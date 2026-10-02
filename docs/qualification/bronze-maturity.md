@@ -5,6 +5,12 @@ The machine-readable report is
 The schema is
 [`schemas/bronze-maturity-qualification-v1.json`](../../schemas/bronze-maturity-qualification-v1.json).
 
+The separate [receipt-backed cohort report](../../quality/qualifications/bronze-receipt-cohort-v1.json)
+and [deferred-source list](./bronze-future-source-list.md) provide a bounded
+view of direct successful source receipts and the remaining current-scope
+work. They do not replace the 157-source current-scope denominator or clear
+the Bronze maturity and Stable v1 M5 gates.
+
 Bronze is mature only when every mandatory property is evidenced. Explicit
 blockers keep the report complete; they do not declare maturity.
 

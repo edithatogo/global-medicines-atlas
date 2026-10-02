@@ -1,0 +1,2631 @@
+{
+  "schema_id": "global-medicines-atlas.bronze-receipt-cohort",
+  "schema_version": 1,
+  "cohort_id": "bronze-receipt-backed-cohort-v1",
+  "qualification_state": "receipt_cohort_qualified",
+  "qualification_basis": "Every cohort member has a source-specific direct successful receipt accepted by the current Bronze maturity receipt validator. The cohort does not claim complete global or current-scope Bronze maturity.",
+  "inputs": {
+    "receipt_validator": {
+      "path": "src/global_medicines_atlas/bronze_maturity.py",
+      "sha256": "a25757f5206467df586850420771a3db73cb60a9f6d6eba3ccf3a8997142723f"
+    },
+    "cohort_generator": {
+      "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
+      "sha256": "fbb4479c8d947bd90aa826315b3b41b9afaf465ee915c51417285d6717dfb81c"
+    },
+    "cohort_schema": {
+      "path": "schemas/bronze-receipt-cohort-v1.json",
+      "sha256": "25df63de05d5e492b116963afd95dd44e8f47094ce893cc2bc66e166cb391f61"
+    },
+    "source_catalog": {
+      "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
+      "sha256": "84d25c8b63024d95398ce92e518d1156c53afb45401a2e719a4016f798b96438"
+    },
+    "source_landing_queue": {
+      "path": "quality/qualifications/bronze-source-landing-queue.json",
+      "sha256": "bb0620be505376e0433533ca0d3888c4fcb39f09ee07b4d6d6862ada6ce7fe03"
+    },
+    "landing_overrides": {
+      "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
+      "sha256": "b02c37174711288d1cb94050b396f99c4758ae58d541d2529f4ff1f8f8f48975"
+    },
+    "qualification_dependencies": {
+      "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
+      "sha256": "e84aa1833a8e16e9ec8e438b4045e4f24bfefe6a16337bd95049516fb2de3260",
+      "file_count": 123,
+      "files": [
+        {
+          "path": "DATA_LICENSE.md",
+          "exists": true,
+          "sha256": "7c46869271e8f7173537e9368d2d60817f7f56cc1264aa99ea108244a9fbd146"
+        },
+        {
+          "path": "conductor/design.md",
+          "exists": true,
+          "sha256": "2722e569e8ed3a1244e67851c7af8c4c96413b257fc0f3016ffe1ec913788716"
+        },
+        {
+          "path": "conductor/requirements.md",
+          "exists": true,
+          "sha256": "391eb0c4e913d5500d397616844387108705c5d28623bd45ebcf852f077b5a2c"
+        },
+        {
+          "path": "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
+          "exists": true,
+          "sha256": "7511d46321c9fada3d1392d24d7ebf0a1678ee4a4c7f0b9faf3a2364a90b7ba8"
+        },
+        {
+          "path": "docs/ECOSYSTEM_REUSE.md",
+          "exists": true,
+          "sha256": "049180198915b1376042cb66d41111be5e57d75b5f314cb82f736955e10a6d1c"
+        },
+        {
+          "path": "docs/data-sources/SOURCE_RIGHTS.md",
+          "exists": true,
+          "sha256": "8931cf4dfeb10f5c18508387d2aa8129376fc7e52b50e4d074932402d0fb0672"
+        },
+        {
+          "path": "quality/bronze-scale-budgets.json",
+          "exists": true,
+          "sha256": "d796c8426529668f35922935e80731dc3bfecdf319db872d5b693f11185a8c1f"
+        },
+        {
+          "path": "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
+          "exists": true,
+          "sha256": "c59a71fc7c83da726f546d7e6853b2d75474dbbffd504ed7650a3c913fa392f2"
+        },
+        {
+          "path": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+          "exists": true,
+          "sha256": "e3f9cf16f55f7173a1f23c3a5ce5e84cf2daa5060c7783ac90fb8a71dcba60a3"
+        },
+        {
+          "path": "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+          "exists": true,
+          "sha256": "70592693ae68e8a7dfcce6746d6b890bd12138f8e3356150ce9748a821e2ec33"
+        },
+        {
+          "path": "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
+          "exists": true,
+          "sha256": "0b363147a625d056b640a9806520abcfb773dec085d6d2c4b8a0878644008f19"
+        },
+        {
+          "path": "quality/qualifications/faers-live-corpus-20260821.json",
+          "exists": true,
+          "sha256": "399ce9ba5dec4593d19c8f696d790cc31d78346e85284bc23ba2b14c3b417d0a"
+        },
+        {
+          "path": "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
+          "exists": true,
+          "sha256": "f981fbb797c21355a9a494b56a725648d8ca4159a4c77b8e16c0f4600484be65"
+        },
+        {
+          "path": "quality/qualifications/fda-rems-live-corpus-20260821.json",
+          "exists": true,
+          "sha256": "cf606821a86ed3f399a39132b5f97b6b0264689525a71fd900bd4a10f29f6fee"
+        },
+        {
+          "path": "quality/qualifications/fda-shortages-live-corpus-20260821.json",
+          "exists": true,
+          "sha256": "17369558f8ca2f71a63be9743637a1b4f3b856b05cd6b943f7819db74f32f2bd"
+        },
+        {
+          "path": "quality/qualifications/gip-acquisition-authorization.json",
+          "exists": true,
+          "sha256": "f26e3475d420a675370a5dfad240e80677bba275f9b4c31d35cb8f889466834c"
+        },
+        {
+          "path": "quality/qualifications/gip-acquisition-success-20260826.json",
+          "exists": true,
+          "sha256": "ac94d17015f4900d802dd30294bfd6da8168e4f0cb283f2ec47070d691a8330e"
+        },
+        {
+          "path": "quality/qualifications/gsrs-unii-acquisition-authorization.json",
+          "exists": true,
+          "sha256": "7e1daaf6a97987b5055953907f823f33a9190b74517018109f1473482655dae0"
+        },
+        {
+          "path": "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
+          "exists": true,
+          "sha256": "dfecdf13308391eb4ad0ad5a021ca5d56c95fe27b168af3600e685942aad722e"
+        },
+        {
+          "path": "quality/qualifications/international-public-bronze-20260827.json",
+          "exists": true,
+          "sha256": "65064f78ff323c362c95714eb92f4fc1a822ee6d39a0e531b8730b6214919bf4"
+        },
+        {
+          "path": "quality/qualifications/ndc-directory-live-corpus-20260821.json",
+          "exists": true,
+          "sha256": "0aed66e010ba847e9a13adf31791ab3bf54165f2d0cdc8996b81ee801a701788"
+        },
+        {
+          "path": "quality/qualifications/nice-utilisation-acquisition-authorization.json",
+          "exists": true,
+          "sha256": "0bb33cc8e8c94a1895912a4a6bd7f5033acc7573dd85882a43f7dbd5f405055a"
+        },
+        {
+          "path": "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
+          "exists": true,
+          "sha256": "7e5aa5b0dd30e8ec4eeb22740e087e5851b63227621709dea26592e62d9a8f4c"
+        },
+        {
+          "path": "quality/qualifications/nordic-utilisation-acquisition-authorization.json",
+          "exists": true,
+          "sha256": "a7716a77e969b7406d46f0c478bc484962094745423e353db98e1edee74200ae"
+        },
+        {
+          "path": "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json",
+          "exists": true,
+          "sha256": "3c3eef893928b7ba2a77462cbfed7eef4c3cb0f887234e5eea710a2530264754"
+        },
+        {
+          "path": "quality/qualifications/norpd-live-private-bronze-20261001.json",
+          "exists": true,
+          "sha256": "7a9212990d996a95192782a2365540a7842096da0ea97eca2fa7e45a6df7a689"
+        },
+        {
+          "path": "quality/qualifications/open-medic-acquisition-success-20260821.json",
+          "exists": true,
+          "sha256": "08f15547b0d41d4d8a2b3ba1a1ea545a7d3f3b8b0e3fd367ca78794392e432d3"
+        },
+        {
+          "path": "quality/qualifications/open-medic-all-release-bronze-20260827.json",
+          "exists": true,
+          "sha256": "454dd69b8b164788bffbacac49d5fbc109a18a8aeabd1ccd1432ffbff178a308"
+        },
+        {
+          "path": "quality/qualifications/orange-book-historical-authorization.json",
+          "exists": true,
+          "sha256": "e84bf23898b580fea231602615d445bad2081a281f9c5395f766850db75551ae"
+        },
+        {
+          "path": "quality/qualifications/orange-book-historical-corpus-20260820.json",
+          "exists": true,
+          "sha256": "cf1586caf350c3b65616ed5e28d00741a92d4cf815f95264541d7b102b6a7b06"
+        },
+        {
+          "path": "quality/qualifications/orange-book-historical-corpus-20260821.json",
+          "exists": true,
+          "sha256": "9e0b3a0dc7b46f1a476141dd633b7f8c77355069a2a7a8d12680eca7ab37e888"
+        },
+        {
+          "path": "quality/qualifications/orange-book-historical-plan.json",
+          "exists": true,
+          "sha256": "894e38962dfcad3ce87862a2137a54fc9744e884689fae9ea4025d08803ceae9"
+        },
+        {
+          "path": "quality/qualifications/orange-book-historical-refresh-20260928.json",
+          "exists": true,
+          "sha256": "e5ba318c3d7cb9fdc11410e2eb1ca6bd646a0da313d566d163d199bb1373c37f"
+        },
+        {
+          "path": "quality/qualifications/sweden-socialstyrelsen-acquisition-decision-20260929.json",
+          "exists": true,
+          "sha256": "8218b7882483584fbf11aa5213eea8f828eab9b1f83fec5f89a7993b95b34a88"
+        },
+        {
+          "path": "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
+          "exists": true,
+          "sha256": "c6fc2297e6ddb6b86b7449ad32ceafe518663b1dc7cfae971c599488e886f83b"
+        },
+        {
+          "path": "quality/qualifications/union-register-live-corpus-20260821.json",
+          "exists": true,
+          "sha256": "45009f96c88a6ec964364432d7e7595ef7b75db9fa65698b7fea3333f4ef7cee"
+        },
+        {
+          "path": "quality/qualifications/us-live-bronze-records-20260820.json",
+          "exists": true,
+          "sha256": "a10db434e85298d8235021adffabd8c6bb2662fcb3950c9cd9b4bc57a7738249"
+        },
+        {
+          "path": "src/global_medicines_atlas/acquisition.py",
+          "exists": true,
+          "sha256": "5163b38d8776d02b1680c023260164727010d086efff2d8290ad9499c2c9bf83"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/__init__.py",
+          "exists": true,
+          "sha256": "7db7015080c8154a292fa16d852d8d557ed3690d3dd1c0b493842f9e0fc56e64"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/_receipt.py",
+          "exists": true,
+          "sha256": "afa94ba955c4723b275addb0b55200636aaf82eeaabcd5ac0b23aefcf2684020"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/au_artg.py",
+          "exists": true,
+          "sha256": "0c75c189f0bfee0a4ca541296a915347d904edbf107f25018dc1ae9563de3279"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/au_mbs.py",
+          "exists": true,
+          "sha256": "f874882bb7e0d3675b791e6cc10393595c705f7b2a977dcff1388a0c27862363"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/au_mbs_workbook.py",
+          "exists": true,
+          "sha256": "0e5d1ff9a53abe60a29ea7094f2d7cbb6dbe48e6821b22f69a861c6561cf2749"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/au_pbs.py",
+          "exists": true,
+          "sha256": "d748897e653eba003d0d1e85e337b1767d16bbc92042356db0b9439bcafbb685"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/canada.py",
+          "exists": true,
+          "sha256": "42e7ad1fa8c139e24f410bd85a02548caa40b8d97230b62e22b86c91c8b9b668"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/european_union.py",
+          "exists": true,
+          "sha256": "940511b3b63463642f38338ae6b58bb06712b9a4026f237472cec98e63697893"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/fixture_contracts.py",
+          "exists": true,
+          "sha256": "42624ef2aead6bd563f477d9e7815b95c99670e1c6161ab945b226a8092f634e"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/japan.py",
+          "exists": true,
+          "sha256": "4315e48914f243b30061be953fb60069d27d3b0d577d6f21a97450488f14d768"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/nz_medsafe.py",
+          "exists": true,
+          "sha256": "f2aadca03d5c88815f897bc2071653e932546a36bae065893b2fce3999513cbb"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/nz_pharmac.py",
+          "exists": true,
+          "sha256": "363b53a2db13451e801baa52b75c23bd03e72222a867850a12675865f341178e"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/source_expansion.py",
+          "exists": true,
+          "sha256": "d9a54e4ca111d106c115103c0f37e7bf4e2aec7d6b7f84e2c34698155bdd395a"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/united_kingdom.py",
+          "exists": true,
+          "sha256": "0251843776cee6a40652f434c16d64304d7240349c2a9344e47273a46d105ab9"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/us_acquisition.py",
+          "exists": true,
+          "sha256": "0ab4f6b4ec9b54497d56ff89dcc1f4e102d98b47a1cd0ad02cd90f29a833a14d"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/us_cms_partd.py",
+          "exists": true,
+          "sha256": "8999b722651bc84e0c2227d13ab0d651cf9e7afa8843fb8aa0f8d4f342d17b96"
+        },
+        {
+          "path": "src/global_medicines_atlas/adapters/us_drugsfda.py",
+          "exists": true,
+          "sha256": "f5b51ec6fa352d42f80e979b4a68af3476215a8532a0ab252e3bc7c06dec7abf"
+        },
+        {
+          "path": "src/global_medicines_atlas/bronze_admission.py",
+          "exists": true,
+          "sha256": "63701a6f88b000e1d8f1e1e2eb28544cf2ff760caa07335f39b2470b863329a2"
+        },
+        {
+          "path": "src/global_medicines_atlas/bronze_landing.py",
+          "exists": true,
+          "sha256": "930666a69bf89f86bf45111a56dd5ebfd208a788efd073ee48c49b09f5f90e07"
+        },
+        {
+          "path": "src/global_medicines_atlas/bronze_maturity.py",
+          "exists": true,
+          "sha256": "a25757f5206467df586850420771a3db73cb60a9f6d6eba3ccf3a8997142723f"
+        },
+        {
+          "path": "src/global_medicines_atlas/bronze_recovery.py",
+          "exists": true,
+          "sha256": "cf0a3eda393513514a5b6c809744e9ab47b99f35dcbd774edc4fdd9d3710134c"
+        },
+        {
+          "path": "src/global_medicines_atlas/bronze_scale.py",
+          "exists": true,
+          "sha256": "183189c1664aeec5a66879e6150c5014824aa4af9370c77cee4a5be0749694a4"
+        },
+        {
+          "path": "src/global_medicines_atlas/bronze_storage.py",
+          "exists": true,
+          "sha256": "225c19616b4b7322e39c66c4de6e54818b8ff4a4a86e5df61ef4d1d00dc3ada3"
+        },
+        {
+          "path": "src/global_medicines_atlas/cms_partd_qualification.py",
+          "exists": true,
+          "sha256": "c4f356ac4ea83e576e2ed7a986d3802528be06b1b17468e14f0075dcaf3effb6"
+        },
+        {
+          "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
+          "exists": true,
+          "sha256": "84d25c8b63024d95398ce92e518d1156c53afb45401a2e719a4016f798b96438"
+        },
+        {
+          "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
+          "exists": true,
+          "sha256": "b02c37174711288d1cb94050b396f99c4758ae58d541d2529f4ff1f8f8f48975"
+        },
+        {
+          "path": "src/global_medicines_atlas/iceberg_ready.py",
+          "exists": true,
+          "sha256": "46e7ab83199e3c74c72304f4af1a5f3c3c90d2097ea2e8f733c74327bc20d394"
+        },
+        {
+          "path": "src/global_medicines_atlas/openlineage_projection.py",
+          "exists": true,
+          "sha256": "be4500be36c3a975e7ea55408fc4861aa1fd75e489567a27abe5e7dee1bb16e7"
+        },
+        {
+          "path": "src/global_medicines_atlas/receipts.py",
+          "exists": true,
+          "sha256": "de20bf6fd3760c048a23ed2485eff1d5c50a3f3bd328c967980c6b3ba60e1275"
+        },
+        {
+          "path": "src/global_medicines_atlas/reuse_gate.py",
+          "exists": true,
+          "sha256": "3fe0e2be9c8d22ec3b145dee91ea8a928fb445b55d705b43fc75c6e41290ba8e"
+        },
+        {
+          "path": "src/global_medicines_atlas/snapshots.py",
+          "exists": true,
+          "sha256": "f31879fb916269aa054b611e3131ce8eca52d54fe7f194c808cf90fce6567a35"
+        },
+        {
+          "path": "src/global_medicines_atlas/source_catalog.py",
+          "exists": true,
+          "sha256": "c9701a19badf146a6f5fda74f158b8e864bdd3b66811e258997ccd9a4b10337f"
+        },
+        {
+          "path": "tests/fixtures/adapters/au_artg.csv",
+          "exists": true,
+          "sha256": "7f834ddae3c1a763cc2d24b4d524a316177063cf8afd2888b773352d7cfb740e"
+        },
+        {
+          "path": "tests/fixtures/adapters/au_mbs.xml",
+          "exists": true,
+          "sha256": "4f4412b414e2d2e09b122de8a8e7e0859f4b2d0470973bb2c034b61cf15b12cc"
+        },
+        {
+          "path": "tests/fixtures/adapters/au_pbs.xml",
+          "exists": true,
+          "sha256": "290aefc6e96968c70f9937dbe6afe68a46a83c8748486dd7da102fa36c911143"
+        },
+        {
+          "path": "tests/fixtures/adapters/nz_medsafe_registry.csv",
+          "exists": true,
+          "sha256": "6c4880b8e10f3f3c7417e55568eb423dc07985325dd217a384110edc885d350d"
+        },
+        {
+          "path": "tests/fixtures/adapters/nz_pharmac_schedule.xml",
+          "exists": true,
+          "sha256": "00316599f377c508544a793d162482609c20dc2d4f121d4e682b7c4d7f1dab3f"
+        },
+        {
+          "path": "tests/fixtures/country_comparison/temporal_assertions.json",
+          "exists": true,
+          "sha256": "441032b27151966f814123aad758e8e025d284b9bd037d3d601a9da037ec13e7"
+        },
+        {
+          "path": "tests/fixtures/datahouse/attestation_leaves.json",
+          "exists": true,
+          "sha256": "27b7568e812ac49f7cdcecc62659262c785cb6476e0517da59b2e8e60fa2295b"
+        },
+        {
+          "path": "tests/fixtures/datahouse/bronze_records.json",
+          "exists": true,
+          "sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da"
+        },
+        {
+          "path": "tests/fixtures/federation_source_metadata/invalid-citation.json",
+          "exists": true,
+          "sha256": "d87abd2afa1b3d0e9f36c1e5f54b978c85f7a68f247c830526f6147948cccfd1"
+        },
+        {
+          "path": "tests/fixtures/federation_source_metadata/invalid-croissant-digest.json",
+          "exists": true,
+          "sha256": "7af1c9d3c47d5e2058a88b01f710161ad5e7f139c82e57c513acb3062b4df178"
+        },
+        {
+          "path": "tests/fixtures/federation_source_metadata/invalid-generic-card.json",
+          "exists": true,
+          "sha256": "2176e4e9a698e1d877b4ca6eddaf95911681a03788ac5244e47a8cef5cde1a6f"
+        },
+        {
+          "path": "tests/fixtures/federation_source_metadata/invalid-version-history.json",
+          "exists": true,
+          "sha256": "1b33012f78d6ceee8af92030e87a3d1c9b100a1f60bb1320d0be484d24e67691"
+        },
+        {
+          "path": "tests/fixtures/federation_source_metadata/valid-mbs.json",
+          "exists": true,
+          "sha256": "bc215dac59fb5e0c4cd50c20e5b046eef70b2004369506d1872e1383b5b8d4de"
+        },
+        {
+          "path": "tests/fixtures/federation_source_metadata/valid-pbs.json",
+          "exists": true,
+          "sha256": "35b1146c5907239fe667aab6f3a71eade3f06e2d7dc28a76c227d36c52ed1bf7"
+        },
+        {
+          "path": "tests/fixtures/global_adapters/canada.json",
+          "exists": true,
+          "sha256": "dc5edba87315b57491154395818e954c9c656ed17656f5110a0afd099a65ebdd"
+        },
+        {
+          "path": "tests/fixtures/global_adapters/european_union.json",
+          "exists": true,
+          "sha256": "40cade29ee91f83f8aa267e3c12d02f1432c56a87473ffb9ec7c1cb7541d3756"
+        },
+        {
+          "path": "tests/fixtures/global_adapters/japan.json",
+          "exists": true,
+          "sha256": "853884908a4370257b5951248ad5894e730984dc0c89243cc7c5b2e33a780086"
+        },
+        {
+          "path": "tests/fixtures/global_adapters/united_kingdom.json",
+          "exists": true,
+          "sha256": "7dfaed495338c7a950e39a8c65ece412634c7b5412970e6d536cc36d489d686b"
+        },
+        {
+          "path": "tests/fixtures/matching/cases.jsonl",
+          "exists": true,
+          "sha256": "b32cd3be9a46735894794a49bb8b5cb06eee68dd6e3550a713a85c73ba68cd57"
+        },
+        {
+          "path": "tests/fixtures/matching/expected_review_queue.jsonl",
+          "exists": true,
+          "sha256": "d432b839d7b365eea7979aa9a79cd7a4613aefde6d7f291f15860e63fd2a51f2"
+        },
+        {
+          "path": "tests/fixtures/matching/manifest.json",
+          "exists": true,
+          "sha256": "5cd9d86b9e99a8b201b62eb7e3dc5b42d01b9641eca2c4a2c342d07b887f6422"
+        },
+        {
+          "path": "tests/fixtures/native/ca/dpd_api.json",
+          "exists": true,
+          "sha256": "5612733defbb625d19bd846560148cb38e583390206bb4f8ed48cb8fa204c5c0"
+        },
+        {
+          "path": "tests/fixtures/native/ca/dpd_bulk.csv",
+          "exists": true,
+          "sha256": "044e59a087aadf089a179dc13f0afbe25992efb51b2fc296432384c7c05bd0ed"
+        },
+        {
+          "path": "tests/fixtures/native/ca/noc_extract.csv",
+          "exists": true,
+          "sha256": "d666035ae34e754cdba205637b41eedc0a5ac96d470a6331a11581ebbaa89025"
+        },
+        {
+          "path": "tests/fixtures/native/eu/ema_medicines.csv",
+          "exists": true,
+          "sha256": "5e0c9f7077f55f5f8bf675c8c84dee9e7dc9ad97816ed6237ce40f72f5053430"
+        },
+        {
+          "path": "tests/fixtures/native/eu/union_register.xml",
+          "exists": true,
+          "sha256": "7e977e1027d478174a7cb2423a65e638e40ba077b25bb5d5bd7ccee3392a822f"
+        },
+        {
+          "path": "tests/fixtures/native/gb/mhra_products.csv",
+          "exists": true,
+          "sha256": "a1f179083a09ec4b9b5a44ea8658f370cd427af0b3947f20a9dce0e43465542a"
+        },
+        {
+          "path": "tests/fixtures/native/gb/nice_appraisals.xml",
+          "exists": true,
+          "sha256": "41b69327c99e4709219addb984c2e9905ed42ad0aa7b52a914cd1697c8098425"
+        },
+        {
+          "path": "tests/fixtures/native/jp/mhlw_nhi_prices.csv",
+          "exists": true,
+          "sha256": "6e371513c70f5443541da4ed579588d9f226511565864f3569c9f4d29aee468e"
+        },
+        {
+          "path": "tests/fixtures/native/jp/pmda_approvals.csv",
+          "exists": true,
+          "sha256": "4165f12fd59e9440e44a02c4124035ea8f1d9ec383c5d9566a2b1c32144a1b2c"
+        },
+        {
+          "path": "tests/fixtures/nz/nzmt_synthetic_bundle.json",
+          "exists": true,
+          "sha256": "de37aa2e630fc3ca987a81895db222b0957fb4ea1c8354731f21ef9d5fa00490"
+        },
+        {
+          "path": "tests/fixtures/protected-evidence/hosted-success.json",
+          "exists": true,
+          "sha256": "369e41914b6052392731b5c0a706866e557fb1f534a01236d872b2a53c16f54c"
+        },
+        {
+          "path": "tests/fixtures/protected-evidence/policy.json",
+          "exists": true,
+          "sha256": "727c5b08ae9278fa7080edab8c35bbdf564aead2868725d60585d95f867b9ac6"
+        },
+        {
+          "path": "tests/fixtures/release-evidence/blocked-live-v0.4.json",
+          "exists": true,
+          "sha256": "acf533e8139e25730c2727c8510128cbe3a2b8edade814acd6686e17b9d0e273"
+        },
+        {
+          "path": "tests/fixtures/release-evidence/blocked-v0.5.json",
+          "exists": true,
+          "sha256": "23cb8a22c355f82c47c0b94b7c059108ba9dfb9993a133861706f5487cd05091"
+        },
+        {
+          "path": "tests/fixtures/release-evidence/product/fixture-qualified-v0.6.json",
+          "exists": true,
+          "sha256": "38399d78f58033e36e4c84a39c275d2107715d83083c9b13dc666addf9088971"
+        },
+        {
+          "path": "tests/fixtures/rxnorm/manifest.json",
+          "exists": true,
+          "sha256": "2a71b78ffd26caf34aea695a292ef3092639d0665fc914d520d7134665f1875c"
+        },
+        {
+          "path": "tests/fixtures/source_expansion/faers.json",
+          "exists": true,
+          "sha256": "63c2262d298cd227b706854353bf66ef7a05b883e05da253e31746a143805cbb"
+        },
+        {
+          "path": "tests/fixtures/source_expansion/who-eml.csv",
+          "exists": true,
+          "sha256": "9cb9f87b1a193563f705d33df69a437aef17e0b8d1ea3382178563329f1d56b5"
+        },
+        {
+          "path": "tests/fixtures/source_health/unavailable-escalation-v1.json",
+          "exists": true,
+          "sha256": "9b1b46d7040a918054b455ea0608bf942309f45e692c3c447bbe76800875841d"
+        },
+        {
+          "path": "tests/fixtures/us/cms_partd_formulary.csv",
+          "exists": true,
+          "sha256": "cfae543c3eaa5e68404ccc7cf254c1bf54069b524fe7f3b5e03f26c05263d8b4"
+        },
+        {
+          "path": "tests/fixtures/us/drugsfda_api.json",
+          "exists": true,
+          "sha256": "545753bc2c201cac21c24201695237bbee098cb5e11e6a1aaee2d90cabe4c425"
+        },
+        {
+          "path": "tests/test_bronze_admission.py",
+          "exists": true,
+          "sha256": "9c5b3aed106a58339159a4a1b63e75069629b506a45f811f696bf2f6fc133116"
+        },
+        {
+          "path": "tests/test_bronze_landing.py",
+          "exists": true,
+          "sha256": "dd73fa1f8f217fd4d310b20738db3a2ebbc2a47ba946af8ca65aa50146556dd5"
+        },
+        {
+          "path": "tests/test_bronze_recovery.py",
+          "exists": true,
+          "sha256": "f3e6440fc08a9cbd27909643bf9e2c36228392a56a9c33c084b808b6371a12b0"
+        },
+        {
+          "path": "tests/test_bronze_scale.py",
+          "exists": true,
+          "sha256": "b1e5b01227f5fb4de298cd1918da66d8979e6530a52ad0695ff5786ec6e7143b"
+        },
+        {
+          "path": "tests/test_bronze_storage.py",
+          "exists": true,
+          "sha256": "0ce2978bbeb6495c5ddbf1d5038e6c21cd206839d588c6093dfe130762fef651"
+        },
+        {
+          "path": "tests/test_iceberg_ready.py",
+          "exists": true,
+          "sha256": "dbfd9c4fbbb22a4348465598aef025d8e21260c694c90d79a66ff35deb498dda"
+        },
+        {
+          "path": "tests/test_openlineage_projection.py",
+          "exists": true,
+          "sha256": "75e75d1f3e10381130b567eeea3ac85646c811fee3d3e4625db72bd7ab977296"
+        },
+        {
+          "path": "tests/test_reuse_gate.py",
+          "exists": true,
+          "sha256": "df77995941fae20284caad905d0adf7d8ef65a55cadc1d79b918970bcf0598ab"
+        },
+        {
+          "path": "tests/test_source_acquisition.py",
+          "exists": true,
+          "sha256": "d3bf2f6b6bd30a672c880415097d1d3aa5b8e751f13a56583d03901b4bed70f3"
+        },
+        {
+          "path": "tests/test_source_receipts.py",
+          "exists": true,
+          "sha256": "5199c36a29673c3af043c1c4df3172568f47e0788ec8551de7d6c6b985687696"
+        },
+        {
+          "path": "tests/test_temporal_identity.py",
+          "exists": true,
+          "sha256": "78d5f450127a2e51ccac03493a3a17dbaf8bcadc74c77be3de3c552eb4183c3c"
+        }
+      ]
+    }
+  },
+  "qualified_cohort": {
+    "state": "qualified",
+    "source_count": 27,
+    "members": [
+      {
+        "source_id": "eu-union-register",
+        "jurisdictions": [
+          "EU"
+        ],
+        "title": "Union Register of medicinal products",
+        "receipt_reference": "quality/qualifications/union-register-live-corpus-20260821.json",
+        "receipt_sha256": "45009f96c88a6ec964364432d7e7595ef7b75db9fa65698b7fea3333f4ef7cee"
+      },
+      {
+        "source_id": "fr-bdpm",
+        "jurisdictions": [
+          "FRA"
+        ],
+        "title": "Base de Donnees Publique des Medicaments",
+        "receipt_reference": "quality/qualifications/international-public-bronze-20260827.json",
+        "receipt_sha256": "65064f78ff323c362c95714eb92f4fc1a822ee6d39a0e531b8730b6214919bf4"
+      },
+      {
+        "source_id": "fr-bdpm-smr-asmr",
+        "jurisdictions": [
+          "FRA"
+        ],
+        "title": "BDPM SMR ASMR and opinion links",
+        "receipt_reference": "quality/qualifications/international-public-bronze-20260827.json",
+        "receipt_sha256": "65064f78ff323c362c95714eb92f4fc1a822ee6d39a0e531b8730b6214919bf4"
+      },
+      {
+        "source_id": "gb-emit",
+        "jurisdictions": [
+          "GBR"
+        ],
+        "title": "Electronic Market Information Tool",
+        "receipt_reference": "quality/qualifications/international-public-bronze-20260827.json",
+        "receipt_sha256": "65064f78ff323c362c95714eb92f4fc1a822ee6d39a0e531b8730b6214919bf4"
+      },
+      {
+        "source_id": "gb-nhs-drug-tariff",
+        "jurisdictions": [
+          "GBR"
+        ],
+        "title": "NHS Drug Tariff",
+        "receipt_reference": "quality/qualifications/international-public-bronze-20260827.json",
+        "receipt_sha256": "65064f78ff323c362c95714eb92f4fc1a822ee6d39a0e531b8730b6214919bf4"
+      },
+      {
+        "source_id": "gb-nice-medicines-utilisation",
+        "jurisdictions": [
+          "GBR"
+        ],
+        "title": "Use of NICE-appraised medicines",
+        "receipt_reference": "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
+        "receipt_sha256": "7e5aa5b0dd30e8ec4eeb22740e087e5851b63227621709dea26592e62d9a8f4c"
+      },
+      {
+        "source_id": "nl-gipdatabank",
+        "jurisdictions": [
+          "NLD"
+        ],
+        "title": "GIPdatabank medicines utilisation",
+        "receipt_reference": "quality/qualifications/gip-acquisition-success-20260826.json",
+        "receipt_sha256": "ac94d17015f4900d802dd30294bfd6da8168e4f0cb283f2ec47070d691a8330e"
+      },
+      {
+        "source_id": "no-norpd-utilisation",
+        "jurisdictions": [
+          "NOR"
+        ],
+        "title": "Norwegian Prescription Database",
+        "receipt_reference": "quality/qualifications/norpd-live-private-bronze-20261001.json",
+        "receipt_sha256": "7a9212990d996a95192782a2365540a7842096da0ea97eca2fa7e45a6df7a689"
+      },
+      {
+        "source_id": "nz-pharmac-hml",
+        "jurisdictions": [
+          "NZL"
+        ],
+        "title": "Hospital Medicines List production resources",
+        "receipt_reference": "quality/qualifications/international-public-bronze-20260827.json",
+        "receipt_sha256": "65064f78ff323c362c95714eb92f4fc1a822ee6d39a0e531b8730b6214919bf4"
+      },
+      {
+        "source_id": "nz-pharmac-schedule",
+        "jurisdictions": [
+          "NZL"
+        ],
+        "title": "Community Pharmaceutical Schedule and HML production resources",
+        "receipt_reference": "quality/qualifications/international-public-bronze-20260827.json",
+        "receipt_sha256": "65064f78ff323c362c95714eb92f4fc1a822ee6d39a0e531b8730b6214919bf4"
+      },
+      {
+        "source_id": "nz-pharmac-schedule-xml",
+        "jurisdictions": [
+          "NZL"
+        ],
+        "title": "Community Pharmaceutical Schedule production XML",
+        "receipt_reference": "quality/qualifications/international-public-bronze-20260827.json",
+        "receipt_sha256": "65064f78ff323c362c95714eb92f4fc1a822ee6d39a0e531b8730b6214919bf4"
+      },
+      {
+        "source_id": "se-socialstyrelsen-utilisation",
+        "jurisdictions": [
+          "SWE"
+        ],
+        "title": "Socialstyrelsen medicines statistics",
+        "receipt_reference": "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
+        "receipt_sha256": "c6fc2297e6ddb6b86b7449ad32ceafe518663b1dc7cfae971c599488e886f83b"
+      },
+      {
+        "source_id": "us-cms-partd-formulary",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "Medicare Part D formulary and pricing data",
+        "receipt_reference": "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
+        "receipt_sha256": "0b363147a625d056b640a9806520abcfb773dec085d6d2c4b8a0878644008f19"
+      },
+      {
+        "source_id": "us-cms-partd-spending",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "Medicare Part D spending by drug",
+        "receipt_reference": "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
+        "receipt_sha256": "0b363147a625d056b640a9806520abcfb773dec085d6d2c4b8a0878644008f19"
+      },
+      {
+        "source_id": "us-fda-drug-shortages",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "FDA drug shortages current and historical snapshots",
+        "receipt_reference": "quality/qualifications/fda-shortages-live-corpus-20260821.json",
+        "receipt_sha256": "17369558f8ca2f71a63be9743637a1b4f3b856b05cd6b943f7819db74f32f2bd"
+      },
+      {
+        "source_id": "us-fda-faers",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "FDA FAERS quarterly public ASCII/XML releases",
+        "receipt_reference": "quality/qualifications/faers-live-corpus-20260821.json",
+        "receipt_sha256": "399ce9ba5dec4593d19c8f696d790cc31d78346e85284bc23ba2b14c3b417d0a"
+      },
+      {
+        "source_id": "us-fda-ndc-directory",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "FDA NDC Directory files",
+        "receipt_reference": "quality/qualifications/ndc-directory-live-corpus-20260821.json",
+        "receipt_sha256": "0aed66e010ba847e9a13adf31791ab3bf54165f2d0cdc8996b81ee801a701788"
+      },
+      {
+        "source_id": "us-fda-nsde",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "FDA NDC SPL Data Elements (NSDE) comprehensive file",
+        "receipt_reference": "quality/qualifications/us-live-bronze-records-20260820.json",
+        "receipt_sha256": "a10db434e85298d8235021adffabd8c6bb2662fcb3950c9cd9b4bc57a7738249"
+      },
+      {
+        "source_id": "us-fda-orange-book",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "Orange Book data files",
+        "receipt_reference": "quality/qualifications/us-live-bronze-records-20260820.json",
+        "receipt_sha256": "a10db434e85298d8235021adffabd8c6bb2662fcb3950c9cd9b4bc57a7738249"
+      },
+      {
+        "source_id": "us-fda-recalls-notices",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "FDA recall, market-withdrawal, and safety-alert notices",
+        "receipt_reference": "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
+        "receipt_sha256": "f981fbb797c21355a9a494b56a725648d8ca4159a4c77b8e16c0f4600484be65"
+      },
+      {
+        "source_id": "us-fda-rems",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "FDA Risk Evaluation and Mitigation Strategies",
+        "receipt_reference": "quality/qualifications/fda-rems-live-corpus-20260821.json",
+        "receipt_sha256": "cf606821a86ed3f399a39132b5f97b6b0264689525a71fd900bd4a10f29f6fee"
+      },
+      {
+        "source_id": "us-gsrs-unii",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "GSRS and UNII",
+        "receipt_reference": "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
+        "receipt_sha256": "dfecdf13308391eb4ad0ad5a021ca5d56c95fe27b168af3600e685942aad722e"
+      },
+      {
+        "source_id": "us-openfda-drugsfda",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "openFDA Drugs@FDA",
+        "receipt_reference": "quality/qualifications/us-live-bronze-records-20260820.json",
+        "receipt_sha256": "a10db434e85298d8235021adffabd8c6bb2662fcb3950c9cd9b4bc57a7738249"
+      },
+      {
+        "source_id": "us-openfda-enforcement",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "openFDA drug enforcement/recalls API",
+        "receipt_reference": "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
+        "receipt_sha256": "f981fbb797c21355a9a494b56a725648d8ca4159a4c77b8e16c0f4600484be65"
+      },
+      {
+        "source_id": "us-openfda-faers",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "openFDA drug adverse-event API (FAERS-derived)",
+        "receipt_reference": "quality/qualifications/us-live-bronze-records-20260820.json",
+        "receipt_sha256": "a10db434e85298d8235021adffabd8c6bb2662fcb3950c9cd9b4bc57a7738249"
+      },
+      {
+        "source_id": "us-openfda-ndc",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "openFDA NDC Directory",
+        "receipt_reference": "quality/qualifications/ndc-directory-live-corpus-20260821.json",
+        "receipt_sha256": "0aed66e010ba847e9a13adf31791ab3bf54165f2d0cdc8996b81ee801a701788"
+      },
+      {
+        "source_id": "us-openfda-nsde",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "openFDA NSDE API (derived from FDA NSDE)",
+        "receipt_reference": "quality/qualifications/us-live-bronze-records-20260820.json",
+        "receipt_sha256": "a10db434e85298d8235021adffabd8c6bb2662fcb3950c9cd9b4bc57a7738249"
+      }
+    ]
+  },
+  "deferred_source_ledger": {
+    "state": "tracked_not_qualified",
+    "source_count": 130,
+    "membership_rule": "All current-scope source IDs without a direct successful receipt accepted by the Bronze maturity receipt validator remain listed, including sources with other landing evidence.",
+    "items": [
+      {
+        "source_id": "ae-dha-prices",
+        "jurisdictions": [
+          "ARE"
+        ],
+        "title": "Medication price list",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ae-ede-register",
+        "jurisdictions": [
+          "ARE"
+        ],
+        "title": "Registered product directory",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ar-anmat-vademecum",
+        "jurisdictions": [
+          "ARG"
+        ],
+        "title": "Vademecum Nacional",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-artg",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "Australian Register of Therapeutic Goods",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-mbs",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "Medicare Benefits Schedule XML releases",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "live_receipt",
+        "defer_reason_code": "queue_landing_not_confirmed_by_receipt_validator",
+        "reason": "The exact July 2025 MBS XML is publicly retained as immutable B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This is service-benefit evidence, not medicine regulatory or PBS funding evidence.",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-mbs-p7-legacy-workbook",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "July 2024 MBS Group P7 genetics workbook",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "live_receipt",
+        "defer_reason_code": "queue_landing_not_confirmed_by_receipt_validator",
+        "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. Its legacy schema era remains explicit for comparison and does not imply current coverage.",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-pbs-api",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "Pharmaceutical Benefits Scheme public data API",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: terms_review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-pbs-historical-xml",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "Historical PBS XML releases",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-tga-daen",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "Database of Adverse Event Notifications",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-tga-pi-cmi",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "Product Information and Consumer Medicine Information",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-tga-regulatory-events",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "ARTG cancellation suspension and regulatory datasets",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "bh-moh-drug-prices",
+        "jurisdictions": [
+          "BHR"
+        ],
+        "title": "Drug price list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "br-anvisa-medicines",
+        "jurisdictions": [
+          "BRA"
+        ],
+        "title": "Anvisa medicines consultation and open-data surfaces",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "br-cmed-prices",
+        "jurisdictions": [
+          "BRA"
+        ],
+        "title": "Medicine price ceilings",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "br-conitec-decisions",
+        "jurisdictions": [
+          "BRA"
+        ],
+        "title": "CONITEC recommendations and SUS incorporation decisions",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ca-canada-vigilance",
+        "jurisdictions": [
+          "CAN"
+        ],
+        "title": "Canada Vigilance adverse reaction online database",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ca-cda-recommendations",
+        "jurisdictions": [
+          "CAN"
+        ],
+        "title": "Reimbursement review recommendations",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ca-cihi-nhex-medicines",
+        "jurisdictions": [
+          "CAN"
+        ],
+        "title": "CIHI National Health Expenditure medicines components",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ca-dpd",
+        "jurisdictions": [
+          "CAN"
+        ],
+        "title": "Drug Product Database",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ca-noc",
+        "jurisdictions": [
+          "CAN"
+        ],
+        "title": "Notice of Compliance data extract",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ca-nova-scotia-pharmacare",
+        "jurisdictions": [
+          "CAN"
+        ],
+        "title": "Nova Scotia Pharmacare Formulary",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ca-ontario-odb",
+        "jurisdictions": [
+          "CAN"
+        ],
+        "title": "Ontario Drug Benefit Formulary CDI",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ch-foph-sl-fhir",
+        "jurisdictions": [
+          "CHE"
+        ],
+        "title": "Specialities List FHIR bulk",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ch-foph-specialities",
+        "jurisdictions": [
+          "CHE"
+        ],
+        "title": "Specialities List",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ch-swissmedic-aips",
+        "jurisdictions": [
+          "CHE"
+        ],
+        "title": "AIPS product-information bulk XML",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ch-swissmedic-authorised",
+        "jurisdictions": [
+          "CHE"
+        ],
+        "title": "Authorised medicinal products",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "cl-isp-register",
+        "jurisdictions": [
+          "CHL"
+        ],
+        "title": "Medicines registration search",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "co-invima-cum",
+        "jurisdictions": [
+          "COL"
+        ],
+        "title": "Codigo Unico de Medicamentos lists",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "co-invima-register",
+        "jurisdictions": [
+          "COL"
+        ],
+        "title": "Sanitary registration search",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "de-bfarm-amice",
+        "jurisdictions": [
+          "DEU"
+        ],
+        "title": "AMIce PharmNet.Bund",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "dk-medicinpriser",
+        "jurisdictions": [
+          "DNK"
+        ],
+        "title": "Medicinpriser",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "dk-medstat-utilisation",
+        "jurisdictions": [
+          "DNK"
+        ],
+        "title": "Medstat.dk medicines statistics",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eg-eda-register",
+        "jurisdictions": [
+          "EGY"
+        ],
+        "title": "Egypt EDA product register",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eg-eda-safety",
+        "jurisdictions": [
+          "EGY"
+        ],
+        "title": "Egyptian Drug Authority public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eg-national-eml",
+        "jurisdictions": [
+          "EGY"
+        ],
+        "title": "EGY essential medicines / health-supplies list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eu-ema-article57",
+        "jurisdictions": [
+          "EU"
+        ],
+        "title": "Article 57 public medicines data",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eu-ema-epar-documents",
+        "jurisdictions": [
+          "EU"
+        ],
+        "title": "EMA EPAR and medicine documents",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eu-ema-json",
+        "jurisdictions": [
+          "EU"
+        ],
+        "title": "EMA medicine and document JSON",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eu-ema-medicines",
+        "jurisdictions": [
+          "EU"
+        ],
+        "title": "EMA medicines and EPAR data",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eu-ema-orphan",
+        "jurisdictions": [
+          "EU"
+        ],
+        "title": "EMA orphan medicinal product designations",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eu-ema-referrals",
+        "jurisdictions": [
+          "EU"
+        ],
+        "title": "EMA referral procedures",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eu-ema-safety-communications",
+        "jurisdictions": [
+          "EU"
+        ],
+        "title": "EMA safety communications",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "eu-spor-public-metadata",
+        "jurisdictions": [
+          "EU"
+        ],
+        "title": "SPOR public RMS/OMS metadata",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "fr-open-medic",
+        "jurisdictions": [
+          "FRA"
+        ],
+        "title": "Open Medic interregime medicines expenditure",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "live_receipt",
+        "defer_reason_code": "queue_landing_not_confirmed_by_receipt_validator",
+        "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, and published under the approved Etalab-2.0 decision. The exact public revision was linked through the reuse gate; all 22,148,373 source-native rows were projected and all 12 products were rebuilt byte-for-byte. Complete French medicines coverage remains unclaimed.",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "gb-mhra-products",
+        "jurisdictions": [
+          "GBR"
+        ],
+        "title": "MHRA Products",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "gb-mhra-yellow-card",
+        "jurisdictions": [
+          "GBR"
+        ],
+        "title": "Yellow Card Scheme public outputs",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "gb-nice-ta",
+        "jurisdictions": [
+          "GBR"
+        ],
+        "title": "Technology appraisal guidance",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "gb-openprescribing",
+        "jurisdictions": [
+          "GBR"
+        ],
+        "title": "OpenPrescribing English primary-care prescribing",
+        "queue_state": "temporarily_unavailable",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. The bounded 2026-09-27 HEAD check of all six documented identities still returned Cloudflare HTTP 403 challenges. On 2026-09-29 the provider confirmed increased Cloudflare protections may challenge or block automation and that it cannot offer an alternative automated route at present. No payload or challenge bytes were retained and no publication occurred.",
+        "next_action": "wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "gcc-central-registration",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "GCC central registration process",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "gh-fda-register",
+        "jurisdictions": [
+          "GHA"
+        ],
+        "title": "Ghana FDA product register",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "gh-fda-safety",
+        "jurisdictions": [
+          "GHA"
+        ],
+        "title": "Ghana Food and Drugs Authority public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "gh-national-eml",
+        "jurisdictions": [
+          "GHA"
+        ],
+        "title": "GHA essential medicines / health-supplies list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "global-who-amds-gprm",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "WHO AMDS / Global Price Reporting Mechanism",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "global-who-availability-surveys",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "WHO medicines availability survey sources",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "global-who-databases",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "WHO medicines and health-product databases catalog",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "global-who-eml",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "WHO Model List of Essential Medicines",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "global-who-medicine-prices",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "WHO medicines pricing information sources",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "global-who-mi4a",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "WHO MI4A vaccine market information",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "global-who-national-eml-index",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "WHO index of national essential medicines lists",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "The current WHO nEML repository index is publicly discoverable, but its linked national documents have varied upstream sources and this review did not establish their per-document reuse rights. The source remains unacquired and unqualified.",
+        "next_action": "complete a metadata-only source inventory where permissible, then resolve source-specific rights and acquisition authority before any linked-document landing",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "global-who-shortage-sources",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "WHO medicines shortage source inventory",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "global-who-wla",
+        "jurisdictions": [
+          "GLOBAL"
+        ],
+        "title": "WHO Listed Authorities and regulatory-system maturity",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: WHO terms apply",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "id-bpom-product",
+        "jurisdictions": [
+          "IDN"
+        ],
+        "title": "Product check portal",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ie-pcrs-reimbursement",
+        "jurisdictions": [
+          "IRL"
+        ],
+        "title": "HSE PCRS reimbursement reports",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "in-cdsco-approved-drugs",
+        "jurisdictions": [
+          "IND"
+        ],
+        "title": "CDSCO approved new drugs",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "in-cdsco-products",
+        "jurisdictions": [
+          "IND"
+        ],
+        "title": "CDSCO public product/license surfaces beyond the approved-drugs seed",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "in-nlem",
+        "jurisdictions": [
+          "IND"
+        ],
+        "title": "National List of Essential Medicines",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "in-nppa-ceiling-prices",
+        "jurisdictions": [
+          "IND"
+        ],
+        "title": "NPPA ceiling prices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "in-procurement-availability",
+        "jurisdictions": [
+          "IND"
+        ],
+        "title": "India public medicines procurement/availability surfaces",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "jp-mhlw-ndb-utilisation",
+        "jurisdictions": [
+          "JPN"
+        ],
+        "title": "NDB tabulated medicines utilisation",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "jp-mhlw-nhi-price",
+        "jurisdictions": [
+          "JPN"
+        ],
+        "title": "NHI drug price standard product lists",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "jp-pmda-approvals",
+        "jurisdictions": [
+          "JPN"
+        ],
+        "title": "Approved drug information and review reports",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "jp-pmda-package-inserts",
+        "jurisdictions": [
+          "JPN"
+        ],
+        "title": "Package insert search and selected CSV lists",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "jp-pmda-safety",
+        "jurisdictions": [
+          "JPN"
+        ],
+        "title": "PMDA safety information and alerts",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ke-national-eml",
+        "jurisdictions": [
+          "KEN"
+        ],
+        "title": "KEN essential medicines / health-supplies list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ke-ppb-register",
+        "jurisdictions": [
+          "KEN"
+        ],
+        "title": "Kenya PPB product register",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ke-ppb-safety",
+        "jurisdictions": [
+          "KEN"
+        ],
+        "title": "Kenya Pharmacy and Poisons Board public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "kr-hira-atc",
+        "jurisdictions": [
+          "KOR"
+        ],
+        "title": "HIRA ATC mapping",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "kr-hira-standard-code",
+        "jurisdictions": [
+          "KOR"
+        ],
+        "title": "Drug standard-code mapping",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "kw-moh-medicines",
+        "jurisdictions": [
+          "KWT"
+        ],
+        "title": "Medicines source discovery record",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "mus-approved-drug-list",
+        "jurisdictions": [
+          "MUS"
+        ],
+        "title": "Mauritius Approved Drug List / EML",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "mus-historical-eml-archive",
+        "jurisdictions": [
+          "MUS"
+        ],
+        "title": "Mauritius historical EML/Approved Drug List editions",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "mus-pharmacy-board-register",
+        "jurisdictions": [
+          "MUS"
+        ],
+        "title": "Mauritius public product registration",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "mus-pharmacy-board-safety",
+        "jurisdictions": [
+          "MUS"
+        ],
+        "title": "Mauritius Pharmacy Board public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "mx-cofepris-register",
+        "jurisdictions": [
+          "MEX"
+        ],
+        "title": "COFEPRIS sanitary registration consultation",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "mx-csg-compendium",
+        "jurisdictions": [
+          "MEX"
+        ],
+        "title": "National Health Supplies Compendium",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "my-npra-quest",
+        "jurisdictions": [
+          "MYS"
+        ],
+        "title": "QUEST3 Product Search",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ng-nafdac-products",
+        "jurisdictions": [
+          "NGA"
+        ],
+        "title": "NAFDAC registered products search",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ng-nafdac-safety",
+        "jurisdictions": [
+          "NGA"
+        ],
+        "title": "NAFDAC public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ng-nhia-medicines",
+        "jurisdictions": [
+          "NGA"
+        ],
+        "title": "NHIA medicines and benefit-package publications",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "nl-medicijnkosten",
+        "jurisdictions": [
+          "NLD"
+        ],
+        "title": "Medicijnkosten",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "no-dmp-fhir",
+        "jurisdictions": [
+          "NOR"
+        ],
+        "title": "Medicinal product FHIR service",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "no-fest",
+        "jurisdictions": [
+          "NOR"
+        ],
+        "title": "FEST full and incremental extracts",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "nz-medsafe-documents",
+        "jurisdictions": [
+          "NZL"
+        ],
+        "title": "Data sheets and consumer medicine information",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "nz-medsafe-products",
+        "jurisdictions": [
+          "NZL"
+        ],
+        "title": "Product/Application and data-sheet search",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "governed_fixture",
+        "defer_reason_code": "fixture_is_not_a_live_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "om-moh-medicines",
+        "jurisdictions": [
+          "OMN"
+        ],
+        "title": "Medicines source discovery record",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ph-fda-verification",
+        "jurisdictions": [
+          "PHL"
+        ],
+        "title": "FDA Verification Portal",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "pk-drap-register",
+        "jurisdictions": [
+          "PAK"
+        ],
+        "title": "DRAP registered/provisional products",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "pk-drap-safety",
+        "jurisdictions": [
+          "PAK"
+        ],
+        "title": "Pakistan Drug Regulatory Authority public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "pk-neml",
+        "jurisdictions": [
+          "PAK"
+        ],
+        "title": "PAK essential medicines / health-supplies list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "qa-moh-medicines",
+        "jurisdictions": [
+          "QAT"
+        ],
+        "title": "Medicines source discovery record",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "rw-national-eml",
+        "jurisdictions": [
+          "RWA"
+        ],
+        "title": "RWA essential medicines / health-supplies list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "rw-rwandafda-register",
+        "jurisdictions": [
+          "RWA"
+        ],
+        "title": "Rwanda FDA product register",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "rw-rwandafda-safety",
+        "jurisdictions": [
+          "RWA"
+        ],
+        "title": "Rwanda Food and Drugs Authority public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "sa-chi-formulary",
+        "jurisdictions": [
+          "SAU"
+        ],
+        "title": "Health insurance formulary and benefit publications",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "se-npl-nsl",
+        "jurisdictions": [
+          "SWE"
+        ],
+        "title": "NPL and NSL open data",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "se-tlv-subsidies",
+        "jurisdictions": [
+          "SWE"
+        ],
+        "title": "TLV price and subsidy database",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "sg-hsa-approval-deltas",
+        "jurisdictions": [
+          "SGP"
+        ],
+        "title": "Approval and post-registration listings",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "sg-hsa-register",
+        "jurisdictions": [
+          "SGP"
+        ],
+        "title": "Register of therapeutic products",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "sg-moh-drug-list",
+        "jurisdictions": [
+          "SGP"
+        ],
+        "title": "Standard Drug List and subsidy information",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "sn-dpm-register",
+        "jurisdictions": [
+          "SEN"
+        ],
+        "title": "Senegal DPM product register",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "sn-dpm-safety",
+        "jurisdictions": [
+          "SEN"
+        ],
+        "title": "Senegal Direction de la Pharmacie et du M\u00e9dicament public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "sn-national-eml",
+        "jurisdictions": [
+          "SEN"
+        ],
+        "title": "SEN essential medicines / health-supplies list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "th-fda-search",
+        "jurisdictions": [
+          "THA"
+        ],
+        "title": "Medicine product search",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "tz-national-eml",
+        "jurisdictions": [
+          "TZA"
+        ],
+        "title": "TZA essential medicines / health-supplies list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "tz-tmda-products",
+        "jurisdictions": [
+          "TZA"
+        ],
+        "title": "TMDA registered products",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "tz-tmda-safety",
+        "jurisdictions": [
+          "TZA"
+        ],
+        "title": "Tanzania Medicines and Medical Devices Authority public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ug-national-eml",
+        "jurisdictions": [
+          "UGA"
+        ],
+        "title": "Uganda EML and health supplies list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ug-nda-register",
+        "jurisdictions": [
+          "UGA"
+        ],
+        "title": "Uganda NDA product register",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "ug-nda-safety",
+        "jurisdictions": [
+          "UGA"
+        ],
+        "title": "Uganda National Drug Authority public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "us-cms-mdrp",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "Medicaid Drug Rebate Program product data",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "us-cms-nadac",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "National Average Drug Acquisition Cost",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "us-dailymed-spl",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "DailyMed Structured Product Labeling",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "us-drugsfda",
+        "jurisdictions": [
+          "USA"
+        ],
+        "title": "Drugs@FDA",
+        "queue_state": "landed_and_evidenced",
+        "evidence_scope": "parser_contract",
+        "defer_reason_code": "parser_contract_is_not_a_source_receipt",
+        "reason": "catalogue implementation claim has committed qualification evidence",
+        "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "za-national-eml",
+        "jurisdictions": [
+          "ZAF"
+        ],
+        "title": "National Essential Medicines List and standard treatment guidelines",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "za-sahpra-register",
+        "jurisdictions": [
+          "ZAF"
+        ],
+        "title": "Registered health products",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "za-sahpra-safety",
+        "jurisdictions": [
+          "ZAF"
+        ],
+        "title": "SAHPRA public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "za-single-exit-price",
+        "jurisdictions": [
+          "ZAF"
+        ],
+        "title": "Single Exit Price database",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "source-specific retention and transformation rights unresolved: review_required",
+        "next_action": "record source-specific retention and transformation rights",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "zw-mcaz-register",
+        "jurisdictions": [
+          "ZWE"
+        ],
+        "title": "MCAZ product register",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "zw-mcaz-safety",
+        "jurisdictions": [
+          "ZWE"
+        ],
+        "title": "Medicines Control Authority of Zimbabwe public safety/recall notices",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "zw-national-eml",
+        "jurisdictions": [
+          "ZWE"
+        ],
+        "title": "ZWE essential medicines / health-supplies list",
+        "queue_state": "manual_only_documented_acquisition",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+        "next_action": "execute and receipt the documented public manual acquisition",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      }
+    ]
+  },
+  "scope_accounting": {
+    "catalog_source_count": 174,
+    "current_scope_count": 157,
+    "qualified_cohort_count": 27,
+    "deferred_current_scope_count": 130,
+    "current_scope_evaluator_landing_count": 42,
+    "current_scope_evaluator_missing_count": 115,
+    "deferred_queue_landed_count": 15,
+    "fixture_only_count": 2,
+    "excluded_count": 15,
+    "partition_complete": true
+  },
+  "preserved_current_scope": {
+    "horizon_id": "bronze-current-public-scope",
+    "qualification_state": "blocked",
+    "completeness_state": "blocked",
+    "bronze_mature": false,
+    "in_scope_count": 157,
+    "evaluator_landing_count": 42,
+    "in_scope_without_landing_or_blocker": 115
+  },
+  "boundaries": {
+    "current_scope_definition_changed": false,
+    "current_scope_qualification_overridden": false,
+    "this_report_closes_stable_v1_m5_gate": false,
+    "missing_sources_treated_as_negative_evidence": false,
+    "source_payloads_acquired_by_this_report": false,
+    "rights_or_publication_authority_granted": false,
+    "external_publication_performed": false
+  }
+}
