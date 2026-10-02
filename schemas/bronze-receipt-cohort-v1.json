@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://edithatogo.github.io/global-medicines-atlas/schemas/bronze-receipt-cohort-v1.json",
+  "title": "Bronze receipt-backed cohort qualification",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "cohort_id",
+    "qualification_state",
+    "qualification_basis",
+    "inputs",
+    "qualified_cohort",
+    "deferred_source_ledger",
+    "scope_accounting",
+    "preserved_current_scope",
+    "boundaries"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "global-medicines-atlas.bronze-receipt-cohort"
+    },
+    "schema_version": { "const": 1 },
+    "cohort_id": { "const": "bronze-receipt-backed-cohort-v1" },
+    "qualification_state": { "const": "receipt_cohort_qualified" },
+    "qualification_basis": { "type": "string", "minLength": 1 },
+    "inputs": {
+      "type": "object",
+      "required": [
+        "receipt_validator",
+        "cohort_generator",
+        "cohort_schema",
+        "source_catalog",
+        "source_landing_queue",
+        "landing_overrides"
+      ],
+      "properties": {
+        "receipt_validator": { "$ref": "#/$defs/input" },
+        "cohort_generator": { "$ref": "#/$defs/input" },
+        "cohort_schema": { "$ref": "#/$defs/input" },
+        "source_catalog": { "$ref": "#/$defs/input" },
+        "source_landing_queue": { "$ref": "#/$defs/input" },
+        "landing_overrides": { "$ref": "#/$defs/input" }
+      },
+      "additionalProperties": false
+    },
+    "qualified_cohort": {
+      "type": "object",
+      "required": ["state", "source_count", "members"],
+      "properties": {
+        "state": { "const": "qualified" },
+        "source_count": { "type": "integer", "minimum": 0 },
+        "members": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/member" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "deferred_source_ledger": {
+      "type": "object",
+      "required": ["state", "source_count", "membership_rule", "items"],
+      "properties": {
+        "state": { "const": "tracked_not_qualified" },
+        "source_count": { "type": "integer", "minimum": 0 },
+        "membership_rule": { "type": "string", "minLength": 1 },
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/deferred" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "scope_accounting": {
+      "type": "object",
+      "required": [
+        "catalog_source_count",
+        "current_scope_count",
+        "qualified_cohort_count",
+        "deferred_current_scope_count",
+        "current_scope_evaluator_landing_count",
+        "current_scope_evaluator_missing_count",
+        "deferred_queue_landed_count",
+        "fixture_only_count",
+        "excluded_count",
+        "partition_complete"
+      ],
+      "properties": {
+        "catalog_source_count": { "type": "integer", "minimum": 0 },
+        "current_scope_count": { "type": "integer", "minimum": 0 },
+        "qualified_cohort_count": { "type": "integer", "minimum": 0 },
+        "deferred_current_scope_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_scope_evaluator_landing_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "current_scope_evaluator_missing_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "deferred_queue_landed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fixture_only_count": { "type": "integer", "minimum": 0 },
+        "excluded_count": { "type": "integer", "minimum": 0 },
+        "partition_complete": { "type": "boolean", "const": true }
+      },
+      "additionalProperties": false
+    },
+    "preserved_current_scope": {
+      "type": "object",
+      "required": [
+        "horizon_id",
+        "qualification_state",
+        "completeness_state",
+        "bronze_mature",
+        "in_scope_count",
+        "evaluator_landing_count",
+        "in_scope_without_landing_or_blocker"
+      ],
+      "properties": {
+        "horizon_id": { "const": "bronze-current-public-scope" },
+        "qualification_state": { "enum": ["qualified", "blocked"] },
+        "completeness_state": { "enum": ["evidenced", "blocked"] },
+        "bronze_mature": { "type": "boolean" },
+        "in_scope_count": { "type": "integer", "minimum": 0 },
+        "evaluator_landing_count": { "type": "integer", "minimum": 0 },
+        "in_scope_without_landing_or_blocker": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    },
+    "boundaries": {
+      "type": "object",
+      "required": [
+        "current_scope_definition_changed",
+        "current_scope_qualification_overridden",
+        "this_report_closes_stable_v1_m5_gate",
+        "missing_sources_treated_as_negative_evidence",
+        "source_payloads_acquired_by_this_report",
+        "rights_or_publication_authority_granted",
+        "external_publication_performed"
+      ],
+      "properties": {
+        "current_scope_definition_changed": {
+          "type": "boolean",
+          "const": false
+        },
+        "current_scope_qualification_overridden": {
+          "type": "boolean",
+          "const": false
+        },
+        "this_report_closes_stable_v1_m5_gate": {
+          "type": "boolean",
+          "const": false
+        },
+        "missing_sources_treated_as_negative_evidence": {
+          "type": "boolean",
+          "const": false
+        },
+        "source_payloads_acquired_by_this_report": {
+          "type": "boolean",
+          "const": false
+        },
+        "rights_or_publication_authority_granted": {
+          "type": "boolean",
+          "const": false
+        },
+        "external_publication_performed": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "input": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      },
+      "additionalProperties": false
+    },
+    "member": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "jurisdictions",
+        "title",
+        "receipt_reference",
+        "receipt_sha256"
+      ],
+      "properties": {
+        "source_id": { "type": "string", "minLength": 1 },
+        "jurisdictions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "title": { "type": "string" },
+        "receipt_reference": { "type": "string", "minLength": 1 },
+        "receipt_sha256": { "$ref": "#/$defs/sha256" }
+      },
+      "additionalProperties": false
+    },
+    "deferred": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "jurisdictions",
+        "title",
+        "queue_state",
+        "evidence_scope",
+        "defer_reason_code",
+        "reason",
+        "next_action",
+        "reentry_trigger"
+      ],
+      "properties": {
+        "source_id": { "type": "string", "minLength": 1 },
+        "jurisdictions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true
+        },
+        "title": { "type": "string" },
+        "queue_state": { "type": "string", "minLength": 1 },
+        "evidence_scope": { "type": "string", "minLength": 1 },
+        "defer_reason_code": { "type": "string", "minLength": 1 },
+        "reason": { "type": "string" },
+        "next_action": { "type": "string" },
+        "reentry_trigger": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

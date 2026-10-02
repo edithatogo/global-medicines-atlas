@@ -78,6 +78,19 @@ Already-governed fixtures include Medsafe, PHARMAC, ARTG, PBS, DPD, NOC, MHRA,
 NICE, EMA medicines, Union Register, PMDA, MHLW NHI, Drugs@FDA, and CMS Part D
 synthetic fixtures.
 
+### Bounded receipt cohort and deferred-source ledger
+
+A versioned receipt-backed cohort may summarize sources with a direct,
+successful, source-specific receipt accepted by the Bronze maturity receipt
+validator. The cohort is a supplemental qualification view. It does not
+replace or narrow the `bronze-current-public-scope` denominator, change M-095,
+or qualify Stable v1 M5. Every other source in that existing denominator stays
+visible in a deferred-source ledger with its source ID, jurisdiction, queue
+state, current reason, next action, and re-entry trigger. Fixture-only and
+otherwise excluded rows remain separate from the deferred current-scope list.
+Missing receipt evidence is not negative medicines evidence, and the ledger
+grants no acquisition, retention, licensing, or publication authority.
+
 ## Out of scope
 
 - Silver, gold, and platinum implementation (W-007).
@@ -297,6 +310,11 @@ and contain no Silver transformation contract.
   landing path, payload, receipt, rights expression, and source-faithful Parquet
   identity, or an explicit documented blocker that is not treated as completion.
 - Credentialed and restricted sources are excluded with durable catalog evidence.
+- If a receipt cohort is emitted, its membership is derived only from direct
+  receipts accepted by the existing receipt validator; the deferred ledger
+  partitions the remaining current-scope source IDs and preserves each queue
+  disposition. The original current-scope qualification and Stable v1 M5 gate
+  remain unchanged.
 - Hugging Face is referenced only as an archive boundary.
 - Silver/gold/platinum code is absent from this track's implementation.
 
