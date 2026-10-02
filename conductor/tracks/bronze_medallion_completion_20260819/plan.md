@@ -914,3 +914,20 @@ for credentialed or rights-unresolved sources.
   deficit falls from 117 to 116; Bronze maturity remains blocked.
 - [x] Validate focused maturity, queue, source-index, and prompt-audit tests,
   routine quality checks, context validation, and generated artifact consistency.
+
+## 2026-10-02 post-PR-700 Bronze dimension reassessment
+
+- [x] Regenerate the Bronze maturity report against exact current `main`
+  `3cd30375aae578c4abd99a72f4048c39deed1596`. The report evaluates all 14
+  mandatory dimensions: 13 are evidenced and only completeness is blocked.
+  The inventory remains 174 catalogue sources, 157 in-scope, 42 receipt-backed
+  landings, 115 without qualifying landing evidence, 2 fixture-only, and 15
+  excluded. The queue has 91 manual-only, 25 rights-blocked, and one temporarily
+  unavailable in-scope source. Approved rights dispositions alone do not
+  establish acquisition or B1/B2 landing evidence.
+- [x] Rebind the Stable-v1 M5 status page to this exact report commit. M5
+  source coverage, Australian federation acceptance, and final Stable-v1
+  release approval remain separate blocked gates; production DR authority is
+  a separate non-acceptance gate.
+- [x] Record the reassessment without promoting Bronze maturity or changing
+  source rights, acquisition, coverage, publication, or any acceptance gate.
