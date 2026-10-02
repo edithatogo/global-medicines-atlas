@@ -18,8 +18,8 @@
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
-    "manual_only_documented_acquisition": 89,
-    "rights_blocked": 27,
+    "manual_only_documented_acquisition": 91,
+    "rights_blocked": 25,
     "temporarily_unavailable": 1
   },
   "missing_source_is_negative_evidence": false,
@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:abd339e71fb7a4ae404f754fb1e44ebb9cb40bb5040090b2b6da54e7a8be92c7",
-  "snapshot_sha256": "abd339e71fb7a4ae404f754fb1e44ebb9cb40bb5040090b2b6da54e7a8be92c7",
+  "snapshot_id": "sha256:7a2fb74f1b8d06e1455641f8381ba39e44675627fa5482e8e359a4c39d67b967",
+  "snapshot_sha256": "7a2fb74f1b8d06e1455641f8381ba39e44675627fa5482e8e359a4c39d67b967",
   "source_count": 174,
   "sources": [
     {
@@ -2767,11 +2767,11 @@
     },
     {
       "access_mode": "api_and_download",
-      "acquisition_family": "paginated_rest_api",
+      "acquisition_family": "manual_reproducible_export",
       "api_url": "https://rxnav.nlm.nih.gov/REST/",
       "authentication": "none",
       "authority": "US National Library of Medicine",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "manual_only_documented_acquisition",
       "discovery_state": "discovery_only",
       "documentation_url": "https://www.nlm.nih.gov/research/umls/rxnorm/",
       "download_url": "https://www.nlm.nih.gov/research/umls/rxnorm/docs/rxnormfiles.html",
@@ -2798,7 +2798,8 @@
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://www.nlm.nih.gov/research/umls/rxnorm/"
+        "quality/qualifications/source-rights-review-ledger.json",
+        "src/global_medicines_atlas/data/source_rights_policy_families.json"
       ],
       "qualification_state": "declared",
       "rights_review_state": "UMLS/RxNorm terms apply",
@@ -6886,11 +6887,11 @@
     },
     {
       "access_mode": "api",
-      "acquisition_family": "paginated_rest_api",
+      "acquisition_family": "manual_reproducible_export",
       "api_url": "https://rxnav.nlm.nih.gov/REST/",
       "authentication": "none",
       "authority": "US National Library of Medicine",
-      "current_landing_disposition": "rights_blocked",
+      "current_landing_disposition": "manual_only_documented_acquisition",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
       "download_url": "",
@@ -6914,7 +6915,9 @@
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
-        "https://www.nlm.nih.gov/research/umls/rxnorm/index.html"
+        "https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+        "quality/qualifications/source-rights-review-ledger.json",
+        "src/global_medicines_atlas/data/source_rights_policy_families.json"
       ],
       "qualification_state": "documentation_verified",
       "rights_review_state": "review_required",

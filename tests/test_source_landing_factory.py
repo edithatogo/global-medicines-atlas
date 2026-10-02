@@ -248,7 +248,9 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
         in openprescribing.evidence_references
     )
     for source_id in ("global-rxnorm", "us-rxnorm-api"):
-        rxnorm = next(item for item in queue.items if item.source_id == source_id)
+        rxnorm = next(
+            item for item in queue.items if item.source_id == source_id
+        )
         assert rxnorm.state is LandingDisposition.MANUAL_ONLY
         assert rxnorm.adapter.preserves_source_bytes is False
         assert rxnorm.adapter.family is (
