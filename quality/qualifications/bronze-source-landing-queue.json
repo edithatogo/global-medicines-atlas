@@ -4,8 +4,8 @@
   "family_counts": {
     "archive_release": 9,
     "document_collection": 27,
-    "manual_reproducible_export": 7,
-    "paginated_rest_api": 14,
+    "manual_reproducible_export": 9,
+    "paginated_rest_api": 12,
     "regulator_search_export": 79,
     "static_file_download": 38
   },
@@ -1799,32 +1799,33 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_instructions": "Acquire only the allowlisted NLM-created RxCUI identifier fields from a documented release/API response; record exact endpoint, release, retrieval time, and field allowlist. Do not retain or publish full response bytes, source vocabulary terms, or other third-party content. Qualify only after a rights-constrained external-reference B2 record and receipt-bound identifier projection are implemented.",
         "acquisition_profile": "public-bulk",
         "credentials_persisted": false,
-        "endpoint": "https://rxnav.nlm.nih.gov/REST/",
-        "family": "paginated_rest_api",
+        "endpoint": "https://www.nlm.nih.gov/research/umls/rxnorm/",
+        "family": "manual_reproducible_export",
         "formats": [
           "json",
           "xml",
           "rrf",
           "zip"
         ],
-        "pagination": "source_config_required",
-        "preserves_source_bytes": true,
+        "pagination": "manual",
+        "preserves_source_bytes": false,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
         "source_id": "global-rxnorm"
       },
       "evidence_references": [
-        "https://www.nlm.nih.gov/research/umls/rxnorm/"
+        "quality/qualifications/source-rights-review-ledger.json",
+        "src/global_medicines_atlas/data/source_rights_policy_families.json"
       ],
       "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: UMLS/RxNorm terms apply",
+      "next_action": "implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists",
+      "priority": 30,
+      "reason": "Source-specific maintainer approval permits public redistribution of NLM-created RxCUI identifiers only; full RxNorm source bytes and third-party vocabulary terms remain excluded.",
       "source_id": "global-rxnorm",
-      "state": "rights_blocked"
+      "state": "manual_only_documented_acquisition"
     },
     {
       "adapter": {
@@ -4485,30 +4486,32 @@
     },
     {
       "adapter": {
-        "acquisition_instructions": "Traverse the configured API pagination contract, preserve each source response, and receipt the completed page set.",
+        "acquisition_instructions": "Acquire only the allowlisted NLM-created RxCUI identifier fields from a documented release/API response; record exact endpoint, release, retrieval time, and field allowlist. Do not retain or publish full response bytes, source vocabulary terms, or other third-party content. Qualify only after a rights-constrained external-reference B2 record and receipt-bound identifier projection are implemented.",
         "acquisition_profile": "public-rest",
         "credentials_persisted": false,
-        "endpoint": "https://rxnav.nlm.nih.gov/REST/",
-        "family": "paginated_rest_api",
+        "endpoint": "https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+        "family": "manual_reproducible_export",
         "formats": [
           "json",
           "xml"
         ],
-        "pagination": "source_config_required",
-        "preserves_source_bytes": true,
+        "pagination": "manual",
+        "preserves_source_bytes": false,
         "requires_reuse_gate": true,
         "requires_rights_gate": true,
         "source_id": "us-rxnorm-api"
       },
       "evidence_references": [
-        "https://www.nlm.nih.gov/research/umls/rxnorm/index.html"
+        "https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
+        "quality/qualifications/source-rights-review-ledger.json",
+        "src/global_medicines_atlas/data/source_rights_policy_families.json"
       ],
       "evidence_scope": "none",
-      "next_action": "record source-specific retention and transformation rights",
-      "priority": 20,
-      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists",
+      "priority": 30,
+      "reason": "Source-specific maintainer approval permits public redistribution of NLM-created RxCUI identifiers only; full RxNorm source bytes and third-party vocabulary terms remain excluded.",
       "source_id": "us-rxnorm-api",
-      "state": "rights_blocked"
+      "state": "manual_only_documented_acquisition"
     },
     {
       "adapter": {
@@ -4701,9 +4704,9 @@
   "state_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
-    "manual_only_documented_acquisition": 89,
+    "manual_only_documented_acquisition": 91,
     "not_yet_implemented": 0,
-    "rights_blocked": 27,
+    "rights_blocked": 25,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   }

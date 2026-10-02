@@ -53,7 +53,6 @@
           "type": "string"
         },
         "preserves_source_bytes": {
-          "const": true,
           "default": true,
           "title": "Preserves Source Bytes",
           "type": "boolean"
