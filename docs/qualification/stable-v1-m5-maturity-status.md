@@ -1,4 +1,4 @@
-# Stable-v1 M5 maturity status, 2026-09-30
+# Stable-v1 M5 maturity status, 2026-10-02
 
 Seven of the eight blocking dimensions in the stable-v1 contract are M5 and
 verified. **Source coverage remains M4/partial**, so the M5 maturity release
@@ -28,9 +28,10 @@ or its historical family. The report was refreshed against exact merged
 source inventory and completeness finding are unchanged. The NorPD queue and
 maturity reconciliation was merged in PR #697. This report is refreshed
 against exact merged `main` commit
-`981e7bbd2af0604674d083c38bf8d8eecb43f529`; the inventory still finds 115 of
-157 in-scope
-public/no-credential sources without qualifying landing evidence. CMS Part D
+`3cd30375aae578c4abd99a72f4048c39deed1596`; the inventory still finds 115 of
+157 in-scope public/no-credential sources without qualifying landing evidence.
+The report evaluates 13 of 14 mandatory Bronze properties as evidenced and
+leaves completeness blocked. CMS Part D
 Prompt 31 was already included in the prior denominator; its reconciled queue
 and source-record evidence do not create another landing increment.
 The Sweden count reflects one internally authorized, privately retained 2025
