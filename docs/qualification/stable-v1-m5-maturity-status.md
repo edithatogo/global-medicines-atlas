@@ -28,7 +28,7 @@ or its historical family. The report was refreshed against exact merged
 source inventory and completeness finding are unchanged. The NorPD queue and
 maturity reconciliation was merged in PR #697. This report is refreshed
 against exact merged `main` commit
-`bab760694687c5e3ecf354bc73c17918ee64e497`; the inventory still finds 115 of
+`93aab4e4e553e1957f743eacc27f8b7537cbf29a`; the inventory still finds 115 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
 The full-scope evaluator has landing evidence for 42 source IDs, while 27 have
 direct successful receipts accepted by the receipt validator; 15 queue-marked
