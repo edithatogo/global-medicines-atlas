@@ -941,7 +941,7 @@ for credentialed or rights-unresolved sources.
 
 ## 2026-10-03 versioned receipt cohort and future-source ledger
 
-- [~] Add a supplemental, versioned receipt-backed source cohort without
+- [x] Add a supplemental, versioned receipt-backed source cohort without
   changing the current-scope Bronze or Stable v1 M5 acceptance gates.
   - [x] Write failing tests proving direct receipts, rather than queue labels,
     determine cohort membership and current-scope sources partition cleanly.
@@ -960,3 +960,21 @@ for credentialed or rights-unresolved sources.
     full-scope evaluator still reports without landing evidence, plus 15 with
     other/queue-level landing evidence that does not satisfy direct-receipt
     cohort membership. No M-095 denominator change or M5 promotion is claimed.
+
+
+## 2026-10-03 rights reconciliation and post-merge qualification
+
+- [x] Merge the accepted-source rights projection reconciliation after
+  resolving the evidence-log conflict with exact merged `main`; preserve both
+  histories and verify the resulting JSONL. The catalogue `rights_status`
+  guard and independent source-rights approvals are both required.
+- [x] Regenerate the receipt cohort after the rights catalogue projection
+  changed its hashed input, then rebind current-scope Bronze and Stable v1 M5
+  status to exact merged `main` `93aab4e4e553e1957f743eacc27f8b7537cbf29a`.
+  Cohort remains 27 direct-receipt sources and 130 deferred current-scope IDs;
+  the full-scope inventory remains 157 in scope, 42 with landing evidence,
+  115 without qualifying landing evidence, 13 of 14 dimensions evidenced, and
+  Bronze completeness and Stable v1 M5 blocked.
+- [x] Validate the changed rights/cohort/maturity contracts (140 passed),
+  Ruff, `ty`, BasedPyright, routine Goblin, context/ecosystem validators, and
+  exact-head protected CI before merge.
