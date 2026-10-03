@@ -19,7 +19,7 @@ Silver transformations included: **no**.
 
 - [ ] `ae-dha-prices` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `au-mbs` — `not_yet_implemented`; Reconcile the August 2026 MBS admission history using a durable landed event and an accepted decision that explicitly supersedes it; otherwise keep this receipt deferred. Do not create a retroactive landed event from inference. Keep source-record projection lineage and M-112 federation acceptance separate..
-- [x] `au-mbs-p7-legacy-workbook` — `landed_and_evidenced`; Reconcile the existing July 2024 workbook payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Preserve the legacy schema-era boundary, then rerun direct-receipt qualification. Keep M-112 federation acceptance separate..
+- [x] `au-mbs-p7-legacy-workbook` — `landed_and_evidenced`; Keep the workbook deferred until a source-origin retrieval from the pinned donor Git commit is recorded under the rights and reuse gates with a typed B1 receipt, acquisition event, chronological landed-to-accepted admission, and exact B2 reference or retained bytes. Re-evaluate the direct receipt cohort after that evidence exists. Keep the legacy date profile unset and M-112 federation acceptance separate..
 - [x] `au-pbs-historical-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `au-tga-regulatory-events` — `rights_blocked`; record source-specific retention and transformation rights.
 - [ ] `br-cmed-prices` — `rights_blocked`; record source-specific retention and transformation rights.

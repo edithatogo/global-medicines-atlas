@@ -11,7 +11,7 @@
     },
     "cohort_generator": {
       "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
-      "sha256": "28e37aeeab6e7971dce08a45ac9249804b9ad8de35abd94fab8c3423db778326"
+      "sha256": "d5df6a98415e1717e141f1f34a1697e59889980ec0a0fb4ee4ff69493f2bbef1"
     },
     "cohort_schema": {
       "path": "schemas/bronze-receipt-cohort-v1.json",
@@ -23,16 +23,16 @@
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
-      "sha256": "ea56bf5f49a3d8f72f2569a2ae1000e80c71599e52588ce1e91db89c0e294a0a"
+      "sha256": "f254927ac5fccd10a6fccc7ebd9ca7a08e3392fde8319c32b6e32149dc5dee1e"
     },
     "landing_overrides": {
       "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
-      "sha256": "6edca56f77bd266f15f474badf4db1210c80bcbc29e78779fbd0a019176138f4"
+      "sha256": "859fe7272fbd8110823c153dc7593a2ed8d4cd5f3b7c916871d0827d0db06138"
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "56f93a07f3961f9f08c967e96ba5cdceb0347d7ace4bcf9293d1774a6fff351a",
-      "file_count": 141,
+      "sha256": "4a965a1a6ccce40ba5e84949d86fdcf3814d3a1616ef616d98c0953f427c6d84",
+      "file_count": 144,
       "files": [
         {
           "path": "DATA_LICENSE.md",
@@ -132,7 +132,7 @@
         {
           "path": "quality/qualifications/bronze-source-landing-queue.json",
           "exists": true,
-          "sha256": "ea56bf5f49a3d8f72f2569a2ae1000e80c71599e52588ce1e91db89c0e294a0a"
+          "sha256": "f254927ac5fccd10a6fccc7ebd9ca7a08e3392fde8319c32b6e32149dc5dee1e"
         },
         {
           "path": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
@@ -198,6 +198,11 @@
           "path": "quality/qualifications/mbs-current-release-contract.json",
           "exists": true,
           "sha256": "833bbf254d50dbc162d0d66e1f9e095c45c5868af1b2378fe3da1b673f4f09f6"
+        },
+        {
+          "path": "quality/qualifications/mbs-p7-storage-receipt-reconciliation-20261003.json",
+          "exists": true,
+          "sha256": "cea3652a8fe43c1af159e30842cfcab33cb3f8ea228cf7be7ee949a0bfc41349"
         },
         {
           "path": "quality/qualifications/ndc-directory-live-corpus-20260821.json",
@@ -298,6 +303,11 @@
           "path": "quality/qualifications/us-live-bronze-records-20260820.json",
           "exists": true,
           "sha256": "a10db434e85298d8235021adffabd8c6bb2662fcb3950c9cd9b4bc57a7738249"
+        },
+        {
+          "path": "scripts/reconcile_mbs_p7_storage_receipt.py",
+          "exists": true,
+          "sha256": "43004d5d121808c0fc7da9b201157f0a5425e0f33e728ec3685c9397202ea91a"
         },
         {
           "path": "src/global_medicines_atlas/acquisition.py",
@@ -407,7 +417,7 @@
         {
           "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
           "exists": true,
-          "sha256": "28e37aeeab6e7971dce08a45ac9249804b9ad8de35abd94fab8c3423db778326"
+          "sha256": "d5df6a98415e1717e141f1f34a1697e59889980ec0a0fb4ee4ff69493f2bbef1"
         },
         {
           "path": "src/global_medicines_atlas/bronze_recovery.py",
@@ -437,12 +447,17 @@
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
           "exists": true,
-          "sha256": "6edca56f77bd266f15f474badf4db1210c80bcbc29e78779fbd0a019176138f4"
+          "sha256": "859fe7272fbd8110823c153dc7593a2ed8d4cd5f3b7c916871d0827d0db06138"
         },
         {
           "path": "src/global_medicines_atlas/iceberg_ready.py",
           "exists": true,
           "sha256": "46e7ab83199e3c74c72304f4af1a5f3c3c90d2097ea2e8f733c74327bc20d394"
+        },
+        {
+          "path": "src/global_medicines_atlas/mbs_p7_receipt_reconciliation.py",
+          "exists": true,
+          "sha256": "41cab02d0931b880a6162aef0f69418aaf175396261abd1f25d0341de18dd692"
         },
         {
           "path": "src/global_medicines_atlas/openlineage_projection.py",
@@ -1079,8 +1094,8 @@
         "queue_state": "landed_and_evidenced",
         "evidence_scope": "live_receipt",
         "defer_reason_code": "queue_landing_not_confirmed_by_receipt_validator",
-        "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This publication/B2 receipt is not itself a typed, validated direct B1 Bronze qualification receipt for the supplemental cohort. Its legacy schema era remains explicit for comparison and does not imply current coverage.",
-        "next_action": "Reconcile the existing July 2024 workbook payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Preserve the legacy schema-era boundary, then rerun direct-receipt qualification. Keep M-112 federation acceptance separate.",
+        "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. Its archived storage SourceReceipt has been reconstructed byte-identically from the committed metadata, but that workflow retrieved from the Hugging Face archive boundary and emitted no source-origin B1 admission lifecycle. The legacy schema era remains explicit for comparison and does not imply current coverage.",
+        "next_action": "Keep the workbook deferred until a source-origin retrieval from the pinned donor Git commit is recorded under the rights and reuse gates with a typed B1 receipt, acquisition event, chronological landed-to-accepted admission, and exact B2 reference or retained bytes. Re-evaluate the direct receipt cohort after that evidence exists. Keep the legacy date profile unset and M-112 federation acceptance separate.",
         "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
       },
       {

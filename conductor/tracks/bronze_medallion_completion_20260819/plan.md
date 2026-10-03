@@ -1067,3 +1067,40 @@ for credentialed or rights-unresolved sources.
   landed event and its exact accepted-event supersession link are evidenced.
 - [ ] Complete source-record projection lineage reconciliation and M-112
   Australian federation acceptance as separate downstream gates.
+
+## 2026-10-03 MBS P7 archived receipt reconciliation
+
+- [x] Reconstruct the July 2024 P7 hosted storage SourceReceipt from its
+  committed payload identity, retrieval timestamp, workflow commit, and pinned
+  transformation identity. Its canonical digest matches the digest recorded
+  in the hosted qualification (`ba18c367...fdf0d52`) without reading workbook
+  bytes locally.
+- [x] Keep that receipt explicitly limited to archive-storage verification:
+  it records a Hugging Face archive retrieval, not a source-origin acquisition,
+  and the workflow emitted no B1 admission lifecycle. Leave P7 deferred from
+  direct receipt qualification, preserve the unresolved legacy date profile,
+  and keep M-112 separate.
+- [x] Regenerate the landing queue, B0 index, direct-receipt cohort, and future
+  source list. Cohort remains 28 qualified / 129 deferred; full current scope
+  remains 42 of 157 with landing evidence, 115 without, and 13 of 14 maturity
+  dimensions evidenced.
+- [x] Run 220 affected tests, routine Test-Goblin, context/ecosystem
+  validation, formatting, lint, typing, and diff checks.
+- [x] Re-run the affected suite and routine profile after binding the new
+  reconciliation producer into the cohort dependency manifest; refresh the
+  generated cohort and confirm exact reproducibility.
+- [x] Resolve the hosted Codecov patch shortfall by adding malformed-input
+  controls and removing unreachable type branches. The new P7 reconciliation
+  module reaches 100% local statement and branch coverage; the corrected PR
+  head must still pass hosted patch coverage.
+- [x] Address PR #713 review findings: require one exact archive inventory row
+  and bind its member path to the pinned P7 archive URI; verify that rebuilding
+  the report from the repository inputs exactly matches the committed report.
+  The two new provenance/regeneration controls pass locally; hosted checks must
+  pass on the corrected PR head before merge.
+- [x] Regenerate the receipt cohort after the reconciler source hash changed.
+  The first hosted rerun correctly rejected the stale dependency manifest; the
+  refreshed cohort preserves 28 qualified / 129 deferred sources and the
+  broader 157-source maturity boundary.
+- [ ] Re-evaluate direct Bronze qualification only after a source-origin
+  retrieval and chronological B1 admission history are evidenced.

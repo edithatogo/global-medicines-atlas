@@ -54,10 +54,13 @@ QUALIFICATION_SPECIALIZED_INPUTS = (
     "quality/qualifications/australian-m112-mbs-b1-event-reconciliation-20261001.json",
     "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
     "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json",
+    "quality/qualifications/mbs-p7-storage-receipt-reconciliation-20261003.json",
     "quality/qualifications/bronze-source-landing-queue.json",
     "src/global_medicines_atlas/data/source_landing_overrides.json",
     "src/global_medicines_atlas/source_landing_factory.py",
     "src/global_medicines_atlas/bronze_receipt_cohort.py",
+    "src/global_medicines_atlas/mbs_p7_receipt_reconciliation.py",
+    "scripts/reconcile_mbs_p7_storage_receipt.py",
 )
 QUALIFICATION_CODE_INPUTS = (
     "src/global_medicines_atlas/bronze_maturity.py",
