@@ -2043,12 +2043,13 @@
       },
       "evidence_references": [
         "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
-        "quality/qualifications/who-national-eml-index-discovery-20261002.json"
+        "quality/qualifications/who-national-eml-index-discovery-20261002.json",
+        "quality/qualifications/who-national-eml-index-inventory-20261003.json"
       ],
       "evidence_scope": "none",
-      "next_action": "complete a metadata-only source inventory where permissible, then resolve source-specific rights and acquisition authority before any linked-document landing",
+      "next_action": "Resolve source-specific rights, upstream origins, and maintainer acquisition authority for each candidate before any linked-document landing; preserve unavailable items as unknown coverage.",
       "priority": 30,
-      "reason": "The current WHO nEML repository index is publicly discoverable, but its linked national documents have varied upstream sources and this review did not establish their per-document reuse rights. The source remains unacquired and unqualified.",
+      "reason": "The official WHO nEML index currently lists 167 candidate country/list items. WHO describes a collection assembled from official government websites and databases plus grey and academic literature; per-document reuse rights, upstream source rights, and acquisition authority remain unestablished. The source remains unacquired and unqualified.",
       "source_id": "global-who-national-eml-index",
       "state": "manual_only_documented_acquisition"
     },

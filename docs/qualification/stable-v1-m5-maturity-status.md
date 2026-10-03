@@ -81,3 +81,10 @@ requires the remaining M-105–M-112 acceptance evidence. Independent
 reproduction, support readiness and final release authority must retain their
 own verified states; a refreshed count or green CI alone does not promote
 them.
+
+The post-PR #715 Bronze maturity report and receipt cohort were regenerated
+against exact merged `main` commit `d4d1285f1c010f4c69d07fffebbc405dace14b8a`.
+The WHO national EML index now has 167 metadata-only candidate listings; its
+documents remain unacquired pending per-document rights and authority review.
+The receipt cohort remains 28 qualified / 129 deferred, and the 157-source
+current-scope denominator and 13-of-14 Bronze dimension result are unchanged.

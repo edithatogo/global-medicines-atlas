@@ -1,0 +1,1192 @@
+{
+  "schema_id": "global-medicines-atlas.who-national-eml-index-inventory",
+  "schema_version": 1,
+  "observed_at": "2026-10-03T11:19:09Z",
+  "source_id": "global-who-national-eml-index",
+  "official_index_url": "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
+  "resolved_index_url": "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
+  "index_http_status": 200,
+  "index_content_type": "text/html; charset=utf-8",
+  "inventory_method": "Parse only WHO index listing metadata and official WHO item-page links; do not request any linked national document or Download target.",
+  "item_count": 167,
+  "inventory_sha256": "a9eb55838cae24d93ecbb612dedb24bb1ad8a293105088a877e58bda92d2bba8",
+  "items": [
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/algeria--la-liste-des-m-dicaments-remboursables-par-la-s-curit--sociale-2023-(french)",
+      "listing_title": "Algeria: Liste des Médicaments Remboursables par la Sécurité Sociale 2023 (French)",
+      "country_or_jurisdiction_as_displayed": "Algeria",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/angola--lista-nacional-de-medicamentos-essenciais-2021-(portugues)",
+      "listing_title": "Angola: Lista Nacional de Medicamentos Essenciais 2021 (Portuguese)",
+      "country_or_jurisdiction_as_displayed": "Angola",
+      "language_as_displayed": "Portuguese",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/benin--liste-nationale-des-medicaments-essentiels-enfants-et-adultes-2018-(french)",
+      "listing_title": "Benin: Liste Nationale des Medicaments Essentiels Enfants et Adultes 2018 (French)",
+      "country_or_jurisdiction_as_displayed": "Benin",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/botswana--botswana-essential-medicines-list-(beml)-2016-(english)",
+      "listing_title": "Botswana: Essential Medicines List (BEML) 2016 (English)",
+      "country_or_jurisdiction_as_displayed": "Botswana",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/burkina-faso--liste-nationale-des-medicamentsessentiels-et-autres-produits-de-sante-2023-(french)",
+      "listing_title": "Burkina Faso: Liste Nationale des Medicaments Essentiels et Autres Produits de Sante 2023 (French)",
+      "country_or_jurisdiction_as_displayed": "Burkina Faso",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/burundi--liste-nationale-des-medicaments-essentiels-au-burundi-2022-(french)",
+      "listing_title": "Burundi: Liste Nationale des Medicaments Essentiels 2025 (French)",
+      "country_or_jurisdiction_as_displayed": "Burundi",
+      "language_as_displayed": "French",
+      "displayed_index_date": "31 January 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/capo-verde--lista-nacional-de-medicamentos-essenciais-2018-(portugues)",
+      "listing_title": "Cabo Verde: Lista Nacional de Medicamentos Essenciais 2018 (Portuguese)",
+      "country_or_jurisdiction_as_displayed": "Cabo Verde",
+      "language_as_displayed": "Portuguese",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/cameroon--liste-nationale-des-medicaments-et-autres-produits-pharmaceutiques-essentiels-2017-(french)",
+      "listing_title": "Cameroon: Liste Nationale des Medicaments et Autres Produits Pharmaceutiques Essentiels 2022 (French)",
+      "country_or_jurisdiction_as_displayed": "Cameroon",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/central-african-republic--liste-nationale-des-medicaments-essentiels-et-dispositifs-medicaux-de-la-rca-2017-(french)",
+      "listing_title": "Central African Republic: Liste Nationale des Medicaments Essentiels et Dispositifs Medicaux de la RCA...",
+      "country_or_jurisdiction_as_displayed": "Central African Republic",
+      "language_as_displayed": null,
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/chad--liste-nationale-des-medicaments-essentiels-et-autres-produits-de-sante-2020-(french)",
+      "listing_title": "Chad: Liste Nationale des Medicaments Essentiels et Autres Produits de Sante 2022 (French)",
+      "country_or_jurisdiction_as_displayed": "Chad",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/comoros--liste-nationale-des-medicaments-essentiels-adulte-et-pediatrique-2014-(french)",
+      "listing_title": "Comoros: Liste Nationale des Medicaments Essentiels Adulte et Pediatrique 2020 (French)",
+      "country_or_jurisdiction_as_displayed": "Comoros",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/congo--liste-nationale-des-medicaments-essentiels-2016-(french)",
+      "listing_title": "Congo: Liste Nationale des Medicaments Essentiels 2016 (French)",
+      "country_or_jurisdiction_as_displayed": "Congo",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/cote-d-ivoire--liste-des-m-dicaments-pris-en-charge-par-la-cmu-(french)",
+      "listing_title": "Cote D'Ivoire: Liste Nationale des Medicaments Essentiels et du Materiel Biomedical (LNME) 2024 (French)",
+      "country_or_jurisdiction_as_displayed": "Cote D'Ivoire",
+      "language_as_displayed": "French",
+      "displayed_index_date": "24 May 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/democratic-republic-of-congo--liste-nationale-des-m-dicaments-essentiels-2020-(french)",
+      "listing_title": "Democratic Republic of Congo: Liste Nationale des Médicaments Essentiels 2020 (French)",
+      "country_or_jurisdiction_as_displayed": "Democratic Republic of Congo",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/equatorial-guinea--lista-nacional-de-medicamentos-esenciales-de-guinea-ecuatorial-2012-(spanish)",
+      "listing_title": "Equatorial Guinea: Lista Nacional de Medicamentos Esenciales de Guinea Ecuatorial 2012 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Equatorial Guinea",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/eritrea--eritrean-national-list-of-medicines-2025-(english)",
+      "listing_title": "Eritrea: National List of Medicines 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Eritrea",
+      "language_as_displayed": "English",
+      "displayed_index_date": "18 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/eswatini--essential-medicines-list-2012-(english)",
+      "listing_title": "Eswatini: Essential Medicines List 2021 (English)",
+      "country_or_jurisdiction_as_displayed": "Eswatini",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 October 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/ethiopia--ethiopian-essential-medicines-list-2020-(english)",
+      "listing_title": "Ethiopia: Essential Medicines List 2024 (English)",
+      "country_or_jurisdiction_as_displayed": "Ethiopia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "24 May 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/gabon--liste-nationale-des-medicaments-et-dispositifs-medicaux-essentiels-2019-(french)",
+      "listing_title": "Gabon: Liste Nationale des Medicaments et Dispositifs Medicaux Essentiels 2024 (French)",
+      "country_or_jurisdiction_as_displayed": "Gabon",
+      "language_as_displayed": "French",
+      "displayed_index_date": "24 May 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/gambia--essential-medicines-list-2019-(english)",
+      "listing_title": "Gambia: Essential Medicines List 2019 (English)",
+      "country_or_jurisdiction_as_displayed": "Gambia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/ghana--essential-medicines-list-2017-(english)",
+      "listing_title": "Ghana: National Health Insurance Scheme (NHIS) Medicines List 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Ghana",
+      "language_as_displayed": "English",
+      "displayed_index_date": "5 November 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/guinea--liste-nationale-des-medicaments-essentiels-2021-(french)",
+      "listing_title": "Guinea: Liste Nationale des Medicaments Essentiels 2021 (French)",
+      "country_or_jurisdiction_as_displayed": "Guinea",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/guinea-bissau--lista-nacional-de-medicamentos-essenciais-2020-(portugues)",
+      "listing_title": "Guinea-Bissau: Lista de Medicamentose Produtos Essenciais de Saúde 2024 (Portuguese)",
+      "country_or_jurisdiction_as_displayed": "Guinea-Bissau",
+      "language_as_displayed": "Portuguese",
+      "displayed_index_date": "24 May 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/kenya--essential-medicines-list-2023-(english)",
+      "listing_title": "Kenya: Essential Medicines List 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Kenya",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/lesotho--essential-medicines-list-2005-(english)",
+      "listing_title": "Lesotho: Essential Medicines List 2005 (English)",
+      "country_or_jurisdiction_as_displayed": "Lesotho",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/liberia--essential-medicines-list-2023-(english)",
+      "listing_title": "Liberia: Essential Medicines List 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Liberia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/madagascar--Liste-medicaments-essentiels-et-intrants-de-sant--2023-(french)",
+      "listing_title": "Madagascar: Liste Médicaments Essentiels et Intrants de Santé 2023 (French)",
+      "country_or_jurisdiction_as_displayed": "Madagascar",
+      "language_as_displayed": "French",
+      "displayed_index_date": "8 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/malawi--essential-medicines-list-(meml)-2015-(english)",
+      "listing_title": "Malawi: Essential Medicines List (MEML) 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Malawi",
+      "language_as_displayed": "English",
+      "displayed_index_date": "5 November 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/mali--liste-nationale-des-médicaments-essentiels-2024-(french)",
+      "listing_title": "Mali: Liste Nationale des Médicaments Essentiels 2024 (French)",
+      "country_or_jurisdiction_as_displayed": "Mali",
+      "language_as_displayed": "French",
+      "displayed_index_date": "24 May 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/mauritania--liste-nationale-des-m-dicament-essentiels-par-niveau-de-la-pyramide-sanitaire-2021-(french)",
+      "listing_title": "Mauritania: Liste Nationale des Médicament Essentiels 2024 (French)",
+      "country_or_jurisdiction_as_displayed": "Mauritania",
+      "language_as_displayed": "French",
+      "displayed_index_date": "25 May 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/mauritius--approved-drug-list-for-public-hospitals-in-mauritius-2022-(english)",
+      "listing_title": "Mauritius: Approved Drug List for Public Hospitals 2022 (English)",
+      "country_or_jurisdiction_as_displayed": "Mauritius",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/mozambique--lista-de-medicamentos-essenciais-2025-(portugues)",
+      "listing_title": "Mozambique: Lista de Medicamentos Essenciais 2025 (Portuguese)",
+      "country_or_jurisdiction_as_displayed": "Mozambique",
+      "language_as_displayed": "Portuguese",
+      "displayed_index_date": "18 May 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/namibia--nemlist---namibia-essential-medicines-list-2016-(english)",
+      "listing_title": "Namibia: NEMLIST - Namibia Essential Medicines List 2021 (English)",
+      "country_or_jurisdiction_as_displayed": "Namibia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "25 May 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/niger--liste-nationale-des-medicaments-essentiels-2025-(french)",
+      "listing_title": "Niger: Liste Nationale des Medicaments Essentiels 2025 (French)",
+      "country_or_jurisdiction_as_displayed": "Niger",
+      "language_as_displayed": "French",
+      "displayed_index_date": "17 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/nigeria--essential-medicines-list-2024-(english)",
+      "listing_title": "Nigeria: Essential Medicines list 2024 (English)",
+      "country_or_jurisdiction_as_displayed": "Nigeria",
+      "language_as_displayed": "English",
+      "displayed_index_date": "9 September 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/rwanda--national-list-of-essential-medicines-for-adults-2022-(english)",
+      "listing_title": "Rwanda: National List of Essential Medicines for Adults 2022 (English)",
+      "country_or_jurisdiction_as_displayed": "Rwanda",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/sao-tome-and-principe--lista-nacional-de-medicamentos-2024-(Portuguese)",
+      "listing_title": "Sao Tome and Principe: Lista Nacional de Medicamentos Essenciais 2024 (Portuguese)",
+      "country_or_jurisdiction_as_displayed": "Sao Tome and Principe",
+      "language_as_displayed": "Portuguese",
+      "displayed_index_date": "18 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/senegal--liste-nationale-des-medicaments-et-produits-essentiels-du-senegal-2025-(french)",
+      "listing_title": "Senegal: Liste Nationale des Medicaments et Produits Essentiels 2025 (French)",
+      "country_or_jurisdiction_as_displayed": "Senegal",
+      "language_as_displayed": "French",
+      "displayed_index_date": "18 May 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/seychelles--list-of-essential-medicines-2022-(english)",
+      "listing_title": "Seychelles: List of Essential medicines 2024 (English)",
+      "country_or_jurisdiction_as_displayed": "Seychelles",
+      "language_as_displayed": "English",
+      "displayed_index_date": "25 May 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/sierra-leone--essential-medicines-list-2021-(english)",
+      "listing_title": "Sierra Leone: Essential Medicines List 2021 (English)",
+      "country_or_jurisdiction_as_displayed": "Sierra Leone",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/south-africa--essential-medicines-list-2021-(english)",
+      "listing_title": "South Africa: Essential Medicines List 2021 (English)",
+      "country_or_jurisdiction_as_displayed": "South Africa",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/south-sudan--essential-medicines-list-(sseml)-2018-(english)",
+      "listing_title": "South Sudan: Essential Medicines List (SSEML) 2018 (English)",
+      "country_or_jurisdiction_as_displayed": "South Sudan",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/togo--liste-nationale-des-m-dicaments-essentiels-sous-dci-pour-les-adultes-2021-(french)",
+      "listing_title": "Togo: Liste Nationale des Médicaments Essentiels sous DCI pour les Adultes 2021 (French)",
+      "country_or_jurisdiction_as_displayed": "Togo",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/uganda--essential-medicines-and-health-supplies-list-for-uganda-(emhslu)-2023-(english)",
+      "listing_title": "Uganda: Essential Medicines and Health Supplies List for Uganda (EMHSLU) 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Uganda",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/united-republic-of-tanzania--national-essential-medicines-list-(nemlit)-2026-(english)",
+      "listing_title": "United Republic of Tanzania: National Essential Medicines List (NEMLIT) 2026 (English)",
+      "country_or_jurisdiction_as_displayed": "United Republic of Tanzania",
+      "language_as_displayed": "English",
+      "displayed_index_date": "9 September 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/zambia--essential-medicines-list-2020-(english)",
+      "listing_title": "Zambia: Essential Medicines List 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Zambia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 October 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/zimbabwe--essential-medicines-list-of-zimbabwe-2020-(english)",
+      "listing_title": "Zimbabwe: Essential Medicines List 2020 (English)",
+      "country_or_jurisdiction_as_displayed": "Zimbabwe",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/afghanistan--national-essential-medicine-list-2025-(english)",
+      "listing_title": "Afghanistan: National Essential Medicine List 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Afghanistan",
+      "language_as_displayed": "English",
+      "displayed_index_date": "18 May 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/bahrain--drug-formulary-2015-(english)",
+      "listing_title": "Bahrain: Drug Formulary 2015 (English)",
+      "country_or_jurisdiction_as_displayed": "Bahrain",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/dijibouti--liste-djiboutienne-des-medicaments-essentiels-2016-(french)",
+      "listing_title": "Djibouti: La Liste Nationale des Médicaments et Matériels Essentiels 2023 (French)",
+      "country_or_jurisdiction_as_displayed": "Djibouti",
+      "language_as_displayed": "French",
+      "displayed_index_date": "26 January 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/egypt--national-essential-medicine-list-2025-(english)",
+      "listing_title": "Egypt: National Essential Medicine List 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Egypt",
+      "language_as_displayed": "English",
+      "displayed_index_date": "8 April 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/iran-(islamic-republic-of)--essential-drug-list-2021-(english)",
+      "listing_title": "Iran (Islamic Republic of): Essential Medicine List 2021 (English)",
+      "country_or_jurisdiction_as_displayed": "Iran (Islamic Republic of)",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/iraq--essential-drugs-list-2023-(english)",
+      "listing_title": "Iraq: Essential Drugs List 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Iraq",
+      "language_as_displayed": "English",
+      "displayed_index_date": "4 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/jordan--essential-medicine-list-2021-(english)",
+      "listing_title": "Jordan: Essential Medicine List 2021 (English)",
+      "country_or_jurisdiction_as_displayed": "Jordan",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/lebanon--list-of-essential-medicines-2018-(english)",
+      "listing_title": "Lebanon: List of Essential Medicines 2018 (English)",
+      "country_or_jurisdiction_as_displayed": "Lebanon",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/libya--essential-medicines-list-2019-(english)",
+      "listing_title": "Libya: Essential Medicines List 2019 (English)",
+      "country_or_jurisdiction_as_displayed": "Libya",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/morrocco--nomenclature-nationale-des-m-dicaments-et-des-dispositifs-m-dicaux-essentiels-2019-(french)",
+      "listing_title": "Morrocco: Nomenclature Nationale des Médicaments et des Dispositifs Médicaux Essentiels 2019 (French)",
+      "country_or_jurisdiction_as_displayed": "Morrocco",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/occupied-palestinian-territory--essential-medicine-list-2024-(english)",
+      "listing_title": "Occupied Palestinian Territory: Essential Medicine List 2024 (English)",
+      "country_or_jurisdiction_as_displayed": "Occupied Palestinian Territory",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 October 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/oman--national-formulary-2016-(english)",
+      "listing_title": "Oman: National Formulary 2016 (English)",
+      "country_or_jurisdiction_as_displayed": "Oman",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/pakistan--national-essential-medicine-list-2023-(english)",
+      "listing_title": "Pakistan: National Essential Medicine List 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Pakistan",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/saudi-arabia--essential-medicines-list-2023-(english)",
+      "listing_title": "Saudi Arabia: Council of Health Insurance Drug Formulary 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Saudi Arabia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "12 November 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/somalia--essential-medicines-list-2019-(english)",
+      "listing_title": "Somalia: Essential Medicines List 2019 (English)",
+      "country_or_jurisdiction_as_displayed": "Somalia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/sudan--national-essential-medicines-list-2019-(english)",
+      "listing_title": "Sudan: National Essential Medicines List 2019 (English)",
+      "country_or_jurisdiction_as_displayed": "Sudan",
+      "language_as_displayed": "English",
+      "displayed_index_date": "12 May 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/syrian-arab-republic--essential-medicines-list-2019-(english)",
+      "listing_title": "Syrian Arab Republic: Essential Medicine List 2022 (English)",
+      "country_or_jurisdiction_as_displayed": "Syrian Arab Republic",
+      "language_as_displayed": "English",
+      "displayed_index_date": "26 January 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/tunisia--formulaire-therapeutique-tunisien-2012-(french)",
+      "listing_title": "Tunisia: Formulaire Therapeutique Tunisien 2012 (French)",
+      "country_or_jurisdiction_as_displayed": "Tunisia",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/united-arab-emirates--national-essential-medicine-list-2025-(english)",
+      "listing_title": "United Arab Emirates: National Essential Medicine List 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "United Arab Emirates",
+      "language_as_displayed": "English",
+      "displayed_index_date": "3 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/yemen--national-essential-medicines-list-2019-(english)",
+      "listing_title": "Yemen: List of Essential Medicines 2022 (English)",
+      "country_or_jurisdiction_as_displayed": "Yemen",
+      "language_as_displayed": "English",
+      "displayed_index_date": "26 January 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/albania--lista-r-barnave-t--rimbursuara-2022-(albanian)",
+      "listing_title": "Albania: Lista e Barnave të Rimbursuara 2022 (Albanian)",
+      "country_or_jurisdiction_as_displayed": "Albania",
+      "language_as_displayed": "Albanian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/armenia--------------2021-(armenian)",
+      "listing_title": "Armenia: ՀԱՅՏԱՐԱՐՎԱԾ ԴԵՂԵՐԻ ՑԱՆԿը 2025 (Armenian)",
+      "country_or_jurisdiction_as_displayed": "Armenia",
+      "language_as_displayed": "Armenian",
+      "displayed_index_date": "1 December 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/belarus----------2022-(russian)",
+      "listing_title": "Belarus: РЕСПУБЛИКАНСКИЙ ФОРМУЛЯРлекарственных средств на 2022 (Russian)",
+      "country_or_jurisdiction_as_displayed": "Belarus",
+      "language_as_displayed": "Russian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/belgium--list-of-essential-medicinal-products-2026-(english)",
+      "listing_title": "Belgium: List of Essential Medicinal Products 2026 (English)",
+      "country_or_jurisdiction_as_displayed": "Belgium",
+      "language_as_displayed": "English",
+      "displayed_index_date": "3 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/bosnia-and-herzegovina--lista-lijekova-obveznog-zdravstvenog-osiguranja-2021-(croatian)",
+      "listing_title": "Bosnia and Herzegovina: Lista Lijekova Obveznog Zdravstvenog Osiguranja 2024 (Croatian)",
+      "country_or_jurisdiction_as_displayed": "Bosnia and Herzegovina",
+      "language_as_displayed": "Croatian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/croatia--essential-medicines-list-2026-(croatian)",
+      "listing_title": "Croatia: Osnovna lista lijekova 2026 (Croatian)",
+      "country_or_jurisdiction_as_displayed": "Croatia",
+      "language_as_displayed": "Croatian",
+      "displayed_index_date": "3 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/czechia--national-medicines-list-2024-(czech)",
+      "listing_title": "Czechia: List of medicinal products 2025 (Czech)",
+      "country_or_jurisdiction_as_displayed": "Czechia",
+      "language_as_displayed": "Czech",
+      "displayed_index_date": "26 April 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/estonia--national-medicines-list-(estonian)",
+      "listing_title": "Estonia: Kokkuvõtlik tabel ravimisoodustustest 2026 (Estonian)",
+      "country_or_jurisdiction_as_displayed": "Estonia",
+      "language_as_displayed": "Estonian",
+      "displayed_index_date": "7 July 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/finland--reimbursable-authorized-medicinal-products-2024-(finnish)",
+      "listing_title": "Finland: Reimbursable authorized medicinal products 2025 (Finnish)",
+      "country_or_jurisdiction_as_displayed": "Finland",
+      "language_as_displayed": "Finnish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/france--liste-des-m-dicaments-essentiels-2023-(franch)",
+      "listing_title": "France: Liste des Médicaments Essentiels 2023 (French)",
+      "country_or_jurisdiction_as_displayed": "France",
+      "language_as_displayed": "French",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/georgia--model-list-of-essential-drugs-2007-(english)",
+      "listing_title": "Georgia: Model List of Essential Drugs 2007 (English)",
+      "country_or_jurisdiction_as_displayed": "Georgia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "5 November 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/greece--list-of-authorized-medicines-for-prescription-national-formulary-2007-(greek)",
+      "listing_title": "Greece: List of Authorized Medicines for Prescription-National Formulary 2007 (Greek)",
+      "country_or_jurisdiction_as_displayed": "Greece",
+      "language_as_displayed": "Greek",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/iceland--listi-yfir-nau-synleg-lyf--tlu--m-nnum-2022-(icelandic)",
+      "listing_title": "Iceland: Listi yfir nauðsynleg lyf ætluð mönnum 2022 (Icelandic)",
+      "country_or_jurisdiction_as_displayed": "Iceland",
+      "language_as_displayed": "Icelandic",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/ireland--reimbursable-items-drugs-2026-(english)",
+      "listing_title": "Ireland: Reimbursable Items-Drugs 2026 (English)",
+      "country_or_jurisdiction_as_displayed": "Ireland",
+      "language_as_displayed": "English",
+      "displayed_index_date": "7 July 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/italy--list-of-innovative-drugs-by-single-indication-2023-(italian)",
+      "listing_title": "Italy: List of innovative drugs by single indication 2023 (Italian)",
+      "country_or_jurisdiction_as_displayed": "Italy",
+      "language_as_displayed": "Italian",
+      "displayed_index_date": "1 September 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/kazakhstan--------2021-(russian)",
+      "listing_title": "Kazakhstan: национального лекарственного формуляра 2021 (Russian)",
+      "country_or_jurisdiction_as_displayed": "Kazakhstan",
+      "language_as_displayed": "Russian",
+      "displayed_index_date": "4 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/kyrgyzstan-----------2009-(russian)",
+      "listing_title": "Kyrgyzstan: национальных перечней жизненно важных лекарственных средств и медицинских изделий  2024 (Russian)",
+      "country_or_jurisdiction_as_displayed": "Kyrgyzstan",
+      "language_as_displayed": "Russian",
+      "displayed_index_date": "22 January 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/latvia--kompens-jamo-z-u-a-un-b-sarakst-2023-(latvian)",
+      "listing_title": "Latvia: Kompensējamo zāļu A un B sarakst 2023 (Latvian)",
+      "country_or_jurisdiction_as_displayed": "Latvia",
+      "language_as_displayed": "Latvian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/lithuania--national-medicines-list-(lithuanian)",
+      "listing_title": "Lithuania: M. KOMPENSUOJAMŲJŲ VAISTINIŲ PREPARATŲ KAINYNAS 2023 (Lithuanian)",
+      "country_or_jurisdiction_as_displayed": "Lithuania",
+      "language_as_displayed": "Lithuanian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/luxembourg--liste-positive-des-m-dicamentst-2025-(french)",
+      "listing_title": "Luxembourg: Liste positive des médicamentst 2025 (French)",
+      "country_or_jurisdiction_as_displayed": "Luxembourg",
+      "language_as_displayed": "French",
+      "displayed_index_date": "5 November 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/malta--hospital-formulary-list-2026-(english)",
+      "listing_title": "Malta: Hospital Formulary List 2026 (English)",
+      "country_or_jurisdiction_as_displayed": "Malta",
+      "language_as_displayed": "English",
+      "displayed_index_date": "3 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/montenegro--osnovne-i-doplatne-liste-ljekova-2024-(bosnian)",
+      "listing_title": "Montenegro: Osnovne i Doplatne Liste Ljekova 2024 (Bosnian)",
+      "country_or_jurisdiction_as_displayed": "Montenegro",
+      "language_as_displayed": "Bosnian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/north-macedonia----------2015-(macedonian)",
+      "listing_title": "North Macedonia: ЛИСТА НА ЕСЕНЦИЈАЛНИ ЛЕКОВИ 2015 (Macedonian)",
+      "country_or_jurisdiction_as_displayed": "North Macedonia",
+      "language_as_displayed": "Macedonian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/poland---wykaz-refundowanych-lek-w-2017-(polish)",
+      "listing_title": "Poland: Wykaz Refundowanych Leków 2017 (Polish)",
+      "country_or_jurisdiction_as_displayed": "Poland",
+      "language_as_displayed": "Polish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/republic-of-moldova--lista-na-ional--de-medicamente-esen-iale-2021-(romanian)",
+      "listing_title": "Republic of Moldova: Lista Națională de Medicamente Esențiale 2021 (Romanian)",
+      "country_or_jurisdiction_as_displayed": "Republic of Moldova",
+      "language_as_displayed": "Romanian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/romania--national-medicines-list-2027-(romanian)",
+      "listing_title": "Romania: National Medicines List 2017 (Romanian)",
+      "country_or_jurisdiction_as_displayed": "Romania",
+      "language_as_displayed": "Romanian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/russian-federation--------------------2025-(russian)",
+      "listing_title": "Russian Federation: жизненно необходимых и важнейших лекарственных препаратов для медицинского применения...",
+      "country_or_jurisdiction_as_displayed": "Russian Federation",
+      "language_as_displayed": null,
+      "displayed_index_date": "17 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/serbia--------------------------2024-(serbian)",
+      "listing_title": "Serbia: ЛИСТИ ЛЕКОВА КОЈИ СЕ ПРОПИСУЈУ И ИЗДАЈУ НА ТЕРЕТСРЕДСТАВА ОБАВЕЗНОГ ЗДРАВСТВЕНОГ ОСИГУРАЊА 2024...",
+      "country_or_jurisdiction_as_displayed": "Serbia",
+      "language_as_displayed": null,
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/slovakia--national-medicines-list-2026-(slovakian)",
+      "listing_title": "Slovakia: Zoznam kategorizovaných liekovt 2026 (Slovakian)",
+      "country_or_jurisdiction_as_displayed": "Slovakia",
+      "language_as_displayed": "Slovakian",
+      "displayed_index_date": "7 July 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/slovenia--seznam-nujno-potrebnih-zdravil-za-uporabo-v-humani-medicini--2023-(slovanian)",
+      "listing_title": "Slovenia: Seznam Nujno Potrebnih Zdravil za Uporabo v Humani Medicini 2023 (Slovanian)",
+      "country_or_jurisdiction_as_displayed": "Slovenia",
+      "language_as_displayed": "Slovanian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/spain---formulario-nacional-2019-(spanish)",
+      "listing_title": "Spain: Formulario Nacional 2019 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Spain",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/sweden--the-wise-list-2015-(english)",
+      "listing_title": "Sweden: The Wise List 2015 (English)",
+      "country_or_jurisdiction_as_displayed": "Sweden",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/switzerland--spezialit-tenliste-2025-(german)",
+      "listing_title": "Switzerland: Spezialitätenliste 2025 (German)",
+      "country_or_jurisdiction_as_displayed": "Switzerland",
+      "language_as_displayed": "German",
+      "displayed_index_date": "12 November 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/tajikistan----------2024-(russian)",
+      "listing_title": "Tajikistan: РЎЙХАТИДОРУҲОИ АСОСИВА СИНОНИМҲОИ ОНҲО 2024 (Russian)",
+      "country_or_jurisdiction_as_displayed": "Tajikistan",
+      "language_as_displayed": "Russian",
+      "displayed_index_date": "17 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/ukraine----------2025-(ukranian)",
+      "listing_title": "Ukraine: Національний перелік основних ЛЗ 2025 (Ukranian)",
+      "country_or_jurisdiction_as_displayed": "Ukraine",
+      "language_as_displayed": "Ukranian",
+      "displayed_index_date": "3 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/uzbekistan--asosiy-dori-vositalari-ro-yxatini-2021-(uzbek)",
+      "listing_title": "Uzbekistan: ASOSIY DORI VOSITALARI RO‘YXATINI 2021 (Uzbek)",
+      "country_or_jurisdiction_as_displayed": "Uzbekistan",
+      "language_as_displayed": "Uzbek",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/argentina--listado-vadem-cum-de-medicamentos-esenciales-2021-(spanish)",
+      "listing_title": "Argentina: Listado/Vademécum de Medicamentos Esenciales 2021 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Argentina",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/bahamas--national-essential-medicines-list-2025-(english)",
+      "listing_title": "Bahamas: National Essential Medicines List 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Bahamas",
+      "language_as_displayed": "English",
+      "displayed_index_date": "10 August 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/barbados--the-barbados-drug-service-2018-(english)",
+      "listing_title": "Barbados: The Barbados Drug Service 2018 (English)",
+      "country_or_jurisdiction_as_displayed": "Barbados",
+      "language_as_displayed": "English",
+      "displayed_index_date": "23 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/belize--drug-formulary-and-therapeutic-manual-2017-(english)",
+      "listing_title": "Belize: Drug Formulary and Therapeutic Manual 2017 (English)",
+      "country_or_jurisdiction_as_displayed": "Belize",
+      "language_as_displayed": "English",
+      "displayed_index_date": "18 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/bolivia--lista-nacional-de-medicamentos-esenciales-2022-(spanish)",
+      "listing_title": "Bolivia: Lista Nacional de Medicamentos Esenciales LINAME 2022 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Bolivia",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "9 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/brazil--rela-o-nacional-de-medicamentos-essenciais-2022-(portugees)",
+      "listing_title": "Brazil: Relação Nacional de Medicamentos Essenciais RENAME 2024 (Portuguese)",
+      "country_or_jurisdiction_as_displayed": "Brazil",
+      "language_as_displayed": "Portuguese",
+      "displayed_index_date": "9 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/canada--a-list-of-essential-prescription-drugs-and-related-products-initial-recommendation-2025-(english)",
+      "listing_title": "Canada: A List of Essential Prescription Drugs and Related Products-Initial Recommendation 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Canada",
+      "language_as_displayed": "English",
+      "displayed_index_date": "2 September 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/chille--formulario-nacional-de-medicamentos-2005-(spanish)",
+      "listing_title": "Chile: Formulario Nacional de Medicamentos 2005 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Chile",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/costa-rica--lista-oficial-de-medicamentos-2025-(portuguese)",
+      "listing_title": "Costa-Rica: Lista Oficial de Medicamentos 2025 (Portuguese)",
+      "country_or_jurisdiction_as_displayed": "Costa-Rica",
+      "language_as_displayed": "Portuguese",
+      "displayed_index_date": "10 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/cuba--fcuadro-b-sico-de-medicamentos-y-productos-naturales-2018-(spanish)",
+      "listing_title": "Cuba: Cuadro Cuadro Básico de Medicamentos y Productos Naturales 2025 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Cuba",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "10 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/dominican-republic--cuadro-b-sico-de-medicamentos-y-productos-naturales-2018-(spanish)",
+      "listing_title": "Dominican Republic: Cuadro Básico de Medicamentos Esenciales 2024 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Dominican Republic",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "10 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/ecuador--cuadro-nacional-de-medicamentos-b-sicos-2019-(spanish)",
+      "listing_title": "Ecuador: Cuadro Nacional de Medicamentos Básicos 2022 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Ecuador",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "10 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/el-salvador--listado-oficial-de-medicamento-de-salud-2025-(portuguese)",
+      "listing_title": "El Salvador: Listado Oficial de Medicamento de Salud 2025 (Portuguese)",
+      "country_or_jurisdiction_as_displayed": "El Salvador",
+      "language_as_displayed": "Portuguese",
+      "displayed_index_date": "7 July 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/guatemala--listado-básico-de-medicamentos-2026-(spanish)",
+      "listing_title": "Guatemala: Listado Básico de Medicamentos 2026 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Guatemala",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "3 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/guyana--essential-medicines-list-2020-(english)",
+      "listing_title": "Guyana: Essential Medicines List 2020 (English)",
+      "country_or_jurisdiction_as_displayed": "Guyana",
+      "language_as_displayed": "English",
+      "displayed_index_date": "10 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/haiti--lliste-nationale-des-m-dicaments-essentiels-2020-(frensh)",
+      "listing_title": "Haiti: Liste Nationale des Médicaments Essentiels 2020 (Frensh)",
+      "country_or_jurisdiction_as_displayed": "Haiti",
+      "language_as_displayed": "Frensh",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/honduras--listado-nacional-de-medicamentos-esenciales-lnme-2018-(spanish)",
+      "listing_title": "Honduras: Listado Nacional de Medicamentos Esenciales LNME 2023 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Honduras",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "1 December 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/jamaica--list-of-vital-essential-and-necessary-list-of-drugs-and-medical-sundries-for-public-institutions-2025-(english)",
+      "listing_title": "Jamaica: List of Vital Essential and Necessary Drugs and Medical Sundries for Public Health Institutions...",
+      "country_or_jurisdiction_as_displayed": "Jamaica",
+      "language_as_displayed": null,
+      "displayed_index_date": "10 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/mexico--cuadro-b-sico-y-cat-logo-de-medicamentos-2017-(spanish)",
+      "listing_title": "Mexico: Cuadro Básico y Catálogo de Medicamentos 2017 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Mexico",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/nicaragua--lista-b-sica-de-medicamentos-esenciales-2022-(spanish)",
+      "listing_title": "Nicaragua: Lista Básica de Medicamentos Esenciales 2022 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Nicaragua",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/panama--la-lista-nacional-de-medicamentos-esenciales-(lme)-2019-(spanish)",
+      "listing_title": "Panama: La Lista Nacional de Medicamentos Esenciales (LME) 2019 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Panama",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/paraguay--lista-de-medicamentos-esenciales-2009-(spanish)",
+      "listing_title": "Paraguay: Lista de Medicamentos Esenciales 2022 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Paraguay",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "10 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/peru--petitorio-nacional--nico-de-medicamentos-esenciales-para-el-sector-salud-2018-(spanish)",
+      "listing_title": "Peru: Petitorio Nacional Único de Medicamentos Esenciales para El Sector Salud 2023 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Peru",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "10 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/suriname--lijst-van-essenti-le-geneesmiddelen-(dutch)",
+      "listing_title": "Suriname: Lijst van Essentiële Geneesmiddelen (Dutch)",
+      "country_or_jurisdiction_as_displayed": "Suriname",
+      "language_as_displayed": "Dutch",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/trinidad---tobago--list-of-drugs-registered-in-accordance-with-the-provisions-of-the-food-and-drugs-act-and-regulations-2019-(english)",
+      "listing_title": "Trinidad and Tobago: List of Drugs Registered in Accordance with the provisions of the Food and Drugs...",
+      "country_or_jurisdiction_as_displayed": "Trinidad and Tobago",
+      "language_as_displayed": null,
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/united-states-of-america--list-of-essential-medicines--medical-countermeasures--and-critical-inputs-2020-(english)",
+      "listing_title": "United States of America: List of Essential Medicines, Medical Countermeasures, and Critical Inputs 2020...",
+      "country_or_jurisdiction_as_displayed": "United States of America",
+      "language_as_displayed": null,
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/uruguay--formulario-terap-utico-de-medicamentos-(f.t.m.)-2012-(spanish)",
+      "listing_title": "Uruguay: Formulario Terapéutico de Medicamentos (F.T.M.) 2012 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Uruguay",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "7 July 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/venezuela-(bolivarian-republic-of)---la-lista-nacional-de-medicamentos-esenciales-(lnme)-2015-(spanish)",
+      "listing_title": "Venezuela (Bolivarian Republic of): la Lista Nacional de Medicamentos Esenciales (LNME) 2015 (Spanish)",
+      "country_or_jurisdiction_as_displayed": "Venezuela (Bolivarian Republic of)",
+      "language_as_displayed": "Spanish",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/bangladesh--list-of-essential-drugs-2016-(english)",
+      "listing_title": "Bangladesh: List of Essential Drugs 2016 (English)",
+      "country_or_jurisdiction_as_displayed": "Bangladesh",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/bhutan--national-essential-medicines-list-2021-(english)",
+      "listing_title": "Bhutan: National Essential Medicines List 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Bhutan",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/democratic-people-s-republic-of-korea--national-essential-medicine-list-2012-(english)",
+      "listing_title": "Democratic People's Republic of Korea: National Essential Medicine List 2012 (English)",
+      "country_or_jurisdiction_as_displayed": "Democratic People's Republic of Korea",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/india--national-list-of-essential-medicines-2022-(english)",
+      "listing_title": "India: National List of Essential Medicines 2022 (English)",
+      "country_or_jurisdiction_as_displayed": "India",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/maldives--national-essential-medicines-list-2023-(english)",
+      "listing_title": "Maldives: National Essential Medicines List 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Maldives",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/myanmar--national-list-of-essential-medicines-(nlem)-2016-(english)",
+      "listing_title": "Myanmar: National List of Essential Medicines (NLEM) 2024 (English)",
+      "country_or_jurisdiction_as_displayed": "Myanmar",
+      "language_as_displayed": "English",
+      "displayed_index_date": "5 November 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/nepal--national-list-of-essential-medicines-2021-(english)",
+      "listing_title": "Nepal: National List of Essential Medicines 2021 (English)",
+      "country_or_jurisdiction_as_displayed": "Nepal",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/sri-lanka--essential-list-2022-(english)",
+      "listing_title": "Sri Lanka: Essential List 2022 (English)",
+      "country_or_jurisdiction_as_displayed": "Sri Lanka",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/thailand--national-list-of-essential-medicines-(nlem)-(thai)",
+      "listing_title": "Thailand: National List of Essential Medicines (NLEM) 2026 (Thai)",
+      "country_or_jurisdiction_as_displayed": "Thailand",
+      "language_as_displayed": "Thai",
+      "displayed_index_date": "20 April 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/timor-leste--essential-medicines-list-(tleml)-2015-(english)",
+      "listing_title": "Timor-Leste: Essential Medicines List (TLEML) 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Timor-Leste",
+      "language_as_displayed": "English",
+      "displayed_index_date": "31 January 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/australia--teh-pharmaceutical-benefit-scheme-(english)",
+      "listing_title": "Australia: The Pharmaceutical Benefit Scheme 2026 (English)",
+      "country_or_jurisdiction_as_displayed": "Australia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "10 July 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/cambodia--essential-medicines-list-2018-(english)",
+      "listing_title": "Cambodia: Essential Medicines List 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Cambodia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "20 October 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/china----2026-(chinese)",
+      "listing_title": "China: 国家基本药物目录 2026 (Chinese)",
+      "country_or_jurisdiction_as_displayed": "China",
+      "language_as_displayed": "Chinese",
+      "displayed_index_date": "15 July 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/cook-islands--essential-medicines-list-2023-(english)",
+      "listing_title": "Cook Islands: Essential Medicines List 2024 (English)",
+      "country_or_jurisdiction_as_displayed": "Cook Islands",
+      "language_as_displayed": "English",
+      "displayed_index_date": "5 November 2025"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/fiji--essential-medicines-list-2015-(english)",
+      "listing_title": "Fiji: Essential Medicines List 2015 (English)",
+      "country_or_jurisdiction_as_displayed": "Fiji",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/indonesia--daftar-obat-esensial-nasional-2021-(indonesian)",
+      "listing_title": "Indonesia: Daftar Obat Esensial Nasional 2021 (Indonesian)",
+      "country_or_jurisdiction_as_displayed": "Indonesia",
+      "language_as_displayed": "Indonesian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/japan----(japanese)",
+      "listing_title": "Japan: 基礎的医薬品対象品 (Japanese)",
+      "country_or_jurisdiction_as_displayed": "Japan",
+      "language_as_displayed": "Japanese",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/kiribati--essential-drugs-list-2009-(english)",
+      "listing_title": "Kiribati: Essential Drugs List 2009 (English)",
+      "country_or_jurisdiction_as_displayed": "Kiribati",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/lao-pdr--list-of-essential-medicines-2024-(lao)",
+      "listing_title": "Lao PDR: List of Essential Medicines 2024 (Lao/English)",
+      "country_or_jurisdiction_as_displayed": "Lao PDR",
+      "language_as_displayed": "Lao/English",
+      "displayed_index_date": "23 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/malaysia--national-essential-medicines-list-2025-(english)",
+      "listing_title": "Malaysia: National Essential Medicines List 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Malaysia",
+      "language_as_displayed": "English",
+      "displayed_index_date": "8 April 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/marshall-islands--majuro-hospital-drug-formulary-2007-(english)",
+      "listing_title": "Marshall Islands: Majuro Hospital Drug Formulary 2007 (English)",
+      "country_or_jurisdiction_as_displayed": "Marshall Islands",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/mongolia-----------2023-(mongolian)",
+      "listing_title": "Mongolia: ЗАЙЛШГҮЙ ШААРДЛАГАТАЙ ЭМИЙН IX ЖАГСААЛТ 2023 (Mongolian)",
+      "country_or_jurisdiction_as_displayed": "Mongolia",
+      "language_as_displayed": "Mongolian",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/nauru--essential-medicines-list-2010-(english)",
+      "listing_title": "Naoero: Essential Medicines List 2010 (English)",
+      "country_or_jurisdiction_as_displayed": "Naoero",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/new-zealand--hospital-medicines-list-2026-(english)",
+      "listing_title": "New Zealand: Hospital Medicines List 2026 (English)",
+      "country_or_jurisdiction_as_displayed": "New Zealand",
+      "language_as_displayed": "English",
+      "displayed_index_date": "8 April 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/niue--essential-drug-list-2006-(english)",
+      "listing_title": "Niue: Essential Drug List 2006 (English)",
+      "country_or_jurisdiction_as_displayed": "Niue",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/palau--essential-medicines-list-2017-(english)",
+      "listing_title": "Palau: Essential Medicines List 2017 (English)",
+      "country_or_jurisdiction_as_displayed": "Palau",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/papua-new-guinea--medical-and-dental-catalogue-2022-(english)",
+      "listing_title": "Papua New Guinea: Medical and Dental Catalogue 2022 (English)",
+      "country_or_jurisdiction_as_displayed": "Papua New Guinea",
+      "language_as_displayed": "English",
+      "displayed_index_date": "23 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/philipines--essential-medicines-list-2022-(english)",
+      "listing_title": "Philippines: PhilHealth Guaranteed and Accessible Medications for Outpatient Treatment 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Philippines",
+      "language_as_displayed": "English",
+      "displayed_index_date": "8 April 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/republic-of-korea--------2025-(korean)",
+      "listing_title": "Republic of Korea: 국가필수의약품 목록 2025 (Korean)",
+      "country_or_jurisdiction_as_displayed": "Republic of Korea",
+      "language_as_displayed": "Korean",
+      "displayed_index_date": "3 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/samoa--essential-medicines-list-2022-(english)",
+      "listing_title": "Samoa: Essential Medicines List 2022 (English)",
+      "country_or_jurisdiction_as_displayed": "Samoa",
+      "language_as_displayed": "English",
+      "displayed_index_date": "4 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/singapore--list-of-subsidised-drugs-(english)",
+      "listing_title": "Singapore: List of subsidized drugs 2026 (English)",
+      "country_or_jurisdiction_as_displayed": "Singapore",
+      "language_as_displayed": "English",
+      "displayed_index_date": "10 July 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/solomon-islands--essential-medicines-list-2023-(english)",
+      "listing_title": "Solomon Islands: Essential Medicines List 2023 (English)",
+      "country_or_jurisdiction_as_displayed": "Solomon Islands",
+      "language_as_displayed": "English",
+      "displayed_index_date": "4 June 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/tonga--essential-drugs-list-2007-(english)",
+      "listing_title": "Tonga: Essential Drugs List 2007 (English)",
+      "country_or_jurisdiction_as_displayed": "Tonga",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/tuvalu--essential-drug-list-2020-(english)",
+      "listing_title": "Tuvalu: Essential Drug List 2010 (English)",
+      "country_or_jurisdiction_as_displayed": "Tuvalu",
+      "language_as_displayed": "English",
+      "displayed_index_date": "30 July 2024"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/vanuatu--essential-medicines-list-2025-(english)",
+      "listing_title": "Vanuatu: Essential Medicines List 2025 (English)",
+      "country_or_jurisdiction_as_displayed": "Vanuatu",
+      "language_as_displayed": "English",
+      "displayed_index_date": "23 February 2026"
+    },
+    {
+      "official_item_url": "https://www.who.int/publications/m/item/viet-nam--danh-m-c-thu-c-h-a-d-c--v-c-xin--sinh-ph-m-thi-t-y-u-2018-(vietnamese)",
+      "listing_title": "Viet Nam: DANH MỤC THUỐC HÓA DƯỢC, VẮC XIN, SINH PHẨM THIẾT YÉU 2018 (Vietnamese)",
+      "country_or_jurisdiction_as_displayed": "Viet Nam",
+      "language_as_displayed": "Vietnamese",
+      "displayed_index_date": "30 July 2024"
+    }
+  ],
+  "source_bytes_downloaded": false,
+  "linked_document_bytes_requested": false,
+  "linked_document_bytes_retained": false,
+  "per_document_rights_reviewed": false,
+  "maintainer_acquisition_authorization": false,
+  "live_qualification_claimed": false,
+  "coverage_claimed": false,
+  "boundary": "The listed item pages and metadata locate candidate national/regional resources only. WHO describes a collection gathered from heterogeneous upstream sources; no rights conclusion, source-document acquisition, medicine coverage, or qualification is inferred."
+}
