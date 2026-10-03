@@ -166,6 +166,7 @@ def test_bronze_track_artifacts_are_complete_and_tdd_shaped() -> None:
     assert set(metadata["requirements"]) >= BRONZE_MUST
     gates = {gate["id"]: gate for gate in metadata["gates"]}
     assert gates["bronze-current-public-scope"]["status"] == "blocked"
+    assert gates["bronze-bounded-public-scope-v1"]["status"] == "passed"
     assert gates["openprescribing-source-access"] == {
         "id": "openprescribing-source-access",
         "kind": "external-source-access",

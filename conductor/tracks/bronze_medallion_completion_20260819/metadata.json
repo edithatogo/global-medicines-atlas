@@ -21,6 +21,11 @@
       "status": "blocked"
     },
     {
+      "id": "bronze-bounded-public-scope-v1",
+      "kind": "dependent-evidence",
+      "status": "passed"
+    },
+    {
       "id": "openprescribing-source-access",
       "kind": "external-source-access",
       "status": "blocked"

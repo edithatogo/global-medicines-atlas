@@ -27,5 +27,5 @@ The machine-readable Bronze report records the exact source-code commit it
 evaluated. Its report, bounded future-source ledger, and the stable-v1 contract
 must be regenerated after any merge that changes their hashed inputs.
 
-The current maturity projection evaluates source-code commit
-`adac807de5e8a69eecc405ab7e28a72e8c9a6fbf`.
+The current maturity projection evaluates exact merged `main` commit
+`a2ee449d6d192283af7128944af2464a1a9dd288`.

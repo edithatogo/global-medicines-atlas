@@ -1199,6 +1199,26 @@ for credentialed or rights-unresolved sources.
   probes, and the full Test Goblin profile. The optional PyIceberg test was
   skipped because the dependency is absent; Darwin mutation results are
   advisory and Linux CI remains authoritative.
-- [ ] Open the scoped PR, resolve review and hosted checks, merge, then rebind
+- [x] Open the scoped PR, resolve review and hosted checks, merge, then rebind
   the qualification projections to exact merged `main` before marking this
   track complete.
+
+## 2026-10-03 PR #721 exact-main reconciliation
+
+- [x] Merge PR #721 (`Qualify Bronze against approved bounded scope`) at
+  `a2ee449d6d192283af7128944af2464a1a9dd288` after all required hosted checks
+  passed, including Codecov patch coverage.
+- [x] Regenerate the Bronze maturity projection on exact merged `main` and
+  refresh the M5 status page provenance. The 42-source bounded horizon remains
+  qualified with all 14 dimensions evidenced; the full public/no-credential
+  universe remains 157 sources with 115 explicitly deferred.
+- [x] Keep the separate 28/129 direct-receipt cohort and Australian federation
+  acceptance boundary unchanged. This exact-main refresh supplies no new
+  source receipt, rights decision, or Australian acceptance evidence.
+- [x] Keep `bronze-current-public-scope` blocked for the full 157-source
+  denominator and represent the approved 42-source qualification as the
+  distinct `bronze-bounded-public-scope-v1` gate. This avoids implying that
+  the 115 explicitly deferred sources have qualified.
+- [ ] Preserve the remaining source-specific acquisition, licensing, and
+  lineage tasks in the future-source ledger or their dependent tracks; do not
+  mark the overall Bronze programme complete while these remain open.
