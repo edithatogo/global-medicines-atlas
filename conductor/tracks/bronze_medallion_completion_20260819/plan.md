@@ -1010,4 +1010,11 @@ for credentialed or rights-unresolved sources.
 - [x] Run focused qualification tests and the full local Test-Goblin profile.
   The full profile reports 5,417 passed, 2 uv-version failures, 1 optional
   skip, and 96.74% coverage; both failures pass under the required uv 0.11.29.
-- [ ] Merge the scoped pull request after all required hosted checks pass.
+- [x] Merge PR [#707](https://github.com/edithatogo/global-medicines-atlas/pull/707)
+  at exact head `4e7ccceb2e8bbde639b86ad596aaded0281a4a38`, squash merge
+  `bf7fde1f1907d055dc784cb29822677cb3adeb6b`. All required hosted checks,
+  including Codecov patch coverage and protected CI, passed; the review thread
+  was resolved after the content-binding fix.
+- [x] Re-evaluate the cohort on exact merged `main`; deterministic regeneration
+  produced no diff. The 28/129 cohort split, 42/157 landing evidence, 115
+  missing, and 13/14 dimension result remain unchanged.
