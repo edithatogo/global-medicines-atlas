@@ -280,6 +280,114 @@ def test_open_medic_receipt_rejects_missing_rights_authority(
 
 
 @pytest.mark.parametrize(
+    "contents",
+    ["{", "[]", "{}", '{"sources": null}', '{"sources": []}'],
+)
+@pytest.mark.unit
+def test_open_medic_source_entry_rejects_malformed_or_missing_ledger_rows(
+    tmp_path: Path, contents: str
+) -> None:
+    ledger = tmp_path / "ledger.json"
+    ledger.write_text(contents, encoding="utf-8")
+
+    assert (
+        bronze_maturity_mod._source_entry(
+            tmp_path, "ledger.json", "sources", "fr-open-medic"
+        )
+        is None
+    )
+
+
+@pytest.mark.unit
+def test_open_medic_source_entry_accepts_one_matching_row_among_other_values(
+    tmp_path: Path,
+) -> None:
+    ledger = tmp_path / "ledger.json"
+    ledger.write_text(
+        json.dumps({
+            "sources": [
+                None,
+                {"source_id": "other"},
+                {"source_id": "fr-open-medic", "approved": True},
+            ]
+        }),
+        encoding="utf-8",
+    )
+
+    assert bronze_maturity_mod._source_entry(
+        tmp_path, "ledger.json", "sources", "fr-open-medic"
+    ) == {"source_id": "fr-open-medic", "approved": True}
+
+
+@pytest.mark.parametrize("items", [None, "not-a-list"])
+@pytest.mark.unit
+def test_open_medic_release_items_rejects_non_list_items(items: object) -> None:
+    assert (
+        bronze_maturity_mod._open_medic_release_items({"items": items}) is None
+    )
+
+
+@pytest.mark.unit
+def test_open_medic_release_items_rejects_non_mapping_release() -> None:
+    assert (
+        bronze_maturity_mod._open_medic_release_items({"items": [None]}) is None
+    )
+
+
+@pytest.mark.parametrize("catalog", ["missing", "[]", '{"sources": null}'])
+@pytest.mark.unit
+def test_open_medic_rights_rejects_malformed_catalog(
+    tmp_path: Path, catalog: str
+) -> None:
+    if catalog != "missing":
+        catalog_path = tmp_path / CATALOG_RELATIVE
+        catalog_path.parent.mkdir(parents=True, exist_ok=True)
+        catalog_path.write_text(catalog, encoding="utf-8")
+
+    assert not bronze_maturity_mod._open_medic_rights_valid(tmp_path)
+
+
+@pytest.mark.unit
+def test_open_medic_rights_rejects_duplicate_catalog_source(
+    tmp_path: Path,
+) -> None:
+    paths = (
+        bronze_maturity_mod.OPEN_MEDIC_ACQUISITION_AUTHORIZATION_RELATIVE,
+        bronze_maturity_mod.OPEN_MEDIC_RIGHTS_DISPOSITION_RELATIVE,
+        bronze_maturity_mod.OPEN_MEDIC_RIGHTS_LEDGER_RELATIVE,
+        CATALOG_RELATIVE,
+    )
+    for relative in paths:
+        target = tmp_path / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((ROOT / relative).read_bytes())
+    catalog_path = tmp_path / CATALOG_RELATIVE
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    source = next(
+        row
+        for row in catalog["sources"]
+        if row["source_id"] == bronze_maturity_mod.OPEN_MEDIC_SOURCE_ID
+    )
+    catalog["sources"].append(source)
+    catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+
+    assert not bronze_maturity_mod._open_medic_rights_valid(tmp_path)
+
+
+@pytest.mark.unit
+def test_open_medic_receipt_rejects_different_source_identity() -> None:
+    receipt = json.loads(
+        (
+            ROOT / bronze_maturity_mod.OPEN_MEDIC_QUALIFICATION_RELATIVE
+        ).read_text(encoding="utf-8")
+    )
+
+    assert not bronze_maturity_mod._is_successful_open_medic_receipt(
+        ROOT, receipt, "other-source"
+    )
+
+
+@pytest.mark.parametrize(
     "mutate",
     [
         lambda receipt: receipt.update(workflow_run="https://example.org/run"),

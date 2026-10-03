@@ -996,4 +996,9 @@ for credentialed or rights-unresolved sources.
 - [x] Review hardening rejects non-integer summary counts and duplicate annual
   source-record digests. A negative test confirmed numeric type drift is
   rejected.
+- [x] Address the hosted Codecov patch result by adding malformed-ledger,
+  missing/duplicate identity, and invalid release-shape negative controls.
+  Local affected tests pass and the maturity module measures 97.94% statement
+  and branch coverage; hosted patch coverage will be confirmed on the follow-up
+  commit.
 - [ ] Merge the scoped pull request after all required hosted checks pass.
