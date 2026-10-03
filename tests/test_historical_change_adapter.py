@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import warnings
 from datetime import UTC, datetime
 from typing import cast
 
@@ -71,8 +72,10 @@ def test_page_validator_rejects_invalid_nested_snapshot() -> None:
         items=(item,), offset=0, limit=1, total=1, next_offset=None
     )
 
-    with pytest.raises(ValidationError):
-        validate_historical_change_page(page)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        with pytest.raises(ValidationError):
+            validate_historical_change_page(page)
 
 
 def test_service_page_payload_revalidates_nested_models() -> None:

@@ -139,7 +139,9 @@ def validate_historical_change_page(
     Pydantic construction. Rebuild from Python-mode values so every nested
     model validator runs before the page is exposed or serialized.
     """
-    return HistoricalChangePage.model_validate(page.model_dump(mode="python"))
+    return HistoricalChangePage.model_validate(
+        page.model_dump(mode="python", warnings=False)
+    )
 
 
 class HistoricalChangeService:
