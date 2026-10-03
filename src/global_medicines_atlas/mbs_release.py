@@ -380,7 +380,7 @@ def stage_mbs_release(  # ruff: ignore[too-many-locals]
                 state=ProbeState.AVAILABLE
                 if state == "accepted"
                 else ProbeState.UNAVAILABLE,
-                detail="MBS release admitted"
+                detail="MBS release passed the official XML profile"
                 if state == "accepted"
                 else f"MbsRelease{state.title()}: no usable release",
             )
