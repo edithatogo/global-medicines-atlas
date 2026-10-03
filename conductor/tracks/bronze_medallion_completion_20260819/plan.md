@@ -1163,3 +1163,14 @@ for credentialed or rights-unresolved sources.
 - [x] Reconfirm source deferrals are explicit and source-specific rights or
   acquisition authority are not inferred for RxNorm, WHO nEML, or other
   deferred candidates.
+
+## 2026-10-03 post-PR-717 exact-main reconciliation
+
+- [x] Regenerate the receipt cohort, future-source list, source landing queue,
+  and B0 source index from exact merged `main` `6a5b265cfefa0e2c8867ab03c4e3efe847697c8e`.
+  Their generated content remained unchanged.
+- [x] Refresh the full-scope maturity report and Stable v1 M5 status page with
+  exact-main provenance. The 28/129 cohort, 42/157 landing evidence count,
+  115-source gap, and 13-of-14 maturity result remain unchanged.
+- [x] Preserve explicit source deferrals and the separate Australian
+  federation and Stable v1 release gates.

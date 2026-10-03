@@ -95,3 +95,9 @@ Their content remained unchanged; the full-scope report now records that exact
 commit. The 28/129 cohort, 42/157 landing-evidence count, 115-source gap, and
 13-of-14 maturity result are unchanged. No WHO document rights or acquisition
 authority were inferred from the metadata-only index.
+
+After PR #717, these projections were regenerated against exact merged `main`
+commit `6a5b265cfefa0e2c8867ab03c4e3efe847697c8e`. The receipt cohort,
+source landing queue, and B0 index remained byte-for-byte unchanged; the
+maturity report now records that commit. The 28/129 cohort, 42/157 landing
+evidence count, 115-source gap, and 13-of-14 result are unchanged.
