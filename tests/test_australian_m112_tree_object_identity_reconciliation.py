@@ -71,7 +71,13 @@ def test_per_path_observations_bind_the_candidate_inventory() -> None:
     per_path = _read(
         "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json"
     )
+    tree_readback = _read(
+        "quality/qualifications/australian-m112-public-tree-readback-20261003.json"
+    )
     current = report["current_tree_metadata_readback"]
+    current_revisions = {
+        row["dataset"]: row["revision"] for row in tree_readback["datasets"]
+    }
 
     expected_by_path = {
         row["path"]: (row, "raw_source_payload")
@@ -89,7 +95,8 @@ def test_per_path_observations_bind_the_candidate_inventory() -> None:
     for path, observed in observed_by_path.items():
         candidate, candidate_class = expected_by_path[path]
         assert observed["dataset"] == candidate["dataset"]
-        assert observed["revision"] == candidate["revision"]
+        assert observed["candidate_inventory_revision"] == candidate["revision"]
+        assert observed["revision"] == current_revisions[candidate["dataset"]]
         assert observed["candidate_class"] == candidate_class
         assert (
             observed["expected_git_blob_oid"] == candidate["hub_git_blob_oid"]
@@ -137,6 +144,11 @@ def test_per_path_observations_bind_the_candidate_inventory() -> None:
     digest = hashlib.sha256(inventory_path.read_bytes()).hexdigest()
     assert current["per_path_metadata_inventory"]["sha256"] == digest
     assert current["per_path_metadata_inventory"]["observation_count"] == 1_759
+    correction = report["current_tree_metadata_revision_correction"]
+    assert correction["previous_supplemental_inventory_sha256"] == (
+        "bfaf0291fc37d6761b3ba0e26f32d8f2cfeba46db7b48d48ed68c52df9f24bd1"
+    )
+    assert correction["current_tree_revisions"] == current_revisions
     pages = per_path["page_response_hashes"]
     assert len(pages) == current["metadata_pages"] == 39
     assert (

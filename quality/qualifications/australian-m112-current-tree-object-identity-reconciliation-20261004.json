@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.australian-m112-current-tree-object-identity-reconciliation",
   "schema_version": 1,
-  "recorded_at": "2026-10-03T18:35:45Z",
+  "recorded_at": "2026-10-03T18:46:40Z",
   "purpose": "Join the approved candidate paths to anonymous current-tree object metadata, reconcile exposed LFS SHA-256 values, and record four additional rights-permitted MBS digest reads without persisting or inspecting their contents.",
   "scope": {
     "jurisdiction": "Australian MBS/PBS only",
@@ -46,7 +46,7 @@
     },
     {
       "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
-      "sha256": "bfaf0291fc37d6761b3ba0e26f32d8f2cfeba46db7b48d48ed68c52df9f24bd1"
+      "sha256": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae"
     }
   ],
   "current_tree_metadata_readback": {
@@ -55,7 +55,7 @@
     "payload_bytes_read_for_metadata": false,
     "payload_values_read": false,
     "metadata_pages": 39,
-    "metadata_response_bytes": 1512673,
+    "metadata_response_bytes": 1499688,
     "candidate_paths_present": 1759,
     "candidate_paths_missing": 0,
     "git_blob_oid_matches": 1759,
@@ -75,7 +75,7 @@
         "projection_paths": 10,
         "metadata_file_entries": 59,
         "anonymous_metadata_http_status": 200,
-        "metadata_response_bytes": 45561,
+        "metadata_response_bytes": 32576,
         "metadata_pages": 1,
         "candidate_paths_present": 18,
         "git_blob_oid_matches": 18,
@@ -87,7 +87,7 @@
         "current_lfs_sha256_mismatches": 0,
         "raw_lfs_sha256_matches": 0,
         "projection_lfs_sha256_matches": 10,
-        "metadata_response_sha256": "d34478e47f3765e53cadc5631d02076ee1fc32b5f56264302dff2ce458d2ed4c"
+        "metadata_response_sha256": "78317a1162abd171482f637a68b825944b7c384a3dc02fca4984082a22571d10"
       },
       {
         "dataset": "edithatogo/australian-pbs-source-archive",
@@ -180,10 +180,10 @@
     ],
     "per_path_metadata_inventory": {
       "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
-      "sha256": "bfaf0291fc37d6761b3ba0e26f32d8f2cfeba46db7b48d48ed68c52df9f24bd1",
+      "sha256": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae",
       "observation_count": 1759,
       "page_response_hashes": 39,
-      "binding": "Each observation is a candidate-path projection of the exact pinned-revision expanded metadata response. Every raw response page has a recorded SHA-256 and byte count; no response or payload bytes are retained."
+      "binding": "Each observation is a candidate-path projection of the exact current pinned-revision expanded metadata response. Every raw response page has a recorded SHA-256 and byte count; no response or payload bytes are retained."
     }
   },
   "existing_hosted_anonymous_digest_receipts": {
@@ -329,5 +329,18 @@
     "consumer_canaries_performed": false,
     "m112_federation_accepted": false
   },
-  "status": "current_tree_object_metadata_reconciled_and_four_permitted_mbs_payload_hashes_confirmed_104_candidates_still_lack_digest_evidence"
+  "status": "current_tree_object_metadata_reconciled_and_four_permitted_mbs_payload_hashes_confirmed_104_candidates_still_lack_digest_evidence",
+  "current_tree_metadata_revision_correction": {
+    "previous_supplemental_inventory_path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
+    "previous_supplemental_inventory_sha256": "bfaf0291fc37d6761b3ba0e26f32d8f2cfeba46db7b48d48ed68c52df9f24bd1",
+    "correction_reason": "The previous supplemental per-path metadata fetch used the candidate inventory revisions. The approved inventory retains earlier revisions for some datasets, while the authoritative current pinned revisions are in the public-tree readback. The per-path observations have been refetched at those exact current revisions.",
+    "authoritative_current_revision_source": "quality/qualifications/australian-m112-public-tree-readback-20261003.json",
+    "current_tree_revisions": {
+      "edithatogo/australian-mbs-source-archive": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "edithatogo/australian-pbs-source-archive": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "edithatogo/australian-mbs-utilisation-archive": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "edithatogo/australian-pbs-utilisation-archive": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "edithatogo/reimbursement-atlas": "8e062578f14e12cf3238700a93946339da9c5d88"
+    }
+  }
 }
