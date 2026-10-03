@@ -192,15 +192,10 @@ def reconcile_p7_storage_receipt(root: Path) -> P7ReceiptReconciliation:
         or archive.get("anonymous_clean_room_restore") is not True
     ):
         raise ValueError("P7 archive identity or restore evidence changed")
-    retrieved_raw = storage.get("retrieved_at")
-    if not isinstance(retrieved_raw, str):
-        raise TypeError("P7 retrieval timestamp is missing")
-    retrieved_at = datetime.fromisoformat(retrieved_raw)
+    retrieved_at = datetime.fromisoformat(cast("str", storage["retrieved_at"]))
     receipt = _receipt(retrieved_at=retrieved_at)
     receipt_digest = receipt.digest()
-    recorded_digest = details.get("source_receipt_sha256")
-    if not isinstance(recorded_digest, str):
-        raise TypeError("P7 recorded receipt digest is missing")
+    recorded_digest = cast("str", details["source_receipt_sha256"])
     if receipt_digest != recorded_digest:
         raise ValueError("reconstructed P7 receipt digest does not match")
     return P7ReceiptReconciliation(

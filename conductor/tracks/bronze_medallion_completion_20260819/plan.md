@@ -1084,10 +1084,14 @@ for credentialed or rights-unresolved sources.
   source list. Cohort remains 28 qualified / 129 deferred; full current scope
   remains 42 of 157 with landing evidence, 115 without, and 13 of 14 maturity
   dimensions evidenced.
-- [x] Run 212 affected tests, routine Test-Goblin, context/ecosystem
+- [x] Run 220 affected tests, routine Test-Goblin, context/ecosystem
   validation, formatting, lint, typing, and diff checks.
 - [x] Re-run the affected suite and routine profile after binding the new
   reconciliation producer into the cohort dependency manifest; refresh the
   generated cohort and confirm exact reproducibility.
+- [x] Resolve the hosted Codecov patch shortfall by adding malformed-input
+  controls and removing unreachable type branches. The new P7 reconciliation
+  module reaches 100% local statement and branch coverage; the corrected PR
+  head must still pass hosted patch coverage.
 - [ ] Re-evaluate direct Bronze qualification only after a source-origin
   retrieval and chronological B1 admission history are evidenced.
