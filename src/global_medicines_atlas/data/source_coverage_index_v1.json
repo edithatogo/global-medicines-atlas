@@ -705,7 +705,7 @@
         "us-openfda-faers"
       ],
       "blocked_source_ids": [],
-      "notes": "us-fda-faers:rights_unresolved_fail_closed; us-openfda-faers:rights_unresolved_fail_closed"
+      "notes": "us-fda-faers:eligible_public_not_live_acquired; us-openfda-faers:eligible_public_not_live_acquired"
     },
     {
       "track_id": 13,
@@ -714,7 +714,7 @@
         "us-fda-recalls-notices"
       ],
       "blocked_source_ids": [],
-      "notes": "us-openfda-enforcement:rights_unresolved_fail_closed; us-fda-recalls-notices:rights_unresolved_fail_closed"
+      "notes": "us-openfda-enforcement:eligible_public_not_live_acquired; us-fda-recalls-notices:interactive_only_blocker"
     },
     {
       "track_id": 14,
@@ -722,7 +722,7 @@
         "us-fda-drug-shortages"
       ],
       "blocked_source_ids": [],
-      "notes": "us-fda-drug-shortages:rights_unresolved_fail_closed"
+      "notes": "us-fda-drug-shortages:interactive_only_blocker"
     },
     {
       "track_id": 15,
@@ -730,7 +730,7 @@
         "us-fda-rems"
       ],
       "blocked_source_ids": [],
-      "notes": "us-fda-rems:rights_unresolved_fail_closed"
+      "notes": "us-fda-rems:eligible_public_not_live_acquired"
     },
     {
       "track_id": 16,
@@ -747,7 +747,7 @@
         "us-fda-ndc-directory"
       ],
       "blocked_source_ids": [],
-      "notes": "us-openfda-ndc:reused_existing_catalog_entry; us-fda-ndc-directory:rights_unresolved_fail_closed"
+      "notes": "us-openfda-ndc:reused_existing_catalog_entry; us-fda-ndc-directory:eligible_public_not_live_acquired"
     },
     {
       "track_id": 18,
@@ -764,7 +764,7 @@
         "us-openfda-nsde"
       ],
       "blocked_source_ids": [],
-      "notes": "us-fda-nsde:rights_unresolved_fail_closed; us-openfda-nsde:rights_unresolved_fail_closed"
+      "notes": "us-fda-nsde:eligible_public_not_live_acquired; us-openfda-nsde:eligible_public_not_live_acquired"
     },
     {
       "track_id": 20,
@@ -1735,7 +1735,7 @@
       "authority": "European Commission",
       "dimension": "regulatory",
       "native_identifier": "EU Union Register EU number",
-      "rights_status": "CC-BY-4.0 dataset; verify per release",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "implemented",
       "information_domains": [
@@ -1751,7 +1751,7 @@
       "authority": "French Ministry of Health",
       "dimension": "regulatory",
       "native_identifier": "source-native identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [
@@ -1767,7 +1767,7 @@
       "authority": "French Ministry of Health and HAS",
       "dimension": "funding",
       "native_identifier": "source-native identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [
@@ -1783,7 +1783,7 @@
       "authority": "Assurance Maladie",
       "dimension": "funding",
       "native_identifier": "Open Medic CIP/ATC + year + regime",
-      "rights_status": "Etalab-2.0",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-open-medic-20260821@d19f7a66e35c58c557615bffa456856b485b7edc",
       "authentication": "none",
       "readiness": "implemented",
       "information_domains": [
@@ -1799,7 +1799,7 @@
       "authority": "UK Department of Health and Social Care",
       "dimension": "funding",
       "native_identifier": "source-native identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [
@@ -1865,7 +1865,7 @@
       "authority": "NHS Business Services Authority",
       "dimension": "funding",
       "native_identifier": "source-native identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [
@@ -2012,7 +2012,7 @@
       "authority": "US National Library of Medicine",
       "dimension": "terminology",
       "native_identifier": "source-native identifier",
-      "rights_status": "UMLS/RxNorm terms apply",
+      "rights_status": "approved_public_exact_inventory_derived_only:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "implemented",
       "information_domains": [
@@ -2845,7 +2845,7 @@
       "authority": "Pharmaceutical Management Agency",
       "dimension": "formulary",
       "native_identifier": "source-native identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [
@@ -2861,7 +2861,7 @@
       "authority": "Pharmac",
       "dimension": "funding",
       "native_identifier": "source-native identifier",
-      "rights_status": "production_terms_and_schema_review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [
@@ -2877,7 +2877,7 @@
       "authority": "Pharmaceutical Management Agency",
       "dimension": "funding",
       "native_identifier": "source-native identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "implemented",
       "information_domains": [
@@ -3414,7 +3414,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
       "native_identifier": "source-native identifier",
-      "rights_status": "US government data; verify endpoint terms",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "implemented",
       "information_domains": [
@@ -3430,7 +3430,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
       "native_identifier": "FDA shortage drug/update identifier + snapshot date",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "candidate",
       "information_domains": [
@@ -3447,7 +3447,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
       "native_identifier": "FAERS primaryid / caseid (case-version retained)",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "implemented",
       "information_domains": [
@@ -3464,7 +3464,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "terminology",
       "native_identifier": "FDA NDC Directory product/package NDC",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "candidate",
       "information_domains": [
@@ -3480,7 +3480,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "terminology",
       "native_identifier": "NSDE item code / NDC11 from FDA SPL NSDE zip",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "candidate",
       "information_domains": [
@@ -3496,7 +3496,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
       "native_identifier": "FDA Orange Book Appl_No + ingredient + TE code",
-      "rights_status": "US government data; verify endpoint terms",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [
@@ -3512,7 +3512,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
       "native_identifier": "FDA recall firm-press notice identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "candidate",
       "information_domains": [
@@ -3529,7 +3529,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
       "native_identifier": "FDA REMS program/application identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "candidate",
       "information_domains": [
@@ -3562,7 +3562,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
       "native_identifier": "source-native identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [
@@ -3578,7 +3578,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
       "native_identifier": "openFDA enforcement report number / event_id",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "candidate",
       "information_domains": [
@@ -3595,7 +3595,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
       "native_identifier": "openFDA safetyreportid overlapping FAERS files",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "candidate",
       "information_domains": [
@@ -3612,7 +3612,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "terminology",
       "native_identifier": "NDC product_ndc / package_ndc",
-      "rights_status": "openFDA terms apply",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [
@@ -3628,7 +3628,7 @@
       "authority": "US Food and Drug Administration",
       "dimension": "terminology",
       "native_identifier": "openFDA other/nsde package_ndc",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "authentication": "none",
       "readiness": "candidate",
       "information_domains": [
@@ -3644,7 +3644,7 @@
       "authority": "US National Library of Medicine",
       "dimension": "terminology",
       "native_identifier": "source-native identifier",
-      "rights_status": "review_required",
+      "rights_status": "approved_public_exact_inventory_derived_only:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "authentication": "none",
       "readiness": "verified",
       "information_domains": [

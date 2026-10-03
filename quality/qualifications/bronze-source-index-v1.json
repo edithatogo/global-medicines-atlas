@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:bebd0f29dc326e93726571c31803b1c8e524d10a16e108ab01d6e037c0711263",
-  "snapshot_sha256": "bebd0f29dc326e93726571c31803b1c8e524d10a16e108ab01d6e037c0711263",
+  "snapshot_id": "sha256:190de5949649d7dde255cbe1059c170f22c3669a34a55fba10da4a462d3f25dc",
+  "snapshot_sha256": "190de5949649d7dde255cbe1059c170f22c3669a34a55fba10da4a462d3f25dc",
   "source_count": 174,
   "sources": [
     {
@@ -2082,7 +2082,7 @@
         "quality/qualifications/union-register-live-corpus-20260821.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "CC-BY-4.0 dataset; verify per release",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "eu-union-register",
@@ -2124,7 +2124,7 @@
         "quality/qualifications/international-public-bronze-20260827.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "fr-bdpm",
@@ -2166,7 +2166,7 @@
         "quality/qualifications/international-public-bronze-20260827.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "fr-bdpm-smr-asmr",
@@ -2212,7 +2212,7 @@
         "quality/qualifications/open-medic-all-release-bronze-20260827.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "Etalab-2.0",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-open-medic-20260821@d19f7a66e35c58c557615bffa456856b485b7edc",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "fr-open-medic",
@@ -2255,7 +2255,7 @@
         "quality/qualifications/international-public-bronze-20260827.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "gb-emit",
@@ -2421,7 +2421,7 @@
         "quality/qualifications/international-public-bronze-20260827.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "gb-nhs-drug-tariff",
@@ -2802,7 +2802,7 @@
         "src/global_medicines_atlas/data/source_rights_policy_families.json"
       ],
       "qualification_state": "declared",
-      "rights_review_state": "UMLS/RxNorm terms apply",
+      "rights_review_state": "approved_public_exact_inventory_derived_only:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "global-rxnorm",
@@ -4896,7 +4896,7 @@
         "quality/qualifications/international-public-bronze-20260827.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "nz-pharmac-hml",
@@ -4937,7 +4937,7 @@
         "quality/qualifications/international-public-bronze-20260827.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "production_terms_and_schema_review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "nz-pharmac-schedule",
@@ -4981,7 +4981,7 @@
         "quality/qualifications/international-public-bronze-20260827.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "nz-pharmac-schedule-xml",
@@ -6334,7 +6334,7 @@
         "tests/fixtures/us/drugsfda_api.json"
       ],
       "qualification_state": "fixture_verified",
-      "rights_review_state": "US government data; verify endpoint terms",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-drugsfda",
@@ -6375,7 +6375,7 @@
         "quality/qualifications/fda-shortages-live-corpus-20260821.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-fda-drug-shortages",
@@ -6421,7 +6421,7 @@
         "quality/qualifications/faers-live-corpus-20260821.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-fda-faers",
@@ -6462,7 +6462,7 @@
         "quality/qualifications/ndc-directory-live-corpus-20260821.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-fda-ndc-directory",
@@ -6503,7 +6503,7 @@
         "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-fda-nsde",
@@ -6549,7 +6549,7 @@
         "quality/qualifications/orange-book-historical-corpus-20260821.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "US government data; verify endpoint terms",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-fda-orange-book",
@@ -6590,7 +6590,7 @@
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-fda-recalls-notices",
@@ -6632,7 +6632,7 @@
         "quality/qualifications/fda-rems-live-corpus-20260821.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-fda-rems",
@@ -6716,7 +6716,7 @@
         "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-openfda-drugsfda",
@@ -6757,7 +6757,7 @@
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-openfda-enforcement",
@@ -6798,7 +6798,7 @@
         "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-openfda-faers",
@@ -6838,7 +6838,7 @@
         "quality/qualifications/ndc-directory-live-corpus-20260821.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "openFDA terms apply",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-openfda-ndc",
@@ -6878,7 +6878,7 @@
         "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
       "qualification_state": "live_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-openfda-nsde",
@@ -6921,7 +6921,7 @@
         "src/global_medicines_atlas/data/source_rights_policy_families.json"
       ],
       "qualification_state": "documentation_verified",
-      "rights_review_state": "review_required",
+      "rights_review_state": "approved_public_exact_inventory_derived_only:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
       "source_id": "us-rxnorm-api",

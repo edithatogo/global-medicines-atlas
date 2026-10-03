@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "src/global_medicines_atlas/data/medicine_source_catalog.json"
@@ -17,6 +18,20 @@ def build() -> dict[str, object]:
     ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
     reviews = {entry["source_id"]: entry for entry in ledger["entries"]}
     sources = catalog["sources"]
+
+    def approved(source: dict[str, Any], review: dict[str, Any]) -> bool:
+        rights_status = str(source["rights_status"])
+        catalogue_approved = (
+            rights_status == "maintainer_redistribution_authorized"
+            or rights_status.startswith("approved_public_exact_inventory")
+        )
+        return (
+            catalogue_approved
+            and review["public_derived_eligible"]
+            and review["maintainer_licence_approved"]
+            and review["maintainer_publication_approved"]
+        )
+
     entries = [
         {
             "source_id": source["source_id"],
@@ -26,14 +41,7 @@ def build() -> dict[str, object]:
             "catalogue_rights_status": source["rights_status"],
             "recommended_disposition": (
                 reviews[source["source_id"]]["disposition"]
-                if (
-                    source["rights_status"]
-                    == "maintainer_redistribution_authorized"
-                    or source["rights_status"].startswith(
-                        "approved_public_exact_inventory"
-                    )
-                )
-                and reviews[source["source_id"]]["public_derived_eligible"]
+                if approved(source, reviews[source["source_id"]])
                 else "credentialed_excluded"
                 if reviews[source["source_id"]]["disposition"]
                 == "credentialed_excluded"
@@ -41,58 +49,24 @@ def build() -> dict[str, object]:
             ),
             "internal_acquisition": (
                 "approved_for_exact_reviewed_scope"
-                if (
-                    source["rights_status"]
-                    == "maintainer_redistribution_authorized"
-                    or source["rights_status"].startswith(
-                        "approved_public_exact_inventory"
-                    )
-                )
-                and reviews[source["source_id"]]["public_derived_eligible"]
+                if approved(source, reviews[source["source_id"]])
                 else "conditional_on_lawful_access_and_retention_review"
             ),
             "public_derived_release": (
                 "approved_for_exact_manifest"
-                if (
-                    source["rights_status"]
-                    == "maintainer_redistribution_authorized"
-                    or source["rights_status"].startswith(
-                        "approved_public_exact_inventory"
-                    )
-                )
-                and reviews[source["source_id"]]["public_derived_eligible"]
+                if approved(source, reviews[source["source_id"]])
                 else "not_approved"
             ),
             "approved_surfaces": (
                 ["repository_metadata", "source_bytes", "derived_products"]
-                if (
-                    source["rights_status"]
-                    == "maintainer_redistribution_authorized"
-                    or source["rights_status"].startswith(
-                        "approved_public_exact_inventory"
-                    )
-                )
+                if approved(source, reviews[source["source_id"]])
                 and reviews[source["source_id"]]["public_source_eligible"]
                 else ["repository_metadata", "derived_products"]
-                if (
-                    source["rights_status"]
-                    == "maintainer_redistribution_authorized"
-                    or source["rights_status"].startswith(
-                        "approved_public_exact_inventory"
-                    )
-                )
-                and reviews[source["source_id"]]["public_derived_eligible"]
+                if approved(source, reviews[source["source_id"]])
                 else ["repository_metadata"]
             ),
             "required_evidence": []
-            if (
-                source["rights_status"]
-                == "maintainer_redistribution_authorized"
-                or source["rights_status"].startswith(
-                    "approved_public_exact_inventory"
-                )
-            )
-            and reviews[source["source_id"]]["public_derived_eligible"]
+            if approved(source, reviews[source["source_id"]])
             else [
                 "current_terms_or_written_permission",
                 "field_level_redistribution_decision",
@@ -102,14 +76,7 @@ def build() -> dict[str, object]:
             ],
             "blocker": (
                 None
-                if (
-                    source["rights_status"]
-                    == "maintainer_redistribution_authorized"
-                    or source["rights_status"].startswith(
-                        "approved_public_exact_inventory"
-                    )
-                )
-                and reviews[source["source_id"]]["public_derived_eligible"]
+                if approved(source, reviews[source["source_id"]])
                 else "source-specific rights receipt required"
             ),
             "rights_policy_family_id": reviews[source["source_id"]][

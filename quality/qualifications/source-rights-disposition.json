@@ -1183,21 +1183,17 @@
       ],
       "authority": "European Commission",
       "dimension": "regulatory",
-      "catalogue_rights_status": "CC-BY-4.0 dataset; verify per release",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "eu-commission-cc-by-4.0"
     },
     {
@@ -1207,21 +1203,17 @@
       ],
       "authority": "French Ministry of Health",
       "dimension": "regulatory",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fr-etalab-open-licence-2.0"
     },
     {
@@ -1231,21 +1223,17 @@
       ],
       "authority": "French Ministry of Health and HAS",
       "dimension": "funding",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fr-etalab-open-licence-2.0"
     },
     {
@@ -1255,21 +1243,17 @@
       ],
       "authority": "Assurance Maladie",
       "dimension": "funding",
-      "catalogue_rights_status": "Etalab-2.0",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-open-medic-20260821@d19f7a66e35c58c557615bffa456856b485b7edc",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fr-etalab-open-licence-2.0"
     },
     {
@@ -1279,21 +1263,17 @@
       ],
       "authority": "UK Department of Health and Social Care",
       "dimension": "funding",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "uk-open-government-licence-3.0"
     },
     {
@@ -1375,21 +1355,17 @@
       ],
       "authority": "NHS Business Services Authority",
       "dimension": "funding",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "nhsbsa-ogl-3.0"
     },
     {
@@ -1592,21 +1568,16 @@
       ],
       "authority": "US National Library of Medicine",
       "dimension": "terminology",
-      "catalogue_rights_status": "UMLS/RxNorm terms apply",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory_derived_only:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_derived_only",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "rxnorm-public-identifiers-only"
     },
     {
@@ -2816,21 +2787,17 @@
       ],
       "authority": "Pharmaceutical Management Agency",
       "dimension": "formulary",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "nz-pharmac-cc-by-4.0"
     },
     {
@@ -2840,21 +2807,17 @@
       ],
       "authority": "Pharmac",
       "dimension": "funding",
-      "catalogue_rights_status": "production_terms_and_schema_review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "nz-pharmac-cc-by-4.0"
     },
     {
@@ -2864,21 +2827,17 @@
       ],
       "authority": "Pharmaceutical Management Agency",
       "dimension": "funding",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "nz-pharmac-cc-by-4.0"
     },
     {
@@ -3648,21 +3607,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
-      "catalogue_rights_status": "US government data; verify endpoint terms",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fda-website-public-domain"
     },
     {
@@ -3672,21 +3627,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fda-website-public-domain"
     },
     {
@@ -3696,21 +3647,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fda-website-public-domain"
     },
     {
@@ -3720,21 +3667,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "terminology",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fda-website-public-domain"
     },
     {
@@ -3744,21 +3687,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "terminology",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fda-website-public-domain"
     },
     {
@@ -3768,21 +3707,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
-      "catalogue_rights_status": "US government data; verify endpoint terms",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fda-website-public-domain"
     },
     {
@@ -3792,21 +3727,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fda-website-public-domain"
     },
     {
@@ -3816,21 +3747,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "fda-website-public-domain"
     },
     {
@@ -3864,21 +3791,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "openfda-cc0"
     },
     {
@@ -3888,21 +3811,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "openfda-cc0"
     },
     {
@@ -3912,21 +3831,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "regulatory",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "openfda-cc0"
     },
     {
@@ -3936,21 +3851,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "terminology",
-      "catalogue_rights_status": "openFDA terms apply",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "openfda-cc0"
     },
     {
@@ -3960,21 +3871,17 @@
       ],
       "authority": "US Food and Drug Administration",
       "dimension": "terminology",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory:edithatogo/global-medicines-atlas-fda-open-20260821@ab3a79a63b5df9f1dca3eb4122d39179c4247417",
+      "recommended_disposition": "approved_public_source",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "source_bytes",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "openfda-cc0"
     },
     {
@@ -3984,21 +3891,16 @@
       ],
       "authority": "US National Library of Medicine",
       "dimension": "terminology",
-      "catalogue_rights_status": "review_required",
-      "recommended_disposition": "catalogue_only",
-      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
-      "public_derived_release": "not_approved",
+      "catalogue_rights_status": "approved_public_exact_inventory_derived_only:edithatogo/global-medicines-atlas-international-permissive-20260821@e6aa97ffe46eb32a41d7c73550fbd52811a9701b",
+      "recommended_disposition": "approved_public_derived_only",
+      "internal_acquisition": "approved_for_exact_reviewed_scope",
+      "public_derived_release": "approved_for_exact_manifest",
       "approved_surfaces": [
-        "repository_metadata"
+        "repository_metadata",
+        "derived_products"
       ],
-      "required_evidence": [
-        "current_terms_or_written_permission",
-        "field_level_redistribution_decision",
-        "attribution_and_notice_requirements",
-        "retrieval_and_schema_receipt",
-        "withdrawal_and_correction_route"
-      ],
-      "blocker": "source-specific rights receipt required",
+      "required_evidence": [],
+      "blocker": null,
       "rights_policy_family_id": "rxnorm-public-identifiers-only"
     },
     {

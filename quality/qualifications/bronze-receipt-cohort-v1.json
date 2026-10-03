@@ -19,7 +19,7 @@
     },
     "source_catalog": {
       "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
-      "sha256": "aa37c9249e71dd4054c84a8a38e27e5c737bf56768a718af38480fe2fa77496f"
+      "sha256": "84d25c8b63024d95398ce92e518d1156c53afb45401a2e719a4016f798b96438"
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "48ef1ba2dbc587d360dfca35ab20ab59acef5c5748573705182a086e83d5be34",
+      "sha256": "e84aa1833a8e16e9ec8e438b4045e4f24bfefe6a16337bd95049516fb2de3260",
       "file_count": 123,
       "files": [
         {
@@ -347,7 +347,7 @@
         {
           "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
           "exists": true,
-          "sha256": "aa37c9249e71dd4054c84a8a38e27e5c737bf56768a718af38480fe2fa77496f"
+          "sha256": "84d25c8b63024d95398ce92e518d1156c53afb45401a2e719a4016f798b96438"
         },
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
