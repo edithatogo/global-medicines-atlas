@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.australian-m112-current-tree-object-identity-reconciliation",
   "schema_version": 1,
-  "recorded_at": "2026-10-03T18:11:57Z",
+  "recorded_at": "2026-10-03T18:35:45Z",
   "purpose": "Join the approved candidate paths to anonymous current-tree object metadata, reconcile exposed LFS SHA-256 values, and record four additional rights-permitted MBS digest reads without persisting or inspecting their contents.",
   "scope": {
     "jurisdiction": "Australian MBS/PBS only",
@@ -43,6 +43,10 @@
     {
       "path": "quality/qualifications/australian-health-legacy-publication-authorization.json",
       "sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
+      "sha256": "bfaf0291fc37d6761b3ba0e26f32d8f2cfeba46db7b48d48ed68c52df9f24bd1"
     }
   ],
   "current_tree_metadata_readback": {
@@ -51,7 +55,7 @@
     "payload_bytes_read_for_metadata": false,
     "payload_values_read": false,
     "metadata_pages": 39,
-    "metadata_response_bytes": 1499563,
+    "metadata_response_bytes": 1512673,
     "candidate_paths_present": 1759,
     "candidate_paths_missing": 0,
     "git_blob_oid_matches": 1759,
@@ -69,9 +73,9 @@
         "candidate_paths": 18,
         "raw_paths": 8,
         "projection_paths": 10,
-      "metadata_file_entries": 59,
+        "metadata_file_entries": 59,
         "anonymous_metadata_http_status": 200,
-        "metadata_response_bytes": 32576,
+        "metadata_response_bytes": 45561,
         "metadata_pages": 1,
         "candidate_paths_present": 18,
         "git_blob_oid_matches": 18,
@@ -82,7 +86,8 @@
         "current_lfs_sha256_matches": 10,
         "current_lfs_sha256_mismatches": 0,
         "raw_lfs_sha256_matches": 0,
-        "projection_lfs_sha256_matches": 10
+        "projection_lfs_sha256_matches": 10,
+        "metadata_response_sha256": "d34478e47f3765e53cadc5631d02076ee1fc32b5f56264302dff2ce458d2ed4c"
       },
       {
         "dataset": "edithatogo/australian-pbs-source-archive",
@@ -90,7 +95,7 @@
         "candidate_paths": 2,
         "raw_paths": 1,
         "projection_paths": 1,
-      "metadata_file_entries": 9,
+        "metadata_file_entries": 9,
         "anonymous_metadata_http_status": 200,
         "metadata_response_bytes": 8367,
         "metadata_pages": 1,
@@ -103,7 +108,8 @@
         "current_lfs_sha256_matches": 2,
         "current_lfs_sha256_mismatches": 0,
         "raw_lfs_sha256_matches": 1,
-        "projection_lfs_sha256_matches": 1
+        "projection_lfs_sha256_matches": 1,
+        "metadata_response_sha256": "05b4bfdabbce485dda0745467a2a400eec1b152b5daaef34b00a853af4b7c0d7"
       },
       {
         "dataset": "edithatogo/australian-mbs-utilisation-archive",
@@ -111,7 +117,7 @@
         "candidate_paths": 14,
         "raw_paths": 14,
         "projection_paths": 0,
-      "metadata_file_entries": 30,
+        "metadata_file_entries": 30,
         "anonymous_metadata_http_status": 200,
         "metadata_response_bytes": 28130,
         "metadata_pages": 1,
@@ -124,7 +130,8 @@
         "current_lfs_sha256_matches": 13,
         "current_lfs_sha256_mismatches": 0,
         "raw_lfs_sha256_matches": 13,
-        "projection_lfs_sha256_matches": 0
+        "projection_lfs_sha256_matches": 0,
+        "metadata_response_sha256": "7ac0e2635a5ad13343f2475137e0e4cba5473dfec768354fda6bf4d0d5255aa1"
       },
       {
         "dataset": "edithatogo/australian-pbs-utilisation-archive",
@@ -132,9 +139,9 @@
         "candidate_paths": 6,
         "raw_paths": 6,
         "projection_paths": 0,
-      "metadata_file_entries": 14,
+        "metadata_file_entries": 14,
         "anonymous_metadata_http_status": 200,
-        "metadata_response_bytes": 13793,
+        "metadata_response_bytes": 13918,
         "metadata_pages": 1,
         "candidate_paths_present": 6,
         "git_blob_oid_matches": 6,
@@ -145,7 +152,8 @@
         "current_lfs_sha256_matches": 5,
         "current_lfs_sha256_mismatches": 0,
         "raw_lfs_sha256_matches": 5,
-        "projection_lfs_sha256_matches": 0
+        "projection_lfs_sha256_matches": 0,
+        "metadata_response_sha256": "326862e9427616b2f22f8ad3a243985eb4b575b68e0e4916a8376705920c6055"
       },
       {
         "dataset": "edithatogo/reimbursement-atlas",
@@ -153,7 +161,7 @@
         "candidate_paths": 1719,
         "raw_paths": 1707,
         "projection_paths": 12,
-      "metadata_file_entries": 1733,
+        "metadata_file_entries": 1733,
         "anonymous_metadata_http_status": 200,
         "metadata_response_bytes": 1416697,
         "metadata_pages": 35,
@@ -166,9 +174,17 @@
         "current_lfs_sha256_matches": 1615,
         "current_lfs_sha256_mismatches": 0,
         "raw_lfs_sha256_matches": 1615,
-        "projection_lfs_sha256_matches": 0
+        "projection_lfs_sha256_matches": 0,
+        "metadata_response_sha256": "d850161ba56bb62050dac33300efd862c04cdde824bcfd3e999131658b7326c0"
       }
-    ]
+    ],
+    "per_path_metadata_inventory": {
+      "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
+      "sha256": "bfaf0291fc37d6761b3ba0e26f32d8f2cfeba46db7b48d48ed68c52df9f24bd1",
+      "observation_count": 1759,
+      "page_response_hashes": 39,
+      "binding": "Each observation is a candidate-path projection of the exact pinned-revision expanded metadata response. Every raw response page has a recorded SHA-256 and byte count; no response or payload bytes are retained."
+    }
   },
   "existing_hosted_anonymous_digest_receipts": {
     "current_m112_reconciliation_object_paths": 22,

@@ -1620,6 +1620,10 @@
   blob ID to the hosted-verified path and is not counted as a separate byte
   hash. See
   `quality/qualifications/australian-m112-current-tree-object-identity-reconciliation-20261004.json`.
+- [x] Bind the aggregate tree-identity counts to the 1,759 path-level metadata
+  observations and all 39 anonymous metadata response-page SHA-256 receipts.
+  This preserves the exact pinned-revision object IDs, byte counts, available
+  LFS digests, and mismatches without retaining source payloads.
 - [ ] Keep the remaining 92 reimbursement-atlas raw objects and 12 projections
   outside v4 and source-byte readback while their source rights remain
   unresolved. MBS August admission history, projection lineage, exact v4

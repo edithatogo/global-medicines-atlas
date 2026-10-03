@@ -30,7 +30,6 @@ def test_current_tree_identity_reconciliation_covers_exact_denominator() -> (
     tree_readback = _read(
         "quality/qualifications/australian-m112-public-tree-readback-20261003.json"
     )
-
     current = report["current_tree_metadata_readback"]
     assert report["scope"]["approved_raw_paths"] == 1_736
     assert report["scope"]["approved_projection_paths"] == 23
@@ -62,6 +61,98 @@ def test_current_tree_identity_reconciliation_covers_exact_denominator() -> (
         inventory["existing_data_projection_candidates"]
     )
     assert expected_candidates == current["candidate_paths_present"]
+
+
+def test_per_path_observations_bind_the_candidate_inventory() -> None:
+    report = json.loads(REPORT.read_text(encoding="utf-8"))
+    inventory = _read(
+        "quality/qualifications/australian-m112-object-inventory-20260930.json"
+    )
+    per_path = _read(
+        "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json"
+    )
+    current = report["current_tree_metadata_readback"]
+
+    expected_by_path = {
+        row["path"]: (row, "raw_source_payload")
+        for row in inventory["raw_source_payload_candidates"]
+    }
+    expected_by_path.update({
+        row["path"]: (row, "existing_data_projection")
+        for row in inventory["existing_data_projection_candidates"]
+    })
+    observed_by_path = {row["path"]: row for row in per_path["observations"]}
+    assert set(observed_by_path) == set(expected_by_path)
+    assert per_path["candidate_paths"] == len(expected_by_path) == 1_759
+    assert per_path["payload_endpoints_used"] is False
+    assert per_path["payload_values_read"] is False
+    for path, observed in observed_by_path.items():
+        candidate, candidate_class = expected_by_path[path]
+        assert observed["dataset"] == candidate["dataset"]
+        assert observed["revision"] == candidate["revision"]
+        assert observed["candidate_class"] == candidate_class
+        assert (
+            observed["expected_git_blob_oid"] == candidate["hub_git_blob_oid"]
+        )
+        assert observed["expected_bytes"] == candidate["bytes"]
+        assert observed["expected_lfs_sha256"] == candidate["lfs_sha256"]
+        assert observed["git_blob_oid_match"] is True
+        assert observed["byte_count_match"] is True
+        if candidate["lfs_sha256"] is not None:
+            assert observed["lfs_sha256_match"] is True
+
+    assert (
+        sum(row["git_blob_oid_match"] for row in observed_by_path.values())
+        == (current["git_blob_oid_matches"])
+    )
+    assert (
+        sum(row["byte_count_match"] for row in observed_by_path.values())
+        == (current["byte_count_matches"])
+    )
+    assert (
+        sum(row["lfs_sha256_match"] for row in observed_by_path.values())
+        == (current["current_lfs_sha256_matches"])
+    )
+    assert (
+        sum(
+            row["lfs_sha256_match"]
+            for row in observed_by_path.values()
+            if row["candidate_class"] == "raw_source_payload"
+        )
+        == current["raw_lfs_sha256_matches"]
+    )
+    assert (
+        sum(
+            row["lfs_sha256_match"]
+            for row in observed_by_path.values()
+            if row["candidate_class"] == "existing_data_projection"
+        )
+        == current["projection_lfs_sha256_matches"]
+    )
+
+    inventory_path = (
+        ROOT
+        / "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json"
+    )
+    digest = hashlib.sha256(inventory_path.read_bytes()).hexdigest()
+    assert current["per_path_metadata_inventory"]["sha256"] == digest
+    assert current["per_path_metadata_inventory"]["observation_count"] == 1_759
+    pages = per_path["page_response_hashes"]
+    assert len(pages) == current["metadata_pages"] == 39
+    assert (
+        sum(page["response_bytes"] for page in pages)
+        == current["metadata_response_bytes"]
+    )
+    assert all(len(page["response_sha256"]) == 64 for page in pages)
+    for dataset in current["datasets"]:
+        dataset_pages = [
+            page for page in pages if page["dataset"] == dataset["dataset"]
+        ]
+        assert len(dataset_pages) == dataset["metadata_pages"]
+        assert (
+            sum(page["response_bytes"] for page in dataset_pages)
+            == dataset["metadata_response_bytes"]
+        )
 
 
 def test_additional_mbs_hashes_match_existing_authorized_sidecars() -> None:
