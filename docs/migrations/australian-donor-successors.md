@@ -1,4 +1,4 @@
-# Australian donor compatibility and successor preparation
+# Australian donor compatibility and successor status
 
 Final archival status (2026-09-06): both Australian donor repositories are
 archived. Graph archival was separately approved and verified at
@@ -49,9 +49,9 @@ repository implementations. Live scheduling is a separate Phase 4 gate.
 
 Active successor development is in
 [Global Medicines Atlas](https://github.com/edithatogo/global-medicines-atlas).
-This donor repository remains an unarchived compatibility and provenance
-mirror. Its historical code, commit links and source identifiers are retained;
-the old scraper's green runs must not be interpreted as successful acquisition.
+The donor repositories are archived compatibility and provenance mirrors.
+Their historical code, commit links and source identifiers are retained; the
+old scraper's green runs must not be interpreted as successful acquisition.
 
 GMA preserves independent MBS service-benefit, PBS funding/formulary, regulatory
 and terminology evidence. It replaces defective donor parser/processor paths
@@ -64,10 +64,44 @@ Exact donor data and complete Git-history preservation are available at
 [MBS archive revision 4d1dae4](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/4d1dae488ac43522f20e8320a8b2a56bf9138341).
 The independently acquired PBS schedule is at
 [PBS archive revision 31ec854](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive/tree/31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7).
-Neither is a promise of complete current coverage. Future dataset publication
-runs from GitHub Actions to public Hugging Face, never from developer machines.
+Those immutable revisions preserve historical donor material and are not the
+current heads of the successor datasets. Neither is a promise of complete
+current coverage. Future dataset publication runs from GitHub Actions to
+public Hugging Face, never from developer machines.
 
-## Canary and archival checklist
+## Successor-link readback (2026-10-04)
+
+The anonymous GitHub readback confirmed both repositories are archived at
+their expected preserved heads. Their current `README.md` files link to
+`SUCCESSOR.md`, and both notices link to the GMA repository and this canonical
+successor map. However, both README files and notices still say the donor
+repository is unarchived. The notices link to the historical HF revisions
+above rather than identifying current successor dataset heads. The GMA-side
+canonical copy is corrected here; the archived external notices have not been
+changed.
+
+| Donor repository | Archived head | README blob | `SUCCESSOR.md` blob | GitHub Releases | Tags |
+| --- | --- | --- | --- | ---: | --- |
+| `edithatogo/aus-health-data-scraper` | `009e80544588a956c8922aaab052ee08947e2b30` | `0abbc7ca2e8b3fff572e43e60f57631348e33a47` | `7836ca20ec41e835d52118e1ecbca8ed463ff4fc` | 0 | `v0.1` |
+| `edithatogo/aus_mbs_pbs_graph` | `3993e5e331eb2d3d9e9d354d80e52c684ad26a1e` | `9d9fd230fb9eb3d178f56d86cb0fd55259322b80` | `7836ca20ec41e835d52118e1ecbca8ed463ff4fc` | 0 | none |
+
+The scraper's `v0.1` tag points to commit `25bc585647d1f16b4f45c8b648212ab81e157b60`;
+its tagged README blob `31adba7b45e228e21f4f19049eb280accf83952f` predates the
+successor notice and has no successor link. No GitHub Release objects or
+release assets were observed for either donor. The detailed readback is
+`quality/qualifications/australian-donor-successor-link-readback-20261004.json`.
+
+The current public successor dataset metadata identifies MBS revision
+`40891976f77ee5e7688edceed25c9ac98a77547e` and PBS revision
+`48fd7345fb09277bb5b85644dba72804633a2abb`; both were public and ungated at
+readback. These metadata observations do not verify every object digest or
+establish source rights. The donor-link acceptance task remains open until the
+stale archived notices and the scraper tag's absent successor path are
+resolved through an approved route. Updating content in an archived public
+repository requires explicit maintainer authorization; no repository was
+unarchived or mutated for this readback.
+
+## Historical canary and archival checklist
 
 The metadata-only refresh on 2026-08-31 observed graph head `3993e5e` and
 scraper head `009e805`. The graph delta is two documentation paths; the scraper
@@ -89,24 +123,18 @@ This is fixture/contract compatibility evidence, not a live-source canary.
 Phase 4 additionally needs a hosted current-release run, admitted nonempty
 artifacts, persistent source-health receipts and anonymous digest verification.
 
-Before any archival, re-query both default-branch heads, verify any changes
+Before the 2026-09-06 archival, the maintainer required re-querying both
+default-branch heads, verifying any changes
 since the preserved commits have their own durable history receipt, check
 open PRs/issues/workflows, complete successor notices and canaries, and obtain
 the maintainer's exact two-repository archive approval. The original pinned
 bundles do not preserve future notice commits or later donor work.
-
-The following commands are documentation only; do not execute without that
-approval and a recorded final preflight:
-
-```sh
-gh repo archive edithatogo/aus_mbs_pbs_graph --yes
-gh repo archive edithatogo/aus-health-data-scraper --yes
-```
 
 Archival is reversible and must never delete branches, history, issues, source
 archives or dirty local checkouts. Record before/after repository state and
 approval in the evidence ledger. If rollback is approved, unarchive the exact
 repository with `gh repo unarchive OWNER/REPOSITORY --yes`, then verify heads,
 links, permissions and workflow settings against the preflight snapshot.
-Do not automatically reactivate obsolete acquisition schedules. No archival
-has been authorized or performed by this preparation document.
+Do not automatically reactivate obsolete acquisition schedules. Both
+archivals are complete as recorded above. This document does not authorize a
+future unarchive, public mutation, or dataset publication.
