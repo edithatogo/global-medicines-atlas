@@ -1104,11 +1104,12 @@ for credentialed or rights-unresolved sources.
 - [x] Add an offline, fail-closed projection for NLM-created RxCUIs from
   transient caller-held response bytes. Bind its response and SourceReceipt
   digests, acquisition identity, rights reference, and identifier-based
-  `idtype`/`id` RxNav request; emit only the identifier allowlist and a
-  query-free B2 external reference. Reject name-search and unrelated query
-  parameters. Validate the bound reuse-gate decision. The component performs
-  no HTTP or file I/O and its emitted projection contains neither response
-  bytes nor source vocabulary terms.
+  `idtype`/`id` RxNav request; emit only the identifier allowlist and an
+  external reference to the pinned RxNorm release locator. Reject name-search
+  and unrelated query parameters, and require a non-empty release identity.
+  Validate the bound reuse-gate decision. The component performs no HTTP or
+  file I/O and its emitted projection contains neither response bytes nor
+  source vocabulary terms.
 - [x] Test malformed responses and IDs, rights/reuse/source/endpoint drift,
   response-size limits, projection allowlist, and B2 linkage. Focused coverage
   is above the repository's 91% threshold; adjacent rights, terminology,
@@ -1117,6 +1118,12 @@ for credentialed or rights-unresolved sources.
   until their exact-scope live-acquisition authorization and receipt-bound
   source evidence are reconciled. Their current queue state, direct-receipt
   cohort, source denominator, completeness result, and M5 result are unchanged.
+- [x] Reconcile merged PR #715 against exact `origin/main` commit
+  `d4d1285f1c010f4c69d07fffebbc405dace14b8a`; regenerate the receipt cohort,
+  full-scope maturity report, Stable v1 M5 status page, source queue, and B0
+  index. The cohort remains 28 qualified / 129 deferred; completeness remains
+  blocked with 115 of 157 current-scope sources lacking qualifying landing
+  evidence.
 - [x] Regenerate the receipt cohort after the reconciler source hash changed.
   The first hosted rerun correctly rejected the stale dependency manifest; the
   refreshed cohort preserves 28 qualified / 129 deferred sources and the
@@ -1128,3 +1135,16 @@ for credentialed or rights-unresolved sources.
   B1 admission remain future evidence requirements.
 - [ ] Re-evaluate direct Bronze qualification only after a source-origin
   retrieval and chronological B1 admission history are evidenced.
+
+## 2026-10-03 WHO national EML metadata-only inventory
+
+- [x] Refresh the current official WHO nEML index as a metadata-only
+  discovery surface. Record all 167 visible country/list candidate entries,
+  official WHO item-page URLs, title, displayed language, and displayed index
+  date in `quality/qualifications/who-national-eml-index-inventory-20261003.json`.
+- [x] Verify every recorded item URL is an official WHO item page and unique;
+  do not fetch item pages or document download targets. No document bytes,
+  rights conclusion, acquisition authorization, coverage, or qualification is
+  claimed.
+- [ ] Resolve source-specific upstream rights and maintainer acquisition
+  authority for each candidate before any linked national document landing.

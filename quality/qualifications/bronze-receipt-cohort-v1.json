@@ -23,15 +23,15 @@
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
-      "sha256": "f254927ac5fccd10a6fccc7ebd9ca7a08e3392fde8319c32b6e32149dc5dee1e"
+      "sha256": "05343fc70169cf92988fdcae77d7d826cc5902827fd774649eb869fdee52ee32"
     },
     "landing_overrides": {
       "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
-      "sha256": "859fe7272fbd8110823c153dc7593a2ed8d4cd5f3b7c916871d0827d0db06138"
+      "sha256": "d1ca24a83ccd1a1d6468aa4209129ac3b29db483371f6c22ea297b0ae7b4f453"
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "4a965a1a6ccce40ba5e84949d86fdcf3814d3a1616ef616d98c0953f427c6d84",
+      "sha256": "7a11fffb06fc915e5f711a23272261d57c2b65334784f4459e81a4cbe58c8eb6",
       "file_count": 144,
       "files": [
         {
@@ -132,7 +132,7 @@
         {
           "path": "quality/qualifications/bronze-source-landing-queue.json",
           "exists": true,
-          "sha256": "f254927ac5fccd10a6fccc7ebd9ca7a08e3392fde8319c32b6e32149dc5dee1e"
+          "sha256": "05343fc70169cf92988fdcae77d7d826cc5902827fd774649eb869fdee52ee32"
         },
         {
           "path": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
@@ -447,7 +447,7 @@
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
           "exists": true,
-          "sha256": "859fe7272fbd8110823c153dc7593a2ed8d4cd5f3b7c916871d0827d0db06138"
+          "sha256": "d1ca24a83ccd1a1d6468aa4209129ac3b29db483371f6c22ea297b0ae7b4f453"
         },
         {
           "path": "src/global_medicines_atlas/iceberg_ready.py",
@@ -1770,8 +1770,8 @@
         "queue_state": "manual_only_documented_acquisition",
         "evidence_scope": "none",
         "defer_reason_code": "no_qualifying_direct_receipt",
-        "reason": "The current WHO nEML repository index is publicly discoverable, but its linked national documents have varied upstream sources and this review did not establish their per-document reuse rights. The source remains unacquired and unqualified.",
-        "next_action": "complete a metadata-only source inventory where permissible, then resolve source-specific rights and acquisition authority before any linked-document landing",
+        "reason": "The official WHO nEML index currently lists 167 candidate country/list items. WHO describes a collection assembled from official government websites and databases plus grey and academic literature; per-document reuse rights, upstream source rights, and acquisition authority remain unestablished. The source remains unacquired and unqualified.",
+        "next_action": "Resolve source-specific rights, upstream origins, and maintainer acquisition authority for each candidate before any linked-document landing; preserve unavailable items as unknown coverage.",
         "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
       },
       {

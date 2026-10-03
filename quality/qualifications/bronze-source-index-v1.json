@@ -32,8 +32,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:41db6dee53692d1a885d8177d4360216d0e26ba220f749089d590e8ace6123aa",
-  "snapshot_sha256": "41db6dee53692d1a885d8177d4360216d0e26ba220f749089d590e8ace6123aa",
+  "snapshot_id": "sha256:79647e995a5e6ea8db9da8117004487084d8a52b734a609605ed5ef33c7e4192",
+  "snapshot_sha256": "79647e995a5e6ea8db9da8117004487084d8a52b734a609605ed5ef33c7e4192",
   "source_count": 174,
   "sources": [
     {
@@ -3141,7 +3141,8 @@
       "missing_source_is_negative_evidence": false,
       "qualification_references": [
         "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
-        "quality/qualifications/who-national-eml-index-discovery-20261002.json"
+        "quality/qualifications/who-national-eml-index-discovery-20261002.json",
+        "quality/qualifications/who-national-eml-index-inventory-20261003.json"
       ],
       "qualification_state": "declared",
       "rights_review_state": "review_required",
