@@ -35,6 +35,8 @@ NLM_RIGHTS_REFERENCE = (
 )
 RXNAV_HOST = "rxnav.nlm.nih.gov"
 RXNAV_PATH = "/REST/rxcui.json"
+RXNORM_RELEASE_HOST = "download.nlm.nih.gov"
+RXNORM_RELEASE_PATH = "/umls/kss/rxnorm"
 MAX_RESPONSE_BYTES = 8 * 1024 * 1024
 MAX_RXCUI_LENGTH = 18
 RXCUI_PATTERN = rf"^[0-9]{{1,{MAX_RXCUI_LENGTH}}}$"
@@ -50,7 +52,7 @@ class RxNormIdentifierProjection(FrozenModel):
     schema_version: Literal[1] = 1
     source_id: Literal["us-rxnorm-api"] = SOURCE_ID
     endpoint: str = Field(min_length=1)
-    release_identity: str | None = None
+    release_identity: str = Field(min_length=1)
     retrieved_at: AwareDatetime
     rights_reference: Literal[
         "https://www.nlm.nih.gov/research/umls/rxnorm/docs/termsofservice.html"
@@ -74,6 +76,13 @@ class RxNormIdentifierProjection(FrozenModel):
             value,
             message="endpoint must be the query-free HTTPS RxNav endpoint",
         )
+
+    @field_validator("release_identity")
+    @classmethod
+    def require_release_identity(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("release identity is required")
+        return value
 
     @model_validator(mode="after")
     def validate_projection_contract(self) -> RxNormIdentifierProjection:
@@ -110,8 +119,10 @@ def project_rxnorm_identifiers(
 
     The caller owns acquisition and must have passed its source-specific
     authority and reuse gates. This pure function performs no network or file
-    I/O. It rejects query-bearing references because the query may contain
-    source vocabulary terms; no response bytes or extracted terms are returned.
+    I/O. The API route is recorded as retrieval provenance while B2 points at
+    the immutable release archive identified by the receipt's source version.
+    Query-bearing retrieval references are rejected because they may contain
+    source vocabulary terms.
     """
     if source_receipt.source.source_id != SOURCE_ID:
         raise ValueError(f"source receipt must identify {SOURCE_ID}")
@@ -131,9 +142,8 @@ def project_rxnorm_identifiers(
         raise ValueError("response exceeds the identifier projection limit")
 
     endpoint = _validate_endpoint(external_reference)
-    if not _is_identifier_lookup_uri(
-        str(source_receipt.retrieval.uri), endpoint
-    ):
+    retrieval_uri = str(source_receipt.retrieval.uri)
+    if not _is_identifier_lookup_uri(retrieval_uri, endpoint):
         raise ValueError("receipt URI must be an identifier-based RxNav lookup")
     document = _decode_response(response)
     id_group_value = document.get("idGroup")
@@ -148,9 +158,12 @@ def project_rxnorm_identifiers(
         raise ValueError("duplicate RxCUI identifier")
 
     temporal = require_temporal(source_receipt.temporal)
+    if not temporal.source_version or not temporal.source_version.strip():
+        raise ValueError("RxNorm release identity is required")
+    immutable_locator = _release_locator(temporal.source_version)
     record = build_raw_evidence_record(
         source_receipt,
-        raw_locator=endpoint,
+        raw_locator=immutable_locator,
         state=RawEvidenceState.EXTERNAL_REFERENCE_ONLY,
         retain_bytes=False,
         kind=RawEvidenceKind.PAYLOAD,
@@ -226,6 +239,19 @@ def _is_identifier_lookup_uri(value: str, endpoint: str) -> bool:
     )
 
 
+def _release_locator(release_identity: str) -> str:
+    if (
+        not release_identity.strip()
+        or any(char in release_identity for char in "?#")
+        or not re.fullmatch(r"[A-Za-z0-9._-]{1,80}", release_identity)
+    ):
+        raise ValueError("invalid RxNorm release identity")
+    return (
+        f"https://{RXNORM_RELEASE_HOST}{RXNORM_RELEASE_PATH}/"
+        f"{release_identity}/RxNorm_full_current.zip"
+    )
+
+
 def _b2_matches_projection(
     row: RawEvidenceRecord, projection: RxNormIdentifierProjection
 ) -> bool:
@@ -233,7 +259,8 @@ def _b2_matches_projection(
         row.source_id == projection.source_id
         and row.state is RawEvidenceState.EXTERNAL_REFERENCE_ONLY
         and row.kind is RawEvidenceKind.PAYLOAD
-        and row.external_reference == projection.endpoint
+        and row.external_reference
+        == _release_locator(projection.release_identity)
         and row.payload_sha256 is None
         and row.byte_count is None
         and row.content_id == projection.source_response_sha256

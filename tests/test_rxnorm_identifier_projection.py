@@ -46,6 +46,12 @@ def _receipt(response: bytes, *, source_id: str = "us-rxnorm-api"):
             "rights_state": RightsState.PERMITTED,
             "rights_reference": AnyUrl(NLM_RIGHTS_URL),
             "reuse": acquire_new_decision(source_id),
+            "temporal": base.temporal.model_copy(
+                update={
+                    "source_version": "2026-09-01",
+                    "content_id": sha256(response).hexdigest(),
+                }
+            ),
         }
     )
 
@@ -79,7 +85,10 @@ def test_projection_keeps_only_allowlisted_rxcui_fields_and_external_b2() -> (
 
     b2 = projection.raw_evidence.rows[0]
     assert b2.state is RawEvidenceState.EXTERNAL_REFERENCE_ONLY
-    assert b2.external_reference == RXNAV_ENDPOINT
+    assert b2.external_reference == (
+        "https://download.nlm.nih.gov/umls/kss/rxnorm/"
+        "2026-09-01/RxNorm_full_current.zip"
+    )
     assert b2.payload_sha256 is None
     assert b2.byte_count is None
     assert b2.content_id == sha256(response).hexdigest()
@@ -253,6 +262,25 @@ def test_rejects_receipt_without_reuse_gate() -> None:
     response = b'{"idGroup":{"rxnormId":["123"]}}'
     receipt = _receipt(response).model_copy(update={"reuse": None})
     with pytest.raises(ValueError, match="reuse gate required"):
+        project_rxnorm_identifiers(
+            response,
+            source_receipt=receipt,
+            external_reference=RXNAV_ENDPOINT,
+        )
+
+
+@pytest.mark.unit
+def test_rejects_receipt_without_release_identity() -> None:
+    response = b'{"idGroup":{"rxnormId":["123"]}}'
+    receipt = _receipt(response)
+    receipt = receipt.model_copy(
+        update={
+            "temporal": receipt.temporal.model_copy(
+                update={"source_version": None}
+            )
+        }
+    )
+    with pytest.raises(ValueError, match="release identity is required"):
         project_rxnorm_identifiers(
             response,
             source_receipt=receipt,
