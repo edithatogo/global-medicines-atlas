@@ -7,7 +7,7 @@
   "inputs": {
     "receipt_validator": {
       "path": "src/global_medicines_atlas/bronze_maturity.py",
-      "sha256": "3ab549d587e06bb8e6e4f4cbb177a4bdd1f12a4cbd17c137ad7091bbcdb0adc7"
+      "sha256": "e62344e108e1f09a1a7979f71b9b839699b075f2a51ec7d596cc2a591e39542c"
     },
     "cohort_generator": {
       "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "055b8648aa08e23b3d2042a53d151536c7e2b27ceb14f1bd86b5d84be8284a23",
+      "sha256": "01194412f0a985c8728c1f0d28d32f2f515fb81ab43e2b0eea1215fee30f4107",
       "file_count": 133,
       "files": [
         {
@@ -372,7 +372,7 @@
         {
           "path": "src/global_medicines_atlas/bronze_maturity.py",
           "exists": true,
-          "sha256": "3ab549d587e06bb8e6e4f4cbb177a4bdd1f12a4cbd17c137ad7091bbcdb0adc7"
+          "sha256": "e62344e108e1f09a1a7979f71b9b839699b075f2a51ec7d596cc2a591e39542c"
         },
         {
           "path": "src/global_medicines_atlas/bronze_recovery.py",

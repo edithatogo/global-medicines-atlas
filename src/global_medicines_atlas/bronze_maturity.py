@@ -331,6 +331,7 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
     boundaries = receipt.get("boundaries")
     if not isinstance(boundaries, Mapping):
         return False
+    boundaries = cast("Mapping[str, Any]", boundaries)
     claims = (
         receipt.get("schema_version") == 1,
         receipt.get("qualification_scope") == "raw_b1_b2_only",
@@ -350,6 +351,7 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
     b2 = receipt.get("b2")
     if not isinstance(b2, Mapping):
         return False
+    b2 = cast("Mapping[str, Any]", b2)
     b2_claims = (
         receipt.get("rights_state") == "permitted",
         receipt.get("reuse_disposition") == "extend",
@@ -406,6 +408,7 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
     ):
         return False
     corrected = cast("Mapping[str, Any]", correction_mappings[0])
+    unresolved = cast("Mapping[str, Any]", unresolved)
     authorization_claims = (
         current_contract.get("source_id") == source_id,
         current_contract.get("effective_date") == "2026-08-01",
@@ -531,11 +534,13 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
     contract = raw_archive.get("contract")
     if not isinstance(object_values, list) or not isinstance(contract, Mapping):
         return False
-    raw_objects = [
-        cast("Mapping[str, Any]", item)
-        for item in object_values
-        if isinstance(item, Mapping) and item.get("role") == "raw"
-    ]
+    object_values = cast("list[Any]", object_values)
+    raw_objects: list[Mapping[str, Any]] = []
+    for item in object_values:
+        if isinstance(item, Mapping):
+            typed_item = cast("Mapping[str, Any]", item)
+            if typed_item.get("role") == "raw":
+                raw_objects.append(typed_item)
     if len(raw_objects) != 1:
         return False
     raw_object = raw_objects[0]
