@@ -1098,5 +1098,9 @@ for credentialed or rights-unresolved sources.
   the report from the repository inputs exactly matches the committed report.
   The two new provenance/regeneration controls pass locally; hosted checks must
   pass on the corrected PR head before merge.
+- [x] Regenerate the receipt cohort after the reconciler source hash changed.
+  The first hosted rerun correctly rejected the stale dependency manifest; the
+  refreshed cohort preserves 28 qualified / 129 deferred sources and the
+  broader 157-source maturity boundary.
 - [ ] Re-evaluate direct Bronze qualification only after a source-origin
   retrieval and chronological B1 admission history are evidenced.
