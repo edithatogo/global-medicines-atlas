@@ -1093,5 +1093,10 @@ for credentialed or rights-unresolved sources.
   controls and removing unreachable type branches. The new P7 reconciliation
   module reaches 100% local statement and branch coverage; the corrected PR
   head must still pass hosted patch coverage.
+- [x] Address PR #713 review findings: require one exact archive inventory row
+  and bind its member path to the pinned P7 archive URI; verify that rebuilding
+  the report from the repository inputs exactly matches the committed report.
+  The two new provenance/regeneration controls pass locally; hosted checks must
+  pass on the corrected PR head before merge.
 - [ ] Re-evaluate direct Bronze qualification only after a source-origin
   retrieval and chronological B1 admission history are evidenced.

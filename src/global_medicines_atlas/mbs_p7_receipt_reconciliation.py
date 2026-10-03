@@ -47,6 +47,9 @@ ARCHIVE_URI = (
     "4d1dae488ac43522f20e8320a8b2a56bf9138341/raw/mbs/legacy/2024-07/"
     "MBS-2024.07-Group-P7-Genetics.xlsx"
 )
+ARCHIVE_MEMBER_PATH = (
+    "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx"
+)
 EXPECTED_RECEIPT_SHA256 = (
     "ba18c36737f9244b204c9d604dce9853e855ee9e9d6f6fd375618c052fdf0d52"
 )
@@ -171,7 +174,7 @@ def reconcile_p7_storage_receipt(root: Path) -> P7ReceiptReconciliation:
     if not isinstance(payloads_value, list):
         raise TypeError("P7 archive raw payload list is missing")
     payloads = cast("list[object]", payloads_value)
-    payload_match = False
+    matching_payloads: list[dict[str, object]] = []
     for item in payloads:
         if not isinstance(item, dict):
             continue
@@ -181,10 +184,11 @@ def reconcile_p7_storage_receipt(root: Path) -> P7ReceiptReconciliation:
             and row.get("sha256") == SOURCE_SHA256
             and row.get("bytes") == SOURCE_BYTES
         ):
-            payload_match = True
-            break
-    if not payload_match:
+            matching_payloads.append(row)
+    if len(matching_payloads) != 1:
         raise ValueError("P7 exact public archive object is not corroborated")
+    if matching_payloads[0].get("path") != ARCHIVE_MEMBER_PATH:
+        raise ValueError("P7 public archive member path does not match receipt")
     if (
         archive.get("dataset") != "edithatogo/australian-mbs-source-archive"
         or archive.get("immutable_revision")

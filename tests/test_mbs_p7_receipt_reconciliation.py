@@ -191,6 +191,52 @@ def test_receipt_reconstruction_rejects_archive_without_exact_p7_object(
         reconcile_p7_storage_receipt(tmp_path)
 
 
+def test_receipt_reconstruction_rejects_archive_member_path_drift(
+    tmp_path: Path,
+) -> None:
+    """The exact digest must still belong to the pinned archive member."""
+
+    _copy_qualification_inputs(tmp_path)
+    path = tmp_path / (
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
+    )
+    archive = _read_json(path)
+    rows_value = archive["raw_payloads"]
+    assert isinstance(rows_value, list)
+    rows = cast("list[dict[str, Any]]", rows_value)
+    p7_row = next(
+        row for row in rows if row.get("source_id") == p7_module.SOURCE_ID
+    )
+    p7_row["path"] = "raw/mbs/elsewhere/renamed.xlsx"
+    path.write_text(json.dumps(archive), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="member path does not match"):
+        reconcile_p7_storage_receipt(tmp_path)
+
+
+def test_receipt_reconstruction_rejects_duplicate_exact_archive_objects(
+    tmp_path: Path,
+) -> None:
+    """Multiple exact-identity rows cannot ambiguously corroborate provenance."""
+
+    _copy_qualification_inputs(tmp_path)
+    path = tmp_path / (
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
+    )
+    archive = _read_json(path)
+    rows_value = archive["raw_payloads"]
+    assert isinstance(rows_value, list)
+    rows = cast("list[dict[str, Any]]", rows_value)
+    p7_row = next(
+        row for row in rows if row.get("source_id") == p7_module.SOURCE_ID
+    )
+    archive["raw_payloads"] = [*rows, p7_row.copy()]
+    path.write_text(json.dumps(archive), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="object is not corroborated"):
+        reconcile_p7_storage_receipt(tmp_path)
+
+
 def test_receipt_reconstruction_rejects_archive_revision_drift(
     tmp_path: Path,
 ) -> None:
@@ -237,3 +283,16 @@ def test_report_projection_is_stable_and_written_as_metadata(
     assert text == dump_reconciliation(result)
     assert "ItemNum" not in text
     assert '"payload_bytes_read_locally": false' in text
+
+
+def test_regeneration_from_repository_matches_committed_report() -> None:
+    """The committed report is exactly the deterministic ROOT reconstruction."""
+
+    committed = ROOT / (
+        "quality/qualifications/"
+        "mbs-p7-storage-receipt-reconciliation-20261003.json"
+    )
+
+    assert dump_reconciliation(reconcile_p7_storage_receipt(ROOT)) == (
+        committed.read_text(encoding="utf-8")
+    )
