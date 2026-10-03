@@ -43,12 +43,21 @@ class FakeHub:
         self.revision = "a" * 40
         self.private = False
         self.corrupt = False
+        self.extra_after_append = False
+        self.extra_on_append = False
+        self.private_after_append = False
+        self.corrupt_after_append = False
         self.calls = 0
 
     def state(self, revision: str | None = None) -> PublicArchiveState:
         return PublicArchiveState(
             revision or self.revision,
-            frozenset(self.files),
+            frozenset(self.files)
+            | (
+                frozenset[str]({"unexpected-after-append"})
+                if self.extra_after_append
+                else frozenset[str]()
+            ),
             self.private,
             gated=False,
         )
@@ -64,6 +73,9 @@ class FakeHub:
             name: path.read_bytes() for name, path in files.items()
         })
         self.revision = chr(ord("a") + self.calls) * 40
+        self.extra_after_append = self.extra_on_append
+        self.private = self.private_after_append
+        self.corrupt = self.corrupt_after_append
         return self.revision
 
 
@@ -238,6 +250,176 @@ def test_lifecycle_publication_appends_and_anonymously_verifies(
 
 
 @pytest.mark.parametrize(
+    ("mode", "message"),
+    [
+        ("synthetic", "live source receipt"),
+        ("rights", "rights state"),
+        ("source", "MBS source"),
+        ("sensitivity", "sensitivity"),
+        ("revision", "pinned Git object id"),
+        ("release_path", "outside the exact MBS release"),
+        ("content_path", "bound to the source digest"),
+        ("version", "authorized MBS release"),
+        ("counts", "counts are inconsistent"),
+    ],
+)
+def test_durable_lifecycle_rejects_unqualified_inputs(
+    live_stage: MbsReleaseStage,
+    mode: str,
+    message: str,
+) -> None:
+    source_object = next(
+        item
+        for item in live_stage.manifest.objects
+        if item.role == "source_receipt"
+    )
+    source = SourceReceipt.model_validate_json(
+        (live_stage.path / source_object.path).read_bytes()
+    )
+    raw = next(
+        item for item in live_stage.manifest.objects if item.role == "raw"
+    )
+    revision = "b" * 40
+    path = raw.path
+    record_count = 1
+    p7_record_count = 0
+    if mode == "synthetic":
+        source = source.model_copy(
+            update={"evidence_class": EvidenceClass.SYNTHETIC}
+        )
+    elif mode == "rights":
+        source = source.model_copy(
+            update={"rights_state": RightsState.RESTRICTED}
+        )
+    elif mode == "source":
+        source = source.model_copy(
+            update={
+                "source": source.source.model_copy(
+                    update={"source_id": "other"}
+                )
+            }
+        )
+    elif mode == "sensitivity":
+        source = source.model_copy(update={"sensitivity": None})
+    elif mode == "revision":
+        revision = "not-a-revision"
+    elif mode == "release_path":
+        path = "raw/mbs/releases/2025-01-01/payload.xml"
+    elif mode == "content_path":
+        path = f"raw/mbs/releases/2026-08-01/{'0' * 64}.xml"
+    elif mode == "version":
+        temporal = source.temporal
+        assert temporal is not None
+        source = source.model_copy(
+            update={
+                "temporal": temporal.model_copy(
+                    update={"source_version": "2025-08-01"}
+                )
+            }
+        )
+    else:
+        record_count = 0
+
+    with pytest.raises(ValueError, match=message):
+        build_verified_mbs_lifecycle(
+            source,
+            raw_archive_revision=revision,
+            raw_object_path=path,
+            decided_at=datetime(2026, 8, 30, tzinfo=UTC),
+            record_count=record_count,
+            p7_record_count=p7_record_count,
+        )
+
+
+@pytest.mark.parametrize(
+    ("mode", "message"),
+    [
+        ("wrong_authority", "authorized MBS contract"),
+        ("private", "not anonymously public"),
+        ("missing_raw", "raw object is absent"),
+        ("corrupt_raw", "no longer matches"),
+        ("collision", "overwrite an existing object"),
+        ("unsafe_path", "unsafe lifecycle object path"),
+        ("unexpected_after", "differs from manifest"),
+        ("private_after", "differs from manifest"),
+        ("corrupt_after", "digest verification failed"),
+    ],
+)
+def test_durable_lifecycle_publication_fails_closed(
+    live_stage: MbsReleaseStage,
+    monkeypatch: pytest.MonkeyPatch,
+    mode: str,
+    message: str,
+) -> None:
+    hub = FakeHub()
+    archive = publish_mbs_stage(
+        live_stage, live_stage.manifest.contract, public=hub, writer=hub
+    )
+    source_object = next(
+        item
+        for item in live_stage.manifest.objects
+        if item.role == "source_receipt"
+    )
+    source = SourceReceipt.model_validate_json(
+        (live_stage.path / source_object.path).read_bytes()
+    )
+    raw = next(
+        item for item in live_stage.manifest.objects if item.role == "raw"
+    )
+    contract = live_stage.manifest.contract
+    if mode == "wrong_authority":
+        source = source.model_copy(
+            update={"rights_reference": AnyUrl("https://example.org/authority")}
+        )
+    elif mode == "private":
+        hub.private = True
+    elif mode == "missing_raw":
+        del hub.files[raw.path]
+    elif mode == "corrupt_raw":
+        hub.corrupt = True
+    elif mode == "collision":
+        objects = build_verified_mbs_lifecycle(
+            source,
+            raw_archive_revision=str(archive["revision"]),
+            raw_object_path=raw.path,
+            decided_at=datetime(2026, 8, 30, tzinfo=UTC),
+            record_count=1,
+            p7_record_count=0,
+        )
+        hub.files.update(dict.fromkeys(objects, b"existing"))
+    elif mode == "unsafe_path":
+
+        def unsafe_lifecycle(
+            *_args: object, **_kwargs: object
+        ) -> dict[str, bytes]:
+            return {"../escape": b"unsafe"}
+
+        monkeypatch.setattr(
+            "global_medicines_atlas.mbs_publication.build_verified_mbs_lifecycle",
+            unsafe_lifecycle,
+        )
+    elif mode == "unexpected_after":
+        hub.extra_on_append = True
+    elif mode == "private_after":
+        hub.private_after_append = True
+    else:
+        hub.corrupt_after_append = True
+
+    with pytest.raises(ValueError, match=message):
+        publish_verified_mbs_lifecycle(
+            source,
+            contract,
+            raw_archive_revision=str(archive["revision"]),
+            raw_object_path=raw.path,
+            record_count=1,
+            p7_record_count=0,
+            decided_at=datetime(2026, 8, 30, tzinfo=UTC),
+            public=hub,
+            writer=hub,
+        )
+
+
+@pytest.mark.parametrize(
     "mode", ["local", "private", "extra", "changed", "anonymous"]
 )
 def test_publication_fails_closed(
@@ -255,9 +437,9 @@ def test_publication_fails_closed(
             b"changed"
         )
     else:
-        hub.corrupt = True
+        hub.corrupt_after_append = True
     with pytest.raises(
-        ValueError, match=r"GitHub Actions|public|unmanifested|digest"
+        ValueError, match=r"GitHub Actions|public|unmanifested|digest|rights"
     ):
         publish_mbs_stage(
             live_stage, live_stage.manifest.contract, public=hub, writer=hub

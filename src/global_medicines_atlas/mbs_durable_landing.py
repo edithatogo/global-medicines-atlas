@@ -16,8 +16,8 @@ from .bronze_raw_evidence import (
     build_raw_evidence_record,
 )
 from .receipts import (
+    AcquisitionStatus,
     EvidenceClass,
-    RightsState,
     SourceReceipt,
     acquisition_event_from_receipt,
     require_publication_permitted,
@@ -45,15 +45,13 @@ def build_verified_mbs_lifecycle(
     """
     if receipt.evidence_class is not EvidenceClass.LIVE:
         raise ValueError("durable MBS lifecycle requires a live source receipt")
-    if not receipt.satisfies_live_gate:
+    if receipt.retrieval.status is not AcquisitionStatus.SUCCEEDED:
         raise ValueError(
             "durable MBS lifecycle requires a successful retrieval"
         )
-    if receipt.rights_state is not RightsState.PERMITTED:
-        raise ValueError("durable MBS lifecycle requires permitted rights")
+    require_publication_permitted(receipt)
     if receipt.source.source_id != "au-mbs":
         raise ValueError("durable MBS lifecycle requires the MBS source")
-    require_publication_permitted(receipt)
     if len(raw_archive_revision) != GIT_OBJECT_ID_LENGTH or any(
         char not in "0123456789abcdef" for char in raw_archive_revision
     ):
