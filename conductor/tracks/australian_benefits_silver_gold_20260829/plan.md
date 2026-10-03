@@ -568,10 +568,17 @@
   This checkpoint did not change the timeout, acquire local raw PBS files or
   publish data; it did not establish the original transport failure cause.
 
-- [ ] Write failing tests for schedules, items, presentations, restrictions,
+- [x] Write failing tests for schedules, items, presentations, restrictions,
   prices, effective dates, AMT references, ATC codes, namespaces, schema drift,
-  and source-native identity.
-- [ ] Confirm the intended failure before implementation.
+  and source-native identity. The focused PBS acceptance set covers native
+  field preservation, structural families, entity lineage, date-slot behavior,
+  namespace/root drift, historical-member identity, and batch/Parquet bounds;
+  162 affected tests pass on current main. Fixtures do not establish the
+  approved real-corpus denominator or semantic/date qualification.
+- [x] Confirm the intended failure before implementation. The documented PBS
+  v3 temporal regression failed with the effective, supply-only, and
+  non-effective date rows all unmapped; the candidate mapping fix is covered
+  by the focused PBS date and historical suites.
 - [x] Implement bounded PBS v3 source-faithful tables. PR #460 merged as
   `5b7af3b6`; the table schema and qualifier retain source-native candidate
   status, exact source identity, and rebuildable Parquet boundaries.
