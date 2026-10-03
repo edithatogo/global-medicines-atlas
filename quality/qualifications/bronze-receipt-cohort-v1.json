@@ -23,15 +23,15 @@
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
-      "sha256": "fce8b41a198a50125fa0790c01f175ef53e742049710512b9425e209b28d8228"
+      "sha256": "f25573e8dd5cd6f2baae56a3a4c9021d47aed19de739f3b30e48a3a36cf345e8"
     },
     "landing_overrides": {
       "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
-      "sha256": "4ef2aa4aa3179d33a09fa539e28db9f588497781052950b1b3c515248aa71dc1"
+      "sha256": "44ae2197d1f6ed2c439cedff5b2f17f93a66fa93664bb5cd26af45026647a4ed"
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "eabc79d4381e59429c988963d9b488a520aa4f6bc723fbcfe1dcc2d6d6bcf2f9",
+      "sha256": "de3f5bb7002af315836cb2727929aa8091c93b298cfc502f65f76b70038e65ee",
       "file_count": 127,
       "files": [
         {
@@ -372,7 +372,7 @@
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
           "exists": true,
-          "sha256": "4ef2aa4aa3179d33a09fa539e28db9f588497781052950b1b3c515248aa71dc1"
+          "sha256": "44ae2197d1f6ed2c439cedff5b2f17f93a66fa93664bb5cd26af45026647a4ed"
         },
         {
           "path": "src/global_medicines_atlas/iceberg_ready.py",

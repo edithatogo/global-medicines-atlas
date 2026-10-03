@@ -1031,6 +1031,8 @@ for credentialed or rights-unresolved sources.
   qualification receipts. State the missing B1 receipt evidence and preserve
   M-112 federation acceptance as a separate gate; do not acquire or publish
   source bytes.
-- [~] Run the affected tests (194 passed), routine Test-Goblin, context and
-  ecosystem validators, and diff checks (all passed); open the scoped PR and
-  complete protected checks and merge.
+- [~] Address the first hosted unit finding by storing source-specific next
+  actions in canonical sparse overrides and regenerating the queue, cohort,
+  and qualification snapshots. The corrected affected contracts pass (254
+  tests); routine Test-Goblin, context/ecosystem, JSONL, and diff checks pass.
+  Complete exact-head hosted checks and merge.

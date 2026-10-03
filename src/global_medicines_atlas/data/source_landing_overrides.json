@@ -45,7 +45,8 @@
       "reason": "The exact July 2025 MBS XML is publicly retained as immutable B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This publication/B2 receipt is not itself a typed, validated direct B1 Bronze qualification receipt for the supplemental cohort. It is service-benefit evidence, not medicine regulatory or PBS funding evidence.",
       "evidence_references": [
         "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
-      ]
+      ],
+      "next_action": "Reconcile the existing July 2025 payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Then rerun direct-receipt qualification. Keep M-112 federation acceptance separate."
     },
     {
       "source_id": "au-mbs-p7-legacy-workbook",
@@ -54,7 +55,8 @@
       "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This publication/B2 receipt is not itself a typed, validated direct B1 Bronze qualification receipt for the supplemental cohort. Its legacy schema era remains explicit for comparison and does not imply current coverage.",
       "evidence_references": [
         "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
-      ]
+      ],
+      "next_action": "Reconcile the existing July 2024 workbook payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Preserve the legacy schema-era boundary, then rerun direct-receipt qualification. Keep M-112 federation acceptance separate."
     },
     {
       "source_id": "dk-medstat-utilisation",
