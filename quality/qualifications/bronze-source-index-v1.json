@@ -32,8 +32,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:f730d4dc99941a5340d03fa614b61878be02df933fa6ceebcace74e3a36e979f",
-  "snapshot_sha256": "f730d4dc99941a5340d03fa614b61878be02df933fa6ceebcace74e3a36e979f",
+  "snapshot_id": "sha256:41db6dee53692d1a885d8177d4360216d0e26ba220f749089d590e8ace6123aa",
+  "snapshot_sha256": "41db6dee53692d1a885d8177d4360216d0e26ba220f749089d590e8ace6123aa",
   "source_count": 174,
   "sources": [
     {
@@ -316,7 +316,8 @@
       "qualification_references": [
         "src/global_medicines_atlas/adapters/au_mbs_workbook.py",
         "tests/test_au_mbs_workbook.py",
-        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+        "quality/qualifications/mbs-p7-storage-receipt-reconciliation-20261003.json"
       ],
       "qualification_state": "live_verified",
       "rights_review_state": "maintainer_redistribution_authorized",

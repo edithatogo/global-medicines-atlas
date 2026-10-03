@@ -279,6 +279,19 @@ def test_generated_queue_schema_and_conductor_projection_are_current() -> None:
         "quality/qualifications/who-national-eml-index-discovery-20261002.json"
         in who_index.evidence_references
     )
+    p7 = next(
+        item
+        for item in queue.items
+        if item.source_id == "au-mbs-p7-legacy-workbook"
+    )
+    assert p7.state is LandingDisposition.LANDED
+    assert "no source-origin B1 admission lifecycle" in p7.reason
+    assert "pinned donor Git commit" in p7.next_action
+    assert "Keep the legacy date profile unset" in p7.next_action
+    assert (
+        "quality/qualifications/mbs-p7-storage-receipt-reconciliation-20261003.json"
+        in p7.evidence_references
+    )
     assert MARKDOWN_PATH.read_text(encoding="utf-8") == (
         render_conductor_queue(queue)
     )
