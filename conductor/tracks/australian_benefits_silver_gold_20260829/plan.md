@@ -1629,7 +1629,12 @@
   used the older candidate-inventory revision for the MBS source archive; the
   corrected per-path inventory now binds every row to the current revision and
   the test enforces this distinction.
-- [ ] Keep the remaining 92 reimbursement-atlas raw objects and 12 projections
-  outside v4 and source-byte readback while their source rights remain
-  unresolved. MBS August admission history, projection lineage, exact v4
-  admission, and consumer canaries are still open.
+- [x] Defer all 1,707 reimbursement-atlas raw candidates and 12 projections
+  from M-112 admission while source-specific rights and lineage are unresolved.
+  Keep all 1,719 paths inside the maintainer-approved denominator and record
+  their future re-entry trigger in
+  `quality/qualifications/australian-m112-deferred-source-candidates-20261004.json`.
+- [ ] Resolve the remaining 92 raw and 12 projection candidates without direct
+  SHA-256 evidence only after source-specific rights permit that work. The
+  remaining MBS August admission history, utilisation rights, projection
+  lineage, exact v4 admission, and consumer canaries remain open.

@@ -1,0 +1,92 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-deferred-source-candidates",
+  "schema_version": 1,
+  "recorded_at": "2026-10-03T18:57:00Z",
+  "purpose": "Name the exact Australian reimbursement-atlas candidate paths deferred from M-112 admission while source-specific rights and lineage remain unresolved.",
+  "scope": {
+    "approved_candidate_denominator": 1759,
+    "approved_raw_paths": 1736,
+    "approved_projection_paths": 23,
+    "denominator_changed": false,
+    "deferred_dataset_candidate_paths": 1719,
+    "deferred_raw_paths": 1707,
+    "deferred_projection_paths": 12,
+    "candidate_paths_remain_in_approved_denominator": true
+  },
+  "evidence_inputs": [
+    {
+      "path": "quality/qualifications/australian-m112-denominator-decision-20260930.json",
+      "sha256": "883b9517d8e646b41885a74da924a3fcb796e1772e5dcdd9394d469b09bb7b71"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-object-inventory-20260930.json",
+      "sha256": "ccc0667b1ce8ba19d4bed0a6590e2bc55ab954d7bd6cc51f56e51231cc780460"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
+      "sha256": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-current-tree-object-identity-reconciliation-20261004.json",
+      "sha256": "42ecec09d1d4a8e03794124bdbb1f169bb998285859278bc57d04772d4dccd22"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json",
+      "sha256": "a6fb05a93168fadecee965079ea3b90e5cdb3e87cd066f9d4b7e9f95060a033a"
+    }
+  ],
+  "deferred_sources": [
+    {
+      "dataset": "edithatogo/reimbursement-atlas",
+      "current_revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+      "observed_source_identifier": "au_pbs",
+      "source_identifier_mapping_status": "candidate-level mapping recorded by the rights and lineage crosswalk; not a per-path source admission",
+      "rights_status": "unresolved",
+      "lineage_status": "unresolved",
+      "reason": "all 1,707 raw payload candidates remain excluded from v4 admission until record-level source rights and lineage are resolved.",
+      "rights_evidence": [
+        "No au_pbs source-rights review entry was found in the GMA source-rights ledger. The exact pinned public repository RIGHTS.md says the registry status is unresolved and requires record-level provenance and applicable source terms."
+      ],
+      "candidate_paths": 1719,
+      "raw_candidate_paths": 1707,
+      "projection_candidate_paths": 12,
+      "paths_without_direct_sha256_metadata": 104,
+      "reentry_trigger": "A maintainer-approved source-specific rights and reuse disposition plus record-level source provenance, receipts, and per-object lineage; perform only payload digest reads authorized by that decision, then independently review v4 admission and consumer canaries.",
+      "admission_status": "deferred_not_admitted",
+      "retained_in_approved_denominator": true,
+      "candidate_path_inventory": {
+        "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
+        "sha256": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae",
+        "selection": {
+          "dataset": "edithatogo/reimbursement-atlas",
+          "current_revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+        }
+      },
+      "paths_without_direct_sha256_metadata_by_class": {
+        "raw_source_payload": 92,
+        "existing_data_projection": 12
+      },
+      "direct_lfs_sha256_metadata_by_class": {
+        "raw_source_payload": 1615,
+        "existing_data_projection": 0
+      }
+    }
+  ],
+  "other_open_gates_preserved": [
+    "PBS historical XML source terms remain unknown despite exact-object publication evidence.",
+    "The MBS August source path still has a conflicting or missing canonical B1 predecessor and projection lineage remains unresolved.",
+    "The utilisation archives have sidecar and dataset-authorization joins but do not provide per-object rights_state; source-specific rights and v4 lineage remain open.",
+    "No federation v4 admission or consumer canary was performed."
+  ],
+  "boundaries": {
+    "source_payload_bytes_read": false,
+    "source_payload_values_read": false,
+    "source_payloads_persisted": false,
+    "new_rights_or_licensing_conclusion": false,
+    "denominator_changed": false,
+    "v4_admission_performed": false,
+    "consumer_canaries_performed": false,
+    "m112_federation_accepted": false
+  },
+  "status": "reimbursement_atlas_candidate_set_explicitly_deferred_pending_source_rights_and_lineage"
+}
