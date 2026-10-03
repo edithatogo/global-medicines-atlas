@@ -1,0 +1,317 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-current-tree-object-identity-reconciliation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-03T18:11:57Z",
+  "purpose": "Join the approved candidate paths to anonymous current-tree object metadata, reconcile exposed LFS SHA-256 values, and record four additional rights-permitted MBS digest reads without persisting or inspecting their contents.",
+  "scope": {
+    "jurisdiction": "Australian MBS/PBS only",
+    "approved_raw_paths": 1736,
+    "approved_projection_paths": 23,
+    "approved_total_paths": 1759,
+    "producer_dataset_count": 5,
+    "denominator_changed": false
+  },
+  "evidence_inputs": [
+    {
+      "path": "quality/qualifications/australian-m112-object-inventory-20260930.json",
+      "sha256": "ccc0667b1ce8ba19d4bed0a6590e2bc55ab954d7bd6cc51f56e51231cc780460"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-public-tree-readback-20261003.json",
+      "sha256": "b9a9583b8bbc6530ddf5dabcfe9212fe663e2c46a9a18cfa5db366fcdc25ea08"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
+      "sha256": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+      "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-source-archive-digest-reconciliation-20261004.json",
+      "sha256": "19cbf039367c3fa0ef276209d83e9172bb90b1ca72262d4794aa37bb8eeaa074"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json",
+      "sha256": "a6fb05a93168fadecee965079ea3b90e5cdb3e87cd066f9d4b7e9f95060a033a"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+      "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b"
+    },
+    {
+      "path": "quality/qualifications/australian-health-legacy-publication-authorization.json",
+      "sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da"
+    }
+  ],
+  "current_tree_metadata_readback": {
+    "method": "Anonymous Hugging Face tree API requests at each exact pinned immutable revision; recursive expanded metadata only, paginated at 100 entries per request. No payload endpoint was used in this metadata pass.",
+    "requests_authenticated": false,
+    "payload_bytes_read_for_metadata": false,
+    "payload_values_read": false,
+    "metadata_pages": 39,
+    "metadata_response_bytes": 1499563,
+    "candidate_paths_present": 1759,
+    "candidate_paths_missing": 0,
+    "git_blob_oid_matches": 1759,
+    "git_blob_oid_mismatches": 0,
+    "byte_count_matches": 1759,
+    "byte_count_mismatches": 0,
+    "current_lfs_sha256_matches": 1645,
+    "current_lfs_sha256_mismatches": 0,
+    "raw_lfs_sha256_matches": 1634,
+    "projection_lfs_sha256_matches": 11,
+    "datasets": [
+      {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "candidate_paths": 18,
+        "raw_paths": 8,
+        "projection_paths": 10,
+      "metadata_file_entries": 59,
+        "anonymous_metadata_http_status": 200,
+        "metadata_response_bytes": 32576,
+        "metadata_pages": 1,
+        "candidate_paths_present": 18,
+        "git_blob_oid_matches": 18,
+        "git_blob_oid_mismatches": 0,
+        "byte_count_matches": 18,
+        "byte_count_mismatches": 0,
+        "current_lfs_sha256_values": 10,
+        "current_lfs_sha256_matches": 10,
+        "current_lfs_sha256_mismatches": 0,
+        "raw_lfs_sha256_matches": 0,
+        "projection_lfs_sha256_matches": 10
+      },
+      {
+        "dataset": "edithatogo/australian-pbs-source-archive",
+        "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+        "candidate_paths": 2,
+        "raw_paths": 1,
+        "projection_paths": 1,
+      "metadata_file_entries": 9,
+        "anonymous_metadata_http_status": 200,
+        "metadata_response_bytes": 8367,
+        "metadata_pages": 1,
+        "candidate_paths_present": 2,
+        "git_blob_oid_matches": 2,
+        "git_blob_oid_mismatches": 0,
+        "byte_count_matches": 2,
+        "byte_count_mismatches": 0,
+        "current_lfs_sha256_values": 2,
+        "current_lfs_sha256_matches": 2,
+        "current_lfs_sha256_mismatches": 0,
+        "raw_lfs_sha256_matches": 1,
+        "projection_lfs_sha256_matches": 1
+      },
+      {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "candidate_paths": 14,
+        "raw_paths": 14,
+        "projection_paths": 0,
+      "metadata_file_entries": 30,
+        "anonymous_metadata_http_status": 200,
+        "metadata_response_bytes": 28130,
+        "metadata_pages": 1,
+        "candidate_paths_present": 14,
+        "git_blob_oid_matches": 14,
+        "git_blob_oid_mismatches": 0,
+        "byte_count_matches": 14,
+        "byte_count_mismatches": 0,
+        "current_lfs_sha256_values": 13,
+        "current_lfs_sha256_matches": 13,
+        "current_lfs_sha256_mismatches": 0,
+        "raw_lfs_sha256_matches": 13,
+        "projection_lfs_sha256_matches": 0
+      },
+      {
+        "dataset": "edithatogo/australian-pbs-utilisation-archive",
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "candidate_paths": 6,
+        "raw_paths": 6,
+        "projection_paths": 0,
+      "metadata_file_entries": 14,
+        "anonymous_metadata_http_status": 200,
+        "metadata_response_bytes": 13793,
+        "metadata_pages": 1,
+        "candidate_paths_present": 6,
+        "git_blob_oid_matches": 6,
+        "git_blob_oid_mismatches": 0,
+        "byte_count_matches": 6,
+        "byte_count_mismatches": 0,
+        "current_lfs_sha256_values": 5,
+        "current_lfs_sha256_matches": 5,
+        "current_lfs_sha256_mismatches": 0,
+        "raw_lfs_sha256_matches": 5,
+        "projection_lfs_sha256_matches": 0
+      },
+      {
+        "dataset": "edithatogo/reimbursement-atlas",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "candidate_paths": 1719,
+        "raw_paths": 1707,
+        "projection_paths": 12,
+      "metadata_file_entries": 1733,
+        "anonymous_metadata_http_status": 200,
+        "metadata_response_bytes": 1416697,
+        "metadata_pages": 35,
+        "candidate_paths_present": 1719,
+        "git_blob_oid_matches": 1719,
+        "git_blob_oid_mismatches": 0,
+        "byte_count_matches": 1719,
+        "byte_count_mismatches": 0,
+        "current_lfs_sha256_values": 1615,
+        "current_lfs_sha256_matches": 1615,
+        "current_lfs_sha256_mismatches": 0,
+        "raw_lfs_sha256_matches": 1615,
+        "projection_lfs_sha256_matches": 0
+      }
+    ]
+  },
+  "existing_hosted_anonymous_digest_receipts": {
+    "current_m112_reconciliation_object_paths": 22,
+    "paths_also_in_current_lfs_sha256_set": 19,
+    "non_lfs_paths_verified_by_those_receipts": 3,
+    "previous_mbs_receipt_paths": [
+      {
+        "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+        "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+        "bytes": 8194522,
+        "receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5461420439"
+      },
+      {
+        "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+        "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+        "bytes": 87727,
+        "receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5461420439"
+      }
+    ],
+    "previous_mbs_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5461420439",
+    "unique_non_lfs_hosted_digest_paths": 5,
+    "current_receipts": [
+      "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489",
+      "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5686447551",
+      "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5961659754",
+      "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466488482"
+    ]
+  },
+  "additional_anonymous_raw_byte_hashes": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+    "objects": [
+      {
+        "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+        "source_id": "au-mbs",
+        "category": "basic_service_description",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "sidecar_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv.receipt.json",
+        "sidecar_sha256": "78d31e23a523816c434af921853b7d7bf3ac2eeed6ce92f8ded38a1f2a0fcc49",
+        "http_status": 200,
+        "expected_bytes": 135983,
+        "observed_bytes": 135983,
+        "expected_sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+        "observed_sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+        "sha256_match": true,
+        "anonymous": true,
+        "streamed_without_persistence": true,
+        "source_values_inspected": false
+      },
+      {
+        "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+        "source_id": "au-mbs",
+        "category": "basic_service_description",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "sidecar_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml.receipt.json",
+        "sidecar_sha256": "c8e5631e97aac6cfd4dc16d3e411273d9b882ae8fb90c0778a2049d35499e320",
+        "http_status": 200,
+        "expected_bytes": 615386,
+        "observed_bytes": 615386,
+        "expected_sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+        "observed_sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+        "sha256_match": true,
+        "anonymous": true,
+        "streamed_without_persistence": true,
+        "source_values_inspected": false
+      },
+      {
+        "path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+        "source_id": "au-mbs",
+        "category": "monthly_schedule_xml",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "sidecar_path": "bronze/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML.receipt.json",
+        "sidecar_sha256": "01f052db621eb1a03ec08198cdcafbc04b8a98238fc06c391e788b7ec73112eb",
+        "http_status": 200,
+        "expected_bytes": 8291891,
+        "observed_bytes": 8291891,
+        "expected_sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+        "observed_sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+        "sha256_match": true,
+        "anonymous": true,
+        "streamed_without_persistence": true,
+        "source_values_inspected": false
+      },
+      {
+        "path": "raw/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT",
+        "source_id": "au-mbs",
+        "category": "relative_value_guide",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "sidecar_path": "bronze/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT.receipt.json",
+        "sidecar_sha256": "d1a8dfe4898acbcae5eb03e019ede01ad648d10bcf58c47b8d3fcba3e19f48f6",
+        "http_status": 200,
+        "expected_bytes": 11865,
+        "observed_bytes": 11865,
+        "expected_sha256": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+        "observed_sha256": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+        "sha256_match": true,
+        "anonymous": true,
+        "streamed_without_persistence": true,
+        "source_values_inspected": false
+      }
+    ],
+    "objects_hashed": 4,
+    "payload_bytes_streamed": 9055125,
+    "persisted_payload_bytes": 0,
+    "rights_basis": "Existing au-mbs source/category sidecars joined to maintainer-approved MBS harvest authorization and source-rights crosswalk; no new rights conclusion."
+  },
+  "digest_coverage": {
+    "current_lfs_sha256_paths": 1645,
+    "existing_hosted_verified_non_lfs_paths": 5,
+    "new_anonymous_byte_hash_paths": 4,
+    "paths_with_direct_sha256_evidence": 1654,
+    "same_git_blob_identity_alias_paths": 1,
+    "alias": {
+      "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "sha256_evidence_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "same_current_git_blob_oid": "025c714ecd1fa69f91fdb4de002d285d47272e40",
+      "same_byte_count": 8293331,
+      "sha256_from_verified_path": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "independently_byte_hashed": false
+    },
+    "paths_without_direct_sha256": 105,
+    "paths_without_direct_or_same_git_object_sha256_binding": 104,
+    "remaining_non_lfs_raw_paths_without_digest_evidence": 92,
+    "remaining_projection_paths_without_digest_evidence": 12
+  },
+  "remaining_acceptance_gates": [
+    "The 92 reimbursement-atlas au_pbs raw payload paths and 12 existing projection paths lack SHA-256 payload proof and source-specific rights; they remain excluded from v4 and no bytes were accessed.",
+    "The PBS historical XML source-rights ledger remains unknown despite current LFS SHA-256 metadata; digest evidence does not establish v4 eligibility.",
+    "MBS August admission still lacks a persisted landed predecessor; root-manifest completeness and source-Parquet projection lineage remain open.",
+    "No candidate object was admitted to federation v4 and no consumer canary was run."
+  ],
+  "boundaries": {
+    "new_upstream_source_acquisition": false,
+    "new_external_publication": false,
+    "source_payload_bytes_streamed_for_sha256": 9055125,
+    "source_payload_values_inspected": false,
+    "source_payload_files_persisted": false,
+    "credential_material_inspected_or_logged": false,
+    "new_rights_or_licensing_conclusion": false,
+    "denominator_changed": false,
+    "v4_admission_performed": false,
+    "consumer_canaries_performed": false,
+    "m112_federation_accepted": false
+  },
+  "status": "current_tree_object_metadata_reconciled_and_four_permitted_mbs_payload_hashes_confirmed_104_candidates_still_lack_digest_evidence"
+}
