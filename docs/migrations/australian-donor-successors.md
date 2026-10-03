@@ -18,9 +18,9 @@ is unarchived and requires separate approval. See the
 Earlier pending/disabled statements below describe the preparation chronology.
 
 The capability dispositions below remain the canonical successor map.
-The notice text and checklist retain the pre-archive preparation snapshot;
-current archival status is recorded above and in the final receipts. The
-compatibility pattern does not inherit another repository's approvals.
+Historical preparation details are labelled as such; current archival status
+is recorded above and in the final receipts. The compatibility pattern does
+not inherit another repository's approvals.
 
 ## Exact baseline and capability disposition
 
@@ -45,29 +45,47 @@ not a current status report. MBS XML/workbook and PBS v3 parsers, bounded CLI
 inspection, historical mock probes and typed HTML/P7 compatibility are now
 repository implementations. Live scheduling is a separate Phase 4 gate.
 
-## Successor notice text for both donors
+## Proposed successor notice refresh (authorization pending)
 
-Active successor development is in
-[Global Medicines Atlas](https://github.com/edithatogo/global-medicines-atlas).
-The donor repositories are archived compatibility and provenance mirrors.
-Their historical code, commit links and source identifiers are retained; the
-old scraper's green runs must not be interpreted as successful acquisition.
+The text below is a draft for the default-branch `README.md` and
+`SUCCESSOR.md` in each archived donor repository. It corrects the stale archive
+status and identifies the exact public successor dataset revisions observed
+on 2026-10-04. This proposal does not authorize unarchiving either repository,
+committing the text externally, creating a tag or release, or publishing a
+dataset. The existing `v0.1` scraper tag predates successor documentation and
+should remain historical; do not move or replace it.
 
-GMA preserves independent MBS service-benefit, PBS funding/formulary, regulatory
-and terminology evidence. It replaces defective donor parser/processor paths
-with bounded typed implementations. The consolidation plan and explicit gaps
-are tracked in [issue #339](https://github.com/edithatogo/global-medicines-atlas/issues/339).
-Roadmap-only graph, ontology, NLP, Spark and Airflow plans are not delivered
-features; see the canonical successor map above.
+> This repository is an archived compatibility and provenance mirror. Its
+> history and source identifiers are retained. Active successor development
+> is in [Global Medicines Atlas](https://github.com/edithatogo/global-medicines-atlas);
+> see its [Australian donor capability map](https://github.com/edithatogo/global-medicines-atlas/blob/main/docs/migrations/australian-donor-successors.md).
+>
+> Public successor dataset identities observed 2026-10-04:
+>
+> - MBS source archive: [`edithatogo/australian-mbs-source-archive` at
+>   `40891976f77ee5e7688edceed25c9ac98a77547e`](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/40891976f77ee5e7688edceed25c9ac98a77547e).
+> - PBS source archive: [`edithatogo/australian-pbs-source-archive` at
+>   `48fd7345fb09277bb5b85644dba72804633a2abb`](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive/tree/48fd7345fb09277bb5b85644dba72804633a2abb).
+>
+> Frozen historical donor evidence remains directly available at the
+> [MBS archive revision `4d1dae488ac43522f20e8320a8b2a56bf9138341`](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/4d1dae488ac43522f20e8320a8b2a56bf9138341)
+> and the [PBS archive revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive/tree/31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7).
+> These immutable baseline revisions preserve historical donor material;
+> they do not identify the current successor dataset heads.
+>
+> The current successor revisions above are immutable dataset revisions, not
+> a promise of complete or continuously current coverage, and this notice does
+> not state a source licence or expand reuse rights. MBS service-benefit
+> evidence remains distinct from PBS funding/formulary, regulatory, and
+> terminology evidence.
+> Historical donor archives remain available at the separately documented
+> baseline revisions; later successor dataset revisions do not rewrite that
+> history. Dataset publication is performed only by the governed GitHub
+> Actions workflow with anonymous digest verification.
 
-Exact donor data and complete Git-history preservation are available at
-[MBS archive revision 4d1dae4](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/4d1dae488ac43522f20e8320a8b2a56bf9138341).
-The independently acquired PBS schedule is at
-[PBS archive revision 31ec854](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive/tree/31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7).
-Those immutable revisions preserve historical donor material and are not the
-current heads of the successor datasets. Neither is a promise of complete
-current coverage. Future dataset publication runs from GitHub Actions to
-public Hugging Face, never from developer machines.
+Before using this draft, re-read both repository heads and the two dataset
+revisions. For any future compatibility release, use a new versioned release
+that links to the approved notice; keep existing tags and history unchanged.
 
 ## Successor-link readback (2026-10-04)
 

@@ -1551,3 +1551,22 @@
   to have a matching raw digest receipt.
 
 - [x] Review correction: scope the credential boundary accurately. The GitHub receipt was read with the existing authenticated `gh` session; Hugging Face metadata reads were anonymous; no credential material was inspected or logged. See `quality/qualifications/australian-m112-mbs-hosted-receipt-20261003.json`.
+
+## M-112 approved-denominator current-state reconciliation (2026-10-04)
+
+- [x] Correct the pre-decision crosswalk's stale claim that the candidate
+  denominator was still unapproved. The exact five-producer denominator
+  (1,736 raw paths plus 23 existing projections) was approved on 2026-09-30;
+  preserve the older crosswalk unchanged and record the correction in
+  `quality/qualifications/australian-m112-current-state-reconciliation-20261004.json`.
+- [x] Reconcile public registry state after the approved metadata publication:
+  Policy AUS is public with five members and Health Economics has six members.
+  Neither membership implies rights or v4 admission.
+- [x] Reconcile the latest anonymous two-scan tree receipt: all 1,759 approved
+  candidate paths are present at their pinned revisions. This is metadata
+  path-presence evidence; full-denominator anonymous object-digest readback,
+  current-tree digest comparison, source rights, per-object lineage, v4
+  admission, and compatibility canaries remain open.
+- [ ] Complete the remaining per-object rights, B1/B2 lineage, anonymous
+  payload-digest readback, v4 admission, and consumer canary gates. M-112
+  remains blocked until every approved object satisfies its independent gates.

@@ -1,0 +1,229 @@
+{
+  "boundaries": {
+    "denominator_changed": false,
+    "m112_federation_accepted": false,
+    "new_external_readback_performed": false,
+    "new_licensing_or_rights_conclusion": false,
+    "public_registry_mutation_performed": false,
+    "source_acquisition_or_publication_performed": false,
+    "source_payload_or_values_read": false,
+    "v4_admission_performed": false
+  },
+  "evidence_inputs": {
+    "candidate_inventory": {
+      "path": "quality/qualifications/australian-m112-object-inventory-20260930.json",
+      "sha256": "ccc0667b1ce8ba19d4bed0a6590e2bc55ab954d7bd6cc51f56e51231cc780460"
+    },
+    "denominator_decision": {
+      "path": "quality/qualifications/australian-m112-denominator-decision-20260930.json",
+      "sha256": "883b9517d8e646b41885a74da924a3fcb796e1772e5dcdd9394d469b09bb7b71"
+    },
+    "historical_crosswalk": {
+      "path": "quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json",
+      "sha256": "a6fb05a93168fadecee965079ea3b90e5cdb3e87cd066f9d4b7e9f95060a033a"
+    },
+    "latest_public_tree_readback": {
+      "path": "quality/qualifications/australian-m112-public-tree-readback-20261003.json",
+      "sha256": "b9a9583b8bbc6530ddf5dabcfe9212fe663e2c46a9a18cfa5db366fcdc25ea08"
+    },
+    "manifest_join_audit": {
+      "path": "quality/qualifications/australian-m112-manifest-join-audit-20260930.json",
+      "sha256": "34441cd4d6dcaa3de214ca504b168a98eaa506d8e90164b857f5fd63d7922b3c"
+    },
+    "mbs_b1_event_reconciliation": {
+      "path": "quality/qualifications/australian-m112-mbs-b1-event-reconciliation-20261001.json",
+      "sha256": "794e8f6f432a9da2dad35f7cbf117b0a123f4a0332dd00b173c9865097807104"
+    },
+    "public_registry_publication_receipt": {
+      "path": "quality/qualifications/hf-public-metadata-publication-receipt-20261001.json",
+      "sha256": "41c0c10bb534651b072ce8a044f3b5268bad3c9b489ace5c0a1cd4d389388850"
+    },
+    "public_registry_readback": {
+      "path": "quality/qualifications/hf-public-metadata-readback-20261001.json",
+      "sha256": "108637195d052c2c98ac8a93e51e942a921ba315d5599f0c1a5468eece88ff0b"
+    },
+    "receipt_sidecar_join_audit": {
+      "path": "quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json",
+      "sha256": "53e7a1659f57f24290dfe08e534131dde59e930ff386655cf0fa047a0dae657b"
+    },
+    "source_archive_receipt_join_audit": {
+      "path": "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
+      "sha256": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0"
+    }
+  },
+  "historical_manifest_hash_join": {
+    "available_tree_sha256_comparisons": 1634,
+    "does_not_prove_current_tree_digests_or_anonymous_payload_bytes": true,
+    "matches": 1634,
+    "mismatches": 0,
+    "pinned_revision_observation_only": true,
+    "receipt": {
+      "path": "quality/qualifications/australian-m112-manifest-join-audit-20260930.json",
+      "sha256": "34441cd4d6dcaa3de214ca504b168a98eaa506d8e90164b857f5fd63d7922b3c"
+    },
+    "unavailable": 102
+  },
+  "public_metadata_readback": {
+    "anonymous": true,
+    "candidate_path_presence_only": true,
+    "candidate_paths_missing": 0,
+    "candidate_paths_present": 1759,
+    "complete_stable_scans": 2,
+    "full_denominator_anonymous_object_digest_readback_performed": false,
+    "head_and_tree_path_sets_identical_between_scans": true,
+    "observed_at": "2026-10-03T12:16:46Z",
+    "payload_bytes_or_values_read": false,
+    "receipt": {
+      "path": "quality/qualifications/australian-m112-public-tree-readback-20261003.json",
+      "sha256": "b9a9583b8bbc6530ddf5dabcfe9212fe663e2c46a9a18cfa5db366fcdc25ea08"
+    }
+  },
+  "purpose": "Reconcile the approved M-112 denominator and later exact-revision metadata readbacks against the pre-approval crosswalk. This is a local evidence reconciliation, not a new external read or source decision.",
+  "reconciles_historical_crosswalk": {
+    "corrections": [
+      "The older crosswalk says the proposed denominator is unapproved; maintainer decision australian-m112-object-denominator-20260930 approved the exact candidate denominator on 2026-09-30.",
+      "The older crosswalk predates the approved public registry and Policy AUS collection publication. The stable Oct 1 anonymous readback confirms the published metadata state.",
+      "Do not interpret either correction as source rights, object admission, lineage, or M-112 acceptance."
+    ],
+    "historical_crosswalk": "quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json",
+    "prior_crosswalk_preserved_unchanged": true
+  },
+  "recorded_at": "2026-10-03T16:09:30Z",
+  "registry_and_collection_metadata": {
+    "anonymous_readback": {
+      "path": "quality/qualifications/hf-public-metadata-readback-20261001.json",
+      "sha256": "108637195d052c2c98ac8a93e51e942a921ba315d5599f0c1a5468eece88ff0b"
+    },
+    "heor_members": 6,
+    "matched_current_public_dataset_count": 76,
+    "membership_grants_rights_or_admission": false,
+    "policy_aus_members": 5,
+    "public_access_mismatch_count": 0,
+    "public_collection_count": 9,
+    "publication_receipt": {
+      "path": "quality/qualifications/hf-public-metadata-publication-receipt-20261001.json",
+      "sha256": "41c0c10bb534651b072ce8a044f3b5268bad3c9b489ace5c0a1cd4d389388850"
+    },
+    "registry_entry_count": 78,
+    "registry_revision": "4802d56a340646043fc91bed218c1e8a958f42c2",
+    "unmatched_nonprivate_registry_entries_pending_review": [
+      {
+        "disposition": "preserve_pending_human_review",
+        "registry_access": "public",
+        "repo_id": "edithatogo/gfjd-source-archive"
+      }
+    ]
+  },
+  "remaining_acceptance_gates": [
+    "Resolve source-specific rights for au-pbs-historical-xml and reimbursement-atlas au_pbs records; sidecars and public visibility are not licensing evidence.",
+    "Complete per-object source membership, receipt and B1/B2 lineage, including the August MBS chronological landed-to-accepted admission lifecycle and all existing projection paths.",
+    "Obtain any missing anonymous object-digest readback for the approved denominator; metadata path presence and Git tree metadata do not replace byte verification.",
+    "Independently admit eligible exact v4 product identities and run consumer compatibility canaries against those same pinned identities."
+  ],
+  "schema_id": "global-medicines-atlas.australian-m112-current-state-reconciliation",
+  "schema_version": 1,
+  "scope": {
+    "approved_for_qualification_scope_only": true,
+    "existing_projection_paths": 23,
+    "jurisdiction": "Australian MBS/PBS only; New Zealand health appropriations are excluded.",
+    "per_dataset": {
+      "edithatogo/australian-mbs-source-archive": {
+        "all_candidate_paths_present": true,
+        "pinned_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "projection_candidate_paths": 10,
+        "projection_candidate_paths_present": 10,
+        "raw_candidate_paths": 8,
+        "raw_candidate_paths_present": 8,
+        "stable_between_complete_scans": true
+      },
+      "edithatogo/australian-mbs-utilisation-archive": {
+        "all_candidate_paths_present": true,
+        "pinned_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "projection_candidate_paths": 0,
+        "projection_candidate_paths_present": 0,
+        "raw_candidate_paths": 14,
+        "raw_candidate_paths_present": 14,
+        "stable_between_complete_scans": true
+      },
+      "edithatogo/australian-pbs-source-archive": {
+        "all_candidate_paths_present": true,
+        "pinned_revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+        "projection_candidate_paths": 1,
+        "projection_candidate_paths_present": 1,
+        "raw_candidate_paths": 1,
+        "raw_candidate_paths_present": 1,
+        "stable_between_complete_scans": true
+      },
+      "edithatogo/australian-pbs-utilisation-archive": {
+        "all_candidate_paths_present": true,
+        "pinned_revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "projection_candidate_paths": 0,
+        "projection_candidate_paths_present": 0,
+        "raw_candidate_paths": 6,
+        "raw_candidate_paths_present": 6,
+        "stable_between_complete_scans": true
+      },
+      "edithatogo/reimbursement-atlas": {
+        "all_candidate_paths_present": true,
+        "pinned_revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "projection_candidate_paths": 12,
+        "projection_candidate_paths_present": 12,
+        "raw_candidate_paths": 1707,
+        "raw_candidate_paths_present": 1707,
+        "stable_between_complete_scans": true
+      }
+    },
+    "producer_datasets": [
+      "edithatogo/australian-mbs-source-archive",
+      "edithatogo/australian-mbs-utilisation-archive",
+      "edithatogo/australian-pbs-source-archive",
+      "edithatogo/australian-pbs-utilisation-archive",
+      "edithatogo/reimbursement-atlas"
+    ],
+    "raw_source_payload_paths": 1736,
+    "total_candidate_paths": 1759
+  },
+  "source_rights_and_lineage_reconciliation": {
+    "existing_projection_paths_with_complete_v4_lineage_and_admission_receipts": 0,
+    "mbs_archive_candidates_with_path_digest_size_receipt_or_authorization_join": 8,
+    "mbs_august_b1_events": {
+      "admission_state": "accepted",
+      "distinct_append_only_events_preserved": true,
+      "durable_landed_predecessor_present": false,
+      "nested_receipts_and_public_tree_bind_path": true,
+      "reviewer_status": "unreviewed",
+      "root_manifest_lists_august_path": false,
+      "source_parquet_projection_lineage_reconciled": false
+    },
+    "pbs_archive_candidates": 1,
+    "pbs_broader_upstream_source_rights_resolved": false,
+    "pbs_exact_publication_authority_and_historic_digest_receipt": {
+      "authorization_ref_in_dataset_manifest": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md#rights-and-publication-authority",
+      "current_pinned_digest_equals_hosted_verified_digest": true,
+      "current_pinned_path_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "current_pinned_revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "decision": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+      "decision_sha256": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
+      "exact_object_publication_authorized": true,
+      "hosted_anonymous_digest_verification": "passed",
+      "hosted_anonymous_verification_comment": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466488482",
+      "hosted_verification_revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "hosted_verification_source_archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "hosted_verification_source_member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "issue": "https://github.com/edithatogo/global-medicines-atlas/issues/340",
+      "publication_intent_comment": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466484158",
+      "publication_intent_exact_commit": "771ca393500165ed57fca64fd5c1c8ac523b98f0",
+      "publication_intent_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33290449753",
+      "rights_conclusion_made": false,
+      "source_terms_status": "unresolved in the source-rights ledger; latest recorded review predates Decision 0009",
+      "temporary_source_bytes_removed": true
+    },
+    "reimbursement_atlas_raw_candidate_paths": 1707,
+    "reimbursement_atlas_rights_state": "explicitly unresolved; keep all candidate payloads out of v4 admission pending source-specific rights and record-level lineage",
+    "source_archive_raw_candidates": 9,
+    "utilisation_objects_with_rights_state_in_sidecar": 0,
+    "utilisation_objects_within_existing_authorization_scope": 20,
+    "utilisation_receipt_sidecar_objects_joined": 20
+  },
+  "status": "approved_denominator_reconciled_metadata_presence_complete_rights_lineage_admission_blocked"
+}
