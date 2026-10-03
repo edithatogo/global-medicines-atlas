@@ -13,7 +13,11 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import AwareDatetime, BaseModel, ConfigDict, ValidationError
 
-from .historical_change import HistoricalChangePage, HistoricalChangeService
+from .historical_change import (
+    HistoricalChangePage,
+    HistoricalChangeService,
+    validate_historical_change_page,
+)
 from .platinum_benefits import (
     BenefitsLookup,
     BenefitsPage,
@@ -559,7 +563,9 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
                 retryable=True,
             )
         try:
-            result = historical_changes.page(offset=offset, limit=limit)
+            result = validate_historical_change_page(
+                historical_changes.page(offset=offset, limit=limit)
+            )
         except ValueError:
             return _error_response(
                 request,

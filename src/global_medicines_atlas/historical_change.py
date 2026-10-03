@@ -122,11 +122,26 @@ class HistoricalChange(FrozenModel):
 class HistoricalChangePage(FrozenModel):
     """A bounded page of already-computed historical change envelopes."""
 
+    model_config = ConfigDict(revalidate_instances="always")
     items: tuple[HistoricalChange, ...]
     offset: int = Field(ge=0)
     limit: int = Field(ge=1, le=MAX_HISTORICAL_CHANGE_PAGE_SIZE)
     total: int = Field(ge=0)
     next_offset: int | None = Field(default=None, ge=0)
+
+
+def validate_historical_change_page(
+    page: HistoricalChangePage,
+) -> HistoricalChangePage:
+    """Revalidate a page and its nested envelopes before transport.
+
+    ``model_construct`` and trusted service implementations can bypass normal
+    Pydantic construction. Rebuild from Python-mode values so every nested
+    model validator runs before the page is exposed or serialized.
+    """
+    return HistoricalChangePage.model_validate(
+        page.model_dump(mode="python", warnings=False)
+    )
 
 
 class HistoricalChangeService:
@@ -160,7 +175,9 @@ class HistoricalChangeService:
         self, *, offset: int = 0, limit: int = 100
     ) -> dict[str, Any]:
         """Return one bounded, JSON-safe page for a read-only transport."""
-        return self.page(offset=offset, limit=limit).model_dump(mode="json")
+        return validate_historical_change_page(
+            self.page(offset=offset, limit=limit)
+        ).model_dump(mode="json")
 
 
 def _observation(item: NativeDifference) -> ChangeObservation:

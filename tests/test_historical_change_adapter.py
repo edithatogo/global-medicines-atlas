@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import warnings
 from datetime import UTC, datetime
+from typing import cast
 
 import pytest
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
 
 from global_medicines_atlas import api as api_mod
 from global_medicines_atlas.api import create_app
@@ -12,11 +15,13 @@ from global_medicines_atlas.historical_change import (
     HistoricalChangePage,
     HistoricalChangeService,
     compare_historical_snapshots,
+    validate_historical_change_page,
 )
 from global_medicines_atlas.historical_change_adapter import (
     historical_change_page_payload,
 )
 from global_medicines_atlas.historical_comparison import NativeSnapshot
+from global_medicines_atlas.query_service import ReadOnlyQueryService
 
 
 def _snapshot(**changes: object) -> NativeSnapshot:
@@ -53,6 +58,61 @@ def test_adapter_returns_bounded_json_safe_page() -> None:
     assert payload["total"] == 2
     assert payload["next_offset"] is None
     assert payload["items"][0]["absence_interpretation"] == "unknown"
+
+
+def test_page_validator_rejects_invalid_nested_snapshot() -> None:
+    item = HistoricalChange.model_construct(
+        left={},
+        right={},
+        availability="both_present",
+        comparison_state="compared",
+        changes=(),
+    )
+    page = HistoricalChangePage.model_construct(
+        items=(item,), offset=0, limit=1, total=1, next_offset=None
+    )
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        with pytest.raises(ValidationError):
+            validate_historical_change_page(page)
+
+
+def test_service_page_payload_revalidates_nested_models() -> None:
+    malformed = HistoricalChange.model_construct(
+        left={},
+        right={},
+        availability="both_present",
+        comparison_state="compared",
+        changes=(),
+    )
+    service = HistoricalChangeService([malformed])
+
+    with pytest.raises(ValidationError):
+        service.page_payload()
+
+
+def test_transport_adapter_revalidates_service_page() -> None:
+    malformed = HistoricalChange.model_construct(
+        left={},
+        right={},
+        availability="both_present",
+        comparison_state="compared",
+        changes=(),
+    )
+    page = HistoricalChangePage.model_construct(
+        items=(malformed,), offset=0, limit=1, total=1, next_offset=None
+    )
+
+    class StaticHistory:
+        def page(self, *, offset: int, limit: int) -> HistoricalChangePage:
+            del offset, limit
+            return page
+
+    with pytest.raises(ValidationError):
+        historical_change_page_payload(
+            cast("HistoricalChangeService", StaticHistory())
+        )
 
 
 @pytest.mark.parametrize(
@@ -107,8 +167,7 @@ def test_history_api_is_bounded_and_preserves_unknown_missingness() -> None:
     ])
     client = TestClient(
         create_app(
-            object(),  # type: ignore[arg-type]
-            historical_changes=history,
+            cast("ReadOnlyQueryService", object()), historical_changes=history
         )
     )
 
@@ -120,7 +179,7 @@ def test_history_api_is_bounded_and_preserves_unknown_missingness() -> None:
         client.get("/api/v1/history", params={"offset": -1}).status_code == 422
     )
     assert client.post("/api/v1/history").status_code == 405
-    unavailable = TestClient(create_app(object()))  # type: ignore[arg-type]
+    unavailable = TestClient(create_app(cast("ReadOnlyQueryService", object())))
     assert unavailable.get("/api/v1/history").status_code == 503
 
     class InvalidHistory:
@@ -130,8 +189,10 @@ def test_history_api_is_bounded_and_preserves_unknown_missingness() -> None:
 
     invalid = TestClient(
         create_app(
-            object(),  # type: ignore[arg-type]
-            historical_changes=InvalidHistory(),  # type: ignore[arg-type]
+            cast("ReadOnlyQueryService", object()),
+            historical_changes=cast(
+                "HistoricalChangeService", InvalidHistory()
+            ),
         )
     )
     assert invalid.get("/api/v1/history").status_code == 422
@@ -152,10 +213,23 @@ def test_history_api_is_bounded_and_preserves_unknown_missingness() -> None:
             del offset, limit
             return page
 
+    malformed = TestClient(
+        create_app(
+            cast("ReadOnlyQueryService", object()),
+            historical_changes=cast("HistoricalChangeService", StaticHistory()),
+        )
+    )
+    assert malformed.get("/api/v1/history").status_code == 422
+
+    valid_page = HistoricalChangeService([
+        compare_historical_snapshots(_snapshot(), _snapshot())
+    ])
     available = TestClient(
-        create_app(object(), historical_changes=StaticHistory())
-    )  # type: ignore[arg-type]
-    assert available.get("/api/v1/history").status_code == 200
+        create_app(
+            cast("ReadOnlyQueryService", object()),
+            historical_changes=valid_page,
+        )
+    )
     monkeypatch = pytest.MonkeyPatch()
     monkeypatch.setattr(api_mod, "_MAX_HISTORY_PAGE_BYTES", 1)
     assert available.get("/api/v1/history").status_code == 503
