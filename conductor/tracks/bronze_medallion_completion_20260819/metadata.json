@@ -18,6 +18,11 @@
     {
       "id": "bronze-current-public-scope",
       "kind": "dependent-evidence",
+      "status": "blocked"
+    },
+    {
+      "id": "bronze-bounded-public-scope-v1",
+      "kind": "dependent-evidence",
       "status": "passed"
     },
     {

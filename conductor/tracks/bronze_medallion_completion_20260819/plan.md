@@ -1215,6 +1215,10 @@ for credentialed or rights-unresolved sources.
 - [x] Keep the separate 28/129 direct-receipt cohort and Australian federation
   acceptance boundary unchanged. This exact-main refresh supplies no new
   source receipt, rights decision, or Australian acceptance evidence.
+- [x] Keep `bronze-current-public-scope` blocked for the full 157-source
+  denominator and represent the approved 42-source qualification as the
+  distinct `bronze-bounded-public-scope-v1` gate. This avoids implying that
+  the 115 explicitly deferred sources have qualified.
 - [ ] Preserve the remaining source-specific acquisition, licensing, and
   lineage tasks in the future-source ledger or their dependent tracks; do not
   mark the overall Bronze programme complete while these remain open.
