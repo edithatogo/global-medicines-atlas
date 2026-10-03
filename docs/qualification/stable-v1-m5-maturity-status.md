@@ -28,4 +28,4 @@ evaluated. Its report, bounded future-source ledger, and the stable-v1 contract
 must be regenerated after any merge that changes their hashed inputs.
 
 The current maturity projection evaluates exact merged `main` commit
-`a2ee449d6d192283af7128944af2464a1a9dd288`.
+`5f61bf7fb874a07e6294a38a9f2160be5c789735`.
