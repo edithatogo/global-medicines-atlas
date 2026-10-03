@@ -715,9 +715,18 @@
   archive revision, the exact August 2026 MBS XML digest path is present in the
   tree and referenced by the nested run manifest with matching SHA-256 and byte
   count, although it is omitted from the root manifest. The current nested run
-  reports admission `accepted` but reviewer status `unreviewed`, while its
-  bundle manifest says `data_acquired: false`; this metadata does not close
-  canonical B1 acquisition/receipt reconciliation or M-112 acceptance. The
+  reports admission `accepted` but reviewer status `unreviewed` and has no
+  persisted `landed` predecessor. The successful hosted release receipt for
+  run 37066153375 separately confirms `data_acquired: true`, anonymous digest
+  verification, eight verified objects, preservation of 52 prior paths, and
+  removal of temporary source bytes. The bundle manifest's `data_acquired:
+  false` is an intentional stage-manifest invariant, not a failed acquisition;
+  the attempt receipt's distinct ID/unknown rights are intermediate because
+  `_release_receipt` normalizes the final receipt to the approved source version.
+  This reconciles hosted acquisition identity and receipt evidence but does not
+  close the missing landed predecessor, projection lineage, or M-112 acceptance.
+  See `quality/qualifications/australian-m112-mbs-hosted-receipt-20261003.json`.
+  The
   previously reconciled two accepted but unreviewed records remain distinct
   append-only acquisition events for the same raw source identity; their
   source-Parquet projection digests differ and still require separate lineage.
@@ -1540,3 +1549,5 @@
   `abcff8ebd1f624c4bbb0a87d903b184388c98254`. This is limited to 30 formulary
   releases and 3 spending resources; the later public dataset head is not claimed
   to have a matching raw digest receipt.
+
+- [x] Review correction: scope the credential boundary accurately. The GitHub receipt was read with the existing authenticated `gh` session; Hugging Face metadata reads were anonymous; no credential material was inspected or logged. See `quality/qualifications/australian-m112-mbs-hosted-receipt-20261003.json`.

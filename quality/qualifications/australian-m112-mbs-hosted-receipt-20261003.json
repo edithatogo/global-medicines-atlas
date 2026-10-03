@@ -1,0 +1,91 @@
+{
+  "admission": {
+    "acquisition_id": "caa6da91b9a87a5094fc803b378321430bdd9c609b36298c8205747bc7651e81",
+    "decision_id": "a24e608ddce5f23e3aaba13ab8c9ac8f7d4cf84d2defc449c43f74091f6cda61",
+    "landed_predecessor_present": false,
+    "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/admission.json",
+    "reviewer_status": "unreviewed",
+    "sha256": "0b03029faa0f5abcbf245bfea4b3064074d3a665ee464d99e83e5fc9f33b2a4a",
+    "state": "accepted",
+    "supersedes_decision_id": null
+  },
+  "boundaries": {
+    "credential_material_inspected_or_logged": false,
+    "licensing_conclusion_made": false,
+    "m112_federation_accepted": false,
+    "public_mutation_performed_by_this_readback": false,
+    "source_payload_bytes_or_values_read": false,
+    "source_record_projection_qualified": false,
+    "stable_v1_approval": false
+  },
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "dataset_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+  "hosted_receipt": {
+    "anonymous_digest_verification": "passed",
+    "data_acquired": true,
+    "legacy_paths_preserved": 52,
+    "manifest_admission_state": "accepted",
+    "manifest_path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/manifest.json",
+    "manifest_sha256": "92eda66dcdc34902ec88f3d13faeb61c13d09fb4c944ad7a1ef0be8c2ac1a93c",
+    "parent_revision": "d9c3605b7ed70047539eefc6b803b6b0800b4de8",
+    "record_count": 6046,
+    "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+    "temporary_source_bytes_removed": true,
+    "verified_objects": 8
+  },
+  "manifest_semantics": {
+    "manifest_data_acquired": false,
+    "reason": "MbsReleaseManifest declares Literal[False]; hosted publication receipt separately reports data_acquired after anonymous digest verification.",
+    "verified_hosted_receipt_data_acquired": true
+  },
+  "method": {
+    "credential_material_inspected_or_logged": false,
+    "external_mutation_performed": false,
+    "github_receipt": "read-only public GitHub issue receipt retrieved with the existing authenticated gh CLI session",
+    "hugging_face_credentials_used": false,
+    "hugging_face_source_metadata": "anonymous read of bounded public JSON sidecars only",
+    "payload_bytes_read": false,
+    "source_values_read": false
+  },
+  "observed_at": "2026-10-03T12:30:00Z",
+  "remaining": [
+    "persisted landed admission predecessor is absent for the accepted MBS acquisition decision",
+    "MBS source-record projection qualification remains open",
+    "full M-112 per-object rights, lineage, admission, and consumer canaries remain open"
+  ],
+  "schema_id": "global-medicines-atlas.australian-m112-mbs-hosted-receipt-readback",
+  "schema_version": 1,
+  "source_identity": {
+    "attempt_receipt": {
+      "acquisition_id": "76d4baf1aaca6218fd43e4e64dc65b58b92a4cf573b1194bcc10ecdb92495a97",
+      "http_status": 200,
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/attempt-1.json",
+      "receipt_id": "au-mbs-2026-10-02T21:20:13.009835+00:00-c5c04792cbdc",
+      "retrieval_status": "succeeded",
+      "rights_state": "unknown",
+      "sha256": "c5a37938cfa2329cdfbb55c04b397ada97fe06d9e44d56b99afc70bc0748543f"
+    },
+    "byte_count": 8293331,
+    "content_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+    "normalization_basis": "src/global_medicines_atlas/mbs_release.py::_release_receipt resets source version to the approved effective date and derives a version-specific temporal acquisition identity; the attempt receipt is intermediate and is not the final B1 source receipt.",
+    "normalized_source_receipt": {
+      "acquisition_id": "caa6da91b9a87a5094fc803b378321430bdd9c609b36298c8205747bc7651e81",
+      "http_status": 200,
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source-receipt.json",
+      "receipt_id": "mbs-release:7dc24e0ef99669f379678b9fa8d25eaf8700c659b7576984d2c41a582f96fcd8",
+      "retrieval_status": "succeeded",
+      "rights_state": "permitted",
+      "sha256": "24703e52245ac5605618c4d19be1cea4adc71f067e77a411b274be3b21d60bf7"
+    },
+    "source_id": "au-mbs",
+    "source_version": "2026-08-01"
+  },
+  "status": "hosted_mbs_acquisition_and_anonymous_verification_confirmed_landed_predecessor_missing",
+  "workflow": {
+    "commit": "12e5ca4678e077f8e6bf954aaa780aac83040994",
+    "final_cleanup_comment_id": "IC_kwDOTmI3us8AAAABY1e1ag",
+    "intent_comment_id": "IC_kwDOTmI3us8AAAABY1erEQ",
+    "receipt_comment_id": "IC_kwDOTmI3us8AAAABY1e1ag",
+    "run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37066153375"
+  }
+}
