@@ -1605,3 +1605,26 @@
 - [x] Address review finding by linking the exact source/file/destination MBS
   authorization receipt alongside Decision 0009 and fingerprinting the public
   receipt body. This does not extend authorization to other sources.
+
+## Current-tree object identity and eligible digest follow-up (2026-10-04)
+
+- [x] Reconcile the approved 1,759 paths against anonymous tree metadata at
+  all five pinned revisions. Git blob IDs and byte counts match for all paths;
+  available current LFS SHA-256 metadata matches 1,645 paths (1,634 raw and
+  11 projections). These metadata matches do not replace anonymous byte reads
+  for non-LFS objects.
+- [x] Reuse 24 existing hosted verification records and hash four additional
+  rights-permitted MBS source objects at the current pinned revision. Their
+  9,055,125 bytes were streamed into SHA-256 without source-value inspection or
+  file persistence. One duplicate August path is linked by its identical Git
+  blob ID to the hosted-verified path and is not counted as a separate byte
+  hash. See
+  `quality/qualifications/australian-m112-current-tree-object-identity-reconciliation-20261004.json`.
+- [x] Bind the aggregate tree-identity counts to the 1,759 path-level metadata
+  observations and all 39 anonymous metadata response-page SHA-256 receipts.
+  This preserves the exact pinned-revision object IDs, byte counts, available
+  LFS digests, and mismatches without retaining source payloads.
+- [ ] Keep the remaining 92 reimbursement-atlas raw objects and 12 projections
+  outside v4 and source-byte readback while their source rights remain
+  unresolved. MBS August admission history, projection lineage, exact v4
+  admission, and consumer canaries are still open.
