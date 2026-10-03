@@ -1123,18 +1123,25 @@
   succeeded, review threads resolved and reviewed/merged trees identical.
   This closes the four code tasks above, not real-source qualification.
 
-- [~] Write failing tests for additions, cessations, renumbering, fee/benefit/
+- [x] Write failing tests for additions, cessations, renumbering, fee/benefit/
   restriction changes, schema-era drift, source failures, missing periods, and
-  current-versus-legacy labels. Synthetic regression coverage now explicitly
+  current-versus-legacy labels. Synthetic regression coverage explicitly
   compares fee, benefit, and restriction values; preserves MBS source and
   selected-row denominators; and treats literal item turnover as observation
-  only. Existing tests cover schema drift, incomplete/missing periods, and
-  legacy/current role constraints. The focused comparison set passes 171 tests.
-  The planned red-before-implementation check remains open for the integrated
-  change-table work.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Build deterministic change/event and comparison tables with explicit
-  denominators and uncertainty.
+  only. Existing tests cover additions/cessations, schema drift, incomplete or
+  missing periods, and cohort-role constraints.
+- [x] Confirm the intended failure before implementation. The new MBS event
+  projection tests failed collection because its module did not exist.
+- [~] Build deterministic change/event and comparison tables with explicit
+  denominators and uncertainty. The existing native comparison Arrow
+  projection retains scoped row denominators, completeness and abstention
+  reasons. A new bounded MBS event projection records full source, omitted,
+  selected-key, observed-row and unmatched-key counts for both cohorts; links
+  rows to the exact report digest; preserves source identities and observation
+  dates; and fixes absence meaning to `unknown`. Focused changed modules pass
+  100% branch coverage; the affected suite passes 197 tests. The full local
+  Goblin profile reports 5,536 passed, two known local uv-pin failures, one
+  optional PyIceberg skip, and 96.74% coverage. Hosted checks remain pending.
 - [x] Revalidate historical-change pages, including nested snapshot and
   comparison models, at API and JSON adapter boundaries. A deliberately
   `model_construct`-built invalid page previously serialized as HTTP 200 with
