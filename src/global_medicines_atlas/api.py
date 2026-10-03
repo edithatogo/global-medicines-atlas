@@ -18,6 +18,7 @@ from .historical_change import (
     HistoricalChangeService,
     validate_historical_change_page,
 )
+from .http_content_negotiation import install_json_accept_negotiation
 from .platinum_benefits import (
     BenefitsLookup,
     BenefitsPage,
@@ -65,6 +66,7 @@ _ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
     400: {"model": ErrorEnvelope},
     422: {"model": ErrorEnvelope},
     503: {"model": ErrorEnvelope},
+    406: {"description": "The request does not accept application/json."},
 }
 _MAX_REQUEST_ID_LENGTH = 128
 _MAX_HISTORY_PAGE_BYTES = 4 * 1024 * 1024
@@ -227,6 +229,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         openapi_url=f"{API_BASE_PATH}/openapi.json",
         redoc_url=None,
     )
+    install_json_accept_negotiation(app, api_base_path=API_BASE_PATH)
 
     def request_validation_error(
         request: Request,

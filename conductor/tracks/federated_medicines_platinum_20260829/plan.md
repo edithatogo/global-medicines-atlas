@@ -167,8 +167,21 @@
 - [x] Add deterministic pagination, size limits, rate controls, content
   negotiation, cache headers, and provenance envelopes. Benefits pagination,
   serialized-page bounds, fixed-window rate controls, transport observations,
-  cache policy and evidence-bearing responses are locally verified; broader
-  content-negotiation coverage remains a follow-up.
+  cache policy and evidence-bearing responses are locally verified.
+- [x] Complete the documented content-negotiation follow-up for both API
+  versions: accept JSON-compatible media ranges with correct quality handling,
+  reject requests that explicitly cannot accept JSON, and document the 406
+  response while keeping documentation UI routes available. Before the shared
+  middleware, six v1/v2 rejection cases incorrectly returned 200. The final API
+  suites pass (93 tests); the shared negotiation helper has 100% statement and
+  branch coverage. JSON quality/specificity controls and v1/v2 docs and OpenAPI
+  checks pass. The semantic snapshot and generated client were refreshed. Full
+  Test-Goblin reported 5,566 passed, one optional skip, and
+  three failures: the expected stale snapshot plus two clean-clone release
+  probes using the host's wrong uv version. The snapshot check and both probes
+  passed when rerun after correction with pinned uv 0.11.29. Routine, context,
+  ecosystem, typing, format, and diff checks pass; hosted qualification remains
+  pending.
 - [ ] Phase Verification & Checkpoint: all result types expose mandatory evidence
   and legacy/current metadata and reject semantic overclaim.
 

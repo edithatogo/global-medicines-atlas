@@ -117,6 +117,63 @@ def test_resolver_service_returns_identity_without_opening_bytes() -> None:
     assert resolver.opened is False
 
 
+@pytest.mark.parametrize(
+    "accept",
+    [
+        "application/json",
+        "application/*",
+        "*/*",
+        "text/html, application/json;q=0.8",
+    ],
+)
+def test_v1_json_representation_negotiates_accepted_media_ranges(
+    accept: str,
+) -> None:
+    response = client().get(
+        "/api/v1/datasets/au.mbs.services.current",
+        headers={"accept": accept},
+    )
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("application/json")
+    assert "accept" in response.headers["vary"].lower()
+
+
+@pytest.mark.parametrize(
+    "accept",
+    [
+        "text/html",
+        "application/json;q=0, */*;q=1",
+        "*/*;q=0",
+    ],
+)
+def test_v1_rejects_unacceptable_json_representation(accept: str) -> None:
+    response = client().get(
+        "/api/v1/datasets/au.mbs.services.current",
+        headers={"accept": accept},
+    )
+
+    assert response.status_code == 406
+    assert response.content == b""
+    assert response.headers["cache-control"] == "no-store"
+    assert response.headers["vary"] == "Accept"
+
+
+def test_v1_openapi_declares_not_acceptable_and_docs_stay_html() -> None:
+    test_client = client()
+    schema = test_client.get("/api/v1/openapi.json").json()
+    docs = test_client.get("/api/v1/docs", headers={"accept": "text/html"})
+
+    assert (
+        schema["paths"]["/api/v1/datasets/{resource_id}"]["get"]["responses"][
+            "406"
+        ]["description"]
+        == "The request does not accept application/json."
+    )
+    assert docs.status_code == 200
+    assert docs.headers["content-type"].startswith("text/html")
+
+
 def test_resolver_service_lists_configured_identities_without_opening_bytes() -> (
     None
 ):
