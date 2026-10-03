@@ -577,3 +577,18 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   without qualifying landing evidence, with completeness the sole blocked
   Bronze property and 13 of 14 mandatory properties evidenced. This is a
   provenance refresh only; the four Stable v1 acceptance gates remain open.
+
+
+## 2026-10-03 post-PR-708 M5 source-coverage provenance
+
+- [x] Refresh the Bronze maturity report from exact merged `main`
+  `752908d174175f3307f34eecc677711fb189b745` after PRs #707 and #708, and bind
+  this status page to that report. Reconcile the receipt count to 28 while
+  preserving 42/157 landing evidence, 115 missing, and 13/14 dimensions;
+  completeness, Australian federation, M5, and stable-release approval remain
+  blocked.
+- [~] Address the first hosted unit finding by regenerating the queue and
+  cohort from canonical sparse overrides, then refresh dependent qualification
+  snapshots. The corrected affected contracts pass (254 tests), with routine
+  checks, context/ecosystem, and diff validation passing. Complete exact-head
+  hosted CI and merge without promoting any gate.

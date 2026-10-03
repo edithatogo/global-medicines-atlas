@@ -1018,3 +1018,21 @@ for credentialed or rights-unresolved sources.
 - [x] Re-evaluate the cohort on exact merged `main`; deterministic regeneration
   produced no diff. The 28/129 cohort split, 42/157 landing evidence, 115
   missing, and 13/14 dimension result remain unchanged.
+
+
+## 2026-10-03 exact-main reconciliation and safe deferral
+
+- [x] Reconcile the post-PR-707/708 direct-receipt cohort and current-scope
+  maturity snapshot against exact merged `main`
+  `752908d174175f3307f34eecc677711fb189b745`; refresh stale status summaries
+  without changing the 157-source denominator or the 42/115 landing counts.
+- [x] Keep the July 2025 MBS XML and July 2024 P7 workbook in the future-source
+  list. Their immutable public B2 payload receipts are not typed direct B1
+  qualification receipts. State the missing B1 receipt evidence and preserve
+  M-112 federation acceptance as a separate gate; do not acquire or publish
+  source bytes.
+- [~] Address the first hosted unit finding by storing source-specific next
+  actions in canonical sparse overrides and regenerating the queue, cohort,
+  and qualification snapshots. The corrected affected contracts pass (254
+  tests); routine Test-Goblin, context/ecosystem, JSONL, and diff checks pass.
+  Complete exact-head hosted checks and merge.

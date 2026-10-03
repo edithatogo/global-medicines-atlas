@@ -23,15 +23,15 @@
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
-      "sha256": "bb0620be505376e0433533ca0d3888c4fcb39f09ee07b4d6d6862ada6ce7fe03"
+      "sha256": "f25573e8dd5cd6f2baae56a3a4c9021d47aed19de739f3b30e48a3a36cf345e8"
     },
     "landing_overrides": {
       "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
-      "sha256": "b02c37174711288d1cb94050b396f99c4758ae58d541d2529f4ff1f8f8f48975"
+      "sha256": "44ae2197d1f6ed2c439cedff5b2f17f93a66fa93664bb5cd26af45026647a4ed"
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "27083892930a484dac1686064cf272e95ec72b5e5729dbdda32675d7fd444373",
+      "sha256": "de3f5bb7002af315836cb2727929aa8091c93b298cfc502f65f76b70038e65ee",
       "file_count": 127,
       "files": [
         {
@@ -372,7 +372,7 @@
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
           "exists": true,
-          "sha256": "b02c37174711288d1cb94050b396f99c4758ae58d541d2529f4ff1f8f8f48975"
+          "sha256": "44ae2197d1f6ed2c439cedff5b2f17f93a66fa93664bb5cd26af45026647a4ed"
         },
         {
           "path": "src/global_medicines_atlas/iceberg_ready.py",
@@ -996,8 +996,8 @@
         "queue_state": "landed_and_evidenced",
         "evidence_scope": "live_receipt",
         "defer_reason_code": "queue_landing_not_confirmed_by_receipt_validator",
-        "reason": "The exact July 2025 MBS XML is publicly retained as immutable B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This is service-benefit evidence, not medicine regulatory or PBS funding evidence.",
-        "next_action": "verify receipt freshness on schedule",
+        "reason": "The exact July 2025 MBS XML is publicly retained as immutable B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This publication/B2 receipt is not itself a typed, validated direct B1 Bronze qualification receipt for the supplemental cohort. It is service-benefit evidence, not medicine regulatory or PBS funding evidence.",
+        "next_action": "Reconcile the existing July 2025 payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Then rerun direct-receipt qualification. Keep M-112 federation acceptance separate.",
         "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
       },
       {
@@ -1009,8 +1009,8 @@
         "queue_state": "landed_and_evidenced",
         "evidence_scope": "live_receipt",
         "defer_reason_code": "queue_landing_not_confirmed_by_receipt_validator",
-        "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. Its legacy schema era remains explicit for comparison and does not imply current coverage.",
-        "next_action": "verify receipt freshness on schedule",
+        "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This publication/B2 receipt is not itself a typed, validated direct B1 Bronze qualification receipt for the supplemental cohort. Its legacy schema era remains explicit for comparison and does not imply current coverage.",
+        "next_action": "Reconcile the existing July 2024 workbook payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Preserve the legacy schema-era boundary, then rerun direct-receipt qualification. Keep M-112 federation acceptance separate.",
         "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
       },
       {

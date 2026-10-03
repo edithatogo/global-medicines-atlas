@@ -28,13 +28,23 @@ or its historical family. The report was refreshed against exact merged
 source inventory and completeness finding are unchanged. The NorPD queue and
 maturity reconciliation was merged in PR #697. This report is refreshed
 against exact merged `main` commit
-`93aab4e4e553e1957f743eacc27f8b7537cbf29a`; the inventory still finds 115 of
+`752908d174175f3307f34eecc677711fb189b745`; the inventory still finds 115 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
-The full-scope evaluator has landing evidence for 42 source IDs, while 27 have
-direct successful receipts accepted by the receipt validator; 15 queue-marked
+The checked-in maturity JSON records generator provenance at reconciliation
+commit `624a59cbc7370ab8e94bb8063af186032c0070d3`; the subsequent source-queue
+projection refresh changes deferred-action metadata without changing the
+13-of-14 Bronze maturity result or the 157-source denominator.
+The full-scope evaluator has landing evidence for 42 source IDs, while 28 have
+direct successful receipts accepted by the receipt validator; 14 queue-marked
 landings remain outside that stricter receipt cohort. See the separate
 [receipt cohort and future-source list](./bronze-future-source-list.md). The
-cohort does not change the 157-source denominator or this blocked result. The
+all-release Open Medic receipt added by PR #707 brings the direct-receipt
+cohort to 28, with 129 current-scope sources on the future list. The two
+Australian MBS payloads remain recorded as public B2 evidence, but their
+publication receipts are not typed direct B1 qualification receipts; the
+future list now records the B1 reconciliation needed. This does not decide the
+separate M-112 federation gate. The cohort does not change the 157-source
+denominator or this blocked result. The
 report evaluates 13 of 14 mandatory Bronze properties as evidenced and leaves
 completeness blocked. CMS Part D
 Prompt 31 was already included in the prior denominator; its reconciled queue
