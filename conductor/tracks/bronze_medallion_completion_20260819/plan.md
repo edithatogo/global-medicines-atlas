@@ -1225,6 +1225,30 @@ for credentialed or rights-unresolved sources.
   bounded-horizon gate is separately passed.
 - [x] Rebind the Bronze report and M5 provenance to exact merged `main` after
   PR #722, then verify the updated projection before closing the reconciliation.
-- [ ] Preserve the remaining source-specific acquisition, licensing, and
+- [x] Preserve the remaining source-specific acquisition, licensing, and
   lineage tasks in the future-source ledger or their dependent tracks; do not
-  mark the overall Bronze programme complete while these remain open.
+  mark the overall Bronze programme complete while these remain open. The
+  115 deferred source rows remain in the versioned future-source ledger and
+  are not omitted from the full-universe diagnostic. The approved 42-source
+  bounded qualification remains complete; the 157-source full-universe gate
+  remains blocked.
+
+## 2026-10-04 post-PR-725 bounded Bronze reconciliation
+
+- [x] Re-evaluate the bounded Bronze qualification against exact merged main
+  `e2f0970e77447fa453bb24edb54fcc997ba82102`. The scratch report qualified
+  with all 14 mandatory properties evidenced, zero bounded-horizon blockers,
+  and the unchanged 42 active / 115 deferred / 157 full-universe counts. The
+  committed qualification remains bound to the last source-relevant exact-main
+  projection at `5f61bf7fb874a07e6294a38a9f2160be5c789735`; PR #725 only
+  reconciled M-112 metadata and did not change its Bronze inputs.
+- [x] Verify Bronze maturity and Stable v1 contract tests: 221 passed. The
+  first run against a scratch report exposed that the M5 status-page provenance
+  intentionally remains bound to the committed report; restored the generated
+  report and reran successfully. No source acquisition, rights, source
+  denominator, M5, or release decision changed.
+- [ ] Keep the full source universe and outstanding source-specific work open
+  in their dependent tracks. The Australian M-112 object rights, lineage,
+  v4 admission, full-denominator digest readback, and consumer canaries remain
+  unresolved; Bronze bounded-scope completion is not overall programme
+  completion.
