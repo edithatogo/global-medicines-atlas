@@ -681,6 +681,21 @@
 - [ ] Phase Verification & Checkpoint: every edge is evidence-bearing and no
   candidate class can masquerade as an authoritative link.
 
+### Gold review chronology control (2026-10-04)
+
+- [~] Require each adjudication supersession chain to be strictly chronological
+  before it can remove a case from the pending Gold-edge queue. A terminal
+  decision dated before or at its predecessor must remain pending. Regression
+  confirmed the existing implementation incorrectly cleared this case. The
+  focused queue suites pass (18 tests); contract, routine, formatting, and
+  typing checks pass. Full Test-Goblin completed with 5,520 passed, 2 failed,
+  and 1 optional PyIceberg skip at 96.75% coverage. Both failures are the
+  stable-release clean-clone reproducibility tests, which require pinned
+  `uv 0.11.29`; this host supplies `uv 0.12.22`. No release pin or gate was
+  weakened. This closes only chronology validation; human reviewer authority,
+  receipts, calibration, promotion, real-source controls, and canonical
+  cross-source relationships remain unresolved.
+
 ## Phase 5: Historical comparisons and publication (AC-06, AC-07)
 
 ### Federated producer v4 acceptance

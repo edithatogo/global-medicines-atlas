@@ -188,13 +188,21 @@ def regenerate_gold_edge_review_queue(
             continue
         current = roots[0]
         visited = {current.event_id}
+        chronological = True
         while (
             current.event_id in children
             and children[current.event_id][0].event_id not in visited
         ):
-            current = children[current.event_id][0]
+            successor = children[current.event_id][0]
+            if successor.occurred_at <= current.occurred_at:
+                chronological = False
+            current = successor
             visited.add(current.event_id)
-        if len(visited) == len(events) and current.state in final_states:
+        if (
+            chronological
+            and len(visited) == len(events)
+            and current.state in final_states
+        ):
             terminal.add(candidate_id)
 
     pending = {

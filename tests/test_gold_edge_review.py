@@ -36,11 +36,12 @@ def adjudication(
     state: ReviewState,
     rationale: str,
     supersedes_event_id: str | None = None,
+    occurred_at: datetime = QUEUED_AT,
 ) -> AdjudicationEvent:
     event_id = AdjudicationEvent.content_id(
         candidate_id=candidate_id,
         state=state,
-        occurred_at=QUEUED_AT,
+        occurred_at=occurred_at,
         reviewer_id="maintainer-supplied",
         rationale=rationale,
         supersedes_event_id=supersedes_event_id,
@@ -49,7 +50,7 @@ def adjudication(
         event_id=event_id,
         candidate_id=candidate_id,
         state=state,
-        occurred_at=QUEUED_AT,
+        occurred_at=occurred_at,
         reviewer_id="maintainer-supplied",
         rationale=rationale,
         supersedes_event_id=supersedes_event_id,
@@ -170,6 +171,7 @@ def test_needs_information_and_complete_supersession_chain_remain_pending():
         ReviewState.ACCEPTED,
         "Existing superseding decision supplied by caller",
         needs_information.event_id,
+        occurred_at=QUEUED_AT.replace(second=1),
     )
     remaining = regenerate_gold_edge_review_queue(
         queue, (needs_information, accepted)
@@ -226,3 +228,18 @@ def test_branched_adjudication_history_remains_pending():
         )
         == queue
     )
+
+
+def test_non_chronological_supersession_chain_remains_pending():
+    queue = build_gold_edge_review_queue((pbs_edge(),), queued_at=QUEUED_AT)
+    root = adjudication(
+        queue[0].review_case_id, ReviewState.NEEDS_INFORMATION, "Root"
+    )
+    later = adjudication(
+        queue[0].review_case_id,
+        ReviewState.ACCEPTED,
+        "Earlier timestamp cannot supersede a later event",
+        root.event_id,
+        occurred_at=QUEUED_AT.replace(day=2),
+    )
+    assert regenerate_gold_edge_review_queue(queue, (root, later)) == queue
