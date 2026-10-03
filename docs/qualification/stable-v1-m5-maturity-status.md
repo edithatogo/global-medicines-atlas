@@ -30,6 +30,10 @@ maturity reconciliation was merged in PR #697. This report is refreshed
 against exact merged `main` commit
 `752908d174175f3307f34eecc677711fb189b745`; the inventory still finds 115 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
+The checked-in maturity JSON records generator provenance at reconciliation
+commit `624a59cbc7370ab8e94bb8063af186032c0070d3`; the subsequent source-queue
+projection refresh changes deferred-action metadata without changing the
+13-of-14 Bronze maturity result or the 157-source denominator.
 The full-scope evaluator has landing evidence for 42 source IDs, while 28 have
 direct successful receipts accepted by the receipt validator; 14 queue-marked
 landings remain outside that stricter receipt cohort. See the separate
