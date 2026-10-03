@@ -1132,7 +1132,7 @@
   missing periods, and cohort-role constraints.
 - [x] Confirm the intended failure before implementation. The new MBS event
   projection tests failed collection because its module did not exist.
-- [~] Build deterministic change/event and comparison tables with explicit
+- [x] Build deterministic change/event and comparison tables with explicit
   denominators and uncertainty. The existing native comparison Arrow
   projection retains scoped row denominators, completeness and abstention
   reasons. A new bounded MBS event projection records full source, omitted,
@@ -1141,7 +1141,11 @@
   dates; and fixes absence meaning to `unknown`. Focused changed modules pass
   100% branch coverage; the affected suite passes 197 tests. The full local
   Goblin profile reports 5,536 passed, two known local uv-pin failures, one
-  optional PyIceberg skip, and 96.74% coverage. Hosted checks remain pending.
+  optional PyIceberg skip, and 96.74% coverage. Review correction preserves
+  each cohort's temporal role in the Arrow envelope. PR #741 merged as
+  `da81000` after all required hosted checks passed, including 100% Codecov
+  patch coverage and Linux/macOS/Windows consumer lanes. No real-source
+  qualification, admission, publication, or rights decision is implied.
 - [x] Revalidate historical-change pages, including nested snapshot and
   comparison models, at API and JSON adapter boundaries. A deliberately
   `model_construct`-built invalid page previously serialized as HTTP 200 with
