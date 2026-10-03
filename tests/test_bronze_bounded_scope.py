@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import json
 from hashlib import sha256
+from pathlib import Path
 
+import pytest
 from jsonschema import Draft202012Validator
 from scripts.build_bronze_bounded_scope_ledger import (
     MARKDOWN,
@@ -15,10 +17,12 @@ from scripts.build_bronze_bounded_scope_ledger import (
     render_markdown,
 )
 
+from global_medicines_atlas import bronze_maturity
 from global_medicines_atlas.bronze_maturity import (
     CATALOG_RELATIVE,
     SCOPE_DECISION_RELATIVE,
     classify_catalog_source,
+    evaluate_completeness,
 )
 
 
@@ -27,7 +31,9 @@ def test_scope_decision_is_catalog_bound_and_schema_valid() -> None:
     schema = json.loads(
         (ROOT / "schemas/bronze-bounded-scope-decision-v1.json").read_text()
     )
-    Draft202012Validator(schema).validate(decision)
+    Draft202012Validator(schema).validate(  # pyright: ignore[reportUnknownMemberType]
+        decision
+    )
     catalog = json.loads((ROOT / CATALOG_RELATIVE).read_text())["sources"]
     full_scope = {
         row["source_id"]
@@ -52,7 +58,9 @@ def test_scope_decision_is_catalog_bound_and_schema_valid() -> None:
 def test_bounded_future_ledger_is_complete_and_reproducible() -> None:
     report = build_report(ROOT)
     schema = json.loads((ROOT / SCHEMA).read_text())
-    Draft202012Validator(schema).validate(report)
+    Draft202012Validator(schema).validate(  # pyright: ignore[reportUnknownMemberType]
+        report
+    )
     accounting = report["source_accounting"]
     assert accounting == {
         "catalog_source_count": 174,
@@ -72,3 +80,55 @@ def test_bounded_future_ledger_is_complete_and_reproducible() -> None:
     )
     assert report == json.loads((ROOT / REPORT).read_text())
     assert render_markdown(report) == (ROOT / MARKDOWN).read_text()
+
+
+def test_bounded_scope_decision_validation_fails_closed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    (tmp_path / CATALOG_RELATIVE).parent.mkdir(parents=True)
+    (tmp_path / CATALOG_RELATIVE).write_bytes(
+        (ROOT / CATALOG_RELATIVE).read_bytes()
+    )
+    with pytest.raises(ValueError, match="decision is missing"):
+        evaluate_completeness(tmp_path)
+
+    decision_path = ROOT / SCOPE_DECISION_RELATIVE
+    destination = tmp_path / SCOPE_DECISION_RELATIVE
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    decision = json.loads(decision_path.read_text())
+    variants = [
+        ({**decision, "decision_id": "wrong"}, "unsupported"),
+        ({**decision, "active_source_ids": None}, "must be strings"),
+        ({**decision, "active_source_ids": [None]}, "must be strings"),
+    ]
+    for variant, message in variants:
+        destination.write_text(json.dumps(variant))
+        with pytest.raises(ValueError, match=message):
+            evaluate_completeness(tmp_path)
+
+    original_receipts = bronze_maturity.receipt_backed_landing_evidence
+
+    def receipt_evidence(root: Path, source_ids: set[str]) -> dict[str, str]:
+        evidence = original_receipts(root, source_ids)
+        if "au-mbs" in source_ids:
+            evidence["au-mbs"] = "test-receipt.json"
+        return evidence
+
+    monkeypatch.setattr(
+        bronze_maturity,
+        "receipt_backed_landing_evidence",
+        receipt_evidence,
+    )
+    original_landing_ids = bronze_maturity.landing_source_ids
+
+    def landing_ids_without_mbs(root: Path, source_ids: set[str]) -> set[str]:
+        return original_landing_ids(root, source_ids) - {"au-mbs"}
+
+    monkeypatch.setattr(
+        bronze_maturity,
+        "landing_source_ids",
+        landing_ids_without_mbs,
+    )
+    property_row, _inventory = evaluate_completeness(ROOT)
+    assert property_row["state"] == "evidenced"
