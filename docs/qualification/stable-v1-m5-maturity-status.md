@@ -30,9 +30,9 @@ maturity reconciliation was merged in PR #697. This report is refreshed
 against exact merged `main` commit
 `752908d174175f3307f34eecc677711fb189b745`; the inventory still finds 115 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
-The checked-in maturity JSON currently records generator provenance at base
-commit `70f00cbcbde7fe6d951915825ee71051614cd4ab`; it preserves the 13-of-14
-maturity result and the 157-source denominator.
+The checked-in maturity JSON is refreshed against exact merged `main` commit
+`f04283fe544acfbee2cb3022df7d4cc2225b5909` after PR #711. It preserves the
+13-of-14 maturity result and the 157-source denominator.
 The full-scope evaluator has landing evidence for 42 source IDs, while 28 have
 direct successful receipts accepted by the receipt validator; 14 queue-marked
 landings remain outside that stricter receipt cohort. See the separate
