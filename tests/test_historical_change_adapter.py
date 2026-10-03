@@ -5,6 +5,7 @@ from typing import cast
 
 import pytest
 from fastapi.testclient import TestClient
+from pydantic import ValidationError
 
 from global_medicines_atlas import api as api_mod
 from global_medicines_atlas.api import create_app
@@ -13,6 +14,7 @@ from global_medicines_atlas.historical_change import (
     HistoricalChangePage,
     HistoricalChangeService,
     compare_historical_snapshots,
+    validate_historical_change_page,
 )
 from global_medicines_atlas.historical_change_adapter import (
     historical_change_page_payload,
@@ -55,6 +57,59 @@ def test_adapter_returns_bounded_json_safe_page() -> None:
     assert payload["total"] == 2
     assert payload["next_offset"] is None
     assert payload["items"][0]["absence_interpretation"] == "unknown"
+
+
+def test_page_validator_rejects_invalid_nested_snapshot() -> None:
+    item = HistoricalChange.model_construct(
+        left={},
+        right={},
+        availability="both_present",
+        comparison_state="compared",
+        changes=(),
+    )
+    page = HistoricalChangePage.model_construct(
+        items=(item,), offset=0, limit=1, total=1, next_offset=None
+    )
+
+    with pytest.raises(ValidationError):
+        validate_historical_change_page(page)
+
+
+def test_service_page_payload_revalidates_nested_models() -> None:
+    malformed = HistoricalChange.model_construct(
+        left={},
+        right={},
+        availability="both_present",
+        comparison_state="compared",
+        changes=(),
+    )
+    service = HistoricalChangeService([malformed])
+
+    with pytest.raises(ValidationError):
+        service.page_payload()
+
+
+def test_transport_adapter_revalidates_service_page() -> None:
+    malformed = HistoricalChange.model_construct(
+        left={},
+        right={},
+        availability="both_present",
+        comparison_state="compared",
+        changes=(),
+    )
+    page = HistoricalChangePage.model_construct(
+        items=(malformed,), offset=0, limit=1, total=1, next_offset=None
+    )
+
+    class StaticHistory:
+        def page(self, *, offset: int, limit: int) -> HistoricalChangePage:
+            del offset, limit
+            return page
+
+    with pytest.raises(ValidationError):
+        historical_change_page_payload(
+            cast("HistoricalChangeService", StaticHistory())
+        )
 
 
 @pytest.mark.parametrize(
