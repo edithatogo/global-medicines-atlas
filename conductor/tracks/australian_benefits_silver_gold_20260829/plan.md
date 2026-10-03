@@ -751,6 +751,18 @@
   No new source payload was downloaded or decoded. This does not add rights
   state to the sidecars, broaden source rights, complete the 1,759-object
   denominator, admit v4 objects, or pass consumer canaries.
+- [x] Bind two additional approved raw source-archive candidates to existing
+  hosted digest evidence: the MBS August XML is present in the exact nested
+  manifest and was verified at the same current revision by successful run
+  `37066153375`; the PBS April XML's current tree LFS SHA-256 matches the
+  digest from successful anonymous verification in run `33290449753`. This
+  adds digest evidence only. The MBS landed predecessor/reviewer and projection
+  lineage remain missing; the PBS source-rights ledger still says redistribution
+  is unknown. See
+  `quality/qualifications/australian-m112-source-archive-digest-reconciliation-20261004.json`.
+  Together with the 20 utilization objects, 22/1,736 raw paths now have these
+  per-object digest joins; all 23 projection paths and 1,714 raw paths remain
+  outside this subset, so M-112 stays open.
 - [ ] Phase Verification & Checkpoint: record the exact producer/object
   denominator, accepted and missing identities, per-layer receipts, consumer
   canary results, and remaining rights/publication boundaries. Leave M-112
