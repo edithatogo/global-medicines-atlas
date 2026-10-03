@@ -1,9 +1,9 @@
 {
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
-  "horizon": "bronze-current-public-scope",
-  "evaluated_at": "2026-10-03T12:04:47.188873+00:00",
-  "git_commit": "6a5b265cfefa0e2c8867ab03c4e3efe847697c8e",
+  "horizon": "bronze-bounded-public-scope-v1",
+  "evaluated_at": "2026-10-03T13:26:17.897165+00:00",
+  "git_commit": "adac807de5e8a69eecc405ab7e28a72e8c9a6fbf",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -15,7 +15,7 @@
     {
       "property_id": "completeness",
       "mandatory": true,
-      "state": "blocked",
+      "state": "evidenced",
       "requirement_ids": [
         "M-095",
         "S-012"
@@ -23,6 +23,7 @@
       "evidence": [
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
+        "quality/qualifications/bronze-bounded-scope-decision-v1.json",
         "src/global_medicines_atlas/adapters/fixture_contracts.py",
         "src/global_medicines_atlas/data/source_landing_overrides.json",
         "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
@@ -41,10 +42,8 @@
         "quality/qualifications/union-register-live-corpus-20260821.json",
         "quality/qualifications/us-live-bronze-records-20260820.json"
       ],
-      "blocker_ids": [
-        "bronze-ingest-incomplete"
-      ],
-      "notes": "115 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence."
+      "blocker_ids": [],
+      "notes": "Every bronze-in-scope catalog source has landing evidence. Excluded sources remain catalogued, not incomplete."
     },
     {
       "property_id": "immutability",
@@ -257,33 +256,6 @@
   "residual_risks": [
     {
       "risk_id": "RISK-001",
-      "description": "115 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
-      "disposition": "unresolved",
-      "blocking": true,
-      "evidence": [
-        "src/global_medicines_atlas/data/medicine_source_catalog.json",
-        "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
-        "src/global_medicines_atlas/adapters/fixture_contracts.py",
-        "src/global_medicines_atlas/data/source_landing_overrides.json",
-        "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
-        "quality/qualifications/faers-live-corpus-20260821.json",
-        "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
-        "quality/qualifications/fda-rems-live-corpus-20260821.json",
-        "quality/qualifications/fda-shortages-live-corpus-20260821.json",
-        "quality/qualifications/gip-acquisition-success-20260826.json",
-        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
-        "quality/qualifications/international-public-bronze-20260827.json",
-        "quality/qualifications/ndc-directory-live-corpus-20260821.json",
-        "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
-        "quality/qualifications/norpd-live-private-bronze-20261001.json",
-        "quality/qualifications/open-medic-all-release-bronze-20260827.json",
-        "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
-        "quality/qualifications/union-register-live-corpus-20260821.json",
-        "quality/qualifications/us-live-bronze-records-20260820.json"
-      ]
-    },
-    {
-      "risk_id": "RISK-002",
       "description": "Production disaster-recovery operation, independent backup storage, RPO, and RTO remain authority-gated; the in-repo Bronze reconstruction qualification is synthetic and local.",
       "disposition": "accepted",
       "blocking": false,
@@ -293,7 +265,7 @@
       ]
     },
     {
-      "risk_id": "RISK-003",
+      "risk_id": "RISK-002",
       "description": "Licensing conclusions remain a maintainer human gate.",
       "disposition": "accepted",
       "blocking": false,
@@ -303,7 +275,7 @@
       ]
     },
     {
-      "risk_id": "RISK-004",
+      "risk_id": "RISK-003",
       "description": "Public software or dataset release remains a human gate.",
       "disposition": "accepted",
       "blocking": false,
@@ -312,7 +284,7 @@
       ]
     },
     {
-      "risk_id": "RISK-005",
+      "risk_id": "RISK-004",
       "description": "External dataset publication, including Hugging Face archives, remains a human gate and is not bronze evidentiary truth.",
       "disposition": "accepted",
       "blocking": false,
@@ -321,7 +293,7 @@
       ]
     },
     {
-      "risk_id": "RISK-006",
+      "risk_id": "RISK-005",
       "description": "Consequential clinical or policy claims remain a human gate.",
       "disposition": "accepted",
       "blocking": false,
@@ -330,34 +302,7 @@
       ]
     }
   ],
-  "blockers": [
-    {
-      "blocker_id": "bronze-ingest-incomplete",
-      "property_id": "completeness",
-      "description": "115 in-scope public/no-credential sources lack observable adapter, fixture, implemented_ingestion, or direct successful receipt-backed landing evidence. Excluded and fixture-only rows are not scored as negative evidence.",
-      "evidence": [
-        "src/global_medicines_atlas/data/medicine_source_catalog.json",
-        "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
-        "src/global_medicines_atlas/adapters/fixture_contracts.py",
-        "src/global_medicines_atlas/data/source_landing_overrides.json",
-        "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
-        "quality/qualifications/faers-live-corpus-20260821.json",
-        "quality/qualifications/fda-enforcement-live-corpus-20260821.json",
-        "quality/qualifications/fda-rems-live-corpus-20260821.json",
-        "quality/qualifications/fda-shortages-live-corpus-20260821.json",
-        "quality/qualifications/gip-acquisition-success-20260826.json",
-        "quality/qualifications/gsrs-unii-acquisition-success-20260826.json",
-        "quality/qualifications/international-public-bronze-20260827.json",
-        "quality/qualifications/ndc-directory-live-corpus-20260821.json",
-        "quality/qualifications/nice-utilisation-acquisition-success-20260821.json",
-        "quality/qualifications/norpd-live-private-bronze-20261001.json",
-        "quality/qualifications/open-medic-all-release-bronze-20260827.json",
-        "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json",
-        "quality/qualifications/union-register-live-corpus-20260821.json",
-        "quality/qualifications/us-live-bronze-records-20260820.json"
-      ]
-    }
-  ],
+  "blockers": [],
   "adversarial_review": {
     "kind": "independent-repository-evidence-review",
     "actor": "criteria-versus-code-tests-docs",
@@ -372,7 +317,7 @@
       {
         "finding_id": "ADV-FALSE-MATURITY",
         "severity": "info",
-        "detail": "Bronze maturity is not declared. Blocked mandatory properties: completeness."
+        "detail": "Every mandatory property is evidenced."
       },
       {
         "finding_id": "ADV-PROPERTY-SET",
@@ -381,15 +326,19 @@
       }
     ]
   },
-  "bronze_mature": false,
-  "qualification_state": "blocked",
+  "bronze_mature": true,
+  "qualification_state": "qualified",
   "report_complete": true,
   "completeness_inventory": {
     "catalog_source_count": 174,
-    "bronze_in_scope_count": 157,
+    "bronze_in_scope_count": 42,
+    "full_bronze_source_universe_count": 157,
+    "deferred_source_count": 115,
+    "full_scope_landing_count": 42,
+    "full_scope_missing_count": 115,
     "fixture_only_count": 2,
     "excluded_count": 15,
-    "in_scope_without_landing_or_blocker": 115,
+    "in_scope_without_landing_or_blocker": 0,
     "missing_coverage_is_not_negative_evidence": true
   }
 }

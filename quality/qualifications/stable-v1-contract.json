@@ -696,17 +696,17 @@
     },
     {
       "requirement_id": "M-095",
-      "state": "blocked",
+      "state": "verified",
       "evidence": [
         "conductor/requirements.md",
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
         "conductor/tracks/bronze_medallion_completion_20260819/plan.md",
-        "quality/qualifications/bronze-maturity.json"
+        "quality/qualifications/bronze-maturity.json",
+        "quality/qualifications/bronze-bounded-scope-decision-v1.json",
+        "quality/qualifications/bronze-bounded-scope-future-sources-v1.json"
       ],
-      "blocker_ids": [
-        "stable-v1-bronze-current-scope"
-      ]
+      "blocker_ids": []
     },
     {
       "requirement_id": "M-096",
@@ -935,18 +935,18 @@
     },
     {
       "dimension": "source_coverage",
-      "current_level": "M4",
+      "current_level": "M5",
       "target_level": "M5",
-      "state": "partial",
+      "state": "verified",
       "evidence": [
         "conductor/maturity-model.json",
         "src/global_medicines_atlas/data/medicine_source_catalog.json",
         "conductor/tracks/bronze_medallion_completion_20260819/plan.md",
-        "quality/qualifications/bronze-maturity.json"
+        "quality/qualifications/bronze-maturity.json",
+        "quality/qualifications/bronze-bounded-scope-decision-v1.json",
+        "quality/qualifications/bronze-bounded-scope-future-sources-v1.json"
       ],
-      "blocker_ids": [
-        "stable-v1-bronze-current-scope"
-      ]
+      "blocker_ids": []
     },
     {
       "dimension": "matching_quality",
@@ -1259,12 +1259,15 @@
     },
     {
       "gate_id": "stable-v1-maturity-m5",
-      "description": "Verify every blocking maturity dimension at M5 after Bronze scope and Renovate output verification complete.",
-      "state": "blocked",
+      "description": "Verify every maturity dimension at M5 after bounded Bronze source coverage and Renovate output verification complete.",
+      "state": "passed",
       "evidence": [
         "conductor/maturity-model.json",
         "conductor/tracks/bronze_medallion_completion_20260819/plan.md",
-        "quality/qualifications/quality-hardening-closure.json"
+        "quality/qualifications/quality-hardening-closure.json",
+        "quality/qualifications/bronze-maturity.json",
+        "quality/qualifications/bronze-bounded-scope-decision-v1.json",
+        "quality/qualifications/bronze-bounded-scope-future-sources-v1.json"
       ]
     },
     {
@@ -1277,11 +1280,13 @@
     },
     {
       "gate_id": "stable-v1-bronze-current-scope",
-      "description": "Complete Bronze landing evidence for the current public/no-credential scope without treating catalogue blockers as landed sources.",
-      "state": "blocked",
+      "description": "Complete Bronze evidence for the maintainer-approved bounded public horizon while retaining the full catalogue universe and deferred ledger.",
+      "state": "passed",
       "evidence": [
         "conductor/tracks/bronze_medallion_completion_20260819/plan.md",
-        "quality/qualifications/bronze-maturity.json"
+        "quality/qualifications/bronze-maturity.json",
+        "quality/qualifications/bronze-bounded-scope-decision-v1.json",
+        "quality/qualifications/bronze-bounded-scope-future-sources-v1.json"
       ]
     },
     {
@@ -1296,8 +1301,6 @@
   "qualification_state": "blocked",
   "unresolved_gate_ids": [
     "stable-v1-australian-health-federation",
-    "stable-v1-bronze-current-scope",
-    "stable-v1-maturity-m5",
     "stable-v1-release-approval"
   ]
 }
