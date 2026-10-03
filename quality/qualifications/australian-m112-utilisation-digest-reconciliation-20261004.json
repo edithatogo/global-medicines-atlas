@@ -1,0 +1,342 @@
+{
+  "archives": [
+    {
+      "authorization": "quality/qualifications/australian-mbs-utilisation-publication-authorization.json",
+      "current_default_head_equals_pinned_revision": true,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "gated": false,
+      "historical_verification_receipt": {
+        "anonymous_digest_verification": "passed",
+        "author": "github-actions[bot]",
+        "issue_comment_body_sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+        "issue_comment_id": "5857784489",
+        "issue_comment_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489",
+        "temporary_source_bytes_removed": true,
+        "verified_file_count": 28,
+        "verifier_source": {
+          "behavior": "downloads every manifest object anonymously and compares exact byte count and SHA-256",
+          "commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+          "function": "verify_anonymous_restore",
+          "line_range": [
+            936,
+            975
+          ],
+          "path": "src/global_medicines_atlas/australian_harvesting.py"
+        },
+        "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "workflow_conclusion": "success",
+        "workflow_run": "36333396964",
+        "workflow_run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "manifest_object_count": 28,
+      "manifest_path": "manifest.json",
+      "manifest_sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+      "public": true,
+      "raw_candidate_object_count": 14,
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7"
+    },
+    {
+      "authorization": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
+      "current_default_head_equals_pinned_revision": true,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "gated": false,
+      "historical_verification_receipt": {
+        "anonymous_digest_verification": "passed",
+        "author": "github-actions[bot]",
+        "issue_comment_body_sha256": "a33529310f75361e9302b66568f4f1b86257b377ab8418ca4c84b490d9c06204",
+        "issue_comment_id": "5686447551",
+        "issue_comment_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5686447551",
+        "temporary_source_bytes_removed": true,
+        "verified_file_count": 12,
+        "verifier_source": {
+          "behavior": "downloads every manifest object anonymously and compares exact byte count and SHA-256",
+          "commit": "0c2c2a241cda0265770f2e69824cd3aae34ded66",
+          "function": "verify_anonymous_restore",
+          "line_range": [
+            810,
+            849
+          ],
+          "path": "src/global_medicines_atlas/australian_harvesting.py"
+        },
+        "workflow_commit": "0c2c2a241cda0265770f2e69824cd3aae34ded66",
+        "workflow_conclusion": "success",
+        "workflow_run": "35011151213",
+        "workflow_run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/35011151213"
+      },
+      "manifest_object_count": 12,
+      "manifest_path": "manifest.json",
+      "manifest_sha256": "965383f30612084fc17f5ee91d4cc4d2f23e9de7b2a735fec5d3321c613495b5",
+      "public": true,
+      "raw_candidate_object_count": 6,
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a"
+    }
+  ],
+  "boundaries": {
+    "consumer_canaries_performed": false,
+    "manifest_metadata_read_anonymously": true,
+    "new_source_payload_bytes_downloaded": false,
+    "public_mutation_performed": false,
+    "source_payload_bytes_read_in_historical_hosted_runs_for_hashing": true,
+    "source_rights_or_licensing_conclusion_changed": false,
+    "source_values_decoded_or_read": false,
+    "v4_admission_performed": false
+  },
+  "evidence_inputs": [
+    {
+      "path": "quality/qualifications/australian-m112-denominator-decision-20260930.json",
+      "sha256": "883b9517d8e646b41885a74da924a3fcb796e1772e5dcdd9394d469b09bb7b71"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json",
+      "sha256": "53e7a1659f57f24290dfe08e534131dde59e930ff386655cf0fa047a0dae657b"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-utilisation-publication-authorization.json",
+      "sha256": "492f754331173916ae565c94d6407eebd6f6ea5e4fad7acb3a14e2518cdfa4a2"
+    },
+    {
+      "path": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
+      "sha256": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19"
+    }
+  ],
+  "purpose": "Reconcile existing hosted anonymous all-object digest receipts to the exact current pinned MBS/PBS utilisation manifests and approved M-112 raw-object joins; no new source payload download or public mutation is performed.",
+  "recorded_at": "2026-10-03T17:16:39Z",
+  "remaining_acceptance_gates": [
+    "Source-specific rights and provenance for au-pbs-historical-xml and 1,707 au_pbs reimbursement-atlas paths remain unresolved.",
+    "MBS August B1 landed-to-accepted chronology, reviewer state, root-manifest membership, and source-Parquet lineage remain open.",
+    "The other approved denominator objects and 23 projections still require their own rights, lineage, digest, admission, and canary reconciliation.",
+    "All 20 utilization sidecars still lack an explicit rights-state field; this record does not add one or expand the authorizations."
+  ],
+  "schema_id": "global-medicines-atlas.australian-m112-utilisation-digest-reconciliation",
+  "schema_version": 1,
+  "scope": {
+    "approved_existing_projection_paths": 23,
+    "approved_raw_paths": 1736,
+    "approved_total_paths": 1759,
+    "denominator_decision": "quality/qualifications/australian-m112-denominator-decision-20260930.json",
+    "full_denominator_digest_readback_complete": false,
+    "objects_covered_by_this_reconciliation": 20
+  },
+  "verified_objects": [
+    {
+      "byte_count": 23934884,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 23436706,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 7680041,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 21966140,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 23765087,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 7316301,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 185194594,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 240803157,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 284302149,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 358227575,
+      "category": "mbs_demographics_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+      "source_id": "au-data-gov-mbs-demographics"
+    },
+    {
+      "byte_count": 205885063,
+      "category": "mbs_group_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "byte_count": 237142509,
+      "category": "mbs_group_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "byte_count": 12291303,
+      "category": "mbs_group_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "byte_count": 6857437,
+      "category": "mbs_group_statistics",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+      "source_id": "au-data-gov-mbs-group"
+    },
+    {
+      "byte_count": 372149,
+      "category": "annual_expenditure_and_prescriptions_report",
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "source_id": "au-pbs-expenditure"
+    },
+    {
+      "byte_count": 468764,
+      "category": "annual_expenditure_and_prescriptions_report",
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "source_id": "au-pbs-expenditure"
+    },
+    {
+      "byte_count": 35384567,
+      "category": "date_of_supply_monthly_prescriptions",
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "source_id": "au-pbs-dos-utilisation"
+    },
+    {
+      "byte_count": 36381946,
+      "category": "date_of_supply_monthly_prescriptions",
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "source_id": "au-pbs-dos-utilisation"
+    },
+    {
+      "byte_count": 1063694,
+      "category": "item_drug_mapping",
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "source_id": "au-pbs-dos-utilisation"
+    },
+    {
+      "byte_count": 117376499,
+      "category": "date_of_supply_multiyear_summary",
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "existing_authorization_scope_match": true,
+      "matched_hosted_verified_manifest": true,
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "source_id": "au-pbs-dos-utilisation"
+    }
+  ]
+}

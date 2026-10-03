@@ -740,6 +740,17 @@
   See `quality/qualifications/australian-m112-object-inventory-20260930.json`,
   `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`,
   and `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
+- [x] Reconcile the 20 MBS/PBS utilisation raw-object digests against each
+  exact current public manifest and its prior hosted anonymous all-object
+  verification receipt. The pinned MBS revision remains `dee9a5b...` with
+  14/14 joined candidate objects and 28/28 manifest objects verified; PBS
+  remains `9f1d53c...` with 6/6 joined candidates and 12/12 manifest objects
+  verified. Both receipts record temporary-byte cleanup. The exact manifests
+  and source verifier commits are bound in
+  `quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json`.
+  No new source payload was downloaded or decoded. This does not add rights
+  state to the sidecars, broaden source rights, complete the 1,759-object
+  denominator, admit v4 objects, or pass consumer canaries.
 - [ ] Phase Verification & Checkpoint: record the exact producer/object
   denominator, accepted and missing identities, per-layer receipts, consumer
   canary results, and remaining rights/publication boundaries. Leave M-112
