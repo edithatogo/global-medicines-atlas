@@ -38,11 +38,17 @@ def snapshot(*, rows=(), **changes):
     })
 
 
-def row(identity="001", value="1.00", state="value", occurrence="/item[1]"):
+def row(
+    identity="001",
+    value="1.00",
+    state="value",
+    occurrence="/item[1]",
+    field_name="fee",
+):
     return NativeRow(
         native_id=identity,
         occurrence_id=occurrence,
-        fields=(NativeField(name="fee", state=state, value=value),),
+        fields=(NativeField(name=field_name, state=state, value=value),),
     )
 
 
@@ -60,6 +66,21 @@ def test_preserves_values_and_exact_snapshot_lineage():
     assert (
         difference.left_occurrence == difference.right_occurrence == "/item[1]"
     )
+
+
+@pytest.mark.parametrize("field_name", ["fee", "benefit", "restriction"])
+def test_fee_benefit_and_restriction_values_compare_literally(field_name):
+    result = compare_native_snapshots(
+        snapshot(rows=(row(value="before", field_name=field_name),)),
+        snapshot(rows=(row(value="after", field_name=field_name),)),
+    )
+
+    assert result.outcome == "compared"
+    assert len(result.differences) == 1
+    assert result.differences[0].kind == "field_changed"
+    assert result.differences[0].field_name == field_name
+    assert result.differences[0].left.value == "before"
+    assert result.differences[0].right.value == "after"
 
 
 def test_presence_is_not_cessation_and_identifiers_are_literal():

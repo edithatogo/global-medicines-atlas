@@ -233,6 +233,36 @@ def test_change_report_preserves_values_and_treats_absence_as_unknown():
     )
 
 
+def test_literal_item_turnover_retains_denominators_without_status_claims():
+    historical, current = cohorts()
+    report = build_mbs_schema_change_report(historical, current, mapping())
+
+    assert (
+        historical.source_record_count,
+        historical.omitted_record_count,
+    ) == (
+        2,
+        0,
+    )
+    assert (current.source_record_count, current.omitted_record_count) == (
+        2,
+        0,
+    )
+    assert historical.snapshot.declared_rows == len(historical.snapshot.rows)
+    assert current.snapshot.declared_rows == len(current.snapshot.rows)
+
+    old_id = key("old").content_id()
+    new_id = key("new").content_id()
+    old_events = [event for event in report.events if event.native_id == old_id]
+    new_events = [event for event in report.events if event.native_id == new_id]
+    assert len(old_events) == len(new_events) == 1
+    assert old_events[0].kind == "observed_only_historical"
+    assert new_events[0].kind == "observed_only_current"
+    assert old_events[0].historical_occurrence is not None
+    assert new_events[0].current_occurrence is not None
+    assert report.absence_interpretation == "unknown"
+
+
 def test_mapping_and_events_are_deterministic_and_input_order_independent():
     historical, current = cohorts()
     first = build_mbs_schema_change_report(historical, current, mapping())
