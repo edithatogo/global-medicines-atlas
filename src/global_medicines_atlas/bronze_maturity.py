@@ -16,6 +16,8 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal, cast
 
+from .bronze_admission import BronzeAdmissionRecord
+from .bronze_raw_evidence import RawEvidenceManifest
 from .cms_partd_qualification import (
     RAW_RELATIVE as CMS_RAW_RELATIVE,
 )
@@ -31,6 +33,7 @@ from .cms_partd_qualification import (
 from .cms_partd_qualification import (
     qualified_cms_sources,
 )
+from .receipts import AcquisitionEvent, SourceReceipt
 from .source_catalog import AccessMode, AuthenticationMode
 
 SCHEMA_ID = "global-medicines-atlas.bronze-maturity-qualification"
@@ -79,6 +82,19 @@ SWEDEN_CELL_COUNT_UPPER_BOUND = 90
 SWEDEN_MAXIMUM_CELLS = 70000
 SWEDEN_MAXIMUM_ATC_CODES = 100
 SWEDEN_ARCHIVE_BYTE_COUNT = 921600
+AU_MBS_PAYLOAD_SHA256 = (
+    "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+)
+AU_MBS_PAYLOAD_BYTE_COUNT = 8293331
+AU_MBS_ACQUISITION_ID = (
+    "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1"
+)
+AU_MBS_RECEIPT_ID = "mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4"
+AU_MBS_ARCHIVE_REVISION = "243f9ff5498816af6e4d9ae4db60528728f01834"
+AU_MBS_RAW_REFERENCE = (
+    "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/"
+    f"{AU_MBS_ARCHIVE_REVISION}/raw/mbs/releases/2026-08-01/{AU_MBS_PAYLOAD_SHA256}.xml"
+)
 NORPD_SOURCE_ID = "no-norpd-utilisation"
 NORPD_QUALIFICATION_RELATIVE = (
     "quality/qualifications/norpd-live-private-bronze-20261001.json"
@@ -112,6 +128,9 @@ OPEN_MEDIC_PROMPT_ID = 34
 OPEN_MEDIC_PUBLIC_MANIFEST_FILE_COUNT = 24
 OPEN_MEDIC_PUBLIC_MANIFEST_SHA256 = (
     "5a08e2eb4e99ec0e95f596a384df22007ca67b9df311a7af9b285f55eada0578"
+)
+AU_MBS_QUALIFICATION_RELATIVE = (
+    "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
 )
 AUTHORITIES = {
     "requirements": "conductor/requirements.md",
@@ -278,6 +297,9 @@ def _is_successful_bronze_receipt(
         "global-medicines-atlas.open-medic-all-release-bronze-qualification": lambda: (
             _is_successful_open_medic_receipt(root, receipt, source_id)
         ),
+        "global-medicines-atlas.australian-mbs-bronze-source-receipt": lambda: (
+            _is_successful_australian_mbs_receipt(root, receipt, source_id)
+        ),
     }
     if schema_id in specialized:
         return specialized[schema_id]()
@@ -297,6 +319,241 @@ def _is_successful_bronze_receipt(
     return (
         successful_admission or successful_release
     ) and _contains_exact_value(receipt, source_id)
+
+
+def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-statements, too-many-branches, too-many-locals, too-many-statements]
+    root: Path, receipt: Mapping[str, Any], source_id: str
+) -> bool:
+    """Validate a raw B1/B2 MBS receipt without qualifying projections."""
+
+    if source_id != "au-mbs" or receipt.get("source_id") != source_id:
+        return False
+    boundaries = receipt.get("boundaries")
+    if not isinstance(boundaries, Mapping):
+        return False
+    claims = (
+        receipt.get("schema_version") == 1,
+        receipt.get("qualification_scope") == "raw_b1_b2_only",
+        receipt.get("evidence_class") == "live",
+        receipt.get("source_version") == "2026-08-01",
+        receipt.get("acquisition_id") == AU_MBS_ACQUISITION_ID,
+        receipt.get("receipt_id") == AU_MBS_RECEIPT_ID,
+        receipt.get("content_id") == AU_MBS_PAYLOAD_SHA256,
+        receipt.get("qualification_state") == "accepted",
+        boundaries.get("source_record_projection_qualified") is False,
+        boundaries.get("m112_federation_accepted") is False,
+        boundaries.get("published_at_observed") is False,
+        boundaries.get("source_effective_at_in_b1_receipt") is False,
+    )
+    if not all(claims):
+        return False
+    b2 = receipt.get("b2")
+    if not isinstance(b2, Mapping):
+        return False
+    b2_claims = (
+        receipt.get("rights_state") == "permitted",
+        receipt.get("reuse_disposition") == "extend",
+        receipt.get("admission_state") == "accepted",
+        receipt.get("effective_date") == "2026-08-01",
+        b2.get("state") == "external_reference_only",
+        b2.get("payload_sha256") == AU_MBS_PAYLOAD_SHA256,
+        b2.get("byte_count") == AU_MBS_PAYLOAD_BYTE_COUNT,
+        b2.get("payload_bytes_retained_locally") is False,
+        receipt.get("authority")
+        == {
+            "current_release_contract": "quality/qualifications/mbs-current-release-contract.json",
+            "publication_authorization": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+            "rights_issue": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        },
+    )
+    if not all(b2_claims):
+        return False
+    contract_path = "quality/qualifications/mbs-current-release-contract.json"
+    authorization_path = "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
+    correction_path = "quality/qualifications/australian-mbs-mbs-b1-event-reconciliation-correction-20261003.json"
+    try:
+        current_contract = json.loads(
+            (root / contract_path).read_text(encoding="utf-8")
+        )
+        publication_authorization = json.loads(
+            (root / authorization_path).read_text(encoding="utf-8")
+        )
+        pairing_correction = json.loads(
+            (root / correction_path).read_text(encoding="utf-8")
+        )
+    except OSError, ValueError, TypeError:
+        return False
+    if not all(
+        isinstance(value, Mapping)
+        for value in (
+            current_contract,
+            publication_authorization,
+            pairing_correction,
+        )
+    ):
+        return False
+    current_contract = cast("Mapping[str, Any]", current_contract)
+    publication_authorization = cast(
+        "Mapping[str, Any]", publication_authorization
+    )
+    pairing_correction = cast("Mapping[str, Any]", pairing_correction)
+    correction_mappings = pairing_correction.get("corrected_mappings")
+    unresolved = pairing_correction.get("preserved_unresolved_findings")
+    if not isinstance(correction_mappings, list) or not correction_mappings:
+        return False
+    if not isinstance(correction_mappings[0], Mapping) or not isinstance(
+        unresolved, Mapping
+    ):
+        return False
+    corrected = cast("Mapping[str, Any]", correction_mappings[0])
+    authorization_claims = (
+        current_contract.get("source_id") == source_id,
+        current_contract.get("effective_date") == "2026-08-01",
+        current_contract.get("publication_authorized") is True,
+        publication_authorization.get("external_publication_authorized")
+        is True,
+        publication_authorization.get(
+            "maintainer_asserted_redistribution_permission"
+        )
+        is True,
+        publication_authorization.get("allowed_sources") == [source_id],
+        pairing_correction.get("schema_id")
+        == "global-medicines-atlas.australian-mbs-b1-event-reconciliation-correction",
+        corrected.get("acquisition_id") == AU_MBS_ACQUISITION_ID,
+        corrected.get("receipt_id") == AU_MBS_RECEIPT_ID,
+        corrected.get("admission_decision_id")
+        == "a4c8e7850c664db20b80a9f3e6d5cd09c61ebc1447c121c852438eff24a42dba",
+        unresolved.get("projection_lineage_reconciled") is False,
+        unresolved.get("root_manifest_completeness_reconciled") is False,
+    )
+    if not all(authorization_claims):
+        return False
+
+    files = receipt.get("files")
+    archive = receipt.get("archive")
+    if not isinstance(files, Mapping) or not isinstance(archive, Mapping):
+        return False
+    files = cast("Mapping[str, Any]", files)
+    archive = cast("Mapping[str, Any]", archive)
+    expected_files = {
+        "source_receipt": (
+            "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+            "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8",
+        ),
+        "acquisition_event": (
+            "quality/bronze/acquisitions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+            "f0539528fff8f48781554e83ff3520579efc9a61daa04c5ca14d75e835bbacba",
+        ),
+        "admission": (
+            "quality/bronze/admissions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+            "0674c678ba14bb916be250e25b69cc11bf5dc3663a216a3c94cebb35837ff22f",
+        ),
+        "b2_manifest": (
+            "quality/bronze/raw-evidence/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/manifest.json",
+            "c195af67842ed7005c836a08a49ca1e65bb3ca957399323a51da6dff58d72b42",
+        ),
+    }
+    for key, (relative, digest) in expected_files.items():
+        claimed = files.get(key)
+        if not isinstance(claimed, Mapping):
+            return False
+        try:
+            actual_digest = sha256((root / relative).read_bytes()).hexdigest()
+        except OSError:
+            return False
+        claimed_file = cast("Mapping[str, Any]", claimed)
+        if (
+            claimed_file != {"path": relative, "sha256": digest}
+            or actual_digest != digest
+        ):
+            return False
+    try:
+        source = SourceReceipt.model_validate_json(
+            (root / expected_files["source_receipt"][0]).read_bytes()
+        )
+        event = AcquisitionEvent.model_validate_json(
+            (root / expected_files["acquisition_event"][0]).read_bytes()
+        )
+        admission = BronzeAdmissionRecord.model_validate_json(
+            (root / expected_files["admission"][0]).read_bytes()
+        )
+        b2_manifest = RawEvidenceManifest.model_validate_json(
+            (root / expected_files["b2_manifest"][0]).read_bytes()
+        )
+    except OSError, ValueError, TypeError, KeyError, json.JSONDecodeError:
+        return False
+    if source.temporal is None or not b2_manifest.rows:
+        return False
+    b2_row = b2_manifest.rows[0]
+    source_claims = (
+        source.source.source_id == source_id,
+        source.receipt_id == AU_MBS_RECEIPT_ID,
+        source.payload.sha256 == AU_MBS_PAYLOAD_SHA256,
+        source.payload.byte_count == AU_MBS_PAYLOAD_BYTE_COUNT,
+        source.rights_state.value == "permitted",
+        source.retrieval.status.value == "succeeded",
+        source.reuse is not None,
+        event.source_id == source_id,
+        event.acquisition_id == source.temporal.acquisition_id,
+        event.payload_sha256 == source.payload.sha256,
+        event.rights_state is not None,
+        admission.state.value == "accepted",
+        admission.acquisition_id == event.acquisition_id,
+        admission.content_id == source.payload.sha256,
+        b2_row.state.value == "external_reference_only",
+        b2_row.source_id == source_id,
+        b2_row.acquisition_id == event.acquisition_id,
+        b2_row.content_id == source.payload.sha256,
+        b2_row.external_reference == AU_MBS_RAW_REFERENCE,
+    )
+    if not all(source_claims) or event.rights_state is None:
+        return False
+    if source.reuse is None or source.reuse.disposition.value != "extend":
+        return False
+    if not {
+        "local_clones",
+        "github",
+        "hugging_face",
+        "source_registry",
+    }.issubset(set(source.reuse.searched_surfaces)):
+        return False
+    archive_path = "quality/bronze/references/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/archive-manifest.json"
+    try:
+        raw_archive_value = json.loads(
+            (root / archive_path).read_text(encoding="utf-8")
+        )
+    except OSError, ValueError, TypeError, json.JSONDecodeError:
+        return False
+    if not isinstance(raw_archive_value, Mapping):
+        return False
+    raw_archive = cast("Mapping[str, Any]", raw_archive_value)
+    object_values = raw_archive.get("objects", [])
+    contract = raw_archive.get("contract")
+    if not isinstance(object_values, list) or not isinstance(contract, Mapping):
+        return False
+    raw_objects = [
+        cast("Mapping[str, Any]", item)
+        for item in object_values
+        if isinstance(item, Mapping) and item.get("role") == "raw"
+    ]
+    if len(raw_objects) != 1:
+        return False
+    raw_object = raw_objects[0]
+    archive_claims = (
+        archive.get("path") == archive_path,
+        archive.get("revision") == AU_MBS_ARCHIVE_REVISION,
+        archive.get("root_manifest_path_present") is False,
+        raw_archive.get("source_id") == source_id,
+        raw_archive.get("admission_state") == "accepted",
+        raw_archive.get("data_acquired") is False,
+        raw_object.get("sha256") == source.payload.sha256,
+        raw_object.get("bytes") == source.payload.byte_count,
+        raw_object.get("path")
+        == f"raw/mbs/releases/2026-08-01/{AU_MBS_PAYLOAD_SHA256}.xml",
+        cast("Mapping[str, Any]", contract).get("effective_date")
+        == "2026-08-01",
+    )
+    return all(archive_claims)
 
 
 def _is_successful_nice_utilisation_receipt(
@@ -973,7 +1230,7 @@ def _is_successful_us_live_records_receipt(
     )
 
 
-def receipt_backed_landing_evidence(
+def receipt_backed_landing_evidence(  # ruff: ignore[too-many-branches]
     root: Path, source_ids: set[str]
 ) -> dict[str, str]:
     """Return each source's direct, successful, non-publication receipt."""
@@ -993,6 +1250,7 @@ def receipt_backed_landing_evidence(
             or override.get("state") != "landed_and_evidenced"
         ):
             continue
+        is_mbs_qualification_reference = False
         for relative in override.get("evidence_references", []):
             if not isinstance(relative, str) or not _is_receipt_reference(
                 relative
@@ -1021,7 +1279,14 @@ def receipt_backed_landing_evidence(
                 root, cast("Mapping[str, Any]", receipt), source_id
             ):
                 evidence[source_id] = relative
+                if (
+                    source_id == "au-mbs"
+                    and relative == AU_MBS_QUALIFICATION_RELATIVE
+                ):
+                    is_mbs_qualification_reference = True
                 break
+        if source_id == "au-mbs" and not is_mbs_qualification_reference:
+            evidence.pop("au-mbs", None)
     return evidence
 
 
@@ -1118,9 +1383,12 @@ def evaluate_completeness(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
         and str(source["source_id"]) in in_scope
     }
     receipt_evidence = receipt_backed_landing_evidence(root, in_scope)
-    landed = (
-        landing_source_ids(root, in_scope) | set(receipt_evidence) | ingested
-    )
+    adapter_landing = landing_source_ids(root, in_scope)
+    landed = adapter_landing | set(receipt_evidence) | ingested
+    # The au-mbs receipt upgrades the catalog's legacy parser marker to a
+    # source-specific raw B1/B2 landing, without qualifying its projection.
+    if "au-mbs" in receipt_evidence:
+        landed.add("au-mbs")
     missing = sorted(in_scope - landed)
     inventory = {
         "catalog_source_count": len(sources),

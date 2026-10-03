@@ -40,9 +40,14 @@ QUALIFICATION_AUTHORIZATION_INPUTS = (
     "quality/qualifications/additional-utilisation-acquisition-authorization.json",
     "quality/qualifications/source-rights-disposition.json",
     "quality/qualifications/source-rights-review-ledger.json",
+    "quality/qualifications/mbs-current-release-contract.json",
+    "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+    "quality/qualifications/australian-mbs-mbs-b1-event-reconciliation-correction-20261003.json",
 )
 QUALIFICATION_SPECIALIZED_INPUTS = (
     "quality/qualifications/open-medic-bronze-release-manifest-v1.json",
+    "quality/qualifications/australian-m112-mbs-b1-event-reconciliation-20261001.json",
+    "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
 )
 QUALIFICATION_CODE_INPUTS = (
     "src/global_medicines_atlas/bronze_maturity.py",

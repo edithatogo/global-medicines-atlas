@@ -65,6 +65,71 @@ def test_fda_shortages_scoped_internal_receipt_counts_as_bronze_landing() -> (
     }
 
 
+def test_australian_mbs_accepted_raw_receipt_counts_as_bronze_landing() -> None:
+    evidence = receipt_backed_landing_evidence(ROOT, {"au-mbs"})
+
+    assert evidence == {
+        "au-mbs": (
+            "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+        )
+    }
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert receipt["qualification_scope"] == "raw_b1_b2_only"
+    assert receipt["b2"]["state"] == "external_reference_only"
+    assert receipt["boundaries"]["source_record_projection_qualified"] is False
+    assert receipt["boundaries"]["m112_federation_accepted"] is False
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    [
+        (("acquisition_id",), "0" * 64),
+        (("receipt_id",), "mbs-release:wrong"),
+        (("rights_state",), "unknown"),
+        (("admission_state",), "quarantined"),
+        (("b2", "state"), "retained"),
+        (("files", "source_receipt", "sha256"), "0" * 64),
+        (("effective_date",), "2026-07-01"),
+        (("source_id",), "au-mbs-p7-legacy-workbook"),
+    ],
+)
+def test_australian_mbs_receipt_rejects_mutated_identity_or_gate(
+    path: tuple[str, ...], value: str
+) -> None:
+    relative = "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+    receipt = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+    target = receipt
+    for segment in path[:-1]:
+        target = target[segment]
+    target[path[-1]] = value
+
+    assert not bronze_maturity_mod._is_successful_australian_mbs_receipt(
+        ROOT, receipt, "au-mbs"
+    )
+
+
+def test_australian_mbs_receipt_qualification_schema() -> None:
+    receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+        ).read_text(encoding="utf-8")
+    )
+    schema = json.loads(
+        (
+            ROOT / "schemas/australian-mbs-bronze-source-receipt-v1.json"
+        ).read_text(encoding="utf-8")
+    )
+
+    Draft202012Validator.check_schema(schema)
+    Draft202012Validator(schema).validate(receipt)
+
+
 def test_fda_shortages_success_predicate_accepts_qualified_receipt() -> None:
     receipt = json.loads(
         (

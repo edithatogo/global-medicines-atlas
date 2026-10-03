@@ -31,8 +31,8 @@
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:190de5949649d7dde255cbe1059c170f22c3669a34a55fba10da4a462d3f25dc",
-  "snapshot_sha256": "190de5949649d7dde255cbe1059c170f22c3669a34a55fba10da4a462d3f25dc",
+  "snapshot_id": "sha256:3453e7e8845e6d96538b8a78a53648e19e84bb3519456ab7357884beb0ed246c",
+  "snapshot_sha256": "3453e7e8845e6d96538b8a78a53648e19e84bb3519456ab7357884beb0ed246c",
   "source_count": 174,
   "sources": [
     {
@@ -270,7 +270,10 @@
         "src/global_medicines_atlas/adapters/au_mbs.py",
         "tests/test_au_mbs_source.py",
         "tests/fixtures/adapters/au_mbs.xml",
-        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+        "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json",
+        "quality/qualifications/mbs-current-release-contract.json",
+        "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
       ],
       "qualification_state": "live_verified",
       "rights_review_state": "maintainer_redistribution_authorized",

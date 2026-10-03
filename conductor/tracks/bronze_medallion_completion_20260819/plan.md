@@ -1039,3 +1039,23 @@ for credentialed or rights-unresolved sources.
   merged at `d573b997c10f3d5fd5fc00c838350c7cd452622c` after every required
   branch-protection check passed. The 157-source denominator and blocked
   completeness/M5 findings remain unchanged.
+
+## 2026-10-03 Australian MBS raw Bronze receipt
+
+- [x] Reconcile the August 2026 MBS typed SourceReceipt, AcquisitionEvent,
+  accepted admission, and B2 external-reference manifest to their exact local
+  content hashes and pinned public archive manifest. No source payload bytes
+  were fetched or retained locally. The dated qualification counts only raw
+  B1/B2; the source-record Parquet projection, published-at identity, archive
+  root-manifest completeness, and M-112 federation remain unqualified.
+- [x] Correct the receipt/run pairing additively against the exact nested
+  source-receipt hashes and acquisition/admission identities. Historical M112
+  audits remain intact and their projection-lineage, root-manifest, and
+  differing-Parquet-digest findings remain open.
+- [x] Regenerate the direct-receipt cohort and its future-source ledger.
+  `au-mbs` enters the cohort (29 qualified / 128 deferred); full-scope unique
+  landing accounting remains 42/157 with 115 missing and 13/14 dimensions
+  evidenced. The denominator is unchanged; Bronze completeness and M5 remain
+  blocked.
+- [ ] Complete source-record projection lineage reconciliation and M-112
+  Australian federation acceptance as separate downstream gates.

@@ -1,0 +1,62 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-release",
+  "source_id": "au-mbs",
+  "contract": {
+    "source_id": "au-mbs",
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "effective_date": "2026-08-01",
+    "source_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801",
+    "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
+    "publication_authorized": true,
+    "authorization_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330"
+  },
+  "evidence_class": "live",
+  "admission_state": "accepted",
+  "record_count": 6046,
+  "p7_record_count": 165,
+  "data_acquired": false,
+  "objects": [
+    {
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/attempt-1.json",
+      "sha256": "16854702f6b8c8ee402ae142bdb2c4d1c66da673a6665fd1106c7351a4572939",
+      "bytes": 6024,
+      "role": "attempt"
+    },
+    {
+      "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "bytes": 8293331,
+      "role": "raw"
+    },
+    {
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source.parquet",
+      "sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a",
+      "bytes": 454247,
+      "role": "source_parquet"
+    },
+    {
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/p7.parquet",
+      "sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a",
+      "bytes": 24367,
+      "role": "p7_parquet"
+    },
+    {
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source-receipt.json",
+      "sha256": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8",
+      "bytes": 6418,
+      "role": "source_receipt"
+    },
+    {
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/admission.json",
+      "sha256": "0674c678ba14bb916be250e25b69cc11bf5dc3663a216a3c94cebb35837ff22f",
+      "bytes": 643,
+      "role": "admission"
+    },
+    {
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source-health.json",
+      "sha256": "fc1d6407332ec54d9102da6d3387f60b299474ccfe40e103a8e2a3565da1a2d5",
+      "bytes": 807,
+      "role": "source_health"
+    }
+  ]
+}

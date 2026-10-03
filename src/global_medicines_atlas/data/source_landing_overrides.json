@@ -42,11 +42,14 @@
       "source_id": "au-mbs",
       "state": "landed_and_evidenced",
       "evidence_scope": "live_receipt",
-      "reason": "The exact July 2025 MBS XML is publicly retained as immutable B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This publication/B2 receipt is not itself a typed, validated direct B1 Bronze qualification receipt for the supplemental cohort. It is service-benefit evidence, not medicine regulatory or PBS funding evidence.",
+      "reason": "The August 2026 MBS release has an accepted, typed raw B1 acquisition receipt and a validated B2 external reference bound to the source-native digest. The source-record Parquet projection and M-112 federation remain unqualified. MBS service-benefit evidence does not imply medicine regulatory or PBS funding evidence.",
       "evidence_references": [
-        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+        "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json",
+        "quality/qualifications/mbs-current-release-contract.json",
+        "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
       ],
-      "next_action": "Reconcile the existing July 2025 payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Then rerun direct-receipt qualification. Keep M-112 federation acceptance separate."
+      "next_action": "Keep the MBS source-record projection lineage and M-112 federation acceptance open; reconcile those separately before making either claim."
     },
     {
       "source_id": "au-mbs-p7-legacy-workbook",
