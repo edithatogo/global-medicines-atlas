@@ -229,6 +229,10 @@
   scraper `v0.1` tag predates successor documentation; neither repository has
   GitHub Release objects. Refreshing public content inside either archived
   repository requires explicit maintainer authorization and has not been done.
+  A copy-ready notice draft now identifies the exact public MBS/PBS dataset
+  revisions observed on 2026-10-04 and preserves the historical `v0.1` tag;
+  it is proposal text only and does not change either repository or close the
+  donor compatibility acceptance task. See `docs/migrations/australian-donor-successors.md`.
 
 ## Phase 5: Research exports and qualification (AC-07, AC-08)
 
