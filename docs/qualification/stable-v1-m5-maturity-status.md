@@ -88,3 +88,10 @@ The WHO national EML index now has 167 metadata-only candidate listings; its
 documents remain unacquired pending per-document rights and authority review.
 The receipt cohort remains 28 qualified / 129 deferred, and the 157-source
 current-scope denominator and 13-of-14 Bronze dimension result are unchanged.
+
+After PR #716, the cohort, source landing queue, and B0 index were regenerated
+against exact merged `main` commit `428b2f1c9201b0f3c2836f3aebc259a3c45a31d0`.
+Their content remained unchanged; the full-scope report now records that exact
+commit. The 28/129 cohort, 42/157 landing-evidence count, 115-source gap, and
+13-of-14 maturity result are unchanged. No WHO document rights or acquisition
+authority were inferred from the metadata-only index.
