@@ -683,7 +683,7 @@
 
 ### Gold review chronology control (2026-10-04)
 
-- [~] Require each adjudication supersession chain to be strictly chronological
+- [x] Require each adjudication supersession chain to be strictly chronological
   before it can remove a case from the pending Gold-edge queue. A terminal
   decision dated before or at its predecessor must remain pending. Regression
   confirmed the existing implementation incorrectly cleared this case. The
@@ -694,7 +694,8 @@
   `uv 0.11.29`; this host supplies `uv 0.12.22`. No release pin or gate was
   weakened. This closes only chronology validation; human reviewer authority,
   receipts, calibration, promotion, real-source controls, and canonical
-  cross-source relationships remain unresolved.
+  cross-source relationships remain unresolved. PR #735 passed all 39 hosted
+  checks and merged as `001ded0d3ff3429fa499671f91074209ca0d8106`.
 
 ## Phase 5: Historical comparisons and publication (AC-06, AC-07)
 
