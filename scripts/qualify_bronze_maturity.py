@@ -13,6 +13,7 @@ from jsonschema import Draft202012Validator
 from global_medicines_atlas.bronze_maturity import (
     REPORT_RELATIVE,
     SCHEMA_RELATIVE,
+    SCOPE_DECISION_RELATIVE,
     dump_report,
     evaluate_repository,
 )
@@ -74,6 +75,15 @@ def main(argv: list[str] | None = None) -> int:
     Draft202012Validator.check_schema(schema)
     Draft202012Validator(schema).validate(  # pyright: ignore[reportUnknownMemberType]
         report
+    )
+    decision_schema = json.loads(
+        (ROOT / "schemas/bronze-bounded-scope-decision-v1.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    Draft202012Validator.check_schema(decision_schema)
+    Draft202012Validator(decision_schema).validate(  # pyright: ignore[reportUnknownMemberType]
+        json.loads((ROOT / SCOPE_DECISION_RELATIVE).read_text(encoding="utf-8"))
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(dump_report(report), encoding="utf-8")

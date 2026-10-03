@@ -6,10 +6,10 @@ the medicine source catalog, or the governed publication contracts.
 
 Stable promotion fails closed. Every Must requirement appears in the
 projection with evidence or an explicit blocker; every blocking maturity
-dimension must reach M5; and every release gate must pass. The reconciled
-contract remains blocked by current-scope Bronze landing, observable Renovate
-output, the resulting M5 transition, and explicit final stable-release
-approval. The existing `v1.0.0rc1` authority is not final-v1 approval.
+dimension must reach M5; and every release gate must pass. The reconciled contract records the bounded Bronze and M5 gates as passed.
+Australian health federation acceptance remains blocked, and explicit final
+stable-release approval is still required. The existing `v1.0.0rc1` authority
+is not final-v1 approval.
 
 ## Contract boundaries
 
@@ -52,9 +52,8 @@ receipts pass for the same commit.
 The software contracts, clean consumers, structural migration, comparison
 validity, discovery, independent fixture reproduction, support documentation,
 hosted governance, and bounded publication controls are now verified. This is
-still not a stable-release claim: Bronze current-scope completion and Renovate
-output remain observable technical gates, and final promotion remains a human
-gate.
+still not a stable-release claim: Australian federation acceptance remains an
+open technical gate, and final promotion remains a human gate.
 
 ## Rehearsal and support gates
 

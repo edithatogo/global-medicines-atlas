@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from copy import deepcopy
 from pathlib import Path
@@ -19,6 +20,12 @@ INDEPENDENT_REPRODUCTION = (
 )
 BRONZE_PLAN = "conductor/tracks/bronze_medallion_completion_20260819/plan.md"
 BRONZE_MATURITY = "quality/qualifications/bronze-maturity.json"
+BRONZE_SCOPE_DECISION = (
+    "quality/qualifications/bronze-bounded-scope-decision-v1.json"
+)
+BRONZE_FUTURE_SOURCES = (
+    "quality/qualifications/bronze-bounded-scope-future-sources-v1.json"
+)
 QUALITY_CLOSURE = "quality/qualifications/quality-hardening-closure.json"
 AUSTRALIAN_HEALTH_GATE = "stable-v1-australian-health-federation"
 SCRAPER_ARCHIVE = "quality/qualifications/scraper-archival-20260906.json"
@@ -104,6 +111,41 @@ def _renovate_output_observed() -> bool:
     return closure["renovate"]["dashboard_or_first_pr"] == "observed"
 
 
+def _bronze_bounded_scope_qualified() -> bool:
+    """Require the versioned horizon, partition, and evidence counts to agree."""
+    report = json.loads((ROOT / BRONZE_MATURITY).read_text(encoding="utf-8"))
+    decision = json.loads(
+        (ROOT / BRONZE_SCOPE_DECISION).read_text(encoding="utf-8")
+    )
+    ledger = json.loads(
+        (ROOT / BRONZE_FUTURE_SOURCES).read_text(encoding="utf-8")
+    )
+    inventory = report["completeness_inventory"]
+    accounting = ledger["source_accounting"]
+    decision_digest = hashlib.sha256(
+        (ROOT / BRONZE_SCOPE_DECISION).read_bytes()
+    ).hexdigest()
+    return bool(
+        report["horizon"] == "bronze-bounded-public-scope-v1"
+        and report["qualification_state"] == "qualified"
+        and report["bronze_mature"] is True
+        and inventory["bronze_in_scope_count"]
+        == decision["active_scope_source_count"]
+        and inventory["full_bronze_source_universe_count"]
+        == decision["full_scope_source_count"]
+        and inventory["deferred_source_count"]
+        == decision["deferred_source_count"]
+        and inventory["in_scope_without_landing_or_blocker"] == 0
+        and accounting["partition_complete"] is True
+        and accounting["deferred_source_count"]
+        == decision["deferred_source_count"]
+        and ledger["qualification_state"] == report["qualification_state"]
+        and ledger["scope_decision"]["sha256"] == decision_digest
+        and ledger["boundaries"]["missing_coverage_is_not_negative_evidence"]
+        is True
+    )
+
+
 def _donor_archive_acceptance_observed() -> bool:
     """Require both approved archives and exact public history restoration."""
     scraper = json.loads((ROOT / SCRAPER_ARCHIVE).read_text(encoding="utf-8"))
@@ -163,6 +205,7 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
     """
     contract = deepcopy(raw)
     renovate_observed = _renovate_output_observed()
+    bronze_scope_qualified = _bronze_bounded_scope_qualified()
     for requirement in contract["requirements"]:
         requirement_id = requirement["requirement_id"]
         if requirement_id == "M-046":
@@ -182,12 +225,34 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                     requirement["blocker_ids"], ["renovate-output-verification"]
                 )
         elif requirement_id == "M-095":
-            requirement["state"] = "blocked"
-            requirement["blocker_ids"] = _append_unique(
-                requirement["blocker_ids"], ["stable-v1-bronze-current-scope"]
-            )
+            other_blockers = set(requirement["blocker_ids"]) - {
+                "stable-v1-bronze-current-scope"
+            }
+            if (
+                bronze_scope_qualified
+                and not other_blockers
+                and requirement["state"] not in {"failed", "unverified"}
+            ):
+                requirement["state"] = "verified"
+                requirement["blocker_ids"] = [
+                    blocker
+                    for blocker in requirement["blocker_ids"]
+                    if blocker != "stable-v1-bronze-current-scope"
+                ]
+            else:
+                requirement["state"] = "blocked"
+                requirement["blocker_ids"] = _append_unique(
+                    requirement["blocker_ids"],
+                    ["stable-v1-bronze-current-scope"],
+                )
             requirement["evidence"] = _append_unique(
-                requirement["evidence"], [BRONZE_PLAN, BRONZE_MATURITY]
+                requirement["evidence"],
+                [
+                    BRONZE_PLAN,
+                    BRONZE_MATURITY,
+                    BRONZE_SCOPE_DECISION,
+                    BRONZE_FUTURE_SOURCES,
+                ],
             )
         elif requirement_id == "M-113":
             adverse = requirement["state"] in {"failed", "unverified"}
@@ -223,14 +288,35 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
     for dimension in contract["maturity_dimensions"]:
         name = dimension["dimension"]
         if name == "source_coverage":
-            dimension["current_level"] = min(dimension["current_level"], "M4")
-            if dimension["state"] == "verified":
-                dimension["state"] = "partial"
-            dimension["blocker_ids"] = _append_unique(
-                dimension["blocker_ids"], ["stable-v1-bronze-current-scope"]
-            )
+            adverse = dimension["state"] in {"failed", "unverified"}
+            other_blockers = set(dimension["blocker_ids"]) - {
+                "stable-v1-bronze-current-scope"
+            }
+            if bronze_scope_qualified and not adverse and not other_blockers:
+                dimension["current_level"] = "M5"
+                dimension["state"] = "verified"
+                dimension["blocker_ids"] = [
+                    blocker
+                    for blocker in dimension["blocker_ids"]
+                    if blocker != "stable-v1-bronze-current-scope"
+                ]
+            else:
+                dimension["current_level"] = min(
+                    dimension["current_level"], "M4"
+                )
+                if dimension["state"] == "verified":
+                    dimension["state"] = "partial"
+                dimension["blocker_ids"] = _append_unique(
+                    dimension["blocker_ids"], ["stable-v1-bronze-current-scope"]
+                )
             dimension["evidence"] = _append_unique(
-                dimension["evidence"], [BRONZE_PLAN, BRONZE_MATURITY]
+                dimension["evidence"],
+                [
+                    BRONZE_PLAN,
+                    BRONZE_MATURITY,
+                    BRONZE_SCOPE_DECISION,
+                    BRONZE_FUTURE_SOURCES,
+                ],
             )
         elif name == "security_and_supply_chain":
             dimension["evidence"] = _append_unique(
@@ -295,18 +381,29 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
         else "stable-v1-bronze-current-scope"
     )
     source_gate = gates.pop(source_gate_id)
-    _retain_gate_observation(
-        source_gate,
-        {
-            "gate_id": "stable-v1-bronze-current-scope",
-            "description": (
-                "Complete Bronze landing evidence for the current public/no-credential "
-                "scope without treating catalogue blockers as landed sources."
-            ),
-            "state": "blocked",
-            "evidence": [BRONZE_PLAN, BRONZE_MATURITY],
-        },
-    )
+    source_gate.update({
+        "gate_id": "stable-v1-bronze-current-scope",
+        "description": (
+            "Complete Bronze evidence for the maintainer-approved bounded public "
+            "horizon while retaining the full catalogue universe and deferred ledger."
+        ),
+        "state": (
+            source_gate["state"]
+            if source_gate["state"] in {"failed", "unverified"}
+            else "passed"
+            if bronze_scope_qualified
+            else "blocked"
+        ),
+        "evidence": _append_unique(
+            source_gate["evidence"],
+            [
+                BRONZE_PLAN,
+                BRONZE_MATURITY,
+                BRONZE_SCOPE_DECISION,
+                BRONZE_FUTURE_SOURCES,
+            ],
+        ),
+    })
 
     renovate_gate_id = (
         "renovate-app-activation"
@@ -345,21 +442,37 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             ],
         },
     )
-    _retain_gate_observation(
-        gates["stable-v1-maturity-m5"],
-        {
-            "description": (
-                "Verify every blocking maturity dimension at M5 after Bronze scope "
-                "and Renovate output verification complete."
-            ),
-            "state": "blocked",
-            "evidence": [
+    maturity_gate = gates["stable-v1-maturity-m5"]
+    dimensions_ready = all(
+        dimension["current_level"] == "M5"
+        and dimension["state"] == "verified"
+        and not dimension["blocker_ids"]
+        for dimension in contract["maturity_dimensions"]
+    )
+    maturity_gate.update({
+        "description": (
+            "Verify every maturity dimension at M5 after bounded Bronze source "
+            "coverage and Renovate output verification complete."
+        ),
+        "state": (
+            maturity_gate["state"]
+            if maturity_gate["state"] in {"failed", "unverified"}
+            else "passed"
+            if dimensions_ready
+            else "blocked"
+        ),
+        "evidence": _append_unique(
+            maturity_gate["evidence"],
+            [
                 "conductor/maturity-model.json",
                 BRONZE_PLAN,
+                BRONZE_MATURITY,
+                BRONZE_SCOPE_DECISION,
+                BRONZE_FUTURE_SOURCES,
                 QUALITY_CLOSURE,
             ],
-        },
-    )
+        ),
+    })
     contract["release_gates"] = [
         *gates.values(),
         source_gate,

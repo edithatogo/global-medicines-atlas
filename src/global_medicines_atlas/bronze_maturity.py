@@ -37,7 +37,14 @@ from .receipts import AcquisitionEvent, SourceReceipt
 from .source_catalog import AccessMode, AuthenticationMode
 
 SCHEMA_ID = "global-medicines-atlas.bronze-maturity-qualification"
-HORIZON = "bronze-current-public-scope"
+HORIZON = "bronze-bounded-public-scope-v1"
+FULL_SCOPE_HORIZON = "bronze-current-public-scope"
+SCOPE_DECISION_RELATIVE = (
+    "quality/qualifications/bronze-bounded-scope-decision-v1.json"
+)
+BOUNDED_SCOPE_FULL_SOURCE_COUNT = 157
+BOUNDED_SCOPE_ACTIVE_SOURCE_COUNT = 42
+BOUNDED_SCOPE_DEFERRED_SOURCE_COUNT = 115
 CATALOG_RELATIVE = (
     "src/global_medicines_atlas/data/medicine_source_catalog.json"
 )
@@ -1398,36 +1405,101 @@ def _evaluate_file_property(
     )
 
 
-def evaluate_completeness(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
-    """Measure bronze completeness without treating exclusion as failure."""
+# ruff: ignore[too-many-locals]
+def evaluate_completeness(
+    root: Path,
+    *,
+    use_bounded_scope: bool = True,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Measure the approved bounded horizon and retain full-universe counts."""
 
     catalog = json.loads(_read(root, CATALOG_RELATIVE))
     sources = catalog["sources"]
     classes: dict[str, ScopeClass] = {}
     for source in sources:
         classes[str(source["source_id"])] = classify_catalog_source(source)
-    in_scope = {
+    full_scope = {
         source_id
         for source_id, scope in classes.items()
         if scope == "bronze_in_scope"
     }
-    ingested = {
+    active_scope = full_scope
+    if use_bounded_scope:
+        decision_path = root / SCOPE_DECISION_RELATIVE
+        if not decision_path.is_file():
+            raise ValueError(
+                "approved bounded Bronze scope decision is missing"
+            )
+        decision = json.loads(decision_path.read_text(encoding="utf-8"))
+        if decision.get("decision_id") != "bronze-bounded-scope-v1":
+            raise ValueError("unsupported bounded Bronze scope decision")
+        active_values_raw = decision.get("active_source_ids")
+        if not isinstance(active_values_raw, list):
+            raise ValueError("bounded Bronze active_source_ids must be strings")
+        active_values_raw = cast("list[Any]", active_values_raw)
+        if not all(isinstance(value, str) for value in active_values_raw):
+            raise ValueError("bounded Bronze active_source_ids must be strings")
+        active_values: list[str] = [
+            cast("str", value) for value in active_values_raw
+        ]
+        active_scope = set(active_values)
+        universe_digest = sha256(
+            ("\n".join(sorted(full_scope)) + "\n").encode()
+        ).hexdigest()
+        active_digest = sha256(
+            ("\n".join(sorted(active_scope)) + "\n").encode()
+        ).hexdigest()
+        scope_checks = (
+            len(active_scope) != len(active_values),
+            not active_scope,
+            not active_scope <= full_scope,
+            len(full_scope) != BOUNDED_SCOPE_FULL_SOURCE_COUNT,
+            len(active_scope) != BOUNDED_SCOPE_ACTIVE_SOURCE_COUNT,
+            len(full_scope - active_scope)
+            != BOUNDED_SCOPE_DEFERRED_SOURCE_COUNT,
+            decision.get("full_scope_source_count") != len(full_scope),
+            decision.get("full_scope_source_ids_sha256") != universe_digest,
+            decision.get("active_scope_source_count") != len(active_scope),
+            decision.get("active_scope_source_ids_sha256") != active_digest,
+            decision.get("deferred_source_count")
+            != len(full_scope - active_scope),
+        )
+        if any(scope_checks):
+            raise ValueError(
+                "bounded Bronze scope decision does not match catalog"
+            )
+    in_scope = active_scope
+    ingested_full = {
         str(source["source_id"])
         for source in sources
         if source.get("implemented_ingestion") is True
-        and str(source["source_id"]) in in_scope
+        and str(source["source_id"]) in full_scope
     }
-    receipt_evidence = receipt_backed_landing_evidence(root, in_scope)
-    adapter_landing = landing_source_ids(root, in_scope)
-    landed = adapter_landing | set(receipt_evidence) | ingested
+    receipt_evidence_full = receipt_backed_landing_evidence(root, full_scope)
+    adapter_landing_full = landing_source_ids(root, full_scope)
+    landed_full = (
+        adapter_landing_full | set(receipt_evidence_full) | ingested_full
+    )
     # The au-mbs receipt upgrades the catalog's legacy parser marker to a
     # source-specific raw B1/B2 landing, without qualifying its projection.
-    if "au-mbs" in receipt_evidence:
-        landed.add("au-mbs")
+    if "au-mbs" in receipt_evidence_full:
+        landed_full.add("au-mbs")
+    landed = landed_full & in_scope
     missing = sorted(in_scope - landed)
+    missing_full = full_scope - landed_full
+    receipt_evidence = {
+        source_id: path
+        for source_id, path in receipt_evidence_full.items()
+        if source_id in in_scope
+    }
+    deferred_count = len(full_scope - in_scope)
     inventory = {
         "catalog_source_count": len(sources),
         "bronze_in_scope_count": len(in_scope),
+        "full_bronze_source_universe_count": len(full_scope),
+        "deferred_source_count": deferred_count,
+        "full_scope_landing_count": len(landed_full),
+        "full_scope_missing_count": len(missing_full),
         "fixture_only_count": sum(
             scope == "fixture_only" for scope in classes.values()
         ),
@@ -1440,6 +1512,7 @@ def evaluate_completeness(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     evidence = (
         CATALOG_RELATIVE,
         AUTHORITIES["bronze_completion_spec"],
+        *((SCOPE_DECISION_RELATIVE,) if use_bounded_scope else ()),
         "src/global_medicines_atlas/adapters/fixture_contracts.py",
         LANDING_OVERRIDES_RELATIVE,
         *sorted(set(receipt_evidence.values())),
@@ -1476,10 +1549,17 @@ def evaluate_completeness(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     return property_row, inventory
 
 
-def evaluate_properties(root: Path) -> list[dict[str, Any]]:
+def evaluate_properties(
+    root: Path,
+    *,
+    use_bounded_scope: bool = True,
+) -> list[dict[str, Any]]:
     """Evaluate every bronze maturity property against repository files."""
 
-    completeness, _inventory = evaluate_completeness(root)
+    completeness, _inventory = evaluate_completeness(
+        root,
+        use_bounded_scope=use_bounded_scope,
+    )
     return [
         completeness,
         _evaluate_file_property(
@@ -2032,11 +2112,15 @@ def evaluate_repository(
     *,
     clock: Callable[[], datetime] | None = None,
     git_commit: str | None = None,
+    use_bounded_scope: bool = True,
 ) -> dict[str, Any]:
     """Return a fail-closed bronze maturity report for ``root``."""
 
-    properties = evaluate_properties(root)
-    _, inventory = evaluate_completeness(root)
+    properties = evaluate_properties(root, use_bounded_scope=use_bounded_scope)
+    _, inventory = evaluate_completeness(
+        root,
+        use_bounded_scope=use_bounded_scope,
+    )
     mandatory_ok = all(
         row["state"] == "evidenced" for row in properties if row["mandatory"]
     )
@@ -2055,7 +2139,7 @@ def evaluate_repository(
     report = {
         "schema_id": SCHEMA_ID,
         "schema_version": 1,
-        "horizon": HORIZON,
+        "horizon": HORIZON if use_bounded_scope else FULL_SCOPE_HORIZON,
         "evaluated_at": stamp.isoformat(),
         "git_commit": git_commit or "unspecified",
         "authorities": AUTHORITIES,

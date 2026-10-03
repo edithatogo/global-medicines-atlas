@@ -16,7 +16,7 @@ from .bronze_maturity import (
     evaluate_repository,
     receipt_backed_landing_evidence,
 )
-from .bronze_maturity import HORIZON as CURRENT_SCOPE_HORIZON
+from .bronze_maturity import FULL_SCOPE_HORIZON as CURRENT_SCOPE_HORIZON
 from .cms_partd_qualification import RAW_RELATIVE as CMS_RAW_RELATIVE
 from .cms_partd_qualification import RECORDS_RELATIVE as CMS_RECORDS_RELATIVE
 from .cms_partd_qualification import RIGHTS_RELATIVE as CMS_RIGHTS_RELATIVE
@@ -426,7 +426,7 @@ def build_bronze_receipt_cohort(root: Path) -> dict[str, Any]:
     members = _build_members(root, catalog, receipt_evidence)
     deferred_ids = current_scope_ids - set(receipt_evidence)
     deferred = _build_deferred_sources(catalog, queue, deferred_ids)
-    evaluator = evaluate_repository(root)
+    evaluator = evaluate_repository(root, use_bounded_scope=False)
     preserved_scope = _preserved_current_scope(evaluator)
     deferred_queue_landed_count = sum(
         item["queue_state"] == "landed_and_evidenced" for item in deferred

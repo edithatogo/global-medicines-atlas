@@ -91,6 +91,25 @@ otherwise excluded rows remain separate from the deferred current-scope list.
 Missing receipt evidence is not negative medicines evidence, and the ledger
 grants no acquisition, retention, licensing, or publication authority.
 
+### Maintainer-approved bounded qualification horizon (2026-10-03)
+
+The maintainer approved deferring sources that cannot yet meet the existing
+evidence gates, recording them on a future-source list, and completing the
+remaining Bronze work. This versioned decision supersedes the earlier
+prohibition on narrowing the immediate qualification horizon; it does not
+delete or relabel the full catalogue universe. The full 157-source public
+universe remains visible, while the hash-bound `bronze-bounded-public-scope-v1`
+qualification horizon contains the 42 source IDs with observable adapter,
+fixture, implemented-ingestion, or direct successful receipt evidence at the
+decision date. The remaining 115 stay in the deferred ledger with their
+source-specific reason and re-entry trigger. The 28-source direct-receipt
+cohort remains a narrower, independent measure and is not conflated with the
+42-source bounded horizon. No rights, source acquisition, retention, or
+publication authority is granted by this scope decision. Missing evidence is
+not negative evidence. Future-source re-entry requires the existing
+source-specific rights, acquisition, reuse, admission, temporal-identity,
+provenance, and validation gates.
+
 ## Out of scope
 
 - Silver, gold, and platinum implementation (W-007).
