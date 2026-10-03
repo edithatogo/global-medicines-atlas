@@ -8,9 +8,9 @@
     "approved_raw_paths": 1736,
     "approved_projection_paths": 23,
     "previously_deferred_candidate_paths": 1719,
-    "newly_deferred_candidate_paths": 33,
-    "combined_deferred_candidate_paths": 1752,
-    "remaining_candidate_paths_for_active_reconciliation": 7,
+    "newly_deferred_candidate_paths": 34,
+    "combined_deferred_candidate_paths": 1753,
+    "remaining_candidate_paths_for_active_reconciliation": 6,
     "denominator_changed": false
   },
   "evidence_inputs": [
@@ -41,10 +41,10 @@
   ],
   "additional_deferred_sources": [
     {
-      "group_id": "au-mbs-august-2026-raw",
+      "group_id": "au-mbs-august-2026-raw-object-paths",
       "dataset": "edithatogo/australian-mbs-source-archive",
-      "candidate_paths": 1,
-      "raw_paths": 1,
+      "candidate_paths": 2,
+      "raw_paths": 2,
       "projection_paths": 0,
       "source_ids": [
         "au-mbs"
@@ -61,11 +61,22 @@
       "path_selection": {
         "kind": "exact_paths",
         "paths": [
+          "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
           "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML"
         ]
       },
       "reentry_trigger": "Reconcile the root manifest with the exact August acquisition, choose and receipt the canonical B1 event without treating either unreviewed record as accepted, then independently qualify its v4 lineage.",
-      "current_revision": "40891976f77ee5e7688edceed25c9ac98a77547e"
+      "current_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path_alias_identity": {
+        "paths": [
+          "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+          "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML"
+        ],
+        "same_current_git_blob_oid": "025c714ecd1fa69f91fdb4de002d285d47272e40",
+        "same_byte_count": 8293331,
+        "same_source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "object_interpretation": "Two approved path candidates refer to one byte-identical Git object; defer both paths with the unresolved August B1 lineage."
+      }
     },
     {
       "group_id": "au-mbs-existing-projections",
@@ -160,8 +171,8 @@
   "active_reconciliation_remainder": {
     "dataset": "edithatogo/australian-mbs-source-archive",
     "candidate_class": "raw_source_payload",
-    "candidate_paths": 7,
-    "selection": "The seven raw candidate paths other than raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML. Their receipts/authorizations remain candidates for focused per-object reconciliation; this register does not qualify or admit them."
+    "candidate_paths": 6,
+    "selection": "The six raw candidate paths other than the two August aliases listed in the deferral group. Their receipts/authorizations remain candidates for focused per-object reconciliation; this register does not qualify or admit them."
   },
   "preserved_acceptance_gates": [
     "Any rights disposition remains a maintainer decision; this register does not supply one.",

@@ -26,11 +26,11 @@ def test_additional_deferrals_preserve_scope_and_open_gates() -> None:
 
     assert register["scope"]["approved_candidate_denominator"] == 1_759
     assert register["scope"]["previously_deferred_candidate_paths"] == 1_719
-    assert register["scope"]["newly_deferred_candidate_paths"] == 33
-    assert register["scope"]["combined_deferred_candidate_paths"] == 1_752
+    assert register["scope"]["newly_deferred_candidate_paths"] == 34
+    assert register["scope"]["combined_deferred_candidate_paths"] == 1_753
     assert (
         register["scope"]["remaining_candidate_paths_for_active_reconciliation"]
-        == 7
+        == 6
     )
     assert register["scope"]["denominator_changed"] is False
     assert previous["scope"]["denominator_changed"] is False
@@ -39,14 +39,14 @@ def test_additional_deferrals_preserve_scope_and_open_gates() -> None:
         row["group_id"]: row for row in register["additional_deferred_sources"]
     }
     assert set(groups) == {
-        "au-mbs-august-2026-raw",
+        "au-mbs-august-2026-raw-object-paths",
         "au-mbs-existing-projections",
         "au-pbs-historical-archive",
         "au-mbs-utilisation-rights-ledger",
         "au-pbs-utilisation-rights-ledger",
     }
-    assert sum(row["candidate_paths"] for row in groups.values()) == 33
-    assert register["active_reconciliation_remainder"]["candidate_paths"] == 7
+    assert sum(row["candidate_paths"] for row in groups.values()) == 34
+    assert register["active_reconciliation_remainder"]["candidate_paths"] == 6
     assert register["active_reconciliation_remainder"]["candidate_class"] == (
         "raw_source_payload"
     )
@@ -118,6 +118,22 @@ def test_additional_deferrals_match_the_exact_current_candidate_inventory() -> (
         assert all(
             row["revision"] == group["current_revision"] for row in selected
         )
+        if group["group_id"] == "au-mbs-august-2026-raw-object-paths":
+            alias = group["path_alias_identity"]
+            assert {row["path"] for row in selected} == set(alias["paths"])
+            assert {row["observed_git_blob_oid"] for row in selected} == {
+                alias["same_current_git_blob_oid"]
+            }
+            assert {row["observed_bytes"] for row in selected} == {
+                alias["same_byte_count"]
+            }
+            assert {row["observed_lfs_sha256"] for row in selected} == {None}
+            assert (
+                alias["same_source_sha256"]
+                == report["digest_coverage"]["alias"][
+                    "sha256_from_verified_path"
+                ]
+            )
         assert deferred_paths.isdisjoint(row["path"] for row in selected)
         deferred_paths.update(row["path"] for row in selected)
 
@@ -138,9 +154,12 @@ def test_additional_deferrals_match_the_exact_current_candidate_inventory() -> (
         if row["dataset"] == active["dataset"]
         and row["candidate_class"] == active["candidate_class"]
         and row["path"]
-        != "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML"
+        not in {
+            "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+            "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+        }
     ]
-    assert len(active_rows) == active["candidate_paths"] == 7
+    assert len(active_rows) == active["candidate_paths"] == 6
     assert deferred_paths.isdisjoint(row["path"] for row in active_rows)
 
     assert deferred_paths.isdisjoint(row["path"] for row in active_rows)
@@ -165,7 +184,7 @@ def test_deferred_groups_match_rights_and_evidence_crosswalks() -> None:
         if row["dataset"] == "edithatogo/australian-pbs-source-archive"
     )
     for key, dataset in [
-        ("au-mbs-august-2026-raw", mbs_source),
+        ("au-mbs-august-2026-raw-object-paths", mbs_source),
         ("au-pbs-historical-archive", pbs_source),
     ]:
         assert (

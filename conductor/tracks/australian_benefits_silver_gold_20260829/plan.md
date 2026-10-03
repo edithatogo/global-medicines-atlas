@@ -1634,13 +1634,14 @@
   Keep all 1,719 paths inside the maintainer-approved denominator and record
   their future re-entry trigger in
   `quality/qualifications/australian-m112-deferred-source-candidates-20261004.json`.
-- [x] Defer 33 further candidates with distinct source-rights or B1/projection
-  lineage gaps: the MBS August raw object and ten projections, the PBS archive
-  raw object and projection, and 20 utilisation objects. Keep the seven other
-  MBS raw candidates in the active reconciliation remainder; the supplemental
+- [x] Defer 34 further candidate paths with distinct source-rights or
+  B1/projection lineage gaps: both August MBS raw path aliases and ten
+  projections, the PBS archive raw object and projection, and 20 utilisation
+  objects. Keep the other six MBS raw candidates in the active reconciliation
+  remainder; the supplemental
   register makes no admission or licensing claim.
   See `quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json`.
-- [ ] Reconcile the seven remaining MBS raw candidates against their exact
+- [ ] Reconcile the six remaining MBS raw candidates against their exact
   current receipts, maintainer authorizations, B1 provenance, and public
   readbacks, then complete only the downstream gates evidenced for them.
 - [ ] Resolve the remaining 92 raw and 12 projection candidates without direct
