@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+import pytest
 from fastapi.testclient import TestClient
 
 from global_medicines_atlas.platinum_v2_api import create_v2_app
@@ -154,6 +155,67 @@ def test_v2_transport_preserves_all_requested_dimensions_and_version() -> None:
         V2EvidenceDimension.TERMINOLOGY,
     )
     assert response.headers["cache-control"].startswith("public")
+
+
+@pytest.mark.parametrize(
+    "accept",
+    [
+        "application/json",
+        "application/*",
+        "*/*",
+        "text/html, application/json;q=0.8",
+    ],
+)
+def test_v2_json_representation_negotiates_accepted_media_ranges(
+    accept: str,
+) -> None:
+    client, _ = _client()
+    response = client.get(
+        "/api/v2/comparisons",
+        params=_params(),
+        headers={"accept": accept},
+    )
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("application/json")
+    assert "accept" in response.headers["vary"].lower()
+
+
+@pytest.mark.parametrize(
+    "accept",
+    [
+        "text/html",
+        "application/json;q=0, */*;q=1",
+        "*/*;q=0",
+    ],
+)
+def test_v2_rejects_unacceptable_json_representation(accept: str) -> None:
+    client, _ = _client()
+    response = client.get(
+        "/api/v2/comparisons",
+        params=_params(),
+        headers={"accept": accept},
+    )
+
+    assert response.status_code == 406
+    assert response.content == b""
+    assert response.headers["cache-control"] == "no-store"
+    assert response.headers["vary"] == "Accept"
+
+
+def test_v2_openapi_declares_not_acceptable_and_docs_stay_html() -> None:
+    client, _ = _client()
+    schema = client.get("/api/v2/openapi.json").json()
+    docs = client.get("/api/v2/docs", headers={"accept": "text/html"})
+
+    assert (
+        schema["paths"]["/api/v2/comparisons"]["get"]["responses"]["406"][
+            "description"
+        ]
+        == "The request does not accept application/json."
+    )
+    assert docs.status_code == 200
+    assert docs.headers["content-type"].startswith("text/html")
 
 
 def test_v2_transport_rejects_duplicate_dimension_with_v2_error() -> None:

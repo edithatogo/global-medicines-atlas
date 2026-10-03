@@ -6,11 +6,39 @@ import hashlib
 
 import pytest
 
+from global_medicines_atlas.http_content_negotiation import accepts_json
 from global_medicines_atlas.platinum_api_contract import (
     ApiContractError,
     make_api_observation,
     observe_api_exchange,
 )
+
+
+@pytest.mark.parametrize(
+    ("accept_header", "expected_acceptance"),
+    [
+        (None, "accepted"),
+        ("", "accepted"),
+        ("application/json", "accepted"),
+        ("application/json;q=0.4, application/json;q=0.8", "accepted"),
+        ("APPLICATION/JSON; charset=utf-8", "accepted"),
+        ("application/*", "accepted"),
+        ("*/*", "accepted"),
+        ("text/html, application/json;q=0.8", "accepted"),
+        ("application/json;q=0, */*;q=1", "rejected"),
+        ("application/json;q=0.000, application/*;q=0.4", "rejected"),
+        ("text/html", "rejected"),
+        ("*/*;q=0", "rejected"),
+        ("application/json;q=1.001", "rejected"),
+        ("application/json;q=NaN", "rejected"),
+        ("application/json;q=0.5;q=1", "rejected"),
+        ("application/json; unsupported", "rejected"),
+    ],
+)
+def test_json_accept_negotiation_obeys_media_specificity_and_quality(
+    accept_header: str | None, expected_acceptance: str
+) -> None:
+    assert accepts_json(accept_header) is (expected_acceptance == "accepted")
 
 
 def test_observation_is_deterministic_and_excludes_response_payload() -> None:

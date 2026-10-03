@@ -11,6 +11,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import AwareDatetime, ValidationError
 
+from .http_content_negotiation import install_json_accept_negotiation
 from .platinum_v2_contracts import (
     V2_API_BASE_PATH,
     V2_API_VERSION,
@@ -56,6 +57,7 @@ _ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
     400: {"model": V2ErrorEnvelope},
     422: {"model": V2ErrorEnvelope},
     503: {"model": V2ErrorEnvelope},
+    406: {"description": "The request does not accept application/json."},
 }
 
 
@@ -164,6 +166,7 @@ def create_v2_app(service: V2ComparisonService) -> FastAPI:
         openapi_url=f"{V2_API_BASE_PATH}/openapi.json",
         redoc_url=None,
     )
+    install_json_accept_negotiation(app, api_base_path=V2_API_BASE_PATH)
 
     def request_validation_error(
         request: Request, error: Exception

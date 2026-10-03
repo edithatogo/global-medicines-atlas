@@ -2294,6 +2294,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -2411,6 +2412,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -2499,6 +2501,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -2537,6 +2540,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -2644,6 +2648,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -2673,6 +2678,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -2719,6 +2725,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -2807,6 +2814,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -2917,6 +2925,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -2980,6 +2989,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -3012,6 +3022,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
@@ -3081,6 +3092,7 @@
               "$ref": "#/components/schemas/ErrorEnvelope"
             }
           },
+          "406": {},
           "422": {
             "application/json": {
               "$ref": "#/components/schemas/ErrorEnvelope"
