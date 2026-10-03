@@ -587,3 +587,12 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] Continue only when a source owner provides substantive guidance or the
   authorized endpoint/transport materially changes. No follow-ups were sent;
   rights, acquisition, and acceptance gates remain unchanged.
+
+## Archived donor notice disposition (2026-10-04)
+
+- [x] Record the maintainer's direction to keep both donor repositories
+  archived and defer public successor-notice updates. The prepared wording
+  remains local; no donor repository, tag, release, or dataset was mutated.
+- [ ] Revisit only after a separate explicit authorization for the public
+  notice change. This documentation decision does not change Australian
+  federation acceptance or Stable v1 gates.

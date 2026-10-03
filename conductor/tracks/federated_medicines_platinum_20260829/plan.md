@@ -223,16 +223,16 @@
   blobs, GitHub Release collections and tags, plus anonymous current MBS/PBS
   successor dataset metadata. Record the exact observations in
   `quality/qualifications/australian-donor-successor-link-readback-20261004.json`.
-- [~] Keep the acceptance task open: existing README-to-notice and notice-to-GMA
-  links resolve, but both external notices still falsely say the repositories
-  are unarchived and only name historical successor dataset revisions. The
-  scraper `v0.1` tag predates successor documentation; neither repository has
-  GitHub Release objects. Refreshing public content inside either archived
-  repository requires explicit maintainer authorization and has not been done.
-  A copy-ready notice draft now identifies the exact public MBS/PBS dataset
-  revisions observed on 2026-10-04 and preserves the historical `v0.1` tag;
-  it is proposal text only and does not change either repository or close the
-  donor compatibility acceptance task. See `docs/migrations/australian-donor-successors.md`.
+- [x] Apply the maintainer's 2026-10-04 direction to keep both donor
+  repositories archived and defer public notice updates. The copy-ready draft
+  remains local; neither repository, tag, release nor dataset was changed.
+  See `docs/migrations/australian-donor-successors.md`.
+- [~] Keep donor compatibility acceptance open: both external notices still
+  falsely say the repositories are unarchived and only name historical
+  successor dataset revisions. The scraper `v0.1` tag predates successor
+  documentation; neither repository has GitHub Release objects. The accepted
+  deferral is not authorization to alter those public artifacts and does not
+  satisfy this acceptance task.
 
 ## Phase 5: Research exports and qualification (AC-07, AC-08)
 
