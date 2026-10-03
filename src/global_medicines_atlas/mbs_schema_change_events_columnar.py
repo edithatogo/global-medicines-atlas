@@ -43,6 +43,7 @@ _COHORT = pa.struct([
             "b1_sha256",
             "b2_sha256",
             "scope_id",
+            "cohort",
             "evidence_class",
             "observed_at",
         )
@@ -100,6 +101,7 @@ def _cohort(
         "b1_sha256": snapshot.b1_sha256,
         "b2_sha256": snapshot.b2_sha256,
         "scope_id": snapshot.scope_id,
+        "cohort": snapshot.cohort,
         "evidence_class": cohort.evidence_class,
         "observed_at": snapshot.observed_at.isoformat(),
         "source_record_count": cohort.source_record_count,

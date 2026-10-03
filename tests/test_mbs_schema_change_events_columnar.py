@@ -39,6 +39,8 @@ def test_event_projection_roundtrips_deterministically_with_denominators():
     assert summary["event_count"] == len(value.events)
     assert summary["historical"]["source_id"] == "au-mbs"
     assert summary["historical"]["table"] == "fees"
+    assert summary["historical"]["cohort"] == "synthetic"
+    assert summary["current"]["cohort"] == "synthetic"
     assert summary["historical"]["observed_at"] == (
         value.historical.snapshot.observed_at.isoformat()
     )
