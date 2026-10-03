@@ -96,6 +96,23 @@ def test_current_donor_successor_readback_preserves_unresolved_gates() -> None:
     assert document["boundaries"]["australian_federation_accepted"] is False
 
 
+def test_proposed_successor_notice_keeps_historical_archive_links() -> None:
+    path = ROOT / "docs/migrations/australian-donor-successors.md"
+    document = path.read_text(encoding="utf-8")
+
+    assert (
+        "https://huggingface.co/datasets/edithatogo/"
+        "australian-mbs-source-archive/tree/"
+        "4d1dae488ac43522f20e8320a8b2a56bf9138341"
+    ) in document
+    assert (
+        "https://huggingface.co/datasets/edithatogo/"
+        "australian-pbs-source-archive/tree/"
+        "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+    ) in document
+    assert "current successor dataset heads" in document
+
+
 def _git(repository: Path, *arguments: str) -> str:
     executable = shutil.which("git")
     if executable is None:

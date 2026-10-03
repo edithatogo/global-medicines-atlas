@@ -67,10 +67,17 @@ should remain historical; do not move or replace it.
 > - PBS source archive: [`edithatogo/australian-pbs-source-archive` at
 >   `48fd7345fb09277bb5b85644dba72804633a2abb`](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive/tree/48fd7345fb09277bb5b85644dba72804633a2abb).
 >
-> These are immutable dataset revisions, not a promise of complete or
-> continuously current coverage, and this notice does not state a source
-> licence or expand reuse rights. MBS service-benefit evidence remains
-> distinct from PBS funding/formulary, regulatory, and terminology evidence.
+> Frozen historical donor evidence remains directly available at the
+> [MBS archive revision `4d1dae488ac43522f20e8320a8b2a56bf9138341`](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/4d1dae488ac43522f20e8320a8b2a56bf9138341)
+> and the [PBS archive revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`](https://huggingface.co/datasets/edithatogo/australian-pbs-source-archive/tree/31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7).
+> These immutable baseline revisions preserve historical donor material;
+> they do not identify the current successor dataset heads.
+>
+> The current successor revisions above are immutable dataset revisions, not
+> a promise of complete or continuously current coverage, and this notice does
+> not state a source licence or expand reuse rights. MBS service-benefit
+> evidence remains distinct from PBS funding/formulary, regulatory, and
+> terminology evidence.
 > Historical donor archives remain available at the separately documented
 > baseline revisions; later successor dataset revisions do not rewrite that
 > history. Dataset publication is performed only by the governed GitHub
