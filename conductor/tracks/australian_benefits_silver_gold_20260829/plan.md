@@ -200,15 +200,20 @@
   Read-only pinned workbook run `33305281887` passed. Metadata receipt and
   exact summary digest retained; no dataset publication or semantic promotion.
 
-- [~] Write failing golden, property, malformed-input, schema-drift,
+- [x] Write failing golden, property, malformed-input, schema-drift,
   determinism, decimal/currency, date, formula-error, duplicate, and lineage
   tests for each MBS table.
   XML candidate tests cover every field, all six destinations, exact decimal
   overflow/scale rejection, explicit dates, duplicate item occurrences,
   receipt mismatch, bounded batching and deterministic Parquet round trips.
-  Legacy annotations, temporal changes and publication tests remain pending.
-- [~] Confirm the intended failure before implementation.
-  Missing `mbs_silver` module observed for the XML table slice.
+  Workbook tests retain legacy annotations, formulas, errors and unsupported
+  date semantics; historical change-event and publication suites cover their
+  respective synthetic contracts. The combined affected set passes 144 tests
+  on current main. This is fixture and candidate-code evidence; real-source
+  qualification remains separate.
+- [x] Confirm the intended failure before implementation. The XML table tests
+  originally failed because `mbs_silver` was absent; historical change-event
+  projection tests likewise failed collection before their module existed.
 - [~] Implement streaming source-faithful MBS service, hierarchy, description,
   fee/benefit, participant, and legacy annotation tables.
   XML candidates use the existing 9 MB bounded parser and at most 4,096 rows
