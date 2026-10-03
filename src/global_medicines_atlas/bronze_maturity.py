@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
+from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal, cast
 
@@ -87,6 +88,31 @@ NORPD_AUTHORIZATION_RELATIVE = (
 )
 NORPD_WORKFLOW_RUN = "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36870401810"
 NORDIC_AUTHORIZED_SOURCE_COUNT = 3
+OPEN_MEDIC_SOURCE_ID = "fr-open-medic"
+OPEN_MEDIC_QUALIFICATION_RELATIVE = (
+    "quality/qualifications/open-medic-all-release-bronze-20260827.json"
+)
+OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE = (
+    "quality/qualifications/open-medic-bronze-release-manifest-v1.json"
+)
+OPEN_MEDIC_RELEASE_MANIFEST_SHA256 = (
+    "238896393567936cae98b2014b85b1597d5b8cfd52b8562e1cf20e5564ff0df6"
+)
+OPEN_MEDIC_ACQUISITION_AUTHORIZATION_RELATIVE = "quality/qualifications/additional-utilisation-acquisition-authorization.json"
+OPEN_MEDIC_RIGHTS_DISPOSITION_RELATIVE = (
+    "quality/qualifications/source-rights-disposition.json"
+)
+OPEN_MEDIC_RIGHTS_LEDGER_RELATIVE = (
+    "quality/qualifications/source-rights-review-ledger.json"
+)
+OPEN_MEDIC_DATASET = "edithatogo/global-medicines-atlas-open-medic-20260821"
+OPEN_MEDIC_REVISION = "d19f7a66e35c58c557615bffa456856b485b7edc"
+OPEN_MEDIC_RELEASE_YEARS = tuple(range(2014, 2026))
+OPEN_MEDIC_PROMPT_ID = 34
+OPEN_MEDIC_PUBLIC_MANIFEST_FILE_COUNT = 24
+OPEN_MEDIC_PUBLIC_MANIFEST_SHA256 = (
+    "5a08e2eb4e99ec0e95f596a384df22007ca67b9df311a7af9b285f55eada0578"
+)
 AUTHORITIES = {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -248,6 +274,9 @@ def _is_successful_bronze_receipt(
         ),
         "global-medicines-atlas.norpd-live-private-bronze-qualification": lambda: (
             _is_successful_norpd_receipt(root, receipt, source_id)
+        ),
+        "global-medicines-atlas.open-medic-all-release-bronze-qualification": lambda: (
+            _is_successful_open_medic_receipt(root, receipt, source_id)
         ),
     }
     if schema_id in specialized:
@@ -527,6 +556,342 @@ def _is_successful_norpd_receipt(
         and norway.get("internal_retention_authorized") is True
         and norway.get("public_release_authorized") is False
         and norway.get("external_publication_authorized") is False
+    )
+
+
+def _source_entry(
+    root: Path, relative: str, collection: str, source_id: str
+) -> Mapping[str, Any] | None:
+    """Return one unique source-specific row from a governed JSON ledger."""
+
+    try:
+        document = json.loads((root / relative).read_text(encoding="utf-8"))
+    except OSError, json.JSONDecodeError:
+        return None
+    if not isinstance(document, Mapping):
+        return None
+    typed_document = cast("Mapping[str, Any]", document)
+    rows = typed_document.get(collection)
+    if not isinstance(rows, list):
+        return None
+    matches: list[Mapping[str, Any]] = []
+    for row in cast("list[object]", rows):
+        if isinstance(row, Mapping):
+            candidate = cast("Mapping[str, Any]", row)
+            if candidate.get("source_id") == source_id:
+                matches.append(candidate)
+    if len(matches) != 1:
+        return None
+    return matches[0]
+
+
+def _valid_open_medic_sha256(value: object) -> bool:
+    """Return whether value is a lowercase SHA-256 digest."""
+
+    return (
+        isinstance(value, str)
+        and len(value) == SHA256_HEX_LENGTH
+        and all(char in "0123456789abcdef" for char in value)
+    )
+
+
+def _valid_open_medic_positive_count(value: object) -> bool:
+    """Reject bools as counts while requiring a positive integer."""
+
+    return isinstance(value, int) and not isinstance(value, bool) and value > 0
+
+
+def _valid_open_medic_release_item(item: object) -> bool:
+    """Require one accepted release with distinct content identities."""
+
+    if not isinstance(item, Mapping):
+        return False
+    row = cast("Mapping[str, Any]", item)
+    identity_valid = (
+        isinstance(row.get("year"), int)
+        and not isinstance(row.get("year"), bool)
+        and row.get("admission") == "accepted"
+    )
+    digests_valid = all(
+        _valid_open_medic_sha256(row.get(name))
+        for name in (
+            "acquisition_id",
+            "payload_sha256",
+            "source_records_sha256",
+        )
+    )
+    counts_valid = all(
+        _valid_open_medic_positive_count(row.get(name))
+        for name in ("payload_byte_count", "source_record_count")
+    )
+    return identity_valid and digests_valid and counts_valid
+
+
+def _open_medic_release_items(
+    receipt: Mapping[str, Any],
+) -> list[Mapping[str, Any]] | None:
+    """Return all valid annual rows in their declared release order."""
+
+    items = receipt.get("items")
+    if not isinstance(items, list):
+        return None
+    raw_items = cast("list[object]", items)
+    if any(not _valid_open_medic_release_item(item) for item in raw_items):
+        return None
+    rows = cast("list[Mapping[str, Any]]", raw_items)
+    years = [row["year"] for row in rows]
+    acquisition_ids = [row["acquisition_id"] for row in rows]
+    payload_digests = [row["payload_sha256"] for row in rows]
+    release_count = len(OPEN_MEDIC_RELEASE_YEARS)
+    release_set_valid = (
+        years == list(OPEN_MEDIC_RELEASE_YEARS)
+        and len(set(acquisition_ids)) == release_count
+        and len(set(payload_digests)) == release_count
+        and len({row["source_records_sha256"] for row in rows}) == release_count
+    )
+    return rows if release_set_valid else None
+
+
+def _open_medic_release_manifest_identity_valid(
+    manifest: Mapping[str, Any],
+) -> bool:
+    """Require a release manifest bound to the approved public archive."""
+
+    return all((
+        manifest.get("schema_id")
+        == "global-medicines-atlas.open-medic-bronze-release-manifest",
+        manifest.get("schema_version") == 1,
+        manifest.get("source_id") == OPEN_MEDIC_SOURCE_ID,
+        manifest.get("public_dataset") == OPEN_MEDIC_DATASET,
+        manifest.get("immutable_revision") == OPEN_MEDIC_REVISION,
+        manifest.get("public_manifest_sha256")
+        == OPEN_MEDIC_PUBLIC_MANIFEST_SHA256,
+    ))
+
+
+def _open_medic_manifest_release_items(
+    manifest: Mapping[str, Any],
+) -> list[Mapping[str, Any]] | None:
+    """Project validated release records from the pinned manifest."""
+
+    releases = manifest.get("releases")
+    if not isinstance(releases, list):
+        return None
+    raw_releases = cast("list[object]", releases)
+    if len(raw_releases) != len(OPEN_MEDIC_RELEASE_YEARS):
+        return None
+    release_items: list[Mapping[str, Any]] = []
+    receipt_digests: list[str] = []
+    expected_item_keys = (
+        "year",
+        "payload_sha256",
+        "payload_byte_count",
+        "acquisition_id",
+        "admission",
+        "source_record_count",
+        "source_records_sha256",
+    )
+    for raw_release in raw_releases:
+        if not isinstance(raw_release, Mapping):
+            return None
+        release = cast("Mapping[str, Any]", raw_release)
+        digests_valid = all(
+            _valid_open_medic_sha256(release.get(key))
+            for key in (
+                "public_archive_receipt_sha256",
+                "public_archive_payload_sha256",
+            )
+        )
+        payload_matches = release.get(
+            "public_archive_payload_sha256"
+        ) == release.get("payload_sha256") and release.get(
+            "public_archive_payload_byte_count"
+        ) == release.get("payload_byte_count")
+        if not digests_valid or not payload_matches:
+            return None
+        receipt_digests.append(
+            cast("str", release["public_archive_receipt_sha256"])
+        )
+        release_items.append({
+            key: release.get(key) for key in expected_item_keys
+        })
+    release_identity_valid = [
+        item.get("year") for item in release_items
+    ] == list(OPEN_MEDIC_RELEASE_YEARS) and len(set(receipt_digests)) == len(
+        OPEN_MEDIC_RELEASE_YEARS
+    )
+    return release_items if release_identity_valid else None
+
+
+def _open_medic_expected_release_items(
+    root: Path,
+) -> list[Mapping[str, Any]] | None:
+    """Load release identities from the content-bound qualification manifest."""
+
+    try:
+        raw_manifest = (
+            root / OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE
+        ).read_bytes()
+        document = json.loads(raw_manifest)
+    except OSError, json.JSONDecodeError:
+        return None
+    manifest_digest_valid = (
+        sha256(raw_manifest).hexdigest() == OPEN_MEDIC_RELEASE_MANIFEST_SHA256
+    )
+    if not manifest_digest_valid or not isinstance(document, Mapping):
+        return None
+    manifest = cast("Mapping[str, Any]", document)
+    if not _open_medic_release_manifest_identity_valid(manifest):
+        return None
+    return _open_medic_manifest_release_items(manifest)
+
+
+def _open_medic_receipt_scope_valid(
+    receipt: Mapping[str, Any], items: list[Mapping[str, Any]]
+) -> bool:
+    """Match the exact linked archive, completeness boundary, and totals."""
+
+    release_count = len(OPEN_MEDIC_RELEASE_YEARS)
+    summary_counts_valid = all(
+        isinstance(receipt.get(name), int)
+        and not isinstance(receipt.get(name), bool)
+        and receipt.get(name) == release_count
+        for name in (
+            "accepted_admission_count",
+            "release_count",
+            "recovered_acquisition_count",
+            "source_record_projection_count",
+            "recovered_source_record_projection_count",
+            "source_record_parquet_pairs_byte_identical",
+        )
+    )
+    totals_valid = (
+        receipt.get("payload_byte_count")
+        == sum(row["payload_byte_count"] for row in items)
+        and receipt.get("source_record_count")
+        == sum(row["source_record_count"] for row in items)
+        and _valid_open_medic_positive_count(receipt.get("payload_byte_count"))
+        and _valid_open_medic_positive_count(receipt.get("source_record_count"))
+    )
+    return all((
+        receipt.get("schema_version") == 1,
+        not isinstance(receipt.get("schema_version"), bool),
+        receipt.get("source_id") == OPEN_MEDIC_SOURCE_ID,
+        receipt.get("evidence_class") == "live_public_archive_reuse",
+        receipt.get("source_live_qualified") is True,
+        receipt.get("source_bytes_committed") is False,
+        receipt.get("existing_public_archive_verified") is True,
+        receipt.get("external_publication_performed") is False,
+        receipt.get("prompt_id") == OPEN_MEDIC_PROMPT_ID,
+        receipt.get("prompt_complete") is False,
+        receipt.get("rights") == "Etalab-2.0",
+        receipt.get("public_dataset") == OPEN_MEDIC_DATASET,
+        receipt.get("immutable_revision") == OPEN_MEDIC_REVISION,
+        receipt.get("reuse_disposition") == "link",
+        receipt.get("reuse_revision") == OPEN_MEDIC_REVISION,
+        _valid_open_medic_sha256(receipt.get("public_manifest_sha256")),
+        receipt.get("public_manifest_sha256")
+        == OPEN_MEDIC_PUBLIC_MANIFEST_SHA256,
+        receipt.get("public_manifest_files_verified")
+        == OPEN_MEDIC_PUBLIC_MANIFEST_FILE_COUNT,
+        summary_counts_valid,
+        totals_valid,
+        receipt.get("canonical_medicine_identity_claimed") is False,
+        receipt.get("cross_country_comparability_claimed") is False,
+        receipt.get("regulatory_approval_claimed") is False,
+    ))
+
+
+def _open_medic_rights_valid(root: Path) -> bool:
+    """Require matching source-specific acquisition and reuse approvals."""
+
+    source_id = OPEN_MEDIC_SOURCE_ID
+    authorization = _source_entry(
+        root,
+        OPEN_MEDIC_ACQUISITION_AUTHORIZATION_RELATIVE,
+        "sources",
+        source_id,
+    )
+    disposition = _source_entry(
+        root,
+        OPEN_MEDIC_RIGHTS_DISPOSITION_RELATIVE,
+        "entries",
+        source_id,
+    )
+    rights = _source_entry(
+        root,
+        OPEN_MEDIC_RIGHTS_LEDGER_RELATIVE,
+        "entries",
+        source_id,
+    )
+    try:
+        catalog = json.loads(
+            (root / CATALOG_RELATIVE).read_text(encoding="utf-8")
+        )
+    except OSError, json.JSONDecodeError:
+        return False
+    if not isinstance(catalog, Mapping):
+        return False
+    typed_catalog = cast("Mapping[str, Any]", catalog)
+    sources = typed_catalog.get("sources")
+    if not isinstance(sources, list):
+        return False
+    catalog_matches: list[Mapping[str, Any]] = []
+    for row in cast("list[object]", sources):
+        if isinstance(row, Mapping):
+            candidate = cast("Mapping[str, Any]", row)
+            if candidate.get("source_id") == source_id:
+                catalog_matches.append(candidate)
+    if len(catalog_matches) != 1:
+        return False
+    source = catalog_matches[0]
+    expected_status = (
+        f"approved_public_exact_inventory:{OPEN_MEDIC_DATASET}"
+        f"@{OPEN_MEDIC_REVISION}"
+    )
+    if authorization is None or disposition is None or rights is None:
+        return False
+    return all((
+        authorization.get("decision_status") == "approved_public",
+        authorization.get("acquisition_authorized") is True,
+        authorization.get("internal_retention_authorized") is True,
+        authorization.get("public_release_authorized") is True,
+        authorization.get("external_publication_authorized") is True,
+        disposition.get("catalogue_rights_status") == expected_status,
+        disposition.get("recommended_disposition") == "approved_public_source",
+        disposition.get("internal_acquisition")
+        == "approved_for_exact_reviewed_scope",
+        disposition.get("public_derived_release")
+        == "approved_for_exact_manifest",
+        disposition.get("blocker") is None,
+        rights.get("disposition") == "approved_public_source",
+        rights.get("redistribute") == "permitted",
+        rights.get("transform") == "permitted",
+        rights.get("publish_source_bytes") == "permitted",
+        rights.get("maintainer_licence_approved") is True,
+        rights.get("maintainer_publication_approved") is True,
+        rights.get("public_source_eligible") is True,
+        rights.get("public_derived_eligible") is True,
+        rights.get("sensitivity") == "public",
+        source.get("rights_status") == expected_status,
+    ))
+
+
+def _is_successful_open_medic_receipt(
+    root: Path, receipt: Mapping[str, Any], source_id: str
+) -> bool:
+    """Require the exact approved 12-release Open Medic Bronze receipt."""
+
+    if source_id != OPEN_MEDIC_SOURCE_ID:
+        return False
+    expected_items = _open_medic_expected_release_items(root)
+    if expected_items is None or receipt.get("items") != expected_items:
+        return False
+    items = _open_medic_release_items(receipt)
+    if items is None:
+        return False
+    return _open_medic_receipt_scope_valid(receipt, items) and (
+        _open_medic_rights_valid(root)
     )
 
 

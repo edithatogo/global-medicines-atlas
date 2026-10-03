@@ -978,3 +978,36 @@ for credentialed or rights-unresolved sources.
 - [x] Validate the changed rights/cohort/maturity contracts (140 passed),
   Ruff, `ty`, BasedPyright, routine Goblin, context/ecosystem validators, and
   exact-head protected CI before merge.
+
+## 2026-10-03 Open Medic receipt reconciliation
+
+- [x] Recognize the existing all-release Open Medic Bronze receipt only under
+  its source-specific acquisition authorization, approved exact public
+  revision, source-rights disposition, and maintainer-reviewed rights ledger.
+  The validator checks all 12 accepted annual releases, distinct acquisition,
+  payload and source-record digests, archive totals, source-record projection
+  parity, and explicit non-claims. No acquisition, rights decision, or
+  publication was performed.
+- [x] Regenerate the supplemental direct-receipt cohort and future-source
+  ledger. The qualified receipt cohort moves from 27 to 28 and deferred current
+  scope from 130 to 129. The full-scope evaluator remains at 42/157 landing
+  evidence, with 115 missing; 13/14 dimensions are evidenced and completeness
+  and M5 remain blocked. Phase 5 remains incomplete.
+- [x] Review hardening rejects non-integer summary counts and duplicate annual
+  source-record digests. A negative test confirmed numeric type drift is
+  rejected.
+- [x] Address the hosted Codecov patch result by adding malformed-ledger,
+  missing/duplicate identity, and invalid release-shape negative controls.
+  That test-only follow-up measured 97.94% combined coverage locally; hosted
+  patch coverage passed on the corresponding PR head before the subsequent
+  manifest-binding fix.
+- [x] Resolve the Codex review finding that release-row digests were syntax-
+  checked but not bound to the pinned public archive. Verify the exact public
+  manifest digest and its 12 receipt/payload entries without fetching archive
+  payload bytes; commit a separately content-addressed expected Bronze release
+  manifest and require an exact per-row match for payload, acquisition,
+  admission, count, and source-record identities.
+- [x] Run focused qualification tests and the full local Test-Goblin profile.
+  The full profile reports 5,417 passed, 2 uv-version failures, 1 optional
+  skip, and 96.74% coverage; both failures pass under the required uv 0.11.29.
+- [ ] Merge the scoped pull request after all required hosted checks pass.

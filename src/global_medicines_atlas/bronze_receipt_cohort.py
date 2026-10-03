@@ -37,6 +37,12 @@ QUALIFICATION_AUTHORIZATION_INPUTS = (
     CMS_RECORDS_RELATIVE,
     "quality/qualifications/nice-utilisation-acquisition-authorization.json",
     "quality/qualifications/nordic-utilisation-acquisition-authorization.json",
+    "quality/qualifications/additional-utilisation-acquisition-authorization.json",
+    "quality/qualifications/source-rights-disposition.json",
+    "quality/qualifications/source-rights-review-ledger.json",
+)
+QUALIFICATION_SPECIALIZED_INPUTS = (
+    "quality/qualifications/open-medic-bronze-release-manifest-v1.json",
 )
 QUALIFICATION_CODE_INPUTS = (
     "src/global_medicines_atlas/bronze_maturity.py",
@@ -141,6 +147,7 @@ def _qualification_dependency_manifest(
     """
 
     paths: set[str] = set(QUALIFICATION_AUTHORIZATION_INPUTS)
+    paths.update(QUALIFICATION_SPECIALIZED_INPUTS)
     paths.update(QUALIFICATION_CODE_INPUTS)
     paths.update(_receipt_candidate_inputs(root, current_scope_ids))
     paths.update(_scanned_evaluator_inputs(root))

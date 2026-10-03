@@ -3,10 +3,10 @@
 This report qualifies only the listed source-specific successful receipts. It does not redefine current Bronze scope, establish global coverage, or clear Stable v1 M5.
 
 - Cohort: `bronze-receipt-backed-cohort-v1`
-- Receipt-qualified sources: `27`
-- Deferred current-scope sources: `130`
+- Receipt-qualified sources: `28`
+- Deferred current-scope sources: `129`
 - Full-scope evaluator landing evidence: `42`
-- Deferred but queue-marked landed: `15`
+- Deferred but queue-marked landed: `14`
 - Full-scope evaluator missing landing evidence: `115`
 - Current-scope Bronze status: `blocked`
 - Current-scope completeness: `blocked`
@@ -22,6 +22,7 @@ The JSON qualification is [`quality/qualifications/bronze-receipt-cohort-v1.json
 | eu-union-register | EU | Union Register of medicinal products | quality/qualifications/union-register-live-corpus-20260821.json |
 | fr-bdpm | FRA | Base de Donnees Publique des Medicaments | quality/qualifications/international-public-bronze-20260827.json |
 | fr-bdpm-smr-asmr | FRA | BDPM SMR ASMR and opinion links | quality/qualifications/international-public-bronze-20260827.json |
+| fr-open-medic | FRA | Open Medic interregime medicines expenditure | quality/qualifications/open-medic-all-release-bronze-20260827.json |
 | gb-emit | GBR | Electronic Market Information Tool | quality/qualifications/international-public-bronze-20260827.json |
 | gb-nhs-drug-tariff | GBR | NHS Drug Tariff | quality/qualifications/international-public-bronze-20260827.json |
 | gb-nice-medicines-utilisation | GBR | Use of NICE-appraised medicines | quality/qualifications/nice-utilisation-acquisition-success-20260821.json |
@@ -96,7 +97,6 @@ These sources remain in the original Bronze denominator. Their absence from the 
 | eu-ema-referrals | EU | EMA referral procedures | rights_blocked | source-specific retention and transformation rights unresolved: review_required | record source-specific retention and transformation rights |
 | eu-ema-safety-communications | EU | EMA safety communications | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
 | eu-spor-public-metadata | EU | SPOR public RMS/OMS metadata | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
-| fr-open-medic | FRA | Open Medic interregime medicines expenditure | landed_and_evidenced | All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, and published under the approved Etalab-2.0 decision. The exact public revision was linked through the reuse gate; all 22,148,373 source-native rows were projected and all 12 products were rebuilt byte-for-byte. Complete French medicines coverage remains unclaimed. | verify receipt freshness on schedule |
 | gb-mhra-products | GBR | MHRA Products | landed_and_evidenced | catalogue implementation claim has committed qualification evidence | verify receipt freshness on schedule |
 | gb-mhra-yellow-card | GBR | Yellow Card Scheme public outputs | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
 | gb-nice-ta | GBR | Technology appraisal guidance | landed_and_evidenced | catalogue implementation claim has committed qualification evidence | verify receipt freshness on schedule |
