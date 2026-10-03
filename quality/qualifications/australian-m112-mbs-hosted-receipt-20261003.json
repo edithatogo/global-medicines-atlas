@@ -10,7 +10,7 @@
     "supersedes_decision_id": null
   },
   "boundaries": {
-    "credentials_used": false,
+    "credential_material_inspected_or_logged": false,
     "licensing_conclusion_made": false,
     "m112_federation_accepted": false,
     "public_mutation_performed_by_this_readback": false,

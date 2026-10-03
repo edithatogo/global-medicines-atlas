@@ -1549,3 +1549,5 @@
   `abcff8ebd1f624c4bbb0a87d903b184388c98254`. This is limited to 30 formulary
   releases and 3 spending resources; the later public dataset head is not claimed
   to have a matching raw digest receipt.
+
+- [x] Review correction: scope the credential boundary accurately. The GitHub receipt was read with the existing authenticated `gh` session; Hugging Face metadata reads were anonymous; no credential material was inspected or logged. See `quality/qualifications/australian-m112-mbs-hosted-receipt-20261003.json`.
