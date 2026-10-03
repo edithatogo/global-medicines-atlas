@@ -26,11 +26,11 @@ def test_additional_deferrals_preserve_scope_and_open_gates() -> None:
 
     assert register["scope"]["approved_candidate_denominator"] == 1_759
     assert register["scope"]["previously_deferred_candidate_paths"] == 1_719
-    assert register["scope"]["newly_deferred_candidate_paths"] == 34
-    assert register["scope"]["combined_deferred_candidate_paths"] == 1_753
+    assert register["scope"]["newly_deferred_candidate_paths"] == 40
+    assert register["scope"]["combined_deferred_candidate_paths"] == 1_759
     assert (
         register["scope"]["remaining_candidate_paths_for_active_reconciliation"]
-        == 6
+        == 0
     )
     assert register["scope"]["denominator_changed"] is False
     assert previous["scope"]["denominator_changed"] is False
@@ -44,9 +44,10 @@ def test_additional_deferrals_preserve_scope_and_open_gates() -> None:
         "au-pbs-historical-archive",
         "au-mbs-utilisation-rights-ledger",
         "au-pbs-utilisation-rights-ledger",
+        "au-mbs-six-exact-receipt-and-authorization-gaps",
     }
-    assert sum(row["candidate_paths"] for row in groups.values()) == 34
-    assert register["active_reconciliation_remainder"]["candidate_paths"] == 6
+    assert sum(row["candidate_paths"] for row in groups.values()) == 40
+    assert register["active_reconciliation_remainder"]["candidate_paths"] == 0
     assert register["active_reconciliation_remainder"]["candidate_class"] == (
         "raw_source_payload"
     )
@@ -159,10 +160,17 @@ def test_additional_deferrals_match_the_exact_current_candidate_inventory() -> (
             "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
         }
     ]
-    assert len(active_rows) == active["candidate_paths"] == 6
-    assert deferred_paths.isdisjoint(row["path"] for row in active_rows)
-
-    assert deferred_paths.isdisjoint(row["path"] for row in active_rows)
+    assert len(active_rows) == 6
+    assert active["candidate_paths"] == 0
+    newly_deferred = {
+        row["path"]
+        for group in groups.values()
+        for row in rows
+        if row["dataset"] == group["dataset"]
+        and group["path_selection"].get("kind") == "exact_paths"
+        and row["path"] in group["path_selection"]["paths"]
+    }
+    assert {row["path"] for row in active_rows} <= newly_deferred
 
 
 def test_deferred_groups_match_rights_and_evidence_crosswalks() -> None:
@@ -187,10 +195,26 @@ def test_deferred_groups_match_rights_and_evidence_crosswalks() -> None:
         ("au-mbs-august-2026-raw-object-paths", mbs_source),
         ("au-pbs-historical-archive", pbs_source),
     ]:
-        assert (
-            groups[key]["source_evidence"]
-            == dataset["source_specific_evidence"]
-        )
+        if key == "au-mbs-august-2026-raw-object-paths":
+            # The register corrects the historical crosswalk wording while
+            # retaining its first two exact authorization and receipt facts.
+            assert (
+                groups[key]["source_evidence"][:2]
+                == (dataset["source_specific_evidence"][:2])
+            )
+            assert (
+                "Both records retain their source-native accepted state"
+                in (groups[key]["source_evidence"][2])
+            )
+            assert (
+                "without treating either unreviewed record as accepted"
+                not in (groups[key]["reentry_trigger"])
+            )
+        else:
+            assert (
+                groups[key]["source_evidence"]
+                == dataset["source_specific_evidence"]
+            )
     assert (
         "23 existing data projections"
         in groups["au-mbs-existing-projections"]["reason"]

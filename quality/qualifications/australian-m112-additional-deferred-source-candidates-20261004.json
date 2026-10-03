@@ -8,9 +8,9 @@
     "approved_raw_paths": 1736,
     "approved_projection_paths": 23,
     "previously_deferred_candidate_paths": 1719,
-    "newly_deferred_candidate_paths": 34,
-    "combined_deferred_candidate_paths": 1753,
-    "remaining_candidate_paths_for_active_reconciliation": 6,
+    "newly_deferred_candidate_paths": 40,
+    "combined_deferred_candidate_paths": 1759,
+    "remaining_candidate_paths_for_active_reconciliation": 0,
     "denominator_changed": false
   },
   "evidence_inputs": [
@@ -37,6 +37,22 @@
     {
       "path": "quality/qualifications/australian-m112-deferred-source-candidates-20261004.json",
       "sha256": "1e2b174d7dd02ca566c106e73a24c8570da02a3455869e4d3a8669591a65c527"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
+      "sha256": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0"
+    },
+    {
+      "path": "quality/qualifications/australian-health-legacy-publication-authorization.json",
+      "sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da"
+    },
+    {
+      "path": "quality/qualifications/mbs-p7-storage-receipt-reconciliation-20261003.json",
+      "sha256": "cea3652a8fe43c1af159e30842cfcab33cb3f8ea228cf7be7ee949a0bfc41349"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+      "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b"
     }
   ],
   "additional_deferred_sources": [
@@ -55,7 +71,7 @@
       "source_evidence": [
         "The exact 2026-08-01 XML is authorized by the sole-maintainer record at issue #339 comment 5467052330; both nested receipts name source_id au-mbs, rights_state permitted, content SHA-256 c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565, and 8,293,331 bytes.",
         "The exact object has a durable GitHub Actions receipt at run 33296983154 and issue #340 comment 5467154799: anonymous digest verification passed at dataset revision 75f9f20a36ddb829dfe0ca88660664570782be02; temporary source bytes were removed after verification.",
-        "At the current pinned revision, the root manifest has 7 of the 8 candidate raw paths and omits the exact August XML path. Its nested acquisition manifests and receipts contain two accepted, unreviewed records for the same content ID, with distinct acquisition/decision IDs, different source Parquet digests, and data_acquired=false. This is a reconciliation conflict, not new permission or v4 admission.",
+        "At the current pinned revision, the root manifest has 7 of the 8 candidate raw paths and omits the exact August XML path. Its nested acquisition manifests and receipts contain two accepted, unreviewed records for the same content ID, with distinct acquisition/decision IDs, different source Parquet digests, and data_acquired=false. Both records retain their source-native accepted state, but neither completes the required landed-to-accepted chronology or establishes v4 admission; preserve both records while reconciling their competing acquisition and projection lineage.",
         "Metadata-only source archive receipt join: 8/8 raw candidate paths map to exact sidecar, nested source receipt, historic publication receipt, or exact legacy authorization by path/digest/size. The five ordinary source sidecars are within the already-recorded MBS source/category/domain bounds. This mapping does not claim anonymous byte verification for each current path. See quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json."
       ],
       "path_selection": {
@@ -65,7 +81,7 @@
           "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML"
         ]
       },
-      "reentry_trigger": "Reconcile the root manifest with the exact August acquisition, choose and receipt the canonical B1 event without treating either unreviewed record as accepted, then independently qualify its v4 lineage.",
+      "reentry_trigger": "Reconcile the root manifest and persisted acquisition/admission events, preserve both recorded accepted states and their unreviewed status, establish the required landed-to-accepted chronology and canonical projection lineage, then independently qualify v4 eligibility.",
       "current_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
       "path_alias_identity": {
         "paths": [
@@ -166,13 +182,109 @@
       },
       "reentry_trigger": "Reconcile each source ID with an explicit rights decision and each receipt with v4 source, category, and lineage requirements.",
       "current_revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a"
+    },
+    {
+      "group_id": "au-mbs-six-exact-receipt-and-authorization-gaps",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "candidate_paths": 6,
+      "raw_paths": 6,
+      "projection_paths": 0,
+      "source_ids": [
+        "au-mbs",
+        "au-mbs-p7-legacy-workbook"
+      ],
+      "rights_state": "Maintainer authorization covers source_id au-mbs and the monthly_schedule_xml, basic_service_description, and relative_value_guide categories within the declared mbsonline.gov.au domains; July 2025 and P7 donor payloads also have exact authorization. Current sidecars do not repeat a per-object authorization_ref or rights_state, and this reconciliation adds no new rights conclusion.",
+      "lineage_state": "exact public source hashes are joined for all six; persistent B1 receipt lineage and schema-era eligibility are incomplete for some paths; no v4 admission is established",
+      "reason": "All six remaining raw paths are now reconciled to exact current-tree blob IDs and byte counts, metadata-only receipt/authorization joins, and available anonymous SHA-256 evidence. The July 2025 XML and P7 workbook have prior hosted anonymous digest verification plus exact legacy authorization, but the referenced July 2025 v4 source-receipt file is absent locally and P7 date semantics remain unqualified. The four July 2026 BSD, monthly XML, and RVG objects have current anonymous hash-only readbacks matching their exact-revision sidecars. The existing maintainer authorization covers au-mbs and these categories/domains, but the sidecars omit per-object authorization_ref, rights_state, reuse_disposition, receipt_id, and acquisition_id, so they do not complete per-object B1 lineage or v4 admission. Preserve every accepted source-native state and defer all six pending the listed re-entry evidence.",
+      "source_evidence": [
+        "Current exact-revision metadata inventory quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json matches each of the six approved paths to its observed Git blob ID and byte count at MBS revision 40891976f77ee5e7688edceed25c9ac98a77547e.",
+        "The 2025-07 MBS XML has a prior hosted anonymous receipt at issue #340 comment 5461420439 and exact donor payload authorization in quality/qualifications/australian-health-legacy-publication-authorization.json. Its receipt join references silver/mbs/v4/2025-07-v3/source-receipt.json, but that file is absent from the local checkout; no current v4 receipt or admission is inferred.",
+        "The July 2024 P7 workbook has a prior hosted anonymous digest receipt and exact donor payload authorization. quality/qualifications/mbs-p7-storage-receipt-reconciliation-20261003.json explicitly says this is archive storage evidence only and source date semantics, source-origin acquisition, Bronze admission lifecycle, and M-112 federation acceptance are unqualified.",
+        "The July 2026 BSD CSV/XML, monthly MBS XML, and RVG have four exact-revision anonymous hash-only streams matching their sidecar digests and sizes in quality/qualifications/australian-m112-current-tree-object-identity-reconciliation-20261004.json. The raw source payloads were not persisted and source values were not inspected.",
+        "The existing maintainer authorization quality/qualifications/australian-mbs-harvest-publication-authorization.json explicitly covers source_id au-mbs and the monthly_schedule_xml, basic_service_description, and relative_value_guide categories on mbsonline.gov.au domains; it does not supply absent per-object receipt/acquisition identifiers or lifecycle fields. No new rights conclusion is made."
+      ],
+      "path_selection": {
+        "kind": "exact_paths",
+        "paths": [
+          "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+          "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+          "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+          "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+          "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+          "raw/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT"
+        ]
+      },
+      "per_path_identity": [
+        {
+          "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+          "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+          "git_blob_oid": "33b9ac313ff4a0f55168ae47556626fb0610a0bb",
+          "bytes": 8194522,
+          "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+          "sidecar_path": null,
+          "sidecar_sha256": null,
+          "anonymous_current_hash_match": false
+        },
+        {
+          "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+          "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+          "git_blob_oid": "d980eca2c5072dc2ddd4c41fda2e192af1a42ddf",
+          "bytes": 135983,
+          "source_sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+          "sidecar_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv.receipt.json",
+          "sidecar_sha256": "78d31e23a523816c434af921853b7d7bf3ac2eeed6ce92f8ded38a1f2a0fcc49",
+          "anonymous_current_hash_match": true
+        },
+        {
+          "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+          "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+          "git_blob_oid": "c373fe0ce2e68a5d027c17847f51ef14f1aeaa41",
+          "bytes": 615386,
+          "source_sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+          "sidecar_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml.receipt.json",
+          "sidecar_sha256": "c8e5631e97aac6cfd4dc16d3e411273d9b882ae8fb90c0778a2049d35499e320",
+          "anonymous_current_hash_match": true
+        },
+        {
+          "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+          "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+          "git_blob_oid": "a9d302b8a278f9e65659a1f5da09ded21723a239",
+          "bytes": 87727,
+          "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+          "sidecar_path": null,
+          "sidecar_sha256": null,
+          "anonymous_current_hash_match": false
+        },
+        {
+          "path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+          "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+          "git_blob_oid": "a5a23b30d9846630e81ffcc164c7217a2f7e67be",
+          "bytes": 8291891,
+          "source_sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+          "sidecar_path": "bronze/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML.receipt.json",
+          "sidecar_sha256": "01f052db621eb1a03ec08198cdcafbc04b8a98238fc06c391e788b7ec73112eb",
+          "anonymous_current_hash_match": true
+        },
+        {
+          "path": "raw/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT",
+          "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+          "git_blob_oid": "19b5444f406d5c97059b560719acd53a98583de9",
+          "bytes": 11865,
+          "source_sha256": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+          "sidecar_path": "bronze/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT.receipt.json",
+          "sidecar_sha256": "d1a8dfe4898acbcae5eb03e019ede01ad648d10bcf58c47b8d3fcba3e19f48f6",
+          "anonymous_current_hash_match": true
+        }
+      ],
+      "reentry_trigger": "Attach the existing source/category/domain authorization to each July 2026 object through its exact authorization_ref and complete persistent per-path B1 acquisition, source receipt, rights_state, and reuse_disposition fields; restore and verify the July 2025 v4 source receipt, qualify P7 date semantics, then perform independent per-object v4 review and consumer canaries.",
+      "current_revision": "40891976f77ee5e7688edceed25c9ac98a77547e"
     }
   ],
   "active_reconciliation_remainder": {
     "dataset": "edithatogo/australian-mbs-source-archive",
     "candidate_class": "raw_source_payload",
-    "candidate_paths": 6,
-    "selection": "The six raw candidate paths other than the two August aliases listed in the deferral group. Their receipts/authorizations remain candidates for focused per-object reconciliation; this register does not qualify or admit them."
+    "candidate_paths": 0,
+    "selection": "All eight MBS raw paths now have a recorded disposition in this future-source register: two August aliases in their existing group and the six exact paths in au-mbs-six-exact-receipt-and-authorization-gaps. The approved denominator remains unchanged; no source is admitted by this register."
   },
   "preserved_acceptance_gates": [
     "Any rights disposition remains a maintainer decision; this register does not supply one.",
@@ -188,5 +300,5 @@
     "consumer_canaries_performed": false,
     "m112_federation_accepted": false
   },
-  "status": "additional_source_and_lineage_blockers_explicitly_deferred_remaining_seven_mbs_raw_candidates_preserved_for_active_reconciliation"
+  "status": "all_current_candidate_paths_have_evidence_bound_disposition_remaining_rights_b1_and_v4_gates_open"
 }

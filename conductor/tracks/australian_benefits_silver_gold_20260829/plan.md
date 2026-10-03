@@ -1634,16 +1634,19 @@
   Keep all 1,719 paths inside the maintainer-approved denominator and record
   their future re-entry trigger in
   `quality/qualifications/australian-m112-deferred-source-candidates-20261004.json`.
-- [x] Defer 34 further candidate paths with distinct source-rights or
-  B1/projection lineage gaps: both August MBS raw path aliases and ten
-  projections, the PBS archive raw object and projection, and 20 utilisation
-  objects. Keep the other six MBS raw candidates in the active reconciliation
-  remainder; the supplemental
-  register makes no admission or licensing claim.
+- [x] Defer 34 candidate paths with distinct source-rights or B1/projection
+  lineage gaps: both August MBS raw path aliases and ten projections, the PBS
+  archive raw object and projection, and 20 utilisation objects. The later
+  six-path reconciliation records the remaining MBS raw candidates separately;
+  neither record makes an admission or new licensing claim.
   See `quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json`.
-- [ ] Reconcile the six remaining MBS raw candidates against their exact
-  current receipts, maintainer authorizations, B1 provenance, and public
-  readbacks, then complete only the downstream gates evidenced for them.
+- [x] Reconcile the six remaining MBS raw candidates to their exact current
+  tree identities, existing receipt/authorization joins, prior or current
+  anonymous digest evidence, and missing B1/rights/v4 fields. Defer all six in
+  the future-source register without changing the approved denominator. The
+  four July 2026 sidecars lack rights/reuse/authorization/acquisition fields;
+  the July 2025 v4 receipt reference is absent locally; and P7 date semantics
+  remain unqualified. Re-entry triggers preserve these gaps explicitly.
 - [ ] Resolve the remaining 92 raw and 12 projection candidates without direct
   SHA-256 evidence only after source-specific rights permit that work. The
   remaining MBS August admission history, utilisation rights, projection
