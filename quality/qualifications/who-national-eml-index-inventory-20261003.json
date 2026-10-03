@@ -9,7 +9,16 @@
   "index_content_type": "text/html; charset=utf-8",
   "inventory_method": "Parse only WHO index listing metadata and official WHO item-page links; do not request any linked national document or Download target.",
   "item_count": 167,
-  "inventory_sha256": "a9eb55838cae24d93ecbb612dedb24bb1ad8a293105088a877e58bda92d2bba8",
+  "source_bytes_downloaded": false,
+  "linked_document_bytes_requested": false,
+  "linked_document_bytes_retained": false,
+  "per_document_rights_reviewed": false,
+  "maintainer_acquisition_authorization": false,
+  "live_qualification_claimed": false,
+  "coverage_claimed": false,
+  "boundary": "The listed item pages and metadata locate candidate national/regional resources only. WHO describes a collection gathered from heterogeneous upstream sources; no rights conclusion, source-document acquisition, medicine coverage, or qualification is inferred.",
+  "items_digest_algorithm": "SHA-256 of UTF-8 JSON serialization of the items array using ensure_ascii=False, sort_keys=True, separators=(',', ':'); this is not the inventory file digest.",
+  "items_canonical_sha256": "a9eb55838cae24d93ecbb612dedb24bb1ad8a293105088a877e58bda92d2bba8",
   "items": [
     {
       "official_item_url": "https://www.who.int/publications/m/item/algeria--la-liste-des-m-dicaments-remboursables-par-la-s-curit--sociale-2023-(french)",
@@ -1180,13 +1189,5 @@
       "language_as_displayed": "Vietnamese",
       "displayed_index_date": "30 July 2024"
     }
-  ],
-  "source_bytes_downloaded": false,
-  "linked_document_bytes_requested": false,
-  "linked_document_bytes_retained": false,
-  "per_document_rights_reviewed": false,
-  "maintainer_acquisition_authorization": false,
-  "live_qualification_claimed": false,
-  "coverage_claimed": false,
-  "boundary": "The listed item pages and metadata locate candidate national/regional resources only. WHO describes a collection gathered from heterogeneous upstream sources; no rights conclusion, source-document acquisition, medicine coverage, or qualification is inferred."
+  ]
 }
