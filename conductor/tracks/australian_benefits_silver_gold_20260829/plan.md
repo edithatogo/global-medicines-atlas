@@ -706,16 +706,24 @@
   `quality/qualifications/australian-m112-denominator-decision-20260930.json`.
   This does not establish per-object source or rights membership, and no v4
   admission is inferred. A metadata-only audit mapped all 1,736 raw candidate paths to
-  pinned source manifests or the exact nested MBS receipt; 1,735 appear in the
-  dataset root manifests. Of 1,634 comparable tree SHA-256 values, all match
-  their manifest digests; 102 candidate paths lack a comparable tree digest.
-  The exact August 2026 MBS XML has prior source-specific authorization and a
-  durable anonymous hosted verification receipt. Its path is missing from the
-  current root manifest. Exact-revision metadata readback reconciles the two
-  accepted but unreviewed records as distinct append-only acquisition events
-  for the same raw source identity; their source-Parquet projection digests
-  differ and still require separate lineage. Root-manifest completeness,
-  projection lineage, and v4 admission remain open. Upstream terms remain
+  pinned source manifests or the exact nested MBS receipt. A subsequent anonymous
+  API tree readback at two identical scans found all 1,759 frozen raw/projection
+  paths present across the five approved producer datasets (zero missing);
+  repository root manifests are not complete tree inventories. Of 1,634
+  comparable tree SHA-256 values, all match their manifest digests; 102
+  candidate paths lack a comparable tree digest. In the current MBS source
+  archive revision, the exact August 2026 MBS XML digest path is present in the
+  tree and referenced by the nested run manifest with matching SHA-256 and byte
+  count, although it is omitted from the root manifest. The current nested run
+  reports admission `accepted` but reviewer status `unreviewed`, while its
+  bundle manifest says `data_acquired: false`; this metadata does not close
+  canonical B1 acquisition/receipt reconciliation or M-112 acceptance. The
+  previously reconciled two accepted but unreviewed records remain distinct
+  append-only acquisition events for the same raw source identity; their
+  source-Parquet projection digests differ and still require separate lineage.
+  Projection lineage and v4 admission remain open. See
+  `quality/qualifications/australian-m112-public-tree-readback-20261003.json`.
+  Upstream terms remain
   unresolved for `au-pbs-historical-xml` and all 1,707 `au_pbs`
   reimbursement-atlas payloads; for the exact PBS source archive, Decision
   0009 and its hosted receipt establish maintainer publication authority and
