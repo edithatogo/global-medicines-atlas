@@ -998,7 +998,16 @@ for credentialed or rights-unresolved sources.
   rejected.
 - [x] Address the hosted Codecov patch result by adding malformed-ledger,
   missing/duplicate identity, and invalid release-shape negative controls.
-  Local affected tests pass and the maturity module measures 97.94% statement
-  and branch coverage; hosted patch coverage will be confirmed on the follow-up
-  commit.
+  That test-only follow-up measured 97.94% combined coverage locally; hosted
+  patch coverage passed on the corresponding PR head before the subsequent
+  manifest-binding fix.
+- [x] Resolve the Codex review finding that release-row digests were syntax-
+  checked but not bound to the pinned public archive. Verify the exact public
+  manifest digest and its 12 receipt/payload entries without fetching archive
+  payload bytes; commit a separately content-addressed expected Bronze release
+  manifest and require an exact per-row match for payload, acquisition,
+  admission, count, and source-record identities.
+- [x] Run focused qualification tests and the full local Test-Goblin profile.
+  The full profile reports 5,417 passed, 2 uv-version failures, 1 optional
+  skip, and 96.74% coverage; both failures pass under the required uv 0.11.29.
 - [ ] Merge the scoped pull request after all required hosted checks pass.

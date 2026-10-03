@@ -7,11 +7,11 @@
   "inputs": {
     "receipt_validator": {
       "path": "src/global_medicines_atlas/bronze_maturity.py",
-      "sha256": "abe42495d87383d4130a070db1a9ae34fc612eb2bee5c2758b8c85548e1cc062"
+      "sha256": "1d039277af75abd3208ca0600ee8ce335f2d39f6b888eb3e9651d410018ff0e8"
     },
     "cohort_generator": {
       "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
-      "sha256": "d3c33eec9ab366eb8c81cd9e0bef31737fbaf8482ff1fad41f6a6434ce54bd10"
+      "sha256": "24aaee44c0194936afaee4de6e853a48a7b5eb612e35dde205a30d7153f677b7"
     },
     "cohort_schema": {
       "path": "schemas/bronze-receipt-cohort-v1.json",
@@ -31,8 +31,8 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "e9f71bd2c300419f3adf7a91e790cb34623ce0c7b06c14a9c97307a32aab1305",
-      "file_count": 126,
+      "sha256": "27083892930a484dac1686064cf272e95ec72b5e5729dbdda32675d7fd444373",
+      "file_count": 127,
       "files": [
         {
           "path": "DATA_LICENSE.md",
@@ -178,6 +178,11 @@
           "path": "quality/qualifications/open-medic-all-release-bronze-20260827.json",
           "exists": true,
           "sha256": "454dd69b8b164788bffbacac49d5fbc109a18a8aeabd1ccd1432ffbff178a308"
+        },
+        {
+          "path": "quality/qualifications/open-medic-bronze-release-manifest-v1.json",
+          "exists": true,
+          "sha256": "238896393567936cae98b2014b85b1597d5b8cfd52b8562e1cf20e5564ff0df6"
         },
         {
           "path": "quality/qualifications/orange-book-historical-authorization.json",
@@ -337,7 +342,7 @@
         {
           "path": "src/global_medicines_atlas/bronze_maturity.py",
           "exists": true,
-          "sha256": "abe42495d87383d4130a070db1a9ae34fc612eb2bee5c2758b8c85548e1cc062"
+          "sha256": "1d039277af75abd3208ca0600ee8ce335f2d39f6b888eb3e9651d410018ff0e8"
         },
         {
           "path": "src/global_medicines_atlas/bronze_recovery.py",

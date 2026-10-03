@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
+from hashlib import sha256
 from pathlib import Path
 from typing import Any, Literal, cast
 
@@ -90,6 +91,12 @@ NORDIC_AUTHORIZED_SOURCE_COUNT = 3
 OPEN_MEDIC_SOURCE_ID = "fr-open-medic"
 OPEN_MEDIC_QUALIFICATION_RELATIVE = (
     "quality/qualifications/open-medic-all-release-bronze-20260827.json"
+)
+OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE = (
+    "quality/qualifications/open-medic-bronze-release-manifest-v1.json"
+)
+OPEN_MEDIC_RELEASE_MANIFEST_SHA256 = (
+    "238896393567936cae98b2014b85b1597d5b8cfd52b8562e1cf20e5564ff0df6"
 )
 OPEN_MEDIC_ACQUISITION_AUTHORIZATION_RELATIVE = "quality/qualifications/additional-utilisation-acquisition-authorization.json"
 OPEN_MEDIC_RIGHTS_DISPOSITION_RELATIVE = (
@@ -645,6 +652,100 @@ def _open_medic_release_items(
     return rows if release_set_valid else None
 
 
+def _open_medic_release_manifest_identity_valid(
+    manifest: Mapping[str, Any],
+) -> bool:
+    """Require a release manifest bound to the approved public archive."""
+
+    return all((
+        manifest.get("schema_id")
+        == "global-medicines-atlas.open-medic-bronze-release-manifest",
+        manifest.get("schema_version") == 1,
+        manifest.get("source_id") == OPEN_MEDIC_SOURCE_ID,
+        manifest.get("public_dataset") == OPEN_MEDIC_DATASET,
+        manifest.get("immutable_revision") == OPEN_MEDIC_REVISION,
+        manifest.get("public_manifest_sha256")
+        == OPEN_MEDIC_PUBLIC_MANIFEST_SHA256,
+    ))
+
+
+def _open_medic_manifest_release_items(
+    manifest: Mapping[str, Any],
+) -> list[Mapping[str, Any]] | None:
+    """Project validated release records from the pinned manifest."""
+
+    releases = manifest.get("releases")
+    if not isinstance(releases, list):
+        return None
+    raw_releases = cast("list[object]", releases)
+    if len(raw_releases) != len(OPEN_MEDIC_RELEASE_YEARS):
+        return None
+    release_items: list[Mapping[str, Any]] = []
+    receipt_digests: list[str] = []
+    expected_item_keys = (
+        "year",
+        "payload_sha256",
+        "payload_byte_count",
+        "acquisition_id",
+        "admission",
+        "source_record_count",
+        "source_records_sha256",
+    )
+    for raw_release in raw_releases:
+        if not isinstance(raw_release, Mapping):
+            return None
+        release = cast("Mapping[str, Any]", raw_release)
+        digests_valid = all(
+            _valid_open_medic_sha256(release.get(key))
+            for key in (
+                "public_archive_receipt_sha256",
+                "public_archive_payload_sha256",
+            )
+        )
+        payload_matches = release.get(
+            "public_archive_payload_sha256"
+        ) == release.get("payload_sha256") and release.get(
+            "public_archive_payload_byte_count"
+        ) == release.get("payload_byte_count")
+        if not digests_valid or not payload_matches:
+            return None
+        receipt_digests.append(
+            cast("str", release["public_archive_receipt_sha256"])
+        )
+        release_items.append({
+            key: release.get(key) for key in expected_item_keys
+        })
+    release_identity_valid = [
+        item.get("year") for item in release_items
+    ] == list(OPEN_MEDIC_RELEASE_YEARS) and len(set(receipt_digests)) == len(
+        OPEN_MEDIC_RELEASE_YEARS
+    )
+    return release_items if release_identity_valid else None
+
+
+def _open_medic_expected_release_items(
+    root: Path,
+) -> list[Mapping[str, Any]] | None:
+    """Load release identities from the content-bound qualification manifest."""
+
+    try:
+        raw_manifest = (
+            root / OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE
+        ).read_bytes()
+        document = json.loads(raw_manifest)
+    except OSError, json.JSONDecodeError:
+        return None
+    manifest_digest_valid = (
+        sha256(raw_manifest).hexdigest() == OPEN_MEDIC_RELEASE_MANIFEST_SHA256
+    )
+    if not manifest_digest_valid or not isinstance(document, Mapping):
+        return None
+    manifest = cast("Mapping[str, Any]", document)
+    if not _open_medic_release_manifest_identity_valid(manifest):
+        return None
+    return _open_medic_manifest_release_items(manifest)
+
+
 def _open_medic_receipt_scope_valid(
     receipt: Mapping[str, Any], items: list[Mapping[str, Any]]
 ) -> bool:
@@ -782,6 +883,9 @@ def _is_successful_open_medic_receipt(
     """Require the exact approved 12-release Open Medic Bronze receipt."""
 
     if source_id != OPEN_MEDIC_SOURCE_ID:
+        return False
+    expected_items = _open_medic_expected_release_items(root)
+    if expected_items is None or receipt.get("items") != expected_items:
         return False
     items = _open_medic_release_items(receipt)
     if items is None:

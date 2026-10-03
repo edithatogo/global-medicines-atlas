@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import json
 from datetime import UTC, datetime
+from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
@@ -161,6 +162,11 @@ def test_open_medic_all_release_receipt_counts_as_bronze_landing() -> None:
         lambda receipt: receipt["items"][1].update(year=2014),
         lambda receipt: receipt["items"][0].update(admission="quarantined"),
         lambda receipt: receipt["items"][0].update(payload_sha256="bad"),
+        lambda receipt: receipt["items"][0].update(payload_sha256="0" * 64),
+        lambda receipt: receipt["items"][0].update(acquisition_id="0" * 64),
+        lambda receipt: receipt["items"][0].update(
+            source_records_sha256="0" * 64
+        ),
         lambda receipt: receipt.update(
             canonical_medicine_identity_claimed=True
         ),
@@ -235,6 +241,7 @@ def test_open_medic_receipt_rejects_rights_or_authority_drift(
         bronze_maturity_mod.OPEN_MEDIC_ACQUISITION_AUTHORIZATION_RELATIVE,
         bronze_maturity_mod.OPEN_MEDIC_RIGHTS_DISPOSITION_RELATIVE,
         bronze_maturity_mod.OPEN_MEDIC_RIGHTS_LEDGER_RELATIVE,
+        bronze_maturity_mod.OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE,
         CATALOG_RELATIVE,
     )
     for source_path in paths:
@@ -268,6 +275,15 @@ def test_open_medic_receipt_rejects_missing_rights_authority(
     source_catalog = tmp_path / CATALOG_RELATIVE
     source_catalog.parent.mkdir(parents=True)
     source_catalog.write_bytes((ROOT / CATALOG_RELATIVE).read_bytes())
+    release_manifest = (
+        tmp_path / bronze_maturity_mod.OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE
+    )
+    release_manifest.parent.mkdir(parents=True, exist_ok=True)
+    release_manifest.write_bytes(
+        (
+            ROOT / bronze_maturity_mod.OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE
+        ).read_bytes()
+    )
     receipt = json.loads(
         (
             ROOT / bronze_maturity_mod.OPEN_MEDIC_QUALIFICATION_RELATIVE
@@ -355,6 +371,7 @@ def test_open_medic_rights_rejects_duplicate_catalog_source(
         bronze_maturity_mod.OPEN_MEDIC_ACQUISITION_AUTHORIZATION_RELATIVE,
         bronze_maturity_mod.OPEN_MEDIC_RIGHTS_DISPOSITION_RELATIVE,
         bronze_maturity_mod.OPEN_MEDIC_RIGHTS_LEDGER_RELATIVE,
+        bronze_maturity_mod.OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE,
         CATALOG_RELATIVE,
     )
     for relative in paths:
@@ -384,6 +401,120 @@ def test_open_medic_receipt_rejects_different_source_identity() -> None:
 
     assert not bronze_maturity_mod._is_successful_open_medic_receipt(
         ROOT, receipt, "other-source"
+    )
+
+
+@pytest.mark.unit
+def test_open_medic_expected_release_manifest_is_content_bound(
+    tmp_path: Path,
+) -> None:
+    relative = bronze_maturity_mod.OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE
+    target = tmp_path / relative
+    target.parent.mkdir(parents=True)
+    document = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+    document["releases"][0]["acquisition_id"] = "0" * 64
+    target.write_text(json.dumps(document), encoding="utf-8")
+
+    assert (
+        bronze_maturity_mod._open_medic_expected_release_items(tmp_path) is None
+    )
+
+
+@pytest.mark.parametrize(
+    "mutate",
+    [
+        lambda manifest: manifest.update(releases=None),
+        lambda manifest: manifest.update(releases=[]),
+        lambda manifest: manifest["releases"].__setitem__(0, None),
+        lambda manifest: manifest["releases"][0].update(
+            public_archive_receipt_sha256="bad"
+        ),
+        lambda manifest: manifest["releases"][0].update(
+            public_archive_payload_sha256="bad"
+        ),
+        lambda manifest: manifest["releases"][0].update(
+            payload_sha256="0" * 64
+        ),
+        lambda manifest: manifest["releases"][0].update(
+            public_archive_payload_byte_count=1
+        ),
+    ],
+)
+@pytest.mark.unit
+def test_open_medic_manifest_release_projection_rejects_drift(mutate) -> None:
+    manifest = json.loads(
+        (
+            ROOT / bronze_maturity_mod.OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE
+        ).read_text(encoding="utf-8")
+    )
+    mutate(manifest)
+
+    assert (
+        bronze_maturity_mod._open_medic_manifest_release_items(manifest) is None
+    )
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "schema_id",
+        "schema_version",
+        "source_id",
+        "public_dataset",
+        "immutable_revision",
+        "public_manifest_sha256",
+    ],
+)
+@pytest.mark.unit
+def test_open_medic_release_manifest_rejects_identity_drift(field: str) -> None:
+    manifest = json.loads(
+        (
+            ROOT / bronze_maturity_mod.OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE
+        ).read_text(encoding="utf-8")
+    )
+    manifest[field] = "drifted"
+
+    assert not bronze_maturity_mod._open_medic_release_manifest_identity_valid(
+        manifest
+    )
+
+
+@pytest.mark.unit
+def test_open_medic_expected_release_items_rejects_pinned_identity_drift(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    relative = bronze_maturity_mod.OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE
+    manifest_path = tmp_path / relative
+    manifest_path.parent.mkdir(parents=True)
+    manifest = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+    manifest["immutable_revision"] = "drifted"
+    encoded = json.dumps(manifest).encode()
+    manifest_path.write_bytes(encoded)
+    monkeypatch.setattr(
+        bronze_maturity_mod,
+        "OPEN_MEDIC_RELEASE_MANIFEST_SHA256",
+        sha256(encoded).hexdigest(),
+    )
+
+    assert (
+        bronze_maturity_mod._open_medic_expected_release_items(tmp_path) is None
+    )
+
+
+@pytest.mark.parametrize("contents", [None, "{"])
+@pytest.mark.unit
+def test_open_medic_expected_release_manifest_rejects_missing_or_invalid_json(
+    tmp_path: Path, contents: str | None
+) -> None:
+    if contents is not None:
+        manifest_path = (
+            tmp_path / bronze_maturity_mod.OPEN_MEDIC_RELEASE_MANIFEST_RELATIVE
+        )
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest_path.write_text(contents, encoding="utf-8")
+
+    assert (
+        bronze_maturity_mod._open_medic_expected_release_items(tmp_path) is None
     )
 
 
