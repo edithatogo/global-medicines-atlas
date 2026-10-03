@@ -1148,3 +1148,18 @@ for credentialed or rights-unresolved sources.
   claimed.
 - [ ] Resolve source-specific upstream rights and maintainer acquisition
   authority for each candidate before any linked national document landing.
+
+## 2026-10-03 post-PR-716 exact-main reconciliation
+
+- [x] Regenerate the receipt cohort, future-source list, source landing queue,
+  and B0 source index from exact merged `main` `428b2f1c9201b0f3c2836f3aebc259a3c45a31d0`.
+  The generated cohort, queue, and index were already current and remained
+  byte-for-byte unchanged.
+- [x] Refresh the full-scope maturity report and Stable v1 M5 status page with
+  exact-main provenance. Completeness remains blocked: 42/157 sources have
+  landing evidence, 115 lack it, and 13/14 Bronze dimensions are evidenced.
+  M5, Australian federation acceptance, and final Stable v1 approval remain
+  separate unresolved gates.
+- [x] Reconfirm source deferrals are explicit and source-specific rights or
+  acquisition authority are not inferred for RxNorm, WHO nEML, or other
+  deferred candidates.
