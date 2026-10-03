@@ -604,3 +604,22 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   completeness is the sole blocked Bronze property, with 13 of 14 mandatory
   properties evidenced. The archived P7 receipt reconciliation changes no
   source-origin acquisition, B1 admission, M-112, M5, or Stable v1 gate state.
+
+
+## 2026-10-04 post-PR-733 M-112 acceptance reconciliation
+
+- [x] Refresh the Australian federation acceptance page from the exact merged
+  M-112 disposition. All 1,759 approved candidate paths now have explicit
+  future-source dispositions; the denominator is unchanged, and no deferral is
+  counted as rights approval, v4 admission, or federation acceptance. The page
+  records the remaining per-object rights, B1/B2 lineage, digest-readback,
+  admission, and consumer-canary requirements.
+- [x] Re-run the stable-v1 contract reconciliation on exact merged `origin/main`
+  `caf2684631742a732e783ff1124647c63f2ad1e5`. It is idempotent: 15 of 17
+  release gates pass; Australian federation and explicit Stable v1 release
+  approval remain blocked. Bounded Bronze and M5 pass with all 14 mandatory
+  Bronze dimensions evidenced for the approved 42-source horizon.
+- [x] Verify the acceptance-page and stable-contract tests (47 passed), routine
+  Test-Goblin, context/ecosystem validation, and diff checks. No source payload
+  values, rights conclusions, denominator decisions, v4 admissions, or release
+  approvals changed.
