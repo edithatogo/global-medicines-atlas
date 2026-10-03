@@ -45,15 +45,19 @@ not a current status report. MBS XML/workbook and PBS v3 parsers, bounded CLI
 inspection, historical mock probes and typed HTML/P7 compatibility are now
 repository implementations. Live scheduling is a separate Phase 4 gate.
 
-## Proposed successor notice refresh (authorization pending)
+## Proposed successor notice refresh (deferred)
+
+Maintainer direction (2026-10-04): keep both donor repositories archived and
+defer the proposed public notice updates. This does not authorize unarchiving,
+committing notice changes, creating tags/releases, or publishing datasets. The
+draft below is retained for a future explicit authorization; the repositories'
+currently published notices remain unchanged.
 
 The text below is a draft for the default-branch `README.md` and
 `SUCCESSOR.md` in each archived donor repository. It corrects the stale archive
 status and identifies the exact public successor dataset revisions observed
-on 2026-10-04. This proposal does not authorize unarchiving either repository,
-committing the text externally, creating a tag or release, or publishing a
-dataset. The existing `v0.1` scraper tag predates successor documentation and
-should remain historical; do not move or replace it.
+on 2026-10-04. The existing `v0.1` scraper tag predates successor documentation
+and should remain historical; do not move or replace it.
 
 > This repository is an archived compatibility and provenance mirror. Its
 > history and source identifiers are retained. Active successor development
