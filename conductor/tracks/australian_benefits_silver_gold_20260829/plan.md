@@ -1624,6 +1624,11 @@
   observations and all 39 anonymous metadata response-page SHA-256 receipts.
   This preserves the exact pinned-revision object IDs, byte counts, available
   LFS digests, and mismatches without retaining source payloads.
+- [x] Correct the supplemental metadata inventory to use the authoritative
+  current revisions in the public-tree readback. The earlier supplemental scan
+  used the older candidate-inventory revision for the MBS source archive; the
+  corrected per-path inventory now binds every row to the current revision and
+  the test enforces this distinction.
 - [ ] Keep the remaining 92 reimbursement-atlas raw objects and 12 projections
   outside v4 and source-byte readback while their source rights remain
   unresolved. MBS August admission history, projection lineage, exact v4
