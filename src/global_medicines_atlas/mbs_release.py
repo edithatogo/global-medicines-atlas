@@ -19,11 +19,6 @@ from pydantic import Field, HttpUrl, model_validator
 
 from .acquisition import AcquisitionPolicy, Receipt, acquire_source
 from .adapters.au_mbs import MbsSourceBatch, parse_mbs_source_xml
-from .bronze_admission import (
-    BronzeAdmissionState,
-    ValidationResult,
-    create_admission_decision,
-)
 from .mbs_compatibility import select_p7_records
 from .models import FrozenModel
 from .receipts import (
@@ -34,7 +29,6 @@ from .receipts import (
     RightsState,
     SensitivityClassification,
     SourceReceipt,
-    require_temporal,
     temporal_identity_from_source,
 )
 from .reuse_gate import ReuseGateDecision
@@ -87,13 +81,14 @@ class MbsArchiveObject(FrozenModel):
 
 
 class MbsReleaseManifest(FrozenModel):
-    schema_id: Literal["global-medicines-atlas.mbs-release"] = (
-        "global-medicines-atlas.mbs-release"
+    schema_id: Literal["global-medicines-atlas.mbs-release-v2"] = (
+        "global-medicines-atlas.mbs-release-v2"
     )
+    schema_version: Literal[2] = 2
     source_id: Literal["au-mbs"] = "au-mbs"
     contract: MbsReleaseContract
     evidence_class: EvidenceClass
-    admission_state: Literal["accepted", "quarantined", "unavailable"]
+    profile_state: Literal["accepted", "quarantined", "unavailable"]
     record_count: int = Field(ge=0)
     p7_record_count: int = Field(ge=0)
     data_acquired: Literal[False] = False
@@ -346,32 +341,6 @@ def stage_mbs_release(  # ruff: ignore[too-many-locals]
                 role="raw",
             ),
         )
-        temporal = require_temporal(receipt.temporal)
-        # Record the raw landing before inspecting the payload. The technical
-        # admission below supersedes this durable source-byte event.
-        landed = create_admission_decision(
-            acquisition_id=temporal.acquisition_id,
-            content_id=receipt.payload.sha256,
-            state=BronzeAdmissionState.LANDED,
-            reason_codes=("mbs_source_payload_landed",),
-            validation_results=(
-                ValidationResult(
-                    check_id="mbs-raw-object-durable",
-                    passed=True,
-                    message=f"sha256:{receipt.payload.sha256}; bytes:{len(payload)}",
-                ),
-            ),
-            actor="global-medicines-atlas:mbs-release-v1",
-            decided_at=clock(),
-        )
-        objects.append(
-            _object(
-                stage,
-                f"{prefix}/landed-admission.json",
-                (landed.model_dump_json() + "\n").encode(),
-                "landed_admission",
-            )
-        )
         try:
             batch = parse_mbs_source_xml(payload, receipt)
         except ValueError:
@@ -403,32 +372,6 @@ def stage_mbs_release(  # ruff: ignore[too-many-locals]
                 "source_receipt",
             )
         )
-        decision = create_admission_decision(
-            acquisition_id=temporal.acquisition_id,
-            content_id=receipt.payload.sha256,
-            state=BronzeAdmissionState(state),
-            reason_codes=("mbs_xml_profile_passed",)
-            if batch is not None
-            else ("mbs_xml_profile_mismatch",),
-            validation_results=(
-                ValidationResult(
-                    check_id="official-mbs-xml",
-                    passed=batch is not None,
-                    message=f"records:{record_count}; p7_records:{p7_count}",
-                ),
-            ),
-            actor="global-medicines-atlas:mbs-release-v1",
-            decided_at=clock(),
-            supersedes_decision_id=landed.decision_id,
-        )
-        objects.append(
-            _object(
-                stage,
-                f"{prefix}/admission.json",
-                (decision.model_dump_json() + "\n").encode(),
-                "admission",
-            )
-        )
     if evidence_class is EvidenceClass.LIVE:
         health = build_source_health_receipt(
             SourceHealthObservation(
@@ -453,7 +396,7 @@ def stage_mbs_release(  # ruff: ignore[too-many-locals]
     manifest = MbsReleaseManifest(
         contract=contract,
         evidence_class=evidence_class,
-        admission_state=state,
+        profile_state=state,
         record_count=record_count,
         p7_record_count=p7_count,
         objects=tuple(objects),

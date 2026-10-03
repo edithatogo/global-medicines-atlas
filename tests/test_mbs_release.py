@@ -7,7 +7,6 @@ import httpx
 import pytest
 
 from global_medicines_atlas.adapters.au_mbs import parse_mbs_source_xml
-from global_medicines_atlas.bronze_admission import BronzeAdmissionRecord
 from global_medicines_atlas.mbs_release import (
     MbsReleaseContract,
     mbs_source_parquet,
@@ -74,28 +73,10 @@ def test_mock_stage_preserves_raw_and_separates_admission(
     )
     assert stage.manifest.data_acquired is False
     assert stage.manifest.evidence_class == "synthetic"
-    assert stage.manifest.admission_state == (
+    assert stage.manifest.profile_state == (
         "accepted" if payload == PAYLOAD else "quarantined"
     )
-    if payload:
-        landed_object = next(
-            item
-            for item in stage.manifest.objects
-            if item.role == "landed_admission"
-        )
-        admission_object = next(
-            item for item in stage.manifest.objects if item.role == "admission"
-        )
-        landed = BronzeAdmissionRecord.model_validate_json(
-            (stage.path / landed_object.path).read_bytes()
-        )
-        admission = BronzeAdmissionRecord.model_validate_json(
-            (stage.path / admission_object.path).read_bytes()
-        )
-        assert landed.state.value == "landed"
-        assert admission.supersedes_decision_id == landed.decision_id
-        assert landed.acquisition_id == admission.acquisition_id
-        assert landed.content_id == admission.content_id
+    assert all("admission" not in item.role for item in stage.manifest.objects)
     raw = [item for item in stage.manifest.objects if item.role == "raw"]
     assert len(raw) == 1
     assert (stage.path / raw[0].path).read_bytes() == payload
@@ -139,7 +120,7 @@ def test_retry_budget_retains_failures_without_claiming_data(
         transport=httpx.MockTransport(timeout),
     )
     assert delays == [2, 2]
-    assert stage.manifest.admission_state == "unavailable"
+    assert stage.manifest.profile_state == "unavailable"
     assert len(stage.manifest.objects) == 3
     assert all(item.role == "attempt" for item in stage.manifest.objects)
 

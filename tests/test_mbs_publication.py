@@ -1,5 +1,6 @@
 """Publication protocol tests use in-memory fake Hub clients, never an upload."""
 
+import json
 from collections.abc import Mapping
 from datetime import UTC, datetime
 from hashlib import sha256
@@ -9,9 +10,13 @@ import httpx
 import pytest
 from pydantic import AnyUrl
 
+from global_medicines_atlas.mbs_durable_landing import (
+    build_verified_mbs_lifecycle,
+)
 from global_medicines_atlas.mbs_publication import (
     PublicArchiveState,
     publish_mbs_stage,
+    publish_verified_mbs_lifecycle,
 )
 from global_medicines_atlas.mbs_release import (
     MbsArchiveObject,
@@ -20,6 +25,7 @@ from global_medicines_atlas.mbs_release import (
     stage_mbs_release,
 )
 from global_medicines_atlas.receipts import (
+    AcquisitionEvent,
     DataSensitivity,
     EvidenceClass,
     PersonalDataState,
@@ -57,7 +63,7 @@ class FakeHub:
         self.files.update({
             name: path.read_bytes() for name, path in files.items()
         })
-        self.revision = "b" * 40
+        self.revision = chr(ord("a") + self.calls) * 40
         return self.revision
 
 
@@ -141,6 +147,94 @@ def test_append_preserves_legacy_and_verifies_all_objects(
     assert receipt["data_acquired"] is True
     assert receipt["temporary_source_bytes_removed"] is False
     assert live_stage.path.exists()
+
+
+def test_durable_lifecycle_is_created_only_for_verified_archive_objects(
+    live_stage: MbsReleaseStage,
+) -> None:
+    hub = FakeHub()
+    archive = publish_mbs_stage(
+        live_stage, live_stage.manifest.contract, public=hub, writer=hub
+    )
+    source_object = next(
+        item
+        for item in live_stage.manifest.objects
+        if item.role == "source_receipt"
+    )
+    source = SourceReceipt.model_validate_json(
+        (live_stage.path / source_object.path).read_bytes()
+    )
+    raw = next(
+        item for item in live_stage.manifest.objects if item.role == "raw"
+    )
+    lifecycle = build_verified_mbs_lifecycle(
+        source,
+        raw_archive_revision=str(archive["revision"]),
+        raw_object_path=raw.path,
+        decided_at=datetime(2026, 8, 30, tzinfo=UTC),
+        record_count=1,
+        p7_record_count=0,
+    )
+    landed = next(
+        json.loads(value)
+        for name, value in lifecycle.items()
+        if "/admissions/" in name and json.loads(value)["state"] == "landed"
+    )
+    accepted = next(
+        json.loads(value)
+        for name, value in lifecycle.items()
+        if "/admissions/" in name and json.loads(value)["state"] == "accepted"
+    )
+    event = next(
+        AcquisitionEvent.model_validate_json(value)
+        for name, value in lifecycle.items()
+        if "/acquisitions/" in name
+    )
+    manifest = next(
+        json.loads(value)
+        for name, value in lifecycle.items()
+        if "/raw-evidence/" in name
+    )
+    assert landed["validation_results"][0]["check_id"] == (
+        "mbs-raw-anonymous-digest-verification"
+    )
+    assert accepted["supersedes_decision_id"] == landed["decision_id"]
+    assert event.acquisition_id == accepted["acquisition_id"]
+    assert manifest["rows"][0]["external_reference"].endswith(raw.path)
+
+
+def test_lifecycle_publication_appends_and_anonymously_verifies(
+    live_stage: MbsReleaseStage,
+) -> None:
+    hub = FakeHub()
+    archive = publish_mbs_stage(
+        live_stage, live_stage.manifest.contract, public=hub, writer=hub
+    )
+    source_object = next(
+        item
+        for item in live_stage.manifest.objects
+        if item.role == "source_receipt"
+    )
+    source = SourceReceipt.model_validate_json(
+        (live_stage.path / source_object.path).read_bytes()
+    )
+    raw = next(
+        item for item in live_stage.manifest.objects if item.role == "raw"
+    )
+    lifecycle = publish_verified_mbs_lifecycle(
+        source,
+        live_stage.manifest.contract,
+        raw_archive_revision=str(archive["revision"]),
+        raw_object_path=raw.path,
+        record_count=1,
+        p7_record_count=0,
+        decided_at=datetime(2026, 8, 30, tzinfo=UTC),
+        public=hub,
+        writer=hub,
+    )
+    assert lifecycle["anonymous_digest_verification"] == "passed"
+    assert lifecycle["verified_objects"] == 5
+    assert hub.revision == "c" * 40
 
 
 @pytest.mark.parametrize(
@@ -230,7 +324,7 @@ def test_quarantined_raw_does_not_inherit_file_authorization(
 ) -> None:
     manifest = live_stage.manifest.model_copy(
         update={
-            "admission_state": "quarantined",
+            "profile_state": "quarantined",
             "record_count": 0,
             "p7_record_count": 0,
         }

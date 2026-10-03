@@ -62,8 +62,10 @@ jobs:
           import subprocess
           from pathlib import Path
           from huggingface_hub import CommitOperationAdd, HfApi, hf_hub_download
-          from global_medicines_atlas.mbs_publication import PublicArchiveState, publish_mbs_stage
+          from datetime import UTC, datetime
+          from global_medicines_atlas.mbs_publication import PublicArchiveState, publish_mbs_stage, publish_verified_mbs_lifecycle
           from global_medicines_atlas.mbs_release import MbsReleaseContract, stage_mbs_release
+          from global_medicines_atlas.receipts import SourceReceipt
           from global_medicines_atlas.reuse_gate import evaluate_reuse_gate, ReuseDisposition, ReuseCandidate, ReuseCandidateKind, ReuseDiscoverySnapshot
 
           root = Path.cwd()
@@ -116,7 +118,26 @@ jobs:
                   return result.oid
 
           receipt = publish_mbs_stage(stage, contract, public=AnonymousReader(), writer=AppendOnlyWriter())
-          receipt.update(workflow_commit=os.environ['GITHUB_SHA'], workflow_run=f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}")
+          source_object = next(item for item in stage.manifest.objects if item.role == 'source_receipt')
+          source_receipt = SourceReceipt.model_validate_json((stage.path / source_object.path).read_bytes())
+          raw_object = next(item for item in stage.manifest.objects if item.role == 'raw')
+          lifecycle = publish_verified_mbs_lifecycle(
+              source_receipt,
+              contract,
+              raw_archive_revision=receipt['revision'],
+              raw_object_path=raw_object.path,
+              record_count=stage.manifest.record_count,
+              p7_record_count=stage.manifest.p7_record_count,
+              decided_at=datetime.now(UTC),
+              public=AnonymousReader(),
+              writer=AppendOnlyWriter(),
+          )
+          receipt.update(
+              source_archive_revision=receipt['revision'],
+              lifecycle_publication=lifecycle,
+              workflow_commit=os.environ['GITHUB_SHA'],
+              workflow_run=f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+          )
           Path('build/mbs-hosted-receipt.json').write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\n')
           PY
           # Record anonymous digest verification durably before any source-byte cleanup.
