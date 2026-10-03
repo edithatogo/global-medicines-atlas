@@ -18,7 +18,7 @@
     {
       "id": "bronze-current-public-scope",
       "kind": "dependent-evidence",
-      "status": "blocked"
+      "status": "passed"
     },
     {
       "id": "openprescribing-source-access",
