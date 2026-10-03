@@ -422,6 +422,33 @@ def test_dependency_manifest_filters_receipt_paths_like_validator(
 
 
 @pytest.mark.unit
+def test_mbs_admission_history_additions_change_qualification_dependencies(
+    tmp_path: Path,
+) -> None:
+    before = cohort_module._qualification_dependency_manifest(
+        tmp_path, {"au-mbs"}, {"properties": []}
+    )
+    landed_path = (
+        tmp_path
+        / "quality/bronze/admissions/au-mbs"
+        / "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1"
+        / "landed.json"
+    )
+    landed_path.parent.mkdir(parents=True)
+    landed_path.write_text('{"state":"landed"}\n', encoding="utf-8")
+
+    after = cohort_module._qualification_dependency_manifest(
+        tmp_path, {"au-mbs"}, {"properties": []}
+    )
+
+    assert after["sha256"] != before["sha256"]
+    assert any(
+        item["path"] == landed_path.relative_to(tmp_path).as_posix()
+        for item in after["files"]
+    )
+
+
+@pytest.mark.unit
 def test_report_and_future_list_regenerate_and_validate(
     tmp_path: Path,
 ) -> None:
@@ -488,10 +515,30 @@ def test_committed_cohort_is_current_and_does_not_hide_full_scope_gaps() -> (
         report["scope_accounting"]["current_scope_evaluator_missing_count"]
         == 115
     )
-    assert report["scope_accounting"]["deferred_queue_landed_count"] == 14
+    assert report["scope_accounting"]["deferred_queue_landed_count"] == 13
     assert report["preserved_current_scope"]["qualification_state"] == "blocked"
     assert report["preserved_current_scope"]["bronze_mature"] is False
     assert report["boundaries"]["this_report_closes_stable_v1_m5_gate"] is False
+    deferred_mbs = next(
+        item
+        for item in report["deferred_source_ledger"]["items"]
+        if item["source_id"] == "au-mbs"
+    )
+    assert deferred_mbs["queue_state"] == "not_yet_implemented"
+    assert deferred_mbs["defer_reason_code"] == "no_qualifying_direct_receipt"
+    assert "no durable preceding landed event" in deferred_mbs["reason"]
+    dependency_paths = {
+        item["path"]
+        for item in report["inputs"]["qualification_dependencies"]["files"]
+    }
+    assert {
+        "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json",
+        "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+        "quality/bronze/acquisitions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+        "quality/bronze/admissions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+        "quality/bronze/raw-evidence/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/manifest.json",
+        "quality/bronze/references/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/archive-manifest.json",
+    }.issubset(dependency_paths)
     committed_report = json.loads(
         (
             ROOT / "quality/qualifications/bronze-receipt-cohort-v1.json"

@@ -7,18 +7,18 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 42
+- `landed_and_evidenced`: 41
 - `temporarily_unavailable`: 1
 - `rights_blocked`: 25
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 91
 - `superseded_by_reused_source`: 0
-- `not_yet_implemented`: 0
+- `not_yet_implemented`: 1
 
 ## `static_file_download`
 
 - [ ] `ae-dha-prices` — `rights_blocked`; record source-specific retention and transformation rights.
-- [x] `au-mbs` — `landed_and_evidenced`; Reconcile the existing July 2025 payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Then rerun direct-receipt qualification. Keep M-112 federation acceptance separate..
+- [ ] `au-mbs` — `not_yet_implemented`; Reconcile the August 2026 MBS admission history using a durable landed event and an accepted decision that explicitly supersedes it; otherwise keep this receipt deferred. Do not create a retroactive landed event from inference. Keep source-record projection lineage and M-112 federation acceptance separate..
 - [x] `au-mbs-p7-legacy-workbook` — `landed_and_evidenced`; Reconcile the existing July 2024 workbook payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Preserve the legacy schema-era boundary, then rerun direct-receipt qualification. Keep M-112 federation acceptance separate..
 - [x] `au-pbs-historical-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `au-tga-regulatory-events` — `rights_blocked`; record source-specific retention and transformation rights.

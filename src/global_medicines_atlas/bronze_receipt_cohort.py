@@ -40,9 +40,24 @@ QUALIFICATION_AUTHORIZATION_INPUTS = (
     "quality/qualifications/additional-utilisation-acquisition-authorization.json",
     "quality/qualifications/source-rights-disposition.json",
     "quality/qualifications/source-rights-review-ledger.json",
+    "quality/qualifications/mbs-current-release-contract.json",
+    "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+    "quality/qualifications/australian-mbs-mbs-b1-event-reconciliation-correction-20261003.json",
+    "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+    "quality/bronze/acquisitions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+    "quality/bronze/admissions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+    "quality/bronze/raw-evidence/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/manifest.json",
+    "quality/bronze/references/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/archive-manifest.json",
 )
 QUALIFICATION_SPECIALIZED_INPUTS = (
     "quality/qualifications/open-medic-bronze-release-manifest-v1.json",
+    "quality/qualifications/australian-m112-mbs-b1-event-reconciliation-20261001.json",
+    "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
+    "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json",
+    "quality/qualifications/bronze-source-landing-queue.json",
+    "src/global_medicines_atlas/data/source_landing_overrides.json",
+    "src/global_medicines_atlas/source_landing_factory.py",
+    "src/global_medicines_atlas/bronze_receipt_cohort.py",
 )
 QUALIFICATION_CODE_INPUTS = (
     "src/global_medicines_atlas/bronze_maturity.py",
@@ -149,6 +164,13 @@ def _qualification_dependency_manifest(
     paths: set[str] = set(QUALIFICATION_AUTHORIZATION_INPUTS)
     paths.update(QUALIFICATION_SPECIALIZED_INPUTS)
     paths.update(QUALIFICATION_CODE_INPUTS)
+    mbs_admission_history = root / "quality/bronze/admissions/au-mbs"
+    if "au-mbs" in current_scope_ids and mbs_admission_history.is_dir():
+        paths.update(
+            path.relative_to(root).as_posix()
+            for path in mbs_admission_history.rglob("*.json")
+            if path.is_file()
+        )
     paths.update(_receipt_candidate_inputs(root, current_scope_ids))
     paths.update(_scanned_evaluator_inputs(root))
     property_rows = evaluator.get("properties", [])

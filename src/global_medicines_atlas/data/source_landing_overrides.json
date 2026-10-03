@@ -40,13 +40,15 @@
     },
     {
       "source_id": "au-mbs",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The exact July 2025 MBS XML is publicly retained as immutable B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This publication/B2 receipt is not itself a typed, validated direct B1 Bronze qualification receipt for the supplemental cohort. It is service-benefit evidence, not medicine regulatory or PBS funding evidence.",
+      "state": "not_yet_implemented",
+      "reason": "The August 2026 MBS source receipt and external B2 reference are preserved, but the accepted admission event has no durable preceding landed event and does not supersede one. The ordered B1 admission lifecycle is therefore incomplete, so this receipt is not eligible for the direct Bronze cohort. Source-record projection lineage and M-112 federation remain separately unqualified. MBS service-benefit evidence does not imply medicine regulatory or PBS funding evidence.",
       "evidence_references": [
-        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+        "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json",
+        "quality/qualifications/mbs-current-release-contract.json",
+        "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
       ],
-      "next_action": "Reconcile the existing July 2025 payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Then rerun direct-receipt qualification. Keep M-112 federation acceptance separate."
+      "next_action": "Reconcile the August 2026 MBS admission history using a durable landed event and an accepted decision that explicitly supersedes it; otherwise keep this receipt deferred. Do not create a retroactive landed event from inference. Keep source-record projection lineage and M-112 federation acceptance separate."
     },
     {
       "source_id": "au-mbs-p7-legacy-workbook",

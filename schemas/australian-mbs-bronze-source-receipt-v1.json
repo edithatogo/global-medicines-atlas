@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/australian-mbs-bronze-source-receipt-v1.json",
+  "title": "Australian MBS raw Bronze source receipt qualification",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "source_id", "source_version", "evidence_class", "qualification_scope", "qualification_state", "acquisition_id", "receipt_id", "content_id", "rights_state", "reuse_disposition", "admission_state", "admission_lifecycle", "effective_date", "files", "b2", "archive", "boundaries", "pairing_correction", "authority"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.australian-mbs-bronze-source-receipt"},
+    "schema_version": {"const": 1},
+    "source_id": {"const": "au-mbs"},
+    "source_version": {"const": "2026-08-01"},
+    "evidence_class": {"const": "live"},
+    "qualification_scope": {"const": "raw_b1_b2_only"},
+    "qualification_state": {"const": "blocked"},
+    "acquisition_id": {"const": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1"},
+    "receipt_id": {"const": "mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4"},
+    "content_id": {"const": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"},
+    "rights_state": {"const": "permitted"},
+    "reuse_disposition": {"const": "extend"},
+    "admission_state": {"const": "accepted"},
+    "admission_lifecycle": {"type": "object", "required": ["required_order", "observed_decisions", "landed_predecessor_present", "qualification_blocked"], "properties": {"required_order": {"const": ["landed", "accepted"]}, "observed_decisions": {"const": [{"decision_id": "a4c8e7850c664db20b80a9f3e6d5cd09c61ebc1447c121c852438eff24a42dba", "state": "accepted", "supersedes_decision_id": null}]}, "landed_predecessor_present": {"const": false}, "qualification_blocked": {"const": true}}, "additionalProperties": false},
+    "effective_date": {"const": "2026-08-01"},
+    "files": {"type": "object", "required": ["source_receipt", "acquisition_event", "admission", "b2_manifest"], "properties": {
+      "source_receipt": {"$ref": "#/$defs/file"}, "acquisition_event": {"$ref": "#/$defs/file"}, "admission": {"$ref": "#/$defs/file"}, "b2_manifest": {"$ref": "#/$defs/file"}
+    }, "additionalProperties": false},
+    "b2": {"type": "object", "required": ["state", "payload_sha256", "byte_count", "payload_bytes_retained_locally"], "properties": {"state": {"const": "external_reference_only"}, "payload_sha256": {"const": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"}, "byte_count": {"const": 8293331}, "payload_bytes_retained_locally": {"const": false}}, "additionalProperties": false},
+    "archive": {"type": "object", "required": ["path", "revision", "root_manifest_path_present"], "properties": {"path": {"const": "quality/bronze/references/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/archive-manifest.json"}, "revision": {"const": "243f9ff5498816af6e4d9ae4db60528728f01834"}, "root_manifest_path_present": {"const": false}}, "additionalProperties": false},
+    "boundaries": {"type": "object", "required": ["source_record_projection_qualified", "m112_federation_accepted", "published_at_observed", "source_effective_at_in_b1_receipt"], "properties": {"source_record_projection_qualified": {"const": false}, "m112_federation_accepted": {"const": false}, "published_at_observed": {"const": false}, "source_effective_at_in_b1_receipt": {"const": false}}, "additionalProperties": false},
+    "pairing_correction": {"type": "object"},
+    "authority": {"type": "object"}
+  },
+  "$defs": {"file": {"type": "object", "required": ["path", "sha256"], "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}, "additionalProperties": false}},
+  "additionalProperties": false
+}

@@ -1039,3 +1039,31 @@ for credentialed or rights-unresolved sources.
   merged at `d573b997c10f3d5fd5fc00c838350c7cd452622c` after every required
   branch-protection check passed. The 157-source denominator and blocked
   completeness/M5 findings remain unchanged.
+
+## 2026-10-03 Australian MBS raw Bronze receipt candidate
+
+- [x] Reconcile the August 2026 MBS typed SourceReceipt, AcquisitionEvent,
+  accepted admission record, and B2 external-reference manifest to their
+  exact local content hashes and pinned public archive manifest. No source
+  payload bytes were fetched or retained locally. The record is only a
+  qualification candidate because it lacks the required preceding durable
+  `landed` event; it is not counted in the direct-receipt cohort.
+- [x] Correct the receipt/run pairing additively against the exact nested
+  source-receipt hashes and acquisition/admission identities. Historical M112
+  audits remain intact and their projection-lineage, root-manifest, and
+  differing-Parquet-digest findings remain open.
+- [x] Defer `au-mbs` after review confirmed no durable `landed` event precedes
+  the accepted decision, and that decision has no `supersedes_decision_id`.
+  Preserve the acquisition and B2 metadata without fabricating lifecycle
+  history; the final cohort is 28 qualified / 129 deferred. Full-scope unique
+  landing accounting remains 42/157 with 115 missing and 13/14 dimensions
+  evidenced. The denominator is unchanged; Bronze completeness and M5 remain
+  blocked.
+- [x] Bind every MBS B1/B2 receipt, admission, archive manifest, and source
+  admission-history file consumed by the validator into the cohort dependency
+  manifest. Regenerate the B0 index, source queue, future-source ledger, and
+  maturity projection.
+- [ ] Re-evaluate direct Bronze qualification only after the actual durable
+  landed event and its exact accepted-event supersession link are evidenced.
+- [ ] Complete source-record projection lineage reconciliation and M-112
+  Australian federation acceptance as separate downstream gates.

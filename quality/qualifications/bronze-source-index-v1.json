@@ -9,16 +9,17 @@
   },
   "evidence_scope_counts": {
     "governed_fixture": 11,
-    "live_receipt": 30,
-    "none": 132,
+    "live_receipt": 29,
+    "none": 133,
     "parser_contract": 1
   },
   "generated_from": "src/global_medicines_atlas/data/medicine_source_catalog.json",
   "index_presence_implies_coverage": false,
   "landing_disposition_counts": {
     "credentialed_and_excluded": 15,
-    "landed_and_evidenced": 42,
+    "landed_and_evidenced": 41,
     "manual_only_documented_acquisition": 91,
+    "not_yet_implemented": 1,
     "rights_blocked": 25,
     "temporarily_unavailable": 1
   },
@@ -26,13 +27,13 @@
   "qualification_state_counts": {
     "declared": 75,
     "documentation_verified": 57,
-    "fixture_verified": 12,
-    "live_verified": 30
+    "fixture_verified": 13,
+    "live_verified": 29
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:190de5949649d7dde255cbe1059c170f22c3669a34a55fba10da4a462d3f25dc",
-  "snapshot_sha256": "190de5949649d7dde255cbe1059c170f22c3669a34a55fba10da4a462d3f25dc",
+  "snapshot_id": "sha256:f730d4dc99941a5340d03fa614b61878be02df933fa6ceebcace74e3a36e979f",
+  "snapshot_sha256": "f730d4dc99941a5340d03fa614b61878be02df933fa6ceebcace74e3a36e979f",
   "source_count": 174,
   "sources": [
     {
@@ -244,11 +245,11 @@
       "api_url": "",
       "authentication": "none",
       "authority": "Australian Government Department of Health",
-      "current_landing_disposition": "landed_and_evidenced",
+      "current_landing_disposition": "not_yet_implemented",
       "discovery_state": "declaration_verified",
       "documentation_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-202507",
       "download_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/0b61e1e80b332754ca258c9e0000c7d8/$FILE/MBS-XML-20250701%20Version%203.XML",
-      "evidence_scope": "live_receipt",
+      "evidence_scope": "none",
       "expected_formats": [
         "xml"
       ],
@@ -270,9 +271,12 @@
         "src/global_medicines_atlas/adapters/au_mbs.py",
         "tests/test_au_mbs_source.py",
         "tests/fixtures/adapters/au_mbs.xml",
-        "quality/qualifications/australian-mbs-public-huggingface-20260829.json"
+        "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+        "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json",
+        "quality/qualifications/mbs-current-release-contract.json",
+        "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
       ],
-      "qualification_state": "live_verified",
+      "qualification_state": "fixture_verified",
       "rights_review_state": "maintainer_redistribution_authorized",
       "schema_drift_policy": "monthly",
       "source_health_policy": "weekly",
