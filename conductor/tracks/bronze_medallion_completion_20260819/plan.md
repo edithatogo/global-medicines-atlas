@@ -1098,6 +1098,25 @@ for credentialed or rights-unresolved sources.
   the report from the repository inputs exactly matches the committed report.
   The two new provenance/regeneration controls pass locally; hosted checks must
   pass on the corrected PR head before merge.
+
+## 2026-10-03 RxNorm identifier-only projection boundary
+
+- [x] Add an offline, fail-closed projection for NLM-created RxCUIs from
+  transient caller-held response bytes. Bind its response and SourceReceipt
+  digests, acquisition identity, rights reference, and identifier-based
+  `idtype`/`id` RxNav request; emit only the identifier allowlist and a
+  query-free B2 external reference. Reject name-search and unrelated query
+  parameters. Validate the bound reuse-gate decision. The component performs
+  no HTTP or file I/O and its emitted projection contains neither response
+  bytes nor source vocabulary terms.
+- [x] Test malformed responses and IDs, rights/reuse/source/endpoint drift,
+  response-size limits, projection allowlist, and B2 linkage. Focused coverage
+  is above the repository's 91% threshold; adjacent rights, terminology,
+  receipt, and landing contracts pass.
+- [ ] Keep `us-rxnorm-api` and `global-rxnorm` outside live Bronze qualification
+  until their exact-scope live-acquisition authorization and receipt-bound
+  source evidence are reconciled. Their current queue state, direct-receipt
+  cohort, source denominator, completeness result, and M5 result are unchanged.
 - [x] Regenerate the receipt cohort after the reconciler source hash changed.
   The first hosted rerun correctly rejected the stale dependency manifest; the
   refreshed cohort preserves 28 qualified / 129 deferred sources and the
