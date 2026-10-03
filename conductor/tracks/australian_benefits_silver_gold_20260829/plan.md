@@ -1593,3 +1593,15 @@
 - [ ] Complete the remaining per-object rights, B1/B2 lineage, anonymous
   payload-digest readback, v4 admission, and consumer canary gates. M-112
   remains blocked until every approved object satisfies its independent gates.
+
+## Source archive digest reconciliation (2026-10-04)
+
+- [x] Bind two Australian raw source-archive candidates (MBS August XML and
+  PBS April ZIP) to exact current manifests and existing hosted anonymous
+  digest receipts. Together with the companion utilization reconciliation,
+  22 of 1,736 raw paths have per-object digest joins; this does not complete
+  full-denominator readback, rights, lineage, v4 admission, or canaries.
+  See `quality/qualifications/australian-m112-source-archive-digest-reconciliation-20261004.json`.
+- [x] Address review finding by linking the exact source/file/destination MBS
+  authorization receipt alongside Decision 0009 and fingerprinting the public
+  receipt body. This does not extend authorization to other sources.

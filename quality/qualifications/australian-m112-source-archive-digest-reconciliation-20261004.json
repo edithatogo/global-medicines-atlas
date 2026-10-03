@@ -24,7 +24,9 @@
       "manifest_sha256": "92eda66dcdc34902ec88f3d13faeb61c13d09fb4c944ad7a1ef0be8c2ac1a93c",
       "public": true,
       "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
-      "source_authority_ref": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md#rights-and-publication-authority"
+      "source_authority_ref": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md#rights-and-publication-authority",
+      "source_authorization_receipt_ref": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+      "source_authorization_receipt_body_sha256": "81b68243e5fcdfd31687c33eaeb7e68a833416195dd0c2779dc36894c545725b"
     },
     {
       "current_anonymous_verification_basis": "historically anonymous-verified content digest matches the current immutable public tree LFS digest and byte count",
