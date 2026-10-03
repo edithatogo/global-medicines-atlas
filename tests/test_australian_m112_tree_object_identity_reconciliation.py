@@ -7,8 +7,12 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT = ROOT / "quality/qualifications/" / (
-    "australian-m112-current-tree-object-identity-reconciliation-20261004.json"
+REPORT = (
+    ROOT
+    / "quality/qualifications/"
+    / (
+        "australian-m112-current-tree-object-identity-reconciliation-20261004.json"
+    )
 )
 
 
@@ -16,7 +20,9 @@ def _read(path: str) -> dict[str, object]:
     return json.loads((ROOT / path).read_text(encoding="utf-8"))
 
 
-def test_current_tree_identity_reconciliation_covers_exact_denominator() -> None:
+def test_current_tree_identity_reconciliation_covers_exact_denominator() -> (
+    None
+):
     report = json.loads(REPORT.read_text(encoding="utf-8"))
     inventory = _read(
         "quality/qualifications/australian-m112-object-inventory-20260930.json"
@@ -41,7 +47,9 @@ def test_current_tree_identity_reconciliation_covers_exact_denominator() -> None
     assert current["projection_lfs_sha256_matches"] == 11
 
     by_dataset = {row["dataset"]: row for row in current["datasets"]}
-    assert set(by_dataset) == {row["dataset"] for row in tree_readback["datasets"]}
+    assert set(by_dataset) == {
+        row["dataset"] for row in tree_readback["datasets"]
+    }
     for row in tree_readback["datasets"]:
         observed = by_dataset[row["dataset"]]
         assert observed["revision"] == row["revision"]
@@ -88,8 +96,14 @@ def test_additional_mbs_hashes_match_existing_authorized_sidecars() -> None:
         assert item["source_id"] in authorization["allowed_sources"]
         assert item["category"] in categories
         assert item["sidecar_sha256"] == sidecar["receipt_sha256"]
-        assert item["expected_bytes"] == item["observed_bytes"] == sidecar["bytes"]
-        assert item["expected_sha256"] == item["observed_sha256"] == sidecar["sha256"]
+        assert (
+            item["expected_bytes"] == item["observed_bytes"] == sidecar["bytes"]
+        )
+        assert (
+            item["expected_sha256"]
+            == item["observed_sha256"]
+            == sidecar["sha256"]
+        )
 
 
 def test_digest_gaps_and_rights_gates_remain_explicit() -> None:
@@ -100,7 +114,10 @@ def test_digest_gaps_and_rights_gates_remain_explicit() -> None:
     assert coverage["paths_with_direct_sha256_evidence"] == 1_654
     assert coverage["same_git_blob_identity_alias_paths"] == 1
     assert coverage["paths_without_direct_sha256"] == 105
-    assert coverage["paths_without_direct_or_same_git_object_sha256_binding"] == 104
+    assert (
+        coverage["paths_without_direct_or_same_git_object_sha256_binding"]
+        == 104
+    )
     assert coverage["remaining_non_lfs_raw_paths_without_digest_evidence"] == 92
     assert coverage["remaining_projection_paths_without_digest_evidence"] == 12
     assert boundaries["new_rights_or_licensing_conclusion"] is False
