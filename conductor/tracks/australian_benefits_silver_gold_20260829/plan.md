@@ -1140,6 +1140,10 @@
   existing release reproducibility checks requiring uv 0.11.29 while this host
   provides 0.12.22. This synthetic API hardening does not qualify real source
   periods, change Gold denominators, resolve rights, or satisfy M-109/M-112.
+  PR #737 merged at `d88aaef73faf46622dd2705783ee8e9703c32d2e`; all 38 hosted
+  checks passed, including 100% Codecov patch coverage and Linux/macOS/Windows
+  consumer lanes. Its review finding about serialization-warning leakage was
+  fixed and the thread resolved before merge.
 - [ ] Publish Silver, Gold, lineage, coverage, promotions, and v4 identities to
   public Hugging Face through the hosted data-plane workflow.
 - [ ] Verify token-free clean-room regeneration and remove only verified
