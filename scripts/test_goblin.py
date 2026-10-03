@@ -259,6 +259,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_review_queue.py",
         "tests/test_gold_edge_review.py",
         "tests/test_rxnorm_lineage.py",
+        "tests/test_rxnorm_identifier_projection.py",
         "tests/test_matching_release.py",
         "tests/test_product_contracts.py",
         "tests/test_platinum_v2_contracts.py",
