@@ -7,6 +7,7 @@ import httpx
 import pytest
 
 from global_medicines_atlas.adapters.au_mbs import parse_mbs_source_xml
+from global_medicines_atlas.bronze_admission import BronzeAdmissionRecord
 from global_medicines_atlas.mbs_release import (
     MbsReleaseContract,
     mbs_source_parquet,
@@ -76,6 +77,25 @@ def test_mock_stage_preserves_raw_and_separates_admission(
     assert stage.manifest.admission_state == (
         "accepted" if payload == PAYLOAD else "quarantined"
     )
+    if payload:
+        landed_object = next(
+            item
+            for item in stage.manifest.objects
+            if item.role == "landed_admission"
+        )
+        admission_object = next(
+            item for item in stage.manifest.objects if item.role == "admission"
+        )
+        landed = BronzeAdmissionRecord.model_validate_json(
+            (stage.path / landed_object.path).read_bytes()
+        )
+        admission = BronzeAdmissionRecord.model_validate_json(
+            (stage.path / admission_object.path).read_bytes()
+        )
+        assert landed.state.value == "landed"
+        assert admission.supersedes_decision_id == landed.decision_id
+        assert landed.acquisition_id == admission.acquisition_id
+        assert landed.content_id == admission.content_id
     raw = [item for item in stage.manifest.objects if item.role == "raw"]
     assert len(raw) == 1
     assert (stage.path / raw[0].path).read_bytes() == payload

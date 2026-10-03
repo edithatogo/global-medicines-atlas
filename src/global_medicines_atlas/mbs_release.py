@@ -346,6 +346,32 @@ def stage_mbs_release(  # ruff: ignore[too-many-locals]
                 role="raw",
             ),
         )
+        temporal = require_temporal(receipt.temporal)
+        # Record the raw landing before inspecting the payload. The technical
+        # admission below supersedes this durable source-byte event.
+        landed = create_admission_decision(
+            acquisition_id=temporal.acquisition_id,
+            content_id=receipt.payload.sha256,
+            state=BronzeAdmissionState.LANDED,
+            reason_codes=("mbs_source_payload_landed",),
+            validation_results=(
+                ValidationResult(
+                    check_id="mbs-raw-object-durable",
+                    passed=True,
+                    message=f"sha256:{receipt.payload.sha256}; bytes:{len(payload)}",
+                ),
+            ),
+            actor="global-medicines-atlas:mbs-release-v1",
+            decided_at=clock(),
+        )
+        objects.append(
+            _object(
+                stage,
+                f"{prefix}/landed-admission.json",
+                (landed.model_dump_json() + "\n").encode(),
+                "landed_admission",
+            )
+        )
         try:
             batch = parse_mbs_source_xml(payload, receipt)
         except ValueError:
@@ -377,7 +403,6 @@ def stage_mbs_release(  # ruff: ignore[too-many-locals]
                 "source_receipt",
             )
         )
-        temporal = require_temporal(receipt.temporal)
         decision = create_admission_decision(
             acquisition_id=temporal.acquisition_id,
             content_id=receipt.payload.sha256,
@@ -394,6 +419,7 @@ def stage_mbs_release(  # ruff: ignore[too-many-locals]
             ),
             actor="global-medicines-atlas:mbs-release-v1",
             decided_at=clock(),
+            supersedes_decision_id=landed.decision_id,
         )
         objects.append(
             _object(
