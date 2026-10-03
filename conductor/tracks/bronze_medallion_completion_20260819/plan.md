@@ -1219,6 +1219,12 @@ for credentialed or rights-unresolved sources.
   denominator and represent the approved 42-source qualification as the
   distinct `bronze-bounded-public-scope-v1` gate. This avoids implying that
   the 115 explicitly deferred sources have qualified.
+- [x] Merge PR #722 at
+  `5f61bf7fb874a07e6294a38a9f2160be5c789735` after its exact-head required
+  checks passed; the original full-scope gate remains blocked and the
+  bounded-horizon gate is separately passed.
+- [x] Rebind the Bronze report and M5 provenance to exact merged `main` after
+  PR #722, then verify the updated projection before closing the reconciliation.
 - [ ] Preserve the remaining source-specific acquisition, licensing, and
   lineage tasks in the future-source ledger or their dependent tracks; do not
   mark the overall Bronze programme complete while these remain open.
