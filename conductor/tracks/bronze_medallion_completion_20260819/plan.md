@@ -1031,8 +1031,11 @@ for credentialed or rights-unresolved sources.
   qualification receipts. State the missing B1 receipt evidence and preserve
   M-112 federation acceptance as a separate gate; do not acquire or publish
   source bytes.
-- [~] Address the first hosted unit finding by storing source-specific next
+- [x] Address the hosted unit findings by storing source-specific next
   actions in canonical sparse overrides and regenerating the queue, cohort,
   and qualification snapshots. The corrected affected contracts pass (254
-  tests); routine Test-Goblin, context/ecosystem, JSONL, and diff checks pass.
-  Complete exact-head hosted checks and merge.
+  tests); the follow-up status-page provenance contract passes (2 tests), and
+  routine Test-Goblin, context/ecosystem, JSONL, and diff checks pass. PR #709
+  merged at `d573b997c10f3d5fd5fc00c838350c7cd452622c` after every required
+  branch-protection check passed. The 157-source denominator and blocked
+  completeness/M5 findings remain unchanged.

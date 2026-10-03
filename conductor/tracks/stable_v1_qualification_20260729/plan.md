@@ -587,8 +587,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   preserving 42/157 landing evidence, 115 missing, and 13/14 dimensions;
   completeness, Australian federation, M5, and stable-release approval remain
   blocked.
-- [~] Address the first hosted unit finding by regenerating the queue and
-  cohort from canonical sparse overrides, then refresh dependent qualification
-  snapshots. The corrected affected contracts pass (254 tests), with routine
-  checks, context/ecosystem, and diff validation passing. Complete exact-head
-  hosted CI and merge without promoting any gate.
+- [x] Address the hosted unit findings by regenerating the queue and cohort
+  from canonical sparse overrides, refreshing dependent qualification
+  snapshots, and binding the status page to the recorded report provenance.
+  The corrected affected contracts pass (254 tests; 2 provenance follow-up
+  tests), with routine checks, context/ecosystem, and diff validation passing.
+  PR #709 merged at `d573b997c10f3d5fd5fc00c838350c7cd452622c` after all
+  required branch-protection checks passed; no acceptance gate was promoted.
