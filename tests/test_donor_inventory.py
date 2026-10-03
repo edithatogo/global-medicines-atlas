@@ -63,6 +63,39 @@ def test_donor_successor_map_covers_every_roadmap_commitment() -> None:
     assert document["archive_authorized"] is False
 
 
+def test_current_donor_successor_readback_preserves_unresolved_gates() -> None:
+    path = ROOT / (
+        "quality/qualifications/"
+        "australian-donor-successor-link-readback-20261004.json"
+    )
+    document = json.loads(path.read_text(encoding="utf-8"))
+    donors = {row["repository"]: row for row in document["donors"]}
+    assert set(donors) == {
+        "edithatogo/aus-health-data-scraper",
+        "edithatogo/aus_mbs_pbs_graph",
+    }
+    assert all(row["archived"] for row in donors.values())
+    assert all(
+        row["readme_links_to_successor_notice"] for row in donors.values()
+    )
+    assert all(
+        row["readme_and_notice_say_unarchived"] for row in donors.values()
+    )
+    assert (
+        donors["edithatogo/aus-health-data-scraper"]["tags"][0][
+            "readme_has_successor_link"
+        ]
+        is False
+    )
+    assert all(row["github_release_count"] == 0 for row in donors.values())
+    assert all(
+        not row["private"] and not row["gated"]
+        for row in document["successor_datasets"]
+    )
+    assert document["boundaries"]["donor_repository_mutated"] is False
+    assert document["boundaries"]["australian_federation_accepted"] is False
+
+
 def _git(repository: Path, *arguments: str) -> str:
     executable = shutil.which("git")
     if executable is None:

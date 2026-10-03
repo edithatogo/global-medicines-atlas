@@ -1,0 +1,79 @@
+{
+  "schema_id": "global-medicines-atlas.australian-donor-successor-link-readback",
+  "schema_version": 1,
+  "observed_at": "2026-10-03T15:37:45Z",
+  "method": {
+    "github_api": "anonymous public repository, content, tag, and release metadata",
+    "hugging_face_api": "anonymous dataset metadata",
+    "readme_and_notice_markdown_read": true,
+    "source_payload_bytes_read": false,
+    "credentials_used": false,
+    "repository_mutation_performed": false,
+    "dataset_mutation_performed": false
+  },
+  "donors": [
+    {
+      "repository": "edithatogo/aus-health-data-scraper",
+      "archived": true,
+      "default_branch": "main",
+      "head": "009e80544588a956c8922aaab052ee08947e2b30",
+      "readme_blob": "0abbc7ca2e8b3fff572e43e60f57631348e33a47",
+      "successor_notice_blob": "7836ca20ec41e835d52118e1ecbca8ed463ff4fc",
+      "readme_links_to_successor_notice": true,
+      "notice_links_to_gma_and_canonical_successor_map": true,
+      "readme_and_notice_say_unarchived": true,
+      "notice_successor_data_revisions_are_historical": true,
+      "github_release_count": 0,
+      "tags": [
+        {
+          "name": "v0.1",
+          "commit": "25bc585647d1f16b4f45c8b648212ab81e157b60",
+          "readme_blob": "31adba7b45e228e21f4f19049eb280accf83952f",
+          "readme_has_successor_link": false
+        }
+      ]
+    },
+    {
+      "repository": "edithatogo/aus_mbs_pbs_graph",
+      "archived": true,
+      "default_branch": "main",
+      "head": "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e",
+      "readme_blob": "9d9fd230fb9eb3d178f56d86cb0fd55259322b80",
+      "successor_notice_blob": "7836ca20ec41e835d52118e1ecbca8ed463ff4fc",
+      "readme_links_to_successor_notice": true,
+      "notice_links_to_gma_and_canonical_successor_map": true,
+      "readme_and_notice_say_unarchived": true,
+      "notice_successor_data_revisions_are_historical": true,
+      "github_release_count": 0,
+      "tags": []
+    }
+  ],
+  "successor_datasets": [
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "private": false,
+      "gated": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "private": false,
+      "gated": false
+    }
+  ],
+  "status": "links_resolve_but_archived_notice_content_needs_authorized_refresh",
+  "unresolved_acceptance": [
+    "Both archived README and SUCCESSOR.md copies inaccurately say the repositories are unarchived.",
+    "The archived notices identify historical HF revisions rather than current successor dataset heads.",
+    "The scraper v0.1 tag's README has no successor link, and no GitHub Releases were present to qualify."
+  ],
+  "boundaries": {
+    "source_rights_changed": false,
+    "source_payloads_acquired": false,
+    "external_publication_performed": false,
+    "donor_repository_unarchived": false,
+    "donor_repository_mutated": false,
+    "australian_federation_accepted": false
+  }
+}
