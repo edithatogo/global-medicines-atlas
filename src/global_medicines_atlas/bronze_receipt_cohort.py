@@ -37,6 +37,9 @@ QUALIFICATION_AUTHORIZATION_INPUTS = (
     CMS_RECORDS_RELATIVE,
     "quality/qualifications/nice-utilisation-acquisition-authorization.json",
     "quality/qualifications/nordic-utilisation-acquisition-authorization.json",
+    "quality/qualifications/additional-utilisation-acquisition-authorization.json",
+    "quality/qualifications/source-rights-disposition.json",
+    "quality/qualifications/source-rights-review-ledger.json",
 )
 QUALIFICATION_CODE_INPUTS = (
     "src/global_medicines_atlas/bronze_maturity.py",

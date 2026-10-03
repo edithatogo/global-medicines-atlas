@@ -132,6 +132,153 @@ def test_norpd_private_historical_report_counts_as_bronze_landing() -> None:
     assert receipt["rights_boundary"]["post_2020_coverage_asserted"] is False
 
 
+@pytest.mark.unit
+def test_open_medic_all_release_receipt_counts_as_bronze_landing() -> None:
+    evidence = receipt_backed_landing_evidence(
+        ROOT, {bronze_maturity_mod.OPEN_MEDIC_SOURCE_ID}
+    )
+    assert evidence == {
+        bronze_maturity_mod.OPEN_MEDIC_SOURCE_ID: (
+            bronze_maturity_mod.OPEN_MEDIC_QUALIFICATION_RELATIVE
+        )
+    }
+
+
+@pytest.mark.parametrize(
+    "mutate",
+    [
+        lambda receipt: receipt.update(source_id="us-drugsfda"),
+        lambda receipt: receipt.update(public_dataset="other/dataset"),
+        lambda receipt: receipt.update(immutable_revision="0" * 40),
+        lambda receipt: receipt.update(accepted_admission_count=11),
+        lambda receipt: receipt.update(accepted_admission_count=12.0),
+        lambda receipt: receipt.update(recovered_acquisition_count=11),
+        lambda receipt: receipt.update(
+            source_record_parquet_pairs_byte_identical=11
+        ),
+        lambda receipt: receipt.update(payload_byte_count=1),
+        lambda receipt: receipt["items"].pop(),
+        lambda receipt: receipt["items"][1].update(year=2014),
+        lambda receipt: receipt["items"][0].update(admission="quarantined"),
+        lambda receipt: receipt["items"][0].update(payload_sha256="bad"),
+        lambda receipt: receipt.update(
+            canonical_medicine_identity_claimed=True
+        ),
+    ],
+)
+@pytest.mark.unit
+def test_open_medic_receipt_rejects_release_scope_or_digest_drift(
+    mutate,
+) -> None:
+    receipt = json.loads(
+        (
+            ROOT / bronze_maturity_mod.OPEN_MEDIC_QUALIFICATION_RELATIVE
+        ).read_text(encoding="utf-8")
+    )
+    mutate(receipt)
+
+    assert not bronze_maturity_mod._is_successful_open_medic_receipt(
+        ROOT, receipt, bronze_maturity_mod.OPEN_MEDIC_SOURCE_ID
+    )
+
+
+@pytest.mark.parametrize(
+    ("relative", "collection", "field", "value"),
+    [
+        (
+            bronze_maturity_mod.OPEN_MEDIC_ACQUISITION_AUTHORIZATION_RELATIVE,
+            "sources",
+            "acquisition_authorized",
+            False,
+        ),
+        (
+            bronze_maturity_mod.OPEN_MEDIC_ACQUISITION_AUTHORIZATION_RELATIVE,
+            "sources",
+            "external_publication_authorized",
+            False,
+        ),
+        (
+            bronze_maturity_mod.OPEN_MEDIC_RIGHTS_DISPOSITION_RELATIVE,
+            "entries",
+            "public_derived_release",
+            "not_approved",
+        ),
+        (
+            bronze_maturity_mod.OPEN_MEDIC_RIGHTS_LEDGER_RELATIVE,
+            "entries",
+            "maintainer_licence_approved",
+            False,
+        ),
+        (
+            bronze_maturity_mod.OPEN_MEDIC_RIGHTS_LEDGER_RELATIVE,
+            "entries",
+            "publish_source_bytes",
+            "unknown",
+        ),
+        (
+            CATALOG_RELATIVE,
+            "sources",
+            "rights_status",
+            "review_required",
+        ),
+    ],
+)
+@pytest.mark.unit
+def test_open_medic_receipt_rejects_rights_or_authority_drift(
+    tmp_path: Path,
+    relative: str,
+    collection: str,
+    field: str,
+    value: object,
+) -> None:
+    paths = (
+        bronze_maturity_mod.OPEN_MEDIC_ACQUISITION_AUTHORIZATION_RELATIVE,
+        bronze_maturity_mod.OPEN_MEDIC_RIGHTS_DISPOSITION_RELATIVE,
+        bronze_maturity_mod.OPEN_MEDIC_RIGHTS_LEDGER_RELATIVE,
+        CATALOG_RELATIVE,
+    )
+    for source_path in paths:
+        target = tmp_path / source_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes((ROOT / source_path).read_bytes())
+    authority_path = tmp_path / relative
+    authority = json.loads(authority_path.read_text(encoding="utf-8"))
+    row = next(
+        entry
+        for entry in authority[collection]
+        if entry["source_id"] == bronze_maturity_mod.OPEN_MEDIC_SOURCE_ID
+    )
+    row[field] = value
+    authority_path.write_text(json.dumps(authority), encoding="utf-8")
+    receipt = json.loads(
+        (
+            ROOT / bronze_maturity_mod.OPEN_MEDIC_QUALIFICATION_RELATIVE
+        ).read_text(encoding="utf-8")
+    )
+
+    assert not bronze_maturity_mod._is_successful_open_medic_receipt(
+        tmp_path, receipt, bronze_maturity_mod.OPEN_MEDIC_SOURCE_ID
+    )
+
+
+@pytest.mark.unit
+def test_open_medic_receipt_rejects_missing_rights_authority(
+    tmp_path: Path,
+) -> None:
+    source_catalog = tmp_path / CATALOG_RELATIVE
+    source_catalog.parent.mkdir(parents=True)
+    source_catalog.write_bytes((ROOT / CATALOG_RELATIVE).read_bytes())
+    receipt = json.loads(
+        (
+            ROOT / bronze_maturity_mod.OPEN_MEDIC_QUALIFICATION_RELATIVE
+        ).read_text(encoding="utf-8")
+    )
+
+    assert not bronze_maturity_mod._is_successful_open_medic_receipt(
+        tmp_path, receipt, bronze_maturity_mod.OPEN_MEDIC_SOURCE_ID
+    )
+
+
 @pytest.mark.parametrize(
     "mutate",
     [

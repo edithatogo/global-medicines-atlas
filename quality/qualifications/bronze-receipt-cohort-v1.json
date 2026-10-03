@@ -7,11 +7,11 @@
   "inputs": {
     "receipt_validator": {
       "path": "src/global_medicines_atlas/bronze_maturity.py",
-      "sha256": "a25757f5206467df586850420771a3db73cb60a9f6d6eba3ccf3a8997142723f"
+      "sha256": "abe42495d87383d4130a070db1a9ae34fc612eb2bee5c2758b8c85548e1cc062"
     },
     "cohort_generator": {
       "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
-      "sha256": "fbb4479c8d947bd90aa826315b3b41b9afaf465ee915c51417285d6717dfb81c"
+      "sha256": "d3c33eec9ab366eb8c81cd9e0bef31737fbaf8482ff1fad41f6a6434ce54bd10"
     },
     "cohort_schema": {
       "path": "schemas/bronze-receipt-cohort-v1.json",
@@ -31,8 +31,8 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "e84aa1833a8e16e9ec8e438b4045e4f24bfefe6a16337bd95049516fb2de3260",
-      "file_count": 123,
+      "sha256": "e9f71bd2c300419f3adf7a91e790cb34623ce0c7b06c14a9c97307a32aab1305",
+      "file_count": 126,
       "files": [
         {
           "path": "DATA_LICENSE.md",
@@ -68,6 +68,11 @@
           "path": "quality/bronze-scale-budgets.json",
           "exists": true,
           "sha256": "d796c8426529668f35922935e80731dc3bfecdf319db872d5b693f11185a8c1f"
+        },
+        {
+          "path": "quality/qualifications/additional-utilisation-acquisition-authorization.json",
+          "exists": true,
+          "sha256": "0ed06a77fdde82ddf649b7ae2f4f542c08a5215553a4fdd99f4645cfced0f559"
         },
         {
           "path": "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
@@ -200,6 +205,16 @@
           "sha256": "e5ba318c3d7cb9fdc11410e2eb1ca6bd646a0da313d566d163d199bb1373c37f"
         },
         {
+          "path": "quality/qualifications/source-rights-disposition.json",
+          "exists": true,
+          "sha256": "be92c9ccaa35f8f96095b6cff4737c3fc14575d2613e5ac0e7d8ce8c0234ce12"
+        },
+        {
+          "path": "quality/qualifications/source-rights-review-ledger.json",
+          "exists": true,
+          "sha256": "74cd6ffb44111dcbf2a2b2d11dd3be0fc62b4136757a33c61c5a839ed29d63d7"
+        },
+        {
           "path": "quality/qualifications/sweden-socialstyrelsen-acquisition-decision-20260929.json",
           "exists": true,
           "sha256": "8218b7882483584fbf11aa5213eea8f828eab9b1f83fec5f89a7993b95b34a88"
@@ -322,7 +337,7 @@
         {
           "path": "src/global_medicines_atlas/bronze_maturity.py",
           "exists": true,
-          "sha256": "a25757f5206467df586850420771a3db73cb60a9f6d6eba3ccf3a8997142723f"
+          "sha256": "abe42495d87383d4130a070db1a9ae34fc612eb2bee5c2758b8c85548e1cc062"
         },
         {
           "path": "src/global_medicines_atlas/bronze_recovery.py",
@@ -654,7 +669,7 @@
   },
   "qualified_cohort": {
     "state": "qualified",
-    "source_count": 27,
+    "source_count": 28,
     "members": [
       {
         "source_id": "eu-union-register",
@@ -682,6 +697,15 @@
         "title": "BDPM SMR ASMR and opinion links",
         "receipt_reference": "quality/qualifications/international-public-bronze-20260827.json",
         "receipt_sha256": "65064f78ff323c362c95714eb92f4fc1a822ee6d39a0e531b8730b6214919bf4"
+      },
+      {
+        "source_id": "fr-open-medic",
+        "jurisdictions": [
+          "FRA"
+        ],
+        "title": "Open Medic interregime medicines expenditure",
+        "receipt_reference": "quality/qualifications/open-medic-all-release-bronze-20260827.json",
+        "receipt_sha256": "454dd69b8b164788bffbacac49d5fbc109a18a8aeabd1ccd1432ffbff178a308"
       },
       {
         "source_id": "gb-emit",
@@ -903,7 +927,7 @@
   },
   "deferred_source_ledger": {
     "state": "tracked_not_qualified",
-    "source_count": 130,
+    "source_count": 129,
     "membership_rule": "All current-scope source IDs without a direct successful receipt accepted by the Bronze maturity receipt validator remain listed, including sources with other landing evidence.",
     "items": [
       {
@@ -1463,19 +1487,6 @@
         "defer_reason_code": "no_qualifying_direct_receipt",
         "reason": "public interactive or document surface requires a documented reproducible acquisition step",
         "next_action": "execute and receipt the documented public manual acquisition",
-        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
-      },
-      {
-        "source_id": "fr-open-medic",
-        "jurisdictions": [
-          "FRA"
-        ],
-        "title": "Open Medic interregime medicines expenditure",
-        "queue_state": "landed_and_evidenced",
-        "evidence_scope": "live_receipt",
-        "defer_reason_code": "queue_landing_not_confirmed_by_receipt_validator",
-        "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, and published under the approved Etalab-2.0 decision. The exact public revision was linked through the reuse gate; all 22,148,373 source-native rows were projected and all 12 products were rebuilt byte-for-byte. Complete French medicines coverage remains unclaimed.",
-        "next_action": "verify receipt freshness on schedule",
         "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
       },
       {
@@ -2601,11 +2612,11 @@
   "scope_accounting": {
     "catalog_source_count": 174,
     "current_scope_count": 157,
-    "qualified_cohort_count": 27,
-    "deferred_current_scope_count": 130,
+    "qualified_cohort_count": 28,
+    "deferred_current_scope_count": 129,
     "current_scope_evaluator_landing_count": 42,
     "current_scope_evaluator_missing_count": 115,
-    "deferred_queue_landed_count": 15,
+    "deferred_queue_landed_count": 14,
     "fixture_only_count": 2,
     "excluded_count": 15,
     "partition_complete": true
