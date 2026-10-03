@@ -751,6 +751,18 @@
   No new source payload was downloaded or decoded. This does not add rights
   state to the sidecars, broaden source rights, complete the 1,759-object
   denominator, admit v4 objects, or pass consumer canaries.
+- [x] Bind two additional approved raw source-archive candidates to existing
+  hosted digest evidence: the MBS August XML is present in the exact nested
+  manifest and was verified at the same current revision by successful run
+  `37066153375`; the PBS April XML's current tree LFS SHA-256 matches the
+  digest from successful anonymous verification in run `33290449753`. This
+  adds digest evidence only. The MBS landed predecessor/reviewer and projection
+  lineage remain missing; the PBS source-rights ledger still says redistribution
+  is unknown. See
+  `quality/qualifications/australian-m112-source-archive-digest-reconciliation-20261004.json`.
+  Together with the 20 utilization objects, 22/1,736 raw paths now have these
+  per-object digest joins; all 23 projection paths and 1,714 raw paths remain
+  outside this subset, so M-112 stays open.
 - [ ] Phase Verification & Checkpoint: record the exact producer/object
   denominator, accepted and missing identities, per-layer receipts, consumer
   canary results, and remaining rights/publication boundaries. Leave M-112
@@ -1581,3 +1593,15 @@
 - [ ] Complete the remaining per-object rights, B1/B2 lineage, anonymous
   payload-digest readback, v4 admission, and consumer canary gates. M-112
   remains blocked until every approved object satisfies its independent gates.
+
+## Source archive digest reconciliation (2026-10-04)
+
+- [x] Bind two Australian raw source-archive candidates (MBS August XML and
+  PBS April ZIP) to exact current manifests and existing hosted anonymous
+  digest receipts. Together with the companion utilization reconciliation,
+  22 of 1,736 raw paths have per-object digest joins; this does not complete
+  full-denominator readback, rights, lineage, v4 admission, or canaries.
+  See `quality/qualifications/australian-m112-source-archive-digest-reconciliation-20261004.json`.
+- [x] Address review finding by linking the exact source/file/destination MBS
+  authorization receipt alongside Decision 0009 and fingerprinting the public
+  receipt body. This does not extend authorization to other sources.

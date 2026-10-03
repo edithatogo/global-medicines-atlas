@@ -1,0 +1,127 @@
+{
+  "archives": [
+    {
+      "current_anonymous_verification_basis": "raw digest directly joined to exact current nested manifest and hosted successful anonymous verifier receipt for the same revision",
+      "current_default_head_equals_pinned_revision": true,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "gated": false,
+      "hosted_verification": {
+        "anonymous_digest_verification": "passed",
+        "issue_comment_body_sha256": "bf814073f3d3bd4a1ee82d4d066145a827554b7c054244b4cc11eb9e47abb42e",
+        "issue_comment_id": "5961659754",
+        "issue_comment_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5961659754",
+        "kind": "hosted_current_revision_object_verification",
+        "run": "37066153375",
+        "run_conclusion": "success",
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37066153375",
+        "temporary_source_bytes_removed": true,
+        "verified_stage_objects": 8,
+        "verifier": "src/global_medicines_atlas/mbs_publication.py::publish_mbs_stage downloads each staged expected object at the returned exact revision and compares SHA-256; this nested manifest binds the target raw object.",
+        "workflow_commit": "12e5ca4678e077f8e6bf954aaa780aac83040994"
+      },
+      "manifest_path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/manifest.json",
+      "manifest_raw_row_matches_target": true,
+      "manifest_sha256": "92eda66dcdc34902ec88f3d13faeb61c13d09fb4c944ad7a1ef0be8c2ac1a93c",
+      "public": true,
+      "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "source_authority_ref": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md#rights-and-publication-authority",
+      "source_authorization_receipt_ref": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+      "source_authorization_receipt_body_sha256": "81b68243e5fcdfd31687c33eaeb7e68a833416195dd0c2779dc36894c545725b"
+    },
+    {
+      "current_anonymous_verification_basis": "historically anonymous-verified content digest matches the current immutable public tree LFS digest and byte count",
+      "current_default_head_equals_pinned_revision": true,
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "gated": false,
+      "hosted_verification": {
+        "anonymous_digest_verification": "passed",
+        "current_revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+        "current_tree_lfs_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+        "current_tree_size": 11156706,
+        "issue_comment_body_sha256": "b03c52b7c239ca08e6f056a22d6319beb72fb5d64286a503e6a3fed0300b5a9b",
+        "issue_comment_id": "5466488482",
+        "issue_comment_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466488482",
+        "kind": "historic_exact_content_digest_plus_current_tree_lfs_identity",
+        "run": "33290449753",
+        "run_conclusion": "success",
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33290449753",
+        "temporary_source_bytes_removed": true,
+        "verification_strength": "current immutable object digest is bound by public LFS metadata to the previously anonymously verified digest; this reconciliation did not redownload it",
+        "verified_revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+        "verified_source_archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+        "workflow_commit": "771ca393500165ed57fca64fd5c1c8ac523b98f0"
+      },
+      "manifest_path": "manifest.json",
+      "manifest_raw_row_matches_target": true,
+      "manifest_sha256": "e6c9abbc62bd44fc47049306a92cc8efc9700031908586262c2b82a907546460",
+      "public": true,
+      "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "source_authority_ref": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md#rights-and-publication-authority"
+    }
+  ],
+  "boundaries": {
+    "consumer_canaries_performed": false,
+    "historical_hosted_verification_read_payload_bytes_for_hashing": true,
+    "manifest_and_tree_metadata_read_anonymously": true,
+    "new_external_publication_performed": false,
+    "new_rights_or_licensing_conclusion_made": false,
+    "new_source_payload_bytes_downloaded": false,
+    "source_values_read": false,
+    "temporary_source_bytes_removed_by_hosted_workflows": true,
+    "v4_admission_performed": false
+  },
+  "evidence_inputs": [
+    {
+      "path": "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
+      "sha256": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-mbs-hosted-receipt-20261003.json",
+      "sha256": "64dcd866c212f422c188462c49f0e19fc7e0802e7c2e31c6dad360fa2a958918"
+    },
+    {
+      "path": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+      "sha256": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f"
+    }
+  ],
+  "purpose": "Bind two approved Australian raw source-archive candidates to exact public manifest/tree identities and existing hosted anonymous digest receipts; metadata only, no new source payload download.",
+  "recorded_at": "2026-10-03T17:29:36Z",
+  "remaining_gates": [
+    "MBS August admission remains unreviewed and has no persisted landed predecessor; root-manifest omission and source-Parquet lineage remain open.",
+    "PBS upstream redistribution terms remain unknown in the source-rights ledger; exact publication authority and digest identity do not establish broader rights or v4 eligibility.",
+    "Across this report and its companion utilization reconciliation, 22 of the 1,736 raw paths have per-object digest joins; the remaining 1,714 raw paths and all 23 existing projections are outside this digest subset. M-112 still requires all object-specific rights, lineage, admission, and consumer evidence."
+  ],
+  "schema_id": "global-medicines-atlas.australian-m112-source-archive-digest-reconciliation",
+  "schema_version": 1,
+  "scope": {
+    "approved_projection_denominator": 23,
+    "approved_raw_denominator": 1736,
+    "approved_total_denominator": 1759,
+    "full_denominator_digest_readback_complete": false,
+    "objects_reconciled_here": 2
+  },
+  "verified_objects": [
+    {
+      "byte_count": 8293331,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "digest_evidence_kind": "hosted_current_revision_object_verification",
+      "exact_manifest_join": true,
+      "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "source_id": "au-mbs",
+      "source_version": "2026-08-01"
+    },
+    {
+      "byte_count": 11156706,
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "digest_evidence_kind": "historic_exact_content_digest_plus_current_tree_lfs_identity",
+      "exact_manifest_join": true,
+      "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+      "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "source_id": "au-pbs-historical-xml",
+      "source_version": "2026-04-01"
+    }
+  ]
+}
