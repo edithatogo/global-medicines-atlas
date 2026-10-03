@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/bronze-bounded-scope-decision-v1.json",
+  "title": "Maintainer-approved bounded Bronze scope decision",
+  "type": "object",
+  "required": ["schema_id", "schema_version", "decision_id", "decided_on", "decision_basis", "full_scope_source_count", "full_scope_source_ids_sha256", "active_scope_source_count", "active_scope_source_ids_sha256", "active_source_ids", "deferred_source_count", "deferred_source_ledger", "reentry_trigger"],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.bronze-bounded-scope-decision"},
+    "schema_version": {"const": 1},
+    "decision_id": {"const": "bronze-bounded-scope-v1"},
+    "decided_on": {"const": "2026-10-03"},
+    "decision_basis": {"type": "string", "minLength": 1},
+    "full_scope_source_count": {"const": 157},
+    "full_scope_source_ids_sha256": {"const": "565efef6f20466a658104b3477d12c3e28fe75c775d2669f062088dc43a793d9"},
+    "active_scope_source_count": {"const": 42},
+    "active_scope_source_ids_sha256": {"const": "37c5d1479fdc15222f22b865e0ef271ca14d9771aaaf5751ef7f6f958d6b3303"},
+    "active_source_ids": {"type": "array", "minItems": 42, "maxItems": 42, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "deferred_source_count": {"const": 115},
+    "deferred_source_ledger": {"const": "docs/qualification/bronze-bounded-scope-future-sources.md"},
+    "reentry_trigger": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

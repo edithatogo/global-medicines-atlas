@@ -7,11 +7,11 @@
   "inputs": {
     "receipt_validator": {
       "path": "src/global_medicines_atlas/bronze_maturity.py",
-      "sha256": "fb3cb7d5e2a8a809fd5efbc6cf519b3d2268eba38472335003a72a8b520145bf"
+      "sha256": "a6f65e967806bfdbd23cb930a51d89c99d5561f593db98898cf63a1e6fbc620d"
     },
     "cohort_generator": {
       "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
-      "sha256": "d5df6a98415e1717e141f1f34a1697e59889980ec0a0fb4ee4ff69493f2bbef1"
+      "sha256": "93216ac5a9aa97b6433c59444b580a7e0831ea878bc1b11fb3d69267561eadf7"
     },
     "cohort_schema": {
       "path": "schemas/bronze-receipt-cohort-v1.json",
@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "7a11fffb06fc915e5f711a23272261d57c2b65334784f4459e81a4cbe58c8eb6",
+      "sha256": "48e024dde8ef99e66fef19d831906a30e2ba4d1c3e2d63e03b96721e953e52c9",
       "file_count": 144,
       "files": [
         {
@@ -47,12 +47,12 @@
         {
           "path": "conductor/requirements.md",
           "exists": true,
-          "sha256": "391eb0c4e913d5500d397616844387108705c5d28623bd45ebcf852f077b5a2c"
+          "sha256": "65f4e3cc18d2432dd2477c8390732e094bc67e0fda4c4973913aad0fda4c5b2f"
         },
         {
           "path": "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
           "exists": true,
-          "sha256": "7511d46321c9fada3d1392d24d7ebf0a1678ee4a4c7f0b9faf3a2364a90b7ba8"
+          "sha256": "78d0bed75bd2415b935108030eeb9b98aab69618790d3eb12ed77aed3f48a500"
         },
         {
           "path": "docs/ECOSYSTEM_REUSE.md",
@@ -412,12 +412,12 @@
         {
           "path": "src/global_medicines_atlas/bronze_maturity.py",
           "exists": true,
-          "sha256": "fb3cb7d5e2a8a809fd5efbc6cf519b3d2268eba38472335003a72a8b520145bf"
+          "sha256": "a6f65e967806bfdbd23cb930a51d89c99d5561f593db98898cf63a1e6fbc620d"
         },
         {
           "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
           "exists": true,
-          "sha256": "d5df6a98415e1717e141f1f34a1697e59889980ec0a0fb4ee4ff69493f2bbef1"
+          "sha256": "93216ac5a9aa97b6433c59444b580a7e0831ea878bc1b11fb3d69267561eadf7"
         },
         {
           "path": "src/global_medicines_atlas/bronze_recovery.py",

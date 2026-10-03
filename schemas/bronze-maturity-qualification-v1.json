@@ -21,7 +21,7 @@
       "const": "global-medicines-atlas.bronze-maturity-qualification"
     },
     "schema_version": {"const": 1},
-    "horizon": {"const": "bronze-current-public-scope"},
+    "horizon": {"enum": ["bronze-bounded-public-scope-v1", "bronze-current-public-scope"]},
     "evaluated_at": {"type": "string", "minLength": 1},
     "git_commit": {"type": "string", "minLength": 1},
     "authorities": {
@@ -71,6 +71,10 @@
       "required": [
         "catalog_source_count",
         "bronze_in_scope_count",
+        "full_bronze_source_universe_count",
+        "deferred_source_count",
+        "full_scope_landing_count",
+        "full_scope_missing_count",
         "fixture_only_count",
         "excluded_count",
         "in_scope_without_landing_or_blocker",
@@ -80,6 +84,10 @@
       "properties": {
         "catalog_source_count": {"type": "integer", "minimum": 1},
         "bronze_in_scope_count": {"type": "integer", "minimum": 0},
+        "full_bronze_source_universe_count": {"type": "integer", "minimum": 0},
+        "deferred_source_count": {"type": "integer", "minimum": 0},
+        "full_scope_landing_count": {"type": "integer", "minimum": 0},
+        "full_scope_missing_count": {"type": "integer", "minimum": 0},
         "fixture_only_count": {"type": "integer", "minimum": 0},
         "excluded_count": {"type": "integer", "minimum": 0},
         "in_scope_without_landing_or_blocker": {

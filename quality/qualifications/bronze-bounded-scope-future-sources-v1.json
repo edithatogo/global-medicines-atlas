@@ -1,0 +1,1291 @@
+{
+  "schema_id": "global-medicines-atlas.bronze-bounded-scope-future-sources",
+  "schema_version": 1,
+  "ledger_id": "bronze-bounded-scope-future-sources-v1",
+  "qualification_horizon": "bronze-bounded-public-scope-v1",
+  "qualification_state": "qualified",
+  "scope_decision": {
+    "path": "quality/qualifications/bronze-bounded-scope-decision-v1.json",
+    "sha256": "89dc6492b432d8a3e8d6800b85a0f4049e26b811179d21b1033cb97c51143448"
+  },
+  "source_accounting": {
+    "catalog_source_count": 174,
+    "full_public_source_count": 157,
+    "active_source_count": 42,
+    "deferred_source_count": 115,
+    "full_scope_missing_evidence_count": 115,
+    "partition_complete": true
+  },
+  "deferred_sources": [
+    {
+      "source_id": "ae-dha-prices",
+      "jurisdictions": [
+        "ARE"
+      ],
+      "title": "Medication price list",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ae-ede-register",
+      "jurisdictions": [
+        "ARE"
+      ],
+      "title": "Registered product directory",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ar-anmat-vademecum",
+      "jurisdictions": [
+        "ARG"
+      ],
+      "title": "Vademecum Nacional",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "au-pbs-api",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "title": "Pharmaceutical Benefits Scheme public data API",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: terms_review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "au-tga-daen",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "title": "Database of Adverse Event Notifications",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "au-tga-pi-cmi",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "title": "Product Information and Consumer Medicine Information",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "au-tga-regulatory-events",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "title": "ARTG cancellation suspension and regulatory datasets",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "bh-moh-drug-prices",
+      "jurisdictions": [
+        "BHR"
+      ],
+      "title": "Drug price list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "br-anvisa-medicines",
+      "jurisdictions": [
+        "BRA"
+      ],
+      "title": "Anvisa medicines consultation and open-data surfaces",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "br-cmed-prices",
+      "jurisdictions": [
+        "BRA"
+      ],
+      "title": "Medicine price ceilings",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "br-conitec-decisions",
+      "jurisdictions": [
+        "BRA"
+      ],
+      "title": "CONITEC recommendations and SUS incorporation decisions",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ca-canada-vigilance",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "title": "Canada Vigilance adverse reaction online database",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ca-cda-recommendations",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "title": "Reimbursement review recommendations",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ca-cihi-nhex-medicines",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "title": "CIHI National Health Expenditure medicines components",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ca-nova-scotia-pharmacare",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "title": "Nova Scotia Pharmacare Formulary",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ca-ontario-odb",
+      "jurisdictions": [
+        "CAN"
+      ],
+      "title": "Ontario Drug Benefit Formulary CDI",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ch-foph-sl-fhir",
+      "jurisdictions": [
+        "CHE"
+      ],
+      "title": "Specialities List FHIR bulk",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ch-foph-specialities",
+      "jurisdictions": [
+        "CHE"
+      ],
+      "title": "Specialities List",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ch-swissmedic-aips",
+      "jurisdictions": [
+        "CHE"
+      ],
+      "title": "AIPS product-information bulk XML",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ch-swissmedic-authorised",
+      "jurisdictions": [
+        "CHE"
+      ],
+      "title": "Authorised medicinal products",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "cl-isp-register",
+      "jurisdictions": [
+        "CHL"
+      ],
+      "title": "Medicines registration search",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "co-invima-cum",
+      "jurisdictions": [
+        "COL"
+      ],
+      "title": "Codigo Unico de Medicamentos lists",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "co-invima-register",
+      "jurisdictions": [
+        "COL"
+      ],
+      "title": "Sanitary registration search",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "de-bfarm-amice",
+      "jurisdictions": [
+        "DEU"
+      ],
+      "title": "AMIce PharmNet.Bund",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "dk-medicinpriser",
+      "jurisdictions": [
+        "DNK"
+      ],
+      "title": "Medicinpriser",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "dk-medstat-utilisation",
+      "jurisdictions": [
+        "DNK"
+      ],
+      "title": "Medstat.dk medicines statistics",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eg-eda-register",
+      "jurisdictions": [
+        "EGY"
+      ],
+      "title": "Egypt EDA product register",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eg-eda-safety",
+      "jurisdictions": [
+        "EGY"
+      ],
+      "title": "Egyptian Drug Authority public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eg-national-eml",
+      "jurisdictions": [
+        "EGY"
+      ],
+      "title": "EGY essential medicines / health-supplies list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eu-ema-article57",
+      "jurisdictions": [
+        "EU"
+      ],
+      "title": "Article 57 public medicines data",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eu-ema-epar-documents",
+      "jurisdictions": [
+        "EU"
+      ],
+      "title": "EMA EPAR and medicine documents",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eu-ema-json",
+      "jurisdictions": [
+        "EU"
+      ],
+      "title": "EMA medicine and document JSON",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eu-ema-orphan",
+      "jurisdictions": [
+        "EU"
+      ],
+      "title": "EMA orphan medicinal product designations",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eu-ema-referrals",
+      "jurisdictions": [
+        "EU"
+      ],
+      "title": "EMA referral procedures",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eu-ema-safety-communications",
+      "jurisdictions": [
+        "EU"
+      ],
+      "title": "EMA safety communications",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "eu-spor-public-metadata",
+      "jurisdictions": [
+        "EU"
+      ],
+      "title": "SPOR public RMS/OMS metadata",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "gb-mhra-yellow-card",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "title": "Yellow Card Scheme public outputs",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "gb-openprescribing",
+      "jurisdictions": [
+        "GBR"
+      ],
+      "title": "OpenPrescribing English primary-care prescribing",
+      "queue_state": "temporarily_unavailable",
+      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. The bounded 2026-09-27 HEAD check of all six documented identities still returned Cloudflare HTTP 403 challenges. On 2026-09-29 the provider confirmed increased Cloudflare protections may challenge or block automation and that it cannot offer an alternative automated route at present. No payload or challenge bytes were retained and no publication occurred.",
+      "next_action": "wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "gcc-central-registration",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "title": "GCC central registration process",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "gh-fda-register",
+      "jurisdictions": [
+        "GHA"
+      ],
+      "title": "Ghana FDA product register",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "gh-fda-safety",
+      "jurisdictions": [
+        "GHA"
+      ],
+      "title": "Ghana Food and Drugs Authority public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "gh-national-eml",
+      "jurisdictions": [
+        "GHA"
+      ],
+      "title": "GHA essential medicines / health-supplies list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "global-who-amds-gprm",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "title": "WHO AMDS / Global Price Reporting Mechanism",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "global-who-availability-surveys",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "title": "WHO medicines availability survey sources",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "global-who-databases",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "title": "WHO medicines and health-product databases catalog",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "global-who-medicine-prices",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "title": "WHO medicines pricing information sources",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "global-who-mi4a",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "title": "WHO MI4A vaccine market information",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "global-who-national-eml-index",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "title": "WHO index of national essential medicines lists",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "The official WHO nEML index currently lists 167 candidate country/list items. WHO describes a collection assembled from official government websites and databases plus grey and academic literature; per-document reuse rights, upstream source rights, and acquisition authority remain unestablished. The source remains unacquired and unqualified.",
+      "next_action": "Resolve source-specific rights, upstream origins, and maintainer acquisition authority for each candidate before any linked-document landing; preserve unavailable items as unknown coverage.",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "global-who-shortage-sources",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "title": "WHO medicines shortage source inventory",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "global-who-wla",
+      "jurisdictions": [
+        "GLOBAL"
+      ],
+      "title": "WHO Listed Authorities and regulatory-system maturity",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: WHO terms apply",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "id-bpom-product",
+      "jurisdictions": [
+        "IDN"
+      ],
+      "title": "Product check portal",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ie-pcrs-reimbursement",
+      "jurisdictions": [
+        "IRL"
+      ],
+      "title": "HSE PCRS reimbursement reports",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "in-cdsco-approved-drugs",
+      "jurisdictions": [
+        "IND"
+      ],
+      "title": "CDSCO approved new drugs",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "in-cdsco-products",
+      "jurisdictions": [
+        "IND"
+      ],
+      "title": "CDSCO public product/license surfaces beyond the approved-drugs seed",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "in-nlem",
+      "jurisdictions": [
+        "IND"
+      ],
+      "title": "National List of Essential Medicines",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "in-nppa-ceiling-prices",
+      "jurisdictions": [
+        "IND"
+      ],
+      "title": "NPPA ceiling prices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "in-procurement-availability",
+      "jurisdictions": [
+        "IND"
+      ],
+      "title": "India public medicines procurement/availability surfaces",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "jp-mhlw-ndb-utilisation",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "title": "NDB tabulated medicines utilisation",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "jp-pmda-package-inserts",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "title": "Package insert search and selected CSV lists",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "jp-pmda-safety",
+      "jurisdictions": [
+        "JPN"
+      ],
+      "title": "PMDA safety information and alerts",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ke-national-eml",
+      "jurisdictions": [
+        "KEN"
+      ],
+      "title": "KEN essential medicines / health-supplies list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ke-ppb-register",
+      "jurisdictions": [
+        "KEN"
+      ],
+      "title": "Kenya PPB product register",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ke-ppb-safety",
+      "jurisdictions": [
+        "KEN"
+      ],
+      "title": "Kenya Pharmacy and Poisons Board public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "kr-hira-atc",
+      "jurisdictions": [
+        "KOR"
+      ],
+      "title": "HIRA ATC mapping",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "kr-hira-standard-code",
+      "jurisdictions": [
+        "KOR"
+      ],
+      "title": "Drug standard-code mapping",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "kw-moh-medicines",
+      "jurisdictions": [
+        "KWT"
+      ],
+      "title": "Medicines source discovery record",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "mus-approved-drug-list",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "title": "Mauritius Approved Drug List / EML",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "mus-historical-eml-archive",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "title": "Mauritius historical EML/Approved Drug List editions",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "mus-pharmacy-board-register",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "title": "Mauritius public product registration",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "mus-pharmacy-board-safety",
+      "jurisdictions": [
+        "MUS"
+      ],
+      "title": "Mauritius Pharmacy Board public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "mx-cofepris-register",
+      "jurisdictions": [
+        "MEX"
+      ],
+      "title": "COFEPRIS sanitary registration consultation",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "mx-csg-compendium",
+      "jurisdictions": [
+        "MEX"
+      ],
+      "title": "National Health Supplies Compendium",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "my-npra-quest",
+      "jurisdictions": [
+        "MYS"
+      ],
+      "title": "QUEST3 Product Search",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ng-nafdac-products",
+      "jurisdictions": [
+        "NGA"
+      ],
+      "title": "NAFDAC registered products search",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ng-nafdac-safety",
+      "jurisdictions": [
+        "NGA"
+      ],
+      "title": "NAFDAC public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ng-nhia-medicines",
+      "jurisdictions": [
+        "NGA"
+      ],
+      "title": "NHIA medicines and benefit-package publications",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "nl-medicijnkosten",
+      "jurisdictions": [
+        "NLD"
+      ],
+      "title": "Medicijnkosten",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "no-dmp-fhir",
+      "jurisdictions": [
+        "NOR"
+      ],
+      "title": "Medicinal product FHIR service",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "no-fest",
+      "jurisdictions": [
+        "NOR"
+      ],
+      "title": "FEST full and incremental extracts",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "nz-medsafe-documents",
+      "jurisdictions": [
+        "NZL"
+      ],
+      "title": "Data sheets and consumer medicine information",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "om-moh-medicines",
+      "jurisdictions": [
+        "OMN"
+      ],
+      "title": "Medicines source discovery record",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ph-fda-verification",
+      "jurisdictions": [
+        "PHL"
+      ],
+      "title": "FDA Verification Portal",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "pk-drap-register",
+      "jurisdictions": [
+        "PAK"
+      ],
+      "title": "DRAP registered/provisional products",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "pk-drap-safety",
+      "jurisdictions": [
+        "PAK"
+      ],
+      "title": "Pakistan Drug Regulatory Authority public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "pk-neml",
+      "jurisdictions": [
+        "PAK"
+      ],
+      "title": "PAK essential medicines / health-supplies list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "qa-moh-medicines",
+      "jurisdictions": [
+        "QAT"
+      ],
+      "title": "Medicines source discovery record",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "rw-national-eml",
+      "jurisdictions": [
+        "RWA"
+      ],
+      "title": "RWA essential medicines / health-supplies list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "rw-rwandafda-register",
+      "jurisdictions": [
+        "RWA"
+      ],
+      "title": "Rwanda FDA product register",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "rw-rwandafda-safety",
+      "jurisdictions": [
+        "RWA"
+      ],
+      "title": "Rwanda Food and Drugs Authority public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "sa-chi-formulary",
+      "jurisdictions": [
+        "SAU"
+      ],
+      "title": "Health insurance formulary and benefit publications",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "se-npl-nsl",
+      "jurisdictions": [
+        "SWE"
+      ],
+      "title": "NPL and NSL open data",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "se-tlv-subsidies",
+      "jurisdictions": [
+        "SWE"
+      ],
+      "title": "TLV price and subsidy database",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "sg-hsa-approval-deltas",
+      "jurisdictions": [
+        "SGP"
+      ],
+      "title": "Approval and post-registration listings",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "sg-hsa-register",
+      "jurisdictions": [
+        "SGP"
+      ],
+      "title": "Register of therapeutic products",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "sg-moh-drug-list",
+      "jurisdictions": [
+        "SGP"
+      ],
+      "title": "Standard Drug List and subsidy information",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "sn-dpm-register",
+      "jurisdictions": [
+        "SEN"
+      ],
+      "title": "Senegal DPM product register",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "sn-dpm-safety",
+      "jurisdictions": [
+        "SEN"
+      ],
+      "title": "Senegal Direction de la Pharmacie et du M\u00e9dicament public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "sn-national-eml",
+      "jurisdictions": [
+        "SEN"
+      ],
+      "title": "SEN essential medicines / health-supplies list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "th-fda-search",
+      "jurisdictions": [
+        "THA"
+      ],
+      "title": "Medicine product search",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "tz-national-eml",
+      "jurisdictions": [
+        "TZA"
+      ],
+      "title": "TZA essential medicines / health-supplies list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "tz-tmda-products",
+      "jurisdictions": [
+        "TZA"
+      ],
+      "title": "TMDA registered products",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "tz-tmda-safety",
+      "jurisdictions": [
+        "TZA"
+      ],
+      "title": "Tanzania Medicines and Medical Devices Authority public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ug-national-eml",
+      "jurisdictions": [
+        "UGA"
+      ],
+      "title": "Uganda EML and health supplies list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ug-nda-register",
+      "jurisdictions": [
+        "UGA"
+      ],
+      "title": "Uganda NDA product register",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "ug-nda-safety",
+      "jurisdictions": [
+        "UGA"
+      ],
+      "title": "Uganda National Drug Authority public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "us-cms-mdrp",
+      "jurisdictions": [
+        "USA"
+      ],
+      "title": "Medicaid Drug Rebate Program product data",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "us-cms-nadac",
+      "jurisdictions": [
+        "USA"
+      ],
+      "title": "National Average Drug Acquisition Cost",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "us-dailymed-spl",
+      "jurisdictions": [
+        "USA"
+      ],
+      "title": "DailyMed Structured Product Labeling",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "za-national-eml",
+      "jurisdictions": [
+        "ZAF"
+      ],
+      "title": "National Essential Medicines List and standard treatment guidelines",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "za-sahpra-register",
+      "jurisdictions": [
+        "ZAF"
+      ],
+      "title": "Registered health products",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "za-sahpra-safety",
+      "jurisdictions": [
+        "ZAF"
+      ],
+      "title": "SAHPRA public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "za-single-exit-price",
+      "jurisdictions": [
+        "ZAF"
+      ],
+      "title": "Single Exit Price database",
+      "queue_state": "rights_blocked",
+      "reason": "source-specific retention and transformation rights unresolved: review_required",
+      "next_action": "record source-specific retention and transformation rights",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "zw-mcaz-register",
+      "jurisdictions": [
+        "ZWE"
+      ],
+      "title": "MCAZ product register",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "zw-mcaz-safety",
+      "jurisdictions": [
+        "ZWE"
+      ],
+      "title": "Medicines Control Authority of Zimbabwe public safety/recall notices",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "zw-national-eml",
+      "jurisdictions": [
+        "ZWE"
+      ],
+      "title": "ZWE essential medicines / health-supplies list",
+      "queue_state": "manual_only_documented_acquisition",
+      "reason": "public interactive or document surface requires a documented reproducible acquisition step",
+      "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    }
+  ],
+  "boundaries": {
+    "missing_coverage_is_not_negative_evidence": true,
+    "rights_or_acquisition_authority_granted": false,
+    "publication_authority_granted": false
+  }
+}

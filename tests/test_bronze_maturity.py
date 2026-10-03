@@ -70,6 +70,37 @@ def test_fda_shortages_scoped_internal_receipt_counts_as_bronze_landing() -> (
     }
 
 
+@pytest.mark.unit
+def test_bounded_scope_is_hash_bound_and_keeps_full_universe_visible() -> None:
+    property_row, inventory = evaluate_completeness(ROOT)
+
+    assert property_row["state"] == "evidenced"
+    assert inventory["bronze_in_scope_count"] == 42
+    assert inventory["full_bronze_source_universe_count"] == 157
+    assert inventory["deferred_source_count"] == 115
+    assert inventory["in_scope_without_landing_or_blocker"] == 0
+    assert inventory["full_scope_missing_count"] == 115
+    assert inventory["missing_coverage_is_not_negative_evidence"] is True
+
+
+@pytest.mark.unit
+def test_bounded_scope_decision_rejects_unreviewed_membership_drift(
+    tmp_path: Path,
+) -> None:
+    catalog_path = ROOT / CATALOG_RELATIVE
+    (tmp_path / CATALOG_RELATIVE).parent.mkdir(parents=True)
+    (tmp_path / CATALOG_RELATIVE).write_bytes(catalog_path.read_bytes())
+    decision_path = ROOT / bronze_maturity_mod.SCOPE_DECISION_RELATIVE
+    destination = tmp_path / bronze_maturity_mod.SCOPE_DECISION_RELATIVE
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    decision = json.loads(decision_path.read_text(encoding="utf-8"))
+    decision["active_source_ids"].append("not-in-catalog")
+    destination.write_text(json.dumps(decision), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="does not match catalog"):
+        evaluate_completeness(tmp_path)
+
+
 def test_australian_mbs_raw_receipt_remains_deferred_without_landed_event() -> (
     None
 ):
@@ -1441,7 +1472,7 @@ def test_live_report_validates_and_does_not_declare_false_maturity() -> None:
     )
     inventory = report["completeness_inventory"]
     assert inventory["catalog_source_count"] == (
-        inventory["bronze_in_scope_count"]
+        inventory["full_bronze_source_universe_count"]
         + inventory["fixture_only_count"]
         + inventory["excluded_count"]
     )
@@ -1479,6 +1510,7 @@ def test_schema_rejects_mature_declaration_with_blockers() -> None:
     invalid = copy.deepcopy(report)
     invalid["bronze_mature"] = True
     invalid["qualification_state"] = "qualified"
+    invalid["blockers"] = [{"blocker_id": "injected", "detail": "test"}]
     with pytest.raises(ValidationError):
         _validate(invalid)
 
@@ -1545,12 +1577,15 @@ def test_dump_report_round_trips() -> None:
 
 
 @pytest.mark.unit
-def test_committed_report_matches_schema_when_present() -> None:
+def test_committed_report_matches_schema_for_bounded_horizon() -> None:
     path = ROOT / "quality/qualifications/bronze-maturity.json"
     if not path.is_file():
         pytest.skip("report not generated yet")
     _validate(_load(path))
-    assert _load(path)["bronze_mature"] is False
+    report = _load(path)
+    assert report["horizon"] == "bronze-bounded-public-scope-v1"
+    assert report["bronze_mature"] is True
+    assert report["completeness_inventory"]["full_scope_missing_count"] == 115
 
 
 def _row(
@@ -1875,7 +1910,10 @@ def test_completeness_is_evidenced_when_every_in_scope_source_landed(
     )
     contracts.parent.mkdir(parents=True, exist_ok=True)
     contracts.write_text('SOURCE = "au-artg"\n', encoding="utf-8")
-    property_row, inventory = evaluate_completeness(tmp_path)
+    property_row, inventory = evaluate_completeness(
+        tmp_path,
+        use_bounded_scope=False,
+    )
     assert property_row["state"] == "evidenced"
     assert inventory["in_scope_without_landing_or_blocker"] == 0
 
@@ -1972,12 +2010,15 @@ def test_evaluate_repository_fail_closes_inconsistent_maturity(
         "missing_coverage_is_not_negative_evidence": True,
     }
 
-    def fake_completeness(root: Path) -> tuple[dict[str, Any], dict[str, Any]]:
+    def fake_completeness(
+        root: Path,
+        **_kwargs: Any,
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
         del root
         return _row("completeness"), inventory
 
     def fake_properties(rows: list[dict[str, Any]]):
-        def inner(root: Path) -> list[dict[str, Any]]:
+        def inner(root: Path, **_kwargs: Any) -> list[dict[str, Any]]:
             del root
             return rows
 

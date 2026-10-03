@@ -205,7 +205,9 @@
   This representation consists of a mandatory one-row acquisition manifest
   and optional adapter-native source records; binary payloads remain immutable
   bytes and are never replacement-decoded into either product.
-- **M-095:** Complete bronze for current-scope public/no-credential catalog
+- **M-095:** Complete Bronze for the versioned approved public/no-credential
+  qualification horizon; preserve the full catalog universe and list deferred
+  sources with source-specific re-entry conditions.
   sources and already-governed fixtures. Credentialed, licensed-feed, and
   restricted-payload sources remain catalogued with explicit exclusion from this
   completion horizon. Python 3.14 remains the complete fallback. Credentials and

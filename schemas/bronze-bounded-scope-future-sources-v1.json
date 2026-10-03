@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/bronze-bounded-scope-future-sources-v1.json",
+  "title": "Bronze bounded-scope future sources",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "ledger_id",
+    "qualification_horizon",
+    "qualification_state",
+    "scope_decision",
+    "source_accounting",
+    "deferred_sources",
+    "boundaries"
+  ],
+  "properties": {
+    "schema_id": {"const": "global-medicines-atlas.bronze-bounded-scope-future-sources"},
+    "schema_version": {"const": 1},
+    "ledger_id": {"const": "bronze-bounded-scope-future-sources-v1"},
+    "qualification_horizon": {"const": "bronze-bounded-public-scope-v1"},
+    "qualification_state": {"enum": ["blocked", "qualified"]},
+    "scope_decision": {
+      "type": "object",
+      "required": ["path", "sha256"],
+      "additionalProperties": false,
+      "properties": {
+        "path": {"const": "quality/qualifications/bronze-bounded-scope-decision-v1.json"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "source_accounting": {
+      "type": "object",
+      "required": ["catalog_source_count", "full_public_source_count", "active_source_count", "deferred_source_count", "full_scope_missing_evidence_count", "partition_complete"],
+      "additionalProperties": false,
+      "properties": {
+        "catalog_source_count": {"type": "integer", "minimum": 1},
+        "full_public_source_count": {"type": "integer", "minimum": 1},
+        "active_source_count": {"type": "integer", "minimum": 1},
+        "deferred_source_count": {"type": "integer", "minimum": 0},
+        "full_scope_missing_evidence_count": {"type": "integer", "minimum": 0},
+        "partition_complete": {"const": true}
+      }
+    },
+    "deferred_sources": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": ["source_id", "jurisdictions", "title", "queue_state", "reason", "next_action", "reentry_trigger"],
+        "additionalProperties": false,
+        "properties": {
+          "source_id": {"type": "string", "minLength": 1},
+          "jurisdictions": {"type": "array", "items": {"type": "string"}},
+          "title": {"type": "string"},
+          "queue_state": {"type": "string"},
+          "reason": {"type": "string"},
+          "next_action": {"type": "string"},
+          "reentry_trigger": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "required": ["missing_coverage_is_not_negative_evidence", "rights_or_acquisition_authority_granted", "publication_authority_granted"],
+      "additionalProperties": false,
+      "properties": {
+        "missing_coverage_is_not_negative_evidence": {"const": true},
+        "rights_or_acquisition_authority_granted": {"const": false},
+        "publication_authority_granted": {"const": false}
+      }
+    }
+  },
+  "additionalProperties": false
+}

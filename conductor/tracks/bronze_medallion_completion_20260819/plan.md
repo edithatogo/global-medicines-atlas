@@ -1174,3 +1174,31 @@ for credentialed or rights-unresolved sources.
   115-source gap, and 13-of-14 maturity result remain unchanged.
 - [x] Preserve explicit source deferrals and the separate Australian
   federation and Stable v1 release gates.
+
+## 2026-10-03 maintainer-approved bounded Bronze qualification horizon
+
+- [x] Record the maintainer-approved, versioned `bronze-bounded-public-scope-v1`
+  decision, hash-bound to the unchanged 157-source public/no-credential
+  universe. The active qualification horizon is exactly the 42 reviewed source
+  IDs with the existing observable adapter, fixture, implemented-ingestion, or
+  direct successful receipt evidence; all 115 other source IDs remain in the
+  source-specific future ledger. Missing coverage remains non-negative evidence.
+- [x] Preserve the narrower 28-source direct-successful-receipt cohort as a
+  separate statistic; do not conflate it with the 42-source bounded horizon.
+- [x] Regenerate and validate the Bronze qualification, future-source ledger,
+  receipt-cohort projection, Stable v1 contract, and release-readiness hash.
+  The bounded Bronze report qualifies with all 14 mandatory dimensions
+  evidenced; the full-universe diagnostic still records 115 of 157 without
+  qualifying landing evidence.
+- [x] Reconcile Stable v1 source coverage and M5: the bounded Bronze and M5
+  gates pass. Australian M-105–M-112 federation acceptance remains blocked;
+  final stable-release approval remains a separate human gate.
+- [x] Verify focused tests (236 passed), follow-up gate tests (45 passed),
+  repository routine checks, context/ecosystem validation, Ruff, basedpyright
+  (0 errors; 4 existing optional-library warnings), clean-consumer wheel/sdist
+  probes, and the full Test Goblin profile. The optional PyIceberg test was
+  skipped because the dependency is absent; Darwin mutation results are
+  advisory and Linux CI remains authoritative.
+- [ ] Open the scoped PR, resolve review and hosted checks, merge, then rebind
+  the qualification projections to exact merged `main` before marking this
+  track complete.
