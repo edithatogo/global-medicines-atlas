@@ -1695,7 +1695,13 @@
   four July 2026 sidecars lack rights/reuse/authorization/acquisition fields;
   the July 2025 v4 receipt reference is absent locally; and P7 date semantics
   remain unqualified. Re-entry triggers preserve these gaps explicitly.
-- [ ] Resolve the remaining 92 raw and 12 projection candidates without direct
-  SHA-256 evidence only after source-specific rights permit that work. The
-  remaining MBS August admission history, utilisation rights, projection
-  lineage, exact v4 admission, and consumer canaries remain open.
+- [x] Explicitly defer the 92 raw and 12 projection candidates without direct
+  SHA-256 metadata into the future-source register, bound to their exact
+  current paths, revision, Git blob identities, and byte counts. The register
+  retains the existing source-rights and B1/B2 re-entry trigger; no bytes were
+  read and no digest, rights, lineage, v4 admission, or canary result is
+  inferred. Contract test verifies all 104 paths against the pinned public
+  inventory. The remaining MBS August admission history, utilisation rights,
+  projection lineage, exact v4 admission, and consumer canaries remain open.
+  See
+  `quality/qualifications/australian-m112-unhashed-deferred-candidates-20261004.json`.

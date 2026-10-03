@@ -1,0 +1,995 @@
+{
+  "boundaries": {
+    "approved_denominator_changed": false,
+    "consumer_canaries_performed": false,
+    "m112_federation_accepted": false,
+    "new_rights_or_licensing_conclusion": false,
+    "payload_bytes_read": false,
+    "payload_values_read": false,
+    "v4_admission_performed": false
+  },
+  "candidate_inventory": {
+    "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
+    "selection": "dataset and exact current revision from the approved inventory; candidate has no observed LFS SHA-256 metadata",
+    "sha256": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae"
+  },
+  "deferred_candidates": [
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 1820758,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "2a4e3c044e4a1f17d5300427fcd338e58089d539",
+      "path": "data/medallion/acquisition_b1/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 27219,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "2917847fb47a1214a834229e769e04eb3f1c8444",
+      "path": "data/medallion/catalogue_b0/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 1767273,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "4a761ded99860a387b45e52b0ee4a89ba18f7b4f",
+      "path": "data/medallion/evidence_b2/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 3267,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "3ac877f65685fb975d707d6c45b57e434aadc71c",
+      "path": "data/medallion/gold/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 10763,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "0e318a088cc8193b2a248fcb5dbf79b9222e26a3",
+      "path": "data/medallion/lineage/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 4340,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "8928af1532500d0e23f3c01a1e349f48a6ba978a",
+      "path": "data/medallion/pbs_archive_variants/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 811545,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "c03b3a5ccf848b71ca7a8e12b2e8db788ad2c01a",
+      "path": "data/medallion/pbs_archive_verification/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 871678,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "844fa45474bf1ef3b6b5ca94ab4afce3394b7867",
+      "path": "data/medallion/pbs_pdf_provenance/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 548634,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "e0b308eafcd5d385c588840ebc7fed59a3d40254",
+      "path": "data/medallion/pbs_structured_provenance/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 2088,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "b6b6c65c04ef7caf4aecfd3660bffe6fa74fdf19",
+      "path": "data/medallion/platinum/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 1321055,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "d5072c1dac03892a54af173d59e3d2408508bb29",
+      "path": "data/medallion/promotion_decisions/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 12732,
+      "candidate_class": "existing_data_projection",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "d2a36a8862a5a28ff7e31a3a71ee1bf68989a1b9",
+      "path": "data/medallion/silver/data.jsonl",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 67038,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "d90cbaa779d61d032ea7675e0f114ab3e2898d3b",
+      "path": "raw/pbs/payloads/au_pbs_archive_02d2d5fa173e8a04/5833a73f8658d3f2ec368fe483858790ddada88bd613b648fc45eca5ab937d9d.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 74261,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "b59e58bec6245a768e671a5d418919fb5d0b5964",
+      "path": "raw/pbs/payloads/au_pbs_archive_02ff51afca816815/27af3e56cc5e3ba560a28c616d1f582ac5a1f85259885693e487fbce6c28d9de.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 84441,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "de4aa7259495d3c73be35aa793c6f71f32809d69",
+      "path": "raw/pbs/payloads/au_pbs_archive_06651ec290a98abc/7d55bb35c4b81090dad71bf0710d8981e17dd8f40f11de9af5f19d9c81b0ea76.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 43896,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "36d09b3b47b6786b934e1069cb3c0e6ba9960c12",
+      "path": "raw/pbs/payloads/au_pbs_archive_06e9f60a4d4cbd73/1236a97681fa4782b2c6834ffc4a1111e9fb62fdb55aaad1b51ff5747af012da.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 50428,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "fedf1b4023cfc689f6c455a0f73b2492278ec5e0",
+      "path": "raw/pbs/payloads/au_pbs_archive_0b75ef3389b28426/7cd7f476e01a189ca53c344576fe75d2df1f7243aa2089fd97ab193c812d178e.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 54855,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "db1f32b42d84b5ad2f89b267518b52f2322240a1",
+      "path": "raw/pbs/payloads/au_pbs_archive_0e7b9b845b8feb95/af4e9cb6004bd2de28fea916cc1f7711210bc6939b41da4f27e0d8b8152b4140.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 70861,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "8cb39da6315e90124ff27c5838de8345a3a73b27",
+      "path": "raw/pbs/payloads/au_pbs_archive_11050d9ef5b93b05/b573d1000c8eb223a36372a5df05ed2c6d8e6b963e2ae8bda3ef79cbd4cba534.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 72248,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "0f680e73a187e7a8ecbcc3966a1c560cd919caba",
+      "path": "raw/pbs/payloads/au_pbs_archive_11b4702e3c29e379/a1a754638d7f618fd516a8aaee22ce5846603df944b85ac0742597144fa0a9df.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 54150,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "d38270fa84a122fb5ca6f57bd9fedd19df19d7e7",
+      "path": "raw/pbs/payloads/au_pbs_archive_12dae6cff93a1dba/f694fac7edb72e565d6429c8d23df05570b8884f6ae357d69eed9bb9368ea164.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 10021,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "abc5ae259b8c773fc405c5ad658e63037c22a12b",
+      "path": "raw/pbs/payloads/au_pbs_archive_156533a9c0d77dc3/ae82ac7db48e928de8be5138e38cd110d95617def90ab1ffd847ac53393938e8.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 41486,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "dcbae245d47a986fa15679563590221692a24bb2",
+      "path": "raw/pbs/payloads/au_pbs_archive_16786fa387db0600/ad16cbceafcb1fd4426820f05656364d8492854e767b8d0793dccc5a350b396a.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 52413,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "5931606fc0af4933168a7ed407a456090df7287f",
+      "path": "raw/pbs/payloads/au_pbs_archive_16f53fd3af1b2c3b/3287eaa158597dca500fb5cc13dbad2e30031116eabf2181fd5dc3eb3b8d9c0e.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 49699,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "de639f76afe5b2fa76f7f216e85f5b56676d727c",
+      "path": "raw/pbs/payloads/au_pbs_archive_1b5747cbb43947cf/0bfa7f37573ae1b8c556af604d95480720ef30af6a53a9606d3c5386a8ae0e0f.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 51133,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "7a0b0b92bb8a2eedad205c6b2d47808bf4ee6d4b",
+      "path": "raw/pbs/payloads/au_pbs_archive_1fd0c04184e74eab/1d2afc85ce6bd2580caf7d1bbf2454c35c6a6339692729ee9b59d7ed7c7f61b8.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 61287,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "7c7de2a1839a2fc9c18fe09e978eb11e41e53c0c",
+      "path": "raw/pbs/payloads/au_pbs_archive_2617825bfe44fb7b/a4df19cb7b8394221f18ed5d7ec05c2c32323227c86ee27608cf85cfde184f22.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 89363,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "afa8dd802fbc89419f932adc378eba6cac16a76f",
+      "path": "raw/pbs/payloads/au_pbs_archive_2a788363cbe67cb7/8119c6ff46fc1168d0bb04e6c192b5aebadc51beaef48b87231569f3b90b9bd7.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 46058,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "2aa4c8804c070fdaece7d898903fc4933a60f39a",
+      "path": "raw/pbs/payloads/au_pbs_archive_3723e42826c656b3/3161a04c6f222fdb87dfb5d0f3cc2c619572f3b03bc34403c306d4e6499ce104.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 30981,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "ed6c3dbb452dc4089af6d3e2b5611d2ce8aeadb8",
+      "path": "raw/pbs/payloads/au_pbs_archive_37c8b425034312e7/590f452099d6360a0f3eb698771a6e74b4be7c8403ddfd8ead21699a61b1a893.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 52348,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "641ec4364e1d8f2b4067924c2101594d418f3499",
+      "path": "raw/pbs/payloads/au_pbs_archive_39acacb81d8d2946/738127033bd07b6f44cc24d0f93716158c985dfbe754fbbcadf25747f93d7597.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 29306,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "85909f9e5909cbabcf7f63f9bdef8c520ae8e472",
+      "path": "raw/pbs/payloads/au_pbs_archive_4018991f6ce03567/cf70e1930c9aef595a20e2690d0c8145115172fac5d7f439c075632ab9754945.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 75943,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "f08519f2fa45ebcd530bd6037025ccd112a0a019",
+      "path": "raw/pbs/payloads/au_pbs_archive_4701605705c1c536/3939e1614ddf3ecbe363f15bc95c2193cee577e1973b57ea3df0f89abd63e1bf.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 50469,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "0e7298ddfc655fd2962bb7f90e4d567b3910c363",
+      "path": "raw/pbs/payloads/au_pbs_archive_4910460af76f5b1a/d5e0b6e88b9c9d622e0540c94922f1e5e4b5bc22688f2e21b8d7982df652d4fc.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 7807,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "439df4c7a37333b1597d32bc02ea9166cee9e7ac",
+      "path": "raw/pbs/payloads/au_pbs_archive_4ae618e1553a4876/005f3d78d66cb3cd1deb18c324d3de730371565983205641b3fe47e07a337a5d.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 7595,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "32a7a7f6f0d5654547c37cfa2e41b5f7e42eaa11",
+      "path": "raw/pbs/payloads/au_pbs_archive_4daaee4e968c82e7/02e5f22eef63aa2766e1f45d9c780aa22cc499709fb00928de2ff286ea0e046e.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 81623,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "9775d177a949ab9d87c9da5ebe6f39c338b53a5f",
+      "path": "raw/pbs/payloads/au_pbs_archive_4ea6885ef6a40fc1/1ca463119fa5a675e8ef159a87b150713c0b41cbf1af1d219d9d90fb98056f76.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 32708,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "72bcfcf7d115dd46aca3f5dc832f127c33b44bef",
+      "path": "raw/pbs/payloads/au_pbs_archive_4ec78739492a3fd6/d0dd051e94f6ad7a0bc1a3bb058e148c718e9cd7489e15afd646d0ffcae0d8ef.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 51945,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "89fffea3f510b3788404189ea4ceb4baade93482",
+      "path": "raw/pbs/payloads/au_pbs_archive_4f1bd4628962d934/afe067a3ce01e6ee6d650625f877271f846cf3a997a933a8272a1c0627af9856.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 54530,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "b7f0f788aebe37289cf5d5a0436217fc58d7ca8a",
+      "path": "raw/pbs/payloads/au_pbs_archive_50e73898654d3f07/f9ad6116dff82b4a380dcfe7ac2bf3ce6660aa1f3e8626991fef3a3d394771a4.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 50323,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "e8daa24f53f78e5997dd20eb70394b94451b9c2b",
+      "path": "raw/pbs/payloads/au_pbs_archive_513a9ac2a494aaa7/ba5e5c7e47f197c225ee2033bdf07beca214927de7e0880f5a4a26efaafb117f.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 62358,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "5198f56fcced98f3f41693b3848ba6e3f969098c",
+      "path": "raw/pbs/payloads/au_pbs_archive_53dfb436789523c8/87006a9ac4b5d1f4fafbb67114696ceadba59b42ed85fb92d6c642b6f078a7d3.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 32120,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "34b4cb723fb54bd9c65b0599a4e95378a6d2e140",
+      "path": "raw/pbs/payloads/au_pbs_archive_54c44753a5cab84e/11b35024a9789f18e7241a83cbfae7ccd90dee1c1cf561097a7942f2217faba3.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 63474,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "48bea1a5b3fb98228615fe4ecf27f4bb16f51f11",
+      "path": "raw/pbs/payloads/au_pbs_archive_57e18d8bc68673a2/b7544b2aa146ca9770f583f171c1560ea4d77f493020db8b42d94436f4f9c8d1.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 83611,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "0aac137aa4cb008bc7de869deb43108b39379746",
+      "path": "raw/pbs/payloads/au_pbs_archive_58b3888c530f48d3/03e0bcdfcf5bed9553ae01f14f7d59205c3b092aab8412600e7f804d27ac610e.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 50366,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "eb8fc6b12b0520b1bbc6afd5c970709e1298acd5",
+      "path": "raw/pbs/payloads/au_pbs_archive_61b5ae028a136003/181b48e24b076a6574dd990e65f123b264bde57d6d2a17f0e0844dcbc850d75c.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 30013,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "cc8dba71e42bf8d9f1ebfd07e3b1c09461f2aea3",
+      "path": "raw/pbs/payloads/au_pbs_archive_63f79ea29ca21480/bcbaf4db7f89b3592a0192cbbdad11fc526b8a3df5560db58e817d99996dd1d6.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 82325,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "854aaf49236219dffc30324bacf47ad950a2118c",
+      "path": "raw/pbs/payloads/au_pbs_archive_695dbe8b540b93f7/05bb7619e1537f50925c24daed840d724c6db949eceabcd0f51a5e995f391a9d.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 70779,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "d58c25dde588ffcb0fed5262dcffa03961d1a664",
+      "path": "raw/pbs/payloads/au_pbs_archive_6ad17415d7ab7964/d7be0fe0eae0244258f6cd94f18be3a9f2ec87d2a025ef2cf65a2425335d6a89.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 95212,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "8330078789eddd0a606a7b3d18113a5c4f51c3a3",
+      "path": "raw/pbs/payloads/au_pbs_archive_6bb5c5ea17fb5fb7/cf5159c5fd4cc96dda86917ae179b54447c99d75ad83d3fab350463187b6cfd4.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 83048,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "bd96f75744314eca43e8e526d5188de5b2249022",
+      "path": "raw/pbs/payloads/au_pbs_archive_715075f1bc08e193/e17e80d42beb074a582eafa3068707f0741d5df77678129778e7a56859c98b41.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 96419,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "b6576d2083420f65d79317c0e8316e92b933097c",
+      "path": "raw/pbs/payloads/au_pbs_archive_729fc47c00c6b5a0/1ca5da4899975173667480f4113303632ca2960b4884395a933f780419597b79.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 11899,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "e4db47c8b3722c2feb002aabb69a9b351405a5f4",
+      "path": "raw/pbs/payloads/au_pbs_archive_740256fa92f18359/483b14148c055d9844b92583a8deb7fd81a40eec0928ebabbdef69be0ee1bc2f.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 70934,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "77c5e2368fd2e0e4e1dff2330e759d48ae7b5c2f",
+      "path": "raw/pbs/payloads/au_pbs_archive_74ab5bd37a660f01/47652585d8df6f8084347be0f25c6b4add08b7128c2fa6adb9c3f0c132ea2d31.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 41859,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "13dcb812cc0e1e480745c4f6c1a6349650ee76f9",
+      "path": "raw/pbs/payloads/au_pbs_archive_772d8cfea87329ec/7b89cb55d4249b9d812b430c68b8f59e9fb325080b83ef85e2593faa473d2b43.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 55128,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "aa03251cf29f0d602916e48ae800d60187207efd",
+      "path": "raw/pbs/payloads/au_pbs_archive_77900e787db5e3e2/82ba5c5844ad835e8a5425d18cd38e9829d6eef9388545d035cf1c370078b915.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 71153,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "dcf1b3858e23a742faf6f326d7cf2c85add9e3d0",
+      "path": "raw/pbs/payloads/au_pbs_archive_7e1ca4045f714051/5d6cfff09e625ff60f2a0558f25d9464f30e95f8ac7e7b4fbea53bdf9ccb6050.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 94307,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "1b6b5ef7a7c1871fe5a8cbb1d8ebe6d963dd57de",
+      "path": "raw/pbs/payloads/au_pbs_archive_7f65138feb94eb6f/33c6dea2bf50f38af3e8c0bb337ad2c4a1f295d189942ef808923241d1aadac1.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 26369,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "f85b93fcafdc903e060babb2b341e072093db79e",
+      "path": "raw/pbs/payloads/au_pbs_archive_7f66d7bccaf1879d/6d4ec1fe940c87e7906280ff8728271240b32f605651b7e80cfade7c44613f4e.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 11989,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "ce0cf388f2b3cdc241d8323f5708984cbb5e9e50",
+      "path": "raw/pbs/payloads/au_pbs_archive_807d44a521ce6e3f/7d9f351c6ceefdf381e4261083a0aee26be631be5f31b11efc80096c87c1aaa3.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 55747,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "2d1e6156cb51f8ac6441668a7d97caf8b380035d",
+      "path": "raw/pbs/payloads/au_pbs_archive_82d15d22a43105a5/3f12ce5245a0d749f57fe55c6fd438b13ab1e135aa075c850ba8922b815ebe8e.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 50705,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "052d505662fb1a01d6217542b215b528ce1dbd37",
+      "path": "raw/pbs/payloads/au_pbs_archive_853c401ed0843b67/d1f7f57c8bbec8e89fa9460f8c7a40df6cc5bfdd979f6efd4c2147ee553ddd00.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 98916,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "0a0fc62676cbff55383ec8c385c63c6d19aa92cb",
+      "path": "raw/pbs/payloads/au_pbs_archive_8765a09d13218ca9/1eceea2f6d5f9368ead0a7df55ffd39761cbaf1a01ab41284a66e5a9c56d85e6.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 63183,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "711ed9561d3fc2efc23af64f836265874f137190",
+      "path": "raw/pbs/payloads/au_pbs_archive_8cf22e7b23e7f789/71aa82d9032c6fef57304ebecef0595df606a32e9c2821931088766e7c67bf9a.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 51982,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "9c5cf75fa7cbcb92a2cc4284c252f69464f20102",
+      "path": "raw/pbs/payloads/au_pbs_archive_8e4770605cd40328/f3fdc620e2a986ac636551af5d6129dca00d12c05407fd731843bcb85fd24b25.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 84058,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "aec724cd351ef11d5b86094a3c83ab0ff84be3d2",
+      "path": "raw/pbs/payloads/au_pbs_archive_8f59c5382ed0e9c1/a3e173b9bb7b86342d87a11d4583079d04918f12a2240062158117ad1e315915.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 50601,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "d742f71a94f6b1de5b5d09c1b4ddc750bc342e68",
+      "path": "raw/pbs/payloads/au_pbs_archive_902ec3817b54201b/c5215ea2af00d65e66714a11fa730db4184cdc961841eec708e19a87593d551d.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 49091,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "fd4eb67766adbe0d79f2d884e968824afa3ab0cf",
+      "path": "raw/pbs/payloads/au_pbs_archive_974ab19f344c8e29/b3e01e4b70f7b7ac6ac583353a2bf1ba1865cdcc17cbe1972a4f771f54700980.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 11293,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "7848c9f37fba40e5f24a3afebc686543bbc7a46b",
+      "path": "raw/pbs/payloads/au_pbs_archive_9a4ff82ad7ea4f42/4a7dac78ee12d400442fc2a8e35b00dedf06c84bb800ddbc61b061fece693671.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 85574,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "c7434bafff9339a10bb527c46e54e80533e4ef62",
+      "path": "raw/pbs/payloads/au_pbs_archive_9b5641cf76434e52/9f884d25b7199024b64d2b42b6f5e749434903b192317b04e7b0e91b8dfc0c1a.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 51973,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "a13955030c851bfbf0e6a2f4c8fc4f83e04976fa",
+      "path": "raw/pbs/payloads/au_pbs_archive_9be647f11be9a222/c105108e441c40d2a15ae2de378c73f02981853140ba8bf2ca090ac3250c77d1.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 58779,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "f88f8ee1624a9b4adf7a586888446b9fa28cdb27",
+      "path": "raw/pbs/payloads/au_pbs_archive_a12ba4c001b62afa/22cb27c515bc5e2da9448b90ca18b3216c5eb85626caa33a37aa6dd01364aab7.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 50319,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "436e1aa2535648346b619be38b065094df62e3a8",
+      "path": "raw/pbs/payloads/au_pbs_archive_a2d9e17cd521055e/7e4a7d48564d0c6f0d10f6ded8eaf831d82e9e2c3380fa013ecf5ee975ab490e.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 63358,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "f3c659c3348c35a3f83ee3767290477338007a98",
+      "path": "raw/pbs/payloads/au_pbs_archive_a306ccf4d2a05fed/ac96deb0068a9e5657f30952d41bb5afdf0203daa1cad027a8bed52bf5b17384.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 58700,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "e4f32d6304ba61fda29ba1e37fda64de22dd10f2",
+      "path": "raw/pbs/payloads/au_pbs_archive_a5b067a977611ca2/f97f7d6b46d85cad203609d4f5eec90a37bf96eea3bb4b3cbacea0d844fd7b99.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 50007,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "2821a9afbd38880ddcb4b58f2bd4c2a46c689ff0",
+      "path": "raw/pbs/payloads/au_pbs_archive_a63c2ff0953d17b8/0c5e9317c0f911066b04b9e606a897054012d87607f25a777c7e1f219998a191.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 67635,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "971bfc4e2b00c39cf6ef132b85014de09852a7f2",
+      "path": "raw/pbs/payloads/au_pbs_archive_aac18ebb109f811c/dbf0444396e4399684263c2e6751e7863fec25b8a71bb1d09465f99781763f9e.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 7632,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "a18520e43ba587968feba41620ad1fff79872e97",
+      "path": "raw/pbs/payloads/au_pbs_archive_ab2c8a6608dff927/5d349e74c8e42a3c58ba72162b1fa7b8f909c0f35ca5cbb93b9ebacbff1b7108.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 50428,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "45ab4b70aaa6fd34eabe5d8ee87145d8db297e10",
+      "path": "raw/pbs/payloads/au_pbs_archive_ac262032c3de4f97/cb955b46370ecea34a82a41c93ba006e7988bbb5b1cbfdf953afe4e1792cfb54.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 90486,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "63b4de132f32ee662de9a69dcca2d745ce5475e0",
+      "path": "raw/pbs/payloads/au_pbs_archive_b031b204cad96519/92b69267fa75e08c8908caf63879958cec0006ef03573830d964889962e4a8da.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 94878,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "d97f5e37247dd6fcb12be43b9a28972660fd4ab3",
+      "path": "raw/pbs/payloads/au_pbs_archive_bb3ddce78da9dbcd/f4fb9bbdd2bba5e514a2650c40c3951a422661fdfb47c42fd5ee112c701e5f8d.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 64056,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "f90edb96bacc39fa54f92901998d30d8a39b1d90",
+      "path": "raw/pbs/payloads/au_pbs_archive_bcdb020a5a96f60b/4d9c36fba15db748191b2cf0a762a1fd32a8b309855be5d618a2ec254435c88b.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 39277,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "4ba4d3698c53b9f17d34d69049a15097097297c6",
+      "path": "raw/pbs/payloads/au_pbs_archive_bf795143db30cc3a/b4f5a3cbbbc409fd0266b19b6cb3b90d873a3d04becf63e1542db827f3c6a2ec.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 86704,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "41d58df877f2949139cad53bbb0bf23015960ade",
+      "path": "raw/pbs/payloads/au_pbs_archive_c560927b245eb8d2/8d1da46a3094a2dfb37d714e86687ade66edef1f448fe9f5954232a943973e4c.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 14169,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "19d53cd757854a284a09b82ba650d3d389625489",
+      "path": "raw/pbs/payloads/au_pbs_archive_ca0082bbfb98fb96/02032b339b09929c6f96c265f7d33662f51796d3d697e28f4e96f6eb64af0b25.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 75263,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "85988af1bebba5f999eb2082b2d24d2c5c8fab1a",
+      "path": "raw/pbs/payloads/au_pbs_archive_d3e11a9d076adc82/9a3f41ee0f773a6aa386d4927290a6a70749b17038a9909bb00e5fab1e52a3c7.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 7200,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "b9e12a311709bc5f9ab365095c0092f7969061ba",
+      "path": "raw/pbs/payloads/au_pbs_archive_d488f255256d3162/5304268fe8431de62161913caecf9fcc0d0836bff1af44744e5688df48563c46.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 52103,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "0f574a61bab0e1e1e57d32cee7a1fa888cd42d4c",
+      "path": "raw/pbs/payloads/au_pbs_archive_d5a2746a0c7df491/333c1b02535358c33a6f5eac78f76e6abb31cf6cbff904c15f9397c806ad6206.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 73626,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "51accb3dda5fe8385e955d98e5f979bfa9242a0c",
+      "path": "raw/pbs/payloads/au_pbs_archive_d6f0dca0c785d77a/819430b53e3c39c3b2b1be07833562e680d9a28761347797dbabfa6d67b08852.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 63717,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "080d1588f767e66bf576eb973a585fbd2fbb4947",
+      "path": "raw/pbs/payloads/au_pbs_archive_dcdbd3a26c5513c6/4d87ac00a38c0541ec9486ed64f75bcee61fbea91d8fcf29fe926abe813645d7.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 57694,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "a932807e2b357ea504aec03d74ea6b1295824308",
+      "path": "raw/pbs/payloads/au_pbs_archive_dea9fe30bf0cacd2/96b6609ef02ecb2ed8a1142ea1be82678d7067dcbdc268d504f959df69c85be6.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 32844,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "1996cfbed28430587a45a28a0843fa9dde42fd5b",
+      "path": "raw/pbs/payloads/au_pbs_archive_e1517f8dbb857d73/7ff7cc6bb90e97ca50ac4362f1817c9e6887b5ce5c1640e130ceac1181565282.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 43251,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "9f585fc80be863dca0d733d8b305671e3ea7fe63",
+      "path": "raw/pbs/payloads/au_pbs_archive_e17df634eb2423f7/8df3466c7f6686f57e88aee4860d4e7d611f3c11bee7ab0aa4d9172580bba23d.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 73344,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "1c282c853810d80a5b07aa853241f083906cd0d0",
+      "path": "raw/pbs/payloads/au_pbs_archive_e67193edf26f4b33/00115ad88776a093c343843f84b0ba66561125d529a6d3b214052c2468dcc77f.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 48982,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "e0ee2a7b39adb58e0dbbd7cf8abe0ee6b22d5829",
+      "path": "raw/pbs/payloads/au_pbs_archive_eba86c44c8445af2/1e02c08553bbd4ce4aa8c4b9a9e7b92048c58e2a0683a018486e4c645a991861.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 61706,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "63a46deb8012d562aa897541a26ed985357bb41a",
+      "path": "raw/pbs/payloads/au_pbs_archive_ef7d702a95fd75fa/13afbd9e7b62cf7d0dd62f71d670cdd7d9d6c1a13b59f2ad1126299350d900ba.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 47027,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "be0844c52379c4c6d637696de43e21ce6ff1eca8",
+      "path": "raw/pbs/payloads/au_pbs_archive_f2f4fc6c6b645244/df6bfd181dfec0dd53f0b945550cccf26345286520846c6b58e9a93d1eb620be.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 55382,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "e52ed706fc69bb6f778d8ce285e8a5970021e331",
+      "path": "raw/pbs/payloads/au_pbs_archive_f5f601a03f5b8958/63aecbe9eefa88021af7954806ade88002963df39e76696f79e6dc31d1552efe.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 85221,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "4d66241be85deb66bd16cfc64c4db6ff79020f83",
+      "path": "raw/pbs/payloads/au_pbs_archive_f817606907dd06ff/5d502ad25b01196b95a8fb6f06c1f518f092d8375f0d6fb250badd564563e94e.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 52019,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "44ce1007acc2cb4cd16e0d1e4e7c498195fbcde9",
+      "path": "raw/pbs/payloads/au_pbs_archive_fba9518959cb85ca/0ae3a95cb515d9f16507a60faea7a5a07dc3ce659b86fc3ea5ab15ac83c1b8f1.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 38871,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "afd6b30843692cbd30e93f0d2ecc0e445805ff37",
+      "path": "raw/pbs/payloads/au_pbs_archive_fe223acb1c9591c1/0190cdd4da0848449e44dc1a6f8a826d959655a8a6c81df81a865c29f688f17c.pdf",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 18565,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "6b9fd617d66ba33263bc213a535b28a6000fef3f",
+      "path": "raw/pbs/payloads/au_pbs_structured_59ccd510180cbf39/da4437d35e2e89fd2b1970abd42462e8ac3db482dc6f66a7a095305ebdc553eb.csv",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 23552,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "6932bf6afc2c1cd86dc1459a0b08c7c0f50ef5cd",
+      "path": "raw/pbs/payloads/au_pbs_structured_7d644eacdd6e0941/61c9c3910b3caf6fad1d45d365ea19a4281b79a8f2c4b0b78e668c701d91c803.csv",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    },
+    {
+      "admission_status": "deferred_not_admitted",
+      "byte_count": 26209,
+      "candidate_class": "raw_source_payload",
+      "direct_sha256_metadata": null,
+      "git_blob_oid": "11955183ff044631fae2243b59576b7c8a20eb21",
+      "path": "raw/pbs/payloads/au_pbs_structured_937f2dca73ba944d/e7b0a14f49dbd98b82629f8eae165b252e65e59c4dc4909198191d310c6bfcf3.csv",
+      "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+    }
+  ],
+  "deferred_register": {
+    "path": "quality/qualifications/australian-m112-deferred-source-candidates-20261004.json",
+    "sha256": "1e2b174d7dd02ca566c106e73a24c8570da02a3455869e4d3a8669591a65c527"
+  },
+  "evidence_inputs": [
+    {
+      "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
+      "sha256": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-deferred-source-candidates-20261004.json",
+      "sha256": "1e2b174d7dd02ca566c106e73a24c8570da02a3455869e4d3a8669591a65c527"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-current-tree-object-identity-reconciliation-20261004.json",
+      "sha256": "42ecec09d1d4a8e03794124bdbb1f169bb998285859278bc57d04772d4dccd22"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-denominator-decision-20260930.json",
+      "sha256": "883b9517d8e646b41885a74da924a3fcb796e1772e5dcdd9394d469b09bb7b71"
+    }
+  ],
+  "lineage_status": "unresolved",
+  "purpose": "Explicitly register each approved M-112 candidate path lacking direct SHA-256 metadata as a future-source item until its source-specific rights and B1/B2 lineage gates permit further verification.",
+  "recorded_at": "2026-10-03T21:57:00Z",
+  "reentry_trigger": "A maintainer-approved source-specific rights and reuse disposition plus record-level source provenance, receipts, and per-object lineage; perform only payload digest reads authorized by that decision, then independently review v4 admission and consumer canaries.",
+  "rights_status": "unresolved",
+  "schema_id": "global-medicines-atlas.australian-m112-unhashed-deferred-candidates",
+  "schema_version": 1,
+  "scope": {
+    "admission_status": "deferred_not_admitted",
+    "approved_candidate_denominator": 1759,
+    "denominator_changed": false,
+    "existing_data_projections": 12,
+    "paths_without_direct_sha256_metadata": 104,
+    "raw_source_payloads": 92
+  },
+  "source_dataset": "edithatogo/reimbursement-atlas",
+  "source_identifier_mapping_status": "candidate-level mapping recorded by the rights and lineage crosswalk; not a per-path source admission",
+  "source_revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+  "status": "all_104_unhashed_candidates_explicitly_deferred_pending_source_rights_and_lineage"
+}
