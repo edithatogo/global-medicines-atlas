@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from typing import cast
 
 import pytest
 from fastapi.testclient import TestClient
@@ -17,6 +18,7 @@ from global_medicines_atlas.historical_change_adapter import (
     historical_change_page_payload,
 )
 from global_medicines_atlas.historical_comparison import NativeSnapshot
+from global_medicines_atlas.query_service import ReadOnlyQueryService
 
 
 def _snapshot(**changes: object) -> NativeSnapshot:
@@ -107,8 +109,7 @@ def test_history_api_is_bounded_and_preserves_unknown_missingness() -> None:
     ])
     client = TestClient(
         create_app(
-            object(),  # type: ignore[arg-type]
-            historical_changes=history,
+            cast("ReadOnlyQueryService", object()), historical_changes=history
         )
     )
 
@@ -120,7 +121,7 @@ def test_history_api_is_bounded_and_preserves_unknown_missingness() -> None:
         client.get("/api/v1/history", params={"offset": -1}).status_code == 422
     )
     assert client.post("/api/v1/history").status_code == 405
-    unavailable = TestClient(create_app(object()))  # type: ignore[arg-type]
+    unavailable = TestClient(create_app(cast("ReadOnlyQueryService", object())))
     assert unavailable.get("/api/v1/history").status_code == 503
 
     class InvalidHistory:
@@ -130,8 +131,10 @@ def test_history_api_is_bounded_and_preserves_unknown_missingness() -> None:
 
     invalid = TestClient(
         create_app(
-            object(),  # type: ignore[arg-type]
-            historical_changes=InvalidHistory(),  # type: ignore[arg-type]
+            cast("ReadOnlyQueryService", object()),
+            historical_changes=cast(
+                "HistoricalChangeService", InvalidHistory()
+            ),
         )
     )
     assert invalid.get("/api/v1/history").status_code == 422
@@ -152,10 +155,23 @@ def test_history_api_is_bounded_and_preserves_unknown_missingness() -> None:
             del offset, limit
             return page
 
+    malformed = TestClient(
+        create_app(
+            cast("ReadOnlyQueryService", object()),
+            historical_changes=cast("HistoricalChangeService", StaticHistory()),
+        )
+    )
+    assert malformed.get("/api/v1/history").status_code == 422
+
+    valid_page = HistoricalChangeService([
+        compare_historical_snapshots(_snapshot(), _snapshot())
+    ])
     available = TestClient(
-        create_app(object(), historical_changes=StaticHistory())
-    )  # type: ignore[arg-type]
-    assert available.get("/api/v1/history").status_code == 200
+        create_app(
+            cast("ReadOnlyQueryService", object()),
+            historical_changes=valid_page,
+        )
+    )
     monkeypatch = pytest.MonkeyPatch()
     monkeypatch.setattr(api_mod, "_MAX_HISTORY_PAGE_BYTES", 1)
     assert available.get("/api/v1/history").status_code == 503

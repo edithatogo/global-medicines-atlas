@@ -8,7 +8,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from .historical_change import HistoricalChangePage, HistoricalChangeService
+from .historical_change import (
+    HistoricalChangePage,
+    HistoricalChangeService,
+    validate_historical_change_page,
+)
 
 
 def historical_change_page_payload(
@@ -24,7 +28,9 @@ def historical_change_page_payload(
     safe.  Paging bounds are enforced by the injected service.
     """
 
-    page: HistoricalChangePage = service.page(offset=offset, limit=limit)
+    page: HistoricalChangePage = validate_historical_change_page(
+        service.page(offset=offset, limit=limit)
+    )
     return page.model_dump(mode="json")
 
 

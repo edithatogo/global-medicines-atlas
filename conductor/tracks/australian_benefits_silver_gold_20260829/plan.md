@@ -1129,6 +1129,17 @@
 - [ ] Confirm the intended failure before implementation.
 - [ ] Build deterministic change/event and comparison tables with explicit
   denominators and uncertainty.
+- [x] Revalidate historical-change pages, including nested snapshot and
+  comparison models, at API and JSON adapter boundaries. A deliberately
+  `model_construct`-built invalid page previously serialized as HTTP 200 with
+  malformed nested objects; it now fails closed with HTTP 422. The transport
+  payload helper and service JSON method use the same reconstruction check.
+  Focused historical suites pass (164 tests); changed production modules pass
+  BasedPyright, and Ruff/format/ty pass. Full Goblin reports 5,520 passed,
+  2 failed, 1 optional PyIceberg skip, 96.75% coverage; the two failures are
+  existing release reproducibility checks requiring uv 0.11.29 while this host
+  provides 0.12.22. This synthetic API hardening does not qualify real source
+  periods, change Gold denominators, resolve rights, or satisfy M-109/M-112.
 - [ ] Publish Silver, Gold, lineage, coverage, promotions, and v4 identities to
   public Hugging Face through the hosted data-plane workflow.
 - [ ] Verify token-free clean-room regeneration and remove only verified
