@@ -1247,7 +1247,7 @@ for credentialed or rights-unresolved sources.
   intentionally remains bound to the committed report; restored the generated
   report and reran successfully. No source acquisition, rights, source
   denominator, M5, or release decision changed.
-- [ ] Keep the full source universe and outstanding source-specific work open
+- [x] Keep the full source universe and outstanding source-specific work open
   in their dependent tracks. The Australian M-112 object rights, lineage,
   v4 admission, full-denominator digest readback, and consumer canaries remain
   unresolved; Bronze bounded-scope completion is not overall programme
