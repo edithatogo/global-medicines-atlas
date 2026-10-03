@@ -485,6 +485,8 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         )
     except OSError, ValueError, TypeError, KeyError, json.JSONDecodeError:
         return False
+    if not _australian_mbs_admission_has_landed_predecessor(root, admission):
+        return False
     if source.temporal is None or not b2_manifest.rows:
         return False
     b2_row = b2_manifest.rows[0]
@@ -559,6 +561,34 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         == "2026-08-01",
     )
     return all(archive_claims)
+
+
+def _australian_mbs_admission_has_landed_predecessor(
+    root: Path, admission: BronzeAdmissionRecord
+) -> bool:
+    """Require a durable landed decision superseded by accepted admission."""
+
+    predecessor_id = admission.supersedes_decision_id
+    if admission.state.value != "accepted" or predecessor_id is None:
+        return False
+    landed_path = (
+        root
+        / "quality/bronze/admissions/au-mbs"
+        / AU_MBS_ACQUISITION_ID
+        / f"{predecessor_id}.json"
+    )
+    try:
+        landed = BronzeAdmissionRecord.model_validate_json(
+            landed_path.read_bytes()
+        )
+    except OSError, ValueError, TypeError, json.JSONDecodeError:
+        return False
+    return (
+        landed.state.value == "landed"
+        and landed.acquisition_id == admission.acquisition_id
+        and landed.content_id == admission.content_id
+        and landed.decision_id == predecessor_id
+    )
 
 
 def _is_successful_nice_utilisation_receipt(

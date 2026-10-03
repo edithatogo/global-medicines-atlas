@@ -5,13 +5,25 @@
   "source_version": "2026-08-01",
   "evidence_class": "live",
   "qualification_scope": "raw_b1_b2_only",
-  "qualification_state": "accepted",
+  "qualification_state": "blocked",
   "acquisition_id": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
   "receipt_id": "mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4",
   "content_id": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
   "rights_state": "permitted",
   "reuse_disposition": "extend",
   "admission_state": "accepted",
+  "admission_lifecycle": {
+    "required_order": ["landed", "accepted"],
+    "observed_decisions": [
+      {
+        "decision_id": "a4c8e7850c664db20b80a9f3e6d5cd09c61ebc1447c121c852438eff24a42dba",
+        "state": "accepted",
+        "supersedes_decision_id": null
+      }
+    ],
+    "landed_predecessor_present": false,
+    "qualification_blocked": true
+  },
   "effective_date": "2026-08-01",
   "files": {
     "source_receipt": {

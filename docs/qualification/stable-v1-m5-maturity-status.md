@@ -30,20 +30,21 @@ maturity reconciliation was merged in PR #697. This report is refreshed
 against exact merged `main` commit
 `752908d174175f3307f34eecc677711fb189b745`; the inventory still finds 115 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
-The checked-in maturity JSON records generator provenance at base commit
-`2a9ebec62fecd9f5d97c999a99772cf8e8e11e6d`; this PR adds a qualified August
-2026 MBS raw B1/B2 receipt without changing the 13-of-14 maturity result or the
-157-source denominator.
+The checked-in maturity JSON currently records generator provenance at base
+commit `05aeb8eb58579a385839eea303dddd5d8780013a`; it preserves the 13-of-14
+maturity result and the 157-source denominator.
 The full-scope evaluator has landing evidence for 42 source IDs, while 28 have
 direct successful receipts accepted by the receipt validator; 14 queue-marked
 landings remain outside that stricter receipt cohort. See the separate
 [receipt cohort and future-source list](./bronze-future-source-list.md). The
 all-release Open Medic receipt added by PR #707 brought the direct-receipt
-cohort to 28. The August 2026 MBS typed receipt now brings it to 29, with 128
-current-scope sources on the future list. This qualifies only raw B1/B2; the
-source-record projection lineage and separate M-112 Australian federation gate
-remain unqualified. The cohort does not change the 157-source
-denominator or this blocked result. The
+cohort to 28. The August 2026 MBS B1 receipt and B2 external reference remain
+preserved, but the accepted admission has no durable preceding `landed` event
+and does not supersede one. The MBS receipt is therefore deferred, leaving 28
+qualified and 129 current-scope sources on the future list. Do not create a
+retroactive lifecycle record from inference. The source-record projection
+lineage and separate M-112 Australian federation gate remain unqualified. The
+cohort does not change the 157-source denominator or this blocked result. The
 report evaluates 13 of 14 mandatory Bronze properties as evidenced and leaves
 completeness blocked. CMS Part D
 Prompt 31 was already included in the prior denominator; its reconciled queue

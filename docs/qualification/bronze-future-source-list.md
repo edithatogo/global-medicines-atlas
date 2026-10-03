@@ -3,8 +3,8 @@
 This report qualifies only the listed source-specific successful receipts. It does not redefine current Bronze scope, establish global coverage, or clear Stable v1 M5.
 
 - Cohort: `bronze-receipt-backed-cohort-v1`
-- Receipt-qualified sources: `29`
-- Deferred current-scope sources: `128`
+- Receipt-qualified sources: `28`
+- Deferred current-scope sources: `129`
 - Full-scope evaluator landing evidence: `42`
 - Deferred but queue-marked landed: `13`
 - Full-scope evaluator missing landing evidence: `115`
@@ -19,7 +19,6 @@ The JSON qualification is [`quality/qualifications/bronze-receipt-cohort-v1.json
 
 | Source ID | Jurisdiction(s) | Source | Receipt |
 | --- | --- | --- | --- |
-| au-mbs | AUS | Medicare Benefits Schedule XML releases | quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json |
 | eu-union-register | EU | Union Register of medicinal products | quality/qualifications/union-register-live-corpus-20260821.json |
 | fr-bdpm | FRA | Base de Donnees Publique des Medicaments | quality/qualifications/international-public-bronze-20260827.json |
 | fr-bdpm-smr-asmr | FRA | BDPM SMR ASMR and opinion links | quality/qualifications/international-public-bronze-20260827.json |
@@ -59,6 +58,7 @@ These sources remain in the original Bronze denominator. Their absence from the 
 | ae-ede-register | ARE | Registered product directory | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
 | ar-anmat-vademecum | ARG | Vademecum Nacional | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
 | au-artg | AUS | Australian Register of Therapeutic Goods | landed_and_evidenced | catalogue implementation claim has committed qualification evidence | verify receipt freshness on schedule |
+| au-mbs | AUS | Medicare Benefits Schedule XML releases | not_yet_implemented | The August 2026 MBS source receipt and external B2 reference are preserved, but the accepted admission event has no durable preceding landed event and does not supersede one. The ordered B1 admission lifecycle is therefore incomplete, so this receipt is not eligible for the direct Bronze cohort. Source-record projection lineage and M-112 federation remain separately unqualified. MBS service-benefit evidence does not imply medicine regulatory or PBS funding evidence. | Reconcile the August 2026 MBS admission history using a durable landed event and an accepted decision that explicitly supersedes it; otherwise keep this receipt deferred. Do not create a retroactive landed event from inference. Keep source-record projection lineage and M-112 federation acceptance separate. |
 | au-mbs-p7-legacy-workbook | AUS | July 2024 MBS Group P7 genetics workbook | landed_and_evidenced | The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. This publication/B2 receipt is not itself a typed, validated direct B1 Bronze qualification receipt for the supplemental cohort. Its legacy schema era remains explicit for comparison and does not imply current coverage. | Reconcile the existing July 2024 workbook payload to a typed, source-specific B1 acquisition receipt recording temporal identity, retrieval, rights/reuse, admission, provenance, exact payload digest, and clean-room recovery; include projection lineage only if a source-record projection is claimed. Preserve the legacy schema-era boundary, then rerun direct-receipt qualification. Keep M-112 federation acceptance separate. |
 | au-pbs-api | AUS | Pharmaceutical Benefits Scheme public data API | rights_blocked | source-specific retention and transformation rights unresolved: terms_review_required | record source-specific retention and transformation rights |
 | au-pbs-historical-xml | AUS | Historical PBS XML releases | landed_and_evidenced | catalogue implementation claim has committed qualification evidence | verify receipt freshness on schedule |
