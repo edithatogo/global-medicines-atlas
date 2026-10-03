@@ -31,7 +31,7 @@ against exact merged `main` commit
 `752908d174175f3307f34eecc677711fb189b745`; the inventory still finds 115 of
 157 in-scope public/no-credential sources without qualifying landing evidence.
 The checked-in maturity JSON is refreshed against exact merged `main` commit
-`f04283fe544acfbee2cb3022df7d4cc2225b5909` after PR #711. It preserves the
+`9a2a7bfe9f02f3b04f792dc958d6773f5098128b` after PR #713. It preserves the
 13-of-14 maturity result and the 157-source denominator.
 The full-scope evaluator has landing evidence for 42 source IDs, while 28 have
 direct successful receipts accepted by the receipt validator; 14 queue-marked
@@ -58,6 +58,13 @@ Norway's coarse source-rights state remains unknown.
 Two fixture-only and 15 excluded sources remain outside that denominator.
 Delegated detail-page coverage remains incomplete, and public release and
 external publication remain unauthorized.
+
+The October 3 P7 receipt-reconciliation change confirms only that the historic
+archive-storage receipt is reproducible from committed metadata. It does not
+establish source-origin acquisition, an ordered B1 admission, source date
+semantics, or Australian federation acceptance. The refreshed report therefore
+remains blocked with the same 115 of 157 sources lacking qualifying landing
+evidence and 13 of 14 Bronze maturity dimensions evidenced.
 Credentialed and licensed feeds remain excluded from this denominator; missing
 evidence is not a negative claim about the source.
 
