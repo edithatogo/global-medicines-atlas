@@ -594,3 +594,13 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   tests), with routine checks, context/ecosystem, and diff validation passing.
   PR #709 merged at `d573b997c10f3d5fd5fc00c838350c7cd452622c` after all
   required branch-protection checks passed; no acceptance gate was promoted.
+
+## 2026-10-03 post-PR-713 exact-main M5 refresh
+
+- [x] Regenerate `quality/qualifications/bronze-maturity.json` from exact
+  merged `main` `9a2a7bfe9f02f3b04f792dc958d6773f5098128b` after PR #713 and
+  rebind this status page to that report. It remains blocked at 115 of 157
+  in-scope public/no-credential sources without qualifying landing evidence;
+  completeness is the sole blocked Bronze property, with 13 of 14 mandatory
+  properties evidenced. The archived P7 receipt reconciliation changes no
+  source-origin acquisition, B1 admission, M-112, M5, or Stable v1 gate state.

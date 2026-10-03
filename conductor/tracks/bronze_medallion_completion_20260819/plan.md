@@ -1102,5 +1102,10 @@ for credentialed or rights-unresolved sources.
   The first hosted rerun correctly rejected the stale dependency manifest; the
   refreshed cohort preserves 28 qualified / 129 deferred sources and the
   broader 157-source maturity boundary.
+- [x] Merge PR #713 after both review threads were resolved and every required
+  Action and Codecov check passed on corrected head `0935e8ad`. Squash merge:
+  `9a2a7bfe9f02f3b04f792dc958d6773f5098128b`. The reconciliation still does
+  not qualify P7 for direct Bronze; the source-origin retrieval and ordered
+  B1 admission remain future evidence requirements.
 - [ ] Re-evaluate direct Bronze qualification only after a source-origin
   retrieval and chronological B1 admission history are evidenced.
