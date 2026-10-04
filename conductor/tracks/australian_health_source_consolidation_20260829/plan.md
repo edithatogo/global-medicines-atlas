@@ -639,6 +639,12 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   metadata endpoints only and did not read source payload bytes or run
   canaries. See
   `quality/qualifications/australian-m112-live-public-v4-metadata-readback-20261004.json`.
+- [x] Merge PR #755 (`8aa006d58a5f8809f0b0541a8ca921e84c96ec53`) after all 37
+  protected checks passed. The review correction makes the addendum's
+  supersession scope explicitly cover both the July v4 identity and August
+  MBS lifecycle. M-112 remains blocked on source-specific rights, per-object
+  rights and lineage, full-denominator digest readback, admission, and
+  consumer canaries; no source values or payload bytes were read.
 - [~] Keep M-112 federation acceptance blocked. Remaining gates are
   source-specific rights for historical PBS and reimbursement-atlas PBS
   records; per-object rights, receipts, B1/B2 lineage, and projection lineage

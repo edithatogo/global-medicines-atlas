@@ -623,3 +623,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   Test-Goblin, context/ecosystem validation, and diff checks. No source payload
   values, rights conclusions, denominator decisions, v4 admissions, or release
   approvals changed.
+
+## 2026-10-04 post-PR-755 M-112 identity reconciliation
+
+- [x] Refresh the dependent Australian federation acceptance evidence from
+  merged PR #755 (`8aa006d58a5f8809f0b0541a8ca921e84c96ec53`). The July 2025
+  MBS v4 candidate's nine public object identities match its immutable
+  publication receipt and current tree; only the identity blocker is resolved,
+  and the product remains candidate-only. M-112 admission, rights, lineage,
+  full-denominator digest readback, and consumer canaries remain open. The
+  Stable v1 federation gate and separate maintainer release-approval gate
+  therefore remain blocked; no release decision is inferred.
