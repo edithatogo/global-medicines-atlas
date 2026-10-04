@@ -1731,3 +1731,11 @@
   remain separate gates. See
   `quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json`
   and `quality/qualifications/bronze-maturity.json`.
+- [x] Join the new MBS raw B1/B2 lifecycle to both approved August M-112 raw
+  archive aliases by source ID, version, exact SHA-256, and byte count. Both
+  aliases still resolve to one producer object at their pinned revision; the
+  producer's prior accepted records remain unchanged. This reconciles source
+  identity and the local landed-to-accepted chronology only. Producer source-
+  Parquet lineage, v4 admission, consumer canaries, and M-112 acceptance remain
+  open. See
+  `quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json`.
