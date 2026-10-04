@@ -1,0 +1,74 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-raw-reference-import",
+  "schema_version": 1,
+  "recorded_at": "2026-10-04T11:10:17.305318+00:00",
+  "status": "historical_raw_reference_imports_prepared_admission_pending",
+  "schema": {
+    "path": "schemas/historical-raw-reference-import-v1.json",
+    "sha256": "2e67d7a0f223360721283deb4bfd36a86989d6d6b7948958738da98a19a2ce23"
+  },
+  "event_import": {
+    "path": "quality/qualifications/australian-mbs-utilisation-acquisition-import-20261004.json",
+    "sha256": "9c5743418e90da2586fb78b3b1e817517d0aaf240d288ff7cd3c693787dd3dfa"
+  },
+  "records": [
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3.json",
+      "sha256": "efeda78ae864846b145ddd83bdf165e0ea5dd250c58c07d482f671de81892343"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd.json",
+      "sha256": "fad7babd72cd6386ebe4928d6960fd926eb708a42ffb6f08132b7f06e8e67447"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb.json",
+      "sha256": "a589909862e99989d5d3e11a18c7483a5379d775fbeb10754e6223712ce90739"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc.json",
+      "sha256": "9b766d8fc63c86c0b5c9ccef31c6c7cdd2cc43e5b226f8ff3f3ecc180591bda1"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf.json",
+      "sha256": "f74725a1ad22d0ddbcba125aca3e6d6c2d785317dd9cded47bac50791c185f41"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22.json",
+      "sha256": "cd6aff5c4c2c8e1086380e850d73eb96b64289965e60b8d41e0fe6f3dff2e824"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521.json",
+      "sha256": "b105523cde65d6061cbf24a5fa4d6dcfce929eba216dca4bdf9de8dd699fb225"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c.json",
+      "sha256": "c8c7d398494b8e560ffe89f8b54cb8379d1f60db4c42a725112502ffc0852522"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef.json",
+      "sha256": "228768c6bccacd89d569f7521a3268f805694db94725bf3eb8a306f90be4a52d"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-demographics/a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690.json",
+      "sha256": "9ee6de6e4d954f2b75fb7fccbca643ef14d4524cb549c022de2f591490680ff5"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-group/0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638.json",
+      "sha256": "56d18e955cc86cf8228d7990ed31c6220755d5b3cf8018fef89afa31f7fd12df"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-group/b12cc1fd8ebca1dadf2c197dcd3ca086b63fcbd9b58ac2d2e9090b94217e5090.json",
+      "sha256": "516b12626fc26d5469e5b7eb243324b990f4127ce86db9f6cd7a3f6e17181c81"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-group/5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967.json",
+      "sha256": "6ced373f4c8544727be6c7545d2b676343853a1a270d83bdc1fb62cbc0ea3337"
+    },
+    {
+      "path": "quality/bronze/historical-raw-references/au-data-gov-mbs-group/7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b.json",
+      "sha256": "55ea753562104b9385f5288d02b117c1114715bc3724258592dd4c15dd8ab6c4"
+    }
+  ],
+  "count": 14,
+  "interpretation": "All 14 historical receipt/event/raw/rights identities are materialized under a separate closed raw-reference import profile. Original producer receipt bytes remain authoritative. These repository imports preserve historical clocks and explicit unknowns without claiming transformed-source receipts or replicated storage lifecycle. Profile validation and identity linkage do not confer processing admission or external publication."
+}

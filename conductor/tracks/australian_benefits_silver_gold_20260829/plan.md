@@ -1818,3 +1818,8 @@
   identify unsupported fields without fabricating transformations, replication
   controls or admission evidence.
   See `quality/qualifications/australian-mbs-utilisation-lifecycle-reconciliation-20261004.json`.
+
+- [x] Define a closed historical raw-reference import profile and materialize
+  all 14 exact MBS receipt/event/raw/rights joins without claiming native
+  transformed receipts, replication controls, payload validation or admission.
+  See `quality/qualifications/australian-mbs-utilisation-raw-reference-import-20261004.json`.

@@ -1,0 +1,344 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "profile",
+    "evidence_kind",
+    "recorded_at",
+    "acquisition_event",
+    "source",
+    "historical_receipt",
+    "raw_reference",
+    "rights_reference",
+    "unknown_evidence",
+    "boundaries"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "global-medicines-atlas.historical-raw-reference-import"
+    },
+    "schema_version": {
+      "const": 1
+    },
+    "profile": {
+      "const": "historical_raw_reference_import"
+    },
+    "evidence_kind": {
+      "const": "historical"
+    },
+    "recorded_at": {
+      "type": "string",
+      "minLength": 1,
+      "format": "date-time"
+    },
+    "acquisition_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "acquisition_id",
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "acquisition_id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id",
+        "category",
+        "original_uri",
+        "final_uri",
+        "retrieved_at",
+        "period_label"
+      ],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1
+        },
+        "original_uri": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri"
+        },
+        "final_uri": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri"
+        },
+        "retrieved_at": {
+          "type": "string",
+          "minLength": 1,
+          "format": "date-time"
+        },
+        "period_label": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "historical_receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "local_path",
+        "archive_path",
+        "sha256",
+        "byte_count",
+        "anonymous_metadata_url"
+      ],
+      "properties": {
+        "local_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "archive_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "anonymous_metadata_url": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri"
+        }
+      }
+    },
+    "raw_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "dataset",
+        "revision",
+        "path",
+        "sha256",
+        "byte_count",
+        "url",
+        "anonymous_digest_evidence"
+      ],
+      "properties": {
+        "state": {
+          "const": "immutable_public_archive_reference"
+        },
+        "dataset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri"
+        },
+        "anonymous_digest_evidence": {
+          "type": "string",
+          "minLength": 1,
+          "format": "uri"
+        }
+      }
+    },
+    "rights_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset",
+        "revision",
+        "path",
+        "sha256",
+        "json_pointer",
+        "state",
+        "approval_record"
+      ],
+      "properties": {
+        "dataset": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "json_pointer": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^/records/[0-9]+$"
+        },
+        "state": {
+          "const": "maintainer-approved-exact-object"
+        },
+        "approval_record": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      }
+    },
+    "unknown_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producer_acquisition_id",
+        "native_catalog_identity",
+        "source_published_at",
+        "source_effective_at",
+        "transformation",
+        "independent_storage_replication",
+        "rpo_rto_restore_controls",
+        "payload_validation",
+        "admission_history"
+      ],
+      "properties": {
+        "producer_acquisition_id": {
+          "const": null
+        },
+        "native_catalog_identity": {
+          "const": null
+        },
+        "source_published_at": {
+          "const": null
+        },
+        "source_effective_at": {
+          "const": null
+        },
+        "transformation": {
+          "const": null
+        },
+        "independent_storage_replication": {
+          "const": null
+        },
+        "rpo_rto_restore_controls": {
+          "const": null
+        },
+        "payload_validation": {
+          "const": null
+        },
+        "admission_history": {
+          "const": null
+        }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "new_acquisition",
+        "native_source_receipt",
+        "native_payload_storage_receipt",
+        "durable_replication_qualified",
+        "payload_values_validated",
+        "processing_admitted",
+        "complete_b1_b2_lifecycle",
+        "external_publication",
+        "v4_admission",
+        "consumer_canaries"
+      ],
+      "properties": {
+        "new_acquisition": {
+          "const": false
+        },
+        "native_source_receipt": {
+          "const": false
+        },
+        "native_payload_storage_receipt": {
+          "const": false
+        },
+        "durable_replication_qualified": {
+          "const": false
+        },
+        "payload_values_validated": {
+          "const": false
+        },
+        "processing_admitted": {
+          "const": false
+        },
+        "complete_b1_b2_lifecycle": {
+          "const": false
+        },
+        "external_publication": {
+          "const": false
+        },
+        "v4_admission": {
+          "const": false
+        },
+        "consumer_canaries": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.org/schemas/historical-raw-reference-import-v1.json",
+  "description": "Receipt-derived B1 import over historical immutable raw references. Unknown producer, transformation, physical replication, payload validation and admission evidence must remain null. This profile confers no native SourceReceipt/PayloadStorageReceipt equivalence or downstream admission. Known evidence is hash-bound in the cohort manifest; schema shape validation alone does not verify external evidence."
+}

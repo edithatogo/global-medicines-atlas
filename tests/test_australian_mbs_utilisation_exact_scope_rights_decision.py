@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from jsonschema import Draft202012Validator, FormatChecker
 
 from global_medicines_atlas.mbs_utilisation_rights_append import (
     validate_rights_append,
@@ -615,3 +616,63 @@ def test_lifecycle_reconciliation_does_not_invent_native_records() -> None:
     assert audit["counts"]["native_source_receipts_selected"] == 0
     assert audit["counts"]["native_storage_receipts_selected"] == 0
     assert not any(audit["boundaries"].values())
+
+
+def test_historical_raw_reference_profile_preserves_exact_evidence() -> None:
+    schema = _read("schemas/historical-raw-reference-import-v1.json")
+    Draft202012Validator.check_schema(schema)
+    validator = Draft202012Validator(schema, format_checker=FormatChecker())
+    manifest = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-raw-reference-import-20261004.json"
+    )
+    imported = _read(manifest["event_import"]["path"])
+    for binding in (manifest["schema"], manifest["event_import"]):
+        assert (
+            binding["sha256"]
+            == hashlib.sha256((ROOT / binding["path"]).read_bytes()).hexdigest()
+        )
+    assert len(manifest["records"]) == len(imported["records"]) == 14
+    for binding, prior in zip(
+        manifest["records"], imported["records"], strict=True
+    ):
+        raw = (ROOT / binding["path"]).read_bytes()
+        assert hashlib.sha256(raw).hexdigest() == binding["sha256"]
+        record = json.loads(raw)
+        validator.validate(record)
+        event = AcquisitionEvent.model_validate_json(
+            (ROOT / prior["event_path"]).read_bytes()
+        )
+        sidecar = _read(prior["historical_receipt"]["local_path"])
+        assert record["acquisition_event"] == {
+            "acquisition_id": prior["acquisition_id"],
+            "path": prior["event_path"],
+            "sha256": prior["event_sha256"],
+        }
+        assert record["source"] == {
+            "source_id": sidecar["source_id"],
+            "category": sidecar["category"],
+            "original_uri": sidecar["source_url"],
+            "final_uri": sidecar["final_url"],
+            "retrieved_at": sidecar["retrieved_at"],
+            "period_label": sidecar["period_label"],
+        }
+        assert record["historical_receipt"] == prior["historical_receipt"]
+        assert record["raw_reference"] == prior["b2_raw_reference"]
+        assert record["rights_reference"] == prior["rights_record"]
+        assert event.content_id == record["raw_reference"]["sha256"]
+        assert all(
+            value is None for value in record["unknown_evidence"].values()
+        )
+        assert not any(record["boundaries"].values())
+        for field in record["boundaries"]:
+            invalid = copy.deepcopy(record)
+            invalid["boundaries"][field] = True
+            assert not validator.is_valid(invalid)
+        for field in record["unknown_evidence"]:
+            invalid = copy.deepcopy(record)
+            invalid["unknown_evidence"][field] = "invented"
+            assert not validator.is_valid(invalid)
+        invalid = copy.deepcopy(record)
+        invalid["unreviewed_claim"] = True
+        assert not validator.is_valid(invalid)
