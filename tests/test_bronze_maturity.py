@@ -268,6 +268,8 @@ def test_australian_mbs_receipt_passes_when_ordered_history_is_verified(
         (("rights_state",), "unknown"),
         (("admission_state",), "quarantined"),
         (("b2", "state"), "retained"),
+        (("hosted_publication",), "invalid"),
+        (("admission_lifecycle",), "invalid"),
         (("files", "source_receipt", "sha256"), "0" * 64),
         (("effective_date",), "2026-07-01"),
         (("source_id",), "au-mbs-p7-legacy-workbook"),
