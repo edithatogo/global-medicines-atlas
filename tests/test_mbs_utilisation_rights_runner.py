@@ -704,3 +704,81 @@ def test_public_download_adapter_uses_existing_bounded_worker(
     )
     assert hub.download_object("dataset", "revision", "raw/path", 123) == target
     assert calls == [("dataset", "revision", "raw/path", 123)]
+
+
+@pytest.mark.parametrize(
+    "stage",
+    [
+        "identity_io",
+        "identity_memory",
+        "parse_io",
+        "parse_memory",
+        "wrapped_io",
+    ],
+)
+def test_worker_infrastructure_failure_is_inconclusive(
+    validation_runner, tmp_path, monkeypatch, stage
+):
+    runner = validation_runner
+    path = tmp_path / "source.csv"
+    payload = b"a\n1\n"
+    path.write_bytes(payload)
+    row = {
+        "raw_reference": _validation_reference(path, payload),
+        "validation_dispatch_eligible": True,
+    }
+    monkeypatch.setattr(runner, "load_validation_cohort", lambda _: [row])
+    monkeypatch.setattr(runner.sys, "platform", "linux")
+    original_import = importlib.import_module
+    monkeypatch.setattr(
+        runner.importlib,
+        "import_module",
+        lambda name: (
+            SimpleNamespace(RLIMIT_AS=1, setrlimit=lambda *_: None)
+            if name == "resource"
+            else original_import(name)
+        ),
+    )
+
+    def unavailable(*_):
+        if stage == "wrapped_io":
+            raise ValueError("archive wrapper") from OSError("read unavailable")
+        if stage.endswith("memory"):
+            raise MemoryError
+        raise OSError("read unavailable")
+
+    monkeypatch.setattr(
+        runner,
+        "verify_staged_identity"
+        if stage.startswith("identity")
+        else "validate_staged_payload",
+        unavailable,
+    )
+    outcome = runner.worker(0, path)
+    assert outcome["status"] == (
+        "identity_unavailable"
+        if stage.startswith("identity")
+        else "validation_unavailable"
+    )
+    assert outcome["anonymous_digest_verified"] == (
+        not stage.startswith("identity")
+    )
+
+
+@pytest.mark.parametrize(
+    "status", ["identity_unavailable", "validation_unavailable"]
+)
+def test_parent_accepts_inconclusive_worker_results(
+    validation_runner, tmp_path, monkeypatch, status
+):
+    runner = validation_runner
+    result = {
+        "status": status,
+        "anonymous_digest_verified": status == "validation_unavailable",
+    }
+    monkeypatch.setattr(
+        runner.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(stdout=json.dumps(result)),
+    )
+    assert runner.run_worker(0, tmp_path / "source") == result

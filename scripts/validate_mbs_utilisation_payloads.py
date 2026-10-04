@@ -50,11 +50,30 @@ def worker(index: int, path: Path) -> dict[str, Any]:
     reference = row["raw_reference"]
     try:
         verify_staged_identity(path, reference)
-    except ValueError, OSError:
+    except OSError, MemoryError:
+        return {
+            "status": "identity_unavailable",
+            "anonymous_digest_verified": False,
+        }
+    except ValueError:
         return {"status": "identity_failed", "anonymous_digest_verified": False}
     try:
         checks = validate_staged_payload(path, reference)
-    except ValueError, OSError, UnicodeError, MemoryError, EOFError, csv.Error:
+    except OSError, MemoryError:
+        return {
+            "status": "validation_unavailable",
+            "anonymous_digest_verified": True,
+        }
+    except ValueError as error:
+        # Shared archive/package guards preserve the original I/O exception
+        # as a cause; it is still inconclusive evidence, not a source verdict.
+        status = (
+            "validation_unavailable"
+            if isinstance(error.__cause__, (OSError, MemoryError))
+            else "structure_failed"
+        )
+        return {"status": status, "anonymous_digest_verified": True}
+    except UnicodeError, EOFError, csv.Error:
         return {"status": "structure_failed", "anonymous_digest_verified": True}
     return {
         "status": "structure_verified",
@@ -97,6 +116,8 @@ def run_worker(index: int, path: Path) -> dict[str, Any]:
         result.get("status")
         not in {
             "identity_failed",
+            "identity_unavailable",
+            "validation_unavailable",
             "structure_failed",
             "structure_verified",
         }
@@ -104,7 +125,7 @@ def run_worker(index: int, path: Path) -> dict[str, Any]:
     ):
         raise ValueError("validation worker returned invalid result")
     if result["anonymous_digest_verified"] != (
-        result["status"] != "identity_failed"
+        result["status"] not in {"identity_failed", "identity_unavailable"}
     ):
         raise ValueError("validation worker identity claim differs")
     return result
