@@ -1777,3 +1777,7 @@
   contract with pinned parent, content-addressed path, preservation, CAS and
   anonymous readback controls. Hosted runner implementation and execution
   remain separate next steps; this contract performs no publication.
+
+- [x] Implement offline validation for the exact MBS-utilisation rights append
+  contract, approval, cohort identities and controls. This validator performs
+  no I/O and supplies no hosted publication or admission evidence.

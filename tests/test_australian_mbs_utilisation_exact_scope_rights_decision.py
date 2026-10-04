@@ -2,10 +2,17 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 from pathlib import Path
 from typing import Any
+
+import pytest
+
+from global_medicines_atlas.mbs_utilisation_rights_append import (
+    validate_rights_append,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 DECISION_PATH = (
@@ -228,3 +235,114 @@ def test_rights_append_contract_binds_exact_payload_and_preservation() -> None:
         "consumer_canaries": False,
         "m112_federation_accepted": False,
     }
+
+
+def test_offline_validator_returns_exact_addition_and_preserved_provenance() -> (
+    None
+):
+    contract = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-rights-append-contract-20261004.json"
+    )
+    payload = (ROOT / contract["addition"]["local_path"]).read_bytes()
+    result = validate_rights_append(
+        contract,
+        payload,
+        (ROOT / DECISION_PATH).read_bytes(),
+        (ROOT / JOIN_PATH).read_bytes(),
+    )
+    assert result.payload == payload
+    assert result.addition.path == contract["addition"]["path"]
+    assert (
+        len(result.required_objects) == 29
+    )  # 14 raw + 14 receipts + manifest.
+    assert result.source_revision == contract["source_revision"]
+    # A reviewed new CAS parent must not require rewriting source provenance.
+    contract["expected_parent_revision"] = "a" * 40
+    contract["parent_readback"]["revision"] = "a" * 40
+    advanced = validate_rights_append(
+        contract,
+        payload,
+        (ROOT / DECISION_PATH).read_bytes(),
+        (ROOT / JOIN_PATH).read_bytes(),
+    )
+    assert advanced.parent_revision == "a" * 40
+    assert advanced.source_revision == result.source_revision
+
+
+def test_offline_validator_rejects_scope_and_control_tampering() -> None:
+    original = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-rights-append-contract-20261004.json"
+    )
+    payload = (ROOT / original["addition"]["local_path"]).read_bytes()
+    decision = (ROOT / DECISION_PATH).read_bytes()
+    joins = (ROOT / JOIN_PATH).read_bytes()
+    changes = [
+        ("dataset", "other/dataset"),
+        ("source_revision", "b" * 40),
+        ("schema_version", True),
+        ("expected_parent_revision", "main"),
+        ("status", "published"),
+        ("rights_decision", {"path": DECISION_PATH, "sha256": "0" * 64}),
+        ("execution_controls", {}),
+        ("verification", {}),
+        ("recovery", {}),
+        ("completion_claims", {}),
+    ]
+    for key, value in changes:
+        contract = copy.deepcopy(original)
+        contract[key] = value
+        with pytest.raises(
+            (ValueError, TypeError), match=r"contract|CAS|metadata|rights"
+        ):
+            validate_rights_append(contract, payload, decision, joins)
+    for wrong_payload, wrong_decision, wrong_joins in [
+        (payload + b" ", decision, joins),
+        (payload, decision + b" ", joins),
+        (payload, decision, joins + b" "),
+        (b"[]", decision, joins),
+        (b" " * (1024 * 1024 + 1), decision, joins),
+    ]:
+        with pytest.raises(
+            (ValueError, TypeError), match=r"contract|CAS|metadata|rights"
+        ):
+            validate_rights_append(
+                original, wrong_payload, wrong_decision, wrong_joins
+            )
+    for mutation in (
+        "duplicate",
+        "unknown",
+        "digest",
+        "reuse",
+        "approval",
+        "top_extra",
+        "row_extra",
+    ):
+        document = json.loads(payload)
+        if mutation == "duplicate":
+            document["records"][1] = document["records"][0]
+        elif mutation == "unknown":
+            document["records"][0]["path"] = "raw/unapproved.csv"
+        elif mutation == "digest":
+            document["records"][0]["sha256"] = "0" * 64
+        elif mutation == "reuse":
+            document["records"][0]["reuse"] = {}
+        elif mutation == "top_extra":
+            document["regulatory_approved"] = True
+        elif mutation == "row_extra":
+            document["records"][0]["later_revisions_authorized"] = True
+        else:
+            document["records"][0]["approval_record"] = {}
+        altered = json.dumps(document).encode()
+        contract = copy.deepcopy(original)
+        digest = hashlib.sha256(altered).hexdigest()
+        path = f"metadata/rights/mbs-utilisation/{digest}.json"
+        contract["addition"].update(
+            path=path, sha256=digest, byte_count=len(altered)
+        )
+        contract["verification"]["expected_inventory_delta"]["added"] = [path]
+        with pytest.raises(
+            (ValueError, TypeError), match=r"contract|CAS|metadata|rights"
+        ):
+            validate_rights_append(contract, altered, decision, joins)
