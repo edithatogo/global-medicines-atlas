@@ -59,5 +59,6 @@
     "consumer_canaries": false,
     "m112_federation_accepted": false
   },
-  "implementation_dependency": "The existing source-metadata publisher validates a different schema. An exact-contract hosted runner remains to be implemented; this contract is not executable by that publisher."
+  "implementation_dependency": "The existing source-metadata publisher validates a different schema. An exact-contract hosted runner remains to be implemented; this contract is not executable by that publisher.",
+  "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7"
 }

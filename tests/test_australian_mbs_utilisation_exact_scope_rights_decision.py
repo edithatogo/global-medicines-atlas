@@ -189,7 +189,11 @@ def test_rights_append_contract_binds_exact_payload_and_preservation() -> None:
         "byte_count": len(payload),
     }
     assert contract["dataset"] == metadata["dataset"]
-    assert contract["expected_parent_revision"] == metadata["source_revision"]
+    assert contract["source_revision"] == metadata["source_revision"]
+    assert (
+        contract["expected_parent_revision"]
+        == contract["parent_readback"]["revision"]
+    )
     assert contract["rights_decision"] == metadata["rights_decision"]
     assert contract["source_manifest_sha256"] == metadata["manifest_sha256"]
     assert contract["status"] == "prepared_not_executed"
