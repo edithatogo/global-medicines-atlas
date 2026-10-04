@@ -1837,3 +1837,9 @@
   verified all 32 objects at `f1c75a0465d8cc22841c498274360753d0aab365`,
   preserved all 31 baseline objects and durably recorded cleanup. See
   `quality/qualifications/australian-mbs-utilisation-lifecycle-publication-receipt-20261004.json`.
+
+- [x] Preflight the exact 14-object MBS validation cohort against current
+  archive resource bounds. Record current quarantine decisions for oversized
+  archives while retaining all raw evidence and other candidates; do not
+  infer payload validity or processing acceptance from object metadata.
+  See `quality/qualifications/australian-mbs-utilisation-validation-preflight-20261004.json`.
