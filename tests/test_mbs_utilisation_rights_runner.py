@@ -782,3 +782,154 @@ def test_parent_accepts_inconclusive_worker_results(
         lambda *_args, **_kwargs: SimpleNamespace(stdout=json.dumps(result)),
     )
     assert runner.run_worker(0, tmp_path / "source") == result
+
+
+def test_workbook_diagnostic_selection_uses_only_recorded_failures(
+    validation_runner,
+):
+    runner = validation_runner
+    selected = runner.failed_workbook_paths(ROOT, load_validation_cohort(ROOT))
+    assert selected == {
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+    }
+
+
+def test_diagnostic_selection_rejects_tampered_receipt_and_source(
+    validation_runner, tmp_path
+):
+    runner = validation_runner
+    target = tmp_path / runner.DIAGNOSTIC_RECEIPT_PATH
+    target.parent.mkdir(parents=True)
+    target.write_bytes(b"{}")
+    with pytest.raises(ValueError, match="receipt differs"):
+        runner.failed_workbook_paths(tmp_path, load_validation_cohort(ROOT))
+    cohort = json.loads(json.dumps(load_validation_cohort(ROOT)))
+    cohort[3]["validation_dispatch_eligible"] = False
+    with pytest.raises(ValueError, match="source identity differs"):
+        runner.failed_workbook_paths(ROOT, cohort)
+
+
+@pytest.mark.parametrize(
+    ("message", "code"),
+    [
+        (
+            "archive total uncompressed bytes limit exceeded",
+            "archive_expanded_byte_limit",
+        ),
+        (
+            "private source value must never be logged",
+            "structural_profile_failure_unclassified",
+        ),
+    ],
+)
+def test_diagnostic_failure_codes_do_not_expose_exception_text(
+    validation_runner, tmp_path, monkeypatch, message, code
+):
+    runner = validation_runner
+    path = tmp_path / "source.csv"
+    payload = b"a\n1\n"
+    path.write_bytes(payload)
+    monkeypatch.setattr(
+        runner,
+        "load_validation_cohort",
+        lambda _: [
+            {
+                "raw_reference": _validation_reference(path, payload),
+                "validation_dispatch_eligible": True,
+            }
+        ],
+    )
+    monkeypatch.setattr(runner.sys, "platform", "linux")
+    original_import = importlib.import_module
+    monkeypatch.setattr(
+        runner.importlib,
+        "import_module",
+        lambda name: (
+            SimpleNamespace(RLIMIT_AS=1, setrlimit=lambda *_: None)
+            if name == "resource"
+            else original_import(name)
+        ),
+    )
+
+    def fail(*_):
+        raise ValueError(message)
+
+    monkeypatch.setattr(runner, "validate_staged_payload", fail)
+    result = runner.worker(0, path)
+    assert result["failure_code"] == code
+    assert message not in json.dumps(result)
+
+
+def test_diagnostic_mode_downloads_only_two_recorded_workbooks(
+    validation_runner, tmp_path, monkeypatch
+):
+    runner = validation_runner
+    cohort = load_validation_cohort(ROOT)
+    selected = runner.failed_workbook_paths(ROOT, cohort)
+    monkeypatch.setattr(
+        "sys.argv",
+        ["runner", "--exact-commit", "a" * 40, "--failed-workbooks-only"],
+    )
+    monkeypatch.setattr(runner, "ROOT", tmp_path)
+    monkeypatch.setattr(runner, "load_validation_cohort", lambda _: cohort)
+    monkeypatch.setattr(runner, "failed_workbook_paths", lambda *_: selected)
+    cache = tmp_path / "cache"
+    cache.mkdir()
+    monkeypatch.setattr(runner.tempfile, "mkdtemp", lambda **_: str(cache))
+    downloads = []
+
+    def download(_dataset, _revision, path, _limit):
+        downloads.append(path)
+        target = cache / str(len(downloads))
+        target.write_bytes(b"synthetic")
+        return target
+
+    monkeypatch.setattr(
+        runner,
+        "HubTransport",
+        lambda _: SimpleNamespace(
+            head=lambda _: "b" * 40, download_object=download
+        ),
+    )
+    monkeypatch.setattr(
+        runner,
+        "run_worker",
+        lambda *_: {
+            "status": "structure_failed",
+            "anonymous_digest_verified": True,
+            "failure_code": "archive_expanded_byte_limit",
+        },
+    )
+    documents = []
+
+    def persist(document, _directory):
+        documents.append(document)
+        return f"https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-{len(documents)}"
+
+    monkeypatch.setattr(runner, "persist_receipt", persist)
+    runner.main()
+    assert set(downloads) == selected
+    assert len(documents) == 3
+    assert all(
+        document["validation_mode"] == "failed_workbooks_only"
+        for document in documents
+    )
+    assert len(documents[-1]["records"]) == 2
+    assert all(record["cache_removed"] for record in documents[-1]["records"])
+
+
+def test_workbook_diagnostic_workflow_is_exact_protected_and_read_only():
+    workflow = yaml.safe_load(
+        (
+            ROOT / ".github/workflows/australian-mbs-workbook-diagnostics.yml"
+        ).read_text()
+    )
+    job = workflow["jobs"]["validate"]
+    assert job["environment"] == "australian-hf-publication"
+    assert (
+        workflow["concurrency"]["group"] == "australian-mbs-utilisation-harvest"
+    )
+    step = next(step for step in job["steps"] if "run" in step)
+    assert "--failed-workbooks-only" in step["run"]
+    assert "HF_TOKEN" not in step["env"]

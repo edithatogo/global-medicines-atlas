@@ -1860,6 +1860,6 @@
   was admitted. See
   `quality/qualifications/australian-mbs-utilisation-payload-validation-receipt-20261004.json`.
 
-- [ ] Classify the March and June 2016 demographics workbook profile failures
+- [~] Classify the March and June 2016 demographics workbook profile failures
   through bounded hosted diagnostics before selecting any recovery or
   source-specific processing-admission step. Preserve raw evidence and limits.
