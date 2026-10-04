@@ -14,7 +14,7 @@
     },
     "archive_policy_contract": {
       "path": "src/global_medicines_atlas/archive_safety.py",
-      "sha256": "1eeeaf5ae354d4bbd5b26a1924ceace36067cac3dbb743239d597211d94d4ba8"
+      "sha256": "e21f93f788e13755e47e2d795db884874e5ce9c1ab84e85eb99d9fcb822a1485"
     }
   },
   "archive_policy": {

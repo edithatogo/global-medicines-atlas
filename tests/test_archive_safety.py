@@ -8,6 +8,7 @@ import tempfile
 import zipfile
 from io import BytesIO
 from pathlib import Path
+from unittest.mock import MagicMock, Mock
 
 import pytest
 from hypothesis import given
@@ -25,6 +26,60 @@ from global_medicines_atlas.archive_safety import (
 )
 
 pytestmark = pytest.mark.edge
+
+
+@pytest.mark.parametrize(
+    ("data", "bad_crc"), [(b"", False), (b"payload", False), (b"", True)]
+)
+def test_verify_zip_file_checks_directory_entries(
+    tmp_path: Path, data: bytes, *, bad_crc: bool
+) -> None:
+    payload = _zip([("dir/", data)])
+    if bad_crc:
+        damaged = bytearray(payload)
+        directory = damaged.index(b"PK\x01\x02")
+        damaged[directory + 16] ^= 1
+        payload = bytes(damaged)
+    path = tmp_path / "source.zip"
+    path.write_bytes(payload)
+    arguments = {
+        "expected_sha256": hashlib.sha256(payload).hexdigest(),
+        "expected_size": len(payload),
+    }
+    if data or bad_crc:
+        with pytest.raises(ArchiveSafetyError, match="archive directory"):
+            verify_zip_file(path, **arguments)
+    else:
+        assert verify_zip_file(path, **arguments).members == ()
+
+
+@pytest.mark.parametrize("declared_size", [1, 3])
+def test_member_verification_rejects_inconsistent_stream_sizes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, declared_size: int
+) -> None:
+    # Exercise defense against an inconsistent archive reader, independent of
+    # zipfile's current internal clipping and CRC implementation.
+    payload = _zip([("data.csv", b"ab")])
+    path = tmp_path / "source.zip"
+    path.write_bytes(payload)
+    info = zipfile.ZipInfo("data.csv")
+    info.file_size = declared_size
+    info.compress_size = 2
+    archive = MagicMock(spec=zipfile.ZipFile)
+    archive.__enter__.return_value = archive
+    archive.infolist.return_value = [info]
+    archive.open.return_value = BytesIO(b"ab")
+    monkeypatch.setattr(
+        "global_medicines_atlas.archive_safety.zipfile.ZipFile",
+        Mock(return_value=archive),
+    )
+    with pytest.raises(ArchiveSafetyError, match="archive member"):
+        verify_zip_file(
+            path,
+            expected_sha256=hashlib.sha256(payload).hexdigest(),
+            expected_size=len(payload),
+            policy=ArchivePolicy(chunk_bytes=1),
+        )
 
 
 def test_verify_zip_file_streams_members_without_extracting(

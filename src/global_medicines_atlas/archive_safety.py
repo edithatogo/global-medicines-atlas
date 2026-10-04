@@ -265,6 +265,7 @@ def verify_zip_file(
         try:
             with zipfile.ZipFile(source) as archive:
                 members = _validate_members(archive, policy)
+                _verify_zip_directories(archive, policy)
                 verified = tuple(
                     _verify_zip_member(archive, info, relative, policy)
                     for info, relative in members
@@ -286,6 +287,19 @@ def verify_zip_file(
         members=tuple(sorted(verified, key=lambda member: member.path)),
         total_uncompressed_bytes=sum(member.size_bytes for member in verified),
     )
+
+
+def _verify_zip_directories(
+    archive: zipfile.ZipFile, policy: ArchivePolicy
+) -> None:
+    for info in archive.infolist():
+        if not info.is_dir():
+            continue
+        if info.file_size != 0 or info.CRC != 0:
+            raise ArchiveSafetyError(
+                "archive directory contains payload or invalid CRC"
+            )
+        _verify_zip_member(archive, info, PurePosixPath(info.filename), policy)
 
 
 def _verify_zip_member(
