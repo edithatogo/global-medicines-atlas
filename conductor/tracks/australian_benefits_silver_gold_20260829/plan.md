@@ -1830,6 +1830,10 @@
   Contract preparation alone does not publish or admit evidence.
   See `quality/qualifications/australian-mbs-utilisation-lifecycle-append-contract-20261004.json`.
 
-- [~] Implement exact offline lifecycle validation and reuse the guarded
+- [x] Implement exact offline lifecycle validation and reuse the guarded
   hosted append protocol through a protected Actions runner. Verify hosted
   publication independently before claiming publication or cache cleanup.
+  Hosted run `37200047657` at `a8751ed711c9f34bf92547b1a3314c5b8b3b9c56`
+  verified all 32 objects at `f1c75a0465d8cc22841c498274360753d0aab365`,
+  preserved all 31 baseline objects and durably recorded cleanup. See
+  `quality/qualifications/australian-mbs-utilisation-lifecycle-publication-receipt-20261004.json`.
