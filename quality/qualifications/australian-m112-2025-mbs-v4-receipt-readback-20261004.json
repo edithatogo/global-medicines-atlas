@@ -1,0 +1,126 @@
+{
+  "boundaries": {
+    "approved_denominator_changed": false,
+    "m112_consumer_canaries_performed": false,
+    "m112_federation_accepted": false,
+    "new_rights_or_licensing_conclusion": false,
+    "source_payload_bytes_read": false,
+    "source_payload_values_read": false,
+    "v4_admission_performed": false
+  },
+  "evidence_inputs": [
+    {
+      "path": "quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json",
+      "sha256": "daa08d46490d92c7598722d8065d64b62b8eec41001ee1f2eb17806ef1d1560e"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
+      "sha256": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-current-tree-object-identity-reconciliation-20261004.json",
+      "sha256": "42ecec09d1d4a8e03794124bdbb1f169bb998285859278bc57d04772d4dccd22"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json",
+      "sha256": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0"
+    },
+    {
+      "path": "quality/qualifications/australian-health-legacy-publication-authorization.json",
+      "sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da"
+    },
+    {
+      "path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+      "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+      "sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/qualification.json",
+      "sha256": "b29d7d088a8a0564f2b022cdafa7351564eb5f292421cfe928c3f04ee0409723"
+    }
+  ],
+  "local_restore": {
+    "manifest_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+    "qualification_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/qualification.json",
+    "receipt_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+    "receipt_restored": true
+  },
+  "public_v4_candidate": {
+    "candidate_only": true,
+    "field_count": 40,
+    "promotion_status": "candidate_only",
+    "qualification_sha256": "10a91301dfc9846ded0a5e64d98c77c35fa73dc567e6c340d70e2e03cea7662f",
+    "receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03",
+    "reported_blockers": [
+      "public_v4_identity_unverified"
+    ],
+    "source_identity_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "source_record_count": 5989
+  },
+  "purpose": "Restore and verify the July 2025 MBS source receipt from the exact pinned public v4 candidate metadata without promoting its candidate state.",
+  "reconciliation": {
+    "exact_current_archive_tree_identity_verified": true,
+    "m112_b1_event_complete": false,
+    "m112_consumer_canaries": false,
+    "m112_federation_accepted": false,
+    "m112_per_object_reuse_disposition_complete": false,
+    "m112_v4_admission": false,
+    "receipt_manifest_canonical_digest_match": true,
+    "receipt_payload_matches_manifest_source": true,
+    "source_receipt_restored_and_verified": true
+  },
+  "recorded_at": "2026-10-04T01:11:31Z",
+  "remote_readback": {
+    "anonymous": true,
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "objects": [
+      {
+        "git_blob_oid": "da7641af3f70b4e4971945a5d9bb88fb6a0f5c62",
+        "local_restore_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+        "raw_sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+        "remote_path": "silver/mbs/v4/2025-07-v3/source-receipt.json",
+        "role": "b1_source_receipt",
+        "size": 1845
+      },
+      {
+        "git_blob_oid": "6f5930b77432e86eb49c2cbc40b3b754e59f0c3f",
+        "local_restore_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+        "raw_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+        "remote_path": "silver/mbs/v4/2025-07-v3/manifest.json",
+        "role": "manifest",
+        "size": 3827
+      },
+      {
+        "git_blob_oid": "11ad6d66ada97f214c8d3adefae375b454a5943e",
+        "local_restore_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/qualification.json",
+        "raw_sha256": "b29d7d088a8a0564f2b022cdafa7351564eb5f292421cfe928c3f04ee0409723",
+        "remote_path": "silver/mbs/v4/2025-07-v3/qualification.json",
+        "role": "value_free_qualification",
+        "size": 2336
+      }
+    ],
+    "request": "GET metadata-only JSON files at pinned dataset revision; no Authorization header or source payload request",
+    "revision": "40891976f77ee5e7688edceed25c9ac98a77547e"
+  },
+  "schema_id": "global-medicines-atlas.australian-m112-2025-mbs-v4-receipt-readback",
+  "schema_version": 1,
+  "source_identity": {
+    "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+    "canonical_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03",
+    "effective_date": "2025-07-01",
+    "legacy_publication_authorization_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/340",
+    "manifest_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03",
+    "manifest_source_identity_match": true,
+    "receipt_id": "public-archive:au-mbs:db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "receipt_manifest_digest_match": true,
+    "recorded_rights_state": "permitted",
+    "source_byte_count": 8194522,
+    "source_id": "au-mbs",
+    "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "source_version": "2025-07-version-3"
+  },
+  "status": "july_2025_source_receipt_restored_and_digest_bound_candidate_and_m112_gates_open"
+}
