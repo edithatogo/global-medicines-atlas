@@ -12,6 +12,11 @@ from typing import Any
 import pytest
 from jsonschema import Draft202012Validator, FormatChecker
 
+from global_medicines_atlas.archive_safety import DEFAULT_ARCHIVE_POLICY
+from global_medicines_atlas.bronze_admission import (
+    BronzeAdmissionRecord,
+    BronzeAdmissionState,
+)
 from global_medicines_atlas.mbs_utilisation_rights_append import (
     validate_rights_append,
 )
@@ -807,3 +812,58 @@ def test_lifecycle_publication_has_complete_preserving_hosted_proof() -> None:
         == contract["addition"]["sha256"]
     )
     assert not any(receipt["boundaries"].values())
+
+
+def test_validation_preflight_keeps_resource_holds_source_specific() -> None:
+    preflight = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-validation-preflight-20261004.json"
+    )
+    imported = _read(preflight["inputs"]["event_import"]["path"])
+    for binding in preflight["inputs"].values():
+        assert (
+            hashlib.sha256((ROOT / binding["path"]).read_bytes()).hexdigest()
+            == binding["sha256"]
+        )
+    assert (
+        preflight["archive_policy"]["max_archive_bytes"]
+        == DEFAULT_ARCHIVE_POLICY.max_archive_bytes
+    )
+    assert len(preflight["records"]) == len(imported["records"]) == 14
+    held = []
+    for row, original in zip(
+        preflight["records"], imported["records"], strict=True
+    ):
+        assert row["path"] == original["path"]
+        assert row["acquisition_id"] == original["acquisition_id"]
+        assert row["raw_reference"] == original["b2_raw_reference"]
+        oversized = (
+            row["path"].endswith((".zip", ".xlsx"))
+            and row["raw_reference"]["byte_count"]
+            > DEFAULT_ARCHIVE_POLICY.max_archive_bytes
+        )
+        if oversized:
+            held.append(row["path"])
+            binding = row["quarantine_decision"]
+            decision_bytes = (ROOT / binding["path"]).read_bytes()
+            assert (
+                hashlib.sha256(decision_bytes).hexdigest() == binding["sha256"]
+            )
+            decision = BronzeAdmissionRecord.model_validate_json(decision_bytes)
+            assert decision.state is BronzeAdmissionState.QUARANTINED
+            assert decision.acquisition_id == row["acquisition_id"]
+            assert decision.content_id == row["raw_reference"]["sha256"]
+            assert decision.reviewer_status == "unreviewed"
+            assert decision.supersedes_decision_id is None
+            assert decision.reason_codes == (
+                "archive_compressed_byte_limit_preflight",
+            )
+            assert row["validation_dispatch_eligible"] is False
+        else:
+            assert row["quarantine_decision"] is None
+            assert row["validation_dispatch_eligible"] is True
+        assert row["payload_validated"] is False
+        assert row["processing_accepted"] is False
+    assert len(held) == 2
+    assert preflight["counts"]["validation_dispatch_eligible"] == 12
+    assert not any(preflight["boundaries"].values())
