@@ -1,0 +1,48 @@
+name: Append exact MBS utilisation lifecycle metadata
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact reviewed main commit containing the lifecycle append contract
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: australian-mbs-utilisation-harvest
+  cancel-in-progress: false
+
+jobs:
+  append:
+    name: Append lifecycle metadata and anonymously verify all objects
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      issues: write # Durable intent, CAS, verification and cleanup receipts.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Append the reviewed historical lifecycle bundle using exact parent CAS
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+          HF_HUB_DISABLE_XET: "1"
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+        run: |
+          set -euo pipefail
+          uv run --frozen --python 3.14.6 --with huggingface-hub==1.14.0 \
+            python scripts/publish_mbs_utilisation_lifecycle.py \
+            --exact-commit "$REQUESTED_COMMIT"
+      - name: Record fail-honest outcome
+        if: failure() || cancelled()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment 340 --body "Exact MBS lifecycle append did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. Any published revision is preserved; reconcile durable receipts before retrying."

@@ -1829,3 +1829,7 @@
   append-only Actions publication contract to the verified dataset parent.
   Contract preparation alone does not publish or admit evidence.
   See `quality/qualifications/australian-mbs-utilisation-lifecycle-append-contract-20261004.json`.
+
+- [~] Implement exact offline lifecycle validation and reuse the guarded
+  hosted append protocol through a protected Actions runner. Verify hosted
+  publication independently before claiming publication or cache cleanup.

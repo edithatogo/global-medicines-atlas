@@ -11,6 +11,10 @@ import pytest
 
 from global_medicines_atlas.federation_metadata_append import ObjectDigest
 from global_medicines_atlas.federation_metadata_hosted import PublicSnapshot
+from global_medicines_atlas.mbs_utilisation_lifecycle_append import (
+    execute_lifecycle_append,
+    validate_lifecycle_append,
+)
 from global_medicines_atlas.mbs_utilisation_rights_append import (
     validate_rights_append,
 )
@@ -276,3 +280,129 @@ def test_invalid_contract_is_rejected_before_transport_use(inputs):
     with pytest.raises(ValueError, match="approved scope"):
         run(inputs)
     assert inputs[-1].calls == []
+
+
+@pytest.fixture
+def lifecycle_inputs(inputs):
+    del inputs  # Reuse the hosted environment fixture without transport calls.
+    contract = json.loads(
+        (
+            BASE
+            / "australian-mbs-utilisation-lifecycle-append-contract-20261004.json"
+        ).read_bytes()
+    )
+    payload = (ROOT / contract["addition"]["local_path"]).read_bytes()
+    baseline = (
+        ROOT / contract["baseline_verification_receipt"]["path"]
+    ).read_bytes()
+    validated = validate_lifecycle_append(contract, payload, baseline)
+    hub = FakeHub(validated)
+    hub.objects = validated.expected_baseline
+    return contract, payload, baseline, hub
+
+
+def test_lifecycle_publication_uses_preserving_receipt_protocol(
+    lifecycle_inputs,
+):
+    contract, payload, baseline, hub = lifecycle_inputs
+    receipts = []
+
+    def save(document):
+        receipts.append(document)
+        return URL
+
+    result = execute_lifecycle_append(
+        contract,
+        payload,
+        baseline,
+        exact_commit=COMMIT,
+        current_main=lambda: COMMIT,
+        hub=hub,
+        persist=save,
+    )
+    assert (
+        result["schema_id"]
+        == "global-medicines-atlas.mbs-utilisation-lifecycle-append"
+    )
+    assert len(result["observed"]) == 32
+    assert result["receipt_url"] == URL
+    assert [r["status"] for r in receipts] == [
+        "intent",
+        "cas_acknowledged",
+        "anonymously_verified",
+    ]
+    assert hub.plan.payload == payload
+
+
+@pytest.mark.parametrize("changed", ["contract", "payload", "baseline"])
+def test_lifecycle_tampering_fails_before_transport(lifecycle_inputs, changed):
+    contract, payload, baseline, hub = lifecycle_inputs
+    if changed == "contract":
+        contract["execution_controls"]["historical_overwrite_allowed"] = True
+    elif changed == "payload":
+        payload += b" "
+    else:
+        baseline += b" "
+    with pytest.raises(ValueError, match="reviewed"):
+        execute_lifecycle_append(
+            contract,
+            payload,
+            baseline,
+            exact_commit=COMMIT,
+            current_main=lambda: COMMIT,
+            hub=hub,
+            persist=lambda _: URL,
+        )
+    assert hub.calls == []
+
+
+def test_lifecycle_local_execution_has_no_side_effects(
+    lifecycle_inputs, monkeypatch
+):
+    monkeypatch.delenv("GITHUB_ACTIONS")
+    contract, payload, baseline, hub = lifecycle_inputs
+    with pytest.raises(ValueError, match="Actions"):
+        execute_lifecycle_append(
+            contract,
+            payload,
+            baseline,
+            exact_commit=COMMIT,
+            current_main=lambda: COMMIT,
+            hub=hub,
+            persist=lambda _: URL,
+        )
+    assert hub.calls == []
+
+
+@pytest.mark.parametrize(
+    "failure", ["size", "extra", "private", "drift", "tamper", "wrong_payload"]
+)
+def test_lifecycle_transport_failures_do_not_verify(lifecycle_inputs, failure):
+    contract, payload, baseline, hub = lifecycle_inputs
+    receipts = []
+    if failure == "size":
+        hub.objects = (replace(hub.objects[0], byte_count=2), *hub.objects[1:])
+    elif failure == "extra":
+        hub.objects += (ObjectDigest("metadata/extra.json", 1, "0" * 64),)
+    else:
+        setattr(hub, failure, True)
+
+    def save(document):
+        receipts.append(document)
+        return URL
+
+    with pytest.raises(
+        ValueError, match=r"baseline|snapshot|head|inventory|metadata"
+    ):
+        execute_lifecycle_append(
+            contract,
+            payload,
+            baseline,
+            exact_commit=COMMIT,
+            current_main=lambda: COMMIT,
+            hub=hub,
+            persist=save,
+        )
+    assert "anonymously_verified" not in [r["status"] for r in receipts]
+    if failure in {"size", "extra", "private", "drift"}:
+        assert hub.plan is None

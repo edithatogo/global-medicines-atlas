@@ -162,3 +162,97 @@ def test_current_main_is_bounded_fixed_argv(publisher, monkeypatch):
 
     monkeypatch.setattr(publisher.subprocess, "check_output", check)
     assert publisher.current_main() == "a" * 40
+
+
+def test_lifecycle_runner_refuses_local_execution(monkeypatch):
+    monkeypatch.syspath_prepend(str(ROOT / "scripts"))
+    lifecycle = importlib.import_module("publish_mbs_utilisation_lifecycle")
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.setattr("sys.argv", ["publisher", "--exact-commit", "a" * 40])
+    with pytest.raises(ValueError, match="Actions"):
+        lifecycle.main()
+
+
+def test_lifecycle_workflow_is_protected_and_shares_writer_lock():
+    workflow = yaml.safe_load(
+        (
+            ROOT / ".github/workflows/australian-mbs-utilisation-lifecycle.yml"
+        ).read_text()
+    )
+    assert set(workflow.get("on", workflow.get(True))) == {"workflow_dispatch"}
+    assert (
+        workflow["jobs"]["append"]["environment"] == "australian-hf-publication"
+    )
+    assert (
+        workflow["concurrency"]["group"] == "australian-mbs-utilisation-harvest"
+    )
+    assert workflow["concurrency"]["cancel-in-progress"] is False
+    command = next(
+        s["run"] for s in workflow["jobs"]["append"]["steps"] if "run" in s
+    )
+    assert "publish_mbs_utilisation_lifecycle.py" in command
+    assert '"$REQUESTED_COMMIT"' in command
+
+
+@pytest.mark.parametrize(
+    "outcome", ["verified", "failed", "drift", "unreviewed"]
+)
+def test_lifecycle_runner_order_and_cache_retention(
+    publisher, hosted, monkeypatch, outcome
+):
+    cache, calls = hosted
+    lifecycle = importlib.import_module("publish_mbs_utilisation_lifecycle")
+    for relative in (
+        lifecycle.CONTRACT_PATH,
+        lifecycle.PAYLOAD_PATH,
+        lifecycle.BASELINE_PATH,
+    ):
+        destination = publisher.ROOT / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes((ROOT / relative).read_bytes())
+    monkeypatch.setattr(lifecycle, "ROOT", publisher.ROOT)
+    monkeypatch.setattr(
+        lifecycle,
+        "current_main",
+        lambda: "b" * 40 if outcome == "drift" else "a" * 40,
+    )
+    monkeypatch.setattr(
+        lifecycle, "HubTransport", lambda _directory: calls.append("transport")
+    )
+    url = "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-1"
+    records = []
+    monkeypatch.setattr(
+        publisher,
+        "persist_receipt",
+        lambda document, _directory: records.append(document) or url,
+    )
+
+    def execute(*_args, **_kwargs):
+        calls.append("execute")
+        if outcome == "failed":
+            raise RuntimeError("readback failed")
+        return {"status": "anonymously_verified", "receipt_url": url}
+
+    monkeypatch.setattr(lifecycle, "execute_lifecycle_append", execute)
+    if outcome == "unreviewed":
+        path = lifecycle.ROOT / lifecycle.PAYLOAD_PATH
+        path.write_bytes(path.read_bytes() + b" ")
+    if outcome == "verified":
+        lifecycle.main()
+        assert calls == ["transport", "execute"]
+        assert not cache.exists()
+        assert records[0]["status"] == "cleanup_completed"
+        assert (
+            lifecycle.ROOT
+            / "build/mbs-utilisation-lifecycle-receipts/result.json"
+        ).exists()
+    else:
+        with pytest.raises(
+            (ValueError, RuntimeError), match=r"advanced|reviewed|readback"
+        ):
+            lifecycle.main()
+        assert cache.exists()
+        assert records == []
+        assert calls == (
+            ["transport", "execute"] if outcome == "failed" else []
+        )

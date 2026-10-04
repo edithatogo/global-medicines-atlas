@@ -42,6 +42,7 @@ class RightsAppendPayload:
     addition: ObjectDigest
     payload: bytes
     required_objects: tuple[tuple[str, str], ...]
+    expected_baseline: tuple[ObjectDigest, ...] | None = None
 
 
 def _document(payload: bytes) -> dict[str, Any]:

@@ -27,6 +27,7 @@ from global_medicines_atlas.federation_metadata_hosted import (
     require_hosted_main,
 )
 from global_medicines_atlas.mbs_utilisation_rights_append import (
+    RightsAppendPayload,
     validate_rights_append,
 )
 
@@ -95,10 +96,52 @@ def execute_rights_append(
     validated = validate_rights_append(
         contract, payload, decision_bytes, join_bytes
     )
+    return execute_validated_append(
+        validated,
+        contract["rights_decision"],
+        receipt_schema="global-medicines-atlas.mbs-utilisation-rights-append",
+        exact_commit=exact_commit,
+        current_main=current_main,
+        hub=hub,
+        persist=persist,
+    )
+
+
+def _require_reviewed_baseline(
+    validated: RightsAppendPayload, baseline: dict[str, ObjectDigest]
+) -> None:
+    if validated.expected_baseline is not None and baseline != {
+        obj.path: obj for obj in validated.expected_baseline
+    }:
+        raise ValueError("baseline differs from reviewed complete inventory")
+
+
+def execute_validated_append(
+    validated: RightsAppendPayload,
+    authorization: dict[str, Any],
+    *,
+    receipt_schema: str,
+    exact_commit: str,
+    current_main: Callable[[], str],
+    hub: MetadataHub,
+    persist: Callable[[dict[str, Any]], str],
+) -> dict[str, Any]:
+    """Execute a validated exact addition under the shared hosted protocol.
+
+    Callers must validate reviewed input bytes before invoking this protocol.
+    This supplies publication evidence only, never source admission.
+    """
+    require_hosted_main(exact_commit)
+    if receipt_schema not in {
+        "global-medicines-atlas.mbs-utilisation-rights-append",
+        "global-medicines-atlas.mbs-utilisation-lifecycle-append",
+    }:
+        raise ValueError("unsupported append receipt schema")
     if current_main() != exact_commit:
         raise ValueError("reviewed main has advanced")
     before = hub.snapshot(validated.dataset, validated.parent_revision)
     baseline = _inventory(before, validated.parent_revision)
+    _require_reviewed_baseline(validated, baseline)
     if len(baseline) == MAX_OBJECTS:
         raise ValueError("snapshot has no capacity for metadata addition")
     for path, digest in validated.required_objects:
@@ -118,7 +161,7 @@ def execute_rights_append(
     if hub.head(plan.dataset) != plan.parent_revision:
         raise ValueError("default head drifted before intent")
     intent = {
-        "schema_id": "global-medicines-atlas.mbs-utilisation-rights-append",
+        "schema_id": receipt_schema,
         "schema_version": 1,
         "status": "intent",
         "dataset": plan.dataset,
@@ -127,7 +170,7 @@ def execute_rights_append(
         "code_commit": exact_commit,
         "run_url": f"https://github.com/{REPOSITORY}/actions/runs/"
         + os.environ["GITHUB_RUN_ID"],
-        "authorization": contract["rights_decision"],
+        "authorization": authorization,
         "addition": asdict(plan.addition),
         "baseline": [asdict(obj) for obj in plan.baseline],
     }
