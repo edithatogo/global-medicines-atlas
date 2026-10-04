@@ -634,3 +634,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   full-denominator digest readback, and consumer canaries remain open. The
   Stable v1 federation gate and separate maintainer release-approval gate
   therefore remain blocked; no release decision is inferred.
+
+## 2026-10-04 post-PR-757 exact-scope MBS utilisation rights reconciliation
+
+- [x] Update the dependent Australian federation acceptance page after PR #757
+  approved reuse and external publication for the exact 14-object
+  MBS-utilisation manifest under its official CC BY 3.0 Australia metadata.
+  Keep the objects deferred because per-object B1 rights/reuse fields,
+  complete B1/B2 lineage, v4 admission, and consumer canaries remain open.
+  The third source ID in the broader authorization has no object in this
+  cohort, and PBS-utilisation rights remain unresolved. Stable v1 federation
+  acceptance and separate stable-release approval remain blocked.
