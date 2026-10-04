@@ -12,6 +12,9 @@ from types import SimpleNamespace
 import pytest
 import yaml
 
+from global_medicines_atlas.australian_harvesting import (
+    MAX_XLSX_UNCOMPRESSED_BYTES,
+)
 from global_medicines_atlas.mbs_utilisation_validation import (
     PREFLIGHT_PATH,
     load_validation_cohort,
@@ -861,15 +864,18 @@ def test_diagnostic_failure_codes_do_not_expose_exception_text(
     assert message not in json.dumps(result)
 
 
+@pytest.mark.parametrize(
+    "mode", ["failed_workbooks_only", "streaming_workbooks"]
+)
 def test_diagnostic_mode_downloads_only_two_recorded_workbooks(
-    validation_runner, tmp_path, monkeypatch
+    validation_runner, tmp_path, monkeypatch, mode
 ):
     runner = validation_runner
     cohort = load_validation_cohort(ROOT)
     selected = runner.failed_workbook_paths(ROOT, cohort)
     monkeypatch.setattr(
         "sys.argv",
-        ["runner", "--exact-commit", "a" * 40, "--failed-workbooks-only"],
+        ["runner", "--exact-commit", "a" * 40, "--" + mode.replace("_", "-")],
     )
     monkeypatch.setattr(runner, "ROOT", tmp_path)
     monkeypatch.setattr(runner, "load_validation_cohort", lambda _: cohort)
@@ -908,13 +914,14 @@ def test_diagnostic_mode_downloads_only_two_recorded_workbooks(
         return f"https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-{len(documents)}"
 
     monkeypatch.setattr(runner, "persist_receipt", persist)
+    monkeypatch.setenv("GMA_MBS_STREAMING_PROFILE", "stale")
     runner.main()
+    assert runner.os.environ.get("GMA_MBS_STREAMING_PROFILE") == (
+        "1" if mode == "streaming_workbooks" else None
+    )
     assert set(downloads) == selected
     assert len(documents) == 3
-    assert all(
-        document["validation_mode"] == "failed_workbooks_only"
-        for document in documents
-    )
+    assert all(document["validation_mode"] == mode for document in documents)
     assert len(documents[-1]["records"]) == 2
     assert all(record["cache_removed"] for record in documents[-1]["records"])
 
@@ -933,3 +940,278 @@ def test_workbook_diagnostic_workflow_is_exact_protected_and_read_only():
     step = next(step for step in job["steps"] if "run" in step)
     assert "--failed-workbooks-only" in step["run"]
     assert "HF_TOKEN" not in step["env"]
+
+
+@pytest.fixture
+def streaming():
+    return importlib.import_module(
+        "global_medicines_atlas.mbs_streaming_workbook"
+    )
+
+
+def _streaming_fixture(
+    tmp_path,
+    streaming,
+    *,
+    target="worksheets/sheet1.xml",
+    tail="",
+    mode="Internal",
+):
+    path = tmp_path / "workbook.xlsx"
+    with zipfile.ZipFile(
+        path, "w", compression=zipfile.ZIP_DEFLATED
+    ) as archive:
+        archive.writestr(
+            "[Content_Types].xml", f'<Types xmlns="{streaming.TYPES}"/>'
+        )
+        archive.writestr(
+            "xl/workbook.xml",
+            f'<workbook xmlns="{streaming.MAIN}" xmlns:r="{streaming.OFFICE}"><sheets><sheet name="Private" r:id="r1"/></sheets></workbook>',
+        )
+        archive.writestr(
+            "xl/_rels/workbook.xml.rels",
+            f'<Relationships xmlns="{streaming.REL}"><Relationship Id="r1" Type="{streaming.OFFICE}/worksheet" Target="{target}" TargetMode="{mode}"/></Relationships>',
+        )
+        archive.writestr(
+            "xl/worksheets/sheet1.xml",
+            f'<worksheet xmlns="{streaming.MAIN}"><sheetData><row><c><v>PRIVATE-CELL</v></c></row></sheetData></worksheet>{tail}',
+        )
+    payload = path.read_bytes()
+    return path, {
+        "path": "workbook.xlsx",
+        "byte_count": len(payload),
+        "sha256": hashlib.sha256(payload).hexdigest(),
+    }
+
+
+def test_streaming_profile_only_emits_counts(tmp_path, streaming):
+    path, reference = _streaming_fixture(tmp_path, streaming)
+    checks = streaming.validate_streaming_workbook(path, reference)
+    assert checks["check_profile"] == streaming.PROFILE
+    assert checks["worksheet_count"] == 1
+    assert checks["expanded_bytes"] > 0
+    assert "PRIVATE" not in json.dumps(checks)
+    assert checks["limits"]["expanded_bytes"] == 1024**3
+
+    assert MAX_XLSX_UNCOMPRESSED_BYTES == 128 * 1024**2
+
+
+@pytest.mark.parametrize(
+    "target",
+    [
+        "../sheet.xml",
+        "/xl/worksheets/sheet.xml",
+        "https://example.org/sheet.xml",
+        "missing.xml",
+    ],
+)
+def test_streaming_rejects_unsafe_relationship(tmp_path, streaming, target):
+    path, reference = _streaming_fixture(tmp_path, streaming, target=target)
+    with pytest.raises(ValueError, match="relationship invalid"):
+        streaming.validate_streaming_workbook(path, reference)
+
+
+def test_streaming_rejects_external_relationship(tmp_path, streaming):
+    path, reference = _streaming_fixture(tmp_path, streaming, mode="External")
+    with pytest.raises(ValueError, match="relationship invalid"):
+        streaming.validate_streaming_workbook(path, reference)
+
+
+def test_streaming_consumes_trailing_xml(tmp_path, streaming):
+    path, reference = _streaming_fixture(tmp_path, streaming, tail="<broken>")
+    with pytest.raises(ValueError, match="XML malformed"):
+        streaming.validate_streaming_workbook(path, reference)
+
+
+@pytest.mark.parametrize(
+    "declaration",
+    ["<!DOCTYPE root>", '<!DOCTYPE root [<!ENTITY secret "PRIVATE">]>'],
+)
+def test_streaming_rejects_split_declarations(streaming, declaration):
+    limits = streaming.XmlLimits(chunk_bytes=1)
+    budget = streaming.XmlBudget(limits)
+    with pytest.raises(ValueError, match="declaration forbidden"):
+        budget.parse(io.BytesIO((declaration + "<root/>").encode()), "root")
+
+
+@pytest.mark.parametrize(
+    ("limits", "xml", "message"),
+    [
+        ({"depth": 2}, b"<root><a><b/></a></root>", "resource limit"),
+        ({"elements": 2}, b"<root><a/><b/></root>", "resource limit"),
+        ({"text_bytes": 3}, b"<root>ABCD</root>", "text limit"),
+        ({"metadata_bytes": 3}, b"<root/>", "metadata byte limit"),
+    ],
+)
+def test_streaming_xml_budgets(streaming, limits, xml, message):
+    budget = streaming.XmlBudget(streaming.XmlLimits(chunk_bytes=1, **limits))
+    with pytest.raises(ValueError, match=message):
+        budget.parse(io.BytesIO(xml), "root", metadata=True)
+
+
+def test_streaming_aggregate_elements_across_members(streaming):
+    budget = streaming.XmlBudget(streaming.XmlLimits(elements=1))
+    budget.parse(io.BytesIO(b"<root/>"), "root")
+    with pytest.raises(ValueError, match="resource limit"):
+        budget.parse(io.BytesIO(b"<root/>"), "root")
+
+
+def test_streaming_reads_incrementally(streaming):
+    class LimitedReader(io.BytesIO):
+        def read(self, size=-1):
+            assert 0 < size <= 7
+            return super().read(size)
+
+    budget = streaming.XmlBudget(streaming.XmlLimits(chunk_bytes=7))
+    assert (
+        budget.parse(LimitedReader(b"<root><a>value</a></root>"), "root") == []
+    )
+    assert budget.elements == 2
+
+
+@pytest.mark.parametrize(
+    "case", ["root", "records", "depth", "empty", "entity"]
+)
+def test_streaming_xml_other_rejections(streaming, monkeypatch, case):
+    xml = {
+        "root": b"<wrong/>",
+        "records": b"<root><item/><item/></root>",
+        "depth": b"<root><nested><item/></nested></root>",
+        "empty": b"",
+        "entity": b"<root>&missing;</root>",
+    }[case]
+    monkeypatch.setattr(
+        streaming,
+        "ARCHIVE_POLICY",
+        streaming.replace(streaming.ARCHIVE_POLICY, max_entries=1),
+    )
+    budget = streaming.XmlBudget(streaming.XmlLimits(chunk_bytes=1))
+    with pytest.raises(
+        ValueError,
+        match=r"XML root invalid|metadata record limit|XML malformed",
+    ):
+        budget.parse(io.BytesIO(xml), "root", collect="item")
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "missing",
+        "duplicate",
+        "empty",
+        "metadata",
+        "format",
+        "identity",
+        "expanded",
+    ],
+)
+def test_streaming_package_rejections(tmp_path, streaming, monkeypatch, case):
+    path, reference = _streaming_fixture(tmp_path, streaming)
+    if case in {"missing", "duplicate", "empty"}:
+        with zipfile.ZipFile(path) as archive:
+            members = {name: archive.read(name) for name in archive.namelist()}
+        if case == "missing":
+            members.pop("xl/worksheets/sheet1.xml")
+        elif case == "empty":
+            members["xl/workbook.xml"] = (
+                f'<workbook xmlns="{streaming.MAIN}"/>'.encode()
+            )
+        else:
+            name = "xl/_rels/workbook.xml.rels"
+            members[name] = members[name].replace(
+                b"</Relationships>", b'<Relationship Id="r1"/></Relationships>'
+            )
+        with zipfile.ZipFile(path, "w") as archive:
+            for name, value in members.items():
+                archive.writestr(name, value)
+        reference.update(
+            byte_count=path.stat().st_size,
+            sha256=hashlib.sha256(path.read_bytes()).hexdigest(),
+        )
+    elif case == "metadata":
+        monkeypatch.setattr(
+            streaming, "XmlLimits", lambda: SimpleNamespace(metadata_bytes=1)
+        )
+    elif case == "format":
+        reference["path"] = "file.zip"
+    elif case == "identity":
+        reference["sha256"] = "0" * 64
+    else:
+        monkeypatch.setattr(
+            streaming,
+            "ARCHIVE_POLICY",
+            streaming.replace(
+                streaming.ARCHIVE_POLICY, max_total_uncompressed_bytes=1
+            ),
+        )
+    with pytest.raises(
+        ValueError,
+        match=r"required member missing|relationship invalid|metadata byte limit|format invalid|digest|identity|uncompressed bytes",
+    ):
+        streaming.validate_streaming_workbook(path, reference)
+
+
+@pytest.mark.parametrize("mode", ["allowed", "unselected", "failure"])
+def test_streaming_worker_is_exact_selected_and_safe(
+    validation_runner, streaming, tmp_path, monkeypatch, mode
+):
+    runner = validation_runner
+    path, reference = _streaming_fixture(tmp_path, streaming)
+    monkeypatch.setenv("GMA_MBS_STREAMING_PROFILE", "1")
+    monkeypatch.setattr(
+        runner,
+        "load_validation_cohort",
+        lambda _: [
+            {"raw_reference": reference, "validation_dispatch_eligible": True}
+        ],
+    )
+    monkeypatch.setattr(
+        runner,
+        "failed_workbook_paths",
+        lambda *_: set() if mode == "unselected" else {reference["path"]},
+    )
+    monkeypatch.setattr(runner.sys, "platform", "linux")
+    monkeypatch.setattr(
+        runner.importlib,
+        "import_module",
+        lambda _: SimpleNamespace(RLIMIT_AS=1, setrlimit=lambda *_: None),
+    )
+    if mode == "failure":
+
+        def fail(*_):
+            raise ValueError("streaming workbook XML malformed")
+
+        monkeypatch.setattr(runner, "validate_streaming_workbook", fail)
+    if mode == "unselected":
+        with pytest.raises(ValueError, match="source not selected"):
+            runner.worker(0, path)
+    else:
+        outcome = runner.worker(0, path)
+        assert outcome["status"] == (
+            "structure_failed" if mode == "failure" else "structure_verified"
+        )
+        assert "PRIVATE" not in json.dumps(outcome)
+        if mode == "failure":
+            assert outcome["failure_code"] == "xlsx_stream_xml_malformed"
+
+
+def test_streaming_workflow_is_protected_and_separate():
+    workflow = yaml.safe_load(
+        (
+            ROOT / ".github/workflows/australian-mbs-workbook-streaming.yml"
+        ).read_text()
+    )
+    assert set(workflow.get("on", workflow.get(True))) == {"workflow_dispatch"}
+    job = workflow["jobs"]["validate"]
+    assert job["environment"] == "australian-hf-publication"
+    assert job["timeout-minutes"] == 10
+    assert (
+        workflow["concurrency"]["group"] == "australian-mbs-utilisation-harvest"
+    )
+    assert workflow["concurrency"]["cancel-in-progress"] is False
+    step = next(step for step in job["steps"] if "run" in step)
+    assert "HF_TOKEN" not in step["env"]
+    assert (
+        '--exact-commit "$REQUESTED_COMMIT" --streaming-workbooks'
+        in step["run"]
+    )

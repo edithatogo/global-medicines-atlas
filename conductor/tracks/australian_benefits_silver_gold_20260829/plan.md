@@ -1877,5 +1877,5 @@
   Prepared `docs/qualification/australian-mbs-streaming-workbook-profile.md`;
   no runtime limits changed and no source recovery run performed.
 
-- [ ] Implement and test the separate streaming workbook profile, then qualify
+- [~] Implement and test the separate streaming workbook profile, then qualify
   only the two pinned workbooks through hosted receipts before any admission.

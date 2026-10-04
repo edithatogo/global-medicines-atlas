@@ -1,6 +1,7 @@
 # Proposed MBS utilisation streaming workbook profile
 
-Status: prepared for implementation; no source recovery run or admission.
+Status: implemented as a separate explicit hosted mode; source recovery
+qualification and admission remain pending.
 
 The March and June 2016 demographics workbooks reached the existing 128 MiB
 ZIP-directory expanded-size guard. The independently verified diagnosis is
@@ -11,7 +12,7 @@ This proposal cannot retrospectively change either recorded failure.
 
 ## Scope and reuse
 
-A new, separately named `mbs-utilisation-streaming-xlsx-v1` profile may select
+The separately named `mbs-utilisation-streaming-xlsx-v1` profile selects
 only the two digest-bound references selected by `failed_workbook_paths`.
 Retain the pinned original archive revision and preflight bindings. Do not
 change `validate_xlsx_payload`, the default archive policy, the ten existing
@@ -90,3 +91,7 @@ before deleting digest-verified temporary source bytes.
 4. Independently read back the two outcomes and summary. Reconcile the track
    only to observed results. Structural success alone grants no admission;
    a new resource hold or inconclusive result keeps recovery open.
+
+Implementation: `src/global_medicines_atlas/mbs_streaming_workbook.py`,
+with dedicated `.github/workflows/australian-mbs-workbook-streaming.yml`.
+The worker keeps all existing default profiles unchanged.

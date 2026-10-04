@@ -24,6 +24,11 @@ from publish_source_metadata import HubTransport, persist_receipt
 from global_medicines_atlas.federation_metadata_hosted import (
     require_hosted_main,
 )
+from global_medicines_atlas.mbs_streaming_workbook import (
+    PROFILE,
+    streaming_limits,
+    validate_streaming_workbook,
+)
 from global_medicines_atlas.mbs_utilisation_validation import (
     load_validation_cohort,
     validate_staged_payload,
@@ -51,6 +56,22 @@ FAILURE_CODES = {
     "Workbook metadata member exceeds size limit": "xlsx_metadata_byte_limit",
     "Workbook OOXML required member is missing": "xlsx_required_member_missing",
     "Workbook OOXML required members have unexpected roots": "xlsx_package_roots_unexpected",
+}
+
+STREAMING_ERRORS = {
+    "streaming workbook " + reason
+    for reason in (
+        "XML root invalid",
+        "XML resource limit",
+        "metadata record limit",
+        "XML text limit",
+        "XML declaration forbidden",
+        "metadata byte limit",
+        "XML malformed",
+        "relationship invalid",
+        "format invalid",
+        "required member missing",
+    )
 }
 
 
@@ -99,8 +120,17 @@ def worker(index: int, path: Path) -> dict[str, Any]:
         }
     except ValueError:
         return {"status": "identity_failed", "anonymous_digest_verified": False}
+    streaming = os.environ.get("GMA_MBS_STREAMING_PROFILE") == "1"
+    if streaming and reference["path"] not in failed_workbook_paths(
+        ROOT, load_validation_cohort(ROOT)
+    ):
+        raise ValueError("streaming profile source not selected")
     try:
-        checks = validate_staged_payload(path, reference)
+        checks = (
+            validate_streaming_workbook(path, reference)
+            if streaming
+            else validate_staged_payload(path, reference)
+        )
     except OSError, MemoryError:
         return {
             "status": "validation_unavailable",
@@ -119,8 +149,15 @@ def worker(index: int, path: Path) -> dict[str, Any]:
             "anonymous_digest_verified": True,
             "failure_code": "infrastructure_unavailable"
             if status == "validation_unavailable"
-            else FAILURE_CODES.get(
-                str(error), "structural_profile_failure_unclassified"
+            else (
+                str(error)
+                .replace("streaming workbook ", "xlsx_stream_")
+                .replace(" ", "_")
+                .lower()
+                if str(error) in STREAMING_ERRORS
+                else FAILURE_CODES.get(
+                    str(error), "structural_profile_failure_unclassified"
+                )
             ),
         }
     except UnicodeError, EOFError, csv.Error:
@@ -181,13 +218,18 @@ def run_worker(index: int, path: Path) -> dict[str, Any]:
     return result
 
 
-def main() -> None:  # ruff: ignore[too-many-locals] -- linear receipt and cleanup gates
+def main() -> None:  # ruff: ignore[too-many-locals, too-many-statements] -- linear receipt and cleanup gates
     """Persist each independent result before cleanup of verified raw bytes."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--failed-workbooks-only", action="store_true")
+    parser.add_argument("--streaming-workbooks", action="store_true")
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
+    os.environ.pop("GMA_MBS_STREAMING_PROFILE", None)
+    if args.streaming_workbooks:
+        args.failed_workbooks_only = True
+        os.environ["GMA_MBS_STREAMING_PROFILE"] = "1"
     cohort = load_validation_cohort(ROOT)
     selected = (
         failed_workbook_paths(ROOT, cohort)
@@ -247,10 +289,19 @@ def main() -> None:  # ruff: ignore[too-many-locals] -- linear receipt and clean
             "processing_admitted": False,
             "semantic_validation": False,
             "quarantine_decision": row["quarantine_decision"],
-            "validation_mode": "failed_workbooks_only"
+            "validation_mode": "streaming_workbooks"
+            if args.streaming_workbooks
+            else "failed_workbooks_only"
             if args.failed_workbooks_only
             else "full_cohort",
         }
+        if args.streaming_workbooks:
+            document["validation_profile"] = PROFILE
+            document["resource_limits"] = {
+                **streaming_limits(),
+                "worker_seconds": WORKER_SECONDS,
+                "worker_memory_bytes": WORKER_MEMORY_BYTES,
+            }
         object_receipts = receipts / row["acquisition_id"]
         object_receipts.mkdir()
         receipt_url = persist_receipt(document, object_receipts)
@@ -284,7 +335,9 @@ def main() -> None:  # ruff: ignore[too-many-locals] -- linear receipt and clean
         "recorded_at": datetime.now(UTC).isoformat(),
         "records": observations,
         "processing_admitted": False,
-        "validation_mode": "failed_workbooks_only"
+        "validation_mode": "streaming_workbooks"
+        if args.streaming_workbooks
+        else "failed_workbooks_only"
         if args.failed_workbooks_only
         else "full_cohort",
     }
