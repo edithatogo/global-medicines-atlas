@@ -1739,3 +1739,11 @@
   Parquet lineage, v4 admission, consumer canaries, and M-112 acceptance remain
   open. See
   `quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json`.
+- [x] Restore the July 2025 MBS v4 candidate's source-receipt metadata from
+  the anonymous pinned producer revision and verify its raw object identity,
+  canonical receipt digest, and manifest/source/qualification joins. The
+  value-free qualification remains `candidate_only` and still reports
+  `public_v4_identity_unverified`; the local M-112 acquisition event, reuse
+  disposition, v4 admission, canaries, and federation acceptance remain open.
+  No source payload was read. See
+  `quality/qualifications/australian-m112-2025-mbs-v4-receipt-readback-20261004.json`.

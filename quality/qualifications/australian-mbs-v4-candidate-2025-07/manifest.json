@@ -1,0 +1,85 @@
+{
+  "authorization_basis": {
+    "decision_path": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+    "decision_sha256": "47f3495f397d47bf441b82ef951c41d1de95b32d8eb1a87f52783e10f117d6d9",
+    "destination": "edithatogo/australian-mbs-source-archive",
+    "source_authorization_path": "quality/qualifications/australian-health-legacy-publication-authorization.json",
+    "source_authorization_sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da"
+  },
+  "candidate_only": true,
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "destination_prefix": "silver/mbs/v4/2025-07-v3",
+  "objects": [
+    {
+      "byte_count": 100062,
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "role": "source_faithful_silver_table",
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"
+    },
+    {
+      "byte_count": 51851,
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "role": "source_faithful_silver_table",
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"
+    },
+    {
+      "byte_count": 620348,
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "role": "source_faithful_silver_table",
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"
+    },
+    {
+      "byte_count": 93072,
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "role": "source_faithful_silver_table",
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"
+    },
+    {
+      "byte_count": 114493,
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "role": "source_faithful_silver_table",
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"
+    },
+    {
+      "byte_count": 60259,
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "role": "source_faithful_silver_table",
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"
+    },
+    {
+      "byte_count": 1845,
+      "path": "silver/mbs/v4/2025-07-v3/source-receipt.json",
+      "role": "b1_source_receipt",
+      "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+    },
+    {
+      "byte_count": 2336,
+      "path": "silver/mbs/v4/2025-07-v3/qualification.json",
+      "role": "value_free_qualification",
+      "sha256": "b29d7d088a8a0564f2b022cdafa7351564eb5f292421cfe928c3f04ee0409723"
+    }
+  ],
+  "official_release": {
+    "compared_at": "2026-09-27T20:37:32.917302Z",
+    "effective_at": "2025-07-01",
+    "official_source_byte_count": 8194522,
+    "official_source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "official_source_uri": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/0b61e1e80b332754ca258c9e0000c7d8/$FILE/MBS-XML-20250701%20Version%203.XML",
+    "release_id": "MBS-XML-20250701 Version 3",
+    "released_at": "2025-06-16"
+  },
+  "producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9",
+  "product_version": "4",
+  "qualification_sha256": "10a91301dfc9846ded0a5e64d98c77c35fa73dc567e6c340d70e2e03cea7662f",
+  "schema_id": "global-medicines-atlas.mbs-silver-v4-manifest",
+  "schema_version": 1,
+  "source": {
+    "byte_count": 8194522,
+    "receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03",
+    "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "source_id": "au-mbs",
+    "source_path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+    "source_revision": "2025-07-version-3",
+    "source_uri": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML"
+  }
+}
