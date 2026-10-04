@@ -1869,7 +1869,13 @@
   later package/worksheet checks remain unqualified. See
   `quality/qualifications/australian-mbs-workbook-diagnostic-receipt-20261005.json`.
 
-- [ ] Prepare a bounded streaming workbook validation profile before any
+- [x] Prepare a bounded streaming workbook validation profile before any
   recovery or processing admission of the two resource-blocked workbooks.
   Preserve existing guards, raw references, ten prior profile passes and both
   oversized ZIP holds.
+
+  Prepared `docs/qualification/australian-mbs-streaming-workbook-profile.md`;
+  no runtime limits changed and no source recovery run performed.
+
+- [ ] Implement and test the separate streaming workbook profile, then qualify
+  only the two pinned workbooks through hosted receipts before any admission.
