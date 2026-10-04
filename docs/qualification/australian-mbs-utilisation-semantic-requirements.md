@@ -89,7 +89,10 @@ Implement an exact-reference hosted header inventory for the four standalone
 CSV objects already structurally verified. Check immutable byte identity;
 read the header only; emit source-native header metadata, its canonical
 digest and field count, with no data records or source-cell values. Compare
-candidate schema eras explicitly and preserve unexpected fields. Selection
+candidate schema eras explicitly and preserve unexpected fields internally.
+Public receipts may name only fields already published in the reviewed
+catalogue metadata; unexpected header tokens produce a digest and counts
+instead of arbitrary text. Selection
 must join the reviewed cohort and prior structural receipts, use the existing
 protected environment and acquisition concurrency, and record independent
 outcomes before cleanup.
