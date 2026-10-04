@@ -1,0 +1,1142 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-lifecycle-publication-receipt",
+  "schema_version": 1,
+  "recorded_at": "2026-10-04T11:55:23.121630+00:00",
+  "status": "published_anonymously_verified",
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+  "parent_revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+  "publication_revision": "f1c75a0465d8cc22841c498274360753d0aab365",
+  "code_commit": "a8751ed711c9f34bf92547b1a3314c5b8b3b9c56",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37200047657",
+  "workflow_conclusion": "success",
+  "contract": {
+    "path": "quality/qualifications/australian-mbs-utilisation-lifecycle-append-contract-20261004.json",
+    "sha256": "77aedd7334d494178b48c3b62044f48ebcc6f9f0eaa1b8478b917bfd387cc3f0"
+  },
+  "payload": {
+    "local_path": "quality/qualifications/australian-mbs-utilisation-lifecycle-bundle-20261004.json",
+    "path": "metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json",
+    "sha256": "3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310",
+    "byte_count": 105611
+  },
+  "hosted_receipts": [
+    {
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5979633019",
+      "author": "github-actions[bot]",
+      "body_sha256": "27e60e05d2c2c4fe2d39ff5aa9da59bd3f4a304aa69fff172d32787c9a2969c4",
+      "document": {
+        "addition": {
+          "byte_count": 105611,
+          "path": "metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json",
+          "sha256": "3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310"
+        },
+        "authorization": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        },
+        "baseline": [
+          {
+            "byte_count": 3216,
+            "path": ".gitattributes",
+            "sha256": "94970c50645db84e25f85c8d2618029afb277b0ddba6504303362c5ba213b0fa"
+          },
+          {
+            "byte_count": 852,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+            "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59"
+          },
+          {
+            "byte_count": 845,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+            "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f"
+          },
+          {
+            "byte_count": 854,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+            "sha256": "88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad"
+          },
+          {
+            "byte_count": 858,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+            "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628"
+          },
+          {
+            "byte_count": 855,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+            "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c"
+          },
+          {
+            "byte_count": 860,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+            "sha256": "e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+            "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+            "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd"
+          },
+          {
+            "byte_count": 888,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+            "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+            "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+            "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+            "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d"
+          },
+          {
+            "byte_count": 797,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+            "sha256": "8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d"
+          },
+          {
+            "byte_count": 807,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+            "sha256": "414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a"
+          },
+          {
+            "byte_count": 9780,
+            "path": "manifest.json",
+            "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab"
+          },
+          {
+            "byte_count": 23376,
+            "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+            "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054"
+          },
+          {
+            "byte_count": 23934884,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+            "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+          },
+          {
+            "byte_count": 23436706,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+            "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+          },
+          {
+            "byte_count": 7680041,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+            "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+          },
+          {
+            "byte_count": 21966140,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+            "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+          },
+          {
+            "byte_count": 23765087,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+            "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+          },
+          {
+            "byte_count": 7316301,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+            "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+          },
+          {
+            "byte_count": 185194594,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+            "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+          },
+          {
+            "byte_count": 240803157,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+            "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+          },
+          {
+            "byte_count": 284302149,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+            "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+          },
+          {
+            "byte_count": 358227575,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+            "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+          },
+          {
+            "byte_count": 205885063,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+            "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+          },
+          {
+            "byte_count": 237142509,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+            "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+          },
+          {
+            "byte_count": 12291303,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+            "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+          },
+          {
+            "byte_count": 6857437,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+            "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+          }
+        ],
+        "code_commit": "a8751ed711c9f34bf92547b1a3314c5b8b3b9c56",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "parent_revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37200047657",
+        "schema_id": "global-medicines-atlas.mbs-utilisation-lifecycle-append",
+        "schema_version": 1,
+        "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "status": "intent"
+      }
+    },
+    {
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5979633258",
+      "author": "github-actions[bot]",
+      "body_sha256": "48e4bfa2ff9f682606ed6da7daf41dfd2fed45ec822993aec226ac7427c4b777",
+      "document": {
+        "addition": {
+          "byte_count": 105611,
+          "path": "metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json",
+          "sha256": "3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310"
+        },
+        "authorization": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        },
+        "baseline": [
+          {
+            "byte_count": 3216,
+            "path": ".gitattributes",
+            "sha256": "94970c50645db84e25f85c8d2618029afb277b0ddba6504303362c5ba213b0fa"
+          },
+          {
+            "byte_count": 852,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+            "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59"
+          },
+          {
+            "byte_count": 845,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+            "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f"
+          },
+          {
+            "byte_count": 854,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+            "sha256": "88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad"
+          },
+          {
+            "byte_count": 858,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+            "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628"
+          },
+          {
+            "byte_count": 855,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+            "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c"
+          },
+          {
+            "byte_count": 860,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+            "sha256": "e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+            "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+            "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd"
+          },
+          {
+            "byte_count": 888,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+            "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+            "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+            "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+            "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d"
+          },
+          {
+            "byte_count": 797,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+            "sha256": "8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d"
+          },
+          {
+            "byte_count": 807,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+            "sha256": "414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a"
+          },
+          {
+            "byte_count": 9780,
+            "path": "manifest.json",
+            "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab"
+          },
+          {
+            "byte_count": 23376,
+            "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+            "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054"
+          },
+          {
+            "byte_count": 23934884,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+            "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+          },
+          {
+            "byte_count": 23436706,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+            "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+          },
+          {
+            "byte_count": 7680041,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+            "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+          },
+          {
+            "byte_count": 21966140,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+            "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+          },
+          {
+            "byte_count": 23765087,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+            "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+          },
+          {
+            "byte_count": 7316301,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+            "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+          },
+          {
+            "byte_count": 185194594,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+            "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+          },
+          {
+            "byte_count": 240803157,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+            "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+          },
+          {
+            "byte_count": 284302149,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+            "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+          },
+          {
+            "byte_count": 358227575,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+            "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+          },
+          {
+            "byte_count": 205885063,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+            "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+          },
+          {
+            "byte_count": 237142509,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+            "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+          },
+          {
+            "byte_count": 12291303,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+            "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+          },
+          {
+            "byte_count": 6857437,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+            "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+          }
+        ],
+        "code_commit": "a8751ed711c9f34bf92547b1a3314c5b8b3b9c56",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "intent_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5979633019",
+        "parent_basis": "server_enforced_parent_commit",
+        "parent_revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "revision": "f1c75a0465d8cc22841c498274360753d0aab365",
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37200047657",
+        "schema_id": "global-medicines-atlas.mbs-utilisation-lifecycle-append",
+        "schema_version": 1,
+        "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "status": "cas_acknowledged"
+      }
+    },
+    {
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5979643575",
+      "author": "github-actions[bot]",
+      "body_sha256": "bfd1244ef48ac2db4e6b407ae72263ed7923ee902700cc66b0dca0e3e6f90276",
+      "document": {
+        "addition": {
+          "byte_count": 105611,
+          "path": "metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json",
+          "sha256": "3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310"
+        },
+        "authorization": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        },
+        "baseline": [
+          {
+            "byte_count": 3216,
+            "path": ".gitattributes",
+            "sha256": "94970c50645db84e25f85c8d2618029afb277b0ddba6504303362c5ba213b0fa"
+          },
+          {
+            "byte_count": 852,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+            "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59"
+          },
+          {
+            "byte_count": 845,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+            "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f"
+          },
+          {
+            "byte_count": 854,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+            "sha256": "88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad"
+          },
+          {
+            "byte_count": 858,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+            "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628"
+          },
+          {
+            "byte_count": 855,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+            "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c"
+          },
+          {
+            "byte_count": 860,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+            "sha256": "e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+            "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+            "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd"
+          },
+          {
+            "byte_count": 888,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+            "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+            "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+            "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+            "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d"
+          },
+          {
+            "byte_count": 797,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+            "sha256": "8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d"
+          },
+          {
+            "byte_count": 807,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+            "sha256": "414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a"
+          },
+          {
+            "byte_count": 9780,
+            "path": "manifest.json",
+            "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab"
+          },
+          {
+            "byte_count": 23376,
+            "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+            "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054"
+          },
+          {
+            "byte_count": 23934884,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+            "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+          },
+          {
+            "byte_count": 23436706,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+            "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+          },
+          {
+            "byte_count": 7680041,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+            "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+          },
+          {
+            "byte_count": 21966140,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+            "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+          },
+          {
+            "byte_count": 23765087,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+            "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+          },
+          {
+            "byte_count": 7316301,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+            "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+          },
+          {
+            "byte_count": 185194594,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+            "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+          },
+          {
+            "byte_count": 240803157,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+            "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+          },
+          {
+            "byte_count": 284302149,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+            "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+          },
+          {
+            "byte_count": 358227575,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+            "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+          },
+          {
+            "byte_count": 205885063,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+            "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+          },
+          {
+            "byte_count": 237142509,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+            "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+          },
+          {
+            "byte_count": 12291303,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+            "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+          },
+          {
+            "byte_count": 6857437,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+            "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+          }
+        ],
+        "code_commit": "a8751ed711c9f34bf92547b1a3314c5b8b3b9c56",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "gated": false,
+        "intent_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5979633019",
+        "observed": [
+          {
+            "byte_count": 3216,
+            "path": ".gitattributes",
+            "sha256": "94970c50645db84e25f85c8d2618029afb277b0ddba6504303362c5ba213b0fa"
+          },
+          {
+            "byte_count": 852,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+            "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59"
+          },
+          {
+            "byte_count": 845,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+            "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f"
+          },
+          {
+            "byte_count": 854,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+            "sha256": "88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad"
+          },
+          {
+            "byte_count": 858,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+            "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628"
+          },
+          {
+            "byte_count": 855,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+            "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c"
+          },
+          {
+            "byte_count": 860,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+            "sha256": "e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+            "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+            "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd"
+          },
+          {
+            "byte_count": 888,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+            "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+            "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+            "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+            "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d"
+          },
+          {
+            "byte_count": 797,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+            "sha256": "8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d"
+          },
+          {
+            "byte_count": 807,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+            "sha256": "414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a"
+          },
+          {
+            "byte_count": 9780,
+            "path": "manifest.json",
+            "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab"
+          },
+          {
+            "byte_count": 105611,
+            "path": "metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json",
+            "sha256": "3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310"
+          },
+          {
+            "byte_count": 23376,
+            "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+            "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054"
+          },
+          {
+            "byte_count": 23934884,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+            "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+          },
+          {
+            "byte_count": 23436706,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+            "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+          },
+          {
+            "byte_count": 7680041,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+            "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+          },
+          {
+            "byte_count": 21966140,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+            "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+          },
+          {
+            "byte_count": 23765087,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+            "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+          },
+          {
+            "byte_count": 7316301,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+            "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+          },
+          {
+            "byte_count": 185194594,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+            "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+          },
+          {
+            "byte_count": 240803157,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+            "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+          },
+          {
+            "byte_count": 284302149,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+            "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+          },
+          {
+            "byte_count": 358227575,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+            "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+          },
+          {
+            "byte_count": 205885063,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+            "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+          },
+          {
+            "byte_count": 237142509,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+            "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+          },
+          {
+            "byte_count": 12291303,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+            "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+          },
+          {
+            "byte_count": 6857437,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+            "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+          }
+        ],
+        "parent_basis": "server_enforced_parent_commit",
+        "parent_revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "private": false,
+        "revision": "f1c75a0465d8cc22841c498274360753d0aab365",
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37200047657",
+        "schema_id": "global-medicines-atlas.mbs-utilisation-lifecycle-append",
+        "schema_version": 1,
+        "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "status": "anonymously_verified"
+      }
+    },
+    {
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5979643793",
+      "author": "github-actions[bot]",
+      "body_sha256": "a5040cdc29d030d353785b3806c0086dd26f0f6c472b602722d413c871494711",
+      "document": {
+        "addition": {
+          "byte_count": 105611,
+          "path": "metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json",
+          "sha256": "3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310"
+        },
+        "authorization": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        },
+        "baseline": [
+          {
+            "byte_count": 3216,
+            "path": ".gitattributes",
+            "sha256": "94970c50645db84e25f85c8d2618029afb277b0ddba6504303362c5ba213b0fa"
+          },
+          {
+            "byte_count": 852,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+            "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59"
+          },
+          {
+            "byte_count": 845,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+            "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f"
+          },
+          {
+            "byte_count": 854,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+            "sha256": "88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad"
+          },
+          {
+            "byte_count": 858,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+            "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628"
+          },
+          {
+            "byte_count": 855,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+            "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c"
+          },
+          {
+            "byte_count": 860,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+            "sha256": "e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+            "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+            "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd"
+          },
+          {
+            "byte_count": 888,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+            "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+            "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+            "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+            "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d"
+          },
+          {
+            "byte_count": 797,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+            "sha256": "8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d"
+          },
+          {
+            "byte_count": 807,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+            "sha256": "414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a"
+          },
+          {
+            "byte_count": 9780,
+            "path": "manifest.json",
+            "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab"
+          },
+          {
+            "byte_count": 23376,
+            "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+            "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054"
+          },
+          {
+            "byte_count": 23934884,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+            "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+          },
+          {
+            "byte_count": 23436706,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+            "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+          },
+          {
+            "byte_count": 7680041,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+            "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+          },
+          {
+            "byte_count": 21966140,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+            "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+          },
+          {
+            "byte_count": 23765087,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+            "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+          },
+          {
+            "byte_count": 7316301,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+            "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+          },
+          {
+            "byte_count": 185194594,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+            "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+          },
+          {
+            "byte_count": 240803157,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+            "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+          },
+          {
+            "byte_count": 284302149,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+            "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+          },
+          {
+            "byte_count": 358227575,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+            "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+          },
+          {
+            "byte_count": 205885063,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+            "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+          },
+          {
+            "byte_count": 237142509,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+            "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+          },
+          {
+            "byte_count": 12291303,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+            "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+          },
+          {
+            "byte_count": 6857437,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+            "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+          }
+        ],
+        "code_commit": "a8751ed711c9f34bf92547b1a3314c5b8b3b9c56",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "gated": false,
+        "intent_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5979633019",
+        "observed": [
+          {
+            "byte_count": 3216,
+            "path": ".gitattributes",
+            "sha256": "94970c50645db84e25f85c8d2618029afb277b0ddba6504303362c5ba213b0fa"
+          },
+          {
+            "byte_count": 852,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+            "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59"
+          },
+          {
+            "byte_count": 845,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+            "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f"
+          },
+          {
+            "byte_count": 854,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+            "sha256": "88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad"
+          },
+          {
+            "byte_count": 858,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+            "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628"
+          },
+          {
+            "byte_count": 855,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+            "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c"
+          },
+          {
+            "byte_count": 860,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+            "sha256": "e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+            "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+            "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd"
+          },
+          {
+            "byte_count": 888,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+            "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94"
+          },
+          {
+            "byte_count": 885,
+            "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+            "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+            "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39"
+          },
+          {
+            "byte_count": 864,
+            "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+            "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d"
+          },
+          {
+            "byte_count": 797,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+            "sha256": "8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d"
+          },
+          {
+            "byte_count": 807,
+            "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+            "sha256": "414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a"
+          },
+          {
+            "byte_count": 9780,
+            "path": "manifest.json",
+            "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab"
+          },
+          {
+            "byte_count": 105611,
+            "path": "metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json",
+            "sha256": "3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310"
+          },
+          {
+            "byte_count": 23376,
+            "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+            "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054"
+          },
+          {
+            "byte_count": 23934884,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+            "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+          },
+          {
+            "byte_count": 23436706,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+            "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+          },
+          {
+            "byte_count": 7680041,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+            "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+          },
+          {
+            "byte_count": 21966140,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+            "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+          },
+          {
+            "byte_count": 23765087,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+            "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+          },
+          {
+            "byte_count": 7316301,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+            "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+          },
+          {
+            "byte_count": 185194594,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+            "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+          },
+          {
+            "byte_count": 240803157,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+            "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+          },
+          {
+            "byte_count": 284302149,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+            "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+          },
+          {
+            "byte_count": 358227575,
+            "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+            "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+          },
+          {
+            "byte_count": 205885063,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+            "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+          },
+          {
+            "byte_count": 237142509,
+            "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+            "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+          },
+          {
+            "byte_count": 12291303,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+            "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+          },
+          {
+            "byte_count": 6857437,
+            "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+            "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+          }
+        ],
+        "parent_basis": "server_enforced_parent_commit",
+        "parent_revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "private": false,
+        "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5979643575",
+        "revision": "f1c75a0465d8cc22841c498274360753d0aab365",
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37200047657",
+        "schema_id": "global-medicines-atlas.mbs-utilisation-lifecycle-append",
+        "schema_version": 1,
+        "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "status": "cleanup_completed",
+        "temporary_cache_removed": true
+      }
+    }
+  ],
+  "independent_metadata_readback": {
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "revision": "f1c75a0465d8cc22841c498274360753d0aab365",
+    "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/f1c75a0465d8cc22841c498274360753d0aab365/metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json",
+    "sha256": "3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310",
+    "byte_count": 105611,
+    "exact_local_metadata_match": true,
+    "anonymous": true,
+    "source_payload_bytes_read": false
+  },
+  "public_head_readback": {
+    "revision": "f1c75a0465d8cc22841c498274360753d0aab365",
+    "private": false,
+    "gated": false
+  },
+  "counts": {
+    "baseline_objects_preserved": 31,
+    "all_objects_anonymously_verified": 32,
+    "historical_raw_reference_imports": 14,
+    "historical_acquisition_events": 14,
+    "profile_schemas": 1
+  },
+  "current_disposition": {
+    "historical_reference_lifecycle_metadata": "published_and_digest_verified",
+    "temporary_hosted_cache_removed": true,
+    "processing_admitted": false,
+    "complete_native_source_receipt_storage_lifecycle": false,
+    "v4_admission": false,
+    "consumer_canaries": false,
+    "m112_federation_accepted": false
+  },
+  "boundaries": {
+    "workstation_source_payload_bytes_read": false,
+    "workstation_source_payload_values_read": false,
+    "new_source_acquisition_performed": false,
+    "native_source_receipts_created": false,
+    "native_storage_receipts_created": false,
+    "payload_values_validated": false,
+    "processing_admission_performed": false,
+    "v4_admission_performed": false,
+    "m112_federation_accepted": false
+  },
+  "verification": {
+    "focused_tests": "85 passed",
+    "routine": "passed",
+    "strict": "0 errors; 4 existing Hugging Face source warnings",
+    "local_full": "5658 passed, 2 existing uv 0.11.29 reproducibility failures, 1 optional pyiceberg skip; coverage 96.73%",
+    "protected_ci": "all required checks passed for PR #770"
+  },
+  "remaining_gates": [
+    "payload validation and processing admission evidence",
+    "per-object v4 review and admission",
+    "consumer canaries"
+  ]
+}

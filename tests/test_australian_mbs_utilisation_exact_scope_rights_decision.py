@@ -746,3 +746,64 @@ def test_lifecycle_append_contract_pins_exact_bundle_and_controls() -> None:
     )
     assert not any(contract["completion_claims"].values())
     assert not any(bundle["boundaries"].values())
+
+
+def test_lifecycle_publication_has_complete_preserving_hosted_proof() -> None:
+    receipt = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-lifecycle-publication-receipt-20261004.json"
+    )
+    contract = _read(receipt["contract"]["path"])
+    assert (
+        hashlib.sha256(
+            (ROOT / receipt["contract"]["path"]).read_bytes()
+        ).hexdigest()
+        == receipt["contract"]["sha256"]
+    )
+    assert receipt["workflow_conclusion"] == "success"
+    events = receipt["hosted_receipts"]
+    assert [event["document"]["status"] for event in events] == [
+        "intent",
+        "cas_acknowledged",
+        "anonymously_verified",
+        "cleanup_completed",
+    ]
+    for event in events:
+        assert event["author"] == "github-actions[bot]"
+        canonical = json.dumps(
+            event["document"], sort_keys=True, separators=(",", ":")
+        )
+        assert (
+            hashlib.sha256(canonical.encode()).hexdigest()
+            == event["body_sha256"]
+        )
+        assert event["document"]["code_commit"] == receipt["code_commit"]
+        assert event["document"]["run_url"] == receipt["workflow_run"]
+        assert event["document"]["authorization"] == contract["rights_decision"]
+        assert (
+            event["document"]["parent_revision"]
+            == contract["expected_parent_revision"]
+        )
+    verified = events[2]["document"]
+    assert verified["revision"] == receipt["publication_revision"]
+    before = {row["path"]: row for row in verified["baseline"]}
+    after = {row["path"]: row for row in verified["observed"]}
+    assert len(before) == 31
+    assert len(after) == 32
+    assert all(after[path] == row for path, row in before.items())
+    assert set(after) - set(before) == {contract["addition"]["path"]}
+    assert after[contract["addition"]["path"]] == {
+        key: contract["addition"][key]
+        for key in ("path", "sha256", "byte_count")
+    }
+    assert events[3]["document"]["temporary_cache_removed"] is True
+    assert events[3]["document"]["receipt_url"] == events[2]["url"]
+    assert (
+        receipt["independent_metadata_readback"]["exact_local_metadata_match"]
+        is True
+    )
+    assert (
+        receipt["independent_metadata_readback"]["sha256"]
+        == contract["addition"]["sha256"]
+    )
+    assert not any(receipt["boundaries"].values())
