@@ -558,3 +558,60 @@ def test_historical_event_import_preserves_receipt_evidence() -> None:
         assert event.retrieval.http.acquisition_agent_version is None
     assert len({row["acquisition_id"] for row in imported["records"]}) == 14
     assert not any(imported["boundaries"].values())
+
+
+def test_lifecycle_reconciliation_does_not_invent_native_records() -> None:
+    audit = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-lifecycle-reconciliation-20261004.json"
+    )
+    imported = _read(audit["inputs"]["event_import"]["path"])
+    for binding in audit["inputs"].values():
+        assert (
+            hashlib.sha256((ROOT / binding["path"]).read_bytes()).hexdigest()
+            == (binding["sha256"])
+        )
+    tree = _read(audit["inputs"]["public_tree"]["path"])
+    assert tree["pagination_complete"] is True
+    assert tree["revision"] == "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf"
+    hosted = _read(audit["inputs"]["hosted_verification"]["path"])
+    verified = next(
+        row["document"]
+        for row in hosted["hosted_receipts"]
+        if row["document"]["status"] == "anonymously_verified"
+    )
+    assert verified["revision"] == tree["revision"]
+    digests = {row["path"]: row for row in verified["observed"]}
+    files = {row["path"]: row for row in tree["files"]}
+    assert len(files) == 31
+    assert len(audit["records"]) == len(imported["records"]) == 14
+    for row, event in zip(audit["records"], imported["records"], strict=True):
+        assert row["acquisition_id"] == event["acquisition_id"]
+        assert row["event_path"] == event["event_path"]
+        assert row["raw_reference"] == event["b2_raw_reference"]
+        assert (
+            files[row["raw_reference"]["path"]]["size"]
+            == (row["raw_reference"]["byte_count"])
+        )
+        observed = digests[row["raw_reference"]["path"]]
+        assert observed["sha256"] == row["raw_reference"]["sha256"]
+        assert observed["byte_count"] == row["raw_reference"]["byte_count"]
+        lfs = files[row["raw_reference"]["path"]].get("lfs")
+        if lfs is not None:
+            assert lfs["oid"] == row["raw_reference"]["sha256"]
+        assert row["source_receipt"] is None
+        assert row["payload_storage_receipt"] is None
+        assert row["admission_history"] is None
+        assert row["source_receipt_gaps"] == [
+            "native_source_catalog_identity",
+            "pinned_transformation_and_output_evidence",
+        ]
+        assert row["durable_storage_gaps"] == [
+            "geographic_primary_and_independent_replica_identity",
+            "replica_version_and_checksum_receipts",
+            "rpo_rto_and_inventory_restore_cadences",
+        ]
+    assert audit["counts"]["immutable_raw_references_reconciled"] == 14
+    assert audit["counts"]["native_source_receipts_selected"] == 0
+    assert audit["counts"]["native_storage_receipts_selected"] == 0
+    assert not any(audit["boundaries"].values())
