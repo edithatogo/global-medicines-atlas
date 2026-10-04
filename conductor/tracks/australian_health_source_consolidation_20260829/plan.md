@@ -596,3 +596,37 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [ ] Revisit only after a separate explicit authorization for the public
   notice change. This documentation decision does not change Australian
   federation acceptance or Stable v1 gates.
+
+## M-112 post-denominator evidence reconciliation (2026-10-04)
+
+- [x] Reconcile all 1,759 paths in the maintainer-approved qualification
+  denominator between active and future-source ledgers. The denominator remains
+  unchanged; all 1,719 previously deferred and 40 newly deferred candidates
+  are explicitly registered. This is classification, not admission or rights
+  evidence. See
+  `quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json`.
+- [x] Crosswalk the hosted August 2026 MBS raw receipt and its two exact
+  producer archive aliases to the current B1/B2 lifecycle, while retaining the
+  missing durable landed predecessor, unreviewed reviewer state, absent root
+  manifest membership, and unreconciled source-Parquet lineage as blockers.
+  PR #751 merged as `d75c905d`; PR #750 separately reconciled the hosted
+  lifecycle to Bronze. See
+  `quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json`.
+- [x] Restore the anonymous pinned-revision July 2025 v4 source-receipt,
+  manifest, and qualification metadata using source-native remote paths and
+  separate local restore paths. Exact receipt and manifest hashes agree; the
+  upstream qualification remains `candidate_only` with
+  `public_v4_identity_unverified`. No source payload bytes were read and no
+  admission or rights decision was made. PR #752 merged as
+  `077cc68de7f5a20e43d3e9224ece80aef5800391` after all required hosted checks
+  passed.
+- [x] Refresh the current-state reconciliation to incorporate the approved
+  denominator, anonymous tree-presence readback, public registry state, and
+  the MBS event and archive joins. See
+  `quality/qualifications/australian-m112-current-state-reconciliation-20261004.json`.
+- [~] Keep M-112 federation acceptance blocked. Remaining gates are
+  source-specific rights for historical PBS and reimbursement-atlas PBS
+  records; per-object rights, receipts, B1/B2 lineage, and projection lineage;
+  outstanding anonymous object-digest verification; and exact v4 admission
+  plus consumer canaries. The 20 utilization-publication digest joins are
+  publication receipts only and do not establish source rights or admission.
