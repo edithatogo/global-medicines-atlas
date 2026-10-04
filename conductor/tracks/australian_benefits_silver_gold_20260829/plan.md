@@ -1887,6 +1887,17 @@
   structural evidence; two oversized ZIP holds remain, with zero admissions.
   See `quality/qualifications/australian-mbs-workbook-streaming-receipt-20261005.json`.
 
-- [ ] Define source-specific utilisation semantic validation and admission
+- [x] Define source-specific utilisation semantic validation and admission
   requirements from approved source documentation and native evidence; keep
   the two oversized ZIP holds and wider M-112 gates separate.
+
+  The metadata-only requirements receipt joins all 14 exact objects to
+  current official resource documentation and records four schema queries
+  with zero returned data rows. It preserves signed service adjustments,
+  source-specific cut-offs and catalogue schema eras without selecting native
+  payload mappings or granting admission. See
+  `quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json`.
+
+- [ ] Implement protected hosted native-header inventory for the four already
+  structurally verified standalone CSVs. Bind exact source identities and
+  record header metadata only before selecting any semantic conversion.

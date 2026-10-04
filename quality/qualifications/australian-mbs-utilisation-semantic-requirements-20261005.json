@@ -1,0 +1,861 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-semantic-requirements",
+  "schema_version": 1,
+  "recorded_at": "2026-10-04T23:29:19.405509+00:00",
+  "status": "requirements_defined_semantic_run_pending",
+  "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+  "inputs": {
+    "crosswalk": {
+      "path": "quality/qualifications/australian-mbs-utilisation-acquisition-crosswalk-20261004.json",
+      "sha256": "65ff382800751c3477b51d3c3fe8e2b330852ac5d7231d28d9c3bd36856d0f51"
+    },
+    "rights_decision": {
+      "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+      "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+    },
+    "preflight": {
+      "path": "quality/qualifications/australian-mbs-utilisation-validation-preflight-20261004.json",
+      "sha256": "c7fa8c0ee0d9991fff6ea70ca4058a79b5af46c0675a493dc0bedbd611f7edbb"
+    },
+    "original_structural_receipt": {
+      "path": "quality/qualifications/australian-mbs-utilisation-payload-validation-receipt-20261004.json",
+      "sha256": "f622434530f3d184a5aea6684e67dc7f874424c2ada634b2f154490a39c6f457"
+    },
+    "streaming_structural_receipt": {
+      "path": "quality/qualifications/australian-mbs-workbook-streaming-receipt-20261005.json",
+      "sha256": "36ace4daa402f3d81a73a9e303a7a90be6234a81c2456071c623976bb7fe676d"
+    }
+  },
+  "catalogue_metadata_snapshots": [
+    {
+      "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+      "observed_at": "2026-10-04T23:24:52.751017+00:00",
+      "selection": "Only catalogue metadata for resources joined to the approved immutable cohort; no download links followed.",
+      "document": {
+        "id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+        "title": "Medicare Benefits Schedule (MBS) - Items by Patient Demographics Report",
+        "metadata_created": "2015-08-11T05:31:48.736672",
+        "metadata_modified": "2023-08-09T23:46:09.504230"
+      },
+      "resources": [
+        {
+          "id": "be3ff4f8-f443-4ed1-bfef-7dd6617ee4c8",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "MBS Patient Demographics 2016 Qtr 3 (July)",
+          "format": "XLSX",
+          "description": "Data is updated monthly \r\n\r\n\r\n*  Quarter 3 contains data for the period 1 July to 31 July 2016.\r\n\r\n\r\n\r\n*  The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.\r\n\r\n\r\n\r\n*  State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.\r\n\r\n\r\n\r\n*  Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.\r\n\r\n\r\n\r\n*  The figures are made up of total services claimed minus later day adjustments. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative. \r\n\r\n\r\n*  Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.\r\n\r\n\r\n\r\n*  If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations.\r\n\r\n",
+          "created": "2016-08-29T15:54:33.101002",
+          "last_modified": "2016-08-29T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.516153"
+        },
+        {
+          "id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "MBS Patient Demographics 2016 Qtr 3 (July)",
+          "format": "CSV",
+          "description": "Data is updated monthly \r\n\r\n\r\n\r\n\u2022Quarter 3 contains data from 1 July 2016 to 31 July 2016  \r\n\r\n\r\n\u2022The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.\r\n\r\n\r\n\r\n\u2022State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.\r\n\r\n\r\n\r\n\u2022Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.\r\n\r\n\r\n\r\n\u2022The figures are made up of total services claimed minus later day adjustments. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative. \r\n\r\n\r\n\u2022Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.\r\n\r\n\r\n\r\n\u2022If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations. \r\n\r\n",
+          "created": "2016-08-29T15:58:50.975898",
+          "last_modified": "2016-08-29T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.516296"
+        },
+        {
+          "id": "58f69c3c-1c1e-4a6e-9176-54bfec1b9e2b",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "MBS Patient Demographics 2016 Qtr 2 ",
+          "format": "XLSX",
+          "description": "Data is updated monthly \r\n\r\n\r\n*  Quarter 2 contains data for the period 1 April to 30 June 2016.\r\n\r\n\r\n\r\n*  The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.\r\n\r\n\r\n\r\n*  State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.\r\n\r\n\r\n\r\n*  Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.\r\n\r\n\r\n\r\n*  The figures are made up of total services claimed minus later day adjustments. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative. \r\n\r\n\r\n*  Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.\r\n\r\n\r\n\r\n*  If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations.\r\n\r\n",
+          "created": "2016-05-26T12:27:43.354127",
+          "last_modified": "2016-07-26T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.516395"
+        },
+        {
+          "id": "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "MBS Patient Demographics 2016 Qtr 2",
+          "format": "CSV",
+          "description": "Data is updated monthly \r\n\r\n\r\n\r\n\u2022Quarter 2 contains data **current to 31 May 2016.** \r\n\r\n\r\n\u2022The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.\r\n\r\n\r\n\r\n\u2022State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.\r\n\r\n\r\n\r\n\u2022Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.\r\n\r\n\r\n\r\n\u2022The figures are made up of total services claimed minus later day adjustments. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative. \r\n\r\n\r\n\u2022Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.\r\n\r\n\r\n\r\n\u2022If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations. \r\n\r\n",
+          "created": "2016-05-26T12:33:19.935235",
+          "last_modified": "2016-06-24T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.516485"
+        },
+        {
+          "id": "e4016a05-a674-49d2-bdc4-052ccdb7b257",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "MBS Patient Demographics 2016 Qtr 1 ",
+          "format": "excel (.xlsx)",
+          "description": "*   Data is updated monthly \r\n  \r\n*   Quarter 1 contains data for the period 1 January to  31 March 2016 . \r\n  \r\n*   The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*   State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.  \r\n  \r\n*   Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n\r\n*   The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.\r\n  \r\n*   Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.  \r\n  \r\n*   If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations. \r\n\r\n",
+          "created": "2015-08-27T05:30:25.707456",
+          "last_modified": "2016-04-28T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.516573"
+        },
+        {
+          "id": "ff6d0692-4c6f-466b-9d93-015224d80b14",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "MBS Patient Demographics 2016 Qtr 1 ",
+          "format": "CSV",
+          "description": "*   Data is updated monthly   \r\n   \r\n*   Quarter 1 contains data current for the period 1 January to 31 March 2016.\r\n\r\n  \r\n*   The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*   State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.  \r\n  \r\n*   Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n\r\n*   The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.\r\n  \r\n*   Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.  \r\n  \r\n*   If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations. \r\n\r\n",
+          "created": "2015-12-18T11:50:15.498787",
+          "last_modified": "2016-04-28T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.516661"
+        },
+        {
+          "id": "827346ed-9926-47ff-a95e-3f84875f42fb",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "XLSX 2008-2012 MBS Patient Demographics Historical",
+          "format": "ZIP",
+          "description": "All Data from January 2008 - December 2012  \r\n  \r\nXLSX spreadsheets containing all data for the respective quarter.  \r\n  \r\n*  The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*  State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.  \r\n  \r\n*  Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n  \r\n*  The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.  \r\n  \r\n*  Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.  \r\n  \r\n*  If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations \r\n\r\n",
+          "created": "2015-08-14T04:27:06.670578",
+          "last_modified": "2015-08-14T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.516834"
+        },
+        {
+          "id": "82c47db1-c175-4648-aafe-28cab7b0dba6",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "XLSX 2003-2007 MBS Patient Demographics Historical",
+          "format": "ZIP",
+          "description": "All Data from January 2003 - December 2007  \r\n  \r\nXLSX Spreadsheets containing all data for the respective quarter.  \r\n  \r\n*  The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*  State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.  \r\n  \r\n*  Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n  \r\n*  The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.  \r\n  \r\n*  Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.  \r\n  \r\n*  If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations ",
+          "created": "2015-08-14T04:02:45.121533",
+          "last_modified": "2015-08-14T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.516919"
+        },
+        {
+          "id": "46704d3a-7bc1-42d6-bed1-29f9419298e0",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "XLSX 1998-2002 MBS Patient Demographics Historical",
+          "format": "ZIP",
+          "description": "All Data from January 1998 - December 2002\r\n\r\nXLSX spreadsheets containing all data for the respective quarter.\r\n\r\n*  The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*  State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered. \r\n  \r\n*  Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n  \r\n*   The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.  \r\n  \r\n*  Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc. \r\n  \r\n*  If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations \r\n",
+          "created": "2015-08-14T03:39:58.054030",
+          "last_modified": "2015-08-14T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.517005"
+        },
+        {
+          "id": "28af2898-358a-445d-9539-4048992c5195",
+          "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+          "name": "XLSX 1993-1997 MBS Patient Demographics Historical",
+          "format": "ZIP",
+          "description": "All Data from July 1993 - December 1997  \r\n  \r\nXLSX spreadsheets containing all data for the respective quarter.  \r\n  \r\n*  The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*  State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.  \r\n  \r\n*  Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n  \r\n*   The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.  \r\n  \r\n*  Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.  \r\n  \r\n*  If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations \r\n\r\n",
+          "created": "2015-08-14T03:22:34.424999",
+          "last_modified": "2015-08-14T00:00:00",
+          "metadata_modified": "2023-08-09T23:46:09.517089"
+        }
+      ]
+    },
+    {
+      "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc",
+      "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+      "observed_at": "2026-10-04T23:24:52.902185+00:00",
+      "selection": "Only catalogue metadata for resources joined to the approved immutable cohort; no download links followed.",
+      "document": {
+        "id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+        "title": "Medicare Benefits Schedule (MBS) - Group Statistics Report",
+        "metadata_created": "2015-08-10T22:40:30.498964",
+        "metadata_modified": "2023-08-09T23:44:56.546505"
+      },
+      "resources": [
+        {
+          "id": "07b46b92-9cc3-4dda-8a0b-ab86f77f5419",
+          "package_id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+          "name": "MBS Group Statistics Report - 2016 (YTD) excel",
+          "format": "excel (.xlsx)",
+          "description": "**   Note:   ** This table is updated monthly and provides a **year to date summary to 31 July 2016**.  \r\n  \r\n*   The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*   State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.   \r\n  \r\n*   Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n   \r\n*   The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.  \r\n  \r\n*   Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.  \r\n  \r\n*   If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations. \r\n",
+          "created": "2015-08-11T02:18:17.468175",
+          "last_modified": "2016-08-29T00:00:00",
+          "metadata_modified": "2023-08-09T23:44:56.565083"
+        },
+        {
+          "id": "663a7fac-114c-47b5-9017-a9dbb9073260",
+          "package_id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+          "name": "MBS Group Statistics Report - 2016 (YTD) csv",
+          "format": "CSV",
+          "description": "**Note:**  This table is updated monthly and provides **a year to date summary to 31 July 2016. **  \r\n  \r\n*   The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*   State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.  \r\n  \r\n*   Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n  \r\n*   The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.  \r\n  \r\n*   Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.  \r\n  \r\n*   If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations.  \r\n  \r\n",
+          "created": "2015-08-13T23:44:42.414179",
+          "last_modified": "2016-08-29T00:00:00",
+          "metadata_modified": "2023-08-09T23:44:56.565206"
+        },
+        {
+          "id": "fd2eb456-4905-4326-b2f8-b834946008c1",
+          "package_id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+          "name": " MBS Group Statistics Report -historical excel 1993-2015",
+          "format": "ZIP",
+          "description": "*   This file contains historical data for the period 1993-2015.  \r\n  \r\n*   The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*   State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.  \r\n  \r\n*   Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n  \r\n*   The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.  \r\n  \r\n*   Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.  \r\n  \r\n*   If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations.\r\n",
+          "created": "2015-08-13T22:50:09.800653",
+          "last_modified": "2016-03-01T00:00:00",
+          "metadata_modified": "2023-08-09T23:44:56.565301"
+        },
+        {
+          "id": "5ef51b77-7b55-4df4-8740-4a19fcc861e1",
+          "package_id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+          "name": "MBS Group Statistics Report - historical csv 1993-2015",
+          "format": "ZIP",
+          "description": "*   This file contains historical data for the period 1993-2015.  \r\n  \r\n*   The metadata for these files is contained within the zip file.  \r\n  \r\n*   The figures in the report include only those services that are performed by a registered provider, for services that qualify for Medicare Benefit and for which a claim has been processed by Medicare Australia. They do not include services provided by hospital doctors to public patients in public hospitals or services that qualify for a benefit under the Department of Veterans' Affairs National Treatment Account.  \r\n  \r\n*   State/Territory is determined according to the address (at the time of claiming) of the patient to whom the service was rendered.  \r\n  \r\n*   Month is determined by the date the service was processed by Medicare Australia, not the date the service was provided.  \r\n  \r\n*   The figures are made up of **total services claimed** minus **later day adjustments**. A later day adjustment is a reversal of a previously claimed service and can occur for a number of reasons. In some months the number of later day adjustments exceeds new claims for an item. In these circumstances, the total figure for the month will be negative.  \r\n  \r\n*   Monthly figures may vary due to the varying number of processing days in a month, which depends on the number of days in the month, public holidays, overtime worked etc.   \r\n  \r\n*   If you require statistics at a more detailed level, please contact statistics@humanservices.gov.au detailing your request. Medicare Australia charges on a cost recovery basis for providing more detailed statistics and their provision is subject to privacy considerations.\r\n",
+          "created": "2015-08-11T04:55:59.652741",
+          "last_modified": "2016-03-01T00:00:00",
+          "metadata_modified": "2023-08-09T23:44:56.565389"
+        }
+      ]
+    }
+  ],
+  "csv_schema_metadata_snapshots": [
+    {
+      "resource_id": "ff6d0692-4c6f-466b-9d93-015224d80b14",
+      "url": "https://data.gov.au/data/api/3/action/datastore_search?resource_id=ff6d0692-4c6f-466b-9d93-015224d80b14&limit=0",
+      "response_sha256": "f2ca77ed39c9627e6fe64bdbe4f46ad958c3010c1337285c8b546f7105545345",
+      "observed_at": "2026-10-04T23:25:56.020870+00:00",
+      "fields": [
+        {
+          "id": "_id",
+          "type": "int"
+        },
+        {
+          "id": "Year",
+          "type": "numeric"
+        },
+        {
+          "id": "MonthofProcessing",
+          "type": "text"
+        },
+        {
+          "id": "ItemNumber",
+          "type": "numeric"
+        },
+        {
+          "id": "State",
+          "type": "text"
+        },
+        {
+          "id": "AgeRange",
+          "type": "text"
+        },
+        {
+          "id": "Gender",
+          "type": "text"
+        },
+        {
+          "id": "Services",
+          "type": "numeric"
+        },
+        {
+          "id": "Benefit",
+          "type": "numeric"
+        }
+      ],
+      "catalogue_total": 545070,
+      "records": [],
+      "archived_header_verified": false,
+      "catalogue_types_are_coercion_rules": false,
+      "ckan_id_assumed_source_native": false
+    },
+    {
+      "resource_id": "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+      "url": "https://data.gov.au/data/api/3/action/datastore_search?resource_id=c3e6f879-be6c-41b9-9cf1-c74feb928b83&limit=0",
+      "response_sha256": "114696484ed8b8573bb461bc4cd4c32e76d3c7c892c15b2c0197c8ba5cbb5b27",
+      "observed_at": "2026-10-04T23:25:56.255068+00:00",
+      "fields": [
+        {
+          "id": "_id",
+          "type": "int"
+        },
+        {
+          "id": "Year",
+          "type": "numeric"
+        },
+        {
+          "id": "MonthofProcessing",
+          "type": "text"
+        },
+        {
+          "id": "ItemNumber",
+          "type": "numeric"
+        },
+        {
+          "id": "State",
+          "type": "text"
+        },
+        {
+          "id": "AgeRange",
+          "type": "text"
+        },
+        {
+          "id": "Gender",
+          "type": "text"
+        },
+        {
+          "id": "Services",
+          "type": "numeric"
+        },
+        {
+          "id": "Benefit",
+          "type": "numeric"
+        }
+      ],
+      "catalogue_total": 567335,
+      "records": [],
+      "archived_header_verified": false,
+      "catalogue_types_are_coercion_rules": false,
+      "ckan_id_assumed_source_native": false
+    },
+    {
+      "resource_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "url": "https://data.gov.au/data/api/3/action/datastore_search?resource_id=492b39de-8c97-4bbf-880e-e97d933daa9c&limit=0",
+      "response_sha256": "585eb705971319571017d2ae0214cda6b4a91892717f987d5e54560015b45b25",
+      "observed_at": "2026-10-04T23:25:57.233656+00:00",
+      "fields": [
+        {
+          "id": "_id",
+          "type": "int"
+        },
+        {
+          "id": "Year",
+          "type": "text"
+        },
+        {
+          "id": "Month of Processing",
+          "type": "text"
+        },
+        {
+          "id": "Item Number",
+          "type": "text"
+        },
+        {
+          "id": "State",
+          "type": "text"
+        },
+        {
+          "id": "Age Range",
+          "type": "text"
+        },
+        {
+          "id": "Gender",
+          "type": "text"
+        },
+        {
+          "id": "Services",
+          "type": "text"
+        },
+        {
+          "id": "Benefit",
+          "type": "text"
+        }
+      ],
+      "catalogue_total": 186082,
+      "records": [],
+      "archived_header_verified": false,
+      "catalogue_types_are_coercion_rules": false,
+      "ckan_id_assumed_source_native": false
+    },
+    {
+      "resource_id": "663a7fac-114c-47b5-9017-a9dbb9073260",
+      "url": "https://data.gov.au/data/api/3/action/datastore_search?resource_id=663a7fac-114c-47b5-9017-a9dbb9073260&limit=0",
+      "response_sha256": "e42025ac5d0b694c7473ade9f29f0957c04ab062d1c87d2c4d4504bd34aac04d",
+      "observed_at": "2026-10-04T23:25:58.089394+00:00",
+      "fields": [
+        {
+          "id": "_id",
+          "type": "int"
+        },
+        {
+          "id": "Year",
+          "type": "text"
+        },
+        {
+          "id": "Month of Processing",
+          "type": "text"
+        },
+        {
+          "id": "Group",
+          "type": "text"
+        },
+        {
+          "id": "Sub-Group",
+          "type": "text"
+        },
+        {
+          "id": "Item Number",
+          "type": "text"
+        },
+        {
+          "id": "State",
+          "type": "text"
+        },
+        {
+          "id": "Services",
+          "type": "text"
+        },
+        {
+          "id": "Benefit",
+          "type": "text"
+        }
+      ],
+      "catalogue_total": 164543,
+      "records": [],
+      "archived_header_verified": false,
+      "catalogue_types_are_coercion_rules": false,
+      "ckan_id_assumed_source_native": false
+    }
+  ],
+  "records": [
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+        "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "byte_count": 23934884,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "ff6d0692-4c6f-466b-9d93-015224d80b14",
+      "resource_description_sha256": "1401931d5f9bbfa6e128196b02ef19016da67bd52b78ebf03b3fda6002abc676",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980746138",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "exact_csv_native_header_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+        "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "byte_count": 23436706,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+      "resource_description_sha256": "7b494fda71b8df57e332006d9b8388528b8aeb517ad92c741b3420a3e3980de6",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980747006",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "exact_csv_native_header_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+        "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+        "byte_count": 7680041,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "resource_description_sha256": "c8b4114771ad59b2dfc6c2172e94ec4ad3922b739c26d02178efb4355e44d758",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980747592",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "exact_csv_native_header_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "byte_count": 21966140,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "e4016a05-a674-49d2-bdc4-052ccdb7b257",
+      "resource_description_sha256": "eed0d9cc5aa738d31e8611b0a8b3aada21bfd6563936d54aa681a11685828804",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5985495831",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "bounded_worksheet_shared_string_and_cell_shape_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+        "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+        "byte_count": 23765087,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "58f69c3c-1c1e-4a6e-9176-54bfec1b9e2b",
+      "resource_description_sha256": "cb6236169a1dbb955abd891717a91e253cfc0a7a187184cda1014fb5f1ef3c49",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5985497499",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "bounded_worksheet_shared_string_and_cell_shape_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+        "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "byte_count": 7316301,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "be3ff4f8-f443-4ed1-bfef-7dd6617ee4c8",
+      "resource_description_sha256": "50653abd7db8c9209dc828a66f679df22bf7bfbe8f276fd15e60e00ef874340b",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980749852",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "bounded_worksheet_shared_string_and_cell_shape_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+        "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+        "byte_count": 185194594,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "28af2898-358a-445d-9539-4048992c5195",
+      "resource_description_sha256": "4947fd5931a68942365f303e592c8f6bdeed7a046898e6ddd5c71ececb880072",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980751578",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "archive_member_metadata_and_schema_era_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+        "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+        "byte_count": 240803157,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "46704d3a-7bc1-42d6-bed1-29f9419298e0",
+      "resource_description_sha256": "c0fba92ba97cdc6d5d175cb9fea8f11ab228357a83605eef6550385a8b95f09a",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980753031",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "archive_member_metadata_and_schema_era_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+        "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+        "byte_count": 284302149,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "82c47db1-c175-4648-aafe-28cab7b0dba6",
+      "resource_description_sha256": "4bf54540b2e66a2691e05bdff36e03407c6b68e0c5a05b4ddb02944e495d5ea9",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980753212",
+      "structural_state": "resource_hold",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": false,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "resource_hold_no_semantic_dispatch"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+      "source_id": "au-data-gov-mbs-demographics",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+        "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+        "byte_count": 358227575,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690",
+      "package_id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "resource_id": "827346ed-9926-47ff-a95e-3f84875f42fb",
+      "resource_description_sha256": "74c543cd2e0a2a077bcc5e996d8a479eabb221648c4818f5c4053696cb5e0aa2",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980753374",
+      "structural_state": "resource_hold",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": false,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "resource_hold_no_semantic_dispatch"
+    },
+    {
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "source_id": "au-data-gov-mbs-group",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "byte_count": 205885063,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638",
+      "package_id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+      "resource_id": "5ef51b77-7b55-4df4-8740-4a19fcc861e1",
+      "resource_description_sha256": "a47956b146d1d275e97cd0c236b9be4fdcdac6fdce34379831e917b3298e604a",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980755409",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "archive_member_metadata_and_schema_era_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+      "source_id": "au-data-gov-mbs-group",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+        "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+        "byte_count": 237142509,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "b12cc1fd8ebca1dadf2c197dcd3ca086b63fcbd9b58ac2d2e9090b94217e5090",
+      "package_id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+      "resource_id": "fd2eb456-4905-4326-b2f8-b834946008c1",
+      "resource_description_sha256": "aa1aee00c5c22464fc07ad7f12063a471b3457bf3c7cc880f1ae5561f216de4b",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980757418",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "archive_member_metadata_and_schema_era_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "source_id": "au-data-gov-mbs-group",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+        "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "byte_count": 12291303,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967",
+      "package_id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+      "resource_id": "663a7fac-114c-47b5-9017-a9dbb9073260",
+      "resource_description_sha256": "040bc3649754be306a5b76f3d342e040fc2bdad5fbde477e0845e9368302e37f",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980758295",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "exact_csv_native_header_inventory"
+    },
+    {
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "source_id": "au-data-gov-mbs-group",
+      "raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+        "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+        "byte_count": 6857437,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "acquisition_id": "7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b",
+      "package_id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+      "resource_id": "07b46b92-9cc3-4dda-8a0b-ab86f77f5419",
+      "resource_description_sha256": "73cab54900f957ff6cc49a1390cd7cfacd8e3a6c928056ea00df3531307e4ab3",
+      "structural_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5980758961",
+      "structural_state": "structure_verified",
+      "semantic_state": "not_run",
+      "processing_admitted": false,
+      "hosted_inventory_candidate": true,
+      "native_table_schema_selected": false,
+      "payload_period_verified": false,
+      "next_validation": "bounded_worksheet_shared_string_and_cell_shape_inventory"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "identity_and_scope",
+      "requirement": "Bind every semantic result to an approved raw digest, receipt, acquisition ID, exact source era and source-specific rights decision.",
+      "boundary": "No additional source, revision or publication authority is implied.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "native_schema_and_grain",
+      "requirement": "Inventory exact CSV headers, XLSX table regions and archive-member metadata before choosing native schema mappings and row grain.",
+      "boundary": "CKAN field names/types are candidate hints; exclude no native field without hosted evidence and do not treat CKAN _id as producer identity.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "lossless_values_and_missingness",
+      "requirement": "Retain native coordinates, tokens, presence, formulas and markers; distinguish absent, empty, zero, suppressed and unknown values.",
+      "boundary": "Unknown historical suppression conventions stay unqualified; never fill suppressed/missing data with zero.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "signed_numeric_measures",
+      "requirement": "Select exact numeric profiles from native evidence; preserve signed service totals and benefit precision with no floating-point loss.",
+      "boundary": "Negative adjusted service totals are documented and must not fail solely for being negative; do not infer a distinct-patient denominator.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "processing_time",
+      "requirement": "Qualify native Year/processing-month tokens and calendar mapping separately from reporting labels and source clocks.",
+      "boundary": "Catalogue notes identify processing time, not service dates; no publication/effective date inferred from period or retrieval.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "patient_geography_and_demographics",
+      "requirement": "Preserve native state, age range and gender labels and unknown/suppressed states.",
+      "boundary": "Catalogue geography describes patient address at claiming; no provider-location or population-denominator inference.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "period_comparability",
+      "requirement": "Reconcile per-resource documented coverage with native payload/member periods before any comparison.",
+      "boundary": "Q2 CSV is documented through May while XLSX covers April-June; group YTD July does not establish its start date; archive filenames are not coverage proof.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "versioned_item_and_group_identity",
+      "requirement": "Preserve item/group/subgroup identifiers lexically and bind them to their source period and schema era.",
+      "boundary": "Item identifiers may change; no current-schedule mapping, medicine identity or clinical assertion is implied.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "duplicates_and_totals",
+      "requirement": "Define grain from native headers and metadata, report duplicate/overlap findings, and validate only source-supplied totals over compatible periods.",
+      "boundary": "Do not silently deduplicate or force unlike CSV/XLSX cut-offs or demographic groups to reconcile.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "coverage_and_exclusions",
+      "requirement": "Carry documented registered-provider/eligible-processed-service scope and public-patient/DVA exclusions with qualified tables.",
+      "boundary": "No whole-population, current availability, funding entitlement or unique-person claim follows from service statistics.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "native_lifecycle_and_admission",
+      "requirement": "Record semantic outcomes separately, then join real source/storage/lineage evidence and the existing Bronze admission protocol per object.",
+      "boundary": "Historical import references cannot fabricate missing native SourceReceipt/storage controls; no object admitted by this metadata review.",
+      "implementation_status": "not_implemented"
+    },
+    {
+      "id": "durable_hosted_execution",
+      "requirement": "Use main-only protected Actions with bounded workers, public-safe aggregate receipts and independent readback before cleanup.",
+      "boundary": "Only exact eligible objects dispatch; oversized ZIP holds remain independent and infrastructure failures remain inconclusive.",
+      "implementation_status": "not_implemented"
+    }
+  ],
+  "counts": {
+    "exact_objects": 14,
+    "source_packages": 2,
+    "current_resource_metadata_joins": 14,
+    "csv_schema_metadata_queries": 4,
+    "source_records_returned": 0,
+    "preserved_structural_passes": 12,
+    "preserved_zip_resource_holds": 2,
+    "semantic_validations_run": 0,
+    "processing_admissions": 0
+  },
+  "boundaries": {
+    "source_payload_bytes_acquired_locally": false,
+    "source_cell_values_inspected": false,
+    "licensing_decision_changed": false,
+    "archive_limits_changed": false,
+    "current_metadata_assumed_historical_payload_truth": false,
+    "processing_admitted": false,
+    "semantic_validation_complete": false,
+    "external_dataset_publication_performed": false,
+    "m112_accepted": false,
+    "m112_denominator": 1759
+  },
+  "next_step": "Implement a protected, exact-reference header inventory for the four previously structurally verified standalone CSV objects. Emit native header metadata and counts, never data records; select no historical ZIP or workbook in that first step."
+}
