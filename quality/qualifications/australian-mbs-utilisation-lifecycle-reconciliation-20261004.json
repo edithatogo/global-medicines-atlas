@@ -19,6 +19,10 @@
     "storage_contract": {
       "path": "src/global_medicines_atlas/bronze_storage.py",
       "sha256": "225c19616b4b7322e39c66c4de6e54818b8ff4a4a86e5df61ef4d1d00dc3ada3"
+    },
+    "hosted_verification": {
+      "path": "quality/qualifications/australian-mbs-utilisation-rights-publication-receipt-20261004.json",
+      "sha256": "b321f3cdee645e8d80a825201aff6242847cbcbdad7100474ba762816874e426"
     }
   },
   "counts": {

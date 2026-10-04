@@ -574,6 +574,14 @@ def test_lifecycle_reconciliation_does_not_invent_native_records() -> None:
     tree = _read(audit["inputs"]["public_tree"]["path"])
     assert tree["pagination_complete"] is True
     assert tree["revision"] == "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf"
+    hosted = _read(audit["inputs"]["hosted_verification"]["path"])
+    verified = next(
+        row["document"]
+        for row in hosted["hosted_receipts"]
+        if row["document"]["status"] == "anonymously_verified"
+    )
+    assert verified["revision"] == tree["revision"]
+    digests = {row["path"]: row for row in verified["observed"]}
     files = {row["path"]: row for row in tree["files"]}
     assert len(files) == 31
     assert len(audit["records"]) == len(imported["records"]) == 14
@@ -585,6 +593,12 @@ def test_lifecycle_reconciliation_does_not_invent_native_records() -> None:
             files[row["raw_reference"]["path"]]["size"]
             == (row["raw_reference"]["byte_count"])
         )
+        observed = digests[row["raw_reference"]["path"]]
+        assert observed["sha256"] == row["raw_reference"]["sha256"]
+        assert observed["byte_count"] == row["raw_reference"]["byte_count"]
+        lfs = files[row["raw_reference"]["path"]].get("lfs")
+        if lfs is not None:
+            assert lfs["oid"] == row["raw_reference"]["sha256"]
         assert row["source_receipt"] is None
         assert row["payload_storage_receipt"] is None
         assert row["admission_history"] is None
