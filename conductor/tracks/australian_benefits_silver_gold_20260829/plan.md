@@ -1717,3 +1717,11 @@
   projection lineage, exact v4 admission, and consumer canaries remain open.
   See
   `quality/qualifications/australian-m112-unhashed-deferred-candidates-20261004.json`.
+- [~] Correct the MBS B1 chronology without retroactively rewriting the
+  August acquisition: retain pre-publication admission as a candidate only;
+  after the raw archive revision passes anonymous digest verification, append
+  canonical acquisition, B2 external-reference, landed, and superseding
+  accepted records in a second verified metadata commit. Reconcile the exact
+  hosted run into the source receipt and maturity audit. This does not qualify
+  source-record projection lineage, v4 admission, M-112 federation, or Stable
+  v1.
