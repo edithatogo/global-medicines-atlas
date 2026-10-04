@@ -1,0 +1,13 @@
+{
+  "schema_id": "global-medicines-atlas.australian-harvest-receipt",
+  "schema_version": 1,
+  "source_id": "au-data-gov-mbs-group",
+  "category": "mbs_group_statistics",
+  "source_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/fd2eb456-4905-4326-b2f8-b834946008c1/download/mbs-demographics-historical-2013-2015.zip",
+  "archive_path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+  "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+  "byte_count": 237142509,
+  "period_label": "historical_ MBS Group Statistics Report -historical excel 199",
+  "retrieved_at": "2026-09-09T13:56:51Z",
+  "final_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/fd2eb456-4905-4326-b2f8-b834946008c1/download/mbs-demographics-historical-2013-2015.zip"
+}

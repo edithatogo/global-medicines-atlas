@@ -421,3 +421,76 @@ def test_hosted_rights_publication_preserves_all_existing_objects() -> None:
             (ROOT / receipt["supersedes"]["path"]).read_bytes()
         ).hexdigest()
     )
+
+
+def test_acquisition_crosswalk_preserves_all_historical_receipt_identities() -> (
+    None
+):
+    crosswalk = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-acquisition-crosswalk-20261004.json"
+    )
+    for reference in crosswalk["evidence_inputs"]:
+        assert (
+            reference["sha256"]
+            == hashlib.sha256(
+                (ROOT / reference["path"]).read_bytes()
+            ).hexdigest()
+        )
+    publication = _read(crosswalk["evidence_inputs"][0]["path"])
+    rights = _read(publication["payload"]["local_path"])
+    verified = publication["hosted_receipts"][2]["document"]
+    observed = {row["path"]: row for row in verified["observed"]}
+    records = crosswalk["records"]
+    assert len(records) == len({row["path"] for row in records}) == 14
+    assert {row["path"] for row in records} == {
+        row["path"] for row in rights["records"]
+    }
+    assert crosswalk["source_revision"] == publication["source_revision"]
+    assert crosswalk["rights_revision"] == publication["publication_revision"]
+    for row in records:
+        receipt = row["historical_receipt"]
+        raw = (ROOT / receipt["local_path"]).read_bytes()
+        original = json.loads(raw)
+        assert hashlib.sha256(raw).hexdigest() == receipt["sha256"]
+        assert len(raw) == receipt["byte_count"]
+        assert observed[receipt["archive_path"]]["sha256"] == receipt["sha256"]
+        assert original["archive_path"] == row["path"]
+        assert original["sha256"] == row["payload_sha256"]
+        assert original["byte_count"] == row["byte_count"]
+        assert original["source_id"] == row["source_id"]
+        assert original["category"] == row["category"]
+        acquisition = row["historical_acquisition"]
+        assert acquisition["retrieved_at"] == original["retrieved_at"]
+        assert acquisition["original_url"] == original["source_url"]
+        assert acquisition["final_url"] == original["final_url"]
+        assert (
+            acquisition["source_native_period_label"]
+            == original["period_label"]
+        )
+        for key in (
+            "producer_acquisition_id",
+            "source_published_at",
+            "source_effective_at",
+        ):
+            assert acquisition[key] is None
+        raw_reference = row["b2_raw_reference"]
+        assert raw_reference["sha256"] == observed[row["path"]]["sha256"]
+        assert (
+            raw_reference["byte_count"] == observed[row["path"]]["byte_count"]
+        )
+        assert raw_reference["revision"] == crosswalk["source_revision"]
+        assert raw_reference["url"].endswith(
+            f"/{crosswalk['source_revision']}/{row['path']}"
+        )
+        pointer = row["rights_record"]["json_pointer"]
+        selected = rights["records"][int(pointer.split("/")[-1])]
+        assert selected["path"] == row["path"]
+        assert selected["sha256"] == row["payload_sha256"]
+        assert selected["receipt_sha256"] == receipt["sha256"]
+        assert row["rights_record"]["revision"] == crosswalk["rights_revision"]
+        assert row["identity_join_complete"] is True
+        assert row["native_acquisition_event_selected"] is False
+        assert row["native_admission_history_selected"] is False
+        assert row["v4_admission"] is False
+    assert not any(crosswalk["boundaries"].values())

@@ -1,0 +1,754 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-acquisition-crosswalk",
+  "schema_version": 1,
+  "recorded_at": "2026-10-04T09:53:15Z",
+  "status": "historical_receipt_raw_rights_identity_join_complete_lifecycle_pending",
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+  "rights_revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+  "evidence_inputs": [
+    {
+      "path": "quality/qualifications/australian-mbs-utilisation-rights-publication-receipt-20261004.json",
+      "sha256": "b321f3cdee645e8d80a825201aff6242847cbcbdad7100474ba762816874e426"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-utilisation-object-rights-metadata-20261004.json",
+      "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+      "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json",
+      "sha256": "53e7a1659f57f24290dfe08e534131dde59e930ff386655cf0fa047a0dae657b"
+    }
+  ],
+  "counts": {
+    "approved_raw_objects": 14,
+    "historical_receipts_restored": 14,
+    "raw_receipt_rights_identity_joins": 14,
+    "native_acquisition_events_selected": 0,
+    "native_admission_histories_selected": 0
+  },
+  "records": [
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+      "byte_count": 23934884,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json",
+        "sha256": "8030d0700ce2062fe0c45a0429635e3eec794689f037f6cd1438a1951f4b9f59",
+        "byte_count": 852,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:57:28Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/ff6d0692-4c6f-466b-9d93-015224d80b14/download/mbs-demographics-2016-qtr-1-march.csv",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/ff6d0692-4c6f-466b-9d93-015224d80b14/download/mbs-demographics-2016-qtr-1-march.csv",
+        "source_native_period_label": "2016_MBS Patient Demographics 2016 Qtr 1 ",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+        "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "byte_count": 23934884,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/0",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+      "byte_count": 23436706,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json",
+        "sha256": "b284c79f10cd4488c5fbb59b6cc4f25716f085a98b26449e866bf0db4305b92f",
+        "byte_count": 845,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:57:21Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/c3e6f879-be6c-41b9-9cf1-c74feb928b83/download/mbs-demographics-2016-qtr-2-may.csv",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/c3e6f879-be6c-41b9-9cf1-c74feb928b83/download/mbs-demographics-2016-qtr-2-may.csv",
+        "source_native_period_label": "2016_MBS Patient Demographics 2016 Qtr 2",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+        "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "byte_count": 23436706,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/1",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+      "byte_count": 7680041,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json",
+        "sha256": "88f251843cad172739d30ca3e73cac4d4b77cd5708ef168313470271ee0ab6ad",
+        "byte_count": 854,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-27T16:43:26Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/492b39de-8c97-4bbf-880e-e97d933daa9c/download/mbs-demographics-2016-qtr-3-july.csv",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/492b39de-8c97-4bbf-880e-e97d933daa9c/download/mbs-demographics-2016-qtr-3-july.csv",
+        "source_native_period_label": "2016_MBS Patient Demographics 2016 Qtr 3 (July)",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+        "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+        "byte_count": 7680041,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/2",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+      "byte_count": 21966140,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json",
+        "sha256": "964299dbd55b524629da727f56f451a825183f3772f8bc73b1efb1d97c55a628",
+        "byte_count": 858,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:57:24Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/e4016a05-a674-49d2-bdc4-052ccdb7b257/download/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/e4016a05-a674-49d2-bdc4-052ccdb7b257/download/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "source_native_period_label": "2016_MBS Patient Demographics 2016 Qtr 1 ",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "byte_count": 21966140,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/3",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+      "byte_count": 23765087,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json",
+        "sha256": "e6b16613c8e9584e4dd4a3ebb1b7f57114f1fb13a4a6abbfb1c01b5604c0006c",
+        "byte_count": 855,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:57:17Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/58f69c3c-1c1e-4a6e-9176-54bfec1b9e2b/download/mbs-demographics-2016-qtr2-junehr.xlsx",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/58f69c3c-1c1e-4a6e-9176-54bfec1b9e2b/download/mbs-demographics-2016-qtr2-junehr.xlsx",
+        "source_native_period_label": "2016_MBS Patient Demographics 2016 Qtr 2 ",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+        "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+        "byte_count": 23765087,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/4",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+      "byte_count": 7316301,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json",
+        "sha256": "e90964f58380c910d59be1762e8d36a0695aec18ea73106785f728935e142ffd",
+        "byte_count": 860,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-27T16:43:21Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/be3ff4f8-f443-4ed1-bfef-7dd6617ee4c8/download/mbs-demographics-2016-qtr3-julyhr.xlsx",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/be3ff4f8-f443-4ed1-bfef-7dd6617ee4c8/download/mbs-demographics-2016-qtr3-julyhr.xlsx",
+        "source_native_period_label": "2016_MBS Patient Demographics 2016 Qtr 3 (July)",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+        "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "byte_count": 7316301,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/5",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+      "byte_count": 185194594,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json",
+        "sha256": "3fe89ec4d65cda99aa4a918b23bf7c50b6a91c38c671f17a05a17ca99c73db2e",
+        "byte_count": 885,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:58:25Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/28af2898-358a-445d-9539-4048992c5195/download/mbs-demographics-historical-1993-1997.zip",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/28af2898-358a-445d-9539-4048992c5195/download/mbs-demographics-historical-1993-1997.zip",
+        "source_native_period_label": "historical_XLSX 1993-1997 MBS Patient Demographics Historical",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+        "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+        "byte_count": 185194594,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/6",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+      "byte_count": 240803157,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json",
+        "sha256": "685fbbb522ed3252dd87a1508a91de61b1600bc119fcf0b7ccdbb97844b17ddd",
+        "byte_count": 885,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:58:14Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/46704d3a-7bc1-42d6-bed1-29f9419298e0/download/mbs-demographics-historical-1998-2002.zip",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/46704d3a-7bc1-42d6-bed1-29f9419298e0/download/mbs-demographics-historical-1998-2002.zip",
+        "source_native_period_label": "historical_XLSX 1998-2002 MBS Patient Demographics Historical",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+        "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+        "byte_count": 240803157,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/7",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+      "byte_count": 284302149,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json",
+        "sha256": "c6c4b22e2eb7d8c05c65f499cd22a8463e3f78457077fdebf5eaadcd7b6d4c94",
+        "byte_count": 888,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:58:01Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/82c47db1-c175-4648-aafe-28cab7b0dba6/download/mbs-demographics-historical-2003-2007-.zip",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/82c47db1-c175-4648-aafe-28cab7b0dba6/download/mbs-demographics-historical-2003-2007-.zip",
+        "source_native_period_label": "historical_XLSX 2003-2007 MBS Patient Demographics Historical",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+        "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+        "byte_count": 284302149,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/8",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+      "source_id": "au-data-gov-mbs-demographics",
+      "category": "mbs_demographics_statistics",
+      "payload_sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+      "byte_count": 358227575,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-demographics/e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5.json",
+        "archive_path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json",
+        "sha256": "e5997cb6eca4c1176866899e3b28ee869750c31a9405f427f97d8ccb5433b4e5",
+        "byte_count": 885,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:57:45Z",
+        "original_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/827346ed-9926-47ff-a95e-3f84875f42fb/download/mbs-demographics-historical-2008-2012.zip",
+        "final_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/827346ed-9926-47ff-a95e-3f84875f42fb/download/mbs-demographics-historical-2008-2012.zip",
+        "source_native_period_label": "historical_XLSX 2008-2012 MBS Patient Demographics Historical",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+        "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+        "byte_count": 358227575,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/9",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "source_id": "au-data-gov-mbs-group",
+      "category": "mbs_group_statistics",
+      "payload_sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+      "byte_count": 205885063,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-group/4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39.json",
+        "archive_path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json",
+        "sha256": "4eefa03cb054d5b5e211441e7e616ab082dac12d9b87dabeea762dfe57bd5f39",
+        "byte_count": 864,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:57:03Z",
+        "original_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/5ef51b77-7b55-4df4-8740-4a19fcc861e1/download/mbs-demographics-historical-1993-2015.zip",
+        "final_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/5ef51b77-7b55-4df4-8740-4a19fcc861e1/download/mbs-demographics-historical-1993-2015.zip",
+        "source_native_period_label": "historical_MBS Group Statistics Report - historical csv 1993-",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "byte_count": 205885063,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/10",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+      "source_id": "au-data-gov-mbs-group",
+      "category": "mbs_group_statistics",
+      "payload_sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+      "byte_count": 237142509,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-group/5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d.json",
+        "archive_path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json",
+        "sha256": "5996ad9fc9490f9f51c21e6c5ae0a07bda3c57b1f67d67060095bef158c7c74d",
+        "byte_count": 864,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-09T13:56:51Z",
+        "original_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/fd2eb456-4905-4326-b2f8-b834946008c1/download/mbs-demographics-historical-2013-2015.zip",
+        "final_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/fd2eb456-4905-4326-b2f8-b834946008c1/download/mbs-demographics-historical-2013-2015.zip",
+        "source_native_period_label": "historical_ MBS Group Statistics Report -historical excel 199",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+        "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+        "byte_count": 237142509,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/11",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "source_id": "au-data-gov-mbs-group",
+      "category": "mbs_group_statistics",
+      "payload_sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+      "byte_count": 12291303,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-group/8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d.json",
+        "archive_path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json",
+        "sha256": "8c7cb6671145bf0700f4a8864000da424fc07a5a361153510cbaf5cc39fc376d",
+        "byte_count": 797,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-27T16:43:17Z",
+        "original_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/663a7fac-114c-47b5-9017-a9dbb9073260/download/mbs-group-2016-july.csv",
+        "final_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/663a7fac-114c-47b5-9017-a9dbb9073260/download/mbs-group-2016-july.csv",
+        "source_native_period_label": "2016_MBS Group Statistics Report - 2016 (YTD) csv",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+        "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "byte_count": 12291303,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/12",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    },
+    {
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "source_id": "au-data-gov-mbs-group",
+      "category": "mbs_group_statistics",
+      "payload_sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+      "byte_count": 6857437,
+      "historical_receipt": {
+        "local_path": "quality/bronze/harvest-receipts/au-data-gov-mbs-group/414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a.json",
+        "archive_path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json",
+        "sha256": "414c380463f57cbe61051b16ebc7e8220bd09c75b8625834bde0a9aa32405c8a",
+        "byte_count": 807,
+        "anonymous_metadata_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json"
+      },
+      "historical_acquisition": {
+        "retrieved_at": "2026-09-27T16:43:13Z",
+        "original_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/07b46b92-9cc3-4dda-8a0b-ab86f77f5419/download/mbs-group-2016hr-july.xlsx",
+        "final_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/07b46b92-9cc3-4dda-8a0b-ab86f77f5419/download/mbs-group-2016hr-july.xlsx",
+        "source_native_period_label": "2016_MBS Group Statistics Report - 2016 (YTD) excel",
+        "producer_acquisition_id": null,
+        "source_published_at": null,
+        "source_effective_at": null,
+        "missing_field_interpretation": "The historical harvest sidecar declares no native acquisition event ID or source publication/effective timestamps; period labels are retained without date inference."
+      },
+      "b2_raw_reference": {
+        "state": "immutable_public_archive_reference",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+        "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+        "byte_count": 6857437,
+        "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+        "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543"
+      },
+      "rights_record": {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+        "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+        "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+        "json_pointer": "/records/13",
+        "state": "maintainer-approved-exact-object",
+        "approval_record": {
+          "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+          "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+        }
+      },
+      "identity_join_complete": true,
+      "native_acquisition_event_selected": false,
+      "native_admission_history_selected": false,
+      "v4_admission": false
+    }
+  ],
+  "remaining_gates": [
+    "Select or faithfully import native acquisition events without inventing missing provenance.",
+    "Establish append-only admission lifecycle metadata and independent v4 review.",
+    "Complete consumer canaries."
+  ],
+  "boundaries": {
+    "source_payload_bytes_read": false,
+    "source_payload_values_read": false,
+    "new_acquisition_performed": false,
+    "historical_receipts_rewritten": false,
+    "new_licensing_conclusion": false,
+    "external_publication_performed": false,
+    "approved_candidate_denominator_changed": false,
+    "complete_b1_b2_lifecycle": false,
+    "v4_admission": false,
+    "consumer_canaries": false,
+    "m112_federation_accepted": false
+  }
+}
