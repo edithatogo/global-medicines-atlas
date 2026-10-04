@@ -1,0 +1,68 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-lifecycle-append-contract",
+  "schema_version": 1,
+  "recorded_at": "2026-10-04T11:17:34.554289+00:00",
+  "status": "prepared_not_executed",
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+  "expected_parent_revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+  "rights_decision": {
+    "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+    "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+  },
+  "baseline_verification_receipt": {
+    "path": "quality/qualifications/australian-mbs-utilisation-rights-publication-receipt-20261004.json",
+    "sha256": "b321f3cdee645e8d80a825201aff6242847cbcbdad7100474ba762816874e426"
+  },
+  "addition": {
+    "local_path": "quality/qualifications/australian-mbs-utilisation-lifecycle-bundle-20261004.json",
+    "path": "metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json",
+    "sha256": "3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310",
+    "byte_count": 105611
+  },
+  "parent_readback": {
+    "observed_at": "2026-10-04T11:17:34.554289+00:00",
+    "url": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-utilisation-archive",
+    "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+    "private": false,
+    "gated": false,
+    "source_payload_bytes_read": false
+  },
+  "execution_controls": {
+    "origin": "github_actions_only",
+    "environment": "australian-hf-publication",
+    "exact_reviewed_main_commit_required": true,
+    "parent_compare_and_swap_required": true,
+    "durable_intent_before_write": true,
+    "allowed_operations": [
+      "add_exact_metadata_object"
+    ],
+    "historical_overwrite_allowed": false,
+    "raw_source_acquisition_allowed": false
+  },
+  "verification": {
+    "expected_inventory_delta": {
+      "added": [
+        "metadata/lifecycle/mbs-utilisation/3eff9522a7558116fa64061e9394d9a33dec3e3e1a72981053ea243d9f56d310.json"
+      ],
+      "removed": [],
+      "modified": []
+    },
+    "anonymous_all_object_digest_readback": true,
+    "durable_receipt_before_cleanup": true,
+    "preserve_failed_published_revision": true
+  },
+  "recovery": {
+    "retry_after_ambiguous_write": "read_back_and_reconcile_before_any_new_write",
+    "parent_drift": "stop_and_prepare_a_new_reviewed_contract"
+  },
+  "completion_claims": {
+    "external_publication_performed": false,
+    "complete_b1_b2_lineage": false,
+    "processing_admitted": false,
+    "v4_admission": false,
+    "consumer_canaries": false,
+    "m112_federation_accepted": false
+  },
+  "implementation_dependency": "The existing rights-only append validator accepts a different payload schema. A lifecycle-specific offline validator and hosted runner integration remain required before execution; this contract is not executable by the rights publisher."
+}

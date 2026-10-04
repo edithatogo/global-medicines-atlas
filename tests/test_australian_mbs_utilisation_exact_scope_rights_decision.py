@@ -676,3 +676,73 @@ def test_historical_raw_reference_profile_preserves_exact_evidence() -> None:
         invalid = copy.deepcopy(record)
         invalid["unreviewed_claim"] = True
         assert not validator.is_valid(invalid)
+
+
+def test_lifecycle_append_contract_pins_exact_bundle_and_controls() -> None:
+    contract = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-lifecycle-append-contract-20261004.json"
+    )
+    payload_bytes = (ROOT / contract["addition"]["local_path"]).read_bytes()
+    digest = hashlib.sha256(payload_bytes).hexdigest()
+    assert contract["addition"]["sha256"] == digest
+    assert contract["addition"]["byte_count"] == len(payload_bytes)
+    assert contract["addition"]["path"] == (
+        f"metadata/lifecycle/mbs-utilisation/{digest}.json"
+    )
+    bundle = json.loads(payload_bytes)
+    manifest = _read(bundle["inputs"]["raw_reference_import"]["path"])
+    assert len(bundle["records"]) == len(manifest["records"]) == 14
+    for binding in bundle["inputs"].values():
+        assert (
+            binding["sha256"]
+            == hashlib.sha256((ROOT / binding["path"]).read_bytes()).hexdigest()
+        )
+    assert bundle["profile_schema"] == _read(bundle["inputs"]["schema"]["path"])
+    validator = Draft202012Validator(
+        bundle["profile_schema"], format_checker=FormatChecker()
+    )
+    for row, binding in zip(
+        bundle["records"], manifest["records"], strict=True
+    ):
+        assert row["raw_reference_import"] == _read(binding["path"])
+        validator.validate(row["raw_reference_import"])
+        event_binding = row["raw_reference_import"]["acquisition_event"]
+        event_bytes = (ROOT / event_binding["path"]).read_bytes()
+        assert (
+            hashlib.sha256(event_bytes).hexdigest() == event_binding["sha256"]
+        )
+        assert row["acquisition_event"] == json.loads(event_bytes)
+        event = AcquisitionEvent.model_validate(row["acquisition_event"])
+        assert event.acquisition_id == event_binding["acquisition_id"]
+        assert (
+            event.content_id
+            == row["raw_reference_import"]["raw_reference"]["sha256"]
+        )
+    assert contract["expected_parent_revision"] == (
+        "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf"
+    )
+    assert contract["execution_controls"] == {
+        "origin": "github_actions_only",
+        "environment": "australian-hf-publication",
+        "exact_reviewed_main_commit_required": True,
+        "parent_compare_and_swap_required": True,
+        "durable_intent_before_write": True,
+        "allowed_operations": ["add_exact_metadata_object"],
+        "historical_overwrite_allowed": False,
+        "raw_source_acquisition_allowed": False,
+    }
+    assert contract["verification"]["expected_inventory_delta"] == {
+        "added": [contract["addition"]["path"]],
+        "removed": [],
+        "modified": [],
+    }
+    assert (
+        contract["verification"]["anonymous_all_object_digest_readback"] is True
+    )
+    assert contract["verification"]["durable_receipt_before_cleanup"] is True
+    assert contract["recovery"]["retry_after_ambiguous_write"] == (
+        "read_back_and_reconcile_before_any_new_write"
+    )
+    assert not any(contract["completion_claims"].values())
+    assert not any(bundle["boundaries"].values())
