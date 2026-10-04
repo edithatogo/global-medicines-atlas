@@ -1797,3 +1797,12 @@
   verified all 31 objects at publication revision `87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf`,
   preserved all 30 baseline objects and durably recorded cleanup. See
   `quality/qualifications/australian-mbs-utilisation-rights-publication-receipt-20261004.json`.
+
+- [x] Restore the exact 14 historical harvest sidecars anonymously and join
+  their source IDs, categories, dates, URLs and raw identities to the pinned
+  B2 references and published per-object rights supplement. Preserve their
+  original bytes, retrieval times and source-native period labels; do not
+  infer publication/effective dates or invent acquisition/admission IDs.
+  Identity linkage is complete; native event selection/import and admission
+  lifecycle metadata remain open. See
+  `quality/qualifications/australian-mbs-utilisation-acquisition-crosswalk-20261004.json`.
