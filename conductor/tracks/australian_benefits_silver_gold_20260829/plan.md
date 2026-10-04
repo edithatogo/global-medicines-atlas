@@ -1747,3 +1747,12 @@
   disposition, v4 admission, canaries, and federation acceptance remain open.
   No source payload was read. See
   `quality/qualifications/australian-m112-2025-mbs-v4-receipt-readback-20261004.json`.
+- [x] Verify the July 2025 v4 candidate identity against the live anonymous
+  dataset tree and immutable publication receipt. All nine expected object
+  sizes/digests and the current manifest metadata match the receipt; a newer
+  append-only dataset head does not invalidate the pinned publication receipt.
+  Supersede only `public_v4_identity_unverified`; retain candidate-only status
+  and the separate M-112 admission/canary gates. No payload bytes or values
+  were read. See
+  `quality/qualifications/australian-m112-live-public-v4-metadata-readback-20261004.json`
+  and the digest-bound current-state addendum.
