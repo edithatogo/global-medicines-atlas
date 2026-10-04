@@ -346,3 +346,78 @@ def test_offline_validator_rejects_scope_and_control_tampering() -> None:
             (ValueError, TypeError), match=r"contract|CAS|metadata|rights"
         ):
             validate_rights_append(contract, altered, decision, joins)
+
+
+def test_hosted_rights_publication_preserves_all_existing_objects() -> None:
+    receipt = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-rights-publication-receipt-20261004.json"
+    )
+    contract_ref = receipt["append_contract"]
+    assert (
+        contract_ref["sha256"]
+        == hashlib.sha256(
+            (ROOT / contract_ref["path"]).read_bytes()
+        ).hexdigest()
+    )
+    contract = _read(contract_ref["path"])
+    assert receipt["payload"] == contract["addition"]
+    assert receipt["source_revision"] == contract["source_revision"]
+    assert receipt["workflow_conclusion"] == "success"
+    events = receipt["hosted_receipts"]
+    assert [event["document"]["status"] for event in events] == [
+        "intent",
+        "cas_acknowledged",
+        "anonymously_verified",
+        "cleanup_completed",
+    ]
+    for event in events:
+        document = event["document"]
+        assert event["author"] == "github-actions[bot]"
+        assert (
+            event["body_sha256"]
+            == hashlib.sha256(
+                json.dumps(
+                    document, sort_keys=True, separators=(",", ":")
+                ).encode()
+            ).hexdigest()
+        )
+        assert document["code_commit"] == receipt["code_commit"]
+        assert document["run_url"] == receipt["workflow_run"]
+        assert document["authorization"] == receipt["rights_decision"]
+    verified = events[2]["document"]
+    assert verified["addition"] == {
+        key: contract["addition"][key]
+        for key in ("path", "byte_count", "sha256")
+    }
+    before = {row["path"]: row for row in verified["baseline"]}
+    after = {row["path"]: row for row in verified["observed"]}
+    assert len(before) == 30
+    assert len(after) == 31
+    assert after == {
+        **before,
+        verified["addition"]["path"]: verified["addition"],
+    }
+    assert verified["revision"] == receipt["publication_revision"]
+    assert events[3]["document"]["temporary_cache_removed"] is True
+    readback = receipt["independent_metadata_readback"]
+    assert readback["sha256"] == contract["addition"]["sha256"]
+    assert readback["byte_count"] == contract["addition"]["byte_count"]
+    assert readback["exact_local_payload_match"] is True
+    assert receipt["current_disposition"]["per_object_rights_metadata"] == (
+        "published_and_digest_verified"
+    )
+    for key in (
+        "complete_b1_b2_lineage",
+        "v4_admission",
+        "consumer_canaries",
+        "m112_federation_accepted",
+        "candidate_denominator_changed",
+    ):
+        assert receipt["current_disposition"][key] is False
+    assert (
+        receipt["supersedes"]["sha256"]
+        == hashlib.sha256(
+            (ROOT / receipt["supersedes"]["path"]).read_bytes()
+        ).hexdigest()
+    )
