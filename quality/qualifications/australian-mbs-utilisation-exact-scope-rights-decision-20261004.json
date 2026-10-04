@@ -1,0 +1,79 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-exact-scope-rights-decision",
+  "schema_version": 1,
+  "recorded_at": "2026-10-04T06:07:46Z",
+  "decision_authority": "sole maintainer",
+  "maintainer_decision": "Approved reuse and external publication for all MBS-utilisation datasets represented in the exact 14-object manifest scope below, subject to CC BY 3.0 Australia attribution and the pre-existing publication controls.",
+  "rights_basis": "The two represented data.gov.au dataset metadata records declare Creative Commons Attribution 3.0 Australia. The maintainer explicitly approves this exact archived source scope for redistribution and publication. This is a source-specific decision bound to the named manifest, not a blanket licence conclusion for other resources or revisions.",
+  "scope": {
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "manifest_path": "manifest.json",
+    "manifest_sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+    "candidate_paths": 14,
+    "raw_paths": 14,
+    "projection_paths": 0,
+    "source_id_counts": {
+      "au-data-gov-mbs-demographics": 10,
+      "au-data-gov-mbs-group": 4
+    },
+    "authorization_allowed_source_ids": [
+      "au-data-gov-mbs-demographics",
+      "au-data-gov-mbs-group",
+      "au-health-medicare-statistics"
+    ],
+    "authorized_source_ids_without_objects_in_scope": [
+      "au-health-medicare-statistics"
+    ],
+    "exact_paths_from_receipt_sidecar_join_audit": "quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json"
+  },
+  "official_evidence": [
+    {
+      "dataset_title": "Medicare Benefits Schedule (MBS) - Items by Patient Demographics Report",
+      "source_id": "au-data-gov-mbs-demographics",
+      "official_url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "metadata_response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+      "license": "Creative Commons Attribution 3.0 Australia",
+      "license_url": "http://creativecommons.org/licenses/by/3.0/au/",
+      "observed_at": "2026-10-04T06:07:46Z"
+    },
+    {
+      "dataset_title": "Medicare Benefits Schedule (MBS) - Group Statistics Report",
+      "source_id": "au-data-gov-mbs-group",
+      "official_url": "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group",
+      "resolved_dataset_id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+      "metadata_response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+      "license": "Creative Commons Attribution 3.0 Australia",
+      "license_url": "http://creativecommons.org/licenses/by/3.0/au/",
+      "observed_at": "2026-10-04T06:07:46Z"
+    },
+    {
+      "official_url": "https://creativecommons.org/licenses/by/3.0/au/",
+      "observed_at": "2026-10-04T06:07:46Z",
+      "scope": "license terms",
+      "license": "Creative Commons Attribution 3.0 Australia"
+    }
+  ],
+  "existing_authorization": "quality/qualifications/australian-mbs-utilisation-publication-authorization.json",
+  "existing_receipt_join_audit": "quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json",
+  "disposition": {
+    "redistribute": "permitted",
+    "transform": "permitted_with_attribution",
+    "publish_source_bytes": "permitted_for_exact_manifest_scope",
+    "sensitivity": "public",
+    "attribution": "Credit Services Australia as source publisher, link the exact dataset/resource, identify transformations, and preserve source dates and notices.",
+    "exclusions": [
+      "The decision does not add the unrepresented au-health-medicare-statistics source to this 14-object cohort.",
+      "No later revision, other resource, source category, clinical interpretation, or patient-level reuse is approved by this record.",
+      "No M-112 v4 admission or consumer acceptance is conferred."
+    ]
+  },
+  "separate_open_gates": {
+    "per_object_b1_receipt_rights_fields": true,
+    "complete_b1_b2_lineage": false,
+    "v4_admission": false,
+    "consumer_canaries": false,
+    "m112_federation_accepted": false,
+    "approved_candidate_denominator_changed": false
+  }
+}

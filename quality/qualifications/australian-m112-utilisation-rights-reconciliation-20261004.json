@@ -1,0 +1,40 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-utilisation-rights-reconciliation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-04T06:07:46Z",
+  "supersedes": {
+    "path": "quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json",
+    "sha256": "daa08d46490d92c7598722d8065d64b62b8eec41001ee1f2eb17806ef1d1560e",
+    "scope": "rights_state for the au-mbs-utilisation-rights-ledger candidate group only; original path denominator and candidate membership are retained"
+  },
+  "rights_decision": {
+    "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+    "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13",
+    "status": "approved_for_exact_manifest_scope"
+  },
+  "receipt_join_audit": {
+    "path": "quality/qualifications/australian-m112-receipt-sidecar-join-audit-20260930.json",
+    "sha256": "53e7a1659f57f24290dfe08e534131dde59e930ff386655cf0fa047a0dae657b"
+  },
+  "current_disposition": {
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "manifest_sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+    "candidate_paths": 14,
+    "rights_state": "maintainer-approved exact-scope reuse and external publication under CC BY 3.0 Australia, with attribution",
+    "lineage_state": "deferred_pending_per_object_B1_rights_and_reuse_fields_and_complete_B1_B2_lineage",
+    "v4_admission": false,
+    "consumer_canaries": false,
+    "m112_federation_accepted": false,
+    "candidate_denominator_changed": false,
+    "authorized_source_ids_without_objects_in_this_scope": [
+      "au-health-medicare-statistics"
+    ]
+  },
+  "remaining_work": [
+    "Add or reconcile per-object B1 rights_state and reuse_disposition without rewriting accepted source-native states.",
+    "Complete required B1/B2 receipt and source-lineage joins for each candidate.",
+    "Perform independent v4 eligibility review and consumer canaries."
+  ],
+  "historical_evidence_preserved": true
+}

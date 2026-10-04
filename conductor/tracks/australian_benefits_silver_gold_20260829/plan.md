@@ -1756,3 +1756,14 @@
   were read. See
   `quality/qualifications/australian-m112-live-public-v4-metadata-readback-20261004.json`
   and the digest-bound current-state addendum.
+- [x] Apply the maintainer's exact-scope rights approval to all 14 MBS-
+  utilisation raw objects in the pinned archive manifest. Official data.gov.au
+  metadata identifies the two represented datasets as CC BY 3.0 Australia;
+  the decision binds both metadata response hashes, the existing publication
+  authorization, archive revision, manifest digest, and 14/14 receipt-sidecar
+  joins. Preserve the candidate denominator and historic hash-bound readbacks.
+  The objects remain deferred because per-object B1 rights/reuse fields,
+  complete B1/B2 lineage, v4 review, and consumer canaries remain open. The
+  third source ID in the broader authorization has no object in this cohort.
+  See `quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json`
+  and `quality/qualifications/australian-m112-utilisation-rights-reconciliation-20261004.json`.
