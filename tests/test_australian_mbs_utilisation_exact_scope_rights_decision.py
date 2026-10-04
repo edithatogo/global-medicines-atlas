@@ -1087,3 +1087,152 @@ def test_streaming_receipt_preserves_exact_cohort_and_admission_boundaries():
     assert report["boundaries"]["source_bytes_locally_acquired"] is False
     assert report["boundaries"]["m112_accepted"] is False
     assert report["boundaries"]["m112_denominator"] == 1759
+
+
+def test_semantic_requirements_join_exact_resource_metadata_without_admission():
+    report = _read(
+        "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json"
+    )
+    assert report["status"] == "requirements_defined_semantic_run_pending"
+    for binding in report["inputs"].values():
+        assert (
+            hashlib.sha256((ROOT / binding["path"]).read_bytes()).hexdigest()
+            == binding["sha256"]
+        )
+    crosswalk = _read(report["inputs"]["crosswalk"]["path"])
+    raw = {row["path"]: row for row in crosswalk["records"]}
+    resources = {
+        (source["document"]["id"], row["id"]): row
+        for source in report["catalogue_metadata_snapshots"]
+        for row in source["resources"]
+    }
+    assert len(report["records"]) == len(raw) == len(resources) == 14
+    assert {row["path"] for row in report["records"]} == set(raw)
+    for row in report["records"]:
+        original = raw[row["path"]]
+        assert row["source_id"] == original["source_id"]
+        assert row["raw_reference"]["sha256"] == original["payload_sha256"]
+        assert row["raw_reference"]["byte_count"] == original["byte_count"]
+        assert (
+            row["raw_reference"]["revision"]
+            == report["source_revision"]
+            == crosswalk["source_revision"]
+        )
+        assert (
+            f"/dataset/{row['package_id']}/resource/{row['resource_id']}/"
+            in original["historical_acquisition"]["original_url"]
+        )
+        description = resources[row["package_id"], row["resource_id"]][
+            "description"
+        ]
+        assert (
+            hashlib.sha256(description.encode()).hexdigest()
+            == row["resource_description_sha256"]
+        )
+        assert "negative" in description.lower()
+        assert "date the service was processed" in description.lower()
+        assert row["semantic_state"] == "not_run"
+        assert row["processing_admitted"] is False
+        assert row["native_table_schema_selected"] is False
+        assert row["payload_period_verified"] is False
+    assert (
+        sum(
+            row["structural_state"] == "structure_verified"
+            for row in report["records"]
+        )
+        == 12
+    )
+    holds = [
+        row
+        for row in report["records"]
+        if not row["hosted_inventory_candidate"]
+    ]
+    assert len(holds) == 2
+    assert all(
+        row["next_validation"] == "resource_hold_no_semantic_dispatch"
+        for row in holds
+    )
+    assert (
+        report["counts"]["semantic_validations_run"]
+        == report["counts"]["processing_admissions"]
+        == 0
+    )
+    assert all(
+        value is False
+        for key, value in report["boundaries"].items()
+        if key != "m112_denominator"
+    )
+    assert report["boundaries"]["m112_denominator"] == 1759
+
+
+def test_csv_schema_metadata_preserves_eras_and_returns_no_source_records():
+    report = _read(
+        "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json"
+    )
+    schemas = {
+        row["resource_id"]: row
+        for row in report["csv_schema_metadata_snapshots"]
+    }
+    records = [row for row in report["records"] if row["path"].endswith(".csv")]
+    assert len(schemas) == len(records) == 4
+    assert {row["resource_id"] for row in records} == set(schemas)
+    for row in records:
+        schema = schemas[row["resource_id"]]
+        assert schema["records"] == []
+        assert schema["url"].endswith("&limit=0")
+        assert schema["archived_header_verified"] is False
+        assert schema["catalogue_types_are_coercion_rules"] is False
+        assert schema["ckan_id_assumed_source_native"] is False
+        fields = {field["id"]: field["type"] for field in schema["fields"]}
+        assert fields["_id"] == "int"
+        assert "Services" in fields
+        assert "Benefit" in fields
+        assert "Patients" not in fields
+        if "qtr-1" in row["path"] or "qtr-2" in row["path"]:
+            assert fields["MonthofProcessing"] == "text"
+            assert fields["ItemNumber"] == fields["Services"] == "numeric"
+            assert "Month of Processing" not in fields
+        else:
+            assert (
+                fields["Month of Processing"]
+                == fields["Item Number"]
+                == fields["Services"]
+                == "text"
+            )
+            if row["source_id"] == "au-data-gov-mbs-group":
+                assert "Group" in fields
+                assert "Sub-Group" in fields
+        assert row["next_validation"] == "exact_csv_native_header_inventory"
+    assert report["counts"]["source_records_returned"] == 0
+
+
+def test_semantic_period_requirements_keep_unlike_source_scopes_separate():
+    report = _read(
+        "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json"
+    )
+    resources = {
+        row["id"]: row
+        for source in report["catalogue_metadata_snapshots"]
+        for row in source["resources"]
+    }
+    records = {Path(row["path"]).name: row for row in report["records"]}
+    may = resources[
+        records["mbs-demographics-2016-qtr-2-may.csv"]["resource_id"]
+    ]["description"]
+    june = resources[
+        records["mbs-demographics-2016-qtr2-junehr.xlsx"]["resource_id"]
+    ]["description"]
+    assert "31 May 2016" in may
+    assert "1 April to 30 June 2016" in june
+    historical = resources[
+        records["mbs-demographics-historical-2013-2015.zip"]["resource_id"]
+    ]["description"]
+    assert "1993-2015" in historical
+    rules = {row["id"]: row for row in report["requirements"]}
+    assert len(rules) == 12
+    assert "negative" in rules["signed_numeric_measures"]["boundary"].lower()
+    assert "May" in rules["period_comparability"]["boundary"]
+    assert all(
+        rule["implementation_status"] == "not_implemented"
+        for rule in rules.values()
+    )
