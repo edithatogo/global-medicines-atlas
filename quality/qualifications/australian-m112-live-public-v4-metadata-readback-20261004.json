@@ -1,0 +1,185 @@
+{
+  "boundaries": {
+    "consumer_canaries_performed": false,
+    "current_tree_identity_verified": true,
+    "external_mutation_performed": false,
+    "m112_federation_accepted": false,
+    "rights_conclusion_added": false,
+    "source_payload_bytes_read": false,
+    "source_payload_values_read": false,
+    "v4_admission_performed": false
+  },
+  "current_manifest_matches_receipt": true,
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "live_head": {
+    "gated": false,
+    "private": false,
+    "revision": "1e4971c35c0ef45026168a8e2498d1bd57a3c324"
+  },
+  "manifest_declares_candidate_only": true,
+  "metadata_objects": {
+    "manifest.json": {
+      "sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+      "size": 3827
+    },
+    "qualification.json": {
+      "sha256": "b29d7d088a8a0564f2b022cdafa7351564eb5f292421cfe928c3f04ee0409723",
+      "size": 2336
+    },
+    "source-receipt.json": {
+      "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+      "size": 1845
+    }
+  },
+  "method": {
+    "anonymous": true,
+    "authenticated": false,
+    "metadata_objects_fetched": 3,
+    "payload_endpoints_used": false,
+    "payload_values_read": false,
+    "source_payload_bytes_read": false,
+    "tree_entries": 9
+  },
+  "object_reconciliation": {
+    "checks": [
+      {
+        "matches_prior_receipt_identity": true,
+        "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "matches_prior_receipt_identity": true,
+        "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "matches_prior_receipt_identity": true,
+        "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "matches_prior_receipt_identity": true,
+        "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "matches_prior_receipt_identity": true,
+        "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "matches_prior_receipt_identity": true,
+        "path": "silver/mbs/v4/2025-07-v3/manifest.json",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "matches_prior_receipt_identity": true,
+        "path": "silver/mbs/v4/2025-07-v3/qualification.json",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "matches_prior_receipt_identity": true,
+        "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "sha256_match": true,
+        "size_match": true
+      },
+      {
+        "matches_prior_receipt_identity": true,
+        "path": "silver/mbs/v4/2025-07-v3/source-receipt.json",
+        "sha256_match": true,
+        "size_match": true
+      }
+    ],
+    "expected_objects": 9,
+    "matched_to_receipt": 9,
+    "mismatched_or_unverified": 0
+  },
+  "prefix": "silver/mbs/v4/2025-07-v3",
+  "prior_publication_receipt": {
+    "anonymous_digest_verification": "passed",
+    "comment_id": 5859624790,
+    "expected_objects": 9,
+    "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+    "revision_matches_current_head": false
+  },
+  "publication_receipt_binds_current_head": false,
+  "purpose": "Refresh the exact public July 2025 MBS v4 candidate metadata identity at the current anonymous dataset head and compare it to the existing hosted digest receipt.",
+  "recorded_at": "2026-10-04T01:46:03Z",
+  "schema_id": "global-medicines-atlas.australian-m112-live-public-v4-metadata-readback",
+  "schema_version": 1,
+  "status": "candidate_identity_verified_historical_receipt_and_current_objects_match",
+  "tree_objects": [
+    {
+      "git_blob_oid": "cf430777e26400ed8956d2046c7a6c0c34b687b6",
+      "lfs_sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "lfs_size": 114493,
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "size": 114493
+    },
+    {
+      "git_blob_oid": "43fb5794a515fa794f192344cedfddcdfb55403d",
+      "lfs_sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "lfs_size": 60259,
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "size": 60259
+    },
+    {
+      "git_blob_oid": "92132bb0700956cd61ead09f7649f0f10009e7e5",
+      "lfs_sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "lfs_size": 620348,
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "size": 620348
+    },
+    {
+      "git_blob_oid": "b3f30480983b27d7cb85d81ff8630d13683ad002",
+      "lfs_sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "lfs_size": 93072,
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "size": 93072
+    },
+    {
+      "git_blob_oid": "cc0c99b7979e8dfc66971822c9599c5f693dd410",
+      "lfs_sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "lfs_size": 51851,
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "size": 51851
+    },
+    {
+      "git_blob_oid": "6f5930b77432e86eb49c2cbc40b3b754e59f0c3f",
+      "lfs_sha256": null,
+      "lfs_size": null,
+      "path": "silver/mbs/v4/2025-07-v3/manifest.json",
+      "size": 3827
+    },
+    {
+      "git_blob_oid": "11ad6d66ada97f214c8d3adefae375b454a5943e",
+      "lfs_sha256": null,
+      "lfs_size": null,
+      "path": "silver/mbs/v4/2025-07-v3/qualification.json",
+      "size": 2336
+    },
+    {
+      "git_blob_oid": "c7e68cb0d86429141ea63855fb85afe8609a95d5",
+      "lfs_sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "lfs_size": 100062,
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "size": 100062
+    },
+    {
+      "git_blob_oid": "da7641af3f70b4e4971945a5d9bb88fb6a0f5c62",
+      "lfs_sha256": null,
+      "lfs_size": null,
+      "path": "silver/mbs/v4/2025-07-v3/source-receipt.json",
+      "size": 1845
+    }
+  ],
+  "verification_interpretation": "The hosted receipt pins the immutable publication revision, which may differ from the current append-only dataset head. The repository verifier validates current tree object identities, metadata digests, and the historical receipt binding; exact revision equality is not required."
+}

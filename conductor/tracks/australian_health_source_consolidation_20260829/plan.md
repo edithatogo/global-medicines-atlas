@@ -626,9 +626,24 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   only the stale August lifecycle fields. The broader denominator, digest,
   rights, lineage, admission, and canary gates remain open. See
   `quality/qualifications/australian-m112-current-state-addendum-20261004.json`.
+- [x] Refresh the July 2025 v4 identity against the live anonymous dataset
+  head. All nine objects still match the historical hosted receipt's size and
+  digest identities, and the current manifest metadata matches that receipt.
+  The live dataset head is
+  `1e4971c35c0ef45026168a8e2498d1bd57a3c324`; the immutable publication receipt
+  remains pinned to `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa`. This is valid
+  for the existing verifier, which checks the historical receipt binding and
+  current object identities without requiring head/revision equality. Identity
+  is verified and the embedded candidate remains candidate-only; this is not
+  M-112 admission or federation acceptance. The refreshed readback used
+  metadata endpoints only and did not read source payload bytes or run
+  canaries. See
+  `quality/qualifications/australian-m112-live-public-v4-metadata-readback-20261004.json`.
 - [~] Keep M-112 federation acceptance blocked. Remaining gates are
   source-specific rights for historical PBS and reimbursement-atlas PBS
-  records; per-object rights, receipts, B1/B2 lineage, and projection lineage;
-  outstanding anonymous object-digest verification; and exact v4 admission
-  plus consumer canaries. The 20 utilization-publication digest joins are
-  publication receipts only and do not establish source rights or admission.
+  records; per-object rights, receipts, B1/B2 lineage, and projection lineage
+  across the full denominator; the July 2025 v4 metadata/object identity is now
+  verified, but exact v4 admission plus consumer canaries remain open. The
+  full-denominator anonymous digest gate remains open. The 20
+  utilization-publication digest joins are publication receipts only and do
+  not establish source rights or admission.

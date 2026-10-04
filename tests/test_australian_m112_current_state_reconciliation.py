@@ -15,6 +15,10 @@ ADDENDUM = (
     ROOT / "quality/qualifications/"
     "australian-m112-current-state-addendum-20261004.json"
 )
+LIVE_V4_READBACK = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-live-public-v4-metadata-readback-20261004.json"
+)
 
 
 def _read(path: str) -> dict[str, object]:
@@ -153,3 +157,31 @@ def test_m112_addendum_supersedes_only_the_stale_mbs_lifecycle_snapshot() -> (
         assert (
             hashlib.sha256(path.read_bytes()).hexdigest() == reference["sha256"]
         )
+
+
+def test_live_v4_metadata_readback_fails_closed_on_stale_hosted_receipt() -> (
+    None
+):
+    receipt = json.loads(LIVE_V4_READBACK.read_text(encoding="utf-8"))
+
+    assert receipt["live_head"]["private"] is False
+    assert receipt["live_head"]["gated"] is False
+    assert receipt["object_reconciliation"]["expected_objects"] == 9
+    assert receipt["object_reconciliation"]["matched_to_receipt"] == 9
+    assert receipt["current_manifest_matches_receipt"] is True
+    assert receipt["manifest_declares_candidate_only"] is True
+    assert receipt["publication_receipt_binds_current_head"] is False
+    assert (
+        receipt["prior_publication_receipt"]["revision_matches_current_head"]
+        is False
+    )
+    assert receipt["status"] == (
+        "candidate_identity_verified_historical_receipt_and_current_objects_match"
+    )
+    assert receipt["object_reconciliation"]["mismatched_or_unverified"] == 0
+    assert receipt["boundaries"]["current_tree_identity_verified"] is True
+    assert receipt["boundaries"]["v4_admission_performed"] is False
+    assert receipt["boundaries"]["consumer_canaries_performed"] is False
+    assert receipt["boundaries"]["m112_federation_accepted"] is False
+    assert receipt["boundaries"]["source_payload_bytes_read"] is False
+    assert receipt["boundaries"]["source_payload_values_read"] is False
