@@ -1848,3 +1848,8 @@
   limits, exact compressed identity checks and streamed CRC/digest checks.
   Validate using synthetic archives before integrating hosted MBS validation;
   this implementation alone does not validate or admit any source object.
+
+- [~] Integrate exact-cohort hosted validation with isolated bounded readers,
+  per-object failure outcomes and durable public-safe receipts. Verify CSV
+  shape and XLSX package structure separately from archive integrity and
+  admission; retain both preflight resource holds.

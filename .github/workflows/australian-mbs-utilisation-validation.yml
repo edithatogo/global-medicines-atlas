@@ -1,0 +1,40 @@
+name: Validate exact MBS utilisation payloads
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_contract_commit:
+        description: Exact reviewed main commit containing the validation cohort
+        required: true
+        type: string
+
+permissions: {}
+concurrency:
+  group: australian-mbs-utilisation-harvest
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate each pinned object and record independent outcomes
+    runs-on: ubuntu-24.04
+    environment: australian-hf-publication
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      issues: write # Durable per-object validation receipts.
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Validate pinned public objects independently
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+          HF_HUB_DISABLE_XET: "1"
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+        run: |
+          set -euo pipefail
+          uv run --frozen --python 3.14.6 --with huggingface-hub==1.14.0 \
+            python scripts/validate_mbs_utilisation_payloads.py \
+            --exact-commit "$REQUESTED_COMMIT"

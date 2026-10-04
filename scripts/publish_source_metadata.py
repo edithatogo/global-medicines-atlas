@@ -61,6 +61,12 @@ class HubTransport:
             raise ValueError("target is not public and non-gated")
         return str(info.sha)
 
+    def download_object(
+        self, dataset: str, revision: str, path: str, limit: int
+    ) -> Path:
+        """Restore one object through the existing isolated bounded reader."""
+        return self._download(dataset, revision, path, limit)
+
     def _download(
         self,
         dataset: str,

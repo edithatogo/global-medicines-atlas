@@ -711,7 +711,8 @@ def _open_xlsx_payload(content: bytes) -> zipfile.ZipFile:
         raise ValueError("Workbook is not a valid OOXML ZIP package") from exc
 
 
-def _validate_xlsx_payload(filename: str, content: bytes) -> None:
+def validate_xlsx_payload(filename: str, content: bytes) -> None:
+    """Check bounded OOXML package metadata; do not infer field semantics."""
     if not filename.lower().endswith(".xlsx"):
         return
     if len(content) > MAX_XLSX_PAYLOAD_BYTES:
@@ -790,7 +791,7 @@ def stage_harvest_payload(
 
     if not content:
         raise ValueError(f"Payload from {resource.url} was empty")
-    _validate_xlsx_payload(resource.filename, content)
+    validate_xlsx_payload(resource.filename, content)
 
     sha256 = hashlib.sha256(content).hexdigest()
     byte_count = len(content)
