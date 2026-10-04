@@ -19,6 +19,10 @@ LIVE_V4_READBACK = (
     ROOT / "quality/qualifications/"
     "australian-m112-live-public-v4-metadata-readback-20261004.json"
 )
+LIVE_V4_ADDENDUM = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-current-state-addendum-20261004.json"
+)
 
 
 def _read(path: str) -> dict[str, object]:
@@ -140,7 +144,8 @@ def test_m112_addendum_supersedes_only_the_stale_mbs_lifecycle_snapshot() -> (
     assert not receipt["august_2026_mbs"]["m112_v4_admission"]
     assert not receipt["august_2026_mbs"]["m112_consumer_canaries"]
     assert receipt["july_2025_v4_metadata"]["candidate_only"]
-    assert receipt["july_2025_v4_metadata"]["reported_blockers"] == [
+    assert receipt["july_2025_v4_metadata"]["reported_blockers"] == []
+    assert receipt["july_2025_v4_metadata"]["resolved_blockers"] == [
         "public_v4_identity_unverified"
     ]
     assert (
@@ -185,3 +190,24 @@ def test_live_v4_metadata_readback_fails_closed_on_stale_hosted_receipt() -> (
     assert receipt["boundaries"]["m112_federation_accepted"] is False
     assert receipt["boundaries"]["source_payload_bytes_read"] is False
     assert receipt["boundaries"]["source_payload_values_read"] is False
+
+
+def test_latest_addendum_supersedes_only_v4_identity_blocker() -> None:
+    receipt = json.loads(LIVE_V4_ADDENDUM.read_text(encoding="utf-8"))
+    assert receipt["approved_scope"]["candidate_paths"] == 1_759
+    assert receipt["approved_scope"]["denominator_changed"] is False
+    v4 = receipt["july_2025_v4_metadata"]
+    assert v4["candidate_only"] is True
+    assert v4["verified_objects"] == 9
+    assert v4["identity_verification"] == (
+        "verified_against_historical_immutable_receipt_and_current_tree"
+    )
+    assert v4["reported_blockers"] == []
+    assert v4["resolved_blockers"] == ["public_v4_identity_unverified"]
+    assert v4["v4_admission"] is False
+    assert v4["consumer_canaries"] is False
+    for reference in receipt["evidence_inputs"].values():
+        path = ROOT / reference["path"]
+        assert (
+            hashlib.sha256(path.read_bytes()).hexdigest() == reference["sha256"]
+        )
