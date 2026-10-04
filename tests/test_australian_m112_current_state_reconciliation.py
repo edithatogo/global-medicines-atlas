@@ -11,6 +11,10 @@ RECONCILIATION = (
     ROOT / "quality/qualifications/"
     "australian-m112-current-state-reconciliation-20261004.json"
 )
+ADDENDUM = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-current-state-addendum-20261004.json"
+)
 
 
 def _read(path: str) -> dict[str, object]:
@@ -104,6 +108,46 @@ def test_m112_reconciliation_corrects_stale_status_without_promoting_gates() -> 
 def test_m112_reconciliation_hash_binds_each_evidence_input() -> None:
     receipt = json.loads(RECONCILIATION.read_text(encoding="utf-8"))
 
+    for reference in receipt["evidence_inputs"].values():
+        path = ROOT / reference["path"]
+        assert (
+            hashlib.sha256(path.read_bytes()).hexdigest() == reference["sha256"]
+        )
+
+
+def test_m112_addendum_supersedes_only_the_stale_mbs_lifecycle_snapshot() -> (
+    None
+):
+    receipt = json.loads(ADDENDUM.read_text(encoding="utf-8"))
+    assert receipt["supersedes"]["path"] == (
+        "quality/qualifications/"
+        "australian-m112-current-state-reconciliation-20261004.json"
+    )
+    assert receipt["august_2026_mbs"]["local_gma_b1_b2_lifecycle_complete"]
+    assert receipt["august_2026_mbs"][
+        "source_identity_joined_to_two_approved_archive_aliases"
+    ]
+    assert not receipt["august_2026_mbs"][
+        "producer_archive_root_manifest_repaired"
+    ]
+    assert not receipt["august_2026_mbs"][
+        "producer_archive_projection_lineage_complete"
+    ]
+    assert not receipt["august_2026_mbs"]["m112_v4_admission"]
+    assert not receipt["august_2026_mbs"]["m112_consumer_canaries"]
+    assert receipt["july_2025_v4_metadata"]["candidate_only"]
+    assert receipt["july_2025_v4_metadata"]["reported_blockers"] == [
+        "public_v4_identity_unverified"
+    ]
+    assert (
+        receipt["unchanged_current_state"][
+            "full_denominator_anonymous_digest_readback_complete"
+        ]
+        is False
+    )
+    assert (
+        receipt["unchanged_current_state"]["m112_federation_accepted"] is False
+    )
     for reference in receipt["evidence_inputs"].values():
         path = ROOT / reference["path"]
         assert (

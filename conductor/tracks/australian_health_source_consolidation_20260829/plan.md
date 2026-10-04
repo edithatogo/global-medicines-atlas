@@ -596,3 +596,39 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [ ] Revisit only after a separate explicit authorization for the public
   notice change. This documentation decision does not change Australian
   federation acceptance or Stable v1 gates.
+
+## M-112 post-denominator evidence reconciliation (2026-10-04)
+
+- [x] Reconcile all 1,759 paths in the maintainer-approved qualification
+  denominator between active and future-source ledgers. The denominator remains
+  unchanged; all 1,719 previously deferred and 40 newly deferred candidates
+  are explicitly registered. This is classification, not admission or rights
+  evidence. See
+  `quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json`.
+- [x] Crosswalk the hosted August 2026 MBS raw receipt and its two exact
+  producer archive aliases to the current B1/B2 lifecycle. PR #750 completed
+  and persisted the local GMA landed-to-accepted lifecycle; PR #751 joined its
+  exact source identity to both aliases. The producer archive's historical
+  records remain unchanged, and its root-manifest membership and source-Parquet
+  projection lineage remain unresolved. PR #751 merged as `d75c905d`. See
+  `quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json`.
+- [x] Restore the anonymous pinned-revision July 2025 v4 source-receipt,
+  manifest, and qualification metadata using source-native remote paths and
+  separate local restore paths. Exact receipt and manifest hashes agree; the
+  upstream qualification remains `candidate_only` with
+  `public_v4_identity_unverified`. No source payload bytes were read and no
+  admission or rights decision was made. PR #752 merged as
+  `077cc68de7f5a20e43d3e9224ece80aef5800391` after all required hosted checks
+  passed.
+- [x] Preserve the October 3 current-state reconciliation as a dated snapshot.
+  Add a later digest-bound M-112 addendum to incorporate the merged August MBS
+  lifecycle crosswalk and restored July 2025 candidate receipt, superseding
+  only the stale August lifecycle fields. The broader denominator, digest,
+  rights, lineage, admission, and canary gates remain open. See
+  `quality/qualifications/australian-m112-current-state-addendum-20261004.json`.
+- [~] Keep M-112 federation acceptance blocked. Remaining gates are
+  source-specific rights for historical PBS and reimbursement-atlas PBS
+  records; per-object rights, receipts, B1/B2 lineage, and projection lineage;
+  outstanding anonymous object-digest verification; and exact v4 admission
+  plus consumer canaries. The 20 utilization-publication digest joins are
+  publication receipts only and do not establish source rights or admission.
