@@ -79,13 +79,21 @@ def test_public_v4_metadata_readback_hashes_match_the_pinned_receipt() -> None:
     objects = {
         item["role"]: item for item in audit["remote_readback"]["objects"]
     }
-    for role, path in {
-        "b1_source_receipt": RECEIPT,
-        "manifest": MANIFEST,
-        "value_free_qualification": QUALIFICATION,
+    for role, (path, remote_path) in {
+        "b1_source_receipt": (
+            RECEIPT,
+            "silver/mbs/v4/2025-07-v3/source-receipt.json",
+        ),
+        "manifest": (MANIFEST, "silver/mbs/v4/2025-07-v3/manifest.json"),
+        "value_free_qualification": (
+            QUALIFICATION,
+            "silver/mbs/v4/2025-07-v3/qualification.json",
+        ),
     }.items():
         item = objects[role]
         data = path.read_bytes()
+        assert item["remote_path"] == remote_path
+        assert item["local_restore_path"] == str(path.relative_to(ROOT))
         assert item["size"] == len(data)
         assert item["raw_sha256"] == hashlib.sha256(data).hexdigest()
         git_blob = hashlib.sha1(
