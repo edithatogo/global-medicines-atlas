@@ -1,13 +1,15 @@
 # Proposed MBS utilisation streaming workbook profile
 
-Status: implemented as a separate explicit hosted mode; source recovery
-qualification and admission remain pending.
+Status: implemented and hosted-qualified for the two exact workbooks;
+source-specific semantic validation and admission remain pending.
 
 The March and June 2016 demographics workbooks reached the existing 128 MiB
 ZIP-directory expanded-size guard. The independently verified diagnosis is
 `quality/qualifications/australian-mbs-workbook-diagnostic-receipt-20261005.json`
 (SHA-256 `767063f81e760bcf93b3618f93d08d3582ad1c649e79970f8ac0b440b87c6c67`).
-Exact expanded sizes and later package or worksheet validity remain unknown.
+At that diagnostic checkpoint, exact expanded sizes and later package or
+worksheet validity were unknown. The hosted outcome below records subsequent
+streaming structural evidence.
 This proposal cannot retrospectively change either recorded failure.
 
 ## Scope and reuse
@@ -95,3 +97,9 @@ before deleting digest-verified temporary source bytes.
 Implementation: `src/global_medicines_atlas/mbs_streaming_workbook.py`,
 with dedicated `.github/workflows/australian-mbs-workbook-streaming.yml`.
 The worker keeps all existing default profiles unchanged.
+
+Hosted run [37243073339](https://github.com/edithatogo/global-medicines-atlas/actions/runs/37243073339)
+passed both exact workbooks. The [independent receipt readback](../../quality/qualifications/australian-mbs-workbook-streaming-receipt-20261005.json)
+records actual expanded bytes of 203,631,529 (March) and 220,739,864 (June),
+two worksheets each, three durable receipts and both cache removals.
+No other cohort objects were retested and neither workbook is admitted.
