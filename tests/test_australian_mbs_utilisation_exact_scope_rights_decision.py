@@ -934,3 +934,69 @@ def test_hosted_payload_validation_keeps_each_scope_and_gate_independent() -> (
         receipt["url"] for receipt in observations
     }
     assert sum(row["cache_removed"] for row in summary) == 12
+
+
+def test_workbook_diagnostic_receipt_classifies_only_recorded_resource_failures() -> (
+    None
+):
+    report = _read(
+        "quality/qualifications/australian-mbs-workbook-diagnostic-receipt-20261005.json"
+    )
+    binding = report["inputs"]["prior_validation_receipt"]
+    assert (
+        hashlib.sha256((ROOT / binding["path"]).read_bytes()).hexdigest()
+        == binding["sha256"]
+    )
+    previous = _read(binding["path"])
+    failed = {
+        receipt["document"]["raw_reference"]["path"]: receipt["document"]
+        for receipt in previous["per_object_receipts"]
+        if receipt["document"]["status"] == "structure_failed"
+    }
+    assert len(report["per_object_receipts"]) == len(failed) == 2
+    assert report["hosted_run"]["conclusion"] == "success"
+    assert (
+        report["classification"]["xlsx_total_uncompressed_byte_limit"]
+        == 128 * 1024 * 1024
+    )
+    assert report["classification"]["exact_declared_expanded_bytes"] is None
+    assert report["classification"]["actual_expanded_bytes"] is None
+    assert (
+        report["classification"]["later_package_or_worksheet_checks_completed"]
+        is False
+    )
+    assert report["boundaries"]["source_corruption_established"] is False
+    assert report["boundaries"]["archive_limits_relaxed"] is False
+    assert report["boundaries"]["m112_accepted"] is False
+    for receipt in [*report["per_object_receipts"], report["summary_receipt"]]:
+        document = receipt["document"]
+        assert (
+            hashlib.sha256(
+                json.dumps(
+                    document, sort_keys=True, separators=(",", ":")
+                ).encode()
+            ).hexdigest()
+            == receipt["body_sha256"]
+        )
+        assert receipt["author"] == "github-actions[bot]"
+        assert document["code_commit"] == report["hosted_run"]["head_sha"]
+        assert document["validation_mode"] == "failed_workbooks_only"
+        assert document["processing_admitted"] is False
+    for receipt in report["per_object_receipts"]:
+        document = receipt["document"]
+        assert (
+            document["raw_reference"]
+            == failed[document["raw_reference"]["path"]]["raw_reference"]
+        )
+        assert document["result"]["anonymous_digest_verified"] is True
+        assert (
+            document["result"]["failure_code"] == "archive_expanded_byte_limit"
+        )
+    summary = report["summary_receipt"]["document"]["records"]
+    assert len(summary) == 2
+    assert {row["receipt_url"] for row in summary} == {
+        receipt["url"] for receipt in report["per_object_receipts"]
+    }
+    assert all(row["cache_removed"] for row in summary)
+    assert report["counts"]["previously_verified_objects_retested"] == 0
+    assert report["counts"]["processing_admissions"] == 0

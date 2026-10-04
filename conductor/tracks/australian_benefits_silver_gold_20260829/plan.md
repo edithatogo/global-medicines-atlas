@@ -1860,6 +1860,16 @@
   was admitted. See
   `quality/qualifications/australian-mbs-utilisation-payload-validation-receipt-20261004.json`.
 
-- [~] Classify the March and June 2016 demographics workbook profile failures
+- [x] Classify the March and June 2016 demographics workbook profile failures
   through bounded hosted diagnostics before selecting any recovery or
   source-specific processing-admission step. Preserve raw evidence and limits.
+  Hosted run `37226168808` identified `archive_expanded_byte_limit` for
+  both exact workbooks under the existing 128 MiB XLSX profile. Three native
+  receipts were independently read back; no other object was retested and
+  later package/worksheet checks remain unqualified. See
+  `quality/qualifications/australian-mbs-workbook-diagnostic-receipt-20261005.json`.
+
+- [ ] Prepare a bounded streaming workbook validation profile before any
+  recovery or processing admission of the two resource-blocked workbooks.
+  Preserve existing guards, raw references, ten prior profile passes and both
+  oversized ZIP holds.
