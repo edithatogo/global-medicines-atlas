@@ -1,0 +1,86 @@
+{
+  "approved_scope": {
+    "all_candidate_paths_registered_as_active_or_deferred": true,
+    "candidate_paths": 1759,
+    "denominator_changed": false,
+    "newly_deferred_candidates": 40,
+    "projection_paths": 23,
+    "raw_source_paths": 1736,
+    "remaining_candidate_paths_for_active_reconciliation": 0
+  },
+  "august_2026_mbs": {
+    "acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
+    "local_gma_b1_b2_lifecycle_complete": true,
+    "m112_consumer_canaries": false,
+    "m112_federation_accepted": false,
+    "m112_v4_admission": false,
+    "producer_archive_projection_lineage_complete": false,
+    "producer_archive_root_manifest_repaired": false,
+    "qualification_scope": "raw_b1_b2_only",
+    "source_identity_joined_to_two_approved_archive_aliases": true,
+    "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+  },
+  "evidence_inputs": {
+    "australian_m112_2025_mbs_v4_receipt_readback_20261004": {
+      "path": "quality/qualifications/australian-m112-2025-mbs-v4-receipt-readback-20261004.json",
+      "sha256": "9b2c5c0023c9e055cfd043e546d754efb5e2f8b51a0c107dffe7c36f3e56880e"
+    },
+    "australian_m112_additional_deferred_source_candidates_20261004": {
+      "path": "quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json",
+      "sha256": "daa08d46490d92c7598722d8065d64b62b8eec41001ee1f2eb17806ef1d1560e"
+    },
+    "australian_m112_current_state_reconciliation_20261004": {
+      "path": "quality/qualifications/australian-m112-current-state-reconciliation-20261004.json",
+      "sha256": "4de52d26ad58599d3e9128960952cc4fb103be5e96b7c889548931f3cc4274c6"
+    },
+    "australian_m112_denominator_decision_20260930": {
+      "path": "quality/qualifications/australian-m112-denominator-decision-20260930.json",
+      "sha256": "883b9517d8e646b41885a74da924a3fcb796e1772e5dcdd9394d469b09bb7b71"
+    },
+    "australian_m112_mbs_lifecycle_crosswalk_20261004": {
+      "path": "quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json",
+      "sha256": "7a4c9d171b5fe82ab71e90ec7a80578d569f2645951dadf79689d364f71cf7ef"
+    },
+    "australian_m112_source_archive_digest_reconciliation_20261004": {
+      "path": "quality/qualifications/australian-m112-source-archive-digest-reconciliation-20261004.json",
+      "sha256": "19cbf039367c3fa0ef276209d83e9172bb90b1ca72262d4794aa37bb8eeaa074"
+    },
+    "australian_m112_utilisation_digest_reconciliation_20261004": {
+      "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+      "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+    }
+  },
+  "july_2025_v4_metadata": {
+    "anonymous_pinned_metadata_readback": true,
+    "candidate_only": true,
+    "consumer_canaries": false,
+    "reported_blockers": [
+      "public_v4_identity_unverified"
+    ],
+    "source_receipt_and_manifest_digest_match": true,
+    "v4_admission": false
+  },
+  "purpose": "Supersede only stale October 3 MBS lifecycle fields from the earlier current-state snapshot using the merged MBS lifecycle crosswalk and July 2025 candidate receipt readback; preserve the denominator and acceptance gates.",
+  "recorded_at": "2026-10-04T01:32:51Z",
+  "remaining_acceptance_gates": [
+    "Resolve source-specific rights for the historical PBS XML and reimbursement-atlas au_pbs records.",
+    "Reconcile remaining per-object source membership, receipts, rights, B1/B2 and source-Parquet projection lineage across the approved denominator.",
+    "Complete anonymous object-digest readback for eligible approved objects; path presence and Git tree metadata are insufficient.",
+    "Independently admit eligible exact v4 product identities and run consumer canaries against those same pinned identities."
+  ],
+  "schema_id": "global-medicines-atlas.australian-m112-current-state-addendum",
+  "schema_version": 1,
+  "status": "latest_metadata_reconciled_mbs_local_lifecycle_complete_federation_gates_open",
+  "supersedes": {
+    "path": "quality/qualifications/australian-m112-current-state-reconciliation-20261004.json",
+    "scope": "August MBS local B1/B2 lifecycle state only; the earlier full-scope reconciliation remains the broader historical snapshot."
+  },
+  "unchanged_current_state": {
+    "full_denominator_anonymous_digest_readback_complete": false,
+    "m112_federation_accepted": false,
+    "metadata_path_presence_is_not_anonymous_digest_verification": true,
+    "public_registry_mutation_performed": false,
+    "source_payload_or_values_read": false,
+    "source_rights_conclusion_added": false
+  }
+}
