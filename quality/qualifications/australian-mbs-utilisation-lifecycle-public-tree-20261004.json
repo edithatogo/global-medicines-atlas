@@ -1,0 +1,277 @@
+{
+  "schema_id": "global-medicines-atlas.pinned-public-tree-readback",
+  "schema_version": 1,
+  "observed_at": "2026-10-04T10:55:11.462362+00:00",
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "revision": "87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf",
+  "anonymous": true,
+  "pagination_complete": true,
+  "response_sha256": "a2a31c8a70639afb19dfb739952bcd900ea6de2046fe57ae5a2b6acaaa27fd05",
+  "query_url": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-utilisation-archive/tree/87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf?recursive=true&expand=false",
+  "files": [
+    {
+      "type": "file",
+      "oid": "70d97016e901d4e3e3878f784ec036cf27b1897b",
+      "size": 3216,
+      "path": ".gitattributes"
+    },
+    {
+      "type": "file",
+      "oid": "17a0e8f25c30ad34392cbba4bfa7c85f802452c9",
+      "size": 852,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "331e4a747925971aa96e5e9a1f30409e4c49ff4d",
+      "size": 845,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "c7b4e5c0d76230c48f29fadf07ca2b423e2f3667",
+      "size": 854,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "312097ebe46af2417041d8b37187d20e70594cb7",
+      "size": 858,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "c2f228779543d44b40a19804f038993d3dbad0c5",
+      "size": 855,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "f9af856af4af0ccceb33deb55d230cb748bfcd6e",
+      "size": 860,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "8ca3c81f213414e6b79f9388859b082b26b3ae13",
+      "size": 885,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "5eb005f0b93d7ea695031a70f84304da45594e06",
+      "size": 885,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "7fc4a9f68ae934b3affb60e495fdec974054cb3a",
+      "size": 888,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "77026a4f7a3951daae820b75aa2a2df0810c1218",
+      "size": 885,
+      "path": "bronze/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "18e0f9d69b7246f2b25b89ad2112655d55090791",
+      "size": 864,
+      "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "1318107aa007e86143f7ab815dbc744e74f14dfe",
+      "size": 864,
+      "path": "bronze/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "887758c83231236bab2467cadbca6d628736638d",
+      "size": 797,
+      "path": "bronze/mbs/utilisation/group/mbs-group-2016-july.csv.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "57a9df91817b99e62949f0ababbd1bd20c7975bf",
+      "size": 807,
+      "path": "bronze/mbs/utilisation/group/mbs-group-2016hr-july.xlsx.receipt.json"
+    },
+    {
+      "type": "file",
+      "oid": "abf082d0b1b4d62cb7876f02b754b247a866120a",
+      "size": 9780,
+      "path": "manifest.json"
+    },
+    {
+      "type": "file",
+      "oid": "e072a00418fe4b9bc1730ba5be44ccc889d0e9a8",
+      "size": 23376,
+      "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json"
+    },
+    {
+      "type": "file",
+      "oid": "7432a243ff9508c93dc4eea4f3f3c9e7e820e0af",
+      "size": 23934884,
+      "lfs": {
+        "oid": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "size": 23934884,
+        "pointerSize": 133
+      },
+      "xetHash": "2e9071381466f99e19ea4b9cadefa5fef0dbd3429c7e4c402635a82780e49f7f",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv"
+    },
+    {
+      "type": "file",
+      "oid": "b4fee923d3301da656c0bffec3ffb0aa063f4840",
+      "size": 23436706,
+      "lfs": {
+        "oid": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "size": 23436706,
+        "pointerSize": 133
+      },
+      "xetHash": "9553a815be17b1d95c288a693a2e5ea8a37fa579b531b8cd9beb01d9107dca32",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv"
+    },
+    {
+      "type": "file",
+      "oid": "8ef49f030df25ecd525a695c016a4707f36c9ca3",
+      "size": 7680041,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv"
+    },
+    {
+      "type": "file",
+      "oid": "faee8cf394e2ebe297e66963d67a0405814eb6ad",
+      "size": 21966140,
+      "lfs": {
+        "oid": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "size": 21966140,
+        "pointerSize": 133
+      },
+      "xetHash": "874679c5c9c23e7c720e15101718b3952266f497105a5efafd9ffef66dda410d",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx"
+    },
+    {
+      "type": "file",
+      "oid": "22df8d52577c481bf9973fb978480fefa00cf056",
+      "size": 23765087,
+      "lfs": {
+        "oid": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+        "size": 23765087,
+        "pointerSize": 133
+      },
+      "xetHash": "8f386e118bfe4bb965f066fff4ae93b1408fa835079bfc6b42a0f0b3a8e4deb2",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx"
+    },
+    {
+      "type": "file",
+      "oid": "06ea0af69b48722979b92b43c84a6f30e1e627f6",
+      "size": 7316301,
+      "lfs": {
+        "oid": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "size": 7316301,
+        "pointerSize": 132
+      },
+      "xetHash": "467c93dcdd69514023f2d1d22e875c419014e4f1303a7d13440c76c08c80f826",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx"
+    },
+    {
+      "type": "file",
+      "oid": "6cff2ae49865352d324a0ef236e4ddf15286cbee",
+      "size": 185194594,
+      "lfs": {
+        "oid": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+        "size": 185194594,
+        "pointerSize": 134
+      },
+      "xetHash": "73bd432b59bd9f28470b00f76986c232cce836696e2efaf59574a83d392d4a12",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip"
+    },
+    {
+      "type": "file",
+      "oid": "522d0f8d2ccabf60a5f2cae00b873e5949d5c4a8",
+      "size": 240803157,
+      "lfs": {
+        "oid": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+        "size": 240803157,
+        "pointerSize": 134
+      },
+      "xetHash": "d0e191c063bc397254d0cd0b391574bb09d655f7caffcae0b8f277aecd32209f",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip"
+    },
+    {
+      "type": "file",
+      "oid": "b33a512b2aa33bba2e3884994cc903835af15ed4",
+      "size": 284302149,
+      "lfs": {
+        "oid": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+        "size": 284302149,
+        "pointerSize": 134
+      },
+      "xetHash": "64f0aec6d63ecfd1e49dcdbce4f20321b1dbf00abab788d7604ae93dccd7b534",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip"
+    },
+    {
+      "type": "file",
+      "oid": "d598619919a918d5dd67dba815d659a6de95401b",
+      "size": 358227575,
+      "lfs": {
+        "oid": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+        "size": 358227575,
+        "pointerSize": 134
+      },
+      "xetHash": "5f3c496c5e0ad1322e508d09a633d5ab3312a7a4554e9485ef4b0bb93b88e861",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip"
+    },
+    {
+      "type": "file",
+      "oid": "825956ec22b618037003d61fb937f1516201dca1",
+      "size": 205885063,
+      "lfs": {
+        "oid": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "size": 205885063,
+        "pointerSize": 134
+      },
+      "xetHash": "2ae7c26e70c9403fec9b5c88b8fd3cb8d30345958fe161adf04424b0999b5512",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip"
+    },
+    {
+      "type": "file",
+      "oid": "d346dab7802e6dc3fa239fbd0324c465a70ebfdc",
+      "size": 237142509,
+      "lfs": {
+        "oid": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+        "size": 237142509,
+        "pointerSize": 134
+      },
+      "xetHash": "1666aedf0dab9b9a76fccd8c97f6805504256d9d7f2c0038b5ba71924c869412",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip"
+    },
+    {
+      "type": "file",
+      "oid": "703900ffa41d6a54e1dad08e0660a14f83178b08",
+      "size": 12291303,
+      "lfs": {
+        "oid": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "size": 12291303,
+        "pointerSize": 133
+      },
+      "xetHash": "ae8bea092b0ffc8a35be3ac78a4f85b81b78d38a5bf8f8717eb6c28bd7ec47e4",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
+    },
+    {
+      "type": "file",
+      "oid": "094d05f83648f833b0bf6fcf66f56204c543e476",
+      "size": 6857437,
+      "lfs": {
+        "oid": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+        "size": 6857437,
+        "pointerSize": 132
+      },
+      "xetHash": "7da51bd838aa66118d668048b93219dbc661da8d75c4d29225b372e75505b8d0",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
+    }
+  ]
+}

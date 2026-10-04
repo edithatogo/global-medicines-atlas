@@ -1812,3 +1812,9 @@
   and unknown fields; distinguish imported repository IDs from producer IDs.
   Admission histories, full lifecycle and external publication remain open.
   See `quality/qualifications/australian-mbs-utilisation-acquisition-import-20261004.json`.
+
+- [x] Reconcile SourceReceipt and storage evidence for all 14 imported MBS
+  events against the pinned public archive inventory and native contracts;
+  identify unsupported fields without fabricating transformations, replication
+  controls or admission evidence.
+  See `quality/qualifications/australian-mbs-utilisation-lifecycle-reconciliation-20261004.json`.
