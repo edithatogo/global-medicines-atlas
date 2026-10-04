@@ -117,6 +117,26 @@ def test_open_medic_supersedes_failure_with_publication_receipt() -> None:
     )
 
 
+def test_mbs_queue_reconciles_the_verified_landed_to_accepted_lifecycle() -> (
+    None
+):
+    entries = {
+        entry["source_id"]: entry
+        for entry in cast("list[dict[str, Any]]", _queue()["entries"])
+    }
+    mbs = entries["au-mbs"]
+    assert mbs["acquisition_state"] == "evidenced"
+    assert mbs["admission_state"] == "accepted"
+    assert mbs["publication_state"] == "published"
+    assert mbs["acquisition_evidence"].endswith(
+        "australian-mbs-bronze-source-receipt-20261004.json"
+    )
+    assert mbs["publication_evidence"].endswith(
+        "australian-mbs-public-huggingface-20260829.json"
+    )
+    assert mbs["next_action"] == "monitor_public_revision"
+
+
 def test_rxnorm_is_derived_only_and_source_vocabulary_bytes_stay_blocked() -> (
     None
 ):

@@ -7,18 +7,18 @@ Silver transformations included: **no**.
 
 ## State summary
 
-- `landed_and_evidenced`: 41
+- `landed_and_evidenced`: 42
 - `temporarily_unavailable`: 1
 - `rights_blocked`: 25
 - `credentialed_and_excluded`: 15
 - `manual_only_documented_acquisition`: 91
 - `superseded_by_reused_source`: 0
-- `not_yet_implemented`: 1
+- `not_yet_implemented`: 0
 
 ## `static_file_download`
 
 - [ ] `ae-dha-prices` — `rights_blocked`; record source-specific retention and transformation rights.
-- [ ] `au-mbs` — `not_yet_implemented`; Reconcile the August 2026 MBS admission history using a durable landed event and an accepted decision that explicitly supersedes it; otherwise keep this receipt deferred. Do not create a retroactive landed event from inference. Keep source-record projection lineage and M-112 federation acceptance separate..
+- [x] `au-mbs` — `landed_and_evidenced`; Keep the source-record Parquet/P7 projection lineage and M-112 per-object rights, v4 admission, and consumer canary gates separate; no source-record projection is qualified by this raw receipt..
 - [x] `au-mbs-p7-legacy-workbook` — `landed_and_evidenced`; Keep the workbook deferred until a source-origin retrieval from the pinned donor Git commit is recorded under the rights and reuse gates with a typed B1 receipt, acquisition event, chronological landed-to-accepted admission, and exact B2 reference or retained bytes. Re-evaluate the direct receipt cohort after that evidence exists. Keep the legacy date profile unset and M-112 federation acceptance separate..
 - [x] `au-pbs-historical-xml` — `landed_and_evidenced`; verify receipt freshness on schedule.
 - [ ] `au-tga-regulatory-events` — `rights_blocked`; record source-specific retention and transformation rights.

@@ -18,6 +18,10 @@ ACQUISITION_EVIDENCE = {
     "union-register": (
         ROOT / "quality/qualifications/union-register-live-corpus-20260821.json"
     ),
+    "au-mbs": (
+        ROOT
+        / "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
+    ),
 }
 PUBLICATION_EVIDENCE = {
     "fda": ROOT / "quality/qualifications/fda-public-huggingface-20260821.json",
@@ -66,6 +70,17 @@ def _acquired_sources() -> dict[str, dict[str, str]]:
                 if union["accepted_admission_count"]
                 else "quarantined"
             ),
+        }
+    mbs = _load(ACQUISITION_EVIDENCE["au-mbs"])
+    if (
+        mbs.get("qualification_state") == "accepted"
+        and mbs.get("qualification_scope") == "raw_b1_b2_only"
+        and mbs.get("admission_lifecycle", {}).get("landed_predecessor_present")
+        is True
+    ):
+        acquired["au-mbs"] = {
+            "evidence": str(ACQUISITION_EVIDENCE["au-mbs"].relative_to(ROOT)),
+            "admission_state": str(mbs["admission_state"]),
         }
     return acquired
 
@@ -128,6 +143,8 @@ def build() -> dict[str, Any]:
                 else None
             )
         )
+        if source_id == "au-mbs" and acquisition is not None:
+            acquisition_evidence = acquisition["evidence"]
         entries.append({
             "source_id": source_id,
             "policy_family_id": review["policy_family_id"],

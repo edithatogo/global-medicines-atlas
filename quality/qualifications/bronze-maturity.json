@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.bronze-maturity-qualification",
   "schema_version": 1,
   "horizon": "bronze-bounded-public-scope-v1",
-  "evaluated_at": "2026-10-03T14:02:31.681130+00:00",
-  "git_commit": "5f61bf7fb874a07e6294a38a9f2160be5c789735",
+  "evaluated_at": "2026-10-04T00:35:41.222986+00:00",
+  "git_commit": "25407d539b5fec4f016c9f13ca57e0b1688ab171",
   "authorities": {
     "requirements": "conductor/requirements.md",
     "maturity_model": "conductor/maturity-model.json",
@@ -26,6 +26,7 @@
         "quality/qualifications/bronze-bounded-scope-decision-v1.json",
         "src/global_medicines_atlas/adapters/fixture_contracts.py",
         "src/global_medicines_atlas/data/source_landing_overrides.json",
+        "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
         "quality/qualifications/cms-partd-source-record-qualification-20260927.json",
         "quality/qualifications/faers-live-corpus-20260821.json",
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json",

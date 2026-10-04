@@ -13,7 +13,7 @@ visible, with 115 sources retained in the
 [future-source ledger](./bronze-bounded-scope-future-sources.md). Those sources
 lack qualifying landing evidence; this is not negative medicines evidence and
 does not grant acquisition or reuse rights. The narrower direct-receipt cohort
-remains 28 sources and is reported separately in the
+remains 29 sources and is reported separately in the
 [receipt cohort ledger](./bronze-future-source-list.md).
 
 The scope basis is the maintainer-approved
@@ -27,5 +27,5 @@ The machine-readable Bronze report records the exact source-code commit it
 evaluated. Its report, bounded future-source ledger, and the stable-v1 contract
 must be regenerated after any merge that changes their hashed inputs.
 
-The current maturity projection evaluates exact merged `main` commit
-`5f61bf7fb874a07e6294a38a9f2160be5c789735`.
+The current maturity projection evaluates exact source commit
+`25407d539b5fec4f016c9f13ca57e0b1688ab171`.

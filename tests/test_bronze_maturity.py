@@ -101,37 +101,52 @@ def test_bounded_scope_decision_rejects_unreviewed_membership_drift(
         evaluate_completeness(tmp_path)
 
 
-def test_australian_mbs_raw_receipt_remains_deferred_without_landed_event() -> (
+def test_australian_mbs_current_raw_receipt_qualifies_after_landed_event() -> (
     None
 ):
     evidence = receipt_backed_landing_evidence(ROOT, {"au-mbs"})
 
-    assert evidence == {}
+    assert evidence == {
+        "au-mbs": "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
+    }
     receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert receipt["qualification_scope"] == "raw_b1_b2_only"
+    assert receipt["qualification_state"] == "accepted"
+    assert receipt["admission_lifecycle"]["landed_predecessor_present"] is True
+    assert receipt["b2"]["state"] == "external_reference_only"
+    assert receipt["boundaries"]["source_record_projection_qualified"] is False
+    assert receipt["boundaries"]["m112_federation_accepted"] is False
+    historical = json.loads(
         (
             ROOT
             / "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
         ).read_text(encoding="utf-8")
     )
-    assert receipt["qualification_scope"] == "raw_b1_b2_only"
-    assert receipt["qualification_state"] == "blocked"
-    assert receipt["admission_lifecycle"]["landed_predecessor_present"] is False
-    assert receipt["b2"]["state"] == "external_reference_only"
-    assert receipt["boundaries"]["source_record_projection_qualified"] is False
-    assert receipt["boundaries"]["m112_federation_accepted"] is False
+    assert historical["qualification_state"] == "blocked"
+    assert (
+        historical["admission_lifecycle"]["landed_predecessor_present"] is False
+    )
     admission_path = (
         ROOT / "quality/bronze/admissions/au-mbs/"
-        "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json"
+        "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/"
+        "39df4d1a14f1b90d1be41ae9e1fab7b99c9c75385f735b00831c8c199a1350f0.json"
     )
     admission = bronze_maturity_mod.BronzeAdmissionRecord.model_validate_json(
         admission_path.read_bytes()
     )
-    assert admission.supersedes_decision_id is None
+    assert admission.supersedes_decision_id == (
+        "56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12"
+    )
     assert (
         bronze_maturity_mod._australian_mbs_admission_has_landed_predecessor(
             ROOT, admission
         )
-        is False
+        is True
     )
 
 
@@ -253,6 +268,8 @@ def test_australian_mbs_receipt_passes_when_ordered_history_is_verified(
         (("rights_state",), "unknown"),
         (("admission_state",), "quarantined"),
         (("b2", "state"), "retained"),
+        (("hosted_publication",), "invalid"),
+        (("admission_lifecycle",), "invalid"),
         (("files", "source_receipt", "sha256"), "0" * 64),
         (("effective_date",), "2026-07-01"),
         (("source_id",), "au-mbs-p7-legacy-workbook"),
@@ -264,7 +281,7 @@ def test_australian_mbs_receipt_passes_when_ordered_history_is_verified(
 def test_australian_mbs_receipt_rejects_mutated_identity_or_gate(
     path: tuple[str, ...], value: str
 ) -> None:
-    relative = "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+    relative = "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
     receipt = json.loads((ROOT / relative).read_text(encoding="utf-8"))
     receipt["qualification_state"] = "accepted"
     target = receipt
@@ -278,50 +295,23 @@ def test_australian_mbs_receipt_rejects_mutated_identity_or_gate(
 
 
 @pytest.mark.parametrize(
-    ("failure", "replacement"),
+    ("field", "replacement"),
     [
-        ("missing", None),
-        ("non_mapping", "[]"),
-        (
-            "empty_mappings",
-            '{"corrected_mappings": [], "preserved_unresolved_findings": {}}',
-        ),
-        (
-            "invalid_mapping",
-            '{"corrected_mappings": [null], "preserved_unresolved_findings": {}}',
-        ),
-        (
-            "authorization_mismatch",
-            (
-                '{"corrected_mappings": [{"acquisition_id": "wrong"}], '
-                '"preserved_unresolved_findings": {}}'
-            ),
-        ),
+        ("workflow_commit", "wrong"),
+        ("source_archive_revision", "wrong"),
+        ("lifecycle_metadata_revision", "wrong"),
+        ("anonymous_digest_verification", "failed"),
+        ("temporary_source_bytes_removed", False),
+        ("verified_lifecycle_objects", 0),
     ],
 )
 def test_australian_mbs_receipt_rejects_unreconciled_b1_event(
-    monkeypatch: pytest.MonkeyPatch,
-    failure: str,
-    replacement: str | None,
+    field: str,
+    replacement: object,
 ) -> None:
-    relative = "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+    relative = "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
     receipt = json.loads((ROOT / relative).read_text(encoding="utf-8"))
-    receipt["qualification_state"] = "accepted"
-    correction_path = (
-        "quality/qualifications/"
-        "australian-mbs-mbs-b1-event-reconciliation-correction-20261003.json"
-    )
-    original_read_text = Path.read_text
-
-    def read_text(path: Path, *args: Any, **kwargs: Any) -> str:
-        if path.as_posix().endswith(correction_path):
-            if failure == "missing":
-                raise FileNotFoundError(correction_path)
-            assert replacement is not None
-            return replacement
-        return original_read_text(path, *args, **kwargs)
-
-    monkeypatch.setattr(Path, "read_text", read_text)
+    receipt["hosted_publication"][field] = replacement
     assert not bronze_maturity_mod._is_successful_australian_mbs_receipt(
         ROOT, receipt, "au-mbs"
     )
@@ -330,12 +320,12 @@ def test_australian_mbs_receipt_rejects_unreconciled_b1_event(
 def test_australian_mbs_receipt_rejects_unreadable_b1_file(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    relative = "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+    relative = "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
     receipt = json.loads((ROOT / relative).read_text(encoding="utf-8"))
     receipt["qualification_state"] = "accepted"
     source_receipt = (
         ROOT / "quality/bronze/receipts/au-mbs/"
-        "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json"
+        "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json"
     )
     original_read_bytes = Path.read_bytes
 
@@ -369,17 +359,17 @@ def test_australian_mbs_receipt_rejects_unreadable_b1_file(
 def test_australian_mbs_receipt_rejects_incomplete_raw_evidence(
     monkeypatch: pytest.MonkeyPatch, failure: str
 ) -> None:
-    relative = "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+    relative = "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
     receipt = json.loads((ROOT / relative).read_text(encoding="utf-8"))
     receipt["qualification_state"] = "accepted"
     acquisition_id = (
-        "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1"
+        "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd"
     )
     payload_sha256 = bronze_maturity_mod.AU_MBS_PAYLOAD_SHA256
     source = SimpleNamespace(
         source=SimpleNamespace(source_id="au-mbs"),
         temporal=SimpleNamespace(acquisition_id=acquisition_id),
-        receipt_id="mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4",
+        receipt_id="mbs-release:dab6a3a2793596b485fb6b1825837a13ade8bce04a897b65002c7794a6832cfb",
         payload=SimpleNamespace(
             sha256=payload_sha256,
             byte_count=bronze_maturity_mod.AU_MBS_PAYLOAD_BYTE_COUNT,
@@ -408,6 +398,12 @@ def test_australian_mbs_receipt_rejects_incomplete_raw_evidence(
         content_id=payload_sha256,
         supersedes_decision_id="1" * 64,
     )
+    landed = SimpleNamespace(
+        state=SimpleNamespace(value="landed"),
+        acquisition_id=acquisition_id,
+        content_id=payload_sha256,
+        decision_id="1" * 64,
+    )
     b2_row = SimpleNamespace(
         state=SimpleNamespace(value="external_reference_only"),
         source_id="au-mbs",
@@ -421,6 +417,8 @@ def test_australian_mbs_receipt_rejects_incomplete_raw_evidence(
         class Parser:
             @classmethod
             def model_validate_json(cls, _raw: bytes) -> Any:
+                if isinstance(value, list):
+                    return value.pop(0)
                 if isinstance(value, Exception):
                     raise value
                 return value
@@ -446,8 +444,9 @@ def test_australian_mbs_receipt_rejects_incomplete_raw_evidence(
         monkeypatch.setattr(
             bronze_maturity_mod, "AcquisitionEvent", parser(event)
         )
+        admission_parser = parser([landed, admission])
         monkeypatch.setattr(
-            bronze_maturity_mod, "BronzeAdmissionRecord", parser(admission)
+            bronze_maturity_mod, "BronzeAdmissionRecord", admission_parser
         )
         monkeypatch.setattr(
             bronze_maturity_mod, "RawEvidenceManifest", parser(manifest)
@@ -460,7 +459,7 @@ def test_australian_mbs_receipt_rejects_incomplete_raw_evidence(
 
     archive_path = (
         ROOT / "quality/bronze/references/au-mbs/"
-        "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/"
+        "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/"
         "archive-manifest.json"
     )
     original_read_text = Path.read_text
@@ -494,12 +493,12 @@ def test_australian_mbs_receipt_qualification_schema() -> None:
     receipt = json.loads(
         (
             ROOT
-            / "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+            / "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
         ).read_text(encoding="utf-8")
     )
     schema = json.loads(
         (
-            ROOT / "schemas/australian-mbs-bronze-source-receipt-v1.json"
+            ROOT / "schemas/australian-mbs-bronze-source-receipt-v2.json"
         ).read_text(encoding="utf-8")
     )
 

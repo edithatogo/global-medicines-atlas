@@ -7,11 +7,11 @@
   "inputs": {
     "receipt_validator": {
       "path": "src/global_medicines_atlas/bronze_maturity.py",
-      "sha256": "a6f65e967806bfdbd23cb930a51d89c99d5561f593db98898cf63a1e6fbc620d"
+      "sha256": "97fbbe0b9e49a9a64fa9632064db39d033886566782160fd8f39ef7710260b53"
     },
     "cohort_generator": {
       "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
-      "sha256": "93216ac5a9aa97b6433c59444b580a7e0831ea878bc1b11fb3d69267561eadf7"
+      "sha256": "bf3ab803d3dc9592dc9e948289a5344f6e9589de917aa16360fe85ac2a1f39a0"
     },
     "cohort_schema": {
       "path": "schemas/bronze-receipt-cohort-v1.json",
@@ -23,16 +23,16 @@
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
-      "sha256": "05343fc70169cf92988fdcae77d7d826cc5902827fd774649eb869fdee52ee32"
+      "sha256": "b8e27eabf880f9b618a3d7a6da7469cc578854ef647b42289eed3ec3dde74eb5"
     },
     "landing_overrides": {
       "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
-      "sha256": "d1ca24a83ccd1a1d6468aa4209129ac3b29db483371f6c22ea297b0ae7b4f453"
+      "sha256": "b74a8e3a236dbeb3414966788d263cb06b855c68de456f1d996b9980109e96ad"
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "48e024dde8ef99e66fef19d831906a30e2ba4d1c3e2d63e03b96721e953e52c9",
-      "file_count": 144,
+      "sha256": "bef6c80d941ec5d1bad2dd5fa35426ae50659bdd49da90810d0087e58c783d8d",
+      "file_count": 147,
       "files": [
         {
           "path": "DATA_LICENSE.md",
@@ -70,9 +70,9 @@
           "sha256": "d796c8426529668f35922935e80731dc3bfecdf319db872d5b693f11185a8c1f"
         },
         {
-          "path": "quality/bronze/acquisitions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+          "path": "quality/bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
           "exists": true,
-          "sha256": "f0539528fff8f48781554e83ff3520579efc9a61daa04c5ca14d75e835bbacba"
+          "sha256": "0473edd93fe9c2781701116febbd68a0c68262b74be5b4de52409d5c52570d30"
         },
         {
           "path": "quality/bronze/admissions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
@@ -80,19 +80,29 @@
           "sha256": "0674c678ba14bb916be250e25b69cc11bf5dc3663a216a3c94cebb35837ff22f"
         },
         {
-          "path": "quality/bronze/raw-evidence/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/manifest.json",
+          "path": "quality/bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/39df4d1a14f1b90d1be41ae9e1fab7b99c9c75385f735b00831c8c199a1350f0.json",
           "exists": true,
-          "sha256": "c195af67842ed7005c836a08a49ca1e65bb3ca957399323a51da6dff58d72b42"
+          "sha256": "25dcc63b950ee330b28cfdd66747e4708891701703f8a91bda3c3b569d5fee7a"
         },
         {
-          "path": "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
+          "path": "quality/bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12.json",
           "exists": true,
-          "sha256": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8"
+          "sha256": "a2e4cb971425c78b9d39cdceb46420bc4beb5b0006636d94911a2013e0b414b6"
         },
         {
-          "path": "quality/bronze/references/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/archive-manifest.json",
+          "path": "quality/bronze/raw-evidence/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/manifest.json",
           "exists": true,
-          "sha256": "51a9242dc32fa0faaf7a9c35d9d73c995ac6458b065d73c85e67f22d76ee7b61"
+          "sha256": "4104bc85b891dd489e94378c40129870ef98f087c0e28862feb759a3723501fb"
+        },
+        {
+          "path": "quality/bronze/receipts/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+          "exists": true,
+          "sha256": "14fb98f49eb4e92dc467c0781a1cbd8a3409994b28059922783558235e97b21a"
+        },
+        {
+          "path": "quality/bronze/references/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/archive-manifest.json",
+          "exists": true,
+          "sha256": "1a2a67e6b1e4dc049a723486f5d252bf6c5221e2e82f16cc85e28a08491e7c8b"
         },
         {
           "path": "quality/qualifications/additional-utilisation-acquisition-authorization.json",
@@ -120,19 +130,19 @@
           "sha256": "083b64eb6ee2015995b65f74d945bee07085a466ad7b1d8ef922745e7c212b45"
         },
         {
+          "path": "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
+          "exists": true,
+          "sha256": "de64938e8ae5b6c0f91c959e7b2eba6b157f1d50fba41cf1705430b861b6a7f4"
+        },
+        {
           "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
           "exists": true,
           "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b"
         },
         {
-          "path": "quality/qualifications/australian-mbs-mbs-b1-event-reconciliation-correction-20261003.json",
-          "exists": true,
-          "sha256": "c331677b4950a12183a739a5e45a6743f9cbf9bd992fcae98400b6a7c7ebd86a"
-        },
-        {
           "path": "quality/qualifications/bronze-source-landing-queue.json",
           "exists": true,
-          "sha256": "05343fc70169cf92988fdcae77d7d826cc5902827fd774649eb869fdee52ee32"
+          "sha256": "b8e27eabf880f9b618a3d7a6da7469cc578854ef647b42289eed3ec3dde74eb5"
         },
         {
           "path": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
@@ -305,6 +315,11 @@
           "sha256": "a10db434e85298d8235021adffabd8c6bb2662fcb3950c9cd9b4bc57a7738249"
         },
         {
+          "path": "schemas/australian-mbs-bronze-source-receipt-v2.json",
+          "exists": true,
+          "sha256": "5085ea515b123391f830440334486635d048f1610bf50471966e33bedf7cfb1b"
+        },
+        {
           "path": "scripts/reconcile_mbs_p7_storage_receipt.py",
           "exists": true,
           "sha256": "43004d5d121808c0fc7da9b201157f0a5425e0f33e728ec3685c9397202ea91a"
@@ -412,12 +427,12 @@
         {
           "path": "src/global_medicines_atlas/bronze_maturity.py",
           "exists": true,
-          "sha256": "a6f65e967806bfdbd23cb930a51d89c99d5561f593db98898cf63a1e6fbc620d"
+          "sha256": "97fbbe0b9e49a9a64fa9632064db39d033886566782160fd8f39ef7710260b53"
         },
         {
           "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
           "exists": true,
-          "sha256": "93216ac5a9aa97b6433c59444b580a7e0831ea878bc1b11fb3d69267561eadf7"
+          "sha256": "bf3ab803d3dc9592dc9e948289a5344f6e9589de917aa16360fe85ac2a1f39a0"
         },
         {
           "path": "src/global_medicines_atlas/bronze_recovery.py",
@@ -447,7 +462,7 @@
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
           "exists": true,
-          "sha256": "d1ca24a83ccd1a1d6468aa4209129ac3b29db483371f6c22ea297b0ae7b4f453"
+          "sha256": "b74a8e3a236dbeb3414966788d263cb06b855c68de456f1d996b9980109e96ad"
         },
         {
           "path": "src/global_medicines_atlas/iceberg_ready.py",
@@ -759,8 +774,17 @@
   },
   "qualified_cohort": {
     "state": "qualified",
-    "source_count": 28,
+    "source_count": 29,
     "members": [
+      {
+        "source_id": "au-mbs",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "Medicare Benefits Schedule XML releases",
+        "receipt_reference": "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
+        "receipt_sha256": "de64938e8ae5b6c0f91c959e7b2eba6b157f1d50fba41cf1705430b861b6a7f4"
+      },
       {
         "source_id": "eu-union-register",
         "jurisdictions": [
@@ -1017,7 +1041,7 @@
   },
   "deferred_source_ledger": {
     "state": "tracked_not_qualified",
-    "source_count": 129,
+    "source_count": 128,
     "membership_rule": "All current-scope source IDs without a direct successful receipt accepted by the Bronze maturity receipt validator remain listed, including sources with other landing evidence.",
     "items": [
       {
@@ -1070,19 +1094,6 @@
         "defer_reason_code": "fixture_is_not_a_live_source_receipt",
         "reason": "catalogue implementation claim has committed qualification evidence",
         "next_action": "verify receipt freshness on schedule",
-        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
-      },
-      {
-        "source_id": "au-mbs",
-        "jurisdictions": [
-          "AUS"
-        ],
-        "title": "Medicare Benefits Schedule XML releases",
-        "queue_state": "not_yet_implemented",
-        "evidence_scope": "none",
-        "defer_reason_code": "no_qualifying_direct_receipt",
-        "reason": "The August 2026 MBS source receipt and external B2 reference are preserved, but the accepted admission event has no durable preceding landed event and does not supersede one. The ordered B1 admission lifecycle is therefore incomplete, so this receipt is not eligible for the direct Bronze cohort. Source-record projection lineage and M-112 federation remain separately unqualified. MBS service-benefit evidence does not imply medicine regulatory or PBS funding evidence.",
-        "next_action": "Reconcile the August 2026 MBS admission history using a durable landed event and an accepted decision that explicitly supersedes it; otherwise keep this receipt deferred. Do not create a retroactive landed event from inference. Keep source-record projection lineage and M-112 federation acceptance separate.",
         "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
       },
       {
@@ -2702,8 +2713,8 @@
   "scope_accounting": {
     "catalog_source_count": 174,
     "current_scope_count": 157,
-    "qualified_cohort_count": 28,
-    "deferred_current_scope_count": 129,
+    "qualified_cohort_count": 29,
+    "deferred_current_scope_count": 128,
     "current_scope_evaluator_landing_count": 42,
     "current_scope_evaluator_missing_count": 115,
     "deferred_queue_landed_count": 13,

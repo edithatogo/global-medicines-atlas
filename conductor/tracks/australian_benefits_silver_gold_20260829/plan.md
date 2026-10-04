@@ -1717,11 +1717,17 @@
   projection lineage, exact v4 admission, and consumer canaries remain open.
   See
   `quality/qualifications/australian-m112-unhashed-deferred-candidates-20261004.json`.
-- [~] Correct the MBS B1 chronology without retroactively rewriting the
-  August acquisition: retain pre-publication admission as a candidate only;
-  after the raw archive revision passes anonymous digest verification, append
-  canonical acquisition, B2 external-reference, landed, and superseding
-  accepted records in a second verified metadata commit. Reconcile the exact
-  hosted run into the source receipt and maturity audit. This does not qualify
-  source-record projection lineage, v4 admission, M-112 federation, or Stable
-  v1.
+- [x] Correct the MBS B1 chronology without retroactively rewriting the
+  August acquisition. On the exact authorized main commit, the hosted workflow
+  anonymously verified the raw archive object, then appended a new acquisition,
+  B2 external-reference manifest, and ordered `landed` then superseding
+  `accepted` records in a second metadata commit. The five B1/B2 metadata
+  objects passed anonymous digest verification before temporary source bytes
+  were removed. Reconciled the public metadata into the local Bronze ledger,
+  the MBS source receipt, landing and publication queues, and maturity audit.
+  The bounded Bronze qualification remains 14/14 mandatory dimensions with no
+  blockers; the receipt-backed cohort is 29 sources. MBS source-record
+  projection lineage, v4 admission, M-112 federation, and Stable v1 approval
+  remain separate gates. See
+  `quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json`
+  and `quality/qualifications/bronze-maturity.json`.
