@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import gzip
+import hashlib
 import stat
 import tarfile
 import tempfile
@@ -20,9 +21,77 @@ from global_medicines_atlas.archive_safety import (
     inspect_gzip,
     inspect_tar,
     inspect_zip,
+    verify_zip_file,
 )
 
 pytestmark = pytest.mark.edge
+
+
+def test_verify_zip_file_streams_members_without_extracting(
+    tmp_path: Path,
+) -> None:
+    payload = _zip([("folder/a.csv", b"a,b\n1,2\n"), ("b.csv", b"x\n3\n")])
+    path = tmp_path / "source.zip"
+    path.write_bytes(payload)
+    receipt = verify_zip_file(
+        path,
+        expected_sha256=hashlib.sha256(payload).hexdigest(),
+        expected_size=len(payload),
+        policy=ArchivePolicy(chunk_bytes=3),
+    )
+    assert receipt.archive_sha256 == hashlib.sha256(payload).hexdigest()
+    assert receipt.total_uncompressed_bytes == 12
+    assert [(m.path, m.sha256, m.size_bytes) for m in receipt.members] == [
+        ("b.csv", hashlib.sha256(b"x\n3\n").hexdigest(), 4),
+        ("folder/a.csv", hashlib.sha256(b"a,b\n1,2\n").hexdigest(), 8),
+    ]
+    assert list(tmp_path.iterdir()) == [path]
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [
+        "digest",
+        "size",
+        "limit",
+        "unsafe",
+        "crc",
+        "invalid",
+        "expanded",
+        "chunk",
+        "trailing",
+        "negative",
+    ],
+)
+def test_verify_zip_file_rejects_unsafe_or_unbound_input(
+    tmp_path: Path, failure: str
+) -> None:
+    payload = _zip([("../bad" if failure == "unsafe" else "a", b"source")])
+    if failure == "crc":
+        damaged = bytearray(payload)
+        directory = damaged.index(b"PK\x01\x02")
+        damaged[directory + 16] ^= 1
+        payload = bytes(damaged)
+    if failure == "invalid":
+        payload = b"not a zip"
+    path = tmp_path / "source.zip"
+    path.write_bytes(payload)
+    policies = {
+        "limit": ArchivePolicy(max_archive_bytes=1),
+        "expanded": ArchivePolicy(max_total_uncompressed_bytes=1),
+        "chunk": ArchivePolicy(chunk_bytes=0),
+    }
+    with pytest.raises(ArchiveSafetyError):
+        verify_zip_file(
+            path,
+            expected_sha256="0" * 64
+            if failure == "digest"
+            else hashlib.sha256(payload).hexdigest(),
+            expected_size=-1
+            if failure == "negative"
+            else len(payload) + (failure == "size") - (failure == "trailing"),
+            policy=policies.get(failure, ArchivePolicy()),
+        )
 
 
 def _zip(entries: list[tuple[zipfile.ZipInfo | str, bytes]]) -> bytes:

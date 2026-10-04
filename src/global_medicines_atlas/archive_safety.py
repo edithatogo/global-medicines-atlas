@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import gzip
 import hashlib
+import lzma
 import stat
 import tarfile
 import tempfile
 import zipfile
+import zlib
 from dataclasses import dataclass
 from io import BytesIO
 from pathlib import Path, PurePosixPath
@@ -215,6 +217,100 @@ def inspect_zip(
     with archive:
         members = _validate_members(archive, policy)
     return len(members)
+
+
+def verify_zip_file(
+    path: Path,
+    *,
+    expected_sha256: str,
+    expected_size: int,
+    policy: ArchivePolicy = DEFAULT_ARCHIVE_POLICY,
+) -> ExtractionReceipt:
+    """Verify compressed identity and every member stream without extraction.
+
+    The caller supplies a private, immutable staged file and enforces a worker
+    timeout. This proves container integrity, not member schema or semantics.
+    Memory is bounded by the archive directory and one configured read chunk.
+
+    Args:
+        path: Private staged archive; it must remain immutable during the call.
+        expected_sha256: Digest from the trusted raw-object receipt.
+        expected_size: Compressed byte count from that same receipt.
+        policy: Existing archive resource and member-path limits.
+
+    Returns:
+        Member identities and expanded byte counts, with no extracted files.
+
+    Raises:
+        ArchiveSafetyError: Identity, resource, path or stream checks failed.
+        OSError: The staged file could not be opened or hashed.
+    """
+    if policy.chunk_bytes <= 0:
+        raise ArchiveSafetyError("archive chunk size must be positive")
+    if expected_size < 0 or expected_size > policy.max_archive_bytes:
+        raise ArchiveSafetyError("archive byte limit exceeded")
+    digest = hashlib.sha256()
+    read_bytes = 0
+    with path.open("rb") as source:
+        while block := source.read(policy.chunk_bytes):
+            read_bytes += len(block)
+            if read_bytes > expected_size:
+                raise ArchiveSafetyError("archive compressed size mismatch")
+            digest.update(block)
+        if read_bytes != expected_size:
+            raise ArchiveSafetyError("archive compressed size mismatch")
+        if digest.hexdigest() != expected_sha256:
+            raise ArchiveSafetyError("archive compressed digest mismatch")
+        source.seek(0)
+        try:
+            with zipfile.ZipFile(source) as archive:
+                members = _validate_members(archive, policy)
+                verified = tuple(
+                    _verify_zip_member(archive, info, relative, policy)
+                    for info, relative in members
+                )
+        except (
+            zipfile.BadZipFile,
+            EOFError,
+            NotImplementedError,
+            zlib.error,
+            lzma.LZMAError,
+            OSError,
+        ) as error:
+            # Do not expose source-native member names or decompressor details.
+            raise ArchiveSafetyError(
+                "archive member integrity failed"
+            ) from error
+    return ExtractionReceipt(
+        archive_sha256=digest.hexdigest(),
+        members=tuple(sorted(verified, key=lambda member: member.path)),
+        total_uncompressed_bytes=sum(member.size_bytes for member in verified),
+    )
+
+
+def _verify_zip_member(
+    archive: zipfile.ZipFile,
+    info: zipfile.ZipInfo,
+    relative: PurePosixPath,
+    policy: ArchivePolicy,
+) -> ExtractedMember:
+    digest = hashlib.sha256()
+    read_bytes = 0
+    with archive.open(info) as source:
+        while block := source.read(policy.chunk_bytes):
+            read_bytes += len(block)
+            if read_bytes > info.file_size:
+                raise ArchiveSafetyError(
+                    "archive member exceeded declared size"
+                )
+            digest.update(block)
+    if read_bytes != info.file_size:
+        raise ArchiveSafetyError("archive member size did not match directory")
+    return ExtractedMember(
+        path=relative.as_posix(),
+        sha256=digest.hexdigest(),
+        size_bytes=read_bytes,
+    )
 
 
 def _validate_tar_members(

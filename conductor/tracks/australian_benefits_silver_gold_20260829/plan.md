@@ -1843,3 +1843,8 @@
   archives while retaining all raw evidence and other candidates; do not
   infer payload validity or processing acceptance from object metadata.
   See `quality/qualifications/australian-mbs-utilisation-validation-preflight-20261004.json`.
+
+- [x] Implement file-backed ZIP member verification with existing archive
+  limits, exact compressed identity checks and streamed CRC/digest checks.
+  Validate using synthetic archives before integrating hosted MBS validation;
+  this implementation alone does not validate or admit any source object.
