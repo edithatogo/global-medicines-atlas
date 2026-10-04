@@ -1781,3 +1781,9 @@
 - [x] Implement offline validation for the exact MBS-utilisation rights append
   contract, approval, cohort identities and controls. This validator performs
   no I/O and supplies no hosted publication or admission evidence.
+
+- [x] Implement hosted-only orchestration for the exact rights append, reusing
+  the anonymous Hub transport protocol and server-enforced CAS. Persist intent,
+  acknowledgement and all-object verification in order; propagate failures
+  without rollback or automatic retries. Workflow wiring and actual dispatch
+  remain separate; no publication is performed during this implementation.
