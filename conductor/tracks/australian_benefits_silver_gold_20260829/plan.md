@@ -1787,3 +1787,9 @@
   acknowledgement and all-object verification in order; propagate failures
   without rollback or automatic retries. Workflow wiring and actual dispatch
   remain separate; no publication is performed during this implementation.
+
+- [~] Wire the exact MBS rights executor into the protected Actions environment,
+  reuse the existing bounded anonymous transport and durable receipt store,
+  and dispatch on the reviewed main commit. Verify all existing objects plus
+  the one addition, then reconcile the hosted receipt without claiming v4
+  admission, acquisition lineage completion or consumer canaries.
