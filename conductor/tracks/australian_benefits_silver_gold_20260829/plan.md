@@ -1823,3 +1823,9 @@
   all 14 exact MBS receipt/event/raw/rights joins without claiming native
   transformed receipts, replication controls, payload validation or admission.
   See `quality/qualifications/australian-mbs-utilisation-raw-reference-import-20261004.json`.
+
+- [x] Package the 14 historical raw-reference imports, acquisition events and
+  closed profile schema into one exact lifecycle metadata bundle, and pin its
+  append-only Actions publication contract to the verified dataset parent.
+  Contract preparation alone does not publish or admit evidence.
+  See `quality/qualifications/australian-mbs-utilisation-lifecycle-append-contract-20261004.json`.
