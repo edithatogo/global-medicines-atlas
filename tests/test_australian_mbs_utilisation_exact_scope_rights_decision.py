@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,10 @@ import pytest
 
 from global_medicines_atlas.mbs_utilisation_rights_append import (
     validate_rights_append,
+)
+from global_medicines_atlas.receipts import (
+    AcquisitionEvent,
+    acquisition_event_id_for,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -494,3 +499,62 @@ def test_acquisition_crosswalk_preserves_all_historical_receipt_identities() -> 
         assert row["native_admission_history_selected"] is False
         assert row["v4_admission"] is False
     assert not any(crosswalk["boundaries"].values())
+
+
+def test_historical_event_import_preserves_receipt_evidence() -> None:
+    crosswalk = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-acquisition-crosswalk-20261004.json"
+    )
+    imported = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-acquisition-import-20261004.json"
+    )
+    assert (
+        imported["crosswalk_sha256"]
+        == hashlib.sha256(
+            (ROOT / imported["crosswalk_path"]).read_bytes()
+        ).hexdigest()
+    )
+    assert len(imported["records"]) == len(crosswalk["records"]) == 14
+    for row, original in zip(
+        imported["records"], crosswalk["records"], strict=True
+    ):
+        receipt = _read(original["historical_receipt"]["local_path"])
+        event_bytes = (ROOT / row["event_path"]).read_bytes()
+        event = AcquisitionEvent.model_validate_json(event_bytes)
+        assert event_bytes == event.canonical_json()
+        assert hashlib.sha256(event_bytes).hexdigest() == row["event_sha256"]
+        assert row["historical_receipt"] == original["historical_receipt"]
+        assert row["b2_raw_reference"] == original["b2_raw_reference"]
+        assert row["rights_record"] == original["rights_record"]
+        assert row["producer_acquisition_id"] is None
+        assert row["admission_record"] is None
+        assert event.acquisition_id == acquisition_event_id_for(
+            source_id=receipt["source_id"],
+            payload_sha256=receipt["sha256"],
+            retrieved_at=datetime.fromisoformat(receipt["retrieved_at"]),
+            original_uri=receipt["source_url"],
+        )
+        assert event.content_id == event.payload_sha256 == receipt["sha256"]
+        assert event.source_id == receipt["source_id"]
+        assert event.retrieved_at == datetime.fromisoformat(
+            receipt["retrieved_at"]
+        )
+        assert event.source_version is None
+        assert event.source_published_at is None
+        assert event.source_effective_at is None
+        assert event.valid_from is None
+        assert event.valid_to is None
+        assert event.retrieval is not None
+        assert str(event.retrieval.uri) == receipt["source_url"]
+        assert event.retrieval.retrieved_at == event.retrieved_at
+        assert event.retrieval.http is not None
+        assert str(event.retrieval.http.final_uri) == receipt["final_url"]
+        assert (
+            event.retrieval.http.observed_byte_length == receipt["byte_count"]
+        )
+        assert event.retrieval.http.http_status is None
+        assert event.retrieval.http.acquisition_agent_version is None
+    assert len({row["acquisition_id"] for row in imported["records"]}) == 14
+    assert not any(imported["boundaries"].values())

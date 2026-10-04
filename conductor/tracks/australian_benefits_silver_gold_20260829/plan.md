@@ -1806,3 +1806,9 @@
   Identity linkage is complete; native event selection/import and admission
   lifecycle metadata remain open. See
   `quality/qualifications/australian-mbs-utilisation-acquisition-crosswalk-20261004.json`.
+
+- [x] Import 14 receipt-derived historical acquisition events using the existing
+  native schema and deterministic identity function. Preserve source clocks
+  and unknown fields; distinguish imported repository IDs from producer IDs.
+  Admission histories, full lifecycle and external publication remain open.
+  See `quality/qualifications/australian-mbs-utilisation-acquisition-import-20261004.json`.
