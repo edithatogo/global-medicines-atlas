@@ -219,3 +219,10 @@ def test_latest_addendum_supersedes_only_v4_identity_blocker() -> None:
         assert (
             hashlib.sha256(path.read_bytes()).hexdigest() == reference["sha256"]
         )
+
+    acceptance = (
+        ROOT / "docs/qualification/australian-health-federation-acceptance.md"
+    ).read_text(encoding="utf-8")
+    assert "PR [#755]" in acceptance
+    assert "candidate remains unadmitted" in acceptance
+    assert "v4 source-receipt reference is absent locally" not in acceptance
