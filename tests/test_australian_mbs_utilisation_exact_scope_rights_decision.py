@@ -167,3 +167,60 @@ def test_prepared_object_rights_records_preserve_receipts_and_exact_scope() -> (
     assert prepared["complete_b1_b2_lineage"] is False
     assert prepared["v4_admission"] is False
     assert prepared["consumer_canaries"] is False
+
+
+def test_rights_append_contract_binds_exact_payload_and_preservation() -> None:
+    contract = _read(
+        "quality/qualifications/"
+        "australian-mbs-utilisation-rights-append-contract-20261004.json"
+    )
+    payload_path = (
+        "quality/qualifications/"
+        "australian-mbs-utilisation-object-rights-metadata-20261004.json"
+    )
+    payload = (ROOT / payload_path).read_bytes()
+    metadata = _read(payload_path)
+    digest = hashlib.sha256(payload).hexdigest()
+    addition = contract["addition"]
+    assert addition == {
+        "local_path": payload_path,
+        "path": f"metadata/rights/mbs-utilisation/{digest}.json",
+        "sha256": digest,
+        "byte_count": len(payload),
+    }
+    assert contract["dataset"] == metadata["dataset"]
+    assert contract["expected_parent_revision"] == metadata["source_revision"]
+    assert contract["rights_decision"] == metadata["rights_decision"]
+    assert contract["source_manifest_sha256"] == metadata["manifest_sha256"]
+    assert contract["status"] == "prepared_not_executed"
+    controls = contract["execution_controls"]
+    assert controls["origin"] == "github_actions_only"
+    assert controls["environment"] == "australian-hf-publication"
+    assert controls["exact_reviewed_main_commit_required"] is True
+    assert controls["parent_compare_and_swap_required"] is True
+    assert controls["durable_intent_before_write"] is True
+    assert controls["allowed_operations"] == ["add_exact_metadata_object"]
+    assert controls["historical_overwrite_allowed"] is False
+    assert controls["raw_source_acquisition_allowed"] is False
+    assert contract["verification"]["expected_inventory_delta"] == {
+        "added": [addition["path"]],
+        "removed": [],
+        "modified": [],
+    }
+    assert (
+        contract["verification"]["anonymous_all_object_digest_readback"] is True
+    )
+    assert contract["verification"]["durable_receipt_before_cleanup"] is True
+    assert (
+        contract["verification"]["preserve_failed_published_revision"] is True
+    )
+    assert contract["recovery"]["retry_after_ambiguous_write"] == (
+        "read_back_and_reconcile_before_any_new_write"
+    )
+    assert contract["completion_claims"] == {
+        "external_publication_performed": False,
+        "complete_b1_b2_lineage": False,
+        "v4_admission": False,
+        "consumer_canaries": False,
+        "m112_federation_accepted": False,
+    }

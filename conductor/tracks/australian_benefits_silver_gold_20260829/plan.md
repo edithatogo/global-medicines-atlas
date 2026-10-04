@@ -1772,3 +1772,8 @@
   MBS-utilisation objects, bound to raw identities and historical receipt
   digests. This local preparation does not publish metadata or complete
   acquisition lineage, v4 admission, or consumer canaries.
+
+- [x] Bind the prepared 14-object rights supplement to an exact metadata-add
+  contract with pinned parent, content-addressed path, preservation, CAS and
+  anonymous readback controls. Hosted runner implementation and execution
+  remain separate next steps; this contract performs no publication.
