@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   validate:
+    name: Validate each pinned object and record independent outcomes
     runs-on: ubuntu-24.04
     environment: australian-hf-publication
     timeout-minutes: 45
