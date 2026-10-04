@@ -1849,7 +1849,17 @@
   Validate using synthetic archives before integrating hosted MBS validation;
   this implementation alone does not validate or admit any source object.
 
-- [~] Integrate exact-cohort hosted validation with isolated bounded readers,
+- [x] Integrate exact-cohort hosted validation with isolated bounded readers,
   per-object failure outcomes and durable public-safe receipts. Verify CSV
   shape and XLSX package structure separately from archive integrity and
   admission; retain both preflight resource holds.
+  Hosted run `37207295524` at `fb9df741d028611068cd4dc560204ea887fe3033`
+  recorded 10 structural-profile passes, two workbook profile failures and
+  both prior ZIP resource holds. All 12 downloaded objects matched their
+  pinned digest; 15 durable receipts were independently read back. No object
+  was admitted. See
+  `quality/qualifications/australian-mbs-utilisation-payload-validation-receipt-20261004.json`.
+
+- [ ] Classify the March and June 2016 demographics workbook profile failures
+  through bounded hosted diagnostics before selecting any recovery or
+  source-specific processing-admission step. Preserve raw evidence and limits.

@@ -867,3 +867,70 @@ def test_validation_preflight_keeps_resource_holds_source_specific() -> None:
     assert len(held) == 2
     assert preflight["counts"]["validation_dispatch_eligible"] == 12
     assert not any(preflight["boundaries"].values())
+
+
+def test_hosted_payload_validation_keeps_each_scope_and_gate_independent() -> (
+    None
+):
+    report = _read(
+        "quality/qualifications/australian-mbs-utilisation-payload-validation-receipt-20261004.json"
+    )
+    preflight = _read(report["preflight"]["path"])
+    assert (
+        hashlib.sha256(
+            (ROOT / report["preflight"]["path"]).read_bytes()
+        ).hexdigest()
+        == report["preflight"]["sha256"]
+    )
+    rows = {row["path"]: row for row in preflight["records"]}
+    observations = report["per_object_receipts"]
+    assert len(observations) == len(rows) == 14
+    assert report["hosted_run"]["conclusion"] == "success"
+    assert report["boundaries"]["m112_denominator"] == 1759
+    assert report["boundaries"]["m112_accepted"] is False
+    assert report["counts"] == {
+        "cohort_objects": 14,
+        "downloaded_and_digest_verified": 12,
+        "structural_profiles_passed": 10,
+        "structural_profiles_not_passed": 2,
+        "preflight_resource_holds": 2,
+        "unavailable_validation": 0,
+        "verified_cache_files_removed": 12,
+        "processing_admissions": 0,
+    }
+    failed_paths = set()
+    for receipt in [*observations, report["summary_receipt"]]:
+        document = receipt["document"]
+        assert receipt["author"] == "github-actions[bot]"
+        assert (
+            hashlib.sha256(
+                json.dumps(
+                    document, sort_keys=True, separators=(",", ":")
+                ).encode()
+            ).hexdigest()
+            == receipt["body_sha256"]
+        )
+        assert document["code_commit"] == report["hosted_run"]["head_sha"]
+        assert document["processing_admitted"] is False
+    for receipt in observations:
+        document = receipt["document"]
+        row = rows[document["raw_reference"]["path"]]
+        assert document["raw_reference"] == row["raw_reference"]
+        assert document["acquisition_id"] == row["acquisition_id"]
+        assert document["semantic_validation"] is False
+        assert document["quarantine_decision"] == row["quarantine_decision"]
+        assert (
+            document["result"]["anonymous_digest_verified"]
+            is row["validation_dispatch_eligible"]
+        )
+        if document["status"] == "structure_failed":
+            failed_paths.add(document["raw_reference"]["path"])
+    assert failed_paths == {
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+    }
+    summary = report["summary_receipt"]["document"]["records"]
+    assert {row["receipt_url"] for row in summary} == {
+        receipt["url"] for receipt in observations
+    }
+    assert sum(row["cache_removed"] for row in summary) == 12
