@@ -113,3 +113,57 @@ def test_rights_decision_binds_all_and_only_the_14_joined_objects() -> None:
     assert disposition["consumer_canaries"] is False
     assert disposition["m112_federation_accepted"] is False
     assert disposition["candidate_denominator_changed"] is False
+
+
+def test_prepared_object_rights_records_preserve_receipts_and_exact_scope() -> (
+    None
+):
+    path = (
+        "quality/qualifications/"
+        "australian-mbs-utilisation-object-rights-metadata-20261004.json"
+    )
+    prepared = _read(path)
+    decision = _read(DECISION_PATH)
+    dataset = next(
+        row
+        for row in _read(JOIN_PATH)["datasets"]
+        if row["dataset"] == decision["scope"]["dataset"]
+    )
+    for reference, source in [
+        ("rights_decision", DECISION_PATH),
+        ("receipt_join_audit", JOIN_PATH),
+    ]:
+        assert prepared[reference]["path"] == source
+        assert (
+            prepared[reference]["sha256"]
+            == hashlib.sha256((ROOT / source).read_bytes()).hexdigest()
+        )
+    assert prepared["dataset"] == dataset["dataset"]
+    assert prepared["source_revision"] == dataset["revision"]
+    assert prepared["manifest_sha256"] == dataset["manifest_sha256"]
+    records = prepared["records"]
+    assert len(records) == len({row["path"] for row in records}) == 14
+    assert {row["path"] for row in records} == {
+        row["path"] for row in dataset["joined_objects"]
+    }
+    expected = {row["path"]: row for row in dataset["joined_objects"]}
+    for row in records:
+        original = expected[row["path"]]
+        for field in (
+            "source_id",
+            "category",
+            "sha256",
+            "byte_count",
+            "receipt_path",
+            "receipt_sha256",
+        ):
+            assert row[field] == original[field]
+        assert row["rights_state"] == "maintainer-approved-exact-object"
+        assert row["reuse"] == decision["disposition"]
+        assert row["approval_record"] == prepared["rights_decision"]
+        assert row["recorded_at"] == prepared["recorded_at"]
+    assert prepared["status"] == "prepared_not_published"
+    assert prepared["historical_receipts_modified"] is False
+    assert prepared["complete_b1_b2_lineage"] is False
+    assert prepared["v4_admission"] is False
+    assert prepared["consumer_canaries"] is False

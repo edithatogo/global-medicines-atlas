@@ -1767,3 +1767,8 @@
   third source ID in the broader authorization has no object in this cohort.
   See `quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json`
   and `quality/qualifications/australian-m112-utilisation-rights-reconciliation-20261004.json`.
+
+- [x] Prepare append-only per-object rights metadata for the exact 14 approved
+  MBS-utilisation objects, bound to raw identities and historical receipt
+  digests. This local preparation does not publish metadata or complete
+  acquisition lineage, v4 admission, or consumer canaries.
