@@ -1,0 +1,64 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-rights-append-contract",
+  "schema_version": 1,
+  "recorded_at": "2026-10-04T07:21:06Z",
+  "status": "prepared_not_executed",
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "expected_parent_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+  "source_manifest_sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+  "rights_decision": {
+    "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+    "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
+  },
+  "addition": {
+    "local_path": "quality/qualifications/australian-mbs-utilisation-object-rights-metadata-20261004.json",
+    "path": "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json",
+    "sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
+    "byte_count": 23376
+  },
+  "parent_readback": {
+    "observed_at": "2026-10-04T07:21:06Z",
+    "url": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-utilisation-archive",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "private": false,
+    "gated": false,
+    "source_payload_bytes_read": false
+  },
+  "execution_controls": {
+    "origin": "github_actions_only",
+    "environment": "australian-hf-publication",
+    "exact_reviewed_main_commit_required": true,
+    "parent_compare_and_swap_required": true,
+    "durable_intent_before_write": true,
+    "allowed_operations": [
+      "add_exact_metadata_object"
+    ],
+    "historical_overwrite_allowed": false,
+    "raw_source_acquisition_allowed": false
+  },
+  "verification": {
+    "expected_inventory_delta": {
+      "added": [
+        "metadata/rights/mbs-utilisation/03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054.json"
+      ],
+      "removed": [],
+      "modified": []
+    },
+    "anonymous_all_object_digest_readback": true,
+    "durable_receipt_before_cleanup": true,
+    "preserve_failed_published_revision": true
+  },
+  "recovery": {
+    "retry_after_ambiguous_write": "read_back_and_reconcile_before_any_new_write",
+    "parent_drift": "stop_and_prepare_a_new_reviewed_contract"
+  },
+  "completion_claims": {
+    "external_publication_performed": false,
+    "complete_b1_b2_lineage": false,
+    "v4_admission": false,
+    "consumer_canaries": false,
+    "m112_federation_accepted": false
+  },
+  "implementation_dependency": "The existing source-metadata publisher validates a different schema. An exact-contract hosted runner remains to be implemented; this contract is not executable by that publisher.",
+  "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7"
+}
