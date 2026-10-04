@@ -194,6 +194,14 @@ def test_live_v4_metadata_readback_fails_closed_on_stale_hosted_receipt() -> (
 
 def test_latest_addendum_supersedes_only_v4_identity_blocker() -> None:
     receipt = json.loads(LIVE_V4_ADDENDUM.read_text(encoding="utf-8"))
+    assert (
+        "July 2025 MBS v4 candidate identity verification"
+        in receipt["supersedes"]["scope"]
+    )
+    assert (
+        "August MBS local B1/B2 lifecycle state"
+        in receipt["supersedes"]["scope"]
+    )
     assert receipt["approved_scope"]["candidate_paths"] == 1_759
     assert receipt["approved_scope"]["denominator_changed"] is False
     v4 = receipt["july_2025_v4_metadata"]

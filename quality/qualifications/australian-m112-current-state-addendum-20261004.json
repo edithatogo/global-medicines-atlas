@@ -85,7 +85,7 @@
     "path": "quality/qualifications/australian-m112-current-state-reconciliation-20261004.json",
     "prior_addendum_commit": "7ade3f87f2bea5dfd0a4e6d9b728a84e57145c54",
     "prior_addendum_sha256": "97021c380a9f84630f3ae74867ff703dfeba38cc27de0a389c348ae7589b11fe",
-    "scope": "August MBS local B1/B2 lifecycle state only; the earlier full-scope reconciliation remains the broader historical snapshot."
+    "scope": "July 2025 MBS v4 candidate identity verification and August MBS local B1/B2 lifecycle state; the earlier full-scope reconciliation remains the broader historical snapshot."
   },
   "unchanged_current_state": {
     "full_denominator_anonymous_digest_readback_complete": false,
