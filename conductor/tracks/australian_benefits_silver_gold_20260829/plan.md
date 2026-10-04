@@ -1877,5 +1877,16 @@
   Prepared `docs/qualification/australian-mbs-streaming-workbook-profile.md`;
   no runtime limits changed and no source recovery run performed.
 
-- [~] Implement and test the separate streaming workbook profile, then qualify
+- [x] Implement and test the separate streaming workbook profile, then qualify
   only the two pinned workbooks through hosted receipts before any admission.
+
+  Hosted run `37243073339` at `02026bcc58652a874532f73d194f68bfcc1b6eac`
+  verified both exact workbook identities and streaming structural profiles.
+  Three native receipts were independently read back; both verified cache
+  files were removed after durable outcomes. Twelve cohort objects now have
+  structural evidence; two oversized ZIP holds remain, with zero admissions.
+  See `quality/qualifications/australian-mbs-workbook-streaming-receipt-20261005.json`.
+
+- [ ] Define source-specific utilisation semantic validation and admission
+  requirements from approved source documentation and native evidence; keep
+  the two oversized ZIP holds and wider M-112 gates separate.

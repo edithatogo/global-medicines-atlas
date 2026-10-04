@@ -1,0 +1,249 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-workbook-streaming-receipt",
+  "schema_version": 1,
+  "recorded_at": "2026-10-04T23:17:25.314626+00:00",
+  "status": "two_pinned_workbooks_structurally_verified",
+  "hosted_run": {
+    "id": 37243073339,
+    "head_sha": "02026bcc58652a874532f73d194f68bfcc1b6eac",
+    "event": "workflow_dispatch",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-04T23:15:06Z",
+    "html_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37243073339",
+    "path": ".github/workflows/australian-mbs-workbook-streaming.yml"
+  },
+  "inputs": {
+    "prior_validation_receipt": {
+      "path": "quality/qualifications/australian-mbs-utilisation-payload-validation-receipt-20261004.json",
+      "sha256": "f622434530f3d184a5aea6684e67dc7f874424c2ada634b2f154490a39c6f457"
+    },
+    "diagnostic_receipt": {
+      "path": "quality/qualifications/australian-mbs-workbook-diagnostic-receipt-20261005.json",
+      "sha256": "767063f81e760bcf93b3618f93d08d3582ad1c649e79970f8ac0b440b87c6c67"
+    },
+    "streaming_validator": {
+      "path": "src/global_medicines_atlas/mbs_streaming_workbook.py",
+      "sha256": "c879da9ebe8ffee6c4838fdd65fc5d6e31c085b0de9370389642849dc7574adc"
+    },
+    "archive_guard": {
+      "path": "src/global_medicines_atlas/archive_safety.py",
+      "sha256": "e21f93f788e13755e47e2d795db884874e5ce9c1ab84e85eb99d9fcb822a1485"
+    },
+    "runner": {
+      "path": "scripts/validate_mbs_utilisation_payloads.py",
+      "sha256": "d3600707ab9488ead1c017c85611d559950cb09b0bb965ca021bd179d0a68850"
+    },
+    "workflow": {
+      "path": ".github/workflows/australian-mbs-workbook-streaming.yml",
+      "sha256": "2694977671fbad98b41a4ba52189e1a3a71cde05629afca1ec8578a04f680116"
+    }
+  },
+  "per_object_receipts": [
+    {
+      "id": 5985495831,
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5985495831",
+      "author": "github-actions[bot]",
+      "created_at": "2026-10-04T23:15:30Z",
+      "body_sha256": "f4797efb62308fd3449ede99f6490c7783a0f2cc32da38909d93e09e4fd53d2e",
+      "document": {
+        "acquisition_id": "4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc",
+        "code_commit": "02026bcc58652a874532f73d194f68bfcc1b6eac",
+        "processing_admitted": false,
+        "quarantine_decision": null,
+        "raw_reference": {
+          "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543",
+          "byte_count": 21966140,
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+          "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+          "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+          "state": "immutable_public_archive_reference",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx"
+        },
+        "recorded_at": "2026-10-04T23:15:29.698229+00:00",
+        "resource_limits": {
+          "archive_bytes": 33554432,
+          "chunk_bytes": 1048576,
+          "entries": 10000,
+          "expanded_bytes": 1073741824,
+          "member_bytes": 536870912,
+          "metadata_bytes": 8388608,
+          "path_depth": 16,
+          "ratio": 200.0,
+          "worker_memory_bytes": 2147483648,
+          "worker_seconds": 120,
+          "xml_depth": 64,
+          "xml_elements": 20000000,
+          "xml_text_bytes": 1048576
+        },
+        "result": {
+          "anonymous_digest_verified": true,
+          "checks": {
+            "check_profile": "mbs-utilisation-streaming-xlsx-v1",
+            "expanded_bytes": 203631529,
+            "format": "xlsx",
+            "limits": {
+              "archive_bytes": 33554432,
+              "chunk_bytes": 1048576,
+              "entries": 10000,
+              "expanded_bytes": 1073741824,
+              "member_bytes": 536870912,
+              "metadata_bytes": 8388608,
+              "path_depth": 16,
+              "ratio": 200.0,
+              "xml_depth": 64,
+              "xml_elements": 20000000,
+              "xml_text_bytes": 1048576
+            },
+            "member_count": 16,
+            "member_inventory_sha256": "43daffa614eefd37f66061d0d2b7b3c42264bb5a2a13e786dd85007af8a75a39",
+            "worksheet_count": 2,
+            "xml_element_count": 9437878
+          },
+          "status": "structure_verified"
+        },
+        "schema_id": "global-medicines-atlas.mbs-utilisation-payload-validation",
+        "schema_version": 1,
+        "semantic_validation": false,
+        "status": "structure_verified",
+        "validation_mode": "streaming_workbooks",
+        "validation_profile": "mbs-utilisation-streaming-xlsx-v1",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37243073339"
+      }
+    },
+    {
+      "id": 5985497499,
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5985497499",
+      "author": "github-actions[bot]",
+      "created_at": "2026-10-04T23:15:43Z",
+      "body_sha256": "f955bd438c92f1ca02fb46028da694b93f8969dfee5e581cc128ecb1e0ccd522",
+      "document": {
+        "acquisition_id": "29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf",
+        "code_commit": "02026bcc58652a874532f73d194f68bfcc1b6eac",
+        "processing_admitted": false,
+        "quarantine_decision": null,
+        "raw_reference": {
+          "anonymous_digest_evidence": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5978580543",
+          "byte_count": 23765087,
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+          "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+          "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+          "state": "immutable_public_archive_reference",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx"
+        },
+        "recorded_at": "2026-10-04T23:15:42.792742+00:00",
+        "resource_limits": {
+          "archive_bytes": 33554432,
+          "chunk_bytes": 1048576,
+          "entries": 10000,
+          "expanded_bytes": 1073741824,
+          "member_bytes": 536870912,
+          "metadata_bytes": 8388608,
+          "path_depth": 16,
+          "ratio": 200.0,
+          "worker_memory_bytes": 2147483648,
+          "worker_seconds": 120,
+          "xml_depth": 64,
+          "xml_elements": 20000000,
+          "xml_text_bytes": 1048576
+        },
+        "result": {
+          "anonymous_digest_verified": true,
+          "checks": {
+            "check_profile": "mbs-utilisation-streaming-xlsx-v1",
+            "expanded_bytes": 220739864,
+            "format": "xlsx",
+            "limits": {
+              "archive_bytes": 33554432,
+              "chunk_bytes": 1048576,
+              "entries": 10000,
+              "expanded_bytes": 1073741824,
+              "member_bytes": 536870912,
+              "metadata_bytes": 8388608,
+              "path_depth": 16,
+              "ratio": 200.0,
+              "xml_depth": 64,
+              "xml_elements": 20000000,
+              "xml_text_bytes": 1048576
+            },
+            "member_count": 16,
+            "member_inventory_sha256": "d4aed336644314e4ca8ff0b21b23b484301043c161863aa83b3d8db71e299cde",
+            "worksheet_count": 2,
+            "xml_element_count": 10022337
+          },
+          "status": "structure_verified"
+        },
+        "schema_id": "global-medicines-atlas.mbs-utilisation-payload-validation",
+        "schema_version": 1,
+        "semantic_validation": false,
+        "status": "structure_verified",
+        "validation_mode": "streaming_workbooks",
+        "validation_profile": "mbs-utilisation-streaming-xlsx-v1",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37243073339"
+      }
+    }
+  ],
+  "summary_receipt": {
+    "id": 5985497698,
+    "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5985497698",
+    "author": "github-actions[bot]",
+    "created_at": "2026-10-04T23:15:44Z",
+    "body_sha256": "3ecc3d4db5dd780ab1d86da753e25dbdbf19218d5c7147e2283e2d3170c95302",
+    "document": {
+      "code_commit": "02026bcc58652a874532f73d194f68bfcc1b6eac",
+      "processing_admitted": false,
+      "recorded_at": "2026-10-04T23:15:43.870370+00:00",
+      "records": [
+        {
+          "cache_removed": true,
+          "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+          "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5985495831",
+          "status": "structure_verified"
+        },
+        {
+          "cache_removed": true,
+          "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+          "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5985497499",
+          "status": "structure_verified"
+        }
+      ],
+      "schema_id": "global-medicines-atlas.mbs-utilisation-validation-summary",
+      "schema_version": 1,
+      "status": "cohort_validation_recorded",
+      "validation_mode": "streaming_workbooks"
+    }
+  },
+  "counts": {
+    "targeted_objects": 2,
+    "downloaded_and_digest_verified": 2,
+    "streaming_profile_passes": 2,
+    "durable_receipts_independently_read": 3,
+    "verified_cache_files_removed": 2,
+    "previously_verified_objects_retested": 0,
+    "current_cohort_structural_profile_passes": 12,
+    "unchanged_oversized_zip_holds": 2,
+    "processing_admissions": 0
+  },
+  "interpretation": [
+    "The March and June 2016 workbooks passed a separate file-backed profile after their earlier 128 MiB resource holds; historical outcomes remain immutable.",
+    "Actual streamed expanded bytes are 203631529 and 220739864 respectively; both had two verified worksheets. These are profile observations, not semantic or processing admission evidence.",
+    "The ten original passes and two oversized ZIP holds were not retested. Combining preserved and new structural evidence yields twelve profile passes and two ZIP holds across the exact fourteen-object cohort.",
+    "Three native bot receipts were independently read back; object receipts preceded temporary cache removal and the summary confirms both removals."
+  ],
+  "remaining": [
+    "Source-specific cell/header/shared-string/period semantics and processing admission for the exact cohort.",
+    "Complete native lifecycle/storage/lineage qualification and wider v4/M-112 acceptance.",
+    "Resolve both oversized ZIP holds separately; this profile cannot select them."
+  ],
+  "boundaries": {
+    "default_archive_limits_changed": false,
+    "source_bytes_locally_acquired": false,
+    "external_dataset_publication_performed": false,
+    "processing_admitted": false,
+    "semantic_validation": false,
+    "m112_accepted": false,
+    "m112_denominator": 1759
+  }
+}
