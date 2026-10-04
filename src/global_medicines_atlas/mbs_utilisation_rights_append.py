@@ -76,6 +76,25 @@ def validate_rights_append(
     decision = _document(decision_bytes)
     joins = _document(join_bytes)
     metadata = _document(payload)
+    _require(
+        sorted(metadata),
+        sorted((
+            "schema_id",
+            "schema_version",
+            "recorded_at",
+            "status",
+            "dataset",
+            "source_revision",
+            "manifest_sha256",
+            "rights_decision",
+            "receipt_join_audit",
+            "historical_receipts_modified",
+            "complete_b1_b2_lineage",
+            "v4_admission",
+            "consumer_canaries",
+            "records",
+        )),
+    )
     _require(hashlib.sha256(decision_bytes).hexdigest(), DECISION_SHA)
     _require(hashlib.sha256(join_bytes).hexdigest(), JOIN_SHA)
     decision_ref = {"path": DECISION_PATH, "sha256": DECISION_SHA}
@@ -200,6 +219,22 @@ def _validate_records(
     observed: set[str] = set()
     required = {source["manifest_path"]: source["manifest_sha256"]}
     for row in records:
+        _require(
+            sorted(row),
+            sorted((
+                "path",
+                "source_id",
+                "category",
+                "sha256",
+                "byte_count",
+                "receipt_path",
+                "receipt_sha256",
+                "recorded_at",
+                "rights_state",
+                "reuse",
+                "approval_record",
+            )),
+        )
         native = expected.get(row["path"])
         if native is None or row["path"] in observed:
             raise ValueError("unknown or duplicate rights object")

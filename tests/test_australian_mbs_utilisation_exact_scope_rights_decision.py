@@ -310,7 +310,15 @@ def test_offline_validator_rejects_scope_and_control_tampering() -> None:
             validate_rights_append(
                 original, wrong_payload, wrong_decision, wrong_joins
             )
-    for mutation in ("duplicate", "unknown", "digest", "reuse", "approval"):
+    for mutation in (
+        "duplicate",
+        "unknown",
+        "digest",
+        "reuse",
+        "approval",
+        "top_extra",
+        "row_extra",
+    ):
         document = json.loads(payload)
         if mutation == "duplicate":
             document["records"][1] = document["records"][0]
@@ -320,6 +328,10 @@ def test_offline_validator_rejects_scope_and_control_tampering() -> None:
             document["records"][0]["sha256"] = "0" * 64
         elif mutation == "reuse":
             document["records"][0]["reuse"] = {}
+        elif mutation == "top_extra":
+            document["regulatory_approved"] = True
+        elif mutation == "row_extra":
+            document["records"][0]["later_revisions_authorized"] = True
         else:
             document["records"][0]["approval_record"] = {}
         altered = json.dumps(document).encode()
