@@ -1,0 +1,106 @@
+{
+  "boundaries": {
+    "approved_denominator_changed": false,
+    "m112_federation_accepted": false,
+    "new_rights_or_licensing_conclusion": false,
+    "source_archive_records_rewritten": false,
+    "source_payload_bytes_read": false,
+    "source_payload_values_read": false,
+    "v4_admission_performed": false
+  },
+  "canonical_bronze_lifecycle": {
+    "acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
+    "archive_revision": "abdf414cdea0127d3edda6f8af402d1a01139623",
+    "byte_count": 8293331,
+    "content_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+    "decision_ids": [
+      "56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12",
+      "39df4d1a14f1b90d1be41ae9e1fab7b99c9c75385f735b00831c8c199a1350f0"
+    ],
+    "effective_date": "2026-08-01",
+    "hosted_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37163925043",
+    "lifecycle_metadata_revision": "1e4971c35c0ef45026168a8e2498d1bd57a3c324",
+    "qualification_scope": "raw_b1_b2_only",
+    "raw_reference": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/abdf414cdea0127d3edda6f8af402d1a01139623/raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+    "receipt_id": "mbs-release:dab6a3a2793596b485fb6b1825837a13ade8bce04a897b65002c7794a6832cfb",
+    "required_decision_order": [
+      "landed",
+      "accepted"
+    ],
+    "source_id": "au-mbs",
+    "source_receipt_path": "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
+    "source_version": "2026-08-01"
+  },
+  "evidence_inputs": [
+    {
+      "path": "quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json",
+      "sha256": "daa08d46490d92c7598722d8065d64b62b8eec41001ee1f2eb17806ef1d1560e"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json",
+      "sha256": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-current-tree-object-identity-reconciliation-20261004.json",
+      "sha256": "42ecec09d1d4a8e03794124bdbb1f169bb998285859278bc57d04772d4dccd22"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
+      "sha256": "de64938e8ae5b6c0f91c959e7b2eba6b157f1d50fba41cf1705430b861b6a7f4"
+    },
+    {
+      "path": "quality/bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/39df4d1a14f1b90d1be41ae9e1fab7b99c9c75385f735b00831c8c199a1350f0.json",
+      "sha256": "25dcc63b950ee330b28cfdd66747e4708891701703f8a91bda3c3b569d5fee7a"
+    },
+    {
+      "path": "quality/bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+      "sha256": "0473edd93fe9c2781701116febbd68a0c68262b74be5b4de52409d5c52570d30"
+    },
+    {
+      "path": "quality/bronze/raw-evidence/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/manifest.json",
+      "sha256": "4104bc85b891dd489e94378c40129870ef98f087c0e28862feb759a3723501fb"
+    },
+    {
+      "path": "quality/bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12.json",
+      "sha256": "a2e4cb971425c78b9d39cdceb46420bc4beb5b0006636d94911a2013e0b414b6"
+    },
+    {
+      "path": "quality/bronze/receipts/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+      "sha256": "14fb98f49eb4e92dc467c0781a1cbd8a3409994b28059922783558235e97b21a"
+    }
+  ],
+  "producer_archive_objects": {
+    "byte_count": 8293331,
+    "path_alias_git_blob_oid": "025c714ecd1fa69f91fdb4de002d285d47272e40",
+    "path_identity_interpretation": "Both approved candidate paths resolve to the same source payload identity at the pinned producer revision.",
+    "previous_record_state": "The two accepted producer-archive records remain preserved as source-native history; this audit does not rewrite, collapse, or retroactively qualify them.",
+    "projection_lineage": "The producer archive has distinct source-Parquet projection digests; their source-record lineage is not established by this raw B1/B2 identity join.",
+    "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+  },
+  "purpose": "Join the newly verified local MBS raw B1/B2 lifecycle to the two approved August raw archive aliases by exact source identity, while preserving producer-archive projection and v4 blockers.",
+  "reconciliation": {
+    "local_b1_b2_lifecycle_complete": true,
+    "m112_consumer_canaries": false,
+    "m112_federation_accepted": false,
+    "m112_v4_admission": false,
+    "producer_archive_projection_lineage_complete": false,
+    "producer_archive_records_rewritten": false,
+    "producer_archive_root_manifest_repaired": false,
+    "source_identity_joined": true
+  },
+  "recorded_at": "2026-10-04T00:50:29Z",
+  "schema_id": "global-medicines-atlas.australian-m112-mbs-lifecycle-crosswalk",
+  "schema_version": 1,
+  "scope": {
+    "approved_candidate_denominator": 1759,
+    "approved_m112_denominator_changed": false,
+    "candidate_paths": 2,
+    "current_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "paths": [
+      "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML"
+    ]
+  },
+  "status": "exact_source_identity_and_local_lifecycle_joined_archive_projection_and_v4_gates_open"
+}
