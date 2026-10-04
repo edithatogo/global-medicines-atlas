@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import importlib
 import json
 import os
@@ -33,6 +34,47 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKER_SECONDS = 120
 WORKER_MEMORY_BYTES = 2 * 1024 * 1024 * 1024
 WORKER_ARGUMENT_COUNT = 4
+DIAGNOSTIC_RECEIPT_PATH = Path(
+    "quality/qualifications/australian-mbs-utilisation-payload-validation-receipt-20261004.json"
+)
+DIAGNOSTIC_RECEIPT_SHA256 = (
+    "f622434530f3d184a5aea6684e67dc7f874424c2ada634b2f154490a39c6f457"
+)
+FAILURE_CODES = {
+    "archive total uncompressed bytes limit exceeded": "archive_expanded_byte_limit",
+    "archive member byte limit exceeded": "archive_member_byte_limit",
+    "archive decompression ratio exceeded": "archive_decompression_ratio_limit",
+    "archive entry count limit exceeded": "archive_entry_count_limit",
+    "archive member integrity failed": "archive_stream_integrity_failed",
+    "archive directory contains payload or invalid CRC": "archive_directory_integrity_failed",
+    "Workbook ZIP exceeds uncompressed size limit": "xlsx_expanded_byte_limit",
+    "Workbook metadata member exceeds size limit": "xlsx_metadata_byte_limit",
+    "Workbook OOXML required member is missing": "xlsx_required_member_missing",
+    "Workbook OOXML required members have unexpected roots": "xlsx_package_roots_unexpected",
+}
+
+
+def failed_workbook_paths(root: Path, cohort: list[dict[str, Any]]) -> set[str]:
+    """Select only exact recorded workbook failures from the trusted receipt."""
+    payload = (root / DIAGNOSTIC_RECEIPT_PATH).read_bytes()
+    if hashlib.sha256(payload).hexdigest() != DIAGNOSTIC_RECEIPT_SHA256:
+        raise ValueError("diagnostic receipt differs")
+    rows = {row["path"]: row for row in cohort}
+    selected: set[str] = set()
+    for receipt in json.loads(payload)["per_object_receipts"]:
+        document = receipt["document"]
+        reference = document["raw_reference"]
+        if document["status"] == "structure_failed" and reference[
+            "path"
+        ].endswith(".xlsx"):
+            row = rows[reference["path"]]
+            if (
+                reference != row["raw_reference"]
+                or not row["validation_dispatch_eligible"]
+            ):
+                raise ValueError("diagnostic source identity differs")
+            selected.add(reference["path"])
+    return selected
 
 
 def worker(index: int, path: Path) -> dict[str, Any]:
@@ -72,7 +114,15 @@ def worker(index: int, path: Path) -> dict[str, Any]:
             if isinstance(error.__cause__, (OSError, MemoryError))
             else "structure_failed"
         )
-        return {"status": status, "anonymous_digest_verified": True}
+        return {
+            "status": status,
+            "anonymous_digest_verified": True,
+            "failure_code": "infrastructure_unavailable"
+            if status == "validation_unavailable"
+            else FAILURE_CODES.get(
+                str(error), "structural_profile_failure_unclassified"
+            ),
+        }
     except UnicodeError, EOFError, csv.Error:
         return {"status": "structure_failed", "anonymous_digest_verified": True}
     return {
@@ -131,13 +181,19 @@ def run_worker(index: int, path: Path) -> dict[str, Any]:
     return result
 
 
-def main() -> None:
+def main() -> None:  # ruff: ignore[too-many-locals] -- linear receipt and cleanup gates
     """Persist each independent result before cleanup of verified raw bytes."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exact-commit", required=True)
+    parser.add_argument("--failed-workbooks-only", action="store_true")
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
     cohort = load_validation_cohort(ROOT)
+    selected = (
+        failed_workbook_paths(ROOT, cohort)
+        if args.failed_workbooks_only
+        else {row["path"] for row in cohort}
+    )
     if current_main() != args.exact_commit:
         raise ValueError("reviewed main has advanced")
     receipts = ROOT / "build/mbs-utilisation-validation-receipts"
@@ -149,6 +205,8 @@ def main() -> None:
     )  # Refuse private/gated datasets.
     observations: list[dict[str, Any]] = []
     for index, row in enumerate(cohort):
+        if row["path"] not in selected:
+            continue
         reference = row["raw_reference"]
         target = None
         outcome: dict[str, Any] = {
@@ -189,6 +247,9 @@ def main() -> None:
             "processing_admitted": False,
             "semantic_validation": False,
             "quarantine_decision": row["quarantine_decision"],
+            "validation_mode": "failed_workbooks_only"
+            if args.failed_workbooks_only
+            else "full_cohort",
         }
         object_receipts = receipts / row["acquisition_id"]
         object_receipts.mkdir()
@@ -223,6 +284,9 @@ def main() -> None:
         "recorded_at": datetime.now(UTC).isoformat(),
         "records": observations,
         "processing_admitted": False,
+        "validation_mode": "failed_workbooks_only"
+        if args.failed_workbooks_only
+        else "full_cohort",
     }
     print(
         json.dumps({"summary_receipt_url": persist_receipt(summary, receipts)})
