@@ -94,10 +94,12 @@ AU_MBS_PAYLOAD_SHA256 = (
 )
 AU_MBS_PAYLOAD_BYTE_COUNT = 8293331
 AU_MBS_ACQUISITION_ID = (
-    "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1"
+    "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd"
 )
-AU_MBS_RECEIPT_ID = "mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4"
-AU_MBS_ARCHIVE_REVISION = "243f9ff5498816af6e4d9ae4db60528728f01834"
+AU_MBS_RECEIPT_ID = "mbs-release:dab6a3a2793596b485fb6b1825837a13ade8bce04a897b65002c7794a6832cfb"
+AU_MBS_ARCHIVE_REVISION = "abdf414cdea0127d3edda6f8af402d1a01139623"
+AU_MBS_VERIFIED_LIFECYCLE_OBJECT_COUNT = 5
+AU_MBS_QUALIFICATION_SCHEMA_VERSION = 2
 AU_MBS_RAW_REFERENCE = (
     "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/"
     f"{AU_MBS_ARCHIVE_REVISION}/raw/mbs/releases/2026-08-01/{AU_MBS_PAYLOAD_SHA256}.xml"
@@ -137,7 +139,7 @@ OPEN_MEDIC_PUBLIC_MANIFEST_SHA256 = (
     "5a08e2eb4e99ec0e95f596a384df22007ca67b9df311a7af9b285f55eada0578"
 )
 AU_MBS_QUALIFICATION_RELATIVE = (
-    "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json"
+    "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
 )
 AUTHORITIES = {
     "requirements": "conductor/requirements.md",
@@ -340,7 +342,7 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         return False
     boundaries = cast("Mapping[str, Any]", boundaries)
     claims = (
-        receipt.get("schema_version") == 1,
+        receipt.get("schema_version") == AU_MBS_QUALIFICATION_SCHEMA_VERSION,
         receipt.get("qualification_scope") == "raw_b1_b2_only",
         receipt.get("evidence_class") == "live",
         receipt.get("source_version") == "2026-08-01",
@@ -379,7 +381,6 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         return False
     contract_path = "quality/qualifications/mbs-current-release-contract.json"
     authorization_path = "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
-    correction_path = "quality/qualifications/australian-mbs-mbs-b1-event-reconciliation-correction-20261003.json"
     try:
         current_contract = json.loads(
             (root / contract_path).read_text(encoding="utf-8")
@@ -387,35 +388,22 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         publication_authorization = json.loads(
             (root / authorization_path).read_text(encoding="utf-8")
         )
-        pairing_correction = json.loads(
-            (root / correction_path).read_text(encoding="utf-8")
-        )
     except OSError, ValueError, TypeError:
         return False
-    if not all(
-        isinstance(value, Mapping)
-        for value in (
-            current_contract,
-            publication_authorization,
-            pairing_correction,
-        )
+    if not isinstance(current_contract, Mapping) or not isinstance(
+        publication_authorization, Mapping
     ):
         return False
     current_contract = cast("Mapping[str, Any]", current_contract)
     publication_authorization = cast(
         "Mapping[str, Any]", publication_authorization
     )
-    pairing_correction = cast("Mapping[str, Any]", pairing_correction)
-    correction_mappings = pairing_correction.get("corrected_mappings")
-    unresolved = pairing_correction.get("preserved_unresolved_findings")
-    if not isinstance(correction_mappings, list) or not correction_mappings:
+    hosted = receipt.get("hosted_publication")
+    lifecycle = receipt.get("admission_lifecycle")
+    if not isinstance(hosted, Mapping) or not isinstance(lifecycle, Mapping):
         return False
-    if not isinstance(correction_mappings[0], Mapping) or not isinstance(
-        unresolved, Mapping
-    ):
-        return False
-    corrected = cast("Mapping[str, Any]", correction_mappings[0])
-    unresolved = cast("Mapping[str, Any]", unresolved)
+    hosted = cast("Mapping[str, Any]", hosted)
+    lifecycle = cast("Mapping[str, Any]", lifecycle)
     authorization_claims = (
         current_contract.get("source_id") == source_id,
         current_contract.get("effective_date") == "2026-08-01",
@@ -427,14 +415,23 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         )
         is True,
         publication_authorization.get("allowed_sources") == [source_id],
-        pairing_correction.get("schema_id")
-        == "global-medicines-atlas.australian-mbs-b1-event-reconciliation-correction",
-        corrected.get("acquisition_id") == AU_MBS_ACQUISITION_ID,
-        corrected.get("receipt_id") == AU_MBS_RECEIPT_ID,
-        corrected.get("admission_decision_id")
-        == "a4c8e7850c664db20b80a9f3e6d5cd09c61ebc1447c121c852438eff24a42dba",
-        unresolved.get("projection_lineage_reconciled") is False,
-        unresolved.get("root_manifest_completeness_reconciled") is False,
+        hosted.get("workflow_run")
+        == "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37163925043",
+        hosted.get("workflow_commit")
+        == "644f3f6cfd2b76b0866d5ecb90dde397d67a51eb",
+        hosted.get("source_archive_revision") == AU_MBS_ARCHIVE_REVISION,
+        hosted.get("lifecycle_metadata_revision")
+        == "1e4971c35c0ef45026168a8e2498d1bd57a3c324",
+        hosted.get("anonymous_digest_verification") == "passed",
+        hosted.get("temporary_source_bytes_removed") is True,
+        hosted.get("verified_lifecycle_objects")
+        == AU_MBS_VERIFIED_LIFECYCLE_OBJECT_COUNT,
+        lifecycle.get("required_order") == ["landed", "accepted"],
+        lifecycle.get("landed_predecessor_present") is True,
+        lifecycle.get("qualification_blocked") is False,
+        receipt.get("boundaries", {}).get("source_record_projection_qualified")
+        is False,
+        receipt.get("boundaries", {}).get("m112_federation_accepted") is False,
     )
     if not all(authorization_claims):
         return False
@@ -447,20 +444,24 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
     archive = cast("Mapping[str, Any]", archive)
     expected_files = {
         "source_receipt": (
-            "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
-            "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8",
+            f"quality/bronze/receipts/au-mbs/{AU_MBS_ACQUISITION_ID}.json",
+            "14fb98f49eb4e92dc467c0781a1cbd8a3409994b28059922783558235e97b21a",
         ),
         "acquisition_event": (
-            "quality/bronze/acquisitions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
-            "f0539528fff8f48781554e83ff3520579efc9a61daa04c5ca14d75e835bbacba",
+            f"quality/bronze/acquisitions/au-mbs/{AU_MBS_ACQUISITION_ID}.json",
+            "0473edd93fe9c2781701116febbd68a0c68262b74be5b4de52409d5c52570d30",
         ),
-        "admission": (
-            "quality/bronze/admissions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
-            "0674c678ba14bb916be250e25b69cc11bf5dc3663a216a3c94cebb35837ff22f",
+        "landed_admission": (
+            f"quality/bronze/admissions/au-mbs/{AU_MBS_ACQUISITION_ID}/56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12.json",
+            "a2e4cb971425c78b9d39cdceb46420bc4beb5b0006636d94911a2013e0b414b6",
+        ),
+        "accepted_admission": (
+            f"quality/bronze/admissions/au-mbs/{AU_MBS_ACQUISITION_ID}/39df4d1a14f1b90d1be41ae9e1fab7b99c9c75385f735b00831c8c199a1350f0.json",
+            "25dcc63b950ee330b28cfdd66747e4708891701703f8a91bda3c3b569d5fee7a",
         ),
         "b2_manifest": (
-            "quality/bronze/raw-evidence/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/manifest.json",
-            "c195af67842ed7005c836a08a49ca1e65bb3ca957399323a51da6dff58d72b42",
+            f"quality/bronze/raw-evidence/au-mbs/{AU_MBS_ACQUISITION_ID}/manifest.json",
+            "4104bc85b891dd489e94378c40129870ef98f087c0e28862feb759a3723501fb",
         ),
     }
     for key, (relative, digest) in expected_files.items():
@@ -484,8 +485,11 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         event = AcquisitionEvent.model_validate_json(
             (root / expected_files["acquisition_event"][0]).read_bytes()
         )
+        landed = BronzeAdmissionRecord.model_validate_json(
+            (root / expected_files["landed_admission"][0]).read_bytes()
+        )
         admission = BronzeAdmissionRecord.model_validate_json(
-            (root / expected_files["admission"][0]).read_bytes()
+            (root / expected_files["accepted_admission"][0]).read_bytes()
         )
         b2_manifest = RawEvidenceManifest.model_validate_json(
             (root / expected_files["b2_manifest"][0]).read_bytes()
@@ -512,6 +516,10 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         admission.state.value == "accepted",
         admission.acquisition_id == event.acquisition_id,
         admission.content_id == source.payload.sha256,
+        landed.state.value == "landed",
+        landed.acquisition_id == event.acquisition_id,
+        landed.content_id == source.payload.sha256,
+        admission.supersedes_decision_id == landed.decision_id,
         b2_row.state.value == "external_reference_only",
         b2_row.source_id == source_id,
         b2_row.acquisition_id == event.acquisition_id,
@@ -529,7 +537,7 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         "source_registry",
     }.issubset(set(source.reuse.searched_surfaces)):
         return False
-    archive_path = "quality/bronze/references/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/archive-manifest.json"
+    archive_path = f"quality/bronze/references/au-mbs/{AU_MBS_ACQUISITION_ID}/archive-manifest.json"
     try:
         raw_archive_value = json.loads(
             (root / archive_path).read_text(encoding="utf-8")
@@ -558,7 +566,7 @@ def _is_successful_australian_mbs_receipt(  # ruff: ignore[too-many-return-state
         archive.get("revision") == AU_MBS_ARCHIVE_REVISION,
         archive.get("root_manifest_path_present") is False,
         raw_archive.get("source_id") == source_id,
-        raw_archive.get("admission_state") == "accepted",
+        raw_archive.get("profile_state") == "accepted",
         raw_archive.get("data_acquired") is False,
         raw_object.get("sha256") == source.payload.sha256,
         raw_object.get("bytes") == source.payload.byte_count,

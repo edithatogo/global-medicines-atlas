@@ -1,0 +1,57 @@
+{
+  "contract": {
+    "authorization_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "effective_date": "2026-08-01",
+    "publication_authorized": true,
+    "source_id": "au-mbs",
+    "source_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801",
+    "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML"
+  },
+  "data_acquired": false,
+  "evidence_class": "live",
+  "objects": [
+    {
+      "bytes": 6510,
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/attempt-1.json",
+      "role": "attempt",
+      "sha256": "e946184482823559d3c7ef50724a6a372f185373a92f38f48f8dfeef9916a206"
+    },
+    {
+      "bytes": 8293331,
+      "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "role": "raw",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+    },
+    {
+      "bytes": 454247,
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
+      "role": "source_parquet",
+      "sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c"
+    },
+    {
+      "bytes": 24367,
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
+      "role": "p7_parquet",
+      "sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69"
+    },
+    {
+      "bytes": 6904,
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source-receipt.json",
+      "role": "source_receipt",
+      "sha256": "e741e662dcdf1d64a187af46d8069effe6323b8664cdc90398c4adcb04cad90d"
+    },
+    {
+      "bytes": 807,
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source-health.json",
+      "role": "source_health",
+      "sha256": "f3691f89e5cbaa7421f771503b687c9c1ecdcf8af7777ee2b0815b5a12793ad0"
+    }
+  ],
+  "p7_record_count": 165,
+  "profile_state": "accepted",
+  "record_count": 6046,
+  "schema_id": "global-medicines-atlas.mbs-release-v2",
+  "schema_version": 2,
+  "source_id": "au-mbs"
+}

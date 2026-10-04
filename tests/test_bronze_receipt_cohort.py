@@ -519,25 +519,26 @@ def test_committed_cohort_is_current_and_does_not_hide_full_scope_gaps() -> (
     assert report["preserved_current_scope"]["qualification_state"] == "blocked"
     assert report["preserved_current_scope"]["bronze_mature"] is False
     assert report["boundaries"]["this_report_closes_stable_v1_m5_gate"] is False
-    deferred_mbs = next(
+    mbs_member = next(
         item
-        for item in report["deferred_source_ledger"]["items"]
+        for item in report["qualified_cohort"]["members"]
         if item["source_id"] == "au-mbs"
     )
-    assert deferred_mbs["queue_state"] == "not_yet_implemented"
-    assert deferred_mbs["defer_reason_code"] == "no_qualifying_direct_receipt"
-    assert "no durable preceding landed event" in deferred_mbs["reason"]
+    assert mbs_member["receipt_reference"] == (
+        "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json"
+    )
     dependency_paths = {
         item["path"]
         for item in report["inputs"]["qualification_dependencies"]["files"]
     }
     assert {
-        "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json",
-        "quality/bronze/receipts/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
-        "quality/bronze/acquisitions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
-        "quality/bronze/admissions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",
-        "quality/bronze/raw-evidence/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/manifest.json",
-        "quality/bronze/references/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1/archive-manifest.json",
+        "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
+        "quality/bronze/receipts/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+        "quality/bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+        "quality/bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12.json",
+        "quality/bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/39df4d1a14f1b90d1be41ae9e1fab7b99c9c75385f735b00831c8c199a1350f0.json",
+        "quality/bronze/raw-evidence/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/manifest.json",
+        "quality/bronze/references/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/archive-manifest.json",
     }.issubset(dependency_paths)
     committed_report = json.loads(
         (
@@ -557,5 +558,5 @@ def test_open_medic_all_release_bronze_receipt_qualifies_exact_source() -> None:
         )
     }
     report = build_bronze_receipt_cohort(ROOT)
-    assert report["qualified_cohort"]["source_count"] == 28
-    assert report["deferred_source_ledger"]["source_count"] == 129
+    assert report["qualified_cohort"]["source_count"] == 29
+    assert report["deferred_source_ledger"]["source_count"] == 128

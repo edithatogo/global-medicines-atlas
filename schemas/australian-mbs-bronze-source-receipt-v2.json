@@ -1,0 +1,277 @@
+{
+  "$defs": {
+    "file": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://global-medicines-atlas.org/schemas/australian-mbs-bronze-source-receipt-v2.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "acquisition_id": {
+      "const": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd"
+    },
+    "admission_lifecycle": {
+      "additionalProperties": false,
+      "properties": {
+        "landed_predecessor_present": {
+          "const": true
+        },
+        "observed_decisions": {
+          "const": [
+            {
+              "decision_id": "56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12",
+              "state": "landed",
+              "supersedes_decision_id": null
+            },
+            {
+              "decision_id": "39df4d1a14f1b90d1be41ae9e1fab7b99c9c75385f735b00831c8c199a1350f0",
+              "state": "accepted",
+              "supersedes_decision_id": "56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12"
+            }
+          ]
+        },
+        "qualification_blocked": {
+          "const": false
+        },
+        "required_order": {
+          "const": [
+            "landed",
+            "accepted"
+          ]
+        }
+      },
+      "required": [
+        "required_order",
+        "observed_decisions",
+        "landed_predecessor_present",
+        "qualification_blocked"
+      ],
+      "type": "object"
+    },
+    "admission_state": {
+      "const": "accepted"
+    },
+    "archive": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "const": "quality/bronze/references/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/archive-manifest.json"
+        },
+        "revision": {
+          "const": "abdf414cdea0127d3edda6f8af402d1a01139623"
+        },
+        "root_manifest_path_present": {
+          "const": false
+        }
+      },
+      "required": [
+        "path",
+        "revision",
+        "root_manifest_path_present"
+      ],
+      "type": "object"
+    },
+    "authority": {
+      "type": "object"
+    },
+    "b2": {
+      "additionalProperties": false,
+      "properties": {
+        "byte_count": {
+          "const": 8293331
+        },
+        "external_reference": {
+          "format": "uri",
+          "type": "string"
+        },
+        "payload_bytes_retained_locally": {
+          "const": false
+        },
+        "payload_sha256": {
+          "const": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+        },
+        "state": {
+          "const": "external_reference_only"
+        }
+      },
+      "required": [
+        "state",
+        "payload_sha256",
+        "byte_count",
+        "payload_bytes_retained_locally",
+        "external_reference"
+      ],
+      "type": "object"
+    },
+    "boundaries": {
+      "additionalProperties": false,
+      "properties": {
+        "m112_federation_accepted": {
+          "const": false
+        },
+        "published_at_observed": {
+          "const": false
+        },
+        "source_effective_at_in_b1_receipt": {
+          "const": false
+        },
+        "source_record_projection_qualified": {
+          "const": false
+        }
+      },
+      "required": [
+        "source_record_projection_qualified",
+        "m112_federation_accepted",
+        "published_at_observed",
+        "source_effective_at_in_b1_receipt"
+      ],
+      "type": "object"
+    },
+    "content_id": {
+      "const": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+    },
+    "effective_date": {
+      "const": "2026-08-01"
+    },
+    "evidence_class": {
+      "const": "live"
+    },
+    "files": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_admission": {
+          "$ref": "#/$defs/file"
+        },
+        "acquisition_event": {
+          "$ref": "#/$defs/file"
+        },
+        "b2_manifest": {
+          "$ref": "#/$defs/file"
+        },
+        "landed_admission": {
+          "$ref": "#/$defs/file"
+        },
+        "source_receipt": {
+          "$ref": "#/$defs/file"
+        }
+      },
+      "required": [
+        "source_receipt",
+        "acquisition_event",
+        "landed_admission",
+        "accepted_admission",
+        "b2_manifest"
+      ],
+      "type": "object"
+    },
+    "hosted_publication": {
+      "additionalProperties": false,
+      "properties": {
+        "anonymous_digest_verification": {
+          "const": "passed"
+        },
+        "lifecycle_metadata_revision": {
+          "const": "1e4971c35c0ef45026168a8e2498d1bd57a3c324"
+        },
+        "source_archive_revision": {
+          "const": "abdf414cdea0127d3edda6f8af402d1a01139623"
+        },
+        "temporary_source_bytes_removed": {
+          "const": true
+        },
+        "verified_lifecycle_objects": {
+          "const": 5
+        },
+        "workflow_commit": {
+          "const": "644f3f6cfd2b76b0866d5ecb90dde397d67a51eb"
+        },
+        "workflow_run": {
+          "const": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37163925043"
+        }
+      },
+      "required": [
+        "workflow_run",
+        "workflow_commit",
+        "source_archive_revision",
+        "lifecycle_metadata_revision",
+        "anonymous_digest_verification",
+        "temporary_source_bytes_removed",
+        "verified_lifecycle_objects"
+      ],
+      "type": "object"
+    },
+    "qualification_scope": {
+      "const": "raw_b1_b2_only"
+    },
+    "qualification_state": {
+      "const": "accepted"
+    },
+    "receipt_id": {
+      "const": "mbs-release:dab6a3a2793596b485fb6b1825837a13ade8bce04a897b65002c7794a6832cfb"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "reuse_disposition": {
+      "const": "extend"
+    },
+    "rights_state": {
+      "const": "permitted"
+    },
+    "schema_id": {
+      "const": "global-medicines-atlas.australian-mbs-bronze-source-receipt"
+    },
+    "schema_version": {
+      "const": 2
+    },
+    "source_id": {
+      "const": "au-mbs"
+    },
+    "source_version": {
+      "const": "2026-08-01"
+    }
+  },
+  "required": [
+    "schema_id",
+    "schema_version",
+    "source_id",
+    "source_version",
+    "evidence_class",
+    "qualification_scope",
+    "qualification_state",
+    "acquisition_id",
+    "receipt_id",
+    "content_id",
+    "rights_state",
+    "reuse_disposition",
+    "admission_state",
+    "admission_lifecycle",
+    "effective_date",
+    "files",
+    "b2",
+    "archive",
+    "boundaries",
+    "authority",
+    "hosted_publication",
+    "recorded_at"
+  ],
+  "title": "Australian MBS raw Bronze source receipt qualification with verified admission lifecycle",
+  "type": "object"
+}

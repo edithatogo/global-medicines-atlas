@@ -1,291 +1,288 @@
 {
-  "schema_version": 1,
   "overrides": [
     {
+      "evidence_references": [
+        "quality/qualifications/source-rights-review-ledger.json",
+        "src/global_medicines_atlas/data/source_rights_policy_families.json"
+      ],
+      "family": "manual_reproducible_export",
+      "manual_instructions": "Acquire only the allowlisted NLM-created RxCUI identifier fields from a documented release/API response; record exact endpoint, release, retrieval time, and field allowlist. Do not retain or publish full response bytes, source vocabulary terms, or other third-party content. Qualify only after a rights-constrained external-reference B2 record and receipt-bound identifier projection are implemented.",
+      "next_action": "implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists",
+      "preserves_source_bytes": false,
+      "reason": "Source-specific maintainer approval permits public redistribution of NLM-created RxCUI identifiers only; full RxNorm source bytes and third-party vocabulary terms remain excluded.",
       "source_id": "global-rxnorm",
-      "family": "manual_reproducible_export",
-      "state": "manual_only_documented_acquisition",
-      "preserves_source_bytes": false,
-      "reason": "Source-specific maintainer approval permits public redistribution of NLM-created RxCUI identifiers only; full RxNorm source bytes and third-party vocabulary terms remain excluded.",
-      "manual_instructions": "Acquire only the allowlisted NLM-created RxCUI identifier fields from a documented release/API response; record exact endpoint, release, retrieval time, and field allowlist. Do not retain or publish full response bytes, source vocabulary terms, or other third-party content. Qualify only after a rights-constrained external-reference B2 record and receipt-bound identifier projection are implemented.",
-      "next_action": "implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists",
+      "state": "manual_only_documented_acquisition"
+    },
+    {
       "evidence_references": [
         "quality/qualifications/source-rights-review-ledger.json",
         "src/global_medicines_atlas/data/source_rights_policy_families.json"
-      ]
-    },
-    {
+      ],
+      "family": "manual_reproducible_export",
+      "manual_instructions": "Acquire only the allowlisted NLM-created RxCUI identifier fields from a documented release/API response; record exact endpoint, release, retrieval time, and field allowlist. Do not retain or publish full response bytes, source vocabulary terms, or other third-party content. Qualify only after a rights-constrained external-reference B2 record and receipt-bound identifier projection are implemented.",
+      "next_action": "implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists",
+      "preserves_source_bytes": false,
+      "reason": "Source-specific maintainer approval permits public redistribution of NLM-created RxCUI identifiers only; full RxNorm source bytes and third-party vocabulary terms remain excluded.",
       "source_id": "us-rxnorm-api",
-      "family": "manual_reproducible_export",
-      "state": "manual_only_documented_acquisition",
-      "preserves_source_bytes": false,
-      "reason": "Source-specific maintainer approval permits public redistribution of NLM-created RxCUI identifiers only; full RxNorm source bytes and third-party vocabulary terms remain excluded.",
-      "manual_instructions": "Acquire only the allowlisted NLM-created RxCUI identifier fields from a documented release/API response; record exact endpoint, release, retrieval time, and field allowlist. Do not retain or publish full response bytes, source vocabulary terms, or other third-party content. Qualify only after a rights-constrained external-reference B2 record and receipt-bound identifier projection are implemented.",
-      "next_action": "implement and test the allowlisted derived-identifier acquisition with external-reference-only B2 evidence; do not claim live acquisition until receipt-bound evidence exists",
-      "evidence_references": [
-        "quality/qualifications/source-rights-review-ledger.json",
-        "src/global_medicines_atlas/data/source_rights_policy_families.json"
-      ]
+      "state": "manual_only_documented_acquisition"
     },
     {
-      "source_id": "global-who-national-eml-index",
-      "state": "manual_only_documented_acquisition",
-      "reason": "The official WHO nEML index currently lists 167 candidate country/list items. WHO describes a collection assembled from official government websites and databases plus grey and academic literature; per-document reuse rights, upstream source rights, and acquisition authority remain unestablished. The source remains unacquired and unqualified.",
-      "manual_instructions": "Use the current official WHO nEML repository page for source discovery. For each candidate, record only the official item URL, country/list title, language, and displayed date. Do not fetch, retain, or publish linked national document bytes until the specific document's rights and acquisition authority are established. Record unavailable entries as unknown coverage, not negative evidence.",
-      "next_action": "Resolve source-specific rights, upstream origins, and maintainer acquisition authority for each candidate before any linked-document landing; preserve unavailable items as unknown coverage.",
       "evidence_references": [
         "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
         "quality/qualifications/who-national-eml-index-discovery-20261002.json",
         "quality/qualifications/who-national-eml-index-inventory-20261003.json"
-      ]
-    },
-    {
-      "source_id": "au-mbs",
-      "state": "not_yet_implemented",
-      "reason": "The August 2026 MBS source receipt and external B2 reference are preserved, but the accepted admission event has no durable preceding landed event and does not supersede one. The ordered B1 admission lifecycle is therefore incomplete, so this receipt is not eligible for the direct Bronze cohort. Source-record projection lineage and M-112 federation remain separately unqualified. MBS service-benefit evidence does not imply medicine regulatory or PBS funding evidence.",
-      "evidence_references": [
-        "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
-        "quality/qualifications/australian-mbs-bronze-source-receipt-20261003.json",
-        "quality/qualifications/mbs-current-release-contract.json",
-        "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
       ],
-      "next_action": "Reconcile the August 2026 MBS admission history using a durable landed event and an accepted decision that explicitly supersedes it; otherwise keep this receipt deferred. Do not create a retroactive landed event from inference. Keep source-record projection lineage and M-112 federation acceptance separate."
+      "manual_instructions": "Use the current official WHO nEML repository page for source discovery. For each candidate, record only the official item URL, country/list title, language, and displayed date. Do not fetch, retain, or publish linked national document bytes until the specific document's rights and acquisition authority are established. Record unavailable entries as unknown coverage, not negative evidence.",
+      "next_action": "Resolve source-specific rights, upstream origins, and maintainer acquisition authority for each candidate before any linked-document landing; preserve unavailable items as unknown coverage.",
+      "reason": "The official WHO nEML index currently lists 167 candidate country/list items. WHO describes a collection assembled from official government websites and databases plus grey and academic literature; per-document reuse rights, upstream source rights, and acquisition authority remain unestablished. The source remains unacquired and unqualified.",
+      "source_id": "global-who-national-eml-index",
+      "state": "manual_only_documented_acquisition"
     },
     {
-      "source_id": "au-mbs-p7-legacy-workbook",
-      "state": "landed_and_evidenced",
+      "evidence_references": [
+        "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
+        "quality/bronze/receipts/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+        "quality/bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
+        "quality/bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/56434cc0e027f2d8b082060feee63c490959b63a26a6aff91c01f84614432a12.json",
+        "quality/bronze/admissions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/39df4d1a14f1b90d1be41ae9e1fab7b99c9c75385f735b00831c8c199a1350f0.json",
+        "quality/bronze/raw-evidence/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/manifest.json",
+        "quality/bronze/references/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd/archive-manifest.json"
+      ],
       "evidence_scope": "live_receipt",
-      "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. Its archived storage SourceReceipt has been reconstructed byte-identically from the committed metadata, but that workflow retrieved from the Hugging Face archive boundary and emitted no source-origin B1 admission lifecycle. The legacy schema era remains explicit for comparison and does not imply current coverage.",
+      "next_action": "Keep the source-record Parquet/P7 projection lineage and M-112 per-object rights, v4 admission, and consumer canary gates separate; no source-record projection is qualified by this raw receipt.",
+      "reason": "The exact August 2026 MBS raw B2 external reference is anonymously digest-verified at a pinned public revision. A new B1 source receipt and acquisition event are joined to a persisted landed decision followed by an accepted decision that explicitly supersedes landed. This qualifies the raw B1/B2 receipt only; MBS source-record projection lineage and M-112 federation acceptance remain separate and unqualified. MBS service-benefit evidence does not imply medicine regulatory or PBS funding evidence.",
+      "source_id": "au-mbs",
+      "state": "landed_and_evidenced"
+    },
+    {
       "evidence_references": [
         "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
         "quality/qualifications/mbs-p7-storage-receipt-reconciliation-20261003.json"
       ],
-      "next_action": "Keep the workbook deferred until a source-origin retrieval from the pinned donor Git commit is recorded under the rights and reuse gates with a typed B1 receipt, acquisition event, chronological landed-to-accepted admission, and exact B2 reference or retained bytes. Re-evaluate the direct receipt cohort after that evidence exists. Keep the legacy date profile unset and M-112 federation acceptance separate."
+      "evidence_scope": "live_receipt",
+      "next_action": "Keep the workbook deferred until a source-origin retrieval from the pinned donor Git commit is recorded under the rights and reuse gates with a typed B1 receipt, acquisition event, chronological landed-to-accepted admission, and exact B2 reference or retained bytes. Re-evaluate the direct receipt cohort after that evidence exists. Keep the legacy date profile unset and M-112 federation acceptance separate.",
+      "reason": "The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. Its archived storage SourceReceipt has been reconstructed byte-identically from the committed metadata, but that workflow retrieved from the Hugging Face archive boundary and emitted no source-origin B1 admission lifecycle. The legacy schema era remains explicit for comparison and does not imply current coverage.",
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "dk-medstat-utilisation",
-      "state": "manual_only_documented_acquisition",
-      "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",
-      "manual_instructions": "After source-specific maintainer acceptance, export aggregate utilisation results with recorded query parameters and receipt the source-native result separately from the metadata downloads.",
       "evidence_references": [
         "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json"
-      ]
+      ],
+      "manual_instructions": "After source-specific maintainer acceptance, export aggregate utilisation results with recorded query parameters and receipt the source-native result separately from the metadata downloads.",
+      "reason": "Medstat is a public aggregate statistics surface with affirmative attribution terms; its bulk download inventory contains supporting ATC, product-name, and population metadata rather than utilisation results.",
+      "source_id": "dk-medstat-utilisation",
+      "state": "manual_only_documented_acquisition"
     },
     {
-      "source_id": "eu-union-register",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The official 2026-08-17 Union Register JSON snapshot was acquired under maintainer-approved internal-only CC BY 4.0 handling, projected at source-native record grain, clean-room reconstructed, and privately archived.",
       "evidence_references": [
         "quality/qualifications/union-register-live-corpus-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "The official 2026-08-17 Union Register JSON snapshot was acquired under maintainer-approved internal-only CC BY 4.0 handling, projected at source-native record grain, clean-room reconstructed, and privately archived.",
+      "source_id": "eu-union-register",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "fr-bdpm",
-      "state": "landed_and_evidenced",
+      "evidence_references": [
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
+      ],
       "evidence_scope": "live_receipt",
       "reason": "All seven source-native BDPM tabular files in the exact approved public archive were digest verified, admitted with an explicit lossless UTF-8-or-CP1252 tabular profile, projected without semantic field inference, and clean-room reconstructed byte-for-byte. Complete French regulatory coverage remains unclaimed.",
+      "source_id": "fr-bdpm",
+      "state": "landed_and_evidenced"
+    },
+    {
       "evidence_references": [
         "quality/qualifications/international-public-huggingface-20260821.json",
         "quality/qualifications/international-public-bronze-20260827.json"
-      ]
-    },
-    {
-      "source_id": "fr-bdpm-smr-asmr",
-      "state": "landed_and_evidenced",
+      ],
       "evidence_scope": "live_receipt",
       "reason": "All three source-native HAS SMR/ASMR tabular files in the exact approved public archive were digest verified, admitted with an explicit lossless UTF-8-or-CP1252 tabular profile, projected without interpreting assessment text as funding equivalence, and clean-room reconstructed byte-for-byte.",
-      "evidence_references": [
-        "quality/qualifications/international-public-huggingface-20260821.json",
-        "quality/qualifications/international-public-bronze-20260827.json"
-      ]
+      "source_id": "fr-bdpm-smr-asmr",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "fr-open-medic",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, and published under the approved Etalab-2.0 decision. The exact public revision was linked through the reuse gate; all 22,148,373 source-native rows were projected and all 12 products were rebuilt byte-for-byte. Complete French medicines coverage remains unclaimed.",
       "evidence_references": [
         "quality/qualifications/additional-utilisation-rights-preflight-20260821.json",
         "quality/qualifications/source-publication-queue.json",
         "quality/qualifications/open-medic-acquisition-success-20260821.json",
         "quality/qualifications/open-medic-public-huggingface-20260821.json",
         "quality/qualifications/open-medic-all-release-bronze-20260827.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "All 12 official Open Medic annual archives for 2014 through 2025 were acquired as immutable source bytes, checksum verified, and published under the approved Etalab-2.0 decision. The exact public revision was linked through the reuse gate; all 22,148,373 source-native rows were projected and all 12 products were rebuilt byte-for-byte. Complete French medicines coverage remains unclaimed.",
+      "source_id": "fr-open-medic",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "gb-emit",
-      "state": "landed_and_evidenced",
+      "evidence_references": [
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
+      ],
       "evidence_scope": "live_receipt",
       "reason": "The exact approved public eMIT ODS snapshot was digest verified, admitted as immutable B2 raw evidence, assigned a nonsemantic document manifest, and clean-room reconstructed from the pinned public archive. Source-native row projection and complete England utilisation coverage remain unclaimed.",
+      "source_id": "gb-emit",
+      "state": "landed_and_evidenced"
+    },
+    {
       "evidence_references": [
         "quality/qualifications/international-public-huggingface-20260821.json",
         "quality/qualifications/international-public-bronze-20260827.json"
-      ]
-    },
-    {
-      "source_id": "gb-nhs-drug-tariff",
-      "state": "landed_and_evidenced",
+      ],
       "evidence_scope": "live_receipt",
       "reason": "The exact approved public NHS Drug Tariff PDF snapshot was digest verified, admitted as immutable B2 raw evidence, assigned a nonsemantic document manifest, and clean-room reconstructed. No NHS endorsement, formulary equivalence, or complete temporal coverage is inferred.",
-      "evidence_references": [
-        "quality/qualifications/international-public-huggingface-20260821.json",
-        "quality/qualifications/international-public-bronze-20260827.json"
-      ]
+      "source_id": "gb-nhs-drug-tariff",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "gb-openprescribing",
-      "state": "temporarily_unavailable",
-      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. The bounded 2026-09-27 HEAD check of all six documented identities still returned Cloudflare HTTP 403 challenges. On 2026-09-29 the provider confirmed increased Cloudflare protections may challenge or block automation and that it cannot offer an alternative automated route at present. No payload or challenge bytes were retained and no publication occurred.",
-      "failure_receipt": "quality/qualifications/openprescribing-head-availability-20260927.json",
       "evidence_references": [
         "quality/qualifications/openprescribing-rights-preflight-20260821.json",
         "quality/qualifications/openprescribing-acquisition-authorization.json",
         "quality/qualifications/openprescribing-availability-20260826.json",
         "quality/qualifications/provider-response-thread-check-20260929.json"
       ],
-      "next_action": "wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files"
+      "failure_receipt": "quality/qualifications/openprescribing-head-availability-20260927.json",
+      "next_action": "wait for a provider-supported automated route or material access-control change before one bounded retry; do not bypass challenges, crawl unboundedly, or substitute upstream files",
+      "reason": "Public acquisition, retention, release, and external publication of successfully retrieved receipt-bound API v1 partitions were approved under the OGL on 2026-08-26. The bounded 2026-09-27 HEAD check of all six documented identities still returned Cloudflare HTTP 403 challenges. On 2026-09-29 the provider confirmed increased Cloudflare protections may challenge or block automation and that it cannot offer an alternative automated route at present. No payload or challenge bytes were retained and no publication occurred.",
+      "source_id": "gb-openprescribing",
+      "state": "temporarily_unavailable"
     },
     {
-      "source_id": "gb-nice-medicines-utilisation",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The four historic 2008\u20132012 releases were acquired under explicit internal-only maintainer approval; all 15 payloads were admitted, recorded in acquisition manifests, and clean-room restored by digest. This is bounded private B1/B2 evidence only: no source-record projection, third-party separability conclusion, public release, external publication, or independent durable replication is claimed.",
-      "next_action": "Keep the historical scope and private-only rights boundary explicit; do not publish or infer current utilisation coverage.",
       "evidence_references": [
         "quality/qualifications/nice-utilisation-acquisition-authorization.json",
         "quality/qualifications/nice-utilisation-acquisition-success-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "next_action": "Keep the historical scope and private-only rights boundary explicit; do not publish or infer current utilisation coverage.",
+      "reason": "The four historic 2008\u20132012 releases were acquired under explicit internal-only maintainer approval; all 15 payloads were admitted, recorded in acquisition manifests, and clean-room restored by digest. This is bounded private B1/B2 evidence only: no source-record projection, third-party separability conclusion, public release, external publication, or independent durable replication is claimed.",
+      "source_id": "gb-nice-medicines-utilisation",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "nl-gipdatabank",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "All 28 exact approved-public GIP Farmacie and Add-on CSV releases were acquired, admitted, projected at source-native grain, reconstructed byte-for-byte, restored from the checksum-verified archive, and anonymously restored from the immutable public Hugging Face revision under the bound CC0 decision.",
       "evidence_references": [
         "quality/qualifications/gip-acquisition-authorization.json",
         "quality/qualifications/gip-publication-authorization-20260821.json",
         "quality/qualifications/gip-acquisition-success-20260826.json",
         "quality/qualifications/gip-public-huggingface-20260826.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "All 28 exact approved-public GIP Farmacie and Add-on CSV releases were acquired, admitted, projected at source-native grain, reconstructed byte-for-byte, restored from the checksum-verified archive, and anonymously restored from the immutable public Hugging Face revision under the bound CC0 decision.",
+      "source_id": "nl-gipdatabank",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "no-norpd-utilisation",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "One official NIPH-published NorPD aggregate report for 2014-2018 was acquired under dated internal-only maintainer authority, admitted with a content-addressed receipt, restored in a clean-room exercise, and read back by digest from a pinned private non-gated archive. This does not assert complete historical coverage, rights clearance, public release, or post-2020 coverage.",
       "evidence_references": [
         "quality/qualifications/nordic-utilisation-acquisition-authorization.json",
         "quality/qualifications/norpd-live-private-bronze-20261001.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "One official NIPH-published NorPD aggregate report for 2014-2018 was acquired under dated internal-only maintainer authority, admitted with a content-addressed receipt, restored in a clean-room exercise, and read back by digest from a pinned private non-gated archive. This does not assert complete historical coverage, rights clearance, public release, or post-2020 coverage.",
+      "source_id": "no-norpd-utilisation",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "nz-pharmac-hml",
-      "state": "landed_and_evidenced",
+      "evidence_references": [
+        "quality/qualifications/international-public-huggingface-20260821.json",
+        "quality/qualifications/international-public-bronze-20260827.json"
+      ],
       "evidence_scope": "live_receipt",
       "reason": "The exact approved public Hospital Medicines List PDF snapshot was digest verified, admitted as immutable B2 raw evidence, assigned a nonsemantic document manifest, and clean-room reconstructed without converting it into funding or clinical claims.",
+      "source_id": "nz-pharmac-hml",
+      "state": "landed_and_evidenced"
+    },
+    {
       "evidence_references": [
         "quality/qualifications/international-public-huggingface-20260821.json",
         "quality/qualifications/international-public-bronze-20260827.json"
-      ]
-    },
-    {
-      "source_id": "nz-pharmac-schedule",
-      "state": "landed_and_evidenced",
+      ],
       "evidence_scope": "live_receipt",
       "reason": "The exact approved public Community Pharmaceutical Schedule PDF snapshot was digest verified, admitted as immutable B2 raw evidence, assigned a nonsemantic document manifest, and clean-room reconstructed without claiming current or complete funding coverage.",
+      "source_id": "nz-pharmac-schedule",
+      "state": "landed_and_evidenced"
+    },
+    {
       "evidence_references": [
         "quality/qualifications/international-public-huggingface-20260821.json",
         "quality/qualifications/international-public-bronze-20260827.json"
-      ]
-    },
-    {
-      "source_id": "nz-pharmac-schedule-xml",
-      "state": "landed_and_evidenced",
+      ],
       "evidence_scope": "live_receipt",
       "reason": "The exact approved public Community Pharmaceutical Schedule XML snapshot passed fail-closed XML inspection, was admitted as immutable B2 raw evidence with a nonsemantic document manifest, and was clean-room reconstructed. Silver normalization and complete funding coverage remain out of scope.",
-      "evidence_references": [
-        "quality/qualifications/international-public-huggingface-20260821.json",
-        "quality/qualifications/international-public-bronze-20260827.json"
-      ]
+      "source_id": "nz-pharmac-schedule-xml",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "se-socialstyrelsen-utilisation",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "Five source-generated aggregate JSON API responses for annual 2025 (national region, both sexes, all age groups, all ATC) and the five approved measure IDs were admitted as immutable B2 evidence, clean-room reconstructed, and archived at an authenticated, pinned private Hugging Face revision after digest verification. The coarse rights state remains unknown; this maintainer decision authorizes internal retention only and does not approve licensing, publication, or redistribution.",
-      "next_action": "Characterize the exact source result schema and broader period/geography coverage only under applicable authorization; do not infer OTC or hospital-administered use, complete Swedish utilisation, public release, or project licence approval.",
       "evidence_references": [
         "quality/qualifications/nordic-utilisation-rights-preflight-20260821.json",
         "quality/qualifications/sweden-socialstyrelsen-acquisition-decision-20260929.json",
         "quality/qualifications/sweden-socialstyrelsen-live-private-bronze-20260929.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "next_action": "Characterize the exact source result schema and broader period/geography coverage only under applicable authorization; do not infer OTC or hospital-administered use, complete Swedish utilisation, public release, or project licence approval.",
+      "reason": "Five source-generated aggregate JSON API responses for annual 2025 (national region, both sexes, all age groups, all ATC) and the five approved measure IDs were admitted as immutable B2 evidence, clean-room reconstructed, and archived at an authenticated, pinned private Hugging Face revision after digest verification. The coarse rights state remains unknown; this maintainer decision authorizes internal retention only and does not approve licensing, publication, or redistribution.",
+      "source_id": "se-socialstyrelsen-utilisation",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-cms-partd-formulary",
-      "state": "landed_and_evidenced",
+      "evidence_references": [
+        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
+        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
+        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
+      ],
       "evidence_scope": "live_receipt",
       "reason": "The exact 30 quarterly formulary releases through Q2 2026 have approved public rights subject to the CMS Agreement for Use, an anonymously verified immutable raw archive, and receipt-qualified source-string record Parquet at public revision aa176310b5748d471cec2c36955cac36eacb4ba2. Plan and population exclusions and release dates remain explicit; complete U.S. formulary coverage is unclaimed.",
+      "source_id": "us-cms-partd-formulary",
+      "state": "landed_and_evidenced"
+    },
+    {
       "evidence_references": [
         "quality/qualifications/cms-partd-rights-preflight-20260821.json",
         "quality/qualifications/cms-partd-public-huggingface-20260829.json",
         "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
-      ]
-    },
-    {
-      "source_id": "us-cms-partd-spending",
-      "state": "landed_and_evidenced",
+      ],
       "evidence_scope": "live_receipt",
       "reason": "The exact three-resource 2024 annual Part D spending surface has approved public rights, an anonymously verified immutable raw archive, and receipt-qualified source-string record Parquet at public revision aa176310b5748d471cec2c36955cac36eacb4ba2. Spending is gross, not net, and does not represent total U.S. medicines utilisation.",
-      "evidence_references": [
-        "quality/qualifications/cms-partd-rights-preflight-20260821.json",
-        "quality/qualifications/cms-partd-public-huggingface-20260829.json",
-        "quality/qualifications/cms-partd-source-record-qualification-20260927.json"
-      ]
+      "source_id": "us-cms-partd-spending",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-fda-drug-shortages",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and the metadata-only 35,494-capture delegated detail inventory were Bronze-exercised and privately archived. On 2026-08-26 the maintainer approved the monthly lists as the temporal corpus; delegated detail-page completeness remains unclaimed.",
       "evidence_references": [
         "quality/qualifications/fda-shortages-live-corpus-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "The complete current openFDA export, all 129 inventoried monthly FDA list snapshots, and the metadata-only 35,494-capture delegated detail inventory were Bronze-exercised and privately archived. On 2026-08-26 the maintainer approved the monthly lists as the temporal corpus; delegated detail-page completeness remains unclaimed.",
+      "source_id": "us-fda-drug-shortages",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-fda-faers",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "All 90 contiguous official FDA AERS/FAERS quarterly ASCII releases from 2004-Q1 through 2026-Q2 were acquired, projected without deduplication or causality inference, reconstructed, and privately archived.",
       "evidence_references": [
         "quality/qualifications/faers-live-corpus-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "All 90 contiguous official FDA AERS/FAERS quarterly ASCII releases from 2004-Q1 through 2026-Q2 were acquired, projected without deduplication or causality inference, reconstructed, and privately archived.",
+      "source_id": "us-fda-faers",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-fda-ndc-directory",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "All four current official FDA NDC bulk dataset surfaces were acquired, projected at product/package granularity, reconstructed, and privately archived.",
       "evidence_references": [
         "quality/qualifications/ndc-directory-live-corpus-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "All four current official FDA NDC bulk dataset surfaces were acquired, projected at product/package granularity, reconstructed, and privately archived.",
+      "source_id": "us-fda-ndc-directory",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-fda-nsde",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The current official NSDE comprehensive file has an accepted admission, a source-native record projection, and a byte-identical clean-room projection in the bounded internal U.S. Bronze receipt. Public release was not performed by that acquisition.",
       "evidence_references": [
         "quality/qualifications/us-live-bronze-records-20260820.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "The current official NSDE comprehensive file has an accepted admission, a source-native record projection, and a byte-identical clean-room projection in the bounded internal U.S. Bronze receipt. Public release was not performed by that acquisition.",
+      "source_id": "us-fda-nsde",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-fda-orange-book",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The bounded U.S. live-record receipt contains an accepted current Orange Book source-record projection, recovered from immutable payloads and reproduced as byte-identical Parquet. The separate historical family remains incomplete: the 2026-09-28 refresh accepted 140 of 260 release URLs, with 104 Archive-It requests failed and 16 responses quarantined. No public release or external publication is authorized.",
-      "failure_receipt": "quality/qualifications/orange-book-historical-refresh-20260928.json",
-      "next_action": "Keep the landed claim limited to the bounded current projection; retry historical acquisition only after a material official inventory or Archive-It availability change.",
       "evidence_references": [
         "quality/qualifications/us-live-bronze-records-20260820.json",
         "quality/qualifications/orange-book-historical-authorization.json",
@@ -293,80 +290,87 @@
         "quality/qualifications/orange-book-historical-refresh-20260928.json",
         "quality/qualifications/orange-book-historical-corpus-20260820.json",
         "quality/qualifications/orange-book-historical-corpus-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "failure_receipt": "quality/qualifications/orange-book-historical-refresh-20260928.json",
+      "next_action": "Keep the landed claim limited to the bounded current projection; retry historical acquisition only after a material official inventory or Archive-It availability change.",
+      "reason": "The bounded U.S. live-record receipt contains an accepted current Orange Book source-record projection, recovered from immutable payloads and reproduced as byte-identical Parquet. The separate historical family remains incomplete: the 2026-09-28 refresh accepted 140 of 260 release URLs, with 104 Archive-It requests failed and 16 responses quarantined. No public release or external publication is authorized.",
+      "source_id": "us-fda-orange-book",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-fda-recalls-notices",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The current FDA notice workbook and official live, archive-policy, and legacy archive-index documentation were acquired, Bronze-landed, clean-room exercised where admitted, and privately archived separately from the complete structured enforcement export.",
       "evidence_references": [
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "The current FDA notice workbook and official live, archive-policy, and legacy archive-index documentation were acquired, Bronze-landed, clean-room exercised where admitted, and privately archived separately from the complete structured enforcement export.",
+      "source_id": "us-fda-recalls-notices",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-fda-rems",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "All four official relational CSV surfaces, all 72 current REMS detail pages, and 827 of 829 linked FDA-hosted documents were acquired, reconstructed where admitted, and privately archived; the remaining two document links returned explicit HTTP 404 failure receipts.",
       "evidence_references": [
         "quality/qualifications/fda-rems-live-corpus-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "All four official relational CSV surfaces, all 72 current REMS detail pages, and 827 of 829 linked FDA-hosted documents were acquired, reconstructed where admitted, and privately archived; the remaining two document links returned explicit HTTP 404 failure receipts.",
+      "source_id": "us-fda-rems",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-gsrs-unii",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "All 68 authorized paired FDA GSRS/UNII releases were privately acquired as 136 immutable payloads, Bronze-landed, checksum verified, and stream-restored from the private archive without promoting terminology evidence to canonical medicine identity.",
       "evidence_references": [
         "quality/qualifications/gsrs-unii-acquisition-authorization.json",
         "quality/qualifications/gsrs-unii-acquisition-success-20260826.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "All 68 authorized paired FDA GSRS/UNII releases were privately acquired as 136 immutable payloads, Bronze-landed, checksum verified, and stream-restored from the private archive without promoting terminology evidence to canonical medicine identity.",
+      "source_id": "us-gsrs-unii",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-openfda-drugsfda",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this source. This openFDA response is a 100-record canary, not a complete release; public release was not performed.",
       "evidence_references": [
         "quality/qualifications/us-live-bronze-records-20260820.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this source. This openFDA response is a 100-record canary, not a complete release; public release was not performed.",
+      "source_id": "us-openfda-drugsfda",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-openfda-enforcement",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The complete current openFDA drug-enforcement bulk export was acquired, projected, clean-room reconstructed, and privately archived without linking or deduplicating it against recall notices.",
       "evidence_references": [
         "quality/qualifications/fda-enforcement-live-corpus-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "The complete current openFDA drug-enforcement bulk export was acquired, projected, clean-room reconstructed, and privately archived without linking or deduplicating it against recall notices.",
+      "source_id": "us-openfda-enforcement",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-openfda-faers",
-      "state": "landed_and_evidenced",
+      "evidence_references": [
+        "quality/qualifications/us-live-bronze-records-20260820.json"
+      ],
       "evidence_scope": "live_receipt",
       "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this distinct openFDA-derived source. Its 100-record response is a canary, not a complete release; it is kept separate from the FDA quarterly files without silent deduplication, and no public release was performed.",
-      "evidence_references": [
-        "quality/qualifications/us-live-bronze-records-20260820.json"
-      ]
+      "source_id": "us-openfda-faers",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-openfda-ndc",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The complete current openFDA NDC bulk partition was acquired, projected, reconstructed, and privately archived.",
       "evidence_references": [
         "quality/qualifications/ndc-directory-live-corpus-20260821.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "The complete current openFDA NDC bulk partition was acquired, projected, reconstructed, and privately archived.",
+      "source_id": "us-openfda-ndc",
+      "state": "landed_and_evidenced"
     },
     {
-      "source_id": "us-openfda-nsde",
-      "state": "landed_and_evidenced",
-      "evidence_scope": "live_receipt",
-      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this source. This openFDA response is a 100-record canary, not a complete release; public release was not performed.",
       "evidence_references": [
         "quality/qualifications/us-live-bronze-records-20260820.json"
-      ]
+      ],
+      "evidence_scope": "live_receipt",
+      "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this source. This openFDA response is a 100-record canary, not a complete release; public release was not performed.",
+      "source_id": "us-openfda-nsde",
+      "state": "landed_and_evidenced"
     }
-  ]
+  ],
+  "schema_version": 1
 }

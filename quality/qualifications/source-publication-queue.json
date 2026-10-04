@@ -15,8 +15,8 @@
       "policy_family_id": "au-maintainer-exact-redistribution-permission-20260829",
       "candidate_packaging_shape": "source_bytes_candidate",
       "acquisition_state": "evidenced",
-      "admission_state": "not_acquired",
-      "acquisition_evidence": "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
+      "admission_state": "accepted",
+      "acquisition_evidence": "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
       "publication_state": "published",
       "publication_evidence": "quality/qualifications/australian-mbs-public-huggingface-20260829.json",
       "next_action": "monitor_public_revision"
