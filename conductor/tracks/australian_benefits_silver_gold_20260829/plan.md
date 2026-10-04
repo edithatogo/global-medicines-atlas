@@ -1788,8 +1788,12 @@
   without rollback or automatic retries. Workflow wiring and actual dispatch
   remain separate; no publication is performed during this implementation.
 
-- [~] Wire the exact MBS rights executor into the protected Actions environment,
+- [x] Wire the exact MBS rights executor into the protected Actions environment,
   reuse the existing bounded anonymous transport and durable receipt store,
   and dispatch on the reviewed main commit. Verify all existing objects plus
   the one addition, then reconcile the hosted receipt without claiming v4
   admission, acquisition lineage completion or consumer canaries.
+  Hosted run `37192560767` at reviewed commit `d4004200bd4f9bf837cb21b88223b9cc3f912ea3`
+  verified all 31 objects at publication revision `87d63977f546dc5cc7c4f5371e37e77a7dfc0ddf`,
+  preserved all 30 baseline objects and durably recorded cleanup. See
+  `quality/qualifications/australian-mbs-utilisation-rights-publication-receipt-20261004.json`.
