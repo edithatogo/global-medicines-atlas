@@ -1,0 +1,35 @@
+{
+  "kind": "australian_mbs_codecov_tls_minimum_version_codeql_remediation",
+  "track_id": "australian_benefits_silver_gold_20260829",
+  "recorded_at": "2026-10-05T16:07:00+10:00",
+  "pull_request": "https://github.com/edithatogo/global-medicines-atlas/pull/782",
+  "codeql_finding": {
+    "check_run_id": 111634750759,
+    "severity": "high",
+    "rule": "Use of insecure SSL/TLS version",
+    "file": "scripts/check_codecov_tls.py",
+    "fix": "Set ssl.SSLContext.minimum_version to TLSv1_2 explicitly"
+  },
+  "implementation": {
+    "script": "scripts/check_codecov_tls.py",
+    "minimum_tls": "TLSv1.2",
+    "system_trust_store_preserved": true,
+    "hostname_validation_preserved": true,
+    "oidc_authentication_changed": false,
+    "fail_ci_if_error_changed": false
+  },
+  "processing_admitted": false,
+  "source_payload_bytes_acquired": false,
+  "hosted_header_inventory_executed": false,
+  "verification": {
+    "focused_tls_tests": "5 passed",
+    "test_goblin_full": "5,794 passed, one optional PyIceberg skip, two pre-existing local uv-version failures, 96.76% coverage",
+    "pinned_uv_reproducibility_rerun": "2 passed using official uv 0.11.29; release archive SHA-256 matched 61c04acc52a33ef0f331e494bdfbedcdb6c26c6970c022ed3699e5860f8930e3",
+    "routine": "passed",
+    "ty": "passed",
+    "diff_check": "passed",
+    "hosted_codeql": "pending new commit",
+    "live_codecov_preflight": "still fails closed because ingest.codecov.io certificate is expired"
+  },
+  "remaining": "Confirm the CodeQL alert is cleared on the pushed head; Codecov certificate renewal or a supported OIDC-compatible upload route is still required before protected checks, merge, and hosted header inventory."
+}

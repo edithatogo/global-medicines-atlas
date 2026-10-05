@@ -294,6 +294,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_stable_v1_monitoring.py",
         "tests/test_stable_v1_documentation.py",
         "tests/test_stable_v1_hosted_governance.py",
+        "tests/test_prepare_codecov_cli.py",
+        "tests/test_codecov_tls.py",
         "tests/test_openapi_semantic.py",
         "tests/test_canonical_v2_runtime.py",
         "tests/test_comparison_validity.py",

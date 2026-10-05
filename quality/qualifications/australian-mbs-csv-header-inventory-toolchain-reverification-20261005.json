@@ -1,0 +1,20 @@
+{
+  "full_suite_repeated": false,
+  "hosted_ci_recovered": false,
+  "hosted_inventory_executed": false,
+  "kind": "australian_mbs_csv_header_inventory_toolchain_reverification",
+  "pinned_uv": "0.11.29",
+  "platform": "aarch64-apple-darwin",
+  "processing_admitted": false,
+  "pull_request": "https://github.com/edithatogo/global-medicines-atlas/pull/782",
+  "recorded_at": "2026-10-05T00:44:53.693734+00:00",
+  "release_asset": "https://github.com/astral-sh/uv/releases/download/0.11.29/uv-aarch64-apple-darwin.tar.gz",
+  "release_asset_sha256": "61c04acc52a33ef0f331e494bdfbedcdb6c26c6970c022ed3699e5860f8930e3",
+  "remaining": "Required Codecov signed CLI asset downloads continue to fail TLS. PR #782 remains blocked until protected required CI can complete.",
+  "targeted_tests": {
+    "command": "PATH=/tmp/gma-uv-0.11.29/uv-aarch64-apple-darwin:$PATH uv run pytest -q tests/test_stable_v1_release_candidate_reproducibility.py::test_clean_clones_match_and_consume_artifacts tests/test_stable_v1_release_candidate_reproducibility.py::test_committed_receipt_reproduces_from_durable_source_commit",
+    "result": "2 passed in 88.85s"
+  },
+  "track_id": "australian_benefits_silver_gold_20260829",
+  "verification": "SHA-256 matched the digest published for the exact GitHub release asset; tool extracted under /tmp without changing repository or shared uv installation."
+}

@@ -1898,6 +1898,49 @@
   payload mappings or granting admission. See
   `quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json`.
 
-- [ ] Implement protected hosted native-header inventory for the four already
+- [~] Implement protected hosted native-header inventory for the four already
   structurally verified standalone CSVs. Bind exact source identities and
   record header metadata only before selecting any semantic conversion.
+
+  Implementation is in PR #782; hosted execution remains pending. CI run
+  `37246962322` passed test steps but failed uploader signature acquisition
+  on three attempts. The hosted test steps passed; only signature-file acquisition failed. The PR now prepares Codecov CLI 11.3.1 from its exact pinned PyPI wheel after PEP 740/Sigstore publisher verification, then passes that installed artifact to the existing OIDC uploader with `fail_ci_if_error: true`. The prior local full profile reported 5,789 passes and two harness false positives because it interpreted an unused Codecov `version` input as the uv version; removing that unnecessary input made both affected tests pass. Routine checks pass; exact-head hosted checks remain pending. See `quality/qualifications/australian-mbs-csv-header-inventory-ci-blocker-20261005.json`, `quality/qualifications/australian-mbs-csv-header-inventory-toolchain-reverification-20261005.json`, and `quality/qualifications/australian-mbs-csv-header-inventory-codecov-pypi-recovery-implementation-20261005.json` (SHA-256 `ac2e79318f72754dc9237ddac52ed5e1fb429e8559a40e0d7081fbbea88bb87b`).
+
+## Codecov expired-certificate preflight (2026-10-05)
+
+- [x] Add a fail-closed TLS readiness check before each protected coverage
+  upload. It uses the system trust store and hostname validation; certificate,
+  connection, and metadata errors stop the workflow before invoking Codecov.
+  OIDC and `fail_ci_if_error: true` remain unchanged. Focused tests: 41 passed;
+  Test-Goblin unit: 4,980 passed, one optional PyIceberg skip; routine passed;
+  strict typing has zero errors and four existing optional Hub source warnings;
+  `ty` passed. Against the live endpoint the diagnostic exited nonzero with
+  `certificate has expired`, without attempting an upload. The exact
+  `*.codecov.io` serial, validity dates, and SHA-256 fingerprint and prior
+  hosted run `37251043420` are recorded in
+  `quality/qualifications/australian-mbs-codecov-tls-preflight-20261005.json`.
+  Implementation commit `1855257fe5f813b35f1527c52efeb73b3944c4e8`.
+  Hosted exact-head checks remain pending; header inventory was not dispatched.
+
+- [x] Address the new CodeQL high-severity TLS protocol finding by setting an
+  explicit TLS 1.2 minimum on the verified Codecov upload preflight context.
+  The focused TLS tests (5), routine harness, `ty`, and `git diff --check`
+  pass. Test-Goblin full completed with 5,794 passed, one optional skip, two
+  existing release-reproducibility failures caused by local uv 0.12.23 instead
+  of required uv 0.11.29, and 96.76% coverage; both affected tests then passed
+  (2 passed) with official uv 0.11.29 after its release-asset SHA-256 matched
+  the previously recorded digest. CodeQL and complete hosted checks remain
+  pending for the new commit. The live Codecov upload endpoint still presents
+  an expired certificate, so upload lanes remain blocked and the header
+  inventory was not dispatched. See
+  `quality/qualifications/australian-mbs-codecov-tls-minimum-version-20261005.json`.
+
+- [x] Reconcile the pushed TLS 1.2 remediation against exact-head hosted
+  security checks. CodeQL run `37270874089` completed successfully and
+  reported no new alerts on commit `90c09f1c576917c71f49b23a282a2aa79a03bf52`.
+  Test-Goblin run `37270874057` completed with 21 successful jobs; seven
+  coverage lanes failed only at the Codecov TLS preflight because the live
+  ingest certificate remains expired. Their test-profile steps passed. The
+  local preflight independently reproduces that expiry. PR #782 remains
+  blocked; no inventory dispatch or processing admission occurred. See
+  `quality/qualifications/australian-mbs-codecov-tls-hosted-reconciliation-20261005.json`.
