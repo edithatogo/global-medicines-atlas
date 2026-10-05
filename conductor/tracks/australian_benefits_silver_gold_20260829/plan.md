@@ -1919,4 +1919,5 @@
   `*.codecov.io` serial, validity dates, and SHA-256 fingerprint and prior
   hosted run `37251043420` are recorded in
   `quality/qualifications/australian-mbs-codecov-tls-preflight-20261005.json`.
+  Implementation commit `1855257fe5f813b35f1527c52efeb73b3944c4e8`.
   Hosted exact-head checks remain pending; header inventory was not dispatched.
