@@ -653,3 +653,34 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   full-denominator anonymous digest gate remains open. The 20
   utilization-publication digest joins are publication receipts only and do
   not establish source rights or admission.
+
+## M-107 historical snapshot coverage reconciliation (2026-10-05)
+
+- [x] Reconcile the current metadata-only public tree inventory with official
+  MBS download pages, PBS source-era documentation, source rights ledgers, and
+  prior Health.gov workbook receipts. Record exact missing families and
+  periods, retrieval state, rights state, and acceptance evidence in
+  `docs/qualification/australian-mbs-pbs-m107-snapshots.md`.
+- [x] Use the pre-authorized exact-main MBS schedule workflow for independent
+  releases. Run `37282662744` added the `2026-11-01` schedule and verified 21
+  cumulative objects with cleanup. Run `37282945693` selected nine recent
+  release resources, added the `2026-01-01` schedule and two distinct
+  `2026-03-01` XML revisions, and verified 27 cumulative objects with cleanup.
+  Read back B1 receipts at the exact resulting revisions; do not treat the
+  partial recent archive as a full release denominator.
+- [x] Preserve the three Health.gov workbook zero-byte timeout findings and
+  annual page/attachment period mismatch. Read back the Department inquiry
+  thread; only outgoing messages were present. No unchanged workbook retries
+  were made.
+- [x] Record the PBS schedule schema-era ranges and exact April 2026 v3 object;
+  record that older XML rights are unresolved, the API's 12-month route lacks
+  retention/redistribution terms, and the separate PBS utilisation tree has
+  six metadata-observed raw paths with per-object rights/lineage unresolved.
+- [~] Keep M-107 blocked. The enumerated official MBS period set is incomplete;
+  exact January/March 2025 and both November 2025 XML revisions remain without
+  receipts; official historic PDF/Word/software formats are not enumerated or
+  covered by the existing MBS XML publication authorization. The PBS schedule
+  and API periods still lack source-specific rights and period-by-period
+  receipts. Finish only after the expected source/snapshot denominator
+  reconciles to exact source receipts, schema era, validity, retrieval,
+  completeness, rights and immutable archive identities.
