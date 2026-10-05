@@ -1825,6 +1825,17 @@
   preserved all 30 baseline objects and durably recorded cleanup. See
   `quality/qualifications/australian-mbs-utilisation-rights-publication-receipt-20261004.json`.
 
+- [x] Reconcile every approved M-112 path individually against current-tree
+  identity, anonymous digest receipts, rights, B1/B2 lineage, v4 admission,
+  consumer canaries, and its preserved deferral group. The 1,759-row ledger
+  confirms all pinned tree identities and sizes, 28 object-level anonymous
+  digest readbacks, and exact-scope rights evidence for the 14 MBS-utilisation
+  objects. No path has complete B1/B2 lineage, v4 admission, or canary proof;
+  all 1,759 remain deferred without changing the approved denominator. The
+  smallest rights-cleared cohort cannot advance because its canonical source
+  receipt, storage receipt, and admission-history fields remain incomplete.
+  See `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261005.json`.
+
 - [x] Restore the exact 14 historical harvest sidecars anonymously and join
   their source IDs, categories, dates, URLs and raw identities to the pinned
   B2 references and published per-object rights supplement. Preserve their
