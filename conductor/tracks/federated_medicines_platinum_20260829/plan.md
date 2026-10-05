@@ -260,3 +260,33 @@
 - [ ] Run Conductor review, repair findings, open scoped pull requests, wait for
   hosted checks, merge, and reconcile evidence; stop at public release and
   consequential-interpretation gates.
+
+### M-111 pinned public consumer verification (2026-10-05)
+
+- [~] Refresh the exact pinned MBS public transport identity. Anonymous
+  retrieval and bounded Parquet verification passed for Bronze object
+  `edithatogo/australian-mbs-source-archive@75f9f20a36ddb829dfe0ca88660664570782be02`,
+  path `bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet`,
+  SHA-256 `6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe`.
+  This is a 165-row Bronze projection and remains explicitly unadmitted, so it
+  is not an M-111 product query or evidence of current source coverage.
+- [ ] Verify API, CLI, atlas, and export against independently admitted exact
+  public v4 Parquet and semantic manifests. Keep all four surfaces blocked:
+  the exact MBS v4 pin `edithatogo/australian-mbs-source-archive@ba82cd1d0f9b0f28514df431b8da3a6c207d76fa`
+  has an anonymous digest-verification receipt for its 9 objects and its
+  manifest SHA-256 is `bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59`,
+  but the manifest declares `candidate_only` and no product admission exists.
+  The public head is now `1e4971c35c0ef45026168a8e2498d1bd57a3c324`; current
+  metadata-tree identities still match the historical receipt. No admitted
+  PBS v4 product manifest is recorded. Without product admission, no consumer
+  can claim Australian result provenance, coverage, schema era, cohort,
+  confidence, review, or source freshness. Do not use the separate Bronze
+  transport fixture or local synthetic outputs to satisfy this gate.
+- [x] Run narrow fail-closed controls for candidate self-admission, empty trust,
+  API/CLI unavailability, Atlas unknown states, and export metadata bounds.
+  Thirty-eight focused tests passed. These checks qualify safety behavior only;
+  they do not complete consumer verification.
+- [ ] Re-enter M-111 when an exact admitted public v4 contract and semantic
+  manifest exist for the tested Parquet identities, then record successful
+  per-surface provenance/freshness/coverage/cohort/confidence canaries and
+  anonymous export readback.
