@@ -1901,3 +1901,8 @@
 - [~] Implement protected hosted native-header inventory for the four already
   structurally verified standalone CSVs. Bind exact source identities and
   record header metadata only before selecting any semantic conversion.
+
+  Implementation is in PR #782; hosted execution remains pending. CI run
+  `37246962322` passed test steps but failed uploader signature acquisition
+  on three attempts. Existing signature controls remain intact. See
+  `quality/qualifications/australian-mbs-csv-header-inventory-ci-blocker-20261005.json`.
