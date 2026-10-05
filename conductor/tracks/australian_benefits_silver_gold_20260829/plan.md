@@ -1934,3 +1934,13 @@
   an expired certificate, so upload lanes remain blocked and the header
   inventory was not dispatched. See
   `quality/qualifications/australian-mbs-codecov-tls-minimum-version-20261005.json`.
+
+- [x] Reconcile the pushed TLS 1.2 remediation against exact-head hosted
+  security checks. CodeQL run `37270874089` completed successfully and
+  reported no new alerts on commit `90c09f1c576917c71f49b23a282a2aa79a03bf52`.
+  Test-Goblin run `37270874057` completed with 21 successful jobs; seven
+  coverage lanes failed only at the Codecov TLS preflight because the live
+  ingest certificate remains expired. Their test-profile steps passed. The
+  local preflight independently reproduces that expiry. PR #782 remains
+  blocked; no inventory dispatch or processing admission occurred. See
+  `quality/qualifications/australian-mbs-codecov-tls-hosted-reconciliation-20261005.json`.

@@ -1,0 +1,31 @@
+{
+  "kind": "australian_mbs_codecov_tls_hosted_reconciliation",
+  "track_id": "australian_benefits_silver_gold_20260829",
+  "recorded_at": "2026-10-05T16:26:14+10:00",
+  "pull_request": "https://github.com/edithatogo/global-medicines-atlas/pull/782",
+  "head_sha": "90c09f1c576917c71f49b23a282a2aa79a03bf52",
+  "security_run": {
+    "id": 37270874089,
+    "codeql_check_run_id": 111637388433,
+    "result": "passed",
+    "new_code_scanning_alerts": 0
+  },
+  "test_goblin_run": {
+    "id": 37270874057,
+    "result": "failed_at_required_codecov_upload_preflight",
+    "successful_jobs": 21,
+    "failed_coverage_jobs": 7,
+    "failed_step": "Verify Codecov upload TLS certificate",
+    "profile_test_steps": "passed"
+  },
+  "processing_admitted": false,
+  "source_payload_bytes_acquired": false,
+  "hosted_header_inventory_executed": false,
+  "live_endpoint": {
+    "host": "ingest.codecov.io:443",
+    "result": "certificate verification fails because the served certificate is expired",
+    "preflight_exit_code": 1,
+    "upload_attempted": false
+  },
+  "remaining": "Codecov certificate renewal or a supported OIDC-compatible upload route is required before the protected CI gate, PR merge, and exact-main header inventory can proceed."
+}
