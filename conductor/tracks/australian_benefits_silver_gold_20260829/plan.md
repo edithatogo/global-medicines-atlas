@@ -1908,4 +1908,5 @@
   clean-clone reproducibility tests now pass with the exact pinned `uv 0.11.29`;
   full-suite evidence was reused. Required hosted CI remains blocked. See
   `quality/qualifications/australian-mbs-csv-header-inventory-ci-blocker-20261005.json`
-  and `quality/qualifications/australian-mbs-csv-header-inventory-toolchain-reverification-20261005.json` (SHA-256 `4cd816c1ca5c58fe6c91f814eea3b31de7f4b34c8b34178c7d354316aa50ee53).
+  and `quality/qualifications/australian-mbs-csv-header-inventory-toolchain-reverification-20261005.json` (SHA-256 `4cd816c1ca5c58fe6c91f814eea3b31de7f4b34c8b34178c7d354316aa50ee53`).
+  A PyPI PEP 740/Sigstore attestation for Codecov CLI 11.3.1 was cryptographically verified against the Codecov GitHub Actions publisher; adopting that alternate trust path requires a maintainer decision. See `quality/qualifications/australian-mbs-csv-header-inventory-codecov-pypi-provenance-20261005.json` (SHA-256 `8b945790fee44b9f897a58ff817d944f5ad17c357fcd8f575bc5e3adc3c6407f`).
