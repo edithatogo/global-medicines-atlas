@@ -200,6 +200,8 @@ jobs:
         run: |
           uv sync --project .ci/codecov --python 3.14.6 --locked
           uv run --project .ci/codecov --python 3.14.6 --locked python scripts/prepare_codecov_cli.py --wheel-directory "$RUNNER_TEMP/codecov-cli"
+      - name: Verify Codecov upload TLS certificate
+        run: python scripts/check_codecov_tls.py
       - name: Upload ${{ matrix.lane }} coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with:
@@ -276,6 +278,9 @@ jobs:
         run: |
           uv sync --project .ci/codecov --python 3.14.6 --locked
           uv run --project .ci/codecov --python 3.14.6 --locked python scripts/prepare_codecov_cli.py --wheel-directory "$RUNNER_TEMP/codecov-cli"
+      - name: Verify Codecov upload TLS certificate
+        if: matrix.profile == 'coverage'
+        run: python scripts/check_codecov_tls.py
       - name: Upload coverage
         if: matrix.profile == 'coverage'
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6

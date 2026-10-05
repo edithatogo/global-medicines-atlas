@@ -1905,3 +1905,18 @@
   Implementation is in PR #782; hosted execution remains pending. CI run
   `37246962322` passed test steps but failed uploader signature acquisition
   on three attempts. The hosted test steps passed; only signature-file acquisition failed. The PR now prepares Codecov CLI 11.3.1 from its exact pinned PyPI wheel after PEP 740/Sigstore publisher verification, then passes that installed artifact to the existing OIDC uploader with `fail_ci_if_error: true`. The prior local full profile reported 5,789 passes and two harness false positives because it interpreted an unused Codecov `version` input as the uv version; removing that unnecessary input made both affected tests pass. Routine checks pass; exact-head hosted checks remain pending. See `quality/qualifications/australian-mbs-csv-header-inventory-ci-blocker-20261005.json`, `quality/qualifications/australian-mbs-csv-header-inventory-toolchain-reverification-20261005.json`, and `quality/qualifications/australian-mbs-csv-header-inventory-codecov-pypi-recovery-implementation-20261005.json` (SHA-256 `ac2e79318f72754dc9237ddac52ed5e1fb429e8559a40e0d7081fbbea88bb87b`).
+
+## Codecov expired-certificate preflight (2026-10-05)
+
+- [x] Add a fail-closed TLS readiness check before each protected coverage
+  upload. It uses the system trust store and hostname validation; certificate,
+  connection, and metadata errors stop the workflow before invoking Codecov.
+  OIDC and `fail_ci_if_error: true` remain unchanged. Focused tests: 41 passed;
+  Test-Goblin unit: 4,980 passed, one optional PyIceberg skip; routine passed;
+  strict typing has zero errors and four existing optional Hub source warnings;
+  `ty` passed. Against the live endpoint the diagnostic exited nonzero with
+  `certificate has expired`, without attempting an upload. The exact
+  `*.codecov.io` serial, validity dates, and SHA-256 fingerprint and prior
+  hosted run `37251043420` are recorded in
+  `quality/qualifications/australian-mbs-codecov-tls-preflight-20261005.json`.
+  Hosted exact-head checks remain pending; header inventory was not dispatched.

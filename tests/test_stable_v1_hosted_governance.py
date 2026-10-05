@@ -250,9 +250,19 @@ def test_coverage_upload_verifies_the_exact_pypi_attested_cli_first() -> None:
         for index, step in enumerate(test_steps)
         if str(step.get("uses", "")).startswith("codecov/codecov-action@")
     )
+    test_tls_index = next(
+        index
+        for index, step in enumerate(test_steps)
+        if step.get("name") == "Verify Codecov upload TLS certificate"
+    )
     test_upload = test_steps[test_upload_index]
     test_config = cast("dict[str, object]", test_upload["with"])
     assert test_prepare_index < test_upload_index
+    assert test_prepare_index < test_tls_index < test_upload_index
+    assert (
+        test_steps[test_tls_index]["run"]
+        == "python scripts/check_codecov_tls.py"
+    )
     assert test_config["binary"] == uploader
     assert test_config["fail_ci_if_error"] is True
     assert test_config["use_oidc"] is True
@@ -268,8 +278,15 @@ def test_coverage_upload_verifies_the_exact_pypi_attested_cli_first() -> None:
         for step in quality_steps
         if str(step.get("uses", "")).startswith("codecov/codecov-action@")
     )
+    quality_tls = next(
+        step
+        for step in quality_steps
+        if step.get("name") == "Verify Codecov upload TLS certificate"
+    )
     quality_config = cast("dict[str, object]", quality_upload["with"])
     assert quality_prepare["if"] == "matrix.profile == 'coverage'"
+    assert quality_tls["if"] == "matrix.profile == 'coverage'"
+    assert quality_tls["run"] == "python scripts/check_codecov_tls.py"
     assert quality_config["binary"] == uploader
     assert quality_config["fail_ci_if_error"] is True
     assert quality_config["use_oidc"] is True
