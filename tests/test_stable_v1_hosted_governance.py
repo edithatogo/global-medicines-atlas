@@ -9,6 +9,7 @@ import jsonschema
 import pytest
 import yaml
 from pydantic import JsonValue, ValidationError
+from scripts import prepare_codecov_cli
 from scripts.qualify_stable_v1_hosted_governance import check_artifacts
 
 from global_medicines_atlas.stable_v1_hosted_governance import (
@@ -229,6 +230,56 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
     assert "Restore content-validated gremlins cache" in workflow
     assert "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9" in workflow
     assert "'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*'" in workflow
+
+
+def test_coverage_upload_verifies_the_exact_pypi_attested_cli_first() -> None:
+    workflow = yaml.safe_load(
+        (ROOT / ".github/workflows/test-goblin.yml").read_text(encoding="utf-8")
+    )
+    jobs = cast("dict[str, dict[str, object]]", workflow["jobs"])
+    uploader = "${{ github.workspace }}/.ci/codecov/.venv/bin/codecovcli"
+
+    test_steps = cast("list[dict[str, object]]", jobs["tests"]["steps"])
+    test_prepare_index = next(
+        index
+        for index, step in enumerate(test_steps)
+        if step.get("name") == "Verify and prepare Codecov CLI"
+    )
+    test_upload_index = next(
+        index
+        for index, step in enumerate(test_steps)
+        if str(step.get("uses", "")).startswith("codecov/codecov-action@")
+    )
+    test_upload = test_steps[test_upload_index]
+    test_config = cast("dict[str, object]", test_upload["with"])
+    assert test_prepare_index < test_upload_index
+    assert test_config["binary"] == uploader
+    assert test_config["fail_ci_if_error"] is True
+    assert test_config["use_oidc"] is True
+
+    quality_steps = cast("list[dict[str, object]]", jobs["quality"]["steps"])
+    quality_prepare = next(
+        step
+        for step in quality_steps
+        if step.get("name") == "Verify and prepare Codecov CLI"
+    )
+    quality_upload = next(
+        step
+        for step in quality_steps
+        if str(step.get("uses", "")).startswith("codecov/codecov-action@")
+    )
+    quality_config = cast("dict[str, object]", quality_upload["with"])
+    assert quality_prepare["if"] == "matrix.profile == 'coverage'"
+    assert quality_config["binary"] == uploader
+    assert quality_config["fail_ci_if_error"] is True
+    assert quality_config["use_oidc"] is True
+
+    isolated_project = (ROOT / ".ci/codecov/pyproject.toml").read_text(
+        encoding="utf-8"
+    )
+    assert prepare_codecov_cli.CODECOV_CLI_VERSION == "11.3.1"
+    assert '"pypi-attestations==0.0.30"' in isolated_project
+    assert '"test-results-parser==0.6.1"' in isolated_project
 
 
 def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:

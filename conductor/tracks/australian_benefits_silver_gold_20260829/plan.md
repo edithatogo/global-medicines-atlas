@@ -1904,9 +1904,4 @@
 
   Implementation is in PR #782; hosted execution remains pending. CI run
   `37246962322` passed test steps but failed uploader signature acquisition
-  on three attempts. Existing signature controls remain intact. Both local
-  clean-clone reproducibility tests now pass with the exact pinned `uv 0.11.29`;
-  full-suite evidence was reused. Required hosted CI remains blocked. See
-  `quality/qualifications/australian-mbs-csv-header-inventory-ci-blocker-20261005.json`
-  and `quality/qualifications/australian-mbs-csv-header-inventory-toolchain-reverification-20261005.json` (SHA-256 `4cd816c1ca5c58fe6c91f814eea3b31de7f4b34c8b34178c7d354316aa50ee53`).
-  A PyPI PEP 740/Sigstore attestation for Codecov CLI 11.3.1 was cryptographically verified against the Codecov GitHub Actions publisher; adopting that alternate trust path requires a maintainer decision. See `quality/qualifications/australian-mbs-csv-header-inventory-codecov-pypi-provenance-20261005.json` (SHA-256 `8b945790fee44b9f897a58ff817d944f5ad17c357fcd8f575bc5e3adc3c6407f`).
+  on three attempts. The hosted test steps passed; only signature-file acquisition failed. The PR now prepares Codecov CLI 11.3.1 from its exact pinned PyPI wheel after PEP 740/Sigstore publisher verification, then passes that installed artifact to the existing OIDC uploader with `fail_ci_if_error: true`. The prior local full profile reported 5,789 passes and two harness false positives because it interpreted an unused Codecov `version` input as the uv version; removing that unnecessary input made both affected tests pass. Routine checks pass; exact-head hosted checks remain pending. See `quality/qualifications/australian-mbs-csv-header-inventory-ci-blocker-20261005.json`, `quality/qualifications/australian-mbs-csv-header-inventory-toolchain-reverification-20261005.json`, and `quality/qualifications/australian-mbs-csv-header-inventory-codecov-pypi-recovery-implementation-20261005.json` (SHA-256 `ac2e79318f72754dc9237ddac52ed5e1fb429e8559a40e0d7081fbbea88bb87b`).
