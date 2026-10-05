@@ -6,17 +6,27 @@ from pathlib import Path
 from typing import Any, cast
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORT_PATH = ROOT / "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261005.json"
+REPORT_PATH = (
+    ROOT
+    / "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261005.json"
+)
 
 
 def _load(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def test_reconciliation_covers_approved_denominator_and_preserves_deferrals() -> None:
+def test_reconciliation_covers_approved_denominator_and_preserves_deferrals() -> (
+    None
+):
     report = _load(REPORT_PATH)
-    inventory = _load(ROOT / "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json")
-    expected = {(row["dataset"], row["path"]) for row in inventory["observations"]}
+    inventory = _load(
+        ROOT
+        / "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json"
+    )
+    expected = {
+        (row["dataset"], row["path"]) for row in inventory["observations"]
+    }
     objects = report["objects"]
     observed = {(row["dataset"], row["path"]) for row in objects}
 
@@ -35,9 +45,14 @@ def test_gate_results_do_not_promote_metadata_or_rights_to_admission() -> None:
     objects = report["objects"]
 
     assert all(row["identity"]["git_blob_and_size_match"] for row in objects)
-    assert sum(row["identity"]["anonymous_digest_readback"] for row in objects) == 28
+    assert (
+        sum(row["identity"]["anonymous_digest_readback"] for row in objects)
+        == 28
+    )
     rights_qualified = [
-        row for row in objects if row["rights"]["state"].startswith("approved_exact_scope")
+        row
+        for row in objects
+        if row["rights"]["state"].startswith("approved_exact_scope")
     ]
     assert len(rights_qualified) == 14
     assert all(not row["b1_b2_lineage"]["complete"] for row in objects)
