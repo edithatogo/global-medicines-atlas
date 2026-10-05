@@ -1,0 +1,257 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m108-derived-products-reconciliation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-05T08:39:00Z",
+  "status": "blocked_no_derived_product_has_v4_admission_and_complete_rights_card_bundle",
+  "requirement": "M-108",
+  "method": "Anonymous Hugging Face dataset/tree metadata plus public manifest, qualification, admission, receipt, and workflow-receipt metadata. No raw source or Parquet payload bytes were downloaded in this reconciliation.",
+  "live_datasets": [
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+      "private": false,
+      "gated": false
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "private": false,
+      "gated": false
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "revision": "f1c75a0465d8cc22841c498274360753d0aab365",
+      "private": false,
+      "gated": false,
+      "scope_observation": "Raw source objects and B1 receipts only; no admitted derived table product identified."
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "private": false,
+      "gated": false,
+      "scope_observation": "Raw source objects and B1 receipts only; no admitted derived table product identified."
+    }
+  ],
+  "products": [
+    {
+      "product_id": "mbs-2026-08-bronze-acquisition-6bc9bcb2",
+      "layer": "bronze",
+      "source_version": "2026-08-01",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "current_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+      "product_prefix": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64",
+      "admission": {
+        "state": "accepted",
+        "reviewer_status": "unreviewed",
+        "decision_id": "a4c8e7850c664db20b80a9f3e6d5cd09c61ebc1447c121c852438eff24a42dba",
+        "acquisition_id": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
+        "content_id": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "federation_v4_admission": false
+      },
+      "rights": {
+        "source_receipt_state": "permitted",
+        "source_receipt_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        "derived_product_rights_bound_to_v4": false
+      },
+      "v4": {
+        "identity": "absent",
+        "manifest_sha256": null,
+        "data_card": "source-archive README only; no product-specific v4 card",
+        "admission_receipt": null
+      },
+      "source_manifest": {
+        "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/manifest.json",
+        "byte_count": 2732,
+        "sha256": "51a9242dc32fa0faaf7a9c35d9d73c995ac6458b065d73c85e67f22d76ee7b61",
+        "federation_v4_manifest": false
+      },
+      "outputs": [
+        {
+          "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source.parquet",
+          "byte_count": 454247,
+          "sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a"
+        },
+        {
+          "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/p7.parquet",
+          "byte_count": 24367,
+          "sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a"
+        }
+      ],
+      "publication": "Already present in the public source archive; no new publication performed.",
+      "blocking_gaps": ["federation_v4_admission", "derived_product_rights_binding", "product_specific_data_card", "independent_replica_evidence"],
+      "status": "blocked"
+    },
+    {
+      "product_id": "mbs-2026-08-bronze-acquisition-99fada49",
+      "layer": "bronze",
+      "source_version": "2026-08-01",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "current_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+      "product_prefix": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc",
+      "admission": {
+        "state": "accepted",
+        "reviewer_status": "unreviewed",
+        "decision_id": "eb05c5b19a731d9009d6fedbfb45b2d56bb742729728f0a54c306835f10d312c",
+        "acquisition_id": "783bd12fab14dc8f93cb34b1d87e9c3f7c95543d261b008f4e0da018a3d11e57",
+        "content_id": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "federation_v4_admission": false
+      },
+      "rights": {
+        "source_receipt_state": "permitted",
+        "source_receipt_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        "derived_product_rights_bound_to_v4": false
+      },
+      "v4": {
+        "identity": "absent",
+        "manifest_sha256": null,
+        "data_card": "source-archive README only; no product-specific v4 card",
+        "admission_receipt": null
+      },
+      "source_manifest": {
+        "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/manifest.json",
+        "byte_count": 2732,
+        "sha256": "9500325db41ed61c07255cd1afc74c701ab6d561489694fb2caeb28972a78036",
+        "federation_v4_manifest": false
+      },
+      "outputs": [
+        {
+          "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+          "byte_count": 454247,
+          "sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf"
+        },
+        {
+          "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
+          "byte_count": 24367,
+          "sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe"
+        }
+      ],
+      "publication": "Already present in the public source archive; no new publication performed.",
+      "blocking_gaps": ["federation_v4_admission", "derived_product_rights_binding", "product_specific_data_card", "independent_replica_evidence"],
+      "status": "blocked"
+    },
+    {
+      "product_id": "pbs-2026-04-bronze-acquisition-7c964aef",
+      "layer": "bronze",
+      "source_version": "2026-04-01",
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "current_revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+      "product_prefix": "bronze/2026-04-01",
+      "admission": {
+        "state": "accepted",
+        "reviewer_status": "unreviewed",
+        "decision_id": "90ab628f11715b23b8f1005c6649c850f01de9cf292bb1e637c1c90165552141",
+        "acquisition_id": "7c964aef63666d334fafd9a461f5a4f8476018a4da5809cf8fefe3a6b8bee727",
+        "content_id": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+        "federation_v4_admission": false
+      },
+      "rights": {
+        "source_receipt_state": "permitted",
+        "source_receipt_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/340",
+        "derived_product_rights_bound_to_v4": false
+      },
+      "v4": {
+        "identity": "absent",
+        "manifest_sha256": null,
+        "data_card": "source-archive README only; no product-specific v4 card",
+        "admission_receipt": null
+      },
+      "source_manifest": {
+        "path": "manifest.json",
+        "byte_count": 7513,
+        "sha256": "e6c9abbc62bd44fc47049306a92cc8efc9700031908586262c2b82a907546460",
+        "scope": "dataset-wide source archive manifest; not a product-specific federation v4 manifest"
+      },
+      "outputs": [
+        {
+          "path": "bronze/2026-04-01/pbs-v3-source.parquet",
+          "byte_count": 158134,
+          "sha256": "9e9facc336b47c5a9d514388a95c9797ba3e03474806fba00b6f03c0e601e97d"
+        }
+      ],
+      "publication": "Already present in the public source archive; no new publication performed.",
+      "blocking_gaps": ["federation_v4_admission", "derived_product_rights_binding", "product_specific_data_card", "independent_replica_evidence"],
+      "status": "blocked"
+    },
+    {
+      "product_id": "mbs-2025-07-silver-v4-candidate",
+      "layer": "silver",
+      "source_version": "2025-07-version-3",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+      "current_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+      "product_prefix": "silver/mbs/v4/2025-07-v3",
+      "candidate_only": true,
+      "typed_federation_v4_admission": false,
+      "rights": {
+        "source_receipt_state": "permitted",
+        "authorization_basis_in_manifest": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md and quality/qualifications/australian-health-legacy-publication-authorization.json",
+        "authorization_scope_sufficient_for_v4_derived_product": "not established by this audit"
+      },
+      "manifest": {
+        "path": "silver/mbs/v4/2025-07-v3/manifest.json",
+        "byte_count": 3827,
+        "sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+        "product_version": "4",
+        "producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9"
+      },
+      "qualification": {
+        "path": "silver/mbs/v4/2025-07-v3/qualification.json",
+        "byte_count": 2336,
+        "sha256": "b29d7d088a8a0564f2b022cdafa7351564eb5f292421cfe928c3f04ee0409723",
+        "candidate_only": true,
+        "reported_blockers": ["public_v4_identity_unverified"],
+        "effective_status": "candidate_only; public identity subsequently verified; no admission"
+      },
+      "source_receipt": {
+        "path": "silver/mbs/v4/2025-07-v3/source-receipt.json",
+        "byte_count": 1845,
+        "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+        "rights_state": "permitted"
+      },
+      "outputs": [
+        {"path": "silver/mbs/v4/2025-07-v3/services.parquet", "byte_count": 100062, "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"},
+        {"path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet", "byte_count": 51851, "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"},
+        {"path": "silver/mbs/v4/2025-07-v3/descriptions.parquet", "byte_count": 620348, "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"},
+        {"path": "silver/mbs/v4/2025-07-v3/fees.parquet", "byte_count": 93072, "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"},
+        {"path": "silver/mbs/v4/2025-07-v3/benefits.parquet", "byte_count": 114493, "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"},
+        {"path": "silver/mbs/v4/2025-07-v3/caps.parquet", "byte_count": 60259, "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"}
+      ],
+      "data_card": {
+        "present": false,
+        "finding": "The dataset README describes the raw MBS source archive and donor history; it does not identify or document this Silver v4 candidate as a product. No product-specific card is present under the v4 prefix."
+      },
+      "publication_receipt": {
+        "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5859624790",
+        "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+        "workflow_anonymous_verified_objects": 9,
+        "current_tree_matches_receipt": true,
+        "latest_anonymous_tree_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+        "method": "Token-free Hub API tree metadata. Current tree contains exactly the same nine v4 objects and all six Parquet LFS digests and sizes match the manifest; the original hosted workflow receipt verified the nine object bytes anonymously."
+      },
+      "collection_membership": "Dataset-level membership does not independently identify this nested v4 candidate.",
+      "independent_replica": "not evidenced",
+      "blocking_gaps": ["typed_federation_v4_admission", "derived_product_rights_scope", "product_specific_data_card", "independent_replica_evidence"],
+      "status": "blocked_candidate_public_but_not_admitted"
+    }
+  ],
+  "negative_scope": {
+    "gold_products": "No admitted Australian Gold product with an exact v4 public identity was found in the reviewed public dataset inventory.",
+    "platinum_products": "No admitted Australian Platinum product with an exact v4 public identity was found in the reviewed public dataset inventory.",
+    "utilisation_archives": "Current public objects are raw source bytes and B1 receipts; no admitted derived table was identified.",
+    "no_empty_denominator_claim": true
+  },
+  "actions": {
+    "new_publication_performed": false,
+    "new_visibility_change_performed": false,
+    "credentials_used": false,
+    "raw_or_parquet_payload_bytes_downloaded": false,
+    "reason": "No product passed both the typed v4 admission and derived-rights gates. Existing public Bronze projections and the MBS v4 candidate remain blocked; republishing would not resolve those missing gates."
+  },
+  "remaining_acceptance_evidence": [
+    "For every candidate, complete source/version/layer lineage and v4 rights/reuse admission bound to exact output digests.",
+    "An approved product-specific data card and manifest with exact immutable revision, path, byte count, digest, producer, schema era, source receipt, and rights receipt.",
+    "Hosted authorized publication of any newly admitted output, followed by anonymous per-object restore/digest verification and durable readback receipt.",
+    "Required collection and independent-replica evidence under the public data-plane track."
+  ]
+}
