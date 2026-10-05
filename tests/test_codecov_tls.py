@@ -34,6 +34,7 @@ class _FakeTLS:
 class _FakeContext:
     def __init__(self, error: Exception | None = None) -> None:
         self.error = error
+        self.minimum_version: ssl.TLSVersion | None = None
         self.server_name: str | None = None
 
     def wrap_socket(
@@ -77,6 +78,7 @@ def test_verified_endpoint_returns_identity_and_checks_expected_host(
     assert fingerprint == (
         "ddbcd4ffb4d2d04ca4d47bd0459a8bc95176e49f54639c3dae682d98f49e6669"
     )
+    assert context.minimum_version == ssl.TLSVersion.TLSv1_2
     assert context.server_name == "ingest.codecov.io"
     assert connections == [(("ingest.codecov.io", 443), 10)]
 

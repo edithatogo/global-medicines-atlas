@@ -1921,3 +1921,16 @@
   `quality/qualifications/australian-mbs-codecov-tls-preflight-20261005.json`.
   Implementation commit `1855257fe5f813b35f1527c52efeb73b3944c4e8`.
   Hosted exact-head checks remain pending; header inventory was not dispatched.
+
+- [x] Address the new CodeQL high-severity TLS protocol finding by setting an
+  explicit TLS 1.2 minimum on the verified Codecov upload preflight context.
+  The focused TLS tests (5), routine harness, `ty`, and `git diff --check`
+  pass. Test-Goblin full completed with 5,794 passed, one optional skip, two
+  existing release-reproducibility failures caused by local uv 0.12.23 instead
+  of required uv 0.11.29, and 96.76% coverage; both affected tests then passed
+  (2 passed) with official uv 0.11.29 after its release-asset SHA-256 matched
+  the previously recorded digest. CodeQL and complete hosted checks remain
+  pending for the new commit. The live Codecov upload endpoint still presents
+  an expired certificate, so upload lanes remain blocked and the header
+  inventory was not dispatched. See
+  `quality/qualifications/australian-mbs-codecov-tls-minimum-version-20261005.json`.
