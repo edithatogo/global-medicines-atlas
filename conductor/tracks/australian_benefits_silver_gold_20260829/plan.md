@@ -1505,6 +1505,21 @@
   unavailable locally (the installed version is 0.12.19).
 - [x] PR #633 merged through protected CI as `0b062f947d2e641a862ff7d9d8e81439c5718efd`; all required checks passed. Exact-main workflow run `36594992662` passed on that commit. The aggregate confirms the canonical B1 receipt digest, nine public objects, six Parquet LFS identities, and matching six-table denominator; `resolved_blockers` includes `public_v4_identity_unverified`, `current_blockers` is empty, and `promotion_status=candidate_only`. Publication was false and source bytes were not retained. This does not establish M-109 acceptance, federation acceptance, or Stable v1 approval.
 
+## M-109 exact MBS XML v3 field semantics (2026-10-05)
+
+- [x] Qualify official field meanings and candidate destination semantics for
+  the exact July 2025 MBS XML v3 era. The field crosswalk covers all 40 native
+  fields contracted by Silver and binds to the exact source digest, 5,989
+  source records and 239,560 field occurrences. Exact-era date parsing remains
+  supported by the separate hosted date receipt. Add a regression that checks
+  the semantic document against the adapter's native field denominator and
+  preserves explicit non-transfer boundaries. This closes field-meaning
+  evidence for this era only; it does not admit Silver or complete M-109.
+- [ ] Repeat native field meaning, temporal semantics and candidate
+  transformation qualification independently for the P7 workbook, each
+  approved later MBS era, each required PBS historical era, and current PBS API
+  only after its access/retention/redistribution gates are resolved.
+
 
 ## M-112 public producer metadata discovery (2026-09-30)
 
