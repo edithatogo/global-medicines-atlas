@@ -1904,5 +1904,8 @@
 
   Implementation is in PR #782; hosted execution remains pending. CI run
   `37246962322` passed test steps but failed uploader signature acquisition
-  on three attempts. Existing signature controls remain intact. See
-  `quality/qualifications/australian-mbs-csv-header-inventory-ci-blocker-20261005.json`.
+  on three attempts. Existing signature controls remain intact. Both local
+  clean-clone reproducibility tests now pass with the exact pinned `uv 0.11.29`;
+  full-suite evidence was reused. Required hosted CI remains blocked. See
+  `quality/qualifications/australian-mbs-csv-header-inventory-ci-blocker-20261005.json`
+  and `quality/qualifications/australian-mbs-csv-header-inventory-toolchain-reverification-20261005.json` (SHA-256 `4cd816c1ca5c58fe6c91f814eea3b31de7f4b34c8b34178c7d354316aa50ee53).
