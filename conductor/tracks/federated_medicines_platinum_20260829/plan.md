@@ -1325,3 +1325,21 @@
   traversal result remains a miss for that distinct workload. This correction
   does not qualify live source coverage, production deployment, rights,
   accessibility conformance, public export, or release.
+
+## 2026-10-17 current M-111 public-product consumer preflight
+
+- [x] Refresh the MBS candidate identity against the current public archive
+  head and bind the six table paths, row/field counts, byte counts, and digests
+  from the preserved source-to-Silver parity receipt. The current head is
+  `3d2d528439bddf6f42e8e700c88917f0960a9f38`, and the manifest SHA-256 remains
+  `bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59`.
+  Product status remains candidate-only with no independent admission.
+- [x] Re-run the four-surface fail-closed consumer controls on current main:
+  57 focused tests passed, including API/CLI unavailable behavior, Atlas
+  unknown-state handling, export guards, and controls against self-admission.
+- [~] Keep M-111 blocked. Do not query a successful consumer result from a
+  candidate-only product. Exact admitted-product API/CLI/Atlas/export canaries,
+  freshness, cohort/coverage, confidence/review, and public export restore
+  remain unverified. See
+  `docs/qualification/australian-platinum-public-consumer-preflight-20261017.md`
+  and `quality/qualifications/platinum-public-consumer-preflight-20261017.json`.
