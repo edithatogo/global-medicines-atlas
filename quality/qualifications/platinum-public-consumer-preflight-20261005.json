@@ -1,0 +1,92 @@
+{
+  "boundaries": {
+    "consumer_queries_performed": false,
+    "dataset_publication_performed": false,
+    "public_product_admission_changed": false,
+    "release_approved": false,
+    "source_rights_changed": false
+  },
+  "consumer_surfaces": {
+    "api": {
+      "reason": "The pinned MBS v4 manifest is candidate-only and no Australian product is independently admitted to the API resolver; successful product queries cannot be claimed.",
+      "status": "blocked_no_admitted_public_product"
+    },
+    "atlas": {
+      "reason": "The pinned MBS v4 manifest is candidate-only and no Australian product is independently admitted to the Atlas query service.",
+      "status": "blocked_no_admitted_public_product"
+    },
+    "cli": {
+      "reason": "The pinned MBS v4 manifest is candidate-only and no Australian product is independently admitted to the CLI resolver; local operator trust cannot substitute for product admission.",
+      "status": "blocked_no_admitted_public_product"
+    },
+    "export": {
+      "reason": "The pinned MBS v4 manifest is candidate-only, so there is no admitted Australian query result to export or anonymously restore.",
+      "status": "blocked_no_admitted_public_product"
+    }
+  },
+  "negative_controls": {
+    "focused_tests": "38 passed: pinned transport remains unadmitted; candidate mutation and empty trust cannot self-admit; API/CLI failures return bounded unavailable states; Atlas preserves unknown states; export metadata guards pass.",
+    "routine_profile": "passed",
+    "test_paths": [
+      "tests/test_platinum_checkpoint.py::test_verified_transport_remains_explicitly_unadmitted",
+      "tests/test_platinum_configuration.py::test_candidate_mutation_does_not_self_admit",
+      "tests/test_platinum_configuration.py::test_empty_trust_is_not_an_admission_policy",
+      "tests/test_platinum_benefits_api.py::test_api_unavailable_validation_and_read_only",
+      "tests/test_product_cli.py::test_runtime_query_failures_are_service_unavailable_without_internal_leakage",
+      "tests/test_atlas_e2e.py::test_complete_comparison_keeps_unknown_states_and_nullable_coverage",
+      "tests/test_research_exports.py",
+      "tests/test_research_package.py"
+    ]
+  },
+  "observed_at": "2026-10-05T09:29:06.909539+00:00",
+  "pinned_public_object": {
+    "byte_count": 24367,
+    "checkpoint_complete": false,
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "layer": "bronze",
+    "metadata_sha256": "212dcd60a96a0105e0592967634e77ee5d2ea4d63fe7e4ace60e40616e253016",
+    "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
+    "product_admitted": false,
+    "receipt_sha256": "7a4d92a3fb2041ca63de7ae5cff8fdfcc902bb46eeb52de990f92ae28f05dfbe",
+    "revision": "75f9f20a36ddb829dfe0ca88660664570782be02",
+    "row_count": 165,
+    "sample_sha256": "08388f5bf5f23c6414a395e96e92e34b2b83e8b66fa35c8e49eeeaec7a43ef3e",
+    "sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe",
+    "transport_verified": true
+  },
+  "pinned_public_product_manifest": {
+    "mbs": {
+      "blocker": "Pinned bytes and manifest are available, but the manifest declares candidate_only and lacks independent product admission; use is therefore blocked for successful product consumer qualification.",
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "expected_objects": 9,
+      "historical_anonymous_digest_verification": "passed for all 9 objects, as recorded in the publication readback; current anonymous metadata tree identities still match that receipt.",
+      "historical_pinned_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+      "live_head": "1e4971c35c0ef45026168a8e2498d1bd57a3c324",
+      "manifest_candidate_only": true,
+      "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+      "objects_matched_to_receipt": 9,
+      "prefix": "silver/mbs/v4/2025-07-v3",
+      "product_admitted": false,
+      "publication_receipt_binds_current_head": false,
+      "readback_record": "quality/qualifications/australian-m112-live-public-v4-metadata-readback-20261004.json",
+      "readback_status": "candidate_identity_verified_historical_receipt_and_current_objects_match"
+    },
+    "pbs": {
+      "admitted_pinned_v4_manifest_available": false,
+      "latest_qualification": "structural_storage_candidate_only; domain_semantics_qualified=false; date_profile=not-selected",
+      "qualification_receipt": "conductor/tracks/australian_benefits_silver_gold_20260829/pbs-aggregate-receipt-20260904.json"
+    }
+  },
+  "schema_id": "global-medicines-atlas.platinum-public-consumer-preflight",
+  "schema_version": 1,
+  "status": "transport_verified_but_consumer_acceptance_blocked",
+  "unverified_claims": [
+    "source freshness/currentness",
+    "complete or representative coverage",
+    "schema-era completeness",
+    "historical cohort comparability",
+    "confidence and review for Australian product rows",
+    "public export publication and anonymous restore",
+    "successful API/CLI/Atlas query over candidate-only Australian Parquet; product admission is required first"
+  ]
+}
