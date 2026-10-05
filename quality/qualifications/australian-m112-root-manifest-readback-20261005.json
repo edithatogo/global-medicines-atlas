@@ -1,0 +1,52 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-mbs-root-manifest-readback",
+  "schema_version": 1,
+  "observed_at": "2026-10-05T06:54:23Z",
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "dataset_revision": "1e4971c35c0ef45026168a8e2498d1bd57a3c324",
+  "dataset_visibility": {
+    "http_status": 200,
+    "private": false,
+    "gated": false
+  },
+  "root_manifest": {
+    "path": "manifest.json",
+    "http_status": 200,
+    "etag_git_blob_oid": "72ffe00c3c194b7d430a45806c12556881f5e636",
+    "sha256": "edbc4a09b81d27b29bea1c0be0ec5b75abf63ca6aca290afdb68bf77003e77cb",
+    "byte_count": 5530,
+    "file_count": 21
+  },
+  "source_identity": {
+    "source_id": "au-mbs",
+    "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+    "byte_count": 8293331,
+    "approved_content_addressed_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml"
+  },
+  "manifest_observation": {
+    "approved_content_addressed_path_present": false,
+    "matching_digest_entries": [
+      {
+        "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+        "kind": "raw_payload",
+        "category": "monthly_schedule_xml",
+        "source_id": "au-mbs",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "byte_count": 8293331
+      }
+    ],
+    "assessment": "same_digest_historical_alias_listed_content_addressed_path_absent"
+  },
+  "boundaries": {
+    "access_anonymous": true,
+    "manifest_metadata_read": true,
+    "source_payload_bytes_or_values_read": false,
+    "dataset_mutation_performed": false,
+    "rights_conclusion_changed": false,
+    "denominator_changed": false,
+    "v4_admission_performed": false,
+    "m112_federation_accepted": false
+  },
+  "status": "root_manifest_path_gap_confirmed_by_current_metadata_readback",
+  "remaining": "Prepare and validate an exact append-only root-manifest update under existing publication controls; perform no hosted write until the source archive's publication authority and CAS/readback requirements are met. Full M-112 rights, lineage, v4 admission, digest, and canary gates remain separate."
+}

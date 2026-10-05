@@ -1901,3 +1901,11 @@
 - [ ] Implement protected hosted native-header inventory for the four already
   structurally verified standalone CSVs. Bind exact source identities and
   record header metadata only before selecting any semantic conversion.
+- [x] Refresh the exact MBS August raw-path root-manifest state with an
+  anonymous metadata-only readback at dataset revision
+  `1e4971c35c0ef45026168a8e2498d1bd57a3c324`. The root manifest lists the
+  matching SHA-256 and byte count under the historical
+  `Downloads-20260801` alias, but does not list the approved content-addressed
+  path. This confirms the path-level manifest gap without reading source bytes,
+  changing rights, changing the denominator, or admitting the object. See
+  `quality/qualifications/australian-m112-root-manifest-readback-20261005.json`.
