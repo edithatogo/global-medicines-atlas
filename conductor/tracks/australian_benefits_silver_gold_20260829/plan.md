@@ -1520,6 +1520,18 @@
   approved later MBS era, each required PBS historical era, and current PBS API
   only after its access/retention/redistribution gates are resolved.
 
+## M-109 source-era denominator reconciliation (2026-10-05)
+
+- [x] Publish a source-era register that distinguishes exact MBS/PBS profile
+  evidence, historical XML schema families, fixture-only coverage, and current
+  PBS API rights state. Reconcile the M-109 kickoff denominator verbatim and
+  preserve its incompleteness: later-approved MBS snapshots and governed PBS
+  v3 releases are not yet enumerated as exact source identities. Do not mark
+  M-109 accepted from this inventory.
+- [ ] Enumerate the approved exact-source identities and acquire the pending
+  maintainer/provider rights decisions before any PBS public API payload
+  request. Continue semantic qualification era by era after these are explicit.
+
 
 ## M-112 public producer metadata discovery (2026-09-30)
 

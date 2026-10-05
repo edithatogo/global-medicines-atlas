@@ -27,6 +27,12 @@ acceptance.
 
 For M-109, the July 2025 MBS XML v3 era now has an exact-release field-semantics crosswalk: all 40 Silver-contract native fields are matched to the official XML field definitions and candidate transformations, bound to 5,989 source records and 239,560 field occurrences. Its date profile is independently qualified for that exact source identity: 11 native date fields, 25,033 converted, 34,857 null, 5,989 absent, and zero invalid or unsupported values. See the [MBS v3 field-semantics qualification](mbs-xml-v3-field-semantics.md) and [exact XML v3 date receipt](../../quality/qualifications/mbs-xml-v3-date-profile-qualification-20260929.json). This is still candidate evidence, not Silver admission or M-109 acceptance. The separate legacy P7 workbook date convention remains unselected because its own source documentation does not specify an order and 1,276 dates are ambiguous; see the [P7 source-document review](../../quality/qualifications/mbs-workbook-date-source-doc-review-20260929.json). PBS API documentation now identifies the API/API CSVs as current distribution, while the April 2026 XML profile remains historical; the public-access, limited-history, retention and redistribution boundaries are recorded in the [PBS transition receipt](../../quality/qualifications/pbs-source-transition-20260929.json) and [API rights preflight](../../quality/qualifications/australian-pbs-api-public-access-preflight-20260929.json). P7, other MBS eras, PBS domain semantics, and current PBS API access/rights remain unqualified, so M-109 remains blocked.
 
+The [M-109 source-era register](australian-m109-source-era-register.md)
+separates existing exact-era profiles from unqualified MBS/PBS releases and
+records that the later-approved MBS and governed PBS source identities still
+need a canonical denominator. The PBS fixture is explicitly excluded from
+real-source coverage.
+
 The donor repositories were read back as archived on 2026-09-27. The scraper
 receipt binds both exact donor heads to 30 anonymously verified public history
 objects at revision `97038008d17a48f620302f04fe6a3156fb8d5d57`. The graph
