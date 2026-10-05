@@ -1928,3 +1928,20 @@
 - [ ] Implement protected hosted native-header inventory for the four already
   structurally verified standalone CSVs. Bind exact source identities and
   record header metadata only before selecting any semantic conversion.
+
+### M-110 real-Silver admission gate recheck (2026-10-05)
+
+- [ ] Qualify Gold relationships over admitted real Silver tables. This remains
+  blocked: the MBS 2025-07 v3 Silver qualification and manifest both say
+  `candidate_only`; the PBS 2026-04 v3 aggregate says
+  `structural_storage_candidate_only`, `domain_semantics_qualified=false`,
+  and `date_profile=not-selected`. No Australian Silver admission register or
+  accepted Silver admission receipt is present in the current tree. The MBS
+  and PBS Gold graph candidates still identify their inputs as synthetic
+  Silver candidates. Bronze receipts or admission do not satisfy this gate.
+- [ ] Re-enter M-110 after the applicable source-era Silver semantics, rights,
+  and admission evidence is accepted for the exact input revisions. Then
+  qualify each relationship against those admitted tables, including typed
+  node/edge identity, source spans, temporal validity, review decisions, and
+  negative controls. Keep MBS/PBS cross-source or clinical interpretations
+  excluded unless separately supported and approved.
