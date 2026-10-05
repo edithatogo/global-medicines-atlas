@@ -865,14 +865,20 @@ def test_diagnostic_failure_codes_do_not_expose_exception_text(
 
 
 @pytest.mark.parametrize(
-    "mode", ["failed_workbooks_only", "streaming_workbooks"]
+    "mode", ["failed_workbooks_only", "streaming_workbooks", "csv_headers_only"]
 )
 def test_diagnostic_mode_downloads_only_two_recorded_workbooks(
     validation_runner, tmp_path, monkeypatch, mode
 ):
     runner = validation_runner
     cohort = load_validation_cohort(ROOT)
-    selected = runner.failed_workbook_paths(ROOT, cohort)
+    candidates = runner.header_candidates(ROOT, cohort)
+    selected = (
+        set(candidates)
+        if mode == "csv_headers_only"
+        else runner.failed_workbook_paths(ROOT, cohort)
+    )
+    monkeypatch.setattr(runner, "header_candidates", lambda *_: candidates)
     monkeypatch.setattr(
         "sys.argv",
         ["runner", "--exact-commit", "a" * 40, "--" + mode.replace("_", "-")],
@@ -914,15 +920,16 @@ def test_diagnostic_mode_downloads_only_two_recorded_workbooks(
         return f"https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-{len(documents)}"
 
     monkeypatch.setattr(runner, "persist_receipt", persist)
+    monkeypatch.setenv("GMA_MBS_HEADER_INVENTORY", "stale")
     monkeypatch.setenv("GMA_MBS_STREAMING_PROFILE", "stale")
     runner.main()
     assert runner.os.environ.get("GMA_MBS_STREAMING_PROFILE") == (
         "1" if mode == "streaming_workbooks" else None
     )
     assert set(downloads) == selected
-    assert len(documents) == 3
+    assert len(documents) == len(selected) + 1
     assert all(document["validation_mode"] == mode for document in documents)
-    assert len(documents[-1]["records"]) == 2
+    assert len(documents[-1]["records"]) == len(selected)
     assert all(record["cache_removed"] for record in documents[-1]["records"])
 
 
@@ -1215,3 +1222,251 @@ def test_streaming_workflow_is_protected_and_separate():
         '--exact-commit "$REQUESTED_COMMIT" --streaming-workbooks'
         in step["run"]
     )
+
+
+@pytest.fixture
+def header_inventory():
+    return importlib.import_module(
+        "global_medicines_atlas.mbs_csv_header_inventory"
+    )
+
+
+def test_header_selection_is_exact_four_prior_csv_passes(header_inventory):
+    cohort = load_validation_cohort(ROOT)
+    selected = header_inventory.header_candidates(ROOT, cohort)
+    assert len(selected) == 4
+    assert all(path.endswith(".csv") for path in selected)
+    assert all("_id" not in fields for fields in selected.values())
+    for row in cohort:
+        if row["path"] in selected:
+            assert row["validation_dispatch_eligible"]
+    assert "MonthofProcessing" in next(
+        fields for path, fields in selected.items() if "qtr-1" in path
+    )
+    assert "Month of Processing" in next(
+        fields for path, fields in selected.items() if "qtr-3" in path
+    )
+
+
+@pytest.mark.parametrize("case", ["requirements", "input", "identity", "held"])
+def test_header_selection_refuses_changed_evidence(
+    header_inventory, tmp_path, monkeypatch, case
+):
+    cohort = load_validation_cohort(ROOT)
+    if case == "requirements":
+        monkeypatch.setattr(header_inventory, "REQUIREMENTS_SHA256", "0" * 64)
+    elif case == "input":
+        payload = json.loads(
+            (ROOT / header_inventory.REQUIREMENTS_PATH).read_bytes()
+        )
+        payload["inputs"]["crosswalk"]["sha256"] = "0" * 64
+        path = tmp_path / "requirements.json"
+        path.write_text(json.dumps(payload))
+        monkeypatch.setattr(header_inventory, "REQUIREMENTS_PATH", path)
+        monkeypatch.setattr(
+            header_inventory,
+            "REQUIREMENTS_SHA256",
+            hashlib.sha256(path.read_bytes()).hexdigest(),
+        )
+    else:
+        row = next(row for row in cohort if row["path"].endswith(".csv"))
+        if case == "identity":
+            row["raw_reference"]["sha256"] = "0" * 64
+        else:
+            row["validation_dispatch_eligible"] = False
+    with pytest.raises(ValueError, match=r"requirements|candidate identity"):
+        header_inventory.header_candidates(ROOT, cohort)
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        b"Year,Services\nPRIVATE-DATA,1\n",
+        b'\xef\xbb\xbf"Year",Services\r\n"invalid data row\n',
+    ],
+)
+def test_header_inventory_never_parses_data_records(
+    header_inventory, tmp_path, payload
+):
+    path = tmp_path / "source.csv"
+    path.write_bytes(payload)
+    checks = header_inventory.inventory_csv_header(
+        path, _validation_reference(path, payload), ["Year", "Services"]
+    )
+    assert checks["matches_catalogue_order"]
+    assert checks["published_field_names_in_order"] == ["Year", "Services"]
+    assert checks["data_records_parsed"] == 0
+    assert checks["semantic_validation"] is False
+    assert "PRIVATE" not in json.dumps(checks)
+
+
+def test_header_inventory_redacts_unknown_empty_duplicate_tokens(
+    header_inventory, tmp_path
+):
+    path = tmp_path / "source.csv"
+    payload = b"Services,PRIVATE-NAME,,Services\n1,2,3,4\n"
+    path.write_bytes(payload)
+    checks = header_inventory.inventory_csv_header(
+        path, _validation_reference(path, payload), ["Services"]
+    )
+    assert checks["published_field_names_in_order"] == [
+        "Services",
+        None,
+        None,
+        "Services",
+    ]
+    assert checks["unknown_field_count"] == 2
+    assert checks["empty_field_count"] == checks["duplicate_field_count"] == 1
+    assert checks["matches_catalogue_order"] is False
+    assert "PRIVATE" not in json.dumps(checks)
+    assert (
+        checks["header_sha256"]
+        == hashlib.sha256(
+            json.dumps(
+                ["Services", "PRIVATE-NAME", "", "Services"],
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
+    )
+
+
+@pytest.mark.parametrize(
+    "case",
+    ["empty", "syntax", "encoding", "bytes", "columns", "field", "identity"],
+)
+def test_header_inventory_is_bounded_and_identity_checked(
+    header_inventory, tmp_path, monkeypatch, case
+):
+    payload = {
+        "empty": b"",
+        "syntax": b'"unfinished\n',
+        "encoding": b"\xff\n",
+        "bytes": b"Services\n",
+        "columns": b"a,b\n",
+        "field": b"ABCD\n",
+        "identity": b"Services\n",
+    }[case]
+    path = tmp_path / "source.csv"
+    path.write_bytes(payload)
+    reference = _validation_reference(path, payload)
+    if case == "empty":
+        monkeypatch.setattr(
+            header_inventory, "verify_staged_identity", lambda *_: None
+        )
+    elif case == "bytes":
+        monkeypatch.setattr(header_inventory, "MAX_HEADER_BYTES", 3)
+    elif case == "columns":
+        monkeypatch.setattr(header_inventory, "MAX_HEADER_FIELDS", 1)
+    elif case == "field":
+        monkeypatch.setattr(header_inventory, "MAX_FIELD_BYTES", 3)
+    elif case == "identity":
+        reference["sha256"] = "0" * 64
+    with pytest.raises(ValueError, match=r"header|identity") as raised:
+        header_inventory.inventory_csv_header(path, reference, ["Services"])
+    assert "unfinished" not in str(raised.value)
+
+
+def test_header_inventory_handles_quoted_multiline_header(
+    header_inventory, tmp_path
+):
+    path = tmp_path / "source.csv"
+    payload = b'"PRIVATE\nTOKEN",Services\n1,2\n'
+    path.write_bytes(payload)
+    checks = header_inventory.inventory_csv_header(
+        path, _validation_reference(path, payload), ["Services"]
+    )
+    assert checks["field_count"] == 2
+    assert checks["unknown_field_count"] == 1
+    assert "PRIVATE" not in json.dumps(checks)
+
+
+@pytest.mark.parametrize("case", ["good", "unselected", "conflict", "failure"])
+def test_header_worker_selects_only_reviewed_csvs(
+    validation_runner, tmp_path, monkeypatch, case
+):
+    runner = validation_runner
+    path = tmp_path / "source.csv"
+    payload = b"Services\n1\n"
+    path.write_bytes(payload)
+    reference = _validation_reference(path, payload)
+    monkeypatch.setenv("GMA_MBS_HEADER_INVENTORY", "1")
+    monkeypatch.setenv(
+        "GMA_MBS_STREAMING_PROFILE", "1" if case == "conflict" else "0"
+    )
+    monkeypatch.setattr(
+        runner, "failed_workbook_paths", lambda *_: {reference["path"]}
+    )
+    monkeypatch.setattr(
+        runner,
+        "header_candidates",
+        lambda *_: (
+            {} if case == "unselected" else {reference["path"]: ["Services"]}
+        ),
+    )
+    monkeypatch.setattr(
+        runner,
+        "load_validation_cohort",
+        lambda _: [
+            {"raw_reference": reference, "validation_dispatch_eligible": True}
+        ],
+    )
+    monkeypatch.setattr(runner.sys, "platform", "linux")
+    monkeypatch.setattr(
+        runner.importlib,
+        "import_module",
+        lambda _: SimpleNamespace(RLIMIT_AS=1, setrlimit=lambda *_: None),
+    )
+    if case == "failure":
+
+        def fail(*_):
+            raise ValueError("CSV header byte limit")
+
+        monkeypatch.setattr(runner, "inventory_csv_header", fail)
+    if case in {"unselected", "conflict"}:
+        with pytest.raises(
+            ValueError, match="header inventory source not selected"
+        ):
+            runner.worker(0, path)
+    else:
+        result = runner.worker(0, path)
+        assert result["anonymous_digest_verified"]
+        if case == "good":
+            assert result["checks"]["data_records_parsed"] == 0
+        else:
+            assert result["failure_code"] == "csv_header_byte_limit"
+
+
+def test_header_workflow_is_main_guarded_and_read_only():
+    workflow = yaml.safe_load(
+        (
+            ROOT / ".github/workflows/australian-mbs-csv-header-inventory.yml"
+        ).read_text()
+    )
+    assert set(workflow.get("on", workflow.get(True))) == {"workflow_dispatch"}
+    job = workflow["jobs"]["validate"]
+    assert job["environment"] == "australian-hf-publication"
+    assert (
+        workflow["concurrency"]["group"] == "australian-mbs-utilisation-harvest"
+    )
+    step = next(step for step in job["steps"] if "run" in step)
+    assert "HF_TOKEN" not in step["env"]
+    assert (
+        '--exact-commit "$REQUESTED_COMMIT" --csv-headers-only' in step["run"]
+    )
+
+
+def test_header_cli_rejects_mode_conflict_before_transport(
+    validation_runner, monkeypatch
+):
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "runner",
+            "--exact-commit",
+            "a" * 40,
+            "--csv-headers-only",
+            "--streaming-workbooks",
+        ],
+    )
+    with pytest.raises(ValueError, match="modes conflict"):
+        validation_runner.main()

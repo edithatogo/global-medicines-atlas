@@ -1898,6 +1898,6 @@
   payload mappings or granting admission. See
   `quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json`.
 
-- [ ] Implement protected hosted native-header inventory for the four already
+- [~] Implement protected hosted native-header inventory for the four already
   structurally verified standalone CSVs. Bind exact source identities and
   record header metadata only before selecting any semantic conversion.

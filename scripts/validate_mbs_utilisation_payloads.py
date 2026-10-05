@@ -24,6 +24,10 @@ from publish_source_metadata import HubTransport, persist_receipt
 from global_medicines_atlas.federation_metadata_hosted import (
     require_hosted_main,
 )
+from global_medicines_atlas.mbs_csv_header_inventory import (
+    header_candidates,
+    inventory_csv_header,
+)
 from global_medicines_atlas.mbs_streaming_workbook import (
     PROFILE,
     streaming_limits,
@@ -46,6 +50,10 @@ DIAGNOSTIC_RECEIPT_SHA256 = (
     "f622434530f3d184a5aea6684e67dc7f874424c2ada634b2f154490a39c6f457"
 )
 FAILURE_CODES = {
+    "CSV header byte limit": "csv_header_byte_limit",
+    "CSV header field count limit": "csv_header_field_count_limit",
+    "CSV header field byte limit": "csv_header_field_byte_limit",
+    "CSV header decoding or syntax invalid": "csv_header_invalid",
     "archive total uncompressed bytes limit exceeded": "archive_expanded_byte_limit",
     "archive member byte limit exceeded": "archive_member_byte_limit",
     "archive decompression ratio exceeded": "archive_decompression_ratio_limit",
@@ -125,9 +133,17 @@ def worker(index: int, path: Path) -> dict[str, Any]:
         ROOT, load_validation_cohort(ROOT)
     ):
         raise ValueError("streaming profile source not selected")
+    headers = os.environ.get("GMA_MBS_HEADER_INVENTORY") == "1"
+    candidates = (
+        header_candidates(ROOT, load_validation_cohort(ROOT)) if headers else {}
+    )
+    if headers and (streaming or reference["path"] not in candidates):
+        raise ValueError("header inventory source not selected")
     try:
         checks = (
-            validate_streaming_workbook(path, reference)
+            inventory_csv_header(path, reference, candidates[reference["path"]])
+            if headers
+            else validate_streaming_workbook(path, reference)
             if streaming
             else validate_staged_payload(path, reference)
         )
@@ -218,21 +234,31 @@ def run_worker(index: int, path: Path) -> dict[str, Any]:
     return result
 
 
-def main() -> None:  # ruff: ignore[too-many-locals, too-many-statements] -- linear receipt and cleanup gates
+def main() -> None:  # ruff: ignore[too-many-locals, too-many-statements, too-many-branches] -- linear receipt and cleanup gates
     """Persist each independent result before cleanup of verified raw bytes."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--failed-workbooks-only", action="store_true")
     parser.add_argument("--streaming-workbooks", action="store_true")
+    parser.add_argument("--csv-headers-only", action="store_true")
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
+    if args.csv_headers_only and (
+        args.streaming_workbooks or args.failed_workbooks_only
+    ):
+        raise ValueError("header inventory modes conflict")
+    os.environ.pop("GMA_MBS_HEADER_INVENTORY", None)
+    if args.csv_headers_only:
+        os.environ["GMA_MBS_HEADER_INVENTORY"] = "1"
     os.environ.pop("GMA_MBS_STREAMING_PROFILE", None)
     if args.streaming_workbooks:
         args.failed_workbooks_only = True
         os.environ["GMA_MBS_STREAMING_PROFILE"] = "1"
     cohort = load_validation_cohort(ROOT)
     selected = (
-        failed_workbook_paths(ROOT, cohort)
+        set(header_candidates(ROOT, cohort))
+        if args.csv_headers_only
+        else failed_workbook_paths(ROOT, cohort)
         if args.failed_workbooks_only
         else {row["path"] for row in cohort}
     )
@@ -289,7 +315,9 @@ def main() -> None:  # ruff: ignore[too-many-locals, too-many-statements] -- lin
             "processing_admitted": False,
             "semantic_validation": False,
             "quarantine_decision": row["quarantine_decision"],
-            "validation_mode": "streaming_workbooks"
+            "validation_mode": "csv_headers_only"
+            if args.csv_headers_only
+            else "streaming_workbooks"
             if args.streaming_workbooks
             else "failed_workbooks_only"
             if args.failed_workbooks_only
@@ -335,7 +363,9 @@ def main() -> None:  # ruff: ignore[too-many-locals, too-many-statements] -- lin
         "recorded_at": datetime.now(UTC).isoformat(),
         "records": observations,
         "processing_admitted": False,
-        "validation_mode": "streaming_workbooks"
+        "validation_mode": "csv_headers_only"
+        if args.csv_headers_only
+        else "streaming_workbooks"
         if args.streaming_workbooks
         else "failed_workbooks_only"
         if args.failed_workbooks_only
