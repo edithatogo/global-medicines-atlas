@@ -20,6 +20,7 @@ def verify_upload_endpoint(
 ) -> tuple[str, str, str]:
     """Return expiry, serial, and fingerprint only for a verified TLS peer."""
     context = ssl.create_default_context()
+    context.minimum_version = ssl.TLSVersion.TLSv1_2
     try:
         with (
             socket.create_connection(
