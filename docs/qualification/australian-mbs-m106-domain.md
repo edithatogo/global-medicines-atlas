@@ -51,3 +51,39 @@ transport constraints. Both period/link mismatches remain source questions;
 neither page currently supplies a verified patient denominator or item-level
 participant count. Keep M-106 blocked and do not repeat the previous endpoint
 probes until the source endpoint or approved transport changes.
+
+## M-106 metadata review and source-owner follow-up (2026-10-05)
+
+The current Australian Government [annual State and Territory publication
+page](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en)
+lists four measure families, including patients, for 2009-10 through 2025-26.
+The official [explanatory notes](https://www.health.gov.au/resources/publications/explanatory-notes-for-medicare-statistics?language=en)
+state that these statistics use claim-processing dates and assign geography
+from the patient's Medicare enrolment address at claim-processing time. This
+makes the annual series a relevant aggregate-denominator candidate. It does
+not yet qualify the exact distinct-patient denominator: the workbook has not
+been acquired or inspected, the page's 2025-26 period previously conflicted
+with a linked filename ending in 2024-25, and patient measures by item were not
+established by the page metadata.
+
+On 2026-10-05, a value-free follow-up was sent in the existing source-owner
+threads to Services Australia and the Department. It asks about the distinct
+patient definition, scope, geography, suppression, exact current workbook
+identity and retrieval route, and applicable reuse terms. A current readback
+found no substantive response. The existing maintainer authorization includes
+the annual statistics source/category and approved public domains; it does
+not resolve the conflicting exact workbook identity or provider terms for the
+candidate payload. No acquisition was made. The metadata-only observations,
+message IDs, exact outstanding evidence and boundaries are in the [M-106
+review receipt](../../quality/qualifications/australian-mbs-m106-source-review-20261005.json).
+
+Source-independent validation now has a separate `MbsMeasureObservation`
+candidate contract at `src/global_medicines_atlas/mbs_measures.py`. It requires
+explicit measure kind, source and receipt digests, semantic evidence, period,
+and observed/suppressed/unreported state. It rejects known service/claim
+fields labelled as distinct-patient counts, rejects negative distinct-patient
+counts, and preserves negative adjusted service totals and suppressed values
+without converting them to zero. This validates candidate structure only;
+it does not qualify any real source, semantic mapping, rights, coverage, or
+patient denominator. M-106 remains blocked pending exact-source clarification,
+rights resolution, and real-corpus denominator verification.

@@ -1,0 +1,125 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-m106-source-review",
+  "schema_version": 1,
+  "observed_at": "2026-10-05",
+  "annual_aggregate_candidate": {
+    "source_id": "au-health-medicare-statistics",
+    "publication_url": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en",
+    "explanatory_notes_url": "https://www.health.gov.au/resources/publications/explanatory-notes-for-medicare-statistics?language=en",
+    "publication_date": "2026-08-10",
+    "page_period": "2009-10 through 2025-26",
+    "page_measure_families": [
+      "all services",
+      "out-of-hospital services",
+      "patients",
+      "broad type of service"
+    ],
+    "time_basis_from_official_notes": "claim processing date",
+    "geography_from_official_notes": "patient Medicare enrolment address at claim-processing date",
+    "metadata_status": "candidate_only",
+    "exact_workbook_identity_reconciled": false,
+    "source_bytes_acquired": false,
+    "source_rows_accessed": false,
+    "distinct_patient_denominator_qualified": false,
+    "item_level_patient_count_established": false
+  },
+  "item_level_candidates": [
+    {
+      "source_id": "au-data-gov-mbs-demographics",
+      "resource_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "data_last_updated": "2016-08-29",
+      "published_fields": [
+        "Year",
+        "Month of Processing",
+        "Item Number",
+        "State",
+        "Age Range",
+        "Gender",
+        "Services",
+        "Benefit"
+      ],
+      "distinct_patient_count_field_observed": false,
+      "current_coverage_qualified": false,
+      "rights_qualified": false,
+      "source_bytes_acquired": false
+    },
+    {
+      "source_id": "au-health-medicare-statistics",
+      "resource_id": "dbdde899-76ab-4d8d-a05a-46b51088b49e",
+      "data_last_updated": "2026-08",
+      "metadata_record_count": 26391,
+      "metadata_query_rows_returned": 0,
+      "published_fields": [
+        "Year",
+        "Month of Processing",
+        "Group",
+        "Sub-Group",
+        "Item Number",
+        "State",
+        "Services",
+        "Benefit"
+      ],
+      "distinct_patient_count_field_observed": false,
+      "rights_qualified": false,
+      "source_bytes_acquired": false,
+      "source_rows_accessed": false
+    }
+  ],
+  "maintainer_authorization": {
+    "record": "quality/qualifications/australian-mbs-utilisation-publication-authorization.json",
+    "source_id_and_category_in_scope": true,
+    "allowed_domain_in_scope": true,
+    "exact_workbook_rights_reconciled": false,
+    "source_owner_terms_confirmed": false,
+    "authorization_expanded": false
+  },
+  "source_owner_outreach": [
+    {
+      "source_owner": "Services Australia",
+      "recipient": "statistics@servicesaustralia.gov.au",
+      "subject": "Public item-level MBS patient-count statistics and reuse terms",
+      "original_message_id": "1a0e93bc557578ea",
+      "followup_message_id": "1a10b08c07b6a7dd",
+      "followup_sent_at": "2026-10-05T07:48:05Z",
+      "question_scope": [
+        "public distinct-patient measure by MBS item and period",
+        "coverage, denominator and suppression rules",
+        "reuse, retention and redistribution terms"
+      ],
+      "patient_level_or_custom_data_requested": false,
+      "source_data_attached": false,
+      "substantive_reply_observed": false
+    },
+    {
+      "source_owner": "Australian Government Department of Health, Disability and Ageing",
+      "recipient": "enquiries@health.gov.au",
+      "subject": "Request for an agency-hosted automated retrieval route for Medicare statistics workbooks",
+      "original_message_id": "1a0e8ec55b28f0e1",
+      "followup_message_id": "1a10b0bf13a6092d",
+      "followup_sent_at": "2026-10-05T07:51:34Z",
+      "question_scope": [
+        "annual patients measure and whether it represents distinct people with eligible processed claims",
+        "geography, coverage and suppression/revision caveats",
+        "period and current workbook identity",
+        "approved automated retrieval route",
+        "reuse, attribution, retention and redistribution terms"
+      ],
+      "patient_level_or_custom_data_requested": false,
+      "source_data_attached": false,
+      "substantive_reply_observed": false
+    }
+  ],
+  "qualification_state": "blocked",
+  "blockers": [
+    "No source-owner clarification has established whether the annual patients measure is the required distinct-person denominator.",
+    "The annual publication page describes 2025-26 while the linked workbook filename previously observed ended in 2024-25; exact workbook identity remains unresolved.",
+    "No exact-workbook source-rights decision and provider reuse terms are reconciled for acquisition and publication.",
+    "No item-level distinct-patient count is present in the observed Services fields."
+  ],
+  "boundary": "Metadata-only review and source-owner follow-up. No workbook, CSV rows, source payload, or patient-level data was acquired or inspected. Item/service counts do not qualify a distinct-patient denominator.",
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
+    "value": "9988e5c46d243139792226df535f4bae42710437082308f68323d2bb97d16d7c"
+  }
+}

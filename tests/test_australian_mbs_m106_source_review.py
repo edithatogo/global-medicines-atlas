@@ -16,6 +16,10 @@ CURRENT_ITEM_DATA = (
     ROOT / "quality/qualifications/"
     "australian-mbs-current-item-data-metadata-20260930.json"
 )
+M106_REVIEW = (
+    ROOT / "quality/qualifications/"
+    "australian-mbs-m106-source-review-20261005.json"
+)
 
 
 def test_item_demographic_candidate_does_not_qualify_patient_denominator() -> (
@@ -98,6 +102,40 @@ def test_current_item_data_metadata_is_not_patient_or_rights_qualification() -> 
     assert qualification["acquisition_authorized"] is False
     assert qualification["public_license_notice"] == (
         "Creative Commons Attribution 3.0 Australia"
+    )
+    digest = receipt["digest"]
+    canonical = {
+        key: value for key, value in receipt.items() if key != "digest"
+    }
+    encoded = json.dumps(
+        canonical,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode()
+    assert digest["value"] == hashlib.sha256(encoded).hexdigest()
+
+
+def test_m106_annual_candidate_and_followups_remain_unqualified() -> None:
+    receipt = cast("dict[str, Any]", json.loads(M106_REVIEW.read_text()))
+    annual = receipt["annual_aggregate_candidate"]
+    authorization = receipt["maintainer_authorization"]
+
+    assert "patients" in annual["page_measure_families"]
+    assert annual["exact_workbook_identity_reconciled"] is False
+    assert annual["source_bytes_acquired"] is False
+    assert annual["distinct_patient_denominator_qualified"] is False
+    assert annual["item_level_patient_count_established"] is False
+    assert authorization["source_id_and_category_in_scope"] is True
+    assert authorization["exact_workbook_rights_reconciled"] is False
+    assert receipt["qualification_state"] == "blocked"
+    assert all(
+        owner["substantive_reply_observed"] is False
+        for owner in receipt["source_owner_outreach"]
+    )
+    assert all(
+        owner["source_data_attached"] is False
+        for owner in receipt["source_owner_outreach"]
     )
     digest = receipt["digest"]
     canonical = {
