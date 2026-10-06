@@ -261,6 +261,15 @@
     context, source coverage, production qualification, representative-user
     acceptance, WCAG conformance, or release readiness.
 
+  - [x] Connect the exact reconciled synthetic PBS Gold edge object to the
+    resolver-backed V2 dataset-identity API. The response preserves its pinned
+    revision, path, object digest, `source_structure` dimension and
+    `evidence_edge` granularity while keeping coverage undeclared, comparison
+    unevaluated, and rows unqueried. The identity-only request performs no
+    object read; anonymous transport remains mocked. Two governed medallion
+    E2E tests pass. This proves synthetic API wiring only and does not qualify
+    a production source or close the broader Phase 2 checkpoint.
+
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
 - [x] Write temporal/change, missing-period, source-outage, schema-drift,
