@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import httpx
@@ -29,6 +29,7 @@ from global_medicines_atlas.platinum_query import (
     PlatinumQueryService,
     QueryResult,
     QuerySpec,
+    QueryUnavailable,
 )
 from global_medicines_atlas.platinum_resolver import (
     ProductResource,
@@ -163,6 +164,9 @@ def _platinum_contract(payload: bytes, receipt: SourceReceipt) -> bytes:
         "receipt"
     ]
     document["cache"]["offline_behavior"] = "verified_exact_digest_only"
+    document["cache"]["expires_at"] = (
+        (NOW + timedelta(days=1)).isoformat().replace("+00:00", "Z")
+    )
     document["cache"]["max_bytes"] = max(
         document["cache"]["max_bytes"], len(payload)
     )
@@ -192,6 +196,38 @@ def _binding(raw: bytes) -> DistributionBinding:
         ).read_bytes(),
         destinations={"platinum": location["dataset"]},
     )[0]
+
+
+def _exercise_query_cache(
+    resolver: StorageNeutralResolver,
+    resource_id: str,
+    requests: list[httpx.Request],
+) -> QueryResult:
+    service = PlatinumQueryService(resolver)
+    spec = QuerySpec(columns=("kind", "inferred"), limit=1)
+    result = service.query(resource_id, engine="polars", spec=spec)
+    assert len(requests) == 2
+
+    cached = service.query(
+        resource_id, engine="polars", spec=spec, offline=True
+    )
+    assert len(requests) == 2
+    assert cached.rows == result.rows
+    assert cached.result_sha256 == result.result_sha256
+    assert cached.cache_receipt.last_origin == "verified_cache"
+
+    resolver.evict()
+    unavailable = service.query_state(
+        resource_id, engine="polars", spec=spec, offline=True
+    )
+    assert isinstance(unavailable, QueryUnavailable)
+    assert unavailable.reason == "offline_cache_unavailable"
+
+    refetched = service.query(resource_id, engine="polars", spec=spec)
+    assert len(requests) == 4
+    assert refetched.rows == result.rows
+    assert refetched.result_sha256 == result.result_sha256
+    return result
 
 
 def _verify_saved_research_export(
@@ -363,7 +399,10 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
         semantic_manifest=semantic,
     )
 
+    requests: list[httpx.Request] = []
+
     def handle(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
         if "/api/datasets/" in request.url.path:
             return httpx.Response(
                 200, json={"sha": "a" * 40, "private": False, "gated": False}
@@ -382,11 +421,7 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
         transport_factory=lambda: httpx.MockTransport(handle),
         clock=lambda: NOW,
     ) as resolver:
-        result = PlatinumQueryService(resolver).query(
-            resource.resource_id,
-            engine="polars",
-            spec=QuerySpec(columns=("kind", "inferred"), limit=1),
-        )
+        result = _exercise_query_cache(resolver, resource.resource_id, requests)
 
     assert result.status == "available"
     assert result.rows == (
