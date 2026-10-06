@@ -214,6 +214,13 @@
     randomized orders passed 184 tests, and profiling/security passed. This
     displays the current context contract but does not populate missing source
     metadata or close the broader checkpoint.
+  - [x] Preserve the left and right subjects' evidence contexts on each
+    comparison-validity result. Contexts flow from the compared conclusions
+    through the v1 API; absent metadata remains explicitly unknown per side.
+    The versioned validity schema and additive OpenAPI snapshot are updated,
+    and the consumer compatibility baseline remains unchanged. Synthetic
+    query/API controls verify that distinct contexts are not collapsed. The
+    broader checkpoint and production source qualification remain open.
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 

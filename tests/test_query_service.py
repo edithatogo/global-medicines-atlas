@@ -11,9 +11,13 @@ from unittest.mock import patch
 import duckdb
 import pytest
 
+from global_medicines_atlas.comparison_validity import (
+    abstaining_status_comparison_validity,
+)
 from global_medicines_atlas.product_contracts import (
     ComparisonQuery,
     CoverageQuery,
+    EvidenceContext,
     EvidenceDimension,
     EvidenceQuery,
     ProductState,
@@ -290,7 +294,51 @@ def test_comparisons_preserve_dimensions_and_explicit_absent_states(
         == item.right_subject_id.endswith(":regulatory")
         for item in response.validity
     )
+    by_subject = {
+        f"{item.concept_id}:{item.jurisdiction}:{item.dimension.value}": item
+        for item in response.conclusions
+    }
+    assert all(
+        item.left_evidence_context
+        == by_subject[item.left_subject_id].evidence_context
+        and item.right_evidence_context
+        == by_subject[item.right_subject_id].evidence_context
+        for item in response.validity
+    )
     assert all(not item.establishes_equal_benefit for item in response.validity)
+
+
+def test_validity_retains_distinct_context_for_each_subject(
+    service: ReadOnlyQueryService,
+) -> None:
+    response = service.comparisons(_comparison())
+    conclusions = tuple(
+        item.model_copy(
+            update={
+                "evidence_context": EvidenceContext(
+                    schema_era=f"synthetic-{item.jurisdiction}",
+                    comparison_cohort="synthetic",
+                    entity_granularity="medicine_item",
+                )
+            }
+        )
+        for item in response.conclusions
+    )
+    expected = {
+        f"{item.concept_id}:{item.jurisdiction}:{item.dimension.value}": (
+            item.evidence_context
+        )
+        for item in conclusions
+    }
+
+    validity = abstaining_status_comparison_validity(conclusions)
+
+    assert validity
+    assert all(
+        item.left_evidence_context == expected[item.left_subject_id]
+        and item.right_evidence_context == expected[item.right_subject_id]
+        for item in validity
+    )
 
 
 def test_absence_without_coverage_is_not_a_negative_conclusion(

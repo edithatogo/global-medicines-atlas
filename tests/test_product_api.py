@@ -4,6 +4,9 @@ from typing import cast
 from fastapi.testclient import TestClient
 
 from global_medicines_atlas.api import create_app
+from global_medicines_atlas.comparison_validity import (
+    abstaining_status_comparison_validity,
+)
 from global_medicines_atlas.product_contracts import (
     AsOfClocks,
     ComparisonQuery,
@@ -11,6 +14,7 @@ from global_medicines_atlas.product_contracts import (
     CoverageQuery,
     CoverageResponse,
     EvidenceAvailability,
+    EvidenceContext,
     EvidenceDimension,
     EvidenceItem,
     EvidenceQuery,
@@ -44,6 +48,7 @@ class StubService:
         self.evidence_query: EvidenceQuery | None = None
         self.invalid_cursor = False
         self.unavailable = False
+        self.distinct_contexts = False
 
     def readiness_probe(self) -> None:
         if self.unavailable:
@@ -88,9 +93,37 @@ class StubService:
                 observed_at=query.observed_at,
             ),
         )
+        if self.distinct_contexts:
+            conclusion = conclusion.model_copy(
+                update={
+                    "evidence_context": EvidenceContext(
+                        schema_era="synthetic-nz-v1",
+                        comparison_cohort="synthetic",
+                        entity_granularity="medicine_item",
+                    )
+                }
+            )
+            other_conclusion = conclusion.model_copy(
+                update={
+                    "jurisdiction": "AU",
+                    "evidence_context": EvidenceContext(
+                        schema_era="synthetic-au-v2",
+                        comparison_cohort="legacy",
+                        entity_granularity="service_item",
+                    ),
+                }
+            )
+        else:
+            other_conclusion = conclusion.model_copy(
+                update={"jurisdiction": "AU"}
+            )
         return ComparisonResponse(
-            metadata=self._metadata(limit=query.limit, returned=1),
-            conclusions=(conclusion,),
+            metadata=self._metadata(limit=query.limit, returned=2),
+            conclusions=(conclusion, other_conclusion),
+            validity=abstaining_status_comparison_validity((
+                conclusion,
+                other_conclusion,
+            )),
         )
 
     def coverage(self, query: CoverageQuery) -> CoverageResponse:
@@ -164,9 +197,64 @@ def test_comparison_preserves_unknown_without_negative_status() -> None:
         "entity_granularity": "unknown",
         "review_state": "not_reported",
     }
+    validity = response.json()["validity"]
+    assert validity
+    assert validity[0]["left_evidence_context"] == {
+        "schema_era": None,
+        "comparison_cohort": "unknown",
+        "entity_granularity": "unknown",
+        "review_state": "not_reported",
+    }
+    assert validity[0]["right_evidence_context"] == {
+        "schema_era": None,
+        "comparison_cohort": "unknown",
+        "entity_granularity": "unknown",
+        "review_state": "not_reported",
+    }
     assert service.comparison_query is not None
     assert service.comparison_query.jurisdictions == ("NZ", "AU")
     assert response.headers["cache-control"].startswith("public")
+
+
+def test_comparison_api_retains_distinct_left_and_right_contexts() -> None:
+    client, service = _client()
+    service.distinct_contexts = True
+
+    response = client.get(
+        "/api/v1/comparisons",
+        params={
+            "concept_id": "rx:1",
+            "jurisdictions": ["NZ", "AU"],
+            "dimensions": ["regulatory"],
+            **CLOCK_PARAMS,
+        },
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    validity = payload["validity"]
+    assert validity
+    contexts_by_subject = {
+        f"{item['concept_id']}:{item['jurisdiction']}:{item['dimension']}": item[
+            "evidence_context"
+        ]
+        for item in payload["conclusions"]
+    }
+    for item in validity:
+        assert (
+            item["left_evidence_context"]
+            == contexts_by_subject[item["left_subject_id"]]
+        )
+        assert (
+            item["right_evidence_context"]
+            == contexts_by_subject[item["right_subject_id"]]
+        )
+    assert {
+        context["schema_era"] for context in contexts_by_subject.values()
+    } == {
+        "synthetic-nz-v1",
+        "synthetic-au-v2",
+    }
 
 
 def test_evidence_drill_down_exposes_source_and_native_terminology() -> None:
