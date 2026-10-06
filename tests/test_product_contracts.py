@@ -19,6 +19,7 @@ from global_medicines_atlas.product_contracts import (
     ErrorCode,
     ErrorEnvelope,
     EvidenceAvailability,
+    EvidenceContext,
     EvidenceDimension,
     EvidenceItem,
     EvidenceQuery,
@@ -408,6 +409,29 @@ def test_nullable_coverage_denominator_does_not_invent_percentage() -> None:
     )
     assert item.denominator is None
     assert "percentage" not in item.model_dump()
+
+
+def test_result_context_serializes_unreported_source_metadata_explicitly() -> (
+    None
+):
+    item = CoverageItem(
+        jurisdiction="NZ",
+        dimension=EvidenceDimension.FUNDING,
+        state=ProductState.UNKNOWN,
+        covered_count=0,
+        denominator=None,
+        valid_time=clocks(),
+    )
+
+    assert item.evidence_context == EvidenceContext()
+    assert item.model_dump(mode="json")["evidence_context"] == {
+        "schema_era": None,
+        "comparison_cohort": "unknown",
+        "entity_granularity": "unknown",
+        "review_state": "not_reported",
+    }
+    with pytest.raises(ValidationError):
+        EvidenceContext.model_validate({"review_state": "reviewed"})
 
 
 def test_coverage_count_cannot_exceed_known_denominator() -> None:

@@ -15,6 +15,7 @@ from pydantic import AwareDatetime, Field, model_validator
 from .product_contracts import (
     AsOfClocks,
     EvidenceAvailability,
+    EvidenceContext,
     JurisdictionCode,
     NonBlank,
     PageMetadata,
@@ -92,6 +93,7 @@ class V2Conclusion(ProductModel):
     evidence_availability: EvidenceAvailability
     evidence_unavailable_reason: NonBlank | None = None
     uncertainty: Uncertainty
+    evidence_context: EvidenceContext = Field(default_factory=EvidenceContext)
     valid_time: AsOfClocks
 
     @model_validator(mode="after")
@@ -151,6 +153,7 @@ class V2EvidenceItem(ProductModel):
     terminology: Terminology
     provenance: ProvenanceLink
     uncertainty: Uncertainty
+    evidence_context: EvidenceContext = Field(default_factory=EvidenceContext)
     valid_time: AsOfClocks
 
     @model_validator(mode="after")

@@ -87,6 +87,9 @@ def test_v2_query_service_preserves_v1_and_additive_dimensions(
     }
 
     assert values["NZ", "regulatory"].status_code == "approved"
+    assert values["NZ", "regulatory"].evidence_context.comparison_cohort == (
+        "unknown"
+    )
     assert values["NZ", "funding"].status_code == "funded"
     assert values["AU", "funding"].status_code is None
     assert values["US", "regulatory"].status_code is None
@@ -212,6 +215,13 @@ def test_v2_evidence_pages_complete_overflowing_v2_dimension(
     )
     assert len(second.evidence) == 13
     assert second.metadata.page.next_cursor is None
+    assert all(
+        item.evidence_context.schema_era is None
+        and item.evidence_context.comparison_cohort == "unknown"
+        and item.evidence_context.entity_granularity == "unknown"
+        and item.evidence_context.review_state == "not_reported"
+        for item in (*first.evidence, *second.evidence)
+    )
     assert {
         item.assertion_id for item in (*first.evidence, *second.evidence)
     } == {f"a-nz-service-{index:02d}" for index in range(33)}

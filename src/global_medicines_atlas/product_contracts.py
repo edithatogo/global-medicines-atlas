@@ -95,6 +95,25 @@ class UncertaintyLevel(StrEnum):
     UNKNOWN = "unknown"
 
 
+class EvidenceContext(ProductModel):
+    """Source-era and review context; missing metadata remains explicit."""
+
+    schema_era: NonBlank | None = None
+    comparison_cohort: Literal["legacy", "current", "synthetic", "unknown"] = (
+        "unknown"
+    )
+    entity_granularity: Literal[
+        "service_item",
+        "medicine_item",
+        "evidence_edge",
+        "history_event",
+        "coverage_record",
+        "provenance_record",
+        "unknown",
+    ] = "unknown"
+    review_state: Literal["not_reported"] = "not_reported"
+
+
 class ComparisonValidityOutcome(StrEnum):
     """Whether evidence supports only the stated status comparison."""
 
@@ -433,6 +452,7 @@ class ProductConclusion(ProductModel):
     evidence_availability: EvidenceAvailability
     evidence_unavailable_reason: NonBlank | None = None
     uncertainty: Uncertainty
+    evidence_context: EvidenceContext = Field(default_factory=EvidenceContext)
     valid_time: AsOfClocks
 
     @model_validator(mode="after")
@@ -491,6 +511,7 @@ class CoverageItem(ProductModel):
     covered_count: int = Field(ge=0)
     denominator: int | None = Field(default=None, ge=0)
     provenance: tuple[ProvenanceLink, ...] = ()
+    evidence_context: EvidenceContext = Field(default_factory=EvidenceContext)
     valid_time: AsOfClocks
 
     @model_validator(mode="after")
@@ -513,6 +534,7 @@ class EvidenceItem(ProductModel):
     terminology: Terminology
     provenance: ProvenanceLink
     uncertainty: Uncertainty
+    evidence_context: EvidenceContext = Field(default_factory=EvidenceContext)
     valid_time: AsOfClocks
 
     @model_validator(mode="after")

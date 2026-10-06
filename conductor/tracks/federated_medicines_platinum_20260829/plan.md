@@ -190,6 +190,18 @@
     same distinction. Red tests reproduced the contract gap. This closes that
     semantic-overclaim case only; the broader result-metadata checkpoint stays
     open.
+  - [x] Add an explicit `EvidenceContext` to v1 and v2 conclusions and evidence
+    rows, and v1 coverage rows. When the query tables do not carry an
+    independently bound schema era, comparison cohort, granularity, or review
+    record, JSON now reports `null`/`unknown`/`not_reported` instead of omitting
+    the metadata. The model cannot assert a reviewed state until a review record
+    is supplied. Focused query/API/OpenAPI checks pass and the schema remains
+    semantically compatible. This does not populate missing lineage or close
+    the checkpoint for every product result surface. The broader local full
+    profile passed its pytest lane at 96.81% coverage; its Darwin mutation stage
+    hit a native segmentation fault, while standalone mutation (2,250 cases),
+    Gremlins (320 tests), regeneration (both 184-test orders), profiling, and
+    security lanes passed. Linux hosted mutation remains authoritative.
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 

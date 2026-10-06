@@ -679,6 +679,9 @@
         "dimension": {
           "$ref": "#/components/schemas/EvidenceDimension"
         },
+        "evidence_context": {
+          "$ref": "#/components/schemas/EvidenceContext"
+        },
         "jurisdiction": {
           "pattern": "^[A-Z]{2,3}$",
           "title": "Jurisdiction",
@@ -1078,6 +1081,56 @@
       ],
       "type": "string"
     },
+    "EvidenceContext": {
+      "additionalProperties": false,
+      "properties": {
+        "comparison_cohort": {
+          "default": "unknown",
+          "enum": [
+            "legacy",
+            "current",
+            "synthetic",
+            "unknown"
+          ],
+          "title": "Comparison Cohort",
+          "type": "string"
+        },
+        "entity_granularity": {
+          "default": "unknown",
+          "enum": [
+            "service_item",
+            "medicine_item",
+            "evidence_edge",
+            "history_event",
+            "coverage_record",
+            "provenance_record",
+            "unknown"
+          ],
+          "title": "Entity Granularity",
+          "type": "string"
+        },
+        "review_state": {
+          "const": "not_reported",
+          "default": "not_reported",
+          "title": "Review State",
+          "type": "string"
+        },
+        "schema_era": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Schema Era"
+        }
+      },
+      "type": "object"
+    },
     "EvidenceDimension": {
       "enum": [
         "regulatory",
@@ -1103,6 +1156,9 @@
         },
         "dimension": {
           "$ref": "#/components/schemas/EvidenceDimension"
+        },
+        "evidence_context": {
+          "$ref": "#/components/schemas/EvidenceContext"
         },
         "jurisdiction": {
           "pattern": "^[A-Z]{2,3}$",
@@ -1867,6 +1923,9 @@
         },
         "evidence_availability": {
           "$ref": "#/components/schemas/EvidenceAvailability"
+        },
+        "evidence_context": {
+          "$ref": "#/components/schemas/EvidenceContext"
         },
         "evidence_unavailable_reason": {
           "anyOf": [
