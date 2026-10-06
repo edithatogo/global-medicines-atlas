@@ -52,6 +52,24 @@ def _citation_sort_key(citation: ExportCitation | Mapping[str, Any]) -> bytes:
     )
 
 
+def canonical_result_bytes(
+    result_rows: Sequence[Mapping[str, Any]],
+) -> bytes:
+    """Serialize query rows to canonical, order-stable JSON bytes.
+
+    Rows are sorted by their canonical object representation, matching the
+    digest algorithm used in query snapshot manifests.
+
+    Args:
+        result_rows: Mapping rows returned by a bounded query.
+
+    Returns:
+        Canonical JSON array bytes whose digest matches the snapshot manifest.
+    """
+    normalized_rows = sorted(_canonical_bytes(row) for row in result_rows)
+    return b"[" + b",".join(normalized_rows) + b"]"
+
+
 class ExportSource(FrozenModel):
     """A pinned public data-plane object used by an export."""
 
@@ -137,8 +155,7 @@ def build_query_snapshot_manifest(
     if not sources:
         raise ValueError("A query snapshot requires at least one source")
     normalized_query = json.loads(_canonical_bytes(query))
-    normalized_rows = sorted(_canonical_bytes(row) for row in result_rows)
-    result_payload = b"[" + b",".join(normalized_rows) + b"]"
+    result_payload = canonical_result_bytes(result_rows)
     return QuerySnapshotManifest(
         query=normalized_query,
         query_sha256=_digest(normalized_query),

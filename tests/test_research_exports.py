@@ -9,6 +9,7 @@ from global_medicines_atlas.research_exports import (
     ExportSource,
     build_query_snapshot_manifest,
     canonical_manifest_bytes,
+    canonical_result_bytes,
     manifest_sha256,
 )
 
@@ -48,6 +49,26 @@ def test_manifest_is_order_stable_and_content_addressed() -> None:
     assert canonical_manifest_bytes(first) == canonical_manifest_bytes(second)
     assert len(manifest_sha256(first)) == 64
     assert first.result_row_count == 2
+
+
+@pytest.mark.unit
+def test_canonical_result_bytes_match_manifest_digest_and_ignore_row_order() -> (
+    None
+):
+    rows = [{"item_id": "2"}, {"item_id": "1"}]
+    first = build_query_snapshot_manifest(
+        query={"select": ["item_id"]},
+        result_rows=rows,
+        sources=[_source()],
+        generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+        generator_commit="abc1234",
+    )
+
+    payload = canonical_result_bytes(rows)
+
+    assert payload == canonical_result_bytes(list(reversed(rows)))
+    assert hashlib.sha256(payload).hexdigest() == first.result_sha256
+    assert json.loads(payload) == [{"item_id": "1"}, {"item_id": "2"}]
 
 
 @pytest.mark.unit
