@@ -12,6 +12,7 @@ import httpx
 import pyarrow.parquet as pq
 import pytest
 
+from global_medicines_atlas.bronze_admission import BronzeAdmissionState
 from global_medicines_atlas.bronze_landing import land_bronze_payload
 from global_medicines_atlas.federation_distribution import (
     DistributionBinding,
@@ -191,6 +192,9 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     assert landed.payload_path.read_bytes() == raw
     assert landed.receipt.evidence_class is EvidenceClass.SYNTHETIC
     assert landed.receipt.payload.sha256 == hashlib.sha256(raw).hexdigest()
+    assert landed.admission.state is BronzeAdmissionState.ACCEPTED
+    assert landed.receipt.rights_state is RightsState.UNKNOWN
+    assert landed.receipt.satisfies_live_gate is False
 
     silver = next(
         iter_mbs_silver_batches(
