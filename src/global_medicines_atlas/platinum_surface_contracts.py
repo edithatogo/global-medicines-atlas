@@ -7,7 +7,12 @@ from typing import TYPE_CHECKING, Annotated, Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 
-from .platinum_types import Capability, EntityGranularity, SemanticDimension
+from .platinum_types import (
+    Capability,
+    EntityGranularity,
+    PlatinumSemanticDimension,
+    SemanticDimension,
+)
 
 if TYPE_CHECKING:
     from .platinum_resolver import ResolvedResource
@@ -56,10 +61,46 @@ class DatasetIdentityEnvelope(PlatinumSurfaceModel):
     rows_queried: Literal[False]
 
 
+class DatasetIdentityV2Envelope(PlatinumSurfaceModel):
+    """Additive v2 identity contract for source-structure resources."""
+
+    version: Literal["1.0"] = "1.0"
+    api_version: Literal["v2"] = "v2"
+    resource_id: str = Field(min_length=1, max_length=256)
+    dataset: str = Field(pattern=r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
+    revision: Revision
+    path: str = Field(min_length=1, max_length=2048)
+    object_sha256: Sha256
+    byte_count: int = Field(ge=0)
+    contract_sha256: Sha256
+    semantic_manifest_sha256: Sha256
+    jurisdiction: Jurisdiction
+    semantic_dimension: PlatinumSemanticDimension
+    entity_granularity: EntityGranularity
+    source_id: str = Field(min_length=1)
+    acquisition_id: str = Field(min_length=1)
+    layer: str = Field(min_length=1)
+    schema_era: str = Field(min_length=1)
+    comparison_cohort: Literal["legacy", "current", "synthetic"]
+    effective_date: str | None
+    retrieved_at: AwareDatetime
+    cache_expires_at: AwareDatetime
+    capabilities: tuple[Capability, ...]
+    coverage_state: Literal["not_declared"]
+    confidence_state: Literal["not_declared"] = "not_declared"
+    uncertainty_state: Literal["not_declared"] = "not_declared"
+    review_state: Literal["not_declared"] = "not_declared"
+    comparison_validity: Literal["not_evaluated"]
+    product_admitted: Literal[True]
+    rows_queried: Literal[False]
+
+
 def dataset_identity(
     resource: ResolvedResource, *, jurisdiction: str
 ) -> DatasetIdentityEnvelope:
     """Translate one admitted resolver result without performing I/O."""
+    if resource.semantic_dimension == "source_structure":
+        raise ValueError("source_structure requires the v2 identity contract")
     return DatasetIdentityEnvelope(
         resource_id=resource.resource_id,
         dataset=resource.dataset,
@@ -91,4 +132,45 @@ def dataset_identity(
     )
 
 
-__all__ = ["DatasetIdentityEnvelope", "dataset_identity"]
+def dataset_identity_v2(
+    resource: ResolvedResource, *, jurisdiction: str
+) -> DatasetIdentityV2Envelope:
+    """Translate a v2 semantic identity without widening the v1 enum."""
+    return DatasetIdentityV2Envelope(
+        api_version="v2",
+        resource_id=resource.resource_id,
+        dataset=resource.dataset,
+        revision=resource.revision,
+        path=resource.path,
+        object_sha256=resource.sha256,
+        byte_count=resource.byte_count,
+        contract_sha256=resource.contract_sha256,
+        semantic_manifest_sha256=resource.semantic_manifest_sha256,
+        jurisdiction=jurisdiction,
+        semantic_dimension=resource.semantic_dimension,
+        entity_granularity=resource.entity_granularity,
+        source_id=resource.source_id,
+        acquisition_id=resource.acquisition_id,
+        layer=resource.layer,
+        schema_era=resource.schema_era,
+        comparison_cohort=resource.comparison_cohort,
+        effective_date=resource.effective_date,
+        retrieved_at=datetime.fromisoformat(resource.retrieved_at),
+        cache_expires_at=resource.cache_expires_at,
+        capabilities=resource.capabilities,
+        coverage_state="not_declared",
+        confidence_state="not_declared",
+        uncertainty_state="not_declared",
+        review_state="not_declared",
+        comparison_validity="not_evaluated",
+        product_admitted=True,
+        rows_queried=False,
+    )
+
+
+__all__ = [
+    "DatasetIdentityEnvelope",
+    "DatasetIdentityV2Envelope",
+    "dataset_identity",
+    "dataset_identity_v2",
+]

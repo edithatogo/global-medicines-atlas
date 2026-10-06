@@ -32,7 +32,7 @@ from .platinum_types import (
     RESOURCE_ID_PATTERN,
     Capability,
     EntityGranularity,
-    SemanticDimension,
+    PlatinumSemanticDimension,
 )
 
 BASE_CAPABILITIES: tuple[Capability, ...] = (
@@ -48,6 +48,7 @@ _DIMENSIONS = {
     "formulary",
     "regulatory",
     "terminology",
+    "source_structure",
 }
 _GRANULARITIES = {
     "service_item",
@@ -64,7 +65,7 @@ class ProductResource:
     """Product-facing semantics bound to exact reconciled v4 bytes."""
 
     resource_id: str
-    semantic_dimension: SemanticDimension
+    semantic_dimension: PlatinumSemanticDimension
     entity_granularity: EntityGranularity
     binding: DistributionBinding
     contract: bytes
@@ -76,7 +77,7 @@ class ResolvedResource:
     """Storage-neutral immutable identity returned without I/O."""
 
     resource_id: str
-    semantic_dimension: SemanticDimension
+    semantic_dimension: PlatinumSemanticDimension
     entity_granularity: EntityGranularity
     dataset: str
     revision: str

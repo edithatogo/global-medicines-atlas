@@ -10,8 +10,10 @@ from pydantic import Field, model_validator
 
 from .platinum_surface_contracts import (
     DatasetIdentityEnvelope,
+    DatasetIdentityV2Envelope,
     PlatinumSurfaceModel,
     dataset_identity,
+    dataset_identity_v2,
 )
 
 if TYPE_CHECKING:
@@ -60,6 +62,12 @@ class ResolverIdentityLookup(Protocol):
     def resolve(self, resource_id: str) -> ResolvedResource: ...
 
 
+class DatasetIdentityV2Lookup(Protocol):
+    """V2 resource identity boundary, separate from the immutable v1 model."""
+
+    def identity_v2(self, resource_id: str) -> DatasetIdentityV2Envelope: ...
+
+
 class ResolverDatasetIdentityService:
     """Expose resolver identities without opening or querying their bytes."""
 
@@ -89,6 +97,15 @@ class ResolverDatasetIdentityService:
             raise UnknownPlatinumResourceError from None
         return dataset_identity(resolved, jurisdiction=jurisdiction)
 
+    def identity_v2(self, resource_id: str) -> DatasetIdentityV2Envelope:
+        """Return the additive semantic contract for a v2 resource."""
+        try:
+            jurisdiction = self._jurisdictions[resource_id]
+            resolved = self._resolver.resolve(resource_id)
+        except KeyError, ValueError:
+            raise UnknownPlatinumResourceError from None
+        return dataset_identity_v2(resolved, jurisdiction=jurisdiction)
+
     def identities(self) -> DatasetIdentityPage:
         """Return every configured identity in stable resource-id order."""
         datasets = tuple(
@@ -101,6 +118,7 @@ class ResolverDatasetIdentityService:
 __all__ = [
     "DatasetIdentityLookup",
     "DatasetIdentityPage",
+    "DatasetIdentityV2Lookup",
     "ResolverDatasetIdentityService",
     "UnknownPlatinumResourceError",
 ]

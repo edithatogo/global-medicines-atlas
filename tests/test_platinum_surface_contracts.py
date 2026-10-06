@@ -12,6 +12,7 @@ from global_medicines_atlas.platinum_resolver import ResolvedResource
 from global_medicines_atlas.platinum_surface_contracts import (
     DatasetIdentityEnvelope,
     dataset_identity,
+    dataset_identity_v2,
 )
 
 
@@ -79,6 +80,25 @@ def test_identity_preserves_admitted_zero_byte_object() -> None:
     )
 
     assert envelope.byte_count == 0
+
+
+def test_v1_identity_remains_closed_and_v2_preserves_source_structure() -> None:
+    pbs_resource = replace(
+        resource(),
+        semantic_dimension="source_structure",
+        entity_granularity="evidence_edge",
+    )
+    with pytest.raises(ValueError, match="requires the v2 identity contract"):
+        dataset_identity(pbs_resource, jurisdiction="AU")
+    envelope = dataset_identity_v2(pbs_resource, jurisdiction="AU").model_dump(
+        mode="json"
+    )
+
+    assert envelope["api_version"] == "v2"
+    assert envelope["semantic_dimension"] == "source_structure"
+    assert envelope["entity_granularity"] == "evidence_edge"
+    assert envelope["comparison_validity"] == "not_evaluated"
+    assert envelope["coverage_state"] == "not_declared"
 
 
 @pytest.mark.parametrize(

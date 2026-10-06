@@ -3,15 +3,22 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping, Sequence
+from datetime import UTC, datetime
 from typing import Annotated, Any, Protocol
 from uuid import uuid4
 
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, Path, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from pydantic import AwareDatetime, ValidationError
 
 from .http_content_negotiation import install_json_accept_negotiation
+from .platinum_identity_service import (
+    DatasetIdentityV2Lookup,
+    UnknownPlatinumResourceError,
+)
+from .platinum_surface_contracts import DatasetIdentityV2Envelope
+from .platinum_types import RESOURCE_ID_PATTERN
 from .platinum_v2_contracts import (
     V2_API_BASE_PATH,
     V2_API_VERSION,
@@ -55,6 +62,7 @@ class V2ComparisonService(Protocol):
 
 _ERROR_RESPONSES: dict[int | str, dict[str, Any]] = {
     400: {"model": V2ErrorEnvelope},
+    404: {"model": V2ErrorEnvelope},
     422: {"model": V2ErrorEnvelope},
     503: {"model": V2ErrorEnvelope},
     406: {"description": "The request does not accept application/json."},
@@ -152,7 +160,28 @@ def _cache_headers(response: Response) -> None:
     response.headers["vary"] = "accept"
 
 
-def create_v2_app(service: V2ComparisonService) -> FastAPI:
+def _identity_cache_headers(
+    response: Response, identity: DatasetIdentityV2Envelope
+) -> None:
+    """Bound cache lifetime to the verified offline-capability expiry."""
+    if "verified_cache_offline" not in identity.capabilities:
+        _cache_headers(response)
+        return
+    remaining = max(
+        0,
+        int((identity.cache_expires_at - datetime.now(UTC)).total_seconds()),
+    )
+    response.headers["cache-control"] = (
+        f"public, max-age={min(60, remaining)}, must-revalidate"
+    )
+    response.headers["vary"] = "accept"
+
+
+def create_v2_app(
+    service: V2ComparisonService,
+    *,
+    dataset_identities: DatasetIdentityV2Lookup | None = None,
+) -> FastAPI:
     """Create an isolated additive V2 API without changing the V1 schema."""
 
     app = FastAPI(
@@ -185,6 +214,50 @@ def create_v2_app(service: V2ComparisonService) -> FastAPI:
         )
 
     app.add_exception_handler(RequestValidationError, request_validation_error)
+
+    @app.api_route(
+        f"{V2_API_BASE_PATH}/datasets/{{resource_id:path}}",
+        methods=["GET"],
+        response_model=DatasetIdentityV2Envelope,
+        responses=_ERROR_RESPONSES,
+        tags=["datasets"],
+        summary="Inspect one v2 admitted immutable dataset identity",
+    )
+    def dataset_identity(
+        request: Request,
+        response: Response,
+        resource_id: Annotated[
+            str,
+            Path(min_length=1, max_length=256, pattern=RESOURCE_ID_PATTERN),
+        ],
+    ) -> DatasetIdentityV2Envelope | JSONResponse:
+        if dataset_identities is None:
+            return _error_response(
+                request,
+                status_code=503,
+                code=ErrorCode.SERVICE_UNAVAILABLE,
+                message="The dataset identity service is unavailable",
+                retryable=True,
+            )
+        try:
+            result = dataset_identities.identity_v2(resource_id)
+        except UnknownPlatinumResourceError:
+            return _error_response(
+                request,
+                status_code=404,
+                code=ErrorCode.NOT_FOUND,
+                message="The admitted dataset resource was not found",
+            )
+        _identity_cache_headers(response, result)
+        return result
+
+    app.add_api_route(
+        f"{V2_API_BASE_PATH}/datasets/{{resource_id:path}}",
+        dataset_identity,
+        methods=["HEAD"],
+        response_model=None,
+        include_in_schema=False,
+    )
 
     @app.api_route(
         f"{V2_API_BASE_PATH}/comparisons",
