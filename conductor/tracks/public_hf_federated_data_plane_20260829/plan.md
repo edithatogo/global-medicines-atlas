@@ -223,7 +223,9 @@
   184/184 each, package, regeneration, Scalene and security lanes passed.
   Linux remains authoritative for mutation. This connects the offline trust
   result to the consumer read boundary; configured production profiles, live
-  archive admission and public product publication remain open.
+  archive admission and public product publication remain open. PR #832 merged
+  as `ed38571146de342db5f243ea435e6b331ad57112` after all 39 hosted checks
+  passed; the exact receipt is in the append-only evidence log.
 
 ### Source-metadata review fixes
 
