@@ -114,6 +114,16 @@ source-specific questions are answered. Do not add source objects or
 revisions. See
 `quality/qualifications/australian-mbs-utilisation-candidate-shape-observation-20261006.json`.
 
+The next observer stage now binds candidate period policies to each exact
+resource ID and saved description digest. It counts only four-digit expected
+year matches and full or three-letter English month names, without trimming or
+rewriting source tokens. Allowed month bounds follow the captured catalogue
+notes for Q1, the Q2 May cutoff, Q3 July, and the group year-to-date July
+cutoff; they do not assert a start month or completeness. Synthetic tests
+cover the parser and fail-closed binding, but exact-main readback is pending.
+The observed classification remains a candidate and does not authorize
+processing admission or Silver publication.
+
 No source identities, revisions, or objects may be added. The two oversized
 ZIP holds remain unchanged; rights approval, native admissions, source row
 semantics, Silver/Gold, and M-112 acceptance remain separate gates.

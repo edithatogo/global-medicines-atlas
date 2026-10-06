@@ -65,7 +65,9 @@ def worker(index: int, path: Path, exact_commit: str) -> dict[str, Any]:
         return {"status": "identity_failed", "anonymous_digest_verified": False}
     try:
         observation = observe_utilisation_csv_values(
-            path, expected_headers=row["expected_headers"]
+            path,
+            expected_headers=row["expected_headers"],
+            period_policy=row["period_policy"],
         )
     except OSError, MemoryError:
         return {

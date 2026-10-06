@@ -2028,7 +2028,18 @@
   was granted. See
   `quality/qualifications/australian-mbs-utilisation-candidate-shape-observation-20261006.json`.
 
-- [~] Resolve exact processing-period tokens and safe categorical domains from
-  source-specific evidence, and validate them in another bounded hosted pass.
-  Keep exact native tokens and suppression/unknown distinctions; do not infer
-  periods from filenames or select comma normalization without evidence.
+- [x] Implement a candidate processing-period observer bound to the four
+  exact resource IDs and the saved official resource-description digests.
+  Require a four-digit 2016 year token and recognize only English full or
+  three-letter month names, without trimming or rewriting the source token.
+  The per-resource allowed month sets reflect the documented Q1, through-May
+  Q2, July Q3, and year-to-date-through-July group bounds; they impose no
+  minimum-period or completeness claim. Aggregate output records recognized,
+  invalid, mismatched, and out-of-window counts, with no raw tokens or row
+  transforms. The observer tests pass with 100% statement and branch coverage;
+  no source bytes were read locally.
+
+- [~] Run the candidate processing-period observer on exact main for the same
+  four CSVs and independently read back its five receipts. Confirm the month
+  spellings and resource-specific bounds only through aggregate outcomes.
+  Keep period semantics unverified, and do not admit results or publish Silver.
