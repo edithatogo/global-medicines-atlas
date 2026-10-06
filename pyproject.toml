@@ -176,7 +176,7 @@ report = ["console", "json"]
 max_pardons = 0
 
 [tool.edgetest]
-command = "pytest -q tests/test_columnar.py tests/test_settings.py tests/test_product_contracts.py tests/test_product_api.py tests/test_product_cli.py"
+command = "pytest -q tests/test_columnar.py tests/test_settings.py tests/test_product_contracts.py tests/test_result_surface_contract_matrix.py tests/test_product_api.py tests/test_product_cli.py"
 
 [[tool.edgetest.env]]
 name = "contracts"
