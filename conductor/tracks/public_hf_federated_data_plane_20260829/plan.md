@@ -169,9 +169,10 @@
     Gold node/edge Parquet, and Platinum research-package bytes with the strict
     non-publishable producer inventory loader and v4 distribution reconciler.
     Every emitted object is matched to its immutable destination, path, digest,
-    byte count, source/acquisition identity, layer, and Bronze stratum. This is
-    synthetic qualification only; it does not publish, admit real data, or
-    close the live producer integration gate.
+    byte count, source/acquisition identity, layer, and Bronze stratum. PR #836
+    merged as `08a08a0f8662fefe8cc473272f6cbe2e2252ba68` after all 38 hosted
+    checks passed. This is synthetic qualification only; it does not publish,
+    admit real data, or close the live producer integration gate.
 - [x] Reject duplicate JSON member names consistently at v4 distribution,
   admission, reader, receipt-closure, and consumer boundaries. Three synthetic
   regressions failed before the shared strict parser; 436 affected federation
