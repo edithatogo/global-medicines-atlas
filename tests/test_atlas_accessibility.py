@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from datetime import UTC, datetime
 
 from bs4 import BeautifulSoup
@@ -32,6 +33,36 @@ def _metadata(returned: int) -> ResponseMetadata:
         clocks=AsOfClocks(valid_at=NOW, observed_at=NOW),
         page=PageMetadata(limit=50, returned=returned),
     )
+
+
+def _css_hex(css: str, variable: str) -> str:
+    match = re.search(
+        rf"{re.escape(variable)}:\s*(#(?:[0-9a-fA-F]{{3}}|[0-9a-fA-F]{{6}}));",
+        css,
+    )
+    assert match is not None, f"missing concrete CSS color for {variable}"
+    color = match.group(1)
+    if len(color) == 4:
+        return "#" + "".join(character * 2 for character in color[1:])
+    return color
+
+
+def _relative_luminance(color: str) -> float:
+    channels = [int(color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
+    linear = [
+        channel / 12.92
+        if channel <= 0.04045
+        else ((channel + 0.055) / 1.055) ** 2.4
+        for channel in channels
+    ]
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+
+def _contrast_ratio(left: str, right: str) -> float:
+    luminance = sorted(
+        (_relative_luminance(left), _relative_luminance(right)), reverse=True
+    )
+    return (luminance[0] + 0.05) / (luminance[1] + 0.05)
 
 
 class FakeService:
@@ -105,6 +136,23 @@ def test_landmark_labels_focus_and_form_structure():
     assert stylesheet.status_code == 200
     assert "@media (max-width: 42rem)" in stylesheet.text
     assert ":focus-visible" in stylesheet.text
+
+
+def test_focus_indicator_has_three_to_one_change_against_atlas_surfaces():
+    stylesheet = TestClient(create_atlas_app(FakeService())).get(
+        "/static/atlas.css"
+    )
+    css = stylesheet.text
+    indicator = _css_hex(css, "--focus-indicator")
+    backgrounds = (_css_hex(css, "--paper"), _css_hex(css, "--wash"))
+
+    assert re.search(
+        r":focus-visible\s*\{[^}]*outline:[^;}]*var\(--focus-indicator\)", css
+    )
+    assert all(
+        _contrast_ratio(indicator, background) >= 3
+        for background in backgrounds
+    )
 
 
 def test_results_are_semantic_textual_and_source_linked():
