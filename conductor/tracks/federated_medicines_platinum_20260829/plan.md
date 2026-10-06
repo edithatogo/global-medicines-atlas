@@ -249,8 +249,10 @@
 
 ## Phase 5: Research exports and qualification (AC-07, AC-08)
 
-- [ ] Write failing determinism, citation, Croissant/RO-Crate, package,
+- [~] Write failing determinism, citation, Croissant/RO-Crate, package,
   clean-room, load, concurrency, security, privacy, and release-gate tests.
+  - [x] Confirmed and fixed query-manifest instability when callers mutate a
+    nested query mapping after manifest construction.
 - [ ] Confirm the intended failure before implementation.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
