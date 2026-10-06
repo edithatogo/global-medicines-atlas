@@ -14,6 +14,13 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 
+from .platinum_benefits import (
+    BenefitsLookup,
+    BenefitsPage,
+    BenefitsQuery,
+    parse_benefits_filters,
+)
+from .platinum_identity_service import UnknownPlatinumResourceError
 from .platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -223,8 +230,9 @@ def create_atlas_app(
     service: AtlasQueryService,
     *,
     v2_service: V2AtlasQueryService | None = None,
+    federated_benefits: BenefitsLookup | None = None,
 ) -> FastAPI:
-    """Create an atlas app with an explicitly injected read-only service."""
+    """Create an atlas app with explicitly injected read-only services."""
     app = FastAPI(
         title="Global Medicines Atlas",
         docs_url=None,
@@ -311,6 +319,59 @@ def create_atlas_app(
                 "error": error,
             },
         )
+
+    if federated_benefits is not None:
+
+        @app.get("/federated/benefits", response_class=HTMLResponse)
+        def federated_benefits_page(  # pyright: ignore[reportUnusedFunction]
+            request: Request,
+            resource_id: Annotated[str, Query(min_length=1, max_length=256)],
+            columns: Annotated[str, Query(min_length=1, max_length=8192)],
+            limit: Annotated[int, Query(ge=1, le=100)] = 50,
+            cursor: Annotated[str | None, Query(max_length=160)] = None,
+            filters: Annotated[str | None, Query(max_length=16384)] = None,
+            *,
+            offline: bool = False,
+        ) -> HTMLResponse:
+            selected_columns = tuple(
+                column.strip()
+                for column in columns.split(",")
+                if column.strip()
+            )
+            error: str | None = None
+            page: BenefitsPage | None = None
+            status_code = 200
+            try:
+                query = BenefitsQuery(
+                    columns=selected_columns,
+                    filters=parse_benefits_filters(filters),
+                    limit=limit,
+                    cursor=cursor,
+                    offline=offline,
+                )
+                page = federated_benefits.query(resource_id, query)
+            except UnknownPlatinumResourceError:
+                error = "The admitted benefits resource was not found."
+                status_code = 404
+            except ValidationError, ValueError:
+                error = "The federated benefits query is invalid."
+                status_code = 422
+
+            return _TEMPLATES.TemplateResponse(
+                request=request,
+                name="atlas_federated_benefits.html",
+                context={
+                    "resource_id": resource_id,
+                    "columns": ",".join(selected_columns),
+                    "limit": limit,
+                    "cursor": cursor or "",
+                    "filters": filters or "",
+                    "offline": offline,
+                    "error": error,
+                    "page": page.model_dump(mode="json") if page else None,
+                },
+                status_code=status_code,
+            )
 
     return app
 
