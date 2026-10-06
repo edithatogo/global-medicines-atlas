@@ -56,7 +56,7 @@ def worker(index: int, path: Path, exact_commit: str) -> dict[str, Any]:
     reference = row["raw_reference"]
     try:
         verify_staged_identity(path, reference)
-    except (OSError, MemoryError):
+    except OSError, MemoryError:
         return {
             "status": "identity_unavailable",
             "anonymous_digest_verified": False,
@@ -67,7 +67,7 @@ def worker(index: int, path: Path, exact_commit: str) -> dict[str, Any]:
         observation = observe_utilisation_csv_values(
             path, expected_headers=row["expected_headers"]
         )
-    except (OSError, MemoryError):
+    except OSError, MemoryError:
         return {
             "status": "observation_unavailable",
             "anonymous_digest_verified": True,
@@ -107,7 +107,7 @@ def run_worker(index: int, path: Path, exact_commit: str) -> dict[str, Any]:
             check=True,
         )
         value = json.loads(completed.stdout)
-    except (subprocess.TimeoutExpired, subprocess.CalledProcessError, ValueError):
+    except subprocess.TimeoutExpired, subprocess.CalledProcessError, ValueError:
         return {
             "status": "worker_failed_or_timed_out",
             "anonymous_digest_verified": False,
@@ -159,12 +159,12 @@ def main() -> None:
                 reference["path"],
                 reference["byte_count"],
             )
-        except (ValueError, OSError):
+        except ValueError, OSError:
             pass
         else:
             try:
                 outcome = run_worker(index, target, args.exact_commit)
-            except (OSError, TypeError, ValueError):
+            except OSError, TypeError, ValueError:
                 outcome = {
                     "status": "worker_result_invalid",
                     "anonymous_digest_verified": False,
