@@ -1968,9 +1968,17 @@
   processing admission, or Silver publication occurred. See
   `quality/qualifications/australian-mbs-utilisation-value-observation-20261006.json`.
 
-- [~] Classify the 4,728 Q2 demographics `Services` decimal-profile failures
-  using aggregate-only lexical categories in an isolated exact-main observer.
-  Preserve the exact four-object source cohort and digest binding; expose no
-  token values, inferred replacements, semantic mappings, admission, or Silver.
-  Keep categorization separate from deciding whether the existing profile is
-  suitable for conversion.
+- [x] Classify invalid numeric tokens into disjoint aggregate lexical
+  categories in the isolated exact-main observer. Run `37417959155` at
+  `a44e18d8ced37019391fef2212262e50da64bc47` verified all four source digests
+  and found all 4,728 Q2 demographics `Services` failures in the separator
+  category; the other three CSVs had zero invalid `Services` tokens, and all
+  `Benefit` values matched the strict decimal profile. Five receipts were
+  independently read back and caches removed after receipt. No token values,
+  mappings, admissions, or Silver rows were published. See
+  `quality/qualifications/australian-mbs-utilisation-invalid-token-category-observation-20261006.json`.
+
+- [~] Refine the Q2 `Services` separator bucket into aggregate-only lexical
+  punctuation-pattern classes. Keep the four-source cohort, digest checks,
+  and privacy boundary. Pattern categories must not imply thousands grouping,
+  numeric conversion, semantic acceptance, admission, or Silver eligibility.
