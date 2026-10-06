@@ -81,16 +81,19 @@ def test_observer_counts_invalid_numeric_tokens_without_leaking_them(
 def test_invalid_numeric_tokens_use_disjoint_exhaustive_private_categories(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setattr(module, "MAX_NUMERIC_TOKEN_CHARS", 5)
+    monkeypatch.setattr(module, "MAX_NUMERIC_TOKEN_CHARS", 20)
     source = tmp_path / "categories.csv"
     source.write_text(
         ",".join(DEMOGRAPHICS_HEADERS)
         + "\n2016,1,0101,NSW,0-4,Male, 1,1\n"
         + "2016,1,0102,NSW,0-4,Male,1e3,1\n"
         + '2016,1,0103,NSW,0-4,Male,"1,000",1\n'
-        + "2016,1,0104,NSW,0-4,Male,NaN,1\n"
-        + "2016,1,0105,NSW,0-4,Male,--,1\n"
-        + "2016,1,0106,NSW,0-4,Male,123456,1\n",
+        + "2016,1,0104,NSW,0-4,Male,1_000,1\n"
+        + '2016,1,0105,NSW,0-4,Male,"1,00",1\n'
+        + "2016,1,0106,NSW,0-4,Male,NaN,1\n"
+        + "2016,1,0107,NSW,0-4,Male,--,1\n"
+        + "2016,1,0108,NSW,0-4,Male,123456789012345678901,1\n"
+        + '2016,1,0109,NSW,0-4,Male,"1,000_000",1\n',
         encoding="utf-8",
     )
 
@@ -99,9 +102,11 @@ def test_invalid_numeric_tokens_use_disjoint_exhaustive_private_categories(
     )
 
     categories = result.services.invalid_category_counts
-    assert result.services.invalid_count == 6
+    assert result.services.invalid_count == 9
     assert set(categories) == set(module.INVALID_TOKEN_CATEGORIES)
-    assert set(categories.values()) == {1}
+    assert categories["comma_triplet_pattern"] == 1
+    assert categories["underscore_triplet_pattern"] == 1
+    assert categories["other_separator"] == 2
     assert sum(categories.values()) == result.services.invalid_count
     public_summary = json.loads(json.dumps(result.to_public_summary()))
     public_strings: set[str] = set()

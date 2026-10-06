@@ -53,7 +53,9 @@ INVALID_TOKEN_CATEGORIES = (
     "overlength",
     "whitespace",
     "exponent_notation",
-    "separator",
+    "comma_triplet_pattern",
+    "underscore_triplet_pattern",
+    "other_separator",
     "alphabetic",
     "other_non_decimal",
 )
@@ -343,13 +345,31 @@ def _parse_decimal_token(token: str) -> Decimal | None:
 def _classify_invalid_token(token: str) -> str:
     """Return a disjoint lexical class without retaining the token."""
     if len(token) > MAX_NUMERIC_TOKEN_CHARS:
-        return "overlength"
-    if any(character.isspace() for character in token):
-        return "whitespace"
-    if re.fullmatch(r"[+-]?[0-9]+(?:\.[0-9]*)?[eE][+-]?[0-9]+", token):
-        return "exponent_notation"
-    if "," in token or "_" in token:
-        return "separator"
-    if any(character.isalpha() for character in token):
-        return "alphabetic"
-    return "other_non_decimal"
+        category = "overlength"
+    elif any(character.isspace() for character in token):
+        category = "whitespace"
+    elif re.fullmatch(r"[+-]?[0-9]+(?:\.[0-9]*)?[eE][+-]?[0-9]+", token):
+        category = "exponent_notation"
+    elif "," in token and "_" not in token:
+        category = (
+            "comma_triplet_pattern"
+            if re.fullmatch(
+                r"[+-]?[0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]*)?", token
+            )
+            else "other_separator"
+        )
+    elif "_" in token and "," not in token:
+        category = (
+            "underscore_triplet_pattern"
+            if re.fullmatch(
+                r"[+-]?[0-9]{1,3}(?:_[0-9]{3})+(?:\.[0-9]*)?", token
+            )
+            else "other_separator"
+        )
+    elif "," in token or "_" in token:
+        category = "other_separator"
+    elif any(character.isalpha() for character in token):
+        category = "alphabetic"
+    else:
+        category = "other_non_decimal"
+    return category
