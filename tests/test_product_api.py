@@ -4,6 +4,9 @@ from typing import cast
 from fastapi.testclient import TestClient
 
 from global_medicines_atlas.api import create_app
+from global_medicines_atlas.comparison_validity import (
+    abstaining_status_comparison_validity,
+)
 from global_medicines_atlas.product_contracts import (
     AsOfClocks,
     ComparisonQuery,
@@ -88,9 +91,14 @@ class StubService:
                 observed_at=query.observed_at,
             ),
         )
+        other_conclusion = conclusion.model_copy(update={"jurisdiction": "AU"})
         return ComparisonResponse(
-            metadata=self._metadata(limit=query.limit, returned=1),
-            conclusions=(conclusion,),
+            metadata=self._metadata(limit=query.limit, returned=2),
+            conclusions=(conclusion, other_conclusion),
+            validity=abstaining_status_comparison_validity((
+                conclusion,
+                other_conclusion,
+            )),
         )
 
     def coverage(self, query: CoverageQuery) -> CoverageResponse:
@@ -159,6 +167,20 @@ def test_comparison_preserves_unknown_without_negative_status() -> None:
     assert conclusion["status_code"] is None
     assert conclusion["evidence_availability"] == "unavailable"
     assert conclusion["evidence_context"] == {
+        "schema_era": None,
+        "comparison_cohort": "unknown",
+        "entity_granularity": "unknown",
+        "review_state": "not_reported",
+    }
+    validity = response.json()["validity"]
+    assert validity
+    assert validity[0]["left_evidence_context"] == {
+        "schema_era": None,
+        "comparison_cohort": "unknown",
+        "entity_granularity": "unknown",
+        "review_state": "not_reported",
+    }
+    assert validity[0]["right_evidence_context"] == {
         "schema_era": None,
         "comparison_cohort": "unknown",
         "entity_granularity": "unknown",

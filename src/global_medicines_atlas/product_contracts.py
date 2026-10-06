@@ -396,6 +396,12 @@ class ComparisonValidity(ProductModel):
     right_subject_id: NonBlank
     outcome: ComparisonValidityOutcome
     dimensions: ComparisonValidityDimensions
+    left_evidence_context: EvidenceContext = Field(
+        default_factory=EvidenceContext
+    )
+    right_evidence_context: EvidenceContext = Field(
+        default_factory=EvidenceContext
+    )
     material_mismatches: tuple[NonBlank, ...] = ()
     explanation: NonBlank
     establishes_medicine_equivalence: Literal[False] = False

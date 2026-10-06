@@ -18,6 +18,7 @@ from global_medicines_atlas.product_contracts import (
     ComparisonValidityDimension,
     ComparisonValidityDimensions,
     ComparisonValidityOutcome,
+    EvidenceContext,
 )
 
 
@@ -82,6 +83,8 @@ def test_unknown_dimension_abstains_with_provenance_preserved() -> None:
     assert verdict.outcome is ComparisonValidityOutcome.INSUFFICIENT_EVIDENCE
     assert verdict.dimensions.granularity.evidence_ids
     assert verdict.dimensions.population.evidence_ids == ()
+    assert verdict.left_evidence_context == EvidenceContext()
+    assert verdict.right_evidence_context == EvidenceContext()
 
 
 def test_compatible_dimension_only_allows_caveated_status_comparison() -> None:
@@ -133,7 +136,18 @@ def test_runtime_verdict_conforms_to_versioned_json_schema() -> None:
         Path("schemas/comparison-validity-v1.json").read_text(encoding="utf-8")
     )
 
+    assert "left_evidence_context" in schema["required"]
+    assert "right_evidence_context" in schema["required"]
     jsonschema.validate(verdict.model_dump(mode="json"), schema)
+
+    for context_field in (
+        "left_evidence_context",
+        "right_evidence_context",
+    ):
+        incomplete = verdict.model_dump(mode="json")
+        del incomplete[context_field]
+        with pytest.raises(jsonschema.ValidationError):
+            jsonschema.validate(incomplete, schema)
 
 
 @pytest.mark.parametrize(

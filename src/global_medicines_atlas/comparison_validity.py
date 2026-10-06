@@ -14,6 +14,7 @@ from .product_contracts import (
     ComparisonValidityDimension,
     ComparisonValidityDimensions,
     ComparisonValidityOutcome,
+    EvidenceContext,
     ProductConclusion,
 )
 
@@ -23,6 +24,8 @@ def evaluate_comparison_validity(
     left_subject_id: str,
     right_subject_id: str,
     dimensions: ComparisonValidityDimensions,
+    left_evidence_context: EvidenceContext | None = None,
+    right_evidence_context: EvidenceContext | None = None,
 ) -> ComparisonValidity:
     """Derive the only permitted outcome from explicit dimensional evidence."""
     named = (
@@ -67,6 +70,16 @@ def evaluate_comparison_validity(
         right_subject_id=right_subject_id,
         outcome=outcome,
         dimensions=dimensions,
+        left_evidence_context=(
+            EvidenceContext()
+            if left_evidence_context is None
+            else left_evidence_context
+        ),
+        right_evidence_context=(
+            EvidenceContext()
+            if right_evidence_context is None
+            else right_evidence_context
+        ),
         material_mismatches=mismatches,
         explanation=explanation,
     )
@@ -104,6 +117,8 @@ def abstaining_status_comparison_validity(
                         f"{right.concept_id}:{right.jurisdiction}:{dimension}"
                     ),
                     dimensions=dimensions,
+                    left_evidence_context=left.evidence_context,
+                    right_evidence_context=right.evidence_context,
                 )
             )
     return tuple(assessments)
