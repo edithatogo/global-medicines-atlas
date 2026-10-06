@@ -49,14 +49,25 @@ def evidence():
     roles = {role.role: role for role in closed.roles}
     trusted = TrustedAdmissionProfile(
         producer_repository="example/producer",
+        contract_repository="edithatogo/global-medicines-atlas",
+        contract_commit="a" * 40,
+        schema_sha256=(
+            "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec"
+        ),
         dataset="example/synthetic-mbs",
         revision="a" * 40,
         path="raw/synthetic.xml",
+        byte_count=11,
         sha256="d" * 64,
         source_id="synthetic-mbs",
         acquisition_id="synthetic-acquisition",
         layer="bronze",
         bronze_stratum="B2",
+        representation="raw",
+        schema_era="synthetic-v1",
+        comparison_cohort="synthetic",
+        effective_date="2026-08-01",
+        retrieved_at="2026-08-30T00:00:00Z",
         evidence_kind="synthetic",
         authorization=roles["/rights/authorization"],
         lineage=tuple(
@@ -71,6 +82,16 @@ def test_exact_independent_profile_admits_without_io():
     result = admit_closed_contract(raw, closed, schema=SCHEMA, trusted=trusted)
     assert result.scope == "offline_trusted_profile"
     assert result.contract_sha256 == hashlib.sha256(raw).hexdigest()
+    assert result.contract_repository == "edithatogo/global-medicines-atlas"
+    assert result.contract_commit == "a" * 40
+    assert result.schema_sha256 == trusted.schema_sha256
+    assert result.evidence_kind == "synthetic"
+    assert result.byte_count == 11
+    assert result.representation == "raw"
+    assert result.schema_era == "synthetic-v1"
+    assert result.comparison_cohort == "synthetic"
+    assert result.effective_date == "2026-08-01"
+    assert result.retrieved_at == "2026-08-30T00:00:00Z"
     assert "authorization" not in result.model_dump()
 
 
@@ -78,14 +99,23 @@ def test_exact_independent_profile_admits_without_io():
     ("field", "value"),
     [
         ("producer_repository", "attacker/repo"),
+        ("contract_repository", "attacker/contracts"),
+        ("contract_commit", "b" * 40),
+        ("schema_sha256", "f" * 64),
         ("dataset", "other/data"),
         ("revision", "b" * 40),
         ("path", "raw/other.xml"),
+        ("byte_count", 12),
         ("sha256", "e" * 64),
         ("source_id", "other"),
         ("acquisition_id", "other"),
         ("layer", "silver"),
         ("bronze_stratum", "B1"),
+        ("representation", "projection"),
+        ("schema_era", "other-era"),
+        ("comparison_cohort", "current"),
+        ("effective_date", "2026-08-02"),
+        ("retrieved_at", "2026-08-31T00:00:00Z"),
         ("evidence_kind", "live"),
     ],
 )
