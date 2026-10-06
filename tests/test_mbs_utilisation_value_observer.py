@@ -4,7 +4,7 @@ import ast
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 
@@ -76,6 +76,58 @@ def test_observer_counts_invalid_numeric_tokens_without_leaking_them(
     summary = json.dumps(result.to_public_summary())
     assert "unknown" not in summary
     assert "NaN" not in summary
+
+
+def test_invalid_numeric_tokens_use_disjoint_exhaustive_private_categories(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(module, "MAX_NUMERIC_TOKEN_CHARS", 5)
+    source = tmp_path / "categories.csv"
+    source.write_text(
+        ",".join(DEMOGRAPHICS_HEADERS)
+        + "\n2016,1,0101,NSW,0-4,Male, 1,1\n"
+        + "2016,1,0102,NSW,0-4,Male,1e3,1\n"
+        + '2016,1,0103,NSW,0-4,Male,"1,000",1\n'
+        + "2016,1,0104,NSW,0-4,Male,NaN,1\n"
+        + "2016,1,0105,NSW,0-4,Male,--,1\n"
+        + "2016,1,0106,NSW,0-4,Male,123456,1\n",
+        encoding="utf-8",
+    )
+
+    result = observe_utilisation_csv_values(
+        source, expected_headers=DEMOGRAPHICS_HEADERS
+    )
+
+    categories = result.services.invalid_category_counts
+    assert result.services.invalid_count == 6
+    assert set(categories) == set(module.INVALID_TOKEN_CATEGORIES)
+    assert set(categories.values()) == {1}
+    assert sum(categories.values()) == result.services.invalid_count
+    public_summary = json.loads(json.dumps(result.to_public_summary()))
+    public_strings: set[str] = set()
+
+    def collect_strings(value: Any) -> None:
+        if isinstance(value, str):
+            public_strings.add(value)
+        elif isinstance(value, dict):
+            string_mapping = cast("dict[str, Any]", value)
+            for key, item in string_mapping.items():
+                collect_strings(key)
+                collect_strings(item)
+        elif isinstance(value, list):
+            sequence = cast("list[Any]", value)
+            for item in sequence:
+                collect_strings(item)
+
+    collect_strings(public_summary)
+    assert public_strings.isdisjoint({
+        " 1",
+        "1e3",
+        "1,000",
+        "NaN",
+        "--",
+        "123456",
+    })
 
 
 def test_observer_counts_ragged_rows_and_excludes_them_from_value_profiles(

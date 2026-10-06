@@ -1953,10 +1953,24 @@
   and the cross-resource schema reconciliation in
   `quality/qualifications/australian-mbs-utilisation-header-schema-reconciliation-20261006.json`.
 
-- [~] Implement bounded, source-value diagnostics for only these four
-  exact-reference standalone CSVs. Synthetic tests must cover strict UTF-8/BOM
+- [x] Implement and execute bounded, source-value diagnostics for only these
+  four exact-reference standalone CSVs. Synthetic tests cover strict UTF-8/BOM
   handling, rectangular rows, exact decimal observation (including signed
-  service totals), missing-cell counts, and digest-bound results. Hosted output
-  may expose aggregate counts and reviewed headers only; it must not expose row
-  values, select semantic mappings, publish Silver, or grant processing
-  admission. No new source identities, revisions, or objects enter this task.
+  service totals), missing-cell counts, and digest-bound results. Exact-main
+  run `37416203337` at `22ef98006b6002aa5b3b9778b68b54ea4a7f97df` observed
+  1,463,030 rows across the four pinned CSVs; all rows were rectangular and no
+  cells were empty. Q2 demographics has 4,728 `Services` values outside the
+  strict decimal token profile; their lexical forms remain unclassified and
+  must not be treated as zero or silently coerced. Four object receipts and a
+  summary receipt were independently read back from issue #340; all exact
+  digests verified and caches were removed after durable receipts. No raw row
+  values were published, no source was added, and no semantic mappings,
+  processing admission, or Silver publication occurred. See
+  `quality/qualifications/australian-mbs-utilisation-value-observation-20261006.json`.
+
+- [~] Classify the 4,728 Q2 demographics `Services` decimal-profile failures
+  using aggregate-only lexical categories in an isolated exact-main observer.
+  Preserve the exact four-object source cohort and digest binding; expose no
+  token values, inferred replacements, semantic mappings, admission, or Silver.
+  Keep categorization separate from deciding whether the existing profile is
+  suitable for conversion.

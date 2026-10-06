@@ -7,7 +7,7 @@ import hashlib
 import json
 import re
 from collections.abc import Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from decimal import Decimal
 from pathlib import Path
 from typing import Any, cast
@@ -49,6 +49,14 @@ MAX_CSV_ROWS = 10_000_000
 MAX_CSV_COLUMNS = 10_000
 MAX_CSV_FIELD_BYTES = 1024 * 1024
 MAX_NUMERIC_TOKEN_CHARS = 256
+INVALID_TOKEN_CATEGORIES = (
+    "overlength",
+    "whitespace",
+    "exponent_notation",
+    "separator",
+    "alphabetic",
+    "other_non_decimal",
+)
 EXPECTED_CSV_SOURCE_COUNT = 4
 _DECIMAL_TOKEN = re.compile(r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\Z")
 
@@ -63,8 +71,9 @@ class NumericObservation:
     negative_count: int
     max_scale: int | None
     max_integer_digits: int | None
+    invalid_category_counts: dict[str, int]
 
-    def to_public_summary(self) -> dict[str, int | None]:
+    def to_public_summary(self) -> dict[str, Any]:
         """Return only aggregate decimal-shape metadata."""
         return {
             "valid_count": self.valid_count,
@@ -73,6 +82,7 @@ class NumericObservation:
             "negative_count": self.negative_count,
             "max_scale": self.max_scale,
             "max_integer_digits": self.max_integer_digits,
+            "invalid_category_counts": self.invalid_category_counts,
         }
 
 
@@ -120,6 +130,9 @@ class _NumericCounters:
     negative_count: int = 0
     max_scale: int | None = None
     max_integer_digits: int | None = None
+    invalid_category_counts: dict[str, int] = field(
+        default_factory=lambda: dict.fromkeys(INVALID_TOKEN_CATEGORIES, 0)
+    )
 
     def add(self, token: str) -> None:
         if not token:
@@ -128,6 +141,8 @@ class _NumericCounters:
         number = _parse_decimal_token(token)
         if number is None:
             self.invalid_count += 1
+            category = _classify_invalid_token(token)
+            self.invalid_category_counts[category] += 1
             return
         digits = len(number.as_tuple().digits)
         exponent = cast("int", number.as_tuple().exponent)
@@ -149,6 +164,7 @@ class _NumericCounters:
             negative_count=self.negative_count,
             max_scale=self.max_scale,
             max_integer_digits=self.max_integer_digits,
+            invalid_category_counts=dict(self.invalid_category_counts),
         )
 
 
@@ -322,3 +338,18 @@ def _parse_decimal_token(token: str) -> Decimal | None:
     ):
         return None
     return Decimal(token)
+
+
+def _classify_invalid_token(token: str) -> str:
+    """Return a disjoint lexical class without retaining the token."""
+    if len(token) > MAX_NUMERIC_TOKEN_CHARS:
+        return "overlength"
+    if any(character.isspace() for character in token):
+        return "whitespace"
+    if re.fullmatch(r"[+-]?[0-9]+(?:\.[0-9]*)?[eE][+-]?[0-9]+", token):
+        return "exponent_notation"
+    if "," in token or "_" in token:
+        return "separator"
+    if any(character.isalpha() for character in token):
+        return "alphabetic"
+    return "other_non_decimal"
