@@ -1978,7 +1978,33 @@
   mappings, admissions, or Silver rows were published. See
   `quality/qualifications/australian-mbs-utilisation-invalid-token-category-observation-20261006.json`.
 
-- [~] Refine the Q2 `Services` separator bucket into aggregate-only lexical
-  punctuation-pattern classes. Keep the four-source cohort, digest checks,
-  and privacy boundary. Pattern categories must not imply thousands grouping,
-  numeric conversion, semantic acceptance, admission, or Silver eligibility.
+- [x] Refine the Q2 `Services` separator bucket into aggregate-only lexical
+  punctuation-pattern classes. Exact-main run `37419485884` at
+  `e1eae264d7380c600e2a337ac9ac7d4bc84415a9` classified all 4,728 invalid Q2
+  `Services` tokens as matching a comma-triplet pattern; all other separator
+  and invalid-token categories were zero. Four exact-source receipts and the
+  summary were independently read back; digests verified and temporary files
+  removed after receipts. This is a lexical pattern only, not a semantic
+  grouping interpretation or permission to normalize. No new source, mapping,
+  admission, or Silver output. See
+  `quality/qualifications/australian-mbs-utilisation-separator-pattern-observation-20261006.json`.
+
+- [x] Prepare a synthetic-only, explicit-policy exact numeric parser for
+  candidate MBS profiles. A caller must supply the representation policy;
+  grouping is disabled by default, signed values and decimal scale are
+  preserved, malformed grouping and exponent forms are rejected, and errors
+  never echo tokens. Twenty-five synthetic tests pass with 100% statement and
+  branch coverage. No source bytes were read and no source profile, row mapping,
+  transformation, admission, or Silver output was selected. See
+  `quality/qualifications/australian-mbs-utilisation-numeric-policy-20261006.json`.
+
+- [x] Define synthetic candidate row mappings for the existing demographics
+  and group CSV shapes from reviewed documentation. Preserve source-native
+  identifiers and period/category tokens; keep each field's semantic role and
+  row grain explicitly qualified or unresolved. Do not read source rows,
+  normalize numeric values, admit data, or publish Silver in this step. The
+  resulting contract maps only candidate roles and marks the demographics and
+  group grain as unverified. It records each unresolved period, category,
+  numeric, suppression, and identifier rule explicitly. No source bytes or
+  rows were read. See
+  `quality/qualifications/australian-mbs-utilisation-candidate-row-mappings-20261006.json`.
