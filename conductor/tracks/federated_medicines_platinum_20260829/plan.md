@@ -184,6 +184,11 @@
   pending.
 - [ ] Phase Verification & Checkpoint: all result types expose mandatory evidence
   and legacy/current metadata and reject semantic overclaim.
+  - [x] Reject v1/v2 assertion rows that combine `unknown` or `not_covered`
+    states with a source status code; conclusion models already enforced the
+    same distinction. Red tests reproduced the contract gap. This closes that
+    semantic-overclaim case only; the broader result-metadata checkpoint stays
+    open.
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 

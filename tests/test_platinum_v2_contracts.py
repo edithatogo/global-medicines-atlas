@@ -9,6 +9,7 @@ from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonResponse,
     V2Conclusion,
     V2EvidenceDimension,
+    V2EvidenceItem,
     V2ResponseMetadata,
 )
 from global_medicines_atlas.product_contracts import (
@@ -218,3 +219,68 @@ def test_v2_conclusion_enforces_explicit_evidence(
 
     with pytest.raises(ValueError, match=message):
         V2Conclusion(**values)
+
+
+@pytest.mark.parametrize(
+    "state", [ProductState.UNKNOWN, ProductState.NOT_COVERED]
+)
+def test_v2_assertion_rows_cannot_pair_absence_states_with_status_codes(
+    state: ProductState,
+) -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    with pytest.raises(ValueError, match="cannot imply a status"):
+        V2EvidenceItem(
+            assertion_id="assertion:1",
+            concept_id="mbs:23",
+            jurisdiction="AU",
+            dimension=V2EvidenceDimension.SERVICE_BENEFIT,
+            state=state,
+            status_code="not_covered",
+            terminology=Terminology(
+                native_code="23",
+                native_label="General practitioner attendance",
+                native_system="MBS",
+            ),
+            provenance=ProvenanceLink(
+                source_id="fixture",
+                source_uri="https://example.invalid/source",
+                retrieved_at=clock,
+            ),
+            uncertainty=Uncertainty(
+                level=UncertaintyLevel.UNKNOWN,
+                reason="No state could be established.",
+            ),
+            valid_time=AsOfClocks(valid_at=clock, observed_at=clock),
+        )
+
+
+def test_v2_assertion_row_allows_status_when_evidence_state_is_confirmed() -> (
+    None
+):
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    value = V2EvidenceItem(
+        assertion_id="assertion:approved",
+        concept_id="mbs:23",
+        jurisdiction="AU",
+        dimension=V2EvidenceDimension.SERVICE_BENEFIT,
+        state=ProductState.CONFIRMED,
+        status_code="active",
+        terminology=Terminology(
+            native_code="23",
+            native_label="General practitioner attendance",
+            native_system="MBS",
+        ),
+        provenance=ProvenanceLink(
+            source_id="fixture",
+            source_uri="https://example.invalid/source",
+            retrieved_at=clock,
+        ),
+        uncertainty=Uncertainty(
+            level=UncertaintyLevel.LOW,
+            confidence=0.98,
+        ),
+        valid_time=AsOfClocks(valid_at=clock, observed_at=clock),
+    )
+
+    assert value.state is ProductState.CONFIRMED
+    assert value.status_code == "active"
