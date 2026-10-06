@@ -173,6 +173,11 @@
     merged as `08a08a0f8662fefe8cc473272f6cbe2e2252ba68` after all 38 hosted
     checks passed. This is synthetic qualification only; it does not publish,
     admit real data, or close the live producer integration gate.
+  - [~] Read every exact reconciled synthetic B1, Silver, Gold, and Platinum
+    object through the typed-admission federated reader; prove anonymous
+    remote verification, exact offline cache replay, fail-closed cache
+    eviction, and remote refetch preserve each object's digest and byte count.
+    Keep B2 raw payloads in the separate source-archive denominator.
 - [x] Reject duplicate JSON member names consistently at v4 distribution,
   admission, reader, receipt-closure, and consumer boundaries. Three synthetic
   regressions failed before the shared strict parser; 436 affected federation
