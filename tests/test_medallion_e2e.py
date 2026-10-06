@@ -17,6 +17,7 @@ from fastapi.testclient import TestClient
 from test_pbs_silver import XML as PBS_XML
 from test_support.federation import admission_record
 
+from global_medicines_atlas.api import create_app
 from global_medicines_atlas.bronze_admission import BronzeAdmissionState
 from global_medicines_atlas.bronze_landing import land_bronze_payload
 from global_medicines_atlas.federation_distribution import (
@@ -36,6 +37,7 @@ from global_medicines_atlas.pbs_gold_graph import (
     project_pbs_gold_graph_arrow,
 )
 from global_medicines_atlas.pbs_silver import iter_pbs_silver_batches
+from global_medicines_atlas.platinum_benefits import BenefitsService
 from global_medicines_atlas.platinum_identity_service import (
     ResolverDatasetIdentityService,
 )
@@ -57,6 +59,7 @@ from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonQuery,
     V2EvidenceQuery,
 )
+from global_medicines_atlas.query_service import ReadOnlyQueryService
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
@@ -433,7 +436,12 @@ class _IdentityHttpResponse(Protocol):
 
 
 class _IdentityHttpClient(Protocol):
-    def get(self, url: str) -> _IdentityHttpResponse: ...
+    def get(
+        self,
+        url: str,
+        *,
+        params: list[tuple[str, str]] | None = None,
+    ) -> _IdentityHttpResponse: ...
 
 
 def _exercise_pbs_v2_identity(
@@ -758,6 +766,8 @@ def _query_synthetic_platinum(
 
     def handle(request: httpx.Request) -> httpx.Response:
         requests.append(request)
+        assert "authorization" not in request.headers
+        assert "cookie" not in request.headers
         if "/api/datasets/" in request.url.path:
             return httpx.Response(
                 200, json={"sha": "a" * 40, "private": False, "gated": False}
@@ -776,6 +786,60 @@ def _query_synthetic_platinum(
         transport_factory=lambda: httpx.MockTransport(handle),
         clock=lambda: NOW,
     ) as resolver:
+        if semantic_dimension == "service_benefit":
+            client = cast(
+                "_IdentityHttpClient",
+                TestClient(
+                    create_app(
+                        cast("ReadOnlyQueryService", object()),
+                        benefits=BenefitsService(
+                            resolver,
+                            cursor_key=b"synthetic-e2e-cursor-key-32-bytes",
+                        ),
+                    )
+                ),
+            )
+            response = client.get(
+                f"/api/v1/benefits/{resource_id}",
+                params=[("columns", column) for column in columns]
+                + [("limit", "1")],
+            )
+            assert response.status_code == 200
+            page = response.json()
+            assert page["status"] == "available"
+            assert page["rows"] == [
+                {
+                    column: value
+                    for column, value in {
+                        "kind": "source_record_has_benefit",
+                        "inferred": False,
+                    }.items()
+                    if column in columns
+                }
+            ]
+            assert page["identity"]["source_id"] == receipt.source.source_id
+            assert page["identity"]["revision"] == binding.revision
+            assert page["identity"]["path"] == binding.object.path
+            assert (
+                page["identity"]["object_sha256"]
+                == hashlib.sha256(gold).hexdigest()
+            )
+            assert page["identity"]["semantic_dimension"] == "service_benefit"
+            assert page["identity"]["entity_granularity"] == "evidence_edge"
+            assert page["coverage_state"] == "not_declared"
+            assert page["comparison_validity"] == "not_evaluated"
+            assert page["page_sha256"]
+            assert page["window_sha256"]
+            assert len(requests) == 2
+            assert requests[0].url.path == (
+                f"/api/datasets/{binding.dataset}/revision/{binding.revision}"
+            )
+            assert requests[1].url.path == (
+                f"/datasets/{binding.dataset}/resolve/{binding.revision}/"
+                f"{binding.object.path}"
+            )
+            requests.clear()
+
         return _exercise_query_cache(
             resolver, resource.resource_id, requests, columns=columns
         )
