@@ -18,10 +18,12 @@ from global_medicines_atlas.product_contracts import (
     ConceptSearchQuery,
     ConceptSearchResponse,
     ConceptSummary,
+    CoverageItem,
     CoverageQuery,
     CoverageResponse,
     DiscoveryMetadata,
     EvidenceAvailability,
+    EvidenceContext,
     EvidenceDimension,
     MatchExplanation,
     MatchMethod,
@@ -100,6 +102,11 @@ class AtlasFixtureService:
                 level=UncertaintyLevel.UNKNOWN,
                 reason="No source assertion is present in this fixture.",
             ),
+            evidence_context=EvidenceContext(
+                schema_era="fixture-v1",
+                comparison_cohort="synthetic",
+                entity_granularity="medicine_item",
+            ),
             valid_time=AsOfClocks(
                 valid_at=query.valid_at,
                 observed_at=query.observed_at,
@@ -118,6 +125,20 @@ class AtlasFixtureService:
         )
 
     def coverage(self, query: CoverageQuery) -> CoverageResponse:
+        item = CoverageItem(
+            jurisdiction="NZ",
+            dimension=EvidenceDimension.REGULATORY,
+            state=ProductState.UNKNOWN,
+            covered_count=0,
+            evidence_context=EvidenceContext(
+                schema_era="fixture-v1",
+                comparison_cohort="synthetic",
+                entity_granularity="coverage_record",
+            ),
+            valid_time=AsOfClocks(
+                valid_at=query.valid_at, observed_at=query.observed_at
+            ),
+        )
         return CoverageResponse(
             metadata=ResponseMetadata(
                 generated_at=NOW,
@@ -125,9 +146,9 @@ class AtlasFixtureService:
                     valid_at=query.valid_at,
                     observed_at=query.observed_at,
                 ),
-                page=PageMetadata(limit=query.limit, returned=0),
+                page=PageMetadata(limit=query.limit, returned=1),
             ),
-            coverage=(),
+            coverage=(item,),
         )
 
 
@@ -210,6 +231,10 @@ def _exercise_keyboard_evidence_flow(
     card = page.locator("article[data-state='unknown']")
     assert "Status: Unknown" in card.inner_text()
     assert "not evidence of a negative" in card.inner_text()
+    context = card.locator("[data-evidence-context]")
+    assert "Schema era" in context.inner_text()
+    assert "fixture-v1" in context.inner_text()
+    assert "Synthetic" in context.inner_text()
     summary = page.get_by_text("Review source evidence")
     summary.focus()
     summary.press("Enter")
@@ -219,3 +244,7 @@ def _exercise_keyboard_evidence_flow(
     assert evidence_link.get_attribute("href") == (
         "https://fixtures.invalid/evidence"
     )
+    coverage_context = page.locator("table [data-evidence-context]")
+    assert "Schema era" in coverage_context.inner_text()
+    assert "fixture-v1" in coverage_context.inner_text()
+    assert "Coverage record" in coverage_context.inner_text()
