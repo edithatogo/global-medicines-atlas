@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "receipt_id": "performance-perf-contract-8ccefeeb070c",
+  "kind": "performance",
+  "subject_id": "PERF-CONTRACT",
+  "executed_at": "2026-10-06T11:46:14.032891Z",
+  "product_version": "0.6",
+  "api_version": "v1",
+  "implementation_digest": "8ccefeeb070ca2b2443b920891819972880705a851ae42aa62bc6931bf4a5eba",
+  "result": {
+    "passed": true,
+    "observed_ms": 0.34847950000000005,
+    "sample_size": 20,
+    "detail": "observed p95 0.348 ms against 25.0 ms budget"
+  },
+  "payload_digest": "ddb2a35b8fae6cfd68b9628410bc893e1d55023a970588d6eaa13a5e547c3926"
+}

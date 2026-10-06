@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "receipt_id": "threat-threat-004-8ccefeeb070c",
+  "kind": "threat",
+  "subject_id": "THREAT-004",
+  "executed_at": "2026-10-06T11:46:18.937175Z",
+  "product_version": "0.6",
+  "api_version": "v1",
+  "implementation_digest": "8ccefeeb070ca2b2443b920891819972880705a851ae42aa62bc6931bf4a5eba",
+  "result": {
+    "passed": true,
+    "observed_ms": null,
+    "sample_size": null,
+    "detail": "script content escaped"
+  },
+  "payload_digest": "cf25655299b99ebdd2ded90c2773f263d3e5c7cc6d838e296fe3fc39b599f335"
+}

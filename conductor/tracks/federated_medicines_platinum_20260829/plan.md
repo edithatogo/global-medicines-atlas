@@ -110,9 +110,10 @@
 - [x] Reduce duplicate comparison cohort work while preserving request-local
   validity, bounded provenance and executed SQL pagination. The shared service
   now issues three rather than four comparison statements and binds repeated
-  scope/time values once per statement. Query/API regressions pass. A paired
-  20-sample fixture comparison measured p95 441.374 ms before and 331.128 ms
-  after; the 250 ms performance gate remains failing and is not waived.
+  scope/time values once per statement. Query/API regressions pass. The initial
+  paired 20-sample fixture comparison measured p95 441.374 ms before and
+  331.128 ms after; a later qualification on the merged implementation passes
+  the unchanged 250 ms budget. See the current-host receipt below.
 - [x] Define the strict shared dataset-identity response envelope over an
   already-admitted resolver resource. It preserves the exact public revision,
   object/contract/semantic digests, semantic dimension, entity granularity,
@@ -321,3 +322,14 @@
   - [x] Merge the scoped implementation after all 39 protected checks passed;
     reconcile exact PR head, merge commit, and hosted state in append-only
     evidence (PR #812).
+
+### Current-host product performance requalification (2026-10-06)
+
+- [x] Re-run the governed synthetic product qualification on merged
+  implementation `8ccefeeb070ca2b2443b920891819972880705a851ae42aa62bc6931bf4a5eba`.
+  The durable comparison p95 is 144.987 ms against the unchanged 250 ms budget;
+  bounded single-page export traversal is 305.613 ms against 1,000 ms. The
+  resulting release evidence is `fixture_qualified`, with clean-start,
+  live-deployment, accessibility-conformance, and production-data gates still
+  unverified. The value-file receipts and aggregate are in
+  `quality/qualifications/platinum-product-performance-20261006/`.
