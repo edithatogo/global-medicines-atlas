@@ -190,6 +190,11 @@ jobs:
           enable-cache: true
       - name: Synchronize Python 3.14 Test-Goblin environment
         run: uv sync --python 3.14.6 --group test-goblin --locked
+      - name: Install Chromium for browser-backed E2E
+        if: matrix.lane == 'e2e'
+        run: >-
+          uv run --python 3.14.6 --group test-goblin playwright install
+          --with-deps chromium
       - name: Run ${{ matrix.lane }} tests
         env:
           COVERAGE_CORE: sysmon

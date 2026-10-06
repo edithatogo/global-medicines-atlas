@@ -205,6 +205,14 @@
   `3ea526b32cdc937cf416f8abebd8c59170dd1eb4`; evidence recorded in PR #522).
 - [ ] Phase Verification & Checkpoint: representative users can inspect evidence
   and uncertainty without mistaking legacy or missing data for current status.
+  - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
+    selection, live status and active-descendant announcements, skip-link focus,
+    unknown-state wording, and keyboard disclosure of source evidence. Register
+    it in the governed E2E lane and install the pinned Playwright browser in CI.
+    The first browser readback exposed an invalid synthetic fixture that paired
+    unavailable evidence with provenance; the fixture now models available but
+    non-decisive evidence. This verifies interaction behavior, not WCAG
+    conformance or representative-user acceptance.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
