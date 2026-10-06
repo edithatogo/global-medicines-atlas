@@ -253,6 +253,9 @@
   clean-room, load, concurrency, security, privacy, and release-gate tests.
   - [x] Confirmed and fixed query-manifest instability when callers mutate a
     nested query mapping after manifest construction.
+  - [x] Add a governed synthetic Bronze-to-Silver-to-Gold-to-Platinum query
+    path to the e2e harness; candidate-only Gold and mocked remote reads remain
+    explicit, with no source coverage or publication claim.
 - [~] Confirm the intended failure before implementation.
   - [x] The metadata-only package composition test failed collection because
     the bundle module did not exist.
