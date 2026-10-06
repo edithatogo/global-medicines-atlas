@@ -165,6 +165,13 @@
     uses no network or source bytes, and the inventory is explicitly
     non-publishable. Full hosted qualification and real producer integration
     remain open.
+  - [x] Integrate actual synthetic Bronze B1 receipt metadata, Silver Parquet,
+    Gold node/edge Parquet, and Platinum research-package bytes with the strict
+    non-publishable producer inventory loader and v4 distribution reconciler.
+    Every emitted object is matched to its immutable destination, path, digest,
+    byte count, source/acquisition identity, layer, and Bronze stratum. This is
+    synthetic qualification only; it does not publish, admit real data, or
+    close the live producer integration gate.
 - [x] Reject duplicate JSON member names consistently at v4 distribution,
   admission, reader, receipt-closure, and consumer boundaries. Three synthetic
   regressions failed before the shared strict parser; 436 affected federation
