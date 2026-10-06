@@ -14,6 +14,7 @@ from global_medicines_atlas.mbs_utilisation_value_observer import (
     DEMOGRAPHICS_HEADERS,
     GROUP_HEADERS,
     SERVICES_HEADER,
+    ProcessingPeriodPolicy,
     load_value_observer_cohort,
     observe_utilisation_csv_values,
 )
@@ -70,6 +71,90 @@ def test_non_measure_token_shape_is_value_free(
     token: str, expected: str
 ) -> None:
     assert module._token_shape(token) == expected  # pyright: ignore[reportPrivateUsage]
+
+
+def test_candidate_processing_periods_are_aggregate_only(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "periods.csv"
+    source.write_text(
+        ",".join(DEMOGRAPHICS_HEADERS)
+        + "\n2016,January,0101,NSW,0-4,Male,1,1.00"
+        + "\n2016,Mar,0102,NSW,5-9,Female,1,1.00"
+        + "\n2016,April,0103,VIC,10-14,Male,1,1.00"
+        + "\n2015,February,0104,QLD,15-19,Female,1,1.00"
+        + "\n20x6,March,0105,WA,20-24,Male,1,1.00"
+        + "\n2016,UnknownMonth,0106,SA,25-29,Female,1,1.00\n",
+        encoding="utf-8",
+    )
+    policy = ProcessingPeriodPolicy(
+        resource_id="synthetic-resource",
+        resource_description_sha256="a" * 64,
+        expected_year="2016",
+        allowed_month_numbers=frozenset({1, 2, 3}),
+    )
+
+    result = observe_utilisation_csv_values(
+        source,
+        expected_headers=DEMOGRAPHICS_HEADERS,
+        period_policy=policy,
+    )
+
+    assert result.processing_period_observation is not None
+    period = result.processing_period_observation
+    assert period["expected_year_count"] == 4
+    assert period["year_mismatch_count"] == 1
+    assert period["year_invalid_count"] == 1
+    assert period["recognized_month_count"] == 3
+    assert period["unrecognized_month_count"] == 1
+    assert period["outside_documented_month_count"] == 1
+    assert period["month_record_counts"] == {
+        "01": 1,
+        "02": 0,
+        "03": 1,
+        "04": 1,
+        "05": 0,
+        "06": 0,
+        "07": 0,
+        "08": 0,
+        "09": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0,
+    }
+    public = json.dumps(result.to_public_summary())
+    for token in ("January", "March", "April", "February", "UnknownMonth"):
+        assert token not in public
+    assert '"period_semantics_verified": false' in public
+
+
+def test_processing_period_policy_rejects_non_csv_resource(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(ValueError, match="outside exact scope"):
+        module.load_processing_period_policy(
+            tmp_path,
+            "ff6d0692-4c6f-466b-9d93-015224d80b14",
+            "raw/mbs/utilisation/demographics/held.xlsx",
+        )
+
+
+def test_period_policy_requires_both_native_period_fields(
+    tmp_path: Path,
+) -> None:
+    policy = ProcessingPeriodPolicy(
+        resource_id="synthetic-resource",
+        resource_description_sha256="a" * 64,
+        expected_year="2016",
+        allowed_month_numbers=frozenset({1}),
+    )
+
+    with pytest.raises(ValueError, match="processing-period CSV profile"):
+        observe_utilisation_csv_values(
+            tmp_path / "not-read.csv",
+            expected_headers=("Year", "Services", "Benefit"),
+            period_policy=policy,
+        )
 
 
 def test_observer_counts_invalid_numeric_tokens_without_leaking_them(
@@ -314,6 +399,7 @@ def test_cohort_is_bound_to_the_four_prior_exact_header_receipts() -> None:
     assert len({row["raw_reference"]["path"] for row in selected}) == 4
     assert all(row["processing_admitted"] is False for row in selected)
     assert all(row["expected_headers"] for row in selected)
+    assert all(row["period_policy"].expected_year == "2016" for row in selected)
     demographics = [
         row
         for row in selected
@@ -349,6 +435,70 @@ def test_cohort_rejects_a_changed_header_qualification_digest(
 
     with pytest.raises(ValueError, match="qualification digest differs"):
         load_value_observer_cohort(tmp_path)
+
+
+def test_processing_period_policy_rejects_changed_metadata_digest(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / module.SEMANTIC_REQUIREMENTS_PATH).parent.mkdir(
+        parents=True, exist_ok=True
+    )
+    (tmp_path / module.SEMANTIC_REQUIREMENTS_PATH).write_text("{}")
+    monkeypatch.setattr(module, "SEMANTIC_REQUIREMENTS_SHA256", "0" * 64)
+
+    with pytest.raises(ValueError, match="processing-period metadata digest"):
+        module.load_processing_period_policy(
+            tmp_path,
+            "ff6d0692-4c6f-466b-9d93-015224d80b14",
+            "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+        )
+
+
+@pytest.mark.parametrize(
+    ("metadata_key", "metadata_value"),
+    [
+        ("source_revision", "other-revision"),
+        ("source_payload_bytes_acquired_locally", True),
+        ("processing_admitted", True),
+    ],
+)
+def test_processing_period_policy_rejects_out_of_scope_metadata(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    metadata_key: str,
+    metadata_value: object,
+) -> None:
+    path = tmp_path / "semantic-requirements.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    boundaries: dict[str, Any] = {
+        "source_payload_bytes_acquired_locally": False,
+        "processing_admitted": False,
+    }
+    document: dict[str, Any] = {
+        "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "boundaries": boundaries,
+        "records": [],
+    }
+    if metadata_key == "source_revision":
+        document[metadata_key] = metadata_value
+    else:
+        boundaries[metadata_key] = metadata_value
+    path.write_text(json.dumps(document), encoding="utf-8")
+    monkeypatch.setattr(
+        module, "SEMANTIC_REQUIREMENTS_PATH", path.relative_to(tmp_path)
+    )
+    monkeypatch.setattr(
+        module,
+        "SEMANTIC_REQUIREMENTS_SHA256",
+        hashlib.sha256(path.read_bytes()).hexdigest(),
+    )
+
+    with pytest.raises(ValueError, match="metadata is out of scope"):
+        module.load_processing_period_policy(
+            tmp_path,
+            "ff6d0692-4c6f-466b-9d93-015224d80b14",
+            "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+        )
 
 
 def test_cohort_rejects_prior_admission_state(

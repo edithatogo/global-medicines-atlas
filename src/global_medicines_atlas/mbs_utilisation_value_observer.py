@@ -50,6 +50,12 @@ MAX_CSV_COLUMNS = 10_000
 MAX_CSV_FIELD_BYTES = 1024 * 1024
 MAX_NUMERIC_TOKEN_CHARS = 256
 MAX_CANDIDATE_KEYS = 1_000_000
+SEMANTIC_REQUIREMENTS_PATH = Path(
+    "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json"
+)
+SEMANTIC_REQUIREMENTS_SHA256 = (
+    "af64e7ac68e0e67587ca153023e2dd3ea8779046407f257f9babd425513afdc2"
+)
 INVALID_TOKEN_CATEGORIES = (
     "overlength",
     "whitespace",
@@ -70,6 +76,44 @@ TOKEN_SHAPE_CATEGORIES: tuple[str, ...] = (
 )
 EXPECTED_CSV_SOURCE_COUNT = 4
 _DECIMAL_TOKEN = re.compile(r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\Z")
+_YEAR_TOKEN = re.compile(r"[0-9]{4}\Z")
+_MONTH_NAMES = (
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+)
+_MONTH_NUMBER_BY_TOKEN = {
+    spelling: number
+    for number, full_name in enumerate(_MONTH_NAMES, start=1)
+    for spelling in (full_name, full_name[:3])
+}
+_PERIOD_POLICY_BY_RESOURCE_ID: dict[str, tuple[str, frozenset[int]]] = {
+    "ff6d0692-4c6f-466b-9d93-015224d80b14": (
+        "1401931d5f9bbfa6e128196b02ef19016da67bd52b78ebf03b3fda6002abc676",
+        frozenset({1, 2, 3}),
+    ),
+    "c3e6f879-be6c-41b9-9cf1-c74feb928b83": (
+        "7b494fda71b8df57e332006d9b8388528b8aeb517ad92c741b3420a3e3980de6",
+        frozenset({1, 2, 3, 4, 5}),
+    ),
+    "492b39de-8c97-4bbf-880e-e97d933daa9c": (
+        "c8b4114771ad59b2dfc6c2172e94ec4ad3922b739c26d02178efb4355e44d758",
+        frozenset({7}),
+    ),
+    "663a7fac-114c-47b5-9017-a9dbb9073260": (
+        "040bc3649754be306a5b76f3d342e040fc2bdad5fbde477e0845e9368302e37f",
+        frozenset({1, 2, 3, 4, 5, 6, 7}),
+    ),
+}
 
 
 @dataclass(frozen=True)
@@ -110,12 +154,13 @@ class CsvValueObservation:
     token_shapes: dict[str, dict[str, int]]
     candidate_key_headers: tuple[str, ...]
     candidate_key_duplicate_records: int
+    processing_period_observation: dict[str, Any] | None
     services: NumericObservation
     benefit: NumericObservation
 
     def to_public_summary(self) -> dict[str, Any]:
         """Serialize reviewed headers and aggregate findings only."""
-        return {
+        result = {
             "status": "row_shape_findings"
             if self.row_width_error_count
             else "observed",
@@ -139,6 +184,85 @@ class CsvValueObservation:
             "semantic_mapping_selected": False,
             "processing_admitted": False,
             "silver_published": False,
+        }
+        if self.processing_period_observation is not None:
+            result["processing_period_observation"] = (
+                self.processing_period_observation
+            )
+        return result
+
+
+@dataclass(frozen=True)
+class ProcessingPeriodPolicy:
+    """Candidate period bounds tied to an exact catalogue resource record."""
+
+    resource_id: str
+    resource_description_sha256: str
+    expected_year: str
+    allowed_month_numbers: frozenset[int]
+
+
+@dataclass
+class _PeriodCounters:
+    policy: ProcessingPeriodPolicy
+    expected_year_count: int = 0
+    year_mismatch_count: int = 0
+    year_invalid_count: int = 0
+    recognized_month_count: int = 0
+    unrecognized_month_count: int = 0
+    outside_documented_month_count: int = 0
+    month_counts: dict[str, int] = field(
+        default_factory=lambda: dict.fromkeys(
+            (f"{number:02d}" for number in range(1, 13)), 0
+        )
+    )
+
+    def add(self, year_token: str, month_token: str) -> None:
+        if not _YEAR_TOKEN.fullmatch(year_token):
+            self.year_invalid_count += 1
+            return
+        if year_token != self.policy.expected_year:
+            self.year_mismatch_count += 1
+            return
+        self.expected_year_count += 1
+        month_number = _MONTH_NUMBER_BY_TOKEN.get(month_token.casefold())
+        if month_number is None:
+            self.unrecognized_month_count += 1
+            return
+        self.recognized_month_count += 1
+        self.month_counts[f"{month_number:02d}"] += 1
+        if month_number not in self.policy.allowed_month_numbers:
+            self.outside_documented_month_count += 1
+
+    def to_public_observation(self) -> dict[str, Any]:
+        return {
+            "resource_id": self.policy.resource_id,
+            "candidate_policy": {
+                "evidence_path": SEMANTIC_REQUIREMENTS_PATH.as_posix(),
+                "evidence_sha256": SEMANTIC_REQUIREMENTS_SHA256,
+                "resource_description_sha256": (
+                    self.policy.resource_description_sha256
+                ),
+                "expected_year": self.policy.expected_year,
+                "allowed_month_numbers": sorted(
+                    self.policy.allowed_month_numbers
+                ),
+                "accepted_token_forms": [
+                    "English full month name",
+                    "English three-letter month abbreviation",
+                ],
+                "state": "candidate_observation_only",
+            },
+            "expected_year_count": self.expected_year_count,
+            "year_mismatch_count": self.year_mismatch_count,
+            "year_invalid_count": self.year_invalid_count,
+            "recognized_month_count": self.recognized_month_count,
+            "unrecognized_month_count": self.unrecognized_month_count,
+            "outside_documented_month_count": (
+                self.outside_documented_month_count
+            ),
+            "month_record_counts": dict(self.month_counts),
+            "period_semantics_verified": False,
         }
 
 
@@ -257,12 +381,65 @@ def load_value_observer_cohort(root: Path) -> list[dict[str, Any]]:
             "expected_headers": expected_headers,
             "observed_schema_id": observed_schema_id,
             "prior_header_receipt_url": prior["receipt_url"],
+            "period_policy": load_processing_period_policy(
+                root, row["resource_id"], reference["path"]
+            ),
         })
     return bound
 
 
+def load_processing_period_policy(
+    root: Path, resource_id: str, source_path: str
+) -> ProcessingPeriodPolicy:
+    """Bind a candidate month window to the pinned official metadata record."""
+    policy_identity = _PERIOD_POLICY_BY_RESOURCE_ID.get(resource_id)
+    if policy_identity is None or not source_path.endswith(".csv"):
+        raise ValueError("processing-period resource is outside exact scope")
+    qualification_bytes = (root / SEMANTIC_REQUIREMENTS_PATH).read_bytes()
+    if (
+        hashlib.sha256(qualification_bytes).hexdigest()
+        != SEMANTIC_REQUIREMENTS_SHA256
+    ):
+        raise ValueError("processing-period metadata digest differs")
+    qualification = json.loads(qualification_bytes)
+    if (
+        qualification.get("source_revision")
+        != "dee9a5b0580dfe394474dc26b372559462e157e7"
+        or qualification.get("boundaries", {}).get(
+            "source_payload_bytes_acquired_locally"
+        )
+        is not False
+        or qualification.get("boundaries", {}).get("processing_admitted")
+        is not False
+    ):
+        raise ValueError("processing-period metadata is out of scope")
+    matching = [
+        record
+        for record in qualification.get("records", [])
+        if record.get("resource_id") == resource_id
+        and record.get("path") == source_path
+    ]
+    description_sha256, allowed_month_numbers = policy_identity
+    if (
+        len(matching) != 1
+        or matching[0].get("resource_description_sha256") != description_sha256
+        or matching[0].get("payload_period_verified") is not False
+        or matching[0].get("processing_admitted") is not False
+    ):
+        raise ValueError("processing-period source binding differs")
+    return ProcessingPeriodPolicy(
+        resource_id=resource_id,
+        resource_description_sha256=description_sha256,
+        expected_year="2016",
+        allowed_month_numbers=allowed_month_numbers,
+    )
+
+
 def observe_utilisation_csv_values(
-    path: Path, *, expected_headers: tuple[str, ...]
+    path: Path,
+    *,
+    expected_headers: tuple[str, ...],
+    period_policy: ProcessingPeriodPolicy | None = None,
 ) -> CsvValueObservation:
     """Observe row shape and exact-decimal parse profiles without retaining values.
 
@@ -285,6 +462,11 @@ def observe_utilisation_csv_values(
         or BENEFIT_HEADER not in expected_headers
     ):
         raise ValueError("reviewed CSV profile is invalid")
+    if period_policy is not None and not {
+        "Year",
+        "Month of Processing",
+    }.issubset(expected_headers):
+        raise ValueError("processing-period CSV profile is invalid")
     size = path.stat().st_size
     if size <= 0 or size > MAX_CSV_BYTES:
         raise ValueError("CSV byte limit exceeded")
@@ -305,6 +487,11 @@ def observe_utilisation_csv_values(
     )
     candidate_keys: set[bytes] = set()
     candidate_key_duplicate_records = 0
+    periods = (
+        _PeriodCounters(policy=period_policy)
+        if period_policy is not None
+        else None
+    )
     services = _NumericCounters()
     benefit = _NumericCounters()
     old_limit = csv.field_size_limit()
@@ -319,6 +506,7 @@ def observe_utilisation_csv_values(
                 token_shapes,
                 candidate_key_indices,
                 candidate_keys,
+                periods,
                 services,
                 benefit,
             )
@@ -343,6 +531,9 @@ def observe_utilisation_csv_values(
         token_shapes=token_shapes,
         candidate_key_headers=candidate_key_headers,
         candidate_key_duplicate_records=candidate_key_duplicate_records,
+        processing_period_observation=(
+            periods.to_public_observation() if periods is not None else None
+        ),
         services=services.freeze(),
         benefit=benefit.freeze(),
     )
@@ -355,6 +546,7 @@ def _observe_rows(
     token_shapes: dict[str, dict[str, int]],
     candidate_key_indices: tuple[int, ...],
     candidate_keys: set[bytes],
+    periods: _PeriodCounters | None,
     services: _NumericCounters,
     benefit: _NumericCounters,
 ) -> tuple[int, int]:
@@ -366,6 +558,12 @@ def _observe_rows(
         raise ValueError("reviewed CSV header differs")
     services_index = expected_headers.index(SERVICES_HEADER)
     benefit_index = expected_headers.index(BENEFIT_HEADER)
+    year_index = expected_headers.index("Year") if periods is not None else None
+    month_index = (
+        expected_headers.index("Month of Processing")
+        if periods is not None
+        else None
+    )
     record_count = 0
     rectangular_count = 0
     for row in reader:
@@ -388,10 +586,18 @@ def _observe_rows(
             separators=(",", ":"),
         ).encode("utf-8")
         candidate_key_digest = hashlib.sha256(key_bytes).digest()
+        if (
+            candidate_key_digest not in candidate_keys
+            and len(candidate_keys) >= MAX_CANDIDATE_KEYS
+        ):
+            raise ValueError("candidate key bound exceeded")
         if candidate_key_digest not in candidate_keys:
-            if len(candidate_keys) >= MAX_CANDIDATE_KEYS:
-                raise ValueError("candidate key bound exceeded")
             candidate_keys.add(candidate_key_digest)
+        if periods is not None:
+            periods.add(
+                row[cast("int", year_index)],
+                row[cast("int", month_index)],
+            )
         services.add(row[services_index])
         benefit.add(row[benefit_index])
     return record_count, rectangular_count
