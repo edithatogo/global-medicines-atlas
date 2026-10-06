@@ -436,3 +436,17 @@
   live-deployment, accessibility-conformance, and production-data gates still
   unverified. The value-file receipts and aggregate are in
   `quality/qualifications/platinum-product-performance-20261006/`.
+
+### PBS source-structure Platinum integration (2026-10-07)
+
+- [x] Admit `source_structure` as its own internal Platinum semantic value;
+  preserve source-structure edges without funding, formulary, regulatory, or
+  terminology promotion.
+- [x] Keep the established v1 dataset-identity enum unchanged and expose the
+  expanded source-structure identity through the isolated v2 dataset route.
+- [x] Verify synthetic PBS bytes from Bronze B1 receipt through Silver fields,
+  Gold containment edges, Platinum verified query/cache recovery, research
+  export, and non-publishable v4 producer-inventory reconciliation.
+- [~] Complete exact-head protected hosted checks, merge, and append the hosted
+  merge receipt. This remains a fixture-only qualification and makes no claim
+  about populated public sources, source coverage, deployment, or release.

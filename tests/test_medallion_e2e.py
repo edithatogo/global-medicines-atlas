@@ -13,6 +13,7 @@ import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from test_pbs_silver import XML as PBS_XML
 from test_support.federation import admission_record
 
 from global_medicines_atlas.bronze_admission import BronzeAdmissionState
@@ -28,6 +29,11 @@ from global_medicines_atlas.mbs_gold_graph import (
     project_mbs_gold_graph_arrow,
 )
 from global_medicines_atlas.mbs_silver import iter_mbs_silver_batches
+from global_medicines_atlas.pbs_gold_graph import (
+    build_pbs_gold_graph_candidate,
+    project_pbs_gold_graph_arrow,
+)
+from global_medicines_atlas.pbs_silver import iter_pbs_silver_batches
 from global_medicines_atlas.platinum_query import (
     PlatinumQueryService,
     QueryResult,
@@ -38,6 +44,7 @@ from global_medicines_atlas.platinum_resolver import (
     ProductResource,
     StorageNeutralResolver,
 )
+from global_medicines_atlas.platinum_types import SemanticDimension
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
@@ -84,20 +91,20 @@ def _payload() -> bytes:
     )
 
 
-def _receipt(payload: bytes) -> SourceReceipt:
+def _receipt(payload: bytes, *, source_id: str = SOURCE_ID) -> SourceReceipt:
     evidence = PayloadEvidence.from_bytes(payload)
     receipt = SourceReceipt(
         receipt_id="synthetic:medallion-e2e",
         source=SourceIdentity(
-            catalog_id=SOURCE_ID,
-            source_id=SOURCE_ID,
+            catalog_id=source_id,
+            source_id=source_id,
             jurisdiction="AUS",
             authority="Repository-owned synthetic fixture",
-            dataset_title="Synthetic MBS E2E fixture",
+            dataset_title=f"Synthetic {source_id} E2E fixture",
             catalog_version="synthetic-e2e-v1",
         ),
         retrieval=RetrievalEvidence(
-            uri="https://fixtures.invalid/mbs.xml",
+            uri=f"https://fixtures.invalid/{source_id}.xml",
             retrieved_at=NOW,
             acquisition_method=AcquisitionMethod.LOCAL_FIXTURE,
             status=AcquisitionStatus.SUCCEEDED,
@@ -114,10 +121,10 @@ def _receipt(payload: bytes) -> SourceReceipt:
     )
     return receipt.model_copy(
         update={
-            "reuse": acquire_new_decision(SOURCE_ID),
+            "reuse": acquire_new_decision(source_id),
             "temporal": temporal_identity_from_source(
                 retrieved_at=NOW,
-                source_id=SOURCE_ID,
+                source_id=source_id,
                 payload_sha256=evidence.sha256,
                 source_version="synthetic-e2e-v1",
             ),
@@ -131,7 +138,7 @@ def _platinum_contract(payload: bytes, receipt: SourceReceipt) -> bytes:
     )
     digest = hashlib.sha256(payload).hexdigest()
     document["source"].update(
-        source_id=SOURCE_ID,
+        source_id=receipt.source.source_id,
         acquisition_id=require_temporal(receipt.temporal).acquisition_id,
         layer="platinum",
         bronze_stratum=None,
@@ -142,7 +149,7 @@ def _platinum_contract(payload: bytes, receipt: SourceReceipt) -> bytes:
         retrieved_at=NOW.isoformat().replace("+00:00", "Z"),
     )
     document["location"].update(
-        path="platinum/synthetic-mbs-edges.parquet",
+        path=f"platinum/synthetic-{receipt.source.source_id}-edges.parquet",
         bytes=len(payload),
         sha256=digest,
     )
@@ -197,7 +204,7 @@ def _distribution_contract(
         "https://github.com/edithatogo/global-medicines-atlas/actions/runs/1"
     )
     document["source"].update(
-        source_id=SOURCE_ID,
+        source_id=receipt.source.source_id,
         acquisition_id=temporal.acquisition_id,
         layer=layer,
         bronze_stratum=bronze_stratum,
@@ -258,7 +265,7 @@ def _reconcile_synthetic_outputs(
     for layer, path, payload, bronze_stratum in outputs:
         digest = hashlib.sha256(payload).hexdigest()
         inventory_objects.append({
-            "source_id": SOURCE_ID,
+            "source_id": receipt.source.source_id,
             "acquisition_id": require_temporal(receipt.temporal).acquisition_id,
             "layer": layer,
             "bronze_stratum": bronze_stratum,
@@ -334,9 +341,11 @@ def _exercise_query_cache(
     resolver: StorageNeutralResolver,
     resource_id: str,
     requests: list[httpx.Request],
+    *,
+    columns: tuple[str, ...] = ("kind", "inferred"),
 ) -> QueryResult:
     service = PlatinumQueryService(resolver)
-    spec = QuerySpec(columns=("kind", "inferred"), limit=1)
+    spec = QuerySpec(columns=columns, limit=1)
     result = service.query(resource_id, engine="polars", spec=spec)
     assert len(requests) == 2
 
@@ -379,7 +388,7 @@ def _verify_saved_research_export(
 ) -> bytes:
     revision = "a" * 40
     source = ExportSource(
-        dataset_id="synthetic/mbs",
+        dataset_id=f"synthetic/{source_receipt.source.source_id}",
         revision=revision,
         path="bronze/raw.xml",
         sha256=source_receipt.payload.sha256,
@@ -493,7 +502,12 @@ def _silver_gold_products(
 
 
 def _query_synthetic_platinum(
-    gold: bytes, receipt: SourceReceipt
+    gold: bytes,
+    receipt: SourceReceipt,
+    *,
+    resource_id: str = "au.mbs.synthetic.edges",
+    semantic_dimension: SemanticDimension = "service_benefit",
+    columns: tuple[str, ...] = ("kind", "inferred"),
 ) -> QueryResult:
     contract = _platinum_contract(gold, receipt)
     binding = _binding(contract)
@@ -501,16 +515,16 @@ def _query_synthetic_platinum(
         {
             "contract_sha256": binding.contract_sha256,
             "entity_granularity": "evidence_edge",
-            "resource_id": "au.mbs.synthetic.edges",
-            "semantic_dimension": "service_benefit",
+            "resource_id": resource_id,
+            "semantic_dimension": semantic_dimension,
             "version": "1.0",
         },
         sort_keys=True,
         separators=(",", ":"),
     ).encode()
     resource = ProductResource(
-        resource_id="au.mbs.synthetic.edges",
-        semantic_dimension="service_benefit",
+        resource_id=resource_id,
+        semantic_dimension=semantic_dimension,
         entity_granularity="evidence_edge",
         binding=binding,
         contract=contract,
@@ -538,7 +552,9 @@ def _query_synthetic_platinum(
         transport_factory=lambda: httpx.MockTransport(handle),
         clock=lambda: NOW,
     ) as resolver:
-        return _exercise_query_cache(resolver, resource.resource_id, requests)
+        return _exercise_query_cache(
+            resolver, resource.resource_id, requests, columns=columns
+        )
 
 
 @pytest.mark.e2e
@@ -610,6 +626,116 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
             (
                 "platinum",
                 "platinum/research-export.zip",
+                export_package,
+                None,
+            ),
+        ),
+    )
+    assert len(bindings) == 5
+    assert {item.object.layer for item in bindings} == {
+        "bronze",
+        "silver",
+        "gold",
+        "platinum",
+    }
+    assert all(item.object.evidence_kind == "synthetic" for item in bindings)
+    assert all(item.revision == "a" * 40 for item in bindings)
+
+
+@pytest.mark.e2e
+def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
+    tmp_path: Path,
+) -> None:
+    """Preserve PBS containment as source structure across all product layers."""
+    raw = PBS_XML
+    receipt = _receipt(raw, source_id="au-pbs")
+    landed = land_bronze_payload(
+        raw,
+        receipt,
+        bronze_root=tmp_path / "bronze",
+        media_hint="xml",
+        admission_decided_at=NOW,
+        transformation_completed_at=NOW,
+    )
+    assert landed.receipt.evidence_class is EvidenceClass.SYNTHETIC
+    assert landed.receipt.rights_state is RightsState.UNKNOWN
+    assert landed.receipt.satisfies_live_gate is False
+    assert landed.payload_path.read_bytes() == raw
+    assert landed.receipt.payload.sha256 == hashlib.sha256(raw).hexdigest()
+
+    silver = pa.Table.from_batches(
+        list(
+            iter_pbs_silver_batches(
+                landed.payload_path.read_bytes(), landed.receipt
+            )
+        )
+    )
+    candidate = build_pbs_gold_graph_candidate(
+        landed.payload_path.read_bytes(), landed.receipt
+    )
+    assert candidate.asserted_dimensions == ()
+    assert candidate.admission_performed is False
+    assert candidate.inference_performed is False
+    nodes, edges = project_pbs_gold_graph_arrow(candidate)
+    assert all(
+        edge.semantic_dimension == "source_structure"
+        and edge.comparison_validity == "source_structure_only"
+        and not edge.inferred
+        for edge in candidate.edges
+    )
+    silver_payload = _parquet_payload(silver)
+    node_payload = _parquet_payload(nodes)
+    gold_payload = _parquet_payload(edges)
+    result = _query_synthetic_platinum(
+        gold_payload,
+        landed.receipt,
+        resource_id="au.pbs.synthetic.structure",
+        semantic_dimension="source_structure",
+        columns=(
+            "kind",
+            "semantic_dimension",
+            "controls_json",
+        ),
+    )
+    assert result.status == "available"
+    assert result.rows
+    assert all(
+        row["semantic_dimension"] == "source_structure" for row in result.rows
+    )
+    assert all(
+        '"comparison_validity":"source_structure_only"'
+        in str(row["controls_json"])
+        and '"inferred":false' in str(row["controls_json"])
+        for row in result.rows
+    )
+    assert result.evidence.semantic_dimension == "source_structure"
+    assert result.evidence.source_id == "au-pbs"
+    export_package = _verify_saved_research_export(
+        result=result,
+        source_receipt=landed.receipt,
+        resource_id="au.pbs.synthetic.structure",
+        tmp_path=tmp_path,
+    )
+    bindings = _reconcile_synthetic_outputs(
+        landed.receipt,
+        (
+            (
+                "bronze",
+                "bronze/receipts/pbs-source.json",
+                landed.receipt.canonical_json(),
+                "B1",
+            ),
+            (
+                "silver",
+                "silver/pbs-native-fields.parquet",
+                silver_payload,
+                None,
+            ),
+            ("gold", "gold/pbs-nodes.parquet", node_payload, None),
+            ("gold", "gold/pbs-edges.parquet", gold_payload, None),
+            (
+                "platinum",
+                "platinum/pbs-research-export.zip",
                 export_package,
                 None,
             ),

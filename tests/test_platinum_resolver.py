@@ -179,6 +179,29 @@ def test_resolve_is_storage_neutral_and_exact() -> None:
     assert not hub.requests
 
 
+def test_source_structure_is_admitted_without_semantic_promotion() -> None:
+    hub = Hub()
+    base = resource()
+    manifest = semantic_manifest(
+        base.binding.contract_sha256,
+        resource_id="au.pbs.source-structure",
+        dimension="source_structure",
+        granularity="evidence_edge",
+    )
+    pbs_resource = replace(
+        base,
+        resource_id="au.pbs.source-structure",
+        semantic_dimension="source_structure",
+        entity_granularity="evidence_edge",
+        semantic_manifest=manifest,
+    )
+    with resolver(hub, pbs_resource) as client:
+        resolved = client.resolve("au.pbs.source-structure")
+        assert resolved.semantic_dimension == "source_structure"
+        assert resolved.entity_granularity == "evidence_edge"
+    assert not hub.requests
+
+
 def test_remote_read_and_explicit_offline_cache_roundtrip() -> None:
     hub = Hub()
     with resolver(hub) as client:

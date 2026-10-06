@@ -18,7 +18,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from .federation_admission import AdmissionRecord
 from .federation_distribution import DistributionBinding
 from .platinum_resolver import ProductResource, StorageNeutralResolver
-from .platinum_types import EntityGranularity, SemanticDimension
+from .platinum_types import EntityGranularity, PlatinumSemanticDimension
 
 _MAX_BYTES = 1024 * 1024
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
@@ -29,7 +29,7 @@ class ResourceConfiguration(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     resource_id: str
-    semantic_dimension: SemanticDimension
+    semantic_dimension: PlatinumSemanticDimension
     entity_granularity: EntityGranularity
     binding: DistributionBinding
     semantic_sha256: Digest

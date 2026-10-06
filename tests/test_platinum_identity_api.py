@@ -51,6 +51,14 @@ class ResolverStub:
     opened = False
 
     def resolve(self, resource_id: str) -> ResolvedResource:
+        if resource_id == "au.pbs.structure.current":
+            return replace(
+                resolved(),
+                resource_id=resource_id,
+                semantic_dimension="source_structure",
+                entity_granularity="evidence_edge",
+                source_id="au-pbs",
+            )
         if resource_id != "au.mbs.services.current":
             raise ValueError("sensitive resolver detail")
         return resolved()
@@ -114,6 +122,25 @@ def test_resolver_service_returns_identity_without_opening_bytes() -> None:
 
     assert result.jurisdiction == "AU"
     assert result.rows_queried is False
+    assert resolver.opened is False
+
+
+def test_resolver_service_exposes_pbs_structure_only_through_v2() -> None:
+    resolver = ResolverStub()
+    service = ResolverDatasetIdentityService(
+        cast("StorageNeutralResolver", resolver),
+        jurisdictions={
+            "au.mbs.services.current": "AU",
+            "au.pbs.structure.current": "AU",
+        },
+    )
+
+    result = service.identity_v2("au.pbs.structure.current")
+
+    assert result.api_version == "v2"
+    assert result.semantic_dimension == "source_structure"
+    assert result.entity_granularity == "evidence_edge"
+    assert result.comparison_validity == "not_evaluated"
     assert resolver.opened is False
 
 
