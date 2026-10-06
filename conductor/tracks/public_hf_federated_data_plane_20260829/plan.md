@@ -173,6 +173,14 @@
     merged as `08a08a0f8662fefe8cc473272f6cbe2e2252ba68` after all 38 hosted
     checks passed. This is synthetic qualification only; it does not publish,
     admit real data, or close the live producer integration gate.
+  - [x] Read every exact reconciled synthetic B1, Silver, Gold, and Platinum
+    object through the typed-admission federated reader; prove anonymous
+    remote verification, exact offline cache replay, fail-closed cache
+    eviction, and remote refetch preserve each object's digest and byte count.
+    Keep B2 raw payloads in the separate source-archive denominator. Code
+    `eceae48`; 136 affected federation/E2E tests and 31 governed E2E tests pass;
+    routine and typing gates pass. Mock transport only; no live admission or
+    publication. See the append-only evidence entry.
 - [x] Reject duplicate JSON member names consistently at v4 distribution,
   admission, reader, receipt-closure, and consumer boundaries. Three synthetic
   regressions failed before the shared strict parser; 436 affected federation

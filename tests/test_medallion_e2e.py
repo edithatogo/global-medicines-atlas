@@ -24,6 +24,7 @@ from global_medicines_atlas.federation_distribution import (
     load_synthetic_producer_inventory,
     reconcile_distribution,
 )
+from global_medicines_atlas.federation_reader import FederatedReader
 from global_medicines_atlas.mbs_gold_graph import (
     build_mbs_gold_graph_candidate,
     project_mbs_gold_graph_arrow,
@@ -81,6 +82,12 @@ from global_medicines_atlas.reuse_gate import acquire_new_decision
 ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 10, 6, tzinfo=UTC)
 SOURCE_ID = "au-mbs"
+type SyntheticOutput = tuple[
+    Literal["bronze", "silver", "gold", "platinum"],
+    str,
+    bytes,
+    Literal["B0", "B1", "B2"] | None,
+]
 
 
 def _payload() -> bytes:
@@ -247,15 +254,7 @@ def _distribution_contract(
 
 def _reconcile_synthetic_outputs(
     receipt: SourceReceipt,
-    outputs: tuple[
-        tuple[
-            Literal["bronze", "silver", "gold", "platinum"],
-            str,
-            bytes,
-            Literal["B0", "B1", "B2"] | None,
-        ],
-        ...,
-    ],
+    outputs: tuple[SyntheticOutput, ...],
 ) -> tuple[DistributionBinding, ...]:
     """Bind actual E2E output bytes to a complete synthetic denominator."""
     producer = "edithatogo/global-medicines-atlas"
@@ -310,6 +309,96 @@ def _reconcile_synthetic_outputs(
             ("bronze", "silver", "gold", "platinum"), dataset
         ),
     )
+
+
+def _exercise_federated_reader(
+    receipt: SourceReceipt,
+    outputs: tuple[SyntheticOutput, ...],
+    bindings: tuple[DistributionBinding, ...],
+) -> None:
+    """Read each reconciled synthetic product remotely and from exact cache."""
+    contracts = tuple(
+        _distribution_contract(
+            payload,
+            receipt,
+            layer=layer,
+            path=path,
+            bronze_stratum=bronze_stratum,
+        )
+        for layer, path, payload, bronze_stratum in outputs
+    )
+    payloads_by_contract = {
+        hashlib.sha256(contract).hexdigest(): output[2]
+        for contract, output in zip(contracts, outputs, strict=True)
+    }
+    bindings_by_contract = {
+        binding.contract_sha256: binding for binding in bindings
+    }
+    assert set(payloads_by_contract) == set(bindings_by_contract)
+
+    dataset = "example/australian-benefits-synthetic"
+    remote_paths = {
+        (
+            f"/datasets/{dataset}/resolve/{binding.revision}/"
+            f"{binding.object.path}"
+        ): payloads_by_contract[digest]
+        for digest, binding in bindings_by_contract.items()
+    }
+    requests: list[httpx.Request] = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        assert "authorization" not in request.headers
+        assert "cookie" not in request.headers
+        if request.url.path.startswith("/api/datasets/"):
+            return httpx.Response(
+                200,
+                json={"sha": "a" * 40, "private": False, "gated": False},
+            )
+        payload = remote_paths.get(request.url.path)
+        if payload is None:
+            return httpx.Response(404)
+        return httpx.Response(200, content=payload)
+
+    schema = (
+        ROOT / "contracts/medallion/v4/federation.schema.json"
+    ).read_bytes()
+    with FederatedReader(
+        schema=schema,
+        admission_records=tuple(admission_record(raw) for raw in contracts),
+        transport_factory=lambda: httpx.MockTransport(handle),
+        clock=lambda: NOW,
+    ) as reader:
+        for contract in contracts:
+            digest = hashlib.sha256(contract).hexdigest()
+            expected = payloads_by_contract[digest]
+            with reader.open(contract) as result:
+                assert result.origin == "remote"
+                assert result.sha256 == hashlib.sha256(expected).hexdigest()
+                assert result.byte_count == len(expected)
+                assert result.stream.read() == expected
+
+            request_count = len(requests)
+            with reader.open(contract, offline=True) as cached:
+                assert cached.origin == "verified_cache"
+                assert cached.sha256 == hashlib.sha256(expected).hexdigest()
+                assert cached.byte_count == len(expected)
+                assert cached.stream.read() == expected
+            assert len(requests) == request_count
+
+            reader.evict()
+            with (
+                pytest.raises(ValueError, match="offline"),
+                reader.open(contract, offline=True),
+            ):
+                pytest.fail("eviction must not synthesize an object")
+            assert len(requests) == request_count
+
+            with reader.open(contract) as refetched:
+                assert refetched.origin == "remote"
+                assert refetched.sha256 == hashlib.sha256(expected).hexdigest()
+                assert refetched.byte_count == len(expected)
+                assert refetched.stream.read() == expected
 
 
 def _binding(raw: bytes) -> DistributionBinding:
@@ -601,36 +690,35 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
         resource_id="au.mbs.synthetic.edges",
         tmp_path=tmp_path,
     )
-    bindings = _reconcile_synthetic_outputs(
-        landed.receipt,
+    outputs: tuple[SyntheticOutput, ...] = (
         (
-            (
-                "bronze",
-                "bronze/receipts/source.json",
-                landed.receipt.canonical_json(),
-                "B1",
-            ),
-            (
-                "silver",
-                "silver/mbs-services.parquet",
-                _parquet_payload(silver),
-                None,
-            ),
-            (
-                "gold",
-                "gold/mbs-nodes.parquet",
-                _parquet_payload(nodes),
-                None,
-            ),
-            ("gold", "gold/mbs-edges.parquet", gold, None),
-            (
-                "platinum",
-                "platinum/research-export.zip",
-                export_package,
-                None,
-            ),
+            "bronze",
+            "bronze/receipts/source.json",
+            landed.receipt.canonical_json(),
+            "B1",
+        ),
+        (
+            "silver",
+            "silver/mbs-services.parquet",
+            _parquet_payload(silver),
+            None,
+        ),
+        (
+            "gold",
+            "gold/mbs-nodes.parquet",
+            _parquet_payload(nodes),
+            None,
+        ),
+        ("gold", "gold/mbs-edges.parquet", gold, None),
+        (
+            "platinum",
+            "platinum/research-export.zip",
+            export_package,
+            None,
         ),
     )
+    bindings = _reconcile_synthetic_outputs(landed.receipt, outputs)
+    _exercise_federated_reader(landed.receipt, outputs, bindings)
     assert len(bindings) == 5
     assert {item.object.layer for item in bindings} == {
         "bronze",
@@ -716,31 +804,30 @@ def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
         resource_id="au.pbs.synthetic.structure",
         tmp_path=tmp_path,
     )
-    bindings = _reconcile_synthetic_outputs(
-        landed.receipt,
+    outputs: tuple[SyntheticOutput, ...] = (
         (
-            (
-                "bronze",
-                "bronze/receipts/pbs-source.json",
-                landed.receipt.canonical_json(),
-                "B1",
-            ),
-            (
-                "silver",
-                "silver/pbs-native-fields.parquet",
-                silver_payload,
-                None,
-            ),
-            ("gold", "gold/pbs-nodes.parquet", node_payload, None),
-            ("gold", "gold/pbs-edges.parquet", gold_payload, None),
-            (
-                "platinum",
-                "platinum/pbs-research-export.zip",
-                export_package,
-                None,
-            ),
+            "bronze",
+            "bronze/receipts/pbs-source.json",
+            landed.receipt.canonical_json(),
+            "B1",
+        ),
+        (
+            "silver",
+            "silver/pbs-native-fields.parquet",
+            silver_payload,
+            None,
+        ),
+        ("gold", "gold/pbs-nodes.parquet", node_payload, None),
+        ("gold", "gold/pbs-edges.parquet", gold_payload, None),
+        (
+            "platinum",
+            "platinum/pbs-research-export.zip",
+            export_package,
+            None,
         ),
     )
+    bindings = _reconcile_synthetic_outputs(landed.receipt, outputs)
+    _exercise_federated_reader(landed.receipt, outputs, bindings)
     assert len(bindings) == 5
     assert {item.object.layer for item in bindings} == {
         "bronze",
