@@ -1936,6 +1936,14 @@
   payload mappings or granting admission. See
   `quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json`.
 
-- [~] Implement protected hosted native-header inventory for the four already
+- [x] Implement protected hosted native-header inventory for the four already
   structurally verified standalone CSVs. Bind exact source identities and
   record header metadata only before selecting any semantic conversion.
+  Exact-main run `37410581626` inventoried four existing public CSVs. All four
+  anonymous digests matched; each had eight headers, matched its existing
+  catalogue schema, and had zero unexpected fields. Durable per-object and
+  summary receipts were independently read back from issue #340; hosted
+  temporary caches were removed after receipts were recorded. No source was
+  added, and no semantic validation, admission, or licensing conclusion
+  changed. See
+  `quality/qualifications/australian-mbs-utilisation-header-inventory-20261006.json`.
