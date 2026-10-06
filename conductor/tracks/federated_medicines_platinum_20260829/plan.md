@@ -447,6 +447,6 @@
 - [x] Verify synthetic PBS bytes from Bronze B1 receipt through Silver fields,
   Gold containment edges, Platinum verified query/cache recovery, research
   export, and non-publishable v4 producer-inventory reconciliation.
-- [~] Complete exact-head protected hosted checks, merge, and append the hosted
+- [x] Complete exact-head protected hosted checks, merge, and append the hosted
   merge receipt. This remains a fixture-only qualification and makes no claim
   about populated public sources, source coverage, deployment, or release.
