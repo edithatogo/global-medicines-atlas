@@ -7,12 +7,13 @@ import io
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal, Never, Protocol, cast
 
 import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from fastapi.testclient import TestClient
 from test_pbs_silver import XML as PBS_XML
 from test_support.federation import admission_record
 
@@ -35,6 +36,9 @@ from global_medicines_atlas.pbs_gold_graph import (
     project_pbs_gold_graph_arrow,
 )
 from global_medicines_atlas.pbs_silver import iter_pbs_silver_batches
+from global_medicines_atlas.platinum_identity_service import (
+    ResolverDatasetIdentityService,
+)
 from global_medicines_atlas.platinum_query import (
     PlatinumQueryService,
     QueryResult,
@@ -45,7 +49,14 @@ from global_medicines_atlas.platinum_resolver import (
     ProductResource,
     StorageNeutralResolver,
 )
-from global_medicines_atlas.platinum_types import SemanticDimension
+from global_medicines_atlas.platinum_types import (
+    PlatinumSemanticDimension,
+)
+from global_medicines_atlas.platinum_v2_api import create_v2_app
+from global_medicines_atlas.platinum_v2_contracts import (
+    V2ComparisonQuery,
+    V2EvidenceQuery,
+)
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
@@ -400,6 +411,130 @@ def _exercise_federated_reader(
                 assert refetched.byte_count == len(expected)
                 assert refetched.stream.read() == expected
 
+    _exercise_pbs_v2_identity(contracts, outputs, bindings, schema)
+
+
+class _IdentityOnlyV2Service:
+    """V2 query dependency that must remain unused by identity lookups."""
+
+    def v2_comparisons(self, query: V2ComparisonQuery) -> Never:
+        del query
+        raise AssertionError("identity lookup must not run a comparison")
+
+    def v2_evidence(self, query: V2EvidenceQuery) -> Never:
+        del query
+        raise AssertionError("identity lookup must not query evidence")
+
+
+class _IdentityHttpResponse(Protocol):
+    status_code: int
+
+    def json(self) -> dict[str, Any]: ...
+
+
+class _IdentityHttpClient(Protocol):
+    def get(self, url: str) -> _IdentityHttpResponse: ...
+
+
+def _exercise_pbs_v2_identity(
+    contracts: tuple[bytes, ...],
+    outputs: tuple[SyntheticOutput, ...],
+    bindings: tuple[DistributionBinding, ...],
+    schema: bytes,
+) -> None:
+    """Expose the exact synthetic PBS Gold edge through V2 identity only."""
+    pbs_edges = next(
+        (
+            (contract, output[2])
+            for contract, output in zip(contracts, outputs, strict=True)
+            if output[1] == "gold/pbs-edges.parquet"
+        ),
+        None,
+    )
+    if pbs_edges is None:
+        return
+
+    contract, payload = pbs_edges
+    bindings_by_contract = {
+        binding.contract_sha256: binding for binding in bindings
+    }
+    binding = bindings_by_contract[hashlib.sha256(contract).hexdigest()]
+    resource_id = "au.pbs.synthetic.structure"
+    semantic_manifest = json.dumps(
+        {
+            "contract_sha256": binding.contract_sha256,
+            "entity_granularity": "evidence_edge",
+            "resource_id": resource_id,
+            "semantic_dimension": "source_structure",
+            "version": "1.0",
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    resource = ProductResource(
+        resource_id=resource_id,
+        semantic_dimension="source_structure",
+        entity_granularity="evidence_edge",
+        binding=binding,
+        contract=contract,
+        semantic_manifest=semantic_manifest,
+    )
+    api_requests: list[httpx.Request] = []
+
+    def handle_api_request(request: httpx.Request) -> httpx.Response:
+        api_requests.append(request)
+        assert "authorization" not in request.headers
+        assert "cookie" not in request.headers
+        if request.url.path.startswith("/api/datasets/"):
+            return httpx.Response(
+                200,
+                json={
+                    "sha": binding.revision,
+                    "private": False,
+                    "gated": False,
+                },
+            )
+        if request.url.path.endswith(f"/{binding.object.path}"):
+            return httpx.Response(200, content=payload)
+        return httpx.Response(404)
+
+    with StorageNeutralResolver(
+        schema=schema,
+        resources=[resource],
+        admission_records=(admission_record(contract),),
+        admitted_semantic_manifests=frozenset({
+            hashlib.sha256(semantic_manifest).hexdigest()
+        }),
+        transport_factory=lambda: httpx.MockTransport(handle_api_request),
+        clock=lambda: NOW,
+    ) as resolver:
+        identity_service = ResolverDatasetIdentityService(
+            resolver,
+            jurisdictions={resource_id: "AU"},
+        )
+        client = cast(
+            "_IdentityHttpClient",
+            TestClient(
+                create_v2_app(
+                    _IdentityOnlyV2Service(),
+                    dataset_identities=identity_service,
+                )
+            ),
+        )
+        response = client.get(f"/api/v2/datasets/{resource_id}")
+
+    assert response.status_code == 200
+    identity = response.json()
+    assert identity["semantic_dimension"] == "source_structure"
+    assert identity["entity_granularity"] == "evidence_edge"
+    assert identity["revision"] == binding.revision
+    assert identity["path"] == binding.object.path
+    assert identity["object_sha256"] == hashlib.sha256(payload).hexdigest()
+    assert identity["coverage_state"] == "not_declared"
+    assert identity["comparison_validity"] == "not_evaluated"
+    assert identity["rows_queried"] is False
+    assert api_requests == []
+
 
 def _binding(raw: bytes) -> DistributionBinding:
     document = json.loads(raw)
@@ -595,7 +730,7 @@ def _query_synthetic_platinum(
     receipt: SourceReceipt,
     *,
     resource_id: str = "au.mbs.synthetic.edges",
-    semantic_dimension: SemanticDimension = "service_benefit",
+    semantic_dimension: PlatinumSemanticDimension = "service_benefit",
     columns: tuple[str, ...] = ("kind", "inferred"),
 ) -> QueryResult:
     contract = _platinum_contract(gold, receipt)

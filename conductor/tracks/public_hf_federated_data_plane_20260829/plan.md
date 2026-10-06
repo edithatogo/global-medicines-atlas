@@ -180,7 +180,8 @@
     Keep B2 raw payloads in the separate source-archive denominator. Code
     `eceae48`; 136 affected federation/E2E tests and 31 governed E2E tests pass;
     routine and typing gates pass. Mock transport only; no live admission or
-    publication. See the append-only evidence entry.
+    publication. PR #840 merged as `71d567f6e4a0346702a38000e9381f96438c97c2`
+    after all 37 hosted checks passed. See the append-only evidence entry.
 - [x] Reject duplicate JSON member names consistently at v4 distribution,
   admission, reader, receipt-closure, and consumer boundaries. Three synthetic
   regressions failed before the shared strict parser; 436 affected federation
