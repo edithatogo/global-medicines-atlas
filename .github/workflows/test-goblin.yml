@@ -190,6 +190,11 @@ jobs:
           enable-cache: true
       - name: Synchronize Python 3.14 Test-Goblin environment
         run: uv sync --python 3.14.6 --group test-goblin --locked
+      - name: Install Chromium for browser-backed E2E
+        if: matrix.lane == 'e2e'
+        run: >-
+          uv run --python 3.14.6 --group test-goblin playwright install
+          --with-deps chromium
       - name: Run ${{ matrix.lane }} tests
         env:
           COVERAGE_CORE: sysmon
@@ -243,6 +248,11 @@ jobs:
           (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
           steps.scope.outputs.heavy == 'true'
         run: uv sync --python 3.14.6 --group dev --locked
+      - name: Install Chromium for full coverage profile
+        if: matrix.profile == 'coverage'
+        run: >-
+          uv run --python 3.14.6 --group dev playwright install
+          --with-deps chromium
       - name: Restore content-validated gremlins cache
         if: >-
           matrix.profile == 'gremlins' &&
