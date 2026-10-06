@@ -85,24 +85,29 @@ policy or a claim that semantic tests have passed.
 
 ## Next bounded implementation
 
-The exact-reference header inventory, row-shape observation, and broad invalid
-numeric-token categorization for the four existing standalone CSV objects are
-complete. The observer counted 1,463,030 records; all were rectangular and no
-cells were empty. Q2 demographics contains 4,728 invalid `Services` tokens,
-all classified only as containing separators. Other invalid-token categories
-are zero across the cohort, as are invalid `Benefit` tokens. These are lexical
-shape findings; they do not establish what a separator means or how it should
-be normalized. The qualification and five durable receipts bind results to the
-four exact source digests and main commit.
+The four existing standalone CSVs now have independently verified headers,
+row-shape aggregates, and value-free invalid-token categories. The Q2
+`Services` anomalies match a comma-triplet lexical pattern, but no source
+separator semantics or numeric normalization has been accepted. A synthetic
+exact numeric parser now requires an explicit policy; grouping is disabled by
+default, signed values and decimal scale are preserved, and ambiguous forms
+are rejected without echoing their tokens. This parser has not read or
+transformed a source row.
 
-Next, refine the broad separator bucket into privacy-safe punctuation-pattern
-classes (such as comma triplets, underscore triplets, and other separator
-shapes), returning aggregate counts only. Reverify the same four exact source
-objects; retain all token values inside the isolated worker and expose none in
-logs or receipts. A recognized pattern must not be called thousands grouping
-or used for conversion without source-semantic evidence. Synthetic fixtures
-must cover grouping shapes, malformed groups, overlapping punctuation, and
-privacy. No source identities, revisions, or objects may be added.
+Synthetic candidate row mappings now describe the already inventoried
+demographics and group fields. They preserve Item Number lexically and record
+period, category, numeric, suppression, and grain questions as unresolved.
+Catalogue type hints are not conversion rules, and no source rows were read.
+The mapping contract is at
+`quality/qualifications/australian-mbs-utilisation-candidate-row-mappings-20261006.json`.
 
-This categorization remains separate from semantic qualification and admission.
-No ZIP or workbook is selected; both oversized ZIP holds remain unchanged.
+Next, implement bounded semantic validation for the same four exact CSV
+references in protected hosted Actions. Validate source identities and row
+shape, preserve tokens and missingness without publishing values, and report
+period/category/numeric findings only as approved aggregates. Keep admission
+and Silver closed until those results resolve the recorded source-specific
+questions. Do not add source objects or revisions.
+
+No source identities, revisions, or objects may be added. The two oversized
+ZIP holds remain unchanged; rights approval, native admissions, source row
+semantics, Silver/Gold, and M-112 acceptance remain separate gates.
