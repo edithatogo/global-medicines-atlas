@@ -419,6 +419,13 @@
     merged as `59b75c9b6445bdb247a20ec7db2a8d5a48e650b9` after all 38 hosted
     checks, including Codecov and Linux/macOS/Windows consumers, passed. No
     source data or publication is involved.
+  - [x] Carry the synthetic MBS Gold edge through the bounded `BenefitsService`
+    and read-only `/api/v1/benefits/{resource_id}` endpoint. Verify anonymous
+    metadata and exact-object reads use the reconciled revision and path, the
+    response preserves the exact Gold digest and source/evidence-edge identity,
+    and coverage/comparison remain `not_declared`/`not_evaluated`. The two
+    medallion tests and governed 31-test E2E lane pass; no source bytes or
+    production admission are involved. This is synthetic API integration only.
   - [x] Run all local full-profile components on 2026-10-06 with the pinned
     temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
     and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317
