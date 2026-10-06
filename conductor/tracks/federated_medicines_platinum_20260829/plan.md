@@ -404,8 +404,10 @@
   - [x] Extend the synthetic Bronze-to-Platinum end-to-end qualification to
     query remotely, reproduce from its verified offline cache, prove explicit
     unavailability after eviction, and refetch the same result. The synthetic
-    contract expiry is bound beyond the fixed qualification clock; no source
-    data or publication is involved.
+    contract expiry is bound beyond the fixed qualification clock. PR #834
+    merged as `59b75c9b6445bdb247a20ec7db2a8d5a48e650b9` after all 38 hosted
+    checks, including Codecov and Linux/macOS/Windows consumers, passed. No
+    source data or publication is involved.
   - [x] Run all local full-profile components on 2026-10-06 with the pinned
     temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
     and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317
