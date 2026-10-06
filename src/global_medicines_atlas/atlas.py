@@ -30,6 +30,7 @@ from .product_contracts import (
     CoverageItem,
     CoverageQuery,
     CoverageResponse,
+    EvidenceContext,
     EvidenceDimension,
     ProductConclusion,
     ProvenanceLink,
@@ -112,6 +113,21 @@ def _conclusion_view(
         "valid_at": conclusion.valid_time.valid_at.isoformat(),
         "observed_at": conclusion.valid_time.observed_at.isoformat(),
         "evidence": _evidence_links(conclusion),
+        **_evidence_context_view(conclusion.evidence_context),
+    }
+
+
+def _evidence_context_view(context: EvidenceContext) -> dict[str, str]:
+    """Render bound context without turning missing values into claims."""
+    return {
+        "schema_era": context.schema_era or "Not reported",
+        "comparison_cohort": context.comparison_cohort.replace(
+            "_", " "
+        ).capitalize(),
+        "entity_granularity": context.entity_granularity.replace(
+            "_", " "
+        ).capitalize(),
+        "review_state": context.review_state.replace("_", " ").capitalize(),
     }
 
 
@@ -126,6 +142,7 @@ def _coverage_view(item: CoverageItem) -> dict[str, object]:
         "denominator": item.denominator,
         "valid_at": item.valid_time.valid_at.isoformat(),
         "observed_at": item.valid_time.observed_at.isoformat(),
+        **_evidence_context_view(item.evidence_context),
     }
 
 

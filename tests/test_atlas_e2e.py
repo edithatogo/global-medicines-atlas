@@ -27,6 +27,7 @@ from global_medicines_atlas.product_contracts import (
     CoverageItem,
     CoverageResponse,
     EvidenceAvailability,
+    EvidenceContext,
     EvidenceDimension,
     PageMetadata,
     ProductConclusion,
@@ -164,6 +165,11 @@ def test_atlas_can_render_all_five_v2_dimensions() -> None:
                         level=UncertaintyLevel.UNKNOWN,
                         reason="Synthetic v2 fixture",
                     ),
+                    evidence_context=EvidenceContext(
+                        schema_era="fixture-v2",
+                        comparison_cohort="synthetic",
+                        entity_granularity="medicine_item",
+                    ),
                     valid_time=clocks,
                 )
                 for dimension in V2EvidenceDimension
@@ -207,6 +213,11 @@ def test_atlas_can_render_all_five_v2_dimensions() -> None:
     assert response.status_code == 200
     for dimension in V2EvidenceDimension:
         assert dimension.value in response.text
+    assert response.text.count("Schema era") == len(V2EvidenceDimension)
+    assert "fixture-v2" in response.text
+    assert "Synthetic" in response.text
+    assert "Medicine item" in response.text
+    assert "Not reported" in response.text
 
 
 def test_source_backed_v2_atlas_factory_renders_all_dimensions(

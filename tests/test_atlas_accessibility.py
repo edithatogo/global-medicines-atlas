@@ -11,6 +11,7 @@ from global_medicines_atlas.product_contracts import (
     AsOfClocks,
     ComparisonResponse,
     ConceptDetail,
+    CoverageItem,
     CoverageResponse,
     EvidenceAvailability,
     EvidenceDimension,
@@ -114,7 +115,14 @@ class FakeService:
 
     def coverage(self, query):
         del query
-        return CoverageResponse(metadata=_metadata(0), coverage=())
+        item = CoverageItem(
+            jurisdiction="NZ",
+            dimension=EvidenceDimension.REGULATORY,
+            state=ProductState.UNKNOWN,
+            covered_count=0,
+            valid_time=AsOfClocks(valid_at=NOW, observed_at=NOW),
+        )
+        return CoverageResponse(metadata=_metadata(1), coverage=(item,))
 
 
 def test_landmark_labels_focus_and_form_structure():
@@ -174,8 +182,20 @@ def test_results_are_semantic_textual_and_source_linked():
     assert "Canonical mapping" in card.get_text(" ", strip=True)
     assert len(card.select("time[datetime]")) == 2
     assert card.select_one("details summary")
+    context = card.select_one("dl[data-evidence-context]")
+    assert context is not None
+    context_text = context.get_text(" ", strip=True)
+    assert "Schema era Not reported" in context_text
+    assert "Comparison cohort Unknown" in context_text
+    assert "Entity granularity Unknown" in context_text
+    assert "Review state Not reported" in context_text
     link = card.select_one("a[href^='https://example.test/evidence']")
     assert link is not None
+    coverage_context = soup.select_one("td dl[data-evidence-context]")
+    assert coverage_context is not None
+    assert "Schema era Not reported" in coverage_context.get_text(
+        " ", strip=True
+    )
     assert soup.select_one("script[src='/static/atlas-autocomplete.js']")
     assert "<script>" not in response.text
 

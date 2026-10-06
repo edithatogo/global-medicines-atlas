@@ -202,6 +202,18 @@
     hit a native segmentation fault, while standalone mutation (2,250 cases),
     Gremlins (320 tests), regeneration (both 184-test orders), profiling, and
     security lanes passed. Linux hosted mutation remains authoritative.
+  - [x] Render bound evidence context in Atlas comparison cards and coverage
+    rows. A red accessibility test confirmed those fields were absent from the
+    rendered result. The UI now shows schema era, comparison cohort, entity
+    granularity, and review state; missing values are explicitly “Not
+    reported” or “Unknown.” Focused accessibility/browser tests passed (5),
+    and the governed E2E lane passed (27). The full profile passed with 5,904
+    tests, one optional PyIceberg skip, and 96.82% coverage; mutation examined
+    2,250 cases (1,879 killed, 364 survived, five suspicious, two unmutated),
+    Gremlins passed 322 tests (892 zapped, 100 survived, no errors), both
+    randomized orders passed 184 tests, and profiling/security passed. This
+    displays the current context contract but does not populate missing source
+    metadata or close the broader checkpoint.
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
