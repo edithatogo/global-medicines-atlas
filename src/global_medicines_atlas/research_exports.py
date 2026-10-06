@@ -136,11 +136,12 @@ def build_query_snapshot_manifest(
     """
     if not sources:
         raise ValueError("A query snapshot requires at least one source")
+    normalized_query = json.loads(_canonical_bytes(query))
     normalized_rows = sorted(_canonical_bytes(row) for row in result_rows)
     result_payload = b"[" + b",".join(normalized_rows) + b"]"
     return QuerySnapshotManifest(
-        query=dict(query),
-        query_sha256=_digest(query),
+        query=normalized_query,
+        query_sha256=_digest(normalized_query),
         result_sha256=hashlib.sha256(result_payload).hexdigest(),
         result_row_count=len(result_rows),
         sources=tuple(

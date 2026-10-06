@@ -1,3 +1,5 @@
+import hashlib
+import json
 from datetime import UTC, datetime
 
 import pytest
@@ -74,6 +76,36 @@ def test_manifest_order_is_stable_when_source_and_citation_keys_tie() -> None:
     )
     assert canonical_manifest_bytes(first) == canonical_manifest_bytes(second)
     assert manifest_sha256(first) == manifest_sha256(second)
+
+
+@pytest.mark.edge
+def test_manifest_query_is_detached_from_mutable_input() -> None:
+    query = {"filters": {"jurisdiction": "AU"}}
+    manifest = build_query_snapshot_manifest(
+        query=query,
+        result_rows=[],
+        sources=[_source()],
+        generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+        generator_commit="abc1234",
+    )
+    original_bytes = canonical_manifest_bytes(manifest)
+
+    query["filters"]["jurisdiction"] = "NZ"
+
+    assert canonical_manifest_bytes(manifest) == original_bytes
+    assert (
+        manifest.query_sha256
+        == hashlib.sha256(
+            json.dumps(
+                manifest.query,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+                allow_nan=False,
+            ).encode("utf-8")
+            + b"\n"
+        ).hexdigest()
+    )
 
 
 @pytest.mark.edge
