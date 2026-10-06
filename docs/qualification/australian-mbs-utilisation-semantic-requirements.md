@@ -85,18 +85,24 @@ policy or a claim that semantic tests have passed.
 
 ## Next bounded implementation
 
-The exact-reference hosted header inventory for the four standalone CSV
-objects is complete. Next, add a bounded source-value observer for only those
-four pinned objects. Recheck immutable byte identity and the reviewed headers;
-count records, row-width outcomes, missing cells, and exact-decimal parse
-outcomes while preserving signed service values as observations. Keep category
-and identifier values inside the worker. Public receipts may contain reviewed
-headers and aggregate counts only; they must not contain row values, select
-semantic mappings, publish Silver, or grant processing admission. Reuse the
-existing protected environment, acquisition concurrency and independent
-receipt-before-cleanup discipline. No source identities, revisions, or objects
-may be added to the reviewed cohort.
+The exact-reference hosted header inventory and aggregate value-shape observer
+for the four existing standalone CSV objects are complete. The observer counted
+1,463,030 records; all were rectangular and no cells were empty. It found 4,728
+`Services` tokens in the Q2 demographics CSV outside the strict decimal profile.
+Those tokens were counted but not retained, displayed, or classified. The
+qualification and five durable receipts bind these findings to the exact
+source digests and main commit.
 
-This diagnostic step remains separate from semantic qualification and
-admission. No ZIP or workbook is selected; both oversized ZIP holds remain
-unchanged.
+Next, add a bounded observer extension that assigns only privacy-safe lexical
+categories to those invalid `Services` tokens (for example, whitespace,
+separator, exponent-like, alphabetic, or other punctuation counts). It must
+return aggregate category counts only, keep the current four-object cohort,
+strictly reverify digest identity, preserve signed values, and leave invalid
+values unresolved. Synthetic fixtures must demonstrate disjoint exhaustive
+category counts and prove token strings never enter receipts or logs. Keep
+semantic mapping, conversion, processing admission, Silver/Gold, and source
+coverage expansion out of that diagnostic step. No source identities,
+revisions, or objects may be added.
+
+This categorization remains separate from semantic qualification and admission.
+No ZIP or workbook is selected; both oversized ZIP holds remain unchanged.
