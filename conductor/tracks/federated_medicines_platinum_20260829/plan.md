@@ -327,10 +327,11 @@
   schema-era, cohort, and temporal identity fields in GMA consumer bindings;
   reject malformed source/verification sections with a bounded error. The
   intended-red regressions show these fields are currently dropped and malformed
-  JSON object sections can escape as `AttributeError`. Green: 12 focused tests,
-  Ruff, ty, routine, and full Test-Goblin passed with pinned uv 0.11.29 on
-  Darwin/Python 3.14.6. Synthetic v4 fixtures only; no source reads, acquisition,
-  admission, or publication. Hosted exact-head checks remain pending.
+  JSON object sections can escape as `AttributeError`. Green: 27 focused tests
+  with 100% statement and branch coverage, Ruff, ty, routine, and full
+  Test-Goblin passed with pinned uv 0.11.29 on Darwin/Python 3.14.6. Synthetic v4
+  fixtures only; no source reads, acquisition, admission, or publication.
+  Hosted exact-head checks remain pending.
 - [~] Verify archived donor READMEs and releases resolve to public successor
   data and documentation without redirecting to local files. Current anonymous
   readback confirms both README-to-`SUCCESSOR.md` links and GMA documentation

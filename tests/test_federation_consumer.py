@@ -131,6 +131,55 @@ def test_malformed_or_drifting_identity_fails_closed(
         )
 
 
+@pytest.mark.parametrize(
+    ("section", "field", "value", "message"),
+    [
+        ("document", "", [], "JSON object"),
+        ("document", "evidence_kind", "unknown", "evidence kind"),
+        ("location", "private", True, "public and non-gated"),
+        ("location", "gated", True, "public and non-gated"),
+        ("location", "path", "", "object path"),
+        ("location", "bytes", -1, "byte count"),
+        ("source", "source_id", "", "source identity"),
+        ("source", "acquisition_id", None, "source identity"),
+        ("source", "schema_era", " ", "source identity"),
+        ("source", "layer", [], "source layer"),
+        ("source", "bronze_stratum", [], "Bronze stratum"),
+        ("source", "representation", {}, "representation"),
+        ("source", "comparison_cohort", "other", "comparison cohort"),
+        ("source", "effective_date", 42, "effective date"),
+        ("source", "retrieved_at", "", "retrieval time"),
+    ],
+)
+def test_invalid_identity_fields_fail_closed(
+    section: str, field: str, value: object, message: str
+) -> None:
+    if section == "document":
+        if not field:
+            raw = json.dumps(value).encode()
+        else:
+            changed = json.loads(contract())
+            changed[field] = value
+            raw = json.dumps(changed).encode()
+    else:
+        changed = json.loads(contract())
+        changed[section][field] = value
+        if section == "location" and field in {"private", "gated"}:
+            changed["location"][field] = value
+        if section == "location" and field == "bytes":
+            changed["verification"][field] = value
+        if section == "location" and field == "path":
+            changed["verification"][field] = value
+        raw = json.dumps(changed).encode()
+
+    with pytest.raises(ValueError, match=message):
+        bind_consumer_contract(
+            raw,
+            consumer_repository="edithatogo/reimbursement-atlas",
+            consumer_commit="a" * 40,
+        )
+
+
 def test_duplicate_json_members_are_rejected() -> None:
     raw = contract()
     marker = b'"source":'
@@ -158,4 +207,32 @@ def test_successor_cannot_be_authority_or_self_link() -> None:
             consumer_repository="edithatogo/reimbursement-atlas",
             consumer_commit="a" * 40,
             successor=bad_authority,
+        )
+
+    bad_self_link = SuccessorLink(
+        legacy_repository="edithatogo/reimbursement-atlas",
+        successor_repository="edithatogo/reimbursement-atlas",
+        successor_commit="b" * 40,
+        notice_digest="f" * 64,
+    )
+    with pytest.raises(ValueError, match="must change repository"):
+        bind_consumer_contract(
+            contract(),
+            consumer_repository="edithatogo/reimbursement-atlas",
+            consumer_commit="a" * 40,
+            successor=bad_self_link,
+        )
+
+    bad_digest = SuccessorLink(
+        legacy_repository=link().legacy_repository,
+        successor_repository=link().successor_repository,
+        successor_commit="b" * 40,
+        notice_digest="invalid",
+    )
+    with pytest.raises(ValueError, match="successor notice digest"):
+        bind_consumer_contract(
+            contract(),
+            consumer_repository="edithatogo/reimbursement-atlas",
+            consumer_commit="a" * 40,
+            successor=bad_digest,
         )
