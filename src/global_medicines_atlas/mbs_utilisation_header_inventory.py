@@ -5,6 +5,8 @@ from __future__ import annotations
 import csv
 import hashlib
 import json
+import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
@@ -191,6 +193,17 @@ def public_header_result(
         else None,
         "schema_matches": list(inventory.schema_matches),
     }
+
+
+def workflow_run_url(run_id: str | None = None) -> str:
+    """Return a validated GitHub Actions run URL for durable receipts."""
+    value = os.environ.get("GITHUB_RUN_ID") if run_id is None else run_id
+    if value is None or not re.fullmatch(r"[0-9]+", value):
+        raise ValueError("workflow run identity is missing or invalid")
+    return (
+        "https://github.com/edithatogo/global-medicines-atlas/actions/runs/"
+        f"{value}"
+    )
 
 
 def _read_bound_json(

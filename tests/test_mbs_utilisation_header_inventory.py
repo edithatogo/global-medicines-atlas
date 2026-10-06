@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
 
@@ -12,6 +13,7 @@ from global_medicines_atlas.mbs_utilisation_header_inventory import (
     inventory_csv_header,
     load_header_inventory_contract,
     public_header_result,
+    workflow_run_url,
 )
 
 
@@ -221,7 +223,7 @@ def test_bound_json_failures_are_closed(
     if contents is not None:
         path.write_bytes(contents)
     with pytest.raises((ValueError, TypeError), match=message):
-        module._read_bound_json(
+        cast("Any", module)._read_bound_json(
             tmp_path, Path("contract.json"), expected_digest, "fixture"
         )
 
@@ -248,6 +250,32 @@ def test_workflow_is_main_only_bounded_and_uses_existing_serialized_gate() -> (
     assert "RECEIPT_URL_PATTERN.fullmatch" in runner
     assert '"processing_admitted": False' in runner
     assert '"semantic_validation": False' in runner
+
+
+@pytest.mark.parametrize(
+    ("run_id", "expected"),
+    [
+        (
+            "37407057486",
+            "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37407057486",
+        ),
+        (None, "error"),
+        ("", "error"),
+        ("12x", "error"),
+    ],
+)
+def test_receipt_run_url_requires_numeric_actions_identity(
+    monkeypatch: pytest.MonkeyPatch, run_id: str | None, expected: str
+) -> None:
+    if run_id is None:
+        monkeypatch.delenv("GITHUB_RUN_ID", raising=False)
+        with pytest.raises(ValueError, match="workflow run identity"):
+            workflow_run_url()
+    elif expected == "error":
+        with pytest.raises(ValueError, match="workflow run identity"):
+            workflow_run_url(run_id)
+    else:
+        assert workflow_run_url(run_id) == expected
 
 
 def inventory_csv_header_from_headers(

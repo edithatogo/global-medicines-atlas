@@ -29,6 +29,7 @@ from global_medicines_atlas.mbs_utilisation_header_inventory import (
     inventory_csv_header,
     load_header_inventory_contract,
     public_header_result,
+    workflow_run_url,
 )
 from global_medicines_atlas.mbs_utilisation_validation import (
     verify_staged_identity,
@@ -190,7 +191,7 @@ def main() -> None:  # ruff: ignore[too-many-locals] -- ordered per-object evide
             "status": outcome["status"],
             "recorded_at": datetime.now(UTC).isoformat(),
             "code_commit": args.exact_commit,
-            "workflow_run": f"https://github.com/edithatogo/global-medicines-atlas/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+            "workflow_run": workflow_run_url(),
             "acquisition_id": row["acquisition_id"],
             "raw_reference": reference,
             "catalogue_resource_id": row["resource_id"],
@@ -225,6 +226,7 @@ def main() -> None:  # ruff: ignore[too-many-locals] -- ordered per-object evide
         "status": "header_inventory_recorded",
         "code_commit": args.exact_commit,
         "recorded_at": datetime.now(UTC).isoformat(),
+        "workflow_run": workflow_run_url(),
         "records": observations,
         "candidate_source_count": len(selected),
         "source_inventory_expanded": False,
