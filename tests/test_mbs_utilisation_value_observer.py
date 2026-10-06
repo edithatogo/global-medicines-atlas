@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 from pathlib import Path
@@ -419,6 +420,7 @@ def test_hosted_runner_is_protected_bounded_and_metadata_only() -> None:
         root / ".github/workflows/australian-mbs-utilisation-value-observer.yml"
     ).read_text()
 
+    ast.parse(runner)
     assert "load_value_observer_cohort(ROOT)" in runner
     assert "verify_staged_identity(path, reference)" in runner
     assert "persist_receipt(document, receipts)" in runner
