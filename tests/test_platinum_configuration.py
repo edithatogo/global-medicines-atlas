@@ -6,6 +6,7 @@ from dataclasses import asdict
 
 import pytest
 from test_platinum_query import SCHEMA, binding, contract, parquet_payload
+from test_support.federation import admission_record
 from typer.testing import CliRunner
 
 from global_medicines_atlas import cli
@@ -27,13 +28,14 @@ def configuration(tmp_path):
         "contract_sha256": bound.contract_sha256,
     }).encode()
     trust = {
-        "version": "1.0",
+        "version": "1.1",
         "resources": [
             {
                 "resource_id": "au.mbs.items",
                 "semantic_dimension": "service_benefit",
                 "entity_granularity": "service_item",
                 "binding": asdict(bound),
+                "admission": admission_record(raw).model_dump(mode="json"),
                 "semantic_sha256": hashlib.sha256(semantic).hexdigest(),
                 "contract_path": "contract.json",
                 "semantic_path": "semantic.json",
@@ -185,7 +187,7 @@ def test_dataset_cli_handles_optional_runtime_imports(
 
 def test_empty_trust_is_not_an_admission_policy(tmp_path):
     trust = tmp_path / "trust.json"
-    trust.write_text(json.dumps({"version": "1.0", "resources": []}))
+    trust.write_text(json.dumps({"version": "1.1", "resources": []}))
     with pytest.raises(ValueError, match="resources"):
         load_benefits_resolver(
             trust_file=trust, metadata_root=tmp_path, schema_file=trust

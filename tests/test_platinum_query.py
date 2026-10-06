@@ -14,6 +14,7 @@ import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from test_support.federation import admission_record
 
 from global_medicines_atlas import platinum_query
 from global_medicines_atlas.federation_distribution import (
@@ -152,7 +153,7 @@ def resolver(
     return StorageNeutralResolver(
         schema=SCHEMA,
         resources=[resource],
-        admitted_contracts=frozenset({distribution.contract_sha256}),
+        admission_records=(admission_record(raw),),
         admitted_semantic_manifests=frozenset({
             hashlib.sha256(semantic).hexdigest()
         }),

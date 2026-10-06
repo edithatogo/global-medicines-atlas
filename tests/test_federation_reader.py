@@ -12,6 +12,7 @@ from typing import Any
 import httpx
 import pytest
 from jsonschema import FormatChecker
+from test_support.federation import admission_record
 
 from global_medicines_atlas import federation_reader as runtime
 from global_medicines_atlas.federation_reader import FederatedReader
@@ -59,9 +60,7 @@ class Hub:
 def reader(hub: Hub, *documents: bytes, **kwargs: Any) -> FederatedReader:
     return FederatedReader(
         schema=SCHEMA,
-        admitted_contracts=frozenset(
-            hashlib.sha256(item).hexdigest() for item in documents
-        ),
+        admission_records=tuple(admission_record(item) for item in documents),
         transport_factory=lambda: httpx.MockTransport(hub.handle),
         clock=lambda: NOW,
         **kwargs,
@@ -105,14 +104,14 @@ def test_unadmitted_or_invalid_contract_never_fetches() -> None:
         pytest.fail("unadmitted")
     invalid = document(location={"revision": "main"})
     with (
-        reader(hub, invalid) as client,
+        reader(hub) as client,
         pytest.raises(ValueError, match="contract"),
         client.open(invalid),
     ):
         pytest.fail("invalid")
     assert not hub.requests
     with pytest.raises(ValueError, match="schema"):
-        FederatedReader(schema=b"{}", admitted_contracts=frozenset())
+        FederatedReader(schema=b"{}", admission_records=())
 
 
 def test_duplicate_json_members_are_rejected_before_remote_fetch() -> None:
@@ -226,8 +225,11 @@ def test_invalid_reader_limits(options: dict[str, Any]) -> None:
 
 
 def test_admission_pin_and_document_bounds() -> None:
-    with pytest.raises(ValueError, match="digest"):
-        FederatedReader(schema=SCHEMA, admitted_contracts=frozenset({"bad"}))
+    with pytest.raises(ValueError, match="typed admission records"):
+        FederatedReader(
+            schema=SCHEMA,
+            admission_records=("bad",),  # type: ignore[arg-type]
+        )
     raw = document(authority={"schema_sha256": "b" * 64})
     with (
         reader(Hub(), raw) as client,
@@ -237,11 +239,30 @@ def test_admission_pin_and_document_bounds() -> None:
         pytest.fail("wrong schema era")
     oversized = b" " * (runtime.METADATA_BYTES + 1)
     with (
-        reader(Hub(), oversized) as client,
+        reader(Hub()) as client,
         pytest.raises(ValueError, match="metadata budget"),
         client.open(oversized),
     ):
         pytest.fail("oversized contract")
+
+
+def test_reader_binds_contract_identity_to_typed_admission_before_io() -> None:
+    raw = document()
+    hub = Hub()
+    admission = admission_record(raw).model_copy(
+        update={"path": "silver/substituted.parquet"}
+    )
+    with (
+        FederatedReader(
+            schema=SCHEMA,
+            admission_records=(admission,),
+            transport_factory=lambda: httpx.MockTransport(hub.handle),
+        ) as client,
+        pytest.raises(ValueError, match="differs from admission record"),
+        client.open(raw),
+    ):
+        pytest.fail("contract identity must be joined before remote reads")
+    assert not hub.requests
 
 
 def test_cache_lru_identity_and_open_result_bounds() -> None:
@@ -303,7 +324,7 @@ def test_redirect_destination_rejected_before_contact(url: str) -> None:
     with (
         FederatedReader(
             schema=SCHEMA,
-            admitted_contracts=frozenset({hashlib.sha256(raw).hexdigest()}),
+            admission_records=(admission_record(raw),),
             transport_factory=lambda: httpx.MockTransport(handle),
         ) as client,
         pytest.raises(ValueError, match="destination"),
@@ -347,7 +368,7 @@ def test_allowed_redirect_never_replays_cookies_or_environment_credentials(
     with (
         FederatedReader(
             schema=SCHEMA,
-            admitted_contracts=frozenset({hashlib.sha256(raw).hexdigest()}),
+            admission_records=(admission_record(raw),),
             transport_factory=lambda: httpx.MockTransport(handle),
             clock=lambda: NOW,
         ) as client,
@@ -372,7 +393,7 @@ def test_delivery_host_reaches_dns_bound_transport_policy(
     with (
         FederatedReader(
             schema=SCHEMA,
-            admitted_contracts=frozenset({hashlib.sha256(raw).hexdigest()}),
+            admission_records=(admission_record(raw),),
             clock=lambda: NOW,
         ) as client,
         client.open(raw) as result,
@@ -403,7 +424,7 @@ def test_http_failures_are_bounded_and_redacted(mode: str) -> None:
     with (
         FederatedReader(
             schema=SCHEMA,
-            admitted_contracts=frozenset({hashlib.sha256(raw).hexdigest()}),
+            admission_records=(admission_record(raw),),
             transport_factory=lambda: httpx.MockTransport(handle),
         ) as client,
         pytest.raises(ValueError, match="HTTP") as error,
@@ -451,7 +472,7 @@ def test_expired_cache_and_corruption_do_not_escape() -> None:
         client._cache[key].stream.seek(0)
         client._cache[key].stream.write(b"broken")
         with (
-            pytest.raises(ValueError, match="digest"),
+            pytest.raises(ValueError, match="digest mismatch"),
             client.open(raw, offline=True),
         ):
             pytest.fail("corrupt cache")
@@ -465,7 +486,7 @@ def test_malformed_hub_metadata_is_not_public_evidence() -> None:
     with (
         FederatedReader(
             schema=SCHEMA,
-            admitted_contracts=frozenset({hashlib.sha256(raw).hexdigest()}),
+            admission_records=(admission_record(raw),),
             transport_factory=lambda: httpx.MockTransport(handle),
         ) as client,
         pytest.raises(TypeError, match="metadata"),

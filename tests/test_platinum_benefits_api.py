@@ -11,6 +11,7 @@ import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
 from test_platinum_query import NOW, SCHEMA, binding, contract, parquet_payload
+from test_support.federation import admission_record
 
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.platinum_benefits import (
@@ -64,7 +65,7 @@ def service(
     backend = StorageNeutralResolver(
         schema=SCHEMA,
         resources=[resource],
-        admitted_contracts=frozenset({distribution.contract_sha256}),
+        admission_records=(admission_record(encoded),),
         admitted_semantic_manifests=frozenset({
             hashlib.sha256(semantic).hexdigest()
         }),
