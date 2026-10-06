@@ -252,3 +252,35 @@ def test_v2_assertion_rows_cannot_pair_absence_states_with_status_codes(
             ),
             valid_time=AsOfClocks(valid_at=clock, observed_at=clock),
         )
+
+
+def test_v2_assertion_row_allows_status_when_evidence_state_is_confirmed() -> (
+    None
+):
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    value = V2EvidenceItem(
+        assertion_id="assertion:approved",
+        concept_id="mbs:23",
+        jurisdiction="AU",
+        dimension=V2EvidenceDimension.SERVICE_BENEFIT,
+        state=ProductState.CONFIRMED,
+        status_code="active",
+        terminology=Terminology(
+            native_code="23",
+            native_label="General practitioner attendance",
+            native_system="MBS",
+        ),
+        provenance=ProvenanceLink(
+            source_id="fixture",
+            source_uri="https://example.invalid/source",
+            retrieved_at=clock,
+        ),
+        uncertainty=Uncertainty(
+            level=UncertaintyLevel.LOW,
+            confidence=0.98,
+        ),
+        valid_time=AsOfClocks(valid_at=clock, observed_at=clock),
+    )
+
+    assert value.state is ProductState.CONFIRMED
+    assert value.status_code == "active"

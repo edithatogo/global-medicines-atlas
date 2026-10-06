@@ -309,6 +309,27 @@ def test_assertion_rows_cannot_pair_absence_states_with_status_codes(
         )
 
 
+def test_assertion_row_allows_status_when_evidence_state_is_confirmed() -> None:
+    value = EvidenceItem(
+        assertion_id="assertion:approved",
+        concept_id="medicine:123",
+        jurisdiction="NZ",
+        dimension=EvidenceDimension.REGULATORY,
+        state=ProductState.CONFIRMED,
+        status_code="approved",
+        terminology=terminology(),
+        provenance=provenance(),
+        uncertainty=Uncertainty(
+            level=UncertaintyLevel.LOW,
+            confidence=0.98,
+        ),
+        valid_time=clocks(),
+    )
+
+    assert value.state is ProductState.CONFIRMED
+    assert value.status_code == "approved"
+
+
 def test_unknown_can_report_explicit_evidence_unavailability() -> None:
     value = conclusion(
         state=ProductState.UNKNOWN,
