@@ -8,9 +8,13 @@ governed data-plane locations and are never copied into the package.
 from __future__ import annotations
 
 import hashlib
+import json
 from dataclasses import dataclass
 from io import BytesIO
-from zipfile import ZIP_STORED, ZipFile, ZipInfo
+from typing import Any, cast
+from zipfile import ZIP_STORED, BadZipFile, ZipFile, ZipInfo
+
+from pydantic import ValidationError
 
 from .research_exports import (
     QuerySnapshotManifest,
@@ -18,7 +22,23 @@ from .research_exports import (
     manifest_sha256,
 )
 from .research_lineage import ResearchLineageReceipt
-from .research_package import ResearchCrate
+from .research_package import (
+    CrateDistribution,
+    ResearchCrate,
+    build_research_crate,
+)
+from .strict_json import unique_json_object
+
+_PACKAGE_DOCUMENTS = (
+    "croissant.json",
+    "lineage.json",
+    "manifest.json",
+    "ro-crate-metadata.json",
+)
+_MAX_PACKAGE_BYTES = 8 * 1024 * 1024
+_MAX_DOCUMENT_BYTES = 2 * 1024 * 1024
+_MAX_PACKAGE_DATE = (1980, 1, 1, 0, 0, 0)
+_MIN_CRATE_GRAPH_ITEMS = 2
 
 
 @dataclass(frozen=True)
@@ -88,3 +108,146 @@ def build_research_export_package(
         ("ro-crate-metadata.json", crate.canonical_jsonld_bytes()),
     )
     return ResearchExportPackage(documents=documents)
+
+
+def verify_research_export_package(
+    archive_bytes: bytes,
+) -> ResearchExportPackage:
+    """Rebuild and verify an export package from its saved archive alone.
+
+    No network access or source/result payloads are needed. All ZIP members,
+    JSON documents, bound digests, and canonical archive bytes are checked.
+    """
+    if not archive_bytes or len(archive_bytes) > _MAX_PACKAGE_BYTES:
+        raise ValueError("research export package exceeds its byte budget")
+
+    try:
+        documents = _read_package_documents(archive_bytes)
+    except BadZipFile, OSError, RuntimeError, EOFError:
+        raise ValueError("invalid research export package archive") from None
+
+    try:
+        manifest, crate, lineage = _parse_package_metadata(documents)
+    except KeyError, TypeError, ValidationError:
+        raise ValueError(
+            "research export package metadata is invalid"
+        ) from None
+
+    rebuilt = build_research_export_package(
+        manifest=manifest,
+        crate=crate,
+        lineage=lineage,
+    )
+    if rebuilt.archive_bytes() != archive_bytes:
+        raise ValueError("research export package is not canonical")
+    return rebuilt
+
+
+def _read_package_documents(archive_bytes: bytes) -> dict[str, bytes]:
+    with ZipFile(BytesIO(archive_bytes), mode="r") as archive:
+        members = archive.infolist()
+        names = tuple(member.filename for member in members)
+        if names != _PACKAGE_DOCUMENTS:
+            raise ValueError("research export package member set is invalid")
+        if archive.comment:
+            raise ValueError("research export package comment is invalid")
+        if any(_invalid_member_metadata(member) for member in members):
+            raise ValueError(
+                "research export package member metadata is invalid"
+            )
+        if archive.testzip() is not None:
+            raise ValueError("research export package CRC is invalid")
+        return {member.filename: archive.read(member) for member in members}
+
+
+def _invalid_member_metadata(member: ZipInfo) -> bool:
+    return any((
+        member.is_dir(),
+        member.file_size > _MAX_DOCUMENT_BYTES,
+        member.compress_type != ZIP_STORED,
+        member.file_size != member.compress_size,
+        member.date_time != _MAX_PACKAGE_DATE,
+        bool(member.flag_bits & 1),
+    ))
+
+
+def _parse_package_metadata(
+    documents: dict[str, bytes],
+) -> tuple[QuerySnapshotManifest, ResearchCrate, ResearchLineageReceipt]:
+    manifest_document = _json_document(documents["manifest.json"])
+    manifest = QuerySnapshotManifest.model_validate(manifest_document)
+    crate_document = _json_document(documents["ro-crate-metadata.json"])
+    crate = _crate_from_jsonld(crate_document, manifest)
+    lineage_document = _json_document(documents["lineage.json"])
+    lineage = ResearchLineageReceipt.model_validate(lineage_document)
+    return manifest, crate, lineage
+
+
+def _json_document(raw: bytes) -> dict[str, Any]:
+    try:
+        value = json.loads(raw, object_pairs_hook=unique_json_object)
+    except json.JSONDecodeError, UnicodeDecodeError, ValueError:
+        raise ValueError("research export package JSON is invalid") from None
+    if not isinstance(value, dict):
+        raise TypeError("research export package JSON must be an object")
+    return cast("dict[str, Any]", value)
+
+
+def _crate_from_jsonld(
+    document: dict[str, Any], manifest: QuerySnapshotManifest
+) -> ResearchCrate:
+    """Recover the typed crate model from its canonical RO-Crate document."""
+    raw_graph = document.get("@graph")
+    if document.get("@context") != "https://w3id.org/ro/crate/1.1/context":
+        raise ValueError("research export RO-Crate graph is invalid")
+    if not isinstance(raw_graph, list):
+        raise TypeError("research export RO-Crate graph must be a list")
+    graph = cast("list[Any]", raw_graph)
+    if len(graph) < _MIN_CRATE_GRAPH_ITEMS:
+        raise ValueError("research export RO-Crate graph is invalid")
+    if not all(isinstance(item, dict) for item in graph):
+        raise ValueError("research export RO-Crate graph is invalid")
+    graph = cast("list[dict[str, Any]]", graph)
+    dataset = graph[0]
+    if dataset.get("@id") != "./" or dataset.get("@type") != "Dataset":
+        raise ValueError("research export RO-Crate dataset is invalid")
+    rows = graph[1:]
+    identifiers = [_required_string(row, "@id") for row in rows]
+    raw_distribution_ids = dataset.get("distribution")
+    if not isinstance(raw_distribution_ids, list):
+        raise TypeError("research export RO-Crate distributions must be a list")
+    distribution_ids = cast("list[Any]", raw_distribution_ids)
+    if not all(isinstance(item, str) for item in distribution_ids):
+        raise ValueError("research export RO-Crate distributions are invalid")
+    distribution_ids = cast("list[str]", distribution_ids)
+    if identifiers != distribution_ids or len(identifiers) != len(
+        set(identifiers)
+    ):
+        raise ValueError("research export RO-Crate distributions are invalid")
+    distributions = tuple(
+        CrateDistribution(
+            identifier=_required_string(row, "@id"),
+            name=_required_string(row, "name"),
+            content_url=_required_string(row, "contentUrl"),
+            media_type=_required_string(row, "encodingFormat"),
+            sha256=_required_string(row, "sha256"),
+        )
+        for row in rows
+        if row.get("@type") == "https://schema.org/DataDownload"
+    )
+    if len(distributions) != len(rows):
+        raise ValueError("research export RO-Crate distribution is invalid")
+    return build_research_crate(
+        identifier=manifest_sha256(manifest),
+        name=_required_string(dataset, "name"),
+        version=_required_string(dataset, "version"),
+        dataset_url=_required_string(dataset, "url"),
+        distributions=distributions,
+    )
+
+
+def _required_string(document: dict[str, Any], key: str) -> str:
+    value = document.get(key)
+    if not isinstance(value, str):
+        raise TypeError(f"research export RO-Crate {key} must be text")
+    return value

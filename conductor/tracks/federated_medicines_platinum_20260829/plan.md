@@ -265,11 +265,21 @@
   manifest, RO-Crate, Croissant, and lineage contracts.
   - [x] Compose and validate manifest, RO-Crate, Croissant, and lineage
     metadata into a deterministic offline package with no embedded rows.
+  - [x] Verify a saved package in a clean-room reader using only its archive;
+    reject duplicate JSON members and unexpected ZIP members. Focused tests,
+    malformed ZIP/JSON/RO-Crate negative controls, 100% statement and branch
+    coverage, 32 targeted end-to-end and regression tests, format/lint, `ty`,
+    BasedPyright, routine harness, context, and ecosystem validation passed
+    on 2026-10-06.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
 - [ ] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
   coverage, security, provenance, rights, regeneration, and full Test-Goblin
   lanes where supported.
+  - [~] Full Test-Goblin on 2026-10-06: 5,869 passed, 4 failed, 1 skipped,
+    96.73% coverage. Two Stable v1 clean-clone tests require unavailable local
+    `uv 0.11.29`; two product qualification tests passed when rerun in an
+    isolated Python 3.14 environment. The full qualification lane remains open.
 - [ ] Run Conductor review, repair findings, open scoped pull requests, wait for
   hosted checks, merge, and reconcile evidence; stop at public release and
   consequential-interpretation gates.
