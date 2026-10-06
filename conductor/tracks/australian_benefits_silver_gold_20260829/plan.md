@@ -1940,10 +1940,23 @@
   structurally verified standalone CSVs. Bind exact source identities and
   record header metadata only before selecting any semantic conversion.
   Exact-main run `37410581626` inventoried four existing public CSVs. All four
-  anonymous digests matched; each had eight headers, matched its existing
-  catalogue schema, and had zero unexpected fields. Durable per-object and
-  summary receipts were independently read back from issue #340; hosted
-  temporary caches were removed after receipts were recorded. No source was
+  anonymous digests matched; each had eight headers, matched a reviewed
+  catalogue schema candidate, and had zero unexpected fields. The Q1 and Q2
+  demographics headers match the Q3 schema candidate rather than their own
+  resource's schema; this establishes header shape only, not semantic mapping.
+  Durable per-object and summary receipts were independently read back from
+  issue #340; hosted temporary caches were removed after receipts were
+  recorded. No source was
   added, and no semantic validation, admission, or licensing conclusion
   changed. See
-  `quality/qualifications/australian-mbs-utilisation-header-inventory-20261006.json`.
+  `quality/qualifications/australian-mbs-utilisation-header-inventory-20261006.json`
+  and the cross-resource schema reconciliation in
+  `quality/qualifications/australian-mbs-utilisation-header-schema-reconciliation-20261006.json`.
+
+- [~] Implement bounded, source-value diagnostics for only these four
+  exact-reference standalone CSVs. Synthetic tests must cover strict UTF-8/BOM
+  handling, rectangular rows, exact decimal observation (including signed
+  service totals), missing-cell counts, and digest-bound results. Hosted output
+  may expose aggregate counts and reviewed headers only; it must not expose row
+  values, select semantic mappings, publish Silver, or grant processing
+  admission. No new source identities, revisions, or objects enter this task.

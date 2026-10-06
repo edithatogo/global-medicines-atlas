@@ -1,0 +1,59 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-header-schema-reconciliation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-06T03:47:21Z",
+  "code_commit": "a7f03c187df671d273559a997f899181eefde8be",
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37410581626",
+  "header_inventory_qualification": "quality/qualifications/australian-mbs-utilisation-header-inventory-20261006.json",
+  "header_inventory_qualification_sha256": "7760909d98d4d9723c0f02de72269c9e88296a80e641e3af5eec5766737b5fbf",
+  "records": [
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "catalogue_resource_id": "ff6d0692-4c6f-466b-9d93-015224d80b14",
+      "candidate_schema_resource_ids": ["492b39de-8c97-4bbf-880e-e97d933daa9c", "c3e6f879-be6c-41b9-9cf1-c74feb928b83", "ff6d0692-4c6f-466b-9d93-015224d80b14"],
+      "observed_schema_matches": ["492b39de-8c97-4bbf-880e-e97d933daa9c"],
+      "header_sha256": "9e4897707061a970f6f3e1035c498d759da1cb1c5491a3de7dc449a974b3ca1f",
+      "column_count": 8,
+      "unexpected_field_count": 0,
+      "matched_own_catalogue_schema": false,
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6008922654"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "catalogue_resource_id": "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+      "candidate_schema_resource_ids": ["492b39de-8c97-4bbf-880e-e97d933daa9c", "c3e6f879-be6c-41b9-9cf1-c74feb928b83", "ff6d0692-4c6f-466b-9d93-015224d80b14"],
+      "observed_schema_matches": ["492b39de-8c97-4bbf-880e-e97d933daa9c"],
+      "header_sha256": "9e4897707061a970f6f3e1035c498d759da1cb1c5491a3de7dc449a974b3ca1f",
+      "column_count": 8,
+      "unexpected_field_count": 0,
+      "matched_own_catalogue_schema": false,
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6008923489"
+    },
+    {
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "catalogue_resource_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "candidate_schema_resource_ids": ["492b39de-8c97-4bbf-880e-e97d933daa9c", "c3e6f879-be6c-41b9-9cf1-c74feb928b83", "ff6d0692-4c6f-466b-9d93-015224d80b14"],
+      "observed_schema_matches": ["492b39de-8c97-4bbf-880e-e97d933daa9c"],
+      "header_sha256": "9e4897707061a970f6f3e1035c498d759da1cb1c5491a3de7dc449a974b3ca1f",
+      "column_count": 8,
+      "unexpected_field_count": 0,
+      "matched_own_catalogue_schema": true,
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6008924160"
+    },
+    {
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "catalogue_resource_id": "663a7fac-114c-47b5-9017-a9dbb9073260",
+      "candidate_schema_resource_ids": ["663a7fac-114c-47b5-9017-a9dbb9073260"],
+      "observed_schema_matches": ["663a7fac-114c-47b5-9017-a9dbb9073260"],
+      "header_sha256": "4c0eb116a9c8571a3c0c9df5507141fefefa6444e88fbe8838714cc1dfa29a19",
+      "column_count": 8,
+      "unexpected_field_count": 0,
+      "matched_own_catalogue_schema": true,
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6008925009"
+    }
+  ],
+  "candidate_source_count": 4,
+  "source_inventory_expanded": false,
+  "semantic_equivalence_inferred": false,
+  "processing_admitted": false
+}
