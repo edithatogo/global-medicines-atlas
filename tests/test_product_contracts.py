@@ -20,6 +20,7 @@ from global_medicines_atlas.product_contracts import (
     ErrorEnvelope,
     EvidenceAvailability,
     EvidenceDimension,
+    EvidenceItem,
     EvidenceQuery,
     ExportFormat,
     ExportRequest,
@@ -281,6 +282,30 @@ def test_absence_states_cannot_imply_a_negative_status(
             provenance=(),
             evidence_availability=EvidenceAvailability.UNAVAILABLE,
             evidence_unavailable_reason="No source coverage",
+        )
+
+
+@pytest.mark.parametrize(
+    "state", [ProductState.UNKNOWN, ProductState.NOT_COVERED]
+)
+def test_assertion_rows_cannot_pair_absence_states_with_status_codes(
+    state: ProductState,
+) -> None:
+    with pytest.raises(ValidationError, match="cannot imply a status"):
+        EvidenceItem(
+            assertion_id="assertion:1",
+            concept_id="medicine:123",
+            jurisdiction="NZ",
+            dimension=EvidenceDimension.REGULATORY,
+            state=state,
+            status_code="not_approved",
+            terminology=terminology(),
+            provenance=provenance(),
+            uncertainty=Uncertainty(
+                level=UncertaintyLevel.UNKNOWN,
+                reason="No state could be established.",
+            ),
+            valid_time=clocks(),
         )
 
 

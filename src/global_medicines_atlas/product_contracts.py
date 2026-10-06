@@ -515,6 +515,17 @@ class EvidenceItem(ProductModel):
     uncertainty: Uncertainty
     valid_time: AsOfClocks
 
+    @model_validator(mode="after")
+    def absence_states_cannot_imply_status(self) -> Self:
+        if (
+            self.state in {ProductState.UNKNOWN, ProductState.NOT_COVERED}
+            and self.status_code
+        ):
+            raise ValueError(
+                "unknown and not-covered evidence cannot imply a status",
+            )
+        return self
+
 
 class PageMetadata(ProductModel):
     limit: int = Field(ge=1, le=MAX_PAGE_SIZE)
