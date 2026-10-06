@@ -183,7 +183,7 @@
   passed when rerun after correction with pinned uv 0.11.29. Routine, context,
   ecosystem, typing, format, and diff checks pass; hosted qualification remains
   pending.
-- [ ] Phase Verification & Checkpoint: all result types expose mandatory evidence
+- [x] Phase Verification & Checkpoint: all result types expose mandatory evidence
   and legacy/current metadata and reject semantic overclaim.
   - [x] Reject v1/v2 assertion rows that combine `unknown` or `not_covered`
     states with a source status code; conclusion models already enforced the
@@ -244,6 +244,22 @@
     subtask only. The broader all-result-types checkpoint, production source
     qualification, source coverage, representative-user acceptance, WCAG
     conformance, and release gates remain open.
+  - [x] Add one regression matrix across evidence and non-evidence product
+    outputs. Assertion and coverage rows require explicit evidence context and
+    valid-time clocks; v1/v2 response envelopes preserve version, paging, and
+    comparison-validity metadata; identity and benefits results preserve exact
+    admitted-object lineage and explicit not-declared states; historical pages
+    preserve per-snapshot source revision, paths, digests, era, cohort, and
+    observed time; Gold edges remain a schema-versioned synthetic structural
+    projection; discovery explicitly denies equivalence; health/errors remain
+    operational envelopes without product conclusions. Existing fail-closed
+    validator tests cover unsupported status, missing evidence, pagination,
+    incomplete history, and edge qualification. The new cross-surface guard
+    runs in Test-Goblin and the dependency-upgrade contract lane. The affected
+    suite passed 201 tests, and routine checks passed. This closes the bounded
+    result-contract checkpoint only; it does not establish populated source
+    context, source coverage, production qualification, representative-user
+    acceptance, WCAG conformance, or release readiness.
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
