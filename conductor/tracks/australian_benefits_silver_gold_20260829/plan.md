@@ -2008,3 +2008,17 @@
   numeric, suppression, and identifier rule explicitly. No source bytes or
   rows were read. See
   `quality/qualifications/australian-mbs-utilisation-candidate-row-mappings-20261006.json`.
+
+- [x] Extend the protected four-CSV observer contract with aggregate-only
+  non-measure token-shape counts and candidate-grain duplicate-record counts.
+  Candidate keys are held only as bounded in-memory digests; processing fails
+  closed after one million unique keys. No raw token or key is emitted, and
+  the proposed grain remains explicitly unverified. Synthetic observer tests
+  pass with 100% statement and branch coverage. Exact-main execution is still
+  pending; no source bytes were read locally.
+
+- [~] Run the candidate-shape observer on exact main for the same four pinned
+  CSV references. Independently verify the per-object and summary receipts,
+  confirm the new aggregate fields contain no tokens, and remove staged bytes
+  only after digest-bound receipts. This does not validate source semantics or
+  grant admission.

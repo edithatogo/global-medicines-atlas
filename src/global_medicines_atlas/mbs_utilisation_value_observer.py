@@ -49,6 +49,7 @@ MAX_CSV_ROWS = 10_000_000
 MAX_CSV_COLUMNS = 10_000
 MAX_CSV_FIELD_BYTES = 1024 * 1024
 MAX_NUMERIC_TOKEN_CHARS = 256
+MAX_CANDIDATE_KEYS = 1_000_000
 INVALID_TOKEN_CATEGORIES = (
     "overlength",
     "whitespace",
@@ -58,6 +59,14 @@ INVALID_TOKEN_CATEGORIES = (
     "other_separator",
     "alphabetic",
     "other_non_decimal",
+)
+TOKEN_SHAPE_CATEGORIES: tuple[str, ...] = (
+    "empty",
+    "ascii_digits",
+    "ascii_letters",
+    "ascii_alphanumeric",
+    "whitespace",
+    "other_nonempty",
 )
 EXPECTED_CSV_SOURCE_COUNT = 4
 _DECIMAL_TOKEN = re.compile(r"[+-]?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)\Z")
@@ -98,6 +107,9 @@ class CsvValueObservation:
     rectangular_record_count: int
     row_width_error_count: int
     empty_cell_counts: dict[str, int]
+    token_shapes: dict[str, dict[str, int]]
+    candidate_key_headers: tuple[str, ...]
+    candidate_key_duplicate_records: int
     services: NumericObservation
     benefit: NumericObservation
 
@@ -114,6 +126,12 @@ class CsvValueObservation:
             "rectangular_record_count": self.rectangular_record_count,
             "row_width_error_count": self.row_width_error_count,
             "empty_cell_counts": self.empty_cell_counts,
+            "non_measure_token_shape_counts": self.token_shapes,
+            "candidate_grain_diagnostic": {
+                "key_headers": list(self.candidate_key_headers),
+                "duplicate_records": self.candidate_key_duplicate_records,
+                "grain_verified": False,
+            },
             "numeric_observations": {
                 SERVICES_HEADER: self.services.to_public_summary(),
                 BENEFIT_HEADER: self.benefit.to_public_summary(),
@@ -272,6 +290,21 @@ def observe_utilisation_csv_values(
         raise ValueError("CSV byte limit exceeded")
 
     empty_cells = dict.fromkeys(expected_headers, 0)
+    token_shapes = {
+        header: dict.fromkeys(TOKEN_SHAPE_CATEGORIES, 0)
+        for header in expected_headers
+        if header not in {SERVICES_HEADER, BENEFIT_HEADER}
+    }
+    candidate_key_headers = tuple(
+        header
+        for header in expected_headers
+        if header not in {SERVICES_HEADER, BENEFIT_HEADER}
+    )
+    candidate_key_indices = tuple(
+        expected_headers.index(header) for header in candidate_key_headers
+    )
+    candidate_keys: set[bytes] = set()
+    candidate_key_duplicate_records = 0
     services = _NumericCounters()
     benefit = _NumericCounters()
     old_limit = csv.field_size_limit()
@@ -280,7 +313,17 @@ def observe_utilisation_csv_values(
         with path.open(encoding="utf-8-sig", newline="") as source:
             reader = csv.reader(source, strict=True)
             record_count, rectangular_count = _observe_rows(
-                reader, expected_headers, empty_cells, services, benefit
+                reader,
+                expected_headers,
+                empty_cells,
+                token_shapes,
+                candidate_key_indices,
+                candidate_keys,
+                services,
+                benefit,
+            )
+            candidate_key_duplicate_records = rectangular_count - len(
+                candidate_keys
             )
     except (UnicodeDecodeError, csv.Error) as error:
         raise ValueError("CSV cannot be decoded or parsed") from error
@@ -297,6 +340,9 @@ def observe_utilisation_csv_values(
         rectangular_record_count=rectangular_count,
         row_width_error_count=record_count - rectangular_count,
         empty_cell_counts=empty_cells,
+        token_shapes=token_shapes,
+        candidate_key_headers=candidate_key_headers,
+        candidate_key_duplicate_records=candidate_key_duplicate_records,
         services=services.freeze(),
         benefit=benefit.freeze(),
     )
@@ -306,6 +352,9 @@ def _observe_rows(
     reader: Iterator[list[str]],
     expected_headers: tuple[str, ...],
     empty_cells: dict[str, int],
+    token_shapes: dict[str, dict[str, int]],
+    candidate_key_indices: tuple[int, ...],
+    candidate_keys: set[bytes],
     services: _NumericCounters,
     benefit: _NumericCounters,
 ) -> tuple[int, int]:
@@ -324,14 +373,43 @@ def _observe_rows(
         if record_count > MAX_CSV_ROWS:
             raise ValueError("CSV row limit exceeded")
         for index, header in enumerate(expected_headers):
-            if index < len(row) and not row[index]:
-                empty_cells[header] += 1
+            if index < len(row):
+                token = row[index]
+                if not token:
+                    empty_cells[header] += 1
+                if header in token_shapes:
+                    token_shapes[header][_token_shape(token)] += 1
         if len(row) != len(expected_headers):
             continue
         rectangular_count += 1
+        key_bytes = json.dumps(
+            [row[index] for index in candidate_key_indices],
+            ensure_ascii=False,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        candidate_key_digest = hashlib.sha256(key_bytes).digest()
+        if candidate_key_digest not in candidate_keys:
+            if len(candidate_keys) >= MAX_CANDIDATE_KEYS:
+                raise ValueError("candidate key bound exceeded")
+            candidate_keys.add(candidate_key_digest)
         services.add(row[services_index])
         benefit.add(row[benefit_index])
     return record_count, rectangular_count
+
+
+def _token_shape(token: str) -> str:
+    """Classify token character shape without retaining or returning it."""
+    if not token:
+        return "empty"
+    if any(character.isspace() for character in token):
+        return "whitespace"
+    if token.isascii() and token.isdigit():
+        return "ascii_digits"
+    if token.isascii() and token.isalpha():
+        return "ascii_letters"
+    if token.isascii() and token.isalnum():
+        return "ascii_alphanumeric"
+    return "other_nonempty"
 
 
 def _parse_decimal_token(token: str) -> Decimal | None:

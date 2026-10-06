@@ -181,7 +181,7 @@ def main() -> None:
             "catalogue_resource_id": row["resource_id"],
             "header_schema_candidate_id": row["observed_schema_id"],
             "prior_header_receipt_url": row["prior_header_receipt_url"],
-            "observation_profile": "mbs-utilisation-csv-value-shape-v1",
+            "observation_profile": "mbs-utilisation-candidate-shape-v1",
             "result": outcome,
             "semantic_validation": False,
             "semantic_mapping_selected": False,

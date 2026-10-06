@@ -43,11 +43,33 @@ def test_observer_reports_exact_decimal_and_missingness_without_row_values(
     assert result.services.max_scale == 0
     assert result.benefit.valid_count == 3
     assert result.benefit.max_scale == 3
+    assert result.candidate_key_duplicate_records == 1
+    assert result.token_shapes["Item Number"]["ascii_digits"] == 3
+    assert result.token_shapes["Gender"]["empty"] == 1
     public = json.dumps(result.to_public_summary())
     assert "0101" not in public
     assert "NSW" not in public
     assert "10.50" not in public
     assert public.count('"column_count": 8') == 1
+    assert '"grain_verified": false' in public
+
+
+@pytest.mark.parametrize(
+    ("token", "expected"),
+    [
+        ("", "empty"),
+        ("123", "ascii_digits"),
+        ("Word", "ascii_letters"),
+        ("A1", "ascii_alphanumeric"),
+        ("A 1", "whitespace"),
+        ("é", "other_nonempty"),
+        ("A-1", "other_nonempty"),
+    ],
+)
+def test_non_measure_token_shape_is_value_free(
+    token: str, expected: str
+) -> None:
+    assert module._token_shape(token) == expected  # pyright: ignore[reportPrivateUsage]
 
 
 def test_observer_counts_invalid_numeric_tokens_without_leaking_them(
@@ -135,6 +157,22 @@ def test_invalid_numeric_tokens_use_disjoint_exhaustive_private_categories(
     })
 
 
+def test_candidate_key_memory_bound_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(module, "MAX_CANDIDATE_KEYS", 0)
+    source = tmp_path / "key-bound.csv"
+    source.write_text(
+        ",".join(DEMOGRAPHICS_HEADERS) + "\n2016,1,0101,NSW,0-4,Male,1,1.00\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="candidate key bound exceeded"):
+        observe_utilisation_csv_values(
+            source, expected_headers=DEMOGRAPHICS_HEADERS
+        )
+
+
 def test_observer_counts_ragged_rows_and_excludes_them_from_value_profiles(
     tmp_path: Path,
 ) -> None:
@@ -153,6 +191,7 @@ def test_observer_counts_ragged_rows_and_excludes_them_from_value_profiles(
     assert result.record_count == 2
     assert result.rectangular_record_count == 1
     assert result.row_width_error_count == 1
+    assert result.candidate_key_duplicate_records == 0
     assert result.services.valid_count == 1
     assert result.services.negative_count == 1
     assert result.benefit.valid_count == 1
