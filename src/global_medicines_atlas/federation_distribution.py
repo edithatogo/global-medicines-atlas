@@ -17,6 +17,7 @@ from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
 from .federation import validate_federation_semantics
 from .federation_reader import METADATA_BYTES, SCHEMA_SHA256
+from .strict_json import unique_json_object
 
 
 @dataclass(frozen=True)
@@ -136,7 +137,9 @@ def _document(raw: bytes, validator: Any) -> dict[str, Any]:
     if len(raw) > METADATA_BYTES:
         raise ValueError("contract exceeds metadata budget")
     try:
-        document: dict[str, Any] = json.loads(raw)
+        document: dict[str, Any] = json.loads(
+            raw, object_pairs_hook=unique_json_object
+        )
         validator.validate(document)
         validate_federation_semantics(document)
     except ValueError, TypeError, KeyError, ValidationError:

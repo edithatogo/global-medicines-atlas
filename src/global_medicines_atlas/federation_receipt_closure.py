@@ -17,6 +17,7 @@ from pydantic import ConfigDict, Field, model_validator
 from .federation import validate_federation_semantics
 from .federation_reader import METADATA_BYTES, SCHEMA_SHA256
 from .models import FrozenModel
+from .strict_json import unique_json_object
 
 MAX_REFERENCES = 256
 MAX_RECEIPT_BYTES = METADATA_BYTES
@@ -88,15 +89,6 @@ class ReceiptClosure(_Model):
         return self
 
 
-def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
-    result: dict[str, Any] = {}
-    for key, value in pairs:
-        if key in result:
-            raise ValueError("duplicate contract JSON key")
-        result[key] = value
-    return result
-
-
 def _preflight(document: object) -> None:
     """Bound untrusted structure before schema uniqueness comparisons.
 
@@ -142,7 +134,7 @@ def _document(raw: bytes, schema: bytes) -> dict[str, Any]:
         raise ValueError("required federation format validators are missing")
     try:
         document: dict[str, Any] = json.loads(
-            raw, object_pairs_hook=_unique_object
+            raw, object_pairs_hook=unique_json_object
         )
     except ValueError, TypeError, RecursionError:
         raise ValueError("invalid federation contract") from None
