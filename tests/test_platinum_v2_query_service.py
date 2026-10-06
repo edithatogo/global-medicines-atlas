@@ -12,6 +12,7 @@ from test_query_service import (
     _database,  # ruff: ignore[import-private-name]
 )
 
+import global_medicines_atlas.platinum_v2_query_service as v2_query_service
 from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonQuery,
     V2EvidenceDimension,
@@ -192,6 +193,30 @@ def test_v2_single_jurisdiction_has_no_pairwise_validity(
 
     assert response.validity_completeness == "not_applicable"
     assert response.comparison_validity == ()
+
+
+def test_v2_validity_skips_same_jurisdiction_pairs(tmp_path: Path) -> None:
+    service = V2ReadOnlyQueryService(
+        _database(tmp_path / "atlas.duckdb"),
+        cursor_secret=SECRET,
+        allowed_root=tmp_path,
+    )
+    response = service.v2_comparisons(
+        V2ComparisonQuery(
+            concept_id="rx:1",
+            jurisdictions=("NZ",),
+            dimensions=(V2EvidenceDimension.REGULATORY,),
+            valid_at=NOW,
+            observed_at=NOW,
+        )
+    )
+    conclusion = response.conclusions[0]
+    same_jurisdiction = conclusion.model_copy(update={"concept_id": "rx:other"})
+
+    assert (
+        v2_query_service._comparison_validity((conclusion, same_jurisdiction))
+        == ()
+    )
 
 
 def test_v2_query_service_omits_unknown_status_code(tmp_path: Path) -> None:
