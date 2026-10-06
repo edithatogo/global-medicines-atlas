@@ -146,7 +146,9 @@
     100% statement and branch coverage; all 380 federation tests and full local
     Test-Goblin pass on pinned uv 0.11.29. Synthetic fixture only. Independently
     configured production profiles and live archive admission remain pending;
-    this change does not alter the publication/rights boundary.
+    this change does not alter the publication/rights boundary. PR #830 merged
+    as `f70b2419864ef2db1cc740006f9e3e4aa04a5675` on 2026-10-06 after all 39
+    hosted checks passed, including Codecov; see the append-only merge receipt.
 
 - [x] Write failing tests that map every produced Bronze/Silver/Gold/Platinum
   object to one public destination and reject mutable/unpinned references.
