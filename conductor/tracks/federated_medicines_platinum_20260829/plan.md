@@ -253,7 +253,13 @@
   clean-room, load, concurrency, security, privacy, and release-gate tests.
   - [x] Confirmed and fixed query-manifest instability when callers mutate a
     nested query mapping after manifest construction.
-- [ ] Confirm the intended failure before implementation.
+- [~] Confirm the intended failure before implementation.
+  - [x] The metadata-only package composition test failed collection because
+    the bundle module did not exist.
+- [~] Compose the local metadata-only research export package from the existing
+  manifest, RO-Crate, Croissant, and lineage contracts.
+  - [x] Compose and validate manifest, RO-Crate, Croissant, and lineage
+    metadata into a deterministic offline package with no embedded rows.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
 - [ ] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
