@@ -26,6 +26,7 @@ from global_medicines_atlas.mbs_gold_graph import (
 from global_medicines_atlas.mbs_silver import iter_mbs_silver_batches
 from global_medicines_atlas.platinum_query import (
     PlatinumQueryService,
+    QueryResult,
     QuerySpec,
 )
 from global_medicines_atlas.platinum_resolver import (
@@ -44,6 +45,24 @@ from global_medicines_atlas.receipts import (
     TransformationEvidence,
     require_temporal,
     temporal_identity_from_source,
+)
+from global_medicines_atlas.research_export_package import (
+    build_research_export_package,
+    verify_research_export_package,
+)
+from global_medicines_atlas.research_exports import (
+    ExportSource,
+    build_query_snapshot_manifest,
+    canonical_result_bytes,
+    manifest_sha256,
+)
+from global_medicines_atlas.research_lineage import (
+    ResearchLineageArtifact,
+    build_research_lineage_receipt,
+)
+from global_medicines_atlas.research_package import (
+    CrateDistribution,
+    build_research_crate,
 )
 from global_medicines_atlas.reuse_gate import acquire_new_decision
 
@@ -174,6 +193,109 @@ def _binding(raw: bytes) -> DistributionBinding:
     )[0]
 
 
+def _verify_saved_research_export(
+    result: QueryResult,
+    source_receipt: SourceReceipt,
+    resource_id: str,
+    tmp_path: Path,
+) -> None:
+    revision = "a" * 40
+    source = ExportSource(
+        dataset_id="synthetic/mbs",
+        revision=revision,
+        path="bronze/raw.xml",
+        sha256=source_receipt.payload.sha256,
+        schema_id="gma.synthetic.mbs.xml",
+        schema_version="1",
+    )
+    manifest = build_query_snapshot_manifest(
+        query={
+            "engine": result.engine,
+            "query_receipt_sha256": result.query_receipt.receipt_sha256,
+            "request": json.loads(result.query_receipt.canonical_query),
+            "resource_id": resource_id,
+        },
+        result_rows=result.rows,
+        sources=[source],
+        generated_at=NOW,
+        generator_commit="synthetic-e2e-v1",
+    )
+    result_payload = canonical_result_bytes(result.rows)
+    assert hashlib.sha256(result_payload).hexdigest() == manifest.result_sha256
+    (tmp_path / "query-result.json").write_bytes(result_payload)
+
+    receipt_payload = result.query_receipt.canonical_bytes
+    assert (
+        hashlib.sha256(receipt_payload).hexdigest()
+        == result.query_receipt.receipt_sha256
+    )
+    (tmp_path / "query-receipt.json").write_bytes(receipt_payload)
+    export_url = (
+        "https://fixtures.invalid/synthetic/exports/resolve/"
+        f"{revision}/query-result.json"
+    )
+    crate = build_research_crate(
+        identifier=manifest_sha256(manifest),
+        name="Synthetic medicine evidence query",
+        version="synthetic-e2e-v1",
+        dataset_url="https://fixtures.invalid/synthetic/exports",
+        distributions=(
+            CrateDistribution(
+                identifier="query-result.json",
+                name="Synthetic query result",
+                content_url=export_url,
+                media_type="application/json",
+                sha256=manifest.result_sha256,
+            ),
+        ),
+    )
+    lineage = build_research_lineage_receipt(
+        export_id=manifest_sha256(manifest),
+        revision=revision,
+        artifacts=(
+            ResearchLineageArtifact(
+                identifier="synthetic-mbs-source",
+                role="input",
+                public_url=(
+                    "https://fixtures.invalid/synthetic/mbs/resolve/"
+                    f"{revision}/bronze/raw.xml"
+                ),
+                sha256=source.sha256,
+            ),
+            ResearchLineageArtifact(
+                identifier="query-receipt.json",
+                role="input",
+                public_url=(
+                    "https://fixtures.invalid/synthetic/receipts/resolve/"
+                    f"{revision}/query-receipt.json"
+                ),
+                sha256=result.query_receipt.receipt_sha256,
+            ),
+            ResearchLineageArtifact(
+                identifier="query-result.json",
+                role="output",
+                public_url=export_url,
+                sha256=manifest.result_sha256,
+            ),
+        ),
+    )
+    package = build_research_export_package(
+        manifest=manifest,
+        crate=crate,
+        lineage=lineage,
+    )
+    archive_bytes = package.archive_bytes()
+    (tmp_path / "research-export.zip").write_bytes(archive_bytes)
+    saved_archive = (tmp_path / "research-export.zip").read_bytes()
+
+    assert b"source_record_has_benefit" not in saved_archive
+    assert result_payload not in saved_archive
+    assert (
+        verify_research_export_package(saved_archive).archive_bytes()
+        == saved_archive
+    )
+
+
 @pytest.mark.e2e
 def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     tmp_path: Path,
@@ -277,3 +399,10 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     )
     assert result.query_receipt.result_sha256 == result.result_sha256
     assert nodes.num_rows == 2
+
+    _verify_saved_research_export(
+        result=result,
+        source_receipt=landed.receipt,
+        resource_id=resource.resource_id,
+        tmp_path=tmp_path,
+    )

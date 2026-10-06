@@ -258,10 +258,12 @@
     explicit. The fixture asserts structural Bronze acceptance independently
     from unknown rights and a false live-source gate (`43aefbf5`; PR #807
     merged as `3ad69e18`, 38 protected checks passed).
-- [~] Confirm the intended failure before implementation.
+- [x] Confirm the intended failure before implementation: the new
+  `canonical_result_bytes` contract test initially failed to import that
+  missing API.
   - [x] The metadata-only package composition test failed collection because
     the bundle module did not exist.
-- [~] Compose the local metadata-only research export package from the existing
+- [x] Compose the local metadata-only research export package from the existing
   manifest, RO-Crate, Croissant, and lineage contracts.
   - [x] Compose and validate manifest, RO-Crate, Croissant, and lineage
     metadata into a deterministic offline package with no embedded rows.
@@ -274,15 +276,27 @@
   - [x] Merge the verifier after all 39 hosted checks passed, including
     Codecov patch coverage, cross-platform consumer tests, and the full
     protected Test-Goblin lanes (`f5df2e42`; PR #810).
+  - [x] Bind the bounded synthetic Platinum query's order-stable result bytes
+    to its snapshot digest, query receipt, source lineage, and saved package.
+    Read the ZIP back through the clean-room verifier and confirm query rows are
+    absent (`3a3d3b43`; 45 focused tests, 100% statement and branch coverage for
+    both export modules, and the registered E2E lane passes 26 tests).
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
-- [ ] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
+- [~] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
   coverage, security, provenance, rights, regeneration, and full Test-Goblin
   lanes where supported.
-  - [~] Full Test-Goblin on 2026-10-06: 5,869 passed, 4 failed, 1 skipped,
-    96.73% coverage. Two Stable v1 clean-clone tests require unavailable local
-    `uv 0.11.29`; two product qualification tests passed when rerun in an
-    isolated Python 3.14 environment. The full qualification lane remains open.
-- [ ] Run Conductor review, repair findings, open scoped pull requests, wait for
+  - [x] Run all local full-profile components on 2026-10-06 with the pinned
+    temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
+    and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317
+    tests (861 zapped, 87%); Scalene profiling and the security audit pass.
+    The first umbrella run exposed the missing pinned uv and optional Scalene
+    group; the pinned clean-clone probes pass, and profiling/security were
+    rerun explicitly after installing the declared profiling group. The
+    broader product qualification remains open for hosted and external gates.
+- [~] Run Conductor review, repair findings, open scoped pull requests, wait for
   hosted checks, merge, and reconcile evidence; stop at public release and
   consequential-interpretation gates.
+  - [x] Self-review the result-bytes diff against the Platinum plan, product
+    guidelines, and Python style guide; no correctness, provenance, privacy, or
+    maintainability findings remain (`3a3d3b43`).
