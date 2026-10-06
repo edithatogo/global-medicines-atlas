@@ -2017,8 +2017,18 @@
   pass with 100% statement and branch coverage. Exact-main execution is still
   pending; no source bytes were read locally.
 
-- [~] Run the candidate-shape observer on exact main for the same four pinned
+- [x] Run the candidate-shape observer on exact main for the same four pinned
   CSV references. Independently verify the per-object and summary receipts,
   confirm the new aggregate fields contain no tokens, and remove staged bytes
-  only after digest-bound receipts. This does not validate source semantics or
-  grant admission.
+  only after digest-bound receipts. Exact run `37427434385` at
+  `07eb1bb8202e4abae4512605ca3e8537fafe66ef` verified all four digests and
+  five receipts. The 1,463,030 rows were rectangular, with no empty cells or
+  repeated candidate keys. Q2 `Services` retained 4,728 comma-triplet lexical
+  failures. The row grain and source semantics remain unverified; no admission
+  was granted. See
+  `quality/qualifications/australian-mbs-utilisation-candidate-shape-observation-20261006.json`.
+
+- [~] Resolve exact processing-period tokens and safe categorical domains from
+  source-specific evidence, and validate them in another bounded hosted pass.
+  Keep exact native tokens and suppression/unknown distinctions; do not infer
+  periods from filenames or select comma normalization without evidence.

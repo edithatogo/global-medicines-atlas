@@ -1,0 +1,575 @@
+{
+  "aggregates": {
+    "candidate_key_duplicate_records": 0,
+    "empty_cells": 0,
+    "q2_services_invalid_tokens": 4728,
+    "record_count": 1463030,
+    "row_width_errors": 0
+  },
+  "boundaries": {
+    "candidate_grain_verified": false,
+    "new_sources_added": false,
+    "processing_admitted": false,
+    "raw_token_values_emitted": false,
+    "raw_token_values_persisted": false,
+    "semantic_mapping_selected": false,
+    "semantic_validation_complete": false,
+    "silver_published": false,
+    "source_bytes_read_locally": false,
+    "source_inventory_expanded": false
+  },
+  "candidate_source_count": 4,
+  "code_commit": "07eb1bb8202e4abae4512605ca3e8537fafe66ef",
+  "interpretation": "All four exact digests verified and five durable aggregate receipts independently read back. Candidate dimension collisions, row-shape faults, and empty cells were zero. This does not validate field meanings, category vocabularies, period semantics, suppression conventions, or candidate row grain. The 4,728 Q2 Services lexical failures remain comma-triplet patterns; no grouping interpretation or normalization is selected.",
+  "observation_profile": "mbs-utilisation-candidate-shape-v1",
+  "receipts_independently_read_back": true,
+  "recorded_at": "2026-10-06T07:05:31.953032+00:00",
+  "records": [
+    {
+      "acquisition_id": "8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3",
+      "anonymous_digest_verified": true,
+      "byte_count": 23934884,
+      "candidate_grain": {
+        "duplicate_records": 0,
+        "grain_verified": false,
+        "key_headers": [
+          "Year",
+          "Month of Processing",
+          "Item Number",
+          "State",
+          "Age Range",
+          "Gender"
+        ]
+      },
+      "catalogue_resource_id": "ff6d0692-4c6f-466b-9d93-015224d80b14",
+      "empty_cell_counts": {
+        "Age Range": 0,
+        "Benefit": 0,
+        "Gender": 0,
+        "Item Number": 0,
+        "Month of Processing": 0,
+        "Services": 0,
+        "State": 0,
+        "Year": 0
+      },
+      "header_schema_candidate_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "header_sha256": "9e4897707061a970f6f3e1035c498d759da1cb1c5491a3de7dc449a974b3ca1f",
+      "headers": [
+        "Year",
+        "Month of Processing",
+        "Item Number",
+        "State",
+        "Age Range",
+        "Gender",
+        "Services",
+        "Benefit"
+      ],
+      "non_measure_token_shape_counts": {
+        "Age Range": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 545070,
+          "whitespace": 0
+        },
+        "Gender": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 545070,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "Item Number": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 545070,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "Month of Processing": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 545070,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "State": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 534050,
+          "empty": 0,
+          "other_nonempty": 11020,
+          "whitespace": 0
+        },
+        "Year": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 545070,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        }
+      },
+      "numeric_observations": {
+        "Benefit": {
+          "empty_count": 0,
+          "invalid_category_counts": {
+            "alphabetic": 0,
+            "comma_triplet_pattern": 0,
+            "exponent_notation": 0,
+            "other_non_decimal": 0,
+            "other_separator": 0,
+            "overlength": 0,
+            "underscore_triplet_pattern": 0,
+            "whitespace": 0
+          },
+          "invalid_count": 0,
+          "max_integer_digits": 7,
+          "max_scale": 0,
+          "negative_count": 1164,
+          "valid_count": 545070
+        },
+        "Services": {
+          "empty_count": 0,
+          "invalid_category_counts": {
+            "alphabetic": 0,
+            "comma_triplet_pattern": 0,
+            "exponent_notation": 0,
+            "other_non_decimal": 0,
+            "other_separator": 0,
+            "overlength": 0,
+            "underscore_triplet_pattern": 0,
+            "whitespace": 0
+          },
+          "invalid_count": 0,
+          "max_integer_digits": 6,
+          "max_scale": 0,
+          "negative_count": 983,
+          "valid_count": 545070
+        }
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011196633",
+      "record_count": 545070,
+      "rectangular_record_count": 545070,
+      "row_width_error_count": 0,
+      "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "source_sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+    },
+    {
+      "acquisition_id": "c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd",
+      "anonymous_digest_verified": true,
+      "byte_count": 23436706,
+      "candidate_grain": {
+        "duplicate_records": 0,
+        "grain_verified": false,
+        "key_headers": [
+          "Year",
+          "Month of Processing",
+          "Item Number",
+          "State",
+          "Age Range",
+          "Gender"
+        ]
+      },
+      "catalogue_resource_id": "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+      "empty_cell_counts": {
+        "Age Range": 0,
+        "Benefit": 0,
+        "Gender": 0,
+        "Item Number": 0,
+        "Month of Processing": 0,
+        "Services": 0,
+        "State": 0,
+        "Year": 0
+      },
+      "header_schema_candidate_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "header_sha256": "9e4897707061a970f6f3e1035c498d759da1cb1c5491a3de7dc449a974b3ca1f",
+      "headers": [
+        "Year",
+        "Month of Processing",
+        "Item Number",
+        "State",
+        "Age Range",
+        "Gender",
+        "Services",
+        "Benefit"
+      ],
+      "non_measure_token_shape_counts": {
+        "Age Range": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 567335,
+          "whitespace": 0
+        },
+        "Gender": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 567335,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "Item Number": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 567335,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "Month of Processing": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 567335,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "State": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 555802,
+          "empty": 0,
+          "other_nonempty": 11533,
+          "whitespace": 0
+        },
+        "Year": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 567335,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        }
+      },
+      "numeric_observations": {
+        "Benefit": {
+          "empty_count": 0,
+          "invalid_category_counts": {
+            "alphabetic": 0,
+            "comma_triplet_pattern": 0,
+            "exponent_notation": 0,
+            "other_non_decimal": 0,
+            "other_separator": 0,
+            "overlength": 0,
+            "underscore_triplet_pattern": 0,
+            "whitespace": 0
+          },
+          "invalid_count": 0,
+          "max_integer_digits": 7,
+          "max_scale": 0,
+          "negative_count": 1295,
+          "valid_count": 567335
+        },
+        "Services": {
+          "empty_count": 0,
+          "invalid_category_counts": {
+            "alphabetic": 0,
+            "comma_triplet_pattern": 4728,
+            "exponent_notation": 0,
+            "other_non_decimal": 0,
+            "other_separator": 0,
+            "overlength": 0,
+            "underscore_triplet_pattern": 0,
+            "whitespace": 0
+          },
+          "invalid_count": 4728,
+          "max_integer_digits": 6,
+          "max_scale": 0,
+          "negative_count": 1046,
+          "valid_count": 562607
+        }
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011199236",
+      "record_count": 567335,
+      "rectangular_record_count": 567335,
+      "row_width_error_count": 0,
+      "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "source_sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+    },
+    {
+      "acquisition_id": "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb",
+      "anonymous_digest_verified": true,
+      "byte_count": 7680041,
+      "candidate_grain": {
+        "duplicate_records": 0,
+        "grain_verified": false,
+        "key_headers": [
+          "Year",
+          "Month of Processing",
+          "Item Number",
+          "State",
+          "Age Range",
+          "Gender"
+        ]
+      },
+      "catalogue_resource_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "empty_cell_counts": {
+        "Age Range": 0,
+        "Benefit": 0,
+        "Gender": 0,
+        "Item Number": 0,
+        "Month of Processing": 0,
+        "Services": 0,
+        "State": 0,
+        "Year": 0
+      },
+      "header_schema_candidate_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "header_sha256": "9e4897707061a970f6f3e1035c498d759da1cb1c5491a3de7dc449a974b3ca1f",
+      "headers": [
+        "Year",
+        "Month of Processing",
+        "Item Number",
+        "State",
+        "Age Range",
+        "Gender",
+        "Services",
+        "Benefit"
+      ],
+      "non_measure_token_shape_counts": {
+        "Age Range": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 186082,
+          "whitespace": 0
+        },
+        "Gender": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 186082,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "Item Number": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 186082,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "Month of Processing": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 186082,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "State": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 182292,
+          "empty": 0,
+          "other_nonempty": 3790,
+          "whitespace": 0
+        },
+        "Year": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 186082,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        }
+      },
+      "numeric_observations": {
+        "Benefit": {
+          "empty_count": 0,
+          "invalid_category_counts": {
+            "alphabetic": 0,
+            "comma_triplet_pattern": 0,
+            "exponent_notation": 0,
+            "other_non_decimal": 0,
+            "other_separator": 0,
+            "overlength": 0,
+            "underscore_triplet_pattern": 0,
+            "whitespace": 0
+          },
+          "invalid_count": 0,
+          "max_integer_digits": 7,
+          "max_scale": 0,
+          "negative_count": 281,
+          "valid_count": 186082
+        },
+        "Services": {
+          "empty_count": 0,
+          "invalid_category_counts": {
+            "alphabetic": 0,
+            "comma_triplet_pattern": 0,
+            "exponent_notation": 0,
+            "other_non_decimal": 0,
+            "other_separator": 0,
+            "overlength": 0,
+            "underscore_triplet_pattern": 0,
+            "whitespace": 0
+          },
+          "invalid_count": 0,
+          "max_integer_digits": 6,
+          "max_scale": 0,
+          "negative_count": 220,
+          "valid_count": 186082
+        }
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011200639",
+      "record_count": 186082,
+      "rectangular_record_count": 186082,
+      "row_width_error_count": 0,
+      "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "source_sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+    },
+    {
+      "acquisition_id": "5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967",
+      "anonymous_digest_verified": true,
+      "byte_count": 12291303,
+      "candidate_grain": {
+        "duplicate_records": 0,
+        "grain_verified": false,
+        "key_headers": [
+          "Year",
+          "Month of Processing",
+          "Group",
+          "Sub-Group",
+          "Item Number",
+          "State"
+        ]
+      },
+      "catalogue_resource_id": "663a7fac-114c-47b5-9017-a9dbb9073260",
+      "empty_cell_counts": {
+        "Benefit": 0,
+        "Group": 0,
+        "Item Number": 0,
+        "Month of Processing": 0,
+        "Services": 0,
+        "State": 0,
+        "Sub-Group": 0,
+        "Year": 0
+      },
+      "header_schema_candidate_id": "663a7fac-114c-47b5-9017-a9dbb9073260",
+      "header_sha256": "4c0eb116a9c8571a3c0c9df5507141fefefa6444e88fbe8838714cc1dfa29a19",
+      "headers": [
+        "Year",
+        "Month of Processing",
+        "Group",
+        "Sub-Group",
+        "Item Number",
+        "State",
+        "Services",
+        "Benefit"
+      ],
+      "non_measure_token_shape_counts": {
+        "Group": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 164543
+        },
+        "Item Number": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 164543,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "Month of Processing": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 164543,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        },
+        "State": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 0,
+          "ascii_letters": 161339,
+          "empty": 0,
+          "other_nonempty": 3204,
+          "whitespace": 0
+        },
+        "Sub-Group": {
+          "ascii_alphanumeric": 33,
+          "ascii_digits": 0,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 164510
+        },
+        "Year": {
+          "ascii_alphanumeric": 0,
+          "ascii_digits": 164543,
+          "ascii_letters": 0,
+          "empty": 0,
+          "other_nonempty": 0,
+          "whitespace": 0
+        }
+      },
+      "numeric_observations": {
+        "Benefit": {
+          "empty_count": 0,
+          "invalid_category_counts": {
+            "alphabetic": 0,
+            "comma_triplet_pattern": 0,
+            "exponent_notation": 0,
+            "other_non_decimal": 0,
+            "other_separator": 0,
+            "overlength": 0,
+            "underscore_triplet_pattern": 0,
+            "whitespace": 0
+          },
+          "invalid_count": 0,
+          "max_integer_digits": 9,
+          "max_scale": 0,
+          "negative_count": 456,
+          "valid_count": 164543
+        },
+        "Services": {
+          "empty_count": 0,
+          "invalid_category_counts": {
+            "alphabetic": 0,
+            "comma_triplet_pattern": 0,
+            "exponent_notation": 0,
+            "other_non_decimal": 0,
+            "other_separator": 0,
+            "overlength": 0,
+            "underscore_triplet_pattern": 0,
+            "whitespace": 0
+          },
+          "invalid_count": 0,
+          "max_integer_digits": 7,
+          "max_scale": 0,
+          "negative_count": 354,
+          "valid_count": 164543
+        }
+      },
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011202217",
+      "record_count": 164543,
+      "rectangular_record_count": 164543,
+      "row_width_error_count": 0,
+      "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "source_sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+    }
+  ],
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-candidate-shape-observation",
+  "schema_version": 1,
+  "status": "exact_main_candidate_shapes_observed_semantics_unresolved",
+  "summary_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011202479",
+  "temporary_source_bytes_removed_after_digest_bound_receipts": true,
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37427434385"
+}
