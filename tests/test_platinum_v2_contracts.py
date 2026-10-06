@@ -4,6 +4,9 @@ from datetime import UTC, datetime
 
 import pytest
 
+from global_medicines_atlas.comparison_validity import (
+    evaluate_comparison_validity,
+)
 from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -14,6 +17,10 @@ from global_medicines_atlas.platinum_v2_contracts import (
 )
 from global_medicines_atlas.product_contracts import (
     AsOfClocks,
+    ComparisonDimensionState,
+    ComparisonValidity,
+    ComparisonValidityDimension,
+    ComparisonValidityDimensions,
     EvidenceAvailability,
     PageMetadata,
     ProductState,
@@ -22,6 +29,45 @@ from global_medicines_atlas.product_contracts import (
     Uncertainty,
     UncertaintyLevel,
 )
+
+
+def _unknown_validity(left: str, right: str) -> ComparisonValidity:
+    unknown = ComparisonValidityDimension(
+        state=ComparisonDimensionState.UNKNOWN
+    )
+    dimensions = ComparisonValidityDimensions(
+        granularity=unknown,
+        indication=unknown,
+        population=unknown,
+        mapping=unknown,
+        normalization=unknown,
+    )
+    return evaluate_comparison_validity(
+        left_subject_id=left,
+        right_subject_id=right,
+        dimensions=dimensions,
+    )
+
+
+def _unknown_conclusion(jurisdiction: str, clocks: AsOfClocks) -> V2Conclusion:
+    return V2Conclusion(
+        concept_id="rx:fixture",
+        jurisdiction=jurisdiction,
+        dimension=V2EvidenceDimension.FUNDING,
+        state=ProductState.UNKNOWN,
+        terminology=Terminology(
+            native_code="unknown",
+            native_label="Unknown",
+            native_system="fixture",
+        ),
+        evidence_availability=EvidenceAvailability.UNAVAILABLE,
+        evidence_unavailable_reason="Fixture evidence is unavailable.",
+        uncertainty=Uncertainty(
+            level=UncertaintyLevel.UNKNOWN,
+            reason="The comparison context is incomplete.",
+        ),
+        valid_time=clocks,
+    )
 
 
 def test_v2_adds_dimensions_without_changing_v1_contracts() -> None:
@@ -113,6 +159,8 @@ def test_v2_response_preserves_five_dimension_conclusions() -> None:
                 valid_time=clocks,
             ),
         ),
+        comparison_validity=(),
+        validity_completeness="not_applicable",
     )
 
     assert response.metadata.api_version == "v2"
@@ -144,6 +192,88 @@ def test_v2_response_rejects_inconsistent_page_count() -> None:
                 page=PageMetadata(limit=10, returned=1),
             ),
             conclusions=(),
+            comparison_validity=(),
+            validity_completeness="not_applicable",
+        )
+
+
+def test_v2_complete_validity_cannot_omit_a_page_subject_pair() -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    clocks = AsOfClocks(valid_at=clock, observed_at=clock)
+    left = _unknown_conclusion("AU", clocks)
+    right = _unknown_conclusion("NZ", clocks)
+
+    with pytest.raises(ValueError, match="cover every page subject pair"):
+        V2ComparisonResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=clock,
+                clocks=clocks,
+                page=PageMetadata(limit=10, returned=2),
+            ),
+            conclusions=(left, right),
+            comparison_validity=(),
+            validity_completeness="complete",
+        )
+
+
+def test_v2_validity_rejects_duplicate_subject_pairs() -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    clocks = AsOfClocks(valid_at=clock, observed_at=clock)
+    left = _unknown_conclusion("AU", clocks)
+    right = _unknown_conclusion("NZ", clocks)
+    pair = _unknown_validity("rx:fixture:AU:funding", "rx:fixture:NZ:funding")
+
+    with pytest.raises(ValueError, match="subjects must be unique"):
+        V2ComparisonResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=clock,
+                clocks=clocks,
+                page=PageMetadata(limit=10, returned=2),
+            ),
+            conclusions=(left, right),
+            comparison_validity=(pair, pair),
+            validity_completeness="partial",
+        )
+
+
+def test_v2_validity_must_reference_subjects_on_the_page() -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    clocks = AsOfClocks(valid_at=clock, observed_at=clock)
+    left = _unknown_conclusion("AU", clocks)
+    right = _unknown_conclusion("NZ", clocks)
+    pair = _unknown_validity(
+        "rx:fixture:AU:funding", "rx:fixture:NZ:funding"
+    ).model_copy(update={"left_subject_id": "not-on-page"})
+
+    with pytest.raises(ValueError, match="reference page subjects"):
+        V2ComparisonResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=clock,
+                clocks=clocks,
+                page=PageMetadata(limit=10, returned=2),
+            ),
+            conclusions=(left, right),
+            comparison_validity=(pair,),
+            validity_completeness="partial",
+        )
+
+
+def test_v2_multi_jurisdiction_cannot_mark_validity_not_applicable() -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    clocks = AsOfClocks(valid_at=clock, observed_at=clock)
+    with pytest.raises(ValueError, match="cannot be marked not applicable"):
+        V2ComparisonResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=clock,
+                clocks=clocks,
+                page=PageMetadata(limit=10, returned=2),
+            ),
+            conclusions=(
+                _unknown_conclusion("AU", clocks),
+                _unknown_conclusion("NZ", clocks),
+            ),
+            comparison_validity=(),
+            validity_completeness="not_applicable",
         )
 
 

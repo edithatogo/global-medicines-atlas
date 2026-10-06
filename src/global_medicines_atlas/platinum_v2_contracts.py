@@ -14,6 +14,7 @@ from pydantic import AwareDatetime, Field, model_validator
 
 from .product_contracts import (
     AsOfClocks,
+    ComparisonValidity,
     EvidenceAvailability,
     EvidenceContext,
     JurisdictionCode,
@@ -173,11 +174,59 @@ class V2ComparisonResponse(ProductModel):
 
     metadata: V2ResponseMetadata
     conclusions: tuple[V2Conclusion, ...]
+    comparison_validity: tuple[ComparisonValidity, ...]
+    validity_completeness: Literal["complete", "partial", "not_applicable"]
 
     @model_validator(mode="after")
     def page_matches_conclusions(self) -> Self:
         if self.metadata.page.returned != len(self.conclusions):
             raise ValueError("page returned count must match conclusions")
+        subjects = {
+            f"{item.concept_id}:{item.jurisdiction}:{item.dimension.value}"
+            for item in self.conclusions
+        }
+        observed_pairs = tuple(
+            (item.left_subject_id, item.right_subject_id)
+            for item in self.comparison_validity
+        )
+        if len(observed_pairs) != len(set(observed_pairs)):
+            raise ValueError("comparison validity subjects must be unique")
+        if any(
+            left not in subjects or right not in subjects
+            for left, right in observed_pairs
+        ):
+            raise ValueError("comparison validity must reference page subjects")
+        jurisdictions = {item.jurisdiction for item in self.conclusions}
+        if (
+            self.validity_completeness == "not_applicable"
+            and len(jurisdictions) > 1
+        ):
+            raise ValueError(
+                "pairwise comparison cannot be marked not applicable"
+            )
+        if self.validity_completeness == "complete":
+            expected_pairs: set[tuple[str, str]] = set()
+            grouped: dict[str, list[V2Conclusion]] = {}
+            for conclusion in self.conclusions:
+                grouped.setdefault(conclusion.dimension.value, []).append(
+                    conclusion
+                )
+            for conclusions in grouped.values():
+                ordered = sorted(
+                    conclusions, key=lambda item: item.jurisdiction
+                )
+                for index, left in enumerate(ordered):
+                    expected_pairs.update(
+                        (
+                            f"{left.concept_id}:{left.jurisdiction}:{left.dimension.value}",
+                            f"{right.concept_id}:{right.jurisdiction}:{right.dimension.value}",
+                        )
+                        for right in ordered[index + 1 :]
+                    )
+            if not expected_pairs or set(observed_pairs) != expected_pairs:
+                raise ValueError(
+                    "complete validity must cover every page subject pair"
+                )
         return self
 
 
