@@ -215,6 +215,11 @@
   for side-by-side evidence, timelines, change views, coverage/freshness, and
   provenance drill-down. Synthetic validation passes; interactive atlas,
   accessibility, and live-source qualification remain open.
+- [x] Give keyboard focus a dedicated indicator color and assert at least 3:1
+  contrast against the configured Atlas paper and wash surfaces (7.788:1 and
+  7.149:1 for the current palette). A red test first failed because the
+  dedicated token was absent. This is automated color-contrast evidence for
+  those surfaces only; it does not establish full WCAG conformance.
 - [x] Keep service-benefit, medicine funding, regulatory, formulary, and
   terminology panels visually and semantically distinct. The source-backed
   Atlas V2 factory renders all five requested dimensions as distinct
@@ -235,6 +240,17 @@
     its synchronous browser lifecycle instead of using the pytest Playwright
     session fixture, which interfered with unrelated asyncio-based tests in
     the full-suite run.
+  - [x] Verify the focus-indicator contract and run the full local profile on
+    the rebased head: the five focused accessibility/browser tests passed;
+    pytest passed 5,904 tests with one optional PyIceberg skip and 96.81%
+    coverage; mutation analyzed 2,250 cases (1,879 killed, 364 survived, five
+    suspicious, two unmutated, zero timeouts); Gremlins passed 322 tests,
+    zapped 864 classified mutations (87%), and reported 125 survivors and one
+    error; both randomized orders passed 184 tests; Scalene qualification
+    passed; offline zizmor found no issues, and pip-audit found no known
+    vulnerabilities (the unpublished local package was skipped). The full
+    harness exited 0. These automated checks do not establish WCAG conformance
+    or representative-user acceptance.
 
 ## Phase 4: Federation and compatibility (AC-06)
 

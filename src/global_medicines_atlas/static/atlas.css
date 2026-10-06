@@ -6,6 +6,7 @@
   --wash: #f1f6f8;
   --accent: #005a70;
   --focus: #ffbf47;
+  --focus-indicator: #005a70;
   --border: #9aabb5;
 }
 
@@ -23,7 +24,7 @@ h1, h2, h3 { line-height: 1.2; }
 section, aside { margin-block: 1.25rem; padding: clamp(1rem, 3vw, 2rem); background: var(--paper); border: 1px solid var(--border); border-radius: .5rem; }
 .skip-link { position: absolute; left: 1rem; top: -5rem; padding: .75rem; color: #000; background: var(--focus); z-index: 10; }
 .skip-link:focus { top: 1rem; }
-:focus-visible { outline: .25rem solid var(--focus); outline-offset: .2rem; }
+:focus-visible { outline: .25rem solid var(--focus-indicator); outline-offset: .2rem; }
 .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
 label { display: grid; gap: .35rem; font-weight: 650; }
 input, button { min-height: 2.75rem; padding: .6rem .75rem; font: inherit; }
