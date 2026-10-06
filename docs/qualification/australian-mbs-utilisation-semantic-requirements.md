@@ -101,16 +101,18 @@ Catalogue type hints are not conversion rules, and no source rows were read.
 The mapping contract is at
 `quality/qualifications/australian-mbs-utilisation-candidate-row-mappings-20261006.json`.
 
-Next, implement bounded semantic validation for the same four exact CSV
-references in protected hosted Actions. The observer now counts lexical token
-shapes for non-measure fields and repeated records under the proposed
-candidate grain, using only bounded in-memory digests and emitting aggregate
-counts. Synthetic tests cover every observer branch; exact-main execution and
-receipt readback are pending. This stage does not validate semantic meaning or
-accept the candidate grain. Preserve tokens and missingness without publishing
-values, and report period/category/numeric findings only as approved
-aggregates. Keep admission and Silver closed until results resolve the
-recorded source-specific questions. Do not add source objects or revisions.
+Next, resolve processing-period tokens and safe categorical domains from
+source-specific evidence, and validate them in another bounded hosted pass.
+The candidate-shape observer's exact-main run `37427434385` independently
+verified five durable receipts for the same four exact references: 1,463,030
+rectangular rows, no empty cells, and no repeated proposed candidate keys.
+The run confirms the 4,728 Q2 `Services` comma-triplet forms and retains no raw
+token values. It does not validate semantic meaning or accept the candidate
+grain. Preserve native token spelling and suppression/unknown distinctions
+without publishing values. Keep admission and Silver closed until the
+source-specific questions are answered. Do not add source objects or
+revisions. See
+`quality/qualifications/australian-mbs-utilisation-candidate-shape-observation-20261006.json`.
 
 No source identities, revisions, or objects may be added. The two oversized
 ZIP holds remain unchanged; rights approval, native admissions, source row
