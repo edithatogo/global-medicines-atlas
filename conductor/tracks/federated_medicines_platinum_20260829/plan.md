@@ -267,8 +267,10 @@
     `evidence_edge` granularity while keeping coverage undeclared, comparison
     unevaluated, and rows unqueried. The identity-only request performs no
     object read; anonymous transport remains mocked. Two governed medallion
-    E2E tests pass. This proves synthetic API wiring only and does not qualify
-    a production source or close the broader Phase 2 checkpoint.
+    E2E tests pass. PR #841 merged as `24ef28a7555cc3746d5fb8cdad79c548998f6780`
+    after all 36 hosted checks passed. This proves synthetic API wiring only
+    and does not qualify a production source or close the broader Phase 2
+    checkpoint.
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
