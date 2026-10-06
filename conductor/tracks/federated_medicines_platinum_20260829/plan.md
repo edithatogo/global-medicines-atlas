@@ -280,7 +280,8 @@
     to its snapshot digest, query receipt, source lineage, and saved package.
     Read the ZIP back through the clean-room verifier and confirm query rows are
     absent (`3a3d3b43`; 45 focused tests, 100% statement and branch coverage for
-    both export modules, and the registered E2E lane passes 26 tests).
+    both export modules, and the registered E2E lane passes 26 tests). PR #812
+    merged as `244dc212` after all 39 protected checks passed.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
 - [~] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
@@ -294,9 +295,12 @@
     group; the pinned clean-clone probes pass, and profiling/security were
     rerun explicitly after installing the declared profiling group. The
     broader product qualification remains open for hosted and external gates.
-- [~] Run Conductor review, repair findings, open scoped pull requests, wait for
+- [x] Run Conductor review, repair findings, open scoped pull requests, wait for
   hosted checks, merge, and reconcile evidence; stop at public release and
   consequential-interpretation gates.
   - [x] Self-review the result-bytes diff against the Platinum plan, product
     guidelines, and Python style guide; no correctness, provenance, privacy, or
     maintainability findings remain (`3a3d3b43`).
+  - [x] Merge the scoped implementation after all 39 protected checks passed;
+    reconcile exact PR head, merge commit, and hosted state in append-only
+    evidence (PR #812).
