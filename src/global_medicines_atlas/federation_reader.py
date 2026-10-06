@@ -30,6 +30,7 @@ from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
 from .acquisition import AcquisitionPolicy, BoundIPAddressTransport
 from .federation import validate_federation_semantics
+from .strict_json import unique_json_object
 
 SCHEMA_SHA256 = (
     "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec"
@@ -175,7 +176,9 @@ class FederatedReader:
         if digest not in self._admitted:
             raise ValueError("contract is not independently admitted")
         try:
-            document: dict[str, Any] = json.loads(raw)
+            document: dict[str, Any] = json.loads(
+                raw, object_pairs_hook=unique_json_object
+            )
             validator = cast("Any", self._validator)
             validator.validate(document)
             validate_federation_semantics(document)

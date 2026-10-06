@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from .federation_reader import SCHEMA_SHA256
+from .strict_json import unique_json_object
 
 _REPOSITORY = re.compile(r"[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+")
 _COMMIT = re.compile(r"[0-9a-f]{40}")
@@ -67,11 +68,13 @@ def bind_consumer_contract(
     _commit_value(consumer_commit, "consumer commit")
     digest = hashlib.sha256(contract).hexdigest()
     try:
-        document: dict[str, Any] = json.loads(contract)
+        document: dict[str, Any] = json.loads(
+            contract, object_pairs_hook=unique_json_object
+        )
         authority = document["authority"]
         source = document["source"]
         location = document["location"]
-    except json.JSONDecodeError, KeyError, TypeError:
+    except ValueError, KeyError, TypeError:
         raise ValueError("invalid consumer contract") from None
     if authority.get("schema_sha256") != SCHEMA_SHA256:
         raise ValueError("consumer contract schema pin mismatch")

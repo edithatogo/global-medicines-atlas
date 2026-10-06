@@ -74,6 +74,20 @@ def test_malformed_or_drifting_identity_fails_closed(
         )
 
 
+def test_duplicate_json_members_are_rejected() -> None:
+    raw = contract()
+    marker = b'"source":'
+    start = raw.index(marker)
+    opening = raw.index(b"{", start) + 1
+    raw = raw[:opening] + b'"source_id":"attacker",' + raw[opening:]
+    with pytest.raises(ValueError, match="invalid consumer contract"):
+        bind_consumer_contract(
+            raw,
+            consumer_repository="edithatogo/reimbursement-atlas",
+            consumer_commit="a" * 40,
+        )
+
+
 def test_successor_cannot_be_authority_or_self_link() -> None:
     bad_authority = SuccessorLink(
         legacy_repository=link().legacy_repository,

@@ -150,6 +150,16 @@
   complete producer denominator. (`620aaf7`; 123 focused federation tests pass,
   new module 100% coverage; full harness and hosted qualification pending.
   Receipt admission and live producer integration remain open.)
+- [x] Reject duplicate JSON member names consistently at v4 distribution,
+  admission, reader, receipt-closure, and consumer boundaries. Three synthetic
+  regressions failed before the shared strict parser; 436 affected federation
+  and Platinum tests pass. The new parser has 100% statement and branch
+  coverage; Ruff, `ty`, and BasedPyright pass. The full Test-Goblin profile
+  reports 5,867 passed, 2 existing clean-clone reproducibility failures caused
+  by local `uv 0.12.23` versus the CI-pinned `0.11.29`, 1 optional PyIceberg
+  skip, and 96.80% coverage. No source bytes, network reads, admission, or
+  publication were involved. This does not close distribution integration.
+  See `quality/qualifications/federation-v4-strict-json-observation-20261006.json`.
 - [ ] Publish source-faithful Parquet, typed tables, graph edge/node tables,
   products, coverage, lineage, and promotions with v4 identities.
 - [~] Implement remote-first readers with bounded cache and offline behavior;

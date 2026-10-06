@@ -19,6 +19,7 @@ from .federation_receipt_closure import (
     contract_receipt_roles,
 )
 from .models import FrozenModel
+from .strict_json import unique_json_object
 
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
 
@@ -66,7 +67,7 @@ def admit_closed_contract(
         raise ValueError("receipt closure belongs to a different contract")
     if closure.roles != contract_receipt_roles(contract, schema=schema):
         raise ValueError("receipt closure roles belong to a different contract")
-    document = json.loads(contract)
+    document = json.loads(contract, object_pairs_hook=unique_json_object)
     authority = document["authority"]
     source = document["source"]
     location = document["location"]

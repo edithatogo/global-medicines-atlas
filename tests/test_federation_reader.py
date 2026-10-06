@@ -115,6 +115,21 @@ def test_unadmitted_or_invalid_contract_never_fetches() -> None:
         FederatedReader(schema=b"{}", admitted_contracts=frozenset())
 
 
+def test_duplicate_json_members_are_rejected_before_remote_fetch() -> None:
+    raw = document()
+    marker = b'"source": {'
+    assert marker in raw
+    raw = raw.replace(marker, marker + b'"source_id":"attacker",', 1)
+    hub = Hub()
+    with (
+        reader(hub, raw) as client,
+        pytest.raises(ValueError, match="invalid federation contract"),
+        client.open(raw),
+    ):
+        pytest.fail("duplicate JSON member must fail closed")
+    assert not hub.requests
+
+
 @pytest.mark.parametrize(
     "metadata",
     [{"private": True}, {"gated": "auto"}, {"sha": "b" * 40}, {"private": 0}],

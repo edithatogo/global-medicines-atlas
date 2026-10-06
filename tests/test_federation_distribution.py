@@ -157,6 +157,21 @@ def test_malformed_or_oversized_document(raw: bytes) -> None:
         reconcile_distribution([obj], [raw], schema=SCHEMA, destinations={})
 
 
+def test_duplicate_json_members_are_rejected_before_reconciliation() -> None:
+    obj, document = candidate()
+    raw = json.dumps(document).encode()
+    marker = b'"source": {'
+    assert marker in raw
+    raw = raw.replace(marker, marker + b'"source_id":"attacker",', 1)
+    with pytest.raises(ValueError, match="invalid federation contract"):
+        reconcile_distribution(
+            [obj],
+            [raw],
+            schema=SCHEMA,
+            destinations={"silver": "example/synthetic-mbs"},
+        )
+
+
 def test_missing_format_plugins_fail_closed(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
