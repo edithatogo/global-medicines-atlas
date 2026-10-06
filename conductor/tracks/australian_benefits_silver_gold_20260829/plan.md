@@ -2039,7 +2039,18 @@
   transforms. The observer tests pass with 100% statement and branch coverage;
   no source bytes were read locally.
 
-- [~] Run the candidate processing-period observer on exact main for the same
+- [x] Run the candidate processing-period observer on exact main for the same
   four CSVs and independently read back its five receipts. Confirm the month
   spellings and resource-specific bounds only through aggregate outcomes.
-  Keep period semantics unverified, and do not admit results or publish Silver.
+  Exact run `37431102764` at `3fa9fd1d6326e816c4540b49a2dd11a8bf9fcb27`
+  recognized all 1,463,030 candidate periods, with no year or month parse
+  failures. Q2 contradicts its saved “current through May” description:
+  190,050 rows classify to June. Five receipts were independently verified,
+  digests matched, and temporary bytes were removed after receipt. The
+  discrepancy remains open; no cutoff override, period semantic acceptance,
+  admission, or Silver output. See
+  `quality/qualifications/australian-mbs-utilisation-processing-period-observation-20261006.json`.
+
+- [~] Resolve the Q2 source-description/payload cutoff conflict before
+  accepting period semantics or admitting the Q2 object. Do not add sources or
+  silently widen the captured May cutoff to make the observer pass.

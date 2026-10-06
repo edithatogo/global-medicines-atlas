@@ -119,10 +119,15 @@ resource ID and saved description digest. It counts only four-digit expected
 year matches and full or three-letter English month names, without trimming or
 rewriting source tokens. Allowed month bounds follow the captured catalogue
 notes for Q1, the Q2 May cutoff, Q3 July, and the group year-to-date July
-cutoff; they do not assert a start month or completeness. Synthetic tests
-cover the parser and fail-closed binding, but exact-main readback is pending.
-The observed classification remains a candidate and does not authorize
-processing admission or Silver publication.
+cutoff; they do not assert a start month or completeness. Exact-main run
+`37431102764` recognized all 1,463,030 candidate periods under this grammar,
+but it found that 190,050 Q2 rows classify to June beyond the saved May
+description cutoff. The five durable receipts were independently read back;
+all digests matched and temporary source bytes were removed after receipt.
+This description/payload conflict remains open. The observed classification
+remains a candidate and does not authorize processing admission or Silver
+publication. See
+`quality/qualifications/australian-mbs-utilisation-processing-period-observation-20261006.json`.
 
 No source identities, revisions, or objects may be added. The two oversized
 ZIP holds remain unchanged; rights approval, native admissions, source row
