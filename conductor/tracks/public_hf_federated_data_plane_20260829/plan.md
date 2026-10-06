@@ -208,6 +208,22 @@
   receipts to the optional-extra change. (`637ab07`; isolated missing-format
   observation and guard regression failed first; 91 reader/contract tests and
   39 receipt/matrix tests pass, reader 100% branch coverage.)
+- [x] Wire exact-profile `AdmissionRecord` identities through the Platinum
+  resolver and bounded reader; compare the complete authority, source, temporal
+  and object identity before remote or cache I/O. The operator trust document
+  now carries the record under configuration version 1.1. Synthetic regression
+  rejects a digest-matched substituted path before any request. Focused reader,
+  admission, resolver, API, configuration and medallion E2E tests pass (168);
+  routine and strict production typing pass. A first combined Darwin
+  Test-Goblin attempt encountered a native subprocess segmentation fault in
+  the mutation lane; the ordinary product-performance test and isolated
+  gremlin lane passed, then a clean full retry passed. It records 97.91% line /
+  93.22% branch coverage, 1,885 killed / 364 survived / 5 suspicious / 2
+  untested mutations, 324 gremlins passed with one warning, randomized suites
+  184/184 each, package, regeneration, Scalene and security lanes passed.
+  Linux remains authoritative for mutation. This connects the offline trust
+  result to the consumer read boundary; configured production profiles, live
+  archive admission and public product publication remain open.
 
 ### Source-metadata review fixes
 

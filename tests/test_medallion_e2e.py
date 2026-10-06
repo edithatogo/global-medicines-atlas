@@ -11,6 +11,7 @@ from pathlib import Path
 import httpx
 import pyarrow.parquet as pq
 import pytest
+from test_support.federation import admission_record
 
 from global_medicines_atlas.bronze_admission import BronzeAdmissionState
 from global_medicines_atlas.bronze_landing import land_bronze_payload
@@ -374,7 +375,7 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
             ROOT / "contracts/medallion/v4/federation.schema.json"
         ).read_bytes(),
         resources=[resource],
-        admitted_contracts=frozenset({binding.contract_sha256}),
+        admission_records=(admission_record(contract),),
         admitted_semantic_manifests=frozenset({
             hashlib.sha256(semantic).hexdigest()
         }),

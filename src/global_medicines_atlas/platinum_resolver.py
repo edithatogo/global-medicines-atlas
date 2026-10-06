@@ -1,6 +1,6 @@
 """Storage-neutral Platinum identity resolution and bounded verified reads.
 
-The caller must supply independently admitted v4 contract digests and
+The caller must supply independently admitted v4 identity records and
 distribution bindings.  This module does not discover, admit, publish, query,
 or persist a dataset; it resolves product identifiers and delegates exact byte
 retrieval to the existing anonymous bounded federation reader.
@@ -26,6 +26,7 @@ from .federation_distribution import (
     DistributionBinding,
     reconcile_distribution,
 )
+from .federation_identity import AdmissionRecord
 from .federation_reader import FederatedReader, VerifiedRead
 from .platinum_types import (
     RESOURCE_ID_PATTERN,
@@ -164,7 +165,7 @@ class StorageNeutralResolver:
         *,
         schema: bytes,
         resources: Sequence[ProductResource],
-        admitted_contracts: frozenset[str],
+        admission_records: Sequence[AdmissionRecord],
         admitted_semantic_manifests: frozenset[str],
         max_read_bytes: int = 64 * 1024 * 1024,
         cache_bytes: int = 64 * 1024 * 1024,
@@ -215,11 +216,14 @@ class StorageNeutralResolver:
                 resolved,
                 bytes(resource.contract),
             )
+        admitted_contracts = {
+            item.contract_sha256 for item in admission_records
+        }
         if not contract_digests <= admitted_contracts:
             raise ValueError("resource contract is not independently admitted")
         self._reader = FederatedReader(
             schema=schema,
-            admitted_contracts=admitted_contracts,
+            admission_records=admission_records,
             max_object_bytes=max_read_bytes,
             cache_bytes=cache_bytes,
             max_entries=max_cache_entries,

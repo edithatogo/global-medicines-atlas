@@ -29,7 +29,7 @@ memory guarantee. Receipt bodies are not parsed or recursively resolved.
 The result is explicitly `receipt_bytes_only`: it authenticates neither URLs
 nor producers and does not validate the assertions inside any receipt. Even a
 fully fabricated but internally matching packet can satisfy byte closure. It
-must never directly populate `FederatedReader.admitted_contracts` or establish
+must never directly populate `FederatedReader.admission_records` or establish
 rights, publication, cleanup, qualification or promotion authority. Consumers
 still need trusted authority/authorization, typed v1–v3 lineage and promotion
 checks, and independent public/non-gated anonymous verification. Existing

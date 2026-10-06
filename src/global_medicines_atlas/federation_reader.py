@@ -1,6 +1,6 @@
 """Anonymous immutable-object reader, not a rights or receipt admission engine.
 
-The caller's admitted contract digests must come from independent authority,
+The caller's typed admission records must come from independent authority,
 receipt and lineage verification. Schema-valid claims alone are never admitted.
 Only synthetic test transports are exercised locally during qualification.
 """
@@ -17,7 +17,7 @@ import tempfile
 import threading
 import time
 from collections import OrderedDict
-from collections.abc import Callable, Generator
+from collections.abc import Callable, Generator, Sequence
 from contextlib import ExitStack, contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -30,6 +30,7 @@ from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
 from .acquisition import AcquisitionPolicy, BoundIPAddressTransport
 from .federation import validate_federation_semantics
+from .federation_identity import AdmissionRecord
 from .strict_json import unique_json_object
 
 SCHEMA_SHA256 = (
@@ -80,7 +81,7 @@ class FederatedReader:
         self,
         *,
         schema: bytes,
-        admitted_contracts: frozenset[str],
+        admission_records: Sequence[AdmissionRecord],
         max_object_bytes: int = 1024 * 1024 * 1024,
         cache_bytes: int = 64 * 1024 * 1024,
         max_entries: int = 32,
@@ -101,11 +102,11 @@ class FederatedReader:
                 raise ValueError("reader budgets must be positive integers")
         if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
             raise ValueError("reader timeout must be finite and positive")
-        if any(
-            re.fullmatch(r"[0-9a-f]{64}", pin) is None
-            for pin in admitted_contracts
-        ):
-            raise ValueError("invalid admitted contract digest")
+        if any(type(item) is not AdmissionRecord for item in admission_records):
+            raise ValueError("reader requires typed admission records")
+        admitted = {item.contract_sha256: item for item in admission_records}
+        if len(admitted) != len(admission_records):
+            raise ValueError("duplicate admitted contract identity")
         formats = FormatChecker()
         if not {"date", "date-time", "uri"} <= formats.checkers.keys():
             raise ValueError(
@@ -114,7 +115,7 @@ class FederatedReader:
         self._validator = Draft202012Validator(
             json.loads(schema), format_checker=formats
         )
-        self._admitted = frozenset(admitted_contracts)
+        self._admitted = admitted
         self._max_object = max_object_bytes
         self._cache_budget = cache_bytes
         self._max_entries = max_entries
@@ -173,7 +174,8 @@ class FederatedReader:
         if len(raw) > METADATA_BYTES:
             raise ValueError("contract exceeds metadata budget")
         digest = hashlib.sha256(raw).hexdigest()
-        if digest not in self._admitted:
+        admission = self._admitted.get(digest)
+        if admission is None:
             raise ValueError("contract is not independently admitted")
         try:
             document: dict[str, Any] = json.loads(
@@ -186,6 +188,53 @@ class FederatedReader:
             raise ValueError("invalid federation contract") from None
         if document["authority"]["schema_sha256"] != SCHEMA_SHA256:
             raise ValueError("invalid federation contract schema pin")
+        identity = (
+            document["authority"]["producer_repository"],
+            document["authority"]["contract_repository"],
+            document["authority"]["contract_commit"],
+            document["authority"]["schema_sha256"],
+            document["evidence_kind"],
+            document["location"]["dataset"],
+            document["location"]["revision"],
+            document["location"]["path"],
+            document["location"]["bytes"],
+            document["location"]["sha256"],
+            document["source"]["layer"],
+            document["source"]["bronze_stratum"],
+            document["source"]["representation"],
+            document["source"]["source_id"],
+            document["source"]["acquisition_id"],
+            document["source"]["schema_era"],
+            document["source"]["comparison_cohort"],
+            document["source"]["effective_date"],
+            document["source"]["retrieved_at"],
+        )
+        admitted_identity = (
+            admission.producer_repository,
+            admission.contract_repository,
+            admission.contract_commit,
+            admission.schema_sha256,
+            admission.evidence_kind,
+            admission.dataset,
+            admission.revision,
+            admission.path,
+            admission.byte_count,
+            admission.sha256,
+            admission.layer,
+            admission.bronze_stratum,
+            admission.representation,
+            admission.source_id,
+            admission.acquisition_id,
+            admission.schema_era,
+            admission.comparison_cohort,
+            admission.effective_date,
+            admission.retrieved_at,
+        )
+        if (
+            identity != admitted_identity
+            or admission.schema_sha256 != SCHEMA_SHA256
+        ):
+            raise ValueError("contract identity differs from admission record")
         self._source_origin(document)
         if document["location"]["bytes"] > min(
             self._max_object, document["cache"]["max_bytes"]
