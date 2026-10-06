@@ -219,8 +219,26 @@
     through the v1 API; absent metadata remains explicitly unknown per side.
     The versioned validity schema and additive OpenAPI snapshot are updated,
     and the consumer compatibility baseline remains unchanged. Synthetic
-    query/API controls verify that distinct contexts are not collapsed. The
-    broader checkpoint and production source qualification remain open.
+    query/API controls verify that distinct contexts are not collapsed. An
+    asymmetric-context regression preserved each side's independent unknown
+    fallback after hosted mutation initially found a small survivor-score
+    regression. PR #824 merged as `c98ab6b0` after all 39 hosted checks passed;
+    Linux mutation killed 1,889/2,256 (83.7323%), above the immutable baseline.
+    The broader checkpoint and production source qualification remain open.
+  - [~] Give the additive v2 comparison endpoint explicit pairwise validity
+    and report whether pagination makes that validity set complete. The v2
+    envelope currently returns cross-jurisdiction conclusions without a
+    validity result; no evidence-backed compatibility dimensions are
+    populated, so the safe outcome must remain insufficient evidence. The
+    intended-red service test confirmed `validity_completeness` was absent.
+    Runtime validity now binds each pair to both subject contexts, enforces
+    complete pair coverage for non-paginated results, and identifies paged
+    outputs as partial. Forty-three focused contract/query/API/Atlas tests,
+    routine, `ty`, and BasedPyright pass. The full local profile's pytest lane
+    passed 5,929 tests at 96.80% coverage but exited 1 on two reproducibility
+    probes requiring pinned `uv 0.11.29` while this machine has `0.12.23`; the
+    optional PyIceberg test skipped. Exact-head hosted qualification remains
+    pending.
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 

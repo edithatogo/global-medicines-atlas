@@ -181,6 +181,8 @@ def test_atlas_can_render_all_five_v2_dimensions() -> None:
                     page=PageMetadata(limit=50, returned=len(conclusions)),
                 ),
                 conclusions=conclusions,
+                comparison_validity=(),
+                validity_completeness="partial",
             )
 
     response = TestClient(

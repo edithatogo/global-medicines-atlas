@@ -84,6 +84,8 @@ class StubV2Service:
                 page=PageMetadata(limit=query.limit, returned=1),
             ),
             conclusions=(conclusion,),
+            comparison_validity=(),
+            validity_completeness="partial",
         )
 
     def v2_evidence(self, query: V2EvidenceQuery) -> V2EvidenceResponse:
@@ -148,6 +150,8 @@ def test_v2_transport_preserves_all_requested_dimensions_and_version() -> None:
     assert response.status_code == 200
     assert response.json()["metadata"]["api_version"] == "v2"
     assert response.json()["conclusions"][0]["dimension"] == "service_benefit"
+    assert response.json()["comparison_validity"] == []
+    assert response.json()["validity_completeness"] == "partial"
     assert service.query is not None
     assert service.query.jurisdictions == ("NZ", "AU")
     assert service.query.dimensions == (
@@ -303,3 +307,6 @@ def test_v2_transport_is_read_only_and_openapi_is_isolated() -> None:
     assert "/api/v2/comparisons" in schema["paths"]
     assert "/api/v2/evidence" in schema["paths"]
     assert not any(path.startswith("/api/v1/") for path in schema["paths"])
+    comparison_schema = schema["components"]["schemas"]["V2ComparisonResponse"]
+    assert "comparison_validity" in comparison_schema["required"]
+    assert "validity_completeness" in comparison_schema["required"]

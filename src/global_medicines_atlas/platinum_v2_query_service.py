@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
+from itertools import combinations
 from typing import Any, cast
 
+from .comparison_validity import evaluate_comparison_validity
 from .platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -18,6 +20,10 @@ from .platinum_v2_contracts import (
 )
 from .product_contracts import (
     AsOfClocks,
+    ComparisonDimensionState,
+    ComparisonValidity,
+    ComparisonValidityDimension,
+    ComparisonValidityDimensions,
     EvidenceAvailability,
     PageMetadata,
     ProductState,
@@ -26,6 +32,48 @@ from .product_contracts import (
     UncertaintyLevel,
 )
 from .query_service import ReadOnlyQueryService
+
+_MIN_PAIRWISE_JURISDICTIONS = 2
+
+
+def _comparison_validity(
+    conclusions: tuple[V2Conclusion, ...],
+) -> tuple[ComparisonValidity, ...]:
+    """Fail closed for each side pair until compatibility evidence is bound."""
+    unknown = ComparisonValidityDimension(
+        state=ComparisonDimensionState.UNKNOWN
+    )
+    dimensions = ComparisonValidityDimensions(
+        granularity=unknown,
+        indication=unknown,
+        population=unknown,
+        mapping=unknown,
+        normalization=unknown,
+    )
+    grouped: dict[str, list[V2Conclusion]] = {}
+    for conclusion in conclusions:
+        grouped.setdefault(conclusion.dimension.value, []).append(conclusion)
+
+    results: list[ComparisonValidity] = []
+    for dimension, items in sorted(grouped.items()):
+        ordered = sorted(items, key=lambda item: item.jurisdiction)
+        for left, right in combinations(ordered, 2):
+            if left.jurisdiction == right.jurisdiction:
+                continue
+            results.append(
+                evaluate_comparison_validity(
+                    left_subject_id=(
+                        f"{left.concept_id}:{left.jurisdiction}:{dimension}"
+                    ),
+                    right_subject_id=(
+                        f"{right.concept_id}:{right.jurisdiction}:{dimension}"
+                    ),
+                    dimensions=dimensions,
+                    left_evidence_context=left.evidence_context,
+                    right_evidence_context=right.evidence_context,
+                )
+            )
+    return tuple(results)
 
 
 class V2ReadOnlyQueryService(ReadOnlyQueryService):
@@ -122,6 +170,14 @@ class V2ReadOnlyQueryService(ReadOnlyQueryService):
             in page_keys
         ]
         has_more = len(candidate_keys) > query.limit
+        validity = _comparison_validity(tuple(conclusions))
+        validity_completeness = (
+            "not_applicable"
+            if len(query.jurisdictions) < _MIN_PAIRWISE_JURISDICTIONS
+            else "partial"
+            if query.cursor is not None or has_more
+            else "complete"
+        )
         next_cursor = (
             self._encode_cursor(fingerprint, candidate_keys[query.limit - 1])
             if has_more and candidate_keys
@@ -140,6 +196,8 @@ class V2ReadOnlyQueryService(ReadOnlyQueryService):
                 ),
             ),
             conclusions=tuple(conclusions),
+            comparison_validity=validity,
+            validity_completeness=validity_completeness,
         )
 
     def _build_v2_conclusions(

@@ -113,6 +113,8 @@ def test_v2_response_preserves_five_dimension_conclusions() -> None:
                 valid_time=clocks,
             ),
         ),
+        comparison_validity=(),
+        validity_completeness="not_applicable",
     )
 
     assert response.metadata.api_version == "v2"
@@ -144,6 +146,44 @@ def test_v2_response_rejects_inconsistent_page_count() -> None:
                 page=PageMetadata(limit=10, returned=1),
             ),
             conclusions=(),
+            comparison_validity=(),
+            validity_completeness="not_applicable",
+        )
+
+
+def test_v2_complete_validity_cannot_omit_a_page_subject_pair() -> None:
+    clock = datetime(2026, 9, 14, tzinfo=UTC)
+    clocks = AsOfClocks(valid_at=clock, observed_at=clock)
+    left = V2Conclusion(
+        concept_id="rx:fixture",
+        jurisdiction="AU",
+        dimension=V2EvidenceDimension.FUNDING,
+        state=ProductState.UNKNOWN,
+        terminology=Terminology(
+            native_code="unknown",
+            native_label="Unknown",
+            native_system="fixture",
+        ),
+        evidence_availability=EvidenceAvailability.UNAVAILABLE,
+        evidence_unavailable_reason="Fixture evidence is unavailable.",
+        uncertainty=Uncertainty(
+            level=UncertaintyLevel.UNKNOWN,
+            reason="The comparison context is incomplete.",
+        ),
+        valid_time=clocks,
+    )
+    right = left.model_copy(update={"jurisdiction": "NZ"})
+
+    with pytest.raises(ValueError, match="cover every page subject pair"):
+        V2ComparisonResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=clock,
+                clocks=clocks,
+                page=PageMetadata(limit=10, returned=2),
+            ),
+            conclusions=(left, right),
+            comparison_validity=(),
+            validity_completeness="complete",
         )
 
 
