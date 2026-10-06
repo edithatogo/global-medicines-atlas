@@ -271,6 +271,9 @@
     coverage, 32 targeted end-to-end and regression tests, format/lint, `ty`,
     BasedPyright, routine harness, context, and ecosystem validation passed
     on 2026-10-06.
+  - [x] Merge the verifier after all 39 hosted checks passed, including
+    Codecov patch coverage, cross-platform consumer tests, and the full
+    protected Test-Goblin lanes (`f5df2e42`; PR #810).
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
 - [ ] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
