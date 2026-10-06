@@ -140,6 +140,13 @@
   Offline exact-profile adapter implemented with immutable admission records;
   actual producer trust profiles and live archive admission remain pending and
   require complete v4 evidence rather than retroactive relabelling.
+  - [x] Preserve the complete contract authority, exact object byte count,
+    source representation/era/cohort, and temporal identity in independently
+    profiled admission records. Twenty-three focused admission tests pass with
+    100% statement and branch coverage; all 380 federation tests and full local
+    Test-Goblin pass on pinned uv 0.11.29. Synthetic fixture only. Independently
+    configured production profiles and live archive admission remain pending;
+    this change does not alter the publication/rights boundary.
 
 - [x] Write failing tests that map every produced Bronze/Silver/Gold/Platinum
   object to one public destination and reject mutable/unpinned references.
