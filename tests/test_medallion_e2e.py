@@ -16,10 +16,13 @@ import pytest
 from fastapi.testclient import TestClient
 from test_pbs_silver import XML as PBS_XML
 from test_support.federation import admission_record
+from typer.testing import CliRunner
 
+from global_medicines_atlas import platinum_configuration
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.bronze_admission import BronzeAdmissionState
 from global_medicines_atlas.bronze_landing import land_bronze_payload
+from global_medicines_atlas.cli import app as cli_app
 from global_medicines_atlas.federation_distribution import (
     DistributionBinding,
     ProducedObject,
@@ -102,6 +105,56 @@ type SyntheticOutput = tuple[
     bytes,
     Literal["B0", "B1", "B2"] | None,
 ]
+
+
+def _exercise_benefits_cli(
+    resolver: StorageNeutralResolver,
+    resource_id: str,
+    columns: tuple[str, ...],
+    api_page: dict[str, Any],
+    test_context: tuple[pytest.MonkeyPatch, Path],
+) -> None:
+    monkeypatch, tmp_path = test_context
+    cursor_key = "".join(("fixture-only-", "cursor-signing-", "key-32-bytes"))
+    monkeypatch.setattr(
+        platinum_configuration,
+        "load_benefits_resolver",
+        lambda **_kwargs: resolver,
+    )
+    monkeypatch.setenv("GMA_CURSOR_SECRET", cursor_key)
+    trust_file = tmp_path / "synthetic-trust.json"
+    trust_file.write_text("{}", encoding="utf-8")
+    metadata_root = tmp_path / "synthetic-metadata"
+    metadata_root.mkdir(exist_ok=True)
+    schema_file = tmp_path / "federation.schema.json"
+    schema_file.write_bytes(
+        (ROOT / "contracts/medallion/v4/federation.schema.json").read_bytes()
+    )
+    arguments = [
+        "benefits",
+        resource_id,
+        "--trust-file",
+        str(trust_file),
+        "--metadata-root",
+        str(metadata_root),
+        "--schema-file",
+        str(schema_file),
+        *(item for column in columns for item in ("--column", column)),
+        "--limit",
+        "1",
+    ]
+    result = CliRunner().invoke(cli_app, arguments)
+    assert result.exit_code == 0, result.output
+    cli_page = json.loads(result.stdout)
+    for key in (
+        "rows",
+        "identity",
+        "page_sha256",
+        "window_sha256",
+        "coverage_state",
+        "comparison_validity",
+    ):
+        assert cli_page[key] == api_page[key]
 
 
 def _payload() -> bytes:
@@ -740,6 +793,8 @@ def _query_synthetic_platinum(
     resource_id: str = "au.mbs.synthetic.edges",
     semantic_dimension: PlatinumSemanticDimension = "service_benefit",
     columns: tuple[str, ...] = ("kind", "inferred"),
+    monkeypatch: pytest.MonkeyPatch | None = None,
+    tmp_path: Path | None = None,
 ) -> QueryResult:
     contract = _platinum_contract(gold, receipt)
     binding = _binding(contract)
@@ -840,6 +895,16 @@ def _query_synthetic_platinum(
             )
             requests.clear()
 
+            if monkeypatch is not None and tmp_path is not None:
+                _exercise_benefits_cli(
+                    resolver,
+                    resource_id,
+                    columns,
+                    page,
+                    (monkeypatch, tmp_path),
+                )
+                requests.clear()
+
         return _exercise_query_cache(
             resolver, resource.resource_id, requests, columns=columns
         )
@@ -848,6 +913,7 @@ def _query_synthetic_platinum(
 @pytest.mark.e2e
 def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Verify exact synthetic lineage through each layer without publication."""
     raw = _payload()
@@ -870,7 +936,9 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     silver, nodes, gold = _silver_gold_products(
         landed.payload_path.read_bytes(), landed.receipt
     )
-    result = _query_synthetic_platinum(gold, landed.receipt)
+    result = _query_synthetic_platinum(
+        gold, landed.receipt, monkeypatch=monkeypatch, tmp_path=tmp_path
+    )
 
     assert result.status == "available"
     assert result.rows == (
