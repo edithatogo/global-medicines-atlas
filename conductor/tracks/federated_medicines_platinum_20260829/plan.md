@@ -208,11 +208,15 @@
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register
-    it in the governed E2E lane and install the pinned Playwright browser in CI.
+    it in the governed E2E lane and install the pinned Playwright browser in
+    both the E2E and full coverage CI jobs.
     The first browser readback exposed an invalid synthetic fixture that paired
     unavailable evidence with provenance; the fixture now models available but
     non-decisive evidence. This verifies interaction behavior, not WCAG
-    conformance or representative-user acceptance.
+    conformance or representative-user acceptance. The test owns and closes
+    its synchronous browser lifecycle instead of using the pytest Playwright
+    session fixture, which interfered with unrelated asyncio-based tests in
+    the full-suite run.
 
 ## Phase 4: Federation and compatibility (AC-06)
 

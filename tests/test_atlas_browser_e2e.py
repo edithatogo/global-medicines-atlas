@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from fastapi.testclient import TestClient
+from playwright.sync_api import sync_playwright
 
 from global_medicines_atlas.atlas import create_atlas_app
 from global_medicines_atlas.product_contracts import (
@@ -150,10 +151,23 @@ def _show_response_in_browser(
 
 @pytest.mark.e2e
 @pytest.mark.timeout(90)
-def test_keyboard_medicine_selection_and_evidence_review(page: Page) -> None:
+def test_keyboard_medicine_selection_and_evidence_review() -> None:
     """Keyboard users can select a concept and inspect uncertainty evidence."""
     client = TestClient(create_atlas_app(AtlasFixtureService()))
     search_html = client.get("/", params={"concept_search": "example"}).text
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _exercise_keyboard_evidence_flow(page, client, search_html)
+        finally:
+            browser.close()
+
+
+def _exercise_keyboard_evidence_flow(
+    page: Page, client: TestClient, search_html: str
+) -> None:
+    """Run the interaction checks inside one explicitly bounded browser."""
     _show_response_in_browser(page, client, search_html)
 
     search = page.get_by_role("combobox", name="Medicine name or identifier")
