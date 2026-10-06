@@ -119,6 +119,19 @@ def test_v2_response_preserves_five_dimension_conclusions() -> None:
     assert (
         response.conclusions[0].dimension is V2EvidenceDimension.SERVICE_BENEFIT
     )
+    context = response.conclusions[0].evidence_context
+    assert context.schema_era is None
+    assert context.comparison_cohort == "unknown"
+    assert context.entity_granularity == "unknown"
+    assert context.review_state == "not_reported"
+    assert response.model_dump(mode="json")["conclusions"][0][
+        "evidence_context"
+    ] == {
+        "schema_era": None,
+        "comparison_cohort": "unknown",
+        "entity_granularity": "unknown",
+        "review_state": "not_reported",
+    }
 
 
 def test_v2_response_rejects_inconsistent_page_count() -> None:

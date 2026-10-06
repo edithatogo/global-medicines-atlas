@@ -158,6 +158,12 @@ def test_comparison_preserves_unknown_without_negative_status() -> None:
     assert conclusion["state"] == "unknown"
     assert conclusion["status_code"] is None
     assert conclusion["evidence_availability"] == "unavailable"
+    assert conclusion["evidence_context"] == {
+        "schema_era": None,
+        "comparison_cohort": "unknown",
+        "entity_granularity": "unknown",
+        "review_state": "not_reported",
+    }
     assert service.comparison_query is not None
     assert service.comparison_query.jurisdictions == ("NZ", "AU")
     assert response.headers["cache-control"].startswith("public")
@@ -175,6 +181,7 @@ def test_evidence_drill_down_exposes_source_and_native_terminology() -> None:
     assert evidence["assertion_id"] == "a-nz-reg"
     assert evidence["terminology"]["native_system"] == "Medsafe"
     assert evidence["provenance"]["source_uri"].startswith("https://")
+    assert evidence["evidence_context"]["comparison_cohort"] == "unknown"
     assert service.evidence_query is not None
 
 

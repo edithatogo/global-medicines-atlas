@@ -267,6 +267,19 @@ def test_comparisons_preserve_dimensions_and_explicit_absent_states(
     assert ("US", "funding") not in values
     assert values["NZ", "regulatory"].terminology.native_system == "Medsafe"
     assert values["NZ", "regulatory"].provenance[0].source_sha256 == "a" * 64
+    assert values["NZ", "regulatory"].evidence_context.schema_era is None
+    assert (
+        values["NZ", "regulatory"].evidence_context.comparison_cohort
+        == "unknown"
+    )
+    assert (
+        values["NZ", "regulatory"].evidence_context.entity_granularity
+        == "unknown"
+    )
+    assert (
+        values["NZ", "regulatory"].evidence_context.review_state
+        == "not_reported"
+    )
     assert response.validity
     assert all(
         item.outcome.value == "insufficient_evidence"
