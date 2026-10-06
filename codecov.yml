@@ -14,6 +14,11 @@ coverage:
         target: 90.01%
         threshold: 0%
 
+codecov:
+  notify:
+    # Six parallel lane reports are partial; wait for the full-suite report too.
+    after_n_builds: 7
+
 flags:
   unit:
     carryforward: false
