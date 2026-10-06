@@ -150,6 +150,12 @@
   complete producer denominator. (`620aaf7`; 123 focused federation tests pass,
   new module 100% coverage; full harness and hosted qualification pending.
   Receipt admission and live producer integration remain open.)
+  - [x] Strictly load the bounded synthetic-only producer inventory and
+    reconcile every Bronze/Silver/Gold/Platinum row against a matching pinned
+    v4 contract; reject a partial object or contract denominator. Local E2E
+    uses no network or source bytes, and the inventory is explicitly
+    non-publishable. Full hosted qualification and real producer integration
+    remain open.
 - [x] Reject duplicate JSON member names consistently at v4 distribution,
   admission, reader, receipt-closure, and consumer boundaries. Three synthetic
   regressions failed before the shared strict parser; 436 affected federation

@@ -9,15 +9,27 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal, cast
 
 from jsonschema import Draft202012Validator, FormatChecker, ValidationError
+from pydantic import (
+    ConfigDict,
+    Field,
+    model_validator,
+)
+from pydantic import (
+    ValidationError as PydanticValidationError,
+)
 
 from .federation import validate_federation_semantics
 from .federation_reader import METADATA_BYTES, SCHEMA_SHA256
+from .models import FrozenModel
 from .strict_json import unique_json_object
+
+_REPOSITORY = re.compile(r"[^/\s]+/[^/\s]+")
 
 
 @dataclass(frozen=True)
@@ -43,6 +55,121 @@ class DistributionBinding:
     dataset: str
     revision: str
     contract_sha256: str
+
+
+class _SyntheticInventoryObject(FrozenModel):
+    """One synthetic object row from the complete producer fixture."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid", strict=True)
+
+    source_id: str = Field(min_length=1, max_length=2048)
+    acquisition_id: str = Field(min_length=1, max_length=2048)
+    layer: Literal["bronze", "silver", "gold", "platinum"]
+    bronze_stratum: Literal["B0", "B1", "B2"] | None
+    path: str = Field(min_length=1, max_length=2048)
+    sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    byte_count: int = Field(gt=0, strict=True)
+
+    @model_validator(mode="after")
+    def validate_layer_and_path(self) -> _SyntheticInventoryObject:
+        if (self.layer == "bronze") != (self.bronze_stratum is not None):
+            raise ValueError("Bronze stratum must exist only for Bronze")
+        parts = self.path.split("/")
+        if (
+            not self.path.startswith(f"{self.layer}/")
+            or "\\" in self.path
+            or any(part in {"", ".", ".."} for part in parts)
+        ):
+            raise ValueError("producer object path is invalid")
+        return self
+
+
+class _SyntheticInventoryDocument(FrozenModel):
+    """Strict local-only shape of the synthetic producer denominator."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid", strict=True)
+
+    schema_id: Literal["global-medicines-atlas.synthetic-producer-inventory"]
+    schema_version: Literal[1]
+    producer_repository: str = Field(min_length=1, max_length=512)
+    dataset: str = Field(min_length=1, max_length=512)
+    evidence_kind: Literal["synthetic"]
+    publishable: Literal[False]
+    objects: tuple[_SyntheticInventoryObject, ...] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_identities(self) -> _SyntheticInventoryDocument:
+        if (
+            _REPOSITORY.fullmatch(self.producer_repository) is None
+            or _REPOSITORY.fullmatch(self.dataset) is None
+        ):
+            raise ValueError("producer repository or dataset is invalid")
+        keys = {
+            (
+                obj.source_id,
+                obj.acquisition_id,
+                obj.layer,
+                obj.path,
+            )
+            for obj in self.objects
+        }
+        if len(keys) != len(self.objects):
+            raise ValueError("duplicate producer object identity")
+        paths = {obj.path for obj in self.objects}
+        if len(paths) != len(self.objects):
+            raise ValueError("duplicate producer object path")
+        return self
+
+
+@dataclass(frozen=True)
+class SyntheticProducerInventory:
+    """Complete non-publishable synthetic producer denominator."""
+
+    producer_repository: str
+    dataset: str
+    objects: tuple[ProducedObject, ...]
+    publishable: Literal[False] = False
+
+
+def load_synthetic_producer_inventory(raw: bytes) -> SyntheticProducerInventory:
+    """Parse the bounded, strict synthetic producer inventory without I/O."""
+    if type(raw) is not bytes or not raw or len(raw) > METADATA_BYTES:
+        raise ValueError("synthetic producer inventory exceeds metadata budget")
+    try:
+        value: Any = json.loads(raw, object_pairs_hook=unique_json_object)
+    except ValueError, TypeError:
+        raise ValueError("invalid synthetic producer inventory") from None
+    if isinstance(value, dict):
+        document_value = cast("dict[str, Any]", value)
+        objects = document_value.get("objects")
+        if isinstance(objects, list):
+            object_rows = cast("list[Any]", objects)
+            value = cast(
+                "Any", {**document_value, "objects": tuple(object_rows)}
+            )
+    try:
+        document = _SyntheticInventoryDocument.model_validate(value)
+    except PydanticValidationError:
+        raise ValueError("invalid synthetic producer inventory") from None
+    objects = tuple(
+        ProducedObject(
+            producer_repository=document.producer_repository,
+            source_id=item.source_id,
+            acquisition_id=item.acquisition_id,
+            layer=item.layer,
+            bronze_stratum=item.bronze_stratum,
+            path=item.path,
+            sha256=item.sha256,
+            byte_count=item.byte_count,
+            evidence_kind=document.evidence_kind,
+        )
+        for item in document.objects
+    )
+    return SyntheticProducerInventory(
+        producer_repository=document.producer_repository,
+        dataset=document.dataset,
+        objects=objects,
+    )
 
 
 def reconcile_distribution(
