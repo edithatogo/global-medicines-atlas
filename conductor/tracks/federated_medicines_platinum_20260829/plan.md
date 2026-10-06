@@ -425,7 +425,15 @@
     response preserves the exact Gold digest and source/evidence-edge identity,
     and coverage/comparison remain `not_declared`/`not_evaluated`. The two
     medallion tests and governed 31-test E2E lane pass; no source bytes or
-    production admission are involved. This is synthetic API integration only.
+    production admission are involved. PR #846 merged as
+    `292b9719147796866cf059b3576f928ff9ed0eb8` after 38 hosted checks passed.
+    This is synthetic API integration only.
+  - [x] Exercise the same synthetic MBS Gold edge through `gma benefits` and
+    compare rows, identity, page/window digests, and conservative coverage and
+    comparison states with the API response. Focused medallion tests (2), the
+    governed E2E lane (31), routine checks, Ruff, `ty`, and BasedPyright pass;
+    the four existing optional `huggingface_hub` source warnings remain.
+    No source acquisition, production admission, or publication is involved.
   - [x] Run all local full-profile components on 2026-10-06 with the pinned
     temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
     and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317
