@@ -401,6 +401,11 @@
 - [~] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
   coverage, security, provenance, rights, regeneration, and full Test-Goblin
   lanes where supported.
+  - [x] Extend the synthetic Bronze-to-Platinum end-to-end qualification to
+    query remotely, reproduce from its verified offline cache, prove explicit
+    unavailability after eviction, and refetch the same result. The synthetic
+    contract expiry is bound beyond the fixed qualification clock; no source
+    data or publication is involved.
   - [x] Run all local full-profile components on 2026-10-06 with the pinned
     temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
     and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317
