@@ -225,7 +225,7 @@
     regression. PR #824 merged as `c98ab6b0` after all 39 hosted checks passed;
     Linux mutation killed 1,889/2,256 (83.7323%), above the immutable baseline.
     The broader checkpoint and production source qualification remain open.
-  - [~] Give the additive v2 comparison endpoint explicit pairwise validity
+  - [x] Give the additive v2 comparison endpoint explicit pairwise validity
     and report whether pagination makes that validity set complete. The v2
     envelope currently returns cross-jurisdiction conclusions without a
     validity result; no evidence-backed compatibility dimensions are
@@ -233,12 +233,17 @@
     intended-red service test confirmed `validity_completeness` was absent.
     Runtime validity now binds each pair to both subject contexts, enforces
     complete pair coverage for non-paginated results, and identifies paged
-    outputs as partial. Forty-three focused contract/query/API/Atlas tests,
-    routine, `ty`, and BasedPyright pass. The full local profile's pytest lane
-    passed 5,929 tests at 96.80% coverage but exited 1 on two reproducibility
-    probes requiring pinned `uv 0.11.29` while this machine has `0.12.23`; the
-    optional PyIceberg test skipped. Exact-head hosted qualification remains
-    pending.
+    outputs as partial. PR #825 merged as `caf05e700e3d77d2076837de6498a36cb5c3d7ac`
+    after all 39 hosted checks passed; Codecov reported 100.00% patch coverage
+    against the 90.01% target, and the full hosted profile passed 5,931 tests
+    with one optional skip at 96.80% coverage. The focused source-neutral result
+    surface matrix subsequently passed 224 tests; `test_goblin.py routine`
+    passed. A deliberately forged BenefitsPage in its fail-closed regression
+    emits a Pydantic serializer warning before revalidation rejects it; it does
+    not bypass the transport boundary. This completes the v2 pairwise validity
+    subtask only. The broader all-result-types checkpoint, production source
+    qualification, source coverage, representative-user acceptance, WCAG
+    conformance, and release gates remain open.
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
