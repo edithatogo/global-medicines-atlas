@@ -7,8 +7,10 @@ import io
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from typing import Literal
 
 import httpx
+import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from test_support.federation import admission_record
@@ -18,6 +20,7 @@ from global_medicines_atlas.bronze_landing import land_bronze_payload
 from global_medicines_atlas.federation_distribution import (
     DistributionBinding,
     ProducedObject,
+    load_synthetic_producer_inventory,
     reconcile_distribution,
 )
 from global_medicines_atlas.mbs_gold_graph import (
@@ -173,6 +176,135 @@ def _platinum_contract(payload: bytes, receipt: SourceReceipt) -> bytes:
     return json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
 
 
+def _distribution_contract(
+    payload: bytes,
+    receipt: SourceReceipt,
+    *,
+    layer: Literal["bronze", "silver", "gold", "platinum"],
+    path: str,
+    bronze_stratum: Literal["B0", "B1", "B2"] | None = None,
+) -> bytes:
+    """Build a non-publishable v4 identity for one actual E2E output."""
+    document = json.loads(
+        (ROOT / "contracts/medallion/v4/fixtures/valid.json").read_bytes()
+    )
+    digest = hashlib.sha256(payload).hexdigest()
+    temporal = require_temporal(receipt.temporal)
+    document["authority"]["producer_repository"] = (
+        "edithatogo/global-medicines-atlas"
+    )
+    document["publication"]["run"] = (
+        "https://github.com/edithatogo/global-medicines-atlas/actions/runs/1"
+    )
+    document["source"].update(
+        source_id=SOURCE_ID,
+        acquisition_id=temporal.acquisition_id,
+        layer=layer,
+        bronze_stratum=bronze_stratum,
+        representation="projection",
+        schema_era="synthetic-e2e-v1",
+        comparison_cohort="synthetic",
+        effective_date=None,
+        retrieved_at=NOW.isoformat().replace("+00:00", "Z"),
+    )
+    for group in ("location", "verification", "rights"):
+        document[group].update(
+            dataset="example/australian-benefits-synthetic",
+            path=path,
+        )
+    for group in ("location", "verification"):
+        document[group].update(bytes=len(payload), sha256=digest)
+    document["verification"]["verified_at"] = NOW.isoformat().replace(
+        "+00:00", "Z"
+    )
+    document["rights"]["subject_sha256"] = digest
+    document["lineage"]["inputs"] = [
+        {
+            "url": "https://fixtures.invalid/receipts/source.json",
+            "sha256": receipt.digest(),
+        }
+    ]
+    if layer != "bronze":
+        document["lineage"]["promotion_receipt"] = document["verification"][
+            "receipt"
+        ]
+    document["cache"]["offline_behavior"] = "verified_exact_digest_only"
+    document["cache"]["expires_at"] = (
+        (NOW + timedelta(days=1)).isoformat().replace("+00:00", "Z")
+    )
+    document["cache"]["max_bytes"] = max(
+        document["cache"]["max_bytes"], len(payload)
+    )
+    return json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
+
+
+def _reconcile_synthetic_outputs(
+    receipt: SourceReceipt,
+    outputs: tuple[
+        tuple[
+            Literal["bronze", "silver", "gold", "platinum"],
+            str,
+            bytes,
+            Literal["B0", "B1", "B2"] | None,
+        ],
+        ...,
+    ],
+) -> tuple[DistributionBinding, ...]:
+    """Bind actual E2E output bytes to a complete synthetic denominator."""
+    producer = "edithatogo/global-medicines-atlas"
+    dataset = "example/australian-benefits-synthetic"
+    inventory_objects: list[dict[str, object]] = []
+    contracts = []
+    for layer, path, payload, bronze_stratum in outputs:
+        digest = hashlib.sha256(payload).hexdigest()
+        inventory_objects.append({
+            "source_id": SOURCE_ID,
+            "acquisition_id": require_temporal(receipt.temporal).acquisition_id,
+            "layer": layer,
+            "bronze_stratum": bronze_stratum,
+            "path": path,
+            "sha256": digest,
+            "byte_count": len(payload),
+        })
+        contracts.append(
+            _distribution_contract(
+                payload,
+                receipt,
+                layer=layer,
+                path=path,
+                bronze_stratum=bronze_stratum,
+            )
+        )
+    inventory = load_synthetic_producer_inventory(
+        json.dumps(
+            {
+                "schema_id": (
+                    "global-medicines-atlas.synthetic-producer-inventory"
+                ),
+                "schema_version": 1,
+                "producer_repository": producer,
+                "dataset": dataset,
+                "evidence_kind": "synthetic",
+                "publishable": False,
+                "objects": inventory_objects,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    )
+    assert inventory.publishable is False
+    return reconcile_distribution(
+        inventory.objects,
+        contracts,
+        schema=(
+            ROOT / "contracts/medallion/v4/federation.schema.json"
+        ).read_bytes(),
+        destinations=dict.fromkeys(
+            ("bronze", "silver", "gold", "platinum"), dataset
+        ),
+    )
+
+
 def _binding(raw: bytes) -> DistributionBinding:
     document = json.loads(raw)
     source = document["source"]
@@ -230,12 +362,21 @@ def _exercise_query_cache(
     return result
 
 
+def _parquet_payload(table: pa.RecordBatch | pa.Table) -> bytes:
+    output = io.BytesIO()
+    parquet_table = (
+        table if isinstance(table, pa.Table) else pa.Table.from_batches([table])
+    )
+    pq.write_table(parquet_table, output)
+    return output.getvalue()
+
+
 def _verify_saved_research_export(
     result: QueryResult,
     source_receipt: SourceReceipt,
     resource_id: str,
     tmp_path: Path,
-) -> None:
+) -> bytes:
     revision = "a" * 40
     source = ExportSource(
         dataset_id="synthetic/mbs",
@@ -331,6 +472,73 @@ def _verify_saved_research_export(
         verify_research_export_package(saved_archive).archive_bytes()
         == saved_archive
     )
+    return saved_archive
+
+
+def _silver_gold_products(
+    payload: bytes, receipt: SourceReceipt
+) -> tuple[pa.RecordBatch, pa.Table, bytes]:
+    silver = next(iter_mbs_silver_batches(payload, receipt, table="services"))
+    assert silver.num_rows == 1
+    assert silver.column("source_sha256")[0].as_py() == receipt.payload.sha256
+
+    candidate = build_mbs_gold_graph_candidate(payload, receipt)
+    assert candidate.qualification == "synthetic_silver_candidate_only"
+    assert candidate.admission_performed is False
+    nodes, edges = project_mbs_gold_graph_arrow(candidate)
+    assert nodes.num_rows == 2
+    gold = _parquet_payload(edges)
+    assert pq.read_table(io.BytesIO(gold)).num_rows == 1
+    return silver, nodes, gold
+
+
+def _query_synthetic_platinum(
+    gold: bytes, receipt: SourceReceipt
+) -> QueryResult:
+    contract = _platinum_contract(gold, receipt)
+    binding = _binding(contract)
+    semantic = json.dumps(
+        {
+            "contract_sha256": binding.contract_sha256,
+            "entity_granularity": "evidence_edge",
+            "resource_id": "au.mbs.synthetic.edges",
+            "semantic_dimension": "service_benefit",
+            "version": "1.0",
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    resource = ProductResource(
+        resource_id="au.mbs.synthetic.edges",
+        semantic_dimension="service_benefit",
+        entity_granularity="evidence_edge",
+        binding=binding,
+        contract=contract,
+        semantic_manifest=semantic,
+    )
+    requests: list[httpx.Request] = []
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        if "/api/datasets/" in request.url.path:
+            return httpx.Response(
+                200, json={"sha": "a" * 40, "private": False, "gated": False}
+            )
+        return httpx.Response(200, content=gold)
+
+    with StorageNeutralResolver(
+        schema=(
+            ROOT / "contracts/medallion/v4/federation.schema.json"
+        ).read_bytes(),
+        resources=[resource],
+        admission_records=(admission_record(contract),),
+        admitted_semantic_manifests=frozenset({
+            hashlib.sha256(semantic).hexdigest()
+        }),
+        transport_factory=lambda: httpx.MockTransport(handle),
+        clock=lambda: NOW,
+    ) as resolver:
+        return _exercise_query_cache(resolver, resource.resource_id, requests)
 
 
 @pytest.mark.e2e
@@ -355,73 +563,10 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     assert landed.receipt.rights_state is RightsState.UNKNOWN
     assert landed.receipt.satisfies_live_gate is False
 
-    silver = next(
-        iter_mbs_silver_batches(
-            landed.payload_path.read_bytes(), landed.receipt, table="services"
-        )
-    )
-    assert silver.num_rows == 1
-    assert (
-        silver.column("source_sha256")[0].as_py()
-        == landed.receipt.payload.sha256
-    )
-
-    candidate = build_mbs_gold_graph_candidate(
+    silver, nodes, gold = _silver_gold_products(
         landed.payload_path.read_bytes(), landed.receipt
     )
-    assert candidate.qualification == "synthetic_silver_candidate_only"
-    assert candidate.admission_performed is False
-    nodes, edges = project_mbs_gold_graph_arrow(candidate)
-    edge_sink = io.BytesIO()
-    pq.write_table(edges, edge_sink)
-    gold = edge_sink.getvalue()
-    assert pq.read_table(io.BytesIO(gold)).num_rows == 1
-
-    contract = _platinum_contract(gold, landed.receipt)
-    binding = _binding(contract)
-    semantic = json.dumps(
-        {
-            "contract_sha256": binding.contract_sha256,
-            "entity_granularity": "evidence_edge",
-            "resource_id": "au.mbs.synthetic.edges",
-            "semantic_dimension": "service_benefit",
-            "version": "1.0",
-        },
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode()
-    resource = ProductResource(
-        resource_id="au.mbs.synthetic.edges",
-        semantic_dimension="service_benefit",
-        entity_granularity="evidence_edge",
-        binding=binding,
-        contract=contract,
-        semantic_manifest=semantic,
-    )
-
-    requests: list[httpx.Request] = []
-
-    def handle(request: httpx.Request) -> httpx.Response:
-        requests.append(request)
-        if "/api/datasets/" in request.url.path:
-            return httpx.Response(
-                200, json={"sha": "a" * 40, "private": False, "gated": False}
-            )
-        return httpx.Response(200, content=gold)
-
-    with StorageNeutralResolver(
-        schema=(
-            ROOT / "contracts/medallion/v4/federation.schema.json"
-        ).read_bytes(),
-        resources=[resource],
-        admission_records=(admission_record(contract),),
-        admitted_semantic_manifests=frozenset({
-            hashlib.sha256(semantic).hexdigest()
-        }),
-        transport_factory=lambda: httpx.MockTransport(handle),
-        clock=lambda: NOW,
-    ) as resolver:
-        result = _exercise_query_cache(resolver, resource.resource_id, requests)
+    result = _query_synthetic_platinum(gold, landed.receipt)
 
     assert result.status == "available"
     assert result.rows == (
@@ -434,11 +579,48 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
         == require_temporal(landed.receipt.temporal).acquisition_id
     )
     assert result.query_receipt.result_sha256 == result.result_sha256
-    assert nodes.num_rows == 2
-
-    _verify_saved_research_export(
+    export_package = _verify_saved_research_export(
         result=result,
         source_receipt=landed.receipt,
-        resource_id=resource.resource_id,
+        resource_id="au.mbs.synthetic.edges",
         tmp_path=tmp_path,
     )
+    bindings = _reconcile_synthetic_outputs(
+        landed.receipt,
+        (
+            (
+                "bronze",
+                "bronze/receipts/source.json",
+                landed.receipt.canonical_json(),
+                "B1",
+            ),
+            (
+                "silver",
+                "silver/mbs-services.parquet",
+                _parquet_payload(silver),
+                None,
+            ),
+            (
+                "gold",
+                "gold/mbs-nodes.parquet",
+                _parquet_payload(nodes),
+                None,
+            ),
+            ("gold", "gold/mbs-edges.parquet", gold, None),
+            (
+                "platinum",
+                "platinum/research-export.zip",
+                export_package,
+                None,
+            ),
+        ),
+    )
+    assert len(bindings) == 5
+    assert {item.object.layer for item in bindings} == {
+        "bronze",
+        "silver",
+        "gold",
+        "platinum",
+    }
+    assert all(item.object.evidence_kind == "synthetic" for item in bindings)
+    assert all(item.revision == "a" * 40 for item in bindings)
