@@ -1947,3 +1947,11 @@
   added, and no semantic validation, admission, or licensing conclusion
   changed. See
   `quality/qualifications/australian-mbs-utilisation-header-inventory-20261006.json`.
+
+- [~] Implement bounded, source-value diagnostics for only these four
+  exact-reference standalone CSVs. Synthetic tests must cover strict UTF-8/BOM
+  handling, rectangular rows, exact decimal observation (including signed
+  service totals), missing-cell counts, and digest-bound results. Hosted output
+  may expose aggregate counts and reviewed headers only; it must not expose row
+  values, select semantic mappings, publish Silver, or grant processing
+  admission. No new source identities, revisions, or objects enter this task.

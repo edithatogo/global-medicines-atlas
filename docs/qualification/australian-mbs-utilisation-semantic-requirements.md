@@ -85,18 +85,18 @@ policy or a claim that semantic tests have passed.
 
 ## Next bounded implementation
 
-Implement an exact-reference hosted header inventory for the four standalone
-CSV objects already structurally verified. Check immutable byte identity;
-read the header only; emit source-native header metadata, its canonical
-digest and field count, with no data records or source-cell values. Compare
-candidate schema eras explicitly and preserve unexpected fields internally.
-Public receipts may name only fields already published in the reviewed
-catalogue metadata; unexpected header tokens produce a digest and counts
-instead of arbitrary text. Selection
-must join the reviewed cohort and prior structural receipts, use the existing
-protected environment and acquisition concurrency, and record independent
-outcomes before cleanup.
+The exact-reference hosted header inventory for the four standalone CSV
+objects is complete. Next, add a bounded source-value observer for only those
+four pinned objects. Recheck immutable byte identity and the reviewed headers;
+count records, row-width outcomes, missing cells, and exact-decimal parse
+outcomes while preserving signed service values as observations. Keep category
+and identifier values inside the worker. Public receipts may contain reviewed
+headers and aggregate counts only; they must not contain row values, select
+semantic mappings, publish Silver, or grant processing admission. Reuse the
+existing protected environment, acquisition concurrency and independent
+receipt-before-cleanup discipline. No source identities, revisions, or objects
+may be added to the reviewed cohort.
 
-That first step selects no ZIP or workbook and grants no processing admission.
-Worksheet semantic inventory and archive-member metadata qualification follow
-under their own bounded profiles. Both oversized ZIP holds remain unchanged.
+This diagnostic step remains separate from semantic qualification and
+admission. No ZIP or workbook is selected; both oversized ZIP holds remain
+unchanged.
