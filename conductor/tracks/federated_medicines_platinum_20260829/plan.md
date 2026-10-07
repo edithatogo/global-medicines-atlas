@@ -307,6 +307,10 @@
     including all 28 required branch-protection contexts and 100% Codecov patch
     coverage. Representative-user acceptance remains open at the parent
     checkpoint.
+  - [~] Expose existing PBS `source_structure` Gold edges through a separate
+    pinned Atlas view with v2 identity, an anonymous bounded query, verified
+    cache reuse, and explicit non-equivalence wording. Track issue #850; no
+    source acquisition, admission, or publication is part of this task.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register
