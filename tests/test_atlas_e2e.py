@@ -13,6 +13,10 @@ from global_medicines_atlas.atlas import (
     create_atlas_app,
     create_source_backed_v2_atlas_app,
 )
+from global_medicines_atlas.platinum_benefits import BenefitsQuery
+from global_medicines_atlas.platinum_identity_service import (
+    UnknownPlatinumResourceError,
+)
 from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -225,14 +229,21 @@ def test_atlas_can_render_all_five_v2_dimensions() -> None:
 def test_source_backed_v2_atlas_factory_renders_all_dimensions(
     tmp_path: Path,
 ) -> None:
+    class UnusedBenefits:
+        def query(self, resource_id: str, query: BenefitsQuery):
+            del resource_id, query
+            raise AssertionError("landing page must not query benefits")
+
     database = _catalog_database(tmp_path / "atlas.duckdb")
-    response = TestClient(
+    client = TestClient(
         create_source_backed_v2_atlas_app(
             database,
             cursor_secret=SECRET,
             allowed_root=tmp_path,
+            federated_benefits=UnusedBenefits(),
         )
-    ).get(
+    )
+    response = client.get(
         "/",
         params={
             "concept_id": "gma:aspirin",
@@ -245,6 +256,40 @@ def test_source_backed_v2_atlas_factory_renders_all_dimensions(
     assert response.status_code == 200
     for dimension in V2EvidenceDimension:
         assert dimension.value in response.text
+    assert 'href="/federated/benefits"' in response.text
+    benefits_landing = client.get("/federated/benefits")
+    assert benefits_landing.status_code == 200
+    assert "Choose a pinned evidence resource" in benefits_landing.text
+
+
+def test_federated_benefits_atlas_fails_closed_on_invalid_and_unknown_queries():
+    class MissingBenefits:
+        def query(self, resource_id: str, query: BenefitsQuery):
+            del resource_id, query
+            raise UnknownPlatinumResourceError
+
+    client = TestClient(
+        create_atlas_app(StateService(), federated_benefits=MissingBenefits())
+    )
+    base = {
+        "resource_id": "au.mbs.missing",
+        "columns": "item_code",
+    }
+
+    invalid = client.get(
+        "/federated/benefits",
+        params={
+            **base,
+            "filters": '[{"column":"item_code","column":"other",'
+            '"operator":"=","value":"100"}]',
+        },
+    )
+    assert invalid.status_code == 422
+    assert "The federated benefits query is invalid." in invalid.text
+
+    missing = client.get("/federated/benefits", params=base)
+    assert missing.status_code == 404
+    assert "The admitted benefits resource was not found." in missing.text
 
 
 def test_hostile_values_are_escaped_and_unsafe_links_are_not_clickable():

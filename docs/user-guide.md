@@ -67,6 +67,16 @@ path, a deployment-owned cursor secret, and an allowed root, then pass it to
 deployment authentication, TLS, rate limiting, monitoring, and recovery remain
 operator responsibilities rather than claims made by this repository.
 
+To expose the pinned benefits evidence view in the source-backed Atlas, pass an
+already-configured `BenefitsLookup` to
+`create_source_backed_v2_atlas_app(..., federated_benefits=reader)`. The home
+page then links to `/federated/benefits`, where a user can query an admitted
+resource by its exact identifier. The page renders bounded source rows and
+their pinned identity and provenance; those rows are not funding, regulatory,
+formulary, terminology, or clinical conclusions. The factory does not perform
+admission or source acquisition, and this wiring does not establish complete
+coverage or a hosted production service.
+
 ## Interpret comparisons and abstentions
 
 Regulatory approval and public funding are separate evidence dimensions. A

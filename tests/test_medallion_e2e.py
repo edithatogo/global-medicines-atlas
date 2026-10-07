@@ -20,6 +20,7 @@ from typer.testing import CliRunner
 
 from global_medicines_atlas import platinum_configuration
 from global_medicines_atlas.api import create_app
+from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
 from global_medicines_atlas.bronze_admission import BronzeAdmissionState
 from global_medicines_atlas.bronze_landing import land_bronze_payload
 from global_medicines_atlas.cli import app as cli_app
@@ -893,6 +894,47 @@ def _query_synthetic_platinum(
                 f"/datasets/{binding.dataset}/resolve/{binding.revision}/"
                 f"{binding.object.path}"
             )
+
+            atlas = TestClient(
+                create_atlas_app(
+                    cast("AtlasQueryService", object()),
+                    federated_benefits=BenefitsService(
+                        resolver,
+                        cursor_key=b"synthetic-e2e-atlas-cursor-key-32-bytes",
+                    ),
+                )
+            )
+            atlas_response = atlas.get(
+                "/federated/benefits",
+                params={
+                    "resource_id": resource_id,
+                    "columns": "kind,inferred",
+                    "limit": "1",
+                },
+            )
+            assert atlas_response.status_code == 200
+            for detail in (
+                resource_id,
+                binding.revision,
+                binding.object.path,
+                hashlib.sha256(gold).hexdigest(),
+                "service_benefit",
+                "evidence_edge",
+                "source_record_has_benefit",
+                "not declared",
+                "not evaluated",
+                "Acquisition",
+                "Schema era",
+                "Contract SHA-256",
+                "Semantic manifest SHA-256",
+                "Retrieved at",
+                "Cache expires at",
+                "Query SHA-256",
+                "Page SHA-256",
+                "Window SHA-256",
+                "Query receipt SHA-256",
+            ):
+                assert detail in atlas_response.text
             requests.clear()
 
             if monkeypatch is not None and tmp_path is not None:

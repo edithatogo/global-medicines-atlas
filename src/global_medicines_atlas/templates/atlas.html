@@ -12,6 +12,9 @@
       <p class="eyebrow">Evidence-backed comparison</p>
       <h1>Global Medicines Atlas</h1>
       <p>Compare regulatory and funding evidence without treating missing data as a negative result.</p>
+      {% if has_federated_benefits %}
+        <p><a href="/federated/benefits">Browse pinned benefit evidence</a></p>
+      {% endif %}
     </header>
     <main id="atlas-results" tabindex="-1">
       <section aria-labelledby="comparison-heading">

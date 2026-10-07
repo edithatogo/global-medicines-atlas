@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Federated benefit evidence — Global Medicines Atlas</title>
+    <link rel="stylesheet" href="/static/atlas.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#atlas-results">Skip to benefit evidence</a>
+    <header>
+      <p class="eyebrow">Pinned federated evidence</p>
+      <h1>Australian benefit evidence</h1>
+      <p>This view shows bounded source evidence from an admitted immutable dataset identity.</p>
+    </header>
+    <main id="atlas-results" tabindex="-1">
+      <section aria-labelledby="query-heading">
+        <h2 id="query-heading">Choose a pinned evidence resource</h2>
+        <form method="get" action="/federated/benefits">
+          <div class="form-grid">
+            <label for="resource-id">Resource identifier</label>
+            <input id="resource-id" name="resource_id" value="{{ resource_id }}" maxlength="256" required>
+            <label for="columns">Source columns, comma separated</label>
+            <input id="columns" name="columns" value="{{ columns }}" maxlength="8192" required>
+            <label for="limit">Rows per page</label>
+            <input id="limit" name="limit" type="number" min="1" max="100" value="{{ limit }}">
+            <label for="filters">Optional bounded filters (JSON array)</label>
+            <input id="filters" name="filters" value="{{ filters }}" maxlength="16384">
+          </div>
+          {% if cursor %}<input type="hidden" name="cursor" value="{{ cursor }}">{% endif %}
+          <label><input type="checkbox" name="offline" value="true" {% if offline %}checked{% endif %}> Use verified cache only</label>
+          <button type="submit">Read pinned evidence</button>
+        </form>
+      </section>
+
+      {% if error %}
+        <section class="notice error" role="alert" aria-labelledby="error-heading">
+          <h2 id="error-heading">Federated evidence unavailable</h2>
+          <p>{{ error }}</p>
+        </section>
+      {% endif %}
+
+      {% if page %}
+        {% if page.status == "unavailable" %}
+          <section class="notice" role="status" aria-labelledby="unavailable-heading">
+            <h2 id="unavailable-heading">Pinned evidence unavailable</h2>
+            <p>{{ page.reason or "No verified evidence page is available." }}</p>
+          </section>
+        {% else %}
+          <section aria-labelledby="identity-heading">
+            <h2 id="identity-heading">Exact evidence identity</h2>
+            <dl>
+              <div><dt>Resource</dt><dd>{{ page.identity.resource_id }}</dd></div>
+              <div><dt>Source</dt><dd>{{ page.identity.source_id }}</dd></div>
+              <div><dt>Acquisition</dt><dd>{{ page.identity.acquisition_id }}</dd></div>
+              <div><dt>Layer</dt><dd>{{ page.identity.layer }}</dd></div>
+              <div><dt>Schema era</dt><dd>{{ page.identity.schema_era }}</dd></div>
+              <div><dt>Comparison cohort</dt><dd>{{ page.identity.comparison_cohort }}</dd></div>
+              <div><dt>Effective date</dt><dd>{{ page.identity.effective_date or "Not reported" }}</dd></div>
+              <div><dt>Dataset revision</dt><dd><code>{{ page.identity.dataset }}@{{ page.identity.revision }}</code></dd></div>
+              <div><dt>Object path</dt><dd><code>{{ page.identity.path }}</code></dd></div>
+              <div><dt>Object SHA-256</dt><dd><code>{{ page.identity.object_sha256 }}</code></dd></div>
+              <div><dt>Contract SHA-256</dt><dd><code>{{ page.identity.contract_sha256 }}</code></dd></div>
+              <div><dt>Semantic manifest SHA-256</dt><dd><code>{{ page.identity.semantic_manifest_sha256 }}</code></dd></div>
+              <div><dt>Retrieved at</dt><dd><time datetime="{{ page.identity.retrieved_at }}">{{ page.identity.retrieved_at }}</time></dd></div>
+              <div><dt>Cache expires at</dt><dd><time datetime="{{ page.identity.cache_expires_at }}">{{ page.identity.cache_expires_at }}</time></dd></div>
+              <div><dt>Semantic dimension</dt><dd><code>{{ page.identity.semantic_dimension }}</code></dd></div>
+              <div><dt>Entity granularity</dt><dd><code>{{ page.identity.entity_granularity }}</code></dd></div>
+              <div><dt>Coverage</dt><dd>{{ page.coverage_state | replace("_", " ") }}</dd></div>
+              <div><dt>Comparison validity</dt><dd>{{ page.comparison_validity | replace("_", " ") }}</dd></div>
+              <div><dt>Query SHA-256</dt><dd><code>{{ page.query_sha256 }}</code></dd></div>
+              <div><dt>Page SHA-256</dt><dd><code>{{ page.page_sha256 or "Not available" }}</code></dd></div>
+              <div><dt>Window SHA-256</dt><dd><code>{{ page.window_sha256 or "Not available" }}</code></dd></div>
+              <div><dt>Query receipt SHA-256</dt><dd><code>{{ page.receipt_sha256 }}</code></dd></div>
+            </dl>
+            <p class="notice">These source evidence rows do not establish a medicine funding, formulary, regulatory, or terminology conclusion. Missing coverage is not negative evidence.</p>
+          </section>
+
+          <section aria-labelledby="rows-heading">
+            <h2 id="rows-heading">Bounded source evidence</h2>
+            {% if page.rows %}
+              <div class="table-scroll" role="region" aria-label="Federated evidence rows" tabindex="0">
+                <table>
+                  <thead><tr>{% for column in page.rows[0].keys() %}<th scope="col">{{ column }}</th>{% endfor %}</tr></thead>
+                  <tbody>{% for row in page.rows %}<tr>{% for value in row.values() %}<td><code>{{ value }}</code></td>{% endfor %}</tr>{% endfor %}</tbody>
+                </table>
+              </div>
+            {% else %}
+              <p class="notice" role="status">No rows were returned for this bounded query.</p>
+            {% endif %}
+            <p>Returned {{ page.rows | length }} rows from a {{ page.window_limit }} row query window. {{ "The verified window is complete." if page.window_complete else "The verified window limit was reached; source completeness is not established." }}</p>
+            {% if page.next_cursor %}
+              <p><a href="/federated/benefits?resource_id={{ resource_id | urlencode }}&amp;columns={{ columns | urlencode }}&amp;limit={{ limit }}&amp;filters={{ filters | urlencode }}&amp;cursor={{ page.next_cursor | urlencode }}{% if offline %}&amp;offline=true{% endif %}">Read the next page</a></p>
+            {% endif %}
+          </section>
+        {% endif %}
+      {% endif %}
+
+      <aside aria-labelledby="limits-heading">
+        <h2 id="limits-heading">Interpretation limits</h2>
+        <p>Evidence identity and source rows are shown separately from cross-jurisdiction medicine comparisons. This fixture-qualified view does not claim complete coverage or clinical equivalence.</p>
+      </aside>
+    </main>
+    <footer><p>Global Medicines Atlas, product evidence version 0.6.</p></footer>
+  </body>
+</html>
