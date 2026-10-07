@@ -21,6 +21,11 @@ from .platinum_benefits import (
     parse_benefits_filters,
 )
 from .platinum_identity_service import UnknownPlatinumResourceError
+from .platinum_structure import (
+    SourceStructureLookup,
+    SourceStructurePage,
+    SourceStructureQuery,
+)
 from .platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -226,11 +231,12 @@ def _atlas_comparison(
     return comparison, coverage
 
 
-def create_atlas_app(
+def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration stays centralized.
     service: AtlasQueryService,
     *,
     v2_service: V2AtlasQueryService | None = None,
     federated_benefits: BenefitsLookup | None = None,
+    federated_source_structure: SourceStructureLookup | None = None,
 ) -> FastAPI:
     """Create an atlas app with explicitly injected read-only services."""
     app = FastAPI(
@@ -318,6 +324,9 @@ def create_atlas_app(
                 "coverage": coverage,
                 "error": error,
                 "has_federated_benefits": federated_benefits is not None,
+                "has_federated_source_structure": (
+                    federated_source_structure is not None
+                ),
             },
         )
 
@@ -375,6 +384,54 @@ def create_atlas_app(
                 status_code=status_code,
             )
 
+    if federated_source_structure is not None:
+
+        @app.get("/federated/source-structure", response_class=HTMLResponse)
+        def federated_source_structure_page(  # pyright: ignore[reportUnusedFunction]
+            request: Request,
+            resource_id: Annotated[str | None, Query(max_length=256)] = None,
+            columns: Annotated[str, Query(max_length=8192)] = (
+                "kind,semantic_dimension,comparison_validity,inferred"
+            ),
+            limit: Annotated[int, Query(ge=1, le=100)] = 50,
+            *,
+            offline: bool = False,
+        ) -> HTMLResponse:
+            selected_columns = tuple(
+                column.strip()
+                for column in columns.split(",")
+                if column.strip()
+            )
+            error: str | None = None
+            page: SourceStructurePage | None = None
+            status_code = 200
+            try:
+                query = SourceStructureQuery(
+                    columns=selected_columns, limit=limit, offline=offline
+                )
+                if resource_id:
+                    page = federated_source_structure.query(resource_id, query)
+            except UnknownPlatinumResourceError:
+                error = "The admitted source-structure resource was not found."
+                status_code = 404
+            except ValidationError, ValueError:
+                error = "The federated source-structure query is invalid."
+                status_code = 422
+
+            return _TEMPLATES.TemplateResponse(
+                request=request,
+                name="atlas_federated_source_structure.html",
+                context={
+                    "resource_id": resource_id or "",
+                    "columns": ",".join(selected_columns),
+                    "limit": limit,
+                    "offline": offline,
+                    "error": error,
+                    "page": page.model_dump(mode="json") if page else None,
+                },
+                status_code=status_code,
+            )
+
     return app
 
 
@@ -384,8 +441,9 @@ def create_source_backed_v2_atlas_app(
     cursor_secret: bytes,
     allowed_root: str | Path | None = None,
     federated_benefits: BenefitsLookup | None = None,
+    federated_source_structure: SourceStructureLookup | None = None,
 ) -> FastAPI:
-    """Create Atlas with the canonical service wired to all V2 dimensions."""
+    """Create Atlas with canonical V2 dimensions and federated evidence."""
     service = V2ReadOnlyQueryService(
         database_path,
         cursor_secret=cursor_secret,
@@ -395,4 +453,5 @@ def create_source_backed_v2_atlas_app(
         service,
         v2_service=service,
         federated_benefits=federated_benefits,
+        federated_source_structure=federated_source_structure,
     )

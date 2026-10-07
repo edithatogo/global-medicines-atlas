@@ -55,6 +55,7 @@ from global_medicines_atlas.platinum_resolver import (
     ProductResource,
     StorageNeutralResolver,
 )
+from global_medicines_atlas.platinum_structure import SourceStructureService
 from global_medicines_atlas.platinum_types import (
     PlatinumSemanticDimension,
 )
@@ -584,6 +585,10 @@ def _exercise_pbs_v2_identity(
             ),
         )
         response = client.get(f"/api/v2/datasets/{resource_id}")
+        assert api_requests == []
+        _exercise_pbs_source_structure_atlas(
+            resolver, resource_id, binding, payload, api_requests
+        )
 
     assert response.status_code == 200
     identity = response.json()
@@ -595,7 +600,66 @@ def _exercise_pbs_v2_identity(
     assert identity["coverage_state"] == "not_declared"
     assert identity["comparison_validity"] == "not_evaluated"
     assert identity["rows_queried"] is False
-    assert api_requests == []
+
+
+def _exercise_pbs_source_structure_atlas(
+    resolver: StorageNeutralResolver,
+    resource_id: str,
+    binding: DistributionBinding,
+    payload: bytes,
+    requests: list[httpx.Request],
+) -> None:
+    """Read PBS structure through Atlas, verified cache and eviction."""
+    atlas = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_source_structure=SourceStructureService(
+                resolver, jurisdictions={resource_id: "AU"}
+            ),
+        )
+    )
+    params = {
+        "resource_id": resource_id,
+        "columns": "kind,semantic_dimension,controls_json",
+        "limit": "10",
+    }
+    response = atlas.get("/federated/source-structure", params=params)
+    assert response.status_code == 200, response.text
+    for detail in (
+        resource_id,
+        binding.revision,
+        binding.object.path,
+        hashlib.sha256(payload).hexdigest(),
+        "source_structure",
+        "evidence_edge",
+        "source_structure_only",
+        "not declared",
+        "not evaluated",
+        "Missing coverage is not negative evidence",
+    ):
+        assert detail in response.text
+    assert [item.url.path for item in requests] == [
+        f"/api/datasets/{binding.dataset}/revision/{binding.revision}",
+        (
+            f"/datasets/{binding.dataset}/resolve/{binding.revision}/"
+            f"{binding.object.path}"
+        ),
+    ]
+    request_count = len(requests)
+    cached = atlas.get(
+        "/federated/source-structure", params={**params, "offline": "true"}
+    )
+    assert cached.status_code == 200
+    assert "source_structure_only" in cached.text
+    assert len(requests) == request_count
+    resolver.evict()
+    unavailable = atlas.get(
+        "/federated/source-structure", params={**params, "offline": "true"}
+    )
+    assert unavailable.status_code == 200
+    assert "Pinned evidence unavailable" in unavailable.text
+    assert "source_structure_only" not in unavailable.text
+    assert len(requests) == request_count
 
 
 def _binding(raw: bytes) -> DistributionBinding:

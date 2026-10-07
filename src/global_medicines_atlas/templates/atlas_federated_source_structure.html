@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Federated source structure — Global Medicines Atlas</title>
+    <link rel="stylesheet" href="/static/atlas.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#atlas-results">Skip to source-structure evidence</a>
+    <header>
+      <p class="eyebrow">Pinned federated evidence</p>
+      <h1>Source-structure evidence</h1>
+      <p>This view displays source-explicit structure from an admitted immutable dataset identity.</p>
+    </header>
+    <main id="atlas-results" tabindex="-1">
+      <section aria-labelledby="query-heading">
+        <h2 id="query-heading">Choose a pinned source-structure resource</h2>
+        <form method="get" action="/federated/source-structure">
+          <div class="form-grid">
+            <label for="resource-id">Resource identifier</label>
+            <input id="resource-id" name="resource_id" value="{{ resource_id }}" maxlength="256" required>
+            <label for="columns">Source columns, comma separated</label>
+            <input id="columns" name="columns" value="{{ columns }}" maxlength="8192" required>
+            <label for="limit">Maximum rows</label>
+            <input id="limit" name="limit" type="number" min="1" max="100" value="{{ limit }}">
+          </div>
+          <label><input type="checkbox" name="offline" value="true" {% if offline %}checked{% endif %}> Use verified cache only</label>
+          <button type="submit">Read pinned structure</button>
+        </form>
+      </section>
+      {% if error %}
+        <section class="notice error" role="alert" aria-labelledby="error-heading">
+          <h2 id="error-heading">Federated source structure unavailable</h2><p>{{ error }}</p>
+        </section>
+      {% endif %}
+      {% if page %}
+        <section aria-labelledby="identity-heading">
+          <h2 id="identity-heading">Exact v2 evidence identity</h2>
+          <dl>
+              <div><dt>Resource</dt><dd>{{ page.identity.resource_id }}</dd></div>
+              <div><dt>Source</dt><dd>{{ page.identity.source_id }}</dd></div>
+              <div><dt>Jurisdiction</dt><dd>{{ page.identity.jurisdiction }}</dd></div>
+              <div><dt>Dataset revision</dt><dd><code>{{ page.identity.dataset }}@{{ page.identity.revision }}</code></dd></div>
+              <div><dt>Acquisition</dt><dd><code>{{ page.identity.acquisition_id }}</code></dd></div>
+              <div><dt>Evidence layer</dt><dd>{{ page.identity.layer }}</dd></div>
+              <div><dt>Schema era</dt><dd>{{ page.identity.schema_era }}</dd></div>
+              <div><dt>Object path</dt><dd><code>{{ page.identity.path }}</code></dd></div>
+              <div><dt>Object SHA-256</dt><dd><code>{{ page.identity.object_sha256 }}</code></dd></div>
+              <div><dt>Object byte count</dt><dd>{{ page.identity.byte_count }}</dd></div>
+              <div><dt>Contract SHA-256</dt><dd><code>{{ page.identity.contract_sha256 }}</code></dd></div>
+              <div><dt>Semantic manifest SHA-256</dt><dd><code>{{ page.identity.semantic_manifest_sha256 }}</code></dd></div>
+              <div><dt>Semantic dimension</dt><dd><code>{{ page.identity.semantic_dimension }}</code></dd></div>
+              <div><dt>Entity granularity</dt><dd><code>{{ page.identity.entity_granularity }}</code></dd></div>
+              <div><dt>Comparison cohort</dt><dd>{{ page.identity.comparison_cohort }}</dd></div>
+              <div><dt>Effective date</dt><dd>{{ page.identity.effective_date or "Not declared" }}</dd></div>
+              <div><dt>Retrieved at</dt><dd>{{ page.identity.retrieved_at }}</dd></div>
+              <div><dt>Cache expires at</dt><dd>{{ page.identity.cache_expires_at }}</dd></div>
+              <div><dt>Capabilities</dt><dd>{{ page.identity.capabilities | join(", ") }}</dd></div>
+              <div><dt>Coverage</dt><dd>{{ page.coverage_state | replace("_", " ") }}</dd></div>
+              <div><dt>Comparison validity</dt><dd>{{ page.comparison_validity | replace("_", " ") }}</dd></div>
+              <div><dt>Query SHA-256</dt><dd><code>{{ page.query_sha256 }}</code></dd></div>
+              <div><dt>Query receipt SHA-256</dt><dd><code>{{ page.query_receipt_sha256 }}</code></dd></div>
+          </dl>
+          <p class="notice">These edges record source structure only. They do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
+        </section>
+        {% if page.status == "unavailable" %}
+          <section class="notice" role="status"><h2>Pinned evidence unavailable</h2><p>{{ page.reason or "No verified evidence is available." }}</p><p>The exact pinned identity and bounded query receipt above identify the evidence that could not be read. No rows are shown.</p></section>
+        {% else %}
+          <section aria-labelledby="rows-heading">
+            <h2 id="rows-heading">Bounded source-structure rows</h2>
+            {% if page.rows %}
+              <div class="table-scroll" role="region" aria-label="Source-structure evidence rows" tabindex="0">
+                <table><thead><tr>{% for column in page.rows[0].keys() %}<th scope="col">{{ column }}</th>{% endfor %}</tr></thead>
+                  <tbody>{% for row in page.rows %}<tr>{% for value in row.values() %}<td><code>{{ value }}</code></td>{% endfor %}</tr>{% endfor %}</tbody>
+                </table>
+              </div>
+            {% else %}<p class="notice" role="status">No rows were returned.</p>{% endif %}
+            <p>At most {{ limit }} rows were queried. This does not establish source completeness.</p>
+          </section>
+        {% endif %}
+      {% endif %}
+      <aside aria-labelledby="limits-heading"><h2 id="limits-heading">Interpretation limits</h2><p>This synthetic qualification does not claim complete coverage, clinical equivalence, or populated production source data.</p></aside>
+    </main>
+    <footer><p>Global Medicines Atlas, product evidence version 0.6.</p></footer>
+  </body>
+</html>
