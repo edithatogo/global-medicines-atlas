@@ -297,13 +297,16 @@
   `3ea526b32cdc937cf416f8abebd8c59170dd1eb4`; evidence recorded in PR #522).
 - [ ] Phase Verification & Checkpoint: representative users can inspect evidence
   and uncertainty without mistaking legacy or missing data for current status.
-  - [~] Add a federated Atlas view that queries already-admitted benefit
+  - [x] Add a federated Atlas view that queries already-admitted benefit
     evidence from its pinned resolver identity, preserves evidence provenance,
     and keeps service-benefit edges separate from medicine funding and
     regulatory conclusions. Mount it through the source-backed Atlas factory
     and link it from the home page when configured. Exercise the rendered view
-    in the synthetic Bronze-to-Platinum E2E path; local verification and hosted
-    qualification are in progress.
+    in the synthetic Bronze-to-Platinum E2E path. PR #848 merged as
+    `075ea0920fd950e54975d941c45ac38b66bed25f` after all 38 hosted checks passed,
+    including all 28 required branch-protection contexts and 100% Codecov patch
+    coverage. Representative-user acceptance remains open at the parent
+    checkpoint.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register
