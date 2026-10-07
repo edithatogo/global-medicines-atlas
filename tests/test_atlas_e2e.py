@@ -229,14 +229,21 @@ def test_atlas_can_render_all_five_v2_dimensions() -> None:
 def test_source_backed_v2_atlas_factory_renders_all_dimensions(
     tmp_path: Path,
 ) -> None:
+    class UnusedBenefits:
+        def query(self, resource_id: str, query: BenefitsQuery):
+            del resource_id, query
+            raise AssertionError("landing page must not query benefits")
+
     database = _catalog_database(tmp_path / "atlas.duckdb")
-    response = TestClient(
+    client = TestClient(
         create_source_backed_v2_atlas_app(
             database,
             cursor_secret=SECRET,
             allowed_root=tmp_path,
+            federated_benefits=UnusedBenefits(),
         )
-    ).get(
+    )
+    response = client.get(
         "/",
         params={
             "concept_id": "gma:aspirin",
@@ -249,6 +256,10 @@ def test_source_backed_v2_atlas_factory_renders_all_dimensions(
     assert response.status_code == 200
     for dimension in V2EvidenceDimension:
         assert dimension.value in response.text
+    assert 'href="/federated/benefits"' in response.text
+    benefits_landing = client.get("/federated/benefits")
+    assert benefits_landing.status_code == 200
+    assert "Choose a pinned evidence resource" in benefits_landing.text
 
 
 def test_federated_benefits_atlas_fails_closed_on_invalid_and_unknown_queries():
