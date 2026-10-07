@@ -17,6 +17,7 @@ from global_medicines_atlas.platinum_identity_service import (
 from global_medicines_atlas.platinum_query import PlatinumQueryService
 from global_medicines_atlas.platinum_resolver import StorageNeutralResolver
 from global_medicines_atlas.platinum_structure import (
+    SourceStructurePage,
     SourceStructureQuery,
     SourceStructureService,
 )
@@ -197,6 +198,62 @@ def test_atlas_source_structure_selection_starts_without_a_query() -> None:
     assert response.status_code == 200
     assert "Choose a pinned source-structure resource" in response.text
     assert "Use verified cache only" in response.text
+
+
+@pytest.mark.parametrize("status", ["available", "unavailable"])
+def test_atlas_renders_full_identity_and_receipt_for_both_read_states(
+    status: str,
+) -> None:
+    page = {
+        "status": status,
+        "identity": _identity().model_dump(mode="json"),
+        "rows": [{"kind": "source_contains_entity"}]
+        if status == "available"
+        else [],
+        "query_sha256": "d" * 64,
+        "query_receipt_sha256": "e" * 64,
+        "reason": "offline_cache_unavailable"
+        if status == "unavailable"
+        else None,
+        "coverage_state": "not_declared",
+        "comparison_validity": "not_evaluated",
+    }
+
+    class FixedLookup:
+        def query(
+            self, resource_id: str, query: SourceStructureQuery
+        ) -> SourceStructurePage:
+            del resource_id, query
+            return SourceStructurePage.model_validate(page)
+
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_source_structure=cast(
+                "SourceStructureService", FixedLookup()
+            ),
+        )
+    )
+    response = client.get(
+        "/federated/source-structure", params={"resource_id": RESOURCE_ID}
+    )
+
+    assert response.status_code == 200
+    for evidence_value in (
+        "Jurisdiction",
+        "AU",
+        "synthetic-pbs-acquisition",
+        "synthetic-pbs-v1",
+        "synthetic",
+        "2026-10-07",
+        "b" * 64,
+        "c" * 64,
+        "e" * 64,
+    ):
+        assert evidence_value in response.text
+    if status == "unavailable":
+        assert "offline_cache_unavailable" in response.text
+        assert "No rows are shown" in response.text
 
 
 @pytest.mark.parametrize(

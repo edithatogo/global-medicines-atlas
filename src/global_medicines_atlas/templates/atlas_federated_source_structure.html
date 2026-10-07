@@ -35,26 +35,38 @@
         </section>
       {% endif %}
       {% if page %}
-        {% if page.status == "unavailable" %}
-          <section class="notice" role="status"><h2>Pinned evidence unavailable</h2><p>{{ page.reason or "No verified evidence is available." }}</p></section>
-        {% else %}
-          <section aria-labelledby="identity-heading">
-            <h2 id="identity-heading">Exact v2 evidence identity</h2>
-            <dl>
+        <section aria-labelledby="identity-heading">
+          <h2 id="identity-heading">Exact v2 evidence identity</h2>
+          <dl>
               <div><dt>Resource</dt><dd>{{ page.identity.resource_id }}</dd></div>
               <div><dt>Source</dt><dd>{{ page.identity.source_id }}</dd></div>
+              <div><dt>Jurisdiction</dt><dd>{{ page.identity.jurisdiction }}</dd></div>
               <div><dt>Dataset revision</dt><dd><code>{{ page.identity.dataset }}@{{ page.identity.revision }}</code></dd></div>
+              <div><dt>Acquisition</dt><dd><code>{{ page.identity.acquisition_id }}</code></dd></div>
+              <div><dt>Evidence layer</dt><dd>{{ page.identity.layer }}</dd></div>
+              <div><dt>Schema era</dt><dd>{{ page.identity.schema_era }}</dd></div>
               <div><dt>Object path</dt><dd><code>{{ page.identity.path }}</code></dd></div>
               <div><dt>Object SHA-256</dt><dd><code>{{ page.identity.object_sha256 }}</code></dd></div>
+              <div><dt>Object byte count</dt><dd>{{ page.identity.byte_count }}</dd></div>
+              <div><dt>Contract SHA-256</dt><dd><code>{{ page.identity.contract_sha256 }}</code></dd></div>
+              <div><dt>Semantic manifest SHA-256</dt><dd><code>{{ page.identity.semantic_manifest_sha256 }}</code></dd></div>
               <div><dt>Semantic dimension</dt><dd><code>{{ page.identity.semantic_dimension }}</code></dd></div>
               <div><dt>Entity granularity</dt><dd><code>{{ page.identity.entity_granularity }}</code></dd></div>
+              <div><dt>Comparison cohort</dt><dd>{{ page.identity.comparison_cohort }}</dd></div>
+              <div><dt>Effective date</dt><dd>{{ page.identity.effective_date or "Not declared" }}</dd></div>
+              <div><dt>Retrieved at</dt><dd>{{ page.identity.retrieved_at }}</dd></div>
+              <div><dt>Cache expires at</dt><dd>{{ page.identity.cache_expires_at }}</dd></div>
+              <div><dt>Capabilities</dt><dd>{{ page.identity.capabilities | join(", ") }}</dd></div>
               <div><dt>Coverage</dt><dd>{{ page.coverage_state | replace("_", " ") }}</dd></div>
               <div><dt>Comparison validity</dt><dd>{{ page.comparison_validity | replace("_", " ") }}</dd></div>
               <div><dt>Query SHA-256</dt><dd><code>{{ page.query_sha256 }}</code></dd></div>
               <div><dt>Query receipt SHA-256</dt><dd><code>{{ page.query_receipt_sha256 }}</code></dd></div>
-            </dl>
-            <p class="notice">These edges record source structure only. They do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
-          </section>
+          </dl>
+          <p class="notice">These edges record source structure only. They do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
+        </section>
+        {% if page.status == "unavailable" %}
+          <section class="notice" role="status"><h2>Pinned evidence unavailable</h2><p>{{ page.reason or "No verified evidence is available." }}</p><p>The exact pinned identity and bounded query receipt above identify the evidence that could not be read. No rows are shown.</p></section>
+        {% else %}
           <section aria-labelledby="rows-heading">
             <h2 id="rows-heading">Bounded source-structure rows</h2>
             {% if page.rows %}
