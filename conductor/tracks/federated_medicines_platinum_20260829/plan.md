@@ -307,10 +307,16 @@
     including all 28 required branch-protection contexts and 100% Codecov patch
     coverage. Representative-user acceptance remains open at the parent
     checkpoint.
-  - [~] Expose existing PBS `source_structure` Gold edges through a separate
+  - [x] Expose existing PBS `source_structure` Gold edges through a separate
     pinned Atlas view with v2 identity, an anonymous bounded query, verified
     cache reuse, and explicit non-equivalence wording. Track issue #850; no
-    source acquisition, admission, or publication is part of this task.
+    source acquisition, admission, or publication is part of this task. The
+    view renders the full evidence identity and retains it with the bounded
+    receipt on unavailable reads. Focused Atlas/medallion checks (11) and the
+    routine harness pass; exact-head PR #851 passed all 38 checks, including
+    Codecov, then merged as `77dea5a4` on 2026-10-07. This closes only the
+    synthetic source-structure Atlas integration, not representative-user
+    acceptance or the broader Phase 3 checkpoint.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register

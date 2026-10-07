@@ -39,6 +39,7 @@
           <h2 id="identity-heading">Exact v2 evidence identity</h2>
           <dl>
               <div><dt>Resource</dt><dd>{{ page.identity.resource_id }}</dd></div>
+              <div><dt>API version</dt><dd>{{ page.identity.api_version }}</dd></div>
               <div><dt>Source</dt><dd>{{ page.identity.source_id }}</dd></div>
               <div><dt>Jurisdiction</dt><dd>{{ page.identity.jurisdiction }}</dd></div>
               <div><dt>Dataset revision</dt><dd><code>{{ page.identity.dataset }}@{{ page.identity.revision }}</code></dd></div>
@@ -58,10 +59,19 @@
               <div><dt>Cache expires at</dt><dd>{{ page.identity.cache_expires_at }}</dd></div>
               <div><dt>Capabilities</dt><dd>{{ page.identity.capabilities | join(", ") }}</dd></div>
               <div><dt>Coverage</dt><dd>{{ page.coverage_state | replace("_", " ") }}</dd></div>
+              <div><dt>Confidence</dt><dd>{{ page.identity.confidence_state | replace("_", " ") }}</dd></div>
+              <div><dt>Uncertainty</dt><dd>{{ page.identity.uncertainty_state | replace("_", " ") }}</dd></div>
+              <div><dt>Review state</dt><dd>{{ page.identity.review_state | replace("_", " ") }}</dd></div>
               <div><dt>Comparison validity</dt><dd>{{ page.comparison_validity | replace("_", " ") }}</dd></div>
+              <div><dt>Product admitted</dt><dd>{{ page.identity.product_admitted }}</dd></div>
+              <div><dt>Rows queried during identity resolution</dt><dd>{{ page.identity.rows_queried }}</dd></div>
               <div><dt>Query SHA-256</dt><dd><code>{{ page.query_sha256 }}</code></dd></div>
               <div><dt>Query receipt SHA-256</dt><dd><code>{{ page.query_receipt_sha256 }}</code></dd></div>
           </dl>
+          <details>
+            <summary>Exact bounded query receipt</summary>
+            <pre><code>{{ page.query_receipt_json }}</code></pre>
+          </details>
           <p class="notice">These edges record source structure only. They do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
         </section>
         {% if page.status == "unavailable" %}
