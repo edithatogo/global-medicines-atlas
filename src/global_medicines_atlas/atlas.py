@@ -355,7 +355,7 @@ def create_atlas_app(
             except UnknownPlatinumResourceError:
                 error = "The admitted benefits resource was not found."
                 status_code = 404
-            except ValidationError, ValueError:
+            except (ValidationError, ValueError):
                 error = "The federated benefits query is invalid."
                 status_code = 422
 
