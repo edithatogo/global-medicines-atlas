@@ -461,16 +461,22 @@
     findings. PR #882 merged as `8b68bf9cd2431b39d9e03cb35938f06e5463e50d`
     after all 28 required branch-protection contexts and all 38 exact-head check
     runs passed, including Codecov and Linux/macOS/Windows consumers.
-  - [x] Verify keyboard recovery after an unknown-resource 404. Activate the
-    source-structure link by Enter, then use the skip link and verify the
-    sequential tab order through both text fields, row limit, cache checkbox,
-    and submit button. Keyboard text entry corrects the retained query and
-    resubmits successfully. The adjacent Atlas, structure API, and medallion
-    suite passes 26 tests; Ruff, format, routine, and diff checks pass. This
-    synthetic test-only follow-up adds no sources and relies on the preceding
-    pinned full-profile result. The Linux E2E lane exposed that Home/Shift+End
-    did not replace the retained value; use ControlOrMeta+A and verify the
-    platform-aware keyboard correction locally. Exact-head hosted rerun pending.
+  - [x] Verify keyboard recovery after source-structure 404 and 422 errors.
+    Activate the source-structure link by Enter, then use the skip link and
+    verify the sequential tab order through both text fields, row limit, cache
+    checkbox, and submit button. Keyboard text entry corrects the retained query
+    and resubmits successfully for both errors. The adjacent Atlas, structure
+    API, and medallion suite passes 27 tests; Ruff, format, routine, and diff
+    checks pass. This synthetic test-only follow-up adds no sources and relies
+    on the prior pinned full-profile result recorded under evidence kind
+    `federated_atlas_unavailable_receipt_redaction_full_e2e_local`. PR #883's
+    merge receipt records its hosted lanes separately, without claiming a local
+    full-profile rerun. Linux CI caught and prompted the platform-aware
+    ControlOrMeta+A correction. PR #883 merged as
+    `d1147ba2ca44e000f14cae71a00ffd756a40e67d` after all 28 required
+    branch-protection contexts and all 37 exact-head check runs passed,
+    including Codecov and Linux/macOS/Windows consumers. Hosted checks for this
+    404/422 expansion remain pending.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
