@@ -2,17 +2,20 @@
 
 from __future__ import annotations
 
+import json
 from typing import cast
 
 import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
 from test_mbs_gold_graph import graph
+from test_pbs_gold_graph import graph as pbs_graph
 from typer.testing import CliRunner
 
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.cli import app
 from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
+from global_medicines_atlas.pbs_gold_graph import project_pbs_gold_graph_arrow
 from global_medicines_atlas.platinum_edge_configuration import (
     MAX_EDGE_FILE_BYTES,
     load_gold_edges,
@@ -32,6 +35,35 @@ def test_edge_route_returns_structural_evidence() -> None:
     payload = response.json()
     assert payload["qualification"] == "synthetic_silver_candidate_only"
     assert payload["items"][0]["evidence"]["source_id"] == "au-mbs"
+
+
+def test_pbs_edge_route_and_cli_preserve_source_structure(tmp_path) -> None:
+    """Serve PBS containment candidates through both Platinum read surfaces."""
+    _, edges = project_pbs_gold_graph_arrow(pbs_graph())
+    client = TestClient(
+        create_app(cast("ReadOnlyQueryService", object()), gold_edges=edges)
+    )
+    response = client.get("/api/v1/edges")
+
+    assert response.status_code == 200
+    api_payload = response.json()
+    assert api_payload["qualification"] == "synthetic_silver_candidate_only"
+    assert api_payload["total"] == edges.num_rows
+    assert api_payload["items"]
+    assert all(
+        item["evidence"]["source_id"] == "au-pbs"
+        and item["kind"] == "source_contains_entity"
+        and item["controls"]["inferred"] is False
+        for item in api_payload["items"]
+    )
+
+    path = tmp_path / "pbs-edges.parquet"
+    pq.write_table(edges, path)
+    result = CliRunner().invoke(app, ["edges", "--edge-file", str(path)])
+
+    assert result.exit_code == 0, result.stderr
+    cli_payload = json.loads(result.stdout)
+    assert cli_payload == api_payload
 
 
 def test_edge_route_is_typed_when_unavailable() -> None:
