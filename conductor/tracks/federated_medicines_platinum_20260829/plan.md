@@ -443,8 +443,8 @@
     platforms. This synthetic fixture adds no source or admission.
   - [x] Exercise unknown source-structure resources and invalid bounded columns
     through the Chromium form. Assert accessible 404/422 errors and exact
-    retention of both submitted fields after each response. The focused browser
-    module passes 13 tests; the adjacent Atlas, structure API, and medallion
+    retention of both submitted fields after each response, with no stale
+    evidence table rendered. The focused browser module passes 13 tests; the adjacent Atlas, structure API, and medallion
     suite passes 24 tests, plus routine, lint, format, and diff checks. PR #880
     merged as `0a9f1e85a2bf30784802655e604dce8bd1c06e26` after all 28 required
     branch-protection contexts passed. Thirty-seven of 38 check runs passed;
