@@ -322,12 +322,13 @@
     unknown absence semantics. The synthetic Bronze snapshot pair passes
     through API, CLI, and Atlas; no sources or acquisition paths were added.
     Focused Atlas/medallion (9) and governed E2E (32) checks plus routine
-    checks pass. The local full profile did not complete: it segfaulted in the
-    DuckDB/LanceDB qualification path. Hosted exact-head tests, full coverage,
-    and protected checks passed; Codecov identified two uncovered defensive
-    branches. Targeted tests now exercise invalid pages, the byte ceiling,
-    source-backed factory wiring, per-snapshot identity, and before/after
-    native states and values; another exact-head coverage run is pending.
+    checks pass. Hosted exact-head PR #862 passed all 38 checks and 100% of
+    patch coverage, then merged as `fb949d5d` on 2026-10-09. The local full
+    profile was attempted with Python 3.14.6; the first run lacked pinned uv
+    0.11.29, and a pinned-toolchain retry passed 5,983 tests with one optional
+    PyIceberg skip before exhausting host disk space during coverage output.
+    The two toolchain-sensitive stable-v1 tests pass when run with uv 0.11.29.
+    No local full-profile pass is claimed. No additional source was added.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register
