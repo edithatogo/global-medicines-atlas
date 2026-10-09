@@ -495,6 +495,7 @@ def create_source_backed_v2_atlas_app(
     allowed_root: str | Path | None = None,
     federated_benefits: BenefitsLookup | None = None,
     federated_source_structure: SourceStructureLookup | None = None,
+    historical_changes: HistoricalChangeService | None = None,
 ) -> FastAPI:
     """Create Atlas with canonical V2 dimensions and federated evidence."""
     service = V2ReadOnlyQueryService(
@@ -507,4 +508,5 @@ def create_source_backed_v2_atlas_app(
         v2_service=service,
         federated_benefits=federated_benefits,
         federated_source_structure=federated_source_structure,
+        historical_changes=historical_changes,
     )

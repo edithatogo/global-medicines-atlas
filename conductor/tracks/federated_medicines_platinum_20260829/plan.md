@@ -325,8 +325,9 @@
     checks pass. The local full profile did not complete: it segfaulted in the
     DuckDB/LanceDB qualification path. Hosted exact-head tests, full coverage,
     and protected checks passed; Codecov identified two uncovered defensive
-    branches. Targeted tests now exercise invalid pages and the byte ceiling,
-    with another exact-head coverage run pending.
+    branches. Targeted tests now exercise invalid pages, the byte ceiling,
+    source-backed factory wiring, per-snapshot identity, and before/after
+    native states and values; another exact-head coverage run is pending.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register

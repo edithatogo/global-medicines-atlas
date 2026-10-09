@@ -431,6 +431,21 @@ def _exercise_atlas_history(
     assert previous_digest in atlas_response.text
     assert current_digest in atlas_response.text
     assert "bronze/raw.xml" in atlas_response.text
+    assert "prior synthetic service" in atlas_response.text
+    assert "fixture service" in atlas_response.text
+    incompatible = compare_historical_snapshots(
+        change.left,
+        change.right.model_copy(update={"source_id": "later-source"}),
+    )
+    identity_response = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            historical_changes=HistoricalChangeService((incompatible,)),
+        )
+    ).get("/history")
+    assert identity_response.status_code == 200
+    assert SOURCE_ID in identity_response.text
+    assert "later-source" in identity_response.text
     unattributed = HistoricalChangeService((
         compare_historical_snapshots(None, change.right),
     ))
