@@ -90,7 +90,7 @@
           </section>
         {% endif %}
       {% endif %}
-      <aside aria-labelledby="limits-heading"><h2 id="limits-heading">Interpretation limits</h2><p>Coverage is not declared here. Bounded source-structure rows do not establish source completeness or cross-source equivalence.</p></aside>
+      <aside aria-labelledby="limits-heading"><h2 id="limits-heading">Interpretation limits</h2>{% if page is not none and page.identity is not none and page.identity.comparison_cohort == "synthetic" %}<p>These rows are synthetic qualification fixtures, not populated production source data. Coverage is not declared here, and these rows do not establish source completeness or cross-source equivalence.</p>{% else %}<p>Coverage is not declared here. Bounded source-structure rows do not establish source completeness or cross-source equivalence.</p>{% endif %}</aside>
     </main>
     <footer><p>Global Medicines Atlas, product evidence version 0.6.</p></footer>
   </body>

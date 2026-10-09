@@ -98,7 +98,11 @@
 
       <aside aria-labelledby="limits-heading">
         <h2 id="limits-heading">Interpretation limits</h2>
+        {% if page is not none and page.identity is not none and page.identity.comparison_cohort == "synthetic" %}
+        <p>These rows are synthetic qualification fixtures, not populated production source data. Coverage is not declared here, and this view does not claim source completeness or clinical equivalence.</p>
+        {% else %}
         <p>Evidence identity and bounded source rows are shown separately from cross-jurisdiction medicine comparisons. Coverage is not declared here, so this view does not claim source completeness or clinical equivalence.</p>
+        {% endif %}
       </aside>
     </main>
     <footer><p>Global Medicines Atlas, product evidence version 0.6.</p></footer>
