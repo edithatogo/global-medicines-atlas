@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
@@ -14,6 +15,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 
+from .historical_change import (
+    HistoricalChangeService,
+    validate_historical_change_page,
+)
 from .platinum_benefits import (
     BenefitsLookup,
     BenefitsPage,
@@ -51,6 +56,7 @@ from .product_contracts import (
 _PACKAGE_ROOT = Path(__file__).resolve().parent
 _TEMPLATES = Jinja2Templates(directory=_PACKAGE_ROOT / "templates")
 _DEFAULT_JURISDICTIONS = ("NZ", "AU", "US")
+_MAX_HISTORY_PAGE_BYTES = 4 * 1024 * 1024
 
 
 class AtlasQueryService(Protocol):
@@ -237,6 +243,7 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
     v2_service: V2AtlasQueryService | None = None,
     federated_benefits: BenefitsLookup | None = None,
     federated_source_structure: SourceStructureLookup | None = None,
+    historical_changes: HistoricalChangeService | None = None,
 ) -> FastAPI:
     """Create an atlas app with explicitly injected read-only services."""
     app = FastAPI(
@@ -250,6 +257,51 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
         StaticFiles(directory=_PACKAGE_ROOT / "static"),
         name="static",
     )
+
+    if historical_changes is not None:
+
+        @app.get("/history", response_class=HTMLResponse)
+        def historical_page(  # pyright: ignore[reportUnusedFunction]
+            request: Request,
+            offset: Annotated[int, Query(ge=0)] = 0,
+            limit: Annotated[int, Query(ge=1, le=1000)] = 100,
+        ) -> HTMLResponse:
+            error: str | None = None
+            page: dict[str, object] | None = None
+            status_code = 200
+            try:
+                result = validate_historical_change_page(
+                    historical_changes.page(offset=offset, limit=limit)
+                )
+            except ValueError:
+                error = "The historical change page is invalid."
+                status_code = 422
+            else:
+                if any(
+                    item.left is None or item.right is None
+                    for item in result.items
+                ):
+                    error = "Historical observations lack attributable source metadata."
+                    status_code = 503
+                else:
+                    encoded = json.dumps(
+                        result.model_dump(mode="json"),
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                    ).encode("utf-8")
+                    if len(encoded) > _MAX_HISTORY_PAGE_BYTES:
+                        error = "The historical change page exceeds the response byte limit."
+                        status_code = 503
+                    else:
+                        page = result.model_dump(mode="json")
+            response = _TEMPLATES.TemplateResponse(
+                request=request,
+                name="atlas_history.html",
+                context={"page": page, "error": error},
+                status_code=status_code,
+            )
+            response.headers["cache-control"] = "no-store"
+            return response
 
     @app.get("/", response_class=HTMLResponse)
     def atlas(  # pyright: ignore[reportUnusedFunction]
@@ -327,6 +379,7 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
                 "has_federated_source_structure": (
                     federated_source_structure is not None
                 ),
+                "has_historical_changes": historical_changes is not None,
             },
         )
 

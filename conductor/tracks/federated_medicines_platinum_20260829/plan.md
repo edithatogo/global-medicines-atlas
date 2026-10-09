@@ -317,6 +317,14 @@
     Codecov, then merged as `77dea5a4` on 2026-10-07. This closes only the
     synthetic source-structure Atlas integration, not representative-user
     acceptance or the broader Phase 3 checkpoint.
+  - [x] Render the existing bounded historical-change service in an opt-in
+    Atlas timeline, preserving source identity, attribution failures, and
+    unknown absence semantics. The synthetic Bronze snapshot pair passes
+    through API, CLI, and Atlas; no sources or acquisition paths were added.
+    Focused Atlas/medallion (9) and governed E2E (32) checks plus routine
+    checks pass. The local full profile did not complete: after reporting two
+    test failures it segfaulted in the DuckDB/LanceDB qualification path, so
+    hosted exact-head checks remain required before merge.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register

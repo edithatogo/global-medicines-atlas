@@ -391,6 +391,37 @@ def _exercise_historical_surfaces(
     assert removed["interpretation"] == "observed_change"
     assert removed["native_id"] == "au-mbs:00567:00::1"
 
+    atlas_client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()), historical_changes=service
+        )
+    )
+    assert (
+        'href="/history">Review historical changes'
+        in atlas_client.get("/").text
+    )
+    atlas_response = atlas_client.get(
+        "/history", params={"offset": "0", "limit": "10"}
+    )
+    assert atlas_response.status_code == 200
+    assert atlas_response.headers["cache-control"] == "no-store"
+    assert "Historical changes" in atlas_response.text
+    assert "absence interpretation: unknown" in atlas_response.text
+    assert "au-mbs:00567:00::1" in atlas_response.text
+    assert previous.digest() in atlas_response.text
+    assert current.digest() in atlas_response.text
+    assert "bronze/raw.xml" in atlas_response.text
+    unattributed = HistoricalChangeService((
+        compare_historical_snapshots(None, change.right),
+    ))
+    unavailable = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()), historical_changes=unattributed
+        )
+    ).get("/history")
+    assert unavailable.status_code == 503
+    assert "lack attributable source metadata" in unavailable.text
+
 
 def _payload() -> bytes:
     return (
