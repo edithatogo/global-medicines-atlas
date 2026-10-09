@@ -595,7 +595,7 @@ def test_keyboard_user_can_recover_from_source_structure_error(
             ):
                 page.keyboard.press("Enter")
 
-            assert page.get_by_role("alert").is_visible()
+            expect(page.get_by_role("alert")).to_be_visible()
             assert resource_field.input_value() == invalid_resource
             assert columns_field.input_value() == invalid_columns
             page.keyboard.press("Tab")

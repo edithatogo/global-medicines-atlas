@@ -132,9 +132,7 @@ def test_synthetic_unknown_coverage_crosses_medallion_products(
     )
     assert cli.exit_code == 0, cli.output
     cli_item = json.loads(cli.stdout)["coverage"][0]
-    assert cli_item["state"] == api_item["state"]
-    assert cli_item["denominator"] is None
-    assert cli_item["covered_count"] == api_item["covered_count"]
+    assert cli_item == api_item
 
     atlas = TestClient(create_atlas_app(service))
     page = atlas.get(
