@@ -31,6 +31,15 @@ from global_medicines_atlas.federation_distribution import (
     reconcile_distribution,
 )
 from global_medicines_atlas.federation_reader import FederatedReader
+from global_medicines_atlas.historical_change import (
+    HistoricalChangeService,
+    compare_historical_snapshots,
+)
+from global_medicines_atlas.historical_comparison import (
+    NativeField,
+    NativeRow,
+    NativeSnapshot,
+)
 from global_medicines_atlas.mbs_gold_graph import (
     build_mbs_gold_graph_candidate,
     project_mbs_gold_graph_arrow,
@@ -245,6 +254,134 @@ def _exercise_gold_edge_surfaces(
     )
 
 
+def _exercise_historical_surfaces(
+    previous_payload: bytes,
+    previous: SourceReceipt,
+    current_payload: bytes,
+    current: SourceReceipt,
+    *,
+    history_file: Path,
+    bronze_root: Path,
+) -> None:
+    """Compare API and CLI history pages derived from synthetic Bronze XML."""
+    previous_landed = land_bronze_payload(
+        previous_payload,
+        previous,
+        bronze_root=bronze_root / "previous",
+        media_hint="xml",
+        admission_decided_at=previous.retrieval.retrieved_at,
+        transformation_completed_at=previous.retrieval.retrieved_at,
+    )
+    current_landed = land_bronze_payload(
+        current_payload,
+        current,
+        bronze_root=bronze_root / "current",
+        media_hint="xml",
+        admission_decided_at=current.retrieval.retrieved_at,
+        transformation_completed_at=current.retrieval.retrieved_at,
+    )
+
+    def snapshot(
+        payload_path: Path,
+        receipt: SourceReceipt,
+    ) -> NativeSnapshot:
+        temporal = require_temporal(receipt.temporal)
+        parsed = [
+            row
+            for batch in iter_mbs_silver_batches(
+                payload_path.read_bytes(), receipt, table="descriptions"
+            )
+            for row in batch.to_pylist()
+        ]
+        native_rows = []
+        for row in parsed:
+            description = row["Description"]
+            state = (
+                "missing"
+                if description["native_state"] == "missing_field"
+                else "null"
+                if description["native_state"] == "null"
+                else "value"
+            )
+            native_rows.append(
+                NativeRow(
+                    native_id=row["source_record_id"],
+                    occurrence_id=str(row["source_ordinal"]),
+                    fields=(
+                        NativeField(
+                            name="Description",
+                            state=state,
+                            value=(
+                                description["native_value"]
+                                if state == "value"
+                                else None
+                            ),
+                        ),
+                    ),
+                )
+            )
+        return NativeSnapshot(
+            source_id=receipt.source.source_id,
+            table="descriptions",
+            dimension="service_benefit",
+            schema_era="synthetic-e2e-v1",
+            identity_profile="mbs-description-record",
+            scope_id="synthetic-bronze-payload",
+            source_revision=temporal.acquisition_id,
+            source_path="bronze/raw.xml",
+            b1_sha256=receipt.digest(),
+            b2_sha256=receipt.payload.sha256,
+            observed_at=receipt.retrieval.retrieved_at,
+            cohort="synthetic",
+            declared_rows=len(native_rows),
+            complete=True,
+            rows=tuple(native_rows),
+        )
+
+    change = compare_historical_snapshots(
+        snapshot(previous_landed.payload_path, previous),
+        snapshot(current_landed.payload_path, current),
+    )
+    service = HistoricalChangeService((change,))
+    history_file.write_text(
+        json.dumps({
+            "version": "1.0",
+            "changes": [change.model_dump(mode="json")],
+        }),
+        encoding="utf-8",
+    )
+    api_response = TestClient(
+        create_app(
+            cast("ReadOnlyQueryService", object()),
+            historical_changes=service,
+        )
+    ).get("/api/v1/history", params={"offset": "0", "limit": "10"})
+    assert api_response.status_code == 200, api_response.text
+    api_page = api_response.json()
+
+    cli_result = CliRunner().invoke(
+        cli_app,
+        ["history", "--history-file", str(history_file), "--limit", "10"],
+    )
+    assert cli_result.exit_code == 0, cli_result.output
+    assert json.loads(cli_result.stdout) == api_page
+    item = api_page["items"][0]
+    assert item["comparison_state"] == "compared"
+    assert item["availability"] == "both_present"
+    assert item["absence_interpretation"] == "unknown"
+    assert {change["kind"] for change in item["changes"]} == {
+        "field_changed",
+        "removed_observation",
+    }
+    removed = next(
+        change
+        for change in item["changes"]
+        if change["kind"] == "removed_observation"
+    )
+    assert removed["interpretation"] == "observed_change"
+    assert removed["native_id"] == "au-mbs:00567:00::1"
+
+
 def _payload() -> bytes:
     return (
         b"<MBS_XML><Data><ItemNum>00123</ItemNum>"
@@ -253,7 +390,12 @@ def _payload() -> bytes:
     )
 
 
-def _receipt(payload: bytes, *, source_id: str = SOURCE_ID) -> SourceReceipt:
+def _receipt(
+    payload: bytes,
+    *,
+    source_id: str = SOURCE_ID,
+    retrieved_at: datetime = NOW,
+) -> SourceReceipt:
     evidence = PayloadEvidence.from_bytes(payload)
     receipt = SourceReceipt(
         receipt_id="synthetic:medallion-e2e",
@@ -267,7 +409,7 @@ def _receipt(payload: bytes, *, source_id: str = SOURCE_ID) -> SourceReceipt:
         ),
         retrieval=RetrievalEvidence(
             uri=f"https://fixtures.invalid/{source_id}.xml",
-            retrieved_at=NOW,
+            retrieved_at=retrieved_at,
             acquisition_method=AcquisitionMethod.LOCAL_FIXTURE,
             status=AcquisitionStatus.SUCCEEDED,
         ),
@@ -285,7 +427,7 @@ def _receipt(payload: bytes, *, source_id: str = SOURCE_ID) -> SourceReceipt:
         update={
             "reuse": acquire_new_decision(source_id),
             "temporal": temporal_identity_from_source(
-                retrieved_at=NOW,
+                retrieved_at=retrieved_at,
                 source_id=source_id,
                 payload_sha256=evidence.sha256,
                 source_version="synthetic-e2e-v1",
@@ -1123,7 +1265,27 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
 ) -> None:
     """Verify exact synthetic lineage through each layer without publication."""
     raw = _payload()
+    previous_raw = (
+        b"<MBS_XML><Data><ItemNum>00123</ItemNum>"
+        b"<SubItemNum>00</SubItemNum>"
+        b"<Description>prior synthetic service</Description></Data>"
+        b"<Data><ItemNum>00567</ItemNum><SubItemNum>00</SubItemNum>"
+        b"<Description>removed synthetic service</Description></Data>"
+        b"</MBS_XML>"
+    )
+    previous_receipt = _receipt(
+        previous_raw,
+        retrieved_at=NOW - timedelta(days=1),
+    )
     receipt = _receipt(raw)
+    _exercise_historical_surfaces(
+        previous_raw,
+        previous_receipt,
+        raw,
+        receipt,
+        history_file=tmp_path / "synthetic-history.json",
+        bronze_root=tmp_path / "historical-bronze",
+    )
     landed = land_bronze_payload(
         raw,
         receipt,
