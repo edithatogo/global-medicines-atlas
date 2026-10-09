@@ -1265,3 +1265,9 @@ for credentialed or rights-unresolved sources.
   Test-Goblin evidence on the unchanged production tree is reused for this
   test-only change; Linux CI remains authoritative for mutation status. No
   source, rights decision, publication, or release state changed.
+- [x] Reconcile the hosted result: PR #901 merged as
+  `529cae59bc76db4fe7fc281a146dc633d69fe016`; the merge tree exactly matches
+  tested head `5147130770d26e4ec671c55fb6dcfe2a6e07969f`. All 28 distinct
+  required branch-protection contexts passed; all 38 reported check runs
+  passed (37 distinct check names, with one duplicated CodeQL run). The exact
+  head also received non-blocking automated reviews with no findings.
