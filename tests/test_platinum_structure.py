@@ -280,7 +280,8 @@ def test_atlas_renders_full_identity_and_receipt_for_both_read_states(
     ):
         assert evidence_value in response.text
     if status == "unavailable":
-        assert "offline_cache_unavailable" in response.text
+        assert "No verified cached copy is available" in response.text
+        assert "offline_cache_unavailable" not in response.text
         assert "No rows are shown" in response.text
 
 

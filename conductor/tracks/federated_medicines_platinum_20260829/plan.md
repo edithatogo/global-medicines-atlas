@@ -426,8 +426,19 @@
     is actionable, no table is rendered, and the browser path does not turn a
     failed read into a negative claim. The focused module passes nine tests;
     repository routine, formatting, and diff checks pass. This is a test-only
-    synthetic follow-up to the current full-profile evidence; hosted checks
-    remain pending.
+    synthetic follow-up to the current full-profile evidence. PR #878 merged
+    as `bba01ac4277f7f897a048720a175188fb71bc213` after all 37 exact-head hosted
+    checks passed, including protected contexts, Codecov, and all three
+    consumer platforms. No source coverage, admission, or publication claim was
+    added.
+  - [x] Exercise missing-cache, expired-cache, and online verified-read
+    unavailability for source-structure evidence in Chromium. The page provides
+    readable recovery guidance, preserves exact identity and query receipt,
+    announces an accessible status, shows no evidence rows, and rejects an
+    accidental offline flag in the online fixture. The affected browser,
+    API, and medallion set passes 23 tests; full pinned Test-Goblin passed with
+    6,006 tests, one optional PyIceberg skip, and 96.87% coverage. Hosted checks
+    remain pending; this synthetic fixture adds no source or admission.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
