@@ -500,6 +500,7 @@ def test_browser_source_structure_errors_retain_submitted_query() -> None:
             )
             assert resource_field.input_value() == "au.pbs.unknown"
             assert columns_field.input_value() == "kind"
+            assert page.get_by_role("table").count() == 0
 
             resource_field.fill(RESOURCE)
             columns_field.fill("kind,unknown_column")
@@ -515,6 +516,7 @@ def test_browser_source_structure_errors_retain_submitted_query() -> None:
             )
             assert resource_field.input_value() == RESOURCE
             assert columns_field.input_value() == "kind,unknown_column"
+            assert page.get_by_role("table").count() == 0
         finally:
             browser.close()
 
