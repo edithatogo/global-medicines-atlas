@@ -403,10 +403,12 @@
     404/422 responses, accessible alert messages, and preserved invalid input;
     the already-verified ASGI fixture exercises both route outcomes. Review
     tightened the retained-input assertion to compare the complete submitted
-    string. Six focused module tests and Ruff pass after the correction;
-    routine and repository typing checks passed before it. This is test-only
-    synthetic evidence; hosted exact-head checks are pending and no source
-    scope or runtime behavior changed.
+    string. Six focused module tests, Ruff, routine and repository typing
+    checks pass. PR #875 merged as `0f80a02d4ac3e0440250c2bd486ac915bd758938`
+    after all 37 hosted check runs passed, including Codecov, protected
+    contexts, and Linux/macOS/Windows consumers. This is test-only synthetic
+    evidence; it adds no source or runtime behavior and does not establish
+    representative-user acceptance or WCAG conformance.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
