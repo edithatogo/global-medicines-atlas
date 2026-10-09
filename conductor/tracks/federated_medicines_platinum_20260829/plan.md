@@ -530,3 +530,12 @@
 - [x] Complete exact-head protected hosted checks, merge, and append the hosted
   merge receipt. This remains a fixture-only qualification and makes no claim
   about populated public sources, source coverage, deployment, or release.
+
+### Bronze acquisition-metadata projection federated E2E (2026-10-09)
+
+- [~] Carry the actual landed B1 acquisition-manifest Parquet projection
+  through v4 distribution reconciliation, remote read, verified cache,
+  eviction, and refetch. Keep the receipt-bound B2 bytes local, and verify the
+  existing distribution gate rejects raw B2 as a derived projection. Use only
+  the existing synthetic MBS/PBS fixtures; no additional source, source claim,
+  or public mutation.
