@@ -204,7 +204,9 @@ def test_materialized_unknown_coverage_reaches_real_browser_page(
             assert response is not None
             assert response.status == 200
 
-            coverage_row = page.locator("table tbody tr").filter(
+            table = page.get_by_role("table")
+            expect(table).to_be_visible()
+            coverage_row = table.get_by_role("row").filter(
                 has=page.locator("[data-state='unknown']")
             )
             expect(coverage_row).to_have_count(1)
