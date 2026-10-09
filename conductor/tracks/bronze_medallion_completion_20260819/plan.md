@@ -1288,3 +1288,9 @@ for credentialed or rights-unresolved sources.
   branch-protection contexts passed, including `codecov/patch`. Thirty-seven
   check runs passed; the optional Iceberg REST lane failed before checkout
   because Docker Hub token retrieval timed out while pulling its fixture image.
+- [x] Reconcile PR #905 and fix its tree review finding: merge commit
+  `608e563b31cde078fcf6a7fb5de3ff90ae460001` has the same tree as qualified
+  head `310147306fe21c21cc0a2a10caadefb42f12b472`
+  (`8f7a5993297858ddb07408d542d9417119981060`). All 28 required contexts,
+  including Codecov, passed. The optional Iceberg REST job failed before
+  checkout because Docker Hub token retrieval timed out on three attempts.
