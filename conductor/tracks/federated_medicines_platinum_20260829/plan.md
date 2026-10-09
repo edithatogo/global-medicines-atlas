@@ -437,8 +437,16 @@
     announces an accessible status, shows no evidence rows, and rejects an
     accidental offline flag in the online fixture. The affected browser,
     API, and medallion set passes 23 tests; full pinned Test-Goblin passed with
-    6,006 tests, one optional PyIceberg skip, and 96.87% coverage. Hosted checks
-    remain pending; this synthetic fixture adds no source or admission.
+    6,006 tests, one optional PyIceberg skip, and 96.87% coverage. PR #879
+    merged as `2834ed10f5615244cd28f559859c4b36314e877e` after all 39 hosted
+    checks passed, including protected contexts, Codecov, and all consumer
+    platforms. This synthetic fixture adds no source or admission.
+  - [x] Exercise unknown source-structure resources and invalid bounded columns
+    through the Chromium form. Assert accessible 404/422 errors and exact
+    retention of both submitted fields after each response. The focused browser
+    module passes 13 tests; the adjacent Atlas, structure API, and medallion
+    suite passes 24 tests, plus routine, lint, format, and diff checks. This is
+    a test-only synthetic follow-up; hosted checks remain pending.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
