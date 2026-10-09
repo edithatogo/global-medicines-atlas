@@ -432,6 +432,12 @@
 - [~] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
   coverage, security, provenance, rights, regeneration, and full Test-Goblin
   lanes where supported.
+  - [x] Carry the existing synthetic MBS Gold edges through the public edge
+    API and CLI, and compare their bounded structural evidence readbacks.
+    The existing Bronze-to-Platinum MBS fixture now verifies exact API/CLI
+    page equality, candidate-only qualification, row count, and source
+    identity. Both medallion E2E cases, routine checks, Ruff, formatting, and
+    `git diff --check` pass locally; hosted verification is pending.
   - [x] Extend the synthetic Bronze-to-Platinum end-to-end qualification to
     query remotely, reproduce from its verified offline cache, prove explicit
     unavailability after eviction, and refetch the same result. The synthetic
