@@ -1252,3 +1252,16 @@ for credentialed or rights-unresolved sources.
   v4 admission, full-denominator digest readback, and consumer canaries remain
   unresolved; Bronze bounded-scope completion is not overall programme
   completion.
+
+## Publication qualification clock-boundary hardening
+
+- [x] Add regression coverage for live receipt retrieval at the evaluation
+  instant, one microsecond in the future, exactly at the declared maximum age,
+  and just beyond that age; also verify effective intervals include their
+  start and exclude their end. The tests address clock-boundary survivors
+  observed in the current macOS mutation report without changing qualification
+  behavior. Focused publication-gate tests (19), the routine Test-Goblin lane,
+  governance validators, and `git diff --check` pass. Existing pinned full
+  Test-Goblin evidence on the unchanged production tree is reused for this
+  test-only change; Linux CI remains authoritative for mutation status. No
+  source, rights decision, publication, or release state changed.
