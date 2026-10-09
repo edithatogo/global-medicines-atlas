@@ -468,8 +468,11 @@
     and resubmits successfully for both errors. The adjacent Atlas, structure
     API, and medallion suite passes 27 tests; Ruff, format, routine, and diff
     checks pass. This synthetic test-only follow-up adds no sources and relies
-    on the preceding pinned full-profile result. Linux CI caught and prompted
-    the platform-aware ControlOrMeta+A correction. PR #883 merged as
+    on the prior pinned full-profile result recorded under evidence kind
+    `federated_atlas_unavailable_receipt_redaction_full_e2e_local`. PR #883's
+    merge receipt records its hosted lanes separately, without claiming a local
+    full-profile rerun. Linux CI caught and prompted the platform-aware
+    ControlOrMeta+A correction. PR #883 merged as
     `d1147ba2ca44e000f14cae71a00ffd756a40e67d` after all 28 required
     branch-protection contexts and all 37 exact-head check runs passed,
     including Codecov and Linux/macOS/Windows consumers. Hosted checks for this
