@@ -2,6 +2,8 @@
   "schema_id": "global-medicines-atlas.australian-donor-successor-link-readback",
   "schema_version": 1,
   "observed_at": "2026-10-09T23:47:24Z",
+  "observed_at_local": "2026-10-10T09:47:24+10:00",
+  "observed_timezone": "Australia/Brisbane",
   "method": {
     "github_api": "anonymous public repository, branch, content, tag, and release metadata",
     "hugging_face_api": "anonymous dataset metadata",

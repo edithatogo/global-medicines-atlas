@@ -56,16 +56,18 @@ currently published notices remain unchanged.
 The text below is a draft for the default-branch `README.md` and
 `SUCCESSOR.md` in each archived donor repository. It corrects the stale archive
 status and identifies the exact public successor dataset revisions observed
-on 2026-10-10. Re-read the revisions immediately before any future authorized
-use. The existing `v0.1` scraper tag predates successor documentation and
-should remain historical; do not move or replace it.
+on 2026-10-10 Australia/Brisbane (2026-10-09 UTC). Re-read the revisions
+immediately before any future authorized use. The existing `v0.1` scraper tag
+predates successor documentation and should remain historical; do not move or
+replace it.
 
 > This repository is an archived compatibility and provenance mirror. Its
 > history and source identifiers are retained. Active successor development
 > is in [Global Medicines Atlas](https://github.com/edithatogo/global-medicines-atlas);
 > see its [Australian donor capability map](https://github.com/edithatogo/global-medicines-atlas/blob/main/docs/migrations/australian-donor-successors.md).
 >
-> Public successor dataset identities observed 2026-10-10:
+> Public successor dataset identities observed 2026-10-10 Australia/Brisbane
+> (2026-10-09 UTC):
 >
 > - MBS source archive: [`edithatogo/australian-mbs-source-archive` at
 >   `44b25bfd87e44998c7c1da4c3930ad4447e9246f`](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/44b25bfd87e44998c7c1da4c3930ad4447e9246f).
@@ -125,7 +127,11 @@ successor path are resolved through an approved route. Updating content in an
 archived public repository requires explicit maintainer authorization; no
 repository was unarchived or mutated for either readback.
 
-## Successor-link metadata refresh (2026-10-10)
+## Successor-link metadata refresh (2026-10-10 Australia/Brisbane)
+
+The receipt's observation timestamp is `2026-10-09T23:47:24Z`, corresponding to
+`2026-10-10T09:47:24+10:00` in Australia/Brisbane. Date labels in this section
+use the Brisbane local calendar date.
 
 Anonymous GitHub API readback confirms both repositories remain archived at
 the same default-branch heads. The README and `SUCCESSOR.md` blob identities are

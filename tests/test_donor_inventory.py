@@ -69,6 +69,9 @@ def test_current_donor_successor_readback_preserves_unresolved_gates() -> None:
         "australian-donor-successor-link-readback-20261010.json"
     )
     document = json.loads(path.read_text(encoding="utf-8"))
+    assert document["observed_at"] == "2026-10-09T23:47:24Z"
+    assert document["observed_at_local"] == "2026-10-10T09:47:24+10:00"
+    assert document["observed_timezone"] == "Australia/Brisbane"
     donors = {row["repository"]: row for row in document["donors"]}
     assert set(donors) == {
         "edithatogo/aus-health-data-scraper",
