@@ -2,11 +2,17 @@
 
 from __future__ import annotations
 
+import socket
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import UTC, datetime
+from threading import Thread
+from time import monotonic, sleep
 from typing import TYPE_CHECKING
-from urllib.parse import urlsplit
+from urllib.parse import urlencode, urlsplit
 
 import pytest
+import uvicorn
 from fastapi.testclient import TestClient
 from playwright.sync_api import sync_playwright
 
@@ -51,6 +57,53 @@ if TYPE_CHECKING:
     from playwright.sync_api import Page, Route
 
 NOW = datetime(2026, 10, 6, 12, tzinfo=UTC)
+
+
+@contextmanager
+def _serve_atlas_on_loopback() -> Iterator[str]:
+    """Run the fixture Atlas through a real HTTP server on an ephemeral port."""
+    listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    listener.bind(("127.0.0.1", 0))
+    listener.listen(128)
+    port = listener.getsockname()[1]
+    server = uvicorn.Server(
+        uvicorn.Config(
+            create_atlas_app(AtlasFixtureService()),
+            host="127.0.0.1",
+            port=port,
+            lifespan="off",
+            access_log=False,
+            log_level="error",
+        )
+    )
+    thread = Thread(
+        target=server.run,
+        kwargs={"sockets": [listener]},
+        daemon=True,
+    )
+    thread.start()
+    deadline = monotonic() + 10
+    while not server.started and thread.is_alive() and monotonic() < deadline:
+        sleep(0.01)
+    if not server.started:
+        server.should_exit = True
+        thread.join(timeout=5)
+        if thread.is_alive():
+            listener.close()
+            raise RuntimeError(
+                "The synthetic Atlas ASGI server did not start and the shutdown timed out"
+            )
+        listener.close()
+        raise RuntimeError("The synthetic Atlas ASGI server did not start")
+    try:
+        yield f"http://127.0.0.1:{port}"
+    finally:
+        server.should_exit = True
+        thread.join(timeout=5)
+        if thread.is_alive():
+            raise RuntimeError("The synthetic Atlas ASGI server did not stop")
+        listener.close()
 
 
 class AtlasFixtureService:
@@ -256,6 +309,56 @@ def test_keyboard_medicine_selection_and_evidence_review() -> None:
         page = browser.new_page()
         try:
             _exercise_keyboard_evidence_flow(page, client, search_html)
+        finally:
+            browser.close()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
+def test_synthetic_atlas_renders_through_loopback_asgi_server() -> None:
+    """Exercise page, assets, and evidence over a real local HTTP socket."""
+    params = urlencode({
+        "concept_id": "rx:fixture",
+        "jurisdiction": "NZ",
+        "valid_at": NOW.isoformat(),
+        "observed_at": NOW.isoformat(),
+    })
+    with (
+        _serve_atlas_on_loopback() as base_url,
+        sync_playwright() as playwright,
+    ):
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        observed_responses: dict[str, int] = {}
+        requested_urls: list[str] = []
+        page.on(
+            "request",
+            lambda request: requested_urls.append(request.url),
+        )
+        page.on(
+            "response",
+            lambda response: observed_responses.update({
+                urlsplit(response.url).path: response.status
+            }),
+        )
+        try:
+            response = page.goto(f"{base_url}/?{params}")
+            assert response is not None
+            assert response.status == 200
+            assert page.get_by_role(
+                "heading", name="Global Medicines Atlas"
+            ).is_visible()
+            assert page.get_by_text(
+                "Canonical medicine identifier: rx:fixture"
+            ).is_visible()
+            assert page.locator(".result-card").count() == 1
+            assert (
+                "Status: Unknown" in page.locator(".result-card").inner_text()
+            )
+            assert observed_responses["/static/atlas.css"] == 200
+            assert observed_responses["/static/atlas-autocomplete.js"] == 200
+            assert requested_urls
+            assert all(url.startswith(base_url) for url in requested_urls)
         finally:
             browser.close()
 

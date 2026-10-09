@@ -850,3 +850,26 @@
   the wrong tree. Darwin mutation results remain advisory and Linux CI remains
   authoritative. This closes the named announcement defect only; full WCAG
   conformance and representative-user acceptance remain open.
+
+### Local ASGI-server browser journey (2026-10-10)
+
+- [x] Add a governed loopback-only Chromium journey against the synthetic Atlas
+  running under a real ASGI server. Verify the server response, Atlas page,
+  stylesheet and script over HTTP, and rendered synthetic evidence. The new
+  test initially failed collection until Uvicorn was pinned in the test group;
+  after correcting the fixture's displayed state casing, it passed. The
+  focused test passed (1), the governed E2E lane passed (54), and routine
+  format/lint/type, context, and governance checks passed. BasedPyright's
+  existing unknown TestClient response diagnostics are outside the new helper
+  and test. The integration lane caught that its committed Stable v1 metadata
+  receipt binds `uv.lock`; the offline receipt was regenerated for the
+  test-only dependency, retained `metadata_qualified_external_gates_blocked`,
+  and the exact-receipt test passed. The integration lane then passed (718).
+  The hosted unit lane identified the datahouse experiment matrix's second
+  explicit `uv.lock` binding; only its lock digest and generation time were
+  refreshed, with experiment outcomes unchanged. It also identified the
+  frontier experiment matrix's imported digest for that file; only that digest
+  was refreshed, with all frontier dispositions unchanged. Focused matrix
+  tests pass for both records.
+  Keep live deployment, production data, source coverage, public release, and
+  full WCAG conformance as separate gates.

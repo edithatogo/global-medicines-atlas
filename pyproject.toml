@@ -59,6 +59,7 @@ test = [
   "pytest-cov>=7.0",
   "pytest-xdist>=3.8",
   "lancedb>=0.27",
+  "uvicorn>=0.54,<0.55",
 ]
 test-goblin = [
   { include-group = "test" },
