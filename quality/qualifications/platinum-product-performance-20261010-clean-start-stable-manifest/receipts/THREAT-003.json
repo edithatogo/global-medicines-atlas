@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "receipt_id": "threat-threat-003-b185a878d560",
+  "kind": "threat",
+  "subject_id": "THREAT-003",
+  "executed_at": "2026-10-09T19:42:00.894029Z",
+  "product_version": "0.6",
+  "api_version": "v1",
+  "implementation_digest": "b185a878d560366f4a811ea31cd7d5b2f294f2838758c4338bce34357a73833f",
+  "result": {
+    "passed": true,
+    "observed_ms": null,
+    "sample_size": null,
+    "detail": "POST mutation method rejected"
+  },
+  "payload_digest": "5896957173b82c67136da034da60c9e724257d1a216baee97a294f1d7344bf3a"
+}
