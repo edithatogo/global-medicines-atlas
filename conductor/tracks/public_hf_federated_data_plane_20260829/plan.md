@@ -41,11 +41,16 @@
   replica, schema-era, comparison, lineage, and cache fields. (`6055379`)
 - [x] Confirm the intended failure before implementation. (`6055379`;
   missing module, then three trailing-newline identity regressions)
-- [~] Commit immutable v4 schema, valid/invalid fixtures, documentation, and
+- [x] Commit immutable v4 schema, valid/invalid fixtures, documentation, and
   cross-repository conformance canaries.
   Schema, offline semantic validation and portable canary fixtures implemented
   in `6055379`; 54 focused tests pass with 100% semantic-module branch coverage.
-  Downstream adoption and live receipt emission are not yet qualified.
+  reimbursement-atlas PR #816 merged at
+  `a93516ed416118bc51c1db2b71ab540fa4d0fe52`; its binding requires the GMA
+  producer, immutable revision, and content digest. The current GMA contract,
+  compatibility-canary, and consumer suites pass (99 tests). This verifies
+  one pinned consumer and synthetic canaries; live receipt emission and
+  production admission remain open as separate qualification gates.
   This independent Phase 2 contract slice does not close the remaining Phase 1
   complete-estate inventory tasks.
 - [x] Approve the stable `edithatogo/australian-mbs-source-archive` name and
