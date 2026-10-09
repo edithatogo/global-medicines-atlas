@@ -800,6 +800,13 @@
   httpx deprecation warning remains. Test-only; no new source, source
   acquisition, runtime behavior, admission, coverage claim, publication,
   WCAG-conformance claim, or representative-user acceptance.
+- [x] Merge the keyboard-only journey after resolving review feedback about
+  programmatic focus; the corrected test now proves natural sequential Tab
+  reachability. PR #909 merged at `022308b6050aa51aa0496d66acad1b9d24d3427b`
+  after all 28 required contexts and 37 reported checks passed, including
+  Codecov, E2E, mutation, Gremlins, and Linux/macOS/Windows consumers. The
+  squash merge tree matches qualified head `519504bcf72c28c7f7506ad59dec18b05c3247e7`.
+  No source, runtime behavior, production admission, publication, or release.
 
 ### Hosted browser synchronization follow-up (2026-10-09)
 
