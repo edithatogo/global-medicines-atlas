@@ -373,8 +373,11 @@ def test_browser_explains_unknown_resources_and_invalid_benefit_filters() -> (
             )
 
             page.get_by_label("Resource identifier").fill(RESOURCE)
-            page.get_by_label("Optional bounded filters (JSON array)").fill(
+            invalid_filters = (
                 '[{"column":"item_code","operator":"==","value":"100"}]'
+            )
+            page.get_by_label("Optional bounded filters (JSON array)").fill(
+                invalid_filters
             )
             with page.expect_response(
                 lambda response: (
@@ -388,10 +391,10 @@ def test_browser_explains_unknown_resources_and_invalid_benefit_filters() -> (
                 filter_alert.inner_text()
             )
             assert (
-                page
-                .get_by_label("Optional bounded filters (JSON array)")
-                .input_value()
-                .startswith('[{"column":"item_code"')
+                page.get_by_label(
+                    "Optional bounded filters (JSON array)"
+                ).input_value()
+                == invalid_filters
             )
         finally:
             browser.close()
