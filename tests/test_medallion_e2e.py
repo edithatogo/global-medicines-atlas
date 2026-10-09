@@ -215,6 +215,36 @@ def _exercise_source_structure_cli(
     assert receipt["cache_receipt_sha256"]
 
 
+def _exercise_gold_edge_surfaces(
+    edges: pa.Table,
+    *,
+    edge_file: Path,
+) -> None:
+    """Compare the synthetic Gold edge API and CLI readbacks."""
+    client = TestClient(
+        create_app(
+            cast("ReadOnlyQueryService", object()),
+            gold_edges=edges,
+        )
+    )
+    response = client.get("/api/v1/edges", params={"limit": "10"})
+    assert response.status_code == 200, response.text
+    api_page = response.json()
+
+    cli_result = CliRunner().invoke(
+        cli_app,
+        ["edges", "--edge-file", str(edge_file), "--limit", "10"],
+    )
+    assert cli_result.exit_code == 0, cli_result.output
+    cli_page = json.loads(cli_result.stdout)
+    assert cli_page == api_page
+    assert api_page["qualification"] == "synthetic_silver_candidate_only"
+    assert api_page["total"] == edges.num_rows
+    assert all(
+        item["evidence"]["source_id"] == "au-mbs" for item in api_page["items"]
+    )
+
+
 def _payload() -> bytes:
     return (
         b"<MBS_XML><Data><ItemNum>00123</ItemNum>"
@@ -1112,6 +1142,10 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     silver, nodes, gold = _silver_gold_products(
         landed.payload_path.read_bytes(), landed.receipt
     )
+    edge_file = tmp_path / "mbs-gold-edges.parquet"
+    gold_edges = pq.read_table(io.BytesIO(gold))
+    pq.write_table(gold_edges, edge_file)
+    _exercise_gold_edge_surfaces(gold_edges, edge_file=edge_file)
     result = _query_synthetic_platinum(
         gold, landed.receipt, monkeypatch=monkeypatch, tmp_path=tmp_path
     )
