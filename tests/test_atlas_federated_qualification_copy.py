@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Literal, cast
@@ -101,10 +102,18 @@ def _unavailable_structure_page(
         "offline_cache_unavailable",
         "offline_contract_expired",
         "verified_resource_unavailable",
+        "future_internal_reason",
     ],
 ) -> SourceStructurePage:
     payload = _structure_page().model_dump(mode="python")
-    payload.update(status="unavailable", rows=(), reason=reason)
+    payload.update(
+        status="unavailable",
+        rows=(),
+        reason=reason,
+        query_receipt_json=json.dumps(
+            {"reason": reason}, sort_keys=True, separators=(",", ":")
+        ),
+    )
     return SourceStructurePage.model_validate(payload)
 
 
@@ -182,6 +191,7 @@ class StructureLookup:
         "offline_cache_unavailable",
         "offline_contract_expired",
         "verified_resource_unavailable",
+        "future_internal_reason",
     ] = "offline_cache_unavailable"
 
     def query(
@@ -191,6 +201,11 @@ class StructureLookup:
             raise UnknownPlatinumResourceError
         if query.columns != ("kind",):
             raise ValueError("invalid bounded source-structure columns")
+        if (
+            self.unavailable_reason == "future_internal_reason"
+            and self.unavailable
+        ):
+            return _unavailable_structure_page(self.unavailable_reason)
         if self.unavailable_reason == "verified_resource_unavailable":
             if self.unavailable and query.offline:
                 raise AssertionError(
@@ -541,6 +556,11 @@ def test_browser_source_structure_errors_retain_submitted_query() -> None:
             "The pinned resource could not be verified or retrieved",
             False,
         ),
+        (
+            "future_internal_reason",
+            "The pinned source-structure evidence is unavailable",
+            False,
+        ),
     ],
 )
 def test_browser_explains_source_structure_unavailability(
@@ -548,6 +568,7 @@ def test_browser_explains_source_structure_unavailability(
         "offline_cache_unavailable",
         "offline_contract_expired",
         "verified_resource_unavailable",
+        "future_internal_reason",
     ],
     expected_message: str,
     *,
@@ -587,12 +608,13 @@ def test_browser_explains_source_structure_unavailability(
                 "heading", name="Pinned evidence unavailable"
             ).is_visible()
             assert expected_message in unavailable.inner_text()
+            assert reason not in page.locator("main").inner_text()
             assert (
                 "Exact v2 evidence identity"
                 in page.locator("main").inner_text()
             )
             assert (
-                "Exact bounded query receipt"
+                "exact bounded query receipt is retained"
                 in page.locator("main").inner_text()
             )
             assert "No rows are shown" in unavailable.inner_text()

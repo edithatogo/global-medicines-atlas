@@ -276,13 +276,17 @@ def test_atlas_renders_full_identity_and_receipt_for_both_read_states(
         "b" * 64,
         "c" * 64,
         "e" * 64,
-        "receipt_sha256",
     ):
         assert evidence_value in response.text
     if status == "unavailable":
         assert "No verified cached copy is available" in response.text
         assert "offline_cache_unavailable" not in response.text
+        assert "Query receipt SHA-256" in response.text
+        assert "exact bounded query receipt is retained" in response.text
+        assert "receipt_sha256" not in response.text
         assert "No rows are shown" in response.text
+    else:
+        assert "receipt_sha256" in response.text
 
 
 @pytest.mark.parametrize(

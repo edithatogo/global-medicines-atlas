@@ -68,10 +68,14 @@
               <div><dt>Query SHA-256</dt><dd><code>{{ page.query_sha256 }}</code></dd></div>
               <div><dt>Query receipt SHA-256</dt><dd><code>{{ page.query_receipt_sha256 }}</code></dd></div>
           </dl>
+          {% if page.status == "unavailable" %}
+          <p class="notice">The exact bounded query receipt is retained for this read and identified by the digest above. Operational failure details are not rendered here.</p>
+          {% else %}
           <details>
             <summary>Exact bounded query receipt</summary>
             <pre><code>{{ page.query_receipt_json }}</code></pre>
           </details>
+          {% endif %}
           <p class="notice">These edges record source structure only. They do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
         </section>
         {% if page.status == "unavailable" %}
@@ -83,8 +87,10 @@
             <p>The cached copy has expired. Turn off “Use verified cache only” to retrieve and verify the pinned evidence online.</p>
             {% elif page.reason == "verified_resource_unavailable" %}
             <p>The pinned resource could not be verified or retrieved. Try again later.</p>
+            {% elif page.reason %}
+            <p>The pinned source-structure evidence is unavailable. Try again later.</p>
             {% else %}
-            <p>{{ page.reason or "No verified evidence is available." }}</p>
+            <p>No verified evidence is available.</p>
             {% endif %}
             <p>The exact pinned identity and bounded query receipt above identify the evidence that could not be read. No rows are shown.</p>
           </section>
