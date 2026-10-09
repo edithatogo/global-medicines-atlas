@@ -421,6 +421,13 @@
     Test-Goblin profile pass; this synthetic fixture change adds no source,
     acquisition, publication, source-coverage claim, or production admission.
     Representative-user acceptance and WCAG conformance remain open.
+  - [x] Exercise the online `verified_resource_unavailable` result in Chromium
+    in addition to offline cache-miss and expired-cache states. The status copy
+    is actionable, no table is rendered, and the browser path does not turn a
+    failed read into a negative claim. The focused module passes nine tests;
+    repository routine, formatting, and diff checks pass. This is a test-only
+    synthetic follow-up to the current full-profile evidence; hosted checks
+    remain pending.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
