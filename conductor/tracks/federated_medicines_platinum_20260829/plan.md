@@ -701,3 +701,16 @@
   one existing Starlette/httpx deprecation warning remains. Test-only change;
   pinned full Test-Goblin evidence on main was reused. No new source, source
   bytes, production admission, source-coverage claim, or publication.
+
+- [x] PR #888 merged at `8a62042431cdf1c39c39acb02c73c6b0fff0e3bb` after all 28
+  required branch-protection contexts passed, including `codecov/patch`,
+  Linux/macOS/Windows consumers, and the exact-head E2E and routine lanes.
+
+### Browser-level unknown coverage rendering (2026-10-09)
+
+- [x] Extend the existing synthetic Chromium Atlas journey to assert that an
+  explicit unknown coverage row visibly says `Status: Unknown` and that the
+  denominator remains unknown, preserving the no-percentage interpretation.
+  Do not add a source, source claim, or coverage promotion. The focused browser
+  module passed (2 tests), the governed E2E lane passed (50), and routine
+  checks passed; one existing Starlette/httpx deprecation warning remains.

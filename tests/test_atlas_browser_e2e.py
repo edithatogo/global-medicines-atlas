@@ -444,6 +444,12 @@ def _exercise_keyboard_evidence_flow(
         "https://fixtures.invalid/evidence"
     )
     coverage_context = page.locator("table [data-evidence-context]")
+    coverage_row = page.locator("table tbody tr").filter(
+        has=page.locator("[data-state='unknown']")
+    )
+    assert coverage_row.count() == 1
+    assert "Status: Unknown" in coverage_row.inner_text()
+    assert "0 observed; denominator unknown" in coverage_row.inner_text()
     assert "Schema era" in coverage_context.inner_text()
     assert "fixture-v1" in coverage_context.inner_text()
     assert "Coverage record" in coverage_context.inner_text()
