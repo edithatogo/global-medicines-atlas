@@ -90,8 +90,9 @@ def _serve_atlas_on_loopback() -> Iterator[str]:
         server.should_exit = True
         thread.join(timeout=5)
         if thread.is_alive():
+            listener.close()
             raise RuntimeError(
-                "The synthetic Atlas ASGI server failed to stop after startup"
+                "The synthetic Atlas ASGI server did not start and the shutdown timed out"
             )
         listener.close()
         raise RuntimeError("The synthetic Atlas ASGI server did not start")
