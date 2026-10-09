@@ -515,8 +515,27 @@ def _assert_landed_b1_projection(
         "https://fixtures.invalid/bronze/"
         f"{hashlib.sha256(payload).hexdigest()}/payload.xml"
     )
-    assert str(landing.payload_path).encode() not in parquet
-    assert payload not in parquet
+    workstation_path = str(landing.payload_path).encode()
+    decoded_values = [
+        value
+        for row in table.to_pylist()
+        for value in row.values()
+        if value is not None
+    ]
+    metadata_values = [
+        value
+        for metadata in (
+            table.schema.metadata,
+            pq.read_metadata(io.BytesIO(parquet)).metadata,
+        )
+        if metadata
+        for pair in metadata.items()
+        for value in pair
+    ]
+    for value in (*decoded_values, *metadata_values):
+        encoded = value if isinstance(value, bytes) else str(value).encode()
+        assert workstation_path not in encoded
+        assert payload not in encoded
     return parquet
 
 
