@@ -508,8 +508,12 @@
   readback confirms both README-to-`SUCCESSOR.md` links and GMA documentation
   links resolve, but the archived notices falsely say the repositories are
   unarchived and point to historical dataset revisions; the scraper `v0.1`
-  tag predates successor links. No GitHub Releases exist. The readback is
-  `quality/qualifications/australian-donor-successor-link-readback-20261004.json`.
+  tag predates successor links. No GitHub Releases exist. The 2026-10-10
+  anonymous refresh confirms the MBS dataset head advanced while the PBS head
+  remained unchanged. Current readback:
+  `quality/qualifications/australian-donor-successor-link-readback-20261010.json`.
+  The task remains open pending explicit authorization to update the archived
+  public notices.
   Updating archived public content remains a maintainer authorization gate.
 - [ ] Phase Verification & Checkpoint: federation has one authority per contract
   and every consumer is revision-pinned.
@@ -520,6 +524,14 @@
   blobs, GitHub Release collections and tags, plus anonymous current MBS/PBS
   successor dataset metadata. Record the exact observations in
   `quality/qualifications/australian-donor-successor-link-readback-20261004.json`.
+- [x] Refresh the anonymous readback after the MBS successor dataset revision
+  advanced. Both repositories remain archived at their preserved heads, and
+  their README/SUCCESSOR.md blobs, stale status statements, historical links,
+  release counts, and tags remain unchanged. MBS is now at
+  `44b25bfd87e44998c7c1da4c3930ad4447e9246f`; PBS remains at
+  `48fd7345fb09277bb5b85644dba72804633a2abb`. No source payload bytes were
+  read and no external object was changed. Receipt:
+  `quality/qualifications/australian-donor-successor-link-readback-20261010.json`.
 - [x] Apply the maintainer's 2026-10-04 direction to keep both donor
   repositories archived and defer public notice updates. The copy-ready draft
   remains local; neither repository, tag, release nor dataset was changed.
