@@ -292,13 +292,18 @@ def test_keyboard_history_timeline_preserves_snapshot_evidence() -> None:
             history_region = page.get_by_role(
                 "region", name="Source snapshot identity"
             )
-            assert "Earlier" in history_region.inner_text()
-            assert "Later" in history_region.inner_text()
-            assert "synthetic-mbs" in history_region.inner_text()
-            assert "fixture-revision-previous" in history_region.inner_text()
-            assert "fixture-revision-current" in history_region.inner_text()
-            assert "fixtures/previous.xml" in history_region.inner_text()
-            assert "fixtures/current.xml" in history_region.inner_text()
+            snapshot_rows = history_region.locator("tbody tr")
+            assert snapshot_rows.count() == 2
+            earlier_row = snapshot_rows.nth(0).inner_text()
+            later_row = snapshot_rows.nth(1).inner_text()
+            assert "Earlier" in earlier_row
+            assert "fixture-revision-previous" in earlier_row
+            assert "fixtures/previous.xml" in earlier_row
+            assert "Later" in later_row
+            assert "fixture-revision-current" in later_row
+            assert "fixtures/current.xml" in later_row
+            assert "synthetic-mbs" in earlier_row
+            assert "synthetic-mbs" in later_row
             assert (
                 "absence interpretation: unknown"
                 in page.locator("main").inner_text()
