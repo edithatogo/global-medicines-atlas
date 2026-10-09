@@ -349,6 +349,16 @@
     PR #866 merged as `f9c851df335e6f7051dd4673b15dd73946ad6d5e` after all 37
     hosted checks passed, including Codecov patch coverage and
     Linux/macOS/Windows consumers.
+  - [x] Keep federated benefits and source-structure interpretation copy
+    accurate for currently identified resources whose v4 identity declares the
+    `current` cohort. Synthetic route regressions assert that those views do
+    not call the resource fixture-only or synthetic while preserving explicit
+    undeclared-coverage and non-equivalence limits. Focused Atlas, medallion,
+    browser, accessibility, routine, and full Test-Goblin checks passed with
+    pinned uv 0.11.29: 5,998 passed, one optional PyIceberg skip, 96.88%
+    coverage; 332 gremlin checks passed. Local Darwin mutation observations
+    are advisory and Linux CI remains authoritative. This copy correction does
+    not establish source coverage or production qualification.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register

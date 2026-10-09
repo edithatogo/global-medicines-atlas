@@ -408,6 +408,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_atlas_e2e.py",
         "tests/test_atlas_browser_e2e.py",
         "tests/test_atlas_discovery_e2e.py",
+        "tests/test_atlas_federated_qualification_copy.py",
         "tests/test_stable_v1_e2e_qualification.py",
     ),
     "smoke": (
