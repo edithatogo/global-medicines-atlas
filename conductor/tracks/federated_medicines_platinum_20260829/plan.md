@@ -470,7 +470,10 @@
     synthetic test-only follow-up adds no sources and relies on the preceding
     pinned full-profile result. The Linux E2E lane exposed that Home/Shift+End
     did not replace the retained value; use ControlOrMeta+A and verify the
-    platform-aware keyboard correction locally. Exact-head hosted rerun pending.
+    platform-aware keyboard correction locally. PR #883 merged as
+    `d1147ba2ca44e000f14cae71a00ffd756a40e67d` after all 28 required
+    branch-protection contexts and all 37 exact-head check runs passed,
+    including Codecov and Linux/macOS/Windows consumers.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
