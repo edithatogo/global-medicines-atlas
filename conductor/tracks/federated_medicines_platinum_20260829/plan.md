@@ -533,8 +533,22 @@
 
 ## Phase 5: Research exports and qualification (AC-07, AC-08)
 
-- [~] Write failing determinism, citation, Croissant/RO-Crate, package,
+- [x] Write failing determinism, citation, Croissant/RO-Crate, package,
   clean-room, load, concurrency, security, privacy, and release-gate tests.
+  - [x] Reconcile category coverage against the registered Test-Goblin
+    selections: deterministic manifests/citations and RO-Crate/Croissant in
+    `test_research_exports.py` and `test_research_package.py`; deterministic,
+    payload-free packages and clean-room malformed-archive controls in
+    `test_research_export_package.py`; bounded concurrent workload and receipt
+    store behavior in `test_performance_workload.py` and
+    `test_platinum_receipts.py`; abuse controls and fail-closed release gates
+    in `test_product_security.py`, `test_product_release.py`, and
+    `test_release_qualification.py`. Exact-head PR #893 passed all 38 reported
+    checks, including the registered unit, integration, E2E, coverage,
+    mutation, Gremlins, security, and regeneration lanes and Linux, macOS, and
+    Windows consumers. This closes the automated test task for the synthetic
+    and metadata-only system; it does not establish production source
+    coverage, full accessibility conformance, or public release readiness.
   - [x] Confirmed and fixed query-manifest instability when callers mutate a
     nested query mapping after manifest construction.
   - [x] Add a governed synthetic Bronze-to-Silver-to-Gold-to-Platinum query
