@@ -83,8 +83,10 @@
             <p>The cached copy has expired. Turn off “Use verified cache only” to retrieve and verify the pinned evidence online.</p>
             {% elif page.reason == "verified_resource_unavailable" %}
             <p>The pinned resource could not be verified or retrieved. Try again later.</p>
+            {% elif page.reason %}
+            <p>The pinned source-structure evidence is unavailable. Try again later.</p>
             {% else %}
-            <p>{{ page.reason or "No verified evidence is available." }}</p>
+            <p>No verified evidence is available.</p>
             {% endif %}
             <p>The exact pinned identity and bounded query receipt above identify the evidence that could not be read. No rows are shown.</p>
           </section>

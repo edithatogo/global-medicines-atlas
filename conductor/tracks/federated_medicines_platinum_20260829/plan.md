@@ -450,6 +450,12 @@
     branch-protection contexts passed. Thirty-seven of 38 check runs passed;
     the optional Delta table-format check was still queued at reconciliation.
     This is test-only synthetic evidence.
+  - [x] Use a generic accessible message for unrecognized source-structure
+    failure reasons so future internal codes are not exposed to users. A
+    synthetic Chromium case confirms the reason code is absent, identity and
+    receipt remain visible, and no evidence rows appear. The adjacent Atlas,
+    structure API, and medallion suite passes 24 tests; full pinned Test-Goblin
+    completed with the optional PyIceberg skip. Hosted PR checks remain pending.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
