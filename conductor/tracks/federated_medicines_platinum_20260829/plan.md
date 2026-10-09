@@ -329,6 +329,10 @@
     PyIceberg skip before exhausting host disk space during coverage output.
     The two toolchain-sensitive stable-v1 tests pass when run with uv 0.11.29.
     No local full-profile pass is claimed. No additional source was added.
+  - [~] Add a Chromium-backed synthetic browser check for the historical Atlas
+    route, exercising skip-link navigation, snapshot identity, and before/after
+    native values/states. This extends interaction evidence only; representative
+    user acceptance and full WCAG conformance remain open.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register
