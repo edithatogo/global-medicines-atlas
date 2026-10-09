@@ -541,5 +541,7 @@
   or public mutation. PR #858 merged as `8cc48eac` after all 37 hosted checks
   passed. The review follow-up inspects decoded Parquet columns and Arrow / file
   metadata for B2 payload and workstation-path sentinels; negative controls
-  inject both sentinels into values and metadata and confirm rejection. No source acquisition,
+  inject both sentinels into values and metadata and confirm rejection. The
+  review-control follow-up merged as PR #860 (`9d600070`) after all 37 hosted
+  checks passed. No source acquisition,
   production admission, coverage claim, public publication, or release.
