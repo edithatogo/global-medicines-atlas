@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Literal, cast
 from urllib.parse import urlsplit
 
 import pytest
+from bs4 import BeautifulSoup
 from fastapi.testclient import TestClient
 from playwright.sync_api import expect, sync_playwright
 
@@ -254,6 +255,34 @@ def test_structure_view_does_not_call_a_current_resource_synthetic() -> None:
     assert "Comparison cohort</dt><dd>current" in response.text
     assert "This synthetic qualification" not in response.text
     assert "Coverage is not declared here" in response.text
+
+
+def test_unavailable_source_structure_status_has_an_accessible_name() -> None:
+    """Assistive technology can identify the unavailable state message."""
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_source_structure=StructureLookup(
+                unavailable=True, unavailable_reason="offline_cache_unavailable"
+            ),
+        )
+    )
+
+    response = client.get(
+        "/federated/source-structure",
+        params={"resource_id": RESOURCE, "columns": "kind", "offline": True},
+    )
+    soup = BeautifulSoup(response.text, "html.parser")
+    status = soup.select_one("section[role='status']")
+
+    assert response.status_code == 200
+    assert status is not None
+    labelled_by = status.get("aria-labelledby")
+    assert isinstance(labelled_by, str)
+    heading = soup.find(id=labelled_by)
+    assert heading is not None
+    assert heading.name in {"h2", "h3"}
+    assert heading.get_text(" ", strip=True) == "Pinned evidence unavailable"
 
 
 def test_benefits_view_retains_synthetic_resource_limits() -> None:
