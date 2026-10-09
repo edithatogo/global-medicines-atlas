@@ -11,7 +11,7 @@ import pytest
 from tests import test_query_service as query_service_tests
 from typer.testing import CliRunner
 
-from global_medicines_atlas import cli
+from global_medicines_atlas import cli, platinum_structure
 from global_medicines_atlas.cli import app
 from global_medicines_atlas.historical_change import (
     compare_historical_snapshots,
@@ -20,6 +20,9 @@ from global_medicines_atlas.historical_comparison import (
     NativeField,
     NativeRow,
     NativeSnapshot,
+)
+from global_medicines_atlas.platinum_identity_service import (
+    UnknownPlatinumResourceError,
 )
 from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonResponse,
@@ -103,6 +106,138 @@ def test_history_rejects_invalid_evidence_file(
     assert result.exit_code == 2
     assert not result.stdout
     assert json.loads(result.stderr)["error"] == ErrorCode.INVALID_REQUEST
+
+
+@pytest.mark.parametrize(
+    ("status", "exit_code"), [("available", 0), ("unavailable", 3)]
+)
+def test_source_structure_cli_uses_operator_trust_and_bounded_query(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    status: str,
+    exit_code: int,
+) -> None:
+    trust_file = tmp_path / "trust.json"
+    trust_file.write_text("{}")
+    metadata_root = tmp_path / "metadata"
+    metadata_root.mkdir()
+    schema_file = tmp_path / "schema.json"
+    schema_file.write_text("{}")
+    resolver = type("Resolver", (), {"resource_ids": ("au.pbs.synthetic",)})()
+    loader_args: dict[str, object] = {}
+    query_args: dict[str, object] = {}
+
+    def load_resolver(**kwargs: object) -> object:
+        loader_args.update(kwargs)
+        return resolver
+
+    class Page:
+        def __init__(self) -> None:
+            self.status = status
+
+        def model_dump_json(self) -> str:
+            return json.dumps({"status": self.status, "rows": []})
+
+    class Service:
+        def __init__(self, value: object, *, jurisdictions: object) -> None:
+            assert value is resolver
+            assert jurisdictions == {"au.pbs.synthetic": "AU"}
+
+        def query(self, resource_id: str, query: object) -> Page:
+            query_args["resource_id"] = resource_id
+            query_args["query"] = query
+            return Page()
+
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: load_resolver)
+    monkeypatch.setattr(platinum_structure, "SourceStructureService", Service)
+    result = runner.invoke(
+        app,
+        [
+            "source-structure",
+            "au.pbs.synthetic",
+            "--trust-file",
+            str(trust_file),
+            "--metadata-root",
+            str(metadata_root),
+            "--schema-file",
+            str(schema_file),
+            "--column",
+            "kind",
+            "--column",
+            "node_id",
+            "--limit",
+            "5",
+            "--offline",
+        ],
+    )
+
+    assert result.exit_code == exit_code, result.stderr
+    assert json.loads(result.stdout) == {"status": status, "rows": []}
+    assert loader_args == {
+        "trust_file": trust_file,
+        "metadata_root": metadata_root,
+        "schema_file": schema_file,
+    }
+    assert query_args["resource_id"] == "au.pbs.synthetic"
+    query = query_args["query"]
+    assert query.columns == ("kind", "node_id")
+    assert query.limit == 5
+    assert query.offline is True
+
+
+@pytest.mark.parametrize(
+    ("failure", "expected_error"),
+    [
+        ("unknown", ErrorCode.NOT_FOUND),
+        ("invalid", ErrorCode.INVALID_REQUEST),
+    ],
+)
+def test_source_structure_cli_reports_typed_failures_without_details(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    failure: str,
+    expected_error: ErrorCode,
+) -> None:
+    trust_file = tmp_path / "trust.json"
+    trust_file.write_text("{}")
+    metadata_root = tmp_path / "metadata"
+    metadata_root.mkdir()
+    schema_file = tmp_path / "schema.json"
+    schema_file.write_text("{}")
+    resolver = type("Resolver", (), {"resource_ids": ("au.pbs.synthetic",)})()
+
+    class Service:
+        def __init__(self, *_args: object, **_kwargs: object) -> None:
+            pass
+
+        def query(self, *_args: object, **_kwargs: object) -> object:
+            if failure == "unknown":
+                raise UnknownPlatinumResourceError("private resource detail")
+            raise ValueError("private operator configuration detail")
+
+    monkeypatch.setattr(
+        cli, "_dataset_resolver_loader", lambda: lambda **_kwargs: resolver
+    )
+    monkeypatch.setattr(platinum_structure, "SourceStructureService", Service)
+    result = runner.invoke(
+        app,
+        [
+            "source-structure",
+            "au.pbs.synthetic",
+            "--trust-file",
+            str(trust_file),
+            "--metadata-root",
+            str(metadata_root),
+            "--schema-file",
+            str(schema_file),
+            "--column",
+            "kind",
+        ],
+    )
+
+    assert result.exit_code != 0
+    assert json.loads(result.stderr)["error"] == expected_error
+    assert "private" not in result.stderr
 
 
 class _Page:

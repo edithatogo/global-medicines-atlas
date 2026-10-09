@@ -159,6 +159,62 @@ def _exercise_benefits_cli(
         assert cli_page[key] == api_page[key]
 
 
+def _exercise_source_structure_cli(
+    resolver: StorageNeutralResolver,
+    resource_id: str,
+    columns: tuple[str, ...],
+    expected: QueryResult,
+    test_context: tuple[pytest.MonkeyPatch, Path],
+) -> None:
+    """Read the verified synthetic structure through the installed CLI."""
+    monkeypatch, tmp_path = test_context
+    monkeypatch.setattr(
+        platinum_configuration,
+        "load_benefits_resolver",
+        lambda **_kwargs: resolver,
+    )
+    trust_file = tmp_path / "synthetic-structure-trust.json"
+    trust_file.write_text("{}", encoding="utf-8")
+    metadata_root = tmp_path / "synthetic-structure-metadata"
+    metadata_root.mkdir(exist_ok=True)
+    schema_file = tmp_path / "federation.schema.json"
+    schema_file.write_bytes(
+        (ROOT / "contracts/medallion/v4/federation.schema.json").read_bytes()
+    )
+    arguments = [
+        "source-structure",
+        resource_id,
+        "--trust-file",
+        str(trust_file),
+        "--metadata-root",
+        str(metadata_root),
+        "--schema-file",
+        str(schema_file),
+        *(item for column in columns for item in ("--column", column)),
+        "--limit",
+        "1",
+        "--offline",
+    ]
+    result = CliRunner().invoke(cli_app, arguments)
+    assert result.exit_code == 0, result.output
+    cli_page = json.loads(result.stdout)
+    assert cli_page["status"] == "available"
+    assert cli_page["rows"] == list(expected.rows)
+    assert cli_page["identity"]["resource_id"] == resource_id
+    assert cli_page["identity"]["revision"] == expected.evidence.revision
+    assert cli_page["identity"]["path"] == expected.evidence.path
+    assert (
+        cli_page["identity"]["object_sha256"] == expected.evidence.object_sha256
+    )
+    assert cli_page["identity"]["semantic_dimension"] == "source_structure"
+    assert cli_page["query_sha256"] == expected.query_receipt.query_sha256
+    receipt = json.loads(cli_page["query_receipt_json"])
+    assert cli_page["query_receipt_sha256"] == receipt["receipt_sha256"]
+    assert receipt["query_sha256"] == expected.query_receipt.query_sha256
+    assert receipt["result_sha256"] == expected.result_sha256
+    assert receipt["cache_receipt_sha256"]
+
+
 def _payload() -> bytes:
     return (
         b"<MBS_XML><Data><ItemNum>00123</ItemNum>"
@@ -1011,9 +1067,23 @@ def _query_synthetic_platinum(
                 )
                 requests.clear()
 
-        return _exercise_query_cache(
+        result = _exercise_query_cache(
             resolver, resource.resource_id, requests, columns=columns
         )
+        if (
+            semantic_dimension == "source_structure"
+            and monkeypatch is not None
+            and tmp_path is not None
+        ):
+            _exercise_source_structure_cli(
+                resolver,
+                resource_id,
+                columns,
+                result,
+                (monkeypatch, tmp_path),
+            )
+            assert len(requests) == 4
+        return result
 
 
 @pytest.mark.e2e
@@ -1106,6 +1176,7 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
 @pytest.mark.e2e
 def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Preserve PBS containment as source structure across all product layers."""
     raw = PBS_XML
@@ -1157,6 +1228,8 @@ def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
             "semantic_dimension",
             "controls_json",
         ),
+        monkeypatch=monkeypatch,
+        tmp_path=tmp_path,
     )
     assert result.status == "available"
     assert result.rows

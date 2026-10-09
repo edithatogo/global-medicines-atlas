@@ -165,6 +165,13 @@
   coverage API/CLI surfaces are implemented. Their focused contract suite
   passed 186 tests on 2026-09-14; the remaining Phase 2 checkpoint is a
   broader qualification task.
+- [x] Carry the existing synthetic PBS source-structure Gold edge through the
+  operator-trusted `gma source-structure` CLI, verifying the bounded rows,
+  pinned identity, query receipt, offline-cache behavior, and typed redacted
+  unknown-resource/configuration failures. The CLI and Bronze-to-Platinum E2E
+  tests pass; the full pinned Test-Goblin profile passes above the repository
+  coverage floor.
+  No source was added, acquired, admitted, or published.
 - [x] Add deterministic pagination, size limits, rate controls, content
   negotiation, cache headers, and provenance envelopes. Benefits pagination,
   serialized-page bounds, fixed-window rate controls, transport observations,
