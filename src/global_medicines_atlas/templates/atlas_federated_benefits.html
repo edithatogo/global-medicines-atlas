@@ -44,7 +44,17 @@
         {% if page.status == "unavailable" %}
           <section class="notice" role="status" aria-labelledby="unavailable-heading">
             <h2 id="unavailable-heading">Pinned evidence unavailable</h2>
+            {% if page.reason == "offline_cache_unavailable" %}
+            <p>No verified cached copy is available. Turn off “Use verified cache only” to try an online read.</p>
+            {% elif page.reason == "offline_contract_expired" %}
+            <p>The pinned contract has expired, so its cached evidence cannot be used.</p>
+            {% elif page.reason == "verified_resource_unavailable" %}
+            <p>The pinned resource could not be verified or retrieved. Try again later.</p>
+            {% elif page.reason == "unknown_resource" %}
+            <p>The requested pinned resource is not available.</p>
+            {% else %}
             <p>{{ page.reason or "No verified evidence page is available." }}</p>
+            {% endif %}
           </section>
         {% else %}
           <section aria-labelledby="identity-heading">
