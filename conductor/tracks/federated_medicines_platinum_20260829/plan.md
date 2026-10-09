@@ -540,5 +540,6 @@
   the existing synthetic MBS/PBS fixtures; no additional source, source claim,
   or public mutation. PR #858 merged as `8cc48eac` after all 37 hosted checks
   passed. The review follow-up inspects decoded Parquet columns and Arrow / file
-  metadata for B2 payload and workstation-path sentinels. No source acquisition,
+  metadata for B2 payload and workstation-path sentinels; negative controls
+  inject both sentinels into values and metadata and confirm rejection. No source acquisition,
   production admission, coverage claim, public publication, or release.
