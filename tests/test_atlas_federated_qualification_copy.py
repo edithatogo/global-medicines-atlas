@@ -336,3 +336,62 @@ def test_browser_navigates_from_home_to_bounded_federated_evidence() -> None:
             _exercise_browser_structure_route(page)
         finally:
             browser.close()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
+def test_browser_explains_unknown_resources_and_invalid_benefit_filters() -> (
+    None
+):
+    """Federated form failures remain visible and actionable in the browser."""
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_benefits=BenefitsLookup(),
+        )
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _route_client_requests(page, client)
+            page.goto("http://atlas.test/")
+            page.get_by_role(
+                "link", name="Browse pinned benefit evidence"
+            ).click()
+            page.get_by_label("Resource identifier").fill("au.mbs.unknown")
+            with page.expect_response(
+                lambda response: (
+                    "/federated/benefits" in response.url
+                    and response.status == 404
+                )
+            ):
+                page.get_by_role("button", name="Read pinned evidence").click()
+            unknown_alert = page.get_by_role("alert")
+            assert "admitted benefits resource was not found" in (
+                unknown_alert.inner_text()
+            )
+
+            page.get_by_label("Resource identifier").fill(RESOURCE)
+            page.get_by_label("Optional bounded filters (JSON array)").fill(
+                '[{"column":"item_code","operator":"==","value":"100"}]'
+            )
+            with page.expect_response(
+                lambda response: (
+                    "/federated/benefits" in response.url
+                    and response.status == 422
+                )
+            ):
+                page.get_by_role("button", name="Read pinned evidence").click()
+            filter_alert = page.get_by_role("alert")
+            assert "federated benefits query is invalid" in (
+                filter_alert.inner_text()
+            )
+            assert (
+                page
+                .get_by_label("Optional bounded filters (JSON array)")
+                .input_value()
+                .startswith('[{"column":"item_code"')
+            )
+        finally:
+            browser.close()
