@@ -873,3 +873,12 @@
   tests pass for both records.
   Keep live deployment, production data, source coverage, public release, and
   full WCAG conformance as separate gates.
+- [x] Merge the loopback-only synthetic Atlas browser journey after the exact
+  cleanup review finding was corrected. PR #911 merged as
+  `f5f804b77ddf9c3343d90a357d98cb82ac6fddec` from qualified head
+  `405eef72ed9efa1b78663757c15f38c7eb6a2b56`; all 28 required contexts passed,
+  including coverage, mutation, Gremlins, exact-head E2E, and Linux/macOS/
+  Windows consumers. Local focused browser tests (3) and routine profile pass.
+  This closes only the synthetic loopback journey; production deployment,
+  admission, source coverage, public release, WCAG conformance, and
+  representative-user acceptance remain separate gates.
