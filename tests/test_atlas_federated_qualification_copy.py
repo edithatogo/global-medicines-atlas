@@ -10,7 +10,7 @@ from urllib.parse import urlsplit
 
 import pytest
 from fastapi.testclient import TestClient
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 
 from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
 from global_medicines_atlas.platinum_benefits import BenefitsPage, BenefitsQuery
@@ -626,7 +626,7 @@ def test_keyboard_user_can_recover_from_source_structure_error(
                 )
             ):
                 page.keyboard.press("Enter")
-            assert page.get_by_role("table").is_visible()
+            expect(page.get_by_role("table")).to_be_visible()
             assert page.get_by_role("alert").count() == 0
         finally:
             browser.close()

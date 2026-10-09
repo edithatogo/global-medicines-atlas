@@ -714,3 +714,12 @@
   Do not add a source, source claim, or coverage promotion. The focused browser
   module passed (2 tests), the governed E2E lane passed (50), and routine
   checks passed; one existing Starlette/httpx deprecation warning remains.
+
+### Hosted browser synchronization follow-up (2026-10-09)
+
+- [x] Address the exact-head Linux E2E failure in the existing federated
+  qualification keyboard-recovery journey. The page received the successful
+  response but the immediate visibility assertion raced with browser render;
+  use Playwright's visibility expectation and rerun the full governed E2E lane.
+  The affected browser module passed (16), governed E2E passed (50), and routine
+  checks passed. One existing Starlette/httpx deprecation warning remains.
