@@ -810,3 +810,15 @@
   exact-head E2E and routine lanes, and Linux/macOS/Windows consumers. This
   closes the browser assertion follow-up only; production coverage and the
   Phase 3 representative-user checkpoint remain open.
+
+### Unavailable source-structure status announcement
+
+- [x] Give the source-structure unavailable live status an accessible name by
+  associating it with its heading. A regression test failed before the template
+  correction and now verifies the `aria-labelledby` target and heading text.
+  Federated browser and Atlas accessibility tests passed (21); the full pinned
+  Test-Goblin profile passed, including 6,028 tests, 96.88% coverage, mutation,
+  Gremlins, both randomized orders, profiling, security, and routine checks.
+  Darwin mutation results remain advisory and Linux CI remains authoritative.
+  This closes the named announcement defect only; full WCAG conformance and
+  representative-user acceptance remain open.

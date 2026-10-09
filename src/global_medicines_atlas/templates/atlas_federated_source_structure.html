@@ -79,8 +79,8 @@
           <p class="notice">These edges record source structure only. They do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
         </section>
         {% if page.status == "unavailable" %}
-          <section class="notice" role="status">
-            <h2>Pinned evidence unavailable</h2>
+          <section class="notice" role="status" aria-labelledby="unavailable-heading">
+            <h2 id="unavailable-heading">Pinned evidence unavailable</h2>
             {% if page.reason == "offline_cache_unavailable" %}
             <p>No verified cached copy is available. Turn off “Use verified cache only” to retrieve and verify the pinned evidence online.</p>
             {% elif page.reason == "offline_contract_expired" %}
