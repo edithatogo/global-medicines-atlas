@@ -389,8 +389,10 @@
     returned HTTP 422; normalize only the blank value to no filter, preserving
     strict parsing for non-empty input. Five focused browser/route tests, the
     routine harness, Ruff, `ty`, and repository BasedPyright pass. Full
-    Test-Goblin with pinned uv 0.11.29 also passed locally. Hosted exact-head
-    checks remain pending. This proves a synthetic browser-to-ASGI path only;
+    Test-Goblin with pinned uv 0.11.29 also passed locally. PR #873 merged as
+    `f496daa20a3ff63640340198e73287ca0305547e` after all 38 hosted checks,
+    including Codecov and protected contexts, passed. This proves a synthetic
+    browser-to-ASGI path only;
     it adds no source and does not establish source coverage, deployment,
     WCAG conformance, or representative-user acceptance. Automated review
     caught a receipt timestamp later than its introducing commit; an appended
