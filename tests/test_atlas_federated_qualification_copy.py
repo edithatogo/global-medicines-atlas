@@ -189,6 +189,8 @@ class StructureLookup:
     ) -> SourceStructurePage:
         if resource_id != RESOURCE:
             raise UnknownPlatinumResourceError
+        if query.columns != ("kind",):
+            raise ValueError("invalid bounded source-structure columns")
         if self.unavailable_reason == "verified_resource_unavailable":
             if self.unavailable and query.offline:
                 raise AssertionError(
@@ -459,6 +461,60 @@ def test_browser_explains_unknown_resources_and_invalid_benefit_filters() -> (
                 ).input_value()
                 == invalid_filters
             )
+        finally:
+            browser.close()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
+def test_browser_source_structure_errors_retain_submitted_query() -> None:
+    """Unknown resources and invalid projections stay visible in the form."""
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_source_structure=StructureLookup(),
+        )
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _route_client_requests(page, client)
+            page.goto("http://atlas.test/")
+            page.get_by_role(
+                "link", name="Browse pinned source-structure evidence"
+            ).click()
+            resource_field = page.get_by_label("Resource identifier")
+            columns_field = page.get_by_label("Source columns, comma separated")
+            resource_field.fill("au.pbs.unknown")
+            columns_field.fill("kind")
+            with page.expect_response(
+                lambda response: (
+                    "/federated/source-structure" in response.url
+                    and response.status == 404
+                )
+            ):
+                page.get_by_role("button", name="Read pinned structure").click()
+            assert "admitted source-structure resource was not found" in (
+                page.get_by_role("alert").inner_text()
+            )
+            assert resource_field.input_value() == "au.pbs.unknown"
+            assert columns_field.input_value() == "kind"
+
+            resource_field.fill(RESOURCE)
+            columns_field.fill("kind,unknown_column")
+            with page.expect_response(
+                lambda response: (
+                    "/federated/source-structure" in response.url
+                    and response.status == 422
+                )
+            ):
+                page.get_by_role("button", name="Read pinned structure").click()
+            assert "federated source-structure query is invalid" in (
+                page.get_by_role("alert").inner_text()
+            )
+            assert resource_field.input_value() == RESOURCE
+            assert columns_field.input_value() == "kind,unknown_column"
         finally:
             browser.close()
 
