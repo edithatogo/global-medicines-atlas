@@ -59,3 +59,20 @@ def test_non_fixed_cypher_templates_are_rejected() -> None:
             export_rdf_star(nodes, edges),
             node_statement="CREATE (n)",
         )
+
+
+@pytest.mark.parametrize("field", ["reference_json", "parameters_json"])
+def test_duplicate_json_object_keys_are_rejected(field: str) -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    export = export_gold_tables(nodes, edges)
+    values = {
+        "reference_json": export.reference_json,
+        "parameters_json": export.parameters_json,
+    }
+    values[field] = '{"nodes":[], ' + values[field][1:]
+    with pytest.raises(ValueError, match="duplicate JSON key: nodes"):
+        validate_graph_previews(
+            values["reference_json"],
+            values["parameters_json"],
+            export_rdf_star(nodes, edges),
+        )

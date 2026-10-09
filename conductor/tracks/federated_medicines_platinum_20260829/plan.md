@@ -533,8 +533,22 @@
 
 ## Phase 5: Research exports and qualification (AC-07, AC-08)
 
-- [~] Write failing determinism, citation, Croissant/RO-Crate, package,
+- [x] Write failing determinism, citation, Croissant/RO-Crate, package,
   clean-room, load, concurrency, security, privacy, and release-gate tests.
+  - [x] Reconcile category coverage against the registered Test-Goblin
+    selections: deterministic manifests/citations and RO-Crate/Croissant in
+    `test_research_exports.py` and `test_research_package.py`; deterministic,
+    payload-free packages and clean-room malformed-archive controls in
+    `test_research_export_package.py`; bounded concurrent workload and receipt
+    store behavior in `test_performance_workload.py` and
+    `test_platinum_receipts.py`; abuse controls and fail-closed release gates
+    in `test_product_security.py`, `test_product_release.py`, and
+    `test_release_qualification.py`. Exact-head PR #893 passed all 38 reported
+    checks, including the registered unit, integration, E2E, coverage,
+    mutation, Gremlins, security, and regeneration lanes and Linux, macOS, and
+    Windows consumers. This closes the automated test task for the synthetic
+    and metadata-only system; it does not establish production source
+    coverage, full accessibility conformance, or public release readiness.
   - [x] Confirmed and fixed query-manifest instability when callers mutate a
     nested query mapping after manifest construction.
   - [x] Add a governed synthetic Bronze-to-Silver-to-Gold-to-Platinum query
@@ -665,6 +679,32 @@
   unverified. The value-file receipts and aggregate are in
   `quality/qualifications/platinum-product-performance-20261006/`.
 
+### Fixture clean-start qualification (2026-10-10)
+
+- [x] Bind a content-addressed clean-start receipt only after an empty
+  temporary root can create a synthetic DuckDB fixture, pass service and API
+  readiness, return a bounded comparison result through the API, and render
+  the Atlas page. The resulting product evidence remains `fixture_qualified`;
+  live deployment, accessibility conformance, and production-data gates stay
+  unverified. The first local receipt set in
+  `quality/qualifications/platinum-product-performance-20261010-clean-start/`
+  included an ignored hatch-vcs generated `_version.py` in its implementation
+  digest and is superseded by the clean-manifest requalification below. No
+  sources, production data, acquisition, publication, or release were used.
+
+### Stable-manifest clean-start requalification (2026-10-10)
+
+- [x] Exclude the ignored hatch-vcs `_version.py` from the implementation
+  manifest so qualification digests are reproducible between local builds and
+  clean Git checkouts. A regression test failed before the fix and passes now.
+  A Git archive of merged PR #895 reproduced its clean-tree digest independently;
+  after the manifest fix, the current implementation digest is bound to all nine
+  newly executed receipts. The focused release suites passed (42); the pinned
+  full Test-Goblin profile passed. Product evidence remains
+  `fixture_qualified`, with live-deployment, accessibility-conformance, and
+  production-data gates unverified. Durable artifacts are in
+  `quality/qualifications/platinum-product-performance-20261010-clean-start-stable-manifest/`.
+
 ### PBS source-structure Platinum integration (2026-10-07)
 
 - [x] Admit `source_structure` as its own internal Platinum semantic value;
@@ -693,3 +733,80 @@
   review-control follow-up merged as PR #860 (`9d600070`) after all 37 hosted
   checks passed. No source acquisition,
   production admission, coverage claim, public publication, or release.
+
+### Source-neutral explicit coverage product E2E (2026-10-09)
+
+- [x] Carry one fully synthetic explicit-unknown coverage observation through
+  Arrow/DuckDB materialization, the read-only query service, v1 API, CLI, and
+  Atlas rendering. Preserve `state=unknown`, a null denominator, and no
+  negative inference; register the focused test in the governed E2E lane.
+  Focused test passed (1); governed E2E lane passed (50); routine checks passed
+  including formatting, lint, typing, context, and governance validation. The
+  one existing Starlette/httpx deprecation warning remains. Test-only change;
+  pinned full Test-Goblin evidence on main was reused. No new source, source
+  bytes, production admission, source-coverage claim, or publication.
+- [x] Require the complete API and CLI coverage records to match for the
+  synthetic unknown observation, guarding all serialized fields across the
+  shared service adapters. Focused test passed (1), governed E2E lane passed
+  (50), and routine checks passed; the existing Starlette/httpx deprecation
+  warning remains. Test-only refinement; no source or runtime behavior changed.
+- [x] Carry that exact DuckDB-backed unknown observation through the Atlas ASGI
+  app into Chromium. The browser row retains `Status: unknown`, the null-
+  denominator explanation, and no percentage. Focused tests (2), governed E2E
+  lane (51), routine checks, and diff validation pass. This test-only expansion
+  adds no source or runtime behavior; the existing deprecation warning remains.
+- [x] PR #892 merged at `0309efa2b6f3cab824b80e136c22eccb036cf5d4` after all
+  28 required branch-protection contexts passed (38 total reported checks),
+  including Codecov patch, exact-head E2E, routine, security, and Linux/macOS/
+  Windows consumers. No source, runtime behavior, admission, publication, or
+  release changed.
+- [x] Assert the same end-to-end coverage row through the browser accessibility
+  tree using its table and row roles. Focused coverage tests (2), governed E2E
+  lane (51), routine checks, and diff validation pass; one existing
+  Starlette/httpx deprecation warning remains. Test-only; no source or runtime
+  behavior changed.
+- [x] PR #890 merged at `105dd4bb9574f67bba883247afcb54631792f00c` after all 37
+  reported checks passed, including `codecov/patch`, exact-head E2E (50),
+  routine, security, mutation, and Linux/macOS/Windows consumers. A hosted
+  browser render race was corrected before merge. No source, runtime behavior,
+  production admission, publication, or release changed.
+
+- [x] PR #888 merged at `8a62042431cdf1c39c39acb02c73c6b0fff0e3bb` after all 28
+  required branch-protection contexts passed, including `codecov/patch`,
+  Linux/macOS/Windows consumers, and the exact-head E2E and routine lanes.
+
+### Browser-level unknown coverage rendering (2026-10-09)
+
+- [x] Extend the existing synthetic Chromium Atlas journey to assert that an
+  explicit unknown coverage row visibly says `Status: Unknown` and that the
+  denominator remains unknown, preserving the no-percentage interpretation.
+  Do not add a source, source claim, or coverage promotion. The focused browser
+  module passed (2 tests), the governed E2E lane passed (50), and routine
+  checks passed; one existing Starlette/httpx deprecation warning remains.
+
+### Hosted browser synchronization follow-up (2026-10-09)
+
+- [x] Address the exact-head Linux E2E failure in the existing federated
+  qualification keyboard-recovery journey. The page received the successful
+  response but the immediate visibility assertion raced with browser render;
+  use Playwright's visibility expectation and rerun the full governed E2E lane.
+  The affected browser module passed (16), governed E2E passed (50), and routine
+  checks passed. One existing Starlette/httpx deprecation warning remains.
+
+- [x] Correct the second exact-head Linux E2E render race in the same
+  keyboard-recovery journey: after the expected 404/422 response arrived, an
+  immediate alert visibility read ran before Chromium finished rendering. Use
+  Playwright's bounded visibility expectation. The two focused cases, full
+  governed E2E lane (50), and routine checks pass; no runtime behavior changed.
+
+### Unknown coverage percentage negative control (2026-10-09)
+
+- [x] Assert the complete unknown-denominator copy and absence of a percent
+  sign in the rendered browser row, so no percentage can be added while the
+  current prefix assertion still passes. Focused browser tests passed (2), the
+  governed E2E lane passed (50), and routine checks passed.
+- [x] PR #889 merged at `be36f4849ff62f1b78115d86085df78f57491e0a` after all 28
+  required branch-protection contexts passed, including `codecov/patch`, the
+  exact-head E2E and routine lanes, and Linux/macOS/Windows consumers. This
+  closes the browser assertion follow-up only; production coverage and the
+  Phase 3 representative-user checkpoint remain open.

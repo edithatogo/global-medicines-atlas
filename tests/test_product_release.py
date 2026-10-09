@@ -9,7 +9,11 @@ import pytest
 from pydantic import ValidationError
 from scripts import run_product_qualification
 from scripts.qualify_product_release import build_evidence
-from scripts.run_product_qualification import implementation_digest, run
+from scripts.run_product_qualification import (
+    implementation_digest,
+    implementation_manifest,
+    run,
+)
 
 from global_medicines_atlas.product_release import (
     ProductReleaseEvidence,
@@ -60,6 +64,7 @@ def test_default_fixture_is_fail_closed():
     assert value.state is ProductReleaseState.BLOCKED
     assert not value.gates["performance_budgets_verified"]
     assert not value.gates["abuse_cases_verified"]
+    assert not value.gates["clean_start_verified"]
     assert all(item.observed_ms is None for item in value.performance)
     assert all(item.receipt_id is None for item in value.threats)
 
@@ -147,6 +152,32 @@ def test_generator_fails_closed_for_stale_and_tampered_receipts(
     assert all(item.receipt_id is None for item in value.performance)
 
 
+def test_clean_start_receipt_rejects_stale_and_wrong_implementation(
+    tmp_path: Path,
+):
+    stale = receipt_payload(
+        kind="clean_start",
+        subject_id="CLEAN-START",
+        executed_at=NOW - timedelta(days=8),
+        implementation_digest=IMPLEMENTATION,
+    )
+    (tmp_path / "stale.json").write_text(json.dumps(stale), encoding="utf-8")
+
+    stale_evidence = build_evidence(
+        receipts_dir=tmp_path,
+        implementation_digest=IMPLEMENTATION,
+        now=NOW,
+    )
+    wrong_implementation_evidence = build_evidence(
+        receipts_dir=tmp_path,
+        implementation_digest="2" * 64,
+        now=NOW,
+    )
+
+    assert not stale_evidence.gates["clean_start_verified"]
+    assert not wrong_implementation_evidence.gates["clean_start_verified"]
+
+
 def test_direct_construction_rejects_forged_release_state():
     payload = build_evidence(now=NOW).model_dump(mode="json")
     payload["state"] = "release_qualified"
@@ -178,6 +209,25 @@ def test_runner_qualifies_fixture_gates_and_binds_receipts(tmp_path: Path):
     assert evidence.gates["abuse_cases_verified"]
     assert all(item.receipt_id for item in evidence.performance)
     assert all(item.receipt_id for item in evidence.threats)
+
+
+def test_runner_verifies_clean_start_in_a_fresh_fixture_root(
+    tmp_path: Path,
+):
+    output = tmp_path / "evidence.json"
+    receipts = tmp_path / "receipts"
+
+    run(output, receipts)
+
+    evidence = ProductReleaseEvidence.model_validate_json(output.read_text())
+    receipt = QualificationReceipt.model_validate_json(
+        (receipts / "CLEAN-START.json").read_text()
+    )
+    assert evidence.deployment.clean_start.value == "passed"
+    assert evidence.gates["clean_start_verified"]
+    assert not evidence.gates["live_deployment_verified"]
+    assert receipt.kind == "clean_start"
+    assert receipt.subject_id == "CLEAN-START"
 
 
 def test_runner_publishes_nothing_when_a_check_fails(
@@ -222,7 +272,8 @@ def test_direct_runner_cli_from_repository_root(tmp_path: Path):
     evidence = destination / "evidence.json"
     receipts = destination / "receipts"
     assert evidence.is_file()
-    assert len(tuple(receipts.glob("*.json"))) == 8
+    assert len(tuple(receipts.glob("*.json"))) == 9
+    assert (receipts / "CLEAN-START.json").is_file()
     assert '"state":"fixture_qualified"' in evidence.read_text()
 
 
@@ -272,6 +323,29 @@ def test_runtime_manifest_change_invalidates_receipt(
         )
         or ""
     )
+
+
+def test_runtime_manifest_excludes_generated_vcs_version_file(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    package = tmp_path / "src/global_medicines_atlas"
+    package.mkdir(parents=True)
+    (package / "runtime.py").write_text("value = 1\n", encoding="utf-8")
+    (package / "_version.py").write_text(
+        "version = 'generated'\n", encoding="utf-8"
+    )
+    monkeypatch.setattr(run_product_qualification, "IMPLEMENTATION_FILES", ())
+    monkeypatch.setattr(
+        run_product_qualification,
+        "IMPLEMENTATION_TREES",
+        (("src/global_medicines_atlas", "*.py"),),
+    )
+
+    manifest = implementation_manifest(tmp_path)
+
+    assert "src/global_medicines_atlas/runtime.py" in manifest
+    assert "src/global_medicines_atlas/_version.py" not in manifest
 
 
 def test_validate_integrity_fields_rejected():

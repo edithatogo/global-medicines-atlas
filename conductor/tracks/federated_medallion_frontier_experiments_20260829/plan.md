@@ -118,6 +118,12 @@
   RDF-star preview projections from the same Gold node/edge tables. Local
   verification passed; live engine parity, public graphs, and promotion remain
   open.
+- [x] Reject duplicate object keys in reference and Cypher-parameter JSON
+  envelopes before semantic parity checks. Failing-first controls reproduced
+  last-key-wins acceptance in both inputs; the shared parser now rejects the
+  ambiguity while preserving the existing envelope contract. This closes a
+  source-neutral preview integrity gap only; live engine parity and broader
+  graph qualification remain open.
 - [ ] Benchmark lexical, ontology-assisted, LanceDB embedding/NLP, and any
   justified Tantivy/Qdrant candidates; preserve explicit candidate status.
 - [ ] Phase Verification & Checkpoint: all engines reproduce portable Gold

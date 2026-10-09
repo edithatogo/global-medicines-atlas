@@ -78,6 +78,40 @@ def _load_receipts(
     return receipts
 
 
+def _clean_start_evidence(
+    receipts: dict[tuple[str, str], QualificationReceipt],
+    *,
+    implementation_digest: str,
+    now: datetime,
+) -> tuple[VerificationState, str]:
+    receipt = receipts.get(("clean_start", "CLEAN-START"))
+    error = (
+        validate_receipt(
+            receipt,
+            kind="clean_start",
+            subject_id="CLEAN-START",
+            implementation_digest=implementation_digest,
+            now=now,
+        )
+        if receipt is not None
+        else "no fresh fixture clean-start receipt was supplied"
+    )
+    if receipt is None or error is not None:
+        return (
+            VerificationState.NOT_VERIFIED,
+            (
+                "Fresh fixture startup is not verified; live deployment, "
+                "accessibility, and production-data verification remain separate."
+            ),
+        )
+    state = (
+        VerificationState.PASSED
+        if receipt.result.passed
+        else VerificationState.FAILED
+    )
+    return state, receipt.result.detail
+
+
 def build_evidence(
     *,
     receipts_dir: Path | None = None,
@@ -164,15 +198,20 @@ def build_evidence(
                 receipt_id=receipt_id,
             )
         )
+    clean_start, clean_start_detail = _clean_start_evidence(
+        receipts,
+        implementation_digest=implementation_digest,
+        now=clock,
+    )
     return qualify_product_release(
         performance=tuple(performance),
         threats=tuple(threats),
         deployment=DeploymentEvidence(
-            clean_start=VerificationState.NOT_VERIFIED,
+            clean_start=clean_start,
             live_deployment=VerificationState.NOT_VERIFIED,
             accessibility_conformance=VerificationState.NOT_VERIFIED,
             production_data=VerificationState.NOT_VERIFIED,
-            detail="Deployment and external conformance require separate live verification.",
+            detail=clean_start_detail,
         ),
         limitations=LIMITATIONS,
         api_contract_verified=True,
