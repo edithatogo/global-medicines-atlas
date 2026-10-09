@@ -342,7 +342,9 @@
     load the stylesheet and autocomplete script through the application's ASGI
     routes. Playwright fulfills each browser request with the synthetic ASGI
     test client; this verifies route-to-render wiring without claiming a
-    deployed-server run. The focused browser tests (2), combined history and
+    deployed-server run. Review requires successful (200) stylesheet and script
+    responses, a computed stylesheet effect, and observable autocomplete status
+    after script execution. The focused browser tests (2), combined history and
     medallion E2E tests (4), Ruff, `ty`, routine harness, and diff checks pass.
     Hosted exact-head checks pending.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
