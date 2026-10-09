@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING
+from urllib.parse import urlsplit
 
 import pytest
 from fastapi.testclient import TestClient
@@ -47,7 +48,7 @@ from global_medicines_atlas.product_contracts import (
 )
 
 if TYPE_CHECKING:
-    from playwright.sync_api import Page
+    from playwright.sync_api import Page, Route
 
 NOW = datetime(2026, 10, 6, 12, tzinfo=UTC)
 
@@ -179,6 +180,26 @@ def _show_response_in_browser(
     page.add_script_tag(content=script)
 
 
+def _route_test_client_requests(page: Page, client: TestClient) -> None:
+    """Serve browser navigations and asset requests through the ASGI client."""
+    base_url = "http://atlas.test"
+
+    def fulfill_from_client(route: Route) -> None:
+        request = route.request
+        parsed_url = urlsplit(request.url)
+        path = parsed_url.path
+        if parsed_url.query:
+            path = f"{path}?{parsed_url.query}"
+        response = client.get(path)
+        route.fulfill(
+            status=response.status_code,
+            headers=dict(response.headers),
+            body=response.content,
+        )
+
+    page.route(f"{base_url}/**", fulfill_from_client)
+
+
 @pytest.mark.e2e
 @pytest.mark.timeout(90)
 def test_keyboard_medicine_selection_and_evidence_review() -> None:
@@ -264,15 +285,31 @@ def test_keyboard_history_timeline_preserves_snapshot_evidence() -> None:
     client = TestClient(
         create_atlas_app(AtlasFixtureService(), historical_changes=history)
     )
-    home = client.get("/")
-    assert 'href="/history"' in home.text
-    history_html = client.get("/history").text
-
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch()
         page = browser.new_page()
         try:
-            _show_response_in_browser(page, client, history_html)
+            requested_paths: list[str] = []
+            page.on(
+                "request",
+                lambda request: requested_paths.append(
+                    urlsplit(request.url).path
+                ),
+            )
+            _route_test_client_requests(page, client)
+            home_response = page.goto("http://atlas.test/")
+            assert home_response is not None
+            assert home_response.status == 200
+            assert "/static/atlas.css" in requested_paths
+            assert "/static/atlas-autocomplete.js" in requested_paths
+            history_link = page.get_by_role(
+                "link", name="Review historical changes"
+            )
+            assert history_link.get_attribute("href") == "/history"
+            history_link.click()
+            assert page.url == "http://atlas.test/history"
+            assert page.locator("link[rel='stylesheet']").count() == 1
+
             skip_link = page.get_by_role(
                 "link", name="Skip to historical changes"
             )

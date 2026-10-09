@@ -338,6 +338,13 @@
     `ba47289513a1f6da2a831d8ca12769886c0687b5` after all 37 hosted checks passed,
     including Codecov patch coverage and Linux/macOS/Windows consumers.
     Representative-user acceptance and full WCAG conformance remain open.
+  - [x] Drive the browser from the Atlas home page through the history link and
+    load the stylesheet and autocomplete script through the application's ASGI
+    routes. Playwright fulfills each browser request with the synthetic ASGI
+    test client; this verifies route-to-render wiring without claiming a
+    deployed-server run. The focused browser tests (2), combined history and
+    medallion E2E tests (4), Ruff, `ty`, routine harness, and diff checks pass.
+    Hosted exact-head checks pending.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register
