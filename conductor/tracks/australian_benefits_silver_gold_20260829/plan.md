@@ -709,6 +709,18 @@
   cross-source relationships remain unresolved. PR #735 passed all 39 hosted
   checks and merged as `001ded0d3ff3429fa499671f91074209ca0d8106`.
 
+### Platinum PBS edge readback coverage (2026-10-09)
+
+- [x] Exercise the existing PBS Gold candidate through both the Platinum edge
+  API and CLI, asserting synthetic-only qualification, source identity,
+  containment-only relation, non-inference control, and identical readback.
+  The first assertion exposed a schema-shape difference: PBS stores
+  `inferred=false` in the edge controls object, while MBS exposes it as a
+  top-level Arrow column. The test now checks the PBS contract at its declared
+  location. The five adjacent Gold graph/review and Platinum edge suites pass
+  (50 tests); `ruff`, `ty`, and the routine harness pass. No source or
+  production behavior changed. Full track acceptance remains open.
+
 ## Phase 5: Historical comparisons and publication (AC-06, AC-07)
 
 ### Federated producer v4 acceptance
