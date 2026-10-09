@@ -96,6 +96,18 @@ def _unavailable_benefits_page(
     return BenefitsPage.model_validate(payload)
 
 
+def _unavailable_structure_page(
+    reason: Literal[
+        "offline_cache_unavailable",
+        "offline_contract_expired",
+        "verified_resource_unavailable",
+    ],
+) -> SourceStructurePage:
+    payload = _structure_page().model_dump(mode="python")
+    payload.update(status="unavailable", rows=(), reason=reason)
+    return SourceStructurePage.model_validate(payload)
+
+
 def _structure_page(
     comparison_cohort: Literal["current", "synthetic"] = "current",
 ) -> SourceStructurePage:
@@ -165,13 +177,27 @@ class BenefitsLookup:
 @dataclass
 class StructureLookup:
     comparison_cohort: Literal["current", "synthetic"] = "current"
+    unavailable: bool = False
+    unavailable_reason: Literal[
+        "offline_cache_unavailable",
+        "offline_contract_expired",
+        "verified_resource_unavailable",
+    ] = "offline_cache_unavailable"
 
     def query(
         self, resource_id: str, query: SourceStructureQuery
     ) -> SourceStructurePage:
-        del query
         if resource_id != RESOURCE:
             raise UnknownPlatinumResourceError
+        if self.unavailable_reason == "verified_resource_unavailable":
+            if self.unavailable and query.offline:
+                raise AssertionError(
+                    "online structure fixture received offline query"
+                )
+            if self.unavailable:
+                return _unavailable_structure_page(self.unavailable_reason)
+        if self.unavailable and query.offline:
+            return _unavailable_structure_page(self.unavailable_reason)
         return _structure_page(self.comparison_cohort)
 
 
@@ -433,6 +459,86 @@ def test_browser_explains_unknown_resources_and_invalid_benefit_filters() -> (
                 ).input_value()
                 == invalid_filters
             )
+        finally:
+            browser.close()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
+@pytest.mark.parametrize(
+    ("reason", "expected_message", "offline"),
+    [
+        (
+            "offline_cache_unavailable",
+            "No verified cached copy is available",
+            True,
+        ),
+        (
+            "offline_contract_expired",
+            "The cached copy has expired",
+            True,
+        ),
+        (
+            "verified_resource_unavailable",
+            "The pinned resource could not be verified or retrieved",
+            False,
+        ),
+    ],
+)
+def test_browser_explains_source_structure_unavailability(
+    reason: Literal[
+        "offline_cache_unavailable",
+        "offline_contract_expired",
+        "verified_resource_unavailable",
+    ],
+    expected_message: str,
+    *,
+    offline: bool,
+) -> None:
+    """Unavailable source-structure reads remain clear and non-negative."""
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_source_structure=StructureLookup(
+                unavailable=True, unavailable_reason=reason
+            ),
+        )
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _route_client_requests(page, client)
+            page.goto("http://atlas.test/")
+            page.get_by_role(
+                "link", name="Browse pinned source-structure evidence"
+            ).click()
+            page.get_by_label("Resource identifier").fill(RESOURCE)
+            page.get_by_label("Source columns, comma separated").fill("kind")
+            if offline:
+                page.get_by_label("Use verified cache only").check()
+            with page.expect_response(
+                lambda response: (
+                    "/federated/source-structure" in response.url
+                    and response.status == 200
+                )
+            ):
+                page.get_by_role("button", name="Read pinned structure").click()
+            unavailable = page.get_by_role("status")
+            assert unavailable.get_by_role(
+                "heading", name="Pinned evidence unavailable"
+            ).is_visible()
+            assert expected_message in unavailable.inner_text()
+            assert (
+                "Exact v2 evidence identity"
+                in page.locator("main").inner_text()
+            )
+            assert (
+                "Exact bounded query receipt"
+                in page.locator("main").inner_text()
+            )
+            assert "No rows are shown" in unavailable.inner_text()
+            assert page.get_by_role("table").count() == 0
         finally:
             browser.close()
 
