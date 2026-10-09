@@ -454,23 +454,24 @@
     governed E2E lane (31), routine checks, Ruff, `ty`, and BasedPyright pass;
     the four existing optional `huggingface_hub` source warnings remain.
     No source acquisition, production admission, or publication is involved.
-  - [~] Add `gma source-structure` for the existing synthetic PBS Gold edge;
+  - [x] Add `gma source-structure` for the existing synthetic PBS Gold edge;
     compare its identity and bounded rows/result digests against the resolver
-    query in the governed E2E test. Focused tests (38), integration (713),
-    routine, typing, formatting, and the clean-clone probe pass. The full local
-    profile's pytest phase passes, but the randomized qualification lane records
-    one performance-budget failure under full-profile load (353.9 ms vs 250 ms);
-    the same test passes independently. Hosted exact-head qualification remains
-    pending. No new source, acquisition, admission, coverage claim, or
+    query in the governed E2E test. The final focused suite passes 43 tests;
+    the governed integration and clean-clone probes pass. The local full
+    profile's pytest phase passed; one performance test exceeded budget under
+    full-profile load and passed on isolated rerun. Exact-head hosted
+    performance, coverage, integration, mutation, gremlins, security, and all
+    platform consumer checks passed. PR #853 merged as
+    `b377938b78eb8108868fd240bcf68054b6c18b4b` after 29 required check runs
+    passed. No new source, acquisition, admission, coverage claim, or
     publication is involved.
   - [x] Close the Codecov patch gap for this CLI by covering typed unknown
-    resource, invalid request, and I/O error responses. The focused suite passes
-    41 tests and routine checks pass; exact-head hosted requalification is
-    pending.
+    resource, invalid request, and I/O error responses. The final exact-head
+    Codecov patch check passes at 100%.
   - [x] Load the configured resolver before importing optional federation
     query modules so a base installation receives the existing typed
     `SERVICE_UNAVAILABLE` response. Configuration and query error controls
-    pass; focused tests now pass 43 cases and routine checks pass.
+    pass in the focused suite and the hosted exact-head CI.
   - [x] Run all local full-profile components on 2026-10-06 with the pinned
     temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
     and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317
