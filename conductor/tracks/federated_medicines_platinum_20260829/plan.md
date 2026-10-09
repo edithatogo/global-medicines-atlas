@@ -436,8 +436,15 @@
     API and CLI, and compare their bounded structural evidence readbacks.
     The existing Bronze-to-Platinum MBS fixture now verifies exact API/CLI
     page equality, candidate-only qualification, row count, and source
-    identity. Both medallion E2E cases, routine checks, Ruff, formatting, and
-    `git diff --check` pass locally; hosted verification is pending.
+    identity. Both medallion E2E cases pass locally. PR #855 merged as
+    `7f27ae4b6c2eed9ec9067b4e12b09b119b6b5330` after all 38 hosted checks,
+    including Codecov patch coverage and Linux/macOS/Windows consumers, passed.
+  - [x] Compare a synthetic historical MBS snapshot pair through the bounded
+    history API and `gma history`, preserving explicit change and unknown
+    absence semantics without inferring cessation. The medallion E2E test
+    passes against both surfaces; the change stays explicitly synthetic and
+    absence remains `unknown`. Routine checks, Ruff, formatting, and diff
+    validation pass locally; hosted verification is pending.
   - [x] Extend the synthetic Bronze-to-Platinum end-to-end qualification to
     query remotely, reproduce from its verified offline cache, prove explicit
     unavailability after eviction, and refetch the same result. The synthetic
