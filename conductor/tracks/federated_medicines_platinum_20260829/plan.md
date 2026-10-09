@@ -861,5 +861,9 @@
   focused test passed (1), the governed E2E lane passed (54), and routine
   format/lint/type, context, and governance checks passed. BasedPyright's
   existing unknown TestClient response diagnostics are outside the new helper
-  and test. Keep live deployment, production data, source coverage, public
-  release, and full WCAG conformance as separate gates.
+  and test. The integration lane caught that its committed Stable v1 metadata
+  receipt binds `uv.lock`; the offline receipt was regenerated for the
+  test-only dependency, retained `metadata_qualified_external_gates_blocked`,
+  and the exact-receipt test passed. The integration lane then passed (718).
+  Keep live deployment, production data, source coverage, public release, and
+  full WCAG conformance as separate gates.
