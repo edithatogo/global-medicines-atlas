@@ -819,6 +819,10 @@
   Federated browser and Atlas accessibility tests passed (21); the full pinned
   Test-Goblin profile passed, including 6,028 tests, 96.88% coverage, mutation,
   Gremlins, both randomized orders, profiling, security, and routine checks.
-  Darwin mutation results remain advisory and Linux CI remains authoritative.
-  This closes the named announcement defect only; full WCAG conformance and
-  representative-user acceptance remain open.
+  PR #907 merged as `5584ca43aa505b5cdbf73f91ec33f0aef8693e54` after all 28
+  required contexts and all 39 reported checks passed. The exact qualified
+  head and merge tree are both `6af463b76fcaf0c45769f59217f88ac1b6b522b6`;
+  the append-only evidence correction records that the earlier receipt named
+  the wrong tree. Darwin mutation results remain advisory and Linux CI remains
+  authoritative. This closes the named announcement defect only; full WCAG
+  conformance and representative-user acceptance remain open.
