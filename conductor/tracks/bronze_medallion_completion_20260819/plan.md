@@ -1271,3 +1271,8 @@ for credentialed or rights-unresolved sources.
   required branch-protection contexts passed; all 38 reported check runs
   passed (37 distinct check names, with one duplicated CodeQL run). The exact
   head also received non-blocking automated reviews with no findings.
+- [x] Reconcile evidence-only PR #902: merge commit
+  `fd401302e6e3a35435778747a5c687ac0c3c5f10` has the same tree as qualified
+  head `c84fd3f8bda9c577be4d93467da860b2b0a879fa`. All 28 distinct required
+  branch-protection contexts passed, as did all 38 reported check runs (37
+  distinct check names, including the duplicate CodeQL run).
