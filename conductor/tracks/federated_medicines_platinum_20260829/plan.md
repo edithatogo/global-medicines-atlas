@@ -346,7 +346,9 @@
     responses, a computed stylesheet effect, and observable autocomplete status
     after script execution. The focused browser tests (2), combined history and
     medallion E2E tests (4), Ruff, `ty`, routine harness, and diff checks pass.
-    Hosted exact-head checks pending.
+    PR #866 merged as `f9c851df335e6f7051dd4673b15dd73946ad6d5e` after all 37
+    hosted checks passed, including Codecov patch coverage and
+    Linux/macOS/Windows consumers.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register
