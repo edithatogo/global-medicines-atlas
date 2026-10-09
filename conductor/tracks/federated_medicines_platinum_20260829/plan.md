@@ -392,7 +392,10 @@
     Test-Goblin with pinned uv 0.11.29 also passed locally. Hosted exact-head
     checks remain pending. This proves a synthetic browser-to-ASGI path only;
     it adds no source and does not establish source coverage, deployment,
-    WCAG conformance, or representative-user acceptance.
+    WCAG conformance, or representative-user acceptance. Automated review
+    caught a receipt timestamp later than its introducing commit; an appended
+    evidence correction now records the commit timestamp as the first durable
+    verifiable time.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
