@@ -148,10 +148,16 @@ class BenefitsLookup:
     def query(self, resource_id: str, query: BenefitsQuery) -> BenefitsPage:
         if resource_id != RESOURCE:
             raise UnknownPlatinumResourceError
-        if self.unavailable and (
-            query.offline
-            or self.unavailable_reason == "verified_resource_unavailable"
+        if (
+            self.unavailable
+            and self.unavailable_reason == "verified_resource_unavailable"
         ):
+            if query.offline:
+                raise AssertionError(
+                    "online retrieval fixture received offline query"
+                )
+            return _unavailable_benefits_page(self.unavailable_reason)
+        if self.unavailable and query.offline:
             return _unavailable_benefits_page(self.unavailable_reason)
         return _benefits_page(self.comparison_cohort)
 
