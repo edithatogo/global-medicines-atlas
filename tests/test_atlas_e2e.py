@@ -13,6 +13,7 @@ from global_medicines_atlas.atlas import (
     create_atlas_app,
     create_source_backed_v2_atlas_app,
 )
+from global_medicines_atlas.historical_change import HistoricalChangeService
 from global_medicines_atlas.platinum_benefits import BenefitsQuery
 from global_medicines_atlas.platinum_identity_service import (
     UnknownPlatinumResourceError,
@@ -241,6 +242,7 @@ def test_source_backed_v2_atlas_factory_renders_all_dimensions(
             cursor_secret=SECRET,
             allowed_root=tmp_path,
             federated_benefits=UnusedBenefits(),
+            historical_changes=HistoricalChangeService(()),
         )
     )
     response = client.get(
@@ -257,6 +259,10 @@ def test_source_backed_v2_atlas_factory_renders_all_dimensions(
     for dimension in V2EvidenceDimension:
         assert dimension.value in response.text
     assert 'href="/federated/benefits"' in response.text
+    assert 'href="/history"' in response.text
+    history = client.get("/history")
+    assert history.status_code == 200
+    assert "Showing 0 of 0 comparisons" in history.text
     benefits_landing = client.get("/federated/benefits")
     assert benefits_landing.status_code == 200
     assert "Choose a pinned evidence resource" in benefits_landing.text

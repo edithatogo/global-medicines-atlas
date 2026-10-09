@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Historical changes — Global Medicines Atlas</title>
+    <link rel="stylesheet" href="/static/atlas.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#history-results">Skip to historical changes</a>
+    <header>
+      <p class="eyebrow">Evidence-backed comparison</p>
+      <h1>Historical changes</h1>
+      <p>Observed differences retain their source identity and uncertainty. Missing observations are unknown, not a negative status.</p>
+      <p><a href="/">Return to medicine comparison</a></p>
+    </header>
+    <main id="history-results" tabindex="-1">
+      {% if error %}
+        <section class="notice error" role="alert" aria-labelledby="history-error-heading">
+          <h2 id="history-error-heading">History unavailable</h2>
+          <p>{{ error }}</p>
+        </section>
+      {% elif page %}
+        <p>Showing {{ page["items"] | length }} of {{ page["total"] }} comparisons from offset {{ page["offset"] }}. Absence interpretation remains unknown.</p>
+        {% for item in page["items"] %}
+          <article class="result-card" aria-labelledby="history-{{ loop.index }}">
+            <h2 id="history-{{ loop.index }}">Historical comparison {{ loop.index }}</h2>
+            <p>Comparison: {{ item.comparison_state | replace("_", " ") }}; availability: {{ item.availability | replace("_", " ") }}; absence interpretation: {{ item.absence_interpretation }}.</p>
+            <div class="table-scroll" role="region" aria-label="Source snapshot identity" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">Snapshot</th><th scope="col">Source</th><th scope="col">Table</th><th scope="col">Dimension</th><th scope="col">Revision</th><th scope="col">Path</th><th scope="col">B1 receipt</th><th scope="col">B2 payload</th><th scope="col">Observed at</th><th scope="col">Cohort / schema</th><th scope="col">Rows</th><th scope="col">Complete</th></tr></thead>
+                <tbody>
+                  {% for label, snapshot in [("Earlier", item.left), ("Later", item.right)] %}
+                    <tr><th scope="row">{{ label }}</th><td>{{ snapshot.source_id }}</td><td>{{ snapshot.table }}</td><td>{{ snapshot.dimension }}</td><td>{{ snapshot.source_revision }}</td><td>{{ snapshot.source_path }}</td><td><code>{{ snapshot.b1_sha256 }}</code></td><td><code>{{ snapshot.b2_sha256 }}</code></td><td><time datetime="{{ snapshot.observed_at }}">{{ snapshot.observed_at }}</time></td><td>{{ snapshot.cohort }} / {{ snapshot.schema_era }}</td><td>{{ snapshot.declared_rows }}</td><td>{{ "Yes" if snapshot.complete else "No" }}</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% if item.changes %}
+              <h3>Observed changes</h3>
+              <ul>
+                {% for change in item.changes %}
+                  <li>
+                    <code>{{ change.native_id }}</code>{% if change.field_name %}, field <code>{{ change.field_name }}</code>{% endif %}: {{ change.kind | replace("_", " ") }} ({{ change.interpretation | replace("_", " ") }}).
+                    <dl aria-label="Before and after native observations">
+                      <div><dt>Earlier observation</dt><dd>{% if change.difference.left %}{{ change.difference.left.state }}{% if change.difference.left.state == "value" %}: <code>{{ change.difference.left.value }}</code>{% endif %}{% else %}No field observation{% endif %}</dd></div>
+                      <div><dt>Later observation</dt><dd>{% if change.difference.right %}{{ change.difference.right.state }}{% if change.difference.right.state == "value" %}: <code>{{ change.difference.right.value }}</code>{% endif %}{% else %}No field observation{% endif %}</dd></div>
+                    </dl>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>No change observations are available for this comparison.</p>
+            {% endif %}
+          </article>
+        {% endfor %}
+        {% if page["next_offset"] is not none %}
+          <nav aria-label="Historical change pages"><a href="/history?offset={{ page["next_offset"] }}&amp;limit={{ page["limit"] }}">Next page</a></nav>
+        {% endif %}
+      {% endif %}
+      <aside aria-labelledby="history-limits-heading">
+        <h2 id="history-limits-heading">Interpretation limits</h2>
+        <p>These comparisons describe supplied snapshots. They do not establish cessation, clinical equivalence, or current status.</p>
+      </aside>
+    </main>
+    <footer><p>Global Medicines Atlas, product evidence version 0.6.</p></footer>
+  </body>
+</html>
