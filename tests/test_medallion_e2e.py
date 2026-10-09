@@ -22,7 +22,16 @@ from global_medicines_atlas import platinum_configuration
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
 from global_medicines_atlas.bronze_admission import BronzeAdmissionState
-from global_medicines_atlas.bronze_landing import land_bronze_payload
+from global_medicines_atlas.bronze_landing import (
+    BronzeLanding,
+    land_bronze_payload,
+)
+from global_medicines_atlas.bronze_storage import (
+    LocalFilesystemPayloadStore,
+    PayloadStore,
+    StoredObjectEvidence,
+    StoredPayload,
+)
 from global_medicines_atlas.cli import app as cli_app
 from global_medicines_atlas.federation_distribution import (
     DistributionBinding,
@@ -434,6 +443,81 @@ def _receipt(
             ),
         }
     )
+
+
+class _SyntheticRemoteLocatorPayloadStore(PayloadStore):
+    """Use temp bytes with a portable, explicitly fake B2 locator."""
+
+    def __init__(self, root: Path) -> None:
+        self._local = LocalFilesystemPayloadStore(root)
+        self.policy = self._local.policy
+
+    def store(
+        self,
+        payload: bytes,
+        *,
+        acquisition_id: str,
+        content_id: str,
+        suffix: str,
+    ) -> StoredPayload:
+        stored = self._local.store(
+            payload,
+            acquisition_id=acquisition_id,
+            content_id=content_id,
+            suffix=suffix,
+        )
+        primary = stored.receipt.primary.model_copy(
+            update={
+                "uri": (
+                    "https://fixtures.invalid/bronze/"
+                    f"{content_id}/payload{suffix}"
+                )
+            }
+        )
+        return StoredPayload(
+            materialized_path=stored.materialized_path,
+            receipt=stored.receipt.model_copy(update={"primary": primary}),
+        )
+
+    def read_object(self, reference: StoredObjectEvidence) -> bytes:
+        return (self._local.root / reference.key).read_bytes()
+
+
+def _assert_landed_b1_projection(
+    landing: BronzeLanding,
+    *,
+    payload: bytes,
+) -> bytes:
+    """Bind a portable B1 projection to local B2 without embedding B2 bytes."""
+    parquet = landing.parquet_path.read_bytes()
+    table = pq.read_table(io.BytesIO(parquet))
+    assert table.num_rows == 1
+    assert (
+        table.column("source_id").to_pylist()[0]
+        == landing.receipt.source.source_id
+    )
+    assert (
+        table.column("acquisition_id").to_pylist()[0]
+        == require_temporal(landing.receipt.temporal).acquisition_id
+    )
+    assert (
+        table.column("payload_sha256").to_pylist()[0]
+        == hashlib.sha256(payload).hexdigest()
+    )
+    assert (
+        table.column("receipt_digest").to_pylist()[0]
+        == landing.receipt.digest()
+    )
+    assert table.column("evidence_class").to_pylist()[0] == "synthetic"
+    assert table.column("rights_state").to_pylist()[0] == "unknown"
+    locator = table.column("raw_evidence_locator").to_pylist()[0]
+    assert locator == (
+        "https://fixtures.invalid/bronze/"
+        f"{hashlib.sha256(payload).hexdigest()}/payload.xml"
+    )
+    assert str(landing.payload_path).encode() not in parquet
+    assert payload not in parquet
+    return parquet
 
 
 def _platinum_contract(payload: bytes, receipt: SourceReceipt) -> bytes:
@@ -1293,13 +1377,18 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
         media_hint="xml",
         admission_decided_at=NOW,
         transformation_completed_at=NOW,
+        payload_store=_SyntheticRemoteLocatorPayloadStore(
+            tmp_path / "synthetic-object-store"
+        ),
     )
     assert landed.payload_path.read_bytes() == raw
     assert landed.receipt.evidence_class is EvidenceClass.SYNTHETIC
+    assert isinstance(landed, BronzeLanding)
     assert landed.receipt.payload.sha256 == hashlib.sha256(raw).hexdigest()
     assert landed.admission.state is BronzeAdmissionState.ACCEPTED
     assert landed.receipt.rights_state is RightsState.UNKNOWN
     assert landed.receipt.satisfies_live_gate is False
+    b1_manifest = _assert_landed_b1_projection(landed, payload=raw)
 
     silver, nodes, gold = _silver_gold_products(
         landed.payload_path.read_bytes(), landed.receipt
@@ -1332,8 +1421,8 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     outputs: tuple[SyntheticOutput, ...] = (
         (
             "bronze",
-            "bronze/receipts/source.json",
-            landed.receipt.canonical_json(),
+            "bronze/acquisition-manifest.parquet",
+            b1_manifest,
             "B1",
         ),
         (
@@ -1384,10 +1473,15 @@ def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
         media_hint="xml",
         admission_decided_at=NOW,
         transformation_completed_at=NOW,
+        payload_store=_SyntheticRemoteLocatorPayloadStore(
+            tmp_path / "synthetic-object-store"
+        ),
     )
     assert landed.receipt.evidence_class is EvidenceClass.SYNTHETIC
+    assert isinstance(landed, BronzeLanding)
     assert landed.receipt.rights_state is RightsState.UNKNOWN
     assert landed.receipt.satisfies_live_gate is False
+    b1_manifest = _assert_landed_b1_projection(landed, payload=raw)
     assert landed.payload_path.read_bytes() == raw
     assert landed.receipt.payload.sha256 == hashlib.sha256(raw).hexdigest()
 
@@ -1449,8 +1543,8 @@ def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
     outputs: tuple[SyntheticOutput, ...] = (
         (
             "bronze",
-            "bronze/receipts/pbs-source.json",
-            landed.receipt.canonical_json(),
+            "bronze/acquisition-manifest.parquet",
+            b1_manifest,
             "B1",
         ),
         (
