@@ -723,3 +723,10 @@
   use Playwright's visibility expectation and rerun the full governed E2E lane.
   The affected browser module passed (16), governed E2E passed (50), and routine
   checks passed. One existing Starlette/httpx deprecation warning remains.
+
+### Unknown coverage percentage negative control (2026-10-09)
+
+- [x] Assert the complete unknown-denominator copy and absence of a percent
+  sign in the rendered browser row, so no percentage can be added while the
+  current prefix assertion still passes. Focused browser tests passed (2), the
+  governed E2E lane passed (50), and routine checks passed.

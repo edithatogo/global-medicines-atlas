@@ -449,7 +449,11 @@ def _exercise_keyboard_evidence_flow(
     )
     assert coverage_row.count() == 1
     assert "Status: Unknown" in coverage_row.inner_text()
-    assert "0 observed; denominator unknown" in coverage_row.inner_text()
+    assert (
+        "0 observed; denominator unknown, so no percentage is calculated"
+        in coverage_row.inner_text()
+    )
+    assert "%" not in coverage_row.inner_text()
     assert "Schema era" in coverage_context.inner_text()
     assert "fixture-v1" in coverage_context.inner_text()
     assert "Coverage record" in coverage_context.inner_text()
