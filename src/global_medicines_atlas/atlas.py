@@ -407,7 +407,7 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
             try:
                 query = BenefitsQuery(
                     columns=selected_columns,
-                    filters=parse_benefits_filters(filters),
+                    filters=parse_benefits_filters(filters or None),
                     limit=limit,
                     cursor=cursor,
                     offline=offline,
