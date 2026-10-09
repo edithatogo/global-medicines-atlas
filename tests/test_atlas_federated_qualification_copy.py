@@ -4,9 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
-from typing import Literal, cast
+from typing import TYPE_CHECKING, Literal, cast
+from urllib.parse import urlsplit
 
+import pytest
 from fastapi.testclient import TestClient
+from playwright.sync_api import sync_playwright
 
 from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
 from global_medicines_atlas.platinum_benefits import BenefitsPage, BenefitsQuery
@@ -24,6 +27,9 @@ from global_medicines_atlas.platinum_surface_contracts import (
 
 NOW = datetime(2026, 10, 9, tzinfo=UTC)
 RESOURCE = "au.mbs.services"
+
+if TYPE_CHECKING:
+    from playwright.sync_api import Page, Route
 
 
 def _benefits_page(
@@ -206,3 +212,127 @@ def test_structure_view_retains_synthetic_resource_limits() -> None:
     assert response.status_code == 200
     assert "synthetic qualification fixtures" in response.text
     assert "not populated production source data" in response.text
+
+
+def _route_client_requests(page: Page, client: TestClient) -> None:
+    """Fulfil browser navigations and assets through the synthetic ASGI app."""
+    base_url = "http://atlas.test"
+
+    def fulfill_from_client(route: Route) -> None:
+        parsed_url = urlsplit(route.request.url)
+        path = parsed_url.path
+        if parsed_url.query:
+            path = f"{path}?{parsed_url.query}"
+        response = client.get(path)
+        route.fulfill(
+            status=response.status_code,
+            headers=dict(response.headers),
+            body=response.content,
+        )
+
+    page.route(f"{base_url}/**", fulfill_from_client)
+
+
+def _assert_atlas_assets_loaded(
+    requests: list[str], responses: dict[str, int], page: Page
+) -> None:
+    assert "/static/atlas.css" in requests
+    assert "/static/atlas-autocomplete.js" in requests
+    assert responses["/static/atlas.css"] == 200
+    assert responses["/static/atlas-autocomplete.js"] == 200
+    assert (
+        page.locator(".skip-link").evaluate(
+            "element => getComputedStyle(element).position"
+        )
+        == "absolute"
+    )
+
+
+def _exercise_browser_benefits_route(page: Page) -> None:
+    benefits_link = page.get_by_role(
+        "link", name="Browse pinned benefit evidence"
+    )
+    assert benefits_link.get_attribute("href") == "/federated/benefits"
+    benefits_link.click()
+    assert page.url == "http://atlas.test/federated/benefits"
+    assert page.get_by_role(
+        "heading", name="Australian benefit evidence"
+    ).is_visible()
+    page.get_by_label("Resource identifier").fill(RESOURCE)
+    page.get_by_label("Source columns, comma separated").fill("item_code")
+    page.get_by_role("button", name="Read pinned evidence").click()
+    content = page.locator("main").inner_text()
+    assert "Comparison cohort" in content
+    assert "current" in content
+    assert "fixture-qualified view" not in content
+    benefit_rows = page.get_by_role(
+        "region", name="Federated evidence rows"
+    ).locator("tbody tr")
+    assert benefit_rows.count() == 1
+    assert "100" in benefit_rows.first.inner_text()
+
+
+def _exercise_browser_structure_route(page: Page) -> None:
+    structure_link = page.get_by_role(
+        "link", name="Browse pinned source-structure evidence"
+    )
+    assert structure_link.get_attribute("href") == (
+        "/federated/source-structure"
+    )
+    structure_link.click()
+    assert page.url == "http://atlas.test/federated/source-structure"
+    assert page.get_by_role(
+        "heading", name="Source-structure evidence"
+    ).is_visible()
+    page.get_by_label("Resource identifier").fill(RESOURCE)
+    page.get_by_label("Source columns, comma separated").fill("kind")
+    page.get_by_role("button", name="Read pinned structure").click()
+    content = page.locator("main").inner_text()
+    assert "Comparison cohort" in content
+    assert "current" in content
+    assert "This synthetic qualification" not in content
+    structure_rows = page.get_by_role(
+        "region", name="Source-structure evidence rows"
+    ).locator("tbody tr")
+    assert structure_rows.count() == 1
+    assert "source_contains_entity" in structure_rows.first.inner_text()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
+def test_browser_navigates_from_home_to_bounded_federated_evidence() -> None:
+    """Users can reach and query both pinned federated views in the browser."""
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_benefits=BenefitsLookup(),
+            federated_source_structure=StructureLookup(),
+        )
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        requests: list[str] = []
+        responses: dict[str, int] = {}
+        page.on(
+            "request",
+            lambda request: requests.append(urlsplit(request.url).path),
+        )
+        page.on(
+            "response",
+            lambda response: responses.update({
+                urlsplit(response.url).path: response.status
+            }),
+        )
+        try:
+            _route_client_requests(page, client)
+            home_response = page.goto("http://atlas.test/")
+            assert home_response is not None
+            assert home_response.status == 200
+            _assert_atlas_assets_loaded(requests, responses, page)
+            _exercise_browser_benefits_route(page)
+
+            page.goto("http://atlas.test/")
+            _exercise_browser_structure_route(page)
+        finally:
+            browser.close()

@@ -382,6 +382,20 @@
     vulnerabilities (the unpublished local package was skipped). The full
     harness exited 0. These automated checks do not establish WCAG conformance
     or representative-user acceptance.
+  - [x] Drive a Chromium browser from Atlas home into the existing federated
+    benefits and source-structure views, load their application assets through
+    the synthetic ASGI client, and submit bounded queries. The journey exposed
+    that a blank optional benefits filter was passed as invalid JSON and
+    returned HTTP 422; normalize only the blank value to no filter, preserving
+    strict parsing for non-empty input. Five focused browser/route tests, the
+    routine harness, Ruff, `ty`, and repository BasedPyright pass. Full
+    Test-Goblin with pinned uv 0.11.29 also passed locally. Hosted exact-head
+    checks remain pending. This proves a synthetic browser-to-ASGI path only;
+    it adds no source and does not establish source coverage, deployment,
+    WCAG conformance, or representative-user acceptance. Automated review
+    caught a receipt timestamp later than its introducing commit; an appended
+    evidence correction now records the commit timestamp as the first durable
+    verifiable time.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
