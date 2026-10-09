@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING, Literal, cast
@@ -105,7 +106,14 @@ def _unavailable_structure_page(
     ],
 ) -> SourceStructurePage:
     payload = _structure_page().model_dump(mode="python")
-    payload.update(status="unavailable", rows=(), reason=reason)
+    payload.update(
+        status="unavailable",
+        rows=(),
+        reason=reason,
+        query_receipt_json=json.dumps(
+            {"reason": reason}, sort_keys=True, separators=(",", ":")
+        ),
+    )
     return SourceStructurePage.model_validate(payload)
 
 
@@ -548,6 +556,11 @@ def test_browser_source_structure_errors_retain_submitted_query() -> None:
             "The pinned resource could not be verified or retrieved",
             False,
         ),
+        (
+            "future_internal_reason",
+            "The pinned source-structure evidence is unavailable",
+            False,
+        ),
     ],
 )
 def test_browser_explains_source_structure_unavailability(
@@ -595,14 +608,13 @@ def test_browser_explains_source_structure_unavailability(
                 "heading", name="Pinned evidence unavailable"
             ).is_visible()
             assert expected_message in unavailable.inner_text()
-            if reason == "future_internal_reason":
-                assert reason not in unavailable.inner_text()
+            assert reason not in page.locator("main").inner_text()
             assert (
                 "Exact v2 evidence identity"
                 in page.locator("main").inner_text()
             )
             assert (
-                "Exact bounded query receipt"
+                "exact bounded query receipt is retained"
                 in page.locator("main").inner_text()
             )
             assert "No rows are shown" in unavailable.inner_text()

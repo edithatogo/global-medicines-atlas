@@ -68,10 +68,14 @@
               <div><dt>Query SHA-256</dt><dd><code>{{ page.query_sha256 }}</code></dd></div>
               <div><dt>Query receipt SHA-256</dt><dd><code>{{ page.query_receipt_sha256 }}</code></dd></div>
           </dl>
+          {% if page.status == "unavailable" %}
+          <p class="notice">The exact bounded query receipt is retained for this read and identified by the digest above. Operational failure details are not rendered here.</p>
+          {% else %}
           <details>
             <summary>Exact bounded query receipt</summary>
             <pre><code>{{ page.query_receipt_json }}</code></pre>
           </details>
+          {% endif %}
           <p class="notice">These edges record source structure only. They do not establish medicine equivalence or funding, formulary, regulatory, or terminology conclusions. Missing coverage is not negative evidence.</p>
         </section>
         {% if page.status == "unavailable" %}
