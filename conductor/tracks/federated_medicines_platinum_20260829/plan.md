@@ -850,3 +850,16 @@
   the wrong tree. Darwin mutation results remain advisory and Linux CI remains
   authoritative. This closes the named announcement defect only; full WCAG
   conformance and representative-user acceptance remain open.
+
+### Local ASGI-server browser journey (2026-10-10)
+
+- [x] Add a governed loopback-only Chromium journey against the synthetic Atlas
+  running under a real ASGI server. Verify the server response, Atlas page,
+  stylesheet and script over HTTP, and rendered synthetic evidence. The new
+  test initially failed collection until Uvicorn was pinned in the test group;
+  after correcting the fixture's displayed state casing, it passed. The
+  focused test passed (1), the governed E2E lane passed (54), and routine
+  format/lint/type, context, and governance checks passed. BasedPyright's
+  existing unknown TestClient response diagnostics are outside the new helper
+  and test. Keep live deployment, production data, source coverage, public
+  release, and full WCAG conformance as separate gates.
