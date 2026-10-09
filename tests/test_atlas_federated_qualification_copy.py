@@ -75,6 +75,25 @@ def _benefits_page(
     )
 
 
+def _unavailable_benefits_page(
+    reason: Literal[
+        "offline_cache_unavailable", "offline_contract_expired"
+    ] = "offline_cache_unavailable",
+) -> BenefitsPage:
+    """Return a typed synthetic offline-cache miss."""
+    payload = _benefits_page().model_dump(mode="python")
+    payload.update(
+        status="unavailable",
+        rows=(),
+        window_sha256=None,
+        page_sha256=None,
+        reason=reason,
+        window_rows=0,
+        window_complete=False,
+    )
+    return BenefitsPage.model_validate(payload)
+
+
 def _structure_page(
     comparison_cohort: Literal["current", "synthetic"] = "current",
 ) -> SourceStructurePage:
@@ -117,11 +136,16 @@ def _structure_page(
 @dataclass
 class BenefitsLookup:
     comparison_cohort: Literal["current", "synthetic"] = "current"
+    unavailable: bool = False
+    unavailable_reason: Literal[
+        "offline_cache_unavailable", "offline_contract_expired"
+    ] = "offline_cache_unavailable"
 
     def query(self, resource_id: str, query: BenefitsQuery) -> BenefitsPage:
-        del query
         if resource_id != RESOURCE:
             raise UnknownPlatinumResourceError
+        if self.unavailable and query.offline:
+            return _unavailable_benefits_page(self.unavailable_reason)
         return _benefits_page(self.comparison_cohort)
 
 
@@ -396,5 +420,67 @@ def test_browser_explains_unknown_resources_and_invalid_benefit_filters() -> (
                 ).input_value()
                 == invalid_filters
             )
+        finally:
+            browser.close()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
+@pytest.mark.parametrize(
+    ("reason", "expected_message"),
+    [
+        (
+            "offline_cache_unavailable",
+            "No verified cached copy is available",
+        ),
+        (
+            "offline_contract_expired",
+            "The cached copy has expired",
+        ),
+    ],
+)
+def test_browser_explains_offline_cache_miss_as_unavailable(
+    reason: Literal["offline_cache_unavailable", "offline_contract_expired"],
+    expected_message: str,
+) -> None:
+    """Offline cache failures remain unavailable, with online recovery copy."""
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_benefits=BenefitsLookup(
+                unavailable=True, unavailable_reason=reason
+            ),
+        )
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _route_client_requests(page, client)
+            page.goto("http://atlas.test/")
+            page.get_by_role(
+                "link", name="Browse pinned benefit evidence"
+            ).click()
+            page.get_by_label("Resource identifier").fill(RESOURCE)
+            page.get_by_label("Use verified cache only").check()
+            with page.expect_response(
+                lambda response: (
+                    "/federated/benefits" in response.url
+                    and response.status == 200
+                )
+            ):
+                page.get_by_role("button", name="Read pinned evidence").click()
+            unavailable = page.get_by_role("status")
+            assert unavailable.get_by_role(
+                "heading", name="Pinned evidence unavailable"
+            ).is_visible()
+            assert expected_message in unavailable.inner_text()
+            assert (
+                page.get_by_role(
+                    "region", name="Federated evidence rows"
+                ).count()
+                == 0
+            )
+            assert page.get_by_role("table").count() == 0
         finally:
             browser.close()

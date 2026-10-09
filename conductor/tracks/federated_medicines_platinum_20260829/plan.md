@@ -411,6 +411,16 @@
     contexts, and Linux/macOS/Windows consumers. This is test-only synthetic
     evidence; it adds no source or runtime behavior and does not establish
     representative-user acceptance or WCAG conformance.
+  - [x] Exercise an offline verified-cache miss through the federated benefits
+    Atlas in Chromium. The typed unavailable result must render as an accessible
+    status with actionable cache guidance, without an evidence table or a
+    negative-coverage implication. The regression exposed the internal reason
+    code being shown directly; review also caught that an expired cached copy
+    can be refreshed online. Both missing-cache and expired-cache messages now
+    offer that recovery. The eight-test focused module and full pinned
+    Test-Goblin profile pass; this synthetic fixture change adds no source,
+    acquisition, publication, source-coverage claim, or production admission.
+    Representative-user acceptance and WCAG conformance remain open.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
