@@ -1283,7 +1283,8 @@ for credentialed or rights-unresolved sources.
   distinct check names, with one duplicated CodeQL run).
 - [x] Reconcile evidence-only PR #904: merge commit
   `a3c6ac4100a75cd648751235beee17f98dd70c19` has the same tree as qualified
-  head `ef02f2b56dce7b10e0ba0a97b538c2c64a8778bd`. All 28 distinct required
+  head `ef02f2b56dce7b10e0ba0a97b538c2c64a8778bd`
+  (`af3d64b31661eedc4b76fe12e37391e5ead4c371`). All 28 distinct required
   branch-protection contexts passed, including `codecov/patch`. Thirty-seven
   check runs passed; the optional Iceberg REST lane failed before checkout
   because Docker Hub token retrieval timed out while pulling its fixture image.
