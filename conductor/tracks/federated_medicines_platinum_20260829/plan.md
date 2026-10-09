@@ -461,9 +461,14 @@
     merged as `244dc212` after all 39 protected checks passed.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
-- [~] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
+- [x] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
   coverage, security, provenance, rights, regeneration, and full Test-Goblin
-  lanes where supported.
+  lanes where supported. Exact-head PR #866 passed all 37 hosted check runs,
+  including the full Test-Goblin coverage, mutation, Gremlins, security,
+  regeneration, browser E2E, Codecov, and Linux/macOS/Windows consumer lanes.
+  This closes automated test execution only. It does not qualify production
+  source coverage, settle licensing or rights, establish full WCAG conformance
+  or representative-user acceptance, or authorize publication or release.
   - [x] Carry the existing synthetic MBS Gold edges through the public edge
     API and CLI, and compare their bounded structural evidence readbacks.
     The existing Bronze-to-Platinum MBS fixture now verifies exact API/CLI
