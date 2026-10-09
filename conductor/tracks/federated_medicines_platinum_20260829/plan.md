@@ -865,5 +865,8 @@
   receipt binds `uv.lock`; the offline receipt was regenerated for the
   test-only dependency, retained `metadata_qualified_external_gates_blocked`,
   and the exact-receipt test passed. The integration lane then passed (718).
+  The hosted unit lane identified the datahouse experiment matrix's second
+  explicit `uv.lock` binding; only its lock digest and generation time were
+  refreshed, with experiment outcomes unchanged. The focused matrix tests pass.
   Keep live deployment, production data, source coverage, public release, and
   full WCAG conformance as separate gates.
