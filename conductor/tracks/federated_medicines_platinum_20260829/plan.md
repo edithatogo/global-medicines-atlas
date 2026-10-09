@@ -729,6 +729,12 @@
   The affected browser module passed (16), governed E2E passed (50), and routine
   checks passed. One existing Starlette/httpx deprecation warning remains.
 
+- [x] Correct the second exact-head Linux E2E render race in the same
+  keyboard-recovery journey: after the expected 404/422 response arrived, an
+  immediate alert visibility read ran before Chromium finished rendering. Use
+  Playwright's bounded visibility expectation. The two focused cases, full
+  governed E2E lane (50), and routine checks pass; no runtime behavior changed.
+
 ### Unknown coverage percentage negative control (2026-10-09)
 
 - [x] Assert the complete unknown-denominator copy and absence of a percent
