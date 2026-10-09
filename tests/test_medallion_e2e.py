@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+from dataclasses import replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal, Never, Protocol, cast
@@ -537,6 +538,41 @@ def _assert_landed_b1_projection(
         assert workstation_path not in encoded
         assert payload not in encoded
     return parquet
+
+
+def _assert_projection_rejects_embedded_b2(
+    landing: BronzeLanding,
+    *,
+    payload: bytes,
+    tmp_path: Path,
+) -> None:
+    """Prove decoded Parquet and metadata leak checks reject B2 sentinels."""
+    table = pq.read_table(landing.parquet_path)
+    path_sentinel = str(landing.payload_path)
+    for name, value in (("path", path_sentinel), ("payload", payload)):
+        leaked_table = table.append_column(f"leaked_{name}", pa.array([value]))
+        leaked_path = tmp_path / f"leaked-{name}.parquet"
+        pq.write_table(leaked_table, leaked_path)
+        with pytest.raises(AssertionError):
+            _assert_landed_b1_projection(
+                replace(landing, acquisition_manifest_path=leaked_path),
+                payload=payload,
+            )
+
+    for name, sentinel in (
+        ("path", path_sentinel.encode()),
+        ("payload", payload),
+    ):
+        metadata = dict(table.schema.metadata or {})
+        metadata[f"leaked_{name}".encode()] = sentinel
+        leaked_table = table.replace_schema_metadata(metadata)
+        leaked_path = tmp_path / f"leaked-metadata-{name}.parquet"
+        pq.write_table(leaked_table, leaked_path)
+        with pytest.raises(AssertionError):
+            _assert_landed_b1_projection(
+                replace(landing, acquisition_manifest_path=leaked_path),
+                payload=payload,
+            )
 
 
 def _platinum_contract(payload: bytes, receipt: SourceReceipt) -> bytes:
@@ -1408,6 +1444,11 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     assert landed.receipt.rights_state is RightsState.UNKNOWN
     assert landed.receipt.satisfies_live_gate is False
     b1_manifest = _assert_landed_b1_projection(landed, payload=raw)
+    _assert_projection_rejects_embedded_b2(
+        landed,
+        payload=raw,
+        tmp_path=tmp_path,
+    )
 
     silver, nodes, gold = _silver_gold_products(
         landed.payload_path.read_bytes(), landed.receipt
