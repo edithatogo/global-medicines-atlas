@@ -791,10 +791,14 @@
   submit controls, and read the exact evidence identity and returned row. The
   first audit found the successful benefits browser journey used pointer
   clicks while keyboard recovery was covered only on source-structure. The
-  three affected accessibility/browser modules pass (24 tests); routine
-  formatting, lint, typing, context, and governance checks pass. One existing
-  Starlette/httpx deprecation warning remains. Test-only; no new source,
-  source acquisition, runtime behavior, admission, coverage claim, publication,
+  initial test used programmatic focus for its first link and resource field;
+  review caught that this bypassed sequential Tab reachability. The corrected
+  journey now starts at document focus and traverses the skip link, benefits
+  link, and resource field with Tab before activation and typing. The three
+  affected accessibility/browser modules pass (24 tests); routine formatting,
+  lint, typing, context, and governance checks pass. One existing Starlette/
+  httpx deprecation warning remains. Test-only; no new source, source
+  acquisition, runtime behavior, admission, coverage claim, publication,
   WCAG-conformance claim, or representative-user acceptance.
 
 ### Hosted browser synchronization follow-up (2026-10-09)

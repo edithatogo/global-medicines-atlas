@@ -473,14 +473,25 @@ def test_keyboard_user_can_query_bounded_benefits_evidence() -> None:
             benefits_link = page.get_by_role(
                 "link", name="Browse pinned benefit evidence"
             )
-            benefits_link.focus()
+            page.keyboard.press("Tab")
+            assert page.evaluate(
+                "document.activeElement.classList.contains('skip-link')"
+            )
+            page.keyboard.press("Tab")
+            assert benefits_link.evaluate(
+                "element => element === document.activeElement"
+            )
             assert benefits_link.get_attribute("href") == "/federated/benefits"
             with page.expect_navigation():
                 page.keyboard.press("Enter")
             assert page.url == "http://atlas.test/federated/benefits"
 
-            resource = page.get_by_label("Resource identifier")
-            resource.focus()
+            page.keyboard.press("Tab")
+            assert page.evaluate(
+                "document.activeElement.classList.contains('skip-link')"
+            )
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "resource-id"
             page.keyboard.type(RESOURCE)
             page.keyboard.press("Tab")
             assert page.evaluate("document.activeElement.id") == "columns"
