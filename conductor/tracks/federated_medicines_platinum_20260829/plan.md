@@ -415,9 +415,10 @@
     Atlas in Chromium. The typed unavailable result must render as an accessible
     status with actionable cache guidance, without an evidence table or a
     negative-coverage implication. The regression exposed the internal reason
-    code being shown directly; the template now renders readable messages for
-    each known unavailable reason. The seven-test focused module and full
-    pinned Test-Goblin profile pass; this synthetic fixture change adds no source,
+    code being shown directly; review also caught that an expired cached copy
+    can be refreshed online. Both missing-cache and expired-cache messages now
+    offer that recovery. The eight-test focused module and full pinned
+    Test-Goblin profile pass; this synthetic fixture change adds no source,
     acquisition, publication, source-coverage claim, or production admission.
     Representative-user acceptance and WCAG conformance remain open.
 
