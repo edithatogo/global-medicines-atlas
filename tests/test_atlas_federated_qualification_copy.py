@@ -455,6 +455,84 @@ def test_browser_navigates_from_home_to_bounded_federated_evidence() -> None:
 
 @pytest.mark.e2e
 @pytest.mark.timeout(90)
+def test_keyboard_user_can_query_bounded_benefits_evidence() -> None:
+    """Keyboard users can open, query, and read the benefits evidence view."""
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_benefits=BenefitsLookup(),
+        )
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _route_client_requests(page, client)
+            page.goto("http://atlas.test/")
+
+            benefits_link = page.get_by_role(
+                "link", name="Browse pinned benefit evidence"
+            )
+            page.keyboard.press("Tab")
+            assert page.evaluate(
+                "document.activeElement.classList.contains('skip-link')"
+            )
+            page.keyboard.press("Tab")
+            assert benefits_link.evaluate(
+                "element => element === document.activeElement"
+            )
+            assert benefits_link.get_attribute("href") == "/federated/benefits"
+            with page.expect_navigation():
+                page.keyboard.press("Enter")
+            assert page.url == "http://atlas.test/federated/benefits"
+
+            page.keyboard.press("Tab")
+            assert page.evaluate(
+                "document.activeElement.classList.contains('skip-link')"
+            )
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "resource-id"
+            page.keyboard.type(RESOURCE)
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "columns"
+            page.keyboard.type("item_code")
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "limit"
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "filters"
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.name") == "offline"
+            page.keyboard.press("Tab")
+            assert (
+                page.evaluate("document.activeElement.textContent.trim()")
+                == "Read pinned evidence"
+            )
+            with page.expect_response(
+                lambda response: (
+                    "/federated/benefits" in response.url
+                    and response.status == 200
+                )
+            ):
+                page.keyboard.press("Enter")
+
+            expect(
+                page.get_by_role("heading", name="Exact evidence identity")
+            ).to_be_visible()
+            rows = page.get_by_role(
+                "region", name="Federated evidence rows"
+            ).locator("tbody tr")
+            expect(rows).to_have_count(1)
+            assert "100" in rows.first.inner_text()
+            assert (
+                "Coverage is not declared here"
+                in page.locator("main").inner_text()
+            )
+        finally:
+            browser.close()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
 def test_browser_explains_unknown_resources_and_invalid_benefit_filters() -> (
     None
 ):
