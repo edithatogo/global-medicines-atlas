@@ -706,6 +706,11 @@
   shared service adapters. Focused test passed (1), governed E2E lane passed
   (50), and routine checks passed; the existing Starlette/httpx deprecation
   warning remains. Test-only refinement; no source or runtime behavior changed.
+- [x] PR #890 merged at `105dd4bb9574f67bba883247afcb54631792f00c` after all 37
+  reported checks passed, including `codecov/patch`, exact-head E2E (50),
+  routine, security, mutation, and Linux/macOS/Windows consumers. A hosted
+  browser render race was corrected before merge. No source, runtime behavior,
+  production admission, publication, or release changed.
 
 - [x] PR #888 merged at `8a62042431cdf1c39c39acb02c73c6b0fff0e3bb` after all 28
   required branch-protection contexts passed, including `codecov/patch`,
