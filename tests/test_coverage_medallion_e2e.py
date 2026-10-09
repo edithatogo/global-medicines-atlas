@@ -6,9 +6,11 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
+from urllib.parse import urlencode, urlsplit
 
 import duckdb
 from fastapi.testclient import TestClient
+from playwright.sync_api import expect, sync_playwright
 from typer.testing import CliRunner
 
 from global_medicines_atlas.api import create_app
@@ -23,15 +25,15 @@ from global_medicines_atlas.query_service import ReadOnlyQueryService
 
 if TYPE_CHECKING:
     import pytest
+    from playwright.sync_api import Page, Route
 
 NOW = datetime(2026, 10, 10, tzinfo=UTC)
 SECRET = b"synthetic-coverage-e2e-secret"
 
 
-def test_synthetic_unknown_coverage_crosses_medallion_products(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Unknown coverage and null denominator survive each user-facing surface."""
+def _materialized_unknown_coverage_service(
+    tmp_path: Path,
+) -> tuple[Path, ReadOnlyQueryService]:
     database = tmp_path / "synthetic-coverage.duckdb"
     observation = CoverageObservation(
         jurisdiction="AU",
@@ -99,6 +101,33 @@ def test_synthetic_unknown_coverage_crosses_medallion_products(
         connection.close()
 
     service = ReadOnlyQueryService(database, cursor_secret=SECRET)
+    return database, service
+
+
+def _route_test_client_requests(page: Page, client: TestClient) -> None:
+    """Serve Chromium navigations through the real Atlas ASGI application."""
+    base_url = "http://coverage.test"
+
+    def fulfill_from_client(route: Route) -> None:
+        request_url = urlsplit(route.request.url)
+        path = request_url.path
+        if request_url.query:
+            path = f"{path}?{request_url.query}"
+        response = client.get(path)
+        route.fulfill(
+            status=response.status_code,
+            headers=dict(response.headers),
+            body=response.content,
+        )
+
+    page.route(f"{base_url}/**", fulfill_from_client)
+
+
+def test_synthetic_unknown_coverage_crosses_medallion_products(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Unknown coverage and null denominator survive each user-facing surface."""
+    database, service = _materialized_unknown_coverage_service(tmp_path)
     api = TestClient(create_app(service))
     params = {
         "jurisdictions": "AU",
@@ -151,3 +180,38 @@ def test_synthetic_unknown_coverage_crosses_medallion_products(
         in page.text
     )
     assert "not_covered" not in page.text
+
+
+def test_materialized_unknown_coverage_reaches_real_browser_page(
+    tmp_path: Path,
+) -> None:
+    """Chromium sees the same unknown row queried from the materialized DB."""
+    _, service = _materialized_unknown_coverage_service(tmp_path)
+    client = TestClient(create_atlas_app(service))
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _route_test_client_requests(page, client)
+            query = urlencode({
+                "concept_id": "test:medicine",
+                "jurisdiction": "AU",
+                "valid_at": NOW.isoformat(),
+                "observed_at": NOW.isoformat(),
+            })
+            response = page.goto(f"http://coverage.test/?{query}")
+            assert response is not None
+            assert response.status == 200
+
+            coverage_row = page.locator("table tbody tr").filter(
+                has=page.locator("[data-state='unknown']")
+            )
+            expect(coverage_row).to_have_count(1)
+            expect(coverage_row).to_contain_text("Status: unknown")
+            expect(coverage_row).to_contain_text(
+                "0 observed; denominator unknown, so no percentage is calculated"
+            )
+            assert "%" not in coverage_row.inner_text()
+        finally:
+            browser.close()

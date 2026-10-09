@@ -706,6 +706,11 @@
   shared service adapters. Focused test passed (1), governed E2E lane passed
   (50), and routine checks passed; the existing Starlette/httpx deprecation
   warning remains. Test-only refinement; no source or runtime behavior changed.
+- [x] Carry that exact DuckDB-backed unknown observation through the Atlas ASGI
+  app into Chromium. The browser row retains `Status: unknown`, the null-
+  denominator explanation, and no percentage. Focused tests (2), governed E2E
+  lane (51), routine checks, and diff validation pass. This test-only expansion
+  adds no source or runtime behavior; the existing deprecation warning remains.
 - [x] PR #890 merged at `105dd4bb9574f67bba883247afcb54631792f00c` after all 37
   reported checks passed, including `codecov/patch`, exact-head E2E (50),
   routine, security, mutation, and Linux/macOS/Windows consumers. A hosted
