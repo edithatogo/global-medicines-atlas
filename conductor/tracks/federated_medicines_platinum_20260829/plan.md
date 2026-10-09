@@ -784,6 +784,19 @@
   module passed (2 tests), the governed E2E lane passed (50), and routine
   checks passed; one existing Starlette/httpx deprecation warning remains.
 
+### Keyboard-only benefits evidence journey (2026-10-10)
+
+- [x] Exercise the successful synthetic benefits query entirely by keyboard:
+  navigate from Atlas home, enter the bounded query, traverse the offline and
+  submit controls, and read the exact evidence identity and returned row. The
+  first audit found the successful benefits browser journey used pointer
+  clicks while keyboard recovery was covered only on source-structure. The
+  three affected accessibility/browser modules pass (24 tests); routine
+  formatting, lint, typing, context, and governance checks pass. One existing
+  Starlette/httpx deprecation warning remains. Test-only; no new source,
+  source acquisition, runtime behavior, admission, coverage claim, publication,
+  WCAG-conformance claim, or representative-user acceptance.
+
 ### Hosted browser synchronization follow-up (2026-10-09)
 
 - [x] Address the exact-head Linux E2E failure in the existing federated
