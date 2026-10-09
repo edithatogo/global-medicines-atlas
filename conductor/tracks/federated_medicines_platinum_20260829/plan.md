@@ -646,6 +646,10 @@
     query modules so a base installation receives the existing typed
     `SERVICE_UNAVAILABLE` response. Configuration and query error controls
     pass in the focused suite and the hosted exact-head CI.
+  - [x] Use a fixed UTC timestamp in the source-structure Atlas identity
+    fixture so rendered identity evidence is deterministic. Both available
+    and unavailable rendering cases compare the displayed date with the same
+    fixture identity; no calendar-dependent failure was observed.
   - [x] Run all local full-profile components on 2026-10-06 with the pinned
     temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
     and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317

@@ -35,7 +35,7 @@ def _identity(
     semantic_dimension: PlatinumSemanticDimension = "source_structure",
     object_sha256: str = OBJECT_SHA256,
 ) -> DatasetIdentityV2Envelope:
-    now = datetime.now(UTC)
+    now = datetime(2026, 10, 7, tzinfo=UTC)
     return DatasetIdentityV2Envelope(
         resource_id=RESOURCE_ID,
         dataset="example/australian-benefits-synthetic",
