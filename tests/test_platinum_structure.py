@@ -223,9 +223,10 @@ def test_atlas_source_structure_selection_starts_without_a_query() -> None:
 def test_atlas_renders_full_identity_and_receipt_for_both_read_states(
     status: str,
 ) -> None:
+    identity = _identity()
     page = {
         "status": status,
-        "identity": _identity().model_dump(mode="json"),
+        "identity": identity.model_dump(mode="json"),
         "rows": [{"kind": "source_contains_entity"}]
         if status == "available"
         else [],
@@ -271,7 +272,7 @@ def test_atlas_renders_full_identity_and_receipt_for_both_read_states(
         "synthetic-pbs-acquisition",
         "synthetic-pbs-v1",
         "synthetic",
-        "2026-10-07",
+        identity.retrieved_at.date().isoformat(),
         "b" * 64,
         "c" * 64,
         "e" * 64,
