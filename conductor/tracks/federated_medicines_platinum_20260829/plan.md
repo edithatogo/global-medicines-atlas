@@ -454,6 +454,23 @@
     governed E2E lane (31), routine checks, Ruff, `ty`, and BasedPyright pass;
     the four existing optional `huggingface_hub` source warnings remain.
     No source acquisition, production admission, or publication is involved.
+  - [~] Add `gma source-structure` for the existing synthetic PBS Gold edge;
+    compare its identity and bounded rows/result digests against the resolver
+    query in the governed E2E test. Focused tests (38), integration (713),
+    routine, typing, formatting, and the clean-clone probe pass. The full local
+    profile's pytest phase passes, but the randomized qualification lane records
+    one performance-budget failure under full-profile load (353.9 ms vs 250 ms);
+    the same test passes independently. Hosted exact-head qualification remains
+    pending. No new source, acquisition, admission, coverage claim, or
+    publication is involved.
+  - [x] Close the Codecov patch gap for this CLI by covering typed unknown
+    resource, invalid request, and I/O error responses. The focused suite passes
+    41 tests and routine checks pass; exact-head hosted requalification is
+    pending.
+  - [x] Load the configured resolver before importing optional federation
+    query modules so a base installation receives the existing typed
+    `SERVICE_UNAVAILABLE` response. Configuration and query error controls
+    pass; focused tests now pass 43 cases and routine checks pass.
   - [x] Run all local full-profile components on 2026-10-06 with the pinned
     temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
     and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317

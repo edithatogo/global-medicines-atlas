@@ -819,6 +819,66 @@ def benefits_query(
         raise typer.Exit(3)
 
 
+@app.command("source-structure")
+def source_structure_query(
+    resource_id: Annotated[str, typer.Argument()],
+    trust_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    metadata_root: Annotated[Path, typer.Option(exists=True, file_okay=False)],
+    schema_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    columns: Annotated[list[str], typer.Option("--column")],
+    limit: Annotated[int, typer.Option(min=1, max=100)] = 100,
+    *,
+    offline: bool = False,
+) -> None:
+    """Query bounded source-structure evidence from operator-pinned trust."""
+    try:
+        resolver = _dataset_resolver_loader()(
+            trust_file=trust_file,
+            metadata_root=metadata_root,
+            schema_file=schema_file,
+        )
+    except ValueError, OSError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The source-structure operator configuration is invalid",
+        )
+
+    from .platinum_identity_service import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+        UnknownPlatinumResourceError,
+    )
+    from .platinum_structure import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+        SourceStructureQuery,
+        SourceStructureService,
+    )
+
+    try:
+        jurisdictions = {
+            candidate_id: candidate_id.split(".", maxsplit=1)[0].upper()
+            for candidate_id in resolver.resource_ids
+        }
+        page = SourceStructureService(
+            resolver, jurisdictions=jurisdictions
+        ).query(
+            resource_id,
+            SourceStructureQuery(
+                columns=tuple(columns), limit=limit, offline=offline
+            ),
+        )
+    except UnknownPlatinumResourceError:
+        _fail(
+            ErrorCode.NOT_FOUND,
+            "The admitted source-structure resource was not found",
+        )
+    except ValueError, OSError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The source-structure query or operator configuration is invalid",
+        )
+    typer.echo(page.model_dump_json())
+    if page.status == "unavailable":
+        raise typer.Exit(3)
+
+
 def _dataset_resolver_loader() -> Callable[..., Any]:
     """Load the optional resolver configuration with a typed failure mode."""
     try:
