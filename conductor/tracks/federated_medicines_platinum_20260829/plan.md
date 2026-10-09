@@ -689,3 +689,15 @@
   review-control follow-up merged as PR #860 (`9d600070`) after all 37 hosted
   checks passed. No source acquisition,
   production admission, coverage claim, public publication, or release.
+
+### Source-neutral explicit coverage product E2E (2026-10-09)
+
+- [x] Carry one fully synthetic explicit-unknown coverage observation through
+  Arrow/DuckDB materialization, the read-only query service, v1 API, CLI, and
+  Atlas rendering. Preserve `state=unknown`, a null denominator, and no
+  negative inference; register the focused test in the governed E2E lane.
+  Focused test passed (1); governed E2E lane passed (50); routine checks passed
+  including formatting, lint, typing, context, and governance validation. The
+  one existing Starlette/httpx deprecation warning remains. Test-only change;
+  pinned full Test-Goblin evidence on main was reused. No new source, source
+  bytes, production admission, source-coverage claim, or publication.
