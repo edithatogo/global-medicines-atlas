@@ -711,6 +711,16 @@
   denominator explanation, and no percentage. Focused tests (2), governed E2E
   lane (51), routine checks, and diff validation pass. This test-only expansion
   adds no source or runtime behavior; the existing deprecation warning remains.
+- [x] PR #892 merged at `0309efa2b6f3cab824b80e136c22eccb036cf5d4` after all
+  28 required branch-protection contexts passed (38 total reported checks),
+  including Codecov patch, exact-head E2E, routine, security, and Linux/macOS/
+  Windows consumers. No source, runtime behavior, admission, publication, or
+  release changed.
+- [x] Assert the same end-to-end coverage row through the browser accessibility
+  tree using its table and row roles. Focused coverage tests (2), governed E2E
+  lane (51), routine checks, and diff validation pass; one existing
+  Starlette/httpx deprecation warning remains. Test-only; no source or runtime
+  behavior changed.
 - [x] PR #890 merged at `105dd4bb9574f67bba883247afcb54631792f00c` after all 37
   reported checks passed, including `codecov/patch`, exact-head E2E (50),
   routine, security, mutation, and Linux/macOS/Windows consumers. A hosted
