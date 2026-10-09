@@ -398,6 +398,15 @@
     caught a receipt timestamp later than its introducing commit; an appended
     evidence correction now records the commit timestamp as the first durable
     verifiable time.
+  - [x] Cover federated browser error recovery for an unknown resource and a
+    malformed non-empty benefits filter. The browser observes the expected
+    404/422 responses, accessible alert messages, and preserved invalid input;
+    the already-verified ASGI fixture exercises both route outcomes. Review
+    tightened the retained-input assertion to compare the complete submitted
+    string. Six focused module tests and Ruff pass after the correction;
+    routine and repository typing checks passed before it. This is test-only
+    synthetic evidence; hosted exact-head checks are pending and no source
+    scope or runtime behavior changed.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
