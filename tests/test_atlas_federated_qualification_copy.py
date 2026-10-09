@@ -538,6 +538,75 @@ def test_browser_source_structure_errors_retain_submitted_query() -> None:
 
 @pytest.mark.e2e
 @pytest.mark.timeout(90)
+def test_keyboard_user_can_recover_from_source_structure_error() -> None:
+    """An invalid query can be corrected and resubmitted from the keyboard."""
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_benefits=BenefitsLookup(),
+            federated_source_structure=StructureLookup(),
+        )
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _route_client_requests(page, client)
+            page.goto("http://atlas.test/")
+            source_link = page.get_by_role(
+                "link", name="Browse pinned source-structure evidence"
+            )
+            source_link.focus()
+            assert source_link.get_attribute("href") == (
+                "/federated/source-structure"
+            )
+            with page.expect_navigation():
+                source_link.press("Enter")
+            assert page.url.endswith("/federated/source-structure")
+
+            resource_field = page.get_by_label("Resource identifier")
+            columns_field = page.get_by_label("Source columns, comma separated")
+            resource_field.fill("au.pbs.unknown")
+            columns_field.fill("kind")
+            submit = page.get_by_role("button", name="Read pinned structure")
+            submit.focus()
+            with page.expect_response(
+                lambda response: (
+                    "/federated/source-structure" in response.url
+                    and response.status == 404
+                )
+            ):
+                page.keyboard.press("Enter")
+
+            assert page.get_by_role("alert").is_visible()
+            assert resource_field.input_value() == "au.pbs.unknown"
+            skip_link = page.get_by_role(
+                "link", name="Skip to source-structure evidence"
+            )
+            skip_link.focus()
+            page.keyboard.press("Enter")
+            assert page.evaluate("document.activeElement.id") == "atlas-results"
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "resource-id"
+
+            resource_field.fill(RESOURCE)
+            columns_field.fill("kind")
+            submit.focus()
+            with page.expect_response(
+                lambda response: (
+                    "/federated/source-structure" in response.url
+                    and response.status == 200
+                )
+            ):
+                page.keyboard.press("Enter")
+            assert page.get_by_role("table").is_visible()
+            assert page.get_by_role("alert").count() == 0
+        finally:
+            browser.close()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
 @pytest.mark.parametrize(
     ("reason", "expected_message", "offline"),
     [
