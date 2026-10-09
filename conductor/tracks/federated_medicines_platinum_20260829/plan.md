@@ -701,6 +701,11 @@
   one existing Starlette/httpx deprecation warning remains. Test-only change;
   pinned full Test-Goblin evidence on main was reused. No new source, source
   bytes, production admission, source-coverage claim, or publication.
+- [x] Require the complete API and CLI coverage records to match for the
+  synthetic unknown observation, guarding all serialized fields across the
+  shared service adapters. Focused test passed (1), governed E2E lane passed
+  (50), and routine checks passed; the existing Starlette/httpx deprecation
+  warning remains. Test-only refinement; no source or runtime behavior changed.
 
 - [x] PR #888 merged at `8a62042431cdf1c39c39acb02c73c6b0fff0e3bb` after all 28
   required branch-protection contexts passed, including `codecov/patch`,
@@ -730,3 +735,8 @@
   sign in the rendered browser row, so no percentage can be added while the
   current prefix assertion still passes. Focused browser tests passed (2), the
   governed E2E lane passed (50), and routine checks passed.
+- [x] PR #889 merged at `be36f4849ff62f1b78115d86085df78f57491e0a` after all 28
+  required branch-protection contexts passed, including `codecov/patch`, the
+  exact-head E2E and routine lanes, and Linux/macOS/Windows consumers. This
+  closes the browser assertion follow-up only; production coverage and the
+  Phase 3 representative-user checkpoint remain open.
