@@ -322,9 +322,11 @@
     unknown absence semantics. The synthetic Bronze snapshot pair passes
     through API, CLI, and Atlas; no sources or acquisition paths were added.
     Focused Atlas/medallion (9) and governed E2E (32) checks plus routine
-    checks pass. The local full profile did not complete: after reporting two
-    test failures it segfaulted in the DuckDB/LanceDB qualification path, so
-    hosted exact-head checks remain required before merge.
+    checks pass. The local full profile did not complete: it segfaulted in the
+    DuckDB/LanceDB qualification path. Hosted exact-head tests, full coverage,
+    and protected checks passed; Codecov identified two uncovered defensive
+    branches. Targeted tests now exercise invalid pages and the byte ceiling,
+    with another exact-head coverage run pending.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register

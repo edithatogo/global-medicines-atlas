@@ -19,6 +19,7 @@ from test_pbs_silver import XML as PBS_XML
 from test_support.federation import admission_record
 from typer.testing import CliRunner
 
+from global_medicines_atlas import atlas as atlas_module
 from global_medicines_atlas import platinum_configuration
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
@@ -42,6 +43,7 @@ from global_medicines_atlas.federation_distribution import (
 )
 from global_medicines_atlas.federation_reader import FederatedReader
 from global_medicines_atlas.historical_change import (
+    HistoricalChange,
     HistoricalChangeService,
     compare_historical_snapshots,
 )
@@ -272,6 +274,7 @@ def _exercise_historical_surfaces(
     *,
     history_file: Path,
     bronze_root: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """Compare API and CLI history pages derived from synthetic Bronze XML."""
     previous_landed = land_bronze_payload(
@@ -391,6 +394,23 @@ def _exercise_historical_surfaces(
     assert removed["interpretation"] == "observed_change"
     assert removed["native_id"] == "au-mbs:00567:00::1"
 
+    _exercise_atlas_history(
+        service,
+        change,
+        previous.digest(),
+        current.digest(),
+        monkeypatch=monkeypatch,
+    )
+
+
+def _exercise_atlas_history(
+    service: HistoricalChangeService,
+    change: HistoricalChange,
+    previous_digest: str,
+    current_digest: str,
+    *,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     atlas_client = TestClient(
         create_atlas_app(
             cast("AtlasQueryService", object()), historical_changes=service
@@ -408,8 +428,8 @@ def _exercise_historical_surfaces(
     assert "Historical changes" in atlas_response.text
     assert "absence interpretation: unknown" in atlas_response.text
     assert "au-mbs:00567:00::1" in atlas_response.text
-    assert previous.digest() in atlas_response.text
-    assert current.digest() in atlas_response.text
+    assert previous_digest in atlas_response.text
+    assert current_digest in atlas_response.text
     assert "bronze/raw.xml" in atlas_response.text
     unattributed = HistoricalChangeService((
         compare_historical_snapshots(None, change.right),
@@ -421,6 +441,28 @@ def _exercise_historical_surfaces(
     ).get("/history")
     assert unavailable.status_code == 503
     assert "lack attributable source metadata" in unavailable.text
+
+    class InvalidHistoryService:
+        def page(self, *, offset: int = 0, limit: int = 100) -> object:
+            del offset, limit
+            raise ValueError("synthetic invalid history page")
+
+    invalid_client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            historical_changes=cast(
+                "HistoricalChangeService", InvalidHistoryService()
+            ),
+        )
+    )
+    invalid = invalid_client.get("/history")
+    assert invalid.status_code == 422
+    assert "historical change page is invalid" in invalid.text
+
+    monkeypatch.setattr(atlas_module, "_MAX_HISTORY_PAGE_BYTES", 1)
+    oversized = atlas_client.get("/history")
+    assert oversized.status_code == 503
+    assert "response byte limit" in oversized.text
 
 
 def _payload() -> bytes:
@@ -1455,6 +1497,7 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
         receipt,
         history_file=tmp_path / "synthetic-history.json",
         bronze_root=tmp_path / "historical-bronze",
+        monkeypatch=monkeypatch,
     )
     landed = land_bronze_payload(
         raw,
