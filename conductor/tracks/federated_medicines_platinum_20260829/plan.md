@@ -468,7 +468,9 @@
     resubmits successfully. The adjacent Atlas, structure API, and medallion
     suite passes 26 tests; Ruff, format, routine, and diff checks pass. This
     synthetic test-only follow-up adds no sources and relies on the preceding
-    pinned full-profile result; hosted checks remain pending.
+    pinned full-profile result. The Linux E2E lane exposed that Home/Shift+End
+    did not replace the retained value; use ControlOrMeta+A and verify the
+    platform-aware keyboard correction locally. Exact-head hosted rerun pending.
 
 ## Phase 4: Federation and compatibility (AC-06)
 

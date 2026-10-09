@@ -315,8 +315,7 @@ def _route_client_requests(page: Page, client: TestClient) -> None:
 
 def _replace_focused_text(page: Page, value: str) -> None:
     """Replace a focused input using keyboard events."""
-    page.keyboard.press("Home")
-    page.keyboard.press("Shift+End")
+    page.keyboard.press("ControlOrMeta+A")
     page.keyboard.type(value)
 
 
