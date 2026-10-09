@@ -462,9 +462,10 @@
     after all 28 required branch-protection contexts and all 38 exact-head check
     runs passed, including Codecov and Linux/macOS/Windows consumers.
   - [x] Verify keyboard recovery after an unknown-resource 404. Activate the
-    source-structure link by Enter, use the skip link to return focus to the
-    query form, tab to the retained resource input, correct the query, and
-    resubmit successfully. The adjacent Atlas, structure API, and medallion
+    source-structure link by Enter, then use the skip link and verify the
+    sequential tab order through both text fields, row limit, cache checkbox,
+    and submit button. Keyboard text entry corrects the retained query and
+    resubmits successfully. The adjacent Atlas, structure API, and medallion
     suite passes 26 tests; Ruff, format, routine, and diff checks pass. This
     synthetic test-only follow-up adds no sources and relies on the preceding
     pinned full-profile result; hosted checks remain pending.

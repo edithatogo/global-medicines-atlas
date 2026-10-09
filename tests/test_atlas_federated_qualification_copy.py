@@ -313,6 +313,13 @@ def _route_client_requests(page: Page, client: TestClient) -> None:
     page.route(f"{base_url}/**", fulfill_from_client)
 
 
+def _replace_focused_text(page: Page, value: str) -> None:
+    """Replace a focused input using keyboard events."""
+    page.keyboard.press("Home")
+    page.keyboard.press("Shift+End")
+    page.keyboard.type(value)
+
+
 def _assert_atlas_assets_loaded(
     requests: list[str], responses: dict[str, int], page: Page
 ) -> None:
@@ -580,18 +587,27 @@ def test_keyboard_user_can_recover_from_source_structure_error() -> None:
 
             assert page.get_by_role("alert").is_visible()
             assert resource_field.input_value() == "au.pbs.unknown"
-            skip_link = page.get_by_role(
-                "link", name="Skip to source-structure evidence"
+            page.keyboard.press("Tab")
+            assert page.evaluate(
+                "document.activeElement.classList.contains('skip-link')"
             )
-            skip_link.focus()
             page.keyboard.press("Enter")
             assert page.evaluate("document.activeElement.id") == "atlas-results"
             page.keyboard.press("Tab")
             assert page.evaluate("document.activeElement.id") == "resource-id"
-
-            resource_field.fill(RESOURCE)
-            columns_field.fill("kind")
-            submit.focus()
+            _replace_focused_text(page, RESOURCE)
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "columns"
+            _replace_focused_text(page, "kind")
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "limit"
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.name") == "offline"
+            page.keyboard.press("Tab")
+            assert (
+                page.evaluate("document.activeElement.textContent.trim()")
+                == "Read pinned structure"
+            )
             with page.expect_response(
                 lambda response: (
                     "/federated/source-structure" in response.url
