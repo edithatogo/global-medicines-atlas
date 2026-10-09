@@ -239,6 +239,44 @@ def test_source_structure_cli_reports_bounded_errors(
     assert json.loads(result.stderr)["error"] == error_code
 
 
+@pytest.mark.parametrize("error", [ValueError, OSError])
+def test_source_structure_cli_reports_configuration_errors(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    error: type[Exception],
+) -> None:
+    trust_file = tmp_path / "trust.json"
+    trust_file.write_text("{}")
+    metadata_root = tmp_path / "metadata"
+    metadata_root.mkdir()
+    schema_file = tmp_path / "schema.json"
+    schema_file.write_text("{}")
+
+    def load_resolver(**_kwargs: object) -> object:
+        raise error("synthetic configuration error")
+
+    monkeypatch.setattr(cli, "_dataset_resolver_loader", lambda: load_resolver)
+    result = runner.invoke(
+        app,
+        [
+            "source-structure",
+            "au.pbs.synthetic",
+            "--trust-file",
+            str(trust_file),
+            "--metadata-root",
+            str(metadata_root),
+            "--schema-file",
+            str(schema_file),
+            "--column",
+            "kind",
+        ],
+    )
+
+    assert result.exit_code == 2
+    assert not result.stdout
+    assert json.loads(result.stderr)["error"] == ErrorCode.INVALID_REQUEST
+
+
 class _Page:
     def __init__(
         self,

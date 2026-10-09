@@ -831,6 +831,18 @@ def source_structure_query(
     offline: bool = False,
 ) -> None:
     """Query bounded source-structure evidence from operator-pinned trust."""
+    try:
+        resolver = _dataset_resolver_loader()(
+            trust_file=trust_file,
+            metadata_root=metadata_root,
+            schema_file=schema_file,
+        )
+    except ValueError, OSError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The source-structure operator configuration is invalid",
+        )
+
     from .platinum_identity_service import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
         UnknownPlatinumResourceError,
     )
@@ -840,11 +852,6 @@ def source_structure_query(
     )
 
     try:
-        resolver = _dataset_resolver_loader()(
-            trust_file=trust_file,
-            metadata_root=metadata_root,
-            schema_file=schema_file,
-        )
         jurisdictions = {
             candidate_id: candidate_id.split(".", maxsplit=1)[0].upper()
             for candidate_id in resolver.resource_ids
