@@ -533,9 +533,12 @@
 
 ### Bronze acquisition-metadata projection federated E2E (2026-10-09)
 
-- [~] Carry the actual landed B1 acquisition-manifest Parquet projection
+- [x] Carry the actual landed B1 acquisition-manifest Parquet projection
   through v4 distribution reconciliation, remote read, verified cache,
   eviction, and refetch. Keep the receipt-bound B2 bytes local, and verify the
   existing distribution gate rejects raw B2 as a derived projection. Use only
   the existing synthetic MBS/PBS fixtures; no additional source, source claim,
-  or public mutation.
+  or public mutation. PR #858 merged as `8cc48eac` after all 37 hosted checks
+  passed. The review follow-up inspects decoded Parquet columns and Arrow / file
+  metadata for B2 payload and workstation-path sentinels. No source acquisition,
+  production admission, coverage claim, public publication, or release.
