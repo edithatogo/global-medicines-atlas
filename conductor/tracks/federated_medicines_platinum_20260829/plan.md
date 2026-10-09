@@ -690,7 +690,7 @@
   checks passed. No source acquisition,
   production admission, coverage claim, public publication, or release.
 
-### Source-neutral explicit coverage product E2E (2026-10-10)
+### Source-neutral explicit coverage product E2E (2026-10-09)
 
 - [x] Carry one fully synthetic explicit-unknown coverage observation through
   Arrow/DuckDB materialization, the read-only query service, v1 API, CLI, and
