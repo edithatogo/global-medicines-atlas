@@ -475,8 +475,10 @@
     ControlOrMeta+A correction. PR #883 merged as
     `d1147ba2ca44e000f14cae71a00ffd756a40e67d` after all 28 required
     branch-protection contexts and all 37 exact-head check runs passed,
-    including Codecov and Linux/macOS/Windows consumers. Hosted checks for this
-    404/422 expansion remain pending.
+    including Codecov and Linux/macOS/Windows consumers. The 404/422
+    keyboard expansion merged in PR #884 as
+    `758648db239c1a9dc7faa3a8a7ded7b62403fe7a` after all required contexts
+    and exact-head hosted checks passed.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
