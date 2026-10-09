@@ -445,8 +445,9 @@
     come from landed XML parsed through MBS Silver. The end-to-end comparison
     covers a changed description and a left-only native row; both surfaces
     agree and absence remains `unknown`. The affected E2E tests (2), routine
-    checks, Ruff, formatting, and diff validation pass locally; hosted
-    verification is pending.
+    checks, Ruff, formatting, and diff validation pass locally. PR #856 merged
+    as `6484d045ed15f15a5c1004adca3528f2335540ca` after all 37 hosted checks,
+    including Codecov patch coverage and Linux/macOS/Windows consumers, passed.
   - [x] Extend the synthetic Bronze-to-Platinum end-to-end qualification to
     query remotely, reproduce from its verified offline cache, prove explicit
     unavailability after eviction, and refetch the same result. The synthetic
