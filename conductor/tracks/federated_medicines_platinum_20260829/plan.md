@@ -867,6 +867,9 @@
   and the exact-receipt test passed. The integration lane then passed (718).
   The hosted unit lane identified the datahouse experiment matrix's second
   explicit `uv.lock` binding; only its lock digest and generation time were
-  refreshed, with experiment outcomes unchanged. The focused matrix tests pass.
+  refreshed, with experiment outcomes unchanged. It also identified the
+  frontier experiment matrix's imported digest for that file; only that digest
+  was refreshed, with all frontier dispositions unchanged. Focused matrix
+  tests pass for both records.
   Keep live deployment, production data, source coverage, public release, and
   full WCAG conformance as separate gates.
