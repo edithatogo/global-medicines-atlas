@@ -458,7 +458,19 @@
     and medallion suite passes 25 tests. Pinned Test-Goblin passes 6,010 tests,
     one optional PyIceberg skip, and 96.88% coverage; Gremlins reports 332
     passed, both randomized runs pass 184 tests, and offline zizmor reports no
-    findings. Hosted PR checks remain pending.
+    findings. PR #882 merged as `8b68bf9cd2431b39d9e03cb35938f06e5463e50d`
+    after all 28 required branch-protection contexts and all 38 exact-head check
+    runs passed, including Codecov and Linux/macOS/Windows consumers.
+  - [x] Verify keyboard recovery after an unknown-resource 404. Activate the
+    source-structure link by Enter, then use the skip link and verify the
+    sequential tab order through both text fields, row limit, cache checkbox,
+    and submit button. Keyboard text entry corrects the retained query and
+    resubmits successfully. The adjacent Atlas, structure API, and medallion
+    suite passes 26 tests; Ruff, format, routine, and diff checks pass. This
+    synthetic test-only follow-up adds no sources and relies on the preceding
+    pinned full-profile result. The Linux E2E lane exposed that Home/Shift+End
+    did not replace the retained value; use ControlOrMeta+A and verify the
+    platform-aware keyboard correction locally. Exact-head hosted rerun pending.
 
 ## Phase 4: Federation and compatibility (AC-06)
 

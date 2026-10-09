@@ -313,6 +313,12 @@ def _route_client_requests(page: Page, client: TestClient) -> None:
     page.route(f"{base_url}/**", fulfill_from_client)
 
 
+def _replace_focused_text(page: Page, value: str) -> None:
+    """Replace a focused input using keyboard events."""
+    page.keyboard.press("ControlOrMeta+A")
+    page.keyboard.type(value)
+
+
 def _assert_atlas_assets_loaded(
     requests: list[str], responses: dict[str, int], page: Page
 ) -> None:
@@ -532,6 +538,84 @@ def test_browser_source_structure_errors_retain_submitted_query() -> None:
             assert resource_field.input_value() == RESOURCE
             assert columns_field.input_value() == "kind,unknown_column"
             assert page.get_by_role("table").count() == 0
+        finally:
+            browser.close()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
+def test_keyboard_user_can_recover_from_source_structure_error() -> None:
+    """An invalid query can be corrected and resubmitted from the keyboard."""
+    client = TestClient(
+        create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_benefits=BenefitsLookup(),
+            federated_source_structure=StructureLookup(),
+        )
+    )
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _route_client_requests(page, client)
+            page.goto("http://atlas.test/")
+            source_link = page.get_by_role(
+                "link", name="Browse pinned source-structure evidence"
+            )
+            source_link.focus()
+            assert source_link.get_attribute("href") == (
+                "/federated/source-structure"
+            )
+            with page.expect_navigation():
+                source_link.press("Enter")
+            assert page.url.endswith("/federated/source-structure")
+
+            resource_field = page.get_by_label("Resource identifier")
+            columns_field = page.get_by_label("Source columns, comma separated")
+            resource_field.fill("au.pbs.unknown")
+            columns_field.fill("kind")
+            submit = page.get_by_role("button", name="Read pinned structure")
+            submit.focus()
+            with page.expect_response(
+                lambda response: (
+                    "/federated/source-structure" in response.url
+                    and response.status == 404
+                )
+            ):
+                page.keyboard.press("Enter")
+
+            assert page.get_by_role("alert").is_visible()
+            assert resource_field.input_value() == "au.pbs.unknown"
+            page.keyboard.press("Tab")
+            assert page.evaluate(
+                "document.activeElement.classList.contains('skip-link')"
+            )
+            page.keyboard.press("Enter")
+            assert page.evaluate("document.activeElement.id") == "atlas-results"
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "resource-id"
+            _replace_focused_text(page, RESOURCE)
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "columns"
+            _replace_focused_text(page, "kind")
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "limit"
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.name") == "offline"
+            page.keyboard.press("Tab")
+            assert (
+                page.evaluate("document.activeElement.textContent.trim()")
+                == "Read pinned structure"
+            )
+            with page.expect_response(
+                lambda response: (
+                    "/federated/source-structure" in response.url
+                    and response.status == 200
+                )
+            ):
+                page.keyboard.press("Enter")
+            assert page.get_by_role("table").is_visible()
+            assert page.get_by_role("alert").count() == 0
         finally:
             browser.close()
 
