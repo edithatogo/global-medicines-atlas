@@ -86,7 +86,9 @@ def implementation_manifest(root: Path = ROOT) -> tuple[str, ...]:
         paths.update(
             path.relative_to(root).as_posix()
             for path in base.rglob(pattern)
-            if path.is_file()
+            # hatch-vcs generates this ignored file during builds; it is not
+            # part of the committed runtime implementation.
+            if path.is_file() and path.name != "_version.py"
         )
     missing = sorted(path for path in paths if not (root / path).is_file())
     if missing:

@@ -682,9 +682,24 @@
   readiness, return a bounded comparison result through the API, and render
   the Atlas page. The resulting product evidence remains `fixture_qualified`;
   live deployment, accessibility conformance, and production-data gates stay
-  unverified. Exact receipts and aggregates are in
-  `quality/qualifications/platinum-product-performance-20261010-clean-start/`.
-  No sources, production data, acquisition, publication, or release were used.
+  unverified. The first local receipt set in
+  `quality/qualifications/platinum-product-performance-20261010-clean-start/`
+  included an ignored hatch-vcs generated `_version.py` in its implementation
+  digest and is superseded by the clean-manifest requalification below. No
+  sources, production data, acquisition, publication, or release were used.
+
+### Stable-manifest clean-start requalification (2026-10-10)
+
+- [x] Exclude the ignored hatch-vcs `_version.py` from the implementation
+  manifest so qualification digests are reproducible between local builds and
+  clean Git checkouts. A regression test failed before the fix and passes now.
+  A Git archive of merged PR #895 reproduced its clean-tree digest independently;
+  after the manifest fix, the current implementation digest is bound to all nine
+  newly executed receipts. The focused release suites passed (42); the pinned
+  full Test-Goblin profile passed. Product evidence remains
+  `fixture_qualified`, with live-deployment, accessibility-conformance, and
+  production-data gates unverified. Durable artifacts are in
+  `quality/qualifications/platinum-product-performance-20261010-clean-start-stable-manifest/`.
 
 ### PBS source-structure Platinum integration (2026-10-07)
 

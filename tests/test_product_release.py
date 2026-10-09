@@ -9,7 +9,11 @@ import pytest
 from pydantic import ValidationError
 from scripts import run_product_qualification
 from scripts.qualify_product_release import build_evidence
-from scripts.run_product_qualification import implementation_digest, run
+from scripts.run_product_qualification import (
+    implementation_digest,
+    implementation_manifest,
+    run,
+)
 
 from global_medicines_atlas.product_release import (
     ProductReleaseEvidence,
@@ -319,6 +323,29 @@ def test_runtime_manifest_change_invalidates_receipt(
         )
         or ""
     )
+
+
+def test_runtime_manifest_excludes_generated_vcs_version_file(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    package = tmp_path / "src/global_medicines_atlas"
+    package.mkdir(parents=True)
+    (package / "runtime.py").write_text("value = 1\n", encoding="utf-8")
+    (package / "_version.py").write_text(
+        "version = 'generated'\n", encoding="utf-8"
+    )
+    monkeypatch.setattr(run_product_qualification, "IMPLEMENTATION_FILES", ())
+    monkeypatch.setattr(
+        run_product_qualification,
+        "IMPLEMENTATION_TREES",
+        (("src/global_medicines_atlas", "*.py"),),
+    )
+
+    manifest = implementation_manifest(tmp_path)
+
+    assert "src/global_medicines_atlas/runtime.py" in manifest
+    assert "src/global_medicines_atlas/_version.py" not in manifest
 
 
 def test_validate_integrity_fields_rejected():
