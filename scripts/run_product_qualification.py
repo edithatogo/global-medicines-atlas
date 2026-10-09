@@ -54,6 +54,8 @@ NOW = datetime(2026, 7, 29, tzinfo=UTC)
 SECRET = b"product-qualification-secret"
 SAMPLES = 20
 METHOD_NOT_ALLOWED = 405
+HTTP_OK = 200
+CLEAN_START_ROWS = 3
 IMPLEMENTATION_FILES = (
     "scripts/qualify_product_release.py",
     "scripts/run_product_qualification.py",
@@ -213,7 +215,7 @@ def _p95(workload: Callable[[], object]) -> float:
 
 
 def _receipt(
-    kind: Literal["performance", "threat"],
+    kind: Literal["performance", "threat", "clean_start"],
     subject: str,
     detail: str,
     digest: str,
@@ -232,6 +234,69 @@ def _receipt(
             sample_size=SAMPLES if observed is not None else None,
             detail=detail,
         ),
+    )
+
+
+def _clean_start_receipt(digest: str) -> QualificationReceipt:
+    """Verify a fresh synthetic root can serve the API and Atlas."""
+    with tempfile.TemporaryDirectory(prefix="gma-product-clean-start-") as raw:
+        root = Path(raw)
+        if any(root.iterdir()):
+            raise RuntimeError("clean-start root was not empty")
+        database = _database(root / "atlas.duckdb")
+        service = ReadOnlyQueryService(
+            database, cursor_secret=SECRET, allowed_root=root
+        )
+        service.readiness_probe()
+        direct = service.comparisons(_query())
+        if len(direct.conclusions) != CLEAN_START_ROWS:
+            raise RuntimeError("clean-start fixture query was incomplete")
+
+        with TestClient(create_app(service)) as client:
+            readiness = cast(
+                "Response",
+                client.get(  # pyright: ignore[reportUnknownMemberType]
+                    "/api/v1/readiness"
+                ),
+            )
+            response = cast(
+                "Response",
+                client.get(  # pyright: ignore[reportUnknownMemberType]
+                    "/api/v1/comparisons",
+                    params={
+                        "concept_id": "rx:fixture",
+                        "jurisdictions": ["AU", "NZ", "US"],
+                        "dimensions": ["regulatory"],
+                        "valid_at": NOW.isoformat(),
+                        "observed_at": NOW.isoformat(),
+                        "limit": 3,
+                    },
+                ),
+            )
+        if readiness.status_code != HTTP_OK or response.status_code != HTTP_OK:
+            raise RuntimeError("clean-start API did not become ready")
+        api_result = response.json()
+        if len(api_result.get("conclusions", [])) != CLEAN_START_ROWS:
+            raise RuntimeError("clean-start API query was incomplete")
+
+        with TestClient(create_atlas_app(service)) as client:
+            atlas = cast(
+                "Response",
+                client.get("/"),  # pyright: ignore[reportUnknownMemberType]
+            )
+        if (
+            atlas.status_code != HTTP_OK
+            or "Global Medicines Atlas" not in atlas.text
+        ):
+            raise RuntimeError("clean-start Atlas did not render")
+
+    return _receipt(
+        "clean_start",
+        "CLEAN-START",
+        "Fresh temporary synthetic database passed readiness, bounded API "
+        "query, and Atlas rendering; no live deployment or production data "
+        "was exercised.",
+        digest,
     )
 
 
@@ -364,7 +429,8 @@ def run(output: Path, receipts_dir: Path) -> None:
         service = ReadOnlyQueryService(
             database, cursor_secret=SECRET, allowed_root=work
         )
-        receipts = _performance_receipts(service, digest)
+        receipts = [_clean_start_receipt(digest)]
+        receipts.extend(_performance_receipts(service, digest))
         receipts.extend(_threat_receipts(service, database, work, digest))
 
         staged = work / "receipts"

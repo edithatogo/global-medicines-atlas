@@ -675,6 +675,17 @@
   unverified. The value-file receipts and aggregate are in
   `quality/qualifications/platinum-product-performance-20261006/`.
 
+### Fixture clean-start qualification (2026-10-10)
+
+- [x] Bind a content-addressed clean-start receipt only after an empty
+  temporary root can create a synthetic DuckDB fixture, pass service and API
+  readiness, return a bounded comparison result through the API, and render
+  the Atlas page. The resulting product evidence remains `fixture_qualified`;
+  live deployment, accessibility conformance, and production-data gates stay
+  unverified. Exact receipts and aggregates are in
+  `quality/qualifications/platinum-product-performance-20261010-clean-start/`.
+  No sources, production data, acquisition, publication, or release were used.
+
 ### PBS source-structure Platinum integration (2026-10-07)
 
 - [x] Admit `source_structure` as its own internal Platinum semantic value;
