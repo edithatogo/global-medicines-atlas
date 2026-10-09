@@ -463,6 +463,10 @@
     the same test passes independently. Hosted exact-head qualification remains
     pending. No new source, acquisition, admission, coverage claim, or
     publication is involved.
+  - [x] Close the Codecov patch gap for this CLI by covering typed unknown
+    resource, invalid request, and I/O error responses. The focused suite passes
+    41 tests and routine checks pass; exact-head hosted requalification is
+    pending.
   - [x] Run all local full-profile components on 2026-10-06 with the pinned
     temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
     and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317

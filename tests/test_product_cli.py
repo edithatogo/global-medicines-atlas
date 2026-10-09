@@ -21,6 +21,9 @@ from global_medicines_atlas.historical_comparison import (
     NativeRow,
     NativeSnapshot,
 )
+from global_medicines_atlas.platinum_identity_service import (
+    UnknownPlatinumResourceError,
+)
 from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonResponse,
     V2EvidenceResponse,
@@ -180,6 +183,60 @@ def test_source_structure_cli_uses_operator_trust_and_bounded_query(
     assert query.columns == ("kind", "node_id")
     assert query.limit == 5
     assert query.offline is True
+
+
+@pytest.mark.parametrize(
+    ("error", "error_code"),
+    [
+        (UnknownPlatinumResourceError, ErrorCode.NOT_FOUND),
+        (ValueError, ErrorCode.INVALID_REQUEST),
+        (OSError, ErrorCode.INVALID_REQUEST),
+    ],
+)
+def test_source_structure_cli_reports_bounded_errors(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    error: type[Exception],
+    error_code: ErrorCode,
+) -> None:
+    trust_file = tmp_path / "trust.json"
+    trust_file.write_text("{}")
+    metadata_root = tmp_path / "metadata"
+    metadata_root.mkdir()
+    schema_file = tmp_path / "schema.json"
+    schema_file.write_text("{}")
+    resolver = type("Resolver", (), {"resource_ids": ("au.pbs.synthetic",)})()
+
+    class Service:
+        def __init__(self, *_args: object, **_kwargs: object) -> None:
+            pass
+
+        def query(self, *_args: object, **_kwargs: object) -> object:
+            raise error("synthetic error")
+
+    monkeypatch.setattr(
+        cli, "_dataset_resolver_loader", lambda: lambda **_kwargs: resolver
+    )
+    monkeypatch.setattr(platinum_structure, "SourceStructureService", Service)
+    result = runner.invoke(
+        app,
+        [
+            "source-structure",
+            "au.pbs.synthetic",
+            "--trust-file",
+            str(trust_file),
+            "--metadata-root",
+            str(metadata_root),
+            "--schema-file",
+            str(schema_file),
+            "--column",
+            "kind",
+        ],
+    )
+
+    assert result.exit_code == 2
+    assert not result.stdout
+    assert json.loads(result.stderr)["error"] == error_code
 
 
 class _Page:
