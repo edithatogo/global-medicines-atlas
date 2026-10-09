@@ -101,6 +101,7 @@ def _unavailable_structure_page(
         "offline_cache_unavailable",
         "offline_contract_expired",
         "verified_resource_unavailable",
+        "future_internal_reason",
     ],
 ) -> SourceStructurePage:
     payload = _structure_page().model_dump(mode="python")
@@ -182,6 +183,7 @@ class StructureLookup:
         "offline_cache_unavailable",
         "offline_contract_expired",
         "verified_resource_unavailable",
+        "future_internal_reason",
     ] = "offline_cache_unavailable"
 
     def query(
@@ -191,6 +193,11 @@ class StructureLookup:
             raise UnknownPlatinumResourceError
         if query.columns != ("kind",):
             raise ValueError("invalid bounded source-structure columns")
+        if (
+            self.unavailable_reason == "future_internal_reason"
+            and self.unavailable
+        ):
+            return _unavailable_structure_page(self.unavailable_reason)
         if self.unavailable_reason == "verified_resource_unavailable":
             if self.unavailable and query.offline:
                 raise AssertionError(
@@ -548,6 +555,7 @@ def test_browser_explains_source_structure_unavailability(
         "offline_cache_unavailable",
         "offline_contract_expired",
         "verified_resource_unavailable",
+        "future_internal_reason",
     ],
     expected_message: str,
     *,
@@ -587,6 +595,8 @@ def test_browser_explains_source_structure_unavailability(
                 "heading", name="Pinned evidence unavailable"
             ).is_visible()
             assert expected_message in unavailable.inner_text()
+            if reason == "future_internal_reason":
+                assert reason not in unavailable.inner_text()
             assert (
                 "Exact v2 evidence identity"
                 in page.locator("main").inner_text()
