@@ -10,6 +10,15 @@ from fastapi.testclient import TestClient
 from playwright.sync_api import sync_playwright
 
 from global_medicines_atlas.atlas import create_atlas_app
+from global_medicines_atlas.historical_change import (
+    HistoricalChangeService,
+    compare_historical_snapshots,
+)
+from global_medicines_atlas.historical_comparison import (
+    NativeField,
+    NativeRow,
+    NativeSnapshot,
+)
 from global_medicines_atlas.product_contracts import (
     AsOfClocks,
     ComparisonQuery,
@@ -181,6 +190,128 @@ def test_keyboard_medicine_selection_and_evidence_review() -> None:
         page = browser.new_page()
         try:
             _exercise_keyboard_evidence_flow(page, client, search_html)
+        finally:
+            browser.close()
+
+
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
+def test_keyboard_history_timeline_preserves_snapshot_evidence() -> None:
+    """Keyboard users can inspect native before/after history evidence."""
+    previous = NativeSnapshot(
+        source_id="synthetic-mbs",
+        table="descriptions",
+        dimension="service_benefit",
+        schema_era="fixture-v1",
+        identity_profile="mbs-description-record",
+        scope_id="synthetic-history-fixture",
+        source_revision="fixture-revision-previous",
+        source_path="fixtures/previous.xml",
+        b1_sha256="a" * 64,
+        b2_sha256="b" * 64,
+        observed_at=NOW,
+        cohort="synthetic",
+        declared_rows=1,
+        complete=True,
+        rows=(
+            NativeRow(
+                native_id="mbs:001:00",
+                occurrence_id="001",
+                fields=(
+                    NativeField(
+                        name="Description",
+                        state="value",
+                        value="Prior synthetic service",
+                    ),
+                    NativeField(name="Benefit", state="missing"),
+                ),
+            ),
+        ),
+    )
+    current = NativeSnapshot(
+        source_id="synthetic-mbs",
+        table="descriptions",
+        dimension="service_benefit",
+        schema_era="fixture-v1",
+        identity_profile="mbs-description-record",
+        scope_id="synthetic-history-fixture",
+        source_revision="fixture-revision-current",
+        source_path="fixtures/current.xml",
+        b1_sha256="c" * 64,
+        b2_sha256="d" * 64,
+        observed_at=NOW,
+        cohort="synthetic",
+        declared_rows=1,
+        complete=True,
+        rows=(
+            NativeRow(
+                native_id="mbs:001:00",
+                occurrence_id="001",
+                fields=(
+                    NativeField(
+                        name="Description",
+                        state="value",
+                        value="Current synthetic service",
+                    ),
+                    NativeField(name="Benefit", state="null"),
+                ),
+            ),
+        ),
+    )
+    history = HistoricalChangeService((
+        compare_historical_snapshots(previous, current),
+    ))
+    client = TestClient(
+        create_atlas_app(AtlasFixtureService(), historical_changes=history)
+    )
+    home = client.get("/")
+    assert 'href="/history"' in home.text
+    history_html = client.get("/history").text
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        try:
+            _show_response_in_browser(page, client, history_html)
+            skip_link = page.get_by_role(
+                "link", name="Skip to historical changes"
+            )
+            skip_link.focus()
+            skip_link.press("Enter")
+            assert page.evaluate("document.activeElement.id") == (
+                "history-results"
+            )
+            page.keyboard.press("Tab")
+            assert (
+                page.evaluate(
+                    "document.activeElement.getAttribute('aria-label')"
+                )
+                == "Source snapshot identity"
+            )
+
+            history_region = page.get_by_role(
+                "region", name="Source snapshot identity"
+            )
+            assert "Earlier" in history_region.inner_text()
+            assert "Later" in history_region.inner_text()
+            assert "synthetic-mbs" in history_region.inner_text()
+            assert "fixture-revision-previous" in history_region.inner_text()
+            assert "fixture-revision-current" in history_region.inner_text()
+            assert "fixtures/previous.xml" in history_region.inner_text()
+            assert "fixtures/current.xml" in history_region.inner_text()
+            assert (
+                "absence interpretation: unknown"
+                in page.locator("main").inner_text()
+            )
+
+            observations = " ".join(
+                " ".join(item.split())
+                for item in page.locator("main ul li").all_inner_texts()
+            )
+            assert "Prior synthetic service" in observations
+            assert "Current synthetic service" in observations
+            assert "Earlier observation missing" in observations
+            assert "Later observation null" in observations
         finally:
             browser.close()
 
