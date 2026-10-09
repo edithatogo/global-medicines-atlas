@@ -333,8 +333,11 @@
     route, exercising skip-link navigation, keyboard access to the snapshot
     table, snapshot identity, and before/after native values/states. The focused
     browser tests (2), governed E2E lane (33), routine, Ruff, ty, and BasedPyright
-    passed locally; representative user acceptance and full WCAG conformance
-    remain open.
+    passed locally. Review tightened the browser assertions so each labelled
+    table row is bound to its expected revision and path. PR #864 merged as
+    `ba47289513a1f6da2a831d8ca12769886c0687b5` after all 37 hosted checks passed,
+    including Codecov patch coverage and Linux/macOS/Windows consumers.
+    Representative-user acceptance and full WCAG conformance remain open.
   - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
     selection, live status and active-descendant announcements, skip-link focus,
     unknown-state wording, and keyboard disclosure of source evidence. Register
