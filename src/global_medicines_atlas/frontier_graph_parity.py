@@ -90,7 +90,7 @@ def validate_graph_previews(
 
 def _document(value: str, label: str) -> dict[str, Any]:
     try:
-        result = json.loads(value)
+        result = json.loads(value, object_pairs_hook=_unique_object)
     except (TypeError, json.JSONDecodeError) as error:
         raise ValueError(f"invalid {label} JSON") from error
     if not isinstance(result, dict) or set(cast("dict[str, Any]", result)) != {
@@ -99,6 +99,15 @@ def _document(value: str, label: str) -> dict[str, Any]:
     }:
         raise ValueError(f"invalid {label} graph envelope")
     return cast("dict[str, Any]", result)
+
+
+def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
 
 
 def _rows(document: dict[str, Any], key: str) -> list[dict[str, Any]]:
