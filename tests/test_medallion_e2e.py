@@ -255,21 +255,77 @@ def _exercise_gold_edge_surfaces(
 
 
 def _exercise_historical_surfaces(
+    previous_payload: bytes,
     previous: SourceReceipt,
+    current_payload: bytes,
     current: SourceReceipt,
     *,
     history_file: Path,
+    bronze_root: Path,
 ) -> None:
-    """Compare historical API and CLI pages over two synthetic snapshots."""
+    """Compare API and CLI history pages derived from synthetic Bronze XML."""
+    previous_landed = land_bronze_payload(
+        previous_payload,
+        previous,
+        bronze_root=bronze_root / "previous",
+        media_hint="xml",
+        admission_decided_at=previous.retrieval.retrieved_at,
+        transformation_completed_at=previous.retrieval.retrieved_at,
+    )
+    current_landed = land_bronze_payload(
+        current_payload,
+        current,
+        bronze_root=bronze_root / "current",
+        media_hint="xml",
+        admission_decided_at=current.retrieval.retrieved_at,
+        transformation_completed_at=current.retrieval.retrieved_at,
+    )
 
-    def snapshot(receipt: SourceReceipt, value: str) -> NativeSnapshot:
+    def snapshot(
+        payload_path: Path,
+        receipt: SourceReceipt,
+    ) -> NativeSnapshot:
         temporal = require_temporal(receipt.temporal)
+        parsed = [
+            row
+            for batch in iter_mbs_silver_batches(
+                payload_path.read_bytes(), receipt, table="descriptions"
+            )
+            for row in batch.to_pylist()
+        ]
+        native_rows = []
+        for row in parsed:
+            description = row["Description"]
+            state = (
+                "missing"
+                if description["native_state"] == "missing_field"
+                else "null"
+                if description["native_state"] == "null"
+                else "value"
+            )
+            native_rows.append(
+                NativeRow(
+                    native_id=row["source_record_id"],
+                    occurrence_id=str(row["source_ordinal"]),
+                    fields=(
+                        NativeField(
+                            name="Description",
+                            state=state,
+                            value=(
+                                description["native_value"]
+                                if state == "value"
+                                else None
+                            ),
+                        ),
+                    ),
+                )
+            )
         return NativeSnapshot(
             source_id=receipt.source.source_id,
-            table="services",
+            table="descriptions",
             dimension="service_benefit",
             schema_era="synthetic-e2e-v1",
-            identity_profile="mbs-item",
+            identity_profile="mbs-description-record",
             scope_id="synthetic-bronze-payload",
             source_revision=temporal.acquisition_id,
             source_path="bronze/raw.xml",
@@ -277,26 +333,14 @@ def _exercise_historical_surfaces(
             b2_sha256=receipt.payload.sha256,
             observed_at=receipt.retrieval.retrieved_at,
             cohort="synthetic",
-            declared_rows=1,
+            declared_rows=len(native_rows),
             complete=True,
-            rows=(
-                NativeRow(
-                    native_id="00123",
-                    occurrence_id=temporal.acquisition_id,
-                    fields=(
-                        NativeField(
-                            name="description",
-                            state="value",
-                            value=value,
-                        ),
-                    ),
-                ),
-            ),
+            rows=tuple(native_rows),
         )
 
     change = compare_historical_snapshots(
-        snapshot(previous, "prior synthetic service"),
-        snapshot(current, "fixture service"),
+        snapshot(previous_landed.payload_path, previous),
+        snapshot(current_landed.payload_path, current),
     )
     service = HistoricalChangeService((change,))
     history_file.write_text(
@@ -325,8 +369,17 @@ def _exercise_historical_surfaces(
     assert item["comparison_state"] == "compared"
     assert item["availability"] == "both_present"
     assert item["absence_interpretation"] == "unknown"
-    assert item["changes"][0]["kind"] == "field_changed"
-    assert item["changes"][0]["interpretation"] == "observed_change"
+    assert {change["kind"] for change in item["changes"]} == {
+        "field_changed",
+        "removed_observation",
+    }
+    removed = next(
+        change
+        for change in item["changes"]
+        if change["kind"] == "removed_observation"
+    )
+    assert removed["interpretation"] == "observed_change"
+    assert removed["native_id"] == "au-mbs:00567:00::1"
 
 
 def _payload() -> bytes:
@@ -1212,16 +1265,26 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
 ) -> None:
     """Verify exact synthetic lineage through each layer without publication."""
     raw = _payload()
-    previous_raw = raw.replace(b"fixture service", b"prior synthetic service")
+    previous_raw = (
+        b"<MBS_XML><Data><ItemNum>00123</ItemNum>"
+        b"<SubItemNum>00</SubItemNum>"
+        b"<Description>prior synthetic service</Description></Data>"
+        b"<Data><ItemNum>00567</ItemNum><SubItemNum>00</SubItemNum>"
+        b"<Description>removed synthetic service</Description></Data>"
+        b"</MBS_XML>"
+    )
     previous_receipt = _receipt(
         previous_raw,
         retrieved_at=NOW - timedelta(days=1),
     )
     receipt = _receipt(raw)
     _exercise_historical_surfaces(
+        previous_raw,
         previous_receipt,
+        raw,
         receipt,
         history_file=tmp_path / "synthetic-history.json",
+        bronze_root=tmp_path / "historical-bronze",
     )
     landed = land_bronze_payload(
         raw,

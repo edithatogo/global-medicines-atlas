@@ -441,10 +441,12 @@
     including Codecov patch coverage and Linux/macOS/Windows consumers, passed.
   - [x] Compare a synthetic historical MBS snapshot pair through the bounded
     history API and `gma history`, preserving explicit change and unknown
-    absence semantics without inferring cessation. The medallion E2E test
-    passes against both surfaces; the change stays explicitly synthetic and
-    absence remains `unknown`. Routine checks, Ruff, formatting, and diff
-    validation pass locally; hosted verification is pending.
+    absence semantics without inferring cessation. Both source snapshots now
+    come from landed XML parsed through MBS Silver. The end-to-end comparison
+    covers a changed description and a left-only native row; both surfaces
+    agree and absence remains `unknown`. The affected E2E tests (2), routine
+    checks, Ruff, formatting, and diff validation pass locally; hosted
+    verification is pending.
   - [x] Extend the synthetic Bronze-to-Platinum end-to-end qualification to
     query remotely, reproduce from its verified offline cache, prove explicit
     unavailability after eviction, and refetch the same result. The synthetic
