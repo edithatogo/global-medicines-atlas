@@ -99,8 +99,16 @@
   production admission/promotion, publication, or source coverage; no source
   was added. A post-review correction places table and namespace cleanup in
   `finally`; focused failure injection confirms cleanup after scan failure and
-  parity mismatch. PR #927 and its full protected checks are the tracked merge
-  gate.
+  parity mismatch. PR #927 merged at `e570b0e6` after all 38 required checks
+  passed; exact scanned row-value parity is a separate follow-up below.
+- [~] Compare every Iceberg-scanned value with the same exact pinned Parquet
+  object, not only its schema and row count. A failing-first same-row-count
+  mutation control reproduced the gap on `e570b0e6`; the implementation now
+  uses Arrow table content equality and records a version-2 metadata-only
+  receipt flag. Focused tests (65) and Test-Goblin E2E (55) pass locally at
+  `8249a8ec`; exact-head hosted registration and protected checks remain pending.
+  This proves object-to-Iceberg readback only, not source-to-raw parity, rights,
+  admission, publication, or source coverage.
 - [x] Record version/environment degradation and leave core functional without
   PyIceberg or a live catalogue. PyIceberg remains an optional extra; isolated
   import checks and fail-closed missing-extra tests preserve the Python core.
@@ -109,7 +117,11 @@
   rebuildable and never becomes evidentiary authority. The hosted fixture drops
   and reconstructs the table from acquisition/digest properties, while the
   receipt expressly makes no production-deployment or universal-compatibility
-  claim. Public-HF-backed Parquet registration remains a separate open check.
+  claim. PR #927 merged at `e570b0e6` after all 38 required checks passed,
+  including the exact existing public Parquet registration lane. Exact row
+  value parity is tracked by the open follow-up above; rights, raw-source
+  parity, production admission, publication, and broader source coverage remain
+  separate and unclaimed.
 
 ## Phase 4: Attestation and research packages (AC-04)
 
