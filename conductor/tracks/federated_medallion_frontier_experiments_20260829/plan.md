@@ -100,13 +100,20 @@
   was added. A post-review correction places table and namespace cleanup in
   `finally`; focused failure injection confirms cleanup after scan failure and
   parity mismatch. PR #927 merged at `e570b0e6` after all 38 required checks
-  passed; exact scanned row-value parity is a separate follow-up below.
-- [~] Compare every Iceberg-scanned value with the same exact pinned Parquet
+  passed; exact scanned row-value parity is completed in the follow-up below.
+- [x] Compare every Iceberg-scanned value with the same exact pinned Parquet
   object, not only its schema and row count. A failing-first same-row-count
   mutation control reproduced the gap on `e570b0e6`; the implementation now
   uses Arrow table content equality and records a version-2 metadata-only
   receipt flag. Focused tests (65) and Test-Goblin E2E (55) pass locally at
-  `8249a8ec`; exact-head hosted registration and protected checks remain pending.
+  `8249a8ec`. PR #928 merged as `4ba48aad6cf111b3059845daacb4a8e9d7735655`
+  from reviewed head `760e47d265310c9757eefe347d1938beb6ac77a0`; all 38
+  protected checks passed, including the exact public Parquet / Iceberg REST
+  job and Linux/macOS/Windows consumer lanes. The exact-head hosted v2 receipt
+  records all 5,989 rows and 17 columns with `object_content_parity_verified`
+  true and contains no source values. Durable receipt:
+  `quality/qualifications/public-parquet-iceberg-registration-20261010.json`
+  (SHA-256 `717cc62571711564ede23c1ba869fe02a9cce3ee2238382b39a6f4415371c0be`).
   This proves object-to-Iceberg readback only, not source-to-raw parity, rights,
   admission, publication, or source coverage.
 - [x] Record version/environment degradation and leave core functional without
@@ -117,11 +124,13 @@
   rebuildable and never becomes evidentiary authority. The hosted fixture drops
   and reconstructs the table from acquisition/digest properties, while the
   receipt expressly makes no production-deployment or universal-compatibility
-  claim. PR #927 merged at `e570b0e6` after all 38 required checks passed,
-  including the exact existing public Parquet registration lane. Exact row
-  value parity is tracked by the open follow-up above; rights, raw-source
-  parity, production admission, publication, and broader source coverage remain
-  separate and unclaimed.
+  claim. PR #927 merged at `e570b0e6` after all 38 required checks passed.
+  PR #928 then verified every scanned value against the exact pinned Parquet
+  object in a disposable catalogue and passed all 38 protected checks. The
+  value-free hosted receipt is committed at
+  `quality/qualifications/public-parquet-iceberg-registration-20261010.json`.
+  Rights, raw-source parity, production admission, publication, and broader
+  source coverage remain separate and unclaimed.
 
 ## Phase 4: Attestation and research packages (AC-04)
 
