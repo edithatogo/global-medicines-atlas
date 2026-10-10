@@ -7,6 +7,7 @@ import pytest
 from test_mbs_gold_graph import graph
 from test_pbs_gold_graph import graph as pbs_graph
 
+from global_medicines_atlas import frontier_graph_export as graph_export_module
 from global_medicines_atlas.frontier_graph_export import (
     export_gold_tables,
     export_rdf_star,
@@ -84,6 +85,35 @@ def test_pbs_preserves_null_confidence_and_explicit_candidate_controls():
         assert json.loads(row["controls_json"])["inferred"] is False
     with pytest.raises(ValueError, match="schema"):
         export_gold_tables(nodes, project_mbs_gold_graph_arrow(graph())[1])
+
+
+@pytest.mark.parametrize("family", ["mbs", "pbs"])
+def test_unknown_binary_graph_column_is_rejected_before_serialization(
+    family: str,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    nodes, edges = (
+        project_mbs_gold_graph_arrow(graph())
+        if family == "mbs"
+        else project_pbs_gold_graph_arrow(pbs_graph())
+    )
+    unexpected_column = pa.array(
+        [b"synthetic-binary-placeholder"] * nodes.num_rows,
+        type=pa.binary(),
+    )
+    nodes_with_unexpected_column = nodes.append_column(
+        "unexpected_binary_column", unexpected_column
+    )
+
+    def reject_serialization(_value):
+        raise AssertionError("unsupported payload reached serialization")
+
+    monkeypatch.setattr(graph_export_module, "_json", reject_serialization)
+
+    with pytest.raises(
+        ValueError, match=r"^unsupported or mismatched Gold schema$"
+    ):
+        export_gold_tables(nodes_with_unexpected_column, edges)
 
 
 def test_empty_tables_and_byte_bounds():
