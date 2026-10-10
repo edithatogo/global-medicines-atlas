@@ -1617,7 +1617,12 @@ def _build_synthetic_cross_dataset_evidence(
     result_payload = canonical_result_bytes(result_rows)
     batch_leaves = (
         *(
-            MerkleLeaf(path=source.path, sha256=source.sha256)
+            MerkleLeaf(
+                dataset_id=source.dataset_id,
+                revision=source.revision,
+                path=source.path,
+                sha256=source.sha256,
+            )
             for source in sources
         ),
         MerkleLeaf(

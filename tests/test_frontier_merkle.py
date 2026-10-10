@@ -25,6 +25,7 @@ def test_root_and_manifest_are_order_stable() -> None:
     assert canonical_merkle_manifest_bytes(
         first
     ) == canonical_merkle_manifest_bytes(second)
+    assert first.schema_version == 2
     assert verify_merkle_manifest(first)
 
 
@@ -34,6 +35,25 @@ def test_mutation_and_missing_leaf_change_root() -> None:
     root = merkle_root(leaves)
     assert merkle_root(leaves[:2]) != root
     assert merkle_root([_leaf("a", "changed"), *leaves[1:]]) != root
+
+
+@pytest.mark.edge
+def test_source_revision_and_dataset_identity_change_root() -> None:
+    digest = hashlib.sha256(b"same bytes").hexdigest()
+    source = MerkleLeaf(
+        dataset_id="agency/catalogue",
+        revision="a" * 40,
+        path="raw/object.xml",
+        sha256=digest,
+    )
+    root = merkle_root([source])
+    assert (
+        merkle_root([source.model_copy(update={"revision": "b" * 40})]) != root
+    )
+    assert (
+        merkle_root([source.model_copy(update={"dataset_id": "agency/other"})])
+        != root
+    )
 
 
 @pytest.mark.edge
