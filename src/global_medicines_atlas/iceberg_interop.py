@@ -259,7 +259,19 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals,too-many-statement
         with table.update_spec() as update:
             update.add_identity("source_id")
         operations.append("evolve_partition_spec")
-        table.append(pyarrow.Table.from_pylist(fixture_records))
+        arrow_schema = pyarrow.schema([
+            pyarrow.field("acquisition_id", pyarrow.string(), nullable=False),
+            pyarrow.field("content_id", pyarrow.string(), nullable=False),
+            pyarrow.field("source_id", pyarrow.string(), nullable=False),
+            pyarrow.field("native_id", pyarrow.string(), nullable=False),
+            pyarrow.field("value", pyarrow.int32(), nullable=False),
+            pyarrow.field(
+                "source_release_date", pyarrow.date32(), nullable=False
+            ),
+        ])
+        table.append(
+            pyarrow.Table.from_pylist(fixture_records, schema=arrow_schema)
+        )
         operations.append("append_fixture_records")
         loaded = catalog.load_table(identifier)
         schema_evolution = (

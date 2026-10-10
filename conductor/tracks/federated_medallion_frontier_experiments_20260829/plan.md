@@ -78,9 +78,11 @@
 - [x] Confirm failure handling with an injected row mutation: the round-trip
   check raises and the disposable table/namespace are cleaned up in `finally`.
 - [~] Run the row-bearing experiment against the digest-pinned REST fixture.
-  Local acceptance tests pass with PyIceberg 0.11.1 installed; this machine has
-  no Docker daemon, so the actual loopback catalogue receipt must come from the
-  protected hosted lane. The fixture remains synthetic and JSON-backed; this
+  Local acceptance tests pass with PyIceberg 0.11.1 installed. The first
+  protected hosted run exposed Arrow nullability and integer-width mismatch;
+  the implementation now supplies an explicit schema matching Iceberg, and
+  the repaired actual loopback catalogue receipt must come from the next hosted
+  lane run. The fixture remains synthetic and JSON-backed; this
   does not qualify an existing public-HF-backed Parquet table.
 - [ ] Register an existing public-HF-backed Parquet table in an isolated
   catalogue and compare observed behavior with prior bounded evidence; no new

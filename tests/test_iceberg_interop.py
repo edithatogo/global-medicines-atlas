@@ -221,7 +221,10 @@ class _ArrowTable:
         self.rows = copy.deepcopy(rows)
 
     @classmethod
-    def from_pylist(cls, rows: list[dict[str, object]]) -> _ArrowTable:
+    def from_pylist(
+        cls, rows: list[dict[str, object]], *, schema: object
+    ) -> _ArrowTable:
+        del schema
         return cls(rows)
 
     def to_pylist(self) -> list[dict[str, object]]:
@@ -299,6 +302,14 @@ def _unlocked_version(_name: str) -> str:
 def _install_rest_stubs(
     monkeypatch: pytest.MonkeyPatch, catalog: _Catalog
 ) -> None:
+    def arrow_schema(fields: list[object]) -> list[object]:
+        return fields
+
+    def arrow_field(
+        name: str, data_type: str, *, nullable: bool
+    ) -> tuple[str, str, bool]:
+        return name, data_type, nullable
+
     types = SimpleNamespace(
         NestedField=_new_object,
         StringType=_new_object,
@@ -314,7 +325,14 @@ def _install_rest_stubs(
         "pyiceberg.catalog": SimpleNamespace(load_catalog=load_catalog),
         "pyiceberg.schema": SimpleNamespace(Schema=_new_object),
         "pyiceberg.types": types,
-        "pyarrow": SimpleNamespace(Table=_ArrowTable),
+        "pyarrow": SimpleNamespace(
+            Table=_ArrowTable,
+            schema=arrow_schema,
+            field=arrow_field,
+            string=lambda: "string",
+            int32=lambda: "int32",
+            date32=lambda: "date32",
+        ),
     }
 
     def import_module(name: str) -> object:
