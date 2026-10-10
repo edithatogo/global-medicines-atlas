@@ -2114,8 +2114,14 @@
   semantic qualification, admission, or publication; M-106 remains blocked on
   its separate source-specific denominator and rights evidence.
 - [x] Register the contract tests in Test-Goblin and run focused, routine, and
-  full local validation. The focused measure/source-review/E2E set passes 20
+  full local validation. The focused measure/source-review/E2E set passes 27
   tests; routine and pinned Test-Goblin checks pass. The full local run passes
   the pytest, package, mutation, Gremlins, randomized-order, provenance,
   security, and dependency lanes. Four existing optional Hugging Face typing
   warnings and an unavailable PyPI package audit are retained as limitations.
+- [x] Close hosted patch-coverage findings for missing invalid-state controls:
+  missing source-defined time evidence, incomplete observed values, a typed
+  value on a non-observed state, missing suppression marker, and native values
+  on unreported/unavailable states. Seven new parameterized cases bring the
+  focused measure/source-review/E2E set to 27; the new module reaches 100%
+  statement and branch coverage locally. Exact-head hosted recheck pending.

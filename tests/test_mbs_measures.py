@@ -116,6 +116,37 @@ def test_period_bounds_must_be_complete_and_ordered() -> None:
         )
 
 
+def test_source_defined_time_basis_requires_evidence() -> None:
+    with pytest.raises(ValidationError, match="time basis requires evidence"):
+        _observation(time_basis_evidence=None)
+
+
+@pytest.mark.parametrize(
+    ("native_value", "count_value"), [(None, 123), ("123", None)]
+)
+def test_observed_measure_requires_both_native_and_typed_values(
+    native_value: str | None, count_value: int | None
+) -> None:
+    with pytest.raises(ValidationError, match="observed measure requires"):
+        _observation(native_value=native_value, count_value=count_value)
+
+
+def test_non_observed_measure_rejects_typed_count() -> None:
+    with pytest.raises(ValidationError, match="cannot have a typed count"):
+        _observation(state="unavailable", native_value=None, count_value=123)
+
+
+def test_suppressed_measure_requires_native_marker() -> None:
+    with pytest.raises(ValidationError, match="preserve its source marker"):
+        _observation(state="suppressed", native_value=None, count_value=None)
+
+
+@pytest.mark.parametrize("state", ["not_reported", "unavailable"])
+def test_unreported_measure_rejects_native_value(state: str) -> None:
+    with pytest.raises(ValidationError, match="cannot carry a native value"):
+        _observation(state=state, native_value="123", count_value=None)
+
+
 def test_arrow_projection_is_typed_deterministic_and_contains_no_person_fields() -> (
     None
 ):
