@@ -218,8 +218,20 @@
   ambiguity while preserving the existing envelope contract. This closes a
   source-neutral preview integrity gap only; live engine parity and broader
   graph qualification remain open.
-- [ ] Benchmark lexical, ontology-assisted, LanceDB embedding/NLP, and any
+- [x] Benchmark lexical, ontology-assisted, LanceDB embedding/NLP, and any
   justified Tantivy/Qdrant candidates; preserve explicit candidate status.
+  The deterministic receipt over six existing synthetic matching cases
+  measured identifier-first lexical recall@5 at 0.25 (one of four relevant
+  cases retrieved), negative-candidate rate at 1.0 (both negative controls
+  surfaced candidates), and abstention at 0.5. Confidence calibration remains
+  unevaluated because candidate scores are not calibrated confidence.
+  Ontology-assisted and LanceDB embedding/NLP are explicitly unavailable
+  without governed synthetic relationship and pinned embedding fixtures;
+  Tantivy and Qdrant are not justified by these bounded pools. No source or
+  dependency was added, and no candidate is promoted or authoritative.
+  Automated review caught that the hashed lexical threshold was not passed to
+  candidate generation. The benchmark now uses one shared threshold constant
+  for execution and query identity; a regression test checks both bindings.
 - [ ] Phase Verification & Checkpoint: all engines reproduce portable Gold
   semantics and no model/index is an authority.
 

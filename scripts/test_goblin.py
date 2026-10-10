@@ -362,6 +362,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_first_party_adapters.py",
         "tests/test_global_fixture_adapters.py",
         "tests/test_matching_pipeline.py",
+        "tests/test_frontier_candidate_benchmark.py",
         "tests/test_matching_rxnorm.py",
         "tests/test_semantic_retrieval.py",
         "tests/test_matching_indexes.py",
