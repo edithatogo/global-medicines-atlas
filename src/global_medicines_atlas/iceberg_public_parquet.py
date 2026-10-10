@@ -100,10 +100,11 @@ def run_public_parquet_registration(  # ruff: ignore[too-many-locals] - end-to-e
     verify_payload(payload)
     parquet_path.write_bytes(payload)
 
-    pyarrow = importlib.import_module("pyarrow")
     parquet = importlib.import_module("pyarrow.parquet")
     catalog_module = importlib.import_module("pyiceberg.catalog")
     pyiceberg_arrow = importlib.import_module("pyiceberg.io.pyarrow")
+    pyiceberg_schema = importlib.import_module("pyiceberg.schema")
+    name_mapping_type = importlib.import_module("pyiceberg.table.name_mapping")
     arrow_schema = parquet.read_schema(parquet_path)
     field_names = tuple(field.name for field in arrow_schema)
     if (
@@ -112,15 +113,16 @@ def run_public_parquet_registration(  # ruff: ignore[too-many-locals] - end-to-e
         or len(set(field_names)) != len(field_names)
     ):
         raise ValueError("public Parquet schema has invalid or duplicate names")
-    if any(pyarrow.types.is_nested(field.type) for field in arrow_schema):
-        raise ValueError(
-            "nested public Parquet fields need an explicit mapping"
-        )
-    name_mapping_type = importlib.import_module("pyiceberg.table.name_mapping")
-    name_mapping = name_mapping_type.NameMapping([
-        name_mapping_type.MappedField(field_id=index, names=[name])
-        for index, name in enumerate(field_names, start=1)
-    ])
+    # PyIceberg 0.11.1 exposes no public Arrow-to-schema path before a mapping
+    # exists. Use its pinned converter, assign fresh field IDs, and emit the
+    # resulting public name mapping for nested as well as flat Parquet fields.
+    schema_without_ids = pyiceberg_arrow._pyarrow_to_schema_without_ids(
+        arrow_schema
+    )
+    schema_with_ids = pyiceberg_schema.assign_fresh_schema_ids(
+        schema_without_ids
+    )
+    name_mapping = name_mapping_type.create_mapping_from_schema(schema_with_ids)
     name_mapping_json = name_mapping.model_dump_json(by_alias=True)
     table_schema = pyiceberg_arrow.pyarrow_to_schema(
         arrow_schema, name_mapping=name_mapping

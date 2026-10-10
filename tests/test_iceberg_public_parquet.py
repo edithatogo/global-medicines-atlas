@@ -195,6 +195,22 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
     def load_catalog(*_args: Any, **_kwargs: Any) -> FakeCatalog:
         return fake_catalog
 
+    schema_without_ids = object()
+
+    def convert_without_ids(_schema: object) -> object:
+        return schema_without_ids
+
+    def assign_fresh_ids(schema: object) -> object:
+        assert schema is schema_without_ids
+        return fake_schema
+
+    def create_name_mapping(schema: object) -> FakeNameMapping:
+        assert schema is fake_schema
+        return FakeNameMapping([
+            FakeMappedField(field_id=1, names=["service_code"]),
+            FakeMappedField(field_id=2, names=["benefit"]),
+        ])
+
     def to_iceberg_schema(
         _schema: object, *, name_mapping: FakeNameMapping
     ) -> object:
@@ -219,20 +235,18 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
         read_table=read_table,
     )
 
-    def is_nested(_arrow_type: object) -> bool:
-        return False
-
-    fake_pyarrow = SimpleNamespace(types=SimpleNamespace(is_nested=is_nested))
     modules: dict[str, Any] = {
-        "pyarrow": fake_pyarrow,
         "pyarrow.parquet": fake_arrow,
         "pyiceberg.catalog": SimpleNamespace(load_catalog=load_catalog),
         "pyiceberg.io.pyarrow": SimpleNamespace(
-            pyarrow_to_schema=to_iceberg_schema
+            _pyarrow_to_schema_without_ids=convert_without_ids,
+            pyarrow_to_schema=to_iceberg_schema,
+        ),
+        "pyiceberg.schema": SimpleNamespace(
+            assign_fresh_schema_ids=assign_fresh_ids
         ),
         "pyiceberg.table.name_mapping": SimpleNamespace(
-            NameMapping=FakeNameMapping,
-            MappedField=FakeMappedField,
+            create_mapping_from_schema=create_name_mapping,
         ),
     }
     monkeypatch.setattr(
@@ -290,3 +304,52 @@ def test_public_registration_rejects_non_loopback_before_fetch(
             temporary_directory=tmp_path,
         )
     assert fetched is False
+
+
+@pytest.mark.unit
+def test_public_registration_rejects_unlocked_pyiceberg_version(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    def wrong_version(_name: str) -> str:
+        return "0.0"
+
+    monkeypatch.setattr(
+        registration.importlib.metadata, "version", wrong_version
+    )
+    with pytest.raises(RuntimeError, match="locked experiment"):
+        registration.run_public_parquet_registration(
+            rest_uri="http://127.0.0.1:8181",
+            temporary_directory=tmp_path,
+        )
+    assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.unit
+def test_public_registration_rejects_non_success_fetch(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    class NonSuccessResponse:
+        status = 404
+
+        def __enter__(self) -> NonSuccessResponse:
+            return self
+
+        def __exit__(self, *_args: object) -> None:
+            return None
+
+    def open_not_found(_url: object, *, timeout: float) -> NonSuccessResponse:
+        assert timeout == 30
+        return NonSuccessResponse()
+
+    monkeypatch.setattr(
+        registration.urllib.request,
+        "urlopen",
+        open_not_found,
+    )
+    with pytest.raises(
+        RuntimeError, match="anonymous public Parquet fetch failed"
+    ):
+        registration.run_public_parquet_registration(
+            rest_uri="http://127.0.0.1:8181",
+            temporary_directory=tmp_path,
+        )
