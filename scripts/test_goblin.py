@@ -1100,19 +1100,30 @@ def package() -> None:
     run([sys.executable, "scripts/qualify_clean_consumer.py"])
 
 
-def profile() -> None:
-    """Exercise the canonical workload under Scalene and emit an HTML report."""
-    command = [
-        sys.executable,
+def _scalene_command(*, outfile: str, workload: str) -> list[str]:
+    """Run Scalene with its optional dependency group in clean environments."""
+    return [
+        "uv",
+        "run",
+        "--group",
+        "profiling",
+        "python",
         "-m",
         "scalene",
         "run",
         "--cpu-only",
         "--profile-all",
         "--outfile",
-        "scalene-profile.json",
-        "scripts/profile_smoke.py",
+        outfile,
+        workload,
     ]
+
+
+def profile() -> None:
+    """Exercise the canonical workload under Scalene and emit an HTML report."""
+    command = _scalene_command(
+        outfile="scalene-profile.json", workload="scripts/profile_smoke.py"
+    )
     started = time.perf_counter()
     run(command)
     elapsed_seconds = time.perf_counter() - started
@@ -1133,17 +1144,9 @@ def profile_tests() -> None:
     """Profile a representative pytest workload under Scalene."""
     artifact = PROJECT_ROOT / "build/profiling/scalene-tests-profile.json"
     artifact.parent.mkdir(parents=True, exist_ok=True)
-    command = [
-        sys.executable,
-        "-m",
-        "scalene",
-        "run",
-        "--cpu-only",
-        "--profile-all",
-        "--outfile",
-        artifact.as_posix(),
-        "scripts/profile_test_workload.py",
-    ]
+    command = _scalene_command(
+        outfile=artifact.as_posix(), workload="scripts/profile_test_workload.py"
+    )
     started = time.perf_counter()
     run(command)
     elapsed_seconds = time.perf_counter() - started

@@ -509,6 +509,14 @@
     keyboard expansion merged in PR #884 as
     `758648db239c1a9dc7faa3a8a7ded7b62403fe7a` after all required contexts
     and exact-head hosted checks passed.
+  - [~] Extend the same-root, empty-start synthetic qualification across
+    historical comparison API, CLI, and Atlas routes. Failing-first control
+    showed that the prior CLEAN-START receipt exercised only ordinary
+    comparison surfaces; implementation now builds two synthetic snapshots,
+    verifies exact API/CLI page parity and unknown-absence semantics, and
+    renders the literal change in Atlas. Local focused and typing evidence is
+    recorded separately; live deployment, production data, source coverage,
+    and representative-user acceptance remain outside this task.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
