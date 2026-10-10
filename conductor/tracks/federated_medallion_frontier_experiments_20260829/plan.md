@@ -193,6 +193,16 @@
   `fields_json` value; the export contract has no rights authority, so the
   rights/restricted-content portion remains open. No live graph or
   semantic-engine qualification is claimed.
+- [x] Validate the canonical graph envelope inside the engine-free parity
+  boundary independently of the exporter. Failing-first controls reproduced
+  acceptance of duplicate node/edge identities, blank identities, and a
+  dangling endpoint when all preview representations agreed; the validator
+  now rejects those cases and non-deterministic row order. Synthetic only;
+  this does not execute Neo4j/SPARQL, screen unlabeled restricted content,
+  calibrate candidate confidence, or grant rights/promotion. The broader
+  graph export/parity/NetworkX/MBS/PBS suite passed (108); the pinned full
+  Test-Goblin profile passed, including both 184-test randomized-order runs,
+  Gremlins (355 passed), profiling, security workflow, and dependency audit.
 - [x] Propagate receipt rights and sensitivity metadata into MBS/PBS graph
   node evidence and reject graph previews when node/edge metadata explicitly
   classifies rights or content as restricted/prohibited or personal data as
