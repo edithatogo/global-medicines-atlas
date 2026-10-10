@@ -2102,3 +2102,20 @@
 - [~] Resolve the Q2 source-description/payload cutoff conflict before
   accepting period semantics or admitting the Q2 object. Do not add sources or
   silently widen the captured May cutoff to make the observer pass.
+
+## Source-neutral aggregate measure contract (2026-10-11)
+
+- [x] Define a candidate-only typed aggregate measure contract that keeps
+  service counts distinct from distinct-patient counts, preserves suppressed,
+  unreported, and unavailable states as unknown, binds source and receipt
+  digests, requires explicit period/time semantics, and excludes patient-level
+  identifiers. A deterministic Arrow schema and Parquet round-trip are tested
+  entirely with synthetic values. The contract performs no source acquisition,
+  semantic qualification, admission, or publication; M-106 remains blocked on
+  its separate source-specific denominator and rights evidence.
+- [x] Register the contract tests in Test-Goblin and run focused, routine, and
+  full local validation. The focused measure/source-review/E2E set passes 20
+  tests; routine and pinned Test-Goblin checks pass. The full local run passes
+  the pytest, package, mutation, Gremlins, randomized-order, provenance,
+  security, and dependency lanes. Four existing optional Hugging Face typing
+  warnings and an unavailable PyPI package audit are retained as limitations.
