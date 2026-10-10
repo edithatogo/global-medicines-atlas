@@ -198,6 +198,30 @@ def test_field_policy_must_be_complete_and_unambiguous() -> None:
     with pytest.raises(ValueError, match="invalid graph fields metadata"):
         export_gold_tables(nodes, edges)
 
+    rows[0]["fields_json"] = json.dumps({
+        "field_policy": {
+            "rights_state": "restricted",
+            "sensitivity": {
+                "data_sensitivity": "non_sensitive",
+                "personal_data": "none",
+                "publication": "permitted",
+            },
+        }
+    })
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+    with pytest.raises(ValueError, match="restricted field rights/sensitivity"):
+        export_gold_tables(nodes, edges)
+
+    rows[0]["fields_json"] = "42"
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+    with pytest.raises(TypeError, match="invalid graph fields metadata"):
+        export_gold_tables(nodes, edges)
+
+    rows[0]["fields_json"] = "[42]"
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+    with pytest.raises(TypeError, match="invalid graph fields metadata"):
+        export_gold_tables(nodes, edges)
+
 
 def test_nonrestrictive_field_policy_is_preserved_without_clearance_claim() -> (
     None
