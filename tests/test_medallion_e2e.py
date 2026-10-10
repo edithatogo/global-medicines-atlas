@@ -1360,6 +1360,7 @@ def _prepare_synthetic_batch_attestation(
     query_receipt_sha256: str,
     result_payload: bytes,
     result_sha256: str,
+    resource_id: str,
     revision: str,
     tmp_path: Path,
 ) -> _SyntheticBatchAttestation:
@@ -1386,11 +1387,13 @@ def _prepare_synthetic_batch_attestation(
     cost_receipt_payload = canonical_verification_cost_bytes(cost_receipt)
     cost_receipt_sha256 = hashlib.sha256(cost_receipt_payload).hexdigest()
     batch_manifest_url = (
-        "https://fixtures.invalid/synthetic/exports/resolve/"
+        "https://fixtures.invalid/synthetic/exports/"
+        f"{resource_id}/resolve/"
         f"{revision}/merkle-manifest.json"
     )
     cost_receipt_url = (
-        "https://fixtures.invalid/synthetic/exports/resolve/"
+        "https://fixtures.invalid/synthetic/exports/"
+        f"{resource_id}/resolve/"
         f"{revision}/verification-cost.json"
     )
     (tmp_path / "merkle-manifest.json").write_bytes(manifest_payload)
@@ -1450,18 +1453,23 @@ def _verify_saved_research_export(
         query_receipt_sha256=result.query_receipt.receipt_sha256,
         result_payload=result_payload,
         result_sha256=manifest.result_sha256,
+        resource_id=resource_id,
         revision=revision,
         tmp_path=tmp_path,
     )
+    assert resource_id in attestation.manifest_url
+    assert resource_id in attestation.cost_receipt_url
     export_url = (
-        "https://fixtures.invalid/synthetic/exports/resolve/"
+        "https://fixtures.invalid/synthetic/exports/"
+        f"{resource_id}/resolve/"
         f"{revision}/query-result.json"
     )
+    assert resource_id in export_url
     crate = build_research_crate(
         identifier=manifest_sha256(manifest),
         name="Synthetic medicine evidence query",
         version="synthetic-e2e-v1",
-        dataset_url="https://fixtures.invalid/synthetic/exports",
+        dataset_url=f"https://fixtures.invalid/synthetic/exports/{resource_id}",
         distributions=(
             CrateDistribution(
                 identifier="query-result.json",
@@ -1491,10 +1499,10 @@ def _verify_saved_research_export(
         revision=revision,
         artifacts=(
             ResearchLineageArtifact(
-                identifier="synthetic-mbs-source",
+                identifier=f"synthetic-{source_receipt.source.source_id}-source",
                 role="input",
                 public_url=(
-                    "https://fixtures.invalid/synthetic/mbs/resolve/"
+                    f"https://fixtures.invalid/{source.dataset_id}/resolve/"
                     f"{revision}/bronze/raw.xml"
                 ),
                 sha256=source.sha256,
@@ -1504,7 +1512,7 @@ def _verify_saved_research_export(
                 role="input",
                 public_url=(
                     "https://fixtures.invalid/synthetic/receipts/resolve/"
-                    f"{revision}/query-receipt.json"
+                    f"{resource_id}/{revision}/query-receipt.json"
                 ),
                 sha256=result.query_receipt.receipt_sha256,
             ),
