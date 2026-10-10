@@ -205,8 +205,9 @@
   Gremlins (355 passed), profiling, security workflow, and dependency audit.
   PR #949 merged the shape-validation change at
   `5f8f34e59c3598a94d73ac76d3eed40bc364ec62` from exact head
-  `d733a4b2f578b0d808a20ebae0e576f47251811b`; all 29 required hosted checks
-  passed, including Codecov patch coverage and Linux/macOS/Windows consumers.
+  `d733a4b2f578b0d808a20ebae0e576f47251811b`; all 28 distinct required
+  contexts passed (29 required-check rows list CodeQL twice), including Codecov
+  patch coverage and Linux/macOS/Windows consumers.
 - [x] Propagate receipt rights and sensitivity metadata into MBS/PBS graph
   node evidence and reject graph previews when node/edge metadata explicitly
   classifies rights or content as restricted/prohibited or personal data as
