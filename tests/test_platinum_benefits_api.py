@@ -20,6 +20,7 @@ from global_medicines_atlas.platinum_benefits import (
     BenefitsService,
     benefits_page_payload,
 )
+from global_medicines_atlas.platinum_evidence import validate_result_evidence
 from global_medicines_atlas.platinum_resolver import (
     ProductResource,
     StorageNeutralResolver,
@@ -28,7 +29,8 @@ from global_medicines_atlas.query_service import ReadOnlyQueryService
 
 
 def service(
-    source: str = "mbs", payload: bytes | None = None
+    source: str = "mbs",
+    payload: bytes | None = None,
 ) -> BenefitsService:
     payload = payload or parquet_payload()
     raw = json.loads(contract(payload))
@@ -95,6 +97,29 @@ def test_pages_preserve_evidence_and_reject_query_drift() -> None:
             "au.mbs.service-items",
             BenefitsQuery(columns=("benefit",), cursor=first.next_cursor),
         )
+
+
+def test_benefits_api_preserves_synthetic_identity_and_conservative_evidence() -> (
+    None
+):
+    app = create_app(
+        cast("ReadOnlyQueryService", object()),
+        benefits=service(),
+    )
+    response = TestClient(app).get(
+        "/api/v1/benefits/au.mbs.service-items",
+        params={"columns": "item_code", "limit": 1},
+    )
+
+    assert response.status_code == 200
+    page = BenefitsPage.model_validate(response.json())
+    assert validate_result_evidence(page) is page
+    assert page.identity.comparison_cohort == "synthetic"
+    assert page.coverage_state == "not_declared"
+    assert page.confidence_state == "not_declared"
+    assert page.uncertainty_state == "not_declared"
+    assert page.review_state == "not_declared"
+    assert page.comparison_validity == "not_evaluated"
 
 
 def test_api_unavailable_validation_and_read_only() -> None:
