@@ -11,7 +11,7 @@ import hashlib
 import json
 from dataclasses import dataclass
 from operator import itemgetter
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 from urllib.parse import quote
 
 if TYPE_CHECKING:
@@ -19,6 +19,19 @@ if TYPE_CHECKING:
 
 from .mbs_gold_graph import MBS_GOLD_EDGE_SCHEMA, MBS_GOLD_NODE_SCHEMA
 from .pbs_gold_graph import PBS_GOLD_EDGE_SCHEMA, PBS_GOLD_NODE_SCHEMA
+from .receipts import (
+    DataSensitivity,
+    PersonalDataState,
+    PublicationDisposition,
+    RightsState,
+)
+
+type GraphPolicy = tuple[
+    RightsState,
+    DataSensitivity,
+    PersonalDataState,
+    PublicationDisposition,
+]
 
 NODE_STATEMENT = (
     "UNWIND $nodes AS row CREATE (n:GmaCandidate "
@@ -109,6 +122,109 @@ def _json(value: object) -> str:
     )
 
 
+def _pairs_without_duplicates(
+    pairs: list[tuple[str, object]],
+) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate graph metadata key")
+        result[key] = value
+    return result
+
+
+def _metadata_object(value: str, name: str) -> dict[str, object]:
+    try:
+        decoded = json.loads(value, object_pairs_hook=_pairs_without_duplicates)
+    except (TypeError, ValueError, json.JSONDecodeError) as error:
+        raise ValueError(f"invalid graph {name} metadata") from error
+    return _string_keyed_object(decoded, name)
+
+
+def _string_keyed_object(value: object, name: str) -> dict[str, object]:
+    if not isinstance(value, dict):
+        raise TypeError(f"invalid graph {name} metadata")
+    return dict(cast("dict[str, object]", value))
+
+
+def _policy_metadata(
+    metadata: dict[str, object], name: str
+) -> tuple[
+    RightsState,
+    DataSensitivity,
+    PersonalDataState,
+    PublicationDisposition,
+]:
+    rights_state = metadata.get("rights_state")
+    if not isinstance(rights_state, str):
+        raise TypeError(f"invalid graph {name} rights/sensitivity metadata")
+    sensitivity = _string_keyed_object(
+        metadata.get("sensitivity"), f"{name} sensitivity"
+    )
+    data_sensitivity = sensitivity.get("data_sensitivity")
+    personal_data = sensitivity.get("personal_data")
+    publication = sensitivity.get("publication")
+    if not all(
+        isinstance(value, str)
+        for value in (data_sensitivity, personal_data, publication)
+    ):
+        raise TypeError(f"invalid graph {name} rights/sensitivity metadata")
+    try:
+        rights_state = RightsState(rights_state)
+        data_sensitivity = DataSensitivity(data_sensitivity)
+        personal_data = PersonalDataState(personal_data)
+        publication = PublicationDisposition(publication)
+    except ValueError as error:
+        raise ValueError(
+            f"invalid graph {name} rights/sensitivity metadata"
+        ) from error
+    if (
+        rights_state in {RightsState.RESTRICTED, RightsState.PROHIBITED}
+        or data_sensitivity
+        in {DataSensitivity.SENSITIVE, DataSensitivity.RESTRICTED}
+        or personal_data
+        in {PersonalDataState.POSSIBLE, PersonalDataState.PRESENT}
+        or publication is PublicationDisposition.PROHIBITED
+    ):
+        raise ValueError(
+            "graph contains restricted or prohibited rights/sensitivity metadata"
+        )
+    return rights_state, data_sensitivity, personal_data, publication
+
+
+def _check_rights_and_sensitivity(
+    node_rows: list[dict[str, object]], edge_rows: list[dict[str, object]]
+) -> None:
+    """Reject records explicitly classified as restricted from local previews.
+
+    Unknown and review-required classifications are preserved for local preview
+    only. This is a metadata guard, not content scanning or rights clearance.
+    """
+    node_policies: set[GraphPolicy] = set()
+    edge_policies: set[GraphPolicy] = set()
+    for row in node_rows:
+        evidence = _metadata_object(str(row["evidence_json"]), "node evidence")
+        node_policies.add(_policy_metadata(evidence, "node evidence"))
+
+    for row in edge_rows:
+        controls = _metadata_object(str(row["controls_json"]), "edge controls")
+        edge_policy = _policy_metadata(controls, "edge controls")
+        evidence = _metadata_object(str(row["evidence_json"]), "edge evidence")
+        evidence_policy = _policy_metadata(evidence, "edge evidence")
+        if edge_policy != evidence_policy:
+            raise ValueError("graph edge rights/sensitivity metadata differs")
+        edge_policies.add(edge_policy)
+
+    if (
+        len(node_policies) > 1
+        or len(edge_policies) > 1
+        or (node_policies and edge_policies and node_policies != edge_policies)
+    ):
+        raise ValueError(
+            "graph rights/sensitivity metadata differs across rows"
+        )
+
+
 def export_gold_tables(
     nodes: pa.Table,
     edges: pa.Table,
@@ -156,6 +272,7 @@ def export_gold_tables(
         for row in edge_rows
     ):
         raise ValueError("graph edge endpoint missing")
+    _check_rights_and_sensitivity(node_rows, edge_rows)
     reference = _json({"nodes": node_rows, "edges": edge_rows})
     parameters = _json({
         "nodes": [

@@ -21,6 +21,7 @@ from test_australian_source_contracts import (
 from test_pbs_silver import XML
 
 from global_medicines_atlas import pbs_gold_graph
+from global_medicines_atlas.frontier_graph_export import export_gold_tables
 from global_medicines_atlas.pbs_gold_graph import (
     PBS_GOLD_EDGE_SCHEMA,
     PBS_GOLD_NODE_SCHEMA,
@@ -39,6 +40,7 @@ from global_medicines_atlas.receipts import (
     EvidenceClass,
     PersonalDataState,
     PublicationDisposition,
+    RightsState,
     SensitivityClassification,
 )
 
@@ -156,6 +158,20 @@ def test_graph_and_arrow_parquet_are_deterministic() -> None:
         assert pq.read_table(BytesIO(stream.getvalue())).equals(
             table, check_metadata=True
         )
+
+
+def test_root_only_graph_is_valid_with_no_edges() -> None:
+    payload = b'<pbs:root xmlns:pbs="http://schema.pbs.gov.au/" version="3.1"/>'
+    candidate = build_pbs_gold_graph_candidate(
+        payload, _receipt(payload, "au-pbs")
+    )
+
+    assert len(candidate.nodes) == 1
+    assert candidate.edges == ()
+    nodes, edges = project_pbs_gold_graph_arrow(candidate)
+    exported = export_gold_tables(nodes, edges)
+    assert '"nodes":[{' in exported.reference_json
+    assert '"edges":[]' in exported.reference_json
 
 
 def test_live_source_is_not_admitted_by_candidate_builder() -> None:
@@ -322,8 +338,13 @@ def test_nested_field_evidence_and_entity_address_tampering_fail_closed() -> (
         PbsGoldEvidence.model_validate(evidence)
 
     fields = list(node.fields)
-    changed = fields[0].model_copy(update={"value": "changed"})
-    fields[0] = PbsGoldFieldEvidence.model_validate(changed.model_dump())
+    value_index = next(
+        index for index, item in enumerate(fields) if item.value is not None
+    )
+    changed = fields[value_index].model_copy(update={"value": "changed"})
+    fields[value_index] = PbsGoldFieldEvidence.model_validate(
+        changed.model_dump()
+    )
     node_data = node.model_dump()
     node_data["fields"] = [item.model_dump() for item in fields]
     with pytest.raises(ValidationError, match="fields differ"):
@@ -333,6 +354,34 @@ def test_nested_field_evidence_and_entity_address_tampering_fail_closed() -> (
     node_data["evidence"]["fields_sha256"] = _digest(node_data["fields"])
     with pytest.raises(ValidationError, match="field lineage"):
         PbsGoldNode.model_validate(node_data)
+
+
+def test_graph_rejects_rights_metadata_mismatch_between_nodes_and_edges():
+    candidate = graph()
+    nodes = tuple(
+        node.model_copy(
+            update={
+                "evidence": node.evidence.model_copy(
+                    update={"rights_state": RightsState.PERMITTED}
+                )
+            }
+        )
+        for node in candidate.nodes
+    )
+    edges = tuple(
+        edge.model_copy(
+            update={
+                "evidence": edge.evidence.model_copy(
+                    update={"rights_state": RightsState.PERMITTED}
+                )
+            }
+        )
+        for edge in candidate.edges
+    )
+    changed = candidate.model_copy(update={"nodes": nodes, "edges": edges})
+
+    with pytest.raises(ValueError, match="rights/sensitivity metadata"):
+        changed.graph_is_closed_and_bound()
 
 
 def test_edge_revision_native_row_and_history_claims_fail_closed() -> None:

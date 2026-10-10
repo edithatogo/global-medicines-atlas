@@ -94,6 +94,10 @@ class PbsGoldEvidence(FrozenModel):
     last_source_ordinal: int = Field(strict=True, ge=0)
     field_count: int = Field(strict=True, ge=1)
     fields_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    rights_state: RightsState
+    sensitivity: SensitivityClassification = Field(
+        default_factory=SensitivityClassification
+    )
 
     @model_validator(mode="after")
     def ordinal_denominator_is_possible(self) -> PbsGoldEvidence:
@@ -224,7 +228,7 @@ class PbsGoldGraphCandidate(FrozenModel):
     schema_id: Literal["global-medicines-atlas.pbs-gold-graph-candidate"] = (
         "global-medicines-atlas.pbs-gold-graph-candidate"
     )
-    schema_version: Literal[1] = 1
+    schema_version: Literal[2] = 2
     qualification: Literal["synthetic_silver_candidate_only"] = (
         "synthetic_silver_candidate_only"
     )
@@ -281,6 +285,17 @@ class PbsGoldGraphCandidate(FrozenModel):
                 != tuple(field.path for field in target.fields)
             ):
                 raise ValueError("PBS Gold edge is not source-parent supported")
+        node_policies = {
+            (node.evidence.rights_state, node.evidence.sensitivity)
+            for node in self.nodes
+        }
+        edge_policies = {
+            (edge.rights_state, edge.sensitivity) for edge in self.edges
+        }
+        if len(node_policies) != 1 or (
+            edge_policies and node_policies != edge_policies
+        ):
+            raise ValueError("PBS Gold rights/sensitivity metadata differs")
         if self.graph_sha256 != _digest(
             self.model_dump(exclude={"graph_sha256"})
         ):
@@ -384,6 +399,8 @@ def build_pbs_gold_graph_candidate(
             last_source_ordinal=fields[-1].source_ordinal,
             field_count=len(fields),
             fields_sha256=_digest([field.model_dump() for field in fields]),
+            rights_state=receipt.rights_state,
+            sensitivity=receipt.sensitivity or SensitivityClassification(),
         )
         dimension = _dimension(row["parent_entity_id"], row["mapping_target"])
         nodes.append(
@@ -450,7 +467,7 @@ PBS_GOLD_NODE_SCHEMA = pa.schema(
     ],
     metadata={
         "schema_name": "global-medicines-atlas.pbs-gold.nodes",
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "qualification": "synthetic_silver_candidate_only",
         "asserted_dimensions": "none",
     },
@@ -470,7 +487,7 @@ PBS_GOLD_EDGE_SCHEMA = pa.schema(
     ],
     metadata={
         "schema_name": "global-medicines-atlas.pbs-gold.edges",
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "qualification": "synthetic_silver_candidate_only",
         "asserted_dimensions": "source_structure_only",
     },

@@ -27,7 +27,7 @@ from global_medicines_atlas.mbs_gold_graph import (
     build_mbs_gold_graph_candidate,
     project_mbs_gold_graph_arrow,
 )
-from global_medicines_atlas.receipts import EvidenceClass
+from global_medicines_atlas.receipts import EvidenceClass, RightsState
 
 
 def graph(count: int = 2) -> MbsGoldGraphCandidate:
@@ -274,10 +274,43 @@ def test_graph_order_uniqueness_denominator_and_edge_support_are_validated():
     )
     changed = result.model_dump()
     changed["edges"] = list(changed["edges"])
-    changed["edges"][0] = mismatched.model_dump()
+    matching_edge = next(
+        index
+        for index, edge in enumerate(result.edges)
+        if edge.evidence == services[0].evidence
+    )
+    changed["edges"][matching_edge] = mismatched.model_dump()
     changed["edges"] = sorted(changed["edges"], key=itemgetter("edge_id"))
     with pytest.raises(ValidationError, match="same record"):
         MbsGoldGraphCandidate.model_validate(changed)
+
+
+def test_graph_rejects_rights_metadata_mismatch_between_nodes_and_edges():
+    candidate = graph()
+    nodes = tuple(
+        node.model_copy(
+            update={
+                "evidence": node.evidence.model_copy(
+                    update={"rights_state": RightsState.PERMITTED}
+                )
+            }
+        )
+        for node in candidate.nodes
+    )
+    edges = tuple(
+        edge.model_copy(
+            update={
+                "evidence": edge.evidence.model_copy(
+                    update={"rights_state": RightsState.PERMITTED}
+                )
+            }
+        )
+        for edge in candidate.edges
+    )
+    changed = candidate.model_copy(update={"nodes": nodes, "edges": edges})
+
+    with pytest.raises(ValueError, match="rights/sensitivity metadata"):
+        changed.graph_is_closed_and_bound()
 
 
 def test_node_field_order_and_self_edges_are_rejected():
