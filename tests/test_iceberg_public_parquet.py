@@ -85,7 +85,7 @@ def test_receipt_is_explicitly_non_promotional_and_value_free() -> None:
 
 
 @pytest.mark.unit
-def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
+def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # ruff: ignore[too-many-statements] - test orchestration paths
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     payload = b"exact public parquet bytes"
@@ -144,18 +144,24 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
             ])
 
     class FakeScan:
+        def __init__(self, *, should_fail: bool) -> None:
+            self.should_fail = should_fail
+
         def to_arrow(self) -> FakeArrowTable:
+            if self.should_fail:
+                raise RuntimeError("injected scan failure")
             return FakeArrowTable()
 
     class FakeTable:
         def __init__(self) -> None:
             self.added: list[str] = []
+            self.fail_scan = False
 
         def add_files(self, files: list[str]) -> None:
             self.added = files
 
         def scan(self) -> FakeScan:
-            return FakeScan()
+            return FakeScan(should_fail=self.fail_scan)
 
     class FakeCatalog:
         def __init__(self) -> None:
@@ -260,6 +266,18 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
         "urlopen",
         open_url,
     )
+
+    fake_catalog.table.fail_scan = True
+    with pytest.raises(RuntimeError, match="injected scan failure"):
+        registration.run_public_parquet_registration(
+            rest_uri="http://127.0.0.1:8181", temporary_directory=tmp_path
+        )
+    assert fake_catalog.dropped == [
+        ("gma_public_parquet", "mbs_services"),
+        ("gma_public_parquet",),
+    ]
+    fake_catalog.dropped.clear()
+    fake_catalog.table.fail_scan = False
 
     receipt = registration.run_public_parquet_registration(
         rest_uri="http://127.0.0.1:8181", temporary_directory=tmp_path

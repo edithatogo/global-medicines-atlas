@@ -74,7 +74,7 @@ def public_object_url() -> str:
     return f"https://huggingface.co/datasets/{DATASET}/resolve/{REVISION}/{OBJECT_PATH}"
 
 
-def run_public_parquet_registration(  # ruff: ignore[too-many-locals] - end-to-end lane
+def run_public_parquet_registration(  # ruff: ignore[too-many-locals, too-many-statements] - hosted E2E orchestration
     *, rest_uri: str, temporary_directory: Path
 ) -> PublicParquetIcebergReceipt:
     """Fetch one exact public object, verify it, and register it in disposable REST."""
@@ -133,37 +133,56 @@ def run_public_parquet_registration(  # ruff: ignore[too-many-locals] - end-to-e
     )
     namespace = ("gma_public_parquet",)
     identifier = (*namespace, "mbs_services")
-    catalog.create_namespace(namespace)
-    table = catalog.create_table(
-        identifier,
-        schema=table_schema,
-        properties={
-            "format-version": "2",
-            "gma.dataset": DATASET,
-            "gma.dataset-revision": REVISION,
-            "gma.object-path": OBJECT_PATH,
-            "gma.object-sha256": OBJECT_SHA256,
-            "gma.source-id": SOURCE_ID,
-            "gma.source-revision": SOURCE_REVISION,
-            "gma.source-sha256": SOURCE_SHA256,
-            "gma.qualification-sha256": QUALIFICATION_SHA256,
-            "gma.candidate-only": "true",
-            "schema.name-mapping.default": name_mapping_json,
-        },
-    )
-    table.add_files([parquet_path.as_uri()])
-    observed = table.scan().to_arrow()
-    if observed.num_rows != arrow_table.num_rows or not observed.schema.equals(
-        arrow_table.schema, check_metadata=False
-    ):
-        raise ValueError(
-            "Iceberg scan differs from the exact public Parquet object"
-        )
+    namespace_created = False
+    table_created = False
     try:
-        catalog.drop_table(identifier)
-        catalog.drop_namespace(namespace)
-    except Exception as exc:
-        raise RuntimeError("disposable catalogue cleanup failed") from exc
+        catalog.create_namespace(namespace)
+        namespace_created = True
+        table = catalog.create_table(
+            identifier,
+            schema=table_schema,
+            properties={
+                "format-version": "2",
+                "gma.dataset": DATASET,
+                "gma.dataset-revision": REVISION,
+                "gma.object-path": OBJECT_PATH,
+                "gma.object-sha256": OBJECT_SHA256,
+                "gma.source-id": SOURCE_ID,
+                "gma.source-revision": SOURCE_REVISION,
+                "gma.source-sha256": SOURCE_SHA256,
+                "gma.qualification-sha256": QUALIFICATION_SHA256,
+                "gma.candidate-only": "true",
+                "schema.name-mapping.default": name_mapping_json,
+            },
+        )
+        table_created = True
+        table.add_files([parquet_path.as_uri()])
+        observed = table.scan().to_arrow()
+        if (
+            observed.num_rows != arrow_table.num_rows
+            or not observed.schema.equals(
+                arrow_table.schema, check_metadata=False
+            )
+        ):
+            raise ValueError(
+                "Iceberg scan differs from the exact public Parquet object"
+            )
+    finally:
+        cleanup_error: Exception | None = None
+        if table_created:
+            try:
+                catalog.drop_table(identifier)
+            except Exception as exc:
+                cleanup_error = exc
+        if namespace_created:
+            try:
+                catalog.drop_namespace(namespace)
+            except Exception as exc:
+                cleanup_error = cleanup_error or exc
+        if cleanup_error is not None:
+            raise RuntimeError(
+                "disposable catalogue cleanup failed"
+            ) from cleanup_error
     return PublicParquetIcebergReceipt(
         schema_id="global-medicines-atlas.public-parquet-iceberg-receipt",
         schema_version=1,
