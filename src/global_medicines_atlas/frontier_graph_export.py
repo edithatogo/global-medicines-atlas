@@ -263,7 +263,6 @@ def _check_nested_field_policy(
         field_object = cast("dict[str, object]", value)
         if "field_policy" in field_object:
             policy = field_object["field_policy"]
-            _check_nested_field_policy(policy, policy_context=True)
             try:
                 _policy_metadata(
                     _string_keyed_object(policy, "field policy"),
@@ -275,9 +274,17 @@ def _check_nested_field_policy(
                         "graph contains restricted field "
                         "rights/sensitivity metadata"
                     ) from error
+                try:
+                    _check_nested_field_policy(policy, policy_context=True)
+                except ValueError as nested_error:
+                    if "restricted field rights/sensitivity" in str(
+                        nested_error
+                    ):
+                        raise
                 raise ValueError(
                     "invalid graph field rights/sensitivity metadata"
                 ) from error
+            _check_nested_field_policy(policy, policy_context=True)
             for key, item in field_object.items():
                 if key != "field_policy":
                     _check_nested_field_policy(

@@ -196,8 +196,9 @@
   - [x] Reject nested declared field-policy envelopes that carry restricted
     rights or sensitivity labels before graph serialization. Preserve source
     fields that happen to use policy-like keys. Failing-first controls proved
-    nested envelopes bypassed the previous check; 116 graph/export/parity tests
-    pass, and the full pinned Test-Goblin profile passes with 96.87% coverage.
+    nested envelopes bypassed the previous check; the focused graph/export/
+    parity suite passes 119 tests, and the full pinned Test-Goblin profile
+    passes with 96.88% coverage.
     This does not infer privacy content or provide rights clearance; broader
     graph content/rights review remains open.
 - [x] Validate the canonical graph envelope inside the engine-free parity
