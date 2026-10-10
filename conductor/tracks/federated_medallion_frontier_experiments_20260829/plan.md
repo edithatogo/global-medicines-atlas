@@ -102,14 +102,16 @@
   not live Neo4j query parity, NetworkX/RDF-star coverage or public-data
   qualification; those broader tasks below remain open.
 
-- [x] Write deterministic graph, engine-parity, query-semantic,
+- [ ] Write failing deterministic graph, engine-parity, query-semantic,
   confidence/calibration, negative-control, review, rights, and restricted-byte
   tests. Existing MBS/PBS portable-table, NetworkX, and preview parity suites
   cover stable ordering, directed queries, null confidence, explicit candidate
-  controls, and mutation/schema rejection. A new synthetic binary-column test
-  proves the closed portable schema rejects restricted-terminology payloads
-  before serialization. No rights clearance or restricted source bytes are
-  claimed; live graph and semantic-engine qualification remain open.
+  controls, and mutation/schema rejection. A synthetic binary-column test
+  verifies that unrecognized schema extensions are rejected before
+  serialization. This does not screen restricted content inside an allowed
+  `fields_json` value; the export contract has no rights authority, so the
+  rights/restricted-content portion remains open. No live graph or
+  semantic-engine qualification is claimed.
 - [x] Execute the optional NetworkX directed multigraph projection against the
   same portable Gold tables and independently compare every node's ancestors,
   descendants and directed degrees with Python table traversal. Preserve

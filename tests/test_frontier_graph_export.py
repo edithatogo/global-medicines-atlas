@@ -88,7 +88,7 @@ def test_pbs_preserves_null_confidence_and_explicit_candidate_controls():
 
 
 @pytest.mark.parametrize("family", ["mbs", "pbs"])
-def test_restricted_terminology_bytes_outside_portable_schema_are_rejected(
+def test_unknown_binary_graph_column_is_rejected_before_serialization(
     family: str,
     monkeypatch: pytest.MonkeyPatch,
 ):
@@ -97,12 +97,12 @@ def test_restricted_terminology_bytes_outside_portable_schema_are_rejected(
         if family == "mbs"
         else project_pbs_gold_graph_arrow(pbs_graph())
     )
-    restricted_bytes = pa.array(
-        [b"synthetic-restricted-placeholder"] * nodes.num_rows,
+    unexpected_column = pa.array(
+        [b"synthetic-binary-placeholder"] * nodes.num_rows,
         type=pa.binary(),
     )
-    nodes_with_restricted_bytes = nodes.append_column(
-        "restricted_terminology_bytes", restricted_bytes
+    nodes_with_unexpected_column = nodes.append_column(
+        "unexpected_binary_column", unexpected_column
     )
 
     def reject_serialization(_value):
@@ -113,7 +113,7 @@ def test_restricted_terminology_bytes_outside_portable_schema_are_rejected(
     with pytest.raises(
         ValueError, match=r"^unsupported or mismatched Gold schema$"
     ):
-        export_gold_tables(nodes_with_restricted_bytes, edges)
+        export_gold_tables(nodes_with_unexpected_column, edges)
 
 
 def test_empty_tables_and_byte_bounds():
