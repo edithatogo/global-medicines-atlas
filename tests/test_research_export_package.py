@@ -196,6 +196,117 @@ def test_research_export_package_rejects_source_binding_mismatch(
 
 
 @pytest.mark.e2e
+def test_cross_dataset_package_binds_existing_public_revisions() -> None:
+    sources = (
+        ExportSource(
+            dataset_id="edithatogo/australian-mbs-source-archive",
+            revision="44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+            path=("raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML"),
+            sha256="c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+            schema_id="gma.au.mbs.source-archive",
+            schema_version="1",
+        ),
+        ExportSource(
+            dataset_id="edithatogo/australian-pbs-source-archive",
+            revision="48fd7345fb09277bb5b85644dba72804633a2abb",
+            path="raw/2026-04-01/2026-04-01-XML-V3.zip",
+            sha256="f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+            schema_id="gma.au.pbs.source-archive",
+            schema_version="1",
+        ),
+    )
+    rows = [
+        {"dataset_id": source.dataset_id, "source_sha256": source.sha256}
+        for source in sources
+    ]
+    manifest = build_query_snapshot_manifest(
+        query={"mode": "synthetic_existing_revision_binding"},
+        result_rows=rows,
+        sources=sources,
+        generated_at=datetime(2026, 10, 10, tzinfo=UTC),
+        generator_commit="synthetic-public-revision-binding-v1",
+    )
+    export_id = manifest_sha256(manifest)
+    revision = "b" * 40
+    result_url = (
+        "https://huggingface.co/datasets/edithatogo/fixture-export/resolve/"
+        f"{revision}/query-result.json"
+    )
+    crate = build_research_crate(
+        identifier=export_id,
+        name="Synthetic existing-revision identity package",
+        version="1",
+        dataset_url="https://huggingface.co/datasets/edithatogo/fixture-export",
+        distributions=(
+            CrateDistribution(
+                identifier="query-result.json",
+                name="Synthetic revision identity result",
+                content_url=result_url,
+                media_type="application/json",
+                sha256=manifest.result_sha256,
+            ),
+        ),
+    )
+    lineage = build_research_lineage_receipt(
+        export_id=export_id,
+        revision=revision,
+        artifacts=(
+            *(
+                ResearchLineageArtifact(
+                    identifier=source.dataset_id,
+                    role="input",
+                    public_url=(
+                        "https://huggingface.co/datasets/"
+                        f"{source.dataset_id}/resolve/{source.revision}/"
+                        f"{source.path}"
+                    ),
+                    sha256=source.sha256,
+                    revision=source.revision,
+                )
+                for source in sources
+            ),
+            ResearchLineageArtifact(
+                identifier="query-result.json",
+                role="output",
+                public_url=result_url,
+                sha256=manifest.result_sha256,
+            ),
+        ),
+    )
+
+    package = build_research_export_package(
+        manifest=manifest,
+        crate=crate,
+        lineage=lineage,
+    )
+    verified = verify_research_export_package(package.archive_bytes())
+    verified_lineage = json.loads(dict(verified.documents)["lineage.json"])
+    bound_inputs = {
+        artifact["identifier"]: (
+            artifact["revision"],
+            artifact["sha256"],
+            artifact["public_url"],
+        )
+        for artifact in verified_lineage["artifacts"]
+        if artifact["role"] == "input"
+    }
+
+    assert lineage.schema_version == 2
+    assert bound_inputs == {
+        source.dataset_id: (
+            source.revision,
+            source.sha256,
+            (
+                "https://huggingface.co/datasets/"
+                f"{source.dataset_id}/resolve/{source.revision}/{source.path}"
+            ),
+        )
+        for source in sources
+    }
+    assert verified.archive_bytes() == package.archive_bytes()
+
+
+@pytest.mark.e2e
 def test_research_export_package_rebuilds_from_saved_archive() -> None:
     manifest, crate, lineage = _inputs()
     original = build_research_export_package(

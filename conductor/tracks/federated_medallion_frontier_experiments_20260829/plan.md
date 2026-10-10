@@ -94,8 +94,12 @@
   lineage over exact public revisions. Synthetic per-dataset end-to-end
   integration now passes for the existing MBS/PBS journeys (PR #920); a
   synthetic cross-dataset package now binds distinct source revisions under
-  one export revision. Full local Test-Goblin passes; hosted verification is
-  pending. Exact public-revision federation remains open.
+  one export revision. PR #921 merged after all 38 protected checks passed,
+  including 92.30% Codecov patch coverage. Manifest binding now checks each
+  lineage input's source dataset identity, path, revision, and digest. Exact
+  existing MBS/PBS public revisions now pass through the metadata-only
+  cross-dataset package verifier. This is immutable identity binding, not a
+  source-content join or source-coverage qualification; those remain open.
 - [ ] Measure verification cost and retain per-object SHA-256 as the base
   evidence even when batch proofs pass.
 - [ ] Phase Verification & Checkpoint: additive attestations improve
