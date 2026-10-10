@@ -200,7 +200,10 @@
     parity suite passes 119 tests, and the full pinned Test-Goblin profile
     passes with 96.88% coverage.
     This does not infer privacy content or provide rights clearance; broader
-    graph content/rights review remains open.
+    graph content/rights review remains open. PR #955 merged at
+    `410cc61aaaee29cfb86dbc92fb7e655b6bbfaa60` from reviewed head
+    `5308e2dd27de3158c25ae9e0c19e3d13fedc01bd`; all 28 required contexts
+    passed, including Codecov patch coverage and Linux/macOS/Windows consumers.
 - [x] Validate the canonical graph envelope inside the engine-free parity
   boundary independently of the exporter. Failing-first controls reproduced
   acceptance of duplicate node/edge identities, blank identities, and a
