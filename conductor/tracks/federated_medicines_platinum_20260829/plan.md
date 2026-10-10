@@ -50,7 +50,7 @@
     unsupported directory sync remains best-effort without bypassing budgets.
     (`b9b5ffe`, `86a56aa`; 37 focused tests pass with 100% statement and branch
     coverage; 239 affected tests and the routine harness pass.)
-- [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
+- [~] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
   - [x] Verify one exact, anonymously readable, 24,367-byte MBS Bronze
     projection at immutable revision `75f9f20` with a five-row bounded
@@ -61,6 +61,16 @@
     `checkpoint_complete=false`. The checkpoint remains open until an
     independently admitted v4 product contract and semantic manifest bind a
     published Australian benefits medallion dataset.
+  - [x] Re-run the pinned public fixture from fresh temporary lake/cache paths
+    and bind the no-lake observation to the bounded query receipt. The exact
+    24,367-byte object at revision `75f9f20` passed anonymous digest and
+    structural verification; five sample rows were queried without writing
+    source bytes or rows to disk. The workspace check confirms only that the
+    fresh temporary lake/cache paths were absent; the checkout and runtime
+    were already installed. Receipt:
+    `quality/qualifications/platinum-empty-workspace-preflight-20261010.json`.
+    The checkpoint remains open because no independently admitted v4 product
+    contract or semantic manifest binds this source projection.
 
 ### Public-fixture checkpoint review fixes
 

@@ -123,6 +123,30 @@ def test_public_preflight_receipt_content_address_is_current() -> None:
     assert hashlib.sha256(canonical).hexdigest() == claimed_digest
 
 
+def test_fresh_workspace_receipt_binds_no_lake_and_bounded_public_query() -> (
+    None
+):
+    """The live receipt records the empty workspace check without row data."""
+    receipt_path = Path(
+        "quality/qualifications/"
+        "platinum-empty-workspace-preflight-20261010.json"
+    )
+    receipt = json.loads(receipt_path.read_bytes())
+    claimed_digest = receipt.pop("receipt_sha256")
+    canonical = json.dumps(
+        receipt, sort_keys=True, separators=(",", ":")
+    ).encode()
+
+    assert hashlib.sha256(canonical).hexdigest() == claimed_digest
+    assert receipt["transport_verified"] is True
+    assert receipt["product_admitted"] is False
+    assert receipt["checkpoint_complete"] is False
+    assert receipt["fresh_workspace"]["durable_local_lake_present"] is False
+    assert receipt["sample_row_count"] == 5
+    assert "canonical_sample_rows" not in receipt
+    assert "source_record_id" not in receipt
+
+
 @pytest.mark.parametrize(
     "state",
     [
