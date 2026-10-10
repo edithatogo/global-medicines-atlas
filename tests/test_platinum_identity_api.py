@@ -27,7 +27,7 @@ from global_medicines_atlas.platinum_surface_contracts import (
 from global_medicines_atlas.query_service import ReadOnlyQueryService
 
 
-def resolved(*, comparison_cohort: str = "current") -> ResolvedResource:
+def resolved() -> ResolvedResource:
     return ResolvedResource(
         resource_id="au.mbs.services.current",
         semantic_dimension="service_benefit",
@@ -43,7 +43,7 @@ def resolved(*, comparison_cohort: str = "current") -> ResolvedResource:
         acquisition_id="acq-1",
         layer="gold",
         schema_era="2026-08",
-        comparison_cohort=comparison_cohort,
+        comparison_cohort="current",
         effective_date="2026-08-01",
         retrieved_at="2026-08-02T00:00:00+00:00",
         cache_expires_at=datetime(2026, 9, 1, tzinfo=UTC),
@@ -73,16 +73,10 @@ class QueryStub:
 
 
 class IdentityStub:
-    def __init__(self, comparison_cohort: str = "current") -> None:
-        self._comparison_cohort = comparison_cohort
-
     def identity(self, resource_id: str):
         if resource_id != "au.mbs.services.current":
             raise UnknownPlatinumResourceError
-        return dataset_identity(
-            resolved(comparison_cohort=self._comparison_cohort),
-            jurisdiction="AU",
-        )
+        return dataset_identity(resolved(), jurisdiction="AU")
 
     def identities(self):
         datasets = (self.identity("au.mbs.services.current"),)
@@ -112,15 +106,11 @@ class FailingIdentityStub(IdentityStub):
         raise ValueError("incomplete identity page")
 
 
-def client(
-    *, configured: bool = True, comparison_cohort: str = "current"
-) -> TestClient:
+def client(*, configured: bool = True) -> TestClient:
     return TestClient(
         create_app(
             cast("ReadOnlyQueryService", QueryStub()),
-            dataset_identities=(
-                IdentityStub(comparison_cohort) if configured else None
-            ),
+            dataset_identities=IdentityStub() if configured else None,
         )
     )
 
@@ -273,11 +263,8 @@ def test_resolver_service_rejects_jurisdiction_not_bound_by_resource_id() -> (
         )
 
 
-@pytest.mark.parametrize("cohort", ["legacy", "current"])
-def test_dataset_identity_endpoint_returns_exact_typed_envelope(
-    cohort: str,
-) -> None:
-    response = client(comparison_cohort=cohort).get(
+def test_dataset_identity_endpoint_returns_exact_typed_envelope() -> None:
+    response = client().get(
         "/api/v1/datasets/au.mbs.services.current",
         headers={"x-request-id": "identity-test"},
     )
@@ -288,11 +275,24 @@ def test_dataset_identity_endpoint_returns_exact_typed_envelope(
     assert identity.revision == "a" * 40
     assert identity.coverage_state == "not_declared"
     assert identity.comparison_validity == "not_evaluated"
-    assert identity.comparison_cohort == cohort
+    assert identity.comparison_cohort == "current"
     assert identity.confidence_state == "not_declared"
     assert identity.uncertainty_state == "not_declared"
     assert identity.review_state == "not_declared"
     assert response.headers["cache-control"].startswith("public")
+
+
+@pytest.mark.parametrize("cohort", ["legacy", "current"])
+def test_identity_adapter_preserves_supported_cohort_labels(
+    cohort: str,
+) -> None:
+    resource = replace(resolved(), comparison_cohort=cohort)
+    identity = dataset_identity(resource, jurisdiction="AU")
+
+    assert validate_result_evidence(identity) is identity
+    assert identity.comparison_cohort == cohort
+    assert identity.coverage_state == "not_declared"
+    assert identity.comparison_validity == "not_evaluated"
 
 
 def test_dataset_identity_collection_is_bounded_and_deterministic() -> None:

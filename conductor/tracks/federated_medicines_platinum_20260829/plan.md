@@ -290,13 +290,14 @@
     after all 36 hosted checks passed. This proves synthetic API wiring only
     and does not qualify a production source or close the broader Phase 2
     checkpoint.
-  - [x] Exercise identity API responses for both legacy and current cohort
-    labels through the mandatory-evidence validator, including explicit
-    conservative states. Keep benefits API fixtures marked synthetic and
-    verify they retain their exact identity and fail-closed states; the v4
-    contract correctly rejects relabeling a synthetic fixture as legacy or
-    current. This adds execution evidence without claiming source coverage or
-    closing the broader all-result-types checkpoint.
+  - [x] Exercise schema-level identity adaptation for both legacy and current
+    cohort labels through the mandatory-evidence validator, including explicit
+    conservative states. Keep the benefits API fixture marked synthetic and
+    verify the resolver-backed result retains its exact identity and
+    fail-closed states. A stubbed identity API test is not resolver-admission
+    evidence; real legacy/current resolver qualification remains open until
+    source evidence exists. This does not close the broader all-result-types
+    checkpoint.
 
 ### Deterministic Gold review-queue CLI (2026-10-10)
 
