@@ -2124,7 +2124,8 @@
   value on a non-observed state, missing suppression marker, and native values
   on unreported/unavailable states. Seven new parameterized cases bring the
   focused measure/source-review/E2E set to 27; the new module reaches 100%
-  statement and branch coverage locally. Exact-head hosted recheck pending.
+  statement and branch coverage locally. Exact-head PR #943 later passed all
+  39 reported checks and merged as `6201cac4d1e7df98528e9cf581834549a87bc248`.
 
 ### Aggregate measure review corrections (2026-10-11)
 
