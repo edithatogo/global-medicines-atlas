@@ -205,6 +205,7 @@ def _check_rights_and_sensitivity(
     for row in node_rows:
         evidence = _metadata_object(str(row["evidence_json"]), "node evidence")
         node_policies.add(_policy_metadata(evidence, "node evidence"))
+        _check_field_rights_metadata(str(row["fields_json"]))
 
     for row in edge_rows:
         controls = _metadata_object(str(row["controls_json"]), "edge controls")
@@ -223,6 +224,45 @@ def _check_rights_and_sensitivity(
         raise ValueError(
             "graph rights/sensitivity metadata differs across rows"
         )
+
+
+def _check_field_rights_metadata(value: str) -> None:
+    """Reject explicitly restricted field envelopes before preview export.
+
+    This checks declared field metadata only. It cannot discover restrictions
+    or personal content inside values that lack a field-policy envelope.
+    """
+    try:
+        fields = json.loads(value, object_pairs_hook=_pairs_without_duplicates)
+    except (TypeError, ValueError, json.JSONDecodeError) as error:
+        raise ValueError("invalid graph fields metadata") from error
+    if isinstance(fields, dict):
+        field_rows: list[object] = [fields] if "field_policy" in fields else []
+    elif isinstance(fields, list):
+        field_rows = cast("list[object]", fields)
+    else:
+        raise TypeError("invalid graph fields metadata")
+    for field in field_rows:
+        if not isinstance(field, dict):
+            raise TypeError("invalid graph fields metadata")
+        field_metadata = _string_keyed_object(cast("object", field), "field")
+        if "field_policy" not in field_metadata:
+            continue
+        try:
+            _policy_metadata(
+                _string_keyed_object(
+                    field_metadata["field_policy"], "field policy"
+                ),
+                "field policy",
+            )
+        except (TypeError, ValueError) as error:
+            if "restricted or prohibited" in str(error):
+                raise ValueError(
+                    "graph contains restricted field rights/sensitivity metadata"
+                ) from error
+            raise ValueError(
+                "invalid graph field rights/sensitivity metadata"
+            ) from error
 
 
 def export_gold_tables(

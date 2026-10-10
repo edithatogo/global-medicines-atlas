@@ -234,6 +234,16 @@
   ambiguity while preserving the existing envelope contract. This closes a
   source-neutral preview integrity gap only; live engine parity and broader
   graph qualification remain open.
+- [x] Reject portable graph field envelopes whose explicit `field_policy`
+  declares restricted/prohibited rights, sensitive/restricted data, possible/
+  present personal data, or prohibited publication. Failing-first synthetic
+  tests cover MBS and PBS node projections. Unknown and review-required field
+  declarations remain preserved, and fields without policy envelopes remain
+  unchanged. This is a declared-metadata guard only; it does not inspect
+  unlabeled content, establish rights, or close the restricted-content review.
+  The focused graph export/parity/NetworkX suite passes 71 tests, and the
+  routine harness passes. The pinned full profile passes 6,154 tests at 96.94%
+  coverage and all local lanes.
 - [x] Benchmark lexical, ontology-assisted, LanceDB embedding/NLP, and any
   justified Tantivy/Qdrant candidates; preserve explicit candidate status.
   The deterministic receipt over six existing synthetic matching cases
