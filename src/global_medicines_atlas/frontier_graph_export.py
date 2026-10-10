@@ -215,7 +215,11 @@ def _check_rights_and_sensitivity(
             raise ValueError("graph edge rights/sensitivity metadata differs")
         edge_policies.add(edge_policy)
 
-    if node_policies != edge_policies or len(node_policies) > 1:
+    if (
+        len(node_policies) > 1
+        or len(edge_policies) > 1
+        or (node_policies and edge_policies and node_policies != edge_policies)
+    ):
         raise ValueError(
             "graph rights/sensitivity metadata differs across rows"
         )

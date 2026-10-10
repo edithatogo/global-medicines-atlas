@@ -292,7 +292,9 @@ class PbsGoldGraphCandidate(FrozenModel):
         edge_policies = {
             (edge.rights_state, edge.sensitivity) for edge in self.edges
         }
-        if len(node_policies) != 1 or node_policies != edge_policies:
+        if len(node_policies) != 1 or (
+            edge_policies and node_policies != edge_policies
+        ):
             raise ValueError("PBS Gold rights/sensitivity metadata differs")
         if self.graph_sha256 != _digest(
             self.model_dump(exclude={"graph_sha256"})
