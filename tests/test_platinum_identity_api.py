@@ -10,6 +10,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from global_medicines_atlas.api import create_app
+from global_medicines_atlas.platinum_evidence import validate_result_evidence
 from global_medicines_atlas.platinum_identity_service import (
     DatasetIdentityPage,
     ResolverDatasetIdentityService,
@@ -19,7 +20,10 @@ from global_medicines_atlas.platinum_resolver import (
     ResolvedResource,
     StorageNeutralResolver,
 )
-from global_medicines_atlas.platinum_surface_contracts import dataset_identity
+from global_medicines_atlas.platinum_surface_contracts import (
+    DatasetIdentityEnvelope,
+    dataset_identity,
+)
 from global_medicines_atlas.query_service import ReadOnlyQueryService
 
 
@@ -266,10 +270,29 @@ def test_dataset_identity_endpoint_returns_exact_typed_envelope() -> None:
     )
 
     assert response.status_code == 200
-    assert response.json()["revision"] == "a" * 40
-    assert response.json()["coverage_state"] == "not_declared"
-    assert response.json()["comparison_validity"] == "not_evaluated"
+    identity = DatasetIdentityEnvelope.model_validate(response.json())
+    assert validate_result_evidence(identity) is identity
+    assert identity.revision == "a" * 40
+    assert identity.coverage_state == "not_declared"
+    assert identity.comparison_validity == "not_evaluated"
+    assert identity.comparison_cohort == "current"
+    assert identity.confidence_state == "not_declared"
+    assert identity.uncertainty_state == "not_declared"
+    assert identity.review_state == "not_declared"
     assert response.headers["cache-control"].startswith("public")
+
+
+@pytest.mark.parametrize("cohort", ["legacy", "current"])
+def test_identity_adapter_preserves_supported_cohort_labels(
+    cohort: str,
+) -> None:
+    resource = replace(resolved(), comparison_cohort=cohort)
+    identity = dataset_identity(resource, jurisdiction="AU")
+
+    assert validate_result_evidence(identity) is identity
+    assert identity.comparison_cohort == cohort
+    assert identity.coverage_state == "not_declared"
+    assert identity.comparison_validity == "not_evaluated"
 
 
 def test_dataset_identity_collection_is_bounded_and_deterministic() -> None:
