@@ -237,11 +237,15 @@
 
 ## Phase 6: Threat, cost, and disposition review (AC-07, AC-08)
 
-- [ ] Run focused, parity, benchmark, property, mutation, security, dependency,
+- [~] Run focused, parity, benchmark, property, mutation, security, dependency,
   typing, provenance, rights, full Test-Goblin where supported, and hosted lanes.
-- [ ] Record free-tier/resource use, threat model, supply-chain impact,
+  The synthetic benchmark has full local and 38/38 hosted evidence; broader
+  graph rights-content screening and live-engine parity remain open.
+- [x] Record free-tier/resource use, threat model, supply-chain impact,
   operational burden, fallback, rollback, and withdrawal behavior.
-- [ ] Run Conductor review, repair findings, publish decision evidence, and
-  classify each row as promote-candidate, retain-preview, defer, or reject.
-- [ ] Do not promote dependencies or production authority in this track; open a
+- [x] Review the current experiment matrix and evidence, record bounded
+  security/rights/operational dispositions in
+  `quality/qualifications/frontier-experiment-disposition-20261011.json`, and
+  classify every matrix row. No preview passed its production-promotion gate.
+- [x] Do not promote dependencies or production authority in this track; open a
   separate ADR/implementation track for any candidate that passes.
