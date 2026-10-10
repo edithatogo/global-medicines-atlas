@@ -2138,4 +2138,6 @@
   Focused tests pass (31); all local gates pass. Full profile: 6,144 passed,
   96.94% coverage, 353 Gremlins passed; Darwin mutation is advisory, and the
   optional PyPI audit is skipped because this project is not published there.
-  Hosted exact-head checks and review-thread reconciliation remain pending.
+  Exact-head PR #943 passed all 39 reported checks including Codecov and
+  Linux/macOS/Windows consumers, all four review threads were reconciled, and
+  the change merged as `6201cac4d1e7df98528e9cf581834549a87bc248`.
