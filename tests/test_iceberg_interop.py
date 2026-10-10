@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+import copy
+import hashlib
+import json
+import subprocess  # ruff: ignore[suspicious-subprocess-import] - fixed interpreter and code
+import sys
 import tomllib
 from pathlib import Path
 from types import SimpleNamespace
@@ -20,6 +25,34 @@ from global_medicines_atlas.iceberg_interop import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _fixture_payload() -> bytes:
+    return json.dumps(
+        _fixture_records(),
+        separators=(",", ":"),
+    ).encode("utf-8")
+
+
+def _fixture_records() -> list[dict[str, object]]:
+    return [
+        {
+            "acquisition_id": "acq-1",
+            "content_id": "sha256:" + "a" * 64,
+            "native_id": "A-001",
+            "source_id": "source-1",
+            "source_release_date": "2026-08-20",
+            "value": 1,
+        },
+        {
+            "acquisition_id": "acq-1",
+            "content_id": "sha256:" + "b" * 64,
+            "native_id": "A-002",
+            "source_id": "source-1",
+            "source_release_date": "2026-08-21",
+            "value": 2,
+        },
+    ]
 
 
 @pytest.mark.unit
@@ -86,6 +119,51 @@ def test_pyiceberg_remains_an_optional_extra() -> None:
     ]
 
 
+@pytest.mark.unit
+def test_core_module_import_does_not_load_optional_pyiceberg() -> None:
+    subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            (
+                "import sys; "
+                "import global_medicines_atlas.iceberg_interop; "
+                "assert 'pyiceberg' not in sys.modules"
+            ),
+        ],
+        check=True,
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+    )
+
+
+@pytest.mark.edge
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        (b'[{"native_id":"A","native_id":"B"}]', "duplicate contract JSON key"),
+        (b"[]", "non-empty row array"),
+        (b"[{}]", "row fields do not match schema"),
+    ],
+)
+def test_iceberg_fixture_ingest_rejects_ambiguous_or_incomplete_json(
+    payload: bytes, message: str
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        iceberg_interop.load_fixture_records(payload)
+
+
+@pytest.mark.edge
+def test_iceberg_fixture_ingest_rejects_mixed_acquisition_identity() -> None:
+    records = _fixture_records()
+    records[1]["acquisition_id"] = "acq-2"
+    payload = json.dumps(records).encode("utf-8")
+
+    with pytest.raises(ValueError, match="one acquisition per table"):
+        iceberg_interop.load_fixture_records(payload)
+
+
 class _Update:
     def __init__(self, table: _Table, kind: str) -> None:
         self.table = table
@@ -98,7 +176,7 @@ class _Update:
         return None
 
     def add_column(self, name: str, _type: object) -> None:
-        self.table.fields[name] = 6
+        self.table.fields[name] = 7
 
     def add_identity(self, name: str) -> None:
         self.table.partitions.add(name)
@@ -107,14 +185,21 @@ class _Update:
 class _Table:
     def __init__(self, properties: dict[str, str]) -> None:
         self.properties = properties
-        self.fields = {"observed_at": 6}
+        self.fields = {"observed_at": 7}
         self.partitions = {"source_id"}
+        self.records: list[dict[str, object]] = []
         self.metadata = SimpleNamespace(
             format_version=int(properties.get("format-version", "2"))
         )
 
-    def current_snapshot(self) -> None:
-        return None
+    def current_snapshot(self) -> object | None:
+        return object() if self.records else None
+
+    def append(self, arrow_table: _ArrowTable) -> None:
+        self.records.extend(arrow_table.to_pylist())
+
+    def scan(self) -> _Scan:
+        return _Scan(self.records)
 
     def update_schema(self) -> _Update:
         return _Update(self, "schema")
@@ -129,6 +214,26 @@ class _Table:
         return SimpleNamespace(
             fields=[SimpleNamespace(name=name) for name in self.partitions]
         )
+
+
+class _ArrowTable:
+    def __init__(self, rows: list[dict[str, object]]) -> None:
+        self.rows = copy.deepcopy(rows)
+
+    @classmethod
+    def from_pylist(cls, rows: list[dict[str, object]]) -> _ArrowTable:
+        return cls(rows)
+
+    def to_pylist(self) -> list[dict[str, object]]:
+        return copy.deepcopy(self.rows)
+
+
+class _Scan:
+    def __init__(self, rows: list[dict[str, object]]) -> None:
+        self.rows = rows
+
+    def to_arrow(self) -> _ArrowTable:
+        return _ArrowTable(self.rows)
 
 
 class _Catalog:
@@ -191,18 +296,15 @@ def _unlocked_version(_name: str) -> str:
     return "9.9.9"
 
 
-@pytest.mark.unit
-def test_rest_catalog_lifecycle_receipt_uses_actual_fixture_digest(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+def _install_rest_stubs(
+    monkeypatch: pytest.MonkeyPatch, catalog: _Catalog
 ) -> None:
-    fixture = tmp_path / "records.json"
-    fixture.write_bytes(b'{"governed":true}\n')
-    catalog = _Catalog()
     types = SimpleNamespace(
         NestedField=_new_object,
         StringType=_new_object,
         IntegerType=_new_object,
         TimestamptzType=_new_object,
+        DateType=_new_object,
     )
 
     def load_catalog(*_args: object, **_kwargs: object) -> _Catalog:
@@ -212,6 +314,7 @@ def test_rest_catalog_lifecycle_receipt_uses_actual_fixture_digest(
         "pyiceberg.catalog": SimpleNamespace(load_catalog=load_catalog),
         "pyiceberg.schema": SimpleNamespace(Schema=_new_object),
         "pyiceberg.types": types,
+        "pyarrow": SimpleNamespace(Table=_ArrowTable),
     }
 
     def import_module(name: str) -> object:
@@ -227,27 +330,67 @@ def test_rest_catalog_lifecycle_receipt_uses_actual_fixture_digest(
         iceberg_interop, "installed_pyiceberg_v3_symbols", _empty_symbols
     )
 
+
+@pytest.mark.unit
+def test_rest_catalog_lifecycle_receipt_uses_actual_fixture_digest(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    fixture = tmp_path / "records.json"
+    fixture_bytes = _fixture_payload()
+    fixture.write_bytes(fixture_bytes)
+    catalog = _Catalog()
+    _install_rest_stubs(monkeypatch, catalog)
+
     receipt = run_rest_catalog_interop(
         rest_uri="http://127.0.0.1:8181", fixture_path=fixture
     )
 
-    assert receipt.fixture_sha256 == (
-        "cb57b6094317ae36e720db24dfab55d34598a70bda7decf0bb2cc64dd071f28d"
-    )
+    assert receipt.fixture_sha256 == hashlib.sha256(fixture_bytes).hexdigest()
+    assert receipt.schema_version == 2
+    assert receipt.fixture_acquisition_id == "acq-1"
+    assert receipt.fixture_record_count == 2
     assert receipt.operations == (
         "create_namespace",
         "create_table",
         "evolve_schema",
         "evolve_partition_spec",
+        "append_fixture_records",
+        "verify_data_roundtrip",
         "drop_table",
         "reconstruct_table",
         "create_v3_table",
     )
     assert receipt.empty_snapshot_observed is True
+    assert receipt.populated_snapshot_observed is True
+    assert receipt.data_roundtrip_verified is True
     assert receipt.schema_evolution_verified is True
     assert receipt.partition_evolution_verified is True
     assert receipt.reconstruction_verified is True
     assert receipt.v3_table_created is True
+    assert catalog.tables == {}
+    assert catalog.namespace is False
+
+
+@pytest.mark.edge
+def test_rest_catalog_fails_closed_when_roundtrip_data_differs(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    fixture = tmp_path / "records.json"
+    fixture.write_bytes(_fixture_payload())
+    catalog = _Catalog()
+    _install_rest_stubs(monkeypatch, catalog)
+    original_append = _Table.append
+
+    def corrupt_append(table: _Table, arrow_table: _ArrowTable) -> None:
+        original_append(table, arrow_table)
+        table.records[0]["value"] = -1
+
+    monkeypatch.setattr(_Table, "append", corrupt_append)
+
+    with pytest.raises(RuntimeError, match="fixture data round-trip"):
+        run_rest_catalog_interop(
+            rest_uri="http://127.0.0.1:8181", fixture_path=fixture
+        )
     assert catalog.tables == {}
     assert catalog.namespace is False
 
@@ -271,7 +414,7 @@ def test_rest_catalog_rejects_unlocked_pyiceberg(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     fixture = tmp_path / "records.json"
-    fixture.write_bytes(b"[]")
+    fixture.write_bytes(_fixture_payload())
     monkeypatch.setattr(
         iceberg_interop.importlib.metadata, "version", _unlocked_version
     )

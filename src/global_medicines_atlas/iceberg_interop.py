@@ -5,13 +5,17 @@ from __future__ import annotations
 import hashlib
 import importlib
 import importlib.metadata
+import json
+from datetime import date
+from operator import itemgetter
 from pathlib import Path
-from typing import Literal
+from typing import Literal, TypedDict, cast
 from urllib.parse import urlsplit
 
 from pydantic import Field
 
 from .models import FrozenModel
+from .strict_json import unique_json_object
 
 ICEBERG_REST_FIXTURE_IMAGE = (
     "apache/iceberg-rest-fixture@"
@@ -19,8 +23,18 @@ ICEBERG_REST_FIXTURE_IMAGE = (
 )
 ICEBERG_RELEASE = "1.11.0"
 PYICEBERG_VERSION = "0.11.1"
-_BASE_FIELD_COUNT = 5
+_BASE_FIELD_COUNT = 6
 _FORMAT_VERSION_V3 = 3
+
+
+class IcebergFixtureRecord(TypedDict):
+    acquisition_id: str
+    content_id: str
+    native_id: str
+    source_id: str
+    source_release_date: date
+    value: int
+
 
 V3_CAPABILITY_SYMBOLS: dict[str, frozenset[str]] = {
     "nanosecond_timestamps": frozenset({
@@ -46,15 +60,19 @@ class CapabilityResult(FrozenModel):
 
 class IcebergInteropReceipt(FrozenModel):
     schema_id: Literal["global-medicines-atlas.iceberg-interop-receipt"]
-    schema_version: Literal[1]
+    schema_version: Literal[2]
     server_image: Literal[
         "apache/iceberg-rest-fixture@sha256:db8de90b5b7693d4ac334c336f91d9bbe320d7b19f4f514d26de84cdfbcbfe8d"
     ]
     iceberg_release: Literal["1.11.0"]
     pyiceberg_version: Literal["0.11.1"]
     fixture_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    fixture_acquisition_id: str = Field(min_length=1)
+    fixture_record_count: int = Field(ge=1)
     operations: tuple[str, ...] = Field(min_length=1)
     empty_snapshot_observed: bool
+    populated_snapshot_observed: bool
+    data_roundtrip_verified: bool
     schema_evolution_verified: bool
     partition_evolution_verified: bool
     reconstruction_verified: bool
@@ -128,13 +146,68 @@ def installed_pyiceberg_v3_symbols() -> set[str]:
     return symbols
 
 
-def run_rest_catalog_interop(  # ruff: ignore[too-many-locals]
+def load_fixture_records(fixture_bytes: bytes) -> list[IcebergFixtureRecord]:
+    parsed: object = json.loads(
+        fixture_bytes, object_pairs_hook=unique_json_object
+    )
+    if not isinstance(parsed, list) or not parsed:
+        raise ValueError("Iceberg fixture must contain a non-empty row array")
+    expected_fields = {
+        "acquisition_id",
+        "content_id",
+        "native_id",
+        "source_id",
+        "source_release_date",
+        "value",
+    }
+    records: list[IcebergFixtureRecord] = []
+    for row in cast("list[object]", parsed):
+        if not isinstance(row, dict):
+            raise TypeError("Iceberg fixture rows must be JSON objects")
+        row_data = cast("dict[str, object]", row)
+        if set(row_data) != expected_fields:
+            raise ValueError("Iceberg fixture row fields do not match schema")
+        if (
+            any(
+                not isinstance(row_data[field], str)
+                for field in (
+                    "acquisition_id",
+                    "content_id",
+                    "native_id",
+                    "source_id",
+                    "source_release_date",
+                )
+            )
+            or type(row_data["value"]) is not int
+        ):
+            raise ValueError("Iceberg fixture row has invalid field types")
+        records.append({
+            "acquisition_id": cast("str", row_data["acquisition_id"]),
+            "content_id": cast("str", row_data["content_id"]),
+            "native_id": cast("str", row_data["native_id"]),
+            "source_id": cast("str", row_data["source_id"]),
+            "source_release_date": date.fromisoformat(
+                cast("str", row_data["source_release_date"])
+            ),
+            "value": row_data["value"],
+        })
+    if len({record["native_id"] for record in records}) != len(records):
+        raise ValueError("Iceberg fixture native identifiers must be unique")
+    if len({record["acquisition_id"] for record in records}) != 1:
+        raise ValueError("Iceberg fixture must bind one acquisition per table")
+    return records
+
+
+def run_rest_catalog_interop(  # ruff: ignore[too-many-locals,too-many-statements]
     *, rest_uri: str, fixture_path: Path
 ) -> IcebergInteropReceipt:
     """Exercise a real disposable REST catalogue through PyIceberg."""
 
     assert_disposable_rest_uri(rest_uri)
-    fixture_sha256 = hashlib.sha256(fixture_path.read_bytes()).hexdigest()
+    fixture_bytes = fixture_path.read_bytes()
+    fixture_sha256 = hashlib.sha256(fixture_bytes).hexdigest()
+    fixture_records = load_fixture_records(fixture_bytes)
+    acquisition_id = fixture_records[0]["acquisition_id"]
     pyiceberg_version = importlib.metadata.version("pyiceberg")
     if pyiceberg_version != PYICEBERG_VERSION:
         raise RuntimeError(
@@ -144,6 +217,7 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals]
     catalog_module = importlib.import_module("pyiceberg.catalog")
     schema_module = importlib.import_module("pyiceberg.schema")
     types = importlib.import_module("pyiceberg.types")
+    pyarrow = importlib.import_module("pyarrow")
     catalog = catalog_module.load_catalog(
         "gma-experiment",
         type="rest",
@@ -160,6 +234,9 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals]
         types.NestedField(3, "source_id", types.StringType(), required=True),
         types.NestedField(4, "native_id", types.StringType(), required=True),
         types.NestedField(5, "value", types.IntegerType(), required=True),
+        types.NestedField(
+            6, "source_release_date", types.DateType(), required=True
+        ),
     )
     operations: list[str] = []
     try:
@@ -171,7 +248,7 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals]
             properties={
                 "format-version": "2",
                 "gma.fixture-sha256": fixture_sha256,
-                "gma.acquisition-id": "acq-experiment-001",
+                "gma.acquisition-id": acquisition_id,
             },
         )
         operations.append("create_table")
@@ -182,6 +259,8 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals]
         with table.update_spec() as update:
             update.add_identity("source_id")
         operations.append("evolve_partition_spec")
+        table.append(pyarrow.Table.from_pylist(fixture_records))
+        operations.append("append_fixture_records")
         loaded = catalog.load_table(identifier)
         schema_evolution = (
             loaded.schema().find_field("observed_at").field_id
@@ -190,6 +269,15 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals]
         partition_evolution = any(
             field.name == "source_id" for field in loaded.spec().fields
         )
+        observed_records = cast(
+            "list[IcebergFixtureRecord]",
+            loaded.scan().to_arrow().to_pylist(),
+        )
+        data_roundtrip = sorted(
+            observed_records, key=itemgetter("native_id")
+        ) == sorted(fixture_records, key=itemgetter("native_id"))
+        populated_snapshot = loaded.current_snapshot() is not None
+        operations.append("verify_data_roundtrip")
         catalog.drop_table(identifier)
         operations.append("drop_table")
         reconstructed = catalog.create_table(
@@ -198,12 +286,14 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals]
             properties={
                 "format-version": "2",
                 "gma.fixture-sha256": fixture_sha256,
-                "gma.acquisition-id": "acq-experiment-001",
+                "gma.acquisition-id": acquisition_id,
                 "gma.reconstructed": "true",
             },
         )
         reconstruction_verified = (
             reconstructed.properties.get("gma.fixture-sha256") == fixture_sha256
+            and reconstructed.properties.get("gma.acquisition-id")
+            == acquisition_id
             and reconstructed.properties.get("gma.reconstructed") == "true"
         )
         operations.append("reconstruct_table")
@@ -214,6 +304,23 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals]
         )
         v3_created = v3_table.metadata.format_version == _FORMAT_VERSION_V3
         operations.append("create_v3_table")
+        verification_results = {
+            "empty snapshot": empty_snapshot,
+            "schema evolution": schema_evolution,
+            "partition evolution": partition_evolution,
+            "fixture data round-trip": data_roundtrip,
+            "populated snapshot": populated_snapshot,
+            "table reconstruction": reconstruction_verified,
+            "v3 table creation": v3_created,
+        }
+        failed_checks = tuple(
+            name for name, passed in verification_results.items() if not passed
+        )
+        if failed_checks:
+            raise RuntimeError(
+                "Iceberg REST fixture verification failed: "
+                + ", ".join(failed_checks)
+            )
     finally:
         for target in (identifier, v3_identifier):
             if catalog.table_exists(target):
@@ -222,13 +329,17 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals]
             catalog.drop_namespace(namespace)
     return IcebergInteropReceipt(
         schema_id="global-medicines-atlas.iceberg-interop-receipt",
-        schema_version=1,
+        schema_version=2,
         server_image=ICEBERG_REST_FIXTURE_IMAGE,
         iceberg_release=ICEBERG_RELEASE,
         pyiceberg_version=pyiceberg_version,
         fixture_sha256=fixture_sha256,
+        fixture_acquisition_id=acquisition_id,
+        fixture_record_count=len(fixture_records),
         operations=tuple(operations),
         empty_snapshot_observed=empty_snapshot,
+        populated_snapshot_observed=populated_snapshot,
+        data_roundtrip_verified=data_roundtrip,
         schema_evolution_verified=schema_evolution,
         partition_evolution_verified=partition_evolution,
         reconstruction_verified=reconstruction_verified,
