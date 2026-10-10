@@ -289,6 +289,8 @@ def _exercise_gold_review_queue(
     adjudication_path: Path,
 ) -> None:
     """Rebuild review cases from portable Gold projection without promotion."""
+    edge_file = adjudication_path.with_suffix(".parquet")
+    pq.write_table(edges, edge_file)
     projected_edges = []
     for row in edges.to_pylist():
         edge = {
@@ -318,6 +320,11 @@ def _exercise_gold_review_queue(
         case.review_state.value == "pending_review" for case in review_cases
     )
     assert all(case.promotion_performed is False for case in review_cases)
+    cli_payload = _invoke_gold_review_cli(edge_file)
+    assert cli_payload["cases"] == [
+        case.model_dump(mode="json") for case in review_cases
+    ]
+    assert cli_payload["promotion_performed"] is False
     case = review_cases[0]
     first = _gold_adjudication(
         candidate_id=case.review_case_id,
@@ -331,6 +338,9 @@ def _exercise_gold_review_queue(
     assert (
         regenerate_gold_edge_review_queue(review_cases, events) == review_cases
     )
+    assert _invoke_gold_review_cli(edge_file, adjudication_path)["cases"] == [
+        case.model_dump(mode="json") for case in review_cases
+    ]
 
     terminal = _gold_adjudication(
         candidate_id=case.review_case_id,
@@ -349,7 +359,29 @@ def _exercise_gold_review_queue(
         if item.review_case_id != case.review_case_id
     }
     assert all(item.promotion_performed is False for item in remaining_cases)
+    assert _invoke_gold_review_cli(
+        edge_file,
+        adjudication_path,
+    )["cases"] == [item.model_dump(mode="json") for item in remaining_cases]
     assert case.promotion_performed is False
+
+
+def _invoke_gold_review_cli(
+    edge_file: Path,
+    adjudication_file: Path | None = None,
+) -> dict[str, Any]:
+    args = [
+        "gold-review-queue",
+        "--edge-file",
+        str(edge_file),
+        "--queued-at",
+        GOLD_REVIEW_QUEUED_AT.isoformat(),
+    ]
+    if adjudication_file is not None:
+        args.extend(("--adjudications-file", str(adjudication_file)))
+    result = CliRunner().invoke(cli_app, args)
+    assert result.exit_code == 0, result.stderr
+    return json.loads(result.stdout)
 
 
 def _gold_adjudication(

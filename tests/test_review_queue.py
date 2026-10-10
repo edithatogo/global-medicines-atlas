@@ -1,10 +1,12 @@
 import json
+import os
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
 from pydantic import ValidationError
 
+from global_medicines_atlas import review_queue as review_queue_module
 from global_medicines_atlas.matching_features import (
     FeatureDisposition as D,
 )
@@ -26,6 +28,8 @@ from global_medicines_atlas.matching_policy import (
     PolicyReason,
 )
 from global_medicines_atlas.review_queue import (
+    MAX_ADJUDICATION_EVENTS,
+    MAX_ADJUDICATION_FILE_BYTES,
     ReviewQueueEntry,
     append_adjudication,
     event_id,
@@ -209,6 +213,207 @@ def test_event_chain_requires_strict_chronology(tmp_path: Path) -> None:
         )
         with pytest.raises(ValueError, match="strictly chronological"):
             append_adjudication(path, later)
+
+
+def test_loader_rejects_reordered_append_only_events(tmp_path: Path) -> None:
+    path = tmp_path / "events.jsonl"
+    first = _event("a")
+    second = _event(
+        "a",
+        state=ReviewState.REJECTED,
+        at=NOW + timedelta(seconds=1),
+        supersedes=first.event_id,
+    )
+    append_adjudication(path, first)
+    append_adjudication(path, second)
+    path.write_text("\n".join(reversed(path.read_text().splitlines())) + "\n")
+
+    with pytest.raises(
+        ValueError,
+        match=r"^First decision cannot supersede an event$",
+    ):
+        load_adjudications(path)
+
+
+def test_loader_bounds_adjudication_file_bytes(tmp_path: Path) -> None:
+    path = tmp_path / "oversized.jsonl"
+    path.write_bytes(b" " * (MAX_ADJUDICATION_FILE_BYTES + 1))
+
+    with pytest.raises(
+        ValueError, match=r"^Adjudication file exceeds byte bound$"
+    ):
+        load_adjudications(path)
+
+
+def test_loader_accepts_files_at_byte_and_event_bounds(tmp_path: Path) -> None:
+    byte_bounded = tmp_path / "byte-bounded.jsonl"
+    event = _event("a")
+    line = json.dumps(
+        event.model_dump(mode="json"),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    byte_bounded.write_bytes(
+        line + b" " * (MAX_ADJUDICATION_FILE_BYTES - len(line) - 1) + b"\n"
+    )
+    assert load_adjudications(byte_bounded) == (event,)
+
+    event_bounded = tmp_path / "event-bounded.jsonl"
+    event_bounded.write_text("\n" * MAX_ADJUDICATION_EVENTS)
+    assert load_adjudications(event_bounded) == ()
+
+
+def test_loader_rejects_event_count_over_bound(tmp_path: Path) -> None:
+    path = tmp_path / "too-many-lines.jsonl"
+    path.write_text("\n" * (MAX_ADJUDICATION_EVENTS + 1))
+
+    with pytest.raises(
+        ValueError,
+        match=r"^Adjudication file exceeds event bound$",
+    ):
+        load_adjudications(path)
+
+
+def test_loader_rejects_non_regular_file(tmp_path: Path) -> None:
+    path = tmp_path / "events.pipe"
+    os.mkfifo(path)
+
+    with pytest.raises(
+        ValueError, match=r"^Adjudication file must be regular$"
+    ):
+        load_adjudications(path)
+
+
+def test_loader_rejects_read_that_exceeds_byte_bound(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "events.jsonl"
+    path.write_bytes(b"{}")
+
+    class OversizedReader:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc_info):
+            pass
+
+        def read(self, size):
+            assert size == MAX_ADJUDICATION_FILE_BYTES + 1
+            return b" " * size
+
+    monkeypatch.setattr(review_queue_module.os, "fdopen", OversizedReader)
+
+    with pytest.raises(
+        ValueError, match=r"^Adjudication file exceeds byte bound$"
+    ):
+        load_adjudications(path)
+
+    assert path.exists()
+
+
+def test_loader_rejects_duplicate_event_ids(tmp_path: Path) -> None:
+    path = tmp_path / "duplicate-events.jsonl"
+    event = _event("a")
+    line = json.dumps(event.model_dump(mode="json"), sort_keys=True)
+    path.write_text(f"{line}\n{line}\n")
+
+    with pytest.raises(
+        ValueError,
+        match=r"^Duplicate adjudication event$",
+    ):
+        load_adjudications(path)
+
+
+def test_loader_requires_successor_to_reference_latest_event(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "stale-supersession.jsonl"
+    first = _event("a")
+    second = _event(
+        "a",
+        state=ReviewState.REJECTED,
+        at=NOW + timedelta(seconds=1),
+        supersedes=first.event_id,
+    )
+    third = _event(
+        "a",
+        state=ReviewState.ACCEPTED,
+        at=NOW + timedelta(seconds=2),
+        supersedes=first.event_id,
+    )
+    path.write_text(
+        "\n".join(
+            json.dumps(event.model_dump(mode="json"), sort_keys=True)
+            for event in (first, second, third)
+        )
+        + "\n"
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=r"^A later decision must supersede the latest event$",
+    ):
+        load_adjudications(path)
+
+
+def test_loader_rejects_non_chronological_event_chain(tmp_path: Path) -> None:
+    path = tmp_path / "same-time-events.jsonl"
+    first = _event("a")
+    second = _event(
+        "a",
+        state=ReviewState.REJECTED,
+        at=NOW,
+        supersedes=first.event_id,
+    )
+    lines = [
+        json.dumps(event.model_dump(mode="json"), sort_keys=True)
+        for event in (first, second)
+    ]
+    path.write_text("\n".join(lines) + "\n")
+
+    with pytest.raises(
+        ValueError,
+        match=r"^Adjudication events must be strictly chronological$",
+    ):
+        load_adjudications(path)
+
+
+def test_loader_opens_nonblocking_and_reads_with_a_byte_cap(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "events.jsonl"
+    append_adjudication(path, _event("a"))
+    real_open = os.open
+    real_fdopen = os.fdopen
+
+    def checked_open(file_path, flags, *args, **kwargs):
+        assert flags & os.O_NONBLOCK
+        return real_open(file_path, flags, *args, **kwargs)
+
+    class BoundedReader:
+        def __init__(self, descriptor, mode, *, closefd):
+            self.stream = real_fdopen(descriptor, mode, closefd=closefd)
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc_info):
+            self.stream.close()
+
+        def read(self, size):
+            assert size == MAX_ADJUDICATION_FILE_BYTES + 1
+            return self.stream.read(size)
+
+    monkeypatch.setattr(review_queue_module.os, "open", checked_open)
+    monkeypatch.setattr(review_queue_module.os, "fdopen", BoundedReader)
+
+    assert load_adjudications(path) == (_event("a"),)
 
 
 def test_event_identity_covers_supersession_and_rationale() -> None:
