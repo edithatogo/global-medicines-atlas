@@ -92,8 +92,10 @@
   packages and lineage.
 - [~] Generate cross-dataset batch roots, research packages, and federation
   lineage over exact public revisions. Synthetic per-dataset end-to-end
-  integration now passes for the existing MBS/PBS journeys; cross-dataset
-  exact-public-revision federation remains open.
+  integration now passes for the existing MBS/PBS journeys (PR #920); a
+  synthetic cross-dataset package now binds distinct source revisions under
+  one export revision. Full local Test-Goblin passes; hosted verification is
+  pending. Exact public-revision federation remains open.
 - [ ] Measure verification cost and retain per-object SHA-256 as the base
   evidence even when batch proofs pass.
 - [ ] Phase Verification & Checkpoint: additive attestations improve

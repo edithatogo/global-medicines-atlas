@@ -1569,6 +1569,199 @@ def _verify_saved_research_export(
     return saved_archive
 
 
+@dataclass(frozen=True)
+class _SyntheticCrossDatasetEvidence:
+    sources: tuple[tuple[str, bytes], ...]
+    query_manifest: Any
+    result_payload: bytes
+    batch_manifest: Any
+    batch_manifest_payload: bytes
+    cost_receipt_payload: bytes
+
+
+def _build_synthetic_cross_dataset_evidence(
+    tmp_path: Path,
+) -> _SyntheticCrossDatasetEvidence:
+    source_payloads = (
+        ("au.mbs.synthetic.edges", _payload(), "gma.synthetic.mbs.xml"),
+        ("au.pbs.synthetic.structure", PBS_XML, "gma.synthetic.pbs.xml"),
+    )
+    sources = tuple(
+        ExportSource(
+            dataset_id=f"synthetic/{resource_id}",
+            revision=("c" if resource_id.startswith("au.mbs") else "d") * 40,
+            path=f"{resource_id}/bronze/raw.xml",
+            sha256=hashlib.sha256(payload).hexdigest(),
+            schema_id=schema_id,
+            schema_version="1",
+        )
+        for resource_id, payload, schema_id in source_payloads
+    )
+    result_rows = tuple(
+        {"resource_id": resource_id, "fixture_present": True}
+        for resource_id, _, _ in source_payloads
+    )
+    query_manifest = build_query_snapshot_manifest(
+        query={
+            "mode": "synthetic_fixture_collection",
+            "resources": sorted(
+                resource_id for resource_id, _, _ in source_payloads
+            ),
+            "semantic_merge": False,
+        },
+        result_rows=result_rows,
+        sources=sources,
+        generated_at=NOW,
+        generator_commit="synthetic-cross-dataset-e2e-v1",
+    )
+    result_payload = canonical_result_bytes(result_rows)
+    batch_leaves = (
+        *(
+            MerkleLeaf(path=source.path, sha256=source.sha256)
+            for source in sources
+        ),
+        MerkleLeaf(
+            path="platinum/query-result.json",
+            sha256=hashlib.sha256(result_payload).hexdigest(),
+        ),
+    )
+    batch_manifest = build_merkle_manifest(batch_leaves)
+    assert verify_merkle_manifest(batch_manifest)
+    batch_manifest_payload = canonical_merkle_manifest_bytes(batch_manifest)
+    cost_receipt = build_verification_cost_receipt(batch_manifest)
+    assert cost_receipt.object_sha256_checks == 3
+    assert verify_verification_cost_receipt(batch_manifest, cost_receipt)
+    cost_receipt_payload = canonical_verification_cost_bytes(cost_receipt)
+    (tmp_path / "cross-dataset-merkle-manifest.json").write_bytes(
+        batch_manifest_payload
+    )
+    (tmp_path / "cross-dataset-verification-cost.json").write_bytes(
+        cost_receipt_payload
+    )
+    return _SyntheticCrossDatasetEvidence(
+        sources=tuple(
+            (resource_id, payload)
+            for resource_id, payload, _ in source_payloads
+        ),
+        query_manifest=query_manifest,
+        result_payload=result_payload,
+        batch_manifest=batch_manifest,
+        batch_manifest_payload=batch_manifest_payload,
+        cost_receipt_payload=cost_receipt_payload,
+    )
+
+
+def _build_synthetic_cross_dataset_package(
+    evidence: _SyntheticCrossDatasetEvidence,
+    tmp_path: Path,
+) -> bytes:
+    revision = "b" * 40
+    result_url = (
+        "https://fixtures.invalid/synthetic/cross-dataset/resolve/"
+        f"{revision}/query-result.json"
+    )
+    manifest_url = (
+        "https://fixtures.invalid/synthetic/cross-dataset/resolve/"
+        f"{revision}/merkle-manifest.json"
+    )
+    cost_url = (
+        "https://fixtures.invalid/synthetic/cross-dataset/resolve/"
+        f"{revision}/verification-cost.json"
+    )
+    crate = build_research_crate(
+        identifier=manifest_sha256(evidence.query_manifest),
+        name="Synthetic MBS and PBS fixture collection",
+        version="synthetic-cross-dataset-e2e-v1",
+        dataset_url="https://fixtures.invalid/synthetic/cross-dataset",
+        distributions=(
+            CrateDistribution(
+                identifier="query-result.json",
+                name="Synthetic fixture collection result",
+                content_url=result_url,
+                media_type="application/json",
+                sha256=evidence.query_manifest.result_sha256,
+            ),
+            CrateDistribution(
+                identifier="merkle-manifest.json",
+                name="Synthetic cross-dataset batch manifest",
+                content_url=manifest_url,
+                media_type="application/json",
+                sha256=hashlib.sha256(
+                    evidence.batch_manifest_payload
+                ).hexdigest(),
+            ),
+            CrateDistribution(
+                identifier="verification-cost.json",
+                name="Synthetic verification-cost receipt",
+                content_url=cost_url,
+                media_type="application/json",
+                sha256=hashlib.sha256(
+                    evidence.cost_receipt_payload
+                ).hexdigest(),
+            ),
+        ),
+    )
+    input_artifacts = tuple(
+        ResearchLineageArtifact(
+            identifier=f"{source.dataset_id}-bronze",
+            role="input",
+            public_url=(
+                f"https://fixtures.invalid/{source.dataset_id}/resolve/"
+                f"{source.revision}/{source.path}"
+            ),
+            sha256=source.sha256,
+            revision=source.revision,
+        )
+        for source in evidence.query_manifest.sources
+    )
+    lineage = build_research_lineage_receipt(
+        export_id=manifest_sha256(evidence.query_manifest),
+        revision=revision,
+        artifacts=(
+            *input_artifacts,
+            ResearchLineageArtifact(
+                identifier="query-result.json",
+                role="output",
+                public_url=result_url,
+                sha256=evidence.query_manifest.result_sha256,
+            ),
+            ResearchLineageArtifact(
+                identifier="merkle-manifest.json",
+                role="output",
+                public_url=manifest_url,
+                sha256=hashlib.sha256(
+                    evidence.batch_manifest_payload
+                ).hexdigest(),
+            ),
+            ResearchLineageArtifact(
+                identifier="verification-cost.json",
+                role="output",
+                public_url=cost_url,
+                sha256=hashlib.sha256(
+                    evidence.cost_receipt_payload
+                ).hexdigest(),
+            ),
+        ),
+    )
+    package = build_research_export_package(
+        manifest=evidence.query_manifest,
+        crate=crate,
+        lineage=lineage,
+    )
+    archive = package.archive_bytes()
+    (tmp_path / "cross-dataset-research-export.zip").write_bytes(archive)
+    lineage_document = json.loads(dict(package.documents)["lineage.json"])
+    assert {
+        artifact["identifier"]
+        for artifact in lineage_document["artifacts"]
+        if artifact["role"] == "input"
+    } == {
+        "synthetic/au.mbs.synthetic.edges-bronze",
+        "synthetic/au.pbs.synthetic.structure-bronze",
+    }
+    return archive
+
+
 def _silver_gold_products(
     payload: bytes, receipt: SourceReceipt
 ) -> tuple[pa.RecordBatch, pa.Table, bytes]:
@@ -1763,6 +1956,24 @@ def _query_synthetic_platinum(
             )
             assert len(requests) == 4
         return result
+
+
+@pytest.mark.e2e
+def test_synthetic_cross_dataset_batch_attestation(tmp_path: Path) -> None:
+    """Package MBS/PBS fixture receipts under one deterministic batch root."""
+    evidence = _build_synthetic_cross_dataset_evidence(tmp_path)
+    saved_archive = _build_synthetic_cross_dataset_package(evidence, tmp_path)
+
+    assert evidence.batch_manifest.root_sha256
+    assert evidence.cost_receipt_payload
+    assert all(payload not in saved_archive for _, payload in evidence.sources)
+    assert evidence.result_payload not in saved_archive
+    assert evidence.batch_manifest_payload not in saved_archive
+    assert evidence.cost_receipt_payload not in saved_archive
+    assert (
+        verify_research_export_package(saved_archive).archive_bytes()
+        == saved_archive
+    )
 
 
 @pytest.mark.e2e
