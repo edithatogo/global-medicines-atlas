@@ -15,6 +15,7 @@ from global_medicines_atlas.frontier_merkle import (
     MerkleLeaf,
     build_merkle_manifest,
     canonical_merkle_manifest_bytes,
+    merkle_root,
     verify_merkle_manifest,
 )
 from global_medicines_atlas.research_export_package import (
@@ -245,14 +246,53 @@ def test_cross_dataset_package_binds_existing_public_revisions() -> None:  # ruf
     )
     batch_manifest = build_merkle_manifest((
         *(
-            MerkleLeaf(path=source.path, sha256=source.sha256)
+            MerkleLeaf(
+                dataset_id=source.dataset_id,
+                revision=source.revision,
+                path=source.path,
+                sha256=source.sha256,
+            )
             for source in sources
         ),
         MerkleLeaf(
+            dataset_id="edithatogo/fixture-export",
+            revision=revision,
             path="platinum/query-result.json",
             sha256=manifest.result_sha256,
         ),
     ))
+    assert verify_merkle_manifest(batch_manifest)
+    source_dataset_ids = {source.dataset_id for source in sources}
+    source_leaves = tuple(
+        leaf
+        for leaf in batch_manifest.leaves
+        if leaf.dataset_id in source_dataset_ids
+    )
+    assert {(leaf.dataset_id, leaf.revision) for leaf in source_leaves} == {
+        (source.dataset_id, source.revision) for source in sources
+    }
+    assert (
+        merkle_root(
+            tuple(
+                leaf.model_copy(update={"revision": "0" * 40})
+                if leaf == source_leaves[0]
+                else leaf
+                for leaf in batch_manifest.leaves
+            )
+        )
+        != batch_manifest.root_sha256
+    )
+    assert (
+        merkle_root(
+            tuple(
+                leaf.model_copy(update={"dataset_id": "different/dataset"})
+                if leaf == source_leaves[0]
+                else leaf
+                for leaf in batch_manifest.leaves
+            )
+        )
+        != batch_manifest.root_sha256
+    )
     merkle_payload = canonical_merkle_manifest_bytes(batch_manifest)
     cost_receipt = build_verification_cost_receipt(batch_manifest)
     cost_payload = canonical_verification_cost_bytes(cost_receipt)

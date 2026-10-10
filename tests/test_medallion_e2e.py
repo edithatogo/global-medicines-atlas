@@ -1371,12 +1371,24 @@ def _prepare_synthetic_batch_attestation(
     )
     assert hashlib.sha256(result_payload).hexdigest() == result_sha256
     batch_manifest = build_merkle_manifest((
-        MerkleLeaf(path="bronze/raw.xml", sha256=source_sha256),
         MerkleLeaf(
+            dataset_id=f"synthetic/{resource_id}",
+            revision=revision,
+            path="bronze/raw.xml",
+            sha256=source_sha256,
+        ),
+        MerkleLeaf(
+            dataset_id=f"synthetic/{resource_id}",
+            revision=revision,
             path="platinum/query-receipt.json",
             sha256=query_receipt_sha256,
         ),
-        MerkleLeaf(path="platinum/query-result.json", sha256=result_sha256),
+        MerkleLeaf(
+            dataset_id=f"synthetic/{resource_id}",
+            revision=revision,
+            path="platinum/query-result.json",
+            sha256=result_sha256,
+        ),
     ))
     assert verify_merkle_manifest(batch_manifest)
     manifest_payload = canonical_merkle_manifest_bytes(batch_manifest)
@@ -1626,6 +1638,8 @@ def _build_synthetic_cross_dataset_evidence(
             for source in sources
         ),
         MerkleLeaf(
+            dataset_id="synthetic/cross-dataset-export",
+            revision="b" * 40,
             path="platinum/query-result.json",
             sha256=hashlib.sha256(result_payload).hexdigest(),
         ),
