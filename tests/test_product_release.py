@@ -230,6 +230,8 @@ def test_runner_verifies_clean_start_in_a_fresh_fixture_root(
     assert receipt.kind == "clean_start"
     assert receipt.subject_id == "CLEAN-START"
     assert "CLI comparison matched the API" in receipt.result.detail
+    assert "historical API/CLI results matched" in receipt.result.detail
+    assert "Atlas rendered the historical change" in receipt.result.detail
 
 
 def test_clean_start_fails_clearly_when_cli_output_is_not_json(

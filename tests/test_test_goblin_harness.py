@@ -91,6 +91,52 @@ def test_routine_profile_runs_javascript_style_gate(monkeypatch) -> None:
     assert [sys.executable, "scripts/validate_javascript_style.py"] in commands
 
 
+def test_profile_installs_scalene_from_its_declared_dependency_group(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The full profile must work from a clean default Test-Goblin env."""
+    commands: list[list[str]] = []
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+    monkeypatch.setattr(
+        HARNESS, "write_quality_receipt", lambda **_kwargs: None
+    )
+    monkeypatch.setattr(HARNESS, "enforce_optional_receipt", lambda _kind: None)
+
+    HARNESS.profile()
+
+    assert len(commands) == 1
+    assert commands[0][:5] == [
+        "uv",
+        "run",
+        "--group",
+        "profiling",
+        "python",
+    ]
+
+
+def test_profile_tests_installs_scalene_from_its_declared_dependency_group(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """The specialized profiling lane also resolves Scalene explicitly."""
+    commands: list[list[str]] = []
+    monkeypatch.setattr(HARNESS, "PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr(HARNESS, "run", commands.append)
+    monkeypatch.setattr(
+        HARNESS, "write_quality_receipt", lambda **_kwargs: None
+    )
+
+    HARNESS.profile_tests()
+
+    assert len(commands) == 1
+    assert commands[0][:5] == [
+        "uv",
+        "run",
+        "--group",
+        "profiling",
+        "python",
+    ]
+
+
 def load_update_script(name: str) -> ModuleType:
     """Load a governed update utility with its sibling imports available."""
     scripts = str(ROOT / "scripts")

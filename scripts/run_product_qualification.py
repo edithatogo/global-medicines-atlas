@@ -38,6 +38,20 @@ else:
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.atlas import create_atlas_app
 from global_medicines_atlas.cli import app as cli_app
+from global_medicines_atlas.historical_change import (
+    HistoricalChangePage,
+    HistoricalChangeService,
+    compare_historical_snapshots,
+)
+from global_medicines_atlas.historical_change_configuration import (
+    HistoricalChangeDocument,
+    load_historical_change_service,
+)
+from global_medicines_atlas.historical_comparison import (
+    NativeField,
+    NativeRow,
+    NativeSnapshot,
+)
 from global_medicines_atlas.product_contracts import (
     ComparisonQuery,
     EvidenceDimension,
@@ -211,6 +225,130 @@ def _query(
     )
 
 
+def _synthetic_history(root: Path):
+    """Create one deterministic synthetic historical change in the clean root."""
+    snapshots = tuple(
+        NativeSnapshot(
+            source_id="synthetic:clean-start",
+            table="items",
+            dimension="funding",
+            schema_era="synthetic-v1",
+            identity_profile="synthetic-item-id",
+            source_revision=revision,
+            source_path="fixture/items.json",
+            b1_sha256=sha256(f"receipt:{revision}".encode()).hexdigest(),
+            b2_sha256=sha256(f"payload:{revision}".encode()).hexdigest(),
+            observed_at=NOW,
+            cohort="synthetic",
+            declared_rows=1,
+            complete=True,
+            rows=(
+                NativeRow(
+                    native_id="item-1",
+                    occurrence_id=f"{revision}:item-1",
+                    fields=(
+                        NativeField(
+                            name="description",
+                            state="value",
+                            value=value,
+                        ),
+                    ),
+                ),
+            ),
+        )
+        for revision, value in (
+            ("synthetic-before", "before"),
+            ("synthetic-after", "after"),
+        )
+    )
+    change = compare_historical_snapshots(*snapshots)
+    history_file = root / "history.json"
+    history_file.write_text(
+        HistoricalChangeDocument(
+            version="1.0", changes=(change,)
+        ).model_dump_json(),
+        encoding="utf-8",
+    )
+    return history_file, load_historical_change_service(history_file)
+
+
+def _qualify_history_api(
+    service: ReadOnlyQueryService, history_service: HistoricalChangeService
+) -> HistoricalChangePage:
+    with TestClient(
+        create_app(service, historical_changes=history_service)
+    ) as client:
+        response = cast(
+            "Response",
+            client.get(  # pyright: ignore[reportUnknownMemberType]
+                "/api/v1/history", params={"limit": 1}
+            ),
+        )
+    if response.status_code != HTTP_OK:
+        raise RuntimeError("clean-start historical API query failed")
+    page = HistoricalChangePage.model_validate_json(response.content)
+    if page.total != 1 or len(page.items) != 1:
+        raise RuntimeError("clean-start historical API result was incomplete")
+    item = page.items[0]
+    if (
+        item.comparison_state != "compared"
+        or item.absence_interpretation != "unknown"
+    ):
+        raise RuntimeError("clean-start historical semantics were incomplete")
+    if not item.changes or item.changes[0].kind != "field_changed":
+        raise RuntimeError("clean-start historical change was incomplete")
+    return page
+
+
+def _qualify_history_cli(
+    history_file: Path, expected: HistoricalChangePage
+) -> None:
+    result = CliRunner().invoke(
+        cli_app,
+        [
+            "history",
+            "--history-file",
+            str(history_file),
+            "--limit",
+            "1",
+        ],
+    )
+    if result.exit_code != 0:
+        raise RuntimeError("clean-start historical CLI query failed")
+    try:
+        page = HistoricalChangePage.model_validate_json(result.stdout)
+    except ValueError as error:
+        raise RuntimeError(
+            "clean-start historical CLI query did not return valid JSON"
+        ) from error
+    if page != expected:
+        raise RuntimeError(
+            "clean-start historical CLI results did not match the API"
+        )
+
+
+def _qualify_history_atlas(
+    service: ReadOnlyQueryService, history_service: HistoricalChangeService
+) -> None:
+    with TestClient(
+        create_atlas_app(service, historical_changes=history_service)
+    ) as client:
+        response = cast(
+            "Response",
+            client.get("/history?limit=1"),  # pyright: ignore[reportUnknownMemberType]
+        )
+    if (
+        response.status_code != HTTP_OK
+        or "Historical comparison 1" not in response.text
+        or "unknown, not a negative status" not in response.text
+        or "before" not in response.text
+        or "after" not in response.text
+    ):
+        raise RuntimeError(
+            "clean-start Atlas did not render the historical change"
+        )
+
+
 def _p95(workload: Callable[[], object]) -> float:
     samples: list[float] = []
     for _ in range(SAMPLES):
@@ -253,6 +391,7 @@ def _clean_start_receipt(digest: str) -> QualificationReceipt:
         service = ReadOnlyQueryService(
             database, cursor_secret=SECRET, allowed_root=root
         )
+        history_file, history_service = _synthetic_history(root)
         service.readiness_probe()
         direct = service.comparisons(_query())
         if len(direct.conclusions) != CLEAN_START_ROWS:
@@ -284,6 +423,7 @@ def _clean_start_receipt(digest: str) -> QualificationReceipt:
         api_result = response.json()
         if len(api_result.get("conclusions", [])) != CLEAN_START_ROWS:
             raise RuntimeError("clean-start API query was incomplete")
+        history_api_page = _qualify_history_api(service, history_service)
 
         cli_arguments = [
             "comparison",
@@ -330,6 +470,8 @@ def _clean_start_receipt(digest: str) -> QualificationReceipt:
                 "clean-start CLI comparison did not match the API"
             )
 
+        _qualify_history_cli(history_file, history_api_page)
+
         with TestClient(create_atlas_app(service)) as client:
             atlas = cast(
                 "Response",
@@ -340,13 +482,15 @@ def _clean_start_receipt(digest: str) -> QualificationReceipt:
             or "Global Medicines Atlas" not in atlas.text
         ):
             raise RuntimeError("clean-start Atlas did not render")
+        _qualify_history_atlas(service, history_service)
 
     return _receipt(
         "clean_start",
         "CLEAN-START",
-        "Fresh temporary synthetic database passed readiness, bounded API "
-        "query, and Atlas rendering. CLI comparison matched the API; no live "
-        "deployment or production data was exercised.",
+        "Fresh temporary synthetic database passed readiness and bounded API "
+        "comparison. CLI comparison matched the API; historical API/CLI "
+        "results matched, and Atlas rendered the historical change with unknown "
+        "absence semantics. No live deployment or production data was exercised.",
         digest,
     )
 
