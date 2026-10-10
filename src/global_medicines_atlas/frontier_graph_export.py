@@ -12,6 +12,7 @@ import json
 from dataclasses import dataclass
 from operator import itemgetter
 from typing import TYPE_CHECKING
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     import pyarrow as pa
@@ -68,14 +69,14 @@ def export_rdf_star(
     payload = json.loads(exported.reference_json)
     lines: list[str] = []
     for row in payload["nodes"]:
-        subject = _rdf_id("node", row["node_id"])
+        subject = rdf_iri_reference("node", row["node_id"])
         lines.append(
             f"{subject} <urn:gma:payload-json> {_rdf_literal(_json(row))} ."
         )
     for row in payload["edges"]:
-        source = _rdf_id("node", row["source_node_id"])
-        target = _rdf_id("node", row["target_node_id"])
-        edge = _rdf_id("edge", row["edge_id"])
+        source = rdf_iri_reference("node", row["source_node_id"])
+        target = rdf_iri_reference("node", row["target_node_id"])
+        edge = rdf_iri_reference("edge", row["edge_id"])
         quoted = f"<<{source} <urn:gma:connects-to> {target}>>"
         lines.extend((
             f"{quoted} <urn:gma:edge-id> {_rdf_literal(row['edge_id'])} .",
@@ -88,14 +89,9 @@ def export_rdf_star(
     return result
 
 
-def _rdf_id(kind: str, value: str) -> str:
-    return (
-        "<urn:gma:"
-        + kind
-        + ":"
-        + value.replace("%", "%25").replace("#", "%23")
-        + ">"
-    )
+def rdf_iri_reference(kind: str, value: str) -> str:
+    """Encode one untrusted graph identifier as an ASCII-safe IRI reference."""
+    return f"<urn:gma:{kind}:{quote(value, safe='-._~:')}>"
 
 
 def _rdf_literal(value: str) -> str:

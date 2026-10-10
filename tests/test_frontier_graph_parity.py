@@ -1,7 +1,9 @@
 """Engine-free parity checks for graph preview projections."""
 
 import json
+from urllib.parse import quote
 
+import pyarrow as pa
 import pytest
 from test_mbs_gold_graph import graph
 
@@ -76,3 +78,29 @@ def test_duplicate_json_object_keys_are_rejected(field: str) -> None:
             values["parameters_json"],
             export_rdf_star(nodes, edges),
         )
+
+
+def test_graph_parity_uses_encoded_iri_identifiers():
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    node_rows = nodes.to_pylist()
+    edge_rows = edges.to_pylist()
+    original = node_rows[0]["node_id"]
+    hostile = "service id/雪%?#<tag>\\value"
+    node_rows[0]["node_id"] = hostile
+    for edge in edge_rows:
+        if edge["source_node_id"] == original:
+            edge["source_node_id"] = hostile
+        if edge["target_node_id"] == original:
+            edge["target_node_id"] = hostile
+    nodes = pa.Table.from_pylist(node_rows, schema=nodes.schema)
+    edges = pa.Table.from_pylist(edge_rows, schema=edges.schema)
+    exported = export_gold_tables(nodes, edges)
+    rdf = export_rdf_star(nodes, edges)
+
+    report = validate_graph_previews(
+        exported.reference_json, exported.parameters_json, rdf
+    )
+
+    expected = f"<urn:gma:node:{quote(hostile, safe='-._~:')}>"
+    assert expected in rdf
+    assert report.rdf_star_checked
