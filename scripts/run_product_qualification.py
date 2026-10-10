@@ -74,6 +74,8 @@ SAMPLES = 20
 METHOD_NOT_ALLOWED = 405
 HTTP_OK = 200
 CLEAN_START_ROWS = 3
+HISTORY_BEFORE_VALUE = "clean-start-field-before-unique-7f3a"
+HISTORY_AFTER_VALUE = "clean-start-field-after-unique-9c2d"
 IMPLEMENTATION_FILES = (
     "scripts/qualify_product_release.py",
     "scripts/run_product_qualification.py",
@@ -257,8 +259,8 @@ def _synthetic_history(root: Path):
             ),
         )
         for revision, value in (
-            ("synthetic-before", "before"),
-            ("synthetic-after", "after"),
+            ("synthetic-before", HISTORY_BEFORE_VALUE),
+            ("synthetic-after", HISTORY_AFTER_VALUE),
         )
     )
     change = compare_historical_snapshots(*snapshots)
@@ -341,8 +343,8 @@ def _qualify_history_atlas(
         response.status_code != HTTP_OK
         or "Historical comparison 1" not in response.text
         or "unknown, not a negative status" not in response.text
-        or "before" not in response.text
-        or "after" not in response.text
+        or HISTORY_BEFORE_VALUE not in response.text
+        or HISTORY_AFTER_VALUE not in response.text
     ):
         raise RuntimeError(
             "clean-start Atlas did not render the historical change"
