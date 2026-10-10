@@ -6,6 +6,7 @@ import pytest
 
 from global_medicines_atlas.research_lineage import (
     ResearchLineageArtifact,
+    ResearchLineageReceipt,
     build_research_lineage_receipt,
 )
 
@@ -116,6 +117,41 @@ def test_lineage_outputs_must_use_the_export_revision() -> None:
                     ),
                     sha256="e" * 64,
                     revision="c" * 40,
+                ),
+            ),
+        )
+
+
+def test_schema_v1_rejects_artifact_specific_revisions() -> None:
+    revision = "a" * 40
+    with pytest.raises(
+        ValueError,
+        match="artifact revisions require research-lineage schema version 2",
+    ):
+        ResearchLineageReceipt(
+            schema_id="global-medicines-atlas.research-lineage",
+            schema_version=1,
+            export_id="legacy-export",
+            revision=revision,
+            artifacts=(
+                ResearchLineageArtifact(
+                    identifier="input.json",
+                    role="input",
+                    public_url=(
+                        "https://huggingface.co/datasets/example/resolve/"
+                        f"{revision}/input.json"
+                    ),
+                    sha256="b" * 64,
+                    revision=revision,
+                ),
+                ResearchLineageArtifact(
+                    identifier="output.json",
+                    role="output",
+                    public_url=(
+                        "https://huggingface.co/datasets/example/resolve/"
+                        f"{revision}/output.json"
+                    ),
+                    sha256="c" * 64,
                 ),
             ),
         )
