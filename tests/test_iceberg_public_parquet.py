@@ -63,7 +63,7 @@ def test_public_payload_must_match_exact_count_and_digest(
 def test_receipt_is_explicitly_non_promotional_and_value_free() -> None:
     receipt = registration.PublicParquetIcebergReceipt(
         schema_id="global-medicines-atlas.public-parquet-iceberg-receipt",
-        schema_version=1,
+        schema_version=2,
         dataset=registration.DATASET,
         dataset_revision=registration.REVISION,
         object_path=registration.OBJECT_PATH,
@@ -81,6 +81,7 @@ def test_receipt_is_explicitly_non_promotional_and_value_free() -> None:
     assert receipt.rights_conclusion is False
     assert receipt.production_promotion is False
     assert receipt.public_data_mutation is False
+    assert receipt.object_content_parity_verified is True
     assert "rows" not in receipt.model_dump_json()
 
 
@@ -114,6 +115,11 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
         num_rows = 2
         column_names = ("service_code", "benefit")
         schema = FakeArrowSchema()
+        rows = (("service-1", "benefit-1"), ("service-2", "benefit-2"))
+
+        def equals(self, other: object, *, check_metadata: bool) -> bool:
+            assert check_metadata is False
+            return isinstance(other, FakeArrowTable) and self.rows == other.rows
 
     class FakePhysicalField:
         def __init__(self, name: str) -> None:
@@ -143,9 +149,16 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
             ])
 
     class FakeScan:
-        def __init__(self, *, should_fail: bool, mismatch: bool) -> None:
+        def __init__(
+            self,
+            *,
+            should_fail: bool,
+            mismatch: bool,
+            content_mismatch: bool,
+        ) -> None:
             self.should_fail = should_fail
             self.mismatch = mismatch
+            self.content_mismatch = content_mismatch
 
         def to_arrow(self) -> FakeArrowTable:
             if self.should_fail:
@@ -153,6 +166,11 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
             table = FakeArrowTable()
             if self.mismatch:
                 table.num_rows = 3
+            if self.content_mismatch:
+                table.rows = (
+                    ("mutated-service", "benefit-1"),
+                    ("service-2", "benefit-2"),
+                )
             return table
 
     class FakeTable:
@@ -160,6 +178,7 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
             self.added: list[str] = []
             self.fail_scan = False
             self.mismatch_scan = False
+            self.content_mismatch_scan = False
             self.fail_add_files = False
 
         def add_files(self, files: list[str]) -> None:
@@ -169,7 +188,9 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
 
         def scan(self) -> FakeScan:
             return FakeScan(
-                should_fail=self.fail_scan, mismatch=self.mismatch_scan
+                should_fail=self.fail_scan,
+                mismatch=self.mismatch_scan,
+                content_mismatch=self.content_mismatch_scan,
             )
 
     class FakeCatalog:
@@ -306,6 +327,17 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
     ]
     fake_catalog.dropped.clear()
     fake_catalog.table.mismatch_scan = False
+    fake_catalog.table.content_mismatch_scan = True
+    with pytest.raises(ValueError, match="scan content differs"):
+        registration.run_public_parquet_registration(
+            rest_uri="http://127.0.0.1:8181", temporary_directory=tmp_path
+        )
+    assert fake_catalog.dropped == [
+        ("gma_public_parquet", "mbs_services"),
+        ("gma_public_parquet",),
+    ]
+    fake_catalog.dropped.clear()
+    fake_catalog.table.content_mismatch_scan = False
     schema_names[:] = ["duplicate", "duplicate"]
     with pytest.raises(ValueError, match="invalid or duplicate names"):
         registration.run_public_parquet_registration(
@@ -327,9 +359,11 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
     )
 
     assert receipt.row_count == 2
+    assert receipt.object_content_parity_verified is True
     assert receipt.column_names == ("service_code", "benefit")
     assert receipt.object_sha256 == hashlib.sha256(payload).hexdigest()
     assert receipt.anonymous_digest_verified is True
+    assert receipt.object_content_parity_verified is True
     assert receipt.catalogue_cleanup_verified is True
     assert (
         fake_catalog.properties["gma.dataset-revision"] == registration.REVISION

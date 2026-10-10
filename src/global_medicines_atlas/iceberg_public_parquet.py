@@ -35,7 +35,7 @@ HTTP_OK = 200
 
 class PublicParquetIcebergReceipt(FrozenModel):
     schema_id: Literal["global-medicines-atlas.public-parquet-iceberg-receipt"]
-    schema_version: Literal[1]
+    schema_version: Literal[2]
     dataset: Literal["edithatogo/australian-mbs-source-archive"]
     dataset_revision: str = Field(pattern=r"^[0-9a-f]{40}$")
     object_path: Literal["silver/mbs/v4/2025-07-v3/services.parquet"]
@@ -50,6 +50,7 @@ class PublicParquetIcebergReceipt(FrozenModel):
     row_count: int = Field(ge=0)
     column_names: tuple[str, ...] = Field(min_length=1)
     anonymous_digest_verified: Literal[True] = True
+    object_content_parity_verified: Literal[True] = True
     existing_public_object_only: Literal[True] = True
     disposable_catalog_registration: Literal[True] = True
     catalogue_cleanup_verified: Literal[True] = True
@@ -167,6 +168,10 @@ def run_public_parquet_registration(  # ruff: ignore[too-many-locals, too-many-s
             raise ValueError(
                 "Iceberg scan differs from the exact public Parquet object"
             )
+        if not observed.equals(arrow_table, check_metadata=False):
+            raise ValueError(
+                "Iceberg scan content differs from the exact public Parquet object"
+            )
     finally:
         cleanup_error: Exception | None = None
         if table_created:
@@ -185,7 +190,7 @@ def run_public_parquet_registration(  # ruff: ignore[too-many-locals, too-many-s
             ) from cleanup_error
     return PublicParquetIcebergReceipt(
         schema_id="global-medicines-atlas.public-parquet-iceberg-receipt",
-        schema_version=1,
+        schema_version=2,
         dataset=DATASET,
         dataset_revision=REVISION,
         object_path=OBJECT_PATH,
