@@ -100,8 +100,12 @@
   existing MBS/PBS public revisions now pass through the metadata-only
   cross-dataset package verifier. This is immutable identity binding, not a
   source-content join or source-coverage qualification; those remain open.
-- [ ] Measure verification cost and retain per-object SHA-256 as the base
-  evidence even when batch proofs pass.
+- [x] Measure deterministic verification work and retain per-object SHA-256
+  as the base evidence even when batch proofs pass. For two existing immutable
+  source objects plus one synthetic result leaf, the bound receipt requires
+  three object-digest checks, three Merkle leaf hashes, and three pair hashes;
+  all three SHA-256 values remain explicit leaves. This is a reproducible work
+  count, not payload re-download or wall-clock performance evidence.
 - [ ] Phase Verification & Checkpoint: additive attestations improve
   verification without creating circular trust or hiding object-level failures.
 

@@ -6,6 +6,17 @@ from zipfile import ZIP_DEFLATED, ZIP_STORED, ZipFile, ZipInfo
 
 import pytest
 
+from global_medicines_atlas.frontier_attestation import (
+    build_verification_cost_receipt,
+    canonical_verification_cost_bytes,
+    verify_verification_cost_receipt,
+)
+from global_medicines_atlas.frontier_merkle import (
+    MerkleLeaf,
+    build_merkle_manifest,
+    canonical_merkle_manifest_bytes,
+    verify_merkle_manifest,
+)
 from global_medicines_atlas.research_export_package import (
     build_research_export_package,
     verify_research_export_package,
@@ -196,7 +207,7 @@ def test_research_export_package_rejects_source_binding_mismatch(
 
 
 @pytest.mark.e2e
-def test_cross_dataset_package_binds_existing_public_revisions() -> None:
+def test_cross_dataset_package_binds_existing_public_revisions() -> None:  # ruff: ignore[too-many-locals]
     sources = (
         ExportSource(
             dataset_id="edithatogo/australian-mbs-source-archive",
@@ -232,6 +243,27 @@ def test_cross_dataset_package_binds_existing_public_revisions() -> None:
         "https://huggingface.co/datasets/edithatogo/fixture-export/resolve/"
         f"{revision}/query-result.json"
     )
+    batch_manifest = build_merkle_manifest((
+        *(
+            MerkleLeaf(path=source.path, sha256=source.sha256)
+            for source in sources
+        ),
+        MerkleLeaf(
+            path="platinum/query-result.json",
+            sha256=manifest.result_sha256,
+        ),
+    ))
+    merkle_payload = canonical_merkle_manifest_bytes(batch_manifest)
+    cost_receipt = build_verification_cost_receipt(batch_manifest)
+    cost_payload = canonical_verification_cost_bytes(cost_receipt)
+    merkle_url = (
+        "https://huggingface.co/datasets/edithatogo/fixture-export/resolve/"
+        f"{revision}/merkle-manifest.json"
+    )
+    cost_url = (
+        "https://huggingface.co/datasets/edithatogo/fixture-export/resolve/"
+        f"{revision}/verification-cost.json"
+    )
     crate = build_research_crate(
         identifier=export_id,
         name="Synthetic existing-revision identity package",
@@ -244,6 +276,20 @@ def test_cross_dataset_package_binds_existing_public_revisions() -> None:
                 content_url=result_url,
                 media_type="application/json",
                 sha256=manifest.result_sha256,
+            ),
+            CrateDistribution(
+                identifier="merkle-manifest.json",
+                name="Source digest batch manifest",
+                content_url=merkle_url,
+                media_type="application/json",
+                sha256=hashlib.sha256(merkle_payload).hexdigest(),
+            ),
+            CrateDistribution(
+                identifier="verification-cost.json",
+                name="Deterministic verification work receipt",
+                content_url=cost_url,
+                media_type="application/json",
+                sha256=hashlib.sha256(cost_payload).hexdigest(),
             ),
         ),
     )
@@ -271,6 +317,18 @@ def test_cross_dataset_package_binds_existing_public_revisions() -> None:
                 public_url=result_url,
                 sha256=manifest.result_sha256,
             ),
+            ResearchLineageArtifact(
+                identifier="merkle-manifest.json",
+                role="output",
+                public_url=merkle_url,
+                sha256=hashlib.sha256(merkle_payload).hexdigest(),
+            ),
+            ResearchLineageArtifact(
+                identifier="verification-cost.json",
+                role="output",
+                public_url=cost_url,
+                sha256=hashlib.sha256(cost_payload).hexdigest(),
+            ),
         ),
     )
 
@@ -292,6 +350,15 @@ def test_cross_dataset_package_binds_existing_public_revisions() -> None:
     }
 
     assert lineage.schema_version == 2
+    assert verify_merkle_manifest(batch_manifest)
+    assert verify_verification_cost_receipt(batch_manifest, cost_receipt)
+    assert cost_receipt.object_sha256_checks == 3
+    assert cost_receipt.merkle_leaf_hashes == 3
+    assert cost_receipt.merkle_pair_hashes == 3
+    assert {leaf.sha256 for leaf in batch_manifest.leaves} == {
+        *(source.sha256 for source in sources),
+        manifest.result_sha256,
+    }
     assert bound_inputs == {
         source.dataset_id: (
             source.revision,

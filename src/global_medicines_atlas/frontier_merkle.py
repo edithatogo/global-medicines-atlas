@@ -1,9 +1,8 @@
 """Deterministic, additive Merkle manifests for public object batches.
 
 The Merkle root accelerates batch verification but never replaces the
-source-native per-object SHA-256 receipts.  Leaves are sorted by path and
-bind both the path and object digest, so reordering, substitution, and missing
-objects produce a different root.
+source-native per-object SHA-256 receipts. Leaves bind source dataset,
+revision, path, and object digest so source identity is covered by the root.
 """
 
 from __future__ import annotations
@@ -17,7 +16,7 @@ from pydantic import Field, field_validator
 from .models import FrozenModel
 
 MERKLE_SCHEMA = "global-medicines-atlas.merkle-manifest"
-MERKLE_VERSION = 1
+MERKLE_VERSION = 2
 
 
 class MerkleLeaf(FrozenModel):
@@ -25,6 +24,8 @@ class MerkleLeaf(FrozenModel):
 
     path: str = Field(min_length=1)
     sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    dataset_id: str | None = Field(default=None, min_length=1)
+    revision: str | None = Field(default=None, min_length=1)
 
 
 class MerkleManifest(FrozenModel):
@@ -51,12 +52,17 @@ def _hash_pair(left: bytes, right: bytes) -> bytes:
 
 
 def _leaf_hash(leaf: MerkleLeaf) -> bytes:
-    return hashlib.sha256(
-        b"leaf\0"
-        + leaf.path.encode("utf-8")
-        + b"\0"
-        + leaf.sha256.encode("ascii")
-    ).digest()
+    identity = json.dumps(
+        {
+            "dataset_id": leaf.dataset_id,
+            "path": leaf.path,
+            "revision": leaf.revision,
+            "sha256": leaf.sha256,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(b"leaf\0" + identity).digest()
 
 
 def merkle_root(leaves: Sequence[MerkleLeaf]) -> str:
