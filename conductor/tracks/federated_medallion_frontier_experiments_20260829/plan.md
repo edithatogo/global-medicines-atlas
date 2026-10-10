@@ -84,9 +84,16 @@
 - [x] Write and pass failing-first Merkle mutation/order/missing-leaf and
   metadata-only RO-Crate completeness controls. Croissant, OpenLineage, and
   optional signature/provenance remain separate candidate surfaces.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Generate cross-dataset batch roots, research packages, and federation
-  lineage over exact public revisions.
+- [x] Confirm the intended failure before implementation; add a synthetic
+  Bronze-to-Platinum batch-attestation regression to the existing MBS/PBS
+  journeys before wiring the Merkle manifest and verification-cost receipt.
+  Both MBS and PBS journeys failed first because the batch manifest was absent,
+  then passed with the manifest and cost receipt bound into metadata-only
+  packages and lineage.
+- [~] Generate cross-dataset batch roots, research packages, and federation
+  lineage over exact public revisions. Synthetic per-dataset end-to-end
+  integration now passes for the existing MBS/PBS journeys; cross-dataset
+  exact-public-revision federation remains open.
 - [ ] Measure verification cost and retain per-object SHA-256 as the base
   evidence even when batch proofs pass.
 - [ ] Phase Verification & Checkpoint: additive attestations improve

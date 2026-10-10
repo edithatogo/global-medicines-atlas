@@ -6,7 +6,7 @@ import hashlib
 import io
 import json
 from collections.abc import Iterable
-from dataclasses import replace
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any, Literal, Never, Protocol, cast
@@ -43,6 +43,17 @@ from global_medicines_atlas.federation_distribution import (
     reconcile_distribution,
 )
 from global_medicines_atlas.federation_reader import FederatedReader
+from global_medicines_atlas.frontier_attestation import (
+    build_verification_cost_receipt,
+    canonical_verification_cost_bytes,
+    verify_verification_cost_receipt,
+)
+from global_medicines_atlas.frontier_merkle import (
+    MerkleLeaf,
+    build_merkle_manifest,
+    canonical_merkle_manifest_bytes,
+    verify_merkle_manifest,
+)
 from global_medicines_atlas.gold_edge_review import (
     build_gold_edge_review_queue,
     regenerate_gold_edge_review_queue,
@@ -1331,9 +1342,73 @@ def _parquet_payload(table: pa.RecordBatch | pa.Table) -> bytes:
     return output.getvalue()
 
 
+@dataclass(frozen=True)
+class _SyntheticBatchAttestation:
+    manifest_payload: bytes
+    manifest_sha256: str
+    manifest_url: str
+    cost_receipt_payload: bytes
+    cost_receipt_sha256: str
+    cost_receipt_url: str
+
+
+def _prepare_synthetic_batch_attestation(
+    *,
+    source_payload: bytes,
+    source_sha256: str,
+    query_receipt_payload: bytes,
+    query_receipt_sha256: str,
+    result_payload: bytes,
+    result_sha256: str,
+    revision: str,
+    tmp_path: Path,
+) -> _SyntheticBatchAttestation:
+    assert hashlib.sha256(source_payload).hexdigest() == source_sha256
+    assert (
+        hashlib.sha256(query_receipt_payload).hexdigest()
+        == query_receipt_sha256
+    )
+    assert hashlib.sha256(result_payload).hexdigest() == result_sha256
+    batch_manifest = build_merkle_manifest((
+        MerkleLeaf(path="bronze/raw.xml", sha256=source_sha256),
+        MerkleLeaf(
+            path="platinum/query-receipt.json",
+            sha256=query_receipt_sha256,
+        ),
+        MerkleLeaf(path="platinum/query-result.json", sha256=result_sha256),
+    ))
+    assert verify_merkle_manifest(batch_manifest)
+    manifest_payload = canonical_merkle_manifest_bytes(batch_manifest)
+    manifest_sha256_value = hashlib.sha256(manifest_payload).hexdigest()
+    cost_receipt = build_verification_cost_receipt(batch_manifest)
+    assert cost_receipt.object_sha256_checks == len(batch_manifest.leaves)
+    assert verify_verification_cost_receipt(batch_manifest, cost_receipt)
+    cost_receipt_payload = canonical_verification_cost_bytes(cost_receipt)
+    cost_receipt_sha256 = hashlib.sha256(cost_receipt_payload).hexdigest()
+    batch_manifest_url = (
+        "https://fixtures.invalid/synthetic/exports/resolve/"
+        f"{revision}/merkle-manifest.json"
+    )
+    cost_receipt_url = (
+        "https://fixtures.invalid/synthetic/exports/resolve/"
+        f"{revision}/verification-cost.json"
+    )
+    (tmp_path / "merkle-manifest.json").write_bytes(manifest_payload)
+    (tmp_path / "verification-cost.json").write_bytes(cost_receipt_payload)
+    return _SyntheticBatchAttestation(
+        manifest_payload=manifest_payload,
+        manifest_sha256=manifest_sha256_value,
+        manifest_url=batch_manifest_url,
+        cost_receipt_payload=cost_receipt_payload,
+        cost_receipt_sha256=cost_receipt_sha256,
+        cost_receipt_url=cost_receipt_url,
+    )
+
+
 def _verify_saved_research_export(
     result: QueryResult,
     source_receipt: SourceReceipt,
+    source_payload: bytes,
     resource_id: str,
     tmp_path: Path,
 ) -> bytes:
@@ -1368,6 +1443,16 @@ def _verify_saved_research_export(
         == result.query_receipt.receipt_sha256
     )
     (tmp_path / "query-receipt.json").write_bytes(receipt_payload)
+    attestation = _prepare_synthetic_batch_attestation(
+        source_payload=source_payload,
+        source_sha256=source.sha256,
+        query_receipt_payload=receipt_payload,
+        query_receipt_sha256=result.query_receipt.receipt_sha256,
+        result_payload=result_payload,
+        result_sha256=manifest.result_sha256,
+        revision=revision,
+        tmp_path=tmp_path,
+    )
     export_url = (
         "https://fixtures.invalid/synthetic/exports/resolve/"
         f"{revision}/query-result.json"
@@ -1384,6 +1469,20 @@ def _verify_saved_research_export(
                 content_url=export_url,
                 media_type="application/json",
                 sha256=manifest.result_sha256,
+            ),
+            CrateDistribution(
+                identifier="merkle-manifest.json",
+                name="Synthetic batch Merkle manifest",
+                content_url=attestation.manifest_url,
+                media_type="application/json",
+                sha256=attestation.manifest_sha256,
+            ),
+            CrateDistribution(
+                identifier="verification-cost.json",
+                name="Synthetic verification-cost receipt",
+                content_url=attestation.cost_receipt_url,
+                media_type="application/json",
+                sha256=attestation.cost_receipt_sha256,
             ),
         ),
     )
@@ -1415,6 +1514,18 @@ def _verify_saved_research_export(
                 public_url=export_url,
                 sha256=manifest.result_sha256,
             ),
+            ResearchLineageArtifact(
+                identifier="merkle-manifest.json",
+                role="output",
+                public_url=attestation.manifest_url,
+                sha256=attestation.manifest_sha256,
+            ),
+            ResearchLineageArtifact(
+                identifier="verification-cost.json",
+                role="output",
+                public_url=attestation.cost_receipt_url,
+                sha256=attestation.cost_receipt_sha256,
+            ),
         ),
     )
     package = build_research_export_package(
@@ -1427,7 +1538,22 @@ def _verify_saved_research_export(
     saved_archive = (tmp_path / "research-export.zip").read_bytes()
 
     assert b"source_record_has_benefit" not in saved_archive
+    assert source_payload not in saved_archive
+    assert receipt_payload not in saved_archive
     assert result_payload not in saved_archive
+    assert attestation.manifest_payload not in saved_archive
+    assert attestation.cost_receipt_payload not in saved_archive
+    lineage_document = json.loads(dict(package.documents)["lineage.json"])
+    output_identifiers = {
+        artifact["identifier"]
+        for artifact in lineage_document["artifacts"]
+        if artifact["role"] == "output"
+    }
+    assert output_identifiers == {
+        "query-result.json",
+        "merkle-manifest.json",
+        "verification-cost.json",
+    }
     assert (
         verify_research_export_package(saved_archive).archive_bytes()
         == saved_archive
@@ -1717,6 +1843,7 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     export_package = _verify_saved_research_export(
         result=result,
         source_receipt=landed.receipt,
+        source_payload=landed.payload_path.read_bytes(),
         resource_id="au.mbs.synthetic.edges",
         tmp_path=tmp_path,
     )
@@ -1844,6 +1971,7 @@ def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
     export_package = _verify_saved_research_export(
         result=result,
         source_receipt=landed.receipt,
+        source_payload=landed.payload_path.read_bytes(),
         resource_id="au.pbs.synthetic.structure",
         tmp_path=tmp_path,
     )
