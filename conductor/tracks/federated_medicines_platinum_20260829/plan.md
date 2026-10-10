@@ -291,6 +291,17 @@
     and does not qualify a production source or close the broader Phase 2
     checkpoint.
 
+### Deterministic Gold review-queue CLI (2026-10-10)
+
+- [x] Add the read-only `gold-review-queue` CLI over validated MBS/PBS Gold
+  Parquet. Require an explicit timezone-aware queue timestamp and accept only
+  caller-supplied append-only adjudication JSONL; emit pending cases with
+  content-bound identities while omitting reviewer rationales and never
+  promoting a case. CLI contract tests and both synthetic Bronze-to-Platinum
+  journeys cover queue creation, ledger readback, and case-specific queue
+  regeneration. This does not grant reviewer authority or complete the
+  Platinum checkpoint.
+
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
 - [x] Write temporal/change, missing-period, source-outage, schema-drift,

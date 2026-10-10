@@ -727,7 +727,9 @@
   append-only adjudication ledger and regenerate the pending queue from its
   readback. A supplied synthetic `needs_information` event keeps its case
   pending; a later chronological accepted event supersedes it and clears only
-  that case. Other PBS cases stay pending, and no case or event performs
+  that case. The same pending cases and post-adjudication state are now
+  queryable through the bounded `gold-review-queue` CLI. Other PBS cases stay
+  pending, no reviewer rationale is emitted, and no case or event performs
   promotion. This verifies persistence and queue mechanics only; the synthetic
   reviewer is not an authority grant or substantive review. Real reviewer
   authority, receipts, calibration, promotion, real-source controls, and the
