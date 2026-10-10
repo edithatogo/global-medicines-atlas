@@ -1,0 +1,78 @@
+{
+  "schema_id": "global-medicines-atlas.frontier-experiment-disposition",
+  "schema_version": 1,
+  "recorded_at": "2026-10-10T14:47:37Z",
+  "track_id": "federated_medallion_frontier_experiments_20260829",
+  "review_scope": "Existing experiment matrix and evidence available on the reviewed mainline; no new sources, acquisitions, external services, or production promotions.",
+  "reviewed_inputs": [
+    {
+      "path": "quality/qualifications/frontier-experiment-matrix.json",
+      "sha256": "af8f93d3574420e9ca26ee4770296f4c9e48519f272ea660efe0200c183b3bf3"
+    },
+    {
+      "path": "quality/qualifications/public-parquet-iceberg-registration-20261010.json",
+      "sha256": "717cc62571711564ede23c1ba869fe02a9cce3ee2238382b39a6f4415371c0be"
+    }
+  ],
+  "review": {
+    "additional_paid_or_external_service_use": false,
+    "incremental_external_service_cost": 0,
+    "hosted_ci_consumption": "Existing required GitHub Actions lanes; exact metered credits are unavailable in this repository evidence.",
+    "supply_chain": "No dependency added. Preview projections remain optional/rebuildable; no production dependency adopted.",
+    "security_and_operations": "Keep inputs untrusted; reject ambiguous JSON and invalid RDF identifiers; generated catalogues, graphs, and indexes are disposable derivatives. Use Python 3.14 and portable Gold tables as the fallback. Rebuild derivatives from their inputs after corruption; delete them for rollback or withdrawal.",
+    "rights_boundary": "No licensing conclusion. Current synthetic fixtures do not contain restricted terminology. The graph export contract does not inspect restricted content embedded inside allowed fields_json values; content-level restricted-byte screening and rights authority remain open gates."
+  },
+  "dispositions": [
+    {
+      "experiment_id": "remote_query_streaming",
+      "disposition": "defer",
+      "basis": "The exact existing public object and anonymous digest are pinned and verified. Comparative request/byte amplification, latency, memory, and result-parity measurements remain absent, so this experiment remains deferred.",
+      "fallback": "Pinned anonymous object download and bounded local DuckDB query."
+    },
+    {
+      "experiment_id": "xet_object_mechanics",
+      "disposition": "defer",
+      "basis": "Two exact public historical revisions and anonymous byte verification remain absent.",
+      "fallback": "Restore full pinned objects and independently verify each SHA-256."
+    },
+    {
+      "experiment_id": "iceberg_catalogue",
+      "disposition": "retain-preview",
+      "basis": "Existing public Parquet to Iceberg content parity and hosted registration are verified; this is rebuildable metadata only and does not satisfy raw-source parity or grant production authority.",
+      "fallback": "Read source-faithful Parquet directly."
+    },
+    {
+      "experiment_id": "batch_attestation",
+      "disposition": "retain-preview",
+      "basis": "Exact existing MBS/PBS revisions are bound into metadata-only cross-dataset package leaves and verified by the package verifier. The artifact remains a preview because payload bytes were not fetched/rehashed for content parity; this does not qualify rights or source coverage.",
+      "fallback": "Verify each object from its independent SHA-256 receipt."
+    },
+    {
+      "experiment_id": "graph_semantic_projection",
+      "disposition": "defer",
+      "basis": "Deterministic reference, Cypher, RDF-star, and NetworkX graph projections are bounded to existing portable Gold/synthetic fixtures; RDF identifier encoding and duplicate-key rejection are verified. Semantic calibration, live Neo4j/SPARQL parity, public graph qualification, and restricted-content screening remain open.",
+      "fallback": "Query portable Gold node and edge tables directly; keep candidate retrieval non-authoritative."
+    },
+    {
+      "experiment_id": "semantic_candidate_retrieval",
+      "disposition": "defer",
+      "basis": "On six existing synthetic cases, identifier-first lexical recall@5 is 0.25, both negative controls produced candidates, and abstention is 0.5. Confidence calibration was not evaluated. Ontology and embedding fixtures are unavailable; Tantivy and Qdrant lack a measured requirement.",
+      "fallback": "Keep candidate retrieval non-authoritative and require human review; use exact identifiers and portable table queries."
+    },
+    {
+      "experiment_id": "transactional_alternatives",
+      "disposition": "defer",
+      "basis": "No measured multi-writer or high-update requirement justifies another transactional engine.",
+      "fallback": "Immutable Parquet, append-only receipts, and embedded DuckDB."
+    }
+  ],
+  "decision": "No preview feature is promoted. Reopen deferred rows only when their stated prerequisites are met; any production promotion requires a separate ADR and implementation track.",
+  "source_boundary": {
+    "sources_added_or_acquired": false,
+    "coverage_claimed": false,
+    "rights_or_licensing_conclusion": false,
+    "restricted_bytes_added": false,
+    "public_data_mutated": false,
+    "production_authority_promoted": false
+  }
+}
