@@ -145,6 +145,10 @@ def test_core_module_import_does_not_load_optional_pyiceberg() -> None:
         (b'[{"native_id":"A","native_id":"B"}]', "duplicate contract JSON key"),
         (b"[]", "non-empty row array"),
         (b"[{}]", "row fields do not match schema"),
+        (
+            b'[{"acquisition_id":1,"content_id":"sha256:x","native_id":"A","source_id":"S","source_release_date":"2026-08-20","value":1}]',
+            "invalid field types",
+        ),
     ],
 )
 def test_iceberg_fixture_ingest_rejects_ambiguous_or_incomplete_json(
@@ -155,12 +159,28 @@ def test_iceberg_fixture_ingest_rejects_ambiguous_or_incomplete_json(
 
 
 @pytest.mark.edge
+def test_iceberg_fixture_ingest_rejects_non_object_rows() -> None:
+    with pytest.raises(TypeError, match="rows must be JSON objects"):
+        iceberg_interop.load_fixture_records(b"[1]")
+
+
+@pytest.mark.edge
 def test_iceberg_fixture_ingest_rejects_mixed_acquisition_identity() -> None:
     records = _fixture_records()
     records[1]["acquisition_id"] = "acq-2"
     payload = json.dumps(records).encode("utf-8")
 
     with pytest.raises(ValueError, match="one acquisition per table"):
+        iceberg_interop.load_fixture_records(payload)
+
+
+@pytest.mark.edge
+def test_iceberg_fixture_ingest_rejects_duplicate_native_identifiers() -> None:
+    records = _fixture_records()
+    records[1]["native_id"] = records[0]["native_id"]
+    payload = json.dumps(records).encode("utf-8")
+
+    with pytest.raises(ValueError, match="native identifiers must be unique"):
         iceberg_interop.load_fixture_records(payload)
 
 
