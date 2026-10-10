@@ -15,6 +15,7 @@ from .models import FrozenModel
 
 _SCHEMA_ID = "global-medicines-atlas.frontier-candidate-benchmark"
 _DEFAULT_LIMIT = 5
+LEXICAL_THRESHOLD = 0.65
 
 
 class CandidateMethodDisposition(FrozenModel):
@@ -99,7 +100,12 @@ def _measure_lexical(
             for target in case.targets
         )
         operation_count += len(targets)
-        result = generate_candidates(source, targets, limit=limit)
+        result = generate_candidates(
+            source,
+            targets,
+            lexical_threshold=LEXICAL_THRESHOLD,
+            limit=limit,
+        )
         selected = {item.target_record_id for item in result.candidates}
         if case.relevant_target_ids:
             relevant_count += 1
@@ -177,7 +183,7 @@ def benchmark_synthetic_candidates(
         "candidate_method": "identifier_first_lexical",
         "identifier_precedence": True,
         "k": limit,
-        "lexical_threshold": 0.65,
+        "lexical_threshold": LEXICAL_THRESHOLD,
         "ranking": ["identifier", "score_desc", "jurisdiction", "record_id"],
     })
 
