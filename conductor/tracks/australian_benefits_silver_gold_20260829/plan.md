@@ -2102,3 +2102,40 @@
 - [~] Resolve the Q2 source-description/payload cutoff conflict before
   accepting period semantics or admitting the Q2 object. Do not add sources or
   silently widen the captured May cutoff to make the observer pass.
+
+## Source-neutral aggregate measure contract (2026-10-11)
+
+- [x] Define a candidate-only typed aggregate measure contract that keeps
+  service counts distinct from distinct-patient counts, preserves suppressed,
+  unreported, and unavailable states as unknown, binds source and receipt
+  digests, requires explicit period/time semantics, and excludes patient-level
+  identifiers. A deterministic Arrow schema and Parquet round-trip are tested
+  entirely with synthetic values. The contract performs no source acquisition,
+  semantic qualification, admission, or publication; M-106 remains blocked on
+  its separate source-specific denominator and rights evidence.
+- [x] Register the contract tests in Test-Goblin and run focused, routine, and
+  full local validation. The focused measure/source-review/E2E set passes 27
+  tests; routine and pinned Test-Goblin checks pass. The full local run passes
+  the pytest, package, mutation, Gremlins, randomized-order, provenance,
+  security, and dependency lanes. Four existing optional Hugging Face typing
+  warnings and an unavailable PyPI package audit are retained as limitations.
+- [x] Close hosted patch-coverage findings for missing invalid-state controls:
+  missing source-defined time evidence, incomplete observed values, a typed
+  value on a non-observed state, missing suppression marker, and native values
+  on unreported/unavailable states. Seven new parameterized cases bring the
+  focused measure/source-review/E2E set to 27; the new module reaches 100%
+  statement and branch coverage locally. Exact-head hosted recheck pending.
+
+### Aggregate measure review corrections (2026-10-11)
+
+- [x] Reconcile observed native integer counts under an explicit representation
+  policy while retaining the exact token, and reject typed counts outside the
+  Arrow `int64` range before projection. Grouped values require policy evidence;
+  malformed groups and unqualified separators fail closed. Synthetic tests
+  cover positive, malformed, missing-policy-evidence, and range-boundary cases.
+- [x] Re-run the focused measure, source-review, and medallion E2E tests plus
+  lint, formatting, `ty`, BasedPyright, and the pinned full Test-Goblin profile.
+  Focused tests pass (31); all local gates pass. Full profile: 6,144 passed,
+  96.94% coverage, 353 Gremlins passed; Darwin mutation is advisory, and the
+  optional PyPI audit is skipped because this project is not published there.
+  Hosted exact-head checks and review-thread reconciliation remain pending.

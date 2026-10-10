@@ -51,3 +51,23 @@ transport constraints. Both period/link mismatches remain source questions;
 neither page currently supplies a verified patient denominator or item-level
 participant count. Keep M-106 blocked and do not repeat the previous endpoint
 probes until the source endpoint or approved transport changes.
+
+## Source-neutral aggregate measure contract, 2026-10-11
+
+`src/global_medicines_atlas/mbs_measures.py` defines a candidate-only contract
+for aggregate service and distinct-patient counts. It binds each observation
+to a source revision, path, payload digest, receipt digest, and record
+identity; keeps native integer text beside its typed value; requires explicit
+time-basis evidence when the basis is source-defined; and represents
+suppressed, unreported, or unavailable counts without turning them into zero.
+The Arrow projection carries explicit `candidate_only` status and false
+admission/publication flags. Extra fields such as person identifiers are
+rejected.
+
+The contract's tests use synthetic fixture identities and values only. They
+verify count semantics, period bounds, deterministic Arrow projection, and
+Parquet round-trip. No source payload or source row was read for this change.
+This contract defines a safe shape for future qualification; it does not
+establish any real distinct-patient denominator, item-level patient count,
+source-specific meaning, rights, coverage, Silver admission, or publication.
+M-106 remains blocked as recorded above.
