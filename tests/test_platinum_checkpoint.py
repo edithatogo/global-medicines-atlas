@@ -142,6 +142,15 @@ def test_fresh_workspace_receipt_binds_no_lake_and_bounded_public_query() -> (
     assert receipt["product_admitted"] is False
     assert receipt["checkpoint_complete"] is False
     assert receipt["fresh_workspace"]["durable_local_lake_present"] is False
+    assert receipt["fresh_workspace"]["environment_redirected"] == [
+        "HOME",
+        "XDG_CACHE_HOME",
+        "GMA_DATA_DIR",
+    ]
+    assert receipt["fresh_workspace"]["working_directory"] == "workspace"
+    assert receipt["fresh_workspace"]["workspace_files_after_query"] == []
+    assert receipt["fresh_workspace"]["data_files_after_query"] == []
+    assert receipt["fresh_workspace"]["cache_files_after_query"] == []
     assert receipt["sample_row_count"] == 5
     assert "canonical_sample_rows" not in receipt
     assert "source_record_id" not in receipt

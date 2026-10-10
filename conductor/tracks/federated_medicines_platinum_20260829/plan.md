@@ -61,14 +61,20 @@
     `checkpoint_complete=false`. The checkpoint remains open until an
     independently admitted v4 product contract and semantic manifest bind a
     published Australian benefits medallion dataset.
-  - [x] Re-run the pinned public fixture from fresh temporary lake/cache paths
-    and bind the no-lake observation to the bounded query receipt. The exact
+  - [x] Re-run the pinned public fixture from an isolated temporary working
+    directory with `HOME`, `XDG_CACHE_HOME`, and `GMA_DATA_DIR` redirected;
+    bind the no-lake observation to the bounded query receipt. The exact
     24,367-byte object at revision `75f9f20` passed anonymous digest and
     structural verification; five sample rows were queried without writing
     source bytes or rows to disk. The workspace check confirms only that the
-    fresh temporary lake/cache paths were absent; the checkout and runtime
-    were already installed. Receipt:
+    configured temporary data/cache paths were absent; the checkout and
+    runtime were already installed. Receipt:
     `quality/qualifications/platinum-empty-workspace-preflight-20261010.json`.
+    The initial receipt was superseded after review found that only the
+    temporary paths, rather than the query process environment, were isolated.
+    The corrected run changes the working directory and redirects the home,
+    cache, and GMA data roots before transport; the correction is append-only
+    in `evidence.jsonl`.
     The checkpoint remains open because no independently admitted v4 product
     contract or semantic manifest binds this source projection.
 
