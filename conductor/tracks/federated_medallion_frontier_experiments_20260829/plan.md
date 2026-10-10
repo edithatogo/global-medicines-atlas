@@ -229,6 +229,9 @@
   without governed synthetic relationship and pinned embedding fixtures;
   Tantivy and Qdrant are not justified by these bounded pools. No source or
   dependency was added, and no candidate is promoted or authoritative.
+  Automated review caught that the hashed lexical threshold was not passed to
+  candidate generation. The benchmark now uses one shared threshold constant
+  for execution and query identity; a regression test checks both bindings.
 - [ ] Phase Verification & Checkpoint: all engines reproduce portable Gold
   semantics and no model/index is an authority.
 
