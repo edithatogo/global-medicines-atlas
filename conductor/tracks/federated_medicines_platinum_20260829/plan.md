@@ -75,6 +75,9 @@
     The corrected run changes the working directory and redirects the home,
     cache, and GMA data roots before transport; the correction is append-only
     in `evidence.jsonl`.
+    PR #914 merged as `6c0b1e15c6ca8ba54e49851c309ac20c7f4aed36` after all
+    29 required hosted contexts passed; the merge tree matches the qualified
+    head and the review thread is resolved.
     The checkpoint remains open because no independently admitted v4 product
     contract or semantic manifest binds this source projection.
 
