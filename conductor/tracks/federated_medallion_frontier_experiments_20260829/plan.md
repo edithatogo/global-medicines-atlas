@@ -193,6 +193,12 @@
   `fields_json` value; the export contract has no rights authority, so the
   rights/restricted-content portion remains open. No live graph or
   semantic-engine qualification is claimed.
+- [x] Encode untrusted graph identifiers as valid ASCII RDF IRI references in
+  both preview export and parity validation. Failing-first controls reproduced
+  invalid RDF IRIs for spaces, slashes, Unicode, percent/query/fragment
+  characters, angle brackets, and backslashes. The shared encoder preserves
+  original identifiers in payloads; this closes only that source-neutral
+  serialization gap and does not close the broader graph review task above.
 - [x] Execute the optional NetworkX directed multigraph projection against the
   same portable Gold tables and independently compare every node's ancestors,
   descendants and directed degrees with Python table traversal. Preserve
