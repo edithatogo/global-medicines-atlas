@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import hashlib
+import json
+from dataclasses import dataclass
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
@@ -71,6 +73,7 @@ def test_receipt_is_explicitly_non_promotional_and_value_free() -> None:
         source_revision=registration.SOURCE_REVISION,
         source_sha256=registration.SOURCE_SHA256,
         qualification_sha256=registration.QUALIFICATION_SHA256,
+        name_mapping_sha256="a" * 64,
         pyiceberg_version=registration.PYICEBERG_VERSION,
         row_count=3,
         column_names=("item", "description"),
@@ -111,6 +114,34 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
         num_rows = 2
         column_names = ("service_code", "benefit")
         schema = FakeArrowSchema()
+
+    class FakePhysicalField:
+        def __init__(self, name: str) -> None:
+            self.name = name
+            self.type = object()
+
+    class FakePhysicalSchema:
+        def __iter__(self) -> Any:
+            return iter((
+                FakePhysicalField("service_code"),
+                FakePhysicalField("benefit"),
+            ))
+
+    @dataclass
+    class FakeMappedField:
+        field_id: int
+        names: list[str]
+
+    class FakeNameMapping:
+        def __init__(self, fields: list[FakeMappedField]) -> None:
+            self.fields = fields
+
+        def model_dump_json(self, *, by_alias: bool) -> str:
+            assert by_alias is True
+            return json.dumps([
+                {"field-id": field.field_id, "names": field.names}
+                for field in self.fields
+            ])
 
     class FakeScan:
         def to_arrow(self) -> FakeArrowTable:
@@ -156,7 +187,7 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
     fake_catalog = FakeCatalog()
 
     def read_schema(_path: Path) -> object:
-        return object()
+        return FakePhysicalSchema()
 
     def read_table(_path: Path) -> FakeArrowTable:
         return FakeArrowTable()
@@ -164,7 +195,13 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
     def load_catalog(*_args: Any, **_kwargs: Any) -> FakeCatalog:
         return fake_catalog
 
-    def to_iceberg_schema(_schema: object) -> object:
+    def to_iceberg_schema(
+        _schema: object, *, name_mapping: FakeNameMapping
+    ) -> object:
+        assert [field.names[0] for field in name_mapping.fields] == [
+            "service_code",
+            "benefit",
+        ]
         return fake_schema
 
     def get_module(name: str, _package: str | None = None) -> Any:
@@ -181,11 +218,21 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
         read_schema=read_schema,
         read_table=read_table,
     )
+
+    def is_nested(_arrow_type: object) -> bool:
+        return False
+
+    fake_pyarrow = SimpleNamespace(types=SimpleNamespace(is_nested=is_nested))
     modules: dict[str, Any] = {
+        "pyarrow": fake_pyarrow,
         "pyarrow.parquet": fake_arrow,
         "pyiceberg.catalog": SimpleNamespace(load_catalog=load_catalog),
         "pyiceberg.io.pyarrow": SimpleNamespace(
             pyarrow_to_schema=to_iceberg_schema
+        ),
+        "pyiceberg.table.name_mapping": SimpleNamespace(
+            NameMapping=FakeNameMapping,
+            MappedField=FakeMappedField,
         ),
     }
     monkeypatch.setattr(
@@ -212,6 +259,7 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(
     assert (
         fake_catalog.properties["gma.dataset-revision"] == registration.REVISION
     )
+    assert "schema.name-mapping.default" in fake_catalog.properties
     assert fake_catalog.properties["gma.candidate-only"] == "true"
     assert fake_catalog.table.added == [
         (tmp_path / "services.parquet").as_uri()

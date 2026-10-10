@@ -45,6 +45,7 @@ class PublicParquetIcebergReceipt(FrozenModel):
     source_revision: Literal["2025-07-version-3"]
     source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     qualification_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    name_mapping_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     pyiceberg_version: Literal["0.11.1"]
     row_count: int = Field(ge=0)
     column_names: tuple[str, ...] = Field(min_length=1)
@@ -73,7 +74,7 @@ def public_object_url() -> str:
     return f"https://huggingface.co/datasets/{DATASET}/resolve/{REVISION}/{OBJECT_PATH}"
 
 
-def run_public_parquet_registration(
+def run_public_parquet_registration(  # ruff: ignore[too-many-locals] - end-to-end lane
     *, rest_uri: str, temporary_directory: Path
 ) -> PublicParquetIcebergReceipt:
     """Fetch one exact public object, verify it, and register it in disposable REST."""
@@ -99,11 +100,30 @@ def run_public_parquet_registration(
     verify_payload(payload)
     parquet_path.write_bytes(payload)
 
+    pyarrow = importlib.import_module("pyarrow")
     parquet = importlib.import_module("pyarrow.parquet")
     catalog_module = importlib.import_module("pyiceberg.catalog")
     pyiceberg_arrow = importlib.import_module("pyiceberg.io.pyarrow")
+    arrow_schema = parquet.read_schema(parquet_path)
+    field_names = tuple(field.name for field in arrow_schema)
+    if (
+        not field_names
+        or any(not name or name.strip() != name for name in field_names)
+        or len(set(field_names)) != len(field_names)
+    ):
+        raise ValueError("public Parquet schema has invalid or duplicate names")
+    if any(pyarrow.types.is_nested(field.type) for field in arrow_schema):
+        raise ValueError(
+            "nested public Parquet fields need an explicit mapping"
+        )
+    name_mapping_type = importlib.import_module("pyiceberg.table.name_mapping")
+    name_mapping = name_mapping_type.NameMapping([
+        name_mapping_type.MappedField(field_id=index, names=[name])
+        for index, name in enumerate(field_names, start=1)
+    ])
+    name_mapping_json = name_mapping.model_dump_json(by_alias=True)
     table_schema = pyiceberg_arrow.pyarrow_to_schema(
-        parquet.read_schema(parquet_path)
+        arrow_schema, name_mapping=name_mapping
     )
     arrow_table = parquet.read_table(parquet_path)
     catalog = catalog_module.load_catalog(
@@ -126,6 +146,7 @@ def run_public_parquet_registration(
             "gma.source-sha256": SOURCE_SHA256,
             "gma.qualification-sha256": QUALIFICATION_SHA256,
             "gma.candidate-only": "true",
+            "schema.name-mapping.default": name_mapping_json,
         },
     )
     table.add_files([parquet_path.as_uri()])
@@ -153,6 +174,9 @@ def run_public_parquet_registration(
         source_revision=SOURCE_REVISION,
         source_sha256=SOURCE_SHA256,
         qualification_sha256=QUALIFICATION_SHA256,
+        name_mapping_sha256=hashlib.sha256(
+            name_mapping_json.encode("utf-8")
+        ).hexdigest(),
         pyiceberg_version=PYICEBERG_VERSION,
         row_count=observed.num_rows,
         column_names=tuple(observed.column_names),
