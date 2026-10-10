@@ -15,12 +15,18 @@ from typing import Literal
 import pyarrow as pa
 from pydantic import Field, model_validator
 
+from .mbs_utilisation_numeric_policy import (
+    ExactNumericPolicy,
+    NumericTokenError,
+    parse_exact_numeric_token,
+)
 from .models import FrozenModel
 
 MeasureKind = Literal["service_count", "distinct_patient_count"]
 MeasureState = Literal["observed", "suppressed", "not_reported", "unavailable"]
 TimeBasis = Literal["claim_processing_date", "service_date", "source_defined"]
 QualificationState = Literal["candidate_only"]
+NativeValuePolicy = Literal["integer", "comma_grouped_integer"]
 
 MBS_MEASURE_SCHEMA = pa.schema(
     [
@@ -36,6 +42,8 @@ MBS_MEASURE_SCHEMA = pa.schema(
         pa.field("measure_definition_evidence", pa.string(), nullable=False),
         pa.field("state", pa.string(), nullable=False),
         pa.field("native_value", pa.string()),
+        pa.field("native_value_policy", pa.string(), nullable=False),
+        pa.field("native_value_policy_evidence", pa.string()),
         pa.field("count_value", pa.int64()),
         pa.field("period_label", pa.string(), nullable=False),
         pa.field("time_basis", pa.string(), nullable=False),
@@ -70,6 +78,8 @@ class MbsMeasureObservation(FrozenModel):
     measure_definition_evidence: str = Field(min_length=1)
     state: MeasureState
     native_value: str | None = None
+    native_value_policy: NativeValuePolicy = "integer"
+    native_value_policy_evidence: str | None = None
     count_value: int | None = None
     period_label: str = Field(min_length=1)
     time_basis: TimeBasis
@@ -84,6 +94,13 @@ class MbsMeasureObservation(FrozenModel):
 
     @model_validator(mode="after")
     def validate_measure_contract(self) -> MbsMeasureObservation:
+        self._validate_period()
+        self._validate_numeric_policy()
+        self._validate_measure_identity()
+        self._validate_measure_state()
+        return self
+
+    def _validate_period(self) -> None:
         if (self.period_start is None) != (self.period_end is None):
             raise ValueError("period bounds must be provided together")
         if (
@@ -95,6 +112,19 @@ class MbsMeasureObservation(FrozenModel):
         if self.time_basis == "source_defined" and not self.time_basis_evidence:
             raise ValueError("source-defined time basis requires evidence")
 
+    def _validate_numeric_policy(self) -> None:
+        if (
+            self.native_value_policy == "comma_grouped_integer"
+            and not self.native_value_policy_evidence
+        ):
+            raise ValueError("grouped native count policy requires evidence")
+        if (
+            self.count_value is not None
+            and not -(2**63) <= self.count_value < 2**63
+        ):
+            raise ValueError("count value is outside the Arrow int64 range")
+
+    def _validate_measure_identity(self) -> None:
         name_tokens = set(
             re.findall(r"[a-z0-9]+", self.native_measure_name.casefold())
         )
@@ -108,25 +138,11 @@ class MbsMeasureObservation(FrozenModel):
                 "service or claim measure cannot represent distinct patients"
             )
 
+    def _validate_measure_state(self) -> None:
         if self.state == "observed":
-            if self.count_value is None or self.native_value is None:
-                raise ValueError(
-                    "observed measure requires native and typed values"
-                )
-            if re.fullmatch(r"[+-]?[0-9]+", self.native_value) is None:
-                raise ValueError(
-                    "observed native count must be an integer string"
-                )
-            if int(self.native_value) != self.count_value:
-                raise ValueError("native count does not match typed count")
-            if (
-                self.measure_kind == "distinct_patient_count"
-                and self.count_value < 0
-            ):
-                raise ValueError("distinct-patient count cannot be negative")
+            self._validate_observed_values()
         elif self.count_value is not None:
             raise ValueError("non-observed measure cannot have a typed count")
-
         if self.state == "suppressed" and self.native_value is None:
             raise ValueError(
                 "suppressed measure must preserve its source marker"
@@ -136,7 +152,37 @@ class MbsMeasureObservation(FrozenModel):
             and self.native_value is not None
         ):
             raise ValueError("unreported measure cannot carry a native value")
-        return self
+
+    def _validate_observed_values(self) -> None:
+        if self.count_value is None or self.native_value is None:
+            raise ValueError(
+                "observed measure requires native and typed values"
+            )
+        if "." in self.native_value:
+            raise ValueError("observed native count must be an integer string")
+        numeric_policy = ExactNumericPolicy(
+            decimal_separator=".",
+            grouping_separator=(
+                ","
+                if self.native_value_policy == "comma_grouped_integer"
+                else None
+            ),
+        )
+        try:
+            parsed_value = parse_exact_numeric_token(
+                self.native_value, policy=numeric_policy
+            )
+        except NumericTokenError as exc:
+            raise ValueError(
+                "observed native count violates its explicit policy"
+            ) from exc
+        if parsed_value != self.count_value:
+            raise ValueError("native count does not match typed count")
+        if (
+            self.measure_kind == "distinct_patient_count"
+            and self.count_value < 0
+        ):
+            raise ValueError("distinct-patient count cannot be negative")
 
 
 def observations_to_arrow(

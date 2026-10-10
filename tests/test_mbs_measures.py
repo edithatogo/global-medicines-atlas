@@ -66,6 +66,41 @@ def test_observed_count_rejects_inconsistent_native_and_typed_values(
         )
 
 
+def test_explicit_grouped_count_policy_preserves_native_token() -> None:
+    result = _observation(
+        native_value="1,234",
+        count_value=1234,
+        native_value_policy="comma_grouped_integer",
+        native_value_policy_evidence="synthetic policy evidence",
+    )
+    assert result.native_value == "1,234"
+    assert result.count_value == 1234
+
+
+def test_grouped_count_requires_explicit_policy_and_valid_groups() -> None:
+    with pytest.raises(ValidationError, match=r"does not match|integer|policy"):
+        _observation(native_value="1,234", count_value=1234)
+    with pytest.raises(ValidationError, match=r"does not match|integer|policy"):
+        _observation(
+            native_value="12,34",
+            count_value=1234,
+            native_value_policy="comma_grouped_integer",
+            native_value_policy_evidence="synthetic policy evidence",
+        )
+    with pytest.raises(ValidationError, match="requires evidence"):
+        _observation(
+            native_value="1,234",
+            count_value=1234,
+            native_value_policy="comma_grouped_integer",
+        )
+
+
+@pytest.mark.parametrize("count_value", [-(2**63) - 1, 2**63])
+def test_count_outside_arrow_int64_is_rejected(count_value: int) -> None:
+    with pytest.raises(ValidationError, match="int64 range"):
+        _observation(native_value=str(count_value), count_value=count_value)
+
+
 @pytest.mark.parametrize(
     "name", ["services", "claims", "per-item service count"]
 )

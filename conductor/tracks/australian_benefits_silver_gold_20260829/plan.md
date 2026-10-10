@@ -2125,3 +2125,17 @@
   on unreported/unavailable states. Seven new parameterized cases bring the
   focused measure/source-review/E2E set to 27; the new module reaches 100%
   statement and branch coverage locally. Exact-head hosted recheck pending.
+
+### Aggregate measure review corrections (2026-10-11)
+
+- [x] Reconcile observed native integer counts under an explicit representation
+  policy while retaining the exact token, and reject typed counts outside the
+  Arrow `int64` range before projection. Grouped values require policy evidence;
+  malformed groups and unqualified separators fail closed. Synthetic tests
+  cover positive, malformed, missing-policy-evidence, and range-boundary cases.
+- [x] Re-run the focused measure, source-review, and medallion E2E tests plus
+  lint, formatting, `ty`, BasedPyright, and the pinned full Test-Goblin profile.
+  Focused tests pass (31); all local gates pass. Full profile: 6,144 passed,
+  96.94% coverage, 353 Gremlins passed; Darwin mutation is advisory, and the
+  optional PyPI audit is skipped because this project is not published there.
+  Hosted exact-head checks and review-thread reconciliation remain pending.
