@@ -43,7 +43,10 @@ from global_medicines_atlas.federation_distribution import (
     reconcile_distribution,
 )
 from global_medicines_atlas.federation_reader import FederatedReader
-from global_medicines_atlas.gold_edge_review import build_gold_edge_review_queue
+from global_medicines_atlas.gold_edge_review import (
+    build_gold_edge_review_queue,
+    regenerate_gold_edge_review_queue,
+)
 from global_medicines_atlas.historical_change import (
     HistoricalChange,
     HistoricalChangeService,
@@ -53,6 +56,10 @@ from global_medicines_atlas.historical_comparison import (
     NativeField,
     NativeRow,
     NativeSnapshot,
+)
+from global_medicines_atlas.matching_models import (
+    AdjudicationEvent,
+    ReviewState,
 )
 from global_medicines_atlas.mbs_gold_graph import (
     MbsGoldEdge,
@@ -122,6 +129,10 @@ from global_medicines_atlas.research_package import (
     build_research_crate,
 )
 from global_medicines_atlas.reuse_gate import acquire_new_decision
+from global_medicines_atlas.review_queue import (
+    append_adjudication,
+    load_adjudications,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 10, 6, tzinfo=UTC)
@@ -275,6 +286,7 @@ def _exercise_gold_review_queue(
     edges: pa.Table,
     *,
     expected_edges: Iterable[MbsGoldEdge | PbsGoldEdge],
+    adjudication_path: Path,
 ) -> None:
     """Rebuild review cases from portable Gold projection without promotion."""
     projected_edges = []
@@ -299,13 +311,73 @@ def _exercise_gold_review_queue(
     assert {case.edge_id for case in review_cases} == set(
         edges.column("edge_id").to_pylist()
     )
-    assert {case.edge_id: case.edge_sha256 for case in review_cases} == ({
+    assert {case.edge_id: case.edge_sha256 for case in review_cases} == {
         case.edge_id: case.edge_sha256 for case in expected_review_cases
-    })
+    }
     assert all(
         case.review_state.value == "pending_review" for case in review_cases
     )
     assert all(case.promotion_performed is False for case in review_cases)
+    case = review_cases[0]
+    first = _gold_adjudication(
+        candidate_id=case.review_case_id,
+        state=ReviewState.NEEDS_INFORMATION,
+        occurred_at=GOLD_REVIEW_QUEUED_AT + timedelta(seconds=1),
+        rationale="Synthetic E2E fixture requests more evidence.",
+    )
+    append_adjudication(adjudication_path, first)
+    events = load_adjudications(adjudication_path)
+    assert events == (first,)
+    assert (
+        regenerate_gold_edge_review_queue(review_cases, events) == review_cases
+    )
+
+    terminal = _gold_adjudication(
+        candidate_id=case.review_case_id,
+        state=ReviewState.ACCEPTED,
+        occurred_at=GOLD_REVIEW_QUEUED_AT + timedelta(seconds=2),
+        rationale="Synthetic E2E fixture supplies a terminal review event.",
+        supersedes_event_id=first.event_id,
+    )
+    append_adjudication(adjudication_path, terminal)
+    events = load_adjudications(adjudication_path)
+    assert events == (first, terminal)
+    remaining_cases = regenerate_gold_edge_review_queue(review_cases, events)
+    assert {item.review_case_id for item in remaining_cases} == {
+        item.review_case_id
+        for item in review_cases
+        if item.review_case_id != case.review_case_id
+    }
+    assert all(item.promotion_performed is False for item in remaining_cases)
+    assert case.promotion_performed is False
+
+
+def _gold_adjudication(
+    *,
+    candidate_id: str,
+    state: ReviewState,
+    occurred_at: datetime,
+    rationale: str,
+    supersedes_event_id: str | None = None,
+) -> AdjudicationEvent:
+    reviewer_id = "synthetic-e2e-reviewer"
+    event_id = AdjudicationEvent.content_id(
+        candidate_id=candidate_id,
+        state=state,
+        occurred_at=occurred_at,
+        reviewer_id=reviewer_id,
+        rationale=rationale,
+        supersedes_event_id=supersedes_event_id,
+    )
+    return AdjudicationEvent(
+        event_id=event_id,
+        candidate_id=candidate_id,
+        state=state,
+        occurred_at=occurred_at,
+        reviewer_id=reviewer_id,
+        rationale=rationale,
+        supersedes_event_id=supersedes_event_id,
+    )
 
 
 def _exercise_historical_surfaces(
@@ -1333,7 +1405,7 @@ def _verify_saved_research_export(
 
 def _silver_gold_products(
     payload: bytes, receipt: SourceReceipt
-) -> tuple[pa.RecordBatch, pa.Table, bytes, dict[str, str]]:
+) -> tuple[pa.RecordBatch, pa.Table, bytes]:
     silver = next(iter_mbs_silver_batches(payload, receipt, table="services"))
     assert silver.num_rows == 1
     assert silver.column("source_sha256")[0].as_py() == receipt.payload.sha256
@@ -1593,6 +1665,7 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
         expected_edges=build_mbs_gold_graph_candidate(
             landed.payload_path.read_bytes(), landed.receipt
         ).edges,
+        adjudication_path=tmp_path / "mbs-gold-adjudications.jsonl",
     )
     result = _query_synthetic_platinum(
         gold, landed.receipt, monkeypatch=monkeypatch, tmp_path=tmp_path
@@ -1708,6 +1781,7 @@ def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
     _exercise_gold_review_queue(
         pq.read_table(io.BytesIO(gold_payload)),
         expected_edges=candidate.edges,
+        adjudication_path=tmp_path / "pbs-gold-adjudications.jsonl",
     )
     result = _query_synthetic_platinum(
         gold_payload,
