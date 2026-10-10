@@ -275,6 +275,47 @@ def test_loader_rejects_event_count_over_bound(tmp_path: Path) -> None:
         load_adjudications(path)
 
 
+def test_loader_rejects_non_regular_file(tmp_path: Path) -> None:
+    path = tmp_path / "events.pipe"
+    os.mkfifo(path)
+
+    with pytest.raises(
+        ValueError, match=r"^Adjudication file must be regular$"
+    ):
+        load_adjudications(path)
+
+
+def test_loader_rejects_read_that_exceeds_byte_bound(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "events.jsonl"
+    path.write_bytes(b"{}")
+
+    class OversizedReader:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc_info):
+            pass
+
+        def read(self, size):
+            assert size == MAX_ADJUDICATION_FILE_BYTES + 1
+            return b" " * size
+
+    monkeypatch.setattr(review_queue_module.os, "fdopen", OversizedReader)
+
+    with pytest.raises(
+        ValueError, match=r"^Adjudication file exceeds byte bound$"
+    ):
+        load_adjudications(path)
+
+    assert path.exists()
+
+
 def test_loader_rejects_duplicate_event_ids(tmp_path: Path) -> None:
     path = tmp_path / "duplicate-events.jsonl"
     event = _event("a")
@@ -284,6 +325,38 @@ def test_loader_rejects_duplicate_event_ids(tmp_path: Path) -> None:
     with pytest.raises(
         ValueError,
         match=r"^Duplicate adjudication event$",
+    ):
+        load_adjudications(path)
+
+
+def test_loader_requires_successor_to_reference_latest_event(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "stale-supersession.jsonl"
+    first = _event("a")
+    second = _event(
+        "a",
+        state=ReviewState.REJECTED,
+        at=NOW + timedelta(seconds=1),
+        supersedes=first.event_id,
+    )
+    third = _event(
+        "a",
+        state=ReviewState.ACCEPTED,
+        at=NOW + timedelta(seconds=2),
+        supersedes=first.event_id,
+    )
+    path.write_text(
+        "\n".join(
+            json.dumps(event.model_dump(mode="json"), sort_keys=True)
+            for event in (first, second, third)
+        )
+        + "\n"
+    )
+
+    with pytest.raises(
+        ValueError,
+        match=r"^A later decision must supersede the latest event$",
     ):
         load_adjudications(path)
 
