@@ -274,7 +274,9 @@
   runs passed. Package/API/CLI, typing, security and regeneration pass. Darwin
   mutation is advisory; Linux hosted mutation is authoritative. Synthetic
   contract only; no source bytes, admission, publication, rights conclusion or
-  coverage claim. Hosted checks pending.
+  coverage claim. PR #941 merged as `b402191d55ea99bf51562d4a216e0c2053919268`
+  from exact head `73e4f54931f01a167204fa399618ff05585ac978` after all 39
+  hosted checks passed; the merge tree matches the qualified head.
 
 ### Source-metadata review fixes
 
