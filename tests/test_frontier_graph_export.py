@@ -178,6 +178,129 @@ def test_nested_restricted_field_metadata_is_rejected_before_serialization(
         export_gold_tables(nodes, edges)
 
 
+@pytest.mark.parametrize(
+    "native_value",
+    [
+        {"nested": {"field_policy": {"rights_state": "restricted"}}},
+        {"nested": {"field_policy": {"rights_state": "prohibited"}}},
+        {
+            "nested": {
+                "field_policy": {
+                    "rights_state": "restricted",
+                    "sensitivity": {
+                        "data_sensitivity": "unknown",
+                        "personal_data": "none",
+                        "publication": "permitted",
+                    },
+                }
+            }
+        },
+        {
+            "nested": [
+                {
+                    "field_policy": {
+                        "rights_state": "permitted",
+                        "sensitivity": {
+                            "data_sensitivity": "unknown",
+                            "personal_data": "none",
+                            "publication": "permitted",
+                        },
+                        "nested": [
+                            {"field_policy": {"rights_state": "restricted"}}
+                        ],
+                    }
+                }
+            ]
+        },
+        {
+            "nested": {
+                "field_policy": {
+                    "sensitivity": {"data_sensitivity": "sensitive"}
+                }
+            }
+        },
+        {
+            "nested": {
+                "field_policy": {
+                    "sensitivity": {"data_sensitivity": "restricted"}
+                }
+            }
+        },
+        {
+            "nested": {
+                "field_policy": {"sensitivity": {"personal_data": "possible"}}
+            }
+        },
+        {
+            "nested": {
+                "field_policy": {"sensitivity": {"personal_data": "present"}}
+            }
+        },
+        {
+            "nested": {
+                "field_policy": {"sensitivity": {"publication": "prohibited"}}
+            }
+        },
+    ],
+)
+def test_nested_field_values_cannot_smuggle_restricted_classifications(
+    native_value: dict[str, object],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    rows = nodes.to_pylist()
+    fields = json.loads(rows[0]["fields_json"])
+    fields[0]["native_value"] = native_value
+    rows[0]["fields_json"] = json.dumps(fields)
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+
+    def reject_serialization(_value):
+        raise AssertionError("restricted field content reached serialization")
+
+    monkeypatch.setattr(graph_export_module, "_json", reject_serialization)
+    with pytest.raises(ValueError, match="restricted field rights/sensitivity"):
+        export_gold_tables(nodes, edges)
+
+
+def test_native_policy_like_fields_are_not_reinterpreted_as_metadata() -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    rows = nodes.to_pylist()
+    fields = json.loads(rows[0]["fields_json"])
+    fields[0]["native_value"] = {
+        "rights_state": "restricted",
+        "empty_native_list": [],
+    }
+    rows[0]["fields_json"] = json.dumps(fields)
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+
+    result = export_gold_tables(nodes, edges)
+    exported = json.loads(result.reference_json)
+    exported_fields = json.loads(exported["nodes"][0]["fields_json"])
+    assert exported_fields[0]["native_value"] == {
+        "rights_state": "restricted",
+        "empty_native_list": [],
+    }
+
+
+def test_nested_incomplete_field_policy_is_rejected() -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    rows = nodes.to_pylist()
+    fields = json.loads(rows[0]["fields_json"])
+    fields[0]["native_value"] = {
+        "field_policy": {
+            "rights_state": "permitted",
+            "nested": [{"field_policy": {"rights_state": "permitted"}}],
+        }
+    }
+    rows[0]["fields_json"] = json.dumps(fields)
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+
+    with pytest.raises(
+        ValueError, match="invalid graph field rights/sensitivity"
+    ):
+        export_gold_tables(nodes, edges)
+
+
 def test_field_policy_must_be_complete_and_unambiguous() -> None:
     nodes, edges = project_mbs_gold_graph_arrow(graph())
     rows = nodes.to_pylist()
