@@ -217,6 +217,9 @@ def test_offline_fail_closed_policy() -> None:
         {"max_open_reads": 0},
         {"timeout_seconds": float("inf")},
         {"timeout_seconds": 0},
+        {"timeout_seconds": True},
+        {"timeout_seconds": "1"},
+        {"timeout_seconds": None},
     ],
 )
 def test_invalid_reader_limits(options: dict[str, Any]) -> None:
