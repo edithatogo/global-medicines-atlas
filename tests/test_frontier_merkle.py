@@ -71,6 +71,17 @@ def test_leaf_requires_source_identity() -> None:
 
 
 @pytest.mark.edge
+def test_leaf_rejects_mutable_revision_names() -> None:
+    with pytest.raises(ValueError, match="revision"):
+        MerkleLeaf(
+            dataset_id="agency/catalogue",
+            revision="main",
+            path="raw/object.xml",
+            sha256="a" * 64,
+        )
+
+
+@pytest.mark.edge
 def test_duplicate_paths_are_rejected() -> None:
     with pytest.raises(ValueError, match="unique"):
         build_merkle_manifest([_leaf("a", "1"), _leaf("a", "2")])

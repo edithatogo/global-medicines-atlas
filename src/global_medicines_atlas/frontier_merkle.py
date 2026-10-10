@@ -26,7 +26,7 @@ class MerkleLeaf(FrozenModel):
     path: str = Field(min_length=1)
     sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     dataset_id: str = Field(min_length=1)
-    revision: str = Field(min_length=1)
+    revision: str = Field(pattern=r"^[0-9a-f]{40}$")
 
 
 class MerkleManifest(FrozenModel):
