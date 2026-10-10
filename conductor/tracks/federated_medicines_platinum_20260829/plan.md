@@ -764,6 +764,10 @@
   `quality/qualifications/platinum-product-performance-20261011-clean-start-cli/`.
   The result remains `fixture_qualified`; production deployment, production
   data, accessibility, source coverage, and public release remain unverified.
+  PR #947 merged as `ea960b66552031c07715ce5dd21c9a02da6139eb`; all 28
+  required contexts and all 38 reported checks passed. The squash merge tree
+  matches the qualified head, and a clean-main readback reproduced the
+  implementation digest and validated all nine receipts.
 
 ### PBS source-structure Platinum integration (2026-10-07)
 
