@@ -42,6 +42,7 @@ from global_medicines_atlas.federation_distribution import (
     reconcile_distribution,
 )
 from global_medicines_atlas.federation_reader import FederatedReader
+from global_medicines_atlas.gold_edge_review import build_gold_edge_review_queue
 from global_medicines_atlas.historical_change import (
     HistoricalChange,
     HistoricalChangeService,
@@ -122,6 +123,7 @@ from global_medicines_atlas.reuse_gate import acquire_new_decision
 ROOT = Path(__file__).resolve().parents[1]
 NOW = datetime(2026, 10, 6, tzinfo=UTC)
 SOURCE_ID = "au-mbs"
+GOLD_REVIEW_QUEUED_AT = datetime(2026, 10, 6, tzinfo=UTC)
 type SyntheticOutput = tuple[
     Literal["bronze", "silver", "gold", "platinum"],
     str,
@@ -264,6 +266,33 @@ def _exercise_gold_edge_surfaces(
     assert all(
         item["evidence"]["source_id"] == "au-mbs" for item in api_page["items"]
     )
+
+
+def _exercise_gold_review_queue(edges: pa.Table) -> None:
+    """Rebuild review cases from portable Gold projection without promotion."""
+    projected_edges = []
+    for row in edges.to_pylist():
+        edge = {
+            key: value
+            for key, value in row.items()
+            if key not in {"evidence_json", "controls_json"}
+        }
+        edge["evidence"] = json.loads(row["evidence_json"])
+        edge.update(json.loads(row["controls_json"]))
+        projected_edges.append(edge)
+    review_cases = build_gold_edge_review_queue(
+        projected_edges,
+        queued_at=GOLD_REVIEW_QUEUED_AT,
+    )
+    assert len(review_cases) == edges.num_rows
+    assert {case.edge_id for case in review_cases} == set(
+        edges.column("edge_id").to_pylist()
+    )
+    assert all(len(case.edge_sha256) == 64 for case in review_cases)
+    assert all(
+        case.review_state.value == "pending_review" for case in review_cases
+    )
+    assert all(case.promotion_performed is False for case in review_cases)
 
 
 def _exercise_historical_surfaces(
@@ -1546,6 +1575,7 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     gold_edges = pq.read_table(io.BytesIO(gold))
     pq.write_table(gold_edges, edge_file)
     _exercise_gold_edge_surfaces(gold_edges, edge_file=edge_file)
+    _exercise_gold_review_queue(gold_edges)
     result = _query_synthetic_platinum(
         gold, landed.receipt, monkeypatch=monkeypatch, tmp_path=tmp_path
     )
@@ -1657,6 +1687,7 @@ def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
     silver_payload = _parquet_payload(silver)
     node_payload = _parquet_payload(nodes)
     gold_payload = _parquet_payload(edges)
+    _exercise_gold_review_queue(pq.read_table(io.BytesIO(gold_payload)))
     result = _query_synthetic_platinum(
         gold_payload,
         landed.receipt,

@@ -709,6 +709,17 @@
   cross-source relationships remain unresolved. PR #735 passed all 39 hosted
   checks and merged as `001ded0d3ff3429fa499671f91074209ca0d8106`.
 
+### Gold review portable projection E2E (2026-10-10)
+
+- [x] Exercise the pending-only review queue from Parquet-projected MBS and
+  PBS Gold edges in the Bronze-to-Platinum synthetic E2E paths. Reconstruct
+  each source edge from its separate evidence and controls columns; verify
+  edge identity, full-content digest shape, `pending_review`, and no promotion.
+  Focused MBS/PBS E2E tests pass (2); Test-Goblin E2E passes (54); routine
+  Test-Goblin checks pass. This closes projection-to-queue integration
+  coverage only; adjudication authority, promotion, real-source controls, and
+  the Gold phase checkpoint remain pending.
+
 ### Platinum PBS edge readback coverage (2026-10-09)
 
 - [x] Exercise the existing PBS Gold candidate through both the Platinum edge
