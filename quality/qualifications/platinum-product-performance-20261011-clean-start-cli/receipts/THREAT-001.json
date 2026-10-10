@@ -1,17 +1,17 @@
 {
   "schema_version": "1",
-  "receipt_id": "threat-threat-001-8b630161af61",
+  "receipt_id": "threat-threat-001-9f7e3d4c7857",
   "kind": "threat",
   "subject_id": "THREAT-001",
-  "executed_at": "2026-10-10T19:16:20.834210Z",
+  "executed_at": "2026-10-10T19:22:26.644309Z",
   "product_version": "0.6",
   "api_version": "v1",
-  "implementation_digest": "8b630161af615f4799b2bbb8b2902a06ea6466694b7f7cbdbb196a60e04710b3",
+  "implementation_digest": "9f7e3d4c7857be7a1016fa0513765e8ddff936d4a9ee65c861420577d9961360",
   "result": {
     "passed": true,
     "observed_ms": null,
     "sample_size": null,
     "detail": "path escape rejected"
   },
-  "payload_digest": "c6686f78d49c3dbb26439618ca77895a7ee037e523ba14bce3d8e0c7ae2846c2"
+  "payload_digest": "7f1f7b2ec73d46b820535cc75f70412b76b1ac0daf77004b2fa8706d364bb16c"
 }

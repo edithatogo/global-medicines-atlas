@@ -1,17 +1,17 @@
 {
   "schema_version": "1",
-  "receipt_id": "performance-perf-contract-8b630161af61",
+  "receipt_id": "performance-perf-contract-9f7e3d4c7857",
   "kind": "performance",
   "subject_id": "PERF-CONTRACT",
-  "executed_at": "2026-10-10T19:16:18.091626Z",
+  "executed_at": "2026-10-10T19:22:23.959925Z",
   "product_version": "0.6",
   "api_version": "v1",
-  "implementation_digest": "8b630161af615f4799b2bbb8b2902a06ea6466694b7f7cbdbb196a60e04710b3",
+  "implementation_digest": "9f7e3d4c7857be7a1016fa0513765e8ddff936d4a9ee65c861420577d9961360",
   "result": {
     "passed": true,
-    "observed_ms": 0.0323625,
+    "observed_ms": 0.01288895,
     "sample_size": 20,
-    "detail": "observed p95 0.032 ms against 25.0 ms budget"
+    "detail": "observed p95 0.013 ms against 25.0 ms budget"
   },
-  "payload_digest": "85d001ee971307ab914c2f2b9cec585d2971d421936ffdcc5da11ee3d0cbdce2"
+  "payload_digest": "9ddada317fa9b8712de60d732c8124b46a4e94cf2ba63c1464ccfe972d44c816"
 }

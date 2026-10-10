@@ -1,17 +1,17 @@
 {
   "schema_version": "1",
-  "receipt_id": "performance-perf-export-page-8b630161af61",
+  "receipt_id": "performance-perf-export-page-9f7e3d4c7857",
   "kind": "performance",
   "subject_id": "PERF-EXPORT-PAGE",
-  "executed_at": "2026-10-10T19:16:20.775833Z",
+  "executed_at": "2026-10-10T19:22:26.588333Z",
   "product_version": "0.6",
   "api_version": "v1",
-  "implementation_digest": "8b630161af615f4799b2bbb8b2902a06ea6466694b7f7cbdbb196a60e04710b3",
+  "implementation_digest": "9f7e3d4c7857be7a1016fa0513765e8ddff936d4a9ee65c861420577d9961360",
   "result": {
     "passed": true,
-    "observed_ms": 144.69962950000001,
+    "observed_ms": 141.84418095,
     "sample_size": 20,
-    "detail": "observed p95 144.700 ms against 1000.0 ms budget"
+    "detail": "observed p95 141.844 ms against 1000.0 ms budget"
   },
-  "payload_digest": "caaac1cd09dc4f7ccbff697d212832b1582eececf149454f5034cc0d0b035426"
+  "payload_digest": "554f9ce236130cc45a8cd3ea81809e65c38a69e39001bf7624304970d86e083c"
 }

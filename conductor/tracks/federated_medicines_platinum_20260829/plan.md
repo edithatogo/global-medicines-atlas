@@ -755,9 +755,11 @@
   temporary DuckDB fixture. Require CLI conclusions, validity details, and
   pagination metadata to match the API before issuing the clean-start receipt.
   The focused release, performance, and security suites passed (25 tests);
-  the pinned full Test-Goblin profile passed, including pytest (6,160, 96.95%
-  coverage), mutation, Gremlins (353 passed), profiling, security workflow,
-  and dependency audit. Nine durable receipts validate against one
+  a malformed-CLI-output regression now confirms clear fail-closed behavior;
+  the focused release suite passes (20 tests). The pinned full Test-Goblin
+  profile passed, including pytest (6,161, 96.95% coverage), mutation,
+  Gremlins (354 passed), profiling, security workflow, and dependency audit.
+  Nine regenerated durable receipts validate against one
   implementation digest in
   `quality/qualifications/platinum-product-performance-20261011-clean-start-cli/`.
   The result remains `fixture_qualified`; production deployment, production

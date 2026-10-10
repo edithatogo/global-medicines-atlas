@@ -314,7 +314,12 @@ def _clean_start_receipt(digest: str) -> QualificationReceipt:
             cli = CliRunner().invoke(cli_app, cli_arguments)
         if cli.exit_code != 0:
             raise RuntimeError("clean-start CLI comparison failed")
-        cli_result = json.loads(cli.stdout)
+        try:
+            cli_result = json.loads(cli.stdout)
+        except json.JSONDecodeError as error:
+            raise RuntimeError(
+                "clean-start CLI comparison did not return JSON"
+            ) from error
         if (
             cli_result.get("conclusions") != api_result.get("conclusions")
             or cli_result.get("validity") != api_result.get("validity")
