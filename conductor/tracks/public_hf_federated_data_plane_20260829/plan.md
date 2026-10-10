@@ -264,6 +264,17 @@
   `6c785f6fed362d9f45a2de57a7b77aa071938206` from exact head
   `5f7617e6025cd04e720f3d1626736b6f3b9bc4a2` after all 39 hosted checks
   passed, including Codecov patch and Linux/macOS/Windows consumer lanes.
+- [x] Reject integer timeout budgets too large for Python's finite-float check.
+  The failing-first `10**1000` case reproduced raw `OverflowError`; it now
+  follows the same typed `ValueError` path as other invalid budgets. Reader,
+  admission and contract tests pass (130). The pinned full profile passes with
+  6,106 tests, one optional PyIceberg skip, 97.92% line and 93.27% branch
+  coverage; 1,960/2,338 mutations killed (367 survived, 4 timed out, 5
+  suspicious, 2 untested), 353 Gremlins passed and both randomized 184-test
+  runs passed. Package/API/CLI, typing, security and regeneration pass. Darwin
+  mutation is advisory; Linux hosted mutation is authoritative. Synthetic
+  contract only; no source bytes, admission, publication, rights conclusion or
+  coverage claim. Hosted checks pending.
 
 ### Source-metadata review fixes
 
