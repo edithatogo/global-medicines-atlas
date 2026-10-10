@@ -51,6 +51,10 @@ class MbsGoldEvidence(FrozenModel):
     source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     receipt_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     catalog_version: str = Field(min_length=1)
+    rights_state: RightsState
+    sensitivity: SensitivityClassification = Field(
+        default_factory=SensitivityClassification
+    )
 
 
 class MbsGoldNode(FrozenModel):
@@ -126,7 +130,7 @@ class MbsGoldGraphCandidate(FrozenModel):
     schema_id: Literal["global-medicines-atlas.mbs-gold-graph-candidate"] = (
         "global-medicines-atlas.mbs-gold-graph-candidate"
     )
-    schema_version: Literal[1] = 1
+    schema_version: Literal[2] = 2
     qualification: Literal["synthetic_silver_candidate_only"] = (
         "synthetic_silver_candidate_only"
     )
@@ -195,6 +199,15 @@ class MbsGoldGraphCandidate(FrozenModel):
                 raise ValueError(
                     "Gold edge is not supported by the same record"
                 )
+        node_policies = {
+            (node.evidence.rights_state, node.evidence.sensitivity)
+            for node in self.nodes
+        }
+        edge_policies = {
+            (edge.rights_state, edge.sensitivity) for edge in self.edges
+        }
+        if len(node_policies) != 1 or node_policies != edge_policies:
+            raise ValueError("Gold graph rights/sensitivity metadata differs")
         if self.graph_sha256 != _digest(
             self.model_dump(exclude={"graph_sha256"})
         ):
@@ -327,6 +340,8 @@ def build_mbs_gold_graph_candidate(
         evidence = MbsGoldEvidence(
             **{key: service_row[key] for key in keys},
             catalog_version=receipt.source.catalog_version,
+            rights_state=receipt.rights_state,
+            sensitivity=receipt.sensitivity or SensitivityClassification(),
         )
         service_fields = _fields(service_row)
         benefit_fields = _fields(benefit_row)
@@ -381,7 +396,7 @@ MBS_GOLD_NODE_SCHEMA = pa.schema(
     ],
     metadata={
         "schema_name": "global-medicines-atlas.mbs-gold.nodes",
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "qualification": "synthetic_silver_candidate_only",
     },
 )
@@ -398,7 +413,7 @@ MBS_GOLD_EDGE_SCHEMA = pa.schema(
     ],
     metadata={
         "schema_name": "global-medicines-atlas.mbs-gold.edges",
-        "schema_version": "1.0",
+        "schema_version": "2.0",
         "qualification": "synthetic_silver_candidate_only",
     },
 )

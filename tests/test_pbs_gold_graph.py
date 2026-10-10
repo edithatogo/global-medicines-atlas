@@ -322,8 +322,13 @@ def test_nested_field_evidence_and_entity_address_tampering_fail_closed() -> (
         PbsGoldEvidence.model_validate(evidence)
 
     fields = list(node.fields)
-    changed = fields[0].model_copy(update={"value": "changed"})
-    fields[0] = PbsGoldFieldEvidence.model_validate(changed.model_dump())
+    value_index = next(
+        index for index, item in enumerate(fields) if item.value is not None
+    )
+    changed = fields[value_index].model_copy(update={"value": "changed"})
+    fields[value_index] = PbsGoldFieldEvidence.model_validate(
+        changed.model_dump()
+    )
     node_data = node.model_dump()
     node_data["fields"] = [item.model_dump() for item in fields]
     with pytest.raises(ValidationError, match="fields differ"):

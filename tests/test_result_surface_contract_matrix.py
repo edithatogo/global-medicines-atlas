@@ -163,6 +163,6 @@ def test_gold_edge_transport_remains_a_qualified_structural_projection() -> (
 ):
     for schema in (MBS_GOLD_EDGE_SCHEMA, PBS_GOLD_EDGE_SCHEMA):
         metadata = schema.metadata or {}
-        assert metadata[b"schema_version"] == b"1.0"
+        assert metadata[b"schema_version"] == b"2.0"
         assert metadata[b"qualification"] == b"synthetic_silver_candidate_only"
         assert {"evidence_json", "controls_json"} <= set(schema.names)

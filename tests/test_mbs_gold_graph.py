@@ -274,7 +274,12 @@ def test_graph_order_uniqueness_denominator_and_edge_support_are_validated():
     )
     changed = result.model_dump()
     changed["edges"] = list(changed["edges"])
-    changed["edges"][0] = mismatched.model_dump()
+    matching_edge = next(
+        index
+        for index, edge in enumerate(result.edges)
+        if edge.evidence == services[0].evidence
+    )
+    changed["edges"][matching_edge] = mismatched.model_dump()
     changed["edges"] = sorted(changed["edges"], key=itemgetter("edge_id"))
     with pytest.raises(ValidationError, match="same record"):
         MbsGoldGraphCandidate.model_validate(changed)

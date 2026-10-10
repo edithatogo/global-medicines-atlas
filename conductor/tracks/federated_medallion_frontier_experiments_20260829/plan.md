@@ -193,6 +193,18 @@
   `fields_json` value; the export contract has no rights authority, so the
   rights/restricted-content portion remains open. No live graph or
   semantic-engine qualification is claimed.
+- [x] Propagate receipt rights and sensitivity metadata into MBS/PBS graph
+  node evidence and reject graph previews when node/edge metadata explicitly
+  classifies rights or content as restricted/prohibited or personal data as
+  possible/present. Failing-first tests confirmed those classifications reached
+  serialization before the guard. This metadata-only screen does not inspect
+  `fields_json`, resolve unknown/review-required states, establish licensing,
+  or close the broader rights/restricted-byte review above.
+  Verification: focused/affected graph suite 83 passed; the pinned full
+  Test-Goblin profile completed with 6,101 passed and 1 optional PyIceberg
+  skip, 96.84% coverage, 353 Gremlins targets passed, both randomized-order
+  runs passed, and the package/CLI/API probes passed. BasedPyright and routine
+  repository/rights checks passed. Hosted CI remains required for this head.
 - [x] Encode untrusted graph identifiers as valid ASCII RDF IRI references in
   both preview export and parity validation. Failing-first controls reproduced
   invalid RDF IRIs for spaces, slashes, Unicode, percent/query/fragment
