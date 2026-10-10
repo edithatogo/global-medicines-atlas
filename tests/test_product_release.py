@@ -228,6 +228,7 @@ def test_runner_verifies_clean_start_in_a_fresh_fixture_root(
     assert not evidence.gates["live_deployment_verified"]
     assert receipt.kind == "clean_start"
     assert receipt.subject_id == "CLEAN-START"
+    assert "CLI comparison matched the API" in receipt.result.detail
 
 
 def test_runner_publishes_nothing_when_a_check_fails(

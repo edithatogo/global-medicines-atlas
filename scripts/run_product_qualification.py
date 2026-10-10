@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import tempfile
 from collections.abc import Callable, Iterable
@@ -14,6 +15,7 @@ from pathlib import Path
 from statistics import quantiles
 from time import perf_counter_ns
 from typing import TYPE_CHECKING, Literal, cast
+from unittest.mock import patch
 
 # Support direct repository-root execution before the package is installed.
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +25,7 @@ if str(SOURCE_ROOT) not in sys.path:
 
 import duckdb
 from fastapi.testclient import TestClient
+from typer.testing import CliRunner
 
 if TYPE_CHECKING:
     from httpx import Response
@@ -34,6 +37,7 @@ else:
 
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.atlas import create_atlas_app
+from global_medicines_atlas.cli import app as cli_app
 from global_medicines_atlas.product_contracts import (
     ComparisonQuery,
     EvidenceDimension,
@@ -240,7 +244,7 @@ def _receipt(
 
 
 def _clean_start_receipt(digest: str) -> QualificationReceipt:
-    """Verify a fresh synthetic root can serve the API and Atlas."""
+    """Verify a fresh synthetic root across API, CLI, and Atlas."""
     with tempfile.TemporaryDirectory(prefix="gma-product-clean-start-") as raw:
         root = Path(raw)
         if any(root.iterdir()):
@@ -281,6 +285,46 @@ def _clean_start_receipt(digest: str) -> QualificationReceipt:
         if len(api_result.get("conclusions", [])) != CLEAN_START_ROWS:
             raise RuntimeError("clean-start API query was incomplete")
 
+        cli_arguments = [
+            "comparison",
+            "--database",
+            str(database),
+            "--allowed-root",
+            str(root),
+            "--concept-id",
+            "rx:fixture",
+            "--jurisdiction",
+            "AU",
+            "--jurisdiction",
+            "NZ",
+            "--jurisdiction",
+            "US",
+            "--valid-at",
+            NOW.isoformat(),
+            "--observed-at",
+            NOW.isoformat(),
+            "--dimension",
+            "regulatory",
+            "--limit",
+            str(CLEAN_START_ROWS),
+        ]
+        with patch.dict(
+            os.environ, {"GMA_CURSOR_SECRET": SECRET.decode("utf-8")}
+        ):
+            cli = CliRunner().invoke(cli_app, cli_arguments)
+        if cli.exit_code != 0:
+            raise RuntimeError("clean-start CLI comparison failed")
+        cli_result = json.loads(cli.stdout)
+        if (
+            cli_result.get("conclusions") != api_result.get("conclusions")
+            or cli_result.get("validity") != api_result.get("validity")
+            or cli_result.get("metadata", {}).get("page")
+            != api_result.get("metadata", {}).get("page")
+        ):
+            raise RuntimeError(
+                "clean-start CLI comparison did not match the API"
+            )
+
         with TestClient(create_atlas_app(service)) as client:
             atlas = cast(
                 "Response",
@@ -296,8 +340,8 @@ def _clean_start_receipt(digest: str) -> QualificationReceipt:
         "clean_start",
         "CLEAN-START",
         "Fresh temporary synthetic database passed readiness, bounded API "
-        "query, and Atlas rendering; no live deployment or production data "
-        "was exercised.",
+        "query, and Atlas rendering. CLI comparison matched the API; no live "
+        "deployment or production data was exercised.",
         digest,
     )
 

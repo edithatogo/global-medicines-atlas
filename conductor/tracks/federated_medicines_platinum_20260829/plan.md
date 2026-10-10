@@ -748,6 +748,21 @@
   production-data gates unverified. Durable artifacts are in
   `quality/qualifications/platinum-product-performance-20261010-clean-start-stable-manifest/`.
 
+### Same-root CLI clean-start parity (2026-10-11)
+
+- [x] Extend the empty-root synthetic product qualification so readiness, the
+  bounded API comparison, CLI comparison, and Atlas render all use the same
+  temporary DuckDB fixture. Require CLI conclusions, validity details, and
+  pagination metadata to match the API before issuing the clean-start receipt.
+  The focused release, performance, and security suites passed (25 tests);
+  the pinned full Test-Goblin profile passed, including pytest (6,160, 96.95%
+  coverage), mutation, Gremlins (353 passed), profiling, security workflow,
+  and dependency audit. Nine durable receipts validate against one
+  implementation digest in
+  `quality/qualifications/platinum-product-performance-20261011-clean-start-cli/`.
+  The result remains `fixture_qualified`; production deployment, production
+  data, accessibility, source coverage, and public release remain unverified.
+
 ### PBS source-structure Platinum integration (2026-10-07)
 
 - [x] Admit `source_structure` as its own internal Platinum semantic value;

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "receipt_id": "threat-threat-005-8b630161af61",
+  "kind": "threat",
+  "subject_id": "THREAT-005",
+  "executed_at": "2026-10-10T19:16:20.959989Z",
+  "product_version": "0.6",
+  "api_version": "v1",
+  "implementation_digest": "8b630161af615f4799b2bbb8b2902a06ea6466694b7f7cbdbb196a60e04710b3",
+  "result": {
+    "passed": true,
+    "observed_ms": null,
+    "sample_size": null,
+    "detail": "missing database failed closed"
+  },
+  "payload_digest": "d986cc819f4d2513873f19c27e4b9b5a194a848c792082f9ced3630ffca90c3d"
+}

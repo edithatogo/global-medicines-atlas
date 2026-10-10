@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "receipt_id": "clean_start-clean-start-8b630161af61",
+  "kind": "clean_start",
+  "subject_id": "CLEAN-START",
+  "executed_at": "2026-10-10T19:16:18.091038Z",
+  "product_version": "0.6",
+  "api_version": "v1",
+  "implementation_digest": "8b630161af615f4799b2bbb8b2902a06ea6466694b7f7cbdbb196a60e04710b3",
+  "result": {
+    "passed": true,
+    "observed_ms": null,
+    "sample_size": null,
+    "detail": "Fresh temporary synthetic database passed readiness, bounded API query, and Atlas rendering. CLI comparison matched the API; no live deployment or production data was exercised."
+  },
+  "payload_digest": "979cfd957fb14630b373e8795b8ea17fd246355b35143f70f9fa74a977ce4a74"
+}
