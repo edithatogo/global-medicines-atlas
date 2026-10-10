@@ -68,12 +68,25 @@
 
 ## Phase 3: Iceberg REST and catalogue federation (AC-03)
 
-- [ ] Write failing REST lifecycle, v3 capability, schema evolution,
+- [x] Write REST lifecycle, v3 capability, schema evolution,
   acquisition-binding, branch/tag alias, deletion/rebuild, and core-import
-  isolation tests.
-- [ ] Confirm the intended failure before implementation.
-- [ ] Register disposable public-HF-backed Parquet tables in an isolated
-  catalogue and compare observed behavior with prior bounded evidence.
+  isolation tests. The actual REST lane's acceptance contract now additionally
+  loads the existing synthetic Bronze JSON fixture, appends its typed rows,
+  scans them back, and emits a version-2 receipt with row count and acquisition
+  identity. PyIceberg remains an optional extra and the core-import test
+  verifies it is not loaded by the package's ordinary module import.
+- [x] Confirm failure handling with an injected row mutation: the round-trip
+  check raises and the disposable table/namespace are cleaned up in `finally`.
+- [~] Run the row-bearing experiment against the digest-pinned REST fixture.
+  Local acceptance tests pass with PyIceberg 0.11.1 installed. The first
+  protected hosted run exposed Arrow nullability and integer-width mismatch;
+  the implementation now supplies an explicit schema matching Iceberg and
+  compares fixture-defined fields while allowing the evolved optional field. The
+  repaired actual loopback catalogue receipt must come from the next hosted run. The fixture remains synthetic and JSON-backed; this
+  does not qualify an existing public-HF-backed Parquet table.
+- [ ] Register an existing public-HF-backed Parquet table in an isolated
+  catalogue and compare observed behavior with prior bounded evidence; no new
+  source or public payload acquisition is authorized by this track.
 - [ ] Record version/environment degradation and leave core functional without
   PyIceberg or a live catalogue.
 - [ ] Phase Verification & Checkpoint: catalogue metadata is demonstrably
@@ -90,7 +103,7 @@
   Both MBS and PBS journeys failed first because the batch manifest was absent,
   then passed with the manifest and cost receipt bound into metadata-only
   packages and lineage.
-- [~] Generate cross-dataset batch roots, research packages, and federation
+- [x] Generate cross-dataset batch roots, research packages, and federation
   lineage over exact public revisions. Synthetic per-dataset end-to-end
   integration now passes for the existing MBS/PBS journeys (PR #920); a
   synthetic cross-dataset package now binds distinct source revisions under
@@ -99,7 +112,8 @@
   lineage input's source dataset identity, path, revision, and digest. Exact
   existing MBS/PBS public revisions now pass through the metadata-only
   cross-dataset package verifier. This is immutable identity binding, not a
-  source-content join or source-coverage qualification; those remain open.
+  source-content join or source-coverage qualification; those remain open and
+  are deferred from this source-neutral completion effort.
   PR #923 then merged with all 38 protected checks passing, correcting the
   batch-leaf identity and hosted-check attribution review findings. Its
   manifest schema v2 includes dataset and revision in leaf hashes. This
