@@ -297,7 +297,9 @@
     fail-closed states. A stubbed identity API test is not resolver-admission
     evidence; real legacy/current resolver qualification remains open until
     source evidence exists. This does not close the broader all-result-types
-    checkpoint.
+    checkpoint. PR #953 merged as `f6581ec68ee1d8f5a971ee0469e8e013c1f51be8`
+    after all 28 required contexts and 38 reported check runs passed; its tree
+    matches the qualified head. The 64 affected tests and routine profile pass.
 
 ### Deterministic Gold review-queue CLI (2026-10-10)
 
