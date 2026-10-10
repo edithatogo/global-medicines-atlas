@@ -13,7 +13,11 @@ from dataclasses import dataclass
 from hashlib import sha256
 from typing import Any, cast
 
-from .frontier_graph_export import EDGE_STATEMENT, NODE_STATEMENT
+from .frontier_graph_export import (
+    EDGE_STATEMENT,
+    NODE_STATEMENT,
+    rdf_iri_reference,
+)
 
 
 @dataclass(frozen=True)
@@ -129,30 +133,20 @@ def _json(value: object) -> str:
     )
 
 
-def _rdf_id(kind: str, value: str) -> str:
-    return (
-        "<urn:gma:"
-        + kind
-        + ":"
-        + value.replace("%", "%25").replace("#", "%23")
-        + ">"
-    )
-
-
 def _rdf_lines(
     nodes: list[dict[str, Any]], edges: list[dict[str, Any]]
 ) -> list[str]:
     lines = [
-        f"{_rdf_id('node', row['node_id'])} <urn:gma:payload-json> {json.dumps(_json(row), ensure_ascii=True)} ."
+        f"{rdf_iri_reference('node', row['node_id'])} <urn:gma:payload-json> {json.dumps(_json(row), ensure_ascii=True)} ."
         for row in nodes
     ]
     for row in edges:
         source, target = (
-            _rdf_id("node", row["source_node_id"]),
-            _rdf_id("node", row["target_node_id"]),
+            rdf_iri_reference("node", row["source_node_id"]),
+            rdf_iri_reference("node", row["target_node_id"]),
         )
         edge, quoted = (
-            _rdf_id("edge", row["edge_id"]),
+            rdf_iri_reference("edge", row["edge_id"]),
             f"<<{source} <urn:gma:connects-to> {target}>>",
         )
         lines.extend((

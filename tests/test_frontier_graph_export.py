@@ -1,6 +1,7 @@
 """Portable graph export preserves evidence and never interpolates labels."""
 
 import json
+from urllib.parse import quote
 
 import pyarrow as pa
 import pytest
@@ -153,3 +154,25 @@ def test_rdf_star_reuses_fail_closed_bounds():
     nodes, edges = project_mbs_gold_graph_arrow(graph())
     with pytest.raises(ValueError, match="bound"):
         export_rdf_star(nodes, edges, max_rows=1)
+
+
+def test_rdf_star_encodes_untrusted_graph_ids_as_valid_iri_references():
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    node_rows = nodes.to_pylist()
+    edge_rows = edges.to_pylist()
+    original = node_rows[0]["node_id"]
+    hostile = "service id/雪%?#<tag>\\value"
+    node_rows[0]["node_id"] = hostile
+    for edge in edge_rows:
+        if edge["source_node_id"] == original:
+            edge["source_node_id"] = hostile
+        if edge["target_node_id"] == original:
+            edge["target_node_id"] = hostile
+    nodes = pa.Table.from_pylist(node_rows, schema=nodes.schema)
+    edges = pa.Table.from_pylist(edge_rows, schema=edges.schema)
+
+    output = export_rdf_star(nodes, edges)
+
+    expected = f"<urn:gma:node:{quote(hostile, safe='-._~:')}>"
+    assert expected in output
+    assert all(ord(character) < 128 for character in output)
