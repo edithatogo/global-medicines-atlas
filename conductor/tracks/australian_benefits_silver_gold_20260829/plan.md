@@ -219,11 +219,14 @@
   XML candidates use the existing 9 MB bounded parser and at most 4,096 rows
   per Arrow batch; this is bounded parsing plus batch output, not unbounded
   input streaming or complete real-corpus qualification.
-- [~] Prove exact existing-source B2-to-Silver row-value parity for the
+- [x] Prove exact existing-source B2-to-Silver row-value parity for the
   already-qualified July 2025 MBS XML and the pinned v4 services Parquet.
   The hosted check binds the existing B1 receipt and both immutable public
   object revisions, compares all rows and fields, and emits a value-free
-  receipt. It does not change rights, admission, publication, or promotion.
+  receipt. PR [#929](https://github.com/edithatogo/global-medicines-atlas/pull/929)
+  merged at `f9c56d32af3ad76d347ff1a25a9e5fcfd96c90e2`; the exact-head hosted
+  receipt verified 5,989 rows × 17 fields. No rights, admission, publication,
+  or promotion decision changed.
 - [~] Add explicit schema-era mappings and historical/current change events
   without overwriting source values.
   XML candidate mappings now require complete exact field coverage for a

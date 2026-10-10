@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import hashlib
 from datetime import UTC, datetime
 from io import BytesIO
+from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -157,3 +159,24 @@ def test_rejects_wrong_b1_receipt_even_when_payload_matches(
 
     with pytest.raises(ValueError, match="B1 receipt"):
         parity.verify_mbs_source_silver_parity(source, wrong_receipt, silver)
+
+
+def test_hosted_parity_receipt_is_durably_pinned_and_value_free() -> None:
+    receipt_path = (
+        Path(__file__).resolve().parents[1]
+        / "quality/qualifications/mbs-source-silver-parity-2025-07-v3.json"
+    )
+    payload = receipt_path.read_bytes()
+    receipt = parity.MbsSourceSilverParityReceipt.model_validate_json(payload)
+
+    assert receipt.source_to_silver_value_parity_verified is True
+    assert receipt.source_values_in_receipt is False
+    assert receipt.row_count == 5_989
+    assert receipt.field_count == 17
+    assert receipt.source_object_sha256 == parity.SOURCE_OBJECT_SHA256
+    assert receipt.silver_object_sha256 == parity.SILVER_OBJECT_SHA256
+    assert "00123" not in receipt.model_dump_json()
+    assert (
+        hashlib.sha256(payload).hexdigest()
+        == "009deabf772e91fedd7642f2b8f0e5a524abb76401620f8e93a8f3bd20189ded"
+    )
