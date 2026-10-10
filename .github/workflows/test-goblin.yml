@@ -169,6 +169,52 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  public-parquet-iceberg-registration:
+    name: Existing public Parquet / Iceberg REST
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      iceberg-rest:
+        image: apache/iceberg-rest-fixture@sha256:db8de90b5b7693d4ac334c336f91d9bbe320d7b19f4f514d26de84cdfbcbfe8d
+        ports:
+          - 8181:8181
+        env:
+          CATALOG_WAREHOUSE: file:///tmp/gma-warehouse
+        options: >-
+          --health-cmd "curl --fail http://localhost:8181/v1/config"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize locked optional Iceberg environment
+        run: uv sync --python 3.14.6 --locked --extra iceberg
+      - name: Verify and register the exact existing public MBS Parquet object
+        run: >-
+          uv run --python 3.14.6 --extra iceberg python
+          scripts/run_public_parquet_iceberg.py
+          --uri http://127.0.0.1:8181
+          --temporary-directory "$RUNNER_TEMP/gma-public-parquet"
+          --output build/quality-receipts/public-parquet-iceberg.json
+      - name: Record metadata-only public Parquet registration receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: public-parquet-iceberg-registration-receipt
+          path: build/quality-receipts/public-parquet-iceberg.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Remove temporary public Parquet bytes after receipt upload
+        if: success()
+        run: |
+          rm -f "$RUNNER_TEMP/gma-public-parquet/services.parquet"
+          rmdir "$RUNNER_TEMP/gma-public-parquet"
+
   tests:
     name: Python 3.14 / ${{ matrix.lane }}
     runs-on: ubuntu-24.04
