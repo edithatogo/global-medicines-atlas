@@ -219,6 +219,11 @@
   XML candidates use the existing 9 MB bounded parser and at most 4,096 rows
   per Arrow batch; this is bounded parsing plus batch output, not unbounded
   input streaming or complete real-corpus qualification.
+- [~] Prove exact existing-source B2-to-Silver row-value parity for the
+  already-qualified July 2025 MBS XML and the pinned v4 services Parquet.
+  The hosted check binds the existing B1 receipt and both immutable public
+  object revisions, compares all rows and fields, and emits a value-free
+  receipt. It does not change rights, admission, publication, or promotion.
 - [~] Add explicit schema-era mappings and historical/current change events
   without overwriting source values.
   XML candidate mappings now require complete exact field coverage for a

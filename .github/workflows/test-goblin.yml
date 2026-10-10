@@ -214,6 +214,18 @@ jobs:
         run: |
           rm -f "$RUNNER_TEMP/gma-public-parquet/services.parquet"
           rmdir "$RUNNER_TEMP/gma-public-parquet"
+      - name: Verify exact public MBS B2-to-Silver row-value parity
+        run: >-
+          uv run --python 3.14.6 python
+          scripts/run_public_mbs_silver_parity.py
+          --output build/quality-receipts/public-mbs-source-silver-parity.json
+      - name: Upload value-free MBS parity receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: public-mbs-source-silver-parity-receipt
+          path: build/quality-receipts/public-mbs-source-silver-parity.json
+          if-no-files-found: error
+          retention-days: 30
 
   tests:
     name: Python 3.14 / ${{ matrix.lane }}
