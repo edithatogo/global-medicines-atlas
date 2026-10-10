@@ -714,7 +714,8 @@
 - [x] Exercise the pending-only review queue from Parquet-projected MBS and
   PBS Gold edges in the Bronze-to-Platinum synthetic E2E paths. Reconstruct
   each source edge from its separate evidence and controls columns; verify
-  edge identity, full-content digest shape, `pending_review`, and no promotion.
+  edge identity, exact full-content digest equality with each pre-projection
+  edge, `pending_review`, and no promotion.
   Focused MBS/PBS E2E tests pass (2); Test-Goblin E2E passes (54); routine
   Test-Goblin checks pass. This closes projection-to-queue integration
   coverage only; adjudication authority, promotion, real-source controls, and
