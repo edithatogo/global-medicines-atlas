@@ -11,6 +11,10 @@
       "sha256": "334b898451294991a7a9519378a41fa7dd1407d3c6b3a8214509ee0a049d2b1a"
     },
     {
+      "path": "quality/qualifications/public-parquet-iceberg-registration-20261010.json",
+      "sha256": "717cc62571711564ede23c1ba869fe02a9cce3ee2238382b39a6f4415371c0be"
+    },
+    {
       "path": "tests/fixtures/datahouse/bronze_records.json",
       "sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da"
     },
@@ -46,18 +50,26 @@
     {
       "experiment_id": "remote_query_streaming",
       "hypothesis": "Remote DuckDB, Polars and Arrow can reduce transferred bytes while preserving source-faithful results.",
-      "unmet_requirement": "Exact representative public Australian Parquet identities and amplification baselines are not yet complete.",
+      "unmet_requirement": "Comparative request/byte amplification, latency, memory, and result-parity baselines remain unmeasured.",
       "baseline": "Pinned anonymous full-object restore with independent SHA-256 verification.",
       "threshold": "Exact result parity with lower transferred bytes and bounded request, latency, and memory amplification.",
       "rights_sensitivity_review": "Only public rights-qualified objects; exclude restricted terminology and credentials.",
       "profile": "tiny",
       "prerequisite_evidence": {
-        "exact_public_object": false,
-        "anonymous_digest": false,
+        "exact_public_object": true,
+        "anonymous_digest": true,
         "request_instrumentation": true
       },
-      "public_object": null,
-      "reused_evidence": [],
+      "public_object": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+        "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+        "anonymously_verified": true
+      },
+      "reused_evidence": [
+        "quality/qualifications/public-parquet-iceberg-registration-20261010.json"
+      ],
       "controls": [
         "mutation",
         "corruption",
@@ -130,19 +142,20 @@
     {
       "experiment_id": "batch_attestation",
       "hypothesis": "The prior Merkle fixture remains a valid additive attestation baseline.",
-      "unmet_requirement": "Cross-dataset public revisions are not complete for a new federation package.",
+      "unmet_requirement": "Payload bytes were not fetched or rehashed for cross-dataset content parity; rights and source coverage remain separate qualifications.",
       "baseline": "Independent per-object SHA-256 receipts plus the verified prior Merkle fixture.",
       "threshold": "Every leaf and cross-dataset revision verifies; mutation, reordering, omission, and circular provenance fail.",
       "rights_sensitivity_review": "Attest only public object identities and metadata; never duplicate restricted bytes.",
       "profile": "tiny",
       "prerequisite_evidence": {
         "prior_fixture_verified": true,
-        "cross_dataset_revisions": false
+        "cross_dataset_revisions": true
       },
       "public_object": null,
       "reused_evidence": [
         "tests/fixtures/datahouse/attestation_leaves.json",
-        "quality/qualifications/datahouse-experiment-matrix.json"
+        "quality/qualifications/datahouse-experiment-matrix.json",
+        "quality/qualifications/public-parquet-iceberg-registration-20261010.json"
       ],
       "controls": [
         "mutation",

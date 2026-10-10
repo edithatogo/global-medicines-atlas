@@ -65,6 +65,7 @@ def test_unmet_or_unverified_prerequisites_block_start() -> None:
     raw = document()
     row = raw["experiments"][0]
     row["experiment_started"] = True
+    row["prerequisite_evidence"]["exact_public_object"] = False
     with pytest.raises(ValidationError, match="without complete prerequisites"):
         FrontierExperimentMatrix.model_validate(raw)
 
