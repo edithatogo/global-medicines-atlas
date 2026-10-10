@@ -721,6 +721,18 @@
   coverage only; adjudication authority, promotion, real-source controls, and
   the Gold phase checkpoint remain pending.
 
+### Gold review append-only ledger E2E (2026-10-10)
+
+- [x] Carry both MBS and PBS Parquet-derived Gold review cases through the
+  append-only adjudication ledger and regenerate the pending queue from its
+  readback. A supplied synthetic `needs_information` event keeps its case
+  pending; a later chronological accepted event supersedes it and clears only
+  that case. Other PBS cases stay pending, and no case or event performs
+  promotion. This verifies persistence and queue mechanics only; the synthetic
+  reviewer is not an authority grant or substantive review. Real reviewer
+  authority, receipts, calibration, promotion, real-source controls, and the
+  Gold phase checkpoint remain pending.
+
 ### Platinum PBS edge readback coverage (2026-10-09)
 
 - [x] Exercise the existing PBS Gold candidate through both the Platinum edge
