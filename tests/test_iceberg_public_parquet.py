@@ -328,6 +328,9 @@ def test_public_registration_rejects_unlocked_pyiceberg_version(
 def test_public_registration_rejects_non_success_fetch(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    def locked_version(_name: str) -> str:
+        return registration.PYICEBERG_VERSION
+
     class NonSuccessResponse:
         status = 404
 
@@ -345,6 +348,9 @@ def test_public_registration_rejects_non_success_fetch(
         registration.urllib.request,
         "urlopen",
         open_not_found,
+    )
+    monkeypatch.setattr(
+        registration.importlib.metadata, "version", locked_version
     )
     with pytest.raises(
         RuntimeError, match="anonymous public Parquet fetch failed"
