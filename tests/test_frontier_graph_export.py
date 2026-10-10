@@ -92,6 +92,59 @@ def test_known_restricted_graph_metadata_is_rejected_before_serialization(
         export_gold_tables(nodes, edges)
 
 
+@pytest.mark.parametrize(
+    ("evidence_json", "message"),
+    [
+        (
+            '{"rights_state":"permitted","rights_state":"restricted"}',
+            "metadata",
+        ),
+        ("{", "metadata"),
+        ("[]", "metadata"),
+        ('{"rights_state":null,"sensitivity":{}}', "rights/sensitivity"),
+        (
+            '{"rights_state":"permitted","sensitivity":[]}',
+            "sensitivity",
+        ),
+        (
+            '{"rights_state":"permitted","sensitivity":{"data_sensitivity":1,"personal_data":"none","publication":"permitted"}}',
+            "rights/sensitivity",
+        ),
+        (
+            '{"rights_state":"invalid","sensitivity":{"data_sensitivity":"unknown","personal_data":"unknown","publication":"review_required"}}',
+            "rights/sensitivity",
+        ),
+    ],
+)
+def test_malformed_graph_policy_metadata_fails_closed(
+    evidence_json: str, message: str
+):
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    rows = nodes.to_pylist()
+    rows[0]["evidence_json"] = evidence_json
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+
+    with pytest.raises((TypeError, ValueError), match=message):
+        export_gold_tables(nodes, edges)
+
+
+@pytest.mark.parametrize("family", ["mbs", "pbs"])
+def test_policy_metadata_must_be_consistent_across_graph_rows(family: str):
+    nodes, edges = (
+        project_mbs_gold_graph_arrow(graph())
+        if family == "mbs"
+        else project_pbs_gold_graph_arrow(pbs_graph())
+    )
+    rows = nodes.to_pylist()
+    evidence = json.loads(rows[0]["evidence_json"])
+    evidence["rights_state"] = "permitted"
+    rows[0]["evidence_json"] = json.dumps(evidence)
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+
+    with pytest.raises(ValueError, match="differs across rows"):
+        export_gold_tables(nodes, edges)
+
+
 @pytest.mark.parametrize("family", ["mbs", "pbs"])
 def test_restricted_node_metadata_is_checked_independently_of_edge_metadata(
     family: str,

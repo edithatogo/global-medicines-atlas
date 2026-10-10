@@ -39,6 +39,7 @@ from global_medicines_atlas.receipts import (
     EvidenceClass,
     PersonalDataState,
     PublicationDisposition,
+    RightsState,
     SensitivityClassification,
 )
 
@@ -338,6 +339,34 @@ def test_nested_field_evidence_and_entity_address_tampering_fail_closed() -> (
     node_data["evidence"]["fields_sha256"] = _digest(node_data["fields"])
     with pytest.raises(ValidationError, match="field lineage"):
         PbsGoldNode.model_validate(node_data)
+
+
+def test_graph_rejects_rights_metadata_mismatch_between_nodes_and_edges():
+    candidate = graph()
+    nodes = tuple(
+        node.model_copy(
+            update={
+                "evidence": node.evidence.model_copy(
+                    update={"rights_state": RightsState.PERMITTED}
+                )
+            }
+        )
+        for node in candidate.nodes
+    )
+    edges = tuple(
+        edge.model_copy(
+            update={
+                "evidence": edge.evidence.model_copy(
+                    update={"rights_state": RightsState.PERMITTED}
+                )
+            }
+        )
+        for edge in candidate.edges
+    )
+    changed = candidate.model_copy(update={"nodes": nodes, "edges": edges})
+
+    with pytest.raises(ValueError, match="rights/sensitivity metadata"):
+        changed.graph_is_closed_and_bound()
 
 
 def test_edge_revision_native_row_and_history_claims_fail_closed() -> None:
