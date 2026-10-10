@@ -63,8 +63,12 @@
   require exact environments and public objects before measurement.
 - [x] Record deterministic profiling evidence and reject optimizations that weaken immutable
   identities, bounded resource behavior, or Python 3.14 completeness.
-- [ ] Phase Verification & Checkpoint: each candidate has measured value and an
-  exact fallback/rollback disposition.
+- [x] Phase Verification & Checkpoint: each candidate has an explicit measured
+  value or a prerequisite-bound defer/reuse disposition, with a named fallback
+  and rollback in `quality/qualifications/frontier-experiment-matrix.json`.
+  Remote-query and Xet runs remain deferred until already inventoried public
+  Parquet identities satisfy the matrix prerequisites; source expansion is not
+  implied.
 
 ## Phase 3: Iceberg REST and catalogue federation (AC-03)
 
@@ -77,20 +81,25 @@
   verifies it is not loaded by the package's ordinary module import.
 - [x] Confirm failure handling with an injected row mutation: the round-trip
   check raises and the disposable table/namespace are cleaned up in `finally`.
-- [~] Run the row-bearing experiment against the digest-pinned REST fixture.
-  Local acceptance tests pass with PyIceberg 0.11.1 installed. The first
-  protected hosted run exposed Arrow nullability and integer-width mismatch;
-  the implementation now supplies an explicit schema matching Iceberg and
-  compares fixture-defined fields while allowing the evolved optional field. The
-  repaired actual loopback catalogue receipt must come from the next hosted run. The fixture remains synthetic and JSON-backed; this
-  does not qualify an existing public-HF-backed Parquet table.
+- [x] Run the row-bearing experiment against the digest-pinned REST fixture.
+  PR #925 merged at `61c9fb85` after all 38 required checks passed. Its hosted
+  version-2 receipt verifies the two-row fixture digest and acquisition ID,
+  empty and populated snapshots, schema/partition evolution, append/scan
+  round-trip, deletion/rebuild, and v3 table creation. The fixture remains
+  synthetic and JSON-backed; this does not qualify a public-HF-backed Parquet
+  table.
 - [ ] Register an existing public-HF-backed Parquet table in an isolated
   catalogue and compare observed behavior with prior bounded evidence; no new
   source or public payload acquisition is authorized by this track.
-- [ ] Record version/environment degradation and leave core functional without
-  PyIceberg or a live catalogue.
-- [ ] Phase Verification & Checkpoint: catalogue metadata is demonstrably
-  rebuildable and never becomes evidentiary authority.
+- [x] Record version/environment degradation and leave core functional without
+  PyIceberg or a live catalogue. PyIceberg remains an optional extra; isolated
+  import checks and fail-closed missing-extra tests preserve the Python core.
+  The hosted receipt records observed v3 support and missing capabilities.
+- [x] Phase Verification & Checkpoint: catalogue metadata is demonstrably
+  rebuildable and never becomes evidentiary authority. The hosted fixture drops
+  and reconstructs the table from acquisition/digest properties, while the
+  receipt expressly makes no production-deployment or universal-compatibility
+  claim. Public-HF-backed Parquet registration remains a separate open check.
 
 ## Phase 4: Attestation and research packages (AC-04)
 
@@ -126,8 +135,12 @@
   three object-digest checks, three Merkle leaf hashes, and three pair hashes;
   all three SHA-256 values remain explicit leaves. This is a reproducible work
   count, not payload re-download or wall-clock performance evidence.
-- [ ] Phase Verification & Checkpoint: additive attestations improve
+- [x] Phase Verification & Checkpoint: additive attestations improve
   verification without creating circular trust or hiding object-level failures.
+  PRs #920–#924 retain per-object SHA-256 leaves alongside Merkle proofs; exact
+  source dataset/revision identities participate in hashes and mutation
+  controls. Existing MBS/PBS identity packages remain metadata-only, with source
+  content parity and coverage explicitly deferred.
 
 ## Phase 5: Graph and semantic projections (AC-05)
 
