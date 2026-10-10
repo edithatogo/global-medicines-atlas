@@ -44,6 +44,12 @@ EDGE_STATEMENT = (
     "CREATE (s)-[:GMA_CANDIDATE "
     "{edge_id: row.edge_id, payload_json: row.payload_json}]->(t)"
 )
+_RESTRICTED_FIELD_CLASSIFICATIONS = {
+    "rights_state": frozenset({"restricted", "prohibited"}),
+    "data_sensitivity": frozenset({"sensitive", "restricted"}),
+    "personal_data": frozenset({"possible", "present"}),
+    "publication": frozenset({"prohibited"}),
+}
 
 
 @dataclass(frozen=True)
@@ -227,17 +233,17 @@ def _check_rights_and_sensitivity(
 
 
 def _check_field_rights_metadata(value: str) -> None:
-    """Reject explicitly restricted field envelopes before preview export.
+    """Reject nested restricted classifications before preview export.
 
-    This checks declared field metadata only. It cannot discover restrictions
-    or personal content inside values that lack a field-policy envelope.
+    The scanner recognizes structured policy labels at any depth. It does not
+    infer rights or detect personal content expressed as ordinary text.
     """
     try:
         fields = json.loads(value, object_pairs_hook=_pairs_without_duplicates)
     except (TypeError, ValueError, json.JSONDecodeError) as error:
         raise ValueError("invalid graph fields metadata") from error
     if isinstance(fields, dict):
-        field_rows: list[object] = [fields] if "field_policy" in fields else []
+        field_rows: list[object] = [fields]
     elif isinstance(fields, list):
         field_rows = cast("list[object]", fields)
     else:
@@ -246,23 +252,54 @@ def _check_field_rights_metadata(value: str) -> None:
         if not isinstance(field, dict):
             raise TypeError("invalid graph fields metadata")
         field_metadata = _string_keyed_object(cast("object", field), "field")
-        if "field_policy" not in field_metadata:
-            continue
-        try:
-            _policy_metadata(
-                _string_keyed_object(
-                    field_metadata["field_policy"], "field policy"
-                ),
-                "field policy",
-            )
-        except (TypeError, ValueError) as error:
-            if "restricted or prohibited" in str(error):
+        _check_nested_field_policy(field_metadata)
+
+
+def _check_nested_field_policy(
+    value: object, *, policy_context: bool = False
+) -> None:
+    """Find nested policy envelopes without interpreting native values."""
+    if isinstance(value, dict):
+        field_object = cast("dict[str, object]", value)
+        if "field_policy" in field_object:
+            policy = field_object["field_policy"]
+            _check_nested_field_policy(policy, policy_context=True)
+            try:
+                _policy_metadata(
+                    _string_keyed_object(policy, "field policy"),
+                    "field policy",
+                )
+            except (TypeError, ValueError) as error:
+                if "restricted or prohibited" in str(error):
+                    raise ValueError(
+                        "graph contains restricted field "
+                        "rights/sensitivity metadata"
+                    ) from error
+                raise ValueError(
+                    "invalid graph field rights/sensitivity metadata"
+                ) from error
+            for key, item in field_object.items():
+                if key != "field_policy":
+                    _check_nested_field_policy(
+                        item, policy_context=policy_context
+                    )
+            return
+
+        for key, item in field_object.items():
+            blocked = _RESTRICTED_FIELD_CLASSIFICATIONS.get(key)
+            if (
+                policy_context
+                and blocked is not None
+                and isinstance(item, str)
+                and item in blocked
+            ):
                 raise ValueError(
                     "graph contains restricted field rights/sensitivity metadata"
-                ) from error
-            raise ValueError(
-                "invalid graph field rights/sensitivity metadata"
-            ) from error
+                )
+            _check_nested_field_policy(item, policy_context=policy_context)
+    elif isinstance(value, list):
+        for item in cast("list[object]", value):
+            _check_nested_field_policy(item, policy_context=policy_context)
 
 
 def export_gold_tables(

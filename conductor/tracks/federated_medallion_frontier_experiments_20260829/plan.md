@@ -183,7 +183,7 @@
   not live Neo4j query parity, NetworkX/RDF-star coverage or public-data
   qualification; those broader tasks below remain open.
 
-- [ ] Write failing deterministic graph, engine-parity, query-semantic,
+- [~] Write failing deterministic graph, engine-parity, query-semantic,
   confidence/calibration, negative-control, review, rights, and restricted-byte
   tests. Existing MBS/PBS portable-table, NetworkX, and preview parity suites
   cover stable ordering, directed queries, null confidence, explicit candidate
@@ -193,6 +193,13 @@
   `fields_json` value; the export contract has no rights authority, so the
   rights/restricted-content portion remains open. No live graph or
   semantic-engine qualification is claimed.
+  - [x] Reject nested declared field-policy envelopes that carry restricted
+    rights or sensitivity labels before graph serialization. Preserve source
+    fields that happen to use policy-like keys. Failing-first controls proved
+    nested envelopes bypassed the previous check; 116 graph/export/parity tests
+    pass, and the full pinned Test-Goblin profile passes with 96.87% coverage.
+    This does not infer privacy content or provide rights clearance; broader
+    graph content/rights review remains open.
 - [x] Validate the canonical graph envelope inside the engine-free parity
   boundary independently of the exporter. Failing-first controls reproduced
   acceptance of duplicate node/edge identities, blank identities, and a
