@@ -10,13 +10,14 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Sequence
+from typing import Literal
 
 from pydantic import Field, field_validator
 
 from .models import FrozenModel
 
 MERKLE_SCHEMA = "global-medicines-atlas.merkle-manifest"
-MERKLE_VERSION = 2
+MERKLE_VERSION = 3
 
 
 class MerkleLeaf(FrozenModel):
@@ -24,15 +25,15 @@ class MerkleLeaf(FrozenModel):
 
     path: str = Field(min_length=1)
     sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    dataset_id: str | None = Field(default=None, min_length=1)
-    revision: str | None = Field(default=None, min_length=1)
+    dataset_id: str = Field(min_length=1)
+    revision: str = Field(pattern=r"^[0-9a-f]{40}$")
 
 
 class MerkleManifest(FrozenModel):
     """Content-addressed manifest for a deterministic object batch."""
 
     schema_id: str = MERKLE_SCHEMA
-    schema_version: int = MERKLE_VERSION
+    schema_version: Literal[3] = MERKLE_VERSION
     leaves: tuple[MerkleLeaf, ...] = Field(min_length=1)
     root_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 

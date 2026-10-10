@@ -100,6 +100,12 @@
   existing MBS/PBS public revisions now pass through the metadata-only
   cross-dataset package verifier. This is immutable identity binding, not a
   source-content join or source-coverage qualification; those remain open.
+  PR #923 then merged with all 38 protected checks passing, correcting the
+  batch-leaf identity and hosted-check attribution review findings. Its
+  manifest schema v2 includes dataset and revision in leaf hashes. This
+  follow-up versions the required-identity contract as schema v3 and binds the
+  exact existing public MBS/PBS revisions into their leaves; payload bytes and
+  source-content parity remain out of scope.
 - [x] Measure deterministic verification work and retain per-object SHA-256
   as the base evidence even when batch proofs pass. For two existing immutable
   source objects plus one synthetic result leaf, the bound receipt requires
