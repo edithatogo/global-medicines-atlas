@@ -26,6 +26,7 @@ from global_medicines_atlas.matching_policy import (
     PolicyReason,
 )
 from global_medicines_atlas.review_queue import (
+    MAX_ADJUDICATION_FILE_BYTES,
     ReviewQueueEntry,
     append_adjudication,
     event_id,
@@ -209,6 +210,34 @@ def test_event_chain_requires_strict_chronology(tmp_path: Path) -> None:
         )
         with pytest.raises(ValueError, match="strictly chronological"):
             append_adjudication(path, later)
+
+
+def test_loader_rejects_reordered_append_only_events(tmp_path: Path) -> None:
+    path = tmp_path / "events.jsonl"
+    first = _event("a")
+    second = _event(
+        "a",
+        state=ReviewState.REJECTED,
+        at=NOW + timedelta(seconds=1),
+        supersedes=first.event_id,
+    )
+    append_adjudication(path, first)
+    append_adjudication(path, second)
+    path.write_text("\n".join(reversed(path.read_text().splitlines())) + "\n")
+
+    with pytest.raises(
+        ValueError,
+        match=r"First decision cannot supersede|latest event",
+    ):
+        load_adjudications(path)
+
+
+def test_loader_bounds_adjudication_file_bytes(tmp_path: Path) -> None:
+    path = tmp_path / "oversized.jsonl"
+    path.write_bytes(b" " * (MAX_ADJUDICATION_FILE_BYTES + 1))
+
+    with pytest.raises(ValueError, match="byte bound"):
+        load_adjudications(path)
 
 
 def test_event_identity_covers_supersession_and_rationale() -> None:
