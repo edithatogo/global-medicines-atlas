@@ -152,10 +152,22 @@ def test_research_export_package_binds_all_metadata_and_is_deterministic() -> (
         )
 
 
+@pytest.mark.parametrize(
+    ("url_before", "url_after", "artifact_revision"),
+    [
+        (_REVISION, "b" * 40, "b" * 40),
+        ("silver/benefits.parquet", "silver/other.parquet", None),
+        ("example/source/resolve", "example/other/resolve", None),
+    ],
+    ids=("revision", "path", "dataset-identity"),
+)
 @pytest.mark.unit
-def test_research_export_package_rejects_source_revision_mismatch() -> None:
+def test_research_export_package_rejects_source_binding_mismatch(
+    url_before: str,
+    url_after: str,
+    artifact_revision: str | None,
+) -> None:
     manifest, crate, lineage = _inputs()
-    mismatched_revision = "b" * 40
     lineage = lineage.model_copy(
         update={
             "artifacts": tuple(
@@ -163,10 +175,10 @@ def test_research_export_package_rejects_source_revision_mismatch() -> None:
                     identifier=artifact.identifier,
                     role=artifact.role,
                     public_url=artifact.public_url.replace(
-                        _REVISION, mismatched_revision
+                        url_before, url_after
                     ),
                     sha256=artifact.sha256,
-                    revision=mismatched_revision,
+                    revision=artifact_revision,
                 )
                 if artifact.role == "input"
                 else artifact
