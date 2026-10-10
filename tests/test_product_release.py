@@ -250,6 +250,34 @@ def test_clean_start_fails_clearly_when_cli_output_is_not_json(
         run_product_qualification._clean_start_receipt(IMPLEMENTATION)
 
 
+def test_cli_clean_start_merge_receipt_reconciles_without_promoting_gates():
+    evidence_path = Path(
+        "conductor/tracks/federated_medicines_platinum_20260829/evidence.jsonl"
+    )
+    records = [
+        json.loads(line)
+        for line in evidence_path.read_text(encoding="utf-8").splitlines()
+    ]
+    receipts = [
+        record
+        for record in records
+        if record.get("kind")
+        == "platinum_same_root_cli_clean_start_merge_receipt"
+    ]
+
+    assert len(receipts) == 1
+    receipt = receipts[0]
+    assert receipt["head"] == "d5cbec644c0cd44fd50bc9ae6fc66c0c457ef6f1"
+    assert receipt["merge_commit"] == "ea960b66552031c07715ce5dd21c9a02da6139eb"
+    assert receipt["merge_tree_oid"] == receipt["qualified_head_tree_oid"]
+    assert receipt["verification"]["required_contexts_passed"] == 28
+    assert receipt["verification"]["reported_checks_passed"] == 38
+    assert receipt["boundaries"]["new_sources_added"] is False
+    assert receipt["boundaries"]["source_coverage_claimed"] is False
+    assert receipt["verification"]["live_deployment_verified"] is False
+    assert receipt["verification"]["production_data_verified"] is False
+
+
 def test_runner_publishes_nothing_when_a_check_fails(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
