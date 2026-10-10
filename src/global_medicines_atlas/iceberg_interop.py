@@ -285,8 +285,16 @@ def run_rest_catalog_interop(  # ruff: ignore[too-many-locals,too-many-statement
             "list[IcebergFixtureRecord]",
             loaded.scan().to_arrow().to_pylist(),
         )
+        expected_fields = tuple(fixture_records[0])
         data_roundtrip = sorted(
-            observed_records, key=itemgetter("native_id")
+            (
+                {
+                    field: cast("dict[str, object]", record)[field]
+                    for field in expected_fields
+                }
+                for record in observed_records
+            ),
+            key=itemgetter("native_id"),
         ) == sorted(fixture_records, key=itemgetter("native_id"))
         populated_snapshot = loaded.current_snapshot() is not None
         operations.append("verify_data_roundtrip")

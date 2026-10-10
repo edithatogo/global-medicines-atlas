@@ -196,7 +196,10 @@ class _Table:
         return object() if self.records else None
 
     def append(self, arrow_table: _ArrowTable) -> None:
-        self.records.extend(arrow_table.to_pylist())
+        self.records.extend(
+            {**record, "observed_at": None}
+            for record in arrow_table.to_pylist()
+        )
 
     def scan(self) -> _Scan:
         return _Scan(self.records)
