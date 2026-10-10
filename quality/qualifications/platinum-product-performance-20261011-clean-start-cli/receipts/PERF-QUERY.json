@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "receipt_id": "performance-perf-query-9f7e3d4c7857",
+  "kind": "performance",
+  "subject_id": "PERF-QUERY",
+  "executed_at": "2026-10-10T19:22:24.610278Z",
+  "product_version": "0.6",
+  "api_version": "v1",
+  "implementation_digest": "9f7e3d4c7857be7a1016fa0513765e8ddff936d4a9ee65c861420577d9961360",
+  "result": {
+    "passed": true,
+    "observed_ms": 48.63296635,
+    "sample_size": 20,
+    "detail": "observed p95 48.633 ms against 250.0 ms budget"
+  },
+  "payload_digest": "bb01afe27102db365a8ad19a193d03809a9ec0ea38f17cf07c54bc54ac9d42fd"
+}

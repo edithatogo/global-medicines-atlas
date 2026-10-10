@@ -4,6 +4,7 @@ import sys
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from pydantic import ValidationError
@@ -228,6 +229,25 @@ def test_runner_verifies_clean_start_in_a_fresh_fixture_root(
     assert not evidence.gates["live_deployment_verified"]
     assert receipt.kind == "clean_start"
     assert receipt.subject_id == "CLEAN-START"
+    assert "CLI comparison matched the API" in receipt.result.detail
+
+
+def test_clean_start_fails_clearly_when_cli_output_is_not_json(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(
+        run_product_qualification.CliRunner,
+        "invoke",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            exit_code=0, stdout="not-json"
+        ),
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="clean-start CLI comparison did not return JSON",
+    ):
+        run_product_qualification._clean_start_receipt(IMPLEMENTATION)
 
 
 def test_runner_publishes_nothing_when_a_check_fails(
