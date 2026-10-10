@@ -243,7 +243,10 @@
   unlabeled content, establish rights, or close the restricted-content review.
   The focused graph export/parity/NetworkX suite passes 71 tests, and the
   routine harness passes. The pinned full profile passes 6,154 tests at 96.94%
-  coverage and all local lanes.
+  coverage and all local lanes. PR #945 merged as
+  `6bac5fe1605fbf27f8df02717d0063d27718058b` from reviewed head
+  `4329a3a01faa2ed0a55a4d51cea4385ac3911cc4`; all 39 hosted checks passed,
+  including Codecov patch coverage.
 - [x] Benchmark lexical, ontology-assisted, LanceDB embedding/NLP, and any
   justified Tantivy/Qdrant candidates; preserve explicit candidate status.
   The deterministic receipt over six existing synthetic matching cases
