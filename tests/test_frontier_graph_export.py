@@ -92,6 +92,139 @@ def test_known_restricted_graph_metadata_is_rejected_before_serialization(
         export_gold_tables(nodes, edges)
 
 
+@pytest.mark.parametrize("family", ["mbs", "pbs"])
+@pytest.mark.parametrize(
+    "field_policy",
+    [
+        {
+            "rights_state": "restricted",
+            "sensitivity": {
+                "data_sensitivity": "non_sensitive",
+                "personal_data": "none",
+                "publication": "permitted",
+            },
+        },
+        {
+            "rights_state": "prohibited",
+            "sensitivity": {
+                "data_sensitivity": "non_sensitive",
+                "personal_data": "none",
+                "publication": "permitted",
+            },
+        },
+        {
+            "rights_state": "permitted",
+            "sensitivity": {
+                "data_sensitivity": "sensitive",
+                "personal_data": "none",
+                "publication": "permitted",
+            },
+        },
+        {
+            "rights_state": "permitted",
+            "sensitivity": {
+                "data_sensitivity": "restricted",
+                "personal_data": "none",
+                "publication": "permitted",
+            },
+        },
+        {
+            "rights_state": "permitted",
+            "sensitivity": {
+                "data_sensitivity": "non_sensitive",
+                "personal_data": "possible",
+                "publication": "permitted",
+            },
+        },
+        {
+            "rights_state": "permitted",
+            "sensitivity": {
+                "data_sensitivity": "non_sensitive",
+                "personal_data": "present",
+                "publication": "permitted",
+            },
+        },
+        {
+            "rights_state": "permitted",
+            "sensitivity": {
+                "data_sensitivity": "non_sensitive",
+                "personal_data": "none",
+                "publication": "prohibited",
+            },
+        },
+    ],
+)
+def test_nested_restricted_field_metadata_is_rejected_before_serialization(
+    family: str,
+    field_policy: dict[str, object],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    nodes, edges = (
+        project_mbs_gold_graph_arrow(graph())
+        if family == "mbs"
+        else project_pbs_gold_graph_arrow(pbs_graph())
+    )
+    rows = nodes.to_pylist()
+    fields = json.loads(rows[0]["fields_json"])
+    fields[0]["field_policy"] = field_policy
+    rows[0]["fields_json"] = json.dumps(fields)
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+
+    def reject_serialization(_value):
+        raise AssertionError("restricted field payload reached serialization")
+
+    monkeypatch.setattr(graph_export_module, "_json", reject_serialization)
+    with pytest.raises(ValueError, match="restricted field rights/sensitivity"):
+        export_gold_tables(nodes, edges)
+
+
+def test_field_policy_must_be_complete_and_unambiguous() -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    rows = nodes.to_pylist()
+    rows[0]["fields_json"] = json.dumps([
+        {"native_value": "fixture", "field_policy": {"rights_state": "unknown"}}
+    ])
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+    with pytest.raises(
+        ValueError, match="invalid graph field rights/sensitivity"
+    ):
+        export_gold_tables(nodes, edges)
+
+    rows[0]["fields_json"] = (
+        '[{"native_value":"fixture","field_policy":'
+        '{"rights_state":"unknown","rights_state":"restricted"}}]'
+    )
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+    with pytest.raises(ValueError, match="invalid graph fields metadata"):
+        export_gold_tables(nodes, edges)
+
+
+def test_nonrestrictive_field_policy_is_preserved_without_clearance_claim() -> (
+    None
+):
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    rows = nodes.to_pylist()
+    field_policy = {
+        "rights_state": "unknown",
+        "sensitivity": {
+            "data_sensitivity": "unknown",
+            "personal_data": "unknown",
+            "publication": "review_required",
+        },
+    }
+    fields = json.loads(rows[0]["fields_json"])
+    fields[0]["field_policy"] = field_policy
+    rows[0]["fields_json"] = json.dumps(fields)
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+
+    result = export_gold_tables(nodes, edges)
+
+    exported = json.loads(result.reference_json)["nodes"][0]
+    assert (
+        json.loads(exported["fields_json"])[0]["field_policy"] == field_policy
+    )
+
+
 @pytest.mark.parametrize(
     ("evidence_json", "message"),
     [
