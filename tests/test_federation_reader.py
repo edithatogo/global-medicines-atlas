@@ -220,6 +220,7 @@ def test_offline_fail_closed_policy() -> None:
         {"timeout_seconds": True},
         {"timeout_seconds": "1"},
         {"timeout_seconds": None},
+        {"timeout_seconds": 10**1000},
     ],
 )
 def test_invalid_reader_limits(options: dict[str, Any]) -> None:
