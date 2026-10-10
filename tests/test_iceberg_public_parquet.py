@@ -120,12 +120,11 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
             self.name = name
             self.type = object()
 
+    schema_names = ["service_code", "benefit"]
+
     class FakePhysicalSchema:
         def __iter__(self) -> Any:
-            return iter((
-                FakePhysicalField("service_code"),
-                FakePhysicalField("benefit"),
-            ))
+            return iter(FakePhysicalField(name) for name in schema_names)
 
     @dataclass
     class FakeMappedField:
@@ -144,33 +143,47 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
             ])
 
     class FakeScan:
-        def __init__(self, *, should_fail: bool) -> None:
+        def __init__(self, *, should_fail: bool, mismatch: bool) -> None:
             self.should_fail = should_fail
+            self.mismatch = mismatch
 
         def to_arrow(self) -> FakeArrowTable:
             if self.should_fail:
                 raise RuntimeError("injected scan failure")
-            return FakeArrowTable()
+            table = FakeArrowTable()
+            if self.mismatch:
+                table.num_rows = 3
+            return table
 
     class FakeTable:
         def __init__(self) -> None:
             self.added: list[str] = []
             self.fail_scan = False
+            self.mismatch_scan = False
+            self.fail_add_files = False
 
         def add_files(self, files: list[str]) -> None:
+            if self.fail_add_files:
+                raise RuntimeError("injected add_files failure")
             self.added = files
 
         def scan(self) -> FakeScan:
-            return FakeScan(should_fail=self.fail_scan)
+            return FakeScan(
+                should_fail=self.fail_scan, mismatch=self.mismatch_scan
+            )
 
     class FakeCatalog:
         def __init__(self) -> None:
             self.table = FakeTable()
             self.properties: dict[str, str] = {}
             self.dropped: list[tuple[str, ...]] = []
+            self.fail_namespace = False
+            self.fail_table_create = False
+            self.fail_drop_table = False
 
         def create_namespace(self, _namespace: tuple[str, ...]) -> None:
-            return None
+            if self.fail_namespace:
+                raise RuntimeError("injected namespace failure")
 
         def create_table(
             self,
@@ -179,12 +192,16 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
             schema: object,
             properties: dict[str, str],
         ) -> FakeTable:
+            if self.fail_table_create:
+                raise RuntimeError("injected table creation failure")
             self.properties = properties
             assert schema is fake_schema
             return self.table
 
         def drop_table(self, identifier: tuple[str, ...]) -> None:
             self.dropped.append(identifier)
+            if self.fail_drop_table:
+                raise RuntimeError("injected table cleanup failure")
 
         def drop_namespace(self, namespace: tuple[str, ...]) -> None:
             self.dropped.append(namespace)
@@ -277,6 +294,32 @@ def test_exact_public_object_registers_and_reads_back_in_disposable_catalog(  # 
         ("gma_public_parquet",),
     ]
     fake_catalog.dropped.clear()
+    fake_catalog.table.fail_scan = False
+    fake_catalog.table.mismatch_scan = True
+    with pytest.raises(ValueError, match="scan differs"):
+        registration.run_public_parquet_registration(
+            rest_uri="http://127.0.0.1:8181", temporary_directory=tmp_path
+        )
+    assert fake_catalog.dropped == [
+        ("gma_public_parquet", "mbs_services"),
+        ("gma_public_parquet",),
+    ]
+    fake_catalog.dropped.clear()
+    fake_catalog.table.mismatch_scan = False
+    schema_names[:] = ["duplicate", "duplicate"]
+    with pytest.raises(ValueError, match="invalid or duplicate names"):
+        registration.run_public_parquet_registration(
+            rest_uri="http://127.0.0.1:8181", temporary_directory=tmp_path
+        )
+    schema_names[:] = ["service_code", "benefit"]
+    fake_catalog.fail_drop_table = True
+    with pytest.raises(RuntimeError, match="catalogue cleanup failed"):
+        registration.run_public_parquet_registration(
+            rest_uri="http://127.0.0.1:8181", temporary_directory=tmp_path
+        )
+    assert fake_catalog.dropped[-1] == ("gma_public_parquet",)
+    fake_catalog.dropped.clear()
+    fake_catalog.fail_drop_table = False
     fake_catalog.table.fail_scan = False
 
     receipt = registration.run_public_parquet_registration(
