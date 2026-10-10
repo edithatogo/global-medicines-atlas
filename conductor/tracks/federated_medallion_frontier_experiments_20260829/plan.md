@@ -88,9 +88,16 @@
   round-trip, deletion/rebuild, and v3 table creation. The fixture remains
   synthetic and JSON-backed; this does not qualify a public-HF-backed Parquet
   table.
-- [ ] Register an existing public-HF-backed Parquet table in an isolated
-  catalogue and compare observed behavior with prior bounded evidence; no new
-  source or public payload acquisition is authorized by this track.
+- [x] Register one already-inventoried public-HF-backed Parquet table in an
+  isolated catalogue and compare its exact bytes, source lineage, row count,
+  and schema with the committed candidate and source-faithful object. The
+  hosted run anonymously verified the pinned 100,062-byte MBS services object,
+  registered its nested schema using a deterministic Iceberg name mapping,
+  scanned all 5,989 rows back, and dropped the disposable table and namespace.
+  A metadata-only receipt was uploaded before the temporary runner copy was
+  removed. This does not establish source-to-raw content parity, rights,
+  production admission/promotion, publication, or source coverage; no source
+  was added. PR #927 and its full protected checks are the tracked merge gate.
 - [x] Record version/environment degradation and leave core functional without
   PyIceberg or a live catalogue. PyIceberg remains an optional extra; isolated
   import checks and fail-closed missing-extra tests preserve the Python core.
