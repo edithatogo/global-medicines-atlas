@@ -152,6 +152,37 @@ def test_research_export_package_binds_all_metadata_and_is_deterministic() -> (
         )
 
 
+@pytest.mark.unit
+def test_research_export_package_rejects_source_revision_mismatch() -> None:
+    manifest, crate, lineage = _inputs()
+    mismatched_revision = "b" * 40
+    lineage = lineage.model_copy(
+        update={
+            "artifacts": tuple(
+                ResearchLineageArtifact(
+                    identifier=artifact.identifier,
+                    role=artifact.role,
+                    public_url=artifact.public_url.replace(
+                        _REVISION, mismatched_revision
+                    ),
+                    sha256=artifact.sha256,
+                    revision=mismatched_revision,
+                )
+                if artifact.role == "input"
+                else artifact
+                for artifact in lineage.artifacts
+            )
+        }
+    )
+
+    with pytest.raises(ValueError, match="source identity, path, revision"):
+        build_research_export_package(
+            manifest=manifest,
+            crate=crate,
+            lineage=lineage,
+        )
+
+
 @pytest.mark.e2e
 def test_research_export_package_rebuilds_from_saved_archive() -> None:
     manifest, crate, lineage = _inputs()

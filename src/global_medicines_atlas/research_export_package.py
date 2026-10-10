@@ -12,11 +12,13 @@ import json
 from dataclasses import dataclass
 from io import BytesIO
 from typing import Any, cast
+from urllib.parse import urlsplit
 from zipfile import ZIP_STORED, BadZipFile, ZipFile, ZipInfo
 
 from pydantic import ValidationError
 
 from .research_exports import (
+    ExportSource,
     QuerySnapshotManifest,
     canonical_manifest_bytes,
     manifest_sha256,
@@ -77,16 +79,21 @@ def build_research_export_package(
             "crate and lineage must bind the query manifest export id"
         )
 
-    input_digests = {
-        artifact.sha256
-        for artifact in lineage.artifacts
-        if artifact.role == "input"
-    }
-    source_digests = {source.sha256 for source in manifest.sources}
-    if not source_digests <= input_digests:
-        raise ValueError(
-            "lineage inputs must bind every manifest source digest"
+    input_artifacts = tuple(
+        artifact for artifact in lineage.artifacts if artifact.role == "input"
+    )
+    for source in manifest.sources:
+        matching_source = any(
+            artifact.sha256 == source.sha256
+            and (artifact.revision or lineage.revision) == source.revision
+            and _lineage_input_binds_source(artifact.public_url, source)
+            for artifact in input_artifacts
         )
+        if not matching_source:
+            raise ValueError(
+                "lineage inputs must bind each manifest source identity, "
+                "path, revision, and digest"
+            )
 
     output_digests = {
         artifact.identifier: artifact.sha256
@@ -108,6 +115,25 @@ def build_research_export_package(
         ("ro-crate-metadata.json", crate.canonical_jsonld_bytes()),
     )
     return ResearchExportPackage(documents=documents)
+
+
+def _lineage_input_binds_source(public_url: str, source: ExportSource) -> bool:
+    """Check that an input URL identifies one manifest source object."""
+    path_parts = tuple(
+        part for part in urlsplit(public_url).path.split("/") if part
+    )
+    try:
+        resolve_index = path_parts.index("resolve")
+    except ValueError:
+        return False
+    dataset_parts = tuple(part for part in source.dataset_id.split("/") if part)
+    source_path_parts = tuple(part for part in source.path.split("/") if part)
+    return (
+        bool(dataset_parts)
+        and path_parts[:resolve_index][-len(dataset_parts) :] == dataset_parts
+        and path_parts[resolve_index + 1 :]
+        == (source.revision, *source_path_parts)
+    )
 
 
 def verify_research_export_package(
