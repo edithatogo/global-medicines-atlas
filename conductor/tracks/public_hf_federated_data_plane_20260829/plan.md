@@ -260,7 +260,10 @@
   routine, typing, security, and regeneration checks passed. Darwin mutation is
   advisory; Linux hosted mutation remains authoritative. Synthetic contracts
   only; no source reads, admission, publication, licensing conclusion, or
-  source-coverage claim.
+  source-coverage claim. PR #939 merged as
+  `6c785f6fed362d9f45a2de57a7b77aa071938206` from exact head
+  `5f7617e6025cd04e720f3d1626736b6f3b9bc4a2` after all 39 hosted checks
+  passed, including Codecov patch and Linux/macOS/Windows consumer lanes.
 
 ### Source-metadata review fixes
 
