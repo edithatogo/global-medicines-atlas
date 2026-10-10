@@ -97,7 +97,10 @@
   A metadata-only receipt was uploaded before the temporary runner copy was
   removed. This does not establish source-to-raw content parity, rights,
   production admission/promotion, publication, or source coverage; no source
-  was added. PR #927 and its full protected checks are the tracked merge gate.
+  was added. A post-review correction places table and namespace cleanup in
+  `finally`; focused failure injection confirms cleanup after scan failure and
+  parity mismatch. PR #927 and its full protected checks are the tracked merge
+  gate.
 - [x] Record version/environment degradation and leave core functional without
   PyIceberg or a live catalogue. PyIceberg remains an optional extra; isolated
   import checks and fail-closed missing-extra tests preserve the Python core.
