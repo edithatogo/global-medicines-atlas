@@ -645,3 +645,17 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   The third source ID in the broader authorization has no object in this
   cohort, and PBS-utilisation rights remain unresolved. Stable v1 federation
   acceptance and separate stable-release approval remain blocked.
+
+## 2026-10-05 exact-main M5 maturity reconciliation
+
+- [x] Reconcile the eight M5 dimensions and Stable v1 gates against exact
+  current `main` `f160a0235c66c425150f90b4cdc6ea3d55365b5b`; refresh only
+  provenance supported by current evidence, state the remaining external and
+  human gates precisely, run affected checks, and complete Conductor review.
+  The report remains qualified at 42/42 approved bounded sources; all eight
+  M5 dimensions remain verified, with the Australian federation and final
+  stable-release gates separate and blocked. Production disaster-recovery
+  authority remains explicitly unclaimed and outside the acceptance gate set.
+  Focused qualification tests (237), routine Test-Goblin, exact-main
+  regeneration, and Conductor review passed; see the 2026-10-05 M5 evidence
+  entries in `evidence.jsonl`.
