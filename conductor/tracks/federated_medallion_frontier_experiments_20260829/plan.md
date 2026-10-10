@@ -204,6 +204,8 @@
     `410cc61aaaee29cfb86dbc92fb7e655b6bbfaa60` from reviewed head
     `5308e2dd27de3158c25ae9e0c19e3d13fedc01bd`; all 28 required contexts
     passed, including Codecov patch coverage and Linux/macOS/Windows consumers.
+    PR #956 reconciled the merge receipt at `5e2d84d65d4cbb28a2e0b8d44d27c058687cdc13`
+    after all 28 required contexts passed.
 - [x] Validate the canonical graph envelope inside the engine-free parity
   boundary independently of the exporter. Failing-first controls reproduced
   acceptance of duplicate node/edge identities, blank identities, and a
