@@ -249,6 +249,19 @@
   as `ed38571146de342db5f243ea435e6b331ad57112` after all 39 hosted checks
   passed; the exact receipt is in the append-only evidence log.
 
+- [x] Reject boolean and nonnumeric timeout budgets at reader construction.
+  Failing-first cases reproduced acceptance of `True` and raw `TypeError` for
+  string/`None` values; all invalid budgets now fail with the documented
+  `ValueError`. The focused reader/admission/contract suites pass (129 tests).
+  The pinned full Test-Goblin profile passes with 6,105 tests, one optional
+  PyIceberg skip, 97.92% line coverage and 93.27% branch coverage; 1,960/2,338
+  mutations killed (367 survived, 4 timed out, 5 suspicious, 2 untested), 353
+  Gremlins passed, both randomized 184-test runs passed, and package/API/CLI,
+  routine, typing, security, and regeneration checks passed. Darwin mutation is
+  advisory; Linux hosted mutation remains authoritative. Synthetic contracts
+  only; no source reads, admission, publication, licensing conclusion, or
+  source-coverage claim.
+
 ### Source-metadata review fixes
 
 - [x] Replace placeholder MBS/PBS payload, B1 receipt, retrieval, and Hub

@@ -100,7 +100,11 @@ class FederatedReader:
         ):
             if type(value) is not int or value <= 0:
                 raise ValueError("reader budgets must be positive integers")
-        if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
+        if (
+            type(timeout_seconds) not in {int, float}
+            or not math.isfinite(timeout_seconds)
+            or timeout_seconds <= 0
+        ):
             raise ValueError("reader timeout must be finite and positive")
         if any(type(item) is not AdmissionRecord for item in admission_records):
             raise ValueError("reader requires typed admission records")
