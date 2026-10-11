@@ -52,6 +52,11 @@ def test_sparql_executes_exact_synthetic_mbs_pbs_projections() -> None:
     for family in ("mbs", "pbs"):
         case = cast("dict[str, object]", cases[family])
         assert case["exact_payload_and_direction_parity"] is True
+        assert case["rdf12_reified_triple_term_parity"] is True
+    assert receipt["rdf12_reification_query"] == (
+        "sparql-1.2-triple-term-pattern"
+    )
+    assert receipt["rdf12_reified_triple_term_parity"] is True
     assert receipt["disposition"] == "retain-preview"
     assert receipt["engine_version"] == "0.5.9"
     assert receipt["engine_image_digest"] == (

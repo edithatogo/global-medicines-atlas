@@ -40,6 +40,14 @@ SELECT ?source ?target ?edge ?edgeId ?payload WHERE {
   ?edge <urn:gma:payload-json> ?payload .
 }
 """
+_REIFIED_EDGE_QUERY = """
+VERSION "1.2"
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT ?edge ?source ?target WHERE {
+  ?edge rdf:reifies <<( ?source <urn:gma:connects-to> ?target )>> .
+}
+ORDER BY STR(?edge)
+"""
 
 
 def execute_query(
@@ -125,6 +133,10 @@ def qualify_graph_exports(
         if cases:
             _execute_update(base_url, "DELETE WHERE { ?s ?p ?o }")
         _load_graph(base_url, rdf_graph)
+        if not verify_reified_edge_semantics(base_url, export):
+            raise ValueError(
+                f"SPARQL RDF 1.2 reified triple-term semantics differ for {family} fixture"
+            )
         recovered = _read_graph(base_url)
         if _canonical_json(recovered) != export.reference_json:
             raise ValueError(
@@ -140,6 +152,7 @@ def qualify_graph_exports(
             "node_count": len(nodes),
             "edge_count": len(edges),
             "exact_payload_and_direction_parity": True,
+            "rdf12_reified_triple_term_parity": True,
         }
     return {
         "schema_id": "global-medicines-atlas.oxigraph-synthetic-graph-parity",
@@ -148,6 +161,8 @@ def qualify_graph_exports(
         "engine_version": _ENGINE_VERSION,
         "engine_image_digest": _IMAGE_DIGEST,
         "api": "sparql-1.1-protocol-rdf-1.2",
+        "rdf12_reification_query": "sparql-1.2-triple-term-pattern",
+        "rdf12_reified_triple_term_parity": True,
         "disposition": "retain-preview",
         "source_scope": "synthetic-mbs-pbs-only",
         "source_payloads_accessed": False,
@@ -155,6 +170,46 @@ def qualify_graph_exports(
         "production_authority_promoted": False,
         "cases": cases,
     }
+
+
+def verify_reified_edge_semantics(
+    base_url: str,
+    export: GoldGraphExport,
+) -> bool:
+    """Compare actual RDF 1.2 reified triple terms with directed Gold edges."""
+    reference = _strict_object(export.reference_json)
+    edges_object = reference.get("edges")
+    if not isinstance(edges_object, list) or any(
+        not isinstance(edge, dict)
+        for edge in cast("list[object]", edges_object)
+    ):
+        raise TypeError("graph reference edges must be objects")
+    edges = cast("list[dict[str, object]]", edges_object)
+    expected: list[tuple[str, str, str]] = []
+    for edge in edges:
+        edge_id = edge.get("edge_id")
+        source_id = edge.get("source_node_id")
+        target_id = edge.get("target_node_id")
+        if any(
+            not isinstance(value, str) or not value
+            for value in (edge_id, source_id, target_id)
+        ):
+            raise ValueError("graph reference edge has invalid RDF identity")
+        expected.append((
+            _iri_value("edge", cast("str", edge_id)),
+            _iri_value("node", cast("str", source_id)),
+            _iri_value("node", cast("str", target_id)),
+        ))
+
+    fields, rows = execute_query(base_url, _REIFIED_EDGE_QUERY)
+    if fields != ["edge", "source", "target"]:
+        raise ValueError("SPARQL reification query returned unexpected fields")
+    observed = [(_uri(row, 0), _uri(row, 1), _uri(row, 2)) for row in rows]
+    if sorted(observed) != sorted(expected):
+        raise ValueError(
+            "SPARQL RDF 1.2 reified triple-term semantics differ from directed edges"
+        )
+    return True
 
 
 def _wait_until_ready(base_url: str) -> None:

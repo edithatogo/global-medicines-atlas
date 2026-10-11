@@ -9,7 +9,17 @@ from typing import cast
 from urllib.request import Request
 
 import pytest
-from test_support.frontier_sparql import execute_query
+from test_mbs_gold_graph import graph as mbs_graph
+from test_support.frontier_sparql import (
+    execute_query,
+    verify_reified_edge_semantics,
+)
+
+from global_medicines_atlas.frontier_graph_export import (
+    export_gold_tables,
+    rdf_iri_reference,
+)
+from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
 
 _OXIGRAPH_RECEIPT = (
     Path(__file__).parents[1]
@@ -24,6 +34,13 @@ _OXIGRAPH_RDF12_RECEIPT = (
 )
 _OXIGRAPH_RDF12_RECEIPT_SHA256 = (
     "892e1d89ef45c864c8169eeeb44d7684450ea12d5fb05fecee8c4c03f7ec0004"
+)
+_OXIGRAPH_RDF12_REIFICATION_RECEIPT = (
+    Path(__file__).parents[1]
+    / "quality/qualifications/oxigraph-rdf12-reification-semantic-parity-20261012.json"
+)
+_OXIGRAPH_RDF12_REIFICATION_RECEIPT_SHA256 = (
+    "047d665c960ff8e4ffb0e2d551543a8cd3cdbdcf4224e7705ca4f9702e2fda65"
 )
 
 
@@ -106,6 +123,95 @@ def test_execute_query_rejects_invalid_result_shape(
         execute_query("http://localhost:7878", "SELECT * WHERE {}")
 
 
+def test_reified_edge_query_requires_exact_rdf12_triple_term_direction(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(mbs_graph())
+    export = export_gold_tables(nodes, edges)
+    reference = json.loads(export.reference_json)
+    expected = [
+        [
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("edge", row["edge_id"])[1:-1],
+            },
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("node", row["source_node_id"])[1:-1],
+            },
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("node", row["target_node_id"])[1:-1],
+            },
+        ]
+        for row in reference["edges"]
+    ]
+    observed_queries: list[str] = []
+
+    def fake_query(
+        _endpoint: str,
+        query: str,
+        *,
+        timeout: float = 10.0,
+    ) -> tuple[list[str], list[list[dict[str, str]]]]:
+        assert timeout > 0
+        observed_queries.append(query)
+        return ["edge", "source", "target"], expected
+
+    monkeypatch.setattr(
+        "test_support.frontier_sparql.execute_query", fake_query
+    )
+
+    assert verify_reified_edge_semantics("http://localhost:7878", export)
+    assert len(observed_queries) == 1
+    assert 'VERSION "1.2"' in observed_queries[0]
+    assert (
+        "rdf:reifies <<( ?source <urn:gma:connects-to> ?target )>>"
+        in (observed_queries[0])
+    )
+
+
+def test_reified_edge_query_rejects_direction_mismatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(mbs_graph())
+    export = export_gold_tables(nodes, edges)
+    reference = json.loads(export.reference_json)
+    expected = [
+        [
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("edge", row["edge_id"])[1:-1],
+            },
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("node", row["target_node_id"])[1:-1],
+            },
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("node", row["source_node_id"])[1:-1],
+            },
+        ]
+        for row in reference["edges"]
+    ]
+
+    def fake_query(
+        _endpoint: str,
+        _query: str,
+        *,
+        timeout: float = 10.0,
+    ) -> tuple[list[str], list[list[dict[str, str]]]]:
+        assert timeout > 0
+        return ["edge", "source", "target"], expected
+
+    monkeypatch.setattr(
+        "test_support.frontier_sparql.execute_query", fake_query
+    )
+
+    with pytest.raises(ValueError, match="reified triple-term semantics"):
+        verify_reified_edge_semantics("http://localhost:7878", export)
+
+
 def test_committed_oxigraph_receipt_pins_synthetic_engine_parity() -> None:
     document = json.loads(_OXIGRAPH_RECEIPT.read_text(encoding="utf-8"))
     assert isinstance(document, dict)
@@ -175,3 +281,42 @@ def test_committed_oxigraph_rdf12_receipt_pins_current_engine_parity() -> None:
         case = cast("dict[str, object]", cases[family])
         assert (case["node_count"], case["edge_count"]) == expected
         assert case["exact_payload_and_direction_parity"] is True
+
+
+def test_committed_oxigraph_receipt_pins_rdf12_reification_semantics() -> None:
+    document = json.loads(
+        _OXIGRAPH_RDF12_REIFICATION_RECEIPT.read_text(encoding="utf-8")
+    )
+    assert isinstance(document, dict)
+    receipt = cast("dict[str, object]", document)
+    embedded_digest = receipt.pop("receipt_sha256")
+    canonical = json.dumps(
+        receipt,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("utf-8")
+
+    assert (
+        embedded_digest
+        == "764f780cfe02072980ea8d4fc91c33b2a707993acee072e1da7eaa13de573e41"
+    )
+    assert sha256(canonical).hexdigest() == embedded_digest
+    assert sha256(
+        _OXIGRAPH_RDF12_REIFICATION_RECEIPT.read_bytes()
+    ).hexdigest() == (_OXIGRAPH_RDF12_REIFICATION_RECEIPT_SHA256)
+    assert receipt["engine"] == "oxigraph"
+    assert receipt["engine_version"] == "0.5.9"
+    assert receipt["rdf12_reification_query"] == (
+        "sparql-1.2-triple-term-pattern"
+    )
+    assert receipt["rdf12_reified_triple_term_parity"] is True
+    assert receipt["source_payloads_accessed"] is False
+    assert receipt["rights_clearance_claimed"] is False
+    assert receipt["production_authority_promoted"] is False
+    cases = cast("dict[str, object]", receipt["cases"])
+    for family, expected in {"mbs": (4, 2), "pbs": (10, 9)}.items():
+        case = cast("dict[str, object]", cases[family])
+        assert (case["node_count"], case["edge_count"]) == expected
+        assert case["rdf12_reified_triple_term_parity"] is True

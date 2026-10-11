@@ -329,6 +329,18 @@
   This closes current Oxigraph RDF 1.2 engine parity for the synthetic MBS/PBS
   projections only. The phase checkpoint and broader graph rights-content
   review remain open.
+- [x] Query the RDF 1.2 `rdf:reifies` triple terms in Oxigraph with a SPARQL 1.2
+  triple-term pattern and compare the reified source/target against every
+  directed synthetic Gold edge. The initial test collection failed because no
+  reification-semantic verifier existed; a negative control rejects reversed
+  endpoints. The pinned Oxigraph 0.5.9 hosted job passed on PR #1016 code commit
+  `b480c85918ef53b24a93a93330f9063d5f894878`; artifact `11708066289` verifies
+  all 2 MBS and 9 PBS directed reifications. The committed metadata-only
+  receipt is `quality/qualifications/oxigraph-rdf12-reification-semantic-parity-20261012.json`
+  (SHA-256 `047d665c960ff8e4ffb0e2d551543a8cd3cdbdcf4224e7705ca4f9702e2fda65`).
+  This closes RDF 1.2 reification-term parity for synthetic MBS/PBS only; it
+  does not resolve rights, source coverage, confidence calibration, or
+  production authority.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
   RDF-star preview projections from the same Gold node/edge tables. Local
