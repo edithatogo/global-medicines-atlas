@@ -1167,9 +1167,12 @@
   acquisition, production admission, rights decision, coverage claim, or
   publication is included.
 
-- [~] Extend clean wheel/sdist consumer qualification on Linux, macOS, and
+- [x] Extend clean wheel/sdist consumer qualification on Linux, macOS, and
   Windows through v2 comparison and evidence CLI commands. The local Darwin
-  clean-consumer run passed both artifacts; platform-specific hosted
-  qualification is pending. Reuse the existing synthetic DuckDB fixture and
-  keep source acquisition, production admission, rights decisions, source
-  coverage, and publication out of scope.
+  clean-consumer run passed both artifacts; PR #998 then passed all 38 hosted
+  check rows, including Linux, macOS, and Windows consumer qualification. Its
+  qualified head `a4824da1a8b454855725015551999e57f3bfefb3` merged as
+  `11bfbd9fea6c22e3eda810b5dde7b71eb9e875fd`; both trees match at
+  `fb96f04b1c4ec1795c2feef84b0f0ed2bc4c405d`. No source acquisition,
+  production admission, rights decision, source-coverage claim, or publication
+  is included.
