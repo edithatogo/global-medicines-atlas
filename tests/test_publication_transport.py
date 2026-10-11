@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess  # ruff: ignore[suspicious-subprocess-import] - local script
 import sys
 from datetime import UTC, datetime
@@ -435,6 +436,100 @@ def test_publication_rejects_anonymous_readback_for_another_object(
     assert failed.state is PublicationTransportState.VERIFICATION_FAILED
 
 
+def test_publication_fails_closed_when_verifier_raises(tmp_path: Path) -> None:
+    artifact_path = tmp_path / "data" / "a.parquet"
+    artifact_path.parent.mkdir()
+    artifact_path.write_bytes(b"abc")
+    prepared, _ = prepare_publication(
+        root=tmp_path,
+        release_version="0.7.0",
+        target=target(),
+        relative_paths=("data/a.parquet",),
+        recorded_at=NOW,
+    )
+    uploader = _VerifiedUploader()
+    uploaded = execute_publication(
+        plan=prepared,
+        authorization=PublicationAuthorization(
+            environment=PRODUCTION_ENVIRONMENT,
+            maintainer_approval=APPROVAL_VALUE,
+        ),
+        root=tmp_path,
+        uploader=uploader,
+        recorded_at=NOW,
+    )
+
+    class _UnavailableVerifier:
+        def verify_artifact(
+            self,
+            *,
+            target: PublicationTarget,
+            revision: str,
+            artifact: ArtifactBinding,
+        ) -> ArtifactVerification:
+            del target, revision, artifact
+            raise OSError("temporarily unavailable")
+
+    failed = verify_publication(
+        plan=prepared,
+        uploaded_receipt=uploaded,
+        verifier=_UnavailableVerifier(),
+        recorded_at=NOW,
+    )
+    assert failed.state is PublicationTransportState.VERIFICATION_FAILED
+
+
+def test_verify_publication_rejects_receipt_not_bound_to_plan(
+    tmp_path: Path,
+) -> None:
+    artifact_path = tmp_path / "data" / "a.parquet"
+    artifact_path.parent.mkdir()
+    artifact_path.write_bytes(b"abc")
+    prepared, prepared_receipt = prepare_publication(
+        root=tmp_path,
+        release_version="0.7.0",
+        target=target(),
+        relative_paths=("data/a.parquet",),
+        recorded_at=NOW,
+    )
+    with pytest.raises(ValueError, match="does not match"):
+        verify_publication(
+            plan=prepared,
+            uploaded_receipt=prepared_receipt,
+            verifier=_VerifiedUploader(),
+            recorded_at=NOW,
+        )
+
+
+def test_execute_publication_fails_closed_if_prepared_root_disappears(
+    tmp_path: Path,
+) -> None:
+    artifact_path = tmp_path / "data" / "a.parquet"
+    artifact_path.parent.mkdir()
+    artifact_path.write_bytes(b"abc")
+    prepared, _ = prepare_publication(
+        root=tmp_path,
+        release_version="0.7.0",
+        target=target(),
+        relative_paths=("data/a.parquet",),
+        recorded_at=NOW,
+    )
+    artifact_path.unlink()
+    uploader = _VerifiedUploader()
+    failed = execute_publication(
+        plan=prepared,
+        authorization=PublicationAuthorization(
+            environment=PRODUCTION_ENVIRONMENT,
+            maintainer_approval=APPROVAL_VALUE,
+        ),
+        root=tmp_path / "removed-root",
+        uploader=uploader,
+        recorded_at=NOW,
+    )
+    assert failed.state is PublicationTransportState.VERIFICATION_FAILED
+    assert uploader.calls == []
+
+
 def test_public_receipt_verification_url_binds_its_exact_revision() -> None:
     with pytest.raises(ValidationError, match="exact target revision"):
         PublicationTransportReceipt(
@@ -449,6 +544,74 @@ def test_public_receipt_verification_url_binds_its_exact_revision() -> None:
                     verification_uri=(
                         f"{target().public_base_url}/resolve/"
                         "commit-123/data/a.parquet"
+                    ),
+                ),
+            ),
+        )
+
+
+@pytest.mark.parametrize(
+    "verification_uri",
+    [
+        "http://huggingface.co/datasets/owner/repo/object",
+        "https:///missing-host",
+        "https://owner@huggingface.co/datasets/owner/repo/object",
+        "https://huggingface.co/datasets/owner/repo/object?token=secret",
+    ],
+)
+def test_artifact_verification_requires_clean_public_https_uri(
+    verification_uri: str,
+) -> None:
+    with pytest.raises(ValidationError):
+        ArtifactVerification(
+            relative_path="data/a.parquet",
+            sha256=DIGEST_A,
+            size=3,
+            verification_uri=verification_uri,
+        )
+
+
+def test_public_receipt_rejects_unsorted_or_duplicate_verified_paths() -> None:
+    def verification(path: str) -> ArtifactVerification:
+        return ArtifactVerification(
+            relative_path=path,
+            sha256=DIGEST_A,
+            size=3,
+            verification_uri=(
+                f"{target().public_base_url}/resolve/commit-123/{path}"
+            ),
+        )
+
+    for artifacts in (
+        (verification("data/b.parquet"), verification("data/a.parquet")),
+        (verification("data/a.parquet"), verification("data/a.parquet")),
+    ):
+        with pytest.raises(ValidationError, match="unique"):
+            PublicationTransportReceipt(
+                **receipt_payload(PublicationTransportState.PUBLIC),
+                remote_revision="commit-123",
+                verification_uri=(
+                    f"{target().public_base_url}/tree/commit-123"
+                ),
+                verified_artifacts=artifacts,
+            )
+
+
+def test_public_receipt_rejects_verified_digest_that_differs_from_plan() -> (
+    None
+):
+    with pytest.raises(ValidationError, match="digests must match"):
+        PublicationTransportReceipt(
+            **receipt_payload(PublicationTransportState.PUBLIC),
+            remote_revision="commit-123",
+            verification_uri=f"{target().public_base_url}/tree/commit-123",
+            verified_artifacts=(
+                ArtifactVerification(
+                    relative_path="data/a.parquet",
+                    sha256=DIGEST_B,
+                    size=3,
+                    verification_uri=(
+                        f"{target().public_base_url}/resolve/commit-123/data/a.parquet"
                     ),
                 ),
             ),
@@ -530,6 +693,40 @@ def test_prepare_publication_rejects_unbound_root_files(tmp_path: Path) -> None:
             release_version="0.7.0",
             target=target(),
             relative_paths=("artifact.json",),
+            recorded_at=NOW,
+        )
+
+
+def test_prepare_publication_rejects_symlinks(tmp_path: Path) -> None:
+    target_file = tmp_path / "real.json"
+    target_file.write_text("{}", encoding="utf-8")
+    link = tmp_path / "linked.json"
+    try:
+        link.symlink_to(target_file)
+    except OSError:
+        pytest.skip("symlink creation is not available")
+    with pytest.raises(ValueError, match="symlinks"):
+        prepare_publication(
+            root=tmp_path,
+            release_version="0.7.0",
+            target=target(),
+            relative_paths=("linked.json", "real.json"),
+            recorded_at=NOW,
+        )
+
+
+def test_prepare_publication_rejects_nonregular_entries(tmp_path: Path) -> None:
+    fifo = tmp_path / "stream.fifo"
+    try:
+        os.mkfifo(fifo)
+    except AttributeError, OSError:
+        pytest.skip("FIFO creation is not available")
+    with pytest.raises(ValueError, match="regular files"):
+        prepare_publication(
+            root=tmp_path,
+            release_version="0.7.0",
+            target=target(),
+            relative_paths=(),
             recorded_at=NOW,
         )
 

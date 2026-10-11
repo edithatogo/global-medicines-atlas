@@ -540,6 +540,148 @@ def test_anonymous_artifact_verifier_rejects_digest_mismatch() -> None:
         )
 
 
+def _anonymous_verifier_fixture(
+    handler: object,
+    *,
+    timeout_seconds: float = 30.0,
+) -> tuple[
+    archive_mod.HuggingFaceAnonymousArtifactVerifier,
+    PublicationTarget,
+    ArtifactBinding,
+]:
+    verifier = archive_mod.HuggingFaceAnonymousArtifactVerifier(
+        timeout_seconds=timeout_seconds,
+        transport_factory=lambda: httpx.MockTransport(handler),  # type: ignore[arg-type]
+    )
+    published_target = PublicationTarget(
+        destination=PublicationDestination.HUGGING_FACE,
+        repository=CATALOGUE_REPOSITORY,
+        revision="archive-v1",
+        public_base_url=(
+            "https://huggingface.co/datasets/"
+            "edithatogo/global-medicines-atlas-catalogue"
+        ),
+    )
+    payload = b"public bytes"
+    artifact = ArtifactBinding(
+        relative_path="manifest.json",
+        sha256=hashlib.sha256(payload).hexdigest(),
+        size=len(payload),
+    )
+    return verifier, published_target, artifact
+
+
+def test_anonymous_artifact_verifier_follows_bounded_public_redirect() -> None:
+    requests: list[str] = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        requests.append(str(request.url))
+        if len(requests) == 1:
+            return httpx.Response(
+                302, headers={"location": "/resolved/manifest"}
+            )
+        return httpx.Response(200, content=b"public bytes")
+
+    verifier, published_target, artifact = _anonymous_verifier_fixture(respond)
+    verified = verifier.verify_artifact(
+        target=published_target, revision="ab" * 20, artifact=artifact
+    )
+    assert verified.sha256 == artifact.sha256
+    assert len(requests) == 2
+
+
+@pytest.mark.parametrize(
+    ("response", "message"),
+    [
+        (httpx.Response(302), "no location"),
+        (httpx.Response(404), "readback failed"),
+        (httpx.Response(200, content=b"too much data"), "size mismatch"),
+    ],
+)
+def test_anonymous_artifact_verifier_rejects_incomplete_readbacks(
+    response: httpx.Response, message: str
+) -> None:
+    verifier, published_target, artifact = _anonymous_verifier_fixture(
+        lambda _request: response
+    )
+    with pytest.raises(ValueError, match=message):
+        verifier.verify_artifact(
+            target=published_target, revision="ab" * 20, artifact=artifact
+        )
+
+
+def test_anonymous_artifact_verifier_rejects_excessive_redirects() -> None:
+    verifier, published_target, artifact = _anonymous_verifier_fixture(
+        lambda _request: httpx.Response(302, headers={"location": "/again"})
+    )
+    with pytest.raises(ValueError, match="redirect limit"):
+        verifier.verify_artifact(
+            target=published_target, revision="ab" * 20, artifact=artifact
+        )
+
+
+def test_anonymous_artifact_verifier_rejects_wrong_destination() -> None:
+    verifier, published_target, artifact = _anonymous_verifier_fixture(
+        lambda _request: httpx.Response(200, content=b"public bytes")
+    )
+    other_target = published_target.model_copy(
+        update={
+            "destination": PublicationDestination.ARCHIVAL,
+            "public_base_url": "https://archive.example.org/datasets/catalogue",
+        }
+    )
+    with pytest.raises(ValueError, match="requires Hugging Face"):
+        verifier.verify_artifact(
+            target=other_target, revision="ab" * 20, artifact=artifact
+        )
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://huggingface.co/datasets/owner/repo/file",
+        "https://invalid.example/datasets/owner/repo/file",
+        "https://user@huggingface.co/datasets/owner/repo/file",
+        "https://huggingface.co:8443/datasets/owner/repo/file",
+        "https://huggingface.co/datasets/owner/repo/file?token=x",
+        "https://huggingface.co/datasets/owner/repo/file#fragment",
+    ],
+)
+def test_anonymous_verification_url_rejects_unapproved_urls(url: str) -> None:
+    with pytest.raises(ValueError, match="unapproved"):
+        archive_mod._require_anonymous_huggingface_url(url)
+
+
+def test_anonymous_artifact_verifier_enforces_total_deadline(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    verifier, published_target, artifact = _anonymous_verifier_fixture(
+        lambda _request: httpx.Response(200, content=b"public bytes"),
+        timeout_seconds=1,
+    )
+    ticks = iter((0.0, 2.0))
+    monkeypatch.setattr(archive_mod.time, "monotonic", lambda: next(ticks))
+    with pytest.raises(ValueError, match="deadline exceeded"):
+        verifier.verify_artifact(
+            target=published_target, revision="ab" * 20, artifact=artifact
+        )
+
+
+def test_anonymous_artifact_verifier_checks_deadline_while_streaming(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    verifier, published_target, artifact = _anonymous_verifier_fixture(
+        lambda _request: httpx.Response(200, content=b"public bytes"),
+        timeout_seconds=1,
+    )
+    ticks = iter((0.0, 0.0, 2.0))
+    monkeypatch.setattr(archive_mod.time, "monotonic", lambda: next(ticks))
+    with pytest.raises(ValueError, match="deadline exceeded"):
+        verifier.verify_artifact(
+            target=published_target, revision="ab" * 20, artifact=artifact
+        )
+
+
 @pytest.mark.parametrize(
     "timeout_seconds",
     [True, 0, -1, float("nan"), float("inf")],
