@@ -1180,7 +1180,7 @@
 
 ### Installed synthetic medallion export handoff (2026-10-11)
 
-- [~] Verify the deterministic Platinum export produced by the full synthetic
+- [x] Verify the deterministic Platinum export produced by the full synthetic
   Bronze-to-Platinum pipeline from clean installed wheel and source-distribution
   environments. The initial qualification failed because the clean-consumer
   command did not accept a pipeline export. It now verifies the exact archive
@@ -1188,5 +1188,12 @@
   same SHA-256, and rejects inputs over 8 MiB before building. The combined
   medallion/consumer tests pass (27); routine, Ruff, formatting, `ty`,
   BasedPyright for the changed qualifier, context, ecosystem, and diff checks
-  pass locally. Hosted exact-head verification remains pending. No source was
-  added or acquired; the export remains synthetic and unpublished.
+  pass locally. PR #1000 merged at 2026-10-11T10:19:17Z as
+  `2b768112a5136f03c025d257c990050f4061ae4f`; all 38 reported check rows and
+  37 distinct contexts passed. The exact export probe ran in hosted Linux E2E
+  and local macOS qualification. Separate hosted Linux/macOS/Windows consumer
+  jobs passed their standard probes but did not receive this export; exact
+  cross-platform export verification remains open. The oversized-input test
+  imports its script inside the test body so mutmut's copied selection can
+  collect without a `scripts` package. No source was added or acquired; the
+  export remains synthetic and unpublished.
