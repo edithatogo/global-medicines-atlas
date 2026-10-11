@@ -1072,6 +1072,20 @@
   no source-coverage, production-admission, rights, public-release, or
   representative-user claim is implied.
 
+### Installed Atlas package-to-browser journey
+
+- [x] Extend the installed wheel and sdist qualification through a real
+  loopback server and Chromium. The existing package check exercises Atlas
+  with in-process ASGI transport, while browser E2E exercises the checkout;
+  this closes the packaged-runtime-to-browser seam using only the synthetic
+  home page and packaged assets. Both isolated wheel and sdist environments
+  serve the actual installed package on loopback; Chromium verifies the page,
+  stylesheet, script, and loopback-only requests. The focused journey passes,
+  the governed E2E lane passes (57), and Test-Goblin routine passes. No source,
+  acquisition, or coverage claim changed. A P2 review finding tightened the
+  stylesheet and script checks to require HTTP 200 rather than response-event
+  presence; the corrected focused journey and routine checks pass.
+
 - [x] Reconcile the receipt after PR #986 merged at
   `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head
   `9d3a6ee9b84f184f67f891dcea370551465306b3`; all 38 reported checks passed,
