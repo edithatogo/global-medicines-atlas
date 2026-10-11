@@ -6,6 +6,7 @@ from urllib.parse import quote
 import pyarrow as pa
 import pytest
 from test_mbs_gold_graph import graph
+from test_pbs_gold_graph import graph as pbs_graph
 
 from global_medicines_atlas.frontier_graph_export import (
     export_gold_tables,
@@ -15,10 +16,16 @@ from global_medicines_atlas.frontier_graph_export import (
 from global_medicines_atlas.frontier_graph_parity import validate_graph_previews
 from global_medicines_atlas.frontier_networkx import qualify_networkx_graph
 from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
+from global_medicines_atlas.pbs_gold_graph import project_pbs_gold_graph_arrow
 
 
-def test_all_preview_surfaces_have_exact_semantic_parity() -> None:
-    nodes, edges = project_mbs_gold_graph_arrow(graph())
+@pytest.mark.parametrize("family", ["mbs", "pbs"])
+def test_all_preview_surfaces_have_exact_semantic_parity(family: str) -> None:
+    nodes, edges = (
+        project_mbs_gold_graph_arrow(graph())
+        if family == "mbs"
+        else project_pbs_gold_graph_arrow(pbs_graph())
+    )
     export = export_gold_tables(nodes, edges)
     networkx = qualify_networkx_graph(nodes, edges)
     report = validate_graph_previews(
@@ -30,6 +37,9 @@ def test_all_preview_surfaces_have_exact_semantic_parity() -> None:
     assert report.node_count == nodes.num_rows
     assert report.edge_count == edges.num_rows
     assert report.disposition == "retain-preview"
+    assert report.networkx_checked
+    assert report.rdf_star_checked
+    assert report.cypher_checked
 
 
 @pytest.mark.parametrize("field", ["parameters_json", "rdf_star"])
