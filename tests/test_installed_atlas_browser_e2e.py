@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import subprocess
 import sys
@@ -13,6 +14,7 @@ from urllib.parse import urlencode
 import httpx
 import pytest
 from playwright.sync_api import Page, Response, sync_playwright
+from tests import test_query_service as query_service_tests
 
 ROOT = Path(__file__).resolve().parents[1]
 SERVER_SOURCE = """
@@ -85,6 +87,119 @@ def _python_in(environment: Path) -> Path:
     if sys.platform == "win32":
         return environment / "Scripts" / "python.exe"
     return environment / "bin" / "python"
+
+
+def _cli_in(environment: Path) -> Path:
+    if sys.platform == "win32":
+        return environment / "Scripts" / "global-medicines-atlas.exe"
+    return environment / "bin" / "global-medicines-atlas"
+
+
+def _exercise_v2_cli(environment: Path, database: Path) -> None:
+    """Exercise v2 query output from the installed wheel or source archive."""
+    common = [
+        "--database",
+        str(database),
+        "--valid-at",
+        "2026-10-06T12:00:00+00:00",
+        "--observed-at",
+        "2026-10-06T12:00:00+00:00",
+    ]
+    dimensions = (
+        "service_benefit",
+        "funding",
+        "regulatory",
+        "formulary",
+        "terminology",
+    )
+    cli_environment = {
+        "GMA_CURSOR_SECRET": (
+            "installed-cli-" + "synthetic-secret-long-enough"
+        ),
+        "PATH": os.environ.get("PATH", ""),
+    }
+    if sys.platform == "win32":
+        cli_environment["SYSTEMROOT"] = os.environ["SYSTEMROOT"]
+    comparison = subprocess.run(
+        [
+            str(_cli_in(environment)),
+            "v2-comparison",
+            *common,
+            "--concept-id",
+            "rx:1",
+            "--jurisdiction",
+            "NZ",
+            "--jurisdiction",
+            "AU",
+            *(
+                argument
+                for dimension in dimensions
+                for argument in ("--dimension", dimension)
+            ),
+        ],
+        cwd=database.parent,
+        check=False,
+        capture_output=True,
+        text=True,
+        env=cli_environment,
+    )
+    assert comparison.returncode == 0, comparison.stderr
+    payload = json.loads(comparison.stdout)
+    assert payload["metadata"]["api_version"] == "v2"
+    conclusions = payload["conclusions"]
+    assert len(conclusions) == len(dimensions) * 2
+    assert {item["dimension"] for item in conclusions} == set(dimensions)
+    assert all(
+        item["state"]
+        in {
+            "unknown",
+            "confirmed",
+            "inferred",
+            "not_covered",
+            "conflicting",
+            "not_applicable",
+        }
+        for item in conclusions
+    )
+    assert any(
+        item["jurisdiction"] == "NZ"
+        and item["dimension"] == "regulatory"
+        and item["state"] == "confirmed"
+        for item in conclusions
+    )
+    assert any(
+        item["jurisdiction"] == "AU"
+        and item["dimension"] == "funding"
+        and item["state"] == "not_covered"
+        for item in conclusions
+    )
+    assert "validity" not in payload
+
+    evidence = subprocess.run(
+        [
+            str(_cli_in(environment)),
+            "v2-evidence",
+            *common,
+            "--concept-id",
+            "rx:1",
+            "--jurisdiction",
+            "NZ",
+            "--dimension",
+            "regulatory",
+        ],
+        cwd=database.parent,
+        check=False,
+        capture_output=True,
+        text=True,
+        env=cli_environment,
+    )
+    assert evidence.returncode == 0, evidence.stderr
+    evidence_payload = json.loads(evidence.stdout)
+    assert evidence_payload["metadata"]["api_version"] == "v2"
+    assert evidence_payload["metadata"]["page"]["returned"] == 1
+    assert evidence_payload["evidence"][0]["dimension"] == "regulatory"
+    assert not comparison.stderr
+    assert not evidence.stderr
 
 
 def _wait_for_server(
@@ -261,7 +376,9 @@ def _exercise_v2_api(server_url: str) -> None:
     assert evidence_payload["evidence"] == []
 
 
-def _exercise_artifact(artifact: Path, root: Path, uv: str) -> None:
+def _exercise_artifact(
+    artifact: Path, root: Path, uv: str, database: Path
+) -> None:
     environment = root / f"venv-{artifact.suffix.lstrip('.')}"
     _run([uv, "venv", "--python", str(sys.executable), str(environment)])
     _run([
@@ -273,6 +390,7 @@ def _exercise_artifact(artifact: Path, root: Path, uv: str) -> None:
         f"{artifact}[federation]",
         "uvicorn>=0.54,<0.55",
     ])
+    _exercise_v2_cli(environment, database)
     ready = root / f"{artifact.name}.ready.json"
     runner = root / f"{artifact.name}.server.py"
     runner.write_text(SERVER_SOURCE, encoding="utf-8")
@@ -317,9 +435,13 @@ def test_installed_atlas_wheel_and_sdist_render_in_loopback_chromium(
         *distribution_dir.glob("*.tar.gz"),
     ))
     assert len(artifacts) == 2
+    database_factory = (
+        query_service_tests._database  # pyright: ignore[reportPrivateUsage]
+    )
+    database = database_factory(tmp_path / "synthetic-atlas.duckdb")
     for artifact in artifacts:
         try:
-            _exercise_artifact(artifact, tmp_path, uv)
+            _exercise_artifact(artifact, tmp_path, uv, database)
         except Exception as error:
             raise AssertionError(
                 f"installed browser journey failed for {artifact.name}"
