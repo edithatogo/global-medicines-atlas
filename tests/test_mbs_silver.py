@@ -194,6 +194,25 @@ def test_late_schema_drift_fails_before_first_streamed_batch() -> None:
         )
 
 
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        (b"<WRONG_ROOT><Data><ItemNum>1</ItemNum></Data></WRONG_ROOT>", "root"),
+        (b"<MBS_XML><Unexpected /></MBS_XML>", "non-Data element"),
+    ],
+)
+def test_stream_rejects_unexpected_document_shapes(
+    payload: bytes,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        next(
+            iter_mbs_silver_batches(
+                payload, _receipt(payload), table="services"
+            )
+        )
+
+
 def test_streamed_mbs_records_require_the_inspected_payload_identity() -> None:
     payload = _xml(count=2)
     metadata = inspect_mbs_source_xml_stream(payload, _receipt(payload))

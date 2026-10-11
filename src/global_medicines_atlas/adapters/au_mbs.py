@@ -6,7 +6,7 @@ import hashlib
 from collections import Counter
 from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, cast
 from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
     ElementTree as ET,
 )
@@ -184,18 +184,10 @@ def _iter_mbs_data_elements(
                     "MBS_XML contains an unexpected non-Data element"
                 )
         elif parent is root:
-            if element.tag != "Data":
-                raise ValueError(
-                    "MBS_XML contains an unexpected non-Data element"
-                )
             record_count += 1
             yield element
             element.clear()
-            if root is None:
-                raise ValueError("MBS XML has no document element")
-            root.remove(element)
-    if root is None:
-        raise ValueError("MBS XML has no document element")
+            cast("ET.Element", parent).remove(element)
     if record_count == 0:
         raise ValueError("MBS_XML contains no Data records")
 

@@ -151,10 +151,8 @@ def iter_xml_events(
     )
     state = [0, 0, 0]
     stack: list[ET.Element] = []
-    root_seen = False
 
     def consume() -> Iterator[tuple[str, ET.Element, ET.Element | None]]:
-        nonlocal root_seen
         events = cast(
             "Iterator[tuple[str, ET.Element]]",
             parser.read_events(),
@@ -164,16 +162,12 @@ def iter_xml_events(
                 parent = stack[-1] if stack else None
                 state[0] += 1
                 state[1] += 1
-                if parent is None:
-                    root_seen = True
                 if state[0] > policy.max_xml_depth:
                     raise ParserSafetyError("XML nesting depth limit exceeded")
                 if state[1] > policy.max_xml_elements:
                     raise ParserSafetyError("XML element count limit exceeded")
                 stack.append(element)
             else:
-                if not stack or stack[-1] is not element:
-                    raise ParserSafetyError("XML event nesting is invalid")
                 parent = stack[-2] if len(stack) > 1 else None
                 state[2] += len((element.text or "").encode())
                 state[2] += len((element.tail or "").encode())
@@ -192,7 +186,3 @@ def iter_xml_events(
         yield from consume()
     except ET.ParseError as error:
         raise ParserSafetyError("XML payload is not well formed") from error
-    if not root_seen:
-        raise ParserSafetyError("XML payload has no document element")
-    if stack or state[0] != 0:
-        raise ParserSafetyError("XML document did not close cleanly")

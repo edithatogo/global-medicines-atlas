@@ -87,6 +87,8 @@ def test_iter_xml_events_matches_safety_limits_and_allows_record_detachment() ->
 
     with pytest.raises(ParserSafetyError, match="DTD or entity"):
         list(iter_xml_events(b'<!DOCTYPE x [<!ENTITY y "z">]><x>&y;</x>'))
+    with pytest.raises(ParserSafetyError, match="not well formed"):
+        list(iter_xml_events(b"<root><record></root>"))
     with pytest.raises(ParserSafetyError, match="byte limit"):
         list(iter_xml_events(b"<x>12345</x>", policy=ParserPolicy(max_bytes=8)))
     with pytest.raises(ParserSafetyError, match="nesting depth"):
