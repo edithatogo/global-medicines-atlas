@@ -452,12 +452,20 @@
   performed; external publication remains subject to its explicit maintainer
   gate.
 
-- [~] Prepare append-only donor-history preservation as a separate public
-  archive transaction: exact heads, CAS, unchanged previous sibling objects,
-  baseline/delta reconstruction and durable anonymous verification before
-  cleanup. The pure contract is implemented; hosted transport and exact newer-
-  history authorization remain pending. Do not infer publication from model
-  validation or reuse the initial private-target replace-all publisher.
+- [x] Prepare and execute append-only donor-history preservation as a
+  separate public archive transaction: exact heads, CAS, unchanged previous
+  sibling objects, baseline/delta reconstruction, clean restoration, and
+  durable anonymous verification before cleanup. GitHub Actions run
+  [34005721959](https://github.com/edithatogo/global-medicines-atlas/actions/runs/34005721959)
+  succeeded for the exact approved graph and scraper heads. The durable issue
+  [#340 receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5556271994)
+  records public revision `97038008d17a48f620302f04fe6a3156fb8d5d57`, preserves
+  the 26-object baseline, verifies both appended histories, and records clean
+  restoration of both exact heads. Receipt SHA-256:
+  `835e2532ae88bb38b13a78f54f00f526906c5eaf7071411ec3d92b903b754df0`.
+  This reconciles the already completed, specifically authorized transaction;
+  it does not authorize another publication, confer source admission or
+  rights clearance, or change the separate publication gate for future data.
 
 - [ ] Run focused tests, schema validation, Ruff, `ty`, BasedPyright, security,
   provenance, rights, deterministic regeneration, and full Test-Goblin where
