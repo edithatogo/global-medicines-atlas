@@ -152,18 +152,39 @@ jobs:
           enable-cache: true
       - name: Synchronize locked Python 3.14 core environment
         run: uv sync --python 3.14.6 --locked
+      - name: Start disposable synthetic Oxigraph service
+        run: >-
+          docker run --detach --rm --name gma-oxigraph-synthetic
+          --publish 127.0.0.1:7878:7878
+          oxigraph/oxigraph@sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e
+          serve --bind 0.0.0.0:7878 --location /tmp/oxigraph
       - name: Execute synthetic MBS and PBS graph projections in Neo4j
         env:
           NEO4J_HTTP_URL: http://127.0.0.1:7474
           NEO4J_QUALIFICATION_RECEIPT: build/quality-receipts/neo4j-graph-parity.json
+          OXIGRAPH_HTTP_URL: http://127.0.0.1:7878
+          OXIGRAPH_QUALIFICATION_RECEIPT: build/quality-receipts/oxigraph-graph-parity.json
         run: >-
           uv run --python 3.14.6 pytest
-          tests/test_frontier_neo4j_integration.py -q
+          tests/test_frontier_neo4j_integration.py
+          tests/test_frontier_sparql_integration.py -q
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         if: always()
         with:
           name: neo4j-synthetic-graph-parity-receipt
           path: build/quality-receipts/neo4j-graph-parity.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Stop disposable synthetic Oxigraph service
+        if: always()
+        run: docker stop gma-oxigraph-synthetic || true
+
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        if: always()
+        with:
+          name: oxigraph-synthetic-graph-parity-receipt
+          path: build/quality-receipts/oxigraph-graph-parity.json
           if-no-files-found: ignore
           retention-days: 30
 

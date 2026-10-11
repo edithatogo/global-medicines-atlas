@@ -11,6 +11,7 @@ from test_pbs_gold_graph import graph as pbs_graph
 from global_medicines_atlas import frontier_graph_export as graph_export_module
 from global_medicines_atlas.frontier_graph_export import (
     export_gold_tables,
+    export_rdf12,
     export_rdf_star,
 )
 from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
@@ -35,6 +36,26 @@ def test_reference_and_cypher_parameters_preserve_every_portable_field():
         export_gold_tables(nodes.take([3, 2, 1, 0]), edges.take([1, 0]))
         == result
     )
+
+
+def test_rdf12_export_reifies_edges_and_preserves_deterministic_payloads():
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    result = export_rdf12(nodes, edges)
+    assert result == export_rdf12(nodes.take([3, 2, 1, 0]), edges.take([1, 0]))
+    assert "<http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> <<(" in result
+    assert "<urn:gma:source>" in result
+    assert "<urn:gma:target>" in result
+    expected = json.loads(export_gold_tables(nodes, edges).reference_json)
+    payloads = [
+        json.loads(
+            json.loads(line.split(" <urn:gma:payload-json> ", 1)[1][:-2])
+        )
+        for line in result.splitlines()
+        if " <urn:gma:payload-json> " in line
+    ]
+    assert payloads == expected["nodes"] + expected["edges"]
+    with pytest.raises(ValueError, match="graph byte bound exceeded"):
+        export_rdf12(nodes, edges, max_bytes=1)
 
 
 def test_hostile_native_text_is_only_parameter_data():

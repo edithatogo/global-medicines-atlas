@@ -302,7 +302,29 @@
     asserts the qualified SHA-256 `1da2e161e35f6d4644782b8625ba15ee94d71a664e207f2ba446f23cc7e09231`.
     Focused Neo4j unit tests pass (10), with Ruff, format, `ty`, BasedPyright,
     and routine repository checks passing.
-- [ ] Confirm the intended failure before implementation.
+- [x] Execute the existing RDF-star preview in digest-pinned Oxigraph 0.4.11
+  and compare queried node payloads and directed edge annotations with the
+  synthetic MBS/PBS Gold references. Exact hosted parity passed on PR #1014
+  head `d45f28d75561a86ff30e12b1f7b492a124fb25c0`; hosted run
+  `38148283805` produced the checksummed, metadata-only receipt
+  `quality/qualifications/oxigraph-synthetic-graph-parity-20261012.json`
+  (SHA-256 `95ecdfdcf3b16efa86065a241b24b0498940ee61c1b1fbb00eefabbfc1f2c746`).
+  MBS reproduced 4 nodes/2 directed edges; PBS reproduced 10 nodes/9 directed
+  edges. A failing-first hosted run and local HTTP reproduction found that
+  Oxigraph 0.5.11 rejects the legacy quoted-triple subject grammar and that
+  SPARQL readback uses bare IRIs; both are now handled and tested. This
+  retains a qualification of the legacy preview on its pinned engine only. It
+  does not qualify current RDF 1.2 compatibility, rights clearance, or
+  production promotion.
+- [x] Add and execute an RDF 1.2 projection on digest-pinned Oxigraph 0.5.9,
+  retaining the RDF-star 0.4.11 receipt as legacy evidence. The projection
+  uses `rdf:reifies` with a triple term and explicit source/target properties
+  for SPARQL 1.1 readback. Local and hosted exact parity passed on Oxigraph
+  0.5.9. The checksummed receipt is
+  `quality/qualifications/oxigraph-rdf12-synthetic-graph-parity-20261012.json`
+  (file SHA-256 `892e1d89ef45c864c8169eeeb44d7684450ea12d5fb05fecee8c4c03f7ec0004`);
+  PR #1014 hosted run `38150870366`, graph job `114503877641`. The review
+  thread is resolved; full required checks remain in progress.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
   RDF-star preview projections from the same Gold node/edge tables. Local
