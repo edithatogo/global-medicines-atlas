@@ -251,6 +251,16 @@
   merged at `f9c56d32af3ad76d347ff1a25a9e5fcfd96c90e2`; the exact-head hosted
   receipt verified 5,989 rows × 17 fields. No rights, admission, publication,
   or promotion decision changed.
+- [x] Re-run the exact parity verifier on current main after the bounded
+  streaming-parser replacement. Commit `9c37ecb1589e03de7e63bbed4fc62f8cdf2713a8`
+  reproduced all 5,989 rows × 17 fields from the same exact source and Silver
+  revisions. Its value-free receipt is byte-for-byte identical to
+  `quality/qualifications/mbs-source-silver-parity-2025-07-v3.json`
+  (SHA-256 `009deabf772e91fedd7642f2b8f0e5a524abb76401620f8e93a8f3bd20189ded`).
+  The pinned public objects were read in memory only; no source bytes were
+  retained locally. No source identity, rights, admission, promotion, or
+  publication decision changed. See the append-only current-main revalidation
+  evidence row.
 - [~] Add explicit schema-era mappings and historical/current change events
   without overwriting source values.
   XML candidate mappings now require complete exact field coverage for a
