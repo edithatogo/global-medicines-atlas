@@ -295,10 +295,13 @@
   regeneration initially rejected the new job as an unregistered workflow
   change; the exact job inventory is now updated and the regeneration profile
   passes twice in opposite order (184 tests each).
-  - [x] Verify the committed hosted receipt checksum and its synthetic-only,
-    no-rights-clearance, and no-promotion declarations in the registered unit
-    suite; the focused Neo4j unit tests pass (10), with Ruff, format, `ty`,
-    BasedPyright, and routine repository checks passing.
+  - [x] Pin the corrected hosted receipt digest and verify its canonical
+    checksum, synthetic-only scope, and no-rights-clearance/no-promotion
+    declarations in the registered unit suite. Automated review caught that a
+    recomputed checksum alone would accept replacement content; the test now
+    asserts the qualified SHA-256 `1da2e161e35f6d4644782b8625ba15ee94d71a664e207f2ba446f23cc7e09231`.
+    Focused Neo4j unit tests pass (10), with Ruff, format, `ty`, BasedPyright,
+    and routine repository checks passing.
 - [ ] Confirm the intended failure before implementation.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and

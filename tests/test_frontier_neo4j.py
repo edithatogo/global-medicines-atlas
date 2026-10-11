@@ -12,6 +12,9 @@ _NEO4J_RECEIPT = (
     Path(__file__).parents[1]
     / "quality/qualifications/neo4j-synthetic-graph-parity-20261011.json"
 )
+_NEO4J_RECEIPT_SHA256 = (
+    "1da2e161e35f6d4644782b8625ba15ee94d71a664e207f2ba446f23cc7e09231"
+)
 
 
 class _Response:
@@ -149,6 +152,7 @@ def test_committed_neo4j_receipt_is_checksummed_and_non_promoting() -> None:
         allow_nan=False,
     ).encode("utf-8")
 
+    assert digest == _NEO4J_RECEIPT_SHA256
     assert hashlib.sha256(canonical).hexdigest() == digest
     assert receipt["engine"] == "neo4j"
     assert receipt["source_scope"] == "synthetic-mbs-pbs-only"
