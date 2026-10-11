@@ -1029,7 +1029,7 @@
 
 ### Benefits offline-cache browser failure recovery (2026-10-11)
 
-- [~] Extend the real loopback Chromium journey through verified offline-cache
+- [x] Extend the real loopback Chromium journey through verified offline-cache
   replay and cache eviction for synthetic MBS and PBS products. The initial
   browser regression reproduced a gap: the benefits page hid its pinned
   identity and query-receipt digest after an offline cache miss. Render the
@@ -1038,6 +1038,10 @@
   post-eviction reads show the unavailable state, exact object digest, receipt
   digest, and no rows. The two MBS/PBS loopback journeys pass; the broader
   affected Atlas E2E selection passes (20). Routine checks and the full pinned
-  Test-Goblin profile pass. Hosted protected checks remain pending. No source,
-  acquisition, coverage claim, admission, publication, or consequential claim
-  was added; WCAG conformance and representative-user acceptance remain open.
+  Test-Goblin profile pass. PR #983 merged as
+  `4488666051d043ce1ef97f53d522fc57f4e55142` from qualified head
+  `a19cfb116a6af346e8e1f1d152c304cc80004c54`; all 39 reported check rows
+  passed across 38 distinct contexts, and the merge tree matches the qualified
+  tree `61796d8b94b7b180fd580c6b74017a88d61d3770`. No source, acquisition,
+  coverage claim, admission, publication, or consequential claim was added;
+  WCAG conformance and representative-user acceptance remain open.
