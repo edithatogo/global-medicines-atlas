@@ -963,7 +963,6 @@ def _require_anonymous_huggingface_url(url: str) -> None:
         parsed.username is not None
         or parsed.password is not None
         or parsed.port not in {None, 443}
-        or parsed.query
         or parsed.fragment
     ):
         raise ValueError("unapproved anonymous verification URL")

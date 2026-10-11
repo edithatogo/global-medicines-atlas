@@ -590,6 +590,35 @@ def test_anonymous_artifact_verifier_follows_bounded_public_redirect() -> None:
     assert len(requests) == 2
 
 
+def test_anonymous_verifier_accepts_signed_query_on_approved_delivery_host() -> (
+    None
+):
+    requests: list[httpx.Request] = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        if "huggingface.co" in request.url.host:
+            return httpx.Response(
+                302,
+                headers={
+                    "location": (
+                        "https://cdn-lfs-us-1.hf.co/payload?signature=synthetic"
+                    )
+                },
+            )
+        return httpx.Response(200, content=b"public bytes")
+
+    verifier, published_target, artifact = _anonymous_verifier_fixture(respond)
+    verified = verifier.verify_artifact(
+        target=published_target, revision="ab" * 20, artifact=artifact
+    )
+    assert verified.sha256 == artifact.sha256
+    assert requests[1].url.query == b"signature=synthetic"
+    assert all("authorization" not in request.headers for request in requests)
+    assert all("cookie" not in request.headers for request in requests)
+    assert "signature=" not in verified.verification_uri
+
+
 @pytest.mark.parametrize(
     ("response", "message"),
     [
@@ -643,7 +672,6 @@ def test_anonymous_artifact_verifier_rejects_wrong_destination() -> None:
         "https://invalid.example/datasets/owner/repo/file",
         "https://user@huggingface.co/datasets/owner/repo/file",
         "https://huggingface.co:8443/datasets/owner/repo/file",
-        "https://huggingface.co/datasets/owner/repo/file?token=x",
         "https://huggingface.co/datasets/owner/repo/file#fragment",
     ],
 )
