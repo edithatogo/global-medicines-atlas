@@ -223,7 +223,8 @@
   open.
 - [x] Replace tree-retained MBS XML Silver conversion with the bounded stream
   and verify it under parser, schema-drift, provenance-identity, and full
-  Test-Goblin checks (`35da943a`; evidence in `evidence.jsonl`).
+  Test-Goblin checks (`35da943a`; PR #966 merged as `56511d48`; evidence in
+  `evidence.jsonl`).
 - [x] Prove exact existing-source B2-to-Silver row-value parity for the
   already-qualified July 2025 MBS XML and the pinned v4 services Parquet.
   The hosted check binds the existing B1 receipt and both immutable public
