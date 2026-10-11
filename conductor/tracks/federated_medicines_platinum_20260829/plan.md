@@ -366,10 +366,14 @@
   - [x] Carry the same independently admitted synthetic MBS/PBS medallion
     products through the Atlas over an ephemeral loopback ASGI server and
     Chromium. From the home page, query each pinned view and verify rendered
-    identity, semantic limits, conservative evidence text, successful assets,
-    and exact anonymous remote object requests. This joins the actual Bronze
-    through Platinum fixture pipeline to browser/HTTP execution; it does not
-    qualify a deployment, production data, source coverage, or user acceptance.
+    identity including the exact object digest, semantic limits, conservative
+    evidence text, successful assets, and exact anonymous remote object
+    requests. This joins the actual Bronze through Platinum fixture pipeline
+    to browser/HTTP execution; it does not qualify a deployment, production
+    data, source coverage, or user acceptance. PR #977 merged at
+    `d94533da2cfa7c154569e0377d884a8b2517cfbd` after all 38 reported checks
+    passed; merge tree `38e0a65c9d65f147c979daf3ded92ced68889da3` matches the
+    qualified head tree.
   - [x] Render the existing bounded historical-change service in an opt-in
     Atlas timeline, preserving source identity, attribution failures, and
     unknown absence semantics. The synthetic Bronze snapshot pair passes
