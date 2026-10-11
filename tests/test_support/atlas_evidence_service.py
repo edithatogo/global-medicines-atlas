@@ -4,6 +4,12 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+from global_medicines_atlas.platinum_v2_contracts import (
+    V2ComparisonQuery,
+    V2ComparisonResponse,
+    V2Conclusion,
+    V2ResponseMetadata,
+)
 from global_medicines_atlas.product_contracts import (
     AsOfClocks,
     ComparisonQuery,
@@ -141,4 +147,52 @@ class InstalledAtlasEvidenceService:
                 page=PageMetadata(limit=query.limit, returned=1),
             ),
             coverage=(item,),
+        )
+
+    def v2_comparisons(self, query: V2ComparisonQuery) -> V2ComparisonResponse:
+        clocks = AsOfClocks(
+            valid_at=query.valid_at,
+            observed_at=query.observed_at,
+        )
+        conclusions = tuple(
+            V2Conclusion(
+                concept_id=query.concept_id,
+                jurisdiction=jurisdiction,
+                dimension=dimension,
+                state=ProductState.UNKNOWN,
+                terminology=Terminology(
+                    native_code=dimension.value,
+                    native_label=f"No source assertion for {dimension.value}",
+                    native_system="synthetic-fixture",
+                ),
+                evidence_availability=EvidenceAvailability.UNAVAILABLE,
+                evidence_unavailable_reason=(
+                    "No source assertion is present in this fixture."
+                ),
+                uncertainty=Uncertainty(
+                    level=UncertaintyLevel.UNKNOWN,
+                    reason="Synthetic v2 fixture has no dimension evidence.",
+                ),
+                evidence_context=EvidenceContext(
+                    schema_era="fixture-v2",
+                    comparison_cohort="synthetic",
+                    entity_granularity="medicine_item",
+                ),
+                valid_time=clocks,
+            )
+            for jurisdiction in query.jurisdictions
+            for dimension in query.dimensions
+        )
+        return V2ComparisonResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=NOW,
+                clocks=clocks,
+                page=PageMetadata(
+                    limit=query.limit,
+                    returned=len(conclusions),
+                ),
+            ),
+            conclusions=conclusions,
+            comparison_validity=(),
+            validity_completeness="partial",
         )

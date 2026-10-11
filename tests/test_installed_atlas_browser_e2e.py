@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 
 import httpx
 import pytest
-from playwright.sync_api import Response, sync_playwright
+from playwright.sync_api import Page, Response, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 SERVER_SOURCE = """
@@ -24,12 +24,25 @@ from pathlib import Path
 from typing import cast
 import uvicorn
 import global_medicines_atlas
+from starlette.applications import Starlette
+from starlette.routing import Mount
 from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
+from global_medicines_atlas.atlas import V2AtlasQueryService
 
 sys.path.insert(0, sys.argv[2])
 from test_support.atlas_evidence_service import InstalledAtlasEvidenceService
 
-app = create_atlas_app(cast(AtlasQueryService, InstalledAtlasEvidenceService()))
+service = InstalledAtlasEvidenceService()
+app = Starlette(routes=[
+    Mount(
+        "/v2",
+        app=create_atlas_app(
+            cast(AtlasQueryService, service),
+            v2_service=cast(V2AtlasQueryService, service),
+        ),
+    ),
+    Mount("/", app=create_atlas_app(cast(AtlasQueryService, service))),
+])
 listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 listener.bind(("127.0.0.1", 0))
@@ -141,8 +154,50 @@ def _exercise_browser(server_url: str) -> None:
                 200 in responses[f"{server_url}/static/atlas-autocomplete.js"]
             )
             assert all(url.startswith(server_url) for url in requested)
+            _exercise_v2_browser(page, server_url, requested)
         finally:
             browser.close()
+
+
+def _exercise_v2_browser(
+    page: Page, server_url: str, requested: list[str]
+) -> None:
+    v2_query = urlencode({
+        "concept_id": "rx:fixture",
+        "jurisdiction": "AU",
+        "valid_at": "2026-10-06T12:00:00+00:00",
+        "observed_at": "2026-10-06T12:00:00+00:00",
+    })
+    response = page.goto(
+        f"{server_url}/v2/?{v2_query}", wait_until="networkidle"
+    )
+    assert response is not None
+    assert response.status == 200
+    assert page.get_by_role(
+        "heading", name="Comparison results for Example medicine"
+    ).is_visible()
+    cards = page.locator("article[data-state='unknown']")
+    assert cards.count() == 5
+    for dimension in (
+        "service_benefit",
+        "funding",
+        "regulatory",
+        "formulary",
+        "terminology",
+    ):
+        card = page.locator("article").filter(
+            has=page.get_by_role("heading", name=f"AU — {dimension}")
+        )
+        assert card.count() == 1
+        assert "No source assertion" in card.inner_text()
+        assert "not evidence of a negative" in card.inner_text()
+        assert not any(
+            negative in card.inner_text().casefold()
+            for negative in ("not covered", "not approved", "not funded")
+        )
+    assert page.get_by_text("fixture-v2").count() == 5
+    assert not page.locator("table tbody tr").count()
+    assert all(url.startswith(server_url) for url in requested)
 
 
 def _exercise_artifact(artifact: Path, root: Path, uv: str) -> None:
