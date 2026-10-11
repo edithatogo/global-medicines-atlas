@@ -277,20 +277,24 @@
   `d12243667ccb73bfb54a85cb76b510fc1d3d34c9` at
   `f81fbaf01264e935788724c6ffea1cfceea689f5`; its tree matches the qualified
   head tree, and all 28 distinct required contexts passed.
-- [~] Execute the fixed parameterized Cypher exporter in an empty, digest-pinned
+- [x] Execute the fixed parameterized Cypher exporter in an empty, digest-pinned
   Neo4j service using only the existing synthetic MBS/PBS Gold fixtures; read
   every node and directed edge back and require exact canonical payload parity.
   The HTTP contract tests and source-neutral qualification helper pass locally;
   the integration test ran in hosted CI because no local Docker service is
-  available. The first hosted receipt was superseded after review found that
-  expected endpoint fields could overwrite observed Neo4j edge direction.
-  A failing-first regression reproduced the defect; readback now rejects any
-  disagreement between observed structural fields and the stored payload. The
-  corrected hosted parity run and receipt are pending. No sources, source
-  bytes, rights conclusions, or promotion are included. Hosted regeneration
-  initially rejected the new job as an unregistered workflow change; the exact
-  job inventory is now updated and the regeneration profile passes twice in
-  opposite order (184 tests each).
+  available. Review found expected endpoint fields could overwrite observed
+  Neo4j edge direction; a failing-first regression reproduced the defect, and
+  readback now rejects structural-field disagreement. The corrected hosted
+  run on PR #1011 head `cbadfd478d80ed45d7e1ff0d6315ef0efa3ef334` passed.
+  Neo4j 2026.09.0 reproduced all 4 MBS nodes/2 directed edges and all 10 PBS
+  nodes/9 directed edges exactly. The verified checksummed metadata-only
+  retain-preview receipt is
+  `quality/qualifications/neo4j-synthetic-graph-parity-20261011.json` (SHA-256
+  `1da2e161e35f6d4644782b8625ba15ee94d71a664e207f2ba446f23cc7e09231`). No
+  sources, source bytes, rights conclusions, or promotion are included. Hosted
+  regeneration initially rejected the new job as an unregistered workflow
+  change; the exact job inventory is now updated and the regeneration profile
+  passes twice in opposite order (184 tests each).
 - [ ] Confirm the intended failure before implementation.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
