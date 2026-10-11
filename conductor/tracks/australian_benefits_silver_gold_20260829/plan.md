@@ -624,6 +624,18 @@
 - [x] Implement bounded PBS v3 source-faithful tables. PR #460 merged as
   `5b7af3b6`; the table schema and qualifier retain source-native candidate
   status, exact source identity, and rebuildable Parquet boundaries.
+- [x] Stream PBS native-field Silver rows from the existing receipt-bound XML
+  inventory. Preflight the complete XML with the no-tree safety validator
+  before exposing rows, preserve the established depth-first slot order and
+  B1/B2 identities, and release completed direct-root children during the
+  bounded event pass. This retains the parser chunk and largest direct-root
+  subtree; a single large wrapper can still approach the document limit.
+  Synthetic sibling, late-tail text-limit, malformed-input, row/Parquet parity,
+  and batch-bound tests pass. Full Test-Goblin passed on macOS with 6,264 tests,
+  355 gremlin checks, and 96.87% coverage; Darwin mutation observations are
+  advisory and Linux CI remains authoritative. Hosted qualification remains
+  pending. No source bytes were read or acquired. Evidence is appended in the
+  track log.
 - [x] Keep PBS funding/formulary, ARTG regulatory, AMT terminology, and ATC
   classification assertions independent in the source-faithful storage and
   lineage layer. PR #460 records funding/formulary as source structure,

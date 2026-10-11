@@ -114,6 +114,14 @@ def test_iter_xml_events_matches_safety_limits_and_allows_record_detachment() ->
         )
 
 
+def test_xml_text_limit_counts_late_tail_across_input_chunks() -> None:
+    payload = b"<root><record/>" + (b"x" * 256) + b"</root>"
+    policy = ParserPolicy(max_xml_text_bytes=64, chunk_bytes=8)
+
+    with pytest.raises(ParserSafetyError, match="text size limit"):
+        list(iter_xml_events(payload, policy=policy))
+
+
 @given(st.integers(min_value=1, max_value=20))
 def test_parse_xml_depth_boundary_is_deterministic(depth: int) -> None:
     payload = ("<x>" * depth + "</x>" * depth).encode()

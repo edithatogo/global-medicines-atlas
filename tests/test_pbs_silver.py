@@ -1,6 +1,10 @@
 """Synthetic PBS native-field Arrow preservation and boundary tests."""
 
+from collections.abc import Iterator
 from io import BytesIO
+from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import] -- inspect parser event parent links
+    ElementTree as ET,
+)
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -12,7 +16,9 @@ from test_australian_source_contracts import (
     _receipt,  # ruff: ignore[import-private-name] -- shared synthetic receipt
 )
 
+from global_medicines_atlas import pbs_xml_slots
 from global_medicines_atlas.australian_source_contracts import pbs_native_fields
+from global_medicines_atlas.parser_safety import ParserPolicy
 from global_medicines_atlas.pbs_silver import iter_pbs_silver_batches
 
 XML = b"""<pbs:root xmlns:pbs="http://schema.pbs.gov.au/"
@@ -124,6 +130,62 @@ def test_batch_size_does_not_change_table_or_parquet_bytes() -> None:
         pq.write_table(table.combine_chunks(), stream)
         outputs.append(stream.getvalue())
     assert outputs[0] == outputs[1] == outputs[2]
+
+
+def test_native_slot_parser_releases_completed_root_children(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    record_count = 2048
+    payload = (
+        b'<pbs:root xmlns:pbs="http://schema.pbs.gov.au/">'
+        + b"".join(
+            f'<pbs:pharmaceutical-item xml:id="{index}">'
+            f"<pbs:price>{index}.00</pbs:price>"
+            "</pbs:pharmaceutical-item>".encode()
+            for index in range(record_count)
+        )
+        + b"</pbs:root>"
+    )
+    original = pbs_xml_slots.iter_xml_events
+    root: ET.Element | None = None
+    sibling_counts: list[int] = []
+
+    def observe_events(
+        event_payload: bytes, *, policy: ParserPolicy
+    ) -> Iterator[tuple[str, ET.Element, ET.Element | None]]:
+        nonlocal root
+        for event, element, parent in original(event_payload, policy=policy):
+            if event == "start" and parent is None:
+                root = element
+            elif event == "start" and parent is root:
+                assert root is not None
+                sibling_counts.append(len(root))
+            yield event, element, parent
+
+    monkeypatch.setattr(pbs_xml_slots, "iter_xml_events", observe_events)
+    rows = [
+        row
+        for batch in iter_pbs_silver_batches(
+            payload, _receipt(payload, "au-pbs")
+        )
+        for row in batch.to_pylist()
+    ]
+
+    assert len(rows) > record_count
+    assert len(sibling_counts) == record_count
+    assert max(sibling_counts) < record_count
+
+
+def test_malformed_document_never_yields_partial_native_rows() -> None:
+    payload = (
+        b'<pbs:root xmlns:pbs="http://schema.pbs.gov.au/">'
+        b'<pbs:pharmaceutical-item xml:id="one"><pbs:price>1.00</pbs:price>'
+        b"</pbs:pharmaceutical-item></pbs:broken>"
+    )
+
+    batches = iter_pbs_silver_batches(payload, _receipt(payload, "au-pbs"))
+    with pytest.raises(ValueError, match="XML"):
+        next(batches)
 
 
 @given(
