@@ -7,6 +7,7 @@ from hypothesis import strategies as st
 from global_medicines_atlas.parser_safety import (
     ParserPolicy,
     ParserSafetyError,
+    iter_xml_events,
     parse_xml,
 )
 
@@ -60,6 +61,56 @@ def test_parse_xml_enforces_depth_element_and_text_limits() -> None:
         parse_xml(
             b"<a>12345</a>",
             policy=ParserPolicy(max_xml_text_bytes=4),
+        )
+
+
+def test_iter_xml_events_matches_safety_limits_and_allows_record_detachment() -> (
+    None
+):
+    payload = (
+        b"<root><record><value>one</value></record><record>two</record></root>"
+    )
+    root = None
+    recovered: list[str] = []
+    for event, element, parent in iter_xml_events(payload):
+        if event == "start" and parent is None:
+            root = element
+        if event == "end" and element.tag == "record" and parent is root:
+            recovered.append("".join(element.itertext()))
+            element.clear()
+            assert parent is not None
+            parent.remove(element)
+
+    assert recovered == ["one", "two"]
+    assert root is not None
+    assert list(root) == []
+
+    with pytest.raises(ParserSafetyError, match="DTD or entity"):
+        list(iter_xml_events(b'<!DOCTYPE x [<!ENTITY y "z">]><x>&y;</x>'))
+    with pytest.raises(ParserSafetyError, match="not well formed"):
+        list(iter_xml_events(b"<root><record></root>"))
+    with pytest.raises(ParserSafetyError, match="byte limit"):
+        list(iter_xml_events(b"<x>12345</x>", policy=ParserPolicy(max_bytes=8)))
+    with pytest.raises(ParserSafetyError, match="nesting depth"):
+        list(
+            iter_xml_events(
+                b"<a><b><c /></b></a>",
+                policy=ParserPolicy(max_xml_depth=2),
+            )
+        )
+    with pytest.raises(ParserSafetyError, match="element count"):
+        list(
+            iter_xml_events(
+                b"<a><b /><c /></a>",
+                policy=ParserPolicy(max_xml_elements=2),
+            )
+        )
+    with pytest.raises(ParserSafetyError, match="text size"):
+        list(
+            iter_xml_events(
+                b"<a>12345</a>",
+                policy=ParserPolicy(max_xml_text_bytes=4),
+            )
         )
 
 

@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
 from collections import Counter
-from typing import Literal
+from collections.abc import Iterator
+from dataclasses import dataclass
+from typing import Literal, cast
 from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
     ElementTree as ET,
 )
@@ -11,7 +14,7 @@ from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
 from pydantic import Field, model_validator
 
 from ..models import FrozenModel, Provenance
-from ..parser_safety import ParserPolicy, parse_xml
+from ..parser_safety import ParserPolicy, iter_xml_events, parse_xml
 from ..receipts import SourceReceipt
 from ._receipt import provenance_from_receipt
 
@@ -119,6 +122,17 @@ class MbsSourceBatch(FrozenModel):
         return len(self.records)
 
 
+@dataclass(frozen=True, slots=True)
+class MbsSourceStreamMetadata:
+    """Denominators and provenance validated before streaming Silver rows."""
+
+    schema_era: str
+    observed_fields: tuple[str, ...]
+    missing_native_fields: tuple[str, ...]
+    record_count: int
+    provenance: Provenance
+
+
 def _native_fields(element: ET.Element) -> tuple[MbsNativeField, ...]:
     # ``parse_xml`` returns Element objects; this helper stays local so the
     # public model never exposes mutable ElementTree nodes.
@@ -148,6 +162,107 @@ def _required_identity_value(
     if value is None or not value.strip():
         raise ValueError(f"MBS Data is missing required identity field {name}")
     return value.strip()
+
+
+def _iter_mbs_data_elements(
+    payload: bytes,
+) -> Iterator[ET.Element]:
+    """Yield direct MBS Data records and detach each completed subtree."""
+    root: ET.Element | None = None
+    record_count = 0
+    for event, element, parent in iter_xml_events(payload, policy=_MBS_POLICY):
+        if event == "start":
+            if parent is None:
+                root = element
+                root_name = root.tag.split("}")[-1]
+                if root_name != "MBS_XML":
+                    raise ValueError(
+                        f"MBS XML root must be 'MBS_XML', got {root_name!r}"
+                    )
+            elif parent is root and element.tag != "Data":
+                raise ValueError(
+                    "MBS_XML contains an unexpected non-Data element"
+                )
+        elif parent is root:
+            record_count += 1
+            yield element
+            element.clear()
+            cast("ET.Element", parent).remove(element)
+    if record_count == 0:
+        raise ValueError("MBS_XML contains no Data records")
+
+
+def inspect_mbs_source_xml_stream(
+    payload: bytes,
+    receipt: SourceReceipt,
+) -> MbsSourceStreamMetadata:
+    """Validate the complete MBS document without retaining its record tree."""
+    provenance = provenance_from_receipt(
+        receipt,
+        payload,
+        source_id=SOURCE_ID,
+        jurisdiction="AUS",
+        transformation="au-mbs-source-xml-v1",
+    )
+    observed: set[str] = set()
+    record_count = 0
+    for element in _iter_mbs_data_elements(payload):
+        fields = _native_fields(element)
+        _required_identity_value(fields, "ItemNum")
+        record_count += 1
+        observed.update(field.name for field in fields)
+    observed_fields = tuple(sorted(observed))
+    return MbsSourceStreamMetadata(
+        schema_era=receipt.source.catalog_version,
+        observed_fields=observed_fields,
+        missing_native_fields=tuple(
+            field for field in MBS_NATIVE_FIELDS if field not in observed
+        ),
+        record_count=record_count,
+        provenance=provenance,
+    )
+
+
+def iter_mbs_source_xml_records(
+    payload: bytes,
+    metadata: MbsSourceStreamMetadata,
+) -> Iterator[MbsSourceRecord]:
+    """Stream validated source records without building a batch-sized tree."""
+    if (
+        metadata.provenance.source_sha256 is None
+        or hashlib.sha256(payload).hexdigest()
+        != metadata.provenance.source_sha256
+    ):
+        raise ValueError(
+            "MBS stream payload differs from inspected source bytes"
+        )
+    for ordinal, element in enumerate(_iter_mbs_data_elements(payload)):
+        fields = _native_fields(element)
+        item = _required_identity_value(fields, "ItemNum")
+        sub_item = next(
+            (
+                field.value or ""
+                for field in fields
+                if field.name == "SubItemNum"
+            ),
+            "",
+        ).strip()
+        start = next(
+            (
+                field.value or ""
+                for field in fields
+                if field.name == "ItemStartDate"
+            ),
+            "",
+        ).strip()
+        yield MbsSourceRecord(
+            source_record_id=(
+                f"{SOURCE_ID}:{item}:{sub_item}:{start}:{ordinal}"
+            ),
+            source_ordinal=ordinal,
+            fields=fields,
+            provenance=metadata.provenance,
+        )
 
 
 def parse_mbs_source_xml(

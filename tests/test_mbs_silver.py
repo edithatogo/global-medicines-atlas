@@ -12,6 +12,10 @@ from hypothesis import given
 from hypothesis import strategies as st
 from pydantic import AnyUrl
 
+from global_medicines_atlas.adapters.au_mbs import (
+    inspect_mbs_source_xml_stream,
+    iter_mbs_source_xml_records,
+)
 from global_medicines_atlas.australian_source_contracts import (
     TargetTable,
     mbs_field_contracts,
@@ -174,6 +178,46 @@ def test_native_schema_drift_fails_before_any_table_is_yielded() -> None:
     payload = _xml("<UnknownField>1</UnknownField>")
     with pytest.raises(ValueError, match="unknown native field"):
         next(iter_mbs_silver_batches(payload, _receipt(payload), table="fees"))
+
+
+def test_late_schema_drift_fails_before_first_streamed_batch() -> None:
+    payload = (
+        b"<MBS_XML><Data><ItemNum>001</ItemNum></Data>"
+        b"<Data><ItemNum>002</ItemNum><UnknownField>bad</UnknownField>"
+        b"</Data></MBS_XML>"
+    )
+    with pytest.raises(ValueError, match="unknown native field"):
+        next(
+            iter_mbs_silver_batches(
+                payload, _receipt(payload), table="services"
+            )
+        )
+
+
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        (b"<WRONG_ROOT><Data><ItemNum>1</ItemNum></Data></WRONG_ROOT>", "root"),
+        (b"<MBS_XML><Unexpected /></MBS_XML>", "non-Data element"),
+    ],
+)
+def test_stream_rejects_unexpected_document_shapes(
+    payload: bytes,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        next(
+            iter_mbs_silver_batches(
+                payload, _receipt(payload), table="services"
+            )
+        )
+
+
+def test_streamed_mbs_records_require_the_inspected_payload_identity() -> None:
+    payload = _xml(count=2)
+    metadata = inspect_mbs_source_xml_stream(payload, _receipt(payload))
+    with pytest.raises(ValueError, match="differs from inspected source"):
+        next(iter_mbs_source_xml_records(_xml(count=3), metadata))
 
 
 def test_receipt_and_raw_identity_follow_every_batch() -> None:
