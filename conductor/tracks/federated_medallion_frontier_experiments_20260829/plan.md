@@ -48,6 +48,19 @@
   ceilings, and requires matching interruption/resume byte offsets with at
   least two requests. Thirteen focused tests provide 100% statement and branch
   coverage; Ruff, format, ty and BasedPyright pass.
+- [~] Version the remote-query profile with a predeclared per-observation
+  latency ceiling and bind it to the selected versioned matrix workload. The
+  matrix schema v2 declares 30-second, 120-second, and 600-second maxima for
+  tiny, medium, and large workloads; the remote-query schema v2 identifies
+  `remote_query_streaming`, requires its tiny profile, and rejects threshold
+  drift or observations above that profile. Review exposed that the initial
+  caller-supplied ceiling could exceed the matrix; the 31-second-over-30-second
+  regression failed before the binding repair. The focused contract and matrix
+  suites pass (42 tests); the full local Test-Goblin profile passes under the
+  pinned uv 0.11.29, including 355 gremlin cases, two 184-test stability
+  samples, Scalene, and zizmor. Darwin mutation score is 83.83% and advisory;
+  Linux CI remains authoritative. Hosted checks are pending for this correction.
+  Real engine measurements remain deferred.
 - [x] Confirm the intended failure before implementation. The new contract test
   failed at collection with `ModuleNotFoundError` before the implementation was
   added; subsequent bounded fixes made custom denominator and anonymous-

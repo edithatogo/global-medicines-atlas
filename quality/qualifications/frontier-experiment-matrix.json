@@ -1,6 +1,6 @@
 {
   "schema_id": "global-medicines-atlas.frontier-experiment-matrix",
-  "schema_version": 1,
+  "schema_version": 2,
   "imported_evidence": [
     {
       "path": "quality/qualifications/datahouse-experiment-matrix.json",
@@ -29,21 +29,24 @@
       "maximum_rows": 1000,
       "maximum_source_bytes": 8388608,
       "maximum_requests": 32,
-      "maximum_memory_bytes": 268435456
+      "maximum_memory_bytes": 268435456,
+      "maximum_latency_ns": 30000000000
     },
     {
       "size": "medium",
       "maximum_rows": 100000,
       "maximum_source_bytes": 268435456,
       "maximum_requests": 512,
-      "maximum_memory_bytes": 1073741824
+      "maximum_memory_bytes": 1073741824,
+      "maximum_latency_ns": 120000000000
     },
     {
       "size": "large",
       "maximum_rows": 10000000,
       "maximum_source_bytes": 2147483648,
       "maximum_requests": 10000,
-      "maximum_memory_bytes": 4294967296
+      "maximum_memory_bytes": 4294967296,
+      "maximum_latency_ns": 600000000000
     }
   ],
   "experiments": [
@@ -52,7 +55,7 @@
       "hypothesis": "Remote DuckDB, Polars and Arrow can reduce transferred bytes while preserving source-faithful results.",
       "unmet_requirement": "Comparative request/byte amplification, latency, memory, and result-parity baselines remain unmeasured.",
       "baseline": "Pinned anonymous full-object restore with independent SHA-256 verification.",
-      "threshold": "Exact result parity with lower transferred bytes and bounded request, latency, and memory amplification.",
+      "threshold": "Exact result parity and lower transferred bytes; each observation remains within the predeclared workload limits for requests, source bytes, latency, memory, and cache.",
       "rights_sensitivity_review": "Only public rights-qualified objects; exclude restricted terminology and credentials.",
       "profile": "tiny",
       "prerequisite_evidence": {
