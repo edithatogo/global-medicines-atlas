@@ -2,19 +2,14 @@
 
 from __future__ import annotations
 
-import socket
-from collections.abc import Iterator
-from contextlib import contextmanager
 from datetime import UTC, datetime
-from threading import Thread
-from time import monotonic, sleep
 from typing import TYPE_CHECKING
 from urllib.parse import urlencode, urlsplit
 
 import pytest
-import uvicorn
 from fastapi.testclient import TestClient
 from playwright.sync_api import sync_playwright
+from test_support.asgi_server import serve_asgi_on_loopback
 
 from global_medicines_atlas.atlas import create_atlas_app
 from global_medicines_atlas.historical_change import (
@@ -57,53 +52,6 @@ if TYPE_CHECKING:
     from playwright.sync_api import Page, Route
 
 NOW = datetime(2026, 10, 6, 12, tzinfo=UTC)
-
-
-@contextmanager
-def _serve_atlas_on_loopback() -> Iterator[str]:
-    """Run the fixture Atlas through a real HTTP server on an ephemeral port."""
-    listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    listener.bind(("127.0.0.1", 0))
-    listener.listen(128)
-    port = listener.getsockname()[1]
-    server = uvicorn.Server(
-        uvicorn.Config(
-            create_atlas_app(AtlasFixtureService()),
-            host="127.0.0.1",
-            port=port,
-            lifespan="off",
-            access_log=False,
-            log_level="error",
-        )
-    )
-    thread = Thread(
-        target=server.run,
-        kwargs={"sockets": [listener]},
-        daemon=True,
-    )
-    thread.start()
-    deadline = monotonic() + 10
-    while not server.started and thread.is_alive() and monotonic() < deadline:
-        sleep(0.01)
-    if not server.started:
-        server.should_exit = True
-        thread.join(timeout=5)
-        if thread.is_alive():
-            listener.close()
-            raise RuntimeError(
-                "The synthetic Atlas ASGI server did not start and the shutdown timed out"
-            )
-        listener.close()
-        raise RuntimeError("The synthetic Atlas ASGI server did not start")
-    try:
-        yield f"http://127.0.0.1:{port}"
-    finally:
-        server.should_exit = True
-        thread.join(timeout=5)
-        if thread.is_alive():
-            raise RuntimeError("The synthetic Atlas ASGI server did not stop")
-        listener.close()
 
 
 class AtlasFixtureService:
@@ -324,7 +272,9 @@ def test_synthetic_atlas_renders_through_loopback_asgi_server() -> None:
         "observed_at": NOW.isoformat(),
     })
     with (
-        _serve_atlas_on_loopback() as base_url,
+        serve_asgi_on_loopback(
+            create_atlas_app(AtlasFixtureService())
+        ) as base_url,
         sync_playwright() as playwright,
     ):
         browser = playwright.chromium.launch()
