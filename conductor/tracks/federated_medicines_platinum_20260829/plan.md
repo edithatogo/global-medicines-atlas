@@ -995,4 +995,7 @@
   completes with 97.92% coverage. No source or source-coverage claim changed.
   This verifies keyboard scrolling across the implemented Atlas table
   surfaces; full WCAG conformance and representative-user acceptance remain
-  open.
+  open. PR #962 merged at `3f1702d7c4ff0e6bbab3d03333e8b461b4e7c5ff` from
+  qualified head `a44bca2c8e7e4973f1729b27d8401d757cc0de3d`; all 29 required
+  contexts and all 39 reported checks passed, and the merge tree matches the
+  qualified head tree.
