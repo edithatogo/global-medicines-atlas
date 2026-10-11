@@ -335,7 +335,7 @@ def _exercise_gold_review_queue(
     assert cli_payload["cases"] == [
         case.model_dump(mode="json") for case in review_cases
     ]
-    assert cli_payload["promotion_performed"] is False
+    _assert_unverified_review_payload(cli_payload, expected_event_count=0)
     case = review_cases[0]
     first = _gold_adjudication(
         candidate_id=case.review_case_id,
@@ -349,9 +349,20 @@ def _exercise_gold_review_queue(
     assert (
         regenerate_gold_edge_review_queue(review_cases, events) == review_cases
     )
-    assert _invoke_gold_review_cli(edge_file, adjudication_path)["cases"] == [
+    needs_information_payload = _invoke_gold_review_cli(
+        edge_file, adjudication_path
+    )
+    assert needs_information_payload["cases"] == [
         case.model_dump(mode="json") for case in review_cases
     ]
+    _assert_unverified_review_payload(
+        needs_information_payload,
+        expected_event_count=1,
+        forbidden_values=(
+            "synthetic-e2e-reviewer",
+            "Synthetic E2E fixture requests more evidence.",
+        ),
+    )
 
     terminal = _gold_adjudication(
         candidate_id=case.review_case_id,
@@ -370,10 +381,21 @@ def _exercise_gold_review_queue(
         if item.review_case_id != case.review_case_id
     }
     assert all(item.promotion_performed is False for item in remaining_cases)
-    assert _invoke_gold_review_cli(
+    accepted_payload = _invoke_gold_review_cli(
         edge_file,
         adjudication_path,
-    )["cases"] == [item.model_dump(mode="json") for item in remaining_cases]
+    )
+    assert accepted_payload["cases"] == [
+        item.model_dump(mode="json") for item in remaining_cases
+    ]
+    _assert_unverified_review_payload(
+        accepted_payload,
+        expected_event_count=2,
+        forbidden_values=(
+            "synthetic-e2e-reviewer",
+            "Synthetic E2E fixture supplies a terminal review event.",
+        ),
+    )
     assert case.promotion_performed is False
 
 
@@ -393,6 +415,20 @@ def _invoke_gold_review_cli(
     result = CliRunner().invoke(cli_app, args)
     assert result.exit_code == 0, result.stderr
     return json.loads(result.stdout)
+
+
+def _assert_unverified_review_payload(
+    payload: dict[str, Any],
+    *,
+    expected_event_count: int,
+    forbidden_values: tuple[str, ...] = (),
+) -> None:
+    assert payload["adjudication_event_count"] == expected_event_count
+    assert payload["adjudication_authority_verified"] is False
+    assert payload["promotion_performed"] is False
+    assert payload["qualification"] == "synthetic_silver_candidate_only"
+    serialized = json.dumps(payload)
+    assert all(value not in serialized for value in forbidden_values)
 
 
 def _gold_adjudication(
