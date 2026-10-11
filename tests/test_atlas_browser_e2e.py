@@ -537,6 +537,29 @@ def test_atlas_history_reflows_at_320_css_pixels() -> None:
         page = browser.new_page(viewport={"width": 320, "height": 800})
         try:
             _route_test_client_requests(page, client)
+
+            def assert_keyboard_scroll(region_name: str) -> None:
+                region = page.get_by_role("region", name=region_name)
+                assert region.is_visible()
+                assert region.get_attribute("tabindex") == "0"
+                assert region.evaluate(
+                    "element => element.scrollWidth > element.clientWidth"
+                )
+                region.focus()
+                initial_scroll_left = region.evaluate(
+                    "element => element.scrollLeft"
+                )
+                region.press("ArrowRight")
+                keyboard_scroll_left = region.evaluate(
+                    "element => element.scrollLeft"
+                )
+                assert keyboard_scroll_left >= initial_scroll_left + 40
+                region.press("ArrowLeft")
+                assert (
+                    region.evaluate("element => element.scrollLeft")
+                    < keyboard_scroll_left
+                )
+
             for path in (
                 "/?concept_id=rx%3Afixture&jurisdiction=NZ",
                 "/history",
@@ -551,29 +574,11 @@ def test_atlas_history_reflows_at_320_css_pixels() -> None:
                     })"""
                 )
                 assert width["document"] <= width["viewport"], width
-
-            table_region = page.get_by_role(
-                "region", name="Source snapshot identity"
-            )
-            assert table_region.is_visible()
-            assert table_region.get_attribute("tabindex") == "0"
-            assert table_region.evaluate(
-                "element => element.scrollWidth > element.clientWidth"
-            )
-            table_region.focus()
-            initial_scroll_left = table_region.evaluate(
-                "element => element.scrollLeft"
-            )
-            table_region.press("ArrowRight")
-            keyboard_scroll_left = table_region.evaluate(
-                "element => element.scrollLeft"
-            )
-            assert keyboard_scroll_left > initial_scroll_left
-            table_region.press("ArrowLeft")
-            assert (
-                table_region.evaluate("element => element.scrollLeft")
-                < keyboard_scroll_left
-            )
+                assert_keyboard_scroll(
+                    "Source snapshot identity"
+                    if path == "/history"
+                    else "Measured source coverage table"
+                )
         finally:
             browser.close()
 

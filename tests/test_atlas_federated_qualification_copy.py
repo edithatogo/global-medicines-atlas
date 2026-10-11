@@ -353,13 +353,38 @@ def _assert_atlas_assets_loaded(
 ) -> None:
     assert "/static/atlas.css" in requests
     assert "/static/atlas-autocomplete.js" in requests
+    assert "/static/atlas-table-scroll.js" in requests
     assert responses["/static/atlas.css"] == 200
     assert responses["/static/atlas-autocomplete.js"] == 200
+    assert responses["/static/atlas-table-scroll.js"] == 200
     assert (
         page.locator(".skip-link").evaluate(
             "element => getComputedStyle(element).position"
         )
         == "absolute"
+    )
+
+
+def _assert_keyboard_table_scroll(page: Page, region_name: str) -> None:
+    """Prove the shared handler scrolls a narrow federated evidence region."""
+    region = page.get_by_role("region", name=region_name)
+    region.evaluate(
+        """element => {
+          element.style.width = '80px';
+          element.querySelector('table').style.width = '400px';
+        }"""
+    )
+    assert region.evaluate(
+        "element => element.scrollWidth > element.clientWidth"
+    )
+    region.focus()
+    initial_scroll_left = region.evaluate("element => element.scrollLeft")
+    region.press("ArrowRight")
+    keyboard_scroll_left = region.evaluate("element => element.scrollLeft")
+    assert keyboard_scroll_left >= initial_scroll_left + 40
+    region.press("ArrowLeft")
+    assert (
+        region.evaluate("element => element.scrollLeft") < keyboard_scroll_left
     )
 
 
@@ -446,9 +471,15 @@ def test_browser_navigates_from_home_to_bounded_federated_evidence() -> None:
             assert home_response.status == 200
             _assert_atlas_assets_loaded(requests, responses, page)
             _exercise_browser_benefits_route(page)
+            _assert_keyboard_table_scroll(page, "Federated evidence rows")
+            _assert_atlas_assets_loaded(requests, responses, page)
 
             page.goto("http://atlas.test/")
             _exercise_browser_structure_route(page)
+            _assert_keyboard_table_scroll(
+                page, "Source-structure evidence rows"
+            )
+            _assert_atlas_assets_loaded(requests, responses, page)
         finally:
             browser.close()
 
