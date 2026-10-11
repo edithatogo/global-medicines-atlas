@@ -977,6 +977,9 @@
   now moves only the focused history table region, and the browser test verifies
   both rightward and leftward scrolling. (Initial test commit
   `4fa8a586ba699b8fa9c572eb9bb4da18fc4072ed`; the keyboard fix and local
-  verification are recorded in follow-up evidence, with hosted validation
-  pending.) This verifies one responsive and keyboard interaction property; it
-  does not establish full WCAG conformance or representative-user acceptance.
+  verification are recorded in follow-up evidence. PR #960 merged at
+  `9f5d331d412698b979c9a7c161fd0436b9664ca2` from qualified head
+  `3e2d78b7ec165cde6924ec5bd17174467724491b`; all 29 required contexts and 39
+  reported checks passed, and the merge tree matches the qualified head tree.
+  This verifies one responsive and keyboard interaction property; it does not
+  establish full WCAG conformance or representative-user acceptance.
