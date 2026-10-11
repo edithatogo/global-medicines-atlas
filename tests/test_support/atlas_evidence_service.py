@@ -1,0 +1,144 @@
+"""Synthetic Atlas service used by installed-distribution browser E2E."""
+
+from __future__ import annotations
+
+from datetime import UTC, datetime
+
+from global_medicines_atlas.product_contracts import (
+    AsOfClocks,
+    ComparisonQuery,
+    ComparisonResponse,
+    ConceptDetail,
+    ConceptSearchQuery,
+    ConceptSearchResponse,
+    ConceptSummary,
+    CoverageItem,
+    CoverageQuery,
+    CoverageResponse,
+    DiscoveryMetadata,
+    EvidenceAvailability,
+    EvidenceContext,
+    EvidenceDimension,
+    MatchExplanation,
+    MatchMethod,
+    PageMetadata,
+    ProductConclusion,
+    ProductState,
+    ProvenanceLink,
+    ResponseMetadata,
+    Terminology,
+    Uncertainty,
+    UncertaintyLevel,
+)
+
+NOW = datetime(2026, 10, 6, 12, tzinfo=UTC)
+
+
+class InstalledAtlasEvidenceService:
+    """Small synthetic service that preserves unknown evidence semantics."""
+
+    def concept_detail(self, concept_id: str) -> ConceptDetail:
+        return ConceptDetail(
+            concept_id=concept_id,
+            preferred_name="Example medicine",
+            concept_type="medicinal_product",
+        )
+
+    def search_concepts(
+        self, query: ConceptSearchQuery
+    ) -> ConceptSearchResponse:
+        return ConceptSearchResponse(
+            metadata=DiscoveryMetadata(
+                generated_at=NOW,
+                page=PageMetadata(limit=query.limit, returned=1),
+            ),
+            concepts=(
+                ConceptSummary(
+                    concept_id="rx:fixture",
+                    preferred_name="Example medicine",
+                    concept_type="medicinal_product",
+                    jurisdictions=("NZ",),
+                    explanation=MatchExplanation(
+                        method=MatchMethod.NORMALIZED_PREFERRED_NAME,
+                        matched_value="Example medicine",
+                        normalized_query=query.query.casefold(),
+                    ),
+                ),
+            ),
+        )
+
+    def comparisons(self, query: ComparisonQuery) -> ComparisonResponse:
+        conclusion = ProductConclusion(
+            concept_id=query.concept_id,
+            jurisdiction="NZ",
+            dimension=EvidenceDimension.REGULATORY,
+            state=ProductState.UNKNOWN,
+            terminology=Terminology(
+                native_code="not-covered",
+                native_label="Not covered in this synthetic fixture",
+                native_system="fixture",
+                canonical_code=query.concept_id,
+                canonical_label="Example medicine",
+                canonical_system="atlas",
+            ),
+            provenance=(
+                ProvenanceLink(
+                    source_id="Synthetic public evidence",
+                    source_uri="https://fixtures.invalid/evidence",
+                    retrieved_at=NOW,
+                ),
+            ),
+            evidence_availability=EvidenceAvailability.AVAILABLE,
+            uncertainty=Uncertainty(
+                level=UncertaintyLevel.UNKNOWN,
+                reason="No source assertion is present in this fixture.",
+            ),
+            evidence_context=EvidenceContext(
+                schema_era="fixture-v1",
+                comparison_cohort="synthetic",
+                entity_granularity="medicine_item",
+            ),
+            valid_time=AsOfClocks(
+                valid_at=query.valid_at,
+                observed_at=query.observed_at,
+            ),
+        )
+        return ComparisonResponse(
+            metadata=ResponseMetadata(
+                generated_at=NOW,
+                clocks=AsOfClocks(
+                    valid_at=query.valid_at,
+                    observed_at=query.observed_at,
+                ),
+                page=PageMetadata(limit=query.limit, returned=1),
+            ),
+            conclusions=(conclusion,),
+        )
+
+    def coverage(self, query: CoverageQuery) -> CoverageResponse:
+        item = CoverageItem(
+            jurisdiction="NZ",
+            dimension=EvidenceDimension.REGULATORY,
+            state=ProductState.UNKNOWN,
+            covered_count=0,
+            evidence_context=EvidenceContext(
+                schema_era="fixture-v1",
+                comparison_cohort="synthetic",
+                entity_granularity="coverage_record",
+            ),
+            valid_time=AsOfClocks(
+                valid_at=query.valid_at,
+                observed_at=query.observed_at,
+            ),
+        )
+        return CoverageResponse(
+            metadata=ResponseMetadata(
+                generated_at=NOW,
+                clocks=AsOfClocks(
+                    valid_at=query.valid_at,
+                    observed_at=query.observed_at,
+                ),
+                page=PageMetadata(limit=query.limit, returned=1),
+            ),
+            coverage=(item,),
+        )

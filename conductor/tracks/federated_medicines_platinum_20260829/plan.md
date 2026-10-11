@@ -1089,6 +1089,18 @@
   head `a7f9b27c23b958dce514b5ae0fbeddf23ad86924`; all 39 reported checks
   passed, and the merge tree matches the qualified head tree.
 
+### Installed Atlas synthetic evidence delivery
+
+- [~] Extend the installed wheel/sdist browser journey to submit a synthetic
+  medicine search, follow its canonical candidate, and inspect the rendered
+  unknown result and coverage without inferring a negative. This verifies the
+  installed package can deliver evidence-shaped product output, while keeping
+  the fixture independent of source acquisition, admission, and publication.
+  Focused wheel/sdist loopback Chromium E2E passes; typing, routine, context,
+  ecosystem, and diff checks pass. The local governed E2E lane reports 54
+  passed and three unrelated existing browser-test teardown timeouts during
+  `browser.close`; awaiting protected exact-head CI before completion.
+
 - [x] Reconcile the receipt after PR #986 merged at
   `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head
   `9d3a6ee9b84f184f67f891dcea370551465306b3`; all 38 reported checks passed,
