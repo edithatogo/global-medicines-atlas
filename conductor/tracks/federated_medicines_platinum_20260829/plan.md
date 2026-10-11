@@ -966,3 +966,17 @@
   This closes only the synthetic loopback journey; production deployment,
   admission, source coverage, public release, WCAG conformance, and
   representative-user acceptance remain separate gates.
+
+### Atlas narrow-viewport reflow (2026-10-11)
+
+- [x] Verify the comparison and historical views at 320 CSS pixels in
+  Chromium. The document stays within the viewport while the wide historical
+  source-identity table remains keyboard-scrollable in its labelled region.
+  The initial regression test verified focus and overflow; PR review then
+  found Chromium arrow keys did not move the table. A scoped keyboard handler
+  now moves only the focused history table region, and the browser test verifies
+  both rightward and leftward scrolling. (Initial test commit
+  `4fa8a586ba699b8fa9c572eb9bb4da18fc4072ed`; the keyboard fix and local
+  verification are recorded in follow-up evidence, with hosted validation
+  pending.) This verifies one responsive and keyboard interaction property; it
+  does not establish full WCAG conformance or representative-user acceptance.
