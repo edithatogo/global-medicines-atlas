@@ -35,6 +35,13 @@ _OXIGRAPH_RDF12_RECEIPT = (
 _OXIGRAPH_RDF12_RECEIPT_SHA256 = (
     "892e1d89ef45c864c8169eeeb44d7684450ea12d5fb05fecee8c4c03f7ec0004"
 )
+_OXIGRAPH_RDF12_REIFICATION_RECEIPT = (
+    Path(__file__).parents[1]
+    / "quality/qualifications/oxigraph-rdf12-reification-semantic-parity-20261012.json"
+)
+_OXIGRAPH_RDF12_REIFICATION_RECEIPT_SHA256 = (
+    "047d665c960ff8e4ffb0e2d551543a8cd3cdbdcf4224e7705ca4f9702e2fda65"
+)
 
 
 class _Response:
@@ -274,3 +281,42 @@ def test_committed_oxigraph_rdf12_receipt_pins_current_engine_parity() -> None:
         case = cast("dict[str, object]", cases[family])
         assert (case["node_count"], case["edge_count"]) == expected
         assert case["exact_payload_and_direction_parity"] is True
+
+
+def test_committed_oxigraph_receipt_pins_rdf12_reification_semantics() -> None:
+    document = json.loads(
+        _OXIGRAPH_RDF12_REIFICATION_RECEIPT.read_text(encoding="utf-8")
+    )
+    assert isinstance(document, dict)
+    receipt = cast("dict[str, object]", document)
+    embedded_digest = receipt.pop("receipt_sha256")
+    canonical = json.dumps(
+        receipt,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("utf-8")
+
+    assert (
+        embedded_digest
+        == "764f780cfe02072980ea8d4fc91c33b2a707993acee072e1da7eaa13de573e41"
+    )
+    assert sha256(canonical).hexdigest() == embedded_digest
+    assert sha256(
+        _OXIGRAPH_RDF12_REIFICATION_RECEIPT.read_bytes()
+    ).hexdigest() == (_OXIGRAPH_RDF12_REIFICATION_RECEIPT_SHA256)
+    assert receipt["engine"] == "oxigraph"
+    assert receipt["engine_version"] == "0.5.9"
+    assert receipt["rdf12_reification_query"] == (
+        "sparql-1.2-triple-term-pattern"
+    )
+    assert receipt["rdf12_reified_triple_term_parity"] is True
+    assert receipt["source_payloads_accessed"] is False
+    assert receipt["rights_clearance_claimed"] is False
+    assert receipt["production_authority_promoted"] is False
+    cases = cast("dict[str, object]", receipt["cases"])
+    for family, expected in {"mbs": (4, 2), "pbs": (10, 9)}.items():
+        case = cast("dict[str, object]", cases[family])
+        assert (case["node_count"], case["edge_count"]) == expected
+        assert case["rdf12_reified_triple_term_parity"] is True
