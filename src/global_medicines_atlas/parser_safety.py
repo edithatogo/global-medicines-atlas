@@ -129,3 +129,70 @@ def parse_xml(
     if root is None:
         raise ParserSafetyError("XML payload has no document element")
     return root
+
+
+def iter_xml_events(
+    payload: bytes,
+    *,
+    policy: ParserPolicy = DEFAULT_PARSER_POLICY,
+) -> Iterator[tuple[str, ET.Element, ET.Element | None]]:
+    """Yield checked XML events with each element's parent.
+
+    Consumers may clear and detach completed direct-child records before the
+    parser advances. Structural limits, DTD/entity rejection, and malformed
+    document handling match :func:`parse_xml`.
+    """
+    if len(payload) > policy.max_bytes:
+        raise ParserSafetyError("XML payload exceeds the byte limit")
+    _reject_declarations(payload)
+
+    parser: ET.XMLPullParser[ET.Element] = ET.XMLPullParser(
+        events=("start", "end")
+    )
+    state = [0, 0, 0]
+    stack: list[ET.Element] = []
+    root_seen = False
+
+    def consume() -> Iterator[tuple[str, ET.Element, ET.Element | None]]:
+        nonlocal root_seen
+        events = cast(
+            "Iterator[tuple[str, ET.Element]]",
+            parser.read_events(),
+        )
+        for event, element in events:
+            if event == "start":
+                parent = stack[-1] if stack else None
+                state[0] += 1
+                state[1] += 1
+                if parent is None:
+                    root_seen = True
+                if state[0] > policy.max_xml_depth:
+                    raise ParserSafetyError("XML nesting depth limit exceeded")
+                if state[1] > policy.max_xml_elements:
+                    raise ParserSafetyError("XML element count limit exceeded")
+                stack.append(element)
+            else:
+                if not stack or stack[-1] is not element:
+                    raise ParserSafetyError("XML event nesting is invalid")
+                parent = stack[-2] if len(stack) > 1 else None
+                state[2] += len((element.text or "").encode())
+                state[2] += len((element.tail or "").encode())
+                if state[2] > policy.max_xml_text_bytes:
+                    raise ParserSafetyError("XML text size limit exceeded")
+            yield event, element, parent
+            if event == "end":
+                stack.pop()
+                state[0] -= 1
+
+    try:
+        for offset in range(0, len(payload), policy.chunk_bytes):
+            parser.feed(payload[offset : offset + policy.chunk_bytes])
+            yield from consume()
+        parser.close()
+        yield from consume()
+    except ET.ParseError as error:
+        raise ParserSafetyError("XML payload is not well formed") from error
+    if not root_seen:
+        raise ParserSafetyError("XML payload has no document element")
+    if stack or state[0] != 0:
+        raise ParserSafetyError("XML document did not close cleanly")
