@@ -295,6 +295,10 @@
   regeneration initially rejected the new job as an unregistered workflow
   change; the exact job inventory is now updated and the regeneration profile
   passes twice in opposite order (184 tests each).
+  - [x] Verify the committed hosted receipt checksum and its synthetic-only,
+    no-rights-clearance, and no-promotion declarations in the registered unit
+    suite; the focused Neo4j unit tests pass (10), with Ruff, format, `ty`,
+    BasedPyright, and routine repository checks passing.
 - [ ] Confirm the intended failure before implementation.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
