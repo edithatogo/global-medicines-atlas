@@ -1121,6 +1121,16 @@
   at `a1f3cc23eeffc097d1f214ea75aa44a6babd8de8`; its merge tree matches the
   qualified head tree `54b91e6eaed31f5f05b498143609ca7c5697199c`.
 
+- [x] Extend the installed wheel/sdist loopback qualification through the
+  read-only v2 JSON API as well as its browser UI. Confirm the five-dimension
+  unknown comparison envelope and explicit empty evidence page over HTTP;
+  the initial installed-artifact test failed at `/api/v2/comparisons` with 404,
+  demonstrating the package-to-API gap. Both artifacts now pass the real
+  loopback API and Chromium journeys. The v2 API/control suite passes (23), as
+  do routine, Ruff, formatting, `ty`, BasedPyright, and context/ecosystem
+  checks. Synthetic only: no source acquisition, admission, rights, coverage,
+  or publication claim. Exact-head hosted qualification is pending.
+
 - [x] Stabilize the existing history-page keyboard browser assertion after
   exact-head Linux E2E showed the stylesheet had not finished loading before
   computed-style inspection. The test now waits for the required skip-link
