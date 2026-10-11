@@ -173,6 +173,7 @@ def test_gold_review_queue_cli_lists_pending_cases_without_promotion(
     assert payload["schema_version"] == 1
     assert payload["qualification"] == "synthetic_silver_candidate_only"
     assert payload["adjudication_event_count"] == 0
+    assert payload["adjudication_authority_verified"] is False
     assert payload["promotion_performed"] is False
     assert payload["cases"] == [
         case.model_dump(mode="json") for case in expected
@@ -230,6 +231,7 @@ def test_gold_review_queue_cli_applies_only_supplied_adjudications(
     assert result.exit_code == 0, result.stderr
     payload = json.loads(result.stdout)
     assert payload["adjudication_event_count"] == 1
+    assert payload["adjudication_authority_verified"] is False
     assert payload["cases"] == [
         item.model_dump(mode="json")
         for item in expected

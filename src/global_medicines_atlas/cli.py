@@ -794,6 +794,7 @@ def gold_review_queue_query(
         json.dumps(
             {
                 "adjudication_event_count": event_count,
+                "adjudication_authority_verified": False,
                 "cases": [case.model_dump(mode="json") for case in pending],
                 "promotion_performed": False,
                 "qualification": "synthetic_silver_candidate_only",

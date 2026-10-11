@@ -751,6 +751,18 @@
   authority, receipts, calibration, promotion, real-source controls, and the
   Gold phase checkpoint remain pending.
 
+### Gold review CLI authority boundary (2026-10-11)
+
+- [x] Mark the `gold-review-queue` CLI response with
+  `adjudication_authority_verified: false`, including when a caller-supplied
+  synthetic accepted event removes its case from the pending queue. The
+  response remains candidate-only and performs no promotion. The intended
+  regression failed before the field was added; focused review/API/graph tests
+  pass (89), and full Test-Goblin passes with 6,189 tests and 96.89% coverage.
+  (`edb622bd`; evidence in `evidence.jsonl`.) This verifies output labelling
+  only; no reviewer identity or authority is created or inferred, and real
+  adjudication remains pending.
+
 ### Platinum PBS edge readback coverage (2026-10-09)
 
 - [x] Exercise the existing PBS Gold candidate through both the Platinum edge
