@@ -762,6 +762,14 @@
   (`edb622bd`; PR #968 merged as `1bc43c17`; evidence in `evidence.jsonl`.)
   This verifies output labelling only; no reviewer identity or authority is
   created or inferred, and real adjudication remains pending.
+- [~] Assert the authority boundary through both synthetic MBS and PBS
+  Bronze-to-Platinum review-queue journeys, before and after caller-supplied
+  `needs_information` and accepted events. Every CLI readback remains
+  `adjudication_authority_verified: false`, candidate-only, and
+  `promotion_performed: false`; the accepted event removes only its case from
+  the queue. Focused journeys pass (2), governed E2E passes (56), and routine
+  checks pass. Test-only follow-up; no reviewer authority or source state is
+  established. Hosted qualification remains pending.
 
 ### Platinum PBS edge readback coverage (2026-10-09)
 

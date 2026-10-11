@@ -335,7 +335,9 @@ def _exercise_gold_review_queue(
     assert cli_payload["cases"] == [
         case.model_dump(mode="json") for case in review_cases
     ]
+    assert cli_payload["adjudication_authority_verified"] is False
     assert cli_payload["promotion_performed"] is False
+    assert cli_payload["qualification"] == "synthetic_silver_candidate_only"
     case = review_cases[0]
     first = _gold_adjudication(
         candidate_id=case.review_case_id,
@@ -349,9 +351,15 @@ def _exercise_gold_review_queue(
     assert (
         regenerate_gold_edge_review_queue(review_cases, events) == review_cases
     )
-    assert _invoke_gold_review_cli(edge_file, adjudication_path)["cases"] == [
+    needs_information_payload = _invoke_gold_review_cli(
+        edge_file, adjudication_path
+    )
+    assert needs_information_payload["cases"] == [
         case.model_dump(mode="json") for case in review_cases
     ]
+    assert needs_information_payload["adjudication_event_count"] == 1
+    assert needs_information_payload["adjudication_authority_verified"] is False
+    assert needs_information_payload["promotion_performed"] is False
 
     terminal = _gold_adjudication(
         candidate_id=case.review_case_id,
@@ -370,10 +378,19 @@ def _exercise_gold_review_queue(
         if item.review_case_id != case.review_case_id
     }
     assert all(item.promotion_performed is False for item in remaining_cases)
-    assert _invoke_gold_review_cli(
+    accepted_payload = _invoke_gold_review_cli(
         edge_file,
         adjudication_path,
-    )["cases"] == [item.model_dump(mode="json") for item in remaining_cases]
+    )
+    assert accepted_payload["cases"] == [
+        item.model_dump(mode="json") for item in remaining_cases
+    ]
+    assert accepted_payload["adjudication_event_count"] == 2
+    assert accepted_payload["adjudication_authority_verified"] is False
+    assert accepted_payload["promotion_performed"] is False
+    assert (
+        accepted_payload["qualification"] == "synthetic_silver_candidate_only"
+    )
     assert case.promotion_performed is False
 
 
