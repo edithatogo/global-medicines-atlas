@@ -690,20 +690,17 @@
 - [~] Add adjudication queues, calibrated thresholds, conflict/supersession, and
   review receipts before any candidate promotion. A generic Gold-edge adapter
   now creates deterministic, full-edge-digest-bound `pending_review` cases for
-  explicit PBS controls and the legacy/current MBS edge contract, and can
-  remove cases only when caller-supplied append-only `AdjudicationEvent`
-  records already exist. It creates no reviewer identity, adjudication,
-  threshold, receipt, authority, admission or promotion; those controls remain
-  pending. The queue now retains `needs_information` cases and removes a case
-  only for a complete, unambiguous supersession chain ending in accepted,
-  rejected, or superseded. Conflicting roots, branches, cycles, and missing
-  predecessors fail closed as pending. The regression failed against the old
-  behavior, then all 38 adjacent Gold graph tests passed. Full Test-Goblin:
-  5,264 passed, 2 environment-only release reproducibility failures, 1
-  optional PyIceberg skip, 96.71% coverage; rerunning only those two tests via
-  `uv 0.11.29` passed both. This fixes queue-state derivation only; reviewer
-  authority, receipts, calibration, candidate promotion, and Gold acceptance
-  remain pending.
+  explicit PBS controls and the legacy/current MBS edge contract. The prior
+  implementation removed cases for terminal caller-supplied event chains
+  without verifying reviewer authority; PR #1020 removed that route. Every case
+  now remains pending until an independent authority verifier exists. This
+  adapter creates no reviewer identity, adjudication, threshold, receipt,
+  authority, admission or promotion. Earlier queue-state tests passed (38),
+  and the focused Gold/API/synthetic MBS-PBS E2E suite passes (25). Full local
+  Test-Goblin passed 6,222 tests at 96.89% coverage; two unrelated stable-v1
+  reproducibility tests passed on isolated rerun with pinned uv 0.11.29, and
+  three optional integrations were skipped. Reviewer authority, receipts,
+  calibration, candidate promotion, and Gold acceptance remain pending.
 - [ ] Phase Verification & Checkpoint: every edge is evidence-bearing and no
   candidate class can masquerade as an authoritative link.
 
