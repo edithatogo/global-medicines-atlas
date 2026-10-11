@@ -1318,9 +1318,23 @@
   failed the same local mutation-score gate: 1,880 killed, 363 survived,
   two untested and five suspicious of 2,250. Later local lanes were not
   reached; no baseline changes or whole-run retries.
-- [ ] Run focused, property, metamorphic, mutation, performance, coverage,
+- [x] Run focused, property, metamorphic, mutation, performance, coverage,
   Ruff, `ty`, BasedPyright, security, rights, provenance, regeneration, and full
-  Test-Goblin lanes where supported.
+  Test-Goblin lanes where supported. The focused B0-to-Platinum change passed
+  24 affected tests and its focused E2E. PR #1005 passed all 38 hosted check
+  rows. PR #1006 passed all 38 hosted check rows across 37 contexts after a
+  documentation-only reconciliation; its mutation and Gremlins execution
+  steps were skipped by the workflow's non-heavy-change rules, so those lane
+  results are reused from #1005. The source/test tree is unchanged from the
+  qualified PR #1005 tree; the intervening changes are documentation only.
+  Hosted lanes across these two PRs include Python 3.14 unit,
+  integration, E2E, smoke, property, edge, routine, strict, package, coverage,
+  mutation, Gremlins, dependency, regeneration and profiling; representative
+  performance; Linux/macOS/Windows consumers; security/context, recovery,
+  operational, archive and table-format checks. Automated rights/provenance
+  controls are test evidence only: this does not decide rights, admit or
+  publish source data, or close real-source, representative-user, or release
+  gates.
 - [ ] Run Conductor review, repair findings, open scoped pull requests, wait for
   hosted checks, merge, and reconcile all evidence.
 
