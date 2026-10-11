@@ -4,7 +4,7 @@ import json
 from urllib.request import Request
 
 import pytest
-from test_support.frontier_neo4j import execute_query
+from test_support.frontier_neo4j import decode_rows, execute_query
 
 
 class _Response:
@@ -106,3 +106,26 @@ def test_execute_query_accepts_write_without_returned_rows(
     monkeypatch.setattr("test_support.frontier_neo4j.urlopen", fake_urlopen)
 
     assert execute_query("http://localhost:7474", "CREATE (n)", {}) == ([], [])
+
+
+def test_readback_rejects_observed_edge_direction_conflict() -> None:
+    fields = ["edge_id", "source_node_id", "target_node_id", "payload_json"]
+    values: list[list[object]] = [
+        [
+            "edge-1",
+            "observed-source",
+            "observed-target",
+            json.dumps({
+                "edge_id": "edge-1",
+                "source_node_id": "expected-source",
+                "target_node_id": "expected-target",
+            }),
+        ]
+    ]
+
+    with pytest.raises(ValueError, match="structural field"):
+        decode_rows(
+            fields,
+            values,
+            ["edge_id", "source_node_id", "target_node_id", "payload_json"],
+        )

@@ -228,7 +228,7 @@ def _read_graph(base_url: str) -> dict[str, object]:
         "ORDER BY node_id",
         {},
     )
-    nodes = _decode_rows(fields, values, ["node_id", "payload_json"])
+    nodes = decode_rows(fields, values, ["node_id", "payload_json"])
     fields, values = execute_query(
         base_url,
         "MATCH (s:GmaCandidate)-[r:GMA_CANDIDATE]->(t:GmaCandidate) "
@@ -237,7 +237,7 @@ def _read_graph(base_url: str) -> dict[str, object]:
         "ORDER BY edge_id",
         {},
     )
-    edges = _decode_rows(
+    edges = decode_rows(
         fields,
         values,
         ["edge_id", "source_node_id", "target_node_id", "payload_json"],
@@ -245,9 +245,10 @@ def _read_graph(base_url: str) -> dict[str, object]:
     return {"nodes": nodes, "edges": edges}
 
 
-def _decode_rows(
+def decode_rows(
     fields: list[str], values: list[list[object]], expected: list[str]
 ) -> list[dict[str, object]]:
+    """Decode a Neo4j tabular response and retain observed structure."""
     if fields != expected:
         raise ValueError("Neo4j query returned unexpected fields")
     rows: list[dict[str, object]] = []
@@ -257,6 +258,13 @@ def _decode_rows(
         if not isinstance(payload_json, str):
             raise TypeError("Neo4j payload must remain a JSON string")
         payload = _strict_object(payload_json)
+        if any(
+            key in payload and payload[key] != value
+            for key, value in row.items()
+        ):
+            raise ValueError(
+                "Neo4j observed structural field conflicts with stored payload"
+            )
         rows.append({**row, **payload})
     return rows
 
