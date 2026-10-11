@@ -216,9 +216,14 @@
   projection tests likewise failed collection before their module existed.
 - [~] Implement streaming source-faithful MBS service, hierarchy, description,
   fee/benefit, participant, and legacy annotation tables.
-  XML candidates use the existing 9 MB bounded parser and at most 4,096 rows
-  per Arrow batch; this is bounded parsing plus batch output, not unbounded
-  input streaming or complete real-corpus qualification.
+  XML candidates use two-pass bounded streaming: full-document structural,
+  schema, identity, denominator, and receipt preflight precedes row output;
+  record subtrees are detached and Silver output stays within 4,096 rows per
+  Arrow batch. Broader real-corpus and other table-family qualification remain
+  open.
+- [x] Replace tree-retained MBS XML Silver conversion with the bounded stream
+  and verify it under parser, schema-drift, provenance-identity, and full
+  Test-Goblin checks (`35da943a`; evidence in `evidence.jsonl`).
 - [x] Prove exact existing-source B2-to-Silver row-value parity for the
   already-qualified July 2025 MBS XML and the pinned v4 services Parquet.
   The hosted check binds the existing B1 receipt and both immutable public
