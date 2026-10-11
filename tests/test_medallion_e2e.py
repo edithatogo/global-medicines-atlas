@@ -2191,6 +2191,7 @@ def _exercise_loopback_federated_atlas(
                 resource_id,
                 "a" * 40,
                 binding.object.path,
+                binding.object.sha256,
                 expected_row,
                 semantic_dimension,
                 "evidence_edge",
