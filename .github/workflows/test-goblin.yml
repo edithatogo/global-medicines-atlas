@@ -127,6 +127,46 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  neo4j-synthetic-graph-parity:
+    name: Neo4j / synthetic MBS-PBS graph parity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      neo4j:
+        # Linux amd64 manifest for Neo4j 2026.09.0; auth is disabled only in
+        # this disposable, empty CI service.
+        image: neo4j@sha256:4aa926e358c1081b6b91b7e33d68575502e2e0ce7bcd9d8700e329170a141119
+        ports:
+          - 7474:7474
+        env:
+          NEO4J_AUTH: none
+          NEO4J_server_memory_heap_initial__size: 256m
+          NEO4J_server_memory_heap_max__size: 512m
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize locked Python 3.14 core environment
+        run: uv sync --python 3.14.6 --locked
+      - name: Execute synthetic MBS and PBS graph projections in Neo4j
+        env:
+          NEO4J_HTTP_URL: http://127.0.0.1:7474
+          NEO4J_QUALIFICATION_RECEIPT: build/quality-receipts/neo4j-graph-parity.json
+        run: >-
+          uv run --python 3.14.6 pytest
+          tests/test_frontier_neo4j_integration.py -q
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        if: always()
+        with:
+          name: neo4j-synthetic-graph-parity-receipt
+          path: build/quality-receipts/neo4j-graph-parity.json
+          if-no-files-found: ignore
+          retention-days: 30
+
   iceberg-rest-interoperability:
     name: Iceberg REST / actual fixture
     runs-on: ubuntu-24.04

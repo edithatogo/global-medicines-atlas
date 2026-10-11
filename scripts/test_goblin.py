@@ -196,6 +196,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_frontier_networkx.py",
         "tests/test_frontier_benchmark.py",
         "tests/test_frontier_graph_parity.py",
+        "tests/test_frontier_neo4j.py",
         "tests/test_frontier_merkle.py",
         "tests/test_research_package.py",
         "tests/test_research_lineage.py",
@@ -351,6 +352,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_test_goblin_harness.py",
     ),
     "integration": (
+        "tests/test_frontier_neo4j_integration.py",
         "tests/test_nz_asset_inventory.py",
         "tests/test_nz_consolidation.py",
         "tests/test_nz_fixture_indexes.py",

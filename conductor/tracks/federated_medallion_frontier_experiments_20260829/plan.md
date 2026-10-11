@@ -277,6 +277,20 @@
   `d12243667ccb73bfb54a85cb76b510fc1d3d34c9` at
   `f81fbaf01264e935788724c6ffea1cfceea689f5`; its tree matches the qualified
   head tree, and all 28 distinct required contexts passed.
+- [~] Execute the fixed parameterized Cypher exporter in an empty, digest-pinned
+  Neo4j service using only the existing synthetic MBS/PBS Gold fixtures; read
+  every node and directed edge back and require exact canonical payload parity.
+  The HTTP contract tests and source-neutral qualification helper pass locally;
+  the integration test ran in hosted CI because no local Docker service is
+  available. The first hosted receipt was superseded after review found that
+  expected endpoint fields could overwrite observed Neo4j edge direction.
+  A failing-first regression reproduced the defect; readback now rejects any
+  disagreement between observed structural fields and the stored payload. The
+  corrected hosted parity run and receipt are pending. No sources, source
+  bytes, rights conclusions, or promotion are included. Hosted regeneration
+  initially rejected the new job as an unregistered workflow change; the exact
+  job inventory is now updated and the regeneration profile passes twice in
+  opposite order (184 tests each).
 - [ ] Confirm the intended failure before implementation.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
