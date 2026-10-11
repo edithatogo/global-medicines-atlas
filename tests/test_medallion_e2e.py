@@ -412,9 +412,7 @@ def _exercise_gold_review_queue(
     append_adjudication(adjudication_path, terminal)
     events = load_adjudications(adjudication_path)
     assert events == (first, terminal)
-    remaining_cases = regenerate_gold_edge_review_queue(
-        review_cases, events, verified_event_ids=frozenset()
-    )
+    remaining_cases = regenerate_gold_edge_review_queue(review_cases, events)
     assert remaining_cases == review_cases
     assert all(item.promotion_performed is False for item in remaining_cases)
     accepted_payload = _invoke_gold_review_cli(

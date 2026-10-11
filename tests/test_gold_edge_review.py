@@ -1,6 +1,7 @@
 """Generic Gold-edge review cases remain pending and evidence-bound."""
 
 from datetime import UTC, datetime
+from inspect import signature
 
 import pytest
 from pydantic import ValidationError
@@ -106,7 +107,7 @@ def test_case_digest_binds_complete_edge_and_case_fields():
 @pytest.mark.parametrize(
     "state", [ReviewState.REJECTED, ReviewState.SUPERSEDED]
 )
-def test_other_terminal_adjudications_remove_only_the_decided_case(
+def test_caller_asserted_authority_ids_cannot_remove_a_review_case(
     state: ReviewState,
 ):
     queue = build_gold_edge_review_queue(
@@ -131,14 +132,13 @@ def test_other_terminal_adjudications_remove_only_the_decided_case(
         rationale=rationale,
     )
     assert regenerate_gold_edge_review_queue(queue, (event,)) == queue
-    assert regenerate_gold_edge_review_queue(
-        queue,
-        (event,),
-        verified_event_ids=frozenset({event.event_id}),
-    ) == (queue[1],)
+    assert (
+        "verified_event_ids"
+        not in signature(regenerate_gold_edge_review_queue).parameters
+    )
 
 
-def test_every_event_in_supersession_chain_requires_authority_verification():
+def test_supersession_chain_cannot_be_authorized_by_caller_assertion():
     queue = build_gold_edge_review_queue((pbs_edge(),), queued_at=QUEUED_AT)
     request = adjudication(
         queue[0].review_case_id,
@@ -154,20 +154,11 @@ def test_every_event_in_supersession_chain_requires_authority_verification():
     )
 
     assert (
-        regenerate_gold_edge_review_queue(
-            queue,
-            (request, decision),
-            verified_event_ids=frozenset({decision.event_id}),
-        )
-        == queue
+        regenerate_gold_edge_review_queue(queue, (request, decision)) == queue
     )
     assert (
-        regenerate_gold_edge_review_queue(
-            queue,
-            (request, decision),
-            verified_event_ids=frozenset({request.event_id, decision.event_id}),
-        )
-        == ()
+        "verified_event_ids"
+        not in signature(regenerate_gold_edge_review_queue).parameters
     )
 
 
@@ -215,16 +206,6 @@ def test_needs_information_and_complete_supersession_chain_remain_pending():
         queue, (needs_information, accepted)
     )
     assert remaining == queue
-    authorized = regenerate_gold_edge_review_queue(
-        queue,
-        (needs_information, accepted),
-        verified_event_ids=frozenset({
-            needs_information.event_id,
-            accepted.event_id,
-        }),
-    )
-    assert authorized == (queue[1],)
-    assert authorized[0].review_state is ReviewState.PENDING_REVIEW
 
 
 def test_conflicting_adjudication_roots_remain_pending():
