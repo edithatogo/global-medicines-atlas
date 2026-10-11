@@ -1115,7 +1115,11 @@
   against both wheel and sdist; the seven-test Atlas E2E suite, routine,
   context/ecosystem validation, Ruff, `ty`, BasedPyright, and diff checks pass.
   No new sources, acquisitions, admissions, rights decisions, or coverage
-  claims are introduced. Exact-head hosted qualification is pending.
+  claims are introduced. The exact head passed all 38 reported check rows
+  across 37 distinct contexts, including Python 3.14 E2E, coverage, mutation,
+  CodeQL, archive packaging, and Linux/macOS/Windows consumers. PR #993 merged
+  at `a1f3cc23eeffc097d1f214ea75aa44a6babd8de8`; its merge tree matches the
+  qualified head tree `54b91e6eaed31f5f05b498143609ca7c5697199c`.
 
 - [x] Stabilize the existing history-page keyboard browser assertion after
   exact-head Linux E2E showed the stylesheet had not finished loading before
