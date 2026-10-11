@@ -9,7 +9,17 @@ from typing import cast
 from urllib.request import Request
 
 import pytest
-from test_support.frontier_sparql import execute_query
+from test_mbs_gold_graph import graph as mbs_graph
+from test_support.frontier_sparql import (
+    execute_query,
+    verify_reified_edge_semantics,
+)
+
+from global_medicines_atlas.frontier_graph_export import (
+    export_gold_tables,
+    rdf_iri_reference,
+)
+from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
 
 _OXIGRAPH_RECEIPT = (
     Path(__file__).parents[1]
@@ -104,6 +114,95 @@ def test_execute_query_rejects_invalid_result_shape(
     monkeypatch.setattr("test_support.frontier_sparql.urlopen", fake_urlopen)
     with pytest.raises(TypeError, match="bindings"):
         execute_query("http://localhost:7878", "SELECT * WHERE {}")
+
+
+def test_reified_edge_query_requires_exact_rdf12_triple_term_direction(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(mbs_graph())
+    export = export_gold_tables(nodes, edges)
+    reference = json.loads(export.reference_json)
+    expected = [
+        [
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("edge", row["edge_id"])[1:-1],
+            },
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("node", row["source_node_id"])[1:-1],
+            },
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("node", row["target_node_id"])[1:-1],
+            },
+        ]
+        for row in reference["edges"]
+    ]
+    observed_queries: list[str] = []
+
+    def fake_query(
+        _endpoint: str,
+        query: str,
+        *,
+        timeout: float = 10.0,
+    ) -> tuple[list[str], list[list[dict[str, str]]]]:
+        assert timeout > 0
+        observed_queries.append(query)
+        return ["edge", "source", "target"], expected
+
+    monkeypatch.setattr(
+        "test_support.frontier_sparql.execute_query", fake_query
+    )
+
+    assert verify_reified_edge_semantics("http://localhost:7878", export)
+    assert len(observed_queries) == 1
+    assert 'VERSION "1.2"' in observed_queries[0]
+    assert (
+        "rdf:reifies <<( ?source <urn:gma:connects-to> ?target )>>"
+        in (observed_queries[0])
+    )
+
+
+def test_reified_edge_query_rejects_direction_mismatch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(mbs_graph())
+    export = export_gold_tables(nodes, edges)
+    reference = json.loads(export.reference_json)
+    expected = [
+        [
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("edge", row["edge_id"])[1:-1],
+            },
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("node", row["target_node_id"])[1:-1],
+            },
+            {
+                "type": "uri",
+                "value": rdf_iri_reference("node", row["source_node_id"])[1:-1],
+            },
+        ]
+        for row in reference["edges"]
+    ]
+
+    def fake_query(
+        _endpoint: str,
+        _query: str,
+        *,
+        timeout: float = 10.0,
+    ) -> tuple[list[str], list[list[dict[str, str]]]]:
+        assert timeout > 0
+        return ["edge", "source", "target"], expected
+
+    monkeypatch.setattr(
+        "test_support.frontier_sparql.execute_query", fake_query
+    )
+
+    with pytest.raises(ValueError, match="reified triple-term semantics"):
+        verify_reified_edge_semantics("http://localhost:7878", export)
 
 
 def test_committed_oxigraph_receipt_pins_synthetic_engine_parity() -> None:
