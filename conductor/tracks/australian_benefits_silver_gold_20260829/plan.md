@@ -791,6 +791,15 @@
   (50 tests); `ruff`, `ty`, and the routine harness pass. No source or
   production behavior changed. Full track acceptance remains open.
 
+### Gold edge loopback HTTP E2E (2026-10-11)
+
+- [x] Carry the actual synthetic MBS and PBS Gold Parquet edge outputs through
+  `/api/v1/edges` over an ephemeral loopback HTTP server, then compare the
+  returned pages with the in-process API and CLI readbacks. Assert each source
+  identity and synthetic-only qualification. The full medallion/Atlas E2E
+  selection passes (7) and routine checks pass. No source, rights conclusion,
+  production behavior, or acceptance gate changed.
+
 ## Phase 5: Historical comparisons and publication (AC-06, AC-07)
 
 ### Federated producer v4 acceptance

@@ -275,11 +275,15 @@ def _exercise_source_structure_cli(
 
 
 def _exercise_gold_edge_surfaces(
-    edges: pa.Table,
+    gold_payload: bytes,
     *,
-    edge_file: Path,
+    tmp_path: Path,
+    source_id: str,
 ) -> None:
-    """Compare the synthetic Gold edge API and CLI readbacks."""
+    """Compare synthetic Gold edge API and CLI readbacks over loopback."""
+    edges = pq.read_table(io.BytesIO(gold_payload))
+    edge_file = tmp_path / f"{source_id}-gold-edges.parquet"
+    pq.write_table(edges, edge_file)
     client = TestClient(
         create_app(
             cast("ReadOnlyQueryService", object()),
@@ -289,6 +293,21 @@ def _exercise_gold_edge_surfaces(
     response = client.get("/api/v1/edges", params={"limit": "10"})
     assert response.status_code == 200, response.text
     api_page = response.json()
+
+    app = create_app(
+        cast("ReadOnlyQueryService", object()),
+        gold_edges=edges,
+    )
+    with (
+        serve_asgi_on_loopback(app) as base_url,
+        httpx.Client(base_url=base_url) as http_client,
+    ):
+        loopback_response = http_client.get(
+            "/api/v1/edges", params={"limit": "10"}
+        )
+    assert base_url.startswith("http://127.0.0.1:")
+    assert loopback_response.status_code == 200
+    assert loopback_response.json() == api_page
 
     cli_result = CliRunner().invoke(
         cli_app,
@@ -300,7 +319,7 @@ def _exercise_gold_edge_surfaces(
     assert api_page["qualification"] == "synthetic_silver_candidate_only"
     assert api_page["total"] == edges.num_rows
     assert all(
-        item["evidence"]["source_id"] == "au-mbs" for item in api_page["items"]
+        item["evidence"]["source_id"] == source_id for item in api_page["items"]
     )
 
 
@@ -2363,12 +2382,13 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     silver, nodes, gold = _silver_gold_products(
         landed.payload_path.read_bytes(), landed.receipt
     )
-    edge_file = tmp_path / "mbs-gold-edges.parquet"
-    gold_edges = pq.read_table(io.BytesIO(gold))
-    pq.write_table(gold_edges, edge_file)
-    _exercise_gold_edge_surfaces(gold_edges, edge_file=edge_file)
+    _exercise_gold_edge_surfaces(
+        gold,
+        tmp_path=tmp_path,
+        source_id="au-mbs",
+    )
     _exercise_gold_review_queue(
-        gold_edges,
+        pq.read_table(io.BytesIO(gold)),
         expected_edges=build_mbs_gold_graph_candidate(
             landed.payload_path.read_bytes(), landed.receipt
         ).edges,
@@ -2486,6 +2506,11 @@ def test_synthetic_pbs_structure_flows_from_bronze_to_platinum(
     silver_payload = _parquet_payload(silver)
     node_payload = _parquet_payload(nodes)
     gold_payload = _parquet_payload(edges)
+    _exercise_gold_edge_surfaces(
+        gold_payload,
+        tmp_path=tmp_path,
+        source_id="au-pbs",
+    )
     _exercise_gold_review_queue(
         pq.read_table(io.BytesIO(gold_payload)),
         expected_edges=candidate.edges,
