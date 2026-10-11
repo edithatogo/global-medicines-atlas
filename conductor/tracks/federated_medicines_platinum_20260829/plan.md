@@ -1197,3 +1197,18 @@
   imports its script inside the test body so mutmut's copied selection can
   collect without a `scripts` package. No source was added or acquired; the
   export remains synthetic and unpublished.
+
+### Cross-platform synthetic export probe (2026-10-11)
+
+- [~] Run the same Bronze-to-Platinum synthetic export handoff through clean
+  installed wheel and source-distribution consumers on Linux, macOS, and
+  Windows. Persist platform-specific qualification receipts in CI. This is
+  test-only platform coverage; it does not imply source completeness,
+  production admission, rights clearance, or publication.
+  The CI consumer job runs the existing medallion E2E through its pipeline,
+  API, and CLI stages, then writes its installed-consumer receipt to the
+  platform artifact path. Its browser subcheck is skipped because Chromium is
+  installed in the Linux E2E lane, which continues to cover the browser path.
+  Local macOS E2E emitted both wheel and sdist passes with an identical archive
+  digest; focused tests (27), routine, actionlint, context/ecosystem validators,
+  and diff checks pass. Hosted platform evidence is pending.

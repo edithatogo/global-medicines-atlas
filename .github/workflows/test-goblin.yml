@@ -425,15 +425,18 @@ jobs:
         run: >-
           uv run --python 3.14.6 pytest -q -n 2 --dist worksteal
           tests/test_stable_v1_release_candidate_reproducibility.py
-      - name: Qualify clean wheel and source-distribution consumers
+      - name: Synchronize environment for synthetic end-to-end consumer qualification
+        if: steps.scope.outputs.heavy == 'true'
+        run: uv sync --python 3.14.6 --group dev --locked
+      - name: Qualify exact synthetic Bronze-to-Platinum export on this platform
         if: steps.scope.outputs.heavy == 'true'
         env:
-          OUTPUT_PATH: build/quality-receipts/consumer-${{ matrix.platform }}.json
+          GMA_SYNTHETIC_EXPORT_CONSUMER_RECEIPT: build/quality-receipts/consumer-${{ matrix.platform }}.json
+          GMA_SKIP_SYNTHETIC_EXPORT_BROWSER: "1"
         shell: bash
         run: >-
-          uv run --python 3.14.6 --no-project python
-          scripts/qualify_clean_consumer.py
-          --output "$OUTPUT_PATH"
+          uv run --python 3.14.6 --group dev pytest -q
+          tests/test_medallion_e2e.py::test_synthetic_evidence_flows_from_bronze_to_platinum_query
       - name: Upload consumer qualification receipt
         if: steps.scope.outputs.heavy == 'true'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
