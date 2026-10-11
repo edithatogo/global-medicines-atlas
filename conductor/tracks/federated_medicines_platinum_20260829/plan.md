@@ -1107,6 +1107,23 @@
 
   PR #990 merged at `e52e3141526edb0baf004b3b12c6820bc60464a1` from exact head `c6846fcae20ba91dadd0929ddf21ba0d316af0e3`; the merge tree matches `abd906eef0ac0b319eeeec8e785f3a7431f67105`. All 38 reported check rows passed across 37 distinct contexts, including Codecov patch, full Python 3.14 E2E, coverage, mutation, and three consumer platforms. The review thread was resolved.
 
+- [x] Extend the installed wheel/sdist Chromium qualification through the
+  additive v2 comparison surface, independently rendering all five semantic
+  dimensions while retaining the v1 search, coverage, and provenance journey.
+  Synthetic unknown states preserve neutral no-assertion wording and do not
+  create a coverage denominator. The focused installed-artifact test passes
+  against both wheel and sdist; the seven-test Atlas E2E suite, routine,
+  context/ecosystem validation, Ruff, `ty`, BasedPyright, and diff checks pass.
+  No new sources, acquisitions, admissions, rights decisions, or coverage
+  claims are introduced. Exact-head hosted qualification is pending.
+
+- [x] Stabilize the existing history-page keyboard browser assertion after
+  exact-head Linux E2E showed the stylesheet had not finished loading before
+  computed-style inspection. The test now waits for the required skip-link
+  position; the isolated test passes locally. This is an E2E synchronization
+  fix and does not change product behavior. The complete affected browser
+  module passes (4 tests); routine, Ruff, formatting, and `ty` also pass.
+
 - [x] Reconcile the receipt after PR #986 merged at
   `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head
   `9d3a6ee9b84f184f67f891dcea370551465306b3`; all 38 reported checks passed,
