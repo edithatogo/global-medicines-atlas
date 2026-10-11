@@ -210,14 +210,19 @@
   See `quality/qualifications/federation-v4-strict-json-observation-20261006.json`.
 - [ ] Publish source-faithful Parquet, typed tables, graph edge/node tables,
   products, coverage, lineage, and promotions with v4 identities.
-- [~] Implement remote-first readers with bounded cache and offline behavior;
+- [x] Implement remote-first readers with bounded cache and offline behavior;
   verify local cache eviction cannot change content identity.
-  Runtime transport/cache slice in progress; only independently admitted v4
-  documents may be consumed. No live source acquisition or publication planned.
-  `2ed6d8d` (rebased from `78abde9`): 89 focused tests pass, reader 100% branch coverage; optional
-  installed-consumer import passes. Exact-head hosted qualification passed in
-  PR #375 (`5d4f382`, reviewed `96ac770`, all 38 checks passed).
-  Live admission/receipt integration remains pending.
+  The complete synthetic B1/Silver/Gold/Platinum journey verifies anonymous
+  remote reads against exact digest and byte count, exact offline cache replay,
+  fail-closed behavior after eviction without a request, and remote refetch with
+  unchanged digest and byte count. The existing MBS and PBS synthetic fixtures
+  were rerun locally (2 passed; one existing Starlette/httpx deprecation
+  warning). The broader journey records 136 affected tests and 31 governed E2E
+  tests passing; PR #840 merged at
+  `71d567f6e4a0346702a38000e9381f96438c97c2` after all 37 hosted checks passed.
+  No new sources, production source bytes, live admission, or publication were
+  involved. See the append-only reconciliation evidence entry. Live producer
+  admission and publication remain separate open tasks.
 - [ ] Phase Verification & Checkpoint: exact remote revisions reproduce all
   products and local storage is demonstrably transient.
 
