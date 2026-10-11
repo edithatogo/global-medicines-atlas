@@ -1215,5 +1215,9 @@
   `476adb7aab3721214562f44d551080eca44f01bb` after all 38 reported check rows
   and 37 distinct contexts passed. Linux, macOS, and Windows platform receipts
   each show both wheel and sdist verifiers passed with the same export digest.
-  The separate Linux E2E lane continues to cover Chromium. No source was added
-  or acquired; the export remains synthetic and unpublished.
+  The separate Linux E2E lane continues to cover Chromium. Following Codex
+  review, all three hosted receipt JSON files were preserved under
+  `receipts/cross-platform-export-probe/` with their content hashes in the
+  append-only evidence record; this remains verifiable after the hosted
+  artifacts expire. No source was added or acquired; the export remains
+  synthetic and unpublished.
