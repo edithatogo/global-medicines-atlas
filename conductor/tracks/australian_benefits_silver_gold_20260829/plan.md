@@ -791,13 +791,18 @@
   `adc2c297056e996fb75b52f3293af65a0a5450bb`; all 40 reported hosted check
   rows passed. No reviewer identity, authority, adjudication, promotion,
   source, licensing conclusion, or publication is created or inferred.
-- [~] Remove caller-asserted event IDs as a route to clear Gold review cases.
+- [x] Remove caller-asserted event IDs as a route to clear Gold review cases.
   No independent authority verifier exists, so the review-queue library now
   keeps every case pending regardless of caller-supplied terminal events. A
   failing-first regression confirmed that arbitrary event IDs could previously
-  make a case disappear; hosted qualification is pending. No reviewer
-  identity, authority, adjudication, promotion, source, licensing conclusion,
-  or publication is created or inferred.
+  make a case disappear. Focused Gold/API/synthetic MBS-PBS E2E passed (25).
+  Full local Test-Goblin passed 6,222 tests and 96.89% coverage apart from two
+  existing stable-v1 toolchain tests that passed on rerun with pinned uv
+  0.11.29; 3 optional integrations were skipped. PR #1020 merged at exact head
+  `bc90b25e4fe98244e9f0813fc7e7cd999e3a8389` as
+  `dda9bae85026f91d9f43c321aced1532d0011960`; all 40 hosted check rows passed.
+  This does not create reviewer authority, adjudication, promotion, source,
+  licensing conclusion, or publication.
 
 ### Platinum PBS edge readback coverage (2026-10-09)
 
