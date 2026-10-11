@@ -18,6 +18,13 @@ _OXIGRAPH_RECEIPT = (
 _OXIGRAPH_RECEIPT_SHA256 = (
     "95ecdfdcf3b16efa86065a241b24b0498940ee61c1b1fbb00eefabbfc1f2c746"
 )
+_OXIGRAPH_RDF12_RECEIPT = (
+    Path(__file__).parents[1]
+    / "quality/qualifications/oxigraph-rdf12-synthetic-graph-parity-20261012.json"
+)
+_OXIGRAPH_RDF12_RECEIPT_SHA256 = (
+    "892e1d89ef45c864c8169eeeb44d7684450ea12d5fb05fecee8c4c03f7ec0004"
+)
 
 
 class _Response:
@@ -119,6 +126,45 @@ def test_committed_oxigraph_receipt_pins_synthetic_engine_parity() -> None:
     assert receipt["engine_image_digest"] == (
         "sha256:af35499a41f8c9768a43b2c31d0f32726dd6ec20855653dfa07814c5dce13565"
     )
+    assert receipt["disposition"] == "retain-preview"
+    assert receipt["source_scope"] == "synthetic-mbs-pbs-only"
+    assert receipt["source_payloads_accessed"] is False
+    assert receipt["rights_clearance_claimed"] is False
+    assert receipt["production_authority_promoted"] is False
+    cases = cast("dict[str, object]", receipt["cases"])
+    for family, expected in {"mbs": (4, 2), "pbs": (10, 9)}.items():
+        case = cast("dict[str, object]", cases[family])
+        assert (case["node_count"], case["edge_count"]) == expected
+        assert case["exact_payload_and_direction_parity"] is True
+
+
+def test_committed_oxigraph_rdf12_receipt_pins_current_engine_parity() -> None:
+    document = json.loads(_OXIGRAPH_RDF12_RECEIPT.read_text(encoding="utf-8"))
+    assert isinstance(document, dict)
+    receipt = cast("dict[str, object]", document)
+    embedded_digest = receipt.pop("receipt_sha256")
+    canonical = json.dumps(
+        receipt,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("utf-8")
+
+    assert (
+        embedded_digest
+        == "f2e1b0d38f07d01828367937066673670507f3d2099a274ce441f3fb7ab7c0ab"
+    )
+    assert sha256(canonical).hexdigest() == embedded_digest
+    assert sha256(_OXIGRAPH_RDF12_RECEIPT.read_bytes()).hexdigest() == (
+        _OXIGRAPH_RDF12_RECEIPT_SHA256
+    )
+    assert receipt["engine"] == "oxigraph"
+    assert receipt["engine_version"] == "0.5.9"
+    assert receipt["engine_image_digest"] == (
+        "sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e"
+    )
+    assert receipt["api"] == "sparql-1.1-protocol-rdf-1.2"
     assert receipt["disposition"] == "retain-preview"
     assert receipt["source_scope"] == "synthetic-mbs-pbs-only"
     assert receipt["source_payloads_accessed"] is False

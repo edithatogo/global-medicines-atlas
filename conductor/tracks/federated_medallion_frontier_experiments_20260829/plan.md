@@ -319,8 +319,12 @@
 - [x] Add and execute an RDF 1.2 projection on digest-pinned Oxigraph 0.5.9,
   retaining the RDF-star 0.4.11 receipt as legacy evidence. The projection
   uses `rdf:reifies` with a triple term and explicit source/target properties
-  for SPARQL 1.1 readback. Local RDF parsing and HTTP parity pass; hosted proof
-  and review resolution remain pending.
+  for SPARQL 1.1 readback. Local and hosted exact parity passed on Oxigraph
+  0.5.9. The checksummed receipt is
+  `quality/qualifications/oxigraph-rdf12-synthetic-graph-parity-20261012.json`
+  (file SHA-256 `892e1d89ef45c864c8169eeeb44d7684450ea12d5fb05fecee8c4c03f7ec0004`);
+  PR #1014 hosted run `38150870366`, graph job `114503877641`. The review
+  thread is resolved; full required checks remain in progress.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
   RDF-star preview projections from the same Gold node/edge tables. Local
