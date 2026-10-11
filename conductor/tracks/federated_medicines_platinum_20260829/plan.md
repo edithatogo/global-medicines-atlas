@@ -1085,6 +1085,9 @@
   acquisition, or coverage claim changed. A P2 review finding tightened the
   stylesheet and script checks to require HTTP 200 rather than response-event
   presence; the corrected focused journey and routine checks pass.
+  PR #988 merged as `78b7d08a942ca700a208aea3a878db9b6d222bb5` from qualified
+  head `a7f9b27c23b958dce514b5ae0fbeddf23ad86924`; all 39 reported checks
+  passed, and the merge tree matches the qualified head tree.
 
 - [x] Reconcile the receipt after PR #986 merged at
   `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head
