@@ -284,7 +284,10 @@
   the integration test is registered in the hosted Neo4j lane because no local
   Docker service is available. The lane emits a checksummed metadata-only
   retain-preview receipt. Hosted engine execution is pending; no sources,
-  source bytes, rights conclusions, or promotion are included.
+  source bytes, rights conclusions, or promotion are included. Hosted
+  regeneration initially rejected the new job as an unregistered workflow
+  change; the exact job inventory is now updated and the regeneration profile
+  passes twice in opposite order (184 tests each).
 - [ ] Confirm the intended failure before implementation.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and

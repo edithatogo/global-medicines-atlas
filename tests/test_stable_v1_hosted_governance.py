@@ -197,6 +197,7 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
         "governed-recovery",
         "operational-exercises",
         "iceberg-rest-interoperability",
+        "neo4j-synthetic-graph-parity",
         "public-parquet-iceberg-registration",
         "ducklake-comparison",
         "free-tier-git-mechanics",
