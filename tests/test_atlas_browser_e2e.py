@@ -560,6 +560,20 @@ def test_atlas_history_reflows_at_320_css_pixels() -> None:
             assert table_region.evaluate(
                 "element => element.scrollWidth > element.clientWidth"
             )
+            table_region.focus()
+            initial_scroll_left = table_region.evaluate(
+                "element => element.scrollLeft"
+            )
+            table_region.press("ArrowRight")
+            keyboard_scroll_left = table_region.evaluate(
+                "element => element.scrollLeft"
+            )
+            assert keyboard_scroll_left > initial_scroll_left
+            table_region.press("ArrowLeft")
+            assert (
+                table_region.evaluate("element => element.scrollLeft")
+                < keyboard_scroll_left
+            )
         finally:
             browser.close()
 

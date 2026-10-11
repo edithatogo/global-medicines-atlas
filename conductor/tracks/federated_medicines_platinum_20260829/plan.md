@@ -972,8 +972,11 @@
 - [x] Verify the comparison and historical views at 320 CSS pixels in
   Chromium. The document stays within the viewport while the wide historical
   source-identity table remains keyboard-scrollable in its labelled region.
-  The affected browser/accessibility modules pass (8), the governed E2E lane
-  passes (56), and the routine profile passes. This adds no source or runtime
-  behavior and verifies one responsive property; it does not establish full
-  WCAG conformance or representative-user acceptance. Test commit
-  `4fa8a586ba699b8fa9c572eb9bb4da18fc4072ed`.
+  The initial regression test verified focus and overflow; PR review then
+  found Chromium arrow keys did not move the table. A scoped keyboard handler
+  now moves only the focused history table region, and the browser test verifies
+  both rightward and leftward scrolling. (Initial test commit
+  `4fa8a586ba699b8fa9c572eb9bb4da18fc4072ed`; the keyboard fix and local
+  verification are recorded in follow-up evidence, with hosted validation
+  pending.) This verifies one responsive and keyboard interaction property; it
+  does not establish full WCAG conformance or representative-user acceptance.
