@@ -306,6 +306,13 @@
     checkpoint. PR #953 merged as `f6581ec68ee1d8f5a971ee0469e8e013c1f51be8`
     after all 28 required contexts and 38 reported check runs passed; its tree
     matches the qualified head. The 64 affected tests and routine profile pass.
+  - [x] Carry the admitted synthetic MBS benefits query through the production
+    FastAPI route over an ephemeral loopback socket. Assert the API page's exact
+    source/revision/path/object digest, semantic dimension, evidence
+    granularity, conservative coverage/comparison states, and exact anonymous
+    metadata/object reads. This closes the in-process-only transport seam for
+    this synthetic API result, not the broader all-result-types checkpoint or
+    live admission/production qualification.
 
 ### Deterministic Gold review-queue CLI (2026-10-10)
 

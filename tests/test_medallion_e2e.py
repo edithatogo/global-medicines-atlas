@@ -2035,6 +2035,16 @@ def _query_synthetic_platinum(
                 f"/datasets/{binding.dataset}/resolve/{binding.revision}/"
                 f"{binding.object.path}"
             )
+            if monkeypatch is not None and tmp_path is not None:
+                requests.clear()
+                _exercise_loopback_benefits_api(
+                    resolver,
+                    binding,
+                    resource_id,
+                    receipt.source.source_id,
+                    columns,
+                    requests,
+                )
 
             atlas = TestClient(
                 create_atlas_app(
@@ -2115,6 +2125,59 @@ def _query_synthetic_platinum(
             )
             assert len(requests) == 4
         return result
+
+
+def _exercise_loopback_benefits_api(
+    resolver: StorageNeutralResolver,
+    binding: DistributionBinding,
+    resource_id: str,
+    source_id: str,
+    columns: tuple[str, ...],
+    requests: list[httpx.Request],
+) -> None:
+    """Query admitted synthetic benefits through real loopback HTTP."""
+    resolver.evict()
+    app = create_app(
+        cast("ReadOnlyQueryService", object()),
+        benefits=BenefitsService(
+            resolver,
+            cursor_key=b"synthetic-e2e-loopback-api-cursor-key",
+        ),
+    )
+    with (
+        serve_asgi_on_loopback(app) as base_url,
+        httpx.Client(base_url=base_url) as client,
+    ):
+        response = client.get(
+            f"/api/v1/benefits/{resource_id}",
+            params=[("columns", column) for column in columns]
+            + [("limit", "1")],
+        )
+        assert response.status_code == 200
+        page = response.json()
+        assert page["status"] == "available"
+        assert page["rows"] == [
+            {"kind": "source_record_has_benefit", "inferred": False}
+        ]
+        assert page["identity"]["source_id"] == source_id
+        assert page["identity"]["revision"] == binding.revision
+        assert page["identity"]["path"] == binding.object.path
+        assert page["identity"]["object_sha256"] == binding.object.sha256
+        assert page["identity"]["semantic_dimension"] == "service_benefit"
+        assert page["identity"]["entity_granularity"] == "evidence_edge"
+        assert page["coverage_state"] == "not_declared"
+        assert page["comparison_validity"] == "not_evaluated"
+        assert page["page_sha256"]
+        assert page["window_sha256"]
+        assert [request.url.path for request in requests] == [
+            f"/api/datasets/{binding.dataset}/revision/{binding.revision}",
+            (
+                f"/datasets/{binding.dataset}/resolve/{binding.revision}/"
+                f"{binding.object.path}"
+            ),
+        ]
+    requests.clear()
+    resolver.evict()
 
 
 def _exercise_loopback_federated_atlas(
