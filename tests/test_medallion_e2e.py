@@ -895,6 +895,29 @@ def _assert_b2_manifest_binds_payload(
     assert record.payload_sha256 == hashlib.sha256(payload).hexdigest()
     assert record.byte_count == len(payload)
     assert record.payload_contents_in_metadata is False
+    serialized_manifest = landing.raw_evidence_manifest_path.read_bytes()
+    _assert_b2_manifest_excludes_payload(
+        serialized_manifest,
+        payload=payload,
+        payload_path=landing.payload_path,
+    )
+    with pytest.raises(AssertionError):
+        _assert_b2_manifest_excludes_payload(
+            serialized_manifest + payload,
+            payload=payload,
+            payload_path=landing.payload_path,
+        )
+
+
+def _assert_b2_manifest_excludes_payload(
+    serialized_manifest: bytes,
+    *,
+    payload: bytes,
+    payload_path: Path,
+) -> None:
+    """Reject raw B2 bytes or a workstation path in serialized metadata."""
+    assert payload not in serialized_manifest
+    assert str(payload_path).encode() not in serialized_manifest
 
 
 def _assert_projection_rejects_embedded_b2(
