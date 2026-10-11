@@ -35,10 +35,12 @@ def _run(command: list[str], *, environment: Path | None = None) -> str:
     completed = subprocess.run(
         [executable, *command[1:]],
         cwd=ROOT,
-        check=True,
+        check=False,
         capture_output=True,
         text=True,
     )
+    if completed.returncode:
+        raise RuntimeError(f"{command[0]} failed ({completed.returncode})")
     return completed.stdout.strip()
 
 
@@ -68,10 +70,34 @@ schema = app.openapi()
 baseline = json.loads(Path(__BASELINE__).read_text(encoding='utf-8'))
 assert_openapi_compatible(baseline, schema)
 assert __version__ == identity.version
+assert importlib.util.find_spec('jsonschema') is None
 assert importlib.util.find_spec('lancedb') is None
 print(json.dumps({'metadata': identity.__dict__, 'openapi_paths': len(schema['paths']), 'api': 'passed', 'core_fallback': 'passed'}, sort_keys=True))
 """
     return template.replace("__BASELINE__", repr(str(BASELINE)))
+
+
+def _atlas_probe() -> str:
+    """Exercise Atlas templates and assets after installing federation extra."""
+    return """
+import asyncio
+import json
+import httpx
+from typing import cast
+from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
+atlas = create_atlas_app(cast(AtlasQueryService, object()))
+async def request_atlas():
+    transport = httpx.ASGITransport(app=atlas)
+    async with httpx.AsyncClient(transport=transport, base_url='http://atlas') as client:
+        return await client.get('/'), await client.get('/static/atlas.css')
+page, stylesheet = asyncio.run(request_atlas())
+assert page.status_code == 200
+assert 'Global Medicines Atlas' in page.text
+assert '/static/atlas.css' in page.text
+assert stylesheet.status_code == 200
+assert '--ink:' in stylesheet.text
+print(json.dumps({'atlas_page': 'passed', 'atlas_static_asset': 'passed'}, sort_keys=True))
+"""
 
 
 def qualify(output: Path) -> dict[str, Any]:
@@ -98,7 +124,7 @@ def qualify(output: Path) -> dict[str, Any]:
                 str(environment),
                 str(artifact),
             ])
-            probe = json.loads(
+            core_probe = json.loads(
                 _run(
                     ["python", "-c", _consumer_probe()], environment=environment
                 )
@@ -110,8 +136,20 @@ def qualify(output: Path) -> dict[str, Any]:
                 "install",
                 "--python",
                 str(environment),
+                f"{artifact}[federation]",
+            ])
+            atlas_probe = json.loads(
+                _run(["python", "-c", _atlas_probe()], environment=environment)
+            )
+            probe = {**core_probe, **atlas_probe}
+            _run([
+                "uv",
+                "pip",
+                "install",
+                "--python",
+                str(environment),
                 "--reinstall",
-                str(artifact),
+                f"{artifact}[federation]",
             ])
             _run(
                 ["python", "-c", "import global_medicines_atlas"],

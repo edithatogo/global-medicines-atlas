@@ -1045,3 +1045,24 @@
   tree `61796d8b94b7b180fd580c6b74017a88d61d3770`. No source, acquisition,
   coverage claim, admission, publication, or consequential claim was added;
   WCAG conformance and representative-user acceptance remain open.
+
+### Installed Atlas distribution journey (2026-10-11)
+
+- [~] Extend the clean wheel and source-distribution consumer gate beyond API
+  and CLI startup: retain the default core-fallback probe, install the declared
+  `federation` extra, and request the installed Atlas root page and packaged
+  stylesheet over HTTP. Initial probe execution exposed the intended optional
+  dependency boundary (`jsonschema` belongs to `federation`); the qualification
+  therefore preserves the base core-fallback check before installing that
+  declared extra. Wheel and sdist consumers both pass Atlas, CSS, API, CLI, and
+  reinstall checks. The pinned `uv 0.11.29` full Test-Goblin profile passed:
+  6,189 passed, one optional PyIceberg skip, 96.89% coverage, 355 Gremlins,
+  2,338 mutation cases, both randomized orders (184 each), profiling, and
+  security with no findings. An initial run with ambient `uv 0.13.0` failed
+  only two pre-existing reproducibility tests that enforce the pinned uv; the
+  complete rerun with pinned uv passed. PR review then identified that the
+  core probe ran after optional-extra installation; it is being split so the
+  core fallback runs first and proves `jsonschema` absent before the Atlas probe
+  installs `federation`. Re-run focused package and routine checks, reconcile
+  the review thread, and await fresh protected cross-platform checks before
+  completing this task.
