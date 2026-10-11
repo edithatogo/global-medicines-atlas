@@ -259,7 +259,10 @@
   projections. The affected suites pass (22); routine, lint, format, typing,
   and repository checks pass. This closes the portable-projection test gap for
   the two existing Gold families only; live Neo4j/SPARQL execution and the
-  broader rights-content review remain open.
+  broader rights-content review remain open. PR #964 merged from exact head
+  `d12243667ccb73bfb54a85cb76b510fc1d3d34c9` at
+  `f81fbaf01264e935788724c6ffea1cfceea689f5`; its tree matches the qualified
+  head tree, and all 28 distinct required contexts passed.
 - [ ] Confirm the intended failure before implementation.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
