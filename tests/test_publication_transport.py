@@ -13,6 +13,7 @@ from global_medicines_atlas.publication_transport import (
     APPROVAL_VALUE,
     PRODUCTION_ENVIRONMENT,
     ArtifactBinding,
+    ArtifactVerification,
     PublicationAuthorization,
     PublicationDestination,
     PublicationPlan,
@@ -22,7 +23,9 @@ from global_medicines_atlas.publication_transport import (
     assert_external_write_authorized,
     authorization_from_environment,
     bind_artifacts,
+    execute_publication,
     prepare_publication,
+    verify_publication,
 )
 
 NOW = datetime(2026, 7, 29, 12, tzinfo=UTC)
@@ -230,7 +233,18 @@ def test_uploaded_public_and_failed_receipts_are_distinct() -> None:
     public = PublicationTransportReceipt(
         **receipt_payload(PublicationTransportState.PUBLIC),
         remote_revision="commit-123",
-        verification_uri="https://huggingface.co/datasets/owner/repo",
+        verification_uri=(f"{target().public_base_url}/tree/commit-123"),
+        verified_artifacts=(
+            ArtifactVerification(
+                relative_path="data/a.parquet",
+                sha256=DIGEST_A,
+                size=3,
+                verification_uri=(
+                    "https://huggingface.co/datasets/owner/repo/resolve/"
+                    "commit-123/data/a.parquet"
+                ),
+            ),
+        ),
     )
     failed = PublicationTransportReceipt(
         **receipt_payload(PublicationTransportState.VERIFICATION_FAILED),
@@ -241,6 +255,204 @@ def test_uploaded_public_and_failed_receipts_are_distinct() -> None:
         PublicationTransportState.PUBLIC,
         PublicationTransportState.VERIFICATION_FAILED,
     }
+
+
+class _VerifiedUploader:
+    def __init__(self) -> None:
+        self.calls: list[str] = []
+
+    def upload_folder(
+        self,
+        *,
+        repository: str,
+        folder: Path,
+        commit_message: str,
+    ) -> str:
+        del folder, commit_message
+        self.calls.append(repository)
+        return "commit-123"
+
+    def verify_artifact(
+        self,
+        *,
+        target: PublicationTarget,
+        revision: str,
+        artifact: ArtifactBinding,
+    ) -> ArtifactVerification:
+        return ArtifactVerification(
+            relative_path=artifact.relative_path,
+            sha256=artifact.sha256,
+            size=artifact.size,
+            verification_uri=(
+                f"{target.public_base_url}/resolve/{revision}/"
+                f"{artifact.relative_path}"
+            ),
+        )
+
+
+def test_upload_receipt_is_not_public_until_anonymous_digest_verification(
+    tmp_path: Path,
+) -> None:
+    artifact_path = tmp_path / "data" / "a.parquet"
+    artifact_path.parent.mkdir()
+    artifact_path.write_bytes(b"abc")
+    prepared, _ = prepare_publication(
+        root=tmp_path,
+        release_version="0.7.0",
+        target=target(),
+        relative_paths=("data/a.parquet",),
+        recorded_at=NOW,
+    )
+    uploader = _VerifiedUploader()
+    uploaded = execute_publication(
+        plan=prepared,
+        authorization=PublicationAuthorization(
+            environment=PRODUCTION_ENVIRONMENT,
+            maintainer_approval=APPROVAL_VALUE,
+        ),
+        root=tmp_path,
+        uploader=uploader,
+        recorded_at=NOW,
+    )
+    assert uploaded.state is PublicationTransportState.UPLOADED
+
+    published = verify_publication(
+        plan=prepared,
+        uploaded_receipt=uploaded,
+        verifier=uploader,
+        recorded_at=NOW,
+    )
+
+    assert published.state is PublicationTransportState.PUBLIC
+    assert len(published.verified_artifacts) == 1
+    assert (
+        published.verified_artifacts[0].sha256 == prepared.artifacts[0].sha256
+    )
+    assert published.verified_artifacts[0].size == 3
+
+
+def test_publication_remains_unverified_when_anonymous_digest_differs(
+    tmp_path: Path,
+) -> None:
+    artifact_path = tmp_path / "data" / "a.parquet"
+    artifact_path.parent.mkdir()
+    artifact_path.write_bytes(b"abc")
+    prepared, _ = prepare_publication(
+        root=tmp_path,
+        release_version="0.7.0",
+        target=target(),
+        relative_paths=("data/a.parquet",),
+        recorded_at=NOW,
+    )
+    uploader = _VerifiedUploader()
+    uploaded = execute_publication(
+        plan=prepared,
+        authorization=PublicationAuthorization(
+            environment=PRODUCTION_ENVIRONMENT,
+            maintainer_approval=APPROVAL_VALUE,
+        ),
+        root=tmp_path,
+        uploader=uploader,
+        recorded_at=NOW,
+    )
+
+    class _WrongDigestVerifier(_VerifiedUploader):
+        def verify_artifact(
+            self,
+            *,
+            target: PublicationTarget,
+            revision: str,
+            artifact: ArtifactBinding,
+        ) -> ArtifactVerification:
+            verification = super().verify_artifact(
+                target=target, revision=revision, artifact=artifact
+            )
+            return verification.model_copy(update={"sha256": DIGEST_B})
+
+    failed = verify_publication(
+        plan=prepared,
+        uploaded_receipt=uploaded,
+        verifier=_WrongDigestVerifier(),
+        recorded_at=NOW,
+    )
+
+    assert failed.state is PublicationTransportState.VERIFICATION_FAILED
+    assert failed.verified_artifacts == ()
+
+
+def test_publication_rejects_anonymous_readback_for_another_object(
+    tmp_path: Path,
+) -> None:
+    artifact_path = tmp_path / "data" / "a.parquet"
+    artifact_path.parent.mkdir()
+    artifact_path.write_bytes(b"abc")
+    prepared, _ = prepare_publication(
+        root=tmp_path,
+        release_version="0.7.0",
+        target=target(),
+        relative_paths=("data/a.parquet",),
+        recorded_at=NOW,
+    )
+    uploader = _VerifiedUploader()
+    uploaded = execute_publication(
+        plan=prepared,
+        authorization=PublicationAuthorization(
+            environment=PRODUCTION_ENVIRONMENT,
+            maintainer_approval=APPROVAL_VALUE,
+        ),
+        root=tmp_path,
+        uploader=uploader,
+        recorded_at=NOW,
+    )
+
+    class _WrongObjectVerifier(_VerifiedUploader):
+        def verify_artifact(
+            self,
+            *,
+            target: PublicationTarget,
+            revision: str,
+            artifact: ArtifactBinding,
+        ) -> ArtifactVerification:
+            verification = super().verify_artifact(
+                target=target, revision=revision, artifact=artifact
+            )
+            return verification.model_copy(
+                update={
+                    "verification_uri": (
+                        "https://huggingface.co/datasets/owner/another/"
+                        "resolve/commit-123/data/a.parquet"
+                    )
+                }
+            )
+
+    failed = verify_publication(
+        plan=prepared,
+        uploaded_receipt=uploaded,
+        verifier=_WrongObjectVerifier(),
+        recorded_at=NOW,
+    )
+
+    assert failed.state is PublicationTransportState.VERIFICATION_FAILED
+
+
+def test_public_receipt_verification_url_binds_its_exact_revision() -> None:
+    with pytest.raises(ValidationError, match="exact target revision"):
+        PublicationTransportReceipt(
+            **receipt_payload(PublicationTransportState.PUBLIC),
+            remote_revision="commit-123",
+            verification_uri="https://huggingface.co/datasets/other/repo/tree/commit-123",
+            verified_artifacts=(
+                ArtifactVerification(
+                    relative_path="data/a.parquet",
+                    sha256=DIGEST_A,
+                    size=3,
+                    verification_uri=(
+                        f"{target().public_base_url}/resolve/"
+                        "commit-123/data/a.parquet"
+                    ),
+                ),
+            ),
+        )
 
 
 def test_receipt_rejects_duplicate_artifact_digests() -> None:
@@ -307,6 +519,47 @@ def test_prepare_publication_binds_plan_and_receipt(tmp_path: Path) -> None:
         item.sha256 for item in prepared_plan.artifacts
     )
     assert receipt.state is PublicationTransportState.PREPARED
+
+
+def test_prepare_publication_rejects_unbound_root_files(tmp_path: Path) -> None:
+    (tmp_path / "artifact.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "unbound.json").write_text('{"secret":false}', encoding="utf-8")
+    with pytest.raises(ValueError, match="bind every file"):
+        prepare_publication(
+            root=tmp_path,
+            release_version="0.7.0",
+            target=target(),
+            relative_paths=("artifact.json",),
+            recorded_at=NOW,
+        )
+
+
+def test_upload_rejects_files_added_after_preparation(tmp_path: Path) -> None:
+    (tmp_path / "artifact.json").write_text("{}", encoding="utf-8")
+    prepared, _ = prepare_publication(
+        root=tmp_path,
+        release_version="0.7.0",
+        target=target(),
+        relative_paths=("artifact.json",),
+        recorded_at=NOW,
+    )
+    (tmp_path / "unbound.json").write_text('{"secret":false}', encoding="utf-8")
+    uploader = _VerifiedUploader()
+
+    receipt = execute_publication(
+        plan=prepared,
+        authorization=PublicationAuthorization(
+            environment=PRODUCTION_ENVIRONMENT,
+            maintainer_approval=APPROVAL_VALUE,
+        ),
+        root=tmp_path,
+        uploader=uploader,
+        recorded_at=NOW,
+    )
+
+    assert receipt.state is PublicationTransportState.VERIFICATION_FAILED
+    assert receipt.failure_reason is not None
+    assert uploader.calls == []
 
 
 def test_preparation_script_emits_local_dry_run_only(tmp_path: Path) -> None:

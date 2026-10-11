@@ -45,6 +45,8 @@ from global_medicines_atlas.data_layer_archive import (
 from global_medicines_atlas.publication_transport import (
     APPROVAL_VALUE,
     PRODUCTION_ENVIRONMENT,
+    ArtifactBinding,
+    ArtifactVerification,
     PublicationAuthorization,
     PublicationDestination,
     PublicationTarget,
@@ -52,6 +54,7 @@ from global_medicines_atlas.publication_transport import (
     assert_external_write_authorized,
     execute_publication,
     prepare_publication,
+    verify_publication,
 )
 from global_medicines_atlas.source_catalog import (
     MedicineDataSource,
@@ -77,6 +80,23 @@ class _FakeUploader:
     ) -> str:
         self.calls.append((repository, folder, commit_message))
         return self.revision
+
+    def verify_artifact(
+        self,
+        *,
+        target: PublicationTarget,
+        revision: str,
+        artifact: ArtifactBinding,
+    ) -> ArtifactVerification:
+        return ArtifactVerification(
+            relative_path=artifact.relative_path,
+            sha256=artifact.sha256,
+            size=artifact.size,
+            verification_uri=(
+                f"{target.public_base_url}/resolve/{revision}/"
+                f"{artifact.relative_path}"
+            ),
+        )
 
 
 def _completed(
@@ -257,7 +277,7 @@ def test_prepared_archive_upload_requires_dual_authorization(
         )
 
 
-def test_authorized_upload_records_public_receipt_without_secrets(
+def test_authorized_upload_records_verified_public_receipt_without_secrets(
     tmp_path: Path,
 ) -> None:
     package = build_data_layer_archive(ROOT, tmp_path / "archive")
@@ -270,7 +290,7 @@ def test_authorized_upload_records_public_receipt_without_secrets(
         recorded_at=NOW,
     )
     uploader = _FakeUploader("deadbeefcafebabe")
-    receipt = execute_publication(
+    uploaded = execute_publication(
         plan=plan,
         authorization=PublicationAuthorization(
             environment=PRODUCTION_ENVIRONMENT,
@@ -280,7 +300,15 @@ def test_authorized_upload_records_public_receipt_without_secrets(
         uploader=uploader,
         recorded_at=NOW,
     )
+    assert uploaded.state is PublicationTransportState.UPLOADED
+    receipt = verify_publication(
+        plan=plan,
+        uploaded_receipt=uploaded,
+        verifier=uploader,
+        recorded_at=NOW,
+    )
     assert receipt.state is PublicationTransportState.PUBLIC
+    assert len(receipt.verified_artifacts) == len(plan.artifacts)
     assert receipt.remote_revision == "deadbeefcafebabe"
     assert receipt.verification_uri == (
         "https://huggingface.co/datasets/"
@@ -438,6 +466,90 @@ def test_cli_uploader_and_revision_probe_fail_closed(
             repository=CATALOGUE_REPOSITORY,
             folder=tmp_path,
             commit_message="archive",
+        )
+
+
+def test_anonymous_artifact_verifier_checks_exact_bytes_without_auth() -> None:
+    requests: list[httpx.Request] = []
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        requests.append(request)
+        return httpx.Response(200, content=b"public bytes")
+
+    verifier = archive_mod.HuggingFaceAnonymousArtifactVerifier(
+        transport_factory=lambda: httpx.MockTransport(respond)
+    )
+    published_target = PublicationTarget(
+        destination=PublicationDestination.HUGGING_FACE,
+        repository=CATALOGUE_REPOSITORY,
+        revision="archive-v1",
+        public_base_url=(
+            "https://huggingface.co/datasets/"
+            "edithatogo/global-medicines-atlas-catalogue"
+        ),
+    )
+    payload = b"public bytes"
+    expected = ArtifactBinding(
+        relative_path="products/query result.json",
+        sha256=hashlib.sha256(payload).hexdigest(),
+        size=len(payload),
+    )
+
+    verified = verifier.verify_artifact(
+        target=published_target,
+        revision="ab" * 20,
+        artifact=expected,
+    )
+
+    assert verified.sha256 == expected.sha256
+    assert verified.size == expected.size
+    assert "/resolve/" + "ab" * 20 + "/products/query%20result.json" in (
+        verified.verification_uri
+    )
+    assert len(requests) == 1
+    assert "authorization" not in requests[0].headers
+    assert "cookie" not in requests[0].headers
+
+
+def test_anonymous_artifact_verifier_rejects_digest_mismatch() -> None:
+    verifier = archive_mod.HuggingFaceAnonymousArtifactVerifier(
+        transport_factory=lambda: httpx.MockTransport(
+            lambda _request: httpx.Response(200, content=b"wr0ng!!!")
+        )
+    )
+    published_target = PublicationTarget(
+        destination=PublicationDestination.HUGGING_FACE,
+        repository=CATALOGUE_REPOSITORY,
+        revision="archive-v1",
+        public_base_url=(
+            "https://huggingface.co/datasets/"
+            "edithatogo/global-medicines-atlas-catalogue"
+        ),
+    )
+    expected = ArtifactBinding(
+        relative_path="manifest.json",
+        sha256=hashlib.sha256(b"expected").hexdigest(),
+        size=len(b"expected"),
+    )
+
+    with pytest.raises(ValueError, match="digest mismatch"):
+        verifier.verify_artifact(
+            target=published_target,
+            revision="ab" * 20,
+            artifact=expected,
+        )
+
+
+@pytest.mark.parametrize(
+    "timeout_seconds",
+    [True, 0, -1, float("nan"), float("inf")],
+)
+def test_anonymous_artifact_verifier_requires_finite_timeout(
+    timeout_seconds: float,
+) -> None:
+    with pytest.raises(ValueError, match="finite and positive"):
+        archive_mod.HuggingFaceAnonymousArtifactVerifier(
+            timeout_seconds=timeout_seconds
         )
 
 
@@ -853,6 +965,9 @@ def test_archive_workflow_is_sha_pinned_and_covers_four_authorities() -> None:
     assert HUGGINGFACE_HUB_PIN in workflow
     publish_at = workflow.index("Publish to Hugging Face")
     assert "--upload" in workflow[publish_at:]
+    assert "--receipt-output build/publication-receipt.json" in workflow
+    assert "Upload publication verification receipt" in workflow
+    assert "name: data-layer-publication-receipt" in workflow
     package_block = workflow[:publish_at]
     assert "--upload" not in package_block
     assert "vendor/nzmedicines" not in workflow
@@ -869,4 +984,17 @@ def test_data_layer_cli_rejects_local_dataset_upload(
             str(tmp_path),
             "--skip-build",
             "--upload",
+        ])
+
+
+def test_publication_receipt_must_be_outside_uploaded_archive(
+    tmp_path: Path,
+) -> None:
+    archive = tmp_path / "archive"
+    with pytest.raises(ValueError, match="outside the uploaded archive"):
+        archive_script.main([
+            "--output-dir",
+            str(archive),
+            "--receipt-output",
+            str(archive / "publication-receipt.json"),
         ])

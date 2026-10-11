@@ -9,6 +9,7 @@ from datetime import datetime
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import Annotated, Protocol, Self
+from urllib.parse import quote, urlsplit
 
 from pydantic import (
     AwareDatetime,
@@ -77,6 +78,35 @@ class ArtifactBinding(PublicationTransportModel):
             or value != path.as_posix()
         ):
             raise ValueError("artifact path must be normalized, relative POSIX")
+        return value
+
+
+class ArtifactVerification(PublicationTransportModel):
+    """Anonymous exact-object readback for one published artifact."""
+
+    relative_path: NonBlank
+    sha256: Sha256
+    size: int = Field(ge=0)
+    verification_uri: NonBlank
+
+    @field_validator("relative_path")
+    @classmethod
+    def path_is_safe(cls, value: str) -> str:
+        return ArtifactBinding.path_is_safe(value)
+
+    @field_validator("verification_uri")
+    @classmethod
+    def verification_uri_is_public_https(cls, value: str) -> str:
+        parsed = urlsplit(value)
+        if parsed.scheme != "https" or not parsed.hostname:
+            raise ValueError("artifact verification URI must be public HTTPS")
+        if (
+            parsed.username is not None
+            or parsed.password is not None
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise ValueError("artifact verification URI must be public HTTPS")
         return value
 
 
@@ -172,6 +202,7 @@ class PublicationTransportReceipt(PublicationTransportModel):
     remote_revision: NonBlank | None = None
     verification_uri: NonBlank | None = None
     failure_reason: NonBlank | None = None
+    verified_artifacts: tuple[ArtifactVerification, ...] = ()
 
     @model_validator(mode="after")
     def state_has_required_evidence(self) -> Self:
@@ -180,25 +211,59 @@ class PublicationTransportReceipt(PublicationTransportModel):
         has_remote = self.remote_revision is not None
         has_verification = self.verification_uri is not None
         has_failure = self.failure_reason is not None
+        has_verified_artifacts = bool(self.verified_artifacts)
         if self.state is PublicationTransportState.PREPARED:
-            if has_remote or has_verification or has_failure:
+            if (
+                has_remote
+                or has_verification
+                or has_failure
+                or has_verified_artifacts
+            ):
                 raise ValueError("prepared state cannot claim remote evidence")
         elif self.state is PublicationTransportState.UPLOADED:
-            if not has_remote or has_verification or has_failure:
+            if (
+                not has_remote
+                or has_verification
+                or has_failure
+                or has_verified_artifacts
+            ):
                 raise ValueError(
                     "uploaded state requires only a remote revision"
                 )
         elif self.state is PublicationTransportState.PUBLIC:
-            if not has_remote or not has_verification or has_failure:
+            if (
+                not has_remote
+                or not has_verification
+                or has_failure
+                or not has_verified_artifacts
+            ):
                 raise ValueError(
-                    "public state requires remote and verification evidence"
+                    "public state requires exact anonymous artifact readbacks"
                 )
             verification_uri = self.verification_uri
             if verification_uri is None or not verification_uri.startswith(
                 "https://"
             ):
                 raise ValueError("public verification URI must use HTTPS")
-        elif not has_failure or has_verification:
+            expected_verification_uri = (
+                f"{self.target.public_base_url.rstrip('/')}/tree/"
+                f"{self.remote_revision}"
+            )
+            if verification_uri != expected_verification_uri:
+                raise ValueError(
+                    "public verification URI must bind the exact target revision"
+                )
+            paths = tuple(
+                item.relative_path for item in self.verified_artifacts
+            )
+            digests = tuple(item.sha256 for item in self.verified_artifacts)
+            if paths != tuple(sorted(paths)) or len(paths) != len(set(paths)):
+                raise ValueError("verified artifacts must be unique")
+            if digests != self.artifact_sha256:
+                raise ValueError(
+                    "verified artifact digests must match the plan"
+                )
+        elif not has_failure or has_verification or has_verified_artifacts:
             raise ValueError(
                 "verification-failed state requires only a failure reason"
             )
@@ -257,6 +322,21 @@ def bind_artifacts(
     return tuple(bindings)
 
 
+def _inventory_regular_files(root: Path) -> tuple[str, ...]:
+    resolved_root = root.resolve(strict=True)
+    relative_paths: list[str] = []
+    for candidate in resolved_root.rglob("*"):
+        if candidate.is_symlink():
+            raise ValueError("publication root must not contain symlinks")
+        if candidate.is_file():
+            relative_paths.append(
+                candidate.relative_to(resolved_root).as_posix()
+            )
+        elif not candidate.is_dir():
+            raise ValueError("publication root must contain regular files only")
+    return tuple(sorted(relative_paths))
+
+
 def prepare_publication(
     *,
     root: Path,
@@ -267,6 +347,10 @@ def prepare_publication(
 ) -> tuple[PublicationPlan, PublicationTransportReceipt]:
     """Prepare deterministic upload metadata and a local-only receipt."""
 
+    if _inventory_regular_files(root) != relative_paths:
+        raise ValueError(
+            "publication plan must bind every file in the prepared root"
+        )
     plan = PublicationPlan(
         release_version=release_version,
         target=target,
@@ -306,6 +390,18 @@ class PublicationUploader(Protocol):
     ) -> str: ...
 
 
+class AnonymousArtifactVerifier(Protocol):
+    """Read an exact remote artifact without credentials or cached bytes."""
+
+    def verify_artifact(
+        self,
+        *,
+        target: PublicationTarget,
+        revision: str,
+        artifact: ArtifactBinding,
+    ) -> ArtifactVerification: ...
+
+
 def execute_publication(
     *,
     plan: PublicationPlan,
@@ -317,12 +413,18 @@ def execute_publication(
     """Upload prepared artifacts after the dual external-write gate."""
 
     assert_external_write_authorized(authorization)
-    current = bind_artifacts(
-        root, tuple(item.relative_path for item in plan.artifacts)
-    )
+    planned_paths = tuple(item.relative_path for item in plan.artifacts)
+    current_inventory: tuple[str, ...] = ()
+    try:
+        current_inventory = _inventory_regular_files(root)
+        current = bind_artifacts(root, planned_paths)
+    except OSError, ValueError:
+        current = ()
+    if current_inventory != planned_paths:
+        current = ()
     planned = tuple(item.sha256 for item in plan.artifacts)
     observed = tuple(item.sha256 for item in current)
-    if planned != observed:
+    if planned != observed or not current:
         return PublicationTransportReceipt(
             plan_sha256=plan.sha256(),
             artifact_sha256=planned,
@@ -336,15 +438,92 @@ def execute_publication(
         folder=root,
         commit_message=f"Archive {plan.release_version}",
     )
-    verification_uri = (
-        f"{plan.target.public_base_url.rstrip('/')}/tree/{revision}"
-    )
     return PublicationTransportReceipt(
         plan_sha256=plan.sha256(),
         artifact_sha256=planned,
         target=plan.target,
-        state=PublicationTransportState.PUBLIC,
+        state=PublicationTransportState.UPLOADED,
         recorded_at=recorded_at,
         remote_revision=revision,
+    )
+
+
+def verify_publication(
+    *,
+    plan: PublicationPlan,
+    uploaded_receipt: PublicationTransportReceipt,
+    verifier: AnonymousArtifactVerifier,
+    recorded_at: datetime,
+) -> PublicationTransportReceipt:
+    """Claim public status only after every artifact is anonymously read back."""
+
+    if (
+        uploaded_receipt.state is not PublicationTransportState.UPLOADED
+        or uploaded_receipt.plan_sha256 != plan.sha256()
+        or uploaded_receipt.target != plan.target
+        or uploaded_receipt.artifact_sha256
+        != tuple(item.sha256 for item in plan.artifacts)
+        or uploaded_receipt.remote_revision is None
+    ):
+        raise ValueError("uploaded receipt does not match the publication plan")
+
+    verified: list[ArtifactVerification] = []
+    for artifact in plan.artifacts:
+        try:
+            result = verifier.verify_artifact(
+                target=plan.target,
+                revision=uploaded_receipt.remote_revision,
+                artifact=artifact,
+            )
+        except Exception:
+            result = None
+        if result is None or (
+            result.relative_path != artifact.relative_path
+            or result.sha256 != artifact.sha256
+            or result.size != artifact.size
+            or result.verification_uri
+            != _artifact_verification_uri(
+                plan.target,
+                uploaded_receipt.remote_revision,
+                artifact.relative_path,
+            )
+        ):
+            return PublicationTransportReceipt(
+                plan_sha256=plan.sha256(),
+                artifact_sha256=tuple(item.sha256 for item in plan.artifacts),
+                target=plan.target,
+                state=PublicationTransportState.VERIFICATION_FAILED,
+                recorded_at=recorded_at,
+                remote_revision=uploaded_receipt.remote_revision,
+                failure_reason=(
+                    "anonymous artifact readback did not match the prepared plan"
+                ),
+            )
+        verified.append(result)
+
+    verification_uri = (
+        f"{plan.target.public_base_url.rstrip('/')}/tree/"
+        f"{uploaded_receipt.remote_revision}"
+    )
+    return PublicationTransportReceipt(
+        plan_sha256=plan.sha256(),
+        artifact_sha256=tuple(item.sha256 for item in plan.artifacts),
+        target=plan.target,
+        state=PublicationTransportState.PUBLIC,
+        recorded_at=recorded_at,
+        remote_revision=uploaded_receipt.remote_revision,
         verification_uri=verification_uri,
+        verified_artifacts=tuple(verified),
+    )
+
+
+def _artifact_verification_uri(
+    target: PublicationTarget,
+    revision: str,
+    relative_path: str,
+) -> str:
+    return (
+        f"{target.public_base_url.rstrip('/')}/resolve/"
+        f"{quote(revision, safe='')}/"
+        f"{quote(relative_path, safe='/')}"
     )
