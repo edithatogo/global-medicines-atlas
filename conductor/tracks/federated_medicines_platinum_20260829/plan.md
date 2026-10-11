@@ -1242,3 +1242,12 @@
   and 37 distinct contexts passed; the merge tree matches its qualified head.
   No source, catalogue entry, live acquisition, production behavior, admission,
   or publication changed.
+
+### Current-main B0-to-Platinum revalidation (2026-10-11)
+
+- [x] Re-run the installed synthetic B0-to-Platinum journey on current main
+  after the acceptance reconciliation merge. The test passed (1); it rebuilt
+  and verified both wheel and source distribution. One existing Starlette
+  `httpx` deprecation warning was reported. This confirms the merged synthetic
+  journey on the current tree; it does not change production acceptance,
+  source coverage, rights, admission, or publication status.
