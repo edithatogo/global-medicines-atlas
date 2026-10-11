@@ -1048,7 +1048,7 @@
 
 ### Installed Atlas distribution journey (2026-10-11)
 
-- [~] Extend the clean wheel and source-distribution consumer gate beyond API
+- [x] Extend the clean wheel and source-distribution consumer gate beyond API
   and CLI startup: retain the default core-fallback probe, install the declared
   `federation` extra, and request the installed Atlas root page and packaged
   stylesheet over HTTP. Initial probe execution exposed the intended optional
@@ -1060,9 +1060,14 @@
   2,338 mutation cases, both randomized orders (184 each), profiling, and
   security with no findings. An initial run with ambient `uv 0.13.0` failed
   only two pre-existing reproducibility tests that enforce the pinned uv; the
-  complete rerun with pinned uv passed. PR review then identified that the
-  core probe ran after optional-extra installation; it is being split so the
-  core fallback runs first and proves `jsonschema` absent before the Atlas probe
-  installs `federation`. Re-run focused package and routine checks, reconcile
-  the review thread, and await fresh protected cross-platform checks before
-  completing this task.
+  complete rerun with pinned uv passed. PR review identified and corrected the
+  ordering gap: the core-only API/CLI probe now runs first and proves
+  `jsonschema` absent before the separate Atlas probe installs `federation`.
+  The review thread was resolved; both wheel and sdist passed the corrected
+  focused qualification and routine checks. PR #985 merged at
+  `0a8736771fe87d40fbde9c24a87735efbcbec03e` from head
+  `07d279f36a76197f3cdc612a39ef7d428db3ad65`; all 38 reported checks passed,
+  and the merge tree matches the qualified head tree
+  `27a5af1e932fe5c62d2657ad214968d8b3e27c85`. No source was added or acquired;
+  no source-coverage, production-admission, rights, public-release, or
+  representative-user claim is implied.
