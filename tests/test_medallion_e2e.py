@@ -2119,7 +2119,11 @@ def _query_synthetic_platinum(
                 )
                 requests.clear()
 
-        if monkeypatch is not None and tmp_path is not None:
+        if (
+            monkeypatch is not None
+            and tmp_path is not None
+            and os.environ.get("GMA_SKIP_SYNTHETIC_EXPORT_BROWSER") != "1"
+        ):
             _exercise_loopback_federated_atlas(
                 resolver,
                 binding,

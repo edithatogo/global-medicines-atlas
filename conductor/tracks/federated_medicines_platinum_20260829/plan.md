@@ -1205,8 +1205,10 @@
   Windows. Persist platform-specific qualification receipts in CI. This is
   test-only platform coverage; it does not imply source completeness,
   production admission, rights clearance, or publication.
-  The CI consumer job now runs the existing full medallion E2E and writes its
-  installed-consumer receipt to the platform artifact path. Local macOS E2E
-  emitted both wheel and sdist passes with an identical archive digest;
-  focused tests (27), routine, actionlint, context/ecosystem validators, and
-  diff checks pass. Hosted platform evidence is pending.
+  The CI consumer job runs the existing medallion E2E through its pipeline,
+  API, and CLI stages, then writes its installed-consumer receipt to the
+  platform artifact path. Its browser subcheck is skipped because Chromium is
+  installed in the Linux E2E lane, which continues to cover the browser path.
+  Local macOS E2E emitted both wheel and sdist passes with an identical archive
+  digest; focused tests (27), routine, actionlint, context/ecosystem validators,
+  and diff checks pass. Hosted platform evidence is pending.

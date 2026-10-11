@@ -432,6 +432,7 @@ jobs:
         if: steps.scope.outputs.heavy == 'true'
         env:
           GMA_SYNTHETIC_EXPORT_CONSUMER_RECEIPT: build/quality-receipts/consumer-${{ matrix.platform }}.json
+          GMA_SKIP_SYNTHETIC_EXPORT_BROWSER: "1"
         shell: bash
         run: >-
           uv run --python 3.14.6 --group dev pytest -q
