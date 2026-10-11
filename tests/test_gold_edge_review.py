@@ -130,7 +130,45 @@ def test_other_terminal_adjudications_remove_only_the_decided_case(
         reviewer_id="maintainer-supplied",
         rationale=rationale,
     )
-    assert regenerate_gold_edge_review_queue(queue, (event,)) == (queue[1],)
+    assert regenerate_gold_edge_review_queue(queue, (event,)) == queue
+    assert regenerate_gold_edge_review_queue(
+        queue,
+        (event,),
+        verified_event_ids=frozenset({event.event_id}),
+    ) == (queue[1],)
+
+
+def test_every_event_in_supersession_chain_requires_authority_verification():
+    queue = build_gold_edge_review_queue((pbs_edge(),), queued_at=QUEUED_AT)
+    request = adjudication(
+        queue[0].review_case_id,
+        ReviewState.NEEDS_INFORMATION,
+        "Synthetic request for information.",
+    )
+    decision = adjudication(
+        queue[0].review_case_id,
+        ReviewState.ACCEPTED,
+        "Synthetic terminal decision.",
+        request.event_id,
+        occurred_at=QUEUED_AT.replace(second=1),
+    )
+
+    assert (
+        regenerate_gold_edge_review_queue(
+            queue,
+            (request, decision),
+            verified_event_ids=frozenset({decision.event_id}),
+        )
+        == queue
+    )
+    assert (
+        regenerate_gold_edge_review_queue(
+            queue,
+            (request, decision),
+            verified_event_ids=frozenset({request.event_id, decision.event_id}),
+        )
+        == ()
+    )
 
 
 def test_queue_rejects_duplicate_or_unsupported_edges():
@@ -176,8 +214,17 @@ def test_needs_information_and_complete_supersession_chain_remain_pending():
     remaining = regenerate_gold_edge_review_queue(
         queue, (needs_information, accepted)
     )
-    assert remaining == (queue[1],)
-    assert remaining[0].review_state is ReviewState.PENDING_REVIEW
+    assert remaining == queue
+    authorized = regenerate_gold_edge_review_queue(
+        queue,
+        (needs_information, accepted),
+        verified_event_ids=frozenset({
+            needs_information.event_id,
+            accepted.event_id,
+        }),
+    )
+    assert authorized == (queue[1],)
+    assert authorized[0].review_state is ReviewState.PENDING_REVIEW
 
 
 def test_conflicting_adjudication_roots_remain_pending():

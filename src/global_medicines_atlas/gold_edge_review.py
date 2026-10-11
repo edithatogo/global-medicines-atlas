@@ -156,8 +156,15 @@ def build_gold_edge_review_queue(
 def regenerate_gold_edge_review_queue(
     cases: Iterable[GoldEdgeReviewCase],
     adjudications: Iterable[AdjudicationEvent],
+    *,
+    verified_event_ids: frozenset[str] = frozenset(),
 ) -> tuple[GoldEdgeReviewCase, ...]:
-    """Filter terminal decisions; keep unresolved or conflicting chains."""
+    """Filter only externally verified terminal decisions.
+
+    Event hashes prove integrity, not reviewer authority. Callers must supply
+    every event ID only after a separate authority verifier accepts it. The
+    default empty set keeps all cases pending.
+    """
     events_by_candidate: dict[str, dict[str, AdjudicationEvent]] = {}
     for event in adjudications:
         events = events_by_candidate.setdefault(event.candidate_id, {})
@@ -201,6 +208,7 @@ def regenerate_gold_edge_review_queue(
         if (
             chronological
             and len(visited) == len(events)
+            and visited <= verified_event_ids
             and current.state in final_states
         ):
             terminal.add(candidate_id)
