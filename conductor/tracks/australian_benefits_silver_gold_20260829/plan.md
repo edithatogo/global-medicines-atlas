@@ -791,6 +791,13 @@
   `adc2c297056e996fb75b52f3293af65a0a5450bb`; all 40 reported hosted check
   rows passed. No reviewer identity, authority, adjudication, promotion,
   source, licensing conclusion, or publication is created or inferred.
+- [~] Remove caller-asserted event IDs as a route to clear Gold review cases.
+  No independent authority verifier exists, so the review-queue library now
+  keeps every case pending regardless of caller-supplied terminal events. A
+  failing-first regression confirmed that arbitrary event IDs could previously
+  make a case disappear; hosted qualification is pending. No reviewer
+  identity, authority, adjudication, promotion, source, licensing conclusion,
+  or publication is created or inferred.
 
 ### Platinum PBS edge readback coverage (2026-10-09)
 
