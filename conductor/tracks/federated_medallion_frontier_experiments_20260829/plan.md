@@ -254,6 +254,12 @@
   fields. NetworkX 3.6.1 was already available locally; no core dependency was
   added. This bounded synthetic experiment does not qualify Neo4j/RDF-star,
   live public graphs, retrieval calibration or production promotion.
+- [x] Run the combined reference JSON, parameterized Cypher, RDF-star, and
+  executed NetworkX parity check against both synthetic MBS and PBS Gold graph
+  projections. The affected suites pass (22); routine, lint, format, typing,
+  and repository checks pass. This closes the portable-projection test gap for
+  the two existing Gold families only; live Neo4j/SPARQL execution and the
+  broader rights-content review remain open.
 - [ ] Confirm the intended failure before implementation.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
