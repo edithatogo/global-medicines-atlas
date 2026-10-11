@@ -323,8 +323,12 @@
   0.5.9. The checksummed receipt is
   `quality/qualifications/oxigraph-rdf12-synthetic-graph-parity-20261012.json`
   (file SHA-256 `892e1d89ef45c864c8169eeeb44d7684450ea12d5fb05fecee8c4c03f7ec0004`);
-  PR #1014 hosted run `38150870366`, graph job `114503877641`. The review
-  thread is resolved; full required checks remain in progress.
+  PR #1014 hosted run `38152116039`, graph job `114507529973`. All required
+  checks passed, Codecov patch coverage was 100%, and the RDF 1.2 review
+  thread was resolved. PR #1014 merged as `414b6659ad1f0f0a1e4d0b7ced6df59e80b53f9e`.
+  This closes current Oxigraph RDF 1.2 engine parity for the synthetic MBS/PBS
+  projections only. The phase checkpoint and broader graph rights-content
+  review remain open.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
   RDF-star preview projections from the same Gold node/edge tables. Local
