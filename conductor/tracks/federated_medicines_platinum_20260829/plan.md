@@ -983,3 +983,16 @@
   reported checks passed, and the merge tree matches the qualified head tree.
   This verifies one responsive and keyboard interaction property; it does not
   establish full WCAG conformance or representative-user acceptance.
+- [x] Apply the same keyboard scrolling to every Atlas evidence-table surface.
+  The shared script is loaded by the comparison, history, benefits, and
+  source-structure templates. The 320 CSS pixel Chromium test now proves the
+  comparison coverage table and historical identity table move in both arrow
+  directions; the federated browser journey confirms the shared asset loads
+  on both evidence routes and forces each synthetic federated table to overflow
+  before checking both keyboard directions. The pre-fix browser test failed on
+  the comparison table. The focused Atlas/browser/accessibility modules pass
+  (26), governed E2E passes (56), routine checks pass, and full Test-Goblin
+  completes with 97.92% coverage. No source or source-coverage claim changed.
+  This verifies keyboard scrolling across the implemented Atlas table
+  surfaces; full WCAG conformance and representative-user acceptance remain
+  open.
