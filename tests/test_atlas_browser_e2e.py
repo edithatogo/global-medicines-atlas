@@ -238,6 +238,9 @@ def _navigate_to_history_page(page: Page, client: TestClient) -> None:
     history_link.click()
     assert page.url == "http://atlas.test/history"
     assert page.locator("link[rel='stylesheet']").count() == 1
+    page.wait_for_function(
+        "getComputedStyle(document.querySelector('.skip-link')).position === 'absolute'"
+    )
     assert (
         page.locator(".skip-link").evaluate(
             "element => getComputedStyle(element).position"

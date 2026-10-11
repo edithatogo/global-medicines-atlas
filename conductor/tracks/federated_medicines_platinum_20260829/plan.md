@@ -1117,6 +1117,13 @@
   No new sources, acquisitions, admissions, rights decisions, or coverage
   claims are introduced. Exact-head hosted qualification is pending.
 
+- [x] Stabilize the existing history-page keyboard browser assertion after
+  exact-head Linux E2E showed the stylesheet had not finished loading before
+  computed-style inspection. The test now waits for the required skip-link
+  position; the isolated test passes locally. This is an E2E synchronization
+  fix and does not change product behavior. The complete affected browser
+  module passes (4 tests); routine, Ruff, formatting, and `ty` also pass.
+
 - [x] Reconcile the receipt after PR #986 merged at
   `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head
   `9d3a6ee9b84f184f67f891dcea370551465306b3`; all 38 reported checks passed,
