@@ -695,12 +695,15 @@
   without verifying reviewer authority; PR #1020 removed that route. Every case
   now remains pending until an independent authority verifier exists. This
   adapter creates no reviewer identity, adjudication, threshold, receipt,
-  authority, admission or promotion. Earlier queue-state tests passed (38),
-  and the focused Gold/API/synthetic MBS-PBS E2E suite passes (25). Full local
-  Test-Goblin passed 6,222 tests at 96.89% coverage; two unrelated stable-v1
-  reproducibility tests passed on isolated rerun with pinned uv 0.11.29, and
-  three optional integrations were skipped. Reviewer authority, receipts,
-  calibration, candidate promotion, and Gold acceptance remain pending.
+  authority, admission or promotion. Earlier queue-state qualification had 9
+  focused Gold-review tests and 38 adjacent Gold-review/MBS/PBS graph tests.
+  The focused Gold/API/synthetic MBS-PBS E2E suite passes (25). The full local
+  Test-Goblin invocation recorded 6,222 passed, 3 optional skips, and 2
+  failures in stable-v1 reproducibility tests because the environment resolved
+  uv 0.13.0 while the release contract requires uv 0.11.29; both failing tests
+  passed on isolated rerun with the pinned version. Coverage was 96.89%.
+  Reviewer authority, receipts, calibration, candidate promotion, and Gold
+  acceptance remain pending.
 - [ ] Phase Verification & Checkpoint: every edge is evidence-bearing and no
   candidate class can masquerade as an authoritative link.
 
