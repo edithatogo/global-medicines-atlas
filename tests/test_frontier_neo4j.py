@@ -1,10 +1,20 @@
 """HTTP contract tests for the optional Neo4j graph experiment."""
 
+import hashlib
 import json
+from pathlib import Path
 from urllib.request import Request
 
 import pytest
 from test_support.frontier_neo4j import decode_rows, execute_query
+
+_NEO4J_RECEIPT = (
+    Path(__file__).parents[1]
+    / "quality/qualifications/neo4j-synthetic-graph-parity-20261011.json"
+)
+_NEO4J_RECEIPT_SHA256 = (
+    "1da2e161e35f6d4644782b8625ba15ee94d71a664e207f2ba446f23cc7e09231"
+)
 
 
 class _Response:
@@ -129,3 +139,28 @@ def test_readback_rejects_observed_edge_direction_conflict() -> None:
             values,
             ["edge_id", "source_node_id", "target_node_id", "payload_json"],
         )
+
+
+def test_committed_neo4j_receipt_is_checksummed_and_non_promoting() -> None:
+    receipt = json.loads(_NEO4J_RECEIPT.read_text(encoding="utf-8"))
+    digest = receipt.pop("receipt_sha256")
+    canonical = json.dumps(
+        receipt,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    ).encode("utf-8")
+
+    assert digest == _NEO4J_RECEIPT_SHA256
+    assert hashlib.sha256(canonical).hexdigest() == digest
+    assert receipt["engine"] == "neo4j"
+    assert receipt["source_scope"] == "synthetic-mbs-pbs-only"
+    assert receipt["source_payloads_accessed"] is False
+    assert receipt["rights_clearance_claimed"] is False
+    assert receipt["production_authority_promoted"] is False
+    cases = receipt["cases"]
+    assert set(cases) == {"mbs", "pbs"}
+    assert all(
+        case["exact_payload_and_direction_parity"] for case in cases.values()
+    )
