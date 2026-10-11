@@ -8,10 +8,11 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from urllib.parse import urlencode
 
 import httpx
 import pytest
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import Response, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 SERVER_SOURCE = """
@@ -25,7 +26,10 @@ import uvicorn
 import global_medicines_atlas
 from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
 
-app = create_atlas_app(cast(AtlasQueryService, object()))
+sys.path.insert(0, sys.argv[2])
+from test_support.atlas_evidence_service import InstalledAtlasEvidenceService
+
+app = create_atlas_app(cast(AtlasQueryService, InstalledAtlasEvidenceService()))
 listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 listener.bind(("127.0.0.1", 0))
@@ -79,6 +83,68 @@ def _wait_for_server(
     raise RuntimeError("installed Atlas server did not become ready")
 
 
+def _exercise_browser(server_url: str) -> None:
+    requested: list[str] = []
+    responses: dict[str, list[int]] = {}
+
+    def record_response(response: Response) -> None:
+        url = response.url.split("?", maxsplit=1)[0]
+        responses.setdefault(url, []).append(response.status)
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        page.on("request", lambda request: requested.append(request.url))
+        page.on("response", record_response)
+        try:
+            search_query = urlencode({
+                "concept_search": "example",
+                "jurisdiction": "NZ",
+                "valid_at": "2026-10-06T12:00:00+00:00",
+                "observed_at": "2026-10-06T12:00:00+00:00",
+            })
+            response = page.goto(
+                f"{server_url}/?{search_query}", wait_until="networkidle"
+            )
+            assert response is not None
+            assert response.status == 200
+            assert page.get_by_role(
+                "heading", name="Medicine search results"
+            ).is_visible()
+            candidate = page.locator(".search-results a")
+            assert candidate.count() == 1
+            assert "rx:fixture" in candidate.inner_text()
+            candidate.click()
+            assert page.get_by_role(
+                "heading", name="Comparison results for Example medicine"
+            ).is_visible()
+            card = page.locator("article[data-state='unknown']")
+            assert card.count() == 1
+            card_text = card.inner_text().casefold()
+            assert "not evidence of a negative" in card_text
+            assert "no source assertion" in card_text
+            assert not any(
+                negative in card_text
+                for negative in ("not covered", "not approved", "not funded")
+            )
+            card.get_by_text("Review source evidence").click()
+            assert card.get_by_role(
+                "link", name="Synthetic public evidence"
+            ).is_visible()
+            coverage = page.locator("table tbody tr")
+            assert coverage.count() == 1
+            assert "Status: Unknown" in coverage.inner_text()
+            assert "denominator unknown" in coverage.inner_text()
+            assert "%" not in coverage.inner_text()
+            assert 200 in responses[f"{server_url}/static/atlas.css"]
+            assert (
+                200 in responses[f"{server_url}/static/atlas-autocomplete.js"]
+            )
+            assert all(url.startswith(server_url) for url in requested)
+        finally:
+            browser.close()
+
+
 def _exercise_artifact(artifact: Path, root: Path, uv: str) -> None:
     environment = root / f"venv-{artifact.suffix.lstrip('.')}"
     _run([uv, "venv", "--python", str(sys.executable), str(environment)])
@@ -95,7 +161,12 @@ def _exercise_artifact(artifact: Path, root: Path, uv: str) -> None:
     runner = root / f"{artifact.name}.server.py"
     runner.write_text(SERVER_SOURCE, encoding="utf-8")
     process = subprocess.Popen(
-        [str(_python_in(environment)), str(runner), str(ready)],
+        [
+            str(_python_in(environment)),
+            str(runner),
+            str(ready),
+            str(ROOT / "tests"),
+        ],
         cwd=root,
         stdin=subprocess.DEVNULL,
         stdout=subprocess.DEVNULL,
@@ -105,34 +176,7 @@ def _exercise_artifact(artifact: Path, root: Path, uv: str) -> None:
         server = _wait_for_server(process, ready)
         package_path = Path(server["package_path"])
         assert package_path.is_relative_to(environment.resolve())
-
-        requested: list[str] = []
-        responses: dict[str, int] = {}
-        with sync_playwright() as playwright:
-            browser = playwright.chromium.launch()
-            page = browser.new_page()
-            page.on("request", lambda request: requested.append(request.url))
-            page.on(
-                "response",
-                lambda response: responses.update({
-                    response.url.split("?", maxsplit=1)[0]: response.status
-                }),
-            )
-            try:
-                response = page.goto(server["url"], wait_until="networkidle")
-                assert response is not None
-                assert response.status == 200
-                assert page.get_by_role(
-                    "heading", name="Global Medicines Atlas"
-                ).is_visible()
-                assert responses[f"{server['url']}/static/atlas.css"] == 200
-                assert (
-                    responses[f"{server['url']}/static/atlas-autocomplete.js"]
-                    == 200
-                )
-                assert all(url.startswith(server["url"]) for url in requested)
-            finally:
-                browser.close()
+        _exercise_browser(server["url"])
     finally:
         process.terminate()
         try:
@@ -147,7 +191,7 @@ def _exercise_artifact(artifact: Path, root: Path, uv: str) -> None:
 def test_installed_atlas_wheel_and_sdist_render_in_loopback_chromium(
     tmp_path: Path,
 ) -> None:
-    """Both installed artifacts serve packaged Atlas pages and assets."""
+    """Both installed artifacts render synthetic Atlas evidence in Chromium."""
     uv = shutil.which("uv")
     assert uv is not None
     distribution_dir = tmp_path / "dist"
