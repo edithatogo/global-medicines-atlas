@@ -1200,7 +1200,7 @@
 
 ### Cross-platform synthetic export probe (2026-10-11)
 
-- [~] Run the same Bronze-to-Platinum synthetic export handoff through clean
+- [x] Run the same Bronze-to-Platinum synthetic export handoff through clean
   installed wheel and source-distribution consumers on Linux, macOS, and
   Windows. Persist platform-specific qualification receipts in CI. This is
   test-only platform coverage; it does not imply source completeness,
@@ -1211,4 +1211,9 @@
   installed in the Linux E2E lane, which continues to cover the browser path.
   Local macOS E2E emitted both wheel and sdist passes with an identical archive
   digest; focused tests (27), routine, actionlint, context/ecosystem validators,
-  and diff checks pass. Hosted platform evidence is pending.
+  and diff checks pass. PR #1002 merged at 2026-10-11T11:08:14Z as
+  `476adb7aab3721214562f44d551080eca44f01bb` after all 38 reported check rows
+  and 37 distinct contexts passed. Linux, macOS, and Windows platform receipts
+  each show both wheel and sdist verifiers passed with the same export digest.
+  The separate Linux E2E lane continues to cover Chromium. No source was added
+  or acquired; the export remains synthetic and unpublished.
