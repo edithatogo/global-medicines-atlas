@@ -966,3 +966,14 @@
   This closes only the synthetic loopback journey; production deployment,
   admission, source coverage, public release, WCAG conformance, and
   representative-user acceptance remain separate gates.
+
+### Atlas narrow-viewport reflow (2026-10-11)
+
+- [x] Verify the comparison and historical views at 320 CSS pixels in
+  Chromium. The document stays within the viewport while the wide historical
+  source-identity table remains keyboard-scrollable in its labelled region.
+  The affected browser/accessibility modules pass (8), the governed E2E lane
+  passes (56), and the routine profile passes. This adds no source or runtime
+  behavior and verifies one responsive property; it does not establish full
+  WCAG conformance or representative-user acceptance. Test commit
+  `4fa8a586ba699b8fa9c572eb9bb4da18fc4072ed`.
