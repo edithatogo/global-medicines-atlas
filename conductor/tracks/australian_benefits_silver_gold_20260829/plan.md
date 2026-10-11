@@ -798,7 +798,10 @@
   returned pages with the in-process API and CLI readbacks. Assert each source
   identity and synthetic-only qualification. The full medallion/Atlas E2E
   selection passes (7) and routine checks pass. No source, rights conclusion,
-  production behavior, or acceptance gate changed.
+  production behavior, or acceptance gate changed. PR #981 merged as
+  `595d44591741ac72a3c5138f80aad0c8e29b3600` after all 38 reported checks
+  passed; merge tree `97ba84bffbd30c2e650711ca5dd7976711f8fcab` matches the
+  qualified head tree.
 
 ## Phase 5: Historical comparisons and publication (AC-06, AC-07)
 
