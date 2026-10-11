@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import os
 from collections.abc import Iterable
 from dataclasses import dataclass, replace
 from datetime import UTC, datetime, timedelta
@@ -2151,7 +2152,13 @@ def _qualify_installed_medallion_export(tmp_path: Path) -> None:
     """Verify the exact pipeline Platinum archive in both installed artifacts."""
     export_archive = tmp_path / "research-export.zip"
     export_digest = hashlib.sha256(export_archive.read_bytes()).hexdigest()
-    receipt_path = tmp_path / "installed-export-consumer.json"
+    receipt_output = os.environ.get("GMA_SYNTHETIC_EXPORT_CONSUMER_RECEIPT")
+    receipt_path = (
+        Path(receipt_output)
+        if receipt_output is not None
+        else tmp_path / "installed-export-consumer.json"
+    )
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
     receipt = qualify_clean_consumer.qualify(
         receipt_path, research_export=export_archive
     )
