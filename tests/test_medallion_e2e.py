@@ -2393,6 +2393,7 @@ def test_synthetic_cross_dataset_batch_attestation(tmp_path: Path) -> None:
 
 
 @pytest.mark.e2e
+@pytest.mark.slow
 @pytest.mark.timeout(300)
 def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     tmp_path: Path,
