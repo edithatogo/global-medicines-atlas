@@ -194,7 +194,10 @@
     acquisition, layer/cohort, and receipt roles. Changed contract bytes and a
     forged expected path are rejected. The resulting records drive the
     FederatedReader and PBS identity/Atlas path. No source coverage, rights
-    clearance, live admission, or publication is established.
+    clearance, live admission, or publication is established. PR #972 merged
+    as `1b5c38ed00d549b2b994a9898b9868b2482f0575` from exact head
+    `44c107bb707458d98d73a9f260fbb457b8328d81`; the merge tree matches the
+    qualified head. All 28 distinct required contexts and Codecov patch passed.
 - [x] Reject duplicate JSON member names consistently at v4 distribution,
   admission, reader, receipt-closure, and consumer boundaries. Three synthetic
   regressions failed before the shared strict parser; 436 affected federation
