@@ -77,6 +77,78 @@ print(json.dumps({'metadata': identity.__dict__, 'openapi_paths': len(schema['pa
     return template.replace("__BASELINE__", repr(str(BASELINE)))
 
 
+def _v2_cli_probe(database: Path) -> str:
+    """Exercise installed v2 CLI commands against a local synthetic fixture."""
+    template = """
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+sys.path.insert(0, __TESTS__)
+from test_support.synthetic_query_database import create_synthetic_query_database
+database = Path(__DATABASE__)
+create_synthetic_query_database(database)
+scripts = Path(sys.prefix) / ("Scripts" if os.name == "nt" else "bin")
+cli = scripts / ("global-medicines-atlas.exe" if os.name == "nt" else "global-medicines-atlas")
+environment = {
+    "GMA_CURSOR_SECRET": "consumer-probe-" + "synthetic-secret-long-enough",
+    "PATH": os.environ.get("PATH", ""),
+}
+if os.name == "nt":
+    environment["SYSTEMROOT"] = os.environ["SYSTEMROOT"]
+common = [
+    "--database", str(database),
+    "--valid-at", "2026-10-06T12:00:00+00:00",
+    "--observed-at", "2026-10-06T12:00:00+00:00",
+]
+dimensions = (
+    "service_benefit", "funding", "regulatory", "formulary", "terminology",
+)
+comparison = subprocess.run([
+    str(cli), "v2-comparison", *common,
+    "--concept-id", "rx:1",
+    "--jurisdiction", "NZ", "--jurisdiction", "AU",
+    *(argument for dimension in dimensions for argument in ("--dimension", dimension)),
+], cwd=database.parent, check=False, capture_output=True, text=True, env=environment)
+assert comparison.returncode == 0, comparison.stderr
+payload = json.loads(comparison.stdout)
+assert payload["metadata"]["api_version"] == "v2"
+conclusions = payload["conclusions"]
+assert len(conclusions) == len(dimensions) * 2
+assert {item["dimension"] for item in conclusions} == set(dimensions)
+assert any(
+    item["jurisdiction"] == "NZ"
+    and item["dimension"] == "regulatory"
+    and item["state"] == "confirmed"
+    for item in conclusions
+)
+assert any(
+    item["jurisdiction"] == "AU"
+    and item["dimension"] == "funding"
+    and item["state"] == "not_covered"
+    for item in conclusions
+)
+assert "validity" not in payload
+evidence = subprocess.run([
+    str(cli), "v2-evidence", *common,
+    "--concept-id", "rx:1", "--jurisdiction", "NZ",
+    "--dimension", "regulatory",
+], cwd=database.parent, check=False, capture_output=True, text=True, env=environment)
+assert evidence.returncode == 0, evidence.stderr
+evidence_payload = json.loads(evidence.stdout)
+assert evidence_payload["metadata"]["api_version"] == "v2"
+assert evidence_payload["metadata"]["page"]["returned"] == 1
+assert evidence_payload["evidence"][0]["dimension"] == "regulatory"
+assert not comparison.stderr
+assert not evidence.stderr
+print(json.dumps({"v2_comparison": "passed", "v2_evidence": "passed"}, sort_keys=True))
+"""
+    return template.replace("__TESTS__", repr(str(ROOT / "tests"))).replace(
+        "__DATABASE__", repr(str(database))
+    )
+
+
 def _atlas_probe() -> str:
     """Exercise Atlas templates and assets after installing federation extra."""
     return """
@@ -130,6 +202,18 @@ def qualify(output: Path) -> dict[str, Any]:
                 )
             )
             _run(["global-medicines-atlas", "--help"], environment=environment)
+            v2_cli_probe = json.loads(
+                _run(
+                    [
+                        "python",
+                        "-c",
+                        _v2_cli_probe(
+                            Path(temporary) / "synthetic-atlas.duckdb"
+                        ),
+                    ],
+                    environment=environment,
+                )
+            )
             _run([
                 "uv",
                 "pip",
@@ -158,7 +242,7 @@ def qualify(output: Path) -> dict[str, Any]:
             results.append({
                 "artifact": artifact.name,
                 "sha256": _sha256(artifact),
-                "probe": probe,
+                "probe": {**probe, **v2_cli_probe},
                 "cli": "passed",
                 "reinstall": "passed",
             })

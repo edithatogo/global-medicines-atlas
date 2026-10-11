@@ -1157,8 +1157,19 @@
   records the installed wheel/sdist loopback API journey. No source or
   coverage claim was added.
 
-- [ ] Extend the installed wheel/sdist qualification through v2 CLI comparison
-  and evidence commands using the existing synthetic DuckDB fixture. Local
-  wheel/sdist journeys and the affected CLI/browser suite pass; exact-head
-  hosted checks remain pending. No source acquisition, production admission,
-  rights decision, coverage claim, or publication is included.
+- [x] Extend the installed wheel/sdist qualification through v2 CLI comparison
+  and evidence commands using the existing synthetic DuckDB fixture. Both
+  artifacts exercise all five dimensions, an explicit confirmed result, an
+  explicit `not_covered` fixture case, and a populated evidence response. The
+  affected installed browser/API/CLI and product CLI suite passed (33 tests);
+  all 38 reported hosted check rows passed, including the 28 protected branch
+  contexts, and the qualified head tree matches the merge tree. No source
+  acquisition, production admission, rights decision, coverage claim, or
+  publication is included.
+
+- [~] Extend clean wheel/sdist consumer qualification on Linux, macOS, and
+  Windows through v2 comparison and evidence CLI commands. The local Darwin
+  clean-consumer run passed both artifacts; platform-specific hosted
+  qualification is pending. Reuse the existing synthetic DuckDB fixture and
+  keep source acquisition, production admission, rights decisions, source
+  coverage, and publication out of scope.

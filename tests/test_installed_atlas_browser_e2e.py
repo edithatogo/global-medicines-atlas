@@ -14,7 +14,9 @@ from urllib.parse import urlencode
 import httpx
 import pytest
 from playwright.sync_api import Page, Response, sync_playwright
-from tests import test_query_service as query_service_tests
+from tests.test_support.synthetic_query_database import (
+    create_synthetic_query_database,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SERVER_SOURCE = """
@@ -435,10 +437,9 @@ def test_installed_atlas_wheel_and_sdist_render_in_loopback_chromium(
         *distribution_dir.glob("*.tar.gz"),
     ))
     assert len(artifacts) == 2
-    database_factory = (
-        query_service_tests._database  # pyright: ignore[reportPrivateUsage]
+    database = create_synthetic_query_database(
+        tmp_path / "synthetic-atlas.duckdb"
     )
-    database = database_factory(tmp_path / "synthetic-atlas.duckdb")
     for artifact in artifacts:
         try:
             _exercise_artifact(artifact, tmp_path, uv, database)
