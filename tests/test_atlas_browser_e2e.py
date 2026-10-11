@@ -487,6 +487,83 @@ def test_keyboard_history_timeline_preserves_snapshot_evidence() -> None:
             browser.close()
 
 
+@pytest.mark.e2e
+@pytest.mark.timeout(90)
+def test_atlas_history_reflows_at_320_css_pixels() -> None:
+    """Keep page-level reflow while allowing wide evidence tables to scroll."""
+    previous = NativeSnapshot(
+        source_id="synthetic-mbs",
+        table="descriptions",
+        dimension="service_benefit",
+        schema_era="fixture-v1",
+        identity_profile="mbs-description-record",
+        scope_id="synthetic-mobile-history-fixture",
+        source_revision="fixture-revision-previous",
+        source_path=f"fixtures/{'a' * 160}.xml",
+        b1_sha256="a" * 64,
+        b2_sha256="b" * 64,
+        observed_at=NOW,
+        cohort="synthetic",
+        declared_rows=0,
+        complete=True,
+        rows=(),
+    )
+    current = NativeSnapshot(
+        source_id="synthetic-mbs",
+        table="descriptions",
+        dimension="service_benefit",
+        schema_era="fixture-v1",
+        identity_profile="mbs-description-record",
+        scope_id="synthetic-mobile-history-fixture",
+        source_revision="fixture-revision-current",
+        source_path=f"fixtures/{'b' * 160}.xml",
+        b1_sha256="c" * 64,
+        b2_sha256="d" * 64,
+        observed_at=NOW,
+        cohort="synthetic",
+        declared_rows=0,
+        complete=True,
+        rows=(),
+    )
+    history = HistoricalChangeService((
+        compare_historical_snapshots(previous, current),
+    ))
+    client = TestClient(
+        create_atlas_app(AtlasFixtureService(), historical_changes=history)
+    )
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page(viewport={"width": 320, "height": 800})
+        try:
+            _route_test_client_requests(page, client)
+            for path in (
+                "/?concept_id=rx%3Afixture&jurisdiction=NZ",
+                "/history",
+            ):
+                response = page.goto(f"http://atlas.test{path}")
+                assert response is not None
+                assert response.status == 200
+                width = page.evaluate(
+                    """() => ({
+                      viewport: window.innerWidth,
+                      document: document.documentElement.scrollWidth
+                    })"""
+                )
+                assert width["document"] <= width["viewport"], width
+
+            table_region = page.get_by_role(
+                "region", name="Source snapshot identity"
+            )
+            assert table_region.is_visible()
+            assert table_region.get_attribute("tabindex") == "0"
+            assert table_region.evaluate(
+                "element => element.scrollWidth > element.clientWidth"
+            )
+        finally:
+            browser.close()
+
+
 def _exercise_keyboard_evidence_flow(
     page: Page, client: TestClient, search_html: str
 ) -> None:
