@@ -759,9 +759,9 @@
   response remains candidate-only and performs no promotion. The intended
   regression failed before the field was added; focused review/API/graph tests
   pass (89), and full Test-Goblin passes with 6,189 tests and 96.89% coverage.
-  (`edb622bd`; evidence in `evidence.jsonl`.) This verifies output labelling
-  only; no reviewer identity or authority is created or inferred, and real
-  adjudication remains pending.
+  (`edb622bd`; PR #968 merged as `1bc43c17`; evidence in `evidence.jsonl`.)
+  This verifies output labelling only; no reviewer identity or authority is
+  created or inferred, and real adjudication remains pending.
 
 ### Platinum PBS edge readback coverage (2026-10-09)
 
