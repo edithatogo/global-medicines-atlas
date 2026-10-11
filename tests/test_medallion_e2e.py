@@ -360,6 +360,10 @@ def _exercise_gold_review_queue(
     assert needs_information_payload["adjudication_event_count"] == 1
     assert needs_information_payload["adjudication_authority_verified"] is False
     assert needs_information_payload["promotion_performed"] is False
+    assert (
+        needs_information_payload["qualification"]
+        == "synthetic_silver_candidate_only"
+    )
 
     terminal = _gold_adjudication(
         candidate_id=case.review_case_id,

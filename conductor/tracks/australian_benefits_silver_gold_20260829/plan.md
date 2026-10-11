@@ -770,6 +770,10 @@
   the queue. Focused journeys pass (2), governed E2E passes (56), and routine
   checks pass. Test-only follow-up; no reviewer authority or source state is
   established. Hosted qualification remains pending.
+  Automated review found that the intermediate `needs_information` response
+  also needed an explicit candidate-only assertion. Added it; the focused
+  journeys, governed E2E lane, and routine checks pass again. The review
+  conversation remains open until the corrected head is rechecked.
 
 ### Platinum PBS edge readback coverage (2026-10-09)
 
