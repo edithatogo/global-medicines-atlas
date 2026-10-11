@@ -17,7 +17,6 @@ import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
 from test_pbs_silver import XML as PBS_XML
-from test_support.federation import admission_record
 from typer.testing import CliRunner
 
 from global_medicines_atlas import atlas as atlas_module
@@ -864,57 +863,6 @@ def _assert_projection_rejects_embedded_b2(
                 replace(landing, acquisition_manifest_path=leaked_path),
                 payload=payload,
             )
-
-
-def _platinum_contract(payload: bytes, receipt: SourceReceipt) -> bytes:
-    document = json.loads(
-        (ROOT / "contracts/medallion/v4/fixtures/valid.json").read_bytes()
-    )
-    digest = hashlib.sha256(payload).hexdigest()
-    document["source"].update(
-        source_id=receipt.source.source_id,
-        acquisition_id=require_temporal(receipt.temporal).acquisition_id,
-        layer="platinum",
-        bronze_stratum=None,
-        representation="projection",
-        schema_era="synthetic-e2e-v1",
-        comparison_cohort="synthetic",
-        effective_date=None,
-        retrieved_at=NOW.isoformat().replace("+00:00", "Z"),
-    )
-    document["location"].update(
-        path=f"platinum/synthetic-{receipt.source.source_id}-edges.parquet",
-        bytes=len(payload),
-        sha256=digest,
-    )
-    document["verification"].update(
-        path=document["location"]["path"],
-        bytes=len(payload),
-        sha256=digest,
-        verified_at=NOW.isoformat().replace("+00:00", "Z"),
-    )
-    document["rights"].update(
-        subject_sha256=digest,
-        path=document["location"]["path"],
-        basis="Synthetic test fixture only; no real publication authority",
-    )
-    document["lineage"]["inputs"] = [
-        {
-            "url": "https://fixtures.invalid/receipts/source.json",
-            "sha256": receipt.digest(),
-        }
-    ]
-    document["lineage"]["promotion_receipt"] = document["verification"][
-        "receipt"
-    ]
-    document["cache"]["offline_behavior"] = "verified_exact_digest_only"
-    document["cache"]["expires_at"] = (
-        (NOW + timedelta(days=1)).isoformat().replace("+00:00", "Z")
-    )
-    document["cache"]["max_bytes"] = max(
-        document["cache"]["max_bytes"], len(payload)
-    )
-    return json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
 
 
 def _distribution_contract(
@@ -1974,7 +1922,12 @@ def _query_synthetic_platinum(
     monkeypatch: pytest.MonkeyPatch | None = None,
     tmp_path: Path | None = None,
 ) -> QueryResult:
-    contract = _platinum_contract(gold, receipt)
+    contract = _distribution_contract(
+        gold,
+        receipt,
+        layer="platinum",
+        path=f"platinum/synthetic-{receipt.source.source_id}-edges.parquet",
+    )
     binding = _binding(contract)
     semantic = json.dumps(
         {
@@ -2012,7 +1965,16 @@ def _query_synthetic_platinum(
             ROOT / "contracts/medallion/v4/federation.schema.json"
         ).read_bytes(),
         resources=[resource],
-        admission_records=(admission_record(contract),),
+        admission_records=(
+            _independently_admit_synthetic_output(
+                contract,
+                gold,
+                receipt,
+                layer="platinum",
+                path=binding.object.path,
+                bronze_stratum=None,
+            ),
+        ),
         admitted_semantic_manifests=frozenset({
             hashlib.sha256(semantic).hexdigest()
         }),

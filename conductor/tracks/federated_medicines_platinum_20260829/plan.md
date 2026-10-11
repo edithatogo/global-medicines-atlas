@@ -52,6 +52,10 @@
     coverage; 239 affected tests and the routine harness pass.)
 - [~] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
+  - [x] Bind the synthetic MBS/PBS API query path to exact v4 receipt closure
+    and an independently configured trusted admission profile; reject altered
+    contract bytes and a forged expected path. Keep these fixtures explicitly
+    synthetic and non-publishable.
   - [x] Verify one exact, anonymously readable, 24,367-byte MBS Bronze
     projection at immutable revision `75f9f20` with a five-row bounded
     structural query. The public-safe receipt binds the object, metadata,
