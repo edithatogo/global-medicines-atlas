@@ -277,6 +277,14 @@
   `d12243667ccb73bfb54a85cb76b510fc1d3d34c9` at
   `f81fbaf01264e935788724c6ffea1cfceea689f5`; its tree matches the qualified
   head tree, and all 28 distinct required contexts passed.
+- [~] Execute the fixed parameterized Cypher exporter in an empty, digest-pinned
+  Neo4j service using only the existing synthetic MBS/PBS Gold fixtures; read
+  every node and directed edge back and require exact canonical payload parity.
+  The HTTP contract tests and source-neutral qualification helper pass locally;
+  the integration test is registered in the hosted Neo4j lane because no local
+  Docker service is available. The lane emits a checksummed metadata-only
+  retain-preview receipt. Hosted engine execution is pending; no sources,
+  source bytes, rights conclusions, or promotion are included.
 - [ ] Confirm the intended failure before implementation.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
