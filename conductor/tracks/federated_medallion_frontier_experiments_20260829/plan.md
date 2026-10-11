@@ -48,6 +48,15 @@
   ceilings, and requires matching interruption/resume byte offsets with at
   least two requests. Thirteen focused tests provide 100% statement and branch
   coverage; Ruff, format, ty and BasedPyright pass.
+- [x] Version the remote-query profile with a predeclared per-observation
+  latency ceiling and enforce it for every engine/scenario, alongside the
+  existing request, byte, memory, cache, and row limits. The experiment-matrix
+  schema v2 declares 30-second, 120-second, and 600-second maxima for tiny,
+  medium, and large workloads; remote-query evidence schema v2 rejects any
+  observation over its caller-supplied limit. Failing-first tests showed that
+  the previous contracts rejected the new profile/version and had no latency
+  bound. The focused contract and matrix suites pass (38 tests); real engine
+  measurements and public-object prerequisites remain deferred.
 - [x] Confirm the intended failure before implementation. The new contract test
   failed at collection with `ModuleNotFoundError` before the implementation was
   added; subsequent bounded fixes made custom denominator and anonymous-

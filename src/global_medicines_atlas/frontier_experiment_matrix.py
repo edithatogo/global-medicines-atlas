@@ -67,6 +67,7 @@ class WorkloadProfile(FrozenModel):
     maximum_source_bytes: int = Field(strict=True, gt=0, le=2_147_483_648)
     maximum_requests: int = Field(strict=True, gt=0, le=10_000)
     maximum_memory_bytes: int = Field(strict=True, gt=0, le=4_294_967_296)
+    maximum_latency_ns: int = Field(strict=True, gt=0, le=3_600_000_000_000)
 
 
 class PublicObjectPrerequisite(FrozenModel):
@@ -135,7 +136,7 @@ class FrontierExperiment(FrozenModel):
 
 class FrontierExperimentMatrix(FrozenModel):
     schema_id: Literal["global-medicines-atlas.frontier-experiment-matrix"]
-    schema_version: Literal[1]
+    schema_version: Literal[2]
     imported_evidence: tuple[ImportedEvidence, ...] = Field(min_length=4)
     workloads: tuple[WorkloadProfile, ...] = Field(min_length=3, max_length=3)
     experiments: tuple[FrontierExperiment, ...] = Field(min_length=6)
@@ -153,6 +154,7 @@ class FrontierExperimentMatrix(FrozenModel):
             "maximum_source_bytes",
             "maximum_requests",
             "maximum_memory_bytes",
+            "maximum_latency_ns",
         )
         if any(
             not all(

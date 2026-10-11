@@ -37,6 +37,24 @@ def test_checked_in_matrix_is_complete_bounded_and_inert() -> None:
     )
 
 
+def test_latency_ceiling_is_predeclared_for_each_workload() -> None:
+    raw = document()
+    for profile, ceiling in zip(
+        raw["workloads"],
+        (30_000_000_000, 120_000_000_000, 600_000_000_000),
+        strict=True,
+    ):
+        profile["maximum_latency_ns"] = ceiling
+
+    matrix = FrontierExperimentMatrix.model_validate(raw)
+
+    assert [item.maximum_latency_ns for item in matrix.workloads] == [
+        30_000_000_000,
+        120_000_000_000,
+        600_000_000_000,
+    ]
+
+
 @pytest.mark.parametrize("field", ["revision", "path", "sha256"])
 def test_partial_public_identity_fails(field: str) -> None:
     raw = document()
@@ -142,6 +160,7 @@ def test_profiles_require_ordered_unique_bounds() -> None:
         "maximum_source_bytes",
         "maximum_requests",
         "maximum_memory_bytes",
+        "maximum_latency_ns",
     ],
 )
 def test_profiles_require_every_bound_to_strictly_increase(

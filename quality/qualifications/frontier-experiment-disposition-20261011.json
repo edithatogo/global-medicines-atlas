@@ -1,13 +1,13 @@
 {
   "schema_id": "global-medicines-atlas.frontier-experiment-disposition",
   "schema_version": 1,
-  "recorded_at": "2026-10-10T14:47:37Z",
+  "recorded_at": "2026-10-11T12:30:44Z",
   "track_id": "federated_medallion_frontier_experiments_20260829",
-  "review_scope": "Existing experiment matrix and evidence available on the reviewed mainline; no new sources, acquisitions, external services, or production promotions.",
+  "review_scope": "Reconciled the existing frontier disposition with the source-neutral latency-bound contract update; no experiments or new sources, acquisitions, external services, or production promotions.",
   "reviewed_inputs": [
     {
       "path": "quality/qualifications/frontier-experiment-matrix.json",
-      "sha256": "af8f93d3574420e9ca26ee4770296f4c9e48519f272ea660efe0200c183b3bf3"
+      "sha256": "4b1912f9969f18347e3f29774ef98b20b5996a48b36c9e69944fc7c5fea10c36"
     },
     {
       "path": "quality/qualifications/public-parquet-iceberg-registration-20261010.json",
@@ -74,5 +74,11 @@
     "restricted_bytes_added": false,
     "public_data_mutated": false,
     "production_authority_promoted": false
+  },
+  "reconciliation": {
+    "change": "Matrix schema v2 predeclares per-workload latency ceilings; remote-query qualification schema v2 enforces each observation against its profile.",
+    "experiment_run": false,
+    "existing_dispositions_changed": false,
+    "remote_query_measurement": "deferred; existing object rights prerequisite remains unqualified by this update"
   }
 }

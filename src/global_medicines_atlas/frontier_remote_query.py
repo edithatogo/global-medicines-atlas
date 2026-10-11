@@ -48,13 +48,14 @@ class ExactPublicObject(FrozenModel):
 
 
 class RemoteQueryProfile(FrozenModel):
-    """Resource ceilings fixed before an experiment runs."""
+    """Resource and per-observation latency ceilings fixed in advance."""
 
     maximum_rows: int = Field(strict=True, gt=0, le=10_000_000)
     maximum_source_bytes: int = Field(strict=True, gt=0, le=2_147_483_648)
     maximum_requests: int = Field(strict=True, gt=0, le=10_000)
     maximum_memory_bytes: int = Field(strict=True, gt=0, le=4_294_967_296)
     maximum_cache_bytes: int = Field(strict=True, ge=0, le=4_294_967_296)
+    maximum_latency_ns: int = Field(strict=True, gt=0, le=3_600_000_000_000)
 
 
 class RemoteQueryIdentity(FrozenModel):
@@ -140,7 +141,7 @@ class RemoteQueryQualification(FrozenModel):
     """Complete bounded parity envelope for four optional query engines."""
 
     schema_id: Literal["global-medicines-atlas.frontier-remote-query"]
-    schema_version: Literal[1]
+    schema_version: Literal[2]
     public_object: ExactPublicObject
     profile: RemoteQueryProfile
     query: RemoteQueryIdentity
@@ -170,6 +171,8 @@ class RemoteQueryQualification(FrozenModel):
                 raise ValueError("remote query memory bound exceeded")
             if item.cache_bytes > self.profile.maximum_cache_bytes:
                 raise ValueError("remote query cache bound exceeded")
+            if item.latency_ns > self.profile.maximum_latency_ns:
+                raise ValueError("remote query latency bound exceeded")
             if (
                 item.scanned_rows > self.profile.maximum_rows
                 or item.returned_rows > self.profile.maximum_rows
