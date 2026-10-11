@@ -36,6 +36,11 @@ from global_medicines_atlas.bronze_storage import (
     StoredPayload,
 )
 from global_medicines_atlas.cli import app as cli_app
+from global_medicines_atlas.federation_admission import (
+    AdmissionRecord,
+    TrustedAdmissionProfile,
+    admit_closed_contract,
+)
 from global_medicines_atlas.federation_distribution import (
     DistributionBinding,
     ProducedObject,
@@ -43,6 +48,11 @@ from global_medicines_atlas.federation_distribution import (
     reconcile_distribution,
 )
 from global_medicines_atlas.federation_reader import FederatedReader
+from global_medicines_atlas.federation_receipt_closure import (
+    ReceiptPayload,
+    ReceiptRole,
+    verify_receipt_closure,
+)
 from global_medicines_atlas.frontier_attestation import (
     build_verification_cost_receipt,
     canonical_verification_cost_bytes,
@@ -959,6 +969,24 @@ def _distribution_contract(
         document["lineage"]["promotion_receipt"] = document["verification"][
             "receipt"
         ]
+    receipt_bytes = receipt.canonical_json()
+    receipt_url = "https://fixtures.invalid/receipts/source.json"
+    receipt_digest = hashlib.sha256(receipt_bytes).hexdigest()
+
+    def bind_receipt_bytes(value: object) -> None:
+        if isinstance(value, dict):
+            node = cast("dict[str, object]", value)
+            if set(node) == {"url", "sha256"}:
+                node["url"] = receipt_url
+                node["sha256"] = receipt_digest
+            else:
+                for child in node.values():
+                    bind_receipt_bytes(child)
+        elif isinstance(value, list):
+            for child in cast("list[object]", value):
+                bind_receipt_bytes(child)
+
+    bind_receipt_bytes(document)
     document["cache"]["offline_behavior"] = "verified_exact_digest_only"
     document["cache"]["expires_at"] = (
         (NOW + timedelta(days=1)).isoformat().replace("+00:00", "Z")
@@ -967,6 +995,81 @@ def _distribution_contract(
         document["cache"]["max_bytes"], len(payload)
     )
     return json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
+
+
+def _independently_admit_synthetic_output(
+    contract: bytes,
+    payload: bytes,
+    receipt: SourceReceipt,
+    *,
+    layer: Literal["bronze", "silver", "gold", "platinum"],
+    path: str,
+    bronze_stratum: Literal["B0", "B1", "B2"] | None,
+) -> AdmissionRecord:
+    """Close receipt bytes and apply caller-owned synthetic expectations."""
+    schema = (
+        ROOT / "contracts/medallion/v4/federation.schema.json"
+    ).read_bytes()
+    receipt_bytes = receipt.canonical_json()
+    receipt_url = "https://fixtures.invalid/receipts/source.json"
+    digest = hashlib.sha256(receipt_bytes).hexdigest()
+    receipt_roles = (
+        "/rights/authorization",
+        "/lineage/inputs/0",
+        "/lineage/v1_conformance",
+        "/lineage/v2_field_lineage",
+        "/lineage/v3_replay",
+    )
+    if layer != "bronze":
+        receipt_roles += ("/lineage/promotion_receipt",)
+
+    def trusted_role(role: str) -> ReceiptRole:
+        return ReceiptRole(role=role, url=receipt_url, sha256=digest)
+
+    closure = verify_receipt_closure(
+        contract,
+        (ReceiptPayload(url=receipt_url, payload=receipt_bytes),),
+        schema=schema,
+    )
+    profile = TrustedAdmissionProfile(
+        producer_repository="edithatogo/global-medicines-atlas",
+        contract_repository="edithatogo/global-medicines-atlas",
+        contract_commit="a" * 40,
+        schema_sha256=hashlib.sha256(schema).hexdigest(),
+        dataset="example/australian-benefits-synthetic",
+        revision="a" * 40,
+        path=path,
+        sha256=hashlib.sha256(payload).hexdigest(),
+        byte_count=len(payload),
+        representation="projection",
+        source_id=receipt.source.source_id,
+        acquisition_id=require_temporal(receipt.temporal).acquisition_id,
+        schema_era="synthetic-e2e-v1",
+        comparison_cohort="synthetic",
+        effective_date=None,
+        retrieved_at=NOW.isoformat().replace("+00:00", "Z"),
+        layer=layer,
+        bronze_stratum=bronze_stratum,
+        evidence_kind="synthetic",
+        authorization=trusted_role("/rights/authorization"),
+        lineage=tuple(trusted_role(role) for role in receipt_roles[1:]),
+    )
+    with pytest.raises(ValueError, match="different contract"):
+        admit_closed_contract(
+            contract + b" ", closure, schema=schema, trusted=profile
+        )
+    with pytest.raises(ValueError, match="independently trusted"):
+        admit_closed_contract(
+            contract,
+            closure,
+            schema=schema,
+            trusted=profile.model_copy(
+                update={"path": "silver/forged.parquet"}
+            ),
+        )
+    return admit_closed_contract(
+        contract, closure, schema=schema, trusted=profile
+    )
 
 
 def _reconcile_synthetic_outputs(
@@ -1080,9 +1183,24 @@ def _exercise_federated_reader(
     schema = (
         ROOT / "contracts/medallion/v4/federation.schema.json"
     ).read_bytes()
+    admissions = tuple(
+        _independently_admit_synthetic_output(
+            contract,
+            output[2],
+            receipt,
+            layer=output[0],
+            path=output[1],
+            bronze_stratum=output[3],
+        )
+        for contract, output in zip(contracts, outputs, strict=True)
+    )
+    assert all(item.scope == "offline_trusted_profile" for item in admissions)
+    assert {item.contract_sha256 for item in admissions} == set(
+        payloads_by_contract
+    )
     with FederatedReader(
         schema=schema,
-        admission_records=tuple(admission_record(raw) for raw in contracts),
+        admission_records=admissions,
         transport_factory=lambda: httpx.MockTransport(handle),
         clock=lambda: NOW,
     ) as reader:
@@ -1117,7 +1235,7 @@ def _exercise_federated_reader(
                 assert refetched.byte_count == len(expected)
                 assert refetched.stream.read() == expected
 
-    _exercise_pbs_v2_identity(contracts, outputs, bindings, schema)
+    _exercise_pbs_v2_identity(receipt, contracts, outputs, bindings, schema)
 
 
 class _IdentityOnlyV2Service:
@@ -1148,6 +1266,7 @@ class _IdentityHttpClient(Protocol):
 
 
 def _exercise_pbs_v2_identity(
+    receipt: SourceReceipt,
     contracts: tuple[bytes, ...],
     outputs: tuple[SyntheticOutput, ...],
     bindings: tuple[DistributionBinding, ...],
@@ -1212,7 +1331,16 @@ def _exercise_pbs_v2_identity(
     with StorageNeutralResolver(
         schema=schema,
         resources=[resource],
-        admission_records=(admission_record(contract),),
+        admission_records=(
+            _independently_admit_synthetic_output(
+                contract,
+                payload,
+                receipt,
+                layer="gold",
+                path=binding.object.path,
+                bronze_stratum=None,
+            ),
+        ),
         admitted_semantic_manifests=frozenset({
             hashlib.sha256(semantic_manifest).hexdigest()
         }),
