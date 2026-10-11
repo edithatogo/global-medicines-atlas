@@ -1190,6 +1190,10 @@
   BasedPyright for the changed qualifier, context, ecosystem, and diff checks
   pass locally. PR #1000 merged at 2026-10-11T10:19:17Z as
   `2b768112a5136f03c025d257c990050f4061ae4f`; all 38 reported check rows and
-  37 distinct contexts passed, including mutation, E2E, and Linux/macOS/Windows
-  installed-consumer qualification. No source was added or acquired; the
+  37 distinct contexts passed. The exact export probe ran in hosted Linux E2E
+  and local macOS qualification. Separate hosted Linux/macOS/Windows consumer
+  jobs passed their standard probes but did not receive this export; exact
+  cross-platform export verification remains open. The oversized-input test
+  imports its script inside the test body so mutmut's copied selection can
+  collect without a `scripts` package. No source was added or acquired; the
   export remains synthetic and unpublished.
