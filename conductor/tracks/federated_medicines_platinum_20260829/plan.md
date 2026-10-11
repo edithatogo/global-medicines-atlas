@@ -1091,7 +1091,7 @@
 
 ### Installed Atlas synthetic evidence delivery
 
-- [~] Extend the installed wheel/sdist browser journey to submit a synthetic
+- [x] Extend the installed wheel/sdist browser journey to submit a synthetic
   medicine search, follow its canonical candidate, and inspect the rendered
   unknown result and coverage without inferring a negative. This verifies the
   installed package can deliver evidence-shaped product output, while keeping
@@ -1102,7 +1102,10 @@
   `browser.close`; hosted Python 3.14 E2E passed. Automated review found
   negative-sounding native fixture terminology under UNKNOWN; this is corrected
   to neutral no-assertion wording and guarded in Chromium. Focused rerun passes;
-  awaiting exact-head CI for the review fix.
+  corrected exact head passed hosted CI in PR #990 and its review thread was
+  resolved.
+
+  PR #990 merged at `e52e3141526edb0baf004b3b12c6820bc60464a1` from exact head `c6846fcae20ba91dadd0929ddf21ba0d316af0e3`; the merge tree matches `abd906eef0ac0b319eeeec8e785f3a7431f67105`. All 38 reported check rows passed across 37 distinct contexts, including Codecov patch, full Python 3.14 E2E, coverage, mutation, and three consumer platforms. The review thread was resolved.
 
 - [x] Reconcile the receipt after PR #986 merged at
   `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head
