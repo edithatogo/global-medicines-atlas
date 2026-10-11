@@ -1,0 +1,57 @@
+{
+  "artifacts": [
+    {
+      "artifact": "global_medicines_atlas-1.0.0rc1.post1.dev801+g39db80375-py3-none-any.whl",
+      "cli": "passed",
+      "probe": {
+        "api": "passed",
+        "atlas_page": "passed",
+        "atlas_static_asset": "passed",
+        "core_fallback": "passed",
+        "metadata": {
+          "name": "global-medicines-atlas",
+          "requires_python": "<3.15,>=3.14",
+          "summary": "Global comparison of medicine registration, approval, funding, and reimbursement systems",
+          "version": "1.0.0rc1.post1.dev801+g39db80375"
+        },
+        "openapi_paths": 14,
+        "research_export": "passed",
+        "research_export_bytes": 5666,
+        "research_export_sha256": "d4f6b3f37a1ea80473c00058635b803842178f340da92a1541498e649255ce20",
+        "v2_comparison": "passed",
+        "v2_evidence": "passed"
+      },
+      "reinstall": "passed",
+      "sha256": "05ff556fc6756afaa13601841c90fec85d275d2f604a2f33df485864d36ea722"
+    },
+    {
+      "artifact": "global_medicines_atlas-1.0.0rc1.post1.dev801+g39db80375.tar.gz",
+      "cli": "passed",
+      "probe": {
+        "api": "passed",
+        "atlas_page": "passed",
+        "atlas_static_asset": "passed",
+        "core_fallback": "passed",
+        "metadata": {
+          "name": "global-medicines-atlas",
+          "requires_python": "<3.15,>=3.14",
+          "summary": "Global comparison of medicine registration, approval, funding, and reimbursement systems",
+          "version": "1.0.0rc1.post1.dev801+g39db80375"
+        },
+        "openapi_paths": 14,
+        "research_export": "passed",
+        "research_export_bytes": 5666,
+        "research_export_sha256": "d4f6b3f37a1ea80473c00058635b803842178f340da92a1541498e649255ce20",
+        "v2_comparison": "passed",
+        "v2_evidence": "passed"
+      },
+      "reinstall": "passed",
+      "sha256": "7d18b9419a77a2c610abebb9cd6400364f4d434edb5c6948d6c0858475ae2fe5"
+    }
+  ],
+  "machine": "arm64",
+  "platform": "darwin",
+  "python": "3.14.6",
+  "schema_version": 1,
+  "state": "passed"
+}

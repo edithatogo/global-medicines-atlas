@@ -1,0 +1,57 @@
+{
+  "artifacts": [
+    {
+      "artifact": "global_medicines_atlas-1.0.0rc1.post1.dev801+g39db80375-py3-none-any.whl",
+      "cli": "passed",
+      "probe": {
+        "api": "passed",
+        "atlas_page": "passed",
+        "atlas_static_asset": "passed",
+        "core_fallback": "passed",
+        "metadata": {
+          "name": "global-medicines-atlas",
+          "requires_python": "<3.15,>=3.14",
+          "summary": "Global comparison of medicine registration, approval, funding, and reimbursement systems",
+          "version": "1.0.0rc1.post1.dev801+g39db80375"
+        },
+        "openapi_paths": 14,
+        "research_export": "passed",
+        "research_export_bytes": 5666,
+        "research_export_sha256": "d4f6b3f37a1ea80473c00058635b803842178f340da92a1541498e649255ce20",
+        "v2_comparison": "passed",
+        "v2_evidence": "passed"
+      },
+      "reinstall": "passed",
+      "sha256": "c0c78e080008b3386867783f5df4b187baf977dd644e1417b589205e5e236d36"
+    },
+    {
+      "artifact": "global_medicines_atlas-1.0.0rc1.post1.dev801+g39db80375.tar.gz",
+      "cli": "passed",
+      "probe": {
+        "api": "passed",
+        "atlas_page": "passed",
+        "atlas_static_asset": "passed",
+        "core_fallback": "passed",
+        "metadata": {
+          "name": "global-medicines-atlas",
+          "requires_python": "<3.15,>=3.14",
+          "summary": "Global comparison of medicine registration, approval, funding, and reimbursement systems",
+          "version": "1.0.0rc1.post1.dev801+g39db80375"
+        },
+        "openapi_paths": 14,
+        "research_export": "passed",
+        "research_export_bytes": 5666,
+        "research_export_sha256": "d4f6b3f37a1ea80473c00058635b803842178f340da92a1541498e649255ce20",
+        "v2_comparison": "passed",
+        "v2_evidence": "passed"
+      },
+      "reinstall": "passed",
+      "sha256": "ac66e6934e7131b57c2796b50348b7af1c52e11aaf61286fe2c9d7202b096163"
+    }
+  ],
+  "machine": "amd64",
+  "platform": "windows",
+  "python": "3.14.6",
+  "schema_version": 1,
+  "state": "passed"
+}
