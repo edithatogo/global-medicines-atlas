@@ -55,7 +55,9 @@
   - [x] Bind the synthetic MBS/PBS API query path to exact v4 receipt closure
     and an independently configured trusted admission profile; reject altered
     contract bytes and a forged expected path. Keep these fixtures explicitly
-    synthetic and non-publishable.
+    synthetic and non-publishable. PR #975 merged as
+    `18a57a34456bfeb8c486ec646cb5b42d4d037d08` after all 38 reported check
+    rows passed.
   - [x] Verify one exact, anonymously readable, 24,367-byte MBS Bronze
     projection at immutable revision `75f9f20` with a five-row bounded
     structural query. The public-safe receipt binds the object, metadata,
