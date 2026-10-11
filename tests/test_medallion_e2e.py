@@ -16,7 +16,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import Locator, Page, sync_playwright
 from test_pbs_silver import XML as PBS_XML
 from test_support.asgi_server import serve_asgi_on_loopback
 from typer.testing import CliRunner
@@ -2199,6 +2199,46 @@ def _exercise_loopback_benefits_api(
     resolver.evict()
 
 
+def _exercise_loopback_cache_states(
+    page: Page,
+    resolver: StorageNeutralResolver,
+    binding: DistributionBinding,
+    route: str,
+    button_name: str,
+    expected_row: str,
+    rows: Locator,
+    requests: list[httpx.Request],
+) -> None:
+    """Verify cached replay and fail-closed eviction in the real browser."""
+    remote_request_count = len(requests)
+    offline_toggle = page.get_by_label("Use verified cache only")
+    offline_toggle.check()
+    with page.expect_response(
+        lambda response: route in response.url and response.status == 200
+    ):
+        page.get_by_role("button", name=button_name).click()
+    cached_body = page.locator("main").inner_text()
+    assert offline_toggle.is_checked()
+    assert expected_row in cached_body
+    assert binding.object.sha256 in cached_body
+    assert rows.count() >= 1
+    assert len(requests) == remote_request_count
+
+    resolver.evict()
+    with page.expect_response(
+        lambda response: route in response.url and response.status == 200
+    ):
+        page.get_by_role("button", name=button_name).click()
+    unavailable_body = page.locator("main").inner_text()
+    assert "Pinned evidence unavailable" in unavailable_body
+    assert "No verified cached copy is available" in unavailable_body
+    assert binding.object.sha256 in unavailable_body
+    assert "Query receipt SHA-256" in unavailable_body
+    assert expected_row not in unavailable_body
+    assert rows.count() == 0
+    assert len(requests) == remote_request_count
+
+
 def _exercise_loopback_federated_atlas(
     resolver: StorageNeutralResolver,
     binding: DistributionBinding,
@@ -2301,6 +2341,16 @@ def _exercise_loopback_federated_atlas(
                     f"{binding.revision}/{binding.object.path}"
                 ),
             ]
+            _exercise_loopback_cache_states(
+                page,
+                resolver,
+                binding,
+                route,
+                button_name,
+                expected_row,
+                rows,
+                requests,
+            )
         finally:
             browser.close()
     requests.clear()

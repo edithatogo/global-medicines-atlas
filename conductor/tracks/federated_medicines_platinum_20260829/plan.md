@@ -1026,3 +1026,18 @@
   qualified head `a44bca2c8e7e4973f1729b27d8401d757cc0de3d`; all 29 required
   contexts and all 39 reported checks passed, and the merge tree matches the
   qualified head tree.
+
+### Benefits offline-cache browser failure recovery (2026-10-11)
+
+- [~] Extend the real loopback Chromium journey through verified offline-cache
+  replay and cache eviction for synthetic MBS and PBS products. The initial
+  browser regression reproduced a gap: the benefits page hid its pinned
+  identity and query-receipt digest after an offline cache miss. Render the
+  exact identity for unavailable benefits reads while withholding rows; the
+  browser now proves cached replay does not issue another resolver request and
+  post-eviction reads show the unavailable state, exact object digest, receipt
+  digest, and no rows. The two MBS/PBS loopback journeys pass; the broader
+  affected Atlas E2E selection passes (20). Routine checks and the full pinned
+  Test-Goblin profile pass. Hosted protected checks remain pending. No source,
+  acquisition, coverage claim, admission, publication, or consequential claim
+  was added; WCAG conformance and representative-user acceptance remain open.
