@@ -4,25 +4,34 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
+import time
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import StrEnum
 from pathlib import Path, PurePosixPath
 from typing import Protocol
-from urllib.parse import urlsplit
+from urllib.parse import quote, urljoin, urlsplit
 
 import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 from pydantic import Field
 
+from .acquisition import AcquisitionPolicy, BoundIPAddressTransport
 from .adapters.us_acquisition import DRUGSFDA_API_URL, DRUGSFDA_BULK_URL
+from .federation_reader import HOSTS as FEDERATION_HOSTS
 from .models import FrozenModel
-from .publication_transport import PublicationDestination, PublicationTarget
+from .publication_transport import (
+    ArtifactBinding,
+    ArtifactVerification,
+    PublicationDestination,
+    PublicationTarget,
+)
 from .source_catalog import MedicineDataSource, load_source_catalog
 from .source_profiles import AuthenticationMode
 
@@ -39,6 +48,7 @@ MAX_ARCHIVAL_FILE_BYTES = 1_000_000
 MAX_LIVE_PAYLOAD_BYTES = 32 * 1024 * 1024
 LIVE_RETRIEVAL_ATTEMPTS = 3
 HTTP_CLIENT_ERROR_STATUS = 400
+HTTP_OK_STATUS = 200
 HF_TOKEN_SECRET_NAME = "HF_TOKEN"  # ruff: ignore[hardcoded-password-string]
 HUGGINGFACE_EXTERNAL_GATE_FILENAME = "huggingface-external-gate.json"
 HUGGINGFACE_HUB_PIN = "huggingface-hub==0.34.4"
@@ -846,6 +856,116 @@ class HuggingFaceCliUploader:
                 missing_secret=HF_TOKEN_SECRET_NAME,
             ) from last_error
         return _public_dataset_revision(repository)
+
+
+class HuggingFaceAnonymousArtifactVerifier:
+    """Verify each published file by an anonymous, digest-bound readback."""
+
+    def __init__(
+        self,
+        *,
+        timeout_seconds: float = 30.0,
+        transport_factory: Callable[[], httpx.BaseTransport] | None = None,
+    ) -> None:
+        if (
+            type(timeout_seconds) not in {int, float}
+            or not math.isfinite(timeout_seconds)
+            or timeout_seconds <= 0
+        ):
+            raise ValueError("timeout must be finite and positive")
+        self._timeout_seconds = timeout_seconds
+        self._transport_factory = transport_factory
+
+    def verify_artifact(
+        self,
+        *,
+        target: PublicationTarget,
+        revision: str,
+        artifact: ArtifactBinding,
+    ) -> ArtifactVerification:
+        if target.destination is not PublicationDestination.HUGGING_FACE:
+            raise ValueError("anonymous verifier requires Hugging Face target")
+        url = (
+            f"{target.public_base_url.rstrip('/')}/resolve/"
+            f"{quote(revision, safe='')}/"
+            f"{quote(artifact.relative_path, safe='/')}"
+        )
+        policy = AcquisitionPolicy(
+            allowed_hosts=FEDERATION_HOSTS,
+            timeout_seconds=self._timeout_seconds,
+        )
+        transport = (
+            self._transport_factory()
+            if self._transport_factory is not None
+            else BoundIPAddressTransport(policy=policy)
+        )
+        digest = hashlib.sha256()
+        size = 0
+        deadline = time.monotonic() + self._timeout_seconds
+        with httpx.Client(
+            transport=transport,
+            trust_env=False,
+            timeout=self._timeout_seconds,
+            follow_redirects=False,
+            headers={"Accept-Encoding": "identity"},
+        ) as client:
+            for _attempt in range(4):
+                _require_anonymous_huggingface_url(url)
+                if time.monotonic() > deadline:
+                    raise ValueError("anonymous verification deadline exceeded")
+                client.cookies.clear()
+                with client.stream("GET", url) as response:
+                    if response.is_redirect:
+                        location = response.headers.get("location")
+                        if location is None:
+                            raise ValueError(
+                                "anonymous redirect has no location"
+                            )
+                        url = urljoin(url, location)
+                        continue
+                    if response.status_code != HTTP_OK_STATUS:
+                        raise ValueError("anonymous artifact readback failed")
+                    for chunk in response.iter_bytes(chunk_size=64 * 1024):
+                        if time.monotonic() > deadline:
+                            raise ValueError(
+                                "anonymous verification deadline exceeded"
+                            )
+                        size += len(chunk)
+                        if size > artifact.size:
+                            raise ValueError("anonymous artifact size mismatch")
+                        digest.update(chunk)
+                break
+            else:
+                raise ValueError(
+                    "anonymous verification redirect limit exceeded"
+                )
+        observed_sha256 = digest.hexdigest()
+        if size != artifact.size or observed_sha256 != artifact.sha256:
+            raise ValueError("anonymous artifact digest mismatch")
+        verification_uri = (
+            f"{target.public_base_url.rstrip('/')}/resolve/"
+            f"{quote(revision, safe='')}/"
+            f"{quote(artifact.relative_path, safe='/')}"
+        )
+        return ArtifactVerification(
+            relative_path=artifact.relative_path,
+            sha256=observed_sha256,
+            size=size,
+            verification_uri=verification_uri,
+        )
+
+
+def _require_anonymous_huggingface_url(url: str) -> None:
+    parsed = urlsplit(url)
+    if parsed.scheme != "https" or parsed.hostname not in FEDERATION_HOSTS:
+        raise ValueError("unapproved anonymous verification URL")
+    if (
+        parsed.username is not None
+        or parsed.password is not None
+        or parsed.port not in {None, 443}
+        or parsed.fragment
+    ):
+        raise ValueError("unapproved anonymous verification URL")
 
 
 def _public_dataset_revision(repository: str) -> str:

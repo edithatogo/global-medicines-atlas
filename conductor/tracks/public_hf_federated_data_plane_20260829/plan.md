@@ -436,6 +436,19 @@
 
 ## Phase 6: Integrated qualification (AC-09)
 
+- [~] Separate successful upload from verified public availability. The
+  publication receipt now records `uploaded` after the gated transport and may
+  record `public` only after anonymous readback confirms every planned file's
+  exact path, SHA-256 digest, and byte count. Preparation and upload both reject
+  unbound local files, and the Hugging Face verifier uses credential-free,
+  redirect-bounded, host-pinned streaming reads. The archive workflow persists
+  the post-upload receipt as a separate hosted artifact. Focused publication
+  and archive tests pass (92), and routine checks pass. The final local full
+  profile reached 6,236 passed, 3 environment-dependent skips, and 96.81%
+  coverage, with two Darwin E2E timeouts under isolation review; hosted
+  qualification remains required. No upload
+  was dispatched and no public state changed.
+
 - [~] Prepare append-only donor-history preservation as a separate public
   archive transaction: exact heads, CAS, unchanged previous sibling objects,
   baseline/delta reconstruction and durable anonymous verification before
