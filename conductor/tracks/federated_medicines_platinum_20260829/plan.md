@@ -1219,5 +1219,9 @@
   review, all three hosted receipt JSON files were preserved under
   `receipts/cross-platform-export-probe/` with their content hashes in the
   append-only evidence record; this remains verifiable after the hosted
-  artifacts expire. No source was added or acquired; the export remains
-  synthetic and unpublished.
+  artifacts expire. The Windows receipt is stored with LF line endings to
+  match repository policy; its original hosted-byte digest is separately
+  recorded. PR #1003 merged at `469a3276f887e51ec112abd13bb0a791db24489f`
+  after all 38 check rows and 37 distinct contexts passed; the merge tree
+  matches its qualified head. No source was added or acquired; the export
+  remains synthetic and unpublished.
