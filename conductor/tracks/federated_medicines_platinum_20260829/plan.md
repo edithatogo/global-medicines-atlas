@@ -1129,7 +1129,11 @@
   loopback API and Chromium journeys. The v2 API/control suite passes (23), as
   do routine, Ruff, formatting, `ty`, BasedPyright, and context/ecosystem
   checks. Synthetic only: no source acquisition, admission, rights, coverage,
-  or publication claim. Exact-head hosted qualification is pending.
+  or publication claim. PR #995 passed all 38 reported check rows across 37
+  distinct contexts, including Python 3.14 E2E, coverage, mutation, CodeQL,
+  archive packaging, and Linux/macOS/Windows consumers. It merged at
+  `ba2d38f0b4873a8973d88c2e24c99749c846db09`; the merge tree matches the
+  qualified head tree `539bc42b1631e7e3ac7b63305f47d0ac7ab1cb46`.
 
 - [x] Stabilize the existing history-page keyboard browser assertion after
   exact-head Linux E2E showed the stylesheet had not finished loading before
