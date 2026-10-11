@@ -1071,3 +1071,11 @@
   `27a5af1e932fe5c62d2657ad214968d8b3e27c85`. No source was added or acquired;
   no source-coverage, production-admission, rights, public-release, or
   representative-user claim is implied.
+
+- [x] Reconcile the receipt after PR #986 merged at
+  `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head
+  `9d3a6ee9b84f184f67f891dcea370551465306b3`; all 38 reported checks passed,
+  and both trees match at
+  `150e52e788e65323f3e1e3c2debe56db15375a26`. This documentation-only change
+  corrects the merge evidence for PR #985 and adds no sources or runtime
+  behavior.
