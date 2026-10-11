@@ -29,6 +29,7 @@ _DISCOVERY_ATTEMPTS = 60
 _NODE_QUERY = """
 SELECT ?node ?payload WHERE {
   ?node <urn:gma:payload-json> ?payload .
+  FILTER(STRSTARTS(STR(?node), "urn:gma:node:"))
 }
 """
 _EDGE_QUERY = """
@@ -230,7 +231,7 @@ def _read_nodes(base_url: str) -> list[dict[str, object]]:
         if not isinstance(node, dict):
             raise TypeError("SPARQL node payload must be a JSON object")
         node_row = cast("dict[str, object]", node)
-        if node_iri != rdf_iri_reference(
+        if node_iri != _iri_value(
             "node", cast("str", node_row.get("node_id", ""))
         ):
             raise ValueError("SPARQL node identity differs from its payload")
@@ -257,14 +258,14 @@ def _read_edges(base_url: str) -> list[dict[str, object]]:
         edge_row = cast("dict[str, object]", decoded)
         if (
             not isinstance(edge_id, str)
-            or edge != rdf_iri_reference("edge", edge_id)
+            or edge != _iri_value("edge", edge_id)
             or edge_row.get("edge_id") != edge_id
             or source
-            != rdf_iri_reference(
+            != _iri_value(
                 "node", cast("str", edge_row.get("source_node_id", ""))
             )
             or target
-            != rdf_iri_reference(
+            != _iri_value(
                 "node", cast("str", edge_row.get("target_node_id", ""))
             )
         ):
@@ -279,6 +280,11 @@ def _uri(row: list[dict[str, str]], index: int) -> str:
     if term.get("type") != "uri":
         raise TypeError("SPARQL binding must be a URI")
     return term["value"]
+
+
+def _iri_value(kind: str, identifier: str) -> str:
+    """Return the SPARQL result value for a generated RDF IRI."""
+    return rdf_iri_reference(kind, identifier)[1:-1]
 
 
 def _literal(row: list[dict[str, str]], index: int) -> str | None:
