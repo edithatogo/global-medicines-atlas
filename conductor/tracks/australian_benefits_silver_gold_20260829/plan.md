@@ -762,7 +762,7 @@
   (`edb622bd`; PR #968 merged as `1bc43c17`; evidence in `evidence.jsonl`.)
   This verifies output labelling only; no reviewer identity or authority is
   created or inferred, and real adjudication remains pending.
-- [~] Assert the authority boundary through both synthetic MBS and PBS
+- [x] Assert the authority boundary through both synthetic MBS and PBS
   Bronze-to-Platinum review-queue journeys, before and after caller-supplied
   `needs_information` and accepted events. Every CLI readback remains
   `adjudication_authority_verified: false`, candidate-only, and
@@ -770,12 +770,14 @@
   the queue. Caller-supplied reviewer identity and rationale are not emitted
   by the CLI. Focused journeys pass (2), governed E2E passes (56), and routine
   checks pass. Test-only follow-up; no reviewer authority or source state is
-  established. Hosted qualification remains pending.
+  established. PR #970 merged as `efd60390e9734dca079e1f893d1a7b99041190b1`
+  after all required checks, including `codecov/patch`, passed on exact head
+  `9f1f0a999d436fa6bdb66bfa684f85799221dc8c`.
   Automated review found that the intermediate `needs_information` response
   also needed an explicit candidate-only assertion. Added it; the focused
   journeys, governed E2E lane, and routine checks pass again. The review
   conversation was resolved against corrected commit `8aee112f`; hosted checks
-  on that head are pending.
+  passed on the final head before merge.
 
 ### Platinum PBS edge readback coverage (2026-10-09)
 
