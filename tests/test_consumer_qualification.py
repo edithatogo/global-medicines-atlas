@@ -7,7 +7,6 @@ import json
 from pathlib import Path
 
 import pytest
-from scripts import qualify_clean_consumer
 
 from global_medicines_atlas import consumer_qualification
 from global_medicines_atlas.consumer_qualification import (
@@ -28,6 +27,8 @@ def test_clean_consumer_rejects_oversized_research_export_before_build(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """Reject oversized optional input before building any artifacts."""
+    from scripts import qualify_clean_consumer
+
     archive = tmp_path / "oversized.zip"
     with archive.open("wb") as stream:
         stream.truncate(8 * 1024 * 1024 + 1)
