@@ -1149,3 +1149,16 @@
   `150e52e788e65323f3e1e3c2debe56db15375a26`. This documentation-only change
   corrects the merge evidence for PR #985 and adds no sources or runtime
   behavior.
+
+- [x] Reconcile the installed v2 API receipt after PR #995 merged at
+  `ba2d38f0b4873a8973d88c2e24c99749c846db09`; the qualified head and merge
+  trees match at `539bc42b1631e7e3ac7b63305f47d0ac7ab1cb46`, and all 38
+  reported check rows passed across 37 distinct contexts. The evidence receipt
+  records the installed wheel/sdist loopback API journey. No source or
+  coverage claim was added.
+
+- [ ] Extend the installed wheel/sdist qualification through v2 CLI comparison
+  and evidence commands using the existing synthetic DuckDB fixture. Local
+  wheel/sdist journeys and the affected CLI/browser suite pass; exact-head
+  hosted checks remain pending. No source acquisition, production admission,
+  rights decision, coverage claim, or publication is included.
