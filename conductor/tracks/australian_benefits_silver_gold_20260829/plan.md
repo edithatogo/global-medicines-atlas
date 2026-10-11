@@ -767,7 +767,8 @@
   `needs_information` and accepted events. Every CLI readback remains
   `adjudication_authority_verified: false`, candidate-only, and
   `promotion_performed: false`; the accepted event removes only its case from
-  the queue. Focused journeys pass (2), governed E2E passes (56), and routine
+  the queue. Caller-supplied reviewer identity and rationale are not emitted
+  by the CLI. Focused journeys pass (2), governed E2E passes (56), and routine
   checks pass. Test-only follow-up; no reviewer authority or source state is
   established. Hosted qualification remains pending.
   Automated review found that the intermediate `needs_information` response
