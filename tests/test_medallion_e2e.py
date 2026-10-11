@@ -17,6 +17,7 @@ import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
 from playwright.sync_api import Locator, Page, sync_playwright
+from scripts import qualify_clean_consumer
 from test_pbs_silver import XML as PBS_XML
 from test_support.asgi_server import serve_asgi_on_loopback
 from typer.testing import CliRunner
@@ -2146,6 +2147,22 @@ def _query_synthetic_platinum(
         return result
 
 
+def _qualify_installed_medallion_export(tmp_path: Path) -> None:
+    """Verify the exact pipeline Platinum archive in both installed artifacts."""
+    export_archive = tmp_path / "research-export.zip"
+    export_digest = hashlib.sha256(export_archive.read_bytes()).hexdigest()
+    receipt_path = tmp_path / "installed-export-consumer.json"
+    receipt = qualify_clean_consumer.qualify(
+        receipt_path, research_export=export_archive
+    )
+    assert len(receipt["artifacts"]) == 2
+    assert all(
+        item["probe"]["research_export_sha256"] == export_digest
+        and item["probe"]["research_export"] == "passed"
+        for item in receipt["artifacts"]
+    )
+
+
 def _exercise_loopback_benefits_api(
     resolver: StorageNeutralResolver,
     binding: DistributionBinding,
@@ -2376,6 +2393,8 @@ def test_synthetic_cross_dataset_batch_attestation(tmp_path: Path) -> None:
 
 
 @pytest.mark.e2e
+@pytest.mark.slow
+@pytest.mark.timeout(300)
 def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -2495,6 +2514,7 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     )
     bindings = _reconcile_synthetic_outputs(landed.receipt, outputs)
     _exercise_federated_reader(landed.receipt, outputs, bindings)
+    _qualify_installed_medallion_export(tmp_path)
     assert len(bindings) == 5
     assert {item.object.layer for item in bindings} == {
         "bronze",

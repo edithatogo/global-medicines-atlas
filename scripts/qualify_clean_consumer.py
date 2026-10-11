@@ -149,6 +149,32 @@ print(json.dumps({"v2_comparison": "passed", "v2_evidence": "passed"}, sort_keys
     )
 
 
+def _research_export_probe(archive: Path) -> str:
+    """Verify a pipeline-produced Platinum archive in an installed package."""
+    template = """
+import hashlib
+import json
+from pathlib import Path
+from global_medicines_atlas.research_export_package import (
+    verify_research_export_package,
+)
+archive_path = Path(__ARCHIVE__)
+assert archive_path.is_file() and not archive_path.is_symlink()
+with archive_path.open('rb') as archive_file:
+    archive = archive_file.read(8 * 1024 * 1024 + 1)
+assert len(archive) <= 8 * 1024 * 1024
+verified = verify_research_export_package(archive)
+rebuilt = verified.archive_bytes()
+assert rebuilt == archive
+print(json.dumps({
+    'research_export': 'passed',
+    'research_export_sha256': hashlib.sha256(rebuilt).hexdigest(),
+    'research_export_bytes': len(rebuilt),
+}, sort_keys=True))
+"""
+    return template.replace("__ARCHIVE__", repr(str(archive)))
+
+
 def _atlas_probe() -> str:
     """Exercise Atlas templates and assets after installing federation extra."""
     return """
@@ -172,8 +198,19 @@ print(json.dumps({'atlas_page': 'passed', 'atlas_static_asset': 'passed'}, sort_
 """
 
 
-def qualify(output: Path) -> dict[str, Any]:
+def qualify(
+    output: Path, *, research_export: Path | None = None
+) -> dict[str, Any]:
     """Build, install, reinstall, probe, and write a platform receipt."""
+    if research_export is not None:
+        if research_export.is_symlink():
+            raise ValueError("research export must be a bounded regular file")
+        research_export = research_export.resolve(strict=True)
+        if (
+            not research_export.is_file()
+            or research_export.stat().st_size > 8 * 1024 * 1024
+        ):
+            raise ValueError("research export must be a bounded regular file")
     dist = ROOT / "build/consumer-dist"
     if dist.exists():
         shutil.rmtree(dist)
@@ -214,6 +251,18 @@ def qualify(output: Path) -> dict[str, Any]:
                     environment=environment,
                 )
             )
+            research_export_probe: dict[str, Any] = {}
+            if research_export is not None:
+                research_export_probe = json.loads(
+                    _run(
+                        [
+                            "python",
+                            "-c",
+                            _research_export_probe(research_export),
+                        ],
+                        environment=environment,
+                    )
+                )
             _run([
                 "uv",
                 "pip",
@@ -225,7 +274,11 @@ def qualify(output: Path) -> dict[str, Any]:
             atlas_probe = json.loads(
                 _run(["python", "-c", _atlas_probe()], environment=environment)
             )
-            probe = {**core_probe, **atlas_probe}
+            probe = {
+                **core_probe,
+                **atlas_probe,
+                **research_export_probe,
+            }
             _run([
                 "uv",
                 "pip",
@@ -268,8 +321,21 @@ def main() -> None:
         type=Path,
         default=Path("build/quality-receipts/consumer.json"),
     )
+    parser.add_argument(
+        "--research-export",
+        type=Path,
+        help=(
+            "verify this bounded Platinum export in each installed "
+            "wheel and source-distribution environment"
+        ),
+    )
     args = parser.parse_args()
-    print(json.dumps(qualify(args.output), sort_keys=True))
+    print(
+        json.dumps(
+            qualify(args.output, research_export=args.research_export),
+            sort_keys=True,
+        )
+    )
 
 
 if __name__ == "__main__":
