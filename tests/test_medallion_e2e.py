@@ -16,7 +16,9 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
+from playwright.sync_api import sync_playwright
 from test_pbs_silver import XML as PBS_XML
+from test_support.asgi_server import serve_asgi_on_loopback
 from typer.testing import CliRunner
 
 from global_medicines_atlas import atlas as atlas_module
@@ -2086,6 +2088,16 @@ def _query_synthetic_platinum(
                 )
                 requests.clear()
 
+        if monkeypatch is not None and tmp_path is not None:
+            _exercise_loopback_federated_atlas(
+                resolver,
+                binding,
+                resource_id,
+                semantic_dimension,
+                columns,
+                requests,
+            )
+
         result = _exercise_query_cache(
             resolver, resource.resource_id, requests, columns=columns
         )
@@ -2103,6 +2115,113 @@ def _query_synthetic_platinum(
             )
             assert len(requests) == 4
         return result
+
+
+def _exercise_loopback_federated_atlas(
+    resolver: StorageNeutralResolver,
+    binding: DistributionBinding,
+    resource_id: str,
+    semantic_dimension: PlatinumSemanticDimension,
+    columns: tuple[str, ...],
+    requests: list[httpx.Request],
+) -> None:
+    """Render the admitted synthetic product through loopback HTTP/Chromium."""
+    if semantic_dimension == "service_benefit":
+        app = create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_benefits=BenefitsService(
+                resolver,
+                cursor_key=b"synthetic-e2e-browser-cursor-key-32-bytes",
+            ),
+        )
+        link_name = "Browse pinned benefit evidence"
+        route = "/federated/benefits"
+        button_name = "Read pinned evidence"
+        region_name = "Federated evidence rows"
+        expected_row = "source_record_has_benefit"
+    else:
+        app = create_atlas_app(
+            cast("AtlasQueryService", object()),
+            federated_source_structure=SourceStructureService(
+                resolver, jurisdictions={resource_id: "AU"}
+            ),
+        )
+        link_name = "Browse pinned source-structure evidence"
+        route = "/federated/source-structure"
+        button_name = "Read pinned structure"
+        region_name = "Source-structure evidence rows"
+        expected_row = "source_contains_entity"
+
+    requests.clear()
+    resolver.evict()
+    with (
+        serve_asgi_on_loopback(app) as base_url,
+        sync_playwright() as playwright,
+    ):
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+        requested_urls: list[str] = []
+        response_statuses: dict[str, int] = {}
+        page.on("request", lambda request: requested_urls.append(request.url))
+        page.on(
+            "response",
+            lambda response: response_statuses.update({
+                response.url.split("?", maxsplit=1)[0]: response.status
+            }),
+        )
+        try:
+            home = page.goto(f"{base_url}/")
+            assert home is not None
+            assert home.status == 200
+            page.get_by_role("link", name=link_name).click()
+            assert page.url == f"{base_url}{route}"
+            page.get_by_label("Resource identifier").fill(resource_id)
+            page.get_by_label("Source columns, comma separated").fill(
+                ",".join(columns)
+            )
+            with page.expect_response(
+                lambda response: (
+                    route in response.url and response.status == 200
+                )
+            ):
+                page.get_by_role("button", name=button_name).click()
+
+            body = page.locator("main").inner_text()
+            for detail in (
+                resource_id,
+                "a" * 40,
+                binding.object.path,
+                expected_row,
+                semantic_dimension,
+                "evidence_edge",
+                "not evaluated",
+            ):
+                assert detail in body
+            rows = page.get_by_role("region", name=region_name).locator(
+                "tbody tr"
+            )
+            assert rows.count() >= 1
+            assert expected_row in rows.first.inner_text()
+            assert response_statuses[f"{base_url}/static/atlas.css"] == 200
+            assert (
+                response_statuses[f"{base_url}/static/atlas-table-scroll.js"]
+                == 200
+            )
+            assert all(url.startswith(base_url) for url in requested_urls)
+            assert [request.url.path for request in requests] == [
+                (
+                    f"/api/datasets/{binding.dataset}/revision/"
+                    f"{binding.revision}"
+                ),
+                (
+                    f"/datasets/{binding.dataset}/resolve/"
+                    f"{binding.revision}/{binding.object.path}"
+                ),
+            ]
+        finally:
+            browser.close()
+    requests.clear()
+    resolver.evict()
 
 
 @pytest.mark.e2e

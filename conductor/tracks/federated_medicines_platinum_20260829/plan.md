@@ -363,6 +363,13 @@
     Codecov, then merged as `77dea5a4` on 2026-10-07. This closes only the
     synthetic source-structure Atlas integration, not representative-user
     acceptance or the broader Phase 3 checkpoint.
+  - [x] Carry the same independently admitted synthetic MBS/PBS medallion
+    products through the Atlas over an ephemeral loopback ASGI server and
+    Chromium. From the home page, query each pinned view and verify rendered
+    identity, semantic limits, conservative evidence text, successful assets,
+    and exact anonymous remote object requests. This joins the actual Bronze
+    through Platinum fixture pipeline to browser/HTTP execution; it does not
+    qualify a deployment, production data, source coverage, or user acceptance.
   - [x] Render the existing bounded historical-change service in an opt-in
     Atlas timeline, preserving source identity, attribution failures, and
     unknown absence semantics. The synthetic Bronze snapshot pair passes
