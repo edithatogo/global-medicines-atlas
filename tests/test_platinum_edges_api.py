@@ -180,7 +180,7 @@ def test_gold_review_queue_cli_lists_pending_cases_without_promotion(
     ]
 
 
-def test_gold_review_queue_cli_applies_only_supplied_adjudications(
+def test_gold_review_queue_cli_keeps_unverified_adjudications_pending(
     tmp_path,
 ) -> None:
     candidate = graph()
@@ -233,9 +233,7 @@ def test_gold_review_queue_cli_applies_only_supplied_adjudications(
     assert payload["adjudication_event_count"] == 1
     assert payload["adjudication_authority_verified"] is False
     assert payload["cases"] == [
-        item.model_dump(mode="json")
-        for item in expected
-        if item.review_case_id != case.review_case_id
+        item.model_dump(mode="json") for item in expected
     ]
     assert payload["promotion_performed"] is False
     assert reviewer_id not in result.stdout

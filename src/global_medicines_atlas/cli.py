@@ -831,7 +831,11 @@ def _pending_gold_review_cases(
         if adjudications_file is not None
         else ()
     )
-    return regenerate_gold_edge_review_queue(cases, events), len(events)
+    # This CLI has no trusted reviewer-authority verifier; append-only event
+    # hashes cannot authenticate the caller, so every case remains pending.
+    return regenerate_gold_edge_review_queue(
+        cases, events, verified_event_ids=frozenset()
+    ), len(events)
 
 
 @app.command("benefits")

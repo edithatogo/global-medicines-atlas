@@ -412,19 +412,17 @@ def _exercise_gold_review_queue(
     append_adjudication(adjudication_path, terminal)
     events = load_adjudications(adjudication_path)
     assert events == (first, terminal)
-    remaining_cases = regenerate_gold_edge_review_queue(review_cases, events)
-    assert {item.review_case_id for item in remaining_cases} == {
-        item.review_case_id
-        for item in review_cases
-        if item.review_case_id != case.review_case_id
-    }
+    remaining_cases = regenerate_gold_edge_review_queue(
+        review_cases, events, verified_event_ids=frozenset()
+    )
+    assert remaining_cases == review_cases
     assert all(item.promotion_performed is False for item in remaining_cases)
     accepted_payload = _invoke_gold_review_cli(
         edge_file,
         adjudication_path,
     )
     assert accepted_payload["cases"] == [
-        item.model_dump(mode="json") for item in remaining_cases
+        item.model_dump(mode="json") for item in review_cases
     ]
     _assert_unverified_review_payload(
         accepted_payload,
