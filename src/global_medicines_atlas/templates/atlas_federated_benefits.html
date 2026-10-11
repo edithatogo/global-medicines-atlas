@@ -57,8 +57,8 @@
             <p>{{ page.reason or "No verified evidence page is available." }}</p>
             {% endif %}
           </section>
-        {% else %}
-          <section aria-labelledby="identity-heading">
+        {% endif %}
+        <section aria-labelledby="identity-heading">
             <h2 id="identity-heading">Exact evidence identity</h2>
             <dl>
               <div><dt>Resource</dt><dd>{{ page.identity.resource_id }}</dd></div>
@@ -85,8 +85,9 @@
               <div><dt>Query receipt SHA-256</dt><dd><code>{{ page.receipt_sha256 }}</code></dd></div>
             </dl>
             <p class="notice">These source evidence rows do not establish a medicine funding, formulary, regulatory, or terminology conclusion. Missing coverage is not negative evidence.</p>
-          </section>
+        </section>
 
+        {% if page.status == "available" %}
           <section aria-labelledby="rows-heading">
             <h2 id="rows-heading">Bounded source evidence</h2>
             {% if page.rows %}

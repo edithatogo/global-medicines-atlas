@@ -922,6 +922,11 @@ def test_browser_explains_verified_query_unavailability(
                 "heading", name="Pinned evidence unavailable"
             ).is_visible()
             assert expected_message in unavailable.inner_text()
+            main_text = page.locator("main").inner_text()
+            assert "Exact evidence identity" in main_text
+            assert "b" * 64 in main_text
+            assert "2" * 64 in main_text
+            assert "No rows were returned" not in main_text
             assert (
                 page.get_by_role(
                     "region", name="Federated evidence rows"
