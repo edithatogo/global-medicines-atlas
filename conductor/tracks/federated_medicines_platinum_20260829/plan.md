@@ -1225,3 +1225,15 @@
   after all 38 check rows and 37 distinct contexts passed; the merge tree
   matches its qualified head. No source was added or acquired; the export
   remains synthetic and unpublished.
+
+### B0-to-Platinum synthetic lineage closure (2026-10-11)
+
+- [~] Extend the existing synthetic Bronze-to-Platinum journey to begin with
+  the current B0 source index, bind its source identifier to the synthetic B1
+  acquisition and B2 manifest, and continue through Silver, Gold, Platinum,
+  federation, and installed export qualification. Assert that index presence
+  is not coverage and that B2 metadata does not contain raw payload bytes.
+  This adds no source and changes no production behavior. The previous full-path
+  test began at B1; focused and affected tests, routine, formatting, lint,
+  context/ecosystem checks, and diff checks pass locally. Hosted qualification
+  and durable merge evidence remain pending.

@@ -32,6 +32,7 @@ from global_medicines_atlas.bronze_landing import (
     BronzeLanding,
     land_bronze_payload,
 )
+from global_medicines_atlas.bronze_source_index import build_b0_source_index
 from global_medicines_atlas.bronze_storage import (
     LocalFilesystemPayloadStore,
     PayloadStore,
@@ -156,6 +157,11 @@ from global_medicines_atlas.reuse_gate import acquire_new_decision
 from global_medicines_atlas.review_queue import (
     append_adjudication,
     load_adjudications,
+)
+from global_medicines_atlas.source_catalog import load_catalog
+from global_medicines_atlas.source_landing_factory import (
+    LandingOverrides,
+    build_source_landing_queue,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -851,6 +857,44 @@ def _assert_landed_b1_projection(
         assert workstation_path not in encoded
         assert payload not in encoded
     return parquet
+
+
+def _assert_source_is_in_b0_index(source_id: str) -> str:
+    """Resolve existing catalogue metadata without inferring coverage."""
+    catalog = load_catalog()
+    index = build_b0_source_index(
+        catalog,
+        build_source_landing_queue(catalog, LandingOverrides.load()),
+    )
+    source = next(item for item in index.sources if item.source_id == source_id)
+    assert index.index_presence_implies_coverage is False
+    assert index.missing_source_is_negative_evidence is False
+    assert source.indexed is True
+    assert source.index_presence_implies_coverage is False
+    assert source.missing_source_is_negative_evidence is False
+    return source.source_id
+
+
+def _assert_b2_manifest_binds_payload(
+    landing: BronzeLanding,
+    *,
+    source_id: str,
+    payload: bytes,
+) -> None:
+    """Verify B2 row identity and ensure its manifest omits raw bytes."""
+    manifest = landing.raw_evidence_manifest
+    assert manifest.authoritative is True
+    assert manifest.row_count == 1
+    record = manifest.rows[0]
+    assert record.stratum == "B2"
+    assert record.source_id == source_id
+    assert (
+        record.acquisition_id
+        == require_temporal(landing.receipt.temporal).acquisition_id
+    )
+    assert record.payload_sha256 == hashlib.sha256(payload).hexdigest()
+    assert record.byte_count == len(payload)
+    assert record.payload_contents_in_metadata is False
 
 
 def _assert_projection_rejects_embedded_b2(
@@ -2410,7 +2454,8 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """Verify exact synthetic lineage through each layer without publication."""
+    """Verify B0-to-B2 and exact synthetic lineage through Platinum."""
+    b0_source_id = _assert_source_is_in_b0_index(SOURCE_ID)
     raw = _payload()
     previous_raw = (
         b"<MBS_XML><Data><ItemNum>00123</ItemNum>"
@@ -2448,10 +2493,16 @@ def test_synthetic_evidence_flows_from_bronze_to_platinum_query(
     assert landed.payload_path.read_bytes() == raw
     assert landed.receipt.evidence_class is EvidenceClass.SYNTHETIC
     assert isinstance(landed, BronzeLanding)
+    assert landed.receipt.source.source_id == b0_source_id
     assert landed.receipt.payload.sha256 == hashlib.sha256(raw).hexdigest()
     assert landed.admission.state is BronzeAdmissionState.ACCEPTED
     assert landed.receipt.rights_state is RightsState.UNKNOWN
     assert landed.receipt.satisfies_live_gate is False
+    _assert_b2_manifest_binds_payload(
+        landed,
+        source_id=b0_source_id,
+        payload=raw,
+    )
     b1_manifest = _assert_landed_b1_projection(landed, payload=raw)
     _assert_projection_rejects_embedded_b2(
         landed,
