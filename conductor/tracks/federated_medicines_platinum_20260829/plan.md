@@ -1176,3 +1176,17 @@
   `fb96f04b1c4ec1795c2feef84b0f0ed2bc4c405d`. No source acquisition,
   production admission, rights decision, source-coverage claim, or publication
   is included.
+
+
+### Installed synthetic medallion export handoff (2026-10-11)
+
+- [~] Verify the deterministic Platinum export produced by the full synthetic
+  Bronze-to-Platinum pipeline from clean installed wheel and source-distribution
+  environments. The initial qualification failed because the clean-consumer
+  command did not accept a pipeline export. It now verifies the exact archive
+  in both installed artifacts, requires byte-for-byte rebuild identity and the
+  same SHA-256, and rejects inputs over 8 MiB before building. The combined
+  medallion/consumer tests pass (27); routine, Ruff, formatting, `ty`,
+  BasedPyright for the changed qualifier, context, ecosystem, and diff checks
+  pass locally. Hosted exact-head verification remains pending. No source was
+  added or acquired; the export remains synthetic and unpublished.

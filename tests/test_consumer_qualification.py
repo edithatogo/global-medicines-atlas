@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 
 import pytest
+from scripts import qualify_clean_consumer
 
 from global_medicines_atlas import consumer_qualification
 from global_medicines_atlas.consumer_qualification import (
@@ -21,6 +22,29 @@ BASELINE = ROOT / "contracts/openapi-v1.json"
 
 def _baseline() -> dict[str, object]:
     return json.loads(BASELINE.read_text(encoding="utf-8"))
+
+
+def test_clean_consumer_rejects_oversized_research_export_before_build(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Reject oversized optional input before building any artifacts."""
+    archive = tmp_path / "oversized.zip"
+    with archive.open("wb") as stream:
+        stream.truncate(8 * 1024 * 1024 + 1)
+
+    def unexpected_build(
+        _command: list[str], *, environment: Path | None = None
+    ) -> str:
+        del environment
+        pytest.fail("an oversized input must be rejected before build")
+
+    monkeypatch.setattr(qualify_clean_consumer, "_run", unexpected_build)
+    with pytest.raises(
+        ValueError, match="research export must be a bounded regular file"
+    ):
+        qualify_clean_consumer.qualify(
+            tmp_path / "receipt.json", research_export=archive
+        )
 
 
 def test_installed_metadata_is_complete_and_dynamic_version_matches() -> None:
