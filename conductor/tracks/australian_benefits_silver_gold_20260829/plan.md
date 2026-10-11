@@ -121,7 +121,15 @@
   mappings, then continue source-specific date/currency/value harmonisation.
   Header mapping run passed; value candidates and their per-field outcome
   profiler are now implemented. Value-level real-source execution passed in
-  run `33310284274`, with unsupported values explicitly retained.
+  run `33310284274`, with unsupported values explicitly retained. Exact-main
+  requalification on `02ea12284c86c97c7c4151db58e19fa4d7bcf5c1` passed in run
+  `38165126564`: all 13,742 cells across four sheets were reconciled to 99
+  observed columns, with 97 headers and four unlabelled cells. The value-free
+  report retains 36 unrepresentable numeric outcomes and 1,280 date-shaped
+  cells without selecting date semantics; `semantic_promotion` remains false.
+  See `quality/qualifications/mbs-p7-workbook-field-lineage-20261011.json`.
+  This closes exact-main storage/header/lineage requalification only; broader
+  value harmonisation and source-era date qualification remain open.
 
 ## Workbook value harmonisation
 
@@ -179,6 +187,16 @@
   review. Run `33310284274` passed: all 13,742 cells accounted for, 924
   converted, 36 unrepresentable decimals and 1,280 unqualified dates retained.
   No date-era qualification, semantic promotion or publication is inferred.
+- [x] Re-run the value-free P7 storage, header, field-lineage, and conversion
+  outcome profiler on current main. Hosted run `38165126564` verified source
+  digest `2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8`,
+  recorded all four sheet and 13,742 cell denominators, and retained 99
+  column-lineage records. The field-lineage report digest is
+  `709273b2ce5da48e2efa36dfbfeac1221dc72b6de241eafbdcbaa7fe8bbf9a5b`.
+  No cell values were retained; 36 values remain unrepresentable, the date
+  profile remains unset, semantic promotion is false, and no product was
+  published. Durable aggregate receipt:
+  `quality/qualifications/mbs-p7-workbook-field-lineage-20261011.json`.
 
 - [x] Preserve sheet identity when combining batches and round-tripping
   Parquet, including an explicit empty-sheet manifest and property presence.
