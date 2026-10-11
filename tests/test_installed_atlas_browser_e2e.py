@@ -125,12 +125,10 @@ def _exercise_artifact(artifact: Path, root: Path, uv: str) -> None:
                 assert page.get_by_role(
                     "heading", name="Global Medicines Atlas"
                 ).is_visible()
-                assert any(
-                    url.endswith("/static/atlas.css") for url in responses
-                )
-                assert any(
-                    url.endswith("/static/atlas-autocomplete.js")
-                    for url in responses
+                assert responses[f"{server['url']}/static/atlas.css"] == 200
+                assert (
+                    responses[f"{server['url']}/static/atlas-autocomplete.js"]
+                    == 200
                 )
                 assert all(url.startswith(server["url"]) for url in requested)
             finally:

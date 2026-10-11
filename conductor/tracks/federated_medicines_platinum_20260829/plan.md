@@ -1082,7 +1082,9 @@
   serve the actual installed package on loopback; Chromium verifies the page,
   stylesheet, script, and loopback-only requests. The focused journey passes,
   the governed E2E lane passes (57), and Test-Goblin routine passes. No source,
-  acquisition, or coverage claim changed.
+  acquisition, or coverage claim changed. A P2 review finding tightened the
+  stylesheet and script checks to require HTTP 200 rather than response-event
+  presence; the corrected focused journey and routine checks pass.
 
 - [x] Reconcile the receipt after PR #986 merged at
   `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head
