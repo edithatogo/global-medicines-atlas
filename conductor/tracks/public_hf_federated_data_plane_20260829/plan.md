@@ -187,6 +187,14 @@
     routine and typing gates pass. Mock transport only; no live admission or
     publication. PR #840 merged as `71d567f6e4a0346702a38000e9381f96438c97c2`
     after all 37 hosted checks passed. See the append-only evidence entry.
+  - [x] Add byte-closed synthetic receipt evidence and caller-owned exact
+    admission profiles to the same actual-output journey before reader setup.
+    The B1, Silver, Gold nodes/edges, and Platinum export are independently
+    checked for contract digest, authority, path, object digest/size, source and
+    acquisition, layer/cohort, and receipt roles. Changed contract bytes and a
+    forged expected path are rejected. The resulting records drive the
+    FederatedReader and PBS identity/Atlas path. No source coverage, rights
+    clearance, live admission, or publication is established.
 - [x] Reject duplicate JSON member names consistently at v4 distribution,
   admission, reader, receipt-closure, and consumer boundaries. Three synthetic
   regressions failed before the shared strict parser; 436 affected federation
