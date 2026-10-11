@@ -8,6 +8,8 @@ from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
     V2Conclusion,
+    V2EvidenceQuery,
+    V2EvidenceResponse,
     V2ResponseMetadata,
 )
 from global_medicines_atlas.product_contracts import (
@@ -195,4 +197,18 @@ class InstalledAtlasEvidenceService:
             conclusions=conclusions,
             comparison_validity=(),
             validity_completeness="partial",
+        )
+
+    def v2_evidence(self, query: V2EvidenceQuery) -> V2EvidenceResponse:
+        clocks = AsOfClocks(
+            valid_at=query.valid_at,
+            observed_at=query.observed_at,
+        )
+        return V2EvidenceResponse(
+            metadata=V2ResponseMetadata(
+                generated_at=NOW,
+                clocks=clocks,
+                page=PageMetadata(limit=query.limit, returned=0),
+            ),
+            evidence=(),
         )

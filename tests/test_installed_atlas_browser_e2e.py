@@ -28,12 +28,13 @@ from starlette.applications import Starlette
 from starlette.routing import Mount
 from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
 from global_medicines_atlas.atlas import V2AtlasQueryService
+from global_medicines_atlas.platinum_v2_api import V2ComparisonService, create_v2_app
 
 sys.path.insert(0, sys.argv[2])
 from test_support.atlas_evidence_service import InstalledAtlasEvidenceService
 
 service = InstalledAtlasEvidenceService()
-app = Starlette(routes=[
+atlas_app = Starlette(routes=[
     Mount(
         "/v2",
         app=create_atlas_app(
@@ -43,6 +44,15 @@ app = Starlette(routes=[
     ),
     Mount("/", app=create_atlas_app(cast(AtlasQueryService, service))),
 ])
+api_app = create_v2_app(cast(V2ComparisonService, service))
+
+class InstalledArtifactApplication:
+    async def __call__(self, scope, receive, send):
+        path = scope.get("path", "")
+        target = api_app if path.startswith("/api/v2/") else atlas_app
+        await target(scope, receive, send)
+
+app = InstalledArtifactApplication()
 listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 listener.bind(("127.0.0.1", 0))
@@ -198,6 +208,57 @@ def _exercise_v2_browser(
     assert page.get_by_text("fixture-v2").count() == 5
     assert not page.locator("table tbody tr").count()
     assert all(url.startswith(server_url) for url in requested)
+    _exercise_v2_api(server_url)
+
+
+def _exercise_v2_api(server_url: str) -> None:
+    dimensions = (
+        "service_benefit",
+        "funding",
+        "regulatory",
+        "formulary",
+        "terminology",
+    )
+    response = httpx.get(
+        f"{server_url}/api/v2/comparisons",
+        params=[
+            ("concept_id", "rx:fixture"),
+            ("jurisdictions", "AU"),
+            *(("dimensions", dimension) for dimension in dimensions),
+            ("valid_at", "2026-10-06T12:00:00+00:00"),
+            ("observed_at", "2026-10-06T12:00:00+00:00"),
+        ],
+        headers={"accept": "application/json"},
+        timeout=5,
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["metadata"]["api_version"] == "v2"
+    conclusions = payload["conclusions"]
+    assert len(conclusions) == len(dimensions)
+    assert {item["dimension"] for item in conclusions} == set(dimensions)
+    for item in conclusions:
+        assert item["state"] == "unknown"
+        assert item["status_code"] is None
+        assert "No source assertion" in item["terminology"]["native_label"]
+        assert item["uncertainty"]["level"] == "unknown"
+    evidence_response = httpx.get(
+        f"{server_url}/api/v2/evidence",
+        params={
+            "concept_id": "rx:fixture",
+            "jurisdiction": "AU",
+            "dimension": "service_benefit",
+            "valid_at": "2026-10-06T12:00:00+00:00",
+            "observed_at": "2026-10-06T12:00:00+00:00",
+        },
+        headers={"accept": "application/json"},
+        timeout=5,
+    )
+    assert evidence_response.status_code == 200
+    evidence_payload = evidence_response.json()
+    assert evidence_payload["metadata"]["api_version"] == "v2"
+    assert evidence_payload["metadata"]["page"]["returned"] == 0
+    assert evidence_payload["evidence"] == []
 
 
 def _exercise_artifact(artifact: Path, root: Path, uv: str) -> None:
