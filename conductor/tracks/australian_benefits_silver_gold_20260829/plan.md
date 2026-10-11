@@ -1322,10 +1322,12 @@
   Ruff, `ty`, BasedPyright, security, rights, provenance, regeneration, and full
   Test-Goblin lanes where supported. The focused B0-to-Platinum change passed
   24 affected tests and its focused E2E. PR #1005 passed all 38 hosted check
-  rows; PR #1006 reran the current-main matrix after a documentation-only
-  reconciliation and also passed all 38 rows across 37 contexts. The current
-  source/test tree differs from the qualified PR #1005 tree only in the
-  Platinum plan and evidence files. Hosted lanes include Python 3.14 unit,
+  rows. PR #1006 passed all 38 hosted check rows across 37 contexts after a
+  documentation-only reconciliation; its mutation and Gremlins execution
+  steps were skipped by the workflow's non-heavy-change rules, so those lane
+  results are reused from #1005. The source/test tree is unchanged from the
+  qualified PR #1005 tree; the intervening changes are documentation only.
+  Hosted lanes across these two PRs include Python 3.14 unit,
   integration, E2E, smoke, property, edge, routine, strict, package, coverage,
   mutation, Gremlins, dependency, regeneration and profiling; representative
   performance; Linux/macOS/Windows consumers; security/context, recovery,
