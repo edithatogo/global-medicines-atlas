@@ -53,6 +53,10 @@ def test_sparql_executes_exact_synthetic_mbs_pbs_projections() -> None:
         case = cast("dict[str, object]", cases[family])
         assert case["exact_payload_and_direction_parity"] is True
     assert receipt["disposition"] == "retain-preview"
+    assert receipt["engine_version"] == "0.4.11"
+    assert receipt["engine_image_digest"] == (
+        "sha256:af35499a41f8c9768a43b2c31d0f32726dd6ec20855653dfa07814c5dce13565"
+    )
     assert receipt["source_scope"] == "synthetic-mbs-pbs-only"
     assert receipt["source_payloads_accessed"] is False
     assert receipt["rights_clearance_claimed"] is False

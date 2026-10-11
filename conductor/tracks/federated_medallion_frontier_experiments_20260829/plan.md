@@ -303,10 +303,14 @@
     Focused Neo4j unit tests pass (10), with Ruff, format, `ty`, BasedPyright,
     and routine repository checks passing.
 - [~] Execute the existing RDF-star graph preview in a digest-pinned,
-  disposable Oxigraph/SPARQL service and compare queried node payloads and
-  directed edge annotations with the same synthetic MBS/PBS Gold reference.
-  This closes engine execution parity only for the existing synthetic graphs;
-  it does not add sources, clear rights, or promote RDF/SPARQL for production.
+  disposable Oxigraph 0.4.11/SPARQL service and compare queried node payloads
+  and directed edge annotations with the same synthetic MBS/PBS Gold
+  reference. Oxigraph 0.5.11 rejects this legacy RDF-star quoted-triple subject
+  grammar; the pinned 0.4.11 parser accepts it in a local library reproduction.
+  The engine check therefore qualifies only the existing preview grammar on
+  the legacy-compatible engine. It adds no sources, rights clearance, or
+  production promotion, and does not establish compatibility with Oxigraph
+  0.5+ RDF 1.2.
 - [ ] Confirm the intended failure before implementation.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and

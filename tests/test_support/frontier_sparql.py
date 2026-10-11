@@ -20,9 +20,9 @@ from global_medicines_atlas.frontier_graph_export import (
     rdf_iri_reference,
 )
 
-_ENGINE_VERSION = "0.5.11"
+_ENGINE_VERSION = "0.4.11"
 _IMAGE_DIGEST = (
-    "sha256:7532c1f9aa5f28c0dc6a4243198f7f6144017fab7429bf6c164a89fec9411767"
+    "sha256:af35499a41f8c9768a43b2c31d0f32726dd6ec20855653dfa07814c5dce13565"
 )
 _QUERY_TIMEOUT_SECONDS = 10.0
 _DISCOVERY_ATTEMPTS = 60

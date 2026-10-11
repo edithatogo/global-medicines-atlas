@@ -156,7 +156,7 @@ jobs:
         run: >-
           docker run --detach --rm --name gma-oxigraph-synthetic
           --publish 127.0.0.1:7878:7878
-          oxigraph/oxigraph@sha256:7532c1f9aa5f28c0dc6a4243198f7f6144017fab7429bf6c164a89fec9411767
+          oxigraph/oxigraph@sha256:af35499a41f8c9768a43b2c31d0f32726dd6ec20855653dfa07814c5dce13565
           serve --bind 0.0.0.0:7878 --location /tmp/oxigraph
       - name: Execute synthetic MBS and PBS graph projections in Neo4j
         env:
