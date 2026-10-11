@@ -312,7 +312,10 @@
     granularity, conservative coverage/comparison states, and exact anonymous
     metadata/object reads. This closes the in-process-only transport seam for
     this synthetic API result, not the broader all-result-types checkpoint or
-    live admission/production qualification.
+    live admission/production qualification. PR #979 merged as
+    `cc92a53516d05c5b91e479ac9c53659d1607987c` after all 38 reported checks
+    passed; merge tree `a871e17233e1848c493d0b5b739498b4e74b1368` matches
+    the qualified head tree.
 
 ### Deterministic Gold review-queue CLI (2026-10-10)
 
