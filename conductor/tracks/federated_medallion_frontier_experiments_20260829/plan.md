@@ -338,6 +338,10 @@
   all 2 MBS and 9 PBS directed reifications. The committed metadata-only
   receipt is `quality/qualifications/oxigraph-rdf12-reification-semantic-parity-20261012.json`
   (SHA-256 `047d665c960ff8e4ffb0e2d551543a8cd3cdbdcf4224e7705ca4f9702e2fda65`).
+  All 29 required status contexts and the Codecov patch check passed on final
+  head `3b117acbc02305c97cacaac5fbdef7e6991ef5ad`; PR #1016 merged at
+  `2da8b2382a419634cc8d92242a1553952d5211f9` on 2026-10-11. The merge
+  receipt is reconciled in the evidence ledger.
   This closes RDF 1.2 reification-term parity for synthetic MBS/PBS only; it
   does not resolve rights, source coverage, confidence calibration, or
   production authority.
