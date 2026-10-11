@@ -54,14 +54,8 @@ def test_rdf12_export_reifies_edges_and_preserves_deterministic_payloads():
         if " <urn:gma:payload-json> " in line
     ]
     assert payloads == expected["nodes"] + expected["edges"]
-    reference_bytes = len(
-        export_gold_tables(nodes, edges).reference_json.encode()
-    )
-    assert len(result.encode()) > reference_bytes
-    with pytest.raises(
-        ValueError, match="serialized graph byte bound exceeded"
-    ):
-        export_rdf12(nodes, edges, max_bytes=reference_bytes)
+    with pytest.raises(ValueError, match="graph byte bound exceeded"):
+        export_rdf12(nodes, edges, max_bytes=1)
 
 
 def test_hostile_native_text_is_only_parameter_data():

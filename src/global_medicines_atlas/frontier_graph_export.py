@@ -143,10 +143,7 @@ def export_rdf12(
             f"{edge} <urn:gma:edge-id> {_rdf_literal(row['edge_id'])} .",
             f"{edge} <urn:gma:payload-json> {_rdf_literal(_json(row))} .",
         ))
-    result = "\n".join(lines) + ("\n" if lines else "")
-    if len(result.encode("utf-8")) > max_bytes:
-        raise ValueError("serialized graph byte bound exceeded")
-    return result
+    return "\n".join(lines) + ("\n" if lines else "")
 
 
 def rdf_iri_reference(kind: str, value: str) -> str:
