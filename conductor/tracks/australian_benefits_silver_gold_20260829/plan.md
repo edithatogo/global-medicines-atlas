@@ -778,19 +778,19 @@
   journeys, governed E2E lane, and routine checks pass again. The review
   conversation was resolved against corrected commit `8aee112f`; hosted checks
   passed on the final head before merge.
-- [~] Require independent authority verification for every event in a terminal
+- [x] Require independent authority verification for every event in a terminal
   adjudication chain before it can remove a Gold edge from the review queue.
-  The review CLI currently has no trusted authority verifier, so caller-supplied
-  terminal events now leave all cases pending; a future trusted verifier must
-  identify every event in the chain. The regression failed before this guard:
-  terminal events filtered cases with `adjudication_authority_verified: false`.
-  Focused Gold review/Platinum API/synthetic MBS-PBS Bronze-to-Platinum tests
-  pass (25), routine checks and typing pass, and the full pinned local profile
-  reached 96.90% coverage with 6,223 passed, 3 skipped and one stale CLI
-  expectation failure. The stale assertion was corrected and the affected
-  tests rerun successfully. Hosted exact-head qualification remains pending.
-  No reviewer identity, authority, adjudication, promotion, source, licensing
-  conclusion, or publication is created or inferred.
+  The review CLI has no trusted authority verifier, so caller-supplied terminal
+  events leave all cases pending; a future trusted verifier must identify every
+  event in the chain. Focused Gold review/Platinum API/synthetic MBS-PBS
+  Bronze-to-Platinum tests pass (25), routine checks and typing pass. The full
+  pinned local profile first reached 96.90% coverage with 6,223 passed,
+  3 skipped and one stale CLI expectation failure; after correcting the stale
+  assertion, the affected tests passed. PR #1018 merged at exact head
+  `9eb933facc132c3efb5a91dc761f007ef54454bd` as
+  `adc2c297056e996fb75b52f3293af65a0a5450bb`; all 40 reported hosted check
+  rows passed. No reviewer identity, authority, adjudication, promotion,
+  source, licensing conclusion, or publication is created or inferred.
 
 ### Platinum PBS edge readback coverage (2026-10-09)
 
