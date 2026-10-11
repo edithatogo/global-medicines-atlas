@@ -773,7 +773,8 @@
   Automated review found that the intermediate `needs_information` response
   also needed an explicit candidate-only assertion. Added it; the focused
   journeys, governed E2E lane, and routine checks pass again. The review
-  conversation remains open until the corrected head is rechecked.
+  conversation was resolved against corrected commit `8aee112f`; hosted checks
+  on that head are pending.
 
 ### Platinum PBS edge readback coverage (2026-10-09)
 
