@@ -74,8 +74,8 @@ class InstalledAtlasEvidenceService:
             dimension=EvidenceDimension.REGULATORY,
             state=ProductState.UNKNOWN,
             terminology=Terminology(
-                native_code="not-covered",
-                native_label="Not covered in this synthetic fixture",
+                native_code="unknown",
+                native_label="No source assertion in this synthetic fixture",
                 native_system="fixture",
                 canonical_code=query.concept_id,
                 canonical_label="Example medicine",

@@ -1099,7 +1099,10 @@
   Focused wheel/sdist loopback Chromium E2E passes; typing, routine, context,
   ecosystem, and diff checks pass. The local governed E2E lane reports 54
   passed and three unrelated existing browser-test teardown timeouts during
-  `browser.close`; awaiting protected exact-head CI before completion.
+  `browser.close`; hosted Python 3.14 E2E passed. Automated review found
+  negative-sounding native fixture terminology under UNKNOWN; this is corrected
+  to neutral no-assertion wording and guarded in Chromium. Focused rerun passes;
+  awaiting exact-head CI for the review fix.
 
 - [x] Reconcile the receipt after PR #986 merged at
   `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head

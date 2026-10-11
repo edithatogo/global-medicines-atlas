@@ -120,7 +120,13 @@ def _exercise_browser(server_url: str) -> None:
             ).is_visible()
             card = page.locator("article[data-state='unknown']")
             assert card.count() == 1
-            assert "not evidence of a negative" in card.inner_text()
+            card_text = card.inner_text().casefold()
+            assert "not evidence of a negative" in card_text
+            assert "no source assertion" in card_text
+            assert not any(
+                negative in card_text
+                for negative in ("not covered", "not approved", "not funded")
+            )
             card.get_by_text("Review source evidence").click()
             assert card.get_by_role(
                 "link", name="Synthetic public evidence"
