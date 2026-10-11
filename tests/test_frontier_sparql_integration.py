@@ -16,7 +16,7 @@ from test_support.frontier_sparql import qualify_graph_exports
 
 from global_medicines_atlas.frontier_graph_export import (
     export_gold_tables,
-    export_rdf_star,
+    export_rdf12,
 )
 from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
 from global_medicines_atlas.pbs_gold_graph import project_pbs_gold_graph_arrow
@@ -38,11 +38,11 @@ def test_sparql_executes_exact_synthetic_mbs_pbs_projections() -> None:
         {
             "mbs": (
                 export_gold_tables(mbs_nodes, mbs_edges),
-                export_rdf_star(mbs_nodes, mbs_edges),
+                export_rdf12(mbs_nodes, mbs_edges),
             ),
             "pbs": (
                 export_gold_tables(pbs_nodes, pbs_edges),
-                export_rdf_star(pbs_nodes, pbs_edges),
+                export_rdf12(pbs_nodes, pbs_edges),
             ),
         },
     )
@@ -53,10 +53,11 @@ def test_sparql_executes_exact_synthetic_mbs_pbs_projections() -> None:
         case = cast("dict[str, object]", cases[family])
         assert case["exact_payload_and_direction_parity"] is True
     assert receipt["disposition"] == "retain-preview"
-    assert receipt["engine_version"] == "0.4.11"
+    assert receipt["engine_version"] == "0.5.9"
     assert receipt["engine_image_digest"] == (
-        "sha256:af35499a41f8c9768a43b2c31d0f32726dd6ec20855653dfa07814c5dce13565"
+        "sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e"
     )
+    assert receipt["api"] == "sparql-1.1-protocol-rdf-1.2"
     assert receipt["source_scope"] == "synthetic-mbs-pbs-only"
     assert receipt["source_payloads_accessed"] is False
     assert receipt["rights_clearance_claimed"] is False

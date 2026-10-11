@@ -1,4 +1,4 @@
-"""Disposable Oxigraph execution for synthetic RDF-star Gold previews.
+"""Disposable Oxigraph execution for synthetic RDF 1.2 Gold previews.
 
 This test-only adapter does not admit graphs, resolve rights, or grant
 production authority.
@@ -20,9 +20,9 @@ from global_medicines_atlas.frontier_graph_export import (
     rdf_iri_reference,
 )
 
-_ENGINE_VERSION = "0.4.11"
+_ENGINE_VERSION = "0.5.9"
 _IMAGE_DIGEST = (
-    "sha256:af35499a41f8c9768a43b2c31d0f32726dd6ec20855653dfa07814c5dce13565"
+    "sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e"
 )
 _QUERY_TIMEOUT_SECONDS = 10.0
 _DISCOVERY_ATTEMPTS = 60
@@ -34,8 +34,9 @@ SELECT ?node ?payload WHERE {
 """
 _EDGE_QUERY = """
 SELECT ?source ?target ?edge ?edgeId ?payload WHERE {
-  << ?source <urn:gma:connects-to> ?target >> <urn:gma:edge-id> ?edgeId .
-  << ?source <urn:gma:connects-to> ?target >> <urn:gma:edge-resource> ?edge .
+  ?edge <urn:gma:source> ?source .
+  ?edge <urn:gma:target> ?target .
+  ?edge <urn:gma:edge-id> ?edgeId .
   ?edge <urn:gma:payload-json> ?payload .
 }
 """
@@ -120,10 +121,10 @@ def qualify_graph_exports(
         raise RuntimeError("Oxigraph experiment store must start empty")
 
     cases: dict[str, object] = {}
-    for family, (export, rdf_star) in sorted(exports.items()):
+    for family, (export, rdf_graph) in sorted(exports.items()):
         if cases:
             _execute_update(base_url, "DELETE WHERE { ?s ?p ?o }")
-        _load_graph(base_url, rdf_star)
+        _load_graph(base_url, rdf_graph)
         recovered = _read_graph(base_url)
         if _canonical_json(recovered) != export.reference_json:
             raise ValueError(
@@ -146,7 +147,7 @@ def qualify_graph_exports(
         "engine": "oxigraph",
         "engine_version": _ENGINE_VERSION,
         "engine_image_digest": _IMAGE_DIGEST,
-        "api": "sparql-1.1-protocol-rdf-star",
+        "api": "sparql-1.1-protocol-rdf-1.2",
         "disposition": "retain-preview",
         "source_scope": "synthetic-mbs-pbs-only",
         "source_payloads_accessed": False,

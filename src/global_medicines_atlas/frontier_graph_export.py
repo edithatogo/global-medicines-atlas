@@ -108,6 +108,47 @@ def export_rdf_star(
     return result
 
 
+def export_rdf12(
+    nodes: pa.Table,
+    edges: pa.Table,
+    *,
+    max_rows: int = 100_000,
+    max_bytes: int = 64 * 1024 * 1024,
+) -> str:
+    """Return a deterministic RDF 1.2 N-Triples projection of Gold tables.
+
+    Each edge resource reifies its source-to-target triple with an RDF 1.2
+    triple term. Explicit endpoint properties keep ordinary SPARQL 1.1
+    readback possible while preserving the full source row as JSON.
+    """
+    exported = export_gold_tables(
+        nodes, edges, max_rows=max_rows, max_bytes=max_bytes
+    )
+    payload = json.loads(exported.reference_json)
+    lines: list[str] = []
+    for row in payload["nodes"]:
+        subject = rdf_iri_reference("node", row["node_id"])
+        lines.append(
+            f"{subject} <urn:gma:payload-json> {_rdf_literal(_json(row))} ."
+        )
+    for row in payload["edges"]:
+        source = rdf_iri_reference("node", row["source_node_id"])
+        target = rdf_iri_reference("node", row["target_node_id"])
+        edge = rdf_iri_reference("edge", row["edge_id"])
+        triple_term = f"<<( {source} <urn:gma:connects-to> {target} )>>"
+        lines.extend((
+            f"{edge} <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> {triple_term} .",
+            f"{edge} <urn:gma:source> {source} .",
+            f"{edge} <urn:gma:target> {target} .",
+            f"{edge} <urn:gma:edge-id> {_rdf_literal(row['edge_id'])} .",
+            f"{edge} <urn:gma:payload-json> {_rdf_literal(_json(row))} .",
+        ))
+    result = "\n".join(lines) + ("\n" if lines else "")
+    if len(result.encode("utf-8")) > max_bytes:
+        raise ValueError("serialized graph byte bound exceeded")
+    return result
+
+
 def rdf_iri_reference(kind: str, value: str) -> str:
     """Encode one untrusted graph identifier as an ASCII-safe IRI reference."""
     return f"<urn:gma:{kind}:{quote(value, safe='-._~:')}>"

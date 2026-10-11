@@ -313,10 +313,14 @@
   edges. A failing-first hosted run and local HTTP reproduction found that
   Oxigraph 0.5.11 rejects the legacy quoted-triple subject grammar and that
   SPARQL readback uses bare IRIs; both are now handled and tested. This
-  qualifies the preview only on the pinned legacy-compatible engine. No source,
-  rights clearance, or production promotion is included; Oxigraph 0.5+ RDF 1.2
-  compatibility remains open.
-- [ ] Confirm the intended failure before implementation.
+  retains a qualification of the legacy preview on its pinned engine only. It
+  does not qualify current RDF 1.2 compatibility, rights clearance, or
+  production promotion.
+- [x] Add and execute an RDF 1.2 projection on digest-pinned Oxigraph 0.5.9,
+  retaining the RDF-star 0.4.11 receipt as legacy evidence. The projection
+  uses `rdf:reifies` with a triple term and explicit source/target properties
+  for SPARQL 1.1 readback. Local RDF parsing and HTTP parity pass; hosted proof
+  and review resolution remain pending.
 - [x] Produce NetworkX reference, Cypher/Neo4j, and RDF-star projections
   (deterministic parameterized Cypher and
   RDF-star preview projections from the same Gold node/edge tables. Local
