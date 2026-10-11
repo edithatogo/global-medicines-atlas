@@ -1,9 +1,9 @@
 {
   "schema_id": "global-medicines-atlas.frontier-experiment-disposition",
   "schema_version": 1,
-  "recorded_at": "2026-10-11T12:30:44Z",
+  "recorded_at": "2026-10-11T13:08:01Z",
   "track_id": "federated_medallion_frontier_experiments_20260829",
-  "review_scope": "Reconciled the existing frontier disposition with the source-neutral latency-bound contract update; no experiments or new sources, acquisitions, external services, or production promotions.",
+  "review_scope": "Reconciled the existing frontier disposition with the source-neutral latency contract and its exact selected workload binding; no experiments or new sources, acquisitions, external services, or production promotions.",
   "reviewed_inputs": [
     {
       "path": "quality/qualifications/frontier-experiment-matrix.json",
@@ -76,7 +76,7 @@
     "production_authority_promoted": false
   },
   "reconciliation": {
-    "change": "Matrix schema v2 predeclares per-workload latency ceilings; remote-query qualification schema v2 enforces each observation against its profile.",
+    "change": "Matrix schema v2 predeclares per-workload latency ceilings. Remote-query schema v2 identifies remote_query_streaming, binds its tiny workload to the same ceilings, and rejects threshold or matrix-profile drift.",
     "experiment_run": false,
     "existing_dispositions_changed": false,
     "remote_query_measurement": "deferred; existing object rights prerequisite remains unqualified by this update"

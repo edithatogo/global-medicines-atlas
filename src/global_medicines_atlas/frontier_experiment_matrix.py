@@ -19,6 +19,19 @@ class WorkloadSize(StrEnum):
     LARGE = "large"
 
 
+REMOTE_QUERY_EXPERIMENT_ID = "remote_query_streaming"
+REMOTE_QUERY_WORKLOAD_SIZE = WorkloadSize.TINY
+
+
+def maximum_latency_ceiling_ns(size: WorkloadSize) -> int:
+    """Return the versioned maximum latency for a workload profile."""
+    return {
+        WorkloadSize.TINY: 30_000_000_000,
+        WorkloadSize.MEDIUM: 120_000_000_000,
+        WorkloadSize.LARGE: 600_000_000_000,
+    }[size]
+
+
 class FrontierDisposition(StrEnum):
     REUSED = "reused"
     DEFER = "defer"
@@ -164,9 +177,25 @@ class FrontierExperimentMatrix(FrozenModel):
             for dimension in dimensions
         ):
             raise ValueError("workload bounds must increase by profile")
+        if any(
+            item.maximum_latency_ns != maximum_latency_ceiling_ns(item.size)
+            for item in ordered
+        ):
+            raise ValueError(
+                "workload latency ceilings differ from the versioned profile"
+            )
         ids = {item.experiment_id for item in self.experiments}
         if ids != set(_REQUIRED_PREREQUISITES):
             raise ValueError("frontier experiment family denominator differs")
+        remote_query = next(
+            item
+            for item in self.experiments
+            if item.experiment_id == REMOTE_QUERY_EXPERIMENT_ID
+        )
+        if remote_query.profile is not REMOTE_QUERY_WORKLOAD_SIZE:
+            raise ValueError(
+                "remote-query experiment must use its versioned tiny profile"
+            )
         imported = {item.path for item in self.imported_evidence}
         for experiment in self.experiments:
             if not set(experiment.reused_evidence) <= imported:

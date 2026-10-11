@@ -55,6 +55,27 @@ def test_latency_ceiling_is_predeclared_for_each_workload() -> None:
     ]
 
 
+def test_matrix_rejects_latency_ceiling_drift() -> None:
+    raw = document()
+    raw["workloads"][0]["maximum_latency_ns"] += 1
+
+    with pytest.raises(ValidationError, match="versioned profile"):
+        FrontierExperimentMatrix.model_validate(raw)
+
+
+def test_remote_query_experiment_remains_bound_to_tiny_profile() -> None:
+    raw = document()
+    remote_query = next(
+        item
+        for item in raw["experiments"]
+        if item["experiment_id"] == "remote_query_streaming"
+    )
+    remote_query["profile"] = "medium"
+
+    with pytest.raises(ValidationError, match="versioned tiny profile"):
+        FrontierExperimentMatrix.model_validate(raw)
+
+
 @pytest.mark.parametrize("field", ["revision", "path", "sha256"])
 def test_partial_public_identity_fails(field: str) -> None:
     raw = document()

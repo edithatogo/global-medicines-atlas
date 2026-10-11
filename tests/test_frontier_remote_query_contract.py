@@ -68,6 +68,7 @@ def query_document() -> dict[str, Any]:
     return {
         "schema_id": "global-medicines-atlas.frontier-remote-query",
         "schema_version": 2,
+        "experiment_id": "remote_query_streaming",
         "public_object": {
             "dataset": "edithatogo/australian-pbs-source-archive",
             "revision": REVISION,
@@ -83,6 +84,7 @@ def query_document() -> dict[str, Any]:
             "maximum_memory_bytes": 8192,
             "maximum_cache_bytes": 1024,
             "maximum_latency_ns": 2000,
+            "workload_size": "tiny",
         },
         "query": query,
         "expected_result_sha256": SHA,
@@ -161,6 +163,24 @@ def test_remote_query_latency_ceiling_must_be_positive_and_bounded(
     raw = query_document()
     raw["profile"]["maximum_latency_ns"] = ceiling
     with pytest.raises(ValidationError):
+        RemoteQueryQualification.model_validate(raw)
+
+
+def test_tiny_remote_query_cannot_exceed_matrix_latency_ceiling() -> None:
+    raw = query_document()
+    raw["profile"]["maximum_latency_ns"] = 30_000_000_001
+    raw["observations"][0]["latency_ns"] = 30_000_000_001
+
+    with pytest.raises(ValidationError, match="selected workload"):
+        RemoteQueryQualification.model_validate(raw)
+
+
+def test_remote_query_profile_must_match_selected_matrix_workload() -> None:
+    raw = query_document()
+    raw["profile"]["workload_size"] = "medium"
+    raw["profile"]["maximum_latency_ns"] = 120_000_000_000
+
+    with pytest.raises(ValidationError, match="selected matrix workload"):
         RemoteQueryQualification.model_validate(raw)
 
 
