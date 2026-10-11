@@ -35,10 +35,12 @@ def _run(command: list[str], *, environment: Path | None = None) -> str:
     completed = subprocess.run(
         [executable, *command[1:]],
         cwd=ROOT,
-        check=True,
+        check=False,
         capture_output=True,
         text=True,
     )
+    if completed.returncode:
+        raise RuntimeError(f"{command[0]} failed ({completed.returncode})")
     return completed.stdout.strip()
 
 
@@ -54,10 +56,13 @@ def _consumer_probe() -> str:
     template = """
 import json
 import importlib.util
+import asyncio
 from pathlib import Path
 from typing import cast
+import httpx
 from global_medicines_atlas import __version__
 from global_medicines_atlas.api import create_app
+from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
 from global_medicines_atlas.consumer_qualification import (
     assert_openapi_compatible, installed_package_identity,
 )
@@ -69,7 +74,18 @@ baseline = json.loads(Path(__BASELINE__).read_text(encoding='utf-8'))
 assert_openapi_compatible(baseline, schema)
 assert __version__ == identity.version
 assert importlib.util.find_spec('lancedb') is None
-print(json.dumps({'metadata': identity.__dict__, 'openapi_paths': len(schema['paths']), 'api': 'passed', 'core_fallback': 'passed'}, sort_keys=True))
+atlas = create_atlas_app(cast(AtlasQueryService, object()))
+async def request_atlas():
+    transport = httpx.ASGITransport(app=atlas)
+    async with httpx.AsyncClient(transport=transport, base_url='http://atlas') as client:
+        return await client.get('/'), await client.get('/static/atlas.css')
+page, stylesheet = asyncio.run(request_atlas())
+assert page.status_code == 200
+assert 'Global Medicines Atlas' in page.text
+assert '/static/atlas.css' in page.text
+assert stylesheet.status_code == 200
+assert '--ink:' in stylesheet.text
+print(json.dumps({'metadata': identity.__dict__, 'openapi_paths': len(schema['paths']), 'api': 'passed', 'atlas_page': 'passed', 'atlas_static_asset': 'passed', 'core_fallback': 'passed'}, sort_keys=True))
 """
     return template.replace("__BASELINE__", repr(str(BASELINE)))
 
@@ -98,6 +114,14 @@ def qualify(output: Path) -> dict[str, Any]:
                 str(environment),
                 str(artifact),
             ])
+            _run([
+                "uv",
+                "pip",
+                "install",
+                "--python",
+                str(environment),
+                f"{artifact}[federation]",
+            ])
             probe = json.loads(
                 _run(
                     ["python", "-c", _consumer_probe()], environment=environment
@@ -111,7 +135,7 @@ def qualify(output: Path) -> dict[str, Any]:
                 "--python",
                 str(environment),
                 "--reinstall",
-                str(artifact),
+                f"{artifact}[federation]",
             ])
             _run(
                 ["python", "-c", "import global_medicines_atlas"],
