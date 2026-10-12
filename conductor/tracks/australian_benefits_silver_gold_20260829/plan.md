@@ -315,7 +315,8 @@
   and two `AV` columns are explicitly unmapped. The 7,643-byte compressed
   artifact ZIP has SHA-256
   `2652330da3465777b013776f5446e8467d1bfefe3a4422865ea22fb052077db5`;
-  its 43,647-byte JSON member has SHA-256
+  its checked-in 43,647-byte JSON member at
+  `quality/qualifications/mbs-p7-workbook-field-lineage-20261011.json` has SHA-256
   `335a737fec71abc6f502d65417a6a2b40b9ff20933e710abe02fc92453274f74`;
   field lineage is candidate-only, the date profile is unset, Parquet roundtrip
   is verified, domain mapping is not qualified, and publication is false.
