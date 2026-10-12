@@ -97,10 +97,13 @@
   PR #1040 merged at `0990a55899dc3d648e886b187f728cd3b95b8705` after all 38
   exact-head checks passed; automated review's exact-row finding was fixed and
   its thread resolved.
-- [~] Verify the synthetic MBS benefits journey in Chromium as well as at the
+- [x] Verify the synthetic MBS benefits journey in Chromium as well as at the
   CLI, API, and rendered-response surfaces. Preserve fixture-only identity and
   explicit unknown coverage/comparison semantics; do not imply production
-  admission or source completeness.
+  admission or source completeness. The append-order review finding was fixed
+  and resolved. PR #1042 merged at
+  `91a5ea2608064b5cf5c18ed6276f90ec50fdd210` after all 39 reported checks and
+  all 28 required branch-protection contexts passed.
 
 ### Public-fixture checkpoint review fixes
 
