@@ -301,14 +301,30 @@
   blockers (`e6abca6`). XML field-addressed lineage now maps all 40 native
   paths to exact Silver table/field/type destinations and records per-field
   state, conversion and occurrence denominators without copying source values.
-  Real-workbook field lineage and real-source execution remain pending. The
-  public v4 identity was subsequently verified at revision
+  The exact-main P7 workbook run below closes the real-workbook structural
+  lineage subtask. Exact-source execution of the six-table XML aggregate
+  candidate qualification remains pending. The public v4 identity was
+  subsequently verified at revision
   `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa` by run `36348699885`; no
   promotion is inferred.
   The hosted P7 qualification command now includes the deterministic
-  value-free column-lineage report alongside existing metadata profiles. Its
-  four-sheet result still requires an exact-main source run before this
-  subtask can close; date semantics remain unselected.
+  value-free column-lineage report alongside existing metadata profiles.
+  Exact-main run `38165126564` on `02ea12284c86c97c7c4151db58e19fa4d7bcf5c1`
+  verifies the pinned 87,727-byte workbook (`2f1cbc2d…e27b8`): four sheets,
+  13,742 cell positions and 99 mapped fields. The uploaded 7,643-byte summary
+  has SHA-256 `335a737fec71abc6f502d65417a6a2b40b9ff20933e710abe02fc92453274f74`;
+  field lineage is candidate-only, the date profile is unset, Parquet roundtrip
+  is verified, domain mapping is not qualified, and publication is false.
+  The hosted workflow retained only the aggregate summary and did not retain
+  the source workbook. This closes structural lineage observation for that
+  exact workbook only; no date convention, Silver promotion, or source-coverage
+  claim follows.
+  - [x] Execute and reconcile the exact-main P7 workbook lineage qualifier.
+    The workflow asserts the requested commit equals `GITHUB_SHA` on `main`;
+    its exact-head job passed and the uploaded summary is bound to the exact
+    source digest above. Cell values and raw workbook bytes are absent from the
+    summary. No source was added, and the broader XML aggregate qualification
+    remains pending.
 
 ## Aggregate qualification review fixes
 
