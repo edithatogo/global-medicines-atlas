@@ -31,6 +31,7 @@ from global_medicines_atlas.query_service import ReadOnlyQueryService
 def service(
     source: str = "mbs",
     payload: bytes | None = None,
+    semantic_dimension: str | None = None,
 ) -> BenefitsService:
     payload = payload or parquet_payload()
     raw = json.loads(contract(payload))
@@ -39,7 +40,9 @@ def service(
     encoded = json.dumps(raw).encode()
     distribution = binding(encoded)
     resource_id = f"au.{source}.service-items"
-    dimension = "service_benefit" if source == "mbs" else "funding"
+    dimension = semantic_dimension or (
+        "service_benefit" if source == "mbs" else "funding"
+    )
     granularity = "service_item" if source == "mbs" else "medicine_item"
     semantic = json.dumps({
         "version": "1.0",
@@ -180,6 +183,23 @@ def test_pbs_funding_is_independent_and_page_digest_is_exact() -> None:
     assert result.page_sha256 != result.window_sha256
     assert result.coverage_state == "not_declared"
     assert result.comparison_validity == "not_evaluated"
+
+
+@pytest.mark.parametrize(
+    ("source", "semantic_dimension"),
+    [("mbs", "funding"), ("pbs", "service_benefit")],
+)
+def test_benefits_surface_rejects_cross_dimension_resources(
+    source: str,
+    semantic_dimension: str,
+) -> None:
+    benefits = service(source, semantic_dimension=semantic_dimension)
+
+    with pytest.raises(ValueError, match="semantic dimension"):
+        benefits.query(
+            f"au.{source}.service-items",
+            BenefitsQuery(columns=("item_code",), limit=1),
+        )
 
 
 def test_benefits_page_payload_is_json_safe_and_fail_closed() -> None:
