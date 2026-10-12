@@ -303,8 +303,13 @@
   state, conversion and occurrence denominators without copying source values.
   The exact-main P7 workbook run below closes the real-workbook structural
   lineage subtask. Exact-source execution of the six-table XML aggregate
-  candidate qualification remains pending. The public v4 identity was
-  subsequently verified at revision
+  candidate qualification passed on exact-main run `38199208744` at
+  `46eda6025cfb12f861a5dd5d478fc320e56fc47e`: all six tables have 5,989 rows,
+  their declared 40 fields account for 239,560 field occurrences, the official
+  July 2025 release digest matches the pinned archive, and the nine-object
+  public v4 identity is verified. This is candidate-only qualification; the
+  workflow retained no source values or source bytes and made no publication.
+  The public v4 identity was subsequently verified at revision
   `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa` by run `36348699885`; no
   promotion is inferred.
   The hosted P7 qualification command now includes the deterministic
@@ -330,8 +335,17 @@
     digest above. Its 99 column-lineage records include 97 mapped fields and
     two unmapped columns. Archive and member sizes/digests are recorded
     separately. Cell values and raw workbook bytes are absent from the member.
-    No source was added, and the broader XML aggregate qualification remains
-    pending.
+    No source was added; XML source qualification is recorded separately
+    below.
+  - [x] Requalify the existing pinned July 2025 MBS XML and published v4
+    Silver identity together on exact main. Run `38199208744` verified the
+    source SHA-256 and byte count against the official release, all six table
+    denominators (5,989 rows each; 40 fields; 239,560 field occurrences), and
+    all nine objects at public v4 revision
+    `44b25bfd87e44998c7c1da4c3930ad4447e9246f`. The value-free aggregate report
+    has no current blockers, but retains `candidate_only`; publication is
+    false and source bytes were not retained. This does not establish M-109
+    acceptance, rights clearance, broader source coverage, or promotion.
 
 ## Aggregate qualification review fixes
 
