@@ -5,12 +5,14 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
+from urllib.parse import urlsplit
 
 if TYPE_CHECKING:
     import httpx
     import pytest
 
 from fastapi.testclient import TestClient
+from playwright.sync_api import Route, sync_playwright
 from test_atlas_e2e import StateService
 from test_platinum_benefits_api import service
 from typer.testing import CliRunner
@@ -126,3 +128,45 @@ def test_synthetic_benefits_query_agrees_across_cli_api_and_atlas(
         assert page["coverage_state"] == "not_declared"
         assert page["confidence_state"] == "not_declared"
         assert page["comparison_validity"] == "not_evaluated"
+
+
+def test_synthetic_benefits_render_in_chromium_atlas() -> None:
+    """Exercise the benefits query through the Atlas page in a real browser."""
+    benefits = service()
+    client = TestClient(
+        create_atlas_app(StateService(), federated_benefits=benefits)
+    )
+
+    def fulfill_from_atlas(route: Route) -> None:
+        request = route.request
+        parsed = urlsplit(request.url)
+        path = parsed.path + (f"?{parsed.query}" if parsed.query else "")
+        typed_client = cast("httpx.Client", client)
+        response = typed_client.get(path)
+        route.fulfill(
+            status=response.status_code,
+            headers=dict(response.headers),
+            body=response.content,
+        )
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        try:
+            page = browser.new_page()
+            page.route("http://atlas.test/**", fulfill_from_atlas)
+            response = page.goto(
+                "http://atlas.test/federated/benefits?resource_id="
+                "au.mbs.service-items&columns=item_code%2Cbenefit&limit=2"
+            )
+            assert response is not None
+            assert response.status == 200
+            rows = page.get_by_role("table").get_by_role("row")
+            assert rows.count() == 3
+            assert rows.nth(1).inner_text() == "100\t12.5"
+            assert rows.nth(2).inner_text() == "200\t25.0"
+            body = page.locator("body").inner_text()
+            assert "Coverage\nnot declared" in body
+            assert "Comparison validity\nnot evaluated" in body
+            assert "synthetic qualification fixtures" in body
+        finally:
+            browser.close()
