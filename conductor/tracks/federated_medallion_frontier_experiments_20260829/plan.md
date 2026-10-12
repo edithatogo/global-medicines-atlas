@@ -203,10 +203,11 @@
   cover stable ordering, directed queries, null confidence, explicit candidate
   controls, and mutation/schema rejection. A synthetic binary-column test
   verifies that unrecognized schema extensions are rejected before
-  serialization. This does not screen restricted content inside an allowed
-  `fields_json` value; the export contract has no rights authority, so the
-  rights/restricted-content portion remains open. No live graph or
-  semantic-engine qualification is claimed.
+  serialization. The exporter recursively rejects explicit structured
+  `field_policy` labels inside `fields_json` while preserving native values
+  that merely use policy-like keys. It does not classify unlabeled text or
+  bytes, and it has no rights authority, so the broader rights/content review
+  remains open. No live graph or semantic-engine qualification is claimed.
   - [x] Reject nested declared field-policy envelopes that carry restricted
     rights or sensitivity labels before graph serialization. Preserve source
     fields that happen to use policy-like keys. Failing-first controls proved
@@ -243,9 +244,11 @@
   node evidence and reject graph previews when node/edge metadata explicitly
   classifies rights or content as restricted/prohibited or personal data as
   possible/present. Failing-first tests confirmed those classifications reached
-  serialization before the guard. This metadata-only screen does not inspect
-  `fields_json`, resolve unknown/review-required states, establish licensing,
-  or close the broader rights/restricted-byte review above.
+  serialization before the guard. A recursive `fields_json` check separately
+  rejects explicit field-policy envelopes with those classifications and
+  preserves native fields with policy-like values. Neither guard classifies
+  unlabeled content, resolves unknown/review-required states, establishes
+  licensing, or closes the broader rights/restricted-byte review above.
   Verification: focused/affected graph suite 83 passed; the pinned full
   Test-Goblin profile completed with 6,102 passed and 1 optional PyIceberg
   skip, 97.92% line coverage, 353 Gremlins targets passed, both randomized-order
