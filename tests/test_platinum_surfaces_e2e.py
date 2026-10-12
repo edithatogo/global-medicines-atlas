@@ -102,8 +102,11 @@ def test_synthetic_benefits_query_agrees_across_cli_api_and_atlas(
         ),
     )
     assert atlas_response.status_code == 200
-    assert "100" in atlas_response.text
-    assert "200" in atlas_response.text
+    assert (
+        "<tbody><tr><td><code>100</code></td><td><code>12.5</code></td></tr>"
+        "<tr><td><code>200</code></td><td><code>25.0</code></td></tr></tbody>"
+        in atlas_response.text
+    )
     assert "not declared" in atlas_response.text
     assert "not evaluated" in atlas_response.text
 
