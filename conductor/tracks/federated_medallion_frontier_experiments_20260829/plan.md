@@ -384,14 +384,26 @@
   candidate generation. The benchmark now uses one shared threshold constant
   for execution and query identity; a regression test checks both bindings.
 - [ ] Phase Verification & Checkpoint: all engines reproduce portable Gold
-  semantics and no model/index is an authority.
+  semantics and no model/index is an authority. Hosted synthetic exact parity
+  is now evidenced for Neo4j 2026.09.0 and Oxigraph 0.5.9 RDF 1.2, including
+  RDF 1.2 reification source/target semantics; the local `tests/test_frontier_*.py`
+  suite passes 175 tests with two expected skips because local Neo4j and
+  Oxigraph services are not configured. These results cover the existing
+  synthetic MBS/PBS projections only. Graph rights-content screening and
+  confidence calibration remain unresolved, so the phase checkpoint stays
+  open. No source expansion, rights clearance, source-coverage claim, or
+  production authority is implied.
 
 ## Phase 6: Threat, cost, and disposition review (AC-07, AC-08)
 
 - [~] Run focused, parity, benchmark, property, mutation, security, dependency,
   typing, provenance, rights, full Test-Goblin where supported, and hosted lanes.
-  The synthetic benchmark has full local and 38/38 hosted evidence; broader
-  graph rights-content screening and live-engine parity remain open.
+  The synthetic benchmark has full local and 38/38 hosted evidence. The hosted
+  graph lanes now verify exact synthetic MBS/PBS parity on Neo4j 2026.09.0 and
+  Oxigraph 0.5.9 RDF 1.2, including reification direction; the local Frontier
+  module suite passes 175 tests with two expected service-absent skips.
+  Broader graph rights-content screening and confidence calibration remain
+  open. This is not public-graph qualification or production promotion.
 - [x] Record free-tier/resource use, threat model, supply-chain impact,
   operational burden, fallback, rollback, and withdrawal behavior.
 - [x] Review the current experiment matrix and evidence, record bounded
