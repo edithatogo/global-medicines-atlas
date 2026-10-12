@@ -9,8 +9,8 @@ from urllib.parse import urlsplit
 
 if TYPE_CHECKING:
     import httpx
-    import pytest
 
+import pytest
 from fastapi.testclient import TestClient
 from playwright.sync_api import Route, sync_playwright
 from test_atlas_e2e import StateService
@@ -24,12 +24,18 @@ from global_medicines_atlas.platinum_resolver import StorageNeutralResolver
 from global_medicines_atlas.query_service import ReadOnlyQueryService
 
 
+@pytest.mark.parametrize(
+    ("source", "semantic_dimension"),
+    [("mbs", "service_benefit"), ("pbs", "funding")],
+)
 def test_synthetic_benefits_query_agrees_across_cli_api_and_atlas(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
+    source: str,
+    semantic_dimension: str,
 ) -> None:
-    benefits = service()
-    resource_id = "au.mbs.service-items"
+    benefits = service(source=source)
+    resource_id = f"au.{source}.service-items"
     columns = ("item_code", "benefit")
     cursor_secret = "k" * 32
     monkeypatch.setenv("GMA_CURSOR_SECRET", cursor_secret)
@@ -123,16 +129,23 @@ def test_synthetic_benefits_query_agrees_across_cli_api_and_atlas(
     )
     for page in (cli_page, api_page):
         identity = cast("dict[str, object]", page["identity"])
-        assert identity["semantic_dimension"] == "service_benefit"
+        assert identity["semantic_dimension"] == semantic_dimension
         assert identity["comparison_cohort"] == "synthetic"
         assert page["coverage_state"] == "not_declared"
         assert page["confidence_state"] == "not_declared"
         assert page["comparison_validity"] == "not_evaluated"
 
 
-def test_synthetic_benefits_render_in_chromium_atlas() -> None:
+@pytest.mark.parametrize(
+    ("source", "semantic_dimension"),
+    [("mbs", "service_benefit"), ("pbs", "funding")],
+)
+def test_synthetic_benefits_render_in_chromium_atlas(
+    source: str,
+    semantic_dimension: str,
+) -> None:
     """Exercise the benefits query through the Atlas page in a real browser."""
-    benefits = service()
+    benefits = service(source=source)
     client = TestClient(
         create_atlas_app(StateService(), federated_benefits=benefits)
     )
@@ -156,7 +169,7 @@ def test_synthetic_benefits_render_in_chromium_atlas() -> None:
             page.route("http://atlas.test/**", fulfill_from_atlas)
             response = page.goto(
                 "http://atlas.test/federated/benefits?resource_id="
-                "au.mbs.service-items&columns=item_code%2Cbenefit&limit=2"
+                f"au.{source}.service-items&columns=item_code%2Cbenefit&limit=2"
             )
             assert response is not None
             assert response.status == 200
@@ -165,6 +178,10 @@ def test_synthetic_benefits_render_in_chromium_atlas() -> None:
             assert rows.nth(1).inner_text() == "100\t12.5"
             assert rows.nth(2).inner_text() == "200\t25.0"
             body = page.locator("body").inner_text()
+            semantic_value = page.locator("dl").get_by_text(
+                semantic_dimension, exact=True
+            )
+            assert semantic_value.is_visible()
             assert "Coverage\nnot declared" in body
             assert "Comparison validity\nnot evaluated" in body
             assert "synthetic qualification fixtures" in body

@@ -104,6 +104,10 @@
   and resolved. PR #1042 merged at
   `91a5ea2608064b5cf5c18ed6276f90ec50fdd210` after all 39 reported checks and
   all 28 required branch-protection contexts passed.
+- [~] Verify synthetic MBS service-benefit and PBS funding queries preserve
+  their separate semantic dimensions through CLI, read-only API, Atlas HTML,
+  and Chromium. No source coverage, production admission, or real-source
+  meaning is inferred from these fixtures.
 
 ### Public-fixture checkpoint review fixes
 
