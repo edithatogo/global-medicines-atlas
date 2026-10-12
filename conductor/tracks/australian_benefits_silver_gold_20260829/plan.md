@@ -311,8 +311,12 @@
   value-free column-lineage report alongside existing metadata profiles.
   Exact-main run `38165126564` on `02ea12284c86c97c7c4151db58e19fa4d7bcf5c1`
   verifies the pinned 87,727-byte workbook (`2f1cbc2d…e27b8`): four sheets,
-  13,742 cell positions and 99 mapped fields. The uploaded 7,643-byte summary
-  has SHA-256 `335a737fec71abc6f502d65417a6a2b40b9ff20933e710abe02fc92453274f74`;
+  13,742 cell positions and 99 column-lineage records, of which 97 are mapped
+  and two `AV` columns are explicitly unmapped. The 7,643-byte compressed
+  artifact ZIP has SHA-256
+  `2652330da3465777b013776f5446e8467d1bfefe3a4422865ea22fb052077db5`;
+  its 43,647-byte JSON member has SHA-256
+  `335a737fec71abc6f502d65417a6a2b40b9ff20933e710abe02fc92453274f74`;
   field lineage is candidate-only, the date profile is unset, Parquet roundtrip
   is verified, domain mapping is not qualified, and publication is false.
   The hosted workflow retained only the aggregate summary and did not retain
@@ -321,10 +325,12 @@
   claim follows.
   - [x] Execute and reconcile the exact-main P7 workbook lineage qualifier.
     The workflow asserts the requested commit equals `GITHUB_SHA` on `main`;
-    its exact-head job passed and the uploaded summary is bound to the exact
-    source digest above. Cell values and raw workbook bytes are absent from the
-    summary. No source was added, and the broader XML aggregate qualification
-    remains pending.
+    its exact-head job passed and the JSON member is bound to the exact source
+    digest above. Its 99 column-lineage records include 97 mapped fields and
+    two unmapped columns. Archive and member sizes/digests are recorded
+    separately. Cell values and raw workbook bytes are absent from the member.
+    No source was added, and the broader XML aggregate qualification remains
+    pending.
 
 ## Aggregate qualification review fixes
 
