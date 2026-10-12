@@ -241,14 +241,18 @@ def test_silver_stream_releases_completed_data_siblings(
     original = au_mbs.iter_xml_events
     invocations = 0
     root: ET.Element | None = None
+    max_chunk_siblings = 0
     streamed_sibling_counts: list[int] = []
 
     def observe_events(
         event_payload: bytes, *, policy: ParserPolicy
     ) -> Iterator[tuple[str, ET.Element, ET.Element | None]]:
-        nonlocal invocations, root
+        nonlocal invocations, max_chunk_siblings, root
         invocations += 1
         current_invocation = invocations
+        if current_invocation == 2:
+            minimum_child_bytes = len(b"<Data><ItemNum>00000</ItemNum></Data>")
+            max_chunk_siblings = policy.chunk_bytes // minimum_child_bytes + 2
         root = None
         for event, element, parent in original(event_payload, policy=policy):
             if event == "start" and parent is None:
@@ -271,7 +275,7 @@ def test_silver_stream_releases_completed_data_siblings(
     assert invocations == 2  # complete preflight, then record stream
     assert observed_rows == record_count
     assert len(streamed_sibling_counts) == record_count
-    assert max(streamed_sibling_counts) < record_count
+    assert max(streamed_sibling_counts) <= max_chunk_siblings
 
 
 def test_receipt_and_raw_identity_follow_every_batch() -> None:

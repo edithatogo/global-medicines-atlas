@@ -245,10 +245,11 @@
   `evidence.jsonl`).
 - [x] Add a synthetic sibling-stream regression proving completed direct-root
   `Data` subtrees are released during the event pass; document the parser and
-  Arrow buffer bounds. Focused tests (35), adjacent MBS/Gold tests (75),
-  routine checks, strict typing, and diff validation passed on 2026-10-12.
-  This test-only follow-up does not close the broader real-corpus
-  qualification above.
+  Arrow buffer bounds. The sibling-retention assertion is bounded by the
+  configured parser chunk and minimum synthetic record size. Focused tests
+  (35), adjacent MBS/Gold tests (75), routine checks, strict typing, and diff
+  validation passed on 2026-10-12. This test-only follow-up does not close the
+  broader real-corpus qualification above.
 - [x] Prove exact existing-source B2-to-Silver row-value parity for the
   already-qualified July 2025 MBS XML and the pinned v4 services Parquet.
   The hosted check binds the existing B1 receipt and both immutable public
