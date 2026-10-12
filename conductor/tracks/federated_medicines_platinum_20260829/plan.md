@@ -86,6 +86,14 @@
     head and the review thread is resolved.
     The checkpoint remains open because no independently admitted v4 product
     contract or semantic manifest binds this source projection.
+- [x] Verify the same synthetic MBS benefits query across CLI, read-only API,
+  and server-rendered Atlas surfaces. All three preserve the same selected
+  rows; the API and CLI also agree on synthetic identity, service-benefit
+  dimension, undeclared coverage, undeclared confidence, and unevaluated
+  comparison validity. This is source-neutral surface-integration evidence;
+  it does not close the public-dataset product-admission checkpoint or any
+  rights, coverage, production, or release gate. See the
+  `platinum_synthetic_benefits_cross_surface_e2e` evidence receipt.
 
 ### Public-fixture checkpoint review fixes
 
