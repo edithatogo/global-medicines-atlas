@@ -110,12 +110,13 @@
   meaning is inferred from these fixtures. PR #1044 merged at
   `7dc9c9762209c437da3ee3bec7e7398014cc37fe` after all 39 reported checks
   passed and automated review completed without findings.
-- [~] Reject cross-dimension identities at the shared benefits query boundary:
+- [x] Reject cross-dimension identities at the shared benefits query boundary:
   MBS resources must declare `service_benefit` and PBS resources must declare
   `funding` before any result rows are queried. Failing-first regressions
   reproduce both invalid pairings; the guard and affected tests pass. Local
-  focused and broad regressions pass. Hosted review and exact-head checks are
-  pending; this adds no source or source-coverage claim.
+  focused and broad regressions pass. PR #1046 merged at
+  `77232bbb951a44cf1b2c931ae431ff3bb42a4107` after all 40 reported checks
+  passed. This adds no source or source-coverage claim.
 
 ### Public-fixture checkpoint review fixes
 
