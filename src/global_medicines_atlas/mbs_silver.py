@@ -1,8 +1,11 @@
 """Bounded typed MBS projections retaining native fields and exact receipts.
 
 These are rebuildable Silver candidates, not public/promotion receipts.
-Raw XML remains evidentiary truth. The existing parser bounds each input to
-9 MB; output batches add a bounded row buffer, not unbounded source streaming.
+Raw XML remains evidentiary truth. A no-tree safety preflight checks the full
+payload before the event pass streams and detaches completed direct-root
+``Data`` subtrees. Parser memory is bounded by one input chunk of pending
+events and the largest ``Data`` subtree; the Arrow output buffer is separately
+bounded by batch size. This is bounded streaming, not constant-memory parsing.
 """
 
 from __future__ import annotations
