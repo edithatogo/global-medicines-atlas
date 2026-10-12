@@ -194,6 +194,14 @@ class BenefitsService:
         ).identity(resource_id)
         if identity.source_id not in {"au-mbs", "au-pbs"}:
             raise ValueError("resource is not an Australian benefits source")
+        expected_dimension = {
+            "au-mbs": "service_benefit",
+            "au-pbs": "funding",
+        }[identity.source_id]
+        if identity.semantic_dimension != expected_dimension:
+            raise ValueError(
+                "resource semantic dimension is not supported by the benefits surface"
+            )
         result = PlatinumQueryService(self._resolver).query_state(
             resource_id,
             engine="polars",
