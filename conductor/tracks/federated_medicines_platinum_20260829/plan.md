@@ -94,6 +94,9 @@
   it does not close the public-dataset product-admission checkpoint or any
   rights, coverage, production, or release gate. See the
   `platinum_synthetic_benefits_cross_surface_e2e` evidence receipt.
+  PR #1040 merged at `0990a55899dc3d648e886b187f728cd3b95b8705` after all 38
+  exact-head checks passed; automated review's exact-row finding was fixed and
+  its thread resolved.
 
 ### Public-fixture checkpoint review fixes
 
