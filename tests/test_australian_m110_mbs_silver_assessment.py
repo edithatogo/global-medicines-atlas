@@ -11,6 +11,10 @@ ASSESSMENT = (
     ROOT
     / "quality/qualifications/australian-m110-mbs-july-2025-silver-assessment-20261017.json"
 )
+HOSTED_REPORT = (
+    ROOT
+    / "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json"
+)
 PARITY = (
     ROOT
     / "quality/qualifications/mbs-source-silver-tables-parity-2025-07-v3.json"
@@ -27,6 +31,8 @@ EVIDENCE = (
 
 def test_assessment_binds_exact_candidate_without_promoting_it() -> None:
     assessment = json.loads(ASSESSMENT.read_text())
+    hosted_report_bytes = HOSTED_REPORT.read_bytes()
+    hosted_report = json.loads(hosted_report_bytes)
     parity = json.loads(PARITY.read_text())
     authorization = json.loads(AUTHORIZATION.read_text())
 
@@ -69,11 +75,33 @@ def test_assessment_binds_exact_candidate_without_promoting_it() -> None:
         == "schema_compatibility_only"
     )
     assert assessment["evidence"]["hosted_artifact_id"] == "12066023734"
+    assert assessment["evidence"]["hosted_artifact_path"] == str(
+        HOSTED_REPORT.relative_to(ROOT)
+    )
     assert assessment["evidence"]["hosted_artifact_body_sha256"] == (
         "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606"
     )
+    assert (
+        hashlib.sha256(hosted_report_bytes).hexdigest()
+        == (assessment["evidence"]["hosted_artifact_body_sha256"])
+    )
+    assert (
+        hosted_report["exact_commit"]
+        == assessment["evidence"]["qualification_commit"]
+    )
+    assert (
+        hosted_report["public_v4_identity"]["current_revision"]
+        == (assessment["scope"]["public_revision"])
+    )
+    assert hosted_report["current_blockers"] == []
+    assert hosted_report["source_bytes_retained"] is False
+    assert hosted_report["publication_performed"] is False
     assert assessment["evidence"]["candidate_report_sha256"] == (
         "a61681c48e4627f9076dc972e05f1ef61d2edbbd70715ccda26c0d860361cfa3"
+    )
+    assert (
+        hosted_report["candidate_report_sha256"]
+        == (assessment["evidence"]["candidate_report_sha256"])
     )
     assert (
         assessment["evidence"]["field_semantics_crosswalk_sha256"]
@@ -119,3 +147,21 @@ def test_evidence_ledger_binds_assessment_digest() -> None:
     assert record["exact_commit"] == "7fe32a8830d9576ebcc4b431031d59e6809ef379"
     assert record["production_admission"] is False
     assert record["m110_acceptance"] is False
+
+
+def test_evidence_ledger_binds_exact_hosted_report() -> None:
+    report_bytes = HOSTED_REPORT.read_bytes()
+    report_sha256 = hashlib.sha256(report_bytes).hexdigest()
+    records = [json.loads(line) for line in EVIDENCE.read_text().splitlines()]
+    record = next(
+        item
+        for item in reversed(records)
+        if item.get("kind") == "m110_mbs_hosted_candidate_report_preserved"
+    )
+
+    assert record["artifact_id"] == "12066023734"
+    assert record["artifact_path"] == str(HOSTED_REPORT.relative_to(ROOT))
+    assert record["artifact_sha256"] == report_sha256
+    assert record["artifact_sha256"] == (
+        "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606"
+    )
