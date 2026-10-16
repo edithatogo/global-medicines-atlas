@@ -100,7 +100,9 @@ def _arrow_type(value_type: ValueType) -> pa.DataType:
     return pa.string()
 
 
-def _field_columns(fields: dict[str, tuple[str, ...]]) -> list[pa.Field]:
+def _field_columns(
+    fields: dict[str, tuple[str, ...]],
+) -> list[pa.Field[pa.DataType]]:
     columns: list[pa.Field[pa.DataType]] = [
         pa.field(name, pa.int64() if name == "source_ordinal" else pa.string())
         for name in (
@@ -175,8 +177,6 @@ def _typed_value(
     if status == "preserved":
         if contract.value_type not in _TEXT_TYPES:
             raise ValueError("preserved MBS value conflicts with field type")
-        if native_value is not None and not isinstance(native_value, str):
-            raise ValueError("preserved MBS value is not text")
         return native_value
     if status != "converted" or not isinstance(native_value, str):
         raise ValueError("converted MBS value lacks serialized scalar")
