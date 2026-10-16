@@ -1294,3 +1294,42 @@ for credentialed or rights-unresolved sources.
   (`8f7a5993297858ddb07408d542d9417119981060`). All 28 required contexts,
   including Codecov, passed. The optional Iceberg REST job failed before
   checkout because Docker Hub token retrieval timed out on three attempts.
+
+
+## Source-neutral full-profile reliability follow-up (2026-10-17)
+
+- [x] Keep the generated-payload Parquet reconstruction property independent
+  of process-level Git lookup while preserving direct verification of the real
+  `git rev-parse HEAD` provenance fallback. The property uses an explicit
+  synthetic commit identity only in its temporary test receipts; a separate
+  unit test covers the real repository fallback, and an existing test covers
+  configured CI commit identity. The focused property and transformation
+  receipt tests pass (8); the isolated property passes in 11.49 seconds. The
+  prior full profile had timed this property out at 30 seconds under suite
+  load, then the unchanged case passed alone in 15.19 seconds. This test-only
+  isolation changes no runtime behavior, source bytes, or source coverage. The
+  first hosted unit run exposed the expected stale receipt-cohort dependency
+  fingerprint for the changed test file. The committed report was regenerated
+  through `scripts/qualify_bronze_receipt_cohort.py`; only that test-file digest
+  and aggregate fingerprint changed, while the 29/128 cohort counts, scope
+  accounting, and incomplete-current-scope boundaries remained identical.
+  PR #1060 merged from exact head `a4764cff0cb589fe5ad1fdf1c4eb3eb0fb6fa738`
+  as `65cb189262586118b012d54213bc321e9cd63c5f`; the merge tree exactly
+  matches the tested head tree. All 29 required branch-protection contexts
+  passed, including Codecov patch and Linux/macOS/Windows consumers.
+  The initial failed-check ledger entry is preserved unchanged. A later
+  append-only clarification associates the failure with PR #1060 and keeps its
+  `26d23b5` failing head distinct from the successful `a4764cff` rerun.
+
+## Post-PR #1061 exact-main bounded Bronze reconciliation (2026-10-16)
+
+- [x] Regenerate Bronze maturity and the receipt-backed cohort from exact
+  current main `eb8bc3e3a01b3e46da19e6aac4035c9d69231d2e`. The bounded
+  42-source horizon remains qualified with all 14 mandatory dimensions; the
+  full 157-source public universe retains 115 individually deferred sources.
+  The separate cohort remains 29 direct-receipt sources and 128 without direct
+  receipts, including 13 queue-landed sources. Maturity substantive fields
+  match the committed report; the receipt-cohort JSON and Markdown regenerate
+  byte-for-byte. Focused qualification tests (237) and routine validation pass.
+  This exact-main refresh changes no scope, source coverage, rights decision,
+  acquisition, Australian acceptance, or release state.

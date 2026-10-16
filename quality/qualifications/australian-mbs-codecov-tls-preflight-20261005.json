@@ -1,0 +1,46 @@
+{
+  "kind": "australian_mbs_codecov_upload_tls_preflight",
+  "track_id": "australian_benefits_silver_gold_20260829",
+  "recorded_at": "2026-10-05T05:50:49Z",
+  "pull_request": "https://github.com/edithatogo/global-medicines-atlas/pull/782",
+  "preflight": {
+    "script": "scripts/check_codecov_tls.py",
+    "endpoint": "ingest.codecov.io:443",
+    "verification": "Python default trust store, hostname validation, and certificate validity; any TLS or transport failure exits nonzero before the Codecov upload action",
+    "authentication_changed": false,
+    "oidc_preserved": true,
+    "fail_ci_if_error_preserved": true
+  },
+  "observed_certificate": {
+    "subject": "CN=*.codecov.io",
+    "issuer": "C=GB, O=Sectigo Limited, CN=Sectigo Public Server Authentication CA DV R36",
+    "serial": "A2B3697AD2131C6B607DA30339D747DA",
+    "not_before": "2025-09-03T00:00:00Z",
+    "not_after": "2026-10-04T23:59:59Z",
+    "sha256_fingerprint": "033b1db32644dfd04f3870d81ffaa0e750786b8b1109a219a0330503b8e86d25",
+    "hosts_observed": ["ingest.codecov.io", "api.codecov.io"]
+  },
+  "prior_hosted_failure": {
+    "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37251043420",
+    "head_sha": "42ee9e85336f44c39d967483695cf69995929878",
+    "failed_upload_jobs": 7,
+    "failure_endpoint": "https://ingest.codecov.io/upload/github/edithatogo::::global-medicines-atlas/upload-coverage"
+  },
+  "local_preflight": {
+    "result": "failed_closed_as_expected",
+    "diagnostic": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate has expired",
+    "upload_attempted": false
+  },
+  "hosted_header_inventory_executed": false,
+  "processing_admitted": false,
+  "source_payload_bytes_acquired": false,
+  "remaining": "Codecov must renew the ingest/API TLS certificate or provide a supported OIDC-compatible upload route; PR #782 protected CI then needs one exact-head hosted rerun before merge and hosted inventory dispatch.",
+  "verification": {
+    "focused_tests": "41 passed",
+    "broader_affected_harness": "Test-Goblin unit: 4,980 passed, 1 optional PyIceberg skip",
+    "routine": "passed",
+    "strict": "0 errors, 4 existing optional huggingface_hub source warnings",
+    "ty": "passed",
+    "status": "local and contract evidence only; exact-head hosted CI pending"
+  }
+}

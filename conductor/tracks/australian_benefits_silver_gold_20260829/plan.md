@@ -2339,6 +2339,27 @@
   only source-to-candidate value parity for one era; M-109's other eras,
   semantics, rights, and denominator requirements remain open.
 
+- [x] Refresh the exact MBS August raw-path root-manifest state with an
+  anonymous metadata-only readback at dataset revision
+  `1e4971c35c0ef45026168a8e2498d1bd57a3c324`. The root manifest lists the
+  matching SHA-256 and byte count under the historical
+  `Downloads-20260801` alias, but does not list the approved content-addressed
+  path. This confirms the path-level manifest gap without reading source bytes,
+  changing rights, changing the denominator, or admitting the object. See
+  `quality/qualifications/australian-m112-root-manifest-readback-20261005.json`.
+
+- [x] Prepare the exact August 2026 MBS root-manifest append as a local,
+  metadata-only candidate. The protected main-only workflow binds the current
+  anonymous manifest revision and digest, the exact existing raw-object blob
+  identity, its historical alias, and the existing MBS publication and source
+  receipt evidence; compare-and-swap writes only `manifest.json`. Focused
+  publisher tests cover stale-head rejection, ambiguous-commit idempotency, and
+  anonymous-readback failure. No source payload is read or uploaded, and no
+  rights, admission, denominator, or M-112 acceptance state changes. The hosted
+  append and its durable anonymous receipt remain pending the final merged-main
+  workflow run.
+
+
 ### M-110 real-Silver admission gate recheck (2026-10-05)
 
 - [ ] Qualify Gold relationships over admitted real Silver tables. This remains

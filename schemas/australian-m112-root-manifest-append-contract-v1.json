@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.github.io/schemas/australian-m112-root-manifest-append-contract-v1.json",
+  "title": "Australian M-112 root manifest append contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "observed_at",
+    "dataset",
+    "expected_parent_revision",
+    "expected_parent_manifest_sha256",
+    "expected_parent_file_count",
+    "object",
+    "evidence_inputs",
+    "boundary"
+  ],
+  "properties": {
+    "schema_id": { "const": "global-medicines-atlas.australian-m112-root-manifest-append-contract" },
+    "schema_version": { "const": 1 },
+    "observed_at": { "type": "string", "format": "date" },
+    "dataset": { "const": "edithatogo/australian-mbs-source-archive" },
+    "expected_parent_revision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "expected_parent_manifest_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "expected_parent_file_count": { "const": 27 },
+    "object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "bytes", "expected_blob_id", "preserved_alias_path"],
+      "properties": {
+        "path": { "const": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml" },
+        "sha256": { "const": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565" },
+        "bytes": { "const": 8293331 },
+        "expected_blob_id": { "const": "025c714ecd1fa69f91fdb4de002d285d47272e40" },
+        "preserved_alias_path": { "const": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML" }
+      }
+    },
+    "evidence_inputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["publication_authorization", "release_contract", "source_receipt", "object_inventory"],
+      "properties": {
+        "publication_authorization": { "$ref": "#/$defs/evidenceRef" },
+        "release_contract": { "$ref": "#/$defs/evidenceRef" },
+        "source_receipt": { "$ref": "#/$defs/evidenceRef" },
+        "object_inventory": { "$ref": "#/$defs/evidenceRef" }
+      }
+    },
+    "boundary": { "type": "string", "minLength": 20 }
+  },
+  "$defs": {
+    "evidenceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  }
+}

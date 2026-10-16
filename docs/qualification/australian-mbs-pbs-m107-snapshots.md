@@ -158,3 +158,29 @@ so the deadline could mask the underlying HTTP phase. The next bounded probe
 uses shorter operation timeouts (7.5 seconds general, at most 5 seconds to
 connect) beneath the same 15-second request cap; it still reads no body and
 retains no exception detail.
+
+## Official workbook-link metadata refresh, 2026-10-17
+
+The Department's current [quarterly](https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26?language=en),
+[annual](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en),
+[year-to-date](https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26),
+and [rolling-12-month](https://www.health.gov.au/resources/publications/medicare-annual-statistics-rolling-12-months-july-2009-to-june-2026)
+publication pages were reviewed again on 2026-10-16 UTC. All four publication
+dates remain 2026-08-10. The quarterly, annual, and year-to-date attachment URLs
+match the 2026-09-28 metadata receipt
+(`quality/qualifications/australian-mbs-publication-metadata-observation-20260928.json`);
+the rolling-12-month URL matches the 2026-09-29 link-drift receipt
+(`quality/qualifications/australian-mbs-workbook-link-drift-20260929.json`).
+The annual state-and-territory page still describes coverage through 2025–26
+while its attachment filename ends in 2024–25. The rolling page still describes
+July 2009–June 2026 while its attachment filename ends in March 2026. The
+quarterly and year-to-date pages still advertise June 2025–26 and July–June
+2025–26 respectively. The updated value-free record is
+`quality/qualifications/australian-mbs-publication-metadata-refresh-20261017.json`.
+
+No workbook link was fetched successfully, and no workbook bytes or response
+body were read or retained. The metadata refresh shows no changed endpoint or
+page publication date, so the prior hosted timeout evidence remains unchanged
+and an identical hosted retry is not justified. It does not resolve the
+annual/rolling filename mismatches, prove workbook coverage, establish rights,
+or change M-107's blocked status.

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import subprocess  # ruff: ignore[suspicious-subprocess-import] - fixed Git argv in isolated test
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 from pathlib import Path
@@ -213,6 +214,27 @@ def test_transformation_environment_fallback_and_ci_commit(
     )
     assert run.code_commit == "a" * 40
     assert run.environment_identity == "python-runtime"
+
+
+@pytest.mark.unit
+def test_transformation_git_fallback_resolves_current_repository_head(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("GITHUB_SHA", raising=False)
+    expected = (
+        subprocess
+        .run(
+            ["git", "rev-parse", "HEAD"],  # ruff: ignore[start-process-with-partial-path]
+            cwd=transformation_module.ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        .stdout.strip()
+        .lower()
+    )
+
+    assert transformation_module._code_commit() == expected
 
 
 @pytest.mark.edge

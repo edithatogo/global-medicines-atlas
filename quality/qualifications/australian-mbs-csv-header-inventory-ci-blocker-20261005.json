@@ -1,0 +1,269 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-csv-header-ci-blocker",
+  "schema_version": 1,
+  "recorded_at": "2026-10-05T00:32:11.822573+00:00",
+  "status": "implementation_tested_merge_and_hosted_inventory_blocked",
+  "code_commit": "6a7886314f5fb1855a8cb878812a75a117457e3b",
+  "pull_request": "https://github.com/edithatogo/global-medicines-atlas/pull/782",
+  "hosted_ci": {
+    "id": 37246962322,
+    "head_sha": "6a7886314f5fb1855a8cb878812a75a117457e3b",
+    "run_attempt": 3,
+    "status": "completed",
+    "conclusion": "failure",
+    "html_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37246962322"
+  },
+  "failed_upload_jobs": [
+    {
+      "id": 111568337058,
+      "name": "Python 3.14 / unit",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37246962322/job/111568337058",
+      "steps": [
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run unit tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload unit coverage",
+          "status": "completed",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "id": 111568337102,
+      "name": "Python 3.14 / e2e",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37246962322/job/111568337102",
+      "steps": [
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run e2e tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload e2e coverage",
+          "status": "completed",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "id": 111568337117,
+      "name": "Python 3.14 / smoke",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37246962322/job/111568337117",
+      "steps": [
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run smoke tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload smoke coverage",
+          "status": "completed",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "id": 111568337157,
+      "name": "Python 3.14 / integration",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37246962322/job/111568337157",
+      "steps": [
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run integration tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload integration coverage",
+          "status": "completed",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "id": 111568337185,
+      "name": "Python 3.14 / edge",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37246962322/job/111568337185",
+      "steps": [
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run edge tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload edge coverage",
+          "status": "completed",
+          "conclusion": "failure"
+        }
+      ]
+    },
+    {
+      "id": 111568337216,
+      "name": "Python 3.14 / coverage",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37246962322/job/111568337216",
+      "steps": [
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run Test-Goblin coverage profile",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload coverage",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "name": "Upload durable quality receipts",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Upload authoritative Mutmut statistics",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Upload mutation survivor review report",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "name": "Upload Scalene profile",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "id": 111568337238,
+      "name": "Python 3.14 / property",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37246962322/job/111568337238",
+      "steps": [
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run property tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Upload property coverage",
+          "status": "completed",
+          "conclusion": "failure"
+        }
+      ]
+    }
+  ],
+  "failure": {
+    "class": "external_uploader_tls_and_signature_acquisition_failure",
+    "host": "cli.codecov.io",
+    "native_smoke_log_job": 111568337117,
+    "observed_diagnostics": [
+      "OpenSSL SSL alert handshake failure",
+      "Could not verify signature"
+    ],
+    "attempts": 3,
+    "alternate_release_checked": "GitHub release checksum metadata was available, but compatible signed provenance could not be verified; no alternate binary used."
+  },
+  "inputs": [
+    {
+      "path": "src/global_medicines_atlas/mbs_csv_header_inventory.py",
+      "sha256": "5d44f0a65311af1e4ae4313bff9f13e11b67a30bf25a39cb875442699503323c"
+    },
+    {
+      "path": "scripts/validate_mbs_utilisation_payloads.py",
+      "sha256": "4b94d0ecef12ae291a5bb12142ecd02902da4976eb62d78a8c596238574baf93"
+    },
+    {
+      "path": ".github/workflows/australian-mbs-csv-header-inventory.yml",
+      "sha256": "409cf5b6d4a80ad67899d9e1f1f649fa8caa451133a7a77ce6525b853dbd9ffc"
+    }
+  ],
+  "verification": {
+    "affected_tests": "136 passed",
+    "routine": "passed",
+    "strict": "zero errors, four existing optional import warnings",
+    "full_profile": "5785 passed, two existing local pinned-uv 0.11.29 failures, one optional skip; 96.76% coverage",
+    "full_log": "/tmp/gma-csv-header-full-final.log"
+  },
+  "boundaries": {
+    "header_objects_selected": 4,
+    "hosted_header_objects_inspected": 0,
+    "source_payload_bytes_acquired_locally": false,
+    "signature_verification_weakened": false,
+    "processing_admitted": false,
+    "semantic_validation_complete": false,
+    "public_dataset_publication_performed": false
+  },
+  "next_step": "Resume required CI after signed Codecov downloads recover; merge only after all required checks pass, then dispatch exact-main header inventory and independently read back five expected receipts."
+}

@@ -1,0 +1,45 @@
+{
+  "existing_blocked_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37246962322",
+  "hosted_ci_retested": false,
+  "hosted_header_inventory_executed": false,
+  "implementation": {
+    "cli_version": "11.3.1",
+    "existing_oidc_authentication": true,
+    "existing_upload_fail_closed": true,
+    "helper": "scripts/prepare_codecov_cli.py",
+    "isolated_environment": ".ci/codecov/pyproject.toml",
+    "isolated_lock": ".ci/codecov/uv.lock",
+    "isolated_lock_sha256": "cf232acba96e25f271ffdcb1124d7a2927b8d1d7ab41ebc20b4db40e7affc5e8",
+    "local_coverage_upload_performed": false,
+    "provenance_predicate": "https://docs.pypi.org/attestations/publish/v1",
+    "source_payload_bytes_locally_acquired": false,
+    "trusted_publisher_workflow": "release_flow.yml at refs/tags/v11.3.1",
+    "trusted_repository": "https://github.com/codecov/codecov-cli",
+    "verification_order": [
+      "bounded wheel download",
+      "exact size and SHA-256 validation",
+      "PEP 740/Sigstore provenance verification",
+      "install the same local wheel without dependency resolution",
+      "existing Codecov OIDC upload action"
+    ],
+    "wheel": "codecov_cli-11.3.1-py3-none-any.whl",
+    "wheel_sha256": "69e2521a4904e15cc87e4bb71ad1ddcfa6a48f1340ec28a2419ed94c723c027d",
+    "wheel_size_bytes": 92828,
+    "workflow": ".github/workflows/test-goblin.yml"
+  },
+  "kind": "australian_mbs_csv_header_inventory_signed_codecov_cli_recovery_implementation",
+  "processing_admitted": false,
+  "pull_request": "https://github.com/edithatogo/global-medicines-atlas/pull/782",
+  "recorded_at": "2026-10-05T01:19:15.066721+00:00",
+  "remaining": "Push the updated PR head and confirm all protected hosted CI lanes, including Codecov upload and codecov/patch, then merge and dispatch the exact-main four-object inventory.",
+  "track_id": "australian_benefits_silver_gold_20260829",
+  "verification": {
+    "exact_wheel_verification": "OK for the local file path",
+    "focused_tests": "6 passed, including hash/provenance fail-closed tests and the two prior harness failures",
+    "full_profile": "5789 passed, two failures from the harness treating Codecov action version input as uv version, one optional PyIceberg skip, 96.76% coverage; unused action version input removed and both affected tests passed focused rerun; no full-suite rerun after this narrow correction",
+    "installed_cli": "codecovcli, version 11.3.1",
+    "pypi_attestation_tool": "pypi-attestations 0.0.30",
+    "routine": "passed",
+    "strict": "0 errors, four existing optional huggingface_hub source warnings"
+  }
+}
