@@ -33,3 +33,24 @@ def test_m109_register_preserves_partial_and_rights_boundaries() -> None:
         "project retention and external redistribution authority remain unresolved"
         in document
     )
+
+
+def test_july_2025_mbs_parity_receipt_is_bound_without_overstating_acceptance() -> (
+    None
+):
+    document = Path(
+        "docs/qualification/australian-m109-source-era-register.md"
+    ).read_text(encoding="utf-8")
+
+    assert "38908829291" in document
+    assert "12048749308" in document
+    assert (
+        "0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6"
+        in document
+    )
+    assert "5,989 rows per table" in document
+    assert (
+        "does not establish rights, production admission, publication, promotion"
+        in document
+    )
+    assert "or full M-109 acceptance" in document
