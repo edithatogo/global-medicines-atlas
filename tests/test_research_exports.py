@@ -1,6 +1,7 @@
 import hashlib
 import json
 from datetime import UTC, datetime
+from typing import Any
 
 import pytest
 
@@ -27,7 +28,7 @@ def _source() -> ExportSource:
 
 @pytest.mark.unit
 def test_manifest_is_order_stable_and_content_addressed() -> None:
-    kwargs = {
+    kwargs: dict[str, Any] = {
         "query": {"filters": {"jurisdiction": "AU"}, "select": ["item_id"]},
         "sources": [_source()],
         "citations": [
@@ -79,7 +80,7 @@ def test_manifest_order_is_stable_when_source_and_citation_keys_tie() -> None:
         citation_id="mbs", title="Primary", uri="https://example.invalid/a"
     )
     changed_citation = citation.model_copy(update={"title": "Secondary"})
-    kwargs = {
+    kwargs: dict[str, Any] = {
         "query": {"select": ["item_id"]},
         "result_rows": [{"item_id": "1"}],
         "generated_at": datetime(2026, 1, 1, tzinfo=UTC),
@@ -151,6 +152,43 @@ def test_manifest_requires_pinned_source() -> None:
             generated_at=datetime(2026, 1, 1, tzinfo=UTC),
             generator_commit="abc1234",
         )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("revision", "main"),
+        ("revision", "a" * 39),
+        ("revision", "A" * 40),
+        ("dataset_id", "owner"),
+        ("dataset_id", "owner/../dataset"),
+        ("dataset_id", "https://huggingface.co/datasets/owner/dataset"),
+        ("path", "/absolute/file.parquet"),
+        ("path", "silver/../private.parquet"),
+        ("path", "silver//items.parquet"),
+        ("path", "silver\\\\items.parquet"),
+        ("path", "silver/items.parquet?download=true"),
+    ],
+)
+@pytest.mark.edge
+def test_export_source_rejects_unpinned_or_ambiguous_identity(
+    field: str, value: str
+) -> None:
+    payload = _source().model_dump()
+    payload[field] = value
+
+    with pytest.raises(ValueError, match=r"dataset|revision|path"):
+        ExportSource.model_validate(payload)
+
+
+@pytest.mark.unit
+def test_export_source_json_schema_exposes_pinned_identity_shapes() -> None:
+    properties = ExportSource.model_json_schema()["properties"]
+
+    assert properties["dataset_id"]["pattern"] == (
+        r"^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$"
+    )
+    assert properties["revision"]["pattern"] == r"^[0-9a-f]{40}$"
 
 
 @pytest.mark.edge
