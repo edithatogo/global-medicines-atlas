@@ -44,6 +44,7 @@ def test_july_2025_mbs_parity_receipt_is_bound_without_overstating_acceptance() 
 
     assert "38908829291" in document
     assert "12048749308" in document
+    assert "mbs-source-silver-tables-parity-2025-07-v3.json" in document
     assert (
         "0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6"
         in document

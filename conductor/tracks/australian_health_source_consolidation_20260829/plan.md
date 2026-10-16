@@ -556,6 +556,13 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   and reports 5,989 rows per table. This is one source-era parity result only;
   rights, production admission, publication, promotion, other-era semantics,
   the approved source-era denominator, and full M-109 acceptance remain open.
+- [x] Preserve the exact 2,843-byte value-free receipt in
+  `quality/qualifications/mbs-source-silver-tables-parity-2025-07-v3.json`.
+  Its committed digest is
+  `0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6`;
+  a regression checks this identity and validates the receipt with both the
+  Pydantic model and JSON Schema so evidence remains auditable after the
+  hosted artifact expires.
 
 ## M-107 metadata evidence review fixes (2026-09-28)
 
