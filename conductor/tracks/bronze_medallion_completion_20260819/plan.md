@@ -1320,3 +1320,16 @@ for credentialed or rights-unresolved sources.
   The initial failed-check ledger entry is preserved unchanged. A later
   append-only clarification associates the failure with PR #1060 and keeps its
   `26d23b5` failing head distinct from the successful `a4764cff` rerun.
+
+## Post-PR #1061 exact-main bounded Bronze reconciliation (2026-10-16)
+
+- [x] Regenerate Bronze maturity and the receipt-backed cohort from exact
+  current main `eb8bc3e3a01b3e46da19e6aac4035c9d69231d2e`. The bounded
+  42-source horizon remains qualified with all 14 mandatory dimensions; the
+  full 157-source public universe retains 115 individually deferred sources.
+  The separate cohort remains 29 direct-receipt sources and 128 without direct
+  receipts, including 13 queue-landed sources. Maturity substantive fields
+  match the committed report; the receipt-cohort JSON and Markdown regenerate
+  byte-for-byte. Focused qualification tests (237) and routine validation pass.
+  This exact-main refresh changes no scope, source coverage, rights decision,
+  acquisition, Australian acceptance, or release state.
