@@ -168,6 +168,7 @@ def test_manifest_requires_pinned_source() -> None:
         ("path", "silver//items.parquet"),
         ("path", "silver\\\\items.parquet"),
         ("path", "silver/items.parquet?download=true"),
+        ("path", "silver/items\x00.parquet"),
     ],
 )
 @pytest.mark.edge
@@ -189,6 +190,20 @@ def test_export_source_json_schema_exposes_pinned_identity_shapes() -> None:
         r"^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$"
     )
     assert properties["revision"]["pattern"] == r"^[0-9a-f]{40}$"
+
+
+@pytest.mark.edge
+def test_manifest_revalidates_copied_export_source_instances() -> None:
+    copied = _source().model_copy(update={"revision": "main"})
+
+    with pytest.raises(ValueError, match="revision"):
+        build_query_snapshot_manifest(
+            query={},
+            result_rows=[],
+            sources=[copied],
+            generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+            generator_commit="abc1234",
+        )
 
 
 @pytest.mark.edge

@@ -710,7 +710,11 @@
   change; export/package tests pass (60), Test-Goblin routine and changed-module
   typing pass. One isolated MBS Bronze-to-Platinum browser E2E passes; the
   combined medallion run hit two browser-teardown timeouts under shared host
-  load. See the local receipt in `evidence.jsonl`; public export remains gated.
+  load. Review also found that `model_copy(update=...)` could bypass the new
+  validators; `ExportSource` now revalidates instances and the regression test
+  fails before the correction and passes after it. The final export/package
+  suite passes 62 tests, with routine, `ty`, and BasedPyright passing. See the
+  local receipt in `evidence.jsonl`; public export remains gated.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
 - [x] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,

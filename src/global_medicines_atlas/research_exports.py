@@ -9,20 +9,18 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
 from collections.abc import Mapping, Sequence
 from datetime import datetime
 from ipaddress import ip_address
 from typing import Any
 from urllib.parse import urlsplit
 
-from pydantic import Field, field_validator
+from pydantic import ConfigDict, Field, field_validator
 
 from .models import FrozenModel
 
 EXPORT_MANIFEST_SCHEMA = "global-medicines-atlas.research-export"
 EXPORT_MANIFEST_VERSION = 1
-_DATASET_ID_PARTS = 2
 _ASCII_CONTROL_MAX = 31
 _ASCII_DELETE = 127
 
@@ -77,6 +75,8 @@ def canonical_result_bytes(
 class ExportSource(FrozenModel):
     """A pinned public data-plane object used by an export."""
 
+    model_config = ConfigDict(revalidate_instances="always")
+
     dataset_id: str = Field(
         min_length=3,
         pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$",
@@ -87,36 +87,13 @@ class ExportSource(FrozenModel):
     schema_id: str = Field(min_length=1)
     schema_version: str = Field(min_length=1)
 
-    @field_validator("dataset_id")
-    @classmethod
-    def dataset_id_is_repository_identity(cls, value: str) -> str:
-        """Require a two-part repository id rather than a URL or path."""
-        parts = value.split("/")
-        if len(parts) != _DATASET_ID_PARTS or any(
-            part in {"", ".", ".."}
-            or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", part) is None
-            for part in parts
-        ):
-            raise ValueError("dataset id must be owner/repository")
-        return value
-
-    @field_validator("revision")
-    @classmethod
-    def revision_is_immutable_commit(cls, value: str) -> str:
-        """Require the full lower-case content-addressed repository commit."""
-        if re.fullmatch(r"[0-9a-f]{40}", value) is None:
-            raise ValueError("revision must be a full immutable commit id")
-        return value
-
     @field_validator("path")
     @classmethod
     def path_is_safe_repository_path(cls, value: str) -> str:
-        """Reject absolute, traversing, or URL-ambiguous object paths."""
+        """Reject absolute, traversing, or control-bearing object paths."""
         parts = value.split("/")
         if (
             value.startswith("/")
-            or "\\" in value
-            or any(character in value for character in "?#%")
             or any(
                 ord(character) <= _ASCII_CONTROL_MAX
                 or ord(character) == _ASCII_DELETE
