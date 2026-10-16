@@ -1,0 +1,474 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-gold-graph-candidate",
+  "schema_version": 2,
+  "qualification": "synthetic_silver_candidate_only",
+  "admission_performed": false,
+  "terminology_linking_performed": false,
+  "publication_performed": false,
+  "source_record_count": 2,
+  "nodes": [
+    {
+      "node_id": "mbs-gold-node:4f6ed4071f1f2bcd5091d75d8b6fa9a1f493c6c18b8629ca596c08246c1641d9",
+      "kind": "mbs_service_record",
+      "evidence": {
+        "source_id": "au-mbs",
+        "source_record_id": "au-mbs:00123:00::0",
+        "source_ordinal": 0,
+        "source_sha256": "d5be90a3b1c1757177f2ad5ec75bc82663f8dafc22e02e78d2d7ad6edf06985e",
+        "receipt_sha256": "11cd4063d77c8daadf2a39549a2b10807e1928ee1d8de8bfa5b5283405c8901b",
+        "catalog_version": "synthetic-iso-v1",
+        "rights_state": "unknown",
+        "sensitivity": {
+          "schema_id": "global-medicines-atlas.bronze-sensitivity-classification",
+          "schema_version": 1,
+          "data_sensitivity": "unknown",
+          "personal_data": "unknown",
+          "publication": "review_required",
+          "reason_codes": [
+            "unassessed"
+          ]
+        }
+      },
+      "fields": [
+        {
+          "native_name": "Anaes",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "AnaesChange",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "BasicUnits",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ItemChange",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ItemEndDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ItemNum",
+          "native_state": "value",
+          "native_value": "00123",
+          "conversion_status": "preserved",
+          "typed_value": "00123"
+        },
+        {
+          "native_name": "ItemStartDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ItemType",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "NewItem",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ProviderType",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "QFEEndDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "QFEStartDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "SubItemNum",
+          "native_state": "value",
+          "native_value": "00",
+          "conversion_status": "preserved",
+          "typed_value": "00"
+        }
+      ]
+    },
+    {
+      "node_id": "mbs-gold-node:5172ed56d9e0a4655c8fbe017d4a860ab1a0028e9cdd0655e44df60764088add",
+      "kind": "mbs_service_record",
+      "evidence": {
+        "source_id": "au-mbs",
+        "source_record_id": "au-mbs:00123:00::1",
+        "source_ordinal": 1,
+        "source_sha256": "d5be90a3b1c1757177f2ad5ec75bc82663f8dafc22e02e78d2d7ad6edf06985e",
+        "receipt_sha256": "11cd4063d77c8daadf2a39549a2b10807e1928ee1d8de8bfa5b5283405c8901b",
+        "catalog_version": "synthetic-iso-v1",
+        "rights_state": "unknown",
+        "sensitivity": {
+          "schema_id": "global-medicines-atlas.bronze-sensitivity-classification",
+          "schema_version": 1,
+          "data_sensitivity": "unknown",
+          "personal_data": "unknown",
+          "publication": "review_required",
+          "reason_codes": [
+            "unassessed"
+          ]
+        }
+      },
+      "fields": [
+        {
+          "native_name": "Anaes",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "AnaesChange",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "BasicUnits",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ItemChange",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ItemEndDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ItemNum",
+          "native_state": "value",
+          "native_value": "00123",
+          "conversion_status": "preserved",
+          "typed_value": "00123"
+        },
+        {
+          "native_name": "ItemStartDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ItemType",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "NewItem",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "ProviderType",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "QFEEndDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "QFEStartDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "SubItemNum",
+          "native_state": "value",
+          "native_value": "00",
+          "conversion_status": "preserved",
+          "typed_value": "00"
+        }
+      ]
+    },
+    {
+      "node_id": "mbs-gold-node:b38839b21a6ae58c352c6e7e00ae8abd931183fe656baeb9de56d0761e954075",
+      "kind": "mbs_benefit_record",
+      "evidence": {
+        "source_id": "au-mbs",
+        "source_record_id": "au-mbs:00123:00::1",
+        "source_ordinal": 1,
+        "source_sha256": "d5be90a3b1c1757177f2ad5ec75bc82663f8dafc22e02e78d2d7ad6edf06985e",
+        "receipt_sha256": "11cd4063d77c8daadf2a39549a2b10807e1928ee1d8de8bfa5b5283405c8901b",
+        "catalog_version": "synthetic-iso-v1",
+        "rights_state": "unknown",
+        "sensitivity": {
+          "schema_id": "global-medicines-atlas.bronze-sensitivity-classification",
+          "schema_version": 1,
+          "data_sensitivity": "unknown",
+          "personal_data": "unknown",
+          "publication": "review_required",
+          "reason_codes": [
+            "unassessed"
+          ]
+        }
+      },
+      "fields": [
+        {
+          "native_name": "Benefit100",
+          "native_state": "value",
+          "native_value": "42.50",
+          "conversion_status": "converted",
+          "typed_value": "42.500000000"
+        },
+        {
+          "native_name": "Benefit75",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "Benefit85",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "BenefitStartDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "BenefitType",
+          "native_state": "value",
+          "native_value": "A",
+          "conversion_status": "preserved",
+          "typed_value": "A"
+        }
+      ]
+    },
+    {
+      "node_id": "mbs-gold-node:e23d0f0c1432fc2670a9392a13a7ce18eac4c09c0d418fd3b16a90237ca8af6f",
+      "kind": "mbs_benefit_record",
+      "evidence": {
+        "source_id": "au-mbs",
+        "source_record_id": "au-mbs:00123:00::0",
+        "source_ordinal": 0,
+        "source_sha256": "d5be90a3b1c1757177f2ad5ec75bc82663f8dafc22e02e78d2d7ad6edf06985e",
+        "receipt_sha256": "11cd4063d77c8daadf2a39549a2b10807e1928ee1d8de8bfa5b5283405c8901b",
+        "catalog_version": "synthetic-iso-v1",
+        "rights_state": "unknown",
+        "sensitivity": {
+          "schema_id": "global-medicines-atlas.bronze-sensitivity-classification",
+          "schema_version": 1,
+          "data_sensitivity": "unknown",
+          "personal_data": "unknown",
+          "publication": "review_required",
+          "reason_codes": [
+            "unassessed"
+          ]
+        }
+      },
+      "fields": [
+        {
+          "native_name": "Benefit100",
+          "native_state": "value",
+          "native_value": "42.50",
+          "conversion_status": "converted",
+          "typed_value": "42.500000000"
+        },
+        {
+          "native_name": "Benefit75",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "Benefit85",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "BenefitStartDate",
+          "native_state": "missing_field",
+          "native_value": null,
+          "conversion_status": "missing_field",
+          "typed_value": null
+        },
+        {
+          "native_name": "BenefitType",
+          "native_state": "value",
+          "native_value": "A",
+          "conversion_status": "preserved",
+          "typed_value": "A"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "mbs-gold-edge:a92967aede9a269f262781c79d040d21ab37ae66d1e9228d8119a7a6a42b9e18",
+      "kind": "source_record_has_benefit",
+      "source_node_id": "mbs-gold-node:5172ed56d9e0a4655c8fbe017d4a860ab1a0028e9cdd0655e44df60764088add",
+      "target_node_id": "mbs-gold-node:b38839b21a6ae58c352c6e7e00ae8abd931183fe656baeb9de56d0761e954075",
+      "evidence": {
+        "source_id": "au-mbs",
+        "source_record_id": "au-mbs:00123:00::1",
+        "source_ordinal": 1,
+        "source_sha256": "d5be90a3b1c1757177f2ad5ec75bc82663f8dafc22e02e78d2d7ad6edf06985e",
+        "receipt_sha256": "11cd4063d77c8daadf2a39549a2b10807e1928ee1d8de8bfa5b5283405c8901b",
+        "catalog_version": "synthetic-iso-v1",
+        "rights_state": "unknown",
+        "sensitivity": {
+          "schema_id": "global-medicines-atlas.bronze-sensitivity-classification",
+          "schema_version": 1,
+          "data_sensitivity": "unknown",
+          "personal_data": "unknown",
+          "publication": "review_required",
+          "reason_codes": [
+            "unassessed"
+          ]
+        }
+      },
+      "supporting_revisions": [
+        "synthetic-iso-v1"
+      ],
+      "assertion_basis": "same_source_record",
+      "semantic_dimension": "service_benefit",
+      "mapping_method": "source-explicit",
+      "confidence": null,
+      "confidence_calibration": "not_applicable_source_record",
+      "review_state": "not_reviewed",
+      "valid_time_status": "unselected",
+      "source_effective_from": null,
+      "source_effective_to": null,
+      "retrieved_at": "2026-08-30T00:00:00Z",
+      "rights_state": "unknown",
+      "sensitivity": {
+        "schema_id": "global-medicines-atlas.bronze-sensitivity-classification",
+        "schema_version": 1,
+        "data_sensitivity": "unknown",
+        "personal_data": "unknown",
+        "publication": "review_required",
+        "reason_codes": [
+          "unassessed"
+        ]
+      },
+      "contradiction_edge_ids": [],
+      "supersedes_edge_ids": [],
+      "negative_control_outcome": "not_applicable",
+      "comparison_validity": "same_source_record_only",
+      "inferred": false
+    },
+    {
+      "edge_id": "mbs-gold-edge:dd9885ec7501ea2cf7ef0f9c9a930700d9cd3c8e7993a265d1ec424a8e1bb67d",
+      "kind": "source_record_has_benefit",
+      "source_node_id": "mbs-gold-node:4f6ed4071f1f2bcd5091d75d8b6fa9a1f493c6c18b8629ca596c08246c1641d9",
+      "target_node_id": "mbs-gold-node:e23d0f0c1432fc2670a9392a13a7ce18eac4c09c0d418fd3b16a90237ca8af6f",
+      "evidence": {
+        "source_id": "au-mbs",
+        "source_record_id": "au-mbs:00123:00::0",
+        "source_ordinal": 0,
+        "source_sha256": "d5be90a3b1c1757177f2ad5ec75bc82663f8dafc22e02e78d2d7ad6edf06985e",
+        "receipt_sha256": "11cd4063d77c8daadf2a39549a2b10807e1928ee1d8de8bfa5b5283405c8901b",
+        "catalog_version": "synthetic-iso-v1",
+        "rights_state": "unknown",
+        "sensitivity": {
+          "schema_id": "global-medicines-atlas.bronze-sensitivity-classification",
+          "schema_version": 1,
+          "data_sensitivity": "unknown",
+          "personal_data": "unknown",
+          "publication": "review_required",
+          "reason_codes": [
+            "unassessed"
+          ]
+        }
+      },
+      "supporting_revisions": [
+        "synthetic-iso-v1"
+      ],
+      "assertion_basis": "same_source_record",
+      "semantic_dimension": "service_benefit",
+      "mapping_method": "source-explicit",
+      "confidence": null,
+      "confidence_calibration": "not_applicable_source_record",
+      "review_state": "not_reviewed",
+      "valid_time_status": "unselected",
+      "source_effective_from": null,
+      "source_effective_to": null,
+      "retrieved_at": "2026-08-30T00:00:00Z",
+      "rights_state": "unknown",
+      "sensitivity": {
+        "schema_id": "global-medicines-atlas.bronze-sensitivity-classification",
+        "schema_version": 1,
+        "data_sensitivity": "unknown",
+        "personal_data": "unknown",
+        "publication": "review_required",
+        "reason_codes": [
+          "unassessed"
+        ]
+      },
+      "contradiction_edge_ids": [],
+      "supersedes_edge_ids": [],
+      "negative_control_outcome": "not_applicable",
+      "comparison_validity": "same_source_record_only",
+      "inferred": false
+    }
+  ],
+  "graph_sha256": "78cde38b55da2c051168a96f77008809f19316444c5d7bf78bc8dbda8c52647c"
+}

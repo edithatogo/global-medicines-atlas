@@ -31,8 +31,8 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "4a32f6b5d28091de7d68725ee0975488e89f8b8fd022174ae577da2434907a7e",
-      "file_count": 147,
+      "sha256": "abba1384d195938ea232fb7507b1ac353f34f44005eb6ef53cb45e498f9eb37e",
+      "file_count": 148,
       "files": [
         {
           "path": "DATA_LICENSE.md",
@@ -608,6 +608,11 @@
           "path": "tests/fixtures/matching/manifest.json",
           "exists": true,
           "sha256": "5cd9d86b9e99a8b201b62eb7e3dc5b42d01b9641eca2c4a2c342d07b887f6422"
+        },
+        {
+          "path": "tests/fixtures/mbs_gold_graph_v2_synthetic.json",
+          "exists": true,
+          "sha256": "cb14abfe202a475b80eae62add6e2748512e50813f463a532f394e0331b6bd5a"
         },
         {
           "path": "tests/fixtures/native/ca/dpd_api.json",

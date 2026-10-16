@@ -2405,15 +2405,35 @@
   `38947544328` resolved the stale `public_v4_identity_unverified` finding;
   the current public revision and all six object identities match. This
   confirms candidate identity and declared schema compatibility only.
-- [ ] Bind the existing Decision 0009 and exact-source publication
+- [x] Bind the existing Decision 0009 and exact-source publication
   authorization basis into an immutable Silver admission receipt against the
   verified six-object revision. The parity receipt's `rights_conclusion=false`
   means that receipt made no independent conclusion; it does not negate the
   maintainer authority. Its `production_admission=false` remains unchanged.
+  `quality/qualifications/australian-mbs-silver-admission-20261017.json`
+  scopes admission to July 2025 MBS v3 graph qualification input only and
+  binds the exact six-table semantic manifest. It makes no new rights
+  conclusion, does not promote the public candidate, and does not accept M-109,
+  M-110 Gold, or M-112.
 - [ ] Qualify the M-110 graph against admitted real tables after the prior
   admission gate passes. Preserve MBS-only scope and the existing M-109/M-112
-  boundaries. See `docs/qualification/australian-m110-mbs-july-2025-silver-assessment.md`
-  and `quality/qualifications/australian-m110-mbs-july-2025-silver-assessment-20261017.json`.
+  boundaries. The earlier assessment snapshots remain historical.
+- [x] Build a value-free M-110 graph candidate from all six exact-revision
+  admitted Silver object identities. The qualification
+  `quality/qualifications/australian-mbs-gold-real-silver-qualification-20261017.json`
+  binds the exact admission and semantic manifest, verifies all six public
+  Parquet digests, and qualifies 5,989 source-record service-benefit edges
+  (11,978 nodes) from the real July 2025 tables. Cross-record, forged-digest,
+  and unpermitted-rights negative controls reject. The graph is candidate schema
+  v3; edge confidence is uncalibrated and review state remains `not_reviewed`.
+  The report records exact hashes for the graph builder, qualifier, and three
+  schemas; its readback rejects stale implementation fingerprints. No public
+  dataset mutation or graph publication occurred.
+- [ ] Complete M-110 Gold graph review and consumer acceptance. The current
+  assessment is
+  `quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261017.json`;
+  maintainer review decisions and the existing Platinum scalar-query bridge
+  remain open. This candidate does not accept M-110, M-109, or M-112.
 - [x] Correct the MBS XML numeric-width transform so the three EMSN numeric
   fields use their official seven-integer-digit limit while ScheduleFee and
   Benefit75/85/100 retain five digits. Boundary tests failed before the fix and
@@ -2422,7 +2442,20 @@
   failed only because spawned processes found uv 0.13.1 instead of required
   0.11.29; those two tests passed when rerun with pinned uv first on PATH.
   Coverage 96.87%; current-source impact remains unqualified.
-- [ ] Re-run the read-only exact-main source qualifier after the field-width
-  fix. Compare all 5,989 source rows and six table digests; if candidate outputs
-  change, regenerate the qualification and use the approved hosted publication
-  path before admission.
+- [x] Re-run the read-only exact-main source qualifier after the field-width
+  fix. Run `38953649119` succeeded at exact main
+  `8c0090db41bb4ad2a4de20090a5e0895fffd91ec`; its value-free report is
+  `quality/qualifications/australian-mbs-silver-candidate-qualification-20261017-8c0090db.json`
+  (artifact `12070470185`, SHA-256
+  `536f607f9f16cef42d6455858ce534af82186ced3ade2eb4c6839b2baf767232`). All
+  5,989 rows and six object identities match the accepted candidate; the
+  field-specific fix changed no values or object digests, so no republication
+  was needed.
+- [x] Qualify the M-110 graph against the admitted exact-era input. The
+  value-free qualification
+  `quality/qualifications/australian-mbs-gold-real-silver-qualification-20261017.json`
+  was rebuilt from the exact six pinned public Parquet objects. Its graph
+  digest is `a52ad5ca22c0c8edda528a5a02276751198a142ab62e35fbf942dff730e3a7d4`;
+  all five implementation/schema fingerprints are checked by `--check` and the
+  assessment test. This remains a candidate with review and consumer
+  acceptance pending.

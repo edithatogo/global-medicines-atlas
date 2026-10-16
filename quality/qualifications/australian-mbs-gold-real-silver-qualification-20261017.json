@@ -1,0 +1,134 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-gold-real-silver-qualification",
+  "schema_version": 1,
+  "status": "real_admitted_silver_graph_candidate_qualified_for_review",
+  "recorded_at": "2026-10-16T19:57:51.919024Z",
+  "requirement_id": "M-110",
+  "implementation_fingerprints": [
+    {
+      "path": "scripts/qualify_australian_mbs_gold_real_silver.py",
+      "sha256": "4555f9f4b9d0d8a2bd49fbf67a029a922190b4203c94b6614e145911b8d5a1f3"
+    },
+    {
+      "path": "src/global_medicines_atlas/mbs_gold_graph.py",
+      "sha256": "d7f8560b4746c0945d2fe743b7d1fed55205fe9aee562755665be643adcf2212"
+    },
+    {
+      "path": "schemas/australian-mbs-gold-real-silver-qualification-v1.json",
+      "sha256": "d260f3c8865bea8ddfa1a1b901cdf4ce71d8f96acc539927dd17f1732d57222b"
+    },
+    {
+      "path": "schemas/australian-mbs-silver-admission-v1.json",
+      "sha256": "8e6eb11bc83fa1bb16cfe631d4d769db6ddf1a35025c8589b6010ba483f4a24b"
+    },
+    {
+      "path": "schemas/australian-mbs-silver-semantic-manifest-v1.json",
+      "sha256": "5800ef8f2f316f8957db541415f6c1267a8078a1ddd1dc33817979aba390f0a6"
+    }
+  ],
+  "source_identity": {
+    "source_id": "au-mbs",
+    "schema_era": "2025-07-version-3",
+    "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "source_byte_count": 8194522,
+    "source_record_count": 5989,
+    "release_id": "MBS-XML-20250701 Version 3",
+    "effective_at": "2025-07-01"
+  },
+  "public_dataset_identity": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "current_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+    "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "prefix": "silver/mbs/v4/2025-07-v3",
+    "candidate_only": true
+  },
+  "admission_receipt": {
+    "path": "quality/qualifications/australian-mbs-silver-admission-20261017.json",
+    "sha256": "ca01262520e1dbf3fbc697f21d644a1739c382f9b1652006ef94881302571f63",
+    "semantic_manifest_sha256": "9ad5e2747949b8b7142819e981241c1f74105b3570d78025e654e780241c5882"
+  },
+  "verified_objects": [
+    {
+      "name": "benefits",
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "byte_count": 114493,
+      "row_count": 5989
+    },
+    {
+      "name": "caps",
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "byte_count": 60259,
+      "row_count": 5989
+    },
+    {
+      "name": "descriptions",
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "byte_count": 620348,
+      "row_count": 5989
+    },
+    {
+      "name": "fees",
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "byte_count": 93072,
+      "row_count": 5989
+    },
+    {
+      "name": "hierarchy",
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "byte_count": 51851,
+      "row_count": 5989
+    },
+    {
+      "name": "services",
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "byte_count": 100062,
+      "row_count": 5989
+    }
+  ],
+  "graph": {
+    "source_record_count": 5989,
+    "node_count": 11978,
+    "edge_count": 5989,
+    "graph_sha256": "a52ad5ca22c0c8edda528a5a02276751198a142ab62e35fbf942dff730e3a7d4",
+    "candidate_schema_version": 3,
+    "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03",
+    "rights_state": "permitted",
+    "source_retrieved_at": "2026-09-27T20:37:32.916888+00:00",
+    "source_snapshot_effective_date": "2025-07-01",
+    "qualification": "admitted_real_silver_candidate_only",
+    "edge_kind": "source_record_has_benefit",
+    "mapping_method": "source-explicit",
+    "assertion_basis": "same_source_record",
+    "temporal_basis": "source_snapshot_effective_date",
+    "confidence": null,
+    "confidence_calibration": "not_applicable_source_record",
+    "review_state": "not_reviewed",
+    "negative_control_outcome": "not_applicable",
+    "inferred": false,
+    "all_edges_same_record_bound": true,
+    "all_nodes_preserve_native_field_states": true
+  },
+  "negative_controls": {
+    "cross_record_pairing_rejected": true,
+    "forged_source_digest_rejected": true,
+    "unpermitted_rights_rejected": true
+  },
+  "boundaries": {
+    "public_candidate_promoted": false,
+    "gold_graph_admission_performed": false,
+    "graph_publication_performed": false,
+    "source_payload_bytes_retained": false,
+    "source_values_in_qualification": false,
+    "m109_full_denominator_accepted": false,
+    "m110_accepted": false,
+    "m112_accepted": false,
+    "patient_denominator_established": false,
+    "pbs_or_clinical_equivalence_claimed": false
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-silver-admission",
+  "schema_version": 1,
+  "status": "admitted_scoped_source_era_for_m110_graph_qualification",
+  "recorded_at": "2026-10-16T19:32:16.997256Z",
+  "admission_scope": "M-110 Gold graph qualification input only",
+  "admission_basis": "Existing Decision 0009 and exact-source publication authorization; no new licensing interpretation",
+  "source_identity": {
+    "source_id": "au-mbs",
+    "schema_era": "2025-07-version-3",
+    "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "source_byte_count": 8194522,
+    "source_record_count": 5989,
+    "release_id": "MBS-XML-20250701 Version 3",
+    "effective_at": "2025-07-01"
+  },
+  "public_dataset_identity": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "current_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+    "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "prefix": "silver/mbs/v4/2025-07-v3",
+    "candidate_only": true
+  },
+  "semantic_manifest": {
+    "path": "quality/qualifications/australian-mbs-silver-semantic-manifest-20261017.json",
+    "sha256": "9ad5e2747949b8b7142819e981241c1f74105b3570d78025e654e780241c5882"
+  },
+  "qualification_evidence": {
+    "run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/38953649119",
+    "exact_commit": "8c0090db41bb4ad2a4de20090a5e0895fffd91ec",
+    "report_path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017-8c0090db.json",
+    "report_sha256": "536f607f9f16cef42d6455858ce534af82186ced3ade2eb4c6839b2baf767232",
+    "artifact_id": "12070470185",
+    "artifact_name": "australian-mbs-silver-candidate-38953649119-1",
+    "candidate_report_sha256": "706a6b7ad2d909d45d31381df44ffd733daaf133955d8e2b97fe62b7b81b6063",
+    "current_blockers": [],
+    "source_bytes_retained": false,
+    "publication_performed": false
+  },
+  "authority": {
+    "decision_path": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
+    "decision_sha256": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
+    "source_authorization_path": "quality/qualifications/australian-health-legacy-publication-authorization.json",
+    "source_authorization_sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da",
+    "existing_external_publication_authorization": true,
+    "existing_maintainer_redistribution_assertion": true,
+    "rights_conclusion_made_by_this_receipt": false,
+    "public_manifest_authority_basis_matches": true
+  },
+  "tables": [
+    {
+      "name": "benefits",
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "byte_count": 114493,
+      "row_count": 5989,
+      "schema_field_count": 9
+    },
+    {
+      "name": "caps",
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "byte_count": 60259,
+      "row_count": 5989,
+      "schema_field_count": 13
+    },
+    {
+      "name": "descriptions",
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "byte_count": 620348,
+      "row_count": 5989,
+      "schema_field_count": 7
+    },
+    {
+      "name": "fees",
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "byte_count": 93072,
+      "row_count": 5989,
+      "schema_field_count": 10
+    },
+    {
+      "name": "hierarchy",
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "byte_count": 51851,
+      "row_count": 5989,
+      "schema_field_count": 8
+    },
+    {
+      "name": "services",
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "byte_count": 100062,
+      "row_count": 5989,
+      "schema_field_count": 17
+    }
+  ],
+  "separation": {
+    "public_candidate_remains_candidate_only": true,
+    "production_admission_or_promotion": false,
+    "public_dataset_mutation": false,
+    "source_payload_retention": false,
+    "M109_full_denominator_accepted": false,
+    "M110_gold_graph_accepted": false,
+    "M112_federation_accepted": false
+  },
+  "limitations": [
+    "Only the exact July 2025 MBS XML v3 source identity and six named tables are admitted for M-110 graph qualification.",
+    "P7, other MBS eras, PBS, terminology, and participant denominators are excluded.",
+    "Admission does not establish an MBS-to-medicine clinical, therapeutic-equivalence, regulatory, funding, or formulary claim.",
+    "Full M-109, M-110 Gold graph, and M-112 acceptance remain incomplete."
+  ]
+}

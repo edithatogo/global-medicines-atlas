@@ -1,12 +1,14 @@
-"""Candidate MBS Gold graph uses only explicit synthetic Silver evidence."""
+"""MBS Gold graph candidates preserve explicit synthetic and admitted evidence."""
 
 # pyright: reportPrivateUsage=false
 # pyright: reportUnknownMemberType=false
 
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from io import BytesIO
 from operator import attrgetter, itemgetter
+from pathlib import Path
 
+import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from pydantic import ValidationError
@@ -18,6 +20,7 @@ from test_mbs_silver import (
 from global_medicines_atlas.mbs_gold_graph import (
     MBS_GOLD_EDGE_SCHEMA,
     MBS_GOLD_NODE_SCHEMA,
+    MbsGoldAdmittedSilverInput,
     MbsGoldEdge,
     MbsGoldFieldEvidence,
     MbsGoldGraphCandidate,
@@ -25,9 +28,71 @@ from global_medicines_atlas.mbs_gold_graph import (
     _edge_id,  # ruff: ignore[import-private-name] -- adversarial contract test
     _node_id,  # ruff: ignore[import-private-name] -- adversarial contract test
     build_mbs_gold_graph_candidate,
+    build_mbs_gold_graph_from_admitted_silver,
     project_mbs_gold_graph_arrow,
 )
 from global_medicines_atlas.receipts import EvidenceClass, RightsState
+
+REAL_SOURCE_SHA256 = (
+    "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
+)
+REAL_RECEIPT_SHA256 = (
+    "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03"
+)
+REAL_RETRIEVED_AT = "2026-09-27T20:37:32.916888+00:00"
+
+
+def _admitted_table(name: str, native_field: str) -> pa.Table:
+    metadata = {
+        "schema_name": f"global-medicines-atlas.mbs-silver.{name}",
+        "schema_version": "1.1",
+        "source_id": "au-mbs",
+        "subject_kind": "service",
+        "dimension": "service_benefit",
+        "absence_interpretation": "unknown",
+        "mapping_status": "source_native",
+        "qualification": "candidate",
+        "conversion_version": "mbs-scalar-v2",
+        "source_receipt_sha256": REAL_RECEIPT_SHA256,
+        "source_uri": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive",
+        "retrieved_at": REAL_RETRIEVED_AT,
+        "rights_state": "permitted",
+        "evidence_class": "live",
+        "schema_era": "2025-07-version-3",
+        "source_record_count": "2",
+    }
+    rows = [
+        {
+            "source_record_id": f"au-mbs:3::2025-07-{ordinal}",
+            "source_ordinal": ordinal,
+            "source_sha256": REAL_SOURCE_SHA256,
+            "receipt_sha256": REAL_RECEIPT_SHA256,
+            native_field: {
+                "native_value": str(ordinal + 1),
+                "native_state": "value",
+                "conversion_status": "preserved",
+                "typed_value": str(ordinal + 1),
+            },
+        }
+        for ordinal in range(2)
+    ]
+    return pa.Table.from_pylist(rows).replace_schema_metadata({
+        key.encode(): value.encode() for key, value in metadata.items()
+    })
+
+
+def _admitted_input() -> MbsGoldAdmittedSilverInput:
+    return MbsGoldAdmittedSilverInput(
+        source_sha256=REAL_SOURCE_SHA256,
+        receipt_sha256=REAL_RECEIPT_SHA256,
+        catalog_version="2025-07-version-3",
+        source_record_count=2,
+        source_effective_date=date(2025, 7, 1),
+        retrieved_at=datetime.fromisoformat(REAL_RETRIEVED_AT),
+        rights_state=RightsState.PERMITTED,
+        admission_sha256="a" * 64,
+        semantic_manifest_sha256="b" * 64,
+    )
 
 
 def graph(count: int = 2) -> MbsGoldGraphCandidate:
@@ -45,6 +110,9 @@ def test_explicit_service_benefit_edges_preserve_every_silver_record():
     assert result.terminology_linking_performed is False
     assert result.publication_performed is False
     assert result.source_record_count == 2
+    assert result.graph_sha256 == (
+        "78cde38b55da2c051168a96f77008809f19316444c5d7bf78bc8dbda8c52647c"
+    )
     assert len(result.nodes) == 4
     assert len(result.edges) == 2
     by_id = {node.node_id: node for node in result.nodes}
@@ -85,6 +153,116 @@ def test_graph_and_arrow_projection_are_deterministic_and_portable():
         pq.write_table(table, output)
         assert pq.read_table(BytesIO(output.getvalue())).equals(
             table, check_metadata=True
+        )
+
+
+def test_frozen_v2_graph_receipt_remains_readable_and_digest_stable():
+    legacy_path = (
+        Path(__file__).parent / "fixtures/mbs_gold_graph_v2_synthetic.json"
+    )
+    legacy_bytes = legacy_path.read_bytes()
+    result = MbsGoldGraphCandidate.model_validate_json(legacy_bytes)
+    assert result.schema_version == 2
+    assert result.qualification == "synthetic_silver_candidate_only"
+    assert result.graph_sha256 == (
+        "78cde38b55da2c051168a96f77008809f19316444c5d7bf78bc8dbda8c52647c"
+    )
+    serialized = result.model_dump(mode="json")
+    assert "input_admission_sha256" not in serialized
+    assert "input_semantic_manifest_sha256" not in serialized
+    assert all(
+        "source_snapshot_effective_date" not in edge
+        for edge in serialized["edges"]
+    )
+
+
+def test_admitted_real_silver_graph_preserves_provenance_and_scope():
+    result = build_mbs_gold_graph_from_admitted_silver(
+        _admitted_table("services", "ItemNum"),
+        _admitted_table("benefits", "Benefit100"),
+        _admitted_input(),
+    )
+    assert result.qualification == "admitted_real_silver_candidate_only"
+    assert result.schema_version == 3
+    assert result.admission_performed is False
+    assert result.input_admission_sha256 == "a" * 64
+    assert result.input_semantic_manifest_sha256 == "b" * 64
+    assert result.source_record_count == 2
+    assert len(result.nodes) == 4
+    assert len(result.edges) == 2
+    assert all(
+        edge.valid_time_status == "source_snapshot_effective_date"
+        for edge in result.edges
+    )
+    assert all(
+        edge.source_snapshot_effective_date == date(2025, 7, 1)
+        for edge in result.edges
+    )
+    assert all(edge.review_state == "not_reviewed" for edge in result.edges)
+    assert all(
+        edge.negative_control_outcome == "not_applicable"
+        for edge in result.edges
+    )
+    nodes, edges = project_mbs_gold_graph_arrow(result)
+    assert nodes.schema.metadata[b"qualification"] == (
+        b"admitted_real_silver_candidate_only"
+    )
+    assert edges.schema.metadata[b"qualification"] == (
+        b"admitted_real_silver_candidate_only"
+    )
+    assert nodes.schema.metadata[b"schema_version"] == b"3.0"
+    assert edges.schema.metadata[b"schema_version"] == b"3.0"
+
+
+def test_admitted_real_silver_graph_rejects_cross_receipt_or_unpermitted_input():
+    services = _admitted_table("services", "ItemNum")
+    benefits = _admitted_table("benefits", "Benefit100")
+    bad_metadata = dict(benefits.schema.metadata or {})
+    bad_metadata[b"source_receipt_sha256"] = b"0" * 64
+    with pytest.raises(ValueError, match="metadata differs"):
+        build_mbs_gold_graph_from_admitted_silver(
+            services,
+            benefits.replace_schema_metadata(bad_metadata),
+            _admitted_input(),
+        )
+    with pytest.raises(ValueError, match="permitted"):
+        build_mbs_gold_graph_from_admitted_silver(
+            services,
+            benefits,
+            _admitted_input().model_copy(
+                update={"rights_state": RightsState.UNKNOWN}
+            ),
+        )
+
+
+@pytest.mark.parametrize(
+    ("column", "expected"),
+    [
+        ("source_sha256", REAL_SOURCE_SHA256),
+        ("receipt_sha256", REAL_RECEIPT_SHA256),
+    ],
+)
+def test_admitted_real_silver_graph_rejects_paired_forged_row_digests(
+    column: str, expected: str
+):
+    services = _admitted_table("services", "ItemNum")
+    benefits = _admitted_table("benefits", "Benefit100")
+    forged = "0" * 64
+    assert expected != forged
+    for table_name, table in (("services", services), ("benefits", benefits)):
+        index = table.schema.get_field_index(column)
+        changed = table.set_column(
+            index,
+            table.schema.field(index),
+            pa.array([forged] * table.num_rows, type=pa.string()),
+        )
+        if table_name == "services":
+            services = changed
+        else:
+            benefits = changed
+    with pytest.raises(ValueError, match="admitted digests"):
+        build_mbs_gold_graph_from_admitted_silver(
+            services, benefits, _admitted_input()
         )
 
 
@@ -287,30 +465,44 @@ def test_graph_order_uniqueness_denominator_and_edge_support_are_validated():
 
 def test_graph_rejects_rights_metadata_mismatch_between_nodes_and_edges():
     candidate = graph()
-    nodes = tuple(
-        node.model_copy(
-            update={
-                "evidence": node.evidence.model_copy(
-                    update={"rights_state": RightsState.PERMITTED}
-                )
-            }
+    nodes = []
+    node_ids = {}
+    for node in candidate.nodes:
+        evidence = node.evidence.model_copy(
+            update={"rights_state": RightsState.PERMITTED}
         )
-        for node in candidate.nodes
-    )
-    edges = tuple(
-        edge.model_copy(
-            update={
-                "evidence": edge.evidence.model_copy(
-                    update={"rights_state": RightsState.PERMITTED}
-                )
-            }
+        node_id = _node_id(node.kind, evidence, node.fields)
+        node_ids[node.node_id] = node_id
+        nodes.append(
+            node.model_copy(update={"evidence": evidence, "node_id": node_id})
         )
-        for edge in candidate.edges
+    edges = []
+    for edge in candidate.edges:
+        evidence = edge.evidence.model_copy(
+            update={"rights_state": RightsState.PERMITTED}
+        )
+        source_id = node_ids[edge.source_node_id]
+        target_id = node_ids[edge.target_node_id]
+        edges.append(
+            edge.model_copy(
+                update={
+                    "evidence": evidence,
+                    "source_node_id": source_id,
+                    "target_node_id": target_id,
+                    "edge_id": _edge_id(source_id, target_id, evidence),
+                }
+            )
+        )
+    changed = candidate.model_copy(
+        update={
+            "nodes": tuple(sorted(nodes, key=lambda item: item.node_id)),
+            "edges": tuple(sorted(edges, key=lambda item: item.edge_id)),
+            "graph_sha256": "0" * 64,
+        }
     )
-    changed = candidate.model_copy(update={"nodes": nodes, "edges": edges})
 
     with pytest.raises(ValueError, match="rights/sensitivity metadata"):
-        changed.graph_is_closed_and_bound()
+        MbsGoldGraphCandidate.model_validate(changed.model_dump())
 
 
 def test_node_field_order_and_self_edges_are_rejected():
