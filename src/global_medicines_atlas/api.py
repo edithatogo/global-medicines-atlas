@@ -499,7 +499,12 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
             str | None,
             Query(
                 max_length=16384,
-                description="JSON array of up to 16 column/operator/scalar predicates, combined with AND.",
+                description=(
+                    "JSON array of up to 16 column/operator/scalar predicates, "
+                    "combined with AND. Date values use "
+                    '{"type":"date","value":"YYYY-MM-DD"}; decimal JSON '
+                    "numbers retain exact decimal comparison."
+                ),
             ),
         ] = None,
         *,

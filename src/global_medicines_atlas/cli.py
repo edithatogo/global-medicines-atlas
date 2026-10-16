@@ -847,7 +847,7 @@ def benefits_query(
     *,
     offline: bool = False,
 ) -> None:
-    """Query one page using independently provisioned operator trust metadata."""
+    """Query one trusted page; dates use tagged ISO values and decimals stay exact."""
     from .platinum_benefits import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
         BenefitsQuery,
         BenefitsService,
