@@ -2347,3 +2347,14 @@
   path. This confirms the path-level manifest gap without reading source bytes,
   changing rights, changing the denominator, or admitting the object. See
   `quality/qualifications/australian-m112-root-manifest-readback-20261005.json`.
+
+- [x] Prepare the exact August 2026 MBS root-manifest append as a local,
+  metadata-only candidate. The protected main-only workflow binds the current
+  anonymous manifest revision and digest, the exact existing raw-object blob
+  identity, its historical alias, and the existing MBS publication and source
+  receipt evidence; compare-and-swap writes only `manifest.json`. Focused
+  publisher tests cover stale-head rejection, ambiguous-commit idempotency, and
+  anonymous-readback failure. No source payload is read or uploaded, and no
+  rights, admission, denominator, or M-112 acceptance state changes. The hosted
+  append and its durable anonymous receipt remain pending the final merged-main
+  workflow run.
