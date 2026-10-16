@@ -38,7 +38,15 @@ from .receipts import SourceReceipt
 _TABLES = frozenset(field.target_table for field in mbs_field_contracts())
 _DECIMAL_TYPE = pa.decimal128(38, 9)
 _XML_WHITESPACE = " \t\r\n"
-MAX_MBS_AMOUNT_INTEGER_DIGITS = 5
+_MAX_MBS_NUMERIC_INTEGER_DIGITS = {
+    "ScheduleFee": 5,
+    "Benefit75": 5,
+    "Benefit85": 5,
+    "Benefit100": 5,
+    "EMSNFixedCapAmount": 7,
+    "EMSNPercentageCap": 7,
+    "EMSNMaximumCap": 7,
+}
 MAX_BATCH_ROWS = 4096
 
 
@@ -135,10 +143,12 @@ def _field_value(
     typed = converted.typed_value
     status: str = converted.status
     if (
-        contract.value_type == "aud_decimal"
+        contract.value_type in {"aud_decimal", "percentage"}
         and isinstance(value, str)
         and converted.status == "converted"
-        and _is_outside_mbs_amount_format(value.strip(_XML_WHITESPACE))
+        and mbs_numeric_field_width_exceeded(
+            contract.native_name, value.strip(_XML_WHITESPACE)
+        )
     ):
         typed, status = None, "invalid"
     if isinstance(typed, Decimal):
@@ -156,10 +166,13 @@ def _field_value(
     }
 
 
-def _is_outside_mbs_amount_format(value: str) -> bool:
-    """Check official MBS amount width after XML whitespace normalization."""
+def mbs_numeric_field_width_exceeded(native_name: str, value: str) -> bool:
+    """Check official field-specific MBS numeric width after XML whitespace."""
+    max_integer_digits = _MAX_MBS_NUMERIC_INTEGER_DIGITS.get(native_name)
+    if max_integer_digits is None:
+        return False
     integer = value.lstrip("+-").partition(".")[0]
-    return len(integer) > MAX_MBS_AMOUNT_INTEGER_DIGITS
+    return len(integer) > max_integer_digits
 
 
 def _row(
