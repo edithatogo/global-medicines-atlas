@@ -161,9 +161,21 @@
 - [x] Confirm the intended failure before implementation. (`620aaf7`;
   test collection failed because the distribution module did not exist.)
 - [~] Qualify offline distribution-inventory reconciliation and integrate the
-  complete producer denominator. (`620aaf7`; 123 focused federation tests pass,
-  new module 100% coverage; full harness and hosted qualification pending.
-  Receipt admission and live producer integration remain open.)
+  complete producer denominator. (`620aaf7`; synthetic producer-denominator,
+  exact v4 contracts, caller-profiled synthetic admission,
+  remote/cache/refetch, and Platinum identity journey are implemented. On
+  current main
+  `eb8bc3e3a01b3e46da19e6aac4035c9d69231d2e`, the affected federation and
+  medallion E2E suite passes (391); routine checks pass. The repository-wide
+  full profile was run on prior code head `6d092b014200d1b3eeb05e7b733e73de1d21d59b`
+  (6,337 passed, 3 failed, 3 skipped): two release-reproducibility tests could
+  not find pinned uv 0.11.29, and a product-export p95 of 1,038.454 ms exceeded
+  its 1,000 ms limit. The two release-reproducibility tests subsequently pass
+  in isolation with the existing pinned uv 0.11.29; the product-export test
+  also passes in isolation, but the full-run performance miss remains
+  unresolved. Exact-head hosted qualification is pending.
+  Independent producer receipt admission and live producer integration remain
+  open.)
   - [x] Strictly load the bounded synthetic-only producer inventory and
     reconcile every Bronze/Silver/Gold/Platinum row against a matching pinned
     v4 contract; reject a partial object or contract denominator. Local E2E
