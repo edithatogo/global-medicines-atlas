@@ -2316,7 +2316,7 @@
 
 ## M-109 July 2025 MBS six-table value parity (2026-10-12)
 
-- [~] Extend the existing exact-source parity qualification from the services
+- [x] Extend the existing exact-source parity qualification from the services
   table to all six pinned July 2025 MBS Silver table candidates. Bind each
   Parquet identity and the candidate manifest digest, compare every generated
   source-faithful field and row value, and emit a value-free receipt with no
@@ -2324,8 +2324,13 @@
   Schema require each of the six tables exactly once and in deterministic
   order. Final local focused/integration checks pass (17 parity tests; 52
   parity plus MBS Silver tests), as do targeted `ty`, BasedPyright, Ruff, and
-  formatting checks. Hosted exact-head and exact-main receipt readback remain
-  pending. The full local profile on the pre-cardinality-guard tree had 6,276
+  formatting checks. PR #1052 passed required exact-head checks and merged as
+  `2666e6e026867be99d85f1e32bc9b381afe50efc`. Exact-main Test-Goblin run
+  `38908829291` passed; its value-free six-table parity receipt was downloaded
+  and validated against both the Pydantic model and Draft 2020-12 JSON Schema.
+  All six tables report 5,989 rows and the expected source-to-Silver value
+  parity. Rights, production admission, publication, and production promotion
+  remain false. The full local profile on the pre-cardinality-guard tree had 6,276
   passed, 3 skipped, and 7 failures; most were existing performance/browser
   checks under severe host load, with one Hypothesis first-call timeout. The
   isolated Bronze recovery retry also timed out while spawning `git
