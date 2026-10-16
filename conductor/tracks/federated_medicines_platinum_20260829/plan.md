@@ -1313,11 +1313,15 @@
 
 ## 2026-10-17 product export qualification correction
 
-- [~] Correct `PERF-EXPORT-PAGE` so its measured workload matches the declared
+- [x] Correct `PERF-EXPORT-PAGE` so its measured workload matches the declared
   bounded single-page JSONL export, using only a synthetic 250-row fixture.
   Keep the 1,000 ms budget and existing multi-page behavior unchanged. Focused
   and affected checks pass; the full local profile's two release-reproduction
-  failures pass when the pinned uv 0.11.29 is visible to child processes.
-  Exact-head hosted checks and a clean corrected full profile remain pending.
-  This benchmark correction does not qualify live source coverage, production
-  deployment, rights, accessibility conformance, public export, or release.
+  failures passed when pinned uv 0.11.29 was visible to child processes. PR
+  #1065 merged as `0cece90f` on exact head `b800f2cb` after all 39 reported
+  checks passed, including hosted full Test-Goblin, E2E, Codecov, security, and
+  Linux/macOS/Windows consumer lanes. The local full-profile environment
+  failure remains recorded separately. The historical 1,038.454 ms cursor
+  traversal result remains a miss for that distinct workload. This correction
+  does not qualify live source coverage, production deployment, rights,
+  accessibility conformance, public export, or release.
