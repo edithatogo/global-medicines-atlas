@@ -1313,3 +1313,10 @@ for credentialed or rights-unresolved sources.
   through `scripts/qualify_bronze_receipt_cohort.py`; only that test-file digest
   and aggregate fingerprint changed, while the 29/128 cohort counts, scope
   accounting, and incomplete-current-scope boundaries remained identical.
+  PR #1060 merged from exact head `a4764cff0cb589fe5ad1fdf1c4eb3eb0fb6fa738`
+  as `65cb189262586118b012d54213bc321e9cd63c5f`; the merge tree exactly
+  matches the tested head tree. All 29 required branch-protection contexts
+  passed, including Codecov patch and Linux/macOS/Windows consumers.
+  The initial failed-check ledger entry is preserved unchanged. A later
+  append-only clarification associates the failure with PR #1060 and keeps its
+  `26d23b5` failing head distinct from the successful `a4764cff` rerun.
