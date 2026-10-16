@@ -27,7 +27,7 @@ The machine-readable Bronze report records the exact source-code commit it
 evaluated. Its report, bounded future-source ledger, and the stable-v1 contract
 must be regenerated after any merge that changes their hashed inputs.
 
-Current Bronze qualification source commit: `f9add1947cc9deec3817d4802a50e7a0e2fd6fa1`.
+Current Bronze qualification source commit: `ffcdfa8c5240bf7f5ea73eddb94e2827566fc0f4`.
 
 ## Current-main M5 reconciliation — 2026-10-17
 
