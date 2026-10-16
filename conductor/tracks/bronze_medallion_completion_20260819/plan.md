@@ -1294,3 +1294,22 @@ for credentialed or rights-unresolved sources.
   (`8f7a5993297858ddb07408d542d9417119981060`). All 28 required contexts,
   including Codecov, passed. The optional Iceberg REST job failed before
   checkout because Docker Hub token retrieval timed out on three attempts.
+
+
+## Source-neutral full-profile reliability follow-up (2026-10-17)
+
+- [x] Keep the generated-payload Parquet reconstruction property independent
+  of process-level Git lookup while preserving direct verification of the real
+  `git rev-parse HEAD` provenance fallback. The property uses an explicit
+  synthetic commit identity only in its temporary test receipts; a separate
+  unit test covers the real repository fallback, and an existing test covers
+  configured CI commit identity. The focused property and transformation
+  receipt tests pass (8); the isolated property passes in 11.49 seconds. The
+  prior full profile had timed this property out at 30 seconds under suite
+  load, then the unchanged case passed alone in 15.19 seconds. This test-only
+  isolation changes no runtime behavior, source bytes, or source coverage. The
+  first hosted unit run exposed the expected stale receipt-cohort dependency
+  fingerprint for the changed test file. The committed report was regenerated
+  through `scripts/qualify_bronze_receipt_cohort.py`; only that test-file digest
+  and aggregate fingerprint changed, while the 29/128 cohort counts, scope
+  accounting, and incomplete-current-scope boundaries remained identical.

@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "80712896b11c589e754265eb0a5ce5faf7204716c6b1a6e10adde20108e6126a",
+      "sha256": "4a32f6b5d28091de7d68725ee0975488e89f8b8fd022174ae577da2434907a7e",
       "file_count": 147,
       "files": [
         {
@@ -727,7 +727,7 @@
         {
           "path": "tests/test_bronze_recovery.py",
           "exists": true,
-          "sha256": "f3e6440fc08a9cbd27909643bf9e2c36228392a56a9c33c084b808b6371a12b0"
+          "sha256": "a7169ce844b96d1f4320022ac3b68c9a1f6e0c5c62d507fb54c8d527784b78c2"
         },
         {
           "path": "tests/test_bronze_scale.py",
