@@ -105,6 +105,7 @@
         "ar-anmat-vademecum",
         "au-amt-rf2",
         "au-artg",
+        "au-data-gov-mbs-demographics",
         "au-mbs",
         "au-mbs-p7-legacy-workbook",
         "au-pbs-api",
@@ -313,6 +314,10 @@
       {
         "rule_id": "S-EX-03",
         "rule": "Exclude restricted or rights-unknown payload bytes from public packages while retaining lawful metadata and retrieval instructions."
+      },
+      {
+        "rule_id": "S-EX-04",
+        "rule": "Catalogued health-service-benefit sources remain in the global source census but are outside medicine regulatory and funding estimands unless a separate estimand and semantic qualification is approved; item or service statistics are not participant denominators."
       }
     ],
     "rights_rules": {
