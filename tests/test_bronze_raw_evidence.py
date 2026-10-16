@@ -33,12 +33,15 @@ from global_medicines_atlas.bronze_raw_evidence import (
     build_archive_member_manifest,
     build_document_manifest,
     build_raw_evidence_record,
+    build_raw_evidence_reference_from_acquisition,
     read_raw_evidence_manifest,
     write_raw_evidence_manifest,
 )
 from global_medicines_atlas.receipts import (
+    AcquisitionStatus,
     PayloadEvidence,
     SourceReceipt,
+    acquisition_event_from_receipt,
     require_temporal,
 )
 from global_medicines_atlas.reuse_gate import acquire_new_decision
@@ -237,6 +240,62 @@ def test_external_reference_and_blocked_states_never_fabricate_payload() -> (
     assert blocked.byte_count is None
     assert external.raw_object_locator is None
     assert blocked.raw_object_locator is None
+
+
+@pytest.mark.unit
+def test_external_b2_reference_can_bind_an_append_only_acquisition_event() -> (
+    None
+):
+    receipt = _receipt(b"external immutable source")
+    event = acquisition_event_from_receipt(receipt)
+    reference = (
+        "https://huggingface.co/datasets/example/data/resolve/"
+        "0123456789abcdef0123456789abcdef01234567/raw/source.csv"
+    )
+
+    record = build_raw_evidence_reference_from_acquisition(
+        event,
+        external_reference=reference,
+        media_type="text/csv",
+    )
+
+    assert record.state is RawEvidenceState.EXTERNAL_REFERENCE_ONLY
+    assert record.source_id == event.source_id
+    assert record.acquisition_id == event.acquisition_id
+    assert record.content_id == event.payload_sha256
+    assert record.external_reference == reference
+    assert record.raw_object_locator is None
+    assert record.payload_sha256 is None
+    assert record.byte_count is None
+    assert record.payload_contents_in_metadata is False
+    schema = json.loads(
+        Path("schemas/b2-raw-evidence-v1.json").read_text(encoding="utf-8")
+    )
+    Draft202012Validator(schema).validate(record.model_dump(mode="json"))
+
+
+@pytest.mark.unit
+def test_external_b2_reference_rejects_failed_acquisitions_and_blank_reference() -> (
+    None
+):
+    event = acquisition_event_from_receipt(_receipt(b"external source"))
+    failed = event.model_copy(
+        update={
+            "retrieval": event.retrieval.model_copy(
+                update={"status": AcquisitionStatus.FAILED}
+            )
+        }
+    )
+    with pytest.raises(ValueError, match="succeeded acquisition"):
+        build_raw_evidence_reference_from_acquisition(
+            failed,
+            external_reference="https://example.invalid/source.csv",
+        )
+    with pytest.raises(ValueError, match="external reference"):
+        build_raw_evidence_reference_from_acquisition(
+            event,
+            external_reference=" ",
+        )
 
 
 @pytest.mark.unit

@@ -2394,6 +2394,28 @@
   and consumer canaries remain incomplete. See
   `quality/qualifications/australian-m112-root-manifest-path-readback-20261017.json`.
 
+## M-112 historical imported B1-to-B2 reference reconciliation (2026-10-17)
+
+- [x] Build deterministic B2 external-reference rows for the selected 14
+  historical MBS utilisation objects from their imported acquisition events.
+  The generator verifies both import manifests, per-record and event digests,
+  B1 acquisition/content identity, successful retrieval, and the immutable
+  public revision locator. It writes
+  `quality/bronze/imported-raw-evidence/australian-mbs-utilisation-20261017.json`
+  and the hash-bound qualification
+  `quality/qualifications/australian-mbs-utilisation-b2-reference-reconciliation-20261017.json`.
+  This is a 14-object subset of the approved 1,759-path denominator. It reads
+  no source payload bytes or values and creates no native source receipt,
+  payload-storage receipt, replication qualification, or admission history.
+  The final focused 25-test selection passes; 231 broader affected tests passed
+  before the final scope annotation was added, which was covered by the final
+  focused selection. The local full profile completed with 6,394 passed,
+  7 failed, 3 skipped and 96.89% coverage. Failures were outside this B2 path:
+  product query performance budgets, the local uv 0.13.1 versus required
+  0.11.29 release-build mismatch, one product-security runner, and one PBS
+  UTF-8 composed-size assertion. M-112 rights, complete B1/B2 lifecycle,
+  admission, v4 admission, and consumer canaries remain open.
+
 ### M-110 real-Silver admission gate recheck (2026-10-05)
 
 - [ ] Qualify Gold relationships over admitted real Silver tables. This remains

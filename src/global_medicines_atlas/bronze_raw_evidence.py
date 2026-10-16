@@ -22,7 +22,13 @@ from pydantic import Field, model_validator
 
 from .archive_safety import inspect_tar, inspect_zip
 from .models import FrozenModel
-from .receipts import SHA256_PATTERN, SourceReceipt, require_temporal
+from .receipts import (
+    SHA256_PATTERN,
+    AcquisitionEvent,
+    AcquisitionStatus,
+    SourceReceipt,
+    require_temporal,
+)
 
 RAW_EVIDENCE_SCHEMA_ID = "global-medicines-atlas.b2-raw-evidence"
 RAW_EVIDENCE_MANIFEST_SCHEMA_ID = (
@@ -214,6 +220,41 @@ def build_raw_evidence_record(
         blocked_reason=(
             blocked_reason if state is RawEvidenceState.BLOCKED else None
         ),
+        media_type=media_type,
+    )
+
+
+def build_raw_evidence_reference_from_acquisition(
+    event: AcquisitionEvent,
+    *,
+    external_reference: str,
+    kind: RawEvidenceKind = RawEvidenceKind.PAYLOAD,
+    media_type: str | None = None,
+) -> RawEvidenceRecord:
+    """Bind B2 to a succeeded B1 event without claiming retained payload bytes.
+
+    The event's content-addressed ID preserves the expected payload digest.
+    This records only the external locator: it does not prove that the remote
+    object currently matches the digest, grant rights, create a source receipt,
+    or assert controlled storage durability.
+    """
+
+    if (
+        event.retrieval is None
+        or event.retrieval.status is not AcquisitionStatus.SUCCEEDED
+    ):
+        raise ValueError(
+            "external B2 reference requires a succeeded acquisition event"
+        )
+    if not external_reference.strip():
+        raise ValueError("external reference is required")
+    return RawEvidenceRecord(
+        source_id=event.source_id,
+        acquisition_id=event.acquisition_id,
+        content_id=event.content_id,
+        kind=kind,
+        state=RawEvidenceState.EXTERNAL_REFERENCE_ONLY,
+        external_reference=external_reference,
         media_type=media_type,
     )
 
