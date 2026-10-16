@@ -243,6 +243,22 @@
   workflow, anonymously restore and digest-check every object, and persist
   readback receipts before removing hosted temporary bytes.
 
+### M-108 exact-current-head metadata refresh (2026-10-17)
+
+- [x] Reconcile the current anonymous public heads and refresh the M-108
+  product inventory. The current MBS archive has three distinct accepted
+  August acquisition records for one source content ID; the third acquisition
+  was missing from the 2026-10-05 inventory. Record the separate public MBS
+  projection whose manifest has no admission state and whose prefix has no
+  admission sidecar, without counting it as accepted. See
+  `docs/qualification/australian-m108-derived-products-20261017.md` and
+  `quality/qualifications/australian-m108-derived-products-20261017.json`.
+- [~] Keep M-108 blocked: all four accepted Bronze projections and the public
+  MBS Silver candidate still lack a complete output-specific rights and typed
+  federation-v4 admission bundle, product-specific card, and independent
+  replica evidence. The unadmitted MBS prefix also needs an explicit
+  disposition. No publication, visibility change, or admission was performed.
+
 ## Review fixes: runtime reader
 
 - [x] Admit the exact observed `us.aws.cdn.hf.co` delivery host, with signed
