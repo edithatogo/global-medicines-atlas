@@ -1310,3 +1310,14 @@
   `httpx` deprecation warning was reported. This confirms the merged synthetic
   journey on the current tree; it does not change production acceptance,
   source coverage, rights, admission, or publication status.
+
+## 2026-10-17 product export qualification correction
+
+- [~] Correct `PERF-EXPORT-PAGE` so its measured workload matches the declared
+  bounded single-page JSONL export, using only a synthetic 250-row fixture.
+  Keep the 1,000 ms budget and existing multi-page behavior unchanged. Focused
+  and affected checks pass; the full local profile's two release-reproduction
+  failures pass when the pinned uv 0.11.29 is visible to child processes.
+  Exact-head hosted checks and a clean corrected full profile remain pending.
+  This benchmark correction does not qualify live source coverage, production
+  deployment, rights, accessibility conformance, public export, or release.
