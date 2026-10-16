@@ -1,0 +1,34 @@
+{
+  "blocked_action": "Replace Codecov CLI artifact acquisition through cli.codecov.io only if maintainer accepts this verified PyPI provenance route.",
+  "cli_package": {
+    "direct_url": "https://files.pythonhosted.org/packages/c1/6e/57c684d5f97f6b3d552b6c40b22743965eec109a00739fa075753accb6bd/codecov_cli-11.3.1-py3-none-any.whl",
+    "file": "codecov_cli-11.3.1-py3-none-any.whl",
+    "name": "codecov-cli",
+    "requires_python": ">=3.9",
+    "sha256": "69e2521a4904e15cc87e4bb71ad1ddcfa6a48f1340ec28a2419ed94c723c027d",
+    "version": "11.3.1"
+  },
+  "coverage_upload_performed": false,
+  "decision": "This route cryptographically ties the exact PyPI wheel digest to Codecov\u2019s tagged GitHub Actions Trusted Publisher. Codecov Action use_pypi explicitly bypasses its GPG check, so CI would need a pinned, pre-execution PEP 740 verification of the same wheel and then execute that verified artifact; a simple use_pypi toggle is insufficient.",
+  "existing_gpg_signature_gate_changed": false,
+  "hosted_ci_recovered": false,
+  "hosted_inventory_executed": false,
+  "kind": "australian_mbs_csv_header_inventory_codecov_pypi_provenance_assessment",
+  "processing_admitted": false,
+  "provenance_api": "https://pypi.org/integrity/codecov-cli/11.3.1/codecov_cli-11.3.1-py3-none-any.whl/provenance",
+  "pull_request": "https://github.com/edithatogo/global-medicines-atlas/pull/782",
+  "recorded_at": "2026-10-05T00:51:00.079873+00:00",
+  "remaining": "Maintainer decision on replacing Codecov GPG artifact verification with verified PyPI Sigstore provenance, or wait for cli.codecov.io recovery.",
+  "tests_repeated": false,
+  "track_id": "australian_benefits_silver_gold_20260829",
+  "verification": {
+    "command": "pypi-attestations verify pypi --repository https://github.com/codecov/codecov-cli pypi:codecov_cli-11.3.1-py3-none-any.whl",
+    "platform": "Sigstore certificate and Rekor transparency proof cryptographically verified by pypi-attestations",
+    "predicate_type": "https://docs.pypi.org/attestations/publish/v1",
+    "result": "OK: codecov_cli-11.3.1-py3-none-any.whl",
+    "tool": "pypi-attestations 0.0.30",
+    "trusted_publisher_repository": "https://github.com/codecov/codecov-cli",
+    "trusted_publisher_workflow": "release_flow.yml at refs/tags/v11.3.1"
+  },
+  "workflow_change_prepared": false
+}
