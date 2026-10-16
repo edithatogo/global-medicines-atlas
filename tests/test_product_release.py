@@ -5,6 +5,7 @@ from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Any
 
 import pytest
 from pydantic import ValidationError
@@ -200,9 +201,30 @@ def test_default_regeneration_is_deterministic():
     assert b"1000-row" not in first
 
 
-def test_runner_qualifies_fixture_gates_and_binds_receipts(tmp_path: Path):
+def test_runner_qualifies_fixture_gates_and_binds_receipts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
     output = tmp_path / "evidence.json"
     receipts = tmp_path / "receipts"
+    original_invoke = run_product_qualification.CliRunner.invoke
+    exports: list[tuple[list[str], int, str]] = []
+
+    def capture_cli_invoke(
+        runner: Any,
+        app: Any,
+        args: list[str],
+        **kwargs: Any,
+    ) -> Any:
+        result = original_invoke(runner, app, args, **kwargs)
+        if args and args[0] == "evidence":
+            exports.append((args, result.exit_code, result.stdout))
+        return result
+
+    monkeypatch.setattr(
+        run_product_qualification.CliRunner,
+        "invoke",
+        capture_cli_invoke,
+    )
     run(output, receipts)
     evidence = ProductReleaseEvidence.model_validate_json(output.read_text())
     assert evidence.state is ProductReleaseState.FIXTURE_QUALIFIED
@@ -210,6 +232,30 @@ def test_runner_qualifies_fixture_gates_and_binds_receipts(tmp_path: Path):
     assert evidence.gates["abuse_cases_verified"]
     assert all(item.receipt_id for item in evidence.performance)
     assert all(item.receipt_id for item in evidence.threats)
+    assert len(exports) == run_product_qualification.SAMPLES
+    for arguments, exit_code, stdout in exports:
+        assert exit_code == 0
+        database = Path(arguments[arguments.index("--database") + 1])
+        assert database.name == "export.duckdb"
+        assert database.parent == Path(
+            arguments[arguments.index("--allowed-root") + 1]
+        )
+        assert arguments[arguments.index("--format") + 1] == "jsonl"
+        assert arguments[arguments.index("--limit") + 1] == "250"
+        assert arguments[arguments.index("--max-rows") + 1] == "250"
+        records = [json.loads(line) for line in stdout.splitlines()]
+        assert len(records) == 250
+        assert all(
+            record["metadata"]["page"]
+            == {"limit": 250, "next_cursor": None, "returned": 250}
+            and "export" not in record["metadata"]
+            and record["record"]["concept_id"] == "rx:export-fixture"
+            and record["record"]["provenance"]["source_id"] == "fixture"
+            for record in records
+        )
+        assert [record["record"]["assertion_id"] for record in records] == [
+            f"export-{index:04d}" for index in range(250)
+        ]
 
 
 def test_runner_verifies_clean_start_in_a_fresh_fixture_root(

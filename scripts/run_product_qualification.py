@@ -53,6 +53,7 @@ from global_medicines_atlas.historical_comparison import (
     NativeSnapshot,
 )
 from global_medicines_atlas.product_contracts import (
+    MAX_PAGE_SIZE,
     ComparisonQuery,
     EvidenceDimension,
 )
@@ -74,6 +75,7 @@ SAMPLES = 20
 METHOD_NOT_ALLOWED = 405
 HTTP_OK = 200
 CLEAN_START_ROWS = 3
+EXPORT_FIXTURE_CONCEPT_ID = "rx:export-fixture"
 HISTORY_BEFORE_VALUE = "clean-start-field-before-unique-7f3a"
 HISTORY_AFTER_VALUE = "clean-start-field-after-unique-9c2d"
 IMPLEMENTATION_FILES = (
@@ -208,6 +210,45 @@ def _database(path: Path) -> Path:
     )
     connection.close()
     return path
+
+
+def _export_database(path: Path) -> Path:
+    """Build a synthetic database with one maximum-size evidence page."""
+    database = _database(path)
+    connection = duckdb.connect(str(database))
+    rows: list[tuple[object, ...]] = [
+        (
+            f"export-{index:04d}",
+            EXPORT_FIXTURE_CONCEPT_ID,
+            "AUS",
+            "regulatory",
+            "Fixture Authority",
+            "approved",
+            "confirmed",
+            cast("list[str]", []),
+            NOW,
+            None,
+            NOW,
+            None,
+            None,
+            None,
+            "fixture",
+            "https://example.test/evidence",
+            NOW,
+            None,
+            None,
+            None,
+            "synthetic-export-v1",
+            "qualification",
+        )
+        for index in range(MAX_PAGE_SIZE)
+    ]
+    connection.executemany(
+        "INSERT INTO temporal_assertions VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        rows,
+    )
+    connection.close()
+    return database
 
 
 def _query(
@@ -498,7 +539,10 @@ def _clean_start_receipt(digest: str) -> QualificationReceipt:
 
 
 def _performance_receipts(
-    service: ReadOnlyQueryService, digest: str
+    service: ReadOnlyQueryService,
+    export_database: Path,
+    allowed_root: Path,
+    digest: str,
 ) -> list[QualificationReceipt]:
     checks = (
         (
@@ -507,7 +551,11 @@ def _performance_receipts(
             lambda: ComparisonQuery.model_validate(_query().model_dump()),
         ),
         ("PERF-QUERY", 250.0, lambda: service.comparisons(_query())),
-        ("PERF-EXPORT-PAGE", 1000.0, lambda: _traverse(service)),
+        (
+            "PERF-EXPORT-PAGE",
+            1000.0,
+            lambda: _single_page_jsonl_export(export_database, allowed_root),
+        ),
     )
     receipts: list[QualificationReceipt] = []
     for subject, budget, workload in checks:
@@ -623,11 +671,14 @@ def run(output: Path, receipts_dir: Path) -> None:
     ) as raw:
         work = Path(raw)
         database = _database(work / "atlas.duckdb")
+        export_database = _export_database(work / "export.duckdb")
         service = ReadOnlyQueryService(
             database, cursor_secret=SECRET, allowed_root=work
         )
         receipts = [_clean_start_receipt(digest)]
-        receipts.extend(_performance_receipts(service, digest))
+        receipts.extend(
+            _performance_receipts(service, export_database, work, digest)
+        )
         receipts.extend(_threat_receipts(service, database, work, digest))
 
         staged = work / "receipts"
@@ -657,15 +708,57 @@ def run(output: Path, receipts_dir: Path) -> None:
         temporary_output.replace(output)
 
 
-def _traverse(service: ReadOnlyQueryService) -> int:
-    cursor: str | None = None
-    count = 0
-    while True:
-        response = service.comparisons(_query(limit=1, cursor=cursor))
-        count += len(response.conclusions)
-        cursor = response.metadata.page.next_cursor
-        if cursor is None:
-            return count
+def _single_page_jsonl_export(database: Path, allowed_root: Path) -> int:
+    """Execute and validate the bounded one-page evidence JSONL export."""
+    arguments = [
+        "evidence",
+        "--database",
+        str(database),
+        "--allowed-root",
+        str(allowed_root),
+        "--concept-id",
+        EXPORT_FIXTURE_CONCEPT_ID,
+        "--valid-at",
+        NOW.isoformat(),
+        "--observed-at",
+        NOW.isoformat(),
+        "--limit",
+        str(MAX_PAGE_SIZE),
+        "--format",
+        "jsonl",
+        "--max-rows",
+        str(MAX_PAGE_SIZE),
+    ]
+    with patch.dict(os.environ, {"GMA_CURSOR_SECRET": SECRET.decode("utf-8")}):
+        result = CliRunner().invoke(cli_app, arguments)
+    if result.exit_code != 0:
+        raise RuntimeError("single-page JSONL export failed")
+    try:
+        records = [
+            json.loads(line)
+            for line in result.stdout.splitlines()
+            if line.strip()
+        ]
+    except json.JSONDecodeError as error:
+        raise RuntimeError("single-page JSONL export was invalid") from error
+    if len(records) != MAX_PAGE_SIZE:
+        raise RuntimeError("single-page JSONL export was incomplete")
+    expected_page = {
+        "limit": MAX_PAGE_SIZE,
+        "returned": MAX_PAGE_SIZE,
+        "next_cursor": None,
+    }
+    if any(
+        record.get("metadata", {}).get("page") != expected_page
+        or record.get("record", {}).get("concept_id")
+        != EXPORT_FIXTURE_CONCEPT_ID
+        for record in records
+    ):
+        raise RuntimeError("single-page JSONL export identity was invalid")
+    identifiers = [record["record"]["assertion_id"] for record in records]
+    if identifiers != [f"export-{index:04d}" for index in range(MAX_PAGE_SIZE)]:
+        raise RuntimeError("single-page JSONL export rows were incomplete")
+    return len(records)
 
 
 def main() -> int:
