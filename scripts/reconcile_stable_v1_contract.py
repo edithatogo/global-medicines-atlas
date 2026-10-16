@@ -11,7 +11,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "quality/qualifications/stable-v1-contract.json"
 SUPPORT = ROOT / "quality/qualifications/stable-v1-support-readiness.json"
-SOURCE_CATALOG = ROOT / "src/global_medicines_atlas/data/medicine_source_catalog.json"
+SOURCE_CATALOG = (
+    ROOT / "src/global_medicines_atlas/data/medicine_source_catalog.json"
+)
 
 STABLE_LEDGER = (
     "conductor/tracks/stable_v1_qualification_20260729/evidence.jsonl"
