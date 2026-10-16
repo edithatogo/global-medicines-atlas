@@ -1,0 +1,35 @@
+{
+  "boundary": "Append only the existing source object identity to the public top-level manifest. Read metadata only; do not acquire or upload source payload bytes; preserve the historical alias and all other rows.",
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "evidence_inputs": {
+    "object_inventory": {
+      "path": "quality/qualifications/australian-m112-object-inventory-20260930.json",
+      "sha256": "ccc0667b1ce8ba19d4bed0a6590e2bc55ab954d7bd6cc51f56e51231cc780460"
+    },
+    "publication_authorization": {
+      "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+      "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b"
+    },
+    "release_contract": {
+      "path": "quality/qualifications/mbs-current-release-contract.json",
+      "sha256": "833bbf254d50dbc162d0d66e1f9e095c45c5868af1b2378fe3da1b673f4f09f6"
+    },
+    "source_receipt": {
+      "path": "quality/qualifications/australian-mbs-bronze-source-receipt-20261004.json",
+      "sha256": "de64938e8ae5b6c0f91c959e7b2eba6b157f1d50fba41cf1705430b861b6a7f4"
+    }
+  },
+  "expected_parent_file_count": 27,
+  "expected_parent_manifest_sha256": "54a32b19f720e47b55243819f396641f246779a0b78716c8677ee884e1d4ea07",
+  "expected_parent_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+  "object": {
+    "bytes": 8293331,
+    "expected_blob_id": "025c714ecd1fa69f91fdb4de002d285d47272e40",
+    "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+    "preserved_alias_path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+    "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+  },
+  "observed_at": "2026-10-17",
+  "schema_id": "global-medicines-atlas.australian-m112-root-manifest-append-contract",
+  "schema_version": 1
+}
