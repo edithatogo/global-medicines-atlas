@@ -38,6 +38,11 @@ XML release without exact-era evidence.
 The typed candidate maps these native fields to `services`, `hierarchy`,
 `descriptions`, `fees`, `benefits` and `caps` under
 [`mbs_field_contracts`](../../src/global_medicines_atlas/australian_source_contracts.py).
+The official field widths are field-specific: `ScheduleFee` and the three
+benefit amounts permit at most five integer digits, while
+`EMSNFixedCapAmount`, `EMSNPercentageCap`, and `EMSNMaximumCap` permit at most
+seven. The projection retains the original text and marks values beyond each
+field's limit invalid; it does not apply a global fee-width rule to cap fields.
 Date parsing is independently qualified only for this exact source identity
 in the [MBS v3 date receipt](../../quality/qualifications/mbs-xml-v3-date-profile-qualification-20260929.json).
 The receipt distinguishes converted, null and absent fields and found no

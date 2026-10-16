@@ -2414,3 +2414,15 @@
   admission gate passes. Preserve MBS-only scope and the existing M-109/M-112
   boundaries. See `docs/qualification/australian-m110-mbs-july-2025-silver-assessment.md`
   and `quality/qualifications/australian-m110-mbs-july-2025-silver-assessment-20261017.json`.
+- [x] Correct the MBS XML numeric-width transform so the three EMSN numeric
+  fields use their official seven-integer-digit limit while ScheduleFee and
+  Benefit75/85/100 retain five digits. Boundary tests failed before the fix and
+  pass after it. Focused MBS plus admission-assessment tests: 65 passed; the
+  full profile: 6,362 passed, three skipped, two local reproducibility tests
+  failed only because spawned processes found uv 0.13.1 instead of required
+  0.11.29; those two tests passed when rerun with pinned uv first on PATH.
+  Coverage 96.87%; current-source impact remains unqualified.
+- [ ] Re-run the read-only exact-main source qualifier after the field-width
+  fix. Compare all 5,989 source rows and six table digests; if candidate outputs
+  change, regenerate the qualification and use the approved hosted publication
+  path before admission.

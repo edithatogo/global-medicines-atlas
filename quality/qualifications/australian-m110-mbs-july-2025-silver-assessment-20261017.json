@@ -36,7 +36,7 @@
     "native_field_count": 40,
     "native_field_occurrence_count": 239560,
     "parity_receipt_sha256": "0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6",
-    "field_semantics_crosswalk_sha256": "0af4a2bfc016a1acef38eb52725b3c20cf511e83361ae2f1592836e81a18363c",
+    "field_semantics_crosswalk_sha256": "4989401d5b3ed18d099d978594e7708c759c238449431d6b82e7079e7450f837",
     "date_profile_receipt_sha256": "f5db28f11c536f3ad2617ac05f2f15dc09bd4b54e087e6a7ffe4b2d8e1b03dfc",
     "publication_authorization_sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da",
     "decision_0009_sha256": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
@@ -54,6 +54,16 @@
     "source_era_field_semantics": "pass_all_40_contract_fields_mapped_to_official_july_2025_xml_definitions",
     "source_era_date_semantics": "pass_exact_dd_mm_yyyy_profile_qualified_over_all_11_native_date_fields",
     "schema_profile_compatibility": "pass_declared_profile_only_schema_compatibility_not_a_semantic_profile",
+    "field_width_transform": "corrected_locally_field_specific_limits_pending_exact_main_requalification",
+    "field_width_profile": {
+      "schedule_fee_and_benefits_max_integer_digits": 5,
+      "emsn_fixed_percentage_and_maximum_cap_max_integer_digits": 7,
+      "profile_id": "mbs-xml-official-field-length-v1",
+      "official_specification": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help",
+      "official_page_updated": "2022-03-04",
+      "arrow_schema_metadata_changed": false,
+      "source_era_rerun_required": true
+    },
     "maintainer_scope_authority": "pass_decision_0009_and_exact_source_publication_authorization_cover_scoped_mbs_public_data_plane",
     "rights_boundary": "existing_parity_receipt_rights_conclusion_false_means_that_receipt_did_not_make_an_independent_rights_conclusion_not_that_decision_0009_authority_is_revoked",
     "silver_production_admission": "not_admitted_existing_receipts_explicitly_false",
@@ -76,5 +86,5 @@
       "any clinical or therapeutic-equivalence claim"
     ]
   },
-  "status": "candidate_only_exact_era_assessed_admission_pending"
+  "status": "candidate_only_field_width_fix_pending_current_main_revalidation"
 }

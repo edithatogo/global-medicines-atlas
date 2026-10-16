@@ -27,8 +27,13 @@ applies to schema-profile compatibility. Separately, the exact-era field-
 semantics crosswalk maps all 40 contract fields to official July 2025 XML
 definitions, and the exact-source date receipt qualifies the `DD.MM.YYYY`
 profile across all 11 native date fields. These are source-era semantic
-evidence, not Silver admission. The hosted run retained no source bytes and
-performed no publication.
+evidence, not Silver admission. Review also found that the then-current
+projection incorrectly applied the five-digit fee width to two safety-net
+amount fields and did not bound the percentage-cap width. A field-specific
+correction is now under test; the hosted identity/profile run predates that
+correction, so its candidate report cannot support admission until an exact-
+main requalification confirms whether any of the 5,989 rows change. The
+hosted run retained no source bytes and performed no publication.
 
 Decision 0009 and the exact-source publication authorization supply maintainer
 authority for the scoped MBS/PBS public data plane and exact MBS source. The

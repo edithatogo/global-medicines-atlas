@@ -100,7 +100,7 @@ def test_assessment_binds_exact_candidate_without_promoting_it() -> None:
     assert parity["production_promotion"] is False
     assert (
         assessment["status"]
-        == "candidate_only_exact_era_assessed_admission_pending"
+        == "candidate_only_field_width_fix_pending_current_main_revalidation"
     )
 
 
