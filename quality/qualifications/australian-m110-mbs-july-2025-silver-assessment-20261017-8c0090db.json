@@ -1,0 +1,134 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m110-mbs-silver-assessment",
+  "schema_version": 1,
+  "recorded_at": "2026-10-17",
+  "requirement_id": "M-110",
+  "scope": {
+    "jurisdiction": "AU",
+    "domain": "MBS service benefits",
+    "source_era": "2025-07-version-3",
+    "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "public_dataset": "edithatogo/australian-mbs-source-archive",
+    "public_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+    "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "prefix": "silver/mbs/v4/2025-07-v3",
+    "tables": [
+      {
+        "name": "services",
+        "rows": 5989,
+        "bytes": 100062,
+        "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"
+      },
+      {
+        "name": "hierarchy",
+        "rows": 5989,
+        "bytes": 51851,
+        "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"
+      },
+      {
+        "name": "descriptions",
+        "rows": 5989,
+        "bytes": 620348,
+        "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"
+      },
+      {
+        "name": "fees",
+        "rows": 5989,
+        "bytes": 93072,
+        "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"
+      },
+      {
+        "name": "benefits",
+        "rows": 5989,
+        "bytes": 114493,
+        "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"
+      },
+      {
+        "name": "caps",
+        "rows": 5989,
+        "bytes": 60259,
+        "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"
+      }
+    ]
+  },
+  "evidence": {
+    "qualification_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/38953649119",
+    "qualification_commit": "8c0090db41bb4ad2a4de20090a5e0895fffd91ec",
+    "hosted_artifact_id": "12070470185",
+    "hosted_artifact_name": "australian-mbs-silver-candidate-38953649119-1",
+    "hosted_artifact_path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017-8c0090db.json",
+    "hosted_artifact_body_sha256": "536f607f9f16cef42d6455858ce534af82186ced3ade2eb4c6839b2baf767232",
+    "candidate_report_sha256": "706a6b7ad2d909d45d31381df44ffd733daaf133955d8e2b97fe62b7b81b6063",
+    "qualification_report_sha256": "536f607f9f16cef42d6455858ce534af82186ced3ade2eb4c6839b2baf767232",
+    "identity_status": "verified",
+    "resolved_technical_blockers": [
+      "public_v4_identity_unverified"
+    ],
+    "current_technical_blockers": [],
+    "source_record_count": 5989,
+    "native_field_count": 40,
+    "native_field_occurrence_count": 239560,
+    "parity_receipt_sha256": "0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6",
+    "field_semantics_crosswalk_sha256": "4989401d5b3ed18d099d978594e7708c759c238449431d6b82e7079e7450f837",
+    "date_profile_receipt_sha256": "f5db28f11c536f3ad2617ac05f2f15dc09bd4b54e087e6a7ffe4b2d8e1b03dfc",
+    "publication_authorization_sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da",
+    "decision_0009_sha256": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
+    "profile_status": "declared_only",
+    "profile_status_scope": "schema_compatibility_only",
+    "profiled_table_values_match_unprofiled_projection": true,
+    "profiled_legacy_metadata_unchanged": true,
+    "publication_performed": false,
+    "source_bytes_retained": false,
+    "field_width_source_requalification": "pass_exact_main_no_candidate_values_or_object_digests_changed",
+    "semantic_manifest_path": "quality/qualifications/australian-mbs-silver-semantic-manifest-20261017.json",
+    "semantic_manifest_sha256": "9ad5e2747949b8b7142819e981241c1f74105b3570d78025e654e780241c5882",
+    "admission_receipt_path": "quality/qualifications/australian-mbs-silver-admission-20261017.json",
+    "admission_receipt_sha256": "ca01262520e1dbf3fbc697f21d644a1739c382f9b1652006ef94881302571f63",
+    "admission_scope": "M-110 Gold graph qualification input only"
+  },
+  "gate_assessment": {
+    "source_identity_and_release": "pass_exact_2025_07_release_identity_rechecked",
+    "source_to_candidate_value_parity": "pass_value_free_receipt_covers_six_tables",
+    "public_object_identity": "pass_current_revision_and_six_object_digests_verified",
+    "source_era_field_semantics": "pass_all_40_contract_fields_mapped_to_official_july_2025_xml_definitions",
+    "source_era_date_semantics": "pass_exact_dd_mm_yyyy_profile_qualified_over_all_11_native_date_fields",
+    "schema_profile_compatibility": "pass_declared_profile_only_schema_compatibility_not_a_semantic_profile",
+    "field_width_transform": "pass_exact_main_requalification_matches_verified_six_table_candidate",
+    "field_width_profile": {
+      "schedule_fee_and_benefits_max_integer_digits": 5,
+      "emsn_fixed_percentage_and_maximum_cap_max_integer_digits": 7,
+      "profile_id": "mbs-xml-official-field-length-v1",
+      "official_specification": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help",
+      "official_page_updated": "2022-03-04",
+      "arrow_schema_metadata_changed": false,
+      "source_era_rerun_required": true
+    },
+    "maintainer_scope_authority": "pass_decision_0009_and_exact_source_publication_authorization_cover_scoped_mbs_public_data_plane",
+    "rights_boundary": "existing_parity_receipt_rights_conclusion_false_means_that_receipt_did_not_make_an_independent_rights_conclusion_not_that_decision_0009_authority_is_revoked",
+    "silver_production_admission": "admitted_scoped_mbs_july_2025_v3_for_m110_graph_input_only",
+    "gold_graph_qualification": "pending_real_admitted_table_graph_qualification",
+    "m109_full_denominator": "incomplete_other_mbs_and_pbs_eras_unqualified",
+    "m112_v4_federation": "not_accepted_per_object_lineage_admission_and_canaries_incomplete"
+  },
+  "proposed_next_gate": {
+    "name": "M-110 real MBS Gold graph qualification",
+    "inputs": "Only the exact July 2025 MBS v3 six-table source era admitted by the linked scoped receipt.",
+    "required_before_graph_qualification": [
+      "read back and verify the scoped admission and semantic-manifest digests",
+      "use the existing typed MBS Gold node/edge contracts and preserve row-level provenance, temporal state, review state, rights and negative controls",
+      "do not promote the public Silver candidate or assert M-109, M-110, M-112, clinical, funding or terminology acceptance"
+    ],
+    "not_authorized_by_this_assessment": [
+      "public dataset mutation or republication",
+      "automatic Silver promotion or M-109/M-110/M-112 acceptance",
+      "admission of P7, other MBS eras, PBS, terminology vocabularies, or patient denominators",
+      "any clinical or therapeutic-equivalence claim"
+    ]
+  },
+  "status": "scoped_mbs_silver_admitted_for_m110_gold_graph_qualification_only",
+  "supersedes_assessment": {
+    "path": "quality/qualifications/australian-m110-mbs-july-2025-silver-assessment-20261017.json",
+    "sha256": "1c97d68208fcafaf1213a84e29a104300dd034a648766580a33044ec750c7d20",
+    "reason": "The prior snapshot was bound to pre-field-width-fix exact main 7fe32a8830d9576ebcc4b431031d59e6809ef379."
+  }
+}

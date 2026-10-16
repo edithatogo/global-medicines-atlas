@@ -1,0 +1,1511 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-silver-semantic-manifest",
+  "schema_version": 1,
+  "status": "qualified_exact_source_era_semantics",
+  "source_identity": {
+    "source_id": "au-mbs",
+    "schema_era": "2025-07-version-3",
+    "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "source_byte_count": 8194522,
+    "source_record_count": 5989,
+    "release_id": "MBS-XML-20250701 Version 3",
+    "effective_at": "2025-07-01"
+  },
+  "public_dataset_identity": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "current_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+    "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "prefix": "silver/mbs/v4/2025-07-v3",
+    "candidate_only": true
+  },
+  "domain_contract": {
+    "subject_kind": "service",
+    "dimension": "service_benefit",
+    "mapping_status": "source_native",
+    "absence_interpretation": "unknown"
+  },
+  "evidence": {
+    "qualification_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/38953649119",
+    "qualification_commit": "8c0090db41bb4ad2a4de20090a5e0895fffd91ec",
+    "qualification_report_path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017-8c0090db.json",
+    "qualification_report_sha256": "536f607f9f16cef42d6455858ce534af82186ced3ade2eb4c6839b2baf767232",
+    "candidate_report_sha256": "706a6b7ad2d909d45d31381df44ffd733daaf133955d8e2b97fe62b7b81b6063",
+    "parity_receipt_path": "quality/qualifications/mbs-source-silver-tables-parity-2025-07-v3.json",
+    "parity_receipt_sha256": "0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6",
+    "field_semantics_path": "docs/qualification/mbs-xml-v3-field-semantics.md",
+    "field_semantics_sha256": "4989401d5b3ed18d099d978594e7708c759c238449431d6b82e7079e7450f837",
+    "date_profile_path": "quality/qualifications/mbs-xml-v3-date-profile-qualification-20260929.json",
+    "date_profile_sha256": "f5db28f11c536f3ad2617ac05f2f15dc09bd4b54e087e6a7ffe4b2d8e1b03dfc",
+    "transformation_path": "src/global_medicines_atlas/mbs_silver.py",
+    "transformation_sha256": "d65f5d2cc77c53cc0853620ac3515a83ae8c99672ca0fbe29c8a7e64fb1c3061",
+    "conversion_path": "src/global_medicines_atlas/mbs_typed_values.py",
+    "conversion_sha256": "1a416d5f171043b0b83147b158b7ec18db084823dd6750b3ef2d662a72d46dba",
+    "conversion_version": "mbs-scalar-v2"
+  },
+  "row_identity_fields": [
+    {
+      "name": "source_record_id",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "source_ordinal",
+      "type": "int64",
+      "nullable": false
+    },
+    {
+      "name": "source_sha256",
+      "type": "string",
+      "nullable": false
+    },
+    {
+      "name": "receipt_sha256",
+      "type": "string",
+      "nullable": false
+    }
+  ],
+  "temporal_contract": {
+    "date_format": "DD.MM.YYYY",
+    "date_profile_id": "mbs-dmy",
+    "date_field_count": 11,
+    "date_profile_path": "quality/qualifications/mbs-xml-v3-date-profile-qualification-20260929.json",
+    "null_and_missing_remain_distinct": true,
+    "snapshot_relative_validity": true
+  },
+  "numeric_width_contract": {
+    "official_profile_id": "mbs-xml-official-field-length-v1",
+    "max_integer_digits": {
+      "ScheduleFee": 5,
+      "Benefit75": 5,
+      "Benefit85": 5,
+      "Benefit100": 5,
+      "EMSNFixedCapAmount": 7,
+      "EMSNPercentageCap": 7,
+      "EMSNMaximumCap": 7
+    },
+    "native_text_preserved": true,
+    "out_of_width_values_are_invalid": true,
+    "percentage_values_are_not_divided_or_rescaled": true
+  },
+  "tables": [
+    {
+      "name": "benefits",
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "byte_count": 114493,
+      "row_count": 5989,
+      "schema_field_count": 9,
+      "schema_fields": [
+        {
+          "name": "source_record_id",
+          "type": "string"
+        },
+        {
+          "name": "source_ordinal",
+          "type": "int64"
+        },
+        {
+          "name": "source_sha256",
+          "type": "string"
+        },
+        {
+          "name": "receipt_sha256",
+          "type": "string"
+        },
+        {
+          "name": "Benefit100",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: decimal128(38, 9)>"
+        },
+        {
+          "name": "Benefit75",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: decimal128(38, 9)>"
+        },
+        {
+          "name": "Benefit85",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: decimal128(38, 9)>"
+        },
+        {
+          "name": "BenefitStartDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "BenefitType",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        }
+      ],
+      "native_fields": [
+        {
+          "native_name": "Benefit100",
+          "source_path": "/MBS_XML/Data/Benefit100",
+          "target_table": "benefits",
+          "value_type": "aud_decimal",
+          "official_meaning": "Benefit-level selector, its conditionally present 75/85/100 percent benefit amounts, and date the current benefit level(s) commenced. Parse amounts as exact AUD decimals; retain absent values according to `BenefitType`, not as zero.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "decimal128(38, 9)",
+          "unit": "AUD",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": 5
+        },
+        {
+          "native_name": "Benefit75",
+          "source_path": "/MBS_XML/Data/Benefit75",
+          "target_table": "benefits",
+          "value_type": "aud_decimal",
+          "official_meaning": "Benefit-level selector, its conditionally present 75/85/100 percent benefit amounts, and date the current benefit level(s) commenced. Parse amounts as exact AUD decimals; retain absent values according to `BenefitType`, not as zero.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "decimal128(38, 9)",
+          "unit": "AUD",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": 5
+        },
+        {
+          "native_name": "Benefit85",
+          "source_path": "/MBS_XML/Data/Benefit85",
+          "target_table": "benefits",
+          "value_type": "aud_decimal",
+          "official_meaning": "Benefit-level selector, its conditionally present 75/85/100 percent benefit amounts, and date the current benefit level(s) commenced. Parse amounts as exact AUD decimals; retain absent values according to `BenefitType`, not as zero.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "decimal128(38, 9)",
+          "unit": "AUD",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": 5
+        },
+        {
+          "native_name": "BenefitStartDate",
+          "source_path": "/MBS_XML/Data/BenefitStartDate",
+          "target_table": "benefits",
+          "value_type": "source_date",
+          "official_meaning": "Benefit-level selector, its conditionally present 75/85/100 percent benefit amounts, and date the current benefit level(s) commenced. Parse amounts as exact AUD decimals; retain absent values according to `BenefitType`, not as zero.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "commencement of the current benefit level(s)",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "BenefitType",
+          "source_path": "/MBS_XML/Data/BenefitType",
+          "target_table": "benefits",
+          "value_type": "source_code",
+          "official_meaning": "Benefit-level selector, its conditionally present 75/85/100 percent benefit amounts, and date the current benefit level(s) commenced. Parse amounts as exact AUD decimals; retain absent values according to `BenefitType`, not as zero.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        }
+      ]
+    },
+    {
+      "name": "caps",
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "byte_count": 60259,
+      "row_count": 5989,
+      "schema_field_count": 13,
+      "schema_fields": [
+        {
+          "name": "source_record_id",
+          "type": "string"
+        },
+        {
+          "name": "source_ordinal",
+          "type": "int64"
+        },
+        {
+          "name": "source_sha256",
+          "type": "string"
+        },
+        {
+          "name": "receipt_sha256",
+          "type": "string"
+        },
+        {
+          "name": "EMSNCap",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "EMSNChange",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "EMSNChangeDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "EMSNDescription",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "EMSNEndDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "EMSNFixedCapAmount",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: decimal128(38, 9)>"
+        },
+        {
+          "name": "EMSNMaximumCap",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: decimal128(38, 9)>"
+        },
+        {
+          "name": "EMSNPercentageCap",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: decimal128(38, 9)>"
+        },
+        {
+          "name": "EMSNStartDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        }
+      ],
+      "native_fields": [
+        {
+          "native_name": "EMSNCap",
+          "source_path": "/MBS_XML/Data/EMSNCap",
+          "target_table": "caps",
+          "value_type": "source_code",
+          "official_meaning": "Extended Medicare Safety Net cap status/type, start/end/change dates, fixed/percentage/maximum values, and derived-fee cap description. Preserve cap kind and exact numeric values. The official page says ended caps before the report date are not reported; null therefore cannot establish no historical cap.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "EMSNChange",
+          "source_path": "/MBS_XML/Data/EMSNChange",
+          "target_table": "caps",
+          "value_type": "source_code",
+          "official_meaning": "Source change/new-item flags. Preserve literal flags and blanks; `NewItem=Y` is relative to the source's base report date, and a blank `FeeChange` can occur for a new item.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "EMSNChangeDate",
+          "source_path": "/MBS_XML/Data/EMSNChangeDate",
+          "target_table": "caps",
+          "value_type": "source_date",
+          "official_meaning": "Extended Medicare Safety Net cap status/type, start/end/change dates, fixed/percentage/maximum values, and derived-fee cap description. Preserve cap kind and exact numeric values. The official page says ended caps before the report date are not reported; null therefore cannot establish no historical cap.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "source-recorded safety-net cap change date",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "EMSNDescription",
+          "source_path": "/MBS_XML/Data/EMSNDescription",
+          "target_table": "caps",
+          "value_type": "source_text",
+          "official_meaning": "Extended Medicare Safety Net cap status/type, start/end/change dates, fixed/percentage/maximum values, and derived-fee cap description. Preserve cap kind and exact numeric values. The official page says ended caps before the report date are not reported; null therefore cannot establish no historical cap.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "EMSNEndDate",
+          "source_path": "/MBS_XML/Data/EMSNEndDate",
+          "target_table": "caps",
+          "value_type": "source_date",
+          "official_meaning": "Extended Medicare Safety Net cap status/type, start/end/change dates, fixed/percentage/maximum values, and derived-fee cap description. Preserve cap kind and exact numeric values. The official page says ended caps before the report date are not reported; null therefore cannot establish no historical cap.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "end of the stated safety-net cap period",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "EMSNFixedCapAmount",
+          "source_path": "/MBS_XML/Data/EMSNFixedCapAmount",
+          "target_table": "caps",
+          "value_type": "aud_decimal",
+          "official_meaning": "Extended Medicare Safety Net cap status/type, start/end/change dates, fixed/percentage/maximum values, and derived-fee cap description. Preserve cap kind and exact numeric values. The official page says ended caps before the report date are not reported; null therefore cannot establish no historical cap.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "decimal128(38, 9)",
+          "unit": "AUD",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": 7
+        },
+        {
+          "native_name": "EMSNMaximumCap",
+          "source_path": "/MBS_XML/Data/EMSNMaximumCap",
+          "target_table": "caps",
+          "value_type": "aud_decimal",
+          "official_meaning": "Extended Medicare Safety Net cap status/type, start/end/change dates, fixed/percentage/maximum values, and derived-fee cap description. Preserve cap kind and exact numeric values. The official page says ended caps before the report date are not reported; null therefore cannot establish no historical cap.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "decimal128(38, 9)",
+          "unit": "AUD",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": 7
+        },
+        {
+          "native_name": "EMSNPercentageCap",
+          "source_path": "/MBS_XML/Data/EMSNPercentageCap",
+          "target_table": "caps",
+          "value_type": "percentage",
+          "official_meaning": "Extended Medicare Safety Net cap status/type, start/end/change dates, fixed/percentage/maximum values, and derived-fee cap description. Preserve cap kind and exact numeric values. The official page says ended caps before the report date are not reported; null therefore cannot establish no historical cap.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "decimal128(38, 9)",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": 7
+        },
+        {
+          "native_name": "EMSNStartDate",
+          "source_path": "/MBS_XML/Data/EMSNStartDate",
+          "target_table": "caps",
+          "value_type": "source_date",
+          "official_meaning": "Extended Medicare Safety Net cap status/type, start/end/change dates, fixed/percentage/maximum values, and derived-fee cap description. Preserve cap kind and exact numeric values. The official page says ended caps before the report date are not reported; null therefore cannot establish no historical cap.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "commencement of the stated safety-net cap period",
+          "max_integer_digits": null
+        }
+      ]
+    },
+    {
+      "name": "descriptions",
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "byte_count": 620348,
+      "row_count": 5989,
+      "schema_field_count": 7,
+      "schema_fields": [
+        {
+          "name": "source_record_id",
+          "type": "string"
+        },
+        {
+          "name": "source_ordinal",
+          "type": "int64"
+        },
+        {
+          "name": "source_sha256",
+          "type": "string"
+        },
+        {
+          "name": "receipt_sha256",
+          "type": "string"
+        },
+        {
+          "name": "Description",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "DescriptionStartDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "DescriptorChange",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        }
+      ],
+      "native_fields": [
+        {
+          "native_name": "Description",
+          "source_path": "/MBS_XML/Data/Description",
+          "target_table": "descriptions",
+          "value_type": "source_text",
+          "official_meaning": "Item description, date the current description commenced, and descriptor-change flag. Preserve description text; date is the source's description-start date, not a date inferred from wording.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "DescriptionStartDate",
+          "source_path": "/MBS_XML/Data/DescriptionStartDate",
+          "target_table": "descriptions",
+          "value_type": "source_date",
+          "official_meaning": "Item description, date the current description commenced, and descriptor-change flag. Preserve description text; date is the source's description-start date, not a date inferred from wording.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "commencement of the current item description",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "DescriptorChange",
+          "source_path": "/MBS_XML/Data/DescriptorChange",
+          "target_table": "descriptions",
+          "value_type": "source_code",
+          "official_meaning": "Source change/new-item flags. Preserve literal flags and blanks; `NewItem=Y` is relative to the source's base report date, and a blank `FeeChange` can occur for a new item. Item description, date the current description commenced, and descriptor-change flag. Preserve description text; date is the source's description-start date, not a date inferred from wording.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        }
+      ]
+    },
+    {
+      "name": "fees",
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "byte_count": 93072,
+      "row_count": 5989,
+      "schema_field_count": 10,
+      "schema_fields": [
+        {
+          "name": "source_record_id",
+          "type": "string"
+        },
+        {
+          "name": "source_ordinal",
+          "type": "int64"
+        },
+        {
+          "name": "source_sha256",
+          "type": "string"
+        },
+        {
+          "name": "receipt_sha256",
+          "type": "string"
+        },
+        {
+          "name": "DerivedFee",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "DerivedFeeStartDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "FeeChange",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "FeeStartDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "FeeType",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "ScheduleFee",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: decimal128(38, 9)>"
+        }
+      ],
+      "native_fields": [
+        {
+          "native_name": "DerivedFee",
+          "source_path": "/MBS_XML/Data/DerivedFee",
+          "target_table": "fees",
+          "value_type": "source_text",
+          "official_meaning": "Derived-fee description/expression and date it commenced. Preserve the expression as source text; do not evaluate it as a schedule amount.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "DerivedFeeStartDate",
+          "source_path": "/MBS_XML/Data/DerivedFeeStartDate",
+          "target_table": "fees",
+          "value_type": "source_date",
+          "official_meaning": "Derived-fee description/expression and date it commenced. Preserve the expression as source text; do not evaluate it as a schedule amount.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "commencement of the derived-fee description",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "FeeChange",
+          "source_path": "/MBS_XML/Data/FeeChange",
+          "target_table": "fees",
+          "value_type": "source_code",
+          "official_meaning": "Source change/new-item flags. Preserve literal flags and blanks; `NewItem=Y` is relative to the source's base report date, and a blank `FeeChange` can occur for a new item. Current schedule-fee commencement, schedule fee, fee-change flag, and normal/derived fee type. Fee amounts use exact decimal parsing in AUD; `ScheduleFee` applies only to normal-fee items.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "FeeStartDate",
+          "source_path": "/MBS_XML/Data/FeeStartDate",
+          "target_table": "fees",
+          "value_type": "source_date",
+          "official_meaning": "Current schedule-fee commencement, schedule fee, fee-change flag, and normal/derived fee type. Fee amounts use exact decimal parsing in AUD; `ScheduleFee` applies only to normal-fee items.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "commencement of the current schedule or derived fee",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "FeeType",
+          "source_path": "/MBS_XML/Data/FeeType",
+          "target_table": "fees",
+          "value_type": "source_code",
+          "official_meaning": "Source item type (`S`, `P`, `D`), fee type (`N`, `D`), and applicable provider-category code. Preserve source codes; do not translate into regulatory approval or provider eligibility claims. Current schedule-fee commencement, schedule fee, fee-change flag, and normal/derived fee type. Fee amounts use exact decimal parsing in AUD; `ScheduleFee` applies only to normal-fee items.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "ScheduleFee",
+          "source_path": "/MBS_XML/Data/ScheduleFee",
+          "target_table": "fees",
+          "value_type": "aud_decimal",
+          "official_meaning": "Current schedule-fee commencement, schedule fee, fee-change flag, and normal/derived fee type. Fee amounts use exact decimal parsing in AUD; `ScheduleFee` applies only to normal-fee items.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "decimal128(38, 9)",
+          "unit": "AUD",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": 5
+        }
+      ]
+    },
+    {
+      "name": "hierarchy",
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "byte_count": 51851,
+      "row_count": 5989,
+      "schema_field_count": 8,
+      "schema_fields": [
+        {
+          "name": "source_record_id",
+          "type": "string"
+        },
+        {
+          "name": "source_ordinal",
+          "type": "int64"
+        },
+        {
+          "name": "source_sha256",
+          "type": "string"
+        },
+        {
+          "name": "receipt_sha256",
+          "type": "string"
+        },
+        {
+          "name": "Category",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "Group",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "SubGroup",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "SubHeading",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        }
+      ],
+      "native_fields": [
+        {
+          "native_name": "Category",
+          "source_path": "/MBS_XML/Data/Category",
+          "target_table": "hierarchy",
+          "value_type": "source_code",
+          "official_meaning": "Hierarchy codes to which an item relates. Preserve each code at its native level; optional empty/null hierarchy is not a negative classification.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "Group",
+          "source_path": "/MBS_XML/Data/Group",
+          "target_table": "hierarchy",
+          "value_type": "source_code",
+          "official_meaning": "Hierarchy codes to which an item relates. Preserve each code at its native level; optional empty/null hierarchy is not a negative classification.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "SubGroup",
+          "source_path": "/MBS_XML/Data/SubGroup",
+          "target_table": "hierarchy",
+          "value_type": "source_code",
+          "official_meaning": "Hierarchy codes to which an item relates. Preserve each code at its native level; optional empty/null hierarchy is not a negative classification.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "SubHeading",
+          "source_path": "/MBS_XML/Data/SubHeading",
+          "target_table": "hierarchy",
+          "value_type": "source_code",
+          "official_meaning": "Hierarchy codes to which an item relates. Preserve each code at its native level; optional empty/null hierarchy is not a negative classification.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        }
+      ]
+    },
+    {
+      "name": "services",
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "byte_count": 100062,
+      "row_count": 5989,
+      "schema_field_count": 17,
+      "schema_fields": [
+        {
+          "name": "source_record_id",
+          "type": "string"
+        },
+        {
+          "name": "source_ordinal",
+          "type": "int64"
+        },
+        {
+          "name": "source_sha256",
+          "type": "string"
+        },
+        {
+          "name": "receipt_sha256",
+          "type": "string"
+        },
+        {
+          "name": "Anaes",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "AnaesChange",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "BasicUnits",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: decimal128(38, 9)>"
+        },
+        {
+          "name": "ItemChange",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "ItemEndDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "ItemNum",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "ItemStartDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "ItemType",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "NewItem",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "ProviderType",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        },
+        {
+          "name": "QFEEndDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "QFEStartDate",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: date32[day]>"
+        },
+        {
+          "name": "SubItemNum",
+          "type": "struct<native_value: string, native_state: string not null, conversion_status: string not null, typed_value: string>"
+        }
+      ],
+      "native_fields": [
+        {
+          "native_name": "Anaes",
+          "source_path": "/MBS_XML/Data/Anaes",
+          "target_table": "services",
+          "value_type": "source_code",
+          "official_meaning": "Anaesthetic indicator, anaesthetic basic units, and anaesthetic-change flag. `BasicUnits` is only present in the documented item range; absence remains distinct from zero.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "AnaesChange",
+          "source_path": "/MBS_XML/Data/AnaesChange",
+          "target_table": "services",
+          "value_type": "source_code",
+          "official_meaning": "Source change/new-item flags. Preserve literal flags and blanks; `NewItem=Y` is relative to the source's base report date, and a blank `FeeChange` can occur for a new item. Anaesthetic indicator, anaesthetic basic units, and anaesthetic-change flag. `BasicUnits` is only present in the documented item range; absence remains distinct from zero.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "BasicUnits",
+          "source_path": "/MBS_XML/Data/BasicUnits",
+          "target_table": "services",
+          "value_type": "decimal",
+          "official_meaning": "Anaesthetic indicator, anaesthetic basic units, and anaesthetic-change flag. `BasicUnits` is only present in the documented item range; absence remains distinct from zero.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "decimal128(38, 9)",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "ItemChange",
+          "source_path": "/MBS_XML/Data/ItemChange",
+          "target_table": "services",
+          "value_type": "source_code",
+          "official_meaning": "Source change/new-item flags. Preserve literal flags and blanks; `NewItem=Y` is relative to the source's base report date, and a blank `FeeChange` can occur for a new item.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "ItemEndDate",
+          "source_path": "/MBS_XML/Data/ItemEndDate",
+          "target_table": "services",
+          "value_type": "source_date",
+          "official_meaning": "Date item commenced / ceased. Parse the exact XML grammar as a source date; a null end date means no end date is stated in this snapshot, not timeless current validity.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "cessation date of the MBS item in this source snapshot",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "ItemNum",
+          "source_path": "/MBS_XML/Data/ItemNum",
+          "target_table": "services",
+          "value_type": "identifier",
+          "official_meaning": "MBS item and precedent-item sub-item identifiers. Preserve lexical identity; the source says `SubItemNum` is not populated in this XML.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "ItemStartDate",
+          "source_path": "/MBS_XML/Data/ItemStartDate",
+          "target_table": "services",
+          "value_type": "source_date",
+          "official_meaning": "Date item commenced / ceased. Parse the exact XML grammar as a source date; a null end date means no end date is stated in this snapshot, not timeless current validity.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "commencement date of the MBS item in this source snapshot",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "ItemType",
+          "source_path": "/MBS_XML/Data/ItemType",
+          "target_table": "services",
+          "value_type": "source_code",
+          "official_meaning": "Source item type (`S`, `P`, `D`), fee type (`N`, `D`), and applicable provider-category code. Preserve source codes; do not translate into regulatory approval or provider eligibility claims.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "NewItem",
+          "source_path": "/MBS_XML/Data/NewItem",
+          "target_table": "services",
+          "value_type": "source_code",
+          "official_meaning": "Source change/new-item flags. Preserve literal flags and blanks; `NewItem=Y` is relative to the source's base report date, and a blank `FeeChange` can occur for a new item.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "ProviderType",
+          "source_path": "/MBS_XML/Data/ProviderType",
+          "target_table": "services",
+          "value_type": "source_code",
+          "official_meaning": "Source item type (`S`, `P`, `D`), fee type (`N`, `D`), and applicable provider-category code. Preserve source codes; do not translate into regulatory approval or provider eligibility claims.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "QFEEndDate",
+          "source_path": "/MBS_XML/Data/QFEEndDate",
+          "target_table": "services",
+          "value_type": "source_date",
+          "official_meaning": "Commencement/end of time-limited listing evaluation. These describe the evaluation period, not item commencement/cessation or a coverage/funding conclusion.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "end of the time-limited listing evaluation period",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "QFEStartDate",
+          "source_path": "/MBS_XML/Data/QFEStartDate",
+          "target_table": "services",
+          "value_type": "source_date",
+          "official_meaning": "Commencement/end of time-limited listing evaluation. These describe the evaluation period, not item commencement/cessation or a coverage/funding conclusion.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "date32[day]",
+          "unit": "not_applicable",
+          "date_format": "DD.MM.YYYY",
+          "temporal_role": "start of the time-limited listing evaluation period",
+          "max_integer_digits": null
+        },
+        {
+          "native_name": "SubItemNum",
+          "source_path": "/MBS_XML/Data/SubItemNum",
+          "target_table": "services",
+          "value_type": "identifier",
+          "official_meaning": "MBS item and precedent-item sub-item identifiers. Preserve lexical identity; the source says `SubItemNum` is not populated in this XML.",
+          "native_value_type": "string|null",
+          "native_state_values": [
+            "missing_field",
+            "null",
+            "value"
+          ],
+          "conversion_status_values": [
+            "missing_field",
+            "null",
+            "blank",
+            "preserved",
+            "converted",
+            "invalid",
+            "unsupported_format"
+          ],
+          "typed_value_type": "string",
+          "unit": "not_applicable",
+          "date_format": "not_applicable",
+          "temporal_role": "not_a_temporal_field",
+          "max_integer_digits": null
+        }
+      ]
+    }
+  ],
+  "boundaries": {
+    "source_values_included": false,
+    "source_bytes_retained": false,
+    "publication_performed": false,
+    "public_candidate_promoted": false,
+    "M109_full_denominator_accepted": false,
+    "M110_gold_graph_accepted": false,
+    "M112_federation_accepted": false,
+    "includes_patient_denominator": false,
+    "makes_pbs_or_clinical_equivalence_claim": false
+  }
+}
