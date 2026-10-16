@@ -680,15 +680,30 @@ def project_mbs_gold_graph_arrow(
 ) -> tuple[pa.Table, pa.Table]:
     """Return deterministic Arrow projections of a validated candidate graph."""
     graph = MbsGoldGraphCandidate.model_validate(graph.model_dump())
+    admitted_bindings: dict[bytes, bytes] = {}
+    if graph.qualification == "admitted_real_silver_candidate_only":
+        admission_sha256 = cast("str", graph.input_admission_sha256)
+        semantic_manifest_sha256 = cast(
+            "str", graph.input_semantic_manifest_sha256
+        )
+        admitted_bindings = {
+            b"input_admission_sha256": admission_sha256.encode(),
+            b"input_semantic_manifest_sha256": (
+                semantic_manifest_sha256.encode()
+            ),
+            b"graph_sha256": graph.graph_sha256.encode(),
+        }
     projection_metadata = {
         **(MBS_GOLD_NODE_SCHEMA.metadata or {}),
         b"qualification": graph.qualification.encode(),
         b"schema_version": f"{graph.schema_version}.0".encode(),
+        **admitted_bindings,
     }
     edge_projection_metadata = {
         **(MBS_GOLD_EDGE_SCHEMA.metadata or {}),
         b"qualification": graph.qualification.encode(),
         b"schema_version": f"{graph.schema_version}.0".encode(),
+        **admitted_bindings,
     }
     node_schema = cast(
         "pa.Schema",

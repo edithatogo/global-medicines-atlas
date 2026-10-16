@@ -2470,3 +2470,14 @@
   but its two failures were stale generated admission/Gold snapshots captured
   before the final schema label and fingerprints were regenerated. Exact-head
   hosted checks for the corrected PR revision remain pending.
+- [~] Preserve exact M-110 admission and semantic bindings in each admitted
+  Gold Arrow projection. The review found that equal row bodies from two
+  different admission manifests produced byte-equal projected tables because
+  Arrow metadata dropped those graph-level identities. Real v3 node and edge
+  schemas now carry the admission, semantic-manifest, and graph SHA-256 values;
+  Parquet round trips preserve them, while synthetic v2 schema metadata remains
+  unchanged. The graph module's focused branch coverage is 100%; the affected
+  five-module selection passes 71 tests. The full local profile completed with
+  6,394 passed, 3 skipped, 96.89% coverage, and one unrelated PERF-QUERY timing
+  overrun (392.588 ms against 250 ms); that same performance test passed alone.
+  Exact-head hosted checks for the final projection change remain pending.

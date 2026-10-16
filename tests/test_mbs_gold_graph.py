@@ -17,6 +17,7 @@ from test_mbs_silver import (
     _xml,  # ruff: ignore[import-private-name] -- shared synthetic fixture
 )
 
+import global_medicines_atlas.mbs_gold_graph as gold_graph_module
 from global_medicines_atlas.mbs_gold_graph import (
     MBS_GOLD_EDGE_SCHEMA,
     MBS_GOLD_NODE_SCHEMA,
@@ -174,6 +175,9 @@ def test_frozen_v2_graph_receipt_remains_readable_and_digest_stable():
         "source_snapshot_effective_date" not in edge
         for edge in serialized["edges"]
     )
+    nodes, edges = project_mbs_gold_graph_arrow(result)
+    assert nodes.schema.metadata == MBS_GOLD_NODE_SCHEMA.metadata
+    assert edges.schema.metadata == MBS_GOLD_EDGE_SCHEMA.metadata
 
 
 def test_admitted_real_silver_graph_preserves_provenance_and_scope():
@@ -212,6 +216,42 @@ def test_admitted_real_silver_graph_preserves_provenance_and_scope():
     )
     assert nodes.schema.metadata[b"schema_version"] == b"3.0"
     assert edges.schema.metadata[b"schema_version"] == b"3.0"
+    assert edges.schema.metadata[b"input_admission_sha256"] == b"a" * 64
+    assert edges.schema.metadata[b"input_semantic_manifest_sha256"] == (
+        b"b" * 64
+    )
+    assert (
+        edges.schema.metadata[b"graph_sha256"] == result.graph_sha256.encode()
+    )
+    for key in (
+        b"qualification",
+        b"schema_version",
+        b"input_admission_sha256",
+        b"input_semantic_manifest_sha256",
+        b"graph_sha256",
+    ):
+        assert nodes.schema.metadata[key] == edges.schema.metadata[key]
+
+    changed_binding = build_mbs_gold_graph_from_admitted_silver(
+        _admitted_table("services", "ItemNum"),
+        _admitted_table("benefits", "Benefit100"),
+        _admitted_input().model_copy(
+            update={
+                "admission_sha256": "c" * 64,
+                "semantic_manifest_sha256": "d" * 64,
+            }
+        ),
+    )
+    changed_nodes, changed_edges = project_mbs_gold_graph_arrow(changed_binding)
+    assert changed_binding.graph_sha256 != result.graph_sha256
+    assert not nodes.equals(changed_nodes, check_metadata=True)
+    assert not edges.equals(changed_edges, check_metadata=True)
+    for table in (nodes, edges, changed_nodes, changed_edges):
+        output = BytesIO()
+        pq.write_table(table, output)
+        restored = pq.read_table(BytesIO(output.getvalue()))
+        assert restored.equals(table, check_metadata=True)
+        assert restored.schema.metadata == table.schema.metadata
 
 
 def test_admitted_real_silver_graph_rejects_cross_receipt_or_unpermitted_input():
@@ -263,6 +303,122 @@ def test_admitted_real_silver_graph_rejects_paired_forged_row_digests(
     with pytest.raises(ValueError, match="admitted digests"):
         build_mbs_gold_graph_from_admitted_silver(
             services, benefits, _admitted_input()
+        )
+
+
+@pytest.mark.parametrize(
+    ("validity", "snapshot_date", "message"),
+    [
+        ("source_snapshot_effective_date", None, "snapshot date must preserve"),
+        ("unselected", date(2025, 7, 1), "unselected validity cannot carry"),
+    ],
+)
+def test_gold_edge_rejects_invalid_snapshot_date_binding(
+    validity: str, snapshot_date: date | None, message: str
+) -> None:
+    edge = graph().edges[0].model_dump()
+    edge["valid_time_status"] = validity
+    edge["source_snapshot_effective_date"] = snapshot_date
+    with pytest.raises(ValidationError, match=message):
+        MbsGoldEdge.model_validate(edge)
+
+
+@pytest.mark.parametrize(
+    ("qualification", "schema_version", "admission", "semantic", "message"),
+    [
+        (
+            "synthetic_silver_candidate_only",
+            3,
+            None,
+            None,
+            "synthetic Gold graph must retain schema v2",
+        ),
+        (
+            "synthetic_silver_candidate_only",
+            2,
+            "a" * 64,
+            "b" * 64,
+            "synthetic Gold graph cannot claim real Silver admission",
+        ),
+        (
+            "admitted_real_silver_candidate_only",
+            2,
+            "a" * 64,
+            "b" * 64,
+            "admitted real Silver Gold graph requires schema v3",
+        ),
+        (
+            "admitted_real_silver_candidate_only",
+            3,
+            None,
+            None,
+            "real Silver Gold graph requires both admission digests",
+        ),
+    ],
+)
+def test_gold_candidate_rejects_inconsistent_admission_binding(
+    qualification: str,
+    schema_version: int,
+    admission: str | None,
+    semantic: str | None,
+    message: str,
+) -> None:
+    candidate = graph().model_dump()
+    candidate.update(
+        qualification=qualification,
+        schema_version=schema_version,
+        input_admission_sha256=admission,
+        input_semantic_manifest_sha256=semantic,
+    )
+    with pytest.raises(ValidationError, match=message):
+        MbsGoldGraphCandidate.model_validate(candidate)
+
+
+def test_admitted_real_silver_graph_checks_row_denominator_and_identity() -> (
+    None
+):
+    services = _admitted_table("services", "ItemNum")
+    benefits = _admitted_table("benefits", "Benefit100")
+    with pytest.raises(ValueError, match="row count differs"):
+        build_mbs_gold_graph_from_admitted_silver(
+            services,
+            benefits,
+            _admitted_input().model_copy(update={"source_record_count": 3}),
+        )
+
+    services_without_ordinal = services.remove_column(
+        services.schema.get_field_index("source_ordinal")
+    )
+    with pytest.raises(ValueError, match="lacks source row identity"):
+        build_mbs_gold_graph_from_admitted_silver(
+            services_without_ordinal, benefits, _admitted_input()
+        )
+
+    mismatched_benefits = benefits.set_column(
+        benefits.schema.get_field_index("source_record_id"),
+        benefits.schema.field("source_record_id"),
+        pa.array(["other:record:0", "other:record:1"], type=pa.string()),
+    )
+    with pytest.raises(ValueError, match="row identities do not pair exactly"):
+        build_mbs_gold_graph_from_admitted_silver(
+            services, mismatched_benefits, _admitted_input()
+        )
+
+
+def test_admitted_real_silver_graph_rejects_empty_projected_denominator(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def skip_table_validation(*_args: object, **_kwargs: object) -> None:
+        return None
+
+    monkeypatch.setattr(
+        gold_graph_module,
+        "_validate_admitted_silver_table",
+        skip_table_validation,
+    )
+    with pytest.raises(ValueError, match="denominators differ"):
+        build_mbs_gold_graph_from_admitted_silver(
+            pa.table({}), pa.table({}), _admitted_input()
         )
 
 

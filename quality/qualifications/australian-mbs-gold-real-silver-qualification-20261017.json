@@ -2,7 +2,7 @@
   "schema_id": "global-medicines-atlas.australian-mbs-gold-real-silver-qualification",
   "schema_version": 1,
   "status": "real_admitted_silver_graph_candidate_qualified_for_review",
-  "recorded_at": "2026-10-16T20:42:17.099210Z",
+  "recorded_at": "2026-10-16T21:11:18.708777Z",
   "requirement_id": "M-110",
   "implementation_fingerprints": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "path": "src/global_medicines_atlas/mbs_gold_graph.py",
-      "sha256": "d7f8560b4746c0945d2fe743b7d1fed55205fe9aee562755665be643adcf2212"
+      "sha256": "63413df59ef919e97abcdd2d7302d2ca3607c6077709405b42fbad1e163d98cb"
     },
     {
       "path": "schemas/australian-mbs-gold-real-silver-qualification-v1.json",

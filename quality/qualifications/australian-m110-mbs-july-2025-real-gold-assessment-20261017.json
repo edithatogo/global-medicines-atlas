@@ -86,7 +86,7 @@
     "admission_receipt_sha256": "a97289a9b0d4abc864b62606eb6d3356fccbedce5ea656235200353c507be7d4",
     "admission_scope": "M-110 Gold graph qualification input only",
     "real_gold_graph_qualification_path": "quality/qualifications/australian-mbs-gold-real-silver-qualification-20261017.json",
-    "real_gold_graph_qualification_sha256": "b157719b8680a2e11a02fad02206a39ca264fbec792de4585b3f4c84115affb7",
+    "real_gold_graph_qualification_sha256": "eaafab075e10a0af810d746385726adc2f5fc546735087b14c97af71b9283b5c",
     "real_gold_graph_sha256": "44c6c4f2d3dee80e49efac7bc14cc8965958b476a0e73c3758214645c7f7b27b",
     "real_gold_graph_edges": 5989,
     "real_gold_graph_nodes": 11978
