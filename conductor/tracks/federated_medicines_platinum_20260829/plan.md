@@ -701,6 +701,20 @@
     absent (`3a3d3b43`; 45 focused tests, 100% statement and branch coverage for
     both export modules, and the registered E2E lane passes 26 tests). PR #812
     merged as `244dc212` after all 39 protected checks passed.
+- [x] Require research-export source identities to use immutable revisions and
+  safe repository-relative object paths; reject malformed identities before
+  composing metadata-only packages. The model requires a two-part repository
+  id and full lower-case 40-hex revision, and rejects absolute/traversing or
+  URL-ambiguous paths. The generated JSON Schema also exposes the repository-id
+  and revision patterns. Eleven malformed-input controls failed before the
+  change; export/package tests pass (60), Test-Goblin routine and changed-module
+  typing pass. One isolated MBS Bronze-to-Platinum browser E2E passes; the
+  combined medallion run hit two browser-teardown timeouts under shared host
+  load. Review also found that `model_copy(update=...)` could bypass the new
+  validators; `ExportSource` now revalidates instances and the regression test
+  fails before the correction and passes after it. The final export/package
+  suite passes 62 tests, with routine, `ty`, and BasedPyright passing. See the
+  local receipt in `evidence.jsonl`; public export remains gated.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
 - [x] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,

@@ -15,12 +15,14 @@ from ipaddress import ip_address
 from typing import Any
 from urllib.parse import urlsplit
 
-from pydantic import Field, field_validator
+from pydantic import ConfigDict, Field, field_validator
 
 from .models import FrozenModel
 
 EXPORT_MANIFEST_SCHEMA = "global-medicines-atlas.research-export"
 EXPORT_MANIFEST_VERSION = 1
+_ASCII_CONTROL_MAX = 31
+_ASCII_DELETE = 127
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -73,12 +75,36 @@ def canonical_result_bytes(
 class ExportSource(FrozenModel):
     """A pinned public data-plane object used by an export."""
 
-    dataset_id: str = Field(min_length=1)
-    revision: str = Field(min_length=1)
-    path: str = Field(min_length=1)
+    model_config = ConfigDict(revalidate_instances="always")
+
+    dataset_id: str = Field(
+        min_length=3,
+        pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$",
+    )
+    revision: str = Field(pattern=r"^[0-9a-f]{40}$")
+    path: str = Field(min_length=1, pattern=r"^[^?#%\\]+$")
     sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     schema_id: str = Field(min_length=1)
     schema_version: str = Field(min_length=1)
+
+    @field_validator("path")
+    @classmethod
+    def path_is_safe_repository_path(cls, value: str) -> str:
+        """Reject absolute, traversing, or control-bearing object paths."""
+        parts = value.split("/")
+        if (
+            value.startswith("/")
+            or any(
+                ord(character) <= _ASCII_CONTROL_MAX
+                or ord(character) == _ASCII_DELETE
+                for character in value
+            )
+            or any(part in {"", ".", ".."} for part in parts)
+        ):
+            raise ValueError(
+                "path must be a safe repository-relative object path"
+            )
+        return value
 
 
 class ExportCitation(FrozenModel):
