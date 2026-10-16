@@ -518,10 +518,18 @@ def test_rebuild_fails_closed_if_receipt_bytes_change(
         reconstruct_bronze(bronze)
 
 
+@pytest.fixture
+def synthetic_github_sha(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GITHUB_SHA", "a" * 40)
+
+
+@pytest.mark.usefixtures("synthetic_github_sha")
 @pytest.mark.property
 @settings(deadline=None)
 @given(st.binary(min_size=1, max_size=64))
 def test_reconstructed_parquet_digest_tracks_payload(payload: bytes) -> None:
+    # Git provenance is covered independently; keep repeated payload examples
+    # from launching one Git process per Hypothesis example.
     with tempfile.TemporaryDirectory() as raw:
         bronze = Path(raw)
         admitted_payload = json.dumps({"value": payload.hex()}).encode()
