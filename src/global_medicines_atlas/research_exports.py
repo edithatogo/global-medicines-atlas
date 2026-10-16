@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import unicodedata
 from collections.abc import Mapping, Sequence
 from datetime import datetime
 from ipaddress import ip_address
@@ -90,13 +91,14 @@ class ExportSource(FrozenModel):
     @field_validator("path")
     @classmethod
     def path_is_safe_repository_path(cls, value: str) -> str:
-        """Reject absolute, traversing, or control-bearing object paths."""
+        """Reject absolute, traversing, or display-spoofing object paths."""
         parts = value.split("/")
         if (
             value.startswith("/")
             or any(
                 ord(character) <= _ASCII_CONTROL_MAX
                 or ord(character) == _ASCII_DELETE
+                or unicodedata.category(character) == "Cf"
                 for character in value
             )
             or any(part in {"", ".", ".."} for part in parts)
