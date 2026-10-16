@@ -716,7 +716,17 @@
   suite passes 62 tests, with routine, `ty`, and BasedPyright passing. See the
   local receipt in `evidence.jsonl`; PR #1050 merged at `144ebada` on exact
   head `11f798ab` after all 40 reported checks passed and the review finding was
-  resolved. Public export remains gated.
+  resolved. The merge evidence reconciliation PR #1051 merged at `fa235baa` on
+- [~] Reject Unicode bidirectional format controls from repository-relative
+  object paths so displayed and stored source identities cannot diverge. Both
+  controls failed before the fix; a copied invalid instance is also exercised
+  through manifest construction. The export/package suite passes 65 tests,
+  routine passes, and changed-file BasedPyright reports 0 errors/warnings/notes.
+  The local full profile reported 6,287 passed, three skipped, and three
+  failures under system uv 0.13.1: both clean-clone reproducibility tests pass
+  when rerun with pinned uv 0.11.29, and the Bronze determinism failure passes
+  in isolation. Hosted exact-head checks for this code follow-up remain pending.
+  Public export remains gated.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
 - [x] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,

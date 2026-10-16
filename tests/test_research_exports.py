@@ -169,6 +169,8 @@ def test_manifest_requires_pinned_source() -> None:
         ("path", "silver\\\\items.parquet"),
         ("path", "silver/items.parquet?download=true"),
         ("path", "silver/items\x00.parquet"),
+        ("path", "silver/visible\u202eparquet.exe"),
+        ("path", "silver/visible\u200f.parquet"),
     ],
 )
 @pytest.mark.edge
@@ -197,6 +199,22 @@ def test_manifest_revalidates_copied_export_source_instances() -> None:
     copied = _source().model_copy(update={"revision": "main"})
 
     with pytest.raises(ValueError, match="revision"):
+        build_query_snapshot_manifest(
+            query={},
+            result_rows=[],
+            sources=[copied],
+            generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+            generator_commit="abc1234",
+        )
+
+
+@pytest.mark.edge
+def test_manifest_rejects_copied_source_with_display_spoofing_path() -> None:
+    copied = _source().model_copy(
+        update={"path": "silver/visible\u202eparquet.exe"}
+    )
+
+    with pytest.raises(ValueError, match="path"):
         build_query_snapshot_manifest(
             query={},
             result_rows=[],
