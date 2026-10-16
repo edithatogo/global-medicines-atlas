@@ -218,7 +218,11 @@
     reconstruction case exceeded its 30-second timeout under full-suite load;
     that exact case passed alone in 15.19 seconds. Full-profile coverage was
     96.88%. No source, rights, calibration, or production-promotion claim is
-    made; the Phase 5 checkpoint remains open.
+    made; the Phase 5 checkpoint remains open. PR #1058 merged as
+    `96f82eee3f95c5ae52bbf3af9c51560db6674f01` from exact head
+    `77c5239779ea72ece238ee4466ef12c286f25d80` after all 29 required branch
+    protection contexts passed, including Codecov patch and Linux/macOS/Windows
+    consumers.
   - [x] Reject nested declared field-policy envelopes that carry restricted
     rights or sensitivity labels before graph serialization. Preserve source
     fields that happen to use policy-like keys. Failing-first controls proved
