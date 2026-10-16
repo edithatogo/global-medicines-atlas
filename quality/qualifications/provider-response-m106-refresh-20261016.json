@@ -1,17 +1,24 @@
 {
   "schema_id": "global-medicines-atlas.provider-response-m106-refresh",
   "schema_version": 1,
-  "observed_at": "2026-10-16T15:15:00Z",
+  "observed_at": "2026-10-16T15:53:33Z",
   "source_id": "au-health-mbs-distinct-patient-denominator",
   "source_owners": [
     "Australian Government Department of Health, Disability and Ageing",
     "Services Australia"
   ],
   "query_scope": {
-    "method": "Gmail sender-scoped search in the account that sent the inquiries",
-    "department_query": "from:enquiries@health.gov.au after:2026/10/05",
-    "services_australia_query": "from:statistics@servicesaustralia.gov.au after:2026/10/05",
-    "searched_at": "2026-10-16T15:15:00Z"
+    "method": "Read-only exact-subject Gmail searches from each inquiry send date, followed by full thread readback; no sender restriction",
+    "department_query": "subject:\"Public MBS distinct-patient denominator source and reuse terms\" after:2026/10/15 -in:spam -in:trash",
+    "services_australia_query": "subject:\"Public item-level MBS patient-count statistics and reuse terms\" after:2026/09/27 -in:spam -in:trash",
+    "searched_at": "2026-10-16T15:52:58Z",
+    "thread_readback": {
+      "services_australia_thread_id": "1a0e93bc557578ea",
+      "services_australia_messages_read": 2,
+      "department_inquiry_message_id": "1a144fb6ffd7c3cd",
+      "department_auto_ack_message_id": "1a144fbfde8847c4",
+      "department_auto_ack_separate_thread": true
+    }
   },
   "observed": {
     "department_matching_messages": 2,
@@ -26,7 +33,8 @@
         "dkim_health_internal": "pass",
         "dkim_selector2": "neutral_body_hash_mismatch"
       },
-      "classification": "receipt_only_no_measurement_or_rights_response"
+      "classification": "receipt_only_no_measurement_or_rights_response",
+      "thread_id": "1a144fbfde8847c4"
     },
     "earlier_department_routing_message": {
       "message_id": "1a10f9f4a569aa64",
@@ -34,22 +42,34 @@
       "classification": "forwarding_status_for_separate_2026-10-05_workbook_retrieval_inquiry"
     },
     "department_substantive_response_to_new_inquiry": false,
-    "services_australia_matching_messages": 0,
+    "services_australia_matching_messages": 2,
+    "services_australia_messages": [
+      {
+        "message_id": "1a0e93bc557578ea",
+        "sent_at": "2026-09-28T18:16:43Z",
+        "direction": "outbound_original_inquiry"
+      },
+      {
+        "message_id": "1a10b08c07b6a7dd",
+        "sent_at": "2026-10-05T07:48:05Z",
+        "direction": "outbound_follow_up"
+      }
+    ],
     "services_australia_inbound_response_found": false,
     "message_bodies_read": true,
     "attachments_read": false,
-    "outbound_messages_sent": false
+    "outbound_messages_sent_during_refresh": false
   },
   "qualification_state": "blocked",
   "source_owner_clarification_received": false,
   "source_specific_maintainer_rights_decision": false,
   "acquisition_authorized": false,
   "m106_acceptance": false,
-  "next_action": "Wait for a substantive response to the 2026-10-16 denominator inquiry; do not infer a patient denominator or rights decision from an automatic acknowledgement or routing update.",
+  "next_action": "Wait for substantive source-owner clarification; do not acquire the candidate source until its exact identity, source-specific rights, and project authorization are established.",
   "boundary": "Mailbox metadata and the text of the Department auto-acknowledgement and earlier routing reply were reviewed. No source payload, workbook, CSV row, or patient-level data was acquired or inspected, and no new message was sent. This receipt establishes contact status only.",
   "digest": {
     "algorithm": "sha256",
     "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
-    "value": "e526b1a8e610e8a149eb45319b8ddc686043d48bebd21c0b86d8610324b47f64"
+    "value": "70f473992370ec53569e43f32761df61fe6905d8d561d6e7e69ed41d2996c1f5"
   }
 }

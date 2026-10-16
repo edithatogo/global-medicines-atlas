@@ -8,14 +8,19 @@ The value-free message identity and current state are recorded in
 `quality/qualifications/australian-mbs-m106-patient-source-metadata-20261016.json`.
 
 The Department sent an automatic receipt (Gmail message `1a144fbfde8847c4`)
-at 2026-10-16T13:51:58Z. Its text only confirms receipt and does not answer the
-measure, source, or reuse questions. A separate Department reply on
-2026-10-06 (message `1a10f9f4a569aa64`) says an earlier workbook-retrieval
-inquiry was forwarded to the appropriate section; it is routing status, not a
-response to this denominator inquiry. A sender-scoped search found no
-Services Australia response. The current mailbox readback is recorded in
+at 2026-10-16T13:51:58Z. It was found by subject search and read separately;
+its text only confirms receipt and does not answer the measure, source, or
+reuse questions. A separate Department reply on 2026-10-06 (message
+`1a10f9f4a569aa64`) says an earlier workbook-retrieval inquiry was forwarded
+to the appropriate section; it is routing status, not a response to this
+denominator inquiry.
+
+The Services Australia exact-subject thread was searched from the original
+2026-09-28 send date and read in full. It contains the original inquiry
+(`1a0e93bc557578ea`) and a follow-up sent 2026-10-05 (`1a10b08c07b6a7dd`),
+both outbound; no inbound reply was present. No additional message was sent
+during the 2026-10-16 mailbox refresh. The current mailbox readback is recorded in
 [`provider-response-m106-refresh-20261016.json`](../../../quality/qualifications/provider-response-m106-refresh-20261016.json).
-No follow-up was sent.
 
 **Subject:** Public MBS distinct-patient denominator source and reuse terms
 
