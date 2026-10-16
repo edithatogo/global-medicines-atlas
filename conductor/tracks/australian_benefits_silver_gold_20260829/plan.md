@@ -2381,6 +2381,19 @@
   object-level lineage, rights/admission, and consumer-canary acceptance remain
   open.
 
+## M-112 August MBS root-manifest current-state refresh (2026-10-17)
+
+- [x] Reconcile the August MBS content-addressed path and preserved historical
+  alias against the exact hosted append receipt, the frozen 1,759-path ledger,
+  and a fresh anonymous readback of the current public root manifest. Both
+  manifest rows are present at revision
+  `3d2d528439bddf6f42e8e700c88917f0960a9f38` with the same SHA-256, byte count,
+  and Git blob identity. This refreshes only manifest membership; the alias's
+  prior object-level anonymous digest state is preserved, and both paths remain
+  deferred because per-object rights, complete B1/B2 lineage, v4 admission,
+  and consumer canaries remain incomplete. See
+  `quality/qualifications/australian-m112-root-manifest-path-readback-20261017.json`.
+
 ### M-110 real-Silver admission gate recheck (2026-10-05)
 
 - [ ] Qualify Gold relationships over admitted real Silver tables. This remains
