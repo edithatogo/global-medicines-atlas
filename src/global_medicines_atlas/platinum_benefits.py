@@ -12,9 +12,12 @@ import hashlib
 import hmac
 import json
 import math
+from datetime import date
+from decimal import Decimal
 from typing import TYPE_CHECKING, Annotated, Literal, Protocol, cast
 
 from pydantic import Field, field_validator
+from pydantic.json_schema import WithJsonSchema
 
 from .platinum_identity_service import ResolverDatasetIdentityService
 from .platinum_limits import InMemoryRateLimiter
@@ -28,6 +31,18 @@ if TYPE_CHECKING:
     from .platinum_resolver import StorageNeutralResolver
 
 Scalar = str | int | float | bool | None
+FilterScalar = Annotated[
+    Scalar | Decimal | date,
+    WithJsonSchema({
+        "anyOf": [
+            {"type": "string"},
+            {"type": "integer"},
+            {"type": "number"},
+            {"type": "boolean"},
+            {"type": "null"},
+        ]
+    }),
+]
 _WINDOW_LIMIT = 1000
 _MIN_CURSOR_KEY_BYTES = 32
 Column = Annotated[
@@ -37,6 +52,7 @@ MAX_FILTERS = 16
 MAX_FILTER_TEXT = 1024
 MAX_FILTER_JSON = 16384
 MAX_PAGE_BYTES = 4 * 1024 * 1024
+_MAX_FILTER_DECIMAL_PRECISION = 38
 
 
 class BenefitsFilter(PlatinumSurfaceModel):
@@ -44,7 +60,7 @@ class BenefitsFilter(PlatinumSurfaceModel):
 
     column: Column
     operator: Literal["=", "!=", "<", "<=", ">", ">="]
-    value: Scalar
+    value: FilterScalar
 
     @field_validator("value", mode="before")
     @classmethod
@@ -52,10 +68,26 @@ class BenefitsFilter(PlatinumSurfaceModel):
         """Reject coercion, nested values, nonfinite numbers and huge scalars."""
         if value is None or type(value) is bool:
             return value
+        if type(value) is date:
+            return value
         if type(value) is str and len(value) <= MAX_FILTER_TEXT:
             return value
         if type(value) is int and -(2**63) <= value < 2**63:
             return value
+        if type(value) is Decimal:
+            if not value.is_finite():
+                raise ValueError("filter value must be a bounded finite scalar")
+            parts = value.as_tuple()
+            if not isinstance(parts.exponent, int):
+                raise ValueError("filter value must be a bounded finite scalar")
+            scale = max(0, -parts.exponent)
+            integer_digits = max(0, len(parts.digits) + parts.exponent)
+            if (
+                scale <= _MAX_FILTER_DECIMAL_PRECISION
+                and integer_digits <= _MAX_FILTER_DECIMAL_PRECISION
+                and integer_digits + scale <= _MAX_FILTER_DECIMAL_PRECISION
+            ):
+                return value
         if type(value) is float and math.isfinite(value):
             return value
         raise ValueError("filter value must be a bounded finite scalar")
@@ -77,7 +109,9 @@ def parse_benefits_filters(encoded: str | None) -> tuple[BenefitsFilter, ...]:
         return result
 
     try:
-        parsed = json.loads(encoded, object_pairs_hook=unique)
+        parsed = json.loads(
+            encoded, object_pairs_hook=unique, parse_float=Decimal
+        )
     except RecursionError:
         raise ValueError("filter JSON nesting exceeds input bound") from None
     if type(parsed) is not list:
@@ -85,7 +119,35 @@ def parse_benefits_filters(encoded: str | None) -> tuple[BenefitsFilter, ...]:
     items = cast("list[object]", parsed)
     if len(items) > MAX_FILTERS:
         raise ValueError("filters require a bounded JSON array")
-    return tuple(BenefitsFilter.model_validate(item) for item in items)
+    normalized: list[object] = []
+    for item in items:
+        normalized_item = item
+        if type(item) is dict:
+            item_dict = cast("dict[str, object]", item)
+            encoded_value = item_dict.get("value")
+            encoded_date = (
+                cast("dict[str, object]", encoded_value)
+                if type(encoded_value) is dict
+                else {}
+            )
+            if (
+                set(encoded_date) == {"type", "value"}
+                and encoded_date.get("type") == "date"
+            ):
+                raw_date = encoded_date.get("value")
+                if type(raw_date) is not str:
+                    raise ValueError("date filter requires canonical ISO text")
+                try:
+                    parsed_date = date.fromisoformat(raw_date)
+                except ValueError:
+                    raise ValueError(
+                        "date filter requires canonical ISO text"
+                    ) from None
+                if parsed_date.isoformat() != raw_date:
+                    raise ValueError("date filter requires canonical ISO text")
+                normalized_item = {**item_dict, "value": parsed_date}
+        normalized.append(normalized_item)
+    return tuple(BenefitsFilter.model_validate(item) for item in normalized)
 
 
 class BenefitsQuery(PlatinumSurfaceModel):

@@ -6,7 +6,8 @@ import hashlib
 import io
 import json
 import math
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -48,6 +49,36 @@ def parquet_payload() -> bytes:
             "item_code": ["100", "200", "300"],
             "benefit": [12.5, 25.0, 37.5],
             "note": ["legacy", "current", "current"],
+        }),
+        sink,
+    )
+    return sink.getvalue()
+
+
+def decimal_parquet_payload() -> bytes:
+    sink = io.BytesIO()
+    pq.write_table(
+        pa.table({
+            "item_code": ["100", "200", "300"],
+            "benefit": pa.array(
+                [Decimal("2.00"), Decimal("10.00"), Decimal("25.00")],
+                type=pa.decimal128(38, 9),
+            ),
+        }),
+        sink,
+    )
+    return sink.getvalue()
+
+
+def date_parquet_payload() -> bytes:
+    sink = io.BytesIO()
+    pq.write_table(
+        pa.table({
+            "item_code": ["100", "200", "300"],
+            "start_date": pa.array(
+                [date(2025, 7, 1), date(2025, 8, 1), date(2025, 9, 1)],
+                type=pa.date32(),
+            ),
         }),
         sink,
     )
@@ -228,6 +259,66 @@ def test_query_projects_filters_limits_and_wraps_exact_evidence(
 
 
 @pytest.mark.parametrize(
+    ("engine", "adapter"),
+    [("duckdb", DuckDBQueryAdapter()), ("polars", PolarsQueryAdapter())],
+)
+def test_decimal_filter_uses_exact_numeric_order_and_receipt_value(
+    engine: str, adapter: Any
+) -> None:
+    payload = decimal_parquet_payload()
+    with resolver(payload) as client:
+        result = PlatinumQueryService(client, adapters={engine: adapter}).query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("item_code", "benefit"),
+                filters=(QueryFilter("benefit", ">=", Decimal("9.99")),),
+                limit=3,
+            ),
+        )
+
+    assert result.rows == (
+        {"item_code": "200", "benefit": "10.000000000"},
+        {"item_code": "300", "benefit": "25.000000000"},
+    )
+    query_document = json.loads(result.query_receipt.canonical_query)
+    assert query_document["filters"][0]["value"] == {
+        "type": "decimal",
+        "value": "9.99",
+    }
+
+
+@pytest.mark.parametrize(
+    ("engine", "adapter"),
+    [("duckdb", DuckDBQueryAdapter()), ("polars", PolarsQueryAdapter())],
+)
+def test_date_filter_uses_explicit_typed_value_and_canonical_receipt(
+    engine: str, adapter: Any
+) -> None:
+    payload = date_parquet_payload()
+    with resolver(payload) as client:
+        result = PlatinumQueryService(client, adapters={engine: adapter}).query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("item_code", "start_date"),
+                filters=(QueryFilter("start_date", ">=", date(2025, 8, 1)),),
+                limit=3,
+            ),
+        )
+
+    assert result.rows == (
+        {"item_code": "200", "start_date": "2025-08-01"},
+        {"item_code": "300", "start_date": "2025-09-01"},
+    )
+    query_document = json.loads(result.query_receipt.canonical_query)
+    assert query_document["filters"][0]["value"] == {
+        "type": "date",
+        "value": "2025-08-01",
+    }
+
+
+@pytest.mark.parametrize(
     "adapter", [DuckDBQueryAdapter(), PolarsQueryAdapter()]
 )
 def test_query_rejects_unknown_columns_and_injection(adapter: Any) -> None:
@@ -265,6 +356,14 @@ def test_query_rejects_unknown_columns_and_injection(adapter: Any) -> None:
                 limit=1,
             ),
             "filters",
+        ),
+        (
+            QuerySpec(
+                columns=("benefit",),
+                filters=(QueryFilter("benefit", "=", Decimal("NaN")),),
+                limit=1,
+            ),
+            "scalar",
         ),
     ],
 )

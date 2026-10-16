@@ -1,8 +1,11 @@
 """Tests for the candidate-only MBS Gold scalar consumer bridge."""
 
+from datetime import date
+from decimal import Decimal
 from pathlib import Path
 from typing import cast
 
+import pyarrow as pa
 import pytest
 from test_mbs_gold_graph import (
     _admitted_input,  # ruff: ignore[import-private-name] -- shared fixture
@@ -14,6 +17,9 @@ from test_mbs_gold_graph import (
 
 import global_medicines_atlas.mbs_gold_graph as graph_module
 import global_medicines_atlas.mbs_gold_scalar_projection as projection_module
+from global_medicines_atlas.australian_source_contracts import (
+    mbs_field_contracts,
+)
 from global_medicines_atlas.mbs_gold_graph import (
     MbsGoldFieldEvidence,
     MbsGoldGraphCandidate,
@@ -22,6 +28,7 @@ from global_medicines_atlas.mbs_gold_graph import (
 from global_medicines_atlas.mbs_gold_scalar_projection import (
     project_mbs_gold_scalar_candidate,
 )
+from global_medicines_atlas.mbs_typed_values import ConversionStatus
 from global_medicines_atlas.receipts import (
     SensitivityClassification,
     SourceReceipt,
@@ -35,13 +42,29 @@ _RECEIPT = (
 
 
 def _real_candidate():
+    benefits = _typed_benefits("Benefit100", ["10.25", "2.75"], "converted")
     graph = build_mbs_gold_graph_from_admitted_silver(
         _admitted_table("services", "ItemNum"),
-        _admitted_table("benefits", "Benefit100"),
+        benefits,
         _admitted_input(),
     )
     receipt = SourceReceipt.model_validate_json(_RECEIPT.read_bytes())
     return graph, receipt
+
+
+def _typed_benefits(
+    native_name: str, values: list[str], status: str
+) -> pa.Table:
+    table = _admitted_table("benefits", native_name)
+    rows = table.to_pylist()
+    for row, value in zip(rows, values, strict=True):
+        row[native_name] = {
+            "native_value": value,
+            "native_state": "value",
+            "conversion_status": status,
+            "typed_value": value if status == "converted" else None,
+        }
+    return pa.Table.from_pylist(rows, schema=table.schema)
 
 
 def test_scalar_projection_preserves_row_states_and_governed_bindings():
@@ -58,7 +81,14 @@ def test_scalar_projection_preserves_row_states_and_governed_bindings():
     ]
     assert result.column(
         "benefit__Benefit100__typed_value_text"
-    ).to_pylist() == ["1", "2"]
+    ).to_pylist() == ["10.25", "2.75"]
+    assert result.schema.field(
+        "benefit__Benefit100__typed_value"
+    ).type == pa.decimal128(38, 9)
+    assert result.column("benefit__Benefit100__typed_value").to_pylist() == [
+        Decimal("10.25"),
+        Decimal("2.75"),
+    ]
     assert result.column("source_effective_at").to_pylist() == [None, None]
     assert result.column("valid_time_status").to_pylist() == [
         "source_snapshot_effective_date",
@@ -81,13 +111,102 @@ def test_scalar_projection_preserves_row_states_and_governed_bindings():
     assert metadata[b"qualification"] == b"candidate_only"
     assert metadata[b"consumer_admission"] == b"not_performed"
     assert (
-        metadata[b"value_representation"]
-        == b"serialized_text_no_semantic_cast_v1"
+        metadata[b"value_representation"] == b"contract_bound_arrow_scalars_v1"
     )
     assert metadata[b"source_receipt_sha256"].decode() == receipt.digest()
     assert (
         metadata[b"acquisition_id"].decode() == receipt.temporal.acquisition_id
     )
+
+
+def test_projection_decodes_only_contract_bound_decimal_and_date_values():
+    _graph, receipt = _real_candidate()
+    date_graph = build_mbs_gold_graph_from_admitted_silver(
+        _admitted_table("services", "ItemNum"),
+        _typed_benefits(
+            "BenefitStartDate", ["2025-07-01", "2025-08-01"], "converted"
+        ),
+        _admitted_input(),
+    )
+    projected = project_mbs_gold_scalar_candidate(date_graph, receipt)
+    assert (
+        projected.schema.field("benefit__BenefitStartDate__typed_value").type
+        == pa.date32()
+    )
+    assert projected.column(
+        "benefit__BenefitStartDate__typed_value"
+    ).to_pylist() == [date(2025, 7, 1), date(2025, 8, 1)]
+
+    bad_decimal = build_mbs_gold_graph_from_admitted_silver(
+        _admitted_table("services", "ItemNum"),
+        _typed_benefits("Benefit100", ["10.1234567891", "2.75"], "converted"),
+        _admitted_input(),
+    )
+    with pytest.raises(ValueError, match="exact decimal128"):
+        project_mbs_gold_scalar_candidate(bad_decimal, receipt)
+
+
+@pytest.mark.parametrize(
+    ("native_name", "status", "typed_value", "schema_era", "message"),
+    [
+        (
+            "Benefit100",
+            "invalid",
+            "1",
+            "2025-07-version-3",
+            "non-converted",
+        ),
+        (
+            "Benefit100",
+            "converted",
+            "not-a-decimal",
+            "2025-07-version-3",
+            "exact decimal128",
+        ),
+        (
+            "BenefitStartDate",
+            "converted",
+            "2025-07-01",
+            "other-era",
+            "qualified source era",
+        ),
+        (
+            "BenefitStartDate",
+            "converted",
+            "01.07.2025",
+            "2025-07-version-3",
+            "canonical ISO",
+        ),
+        (
+            "ItemNum",
+            "converted",
+            "001",
+            "2025-07-version-3",
+            "text MBS field",
+        ),
+    ],
+)
+def test_typed_scalar_conversion_fails_closed_on_contract_mismatch(
+    native_name: str,
+    status: ConversionStatus,
+    typed_value: str,
+    schema_era: str,
+    message: str,
+):
+    field = MbsGoldFieldEvidence(
+        native_name=native_name,
+        native_state="value",
+        native_value="native",
+        conversion_status=status,
+        typed_value=typed_value,
+    )
+    contract = next(
+        item
+        for item in mbs_field_contracts()
+        if item.native_name == native_name
+    )
+    with pytest.raises(ValueError, match=message):
+        projection_module._typed_value(field, contract, schema_era)
 
 
 def test_scalar_projection_is_deterministic_and_rejects_receipt_tampering():
@@ -226,6 +345,24 @@ def test_field_contract_rejects_missing_classes_mixed_fields_and_bad_names():
     with pytest.raises(ValueError, match="cannot form a scalar column"):
         projection_module._validate_field_contract(
             graph.model_copy(update={"nodes": invalid_nodes})
+        )
+
+    wrong_table_field = MbsGoldFieldEvidence(
+        native_name="Benefit100",
+        native_state="value",
+        native_value="1.00",
+        conversion_status="converted",
+        typed_value="1.00",
+    )
+    wrong_table_nodes = tuple(
+        node.model_copy(update={"fields": (wrong_table_field,)})
+        if node.kind == "mbs_service_record"
+        else node
+        for node in graph.nodes
+    )
+    with pytest.raises(ValueError, match="table contract"):
+        projection_module._validate_field_contract(
+            graph.model_copy(update={"nodes": wrong_table_nodes})
         )
 
 

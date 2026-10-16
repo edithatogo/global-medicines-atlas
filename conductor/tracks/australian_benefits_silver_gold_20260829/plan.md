@@ -2512,19 +2512,22 @@
 
 ### M-110 source-neutral scalar consumer bridge (2026-10-17)
 
-- [x] Add a deterministic candidate-only text-valued Arrow projection over the
-  admitted-real-Silver Gold graph. Preserve native values, native states,
-  conversion status, source record ordinal, source/receipt/acquisition IDs,
-  graph/admission/semantic digests, rights, both graph and B1 sensitivity
-  assertions, receipt clocks, and the graph's day-level snapshot validity.
-  Reject source/receipt mismatches across every graph node. The projection
-  retains the graph's serialized text without inferring numeric, date, or
-  boolean query types. It makes no v4 admission or product-trust claim. Six
-  focused tests pass with 100% statement and branch coverage; Ruff and `ty`
-  pass.
-- [~] Complete the semantic scalar conversion and qualify the exact projection
-  as an existing Platinum product resource only after field-level source
-  semantics, independent v4 `ReceiptClosure`, `TrustedAdmissionProfile`, and
+- [x] Add a deterministic candidate-only contract-typed Arrow projection over
+  the admitted-real-Silver Gold graph. Preserve the serialized typed value,
+  native value and state, conversion status, source record ordinal,
+  source/receipt/acquisition IDs, graph/admission/semantic digests, rights,
+  both graph and B1 sensitivity assertions, receipt clocks, and the graph's
+  day-level snapshot validity. Restore exact `decimal128(38,9)`, `date32`, and
+  string values only from the existing field contracts and source-era typed
+  values; retain native text beside each typed value. Reject incompatible
+  field-table mappings, malformed scalars, and source/receipt mismatches.
+  This candidate projection makes no v4 admission or product-trust claim.
+- [x] Preserve exact decimal filters through the bounded Platinum query and
+  Benefits API surfaces; add an explicit tagged ISO date filter for `date32`
+  columns. DuckDB and Polars compare Decimal/date values natively, while JSON
+  results remain lossless strings. The OpenAPI schema is unchanged.
+- [~] Qualify the exact projection as an existing Platinum product resource
+  only after independent v4 `ReceiptClosure`, `TrustedAdmissionProfile`, and
   deployment trust accept the exact artifact. The current M-110 assessment
   still scopes Silver admission to graph input; consumer acceptance and graph
   review remain open. No source was added and no public object was written.

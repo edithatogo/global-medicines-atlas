@@ -35,6 +35,7 @@ from .platinum_resolver import (
 EngineName = Literal["duckdb", "polars"]
 Operator = Literal["=", "!=", "<", "<=", ">", ">="]
 Scalar = str | int | float | bool | None
+QueryFilterScalar = Scalar | decimal.Decimal | dt.date
 CAPABILITIES = (
     "column_projection",
     "predicate_pushdown",
@@ -45,6 +46,7 @@ MAX_FILTERS = 16
 MAX_ROWS = 1000
 MAX_RESULT_BYTES = 1024 * 1024
 MAX_RUNTIME_SECONDS = 30.0
+_MAX_DECIMAL_PRECISION = 38
 _COLUMN = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 _OPERATORS = {"=", "!=", "<", "<=", ">", ">="}
 
@@ -55,7 +57,7 @@ class QueryFilter:
 
     column: str
     operator: Operator
-    value: Scalar
+    value: QueryFilterScalar
 
 
 @dataclass(frozen=True)
@@ -493,7 +495,7 @@ def _canonical_query(spec: QuerySpec) -> bytes:
                 {
                     "column": item.column,
                     "operator": item.operator,
-                    "value": item.value,
+                    "value": _canonical_scalar(item.value),
                 }
                 for item in spec.filters
             ],
@@ -571,10 +573,37 @@ def _runtime(started: float, limit: float) -> None:
 def _is_scalar(value: object) -> bool:
     if value is None or type(value) in {str, int, bool}:
         return True
+    if type(value) is dt.date:
+        return True
+    if isinstance(value, decimal.Decimal):
+        if not value.is_finite():
+            return False
+        parts = value.as_tuple()
+        if not isinstance(parts.exponent, int):
+            return False
+        scale = max(0, -parts.exponent)
+        integer_digits = max(0, len(parts.digits) + parts.exponent)
+        return (
+            scale <= _MAX_DECIMAL_PRECISION
+            and integer_digits <= _MAX_DECIMAL_PRECISION
+            and integer_digits + scale <= _MAX_DECIMAL_PRECISION
+        )
     return type(value) is float and math.isfinite(value)
 
 
+def _canonical_scalar(value: QueryFilterScalar) -> object:
+    if isinstance(value, decimal.Decimal):
+        return {"type": "decimal", "value": str(value)}
+    if type(value) is dt.date:
+        return {"type": "date", "value": value.isoformat()}
+    return value
+
+
 def _scalar(value: object) -> Scalar:
+    if isinstance(value, decimal.Decimal):
+        return str(value)
+    if type(value) is dt.date:
+        return value.isoformat()
     if _is_scalar(value):
         return cast("Scalar", value)
     if isinstance(value, dt.datetime | dt.date | dt.time | decimal.Decimal):

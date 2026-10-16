@@ -2,12 +2,15 @@
 
 import builtins
 import json
+from datetime import date
+from decimal import Decimal
 from typing import cast
 
 import pytest
 from fastapi.testclient import TestClient
 from test_platinum_benefits_api import service
 from test_platinum_configuration import configuration
+from test_platinum_query import date_parquet_payload, decimal_parquet_payload
 from typer.testing import CliRunner
 
 from global_medicines_atlas.api import create_app
@@ -158,7 +161,16 @@ def test_cli_offline_attempt_preserves_filter_evidence(tmp_path):
 
 
 @pytest.mark.parametrize(
-    "value", [float("inf"), float("nan"), 2**64, "x" * 1025]
+    "value",
+    [
+        float("inf"),
+        float("nan"),
+        Decimal("NaN"),
+        Decimal("1e39"),
+        Decimal("0." + "0" * 38 + "1"),
+        2**64,
+        "x" * 1025,
+    ],
 )
 def test_scalar_bounds(value):
     with pytest.raises(ValueError, match="bounded finite scalar"):
@@ -172,6 +184,73 @@ def test_parser_limit_and_boolean_type():
         '[{"column":"flag","operator":"=","value":true}]'
     )
     assert result[0].value is True
+
+
+def test_filter_parser_preserves_exact_json_decimal():
+    parsed = parse_benefits_filters(
+        '[{"column":"benefit","operator":">=","value":10.25}]'
+    )
+    assert parsed[0].value == Decimal("10.25")
+    assert type(parsed[0].value) is Decimal
+
+
+def test_filter_parser_requires_explicit_canonical_date_value():
+    parsed = parse_benefits_filters(
+        '[{"column":"start_date","operator":">=","value":'
+        '{"type":"date","value":"2025-08-01"}}]'
+    )
+    assert parsed[0].value == date(2025, 8, 1)
+    with pytest.raises(ValueError, match="canonical ISO"):
+        parse_benefits_filters(
+            '[{"column":"start_date","operator":">=","value":'
+            '{"type":"date","value":"01.08.2025"}}]'
+        )
+
+
+def test_api_applies_exact_decimal_filters_to_typed_benefit_column():
+    backend = service(payload=decimal_parquet_payload())
+    client = TestClient(
+        create_app(cast("ReadOnlyQueryService", object()), benefits=backend)
+    )
+    response = client.get(
+        "/api/v1/benefits/au.mbs.service-items",
+        params=[
+            ("columns", "item_code"),
+            ("columns", "benefit"),
+            ("filters", '[{"column":"benefit","operator":">=","value":9.99}]'),
+        ],
+    )
+    assert response.status_code == 200
+    assert response.json()["rows"] == [
+        {"item_code": "200", "benefit": "10.000000000"},
+        {"item_code": "300", "benefit": "25.000000000"},
+    ]
+
+
+def test_api_applies_explicit_date_filter_to_typed_date_column():
+    backend = service(payload=date_parquet_payload())
+    client = TestClient(
+        create_app(cast("ReadOnlyQueryService", object()), benefits=backend)
+    )
+    response = client.get(
+        "/api/v1/benefits/au.mbs.service-items",
+        params=[
+            ("columns", "item_code"),
+            ("columns", "start_date"),
+            (
+                "filters",
+                (
+                    '[{"column":"start_date","operator":">=","value":'
+                    '{"type":"date","value":"2025-08-01"}}]'
+                ),
+            ),
+        ],
+    )
+    assert response.status_code == 200
+    assert response.json()["rows"] == [
+        {"item_code": "200", "start_date": "2025-08-01"},
+        {"item_code": "300", "start_date": "2025-09-01"},
+    ]
 
 
 @pytest.mark.parametrize("value", [None, -(2**63), 2**63 - 1, 1.25])
