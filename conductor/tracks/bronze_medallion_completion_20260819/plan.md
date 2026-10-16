@@ -1307,4 +1307,9 @@ for credentialed or rights-unresolved sources.
   receipt tests pass (8); the isolated property passes in 11.49 seconds. The
   prior full profile had timed this property out at 30 seconds under suite
   load, then the unchanged case passed alone in 15.19 seconds. This test-only
-  isolation changes no runtime behavior, source bytes, or source coverage.
+  isolation changes no runtime behavior, source bytes, or source coverage. The
+  first hosted unit run exposed the expected stale receipt-cohort dependency
+  fingerprint for the changed test file. The committed report was regenerated
+  through `scripts/qualify_bronze_receipt_cohort.py`; only that test-file digest
+  and aggregate fingerprint changed, while the 29/128 cohort counts, scope
+  accounting, and incomplete-current-scope boundaries remained identical.
