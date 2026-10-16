@@ -494,6 +494,30 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   rights decision for this exact resource. No CSV row or source byte was
   retrieved.
 
+## M-106 public patient-statistics metadata recheck (2026-10-16)
+
+- [x] Review the Department's current Medicare statistics collection and
+  linked patient-statistics metadata. The collection page lists a 2025–26
+  per-patient bulk-billing dashboard and annual GP Non-Referred Attendances
+  patient bulk-billing ranges by PHN. The 2024–25 annual report states that
+  the Department counts patients for its MBS population-access measure from
+  claims in its Enterprise Data Warehouse, but the cited methodology does not
+  publish the exact numerator. Record these as metadata-only candidate/source-
+  owner evidence in
+  `quality/qualifications/australian-mbs-m106-patient-source-metadata-20261016.json`.
+  No product payload was downloaded, no count was derived, and no rights or
+  acquisition decision was made.
+- [~] Keep M-106 blocked. Clarify whether a public or releasable dataset gives
+  exact deduplicated distinct-patient counts for the required MBS domain and
+  periods, including coverage, suppression, and reuse terms. Obtain a separate
+  source-specific maintainer rights decision before any acquisition. GP/NRA
+  patient-billing products and rounded population percentages are not a
+  denominator for full MBS coverage. A value-free source-owner inquiry was
+  sent to the Department's published enquiry address on 2026-10-16 and read
+  back under the sent label; its message identity and scope are recorded in
+  the qualification JSON. Await a substantive reply; no data or attachments
+  were sent, and no source rights or acquisition decision was made.
+
 ## M-109 PBS current-distribution transition (2026-09-29)
 
 - [x] Reconcile current official PBS distribution metadata with the pinned
