@@ -659,3 +659,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   Focused qualification tests (237), routine Test-Goblin, exact-main
   regeneration, and Conductor review passed; see the 2026-10-05 M5 evidence
   entries in `evidence.jsonl`.
+
+## 2026-10-17 current-main M5 refresh
+
+- [x] Re-run the Bronze maturity generator against exact `main`
+  `7fe32a8830d9576ebcc4b431031d59e6809ef379` after PR #791. The report's
+  substantive qualification is unchanged from the 2026-10-05 run: all eight
+  M5 dimensions remain verified, the Bronze gate remains passed, and only the
+  Australian federation and stable-release approval gates remain blocked.
+  Refresh the report's evaluated timestamp and exact source commit, verify
+  the Stable v1 contract remains idempotent, and rerun the focused and routine
+  affected checks before marking this refresh complete.

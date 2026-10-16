@@ -27,7 +27,7 @@ The machine-readable Bronze report records the exact source-code commit it
 evaluated. Its report, bounded future-source ledger, and the stable-v1 contract
 must be regenerated after any merge that changes their hashed inputs.
 
-## Current-main M5 reconciliation — 2026-10-05
+## Current-main M5 reconciliation — 2026-10-17
 
 The maturity model has eight blocking dimensions. Each is recorded at M5,
 verified, and without blocker IDs in the current Stable v1 contract:
@@ -44,7 +44,7 @@ verified, and without blocker IDs in the current Stable v1 contract:
 | Reproducibility and support | M5 / verified | Independent fixture-process reproduction, support documentation, and the Stable v1 evidence ledger. |
 
 On exact `main` commit
-`f160a0235c66c425150f90b4cdc6ea3d55365b5b`, the Bronze maturity generator
+`7fe32a8830d9576ebcc4b431031d59e6809ef379`, the Bronze maturity generator
 qualified the bounded horizon and reproduced the committed report's
 substantive fields. The report is now rebound to that exact source commit. The
 source-maturity catalogue projection regenerated identically, the direct
