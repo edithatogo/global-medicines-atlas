@@ -27,6 +27,7 @@ from global_medicines_atlas.australian_source_contracts import (
 )
 from global_medicines_atlas.mbs_silver import (
     iter_mbs_silver_batches,
+    mbs_numeric_field_width_exceeded,
     mbs_silver_schema,
 )
 from global_medicines_atlas.parser_safety import ParserPolicy
@@ -364,6 +365,12 @@ def test_mbs_amount_width_contract_is_independent_of_date_profile(
     assert amount["native_value"] == "123456.78"
     assert amount["typed_value"] is None
     assert amount["conversion_status"] == "invalid"
+
+
+def test_numeric_width_rule_does_not_apply_to_unconstrained_text_fields() -> (
+    None
+):
+    assert mbs_numeric_field_width_exceeded("DerivedFee", "999999999") is False
 
 
 @pytest.mark.parametrize(
