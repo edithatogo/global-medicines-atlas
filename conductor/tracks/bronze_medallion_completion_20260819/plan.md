@@ -1333,3 +1333,16 @@ for credentialed or rights-unresolved sources.
   byte-for-byte. Focused qualification tests (237) and routine validation pass.
   This exact-main refresh changes no scope, source coverage, rights decision,
   acquisition, Australian acceptance, or release state.
+
+## M-112 B0 identity and current Bronze accounting refresh (2026-10-17)
+
+- [x] Reconcile the already-approved MBS demographics object cohort to its
+  missing B0 source identity. Add it as a rights-blocked catalogue/queue row;
+  keep the evidence scope empty and leave the 42-source approved bounded set
+  unchanged. Regenerate B0, landing queue, rights, source coverage, Bronze
+  maturity, receipt-cohort, and Stable v1 source-maturity projections. The
+  resulting catalogue has 175 sources, the full public source universe has
+  158 sources with 116 deferred, and the direct-receipt cohort remains 29
+  sources with 129 lacking direct receipts. All 14 Bronze maturity dimensions
+  remain evidenced for the unchanged bounded scope. No rights, acquisition,
+  source-coverage, M-112 acceptance, or stable-release state changed.

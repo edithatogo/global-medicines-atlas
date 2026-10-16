@@ -51,7 +51,7 @@ def test_b0_index_is_exhaustive_unique_and_referentially_integral() -> None:
     catalog_by_id = {source.source_id: source for source in catalog.sources}
     queue_by_id = {item.source_id: item for item in queue.items}
 
-    assert index.source_count == len(catalog.sources) == 174
+    assert index.source_count == len(catalog.sources) == 175
     assert len(index_ids) == len(set(index_ids))
     assert set(index_ids) == catalog_ids
     assert all(source.jurisdictions for source in index.sources)
@@ -88,6 +88,36 @@ def test_b0_index_is_exhaustive_unique_and_referentially_integral() -> None:
         for source_id in track["source_ids"]
     }
     assert coverage_ids - set(index_ids) == {index.dataset_id}
+
+
+@pytest.mark.unit
+def test_mbs_demographics_identity_is_catalogued_without_overclaiming() -> None:
+    catalog = load_catalog()
+    queue = build_source_landing_queue(catalog, LandingOverrides.load())
+    source = next(
+        item
+        for item in catalog.sources
+        if item.source_id == "au-data-gov-mbs-demographics"
+    )
+    indexed = next(
+        item for item in _build().sources if item.source_id == source.source_id
+    )
+    queued = next(
+        item for item in queue.items if item.source_id == source.source_id
+    )
+
+    assert source.readiness.value == "blocked"
+    assert source.discovery_status.value == "declaration_verified"
+    assert source.qualification_state.value == "documentation_verified"
+    assert source.implemented_ingestion is False
+    assert source.current_receipt_id is None
+    assert "participant_counts" not in {
+        field.value for field in source.available_fields
+    }
+    assert queued.state is LandingDisposition.RIGHTS_BLOCKED
+    assert "exact 14 historical objects" in queued.reason
+    assert indexed.evidence_scope == "none"
+    assert "patient_denominator_qualified=false" in source.evidence_limit
 
 
 @pytest.mark.unit

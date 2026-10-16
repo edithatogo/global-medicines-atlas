@@ -19,8 +19,8 @@ def test_every_catalogue_source_has_a_fail_closed_disposition() -> None:
     matrix = json.loads(MATRIX.read_text(encoding="utf-8"))
     built = build()
     assert matrix == built
-    assert matrix["source_count"] == 174
-    assert len(matrix["entries"]) == 174
+    assert matrix["source_count"] == 175
+    assert len(matrix["entries"]) == 175
     dispositions = {
         entry["recommended_disposition"] for entry in matrix["entries"]
     }
@@ -56,6 +56,10 @@ def test_public_surfaces_require_source_specific_ledger_approval() -> None:
     matrix = json.loads(MATRIX.read_text(encoding="utf-8"))
     assert matrix["public_derived_release"] == "exact_approved_manifests_only"
     entries = {entry["source_id"]: entry for entry in matrix["entries"]}
+    demographics = entries["au-data-gov-mbs-demographics"]
+    assert demographics["recommended_disposition"] == "catalogue_only"
+    assert demographics["public_derived_release"] == "not_approved"
+    assert demographics["approved_surfaces"] == ["repository_metadata"]
     decisions = json.loads(SOURCE_DECISIONS.read_text(encoding="utf-8"))
     derived_only = {
         source_id

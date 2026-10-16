@@ -40,7 +40,7 @@ def test_scope_decision_is_catalog_bound_and_schema_valid() -> None:
         for row in catalog
         if classify_catalog_source(row) == "bronze_in_scope"
     }
-    assert decision["full_scope_source_count"] == len(full_scope) == 157
+    assert decision["full_scope_source_count"] == len(full_scope) == 158
     assert (
         decision["full_scope_source_ids_sha256"]
         == sha256(("\n".join(sorted(full_scope)) + "\n").encode()).hexdigest()
@@ -63,16 +63,16 @@ def test_bounded_future_ledger_is_complete_and_reproducible() -> None:
     )
     accounting = report["source_accounting"]
     assert accounting == {
-        "catalog_source_count": 174,
-        "full_public_source_count": 157,
+        "catalog_source_count": 175,
+        "full_public_source_count": 158,
         "active_source_count": 42,
-        "deferred_source_count": 115,
-        "full_scope_missing_evidence_count": 115,
+        "deferred_source_count": 116,
+        "full_scope_missing_evidence_count": 116,
         "partition_complete": True,
     }
-    assert len(report["deferred_sources"]) == 115
+    assert len(report["deferred_sources"]) == 116
     assert (
-        len({item["source_id"] for item in report["deferred_sources"]}) == 115
+        len({item["source_id"] for item in report["deferred_sources"]}) == 116
     )
     assert all(
         item["reason"] and item["next_action"]

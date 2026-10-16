@@ -2553,3 +2553,19 @@
   deployment trust accept the exact artifact. The current M-110 assessment
   still scopes Silver admission to graph input; consumer acceptance and graph
   review remain open. No source was added and no public object was written.
+
+### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
+
+- [x] Add the imported MBS demographics source identity to the B0 catalogue
+  and landing queue so its historical B1/B2 references resolve to a known
+  source. Keep the queue `rights_blocked` with `evidence_scope=none`: the
+  existing maintainer decision covers only 10 demographics and 4
+  group-statistics objects in the exact 14-object archive manifest. The new
+  source row does not qualify a distinct-patient denominator, current
+  coverage, native receipts, storage receipts, or admission. The catalogue
+  now has 175 sources; the approved bounded Bronze scope remains 42, and the
+  full public universe is 158 with 116 deferred. M-112's approved 1,759-path
+  denominator is unchanged. Focused tests, rights-generator checks, B0
+  byte-for-byte regeneration, Ruff, BasedPyright, and diff checks pass. The
+  full local profile was not repeated while the shared validation run was
+  active.

@@ -370,6 +370,18 @@
       "reason": "The bounded internal U.S. Bronze receipt records an accepted admission, native projection, and byte-identical clean-room recovery for this source. This openFDA response is a 100-record canary, not a complete release; public release was not performed.",
       "source_id": "us-openfda-nsde",
       "state": "landed_and_evidenced"
+    },
+    {
+      "source_id": "au-data-gov-mbs-demographics",
+      "family": "manual_reproducible_export",
+      "state": "rights_blocked",
+      "reason": "Maintainer approval is limited to the exact 14 historical objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission.",
+      "next_action": "Obtain source-specific rights and define a qualified acquisition profile before handling any resources outside the approved 14-object archive scope; do not infer distinct-patient counts.",
+      "evidence_references": [
+        "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-b2-reference-reconciliation-20261017.json",
+        "quality/qualifications/australian-mbs-item-demographic-source-review-20260929.json"
+      ]
     }
   ],
   "schema_version": 1
