@@ -2,10 +2,10 @@
 
 This versioned ledger records sources deferred from the approved `bronze-bounded-public-scope-v1` horizon. The full public catalogue universe remains visible; missing evidence is not negative evidence. This ledger grants no source acquisition, rights, retention, or publication authority.
 
-- Full public source universe: `158`
+- Full public source universe: `159`
 - Active qualification horizon: `42`
-- Deferred sources: `116`
-- Missing evidence across the full universe: `116`
+- Deferred sources: `117`
+- Missing evidence across the full universe: `117`
 - Current bounded-horizon qualification: `qualified`
 - Machine-readable ledger: [`quality/qualifications/bronze-bounded-scope-future-sources-v1.json`](../../quality/qualifications/bronze-bounded-scope-future-sources-v1.json)
 - Scope decision: [`quality/qualifications/bronze-bounded-scope-decision-v1.json`](../../quality/qualifications/bronze-bounded-scope-decision-v1.json)
@@ -16,6 +16,7 @@ This versioned ledger records sources deferred from the approved `bronze-bounded
 | ae-ede-register | ARE | Registered product directory | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
 | ar-anmat-vademecum | ARG | Vademecum Nacional | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
 | au-data-gov-mbs-demographics | AUS | Medicare Benefits Schedule (MBS) - Items by Patient Demographics Report | rights_blocked | Maintainer approval is limited to the exact 14 historical objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission. | Obtain source-specific rights and define a qualified acquisition profile before handling any resources outside the approved 14-object archive scope; do not infer distinct-patient counts. |
+| au-data-gov-mbs-group | AUS | Medicare Benefits Schedule (MBS) - Group Statistics Report | rights_blocked | Maintainer approval is limited to the exact 4 historical group-statistics objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission. | Obtain source-specific rights and define a qualified acquisition profile before handling resources outside the approved 4-object archive scope; do not infer distinct-patient counts. |
 | au-pbs-api | AUS | Pharmaceutical Benefits Scheme public data API | rights_blocked | source-specific retention and transformation rights unresolved: terms_review_required | record source-specific retention and transformation rights |
 | au-tga-daen | AUS | Database of Adverse Event Notifications | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
 | au-tga-pi-cmi | AUS | Product Information and Consumer Medicine Information | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |

@@ -41,7 +41,7 @@ def _unresolved(
 ) -> SourceRightsReview:
     source_id = str(source["source_id"])
     authentication = str(source["authentication"])
-    if source_id == "au-data-gov-mbs-demographics":
+    if source_id in {"au-data-gov-mbs-demographics", "au-data-gov-mbs-group"}:
         decision = _load(MBS_UTILISATION_RIGHTS)
         official = next(
             item

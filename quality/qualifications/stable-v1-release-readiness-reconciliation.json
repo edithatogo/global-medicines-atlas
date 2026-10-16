@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "2c8ec276b53a321c9f51fbb72e0e5b694337291c1b46babb343e12cfefe83170"
+    "sha256": "3d182537eeb39bfc138ca34a1a1d9f1cf664a6f2bf0aaf88809d9b7236226ab7"
   },
   "qualification_state": "blocked",
   "release_performed": false,

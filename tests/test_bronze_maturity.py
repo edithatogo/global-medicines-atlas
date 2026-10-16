@@ -76,10 +76,10 @@ def test_bounded_scope_is_hash_bound_and_keeps_full_universe_visible() -> None:
 
     assert property_row["state"] == "evidenced"
     assert inventory["bronze_in_scope_count"] == 42
-    assert inventory["full_bronze_source_universe_count"] == 158
-    assert inventory["deferred_source_count"] == 116
+    assert inventory["full_bronze_source_universe_count"] == 159
+    assert inventory["deferred_source_count"] == 117
     assert inventory["in_scope_without_landing_or_blocker"] == 0
-    assert inventory["full_scope_missing_count"] == 116
+    assert inventory["full_scope_missing_count"] == 117
     assert inventory["missing_coverage_is_not_negative_evidence"] is True
 
 
@@ -1584,7 +1584,7 @@ def test_committed_report_matches_schema_for_bounded_horizon() -> None:
     report = _load(path)
     assert report["horizon"] == "bronze-bounded-public-scope-v1"
     assert report["bronze_mature"] is True
-    assert report["completeness_inventory"]["full_scope_missing_count"] == 116
+    assert report["completeness_inventory"]["full_scope_missing_count"] == 117
 
 
 def _row(

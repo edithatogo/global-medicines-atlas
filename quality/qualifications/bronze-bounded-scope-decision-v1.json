@@ -3,9 +3,9 @@
   "schema_version": 1,
   "decision_id": "bronze-bounded-scope-v1",
   "decided_on": "2026-10-03",
-  "decision_basis": "The maintainer approved safely deferring unready sources to a future-source list. This version bounds the immediate Bronze qualification to the 42 source IDs with observable adapter, fixture, implemented-ingestion, or direct successful receipt evidence at decision time. It does not assert full-universe Bronze completion, alter source rights, or authorize acquisition or publication. On 2026-10-17 the full public source universe was reconciled to include the already represented M-112 source identity au-data-gov-mbs-demographics; it remains deferred under the existing approval because broader rights and admission are unresolved. The approved active 42-source cohort and its identity are unchanged.",
-  "full_scope_source_count": 158,
-  "full_scope_source_ids_sha256": "7a4c3d950145f5ed6356ff7b4a5df43255362719437fe44da8f23d7c7a616e83",
+  "decision_basis": "The maintainer approved safely deferring unready sources to a future-source list. This version bounds the immediate Bronze qualification to the 42 source IDs with observable adapter, fixture, implemented-ingestion, or direct successful receipt evidence at decision time. It does not assert full-universe Bronze completion, alter source rights, or authorize acquisition or publication. On 2026-10-17 the full public source universe was reconciled to include the already represented M-112 source identities au-data-gov-mbs-demographics and au-data-gov-mbs-group; both remain deferred under the existing approval because broader rights and admission are unresolved. The approved active 42-source cohort and its identity are unchanged.",
+  "full_scope_source_count": 159,
+  "full_scope_source_ids_sha256": "61d7b5ccbdd1488ec27fba0783c2b6e626840ffcf4f33ddaa87e591b86913e16",
   "active_scope_source_count": 42,
   "active_scope_source_ids_sha256": "37c5d1479fdc15222f22b865e0ef271ca14d9771aaaf5751ef7f6f958d6b3303",
   "active_source_ids": [
@@ -52,7 +52,7 @@
     "us-openfda-ndc",
     "us-openfda-nsde"
   ],
-  "deferred_source_count": 116,
+  "deferred_source_count": 117,
   "deferred_source_ledger": "docs/qualification/bronze-bounded-scope-future-sources.md",
   "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
 }

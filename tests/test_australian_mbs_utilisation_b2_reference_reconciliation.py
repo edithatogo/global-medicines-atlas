@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+from collections import Counter
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -55,6 +57,26 @@ def test_m112_historical_events_bind_to_explicit_b2_external_references() -> (
     assert qualification["input"]["path"].endswith(
         "australian-mbs-utilisation-raw-reference-import-20261004.json"
     )
+    event_source_counts: Counter[str] = Counter()
+    for record in qualification["records"]:
+        event_path = resolve_repo_file(
+            Path(__file__).resolve().parents[1], record["event_path"]
+        )
+        event_bytes = event_path.read_bytes()
+        assert sha256(event_bytes).hexdigest() == record["event_sha256"]
+        event_source_counts[json.loads(event_bytes)["source_id"]] += 1
+    assert event_source_counts == {
+        "au-data-gov-mbs-demographics": 10,
+        "au-data-gov-mbs-group": 4,
+    }
+    catalog = json.loads(
+        (
+            Path(__file__).resolve().parents[1]
+            / "src/global_medicines_atlas/data/medicine_source_catalog.json"
+        ).read_text(encoding="utf-8")
+    )
+    catalog_source_ids = {source["source_id"] for source in catalog["sources"]}
+    assert set(event_source_counts).issubset(catalog_source_ids)
 
 
 @pytest.mark.unit

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "as_of": "2026-08-21",
   "evidence_policy": "catalog declarations; executable committed fixtures; durable live receipts",
-  "catalog_source_count": 175,
+  "catalog_source_count": 176,
   "facet_matrix": [
     {
       "facet": "regulatory_registration",
@@ -507,7 +507,7 @@
     },
     {
       "jurisdiction": "AUS",
-      "catalogued": 11,
+      "catalogued": 12,
       "fixture_qualified": 2,
       "live_qualified": 0
     },
@@ -1253,7 +1253,7 @@
     },
     {
       "regulator": "Services Australia",
-      "catalogued": 1,
+      "catalogued": 2,
       "fixture_qualified": 0,
       "live_qualified": 0
     },

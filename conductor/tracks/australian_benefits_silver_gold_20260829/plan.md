@@ -2563,9 +2563,21 @@
   group-statistics objects in the exact 14-object archive manifest. The new
   source row does not qualify a distinct-patient denominator, current
   coverage, native receipts, storage receipts, or admission. The catalogue
-  now has 175 sources; the approved bounded Bronze scope remains 42, and the
-  full public universe is 158 with 116 deferred. M-112's approved 1,759-path
+  now has 176 sources; the approved bounded Bronze scope remains 42, and the
+  full public universe is 159 with 117 deferred. A separate B0 identity for
+  the four group-statistics objects resolves all 14 approved imported source
+  identities across demographics and group statistics; this adds no receipt,
+  admission, or distinct-patient denominator evidence. M-112's approved 1,759-path
   denominator is unchanged. Focused tests, rights-generator checks, B0
   byte-for-byte regeneration, Ruff, BasedPyright, and diff checks pass. The
   full local profile was not repeated while the shared validation run was
   active.
+- [x] Add the separate `au-data-gov-mbs-group` B0 identity for the four
+  group-statistics references in the same exact 14-object authorization. A
+  source-event digest audit and regression now verify 10 demographics and 4
+  group-statistics identities resolve to B0; queue rights remain blocked and
+  source evidence remains `none`. Reconcile catalogue-derived Bronze and Stable
+  projections to 176 catalogue rows, 159 public Bronze sources, 117 deferred,
+  29 direct-receipt sources, and 130 without a direct receipt. The 42-source
+  bounded cohort and 1,759-path M-112 denominator are unchanged. No source
+  payload bytes were read, acquired, admitted, or published.

@@ -3,7 +3,7 @@
   "schema_version": 1,
   "generated_at": "2026-10-17",
   "decision_id": "conductor/decisions/0008-source-derived-dataset-licensing-batch.md",
-  "source_count": 175,
+  "source_count": 176,
   "batch_recommendation": "source_specific_ledger_controls_publication",
   "public_derived_release": "exact_approved_manifests_only",
   "internal_acquisition": "approved_or_conditional_by_source_review",
@@ -136,6 +136,30 @@
       "authority": "Services Australia",
       "dimension": "service_benefit",
       "catalogue_rights_status": "maintainer-approved exact 14-object archive scope only; rights for broader resources and revisions remain unresolved",
+      "recommended_disposition": "catalogue_only",
+      "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
+      "public_derived_release": "not_approved",
+      "approved_surfaces": [
+        "repository_metadata"
+      ],
+      "required_evidence": [
+        "current_terms_or_written_permission",
+        "field_level_redistribution_decision",
+        "attribution_and_notice_requirements",
+        "retrieval_and_schema_receipt",
+        "withdrawal_and_correction_route"
+      ],
+      "blocker": "source-specific rights receipt required",
+      "rights_policy_family_id": "unresolved-source-specific-terms"
+    },
+    {
+      "source_id": "au-data-gov-mbs-group",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Services Australia",
+      "dimension": "service_benefit",
+      "catalogue_rights_status": "maintainer-approved exact 4-object archive scope only; rights for broader resources and revisions remain unresolved",
       "recommended_disposition": "catalogue_only",
       "internal_acquisition": "conditional_on_lawful_access_and_retention_review",
       "public_derived_release": "not_approved",

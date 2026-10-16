@@ -559,7 +559,7 @@ def test_blockers_are_actionable_and_reconciliation_stays_incomplete() -> None:
         "landed_and_evidenced": 42,
         "manual_only_documented_acquisition": 91,
         "not_yet_implemented": 0,
-        "rights_blocked": 26,
+            "rights_blocked": 27,
         "superseded_by_reused_source": 0,
         "temporarily_unavailable": 1,
     }

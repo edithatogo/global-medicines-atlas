@@ -1346,3 +1346,13 @@ for credentialed or rights-unresolved sources.
   sources with 129 lacking direct receipts. All 14 Bronze maturity dimensions
   remain evidenced for the unchanged bounded scope. No rights, acquisition,
   source-coverage, M-112 acceptance, or stable-release state changed.
+
+## Second M-112 B0 identity reconciliation (2026-10-17)
+
+- [x] Index the approved MBS group-statistics identity as rights-blocked B0
+  metadata and refresh the full-universe accounting. The exact 14 imported
+  references now resolve to 10 demographics and 4 group-statistics events; the
+  42-source bounded horizon and 1,759-path denominator are unchanged. The
+  current catalogue is 176, public Bronze universe 159, deferred 117, and
+  direct-receipt cohort 29 / 130 without a direct receipt. No source bytes were
+  acquired, and no rights, admission, or federation state changed.

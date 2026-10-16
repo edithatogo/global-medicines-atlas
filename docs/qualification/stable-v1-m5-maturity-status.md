@@ -8,12 +8,12 @@ stable-release approval.
 
 The Bronze report is [`quality/qualifications/bronze-maturity.json`](../../quality/qualifications/bronze-maturity.json).
 It qualifies the hash-bound `bronze-bounded-public-scope-v1` horizon of 42
-sources. The full 158-source public/no-credential catalogue universe remains
-visible, with 116 sources retained in the
+sources. The full 159-source public/no-credential catalogue universe remains
+visible, with 117 sources retained in the
 [future-source ledger](./bronze-bounded-scope-future-sources.md). Those sources
 lack qualifying landing evidence; this is not negative medicines evidence and
 does not grant acquisition or reuse rights. The narrower direct-receipt cohort
-remains 29 sources, with 129 sources lacking a direct receipt, and is reported separately in the
+remains 29 sources, with 130 sources lacking a direct receipt, and is reported separately in the
 [receipt cohort ledger](./bronze-future-source-list.md).
 
 The scope basis is the maintainer-approved
@@ -27,6 +27,8 @@ The machine-readable Bronze report records the exact source-code commit it
 evaluated. Its report, bounded future-source ledger, and the stable-v1 contract
 must be regenerated after any merge that changes their hashed inputs.
 
+Current Bronze qualification source commit: `f9add1947cc9deec3817d4802a50e7a0e2fd6fa1`.
+
 ## Current-main M5 reconciliation — 2026-10-17
 
 The maturity model has eight blocking dimensions. Each is recorded at M5,
@@ -35,7 +37,7 @@ verified, and without blocker IDs in the current Stable v1 contract:
 | Dimension | Current state | Qualification evidence |
 | --- | --- | --- |
 | Canonical evidence | M5 / verified | Independent canonical v1/v2 reproduction, deterministic migration and rollback, plus the Stable v1 evidence ledger. |
-| Source coverage | M5 / verified | Bronze report: 42/42 approved bounded sources; the separate 158-source universe and its 116 deferred entries remain explicit. |
+| Source coverage | M5 / verified | Bronze report: 42/42 approved bounded sources; the separate 159-source universe and its 117 deferred entries remain explicit. |
 | Matching quality | M5 / verified | Independent fixture-process reproduction and the Stable v1 evidence ledger. |
 | Provenance and rights | M5 / verified | Publication contracts, data licence policy, independent reproduction, and the Stable v1 evidence ledger. This does not grant rights for deferred sources. |
 | Product accessibility | M5 / verified | Independent reproduction and the Stable v1 evidence ledger. |
@@ -55,18 +57,18 @@ accounting.
 
 ### M-112 source identity catalogue refresh (2026-10-17)
 
-The B0 catalogue now includes the already-reconciled MBS demographics source
-identity. The exact 14-object approval still covers only 10 demographics and 4
-group-statistics objects; no broader rights or source coverage is inferred.
-The bounded Bronze horizon remains 42/42, while the current public universe is
-158 sources with 116 deferred. The receipt-backed cohort is 29 sources with
-129 lacking a direct receipt. M5 remains qualified on its bounded Bronze
+The B0 catalogue now includes both already-reconciled MBS source identities:
+demographics and group statistics. The exact 14-object approval still covers
+only 10 demographics and 4 group-statistics objects; no broader rights or
+source coverage is inferred. The catalogue has 176 source identities. The
+bounded Bronze horizon remains 42/42, while the current 159-source public
+universe has 117 deferred. The receipt-backed cohort is 29 sources with 130
+lacking a direct receipt. M5 remains qualified on its bounded Bronze
 contract; source rights, M-112 native lifecycle, and federation acceptance are
 unchanged.
-The regenerated Bronze maturity report currently evaluates source commit
-`6682af81ddd827125b9c84e7fb05cfe305f005dd` after rebasing the catalogue and
-M-112 lineage changes onto current main. Its bounded-scope counts remain 42
-active sources, 158 public sources, 116 deferred, and 29 directly receipt-backed.
+The regenerated Bronze maturity report evaluates the source commit recorded
+in its current qualification. Its bounded-scope counts are 42 active sources,
+159 public sources, 117 deferred, and 29 directly receipt-backed.
 
 The contract has 84 verified requirements and eight blocked Australian
 requirements (M-105–M-112). Fifteen of 17 release gates pass, including the
