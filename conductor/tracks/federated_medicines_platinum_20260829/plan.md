@@ -714,7 +714,9 @@
   validators; `ExportSource` now revalidates instances and the regression test
   fails before the correction and passes after it. The final export/package
   suite passes 62 tests, with routine, `ty`, and BasedPyright passing. See the
-  local receipt in `evidence.jsonl`; public export remains gated.
+  local receipt in `evidence.jsonl`; PR #1050 merged at `144ebada` on exact
+  head `11f798ab` after all 40 reported checks passed and the review finding was
+  resolved. Public export remains gated.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
 - [x] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
