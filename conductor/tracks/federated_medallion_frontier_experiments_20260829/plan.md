@@ -208,6 +208,17 @@
   that merely use policy-like keys. It does not classify unlabeled text or
   bytes, and it has no rights authority, so the broader rights/content review
   remains open. No live graph or semantic-engine qualification is claimed.
+  - [x] Reject non-finite semantic candidate distances. Failing-first
+    validation reproduced acceptance of positive infinity; `SemanticHit` now
+    uses Pydantic `FiniteFloat` with the existing non-negative bound. Focused
+    semantic-retrieval/frontier benchmark tests passed (24), routine checks
+    passed, and BasedPyright reported no errors (four existing optional import
+    source warnings). The full pinned Test-Goblin run reached 100% with
+    6,304 passed and 3 skipped, but one unrelated Hypothesis Bronze Parquet
+    reconstruction case exceeded its 30-second timeout under full-suite load;
+    that exact case passed alone in 15.19 seconds. Full-profile coverage was
+    96.88%. No source, rights, calibration, or production-promotion claim is
+    made; the Phase 5 checkpoint remains open.
   - [x] Reject nested declared field-policy envelopes that carry restricted
     rights or sensitivity labels before graph serialization. Preserve source
     fields that happen to use policy-like keys. Failing-first controls proved

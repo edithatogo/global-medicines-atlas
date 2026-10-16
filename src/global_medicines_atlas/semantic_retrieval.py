@@ -7,7 +7,7 @@ from importlib import import_module
 from pathlib import Path
 from typing import Protocol, cast
 
-from pydantic import AwareDatetime, Field
+from pydantic import AwareDatetime, Field, FiniteFloat
 
 from .matching_indexes import (
     MatchingIndexManifest,
@@ -22,7 +22,7 @@ class SemanticHit(FrozenModel):
 
     concept_id: str = Field(min_length=1)
     mapping_level: str = Field(min_length=1)
-    distance: float = Field(ge=0)
+    distance: FiniteFloat = Field(ge=0)
     index_version: str = Field(min_length=1)
 
 
