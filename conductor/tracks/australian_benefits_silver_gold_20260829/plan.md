@@ -2143,6 +2143,12 @@
   files were removed after durable outcomes. Twelve cohort objects now have
   structural evidence; two oversized ZIP holds remain, with zero admissions.
   See `quality/qualifications/australian-mbs-workbook-streaming-receipt-20261005.json`.
+  Current-main revalidation run `38944324136` at
+  `8ba21a12f74c6336901abfe6b13cd6d2caae9a91` retested only these two pinned
+  workbooks. Both again passed the same bounded profile, three receipts were
+  read back, and both hosted cache files were removed. The two ZIP holds and
+  zero-admission state are unchanged; see
+  `quality/qualifications/australian-mbs-workbook-streaming-receipt-20261017.json`.
 
 - [x] Define source-specific utilisation semantic validation and admission
   requirements from approved source documentation and native evidence; keep
