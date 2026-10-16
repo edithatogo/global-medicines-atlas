@@ -118,6 +118,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_pbs_gold_graph.py",
         "tests/test_australian_benefits_synthetic_producer.py",
         "tests/test_australian_m112_current_state_reconciliation.py",
+        "tests/test_australian_mbs_root_manifest_append.py",
         "tests/test_australian_m112_tree_object_identity_reconciliation.py",
         "tests/test_australian_m112_deferred_source_candidates.py",
         "tests/test_australian_m112_additional_deferred_candidates.py",
