@@ -64,8 +64,9 @@ The bounded Bronze horizon remains 42/42, while the current public universe is
 contract; source rights, M-112 native lifecycle, and federation acceptance are
 unchanged.
 The regenerated Bronze maturity report currently evaluates source commit
-`39a2421b90a293d8aca8b777c842086d753e022a`; after the catalogue change merges,
-the report will be rebound to the exact merge commit.
+`6682af81ddd827125b9c84e7fb05cfe305f005dd` after rebasing the catalogue and
+M-112 lineage changes onto current main. Its bounded-scope counts remain 42
+active sources, 158 public sources, 116 deferred, and 29 directly receipt-backed.
 
 The contract has 84 verified requirements and eight blocked Australian
 requirements (M-105–M-112). Fifteen of 17 release gates pass, including the
