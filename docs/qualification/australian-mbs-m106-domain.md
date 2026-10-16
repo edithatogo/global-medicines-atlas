@@ -71,3 +71,44 @@ This contract defines a safe shape for future qualification; it does not
 establish any real distinct-patient denominator, item-level patient count,
 source-specific meaning, rights, coverage, Silver admission, or publication.
 M-106 remains blocked as recorded above.
+
+## Public patient-statistics metadata recheck, 2026-10-16
+
+The Department of Health, Disability and Ageing's [Medicare statistics
+collection](https://www.health.gov.au/resources/collections/medicare-statistics-collection)
+was last updated on 10 August 2026. Its public listing includes a 2025-26
+per-patient bulk-billing dashboard and an annual dataset titled *Medicare GP
+Non-Referred Attendances patient bulk billing ranges – Primary Health Networks
+(2009-10 to 2025-26)*. The dashboard page describes a proportion of GP
+non-referred-attendance patients fully bulk billed; the annual dataset page
+describes patient bulk-billing ranges by PHN. These are bounded GP/NRA and
+bulk-billing products. Their page metadata alone does not establish a distinct
+patient denominator for the full MBS service domain, item-level patient counts,
+or the exact count values and deduplication rules. No workbook or dashboard
+payload was downloaded or inspected.
+
+The Department's [2024-25 annual report](https://www.health.gov.au/sites/default/files/2025-11/department-of-health-disability-and-ageing-2024-25-annual-report.pdf)
+states that each Medicare patient has a unique identification number and that
+patient counts for its MBS population-access measure are extracted from
+Medicare claims held in the Department's Enterprise Data Warehouse (EDW). The
+published measure reports a percentage against ABS Estimated Resident
+Population; it does not publish the underlying exact numerator in the cited
+methodology. The PDF text was reviewed through the web reader at pages 91–92;
+no local PDF copy was saved and no patient-level rows or source dataset values
+were read. This identifies the Department's EDW as an authoritative source
+owner lead, not as a public or project-authorized dataset.
+
+On 2026-10-16, a value-free inquiry was sent to the Department's published
+enquiry address asking whether an existing public or releasable aggregate
+dataset provides exact, deduplicated distinct-patient counts for the required
+MBS cohort and periods; how patients are deduplicated across items and
+services; what suppression and coverage rules apply; and what reuse and
+redistribution terms govern the exact dataset. The exact sent text and
+message identity are preserved in
+[`m106-department-patient-denominator-inquiry.md`](../../conductor/tracks/australian_health_source_consolidation_20260829/m106-department-patient-denominator-inquiry.md).
+Keep the two public
+GP/NRA products as metadata-only candidates until their contents, source
+denominators, and rights are confirmed. Do not derive a patient count from a
+rounded population percentage, treat item/service counts as people, acquire
+any payload before source-owner clarification and a separate source-specific
+maintainer rights decision, or change M-106's blocked state on this evidence.

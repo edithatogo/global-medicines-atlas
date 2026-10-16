@@ -1,0 +1,70 @@
+{
+  "qualification_id": "australian-mbs-m106-patient-source-metadata-20261016",
+  "recorded_at": "2026-10-16",
+  "source_metadata_review": {
+    "accessed_at": "2026-10-16",
+    "owner": "Australian Government Department of Health, Disability and Ageing",
+    "collection": {
+      "title": "Medicare statistics collection",
+      "url": "https://www.health.gov.au/resources/collections/medicare-statistics-collection",
+      "last_updated": "2026-08-10"
+    },
+    "candidate_resources": [
+      {
+        "title": "Medicare statistics – per patient bulk billing dashboard 2025–26",
+        "url": "https://www.health.gov.au/resources/publications/medicare-statistics-per-patient-bulk-billing-dashboard-2025-26?language=en",
+        "page_described_scope": "Proportion of patients fully bulk billed for GP Non-Referred Attendances in 2025–26",
+        "payload_acquired": false
+      },
+      {
+        "title": "Medicare GP Non-Referred Attendances patient bulk billing ranges – Primary Health Networks (2009-10 to 2025-26)",
+        "url": "https://www.health.gov.au/resources/publications/medicare-gp-non-referred-attendances-patient-bulk-billing-ranges-primary-health-networks-2009-10-to-2025-26?language=en",
+        "page_described_scope": "Annual patient bulk-billing ranges by PHN for GP Non-Referred Attendances",
+        "payload_acquired": false
+      }
+    ],
+    "authoritative_measurement_context": {
+      "title": "Department of Health, Disability and Ageing Annual Report 2024–25",
+      "url": "https://www.health.gov.au/sites/default/files/2025-11/department-of-health-disability-and-ageing-2024-25-annual-report.pdf",
+      "finding": "The report states that each Medicare patient has a unique identification number and that patients in its MBS population-access measure are counted from Medicare claims in the Department's Enterprise Data Warehouse.",
+      "published_exact_patient_numerator_in_cited_methodology": false,
+      "dataset_payload_acquired": false,
+      "reference_document_access": {
+        "content_reviewed_via_web_reader": true,
+        "pages_reviewed": [91, 92],
+        "pdf_saved_locally": false,
+        "reference_identity": "Department of Health, Disability and Ageing Annual Report 2024–25, published November 2025, pp. 91–92, at the exact URL above"
+      }
+    }
+  },
+  "assessment": {
+    "status": "candidate_metadata_only",
+    "establishes_full_mbs_distinct_patient_denominator": false,
+    "establishes_item_level_distinct_patient_counts": false,
+    "source_owner_clarification_received": false,
+    "source_specific_maintainer_rights_decision": false,
+    "acquisition_authorized": false,
+    "m106_acceptance": false,
+    "limitations": [
+      "The public product pages describe GP Non-Referred Attendances and bulk-billing measures, not a full MBS distinct-patient denominator.",
+      "Product contents, exact patient counts, deduplication rules, coverage, suppression, and redistribution terms were not verified.",
+      "Do not derive an exact patient count from a rounded population percentage or substitute service counts for distinct patients."
+    ]
+  },
+  "source_owner_inquiry": {
+    "recipient": "enquiries@health.gov.au",
+    "subject": "Public MBS distinct-patient denominator source and reuse terms",
+    "sent_at": "2026-10-16T13:51:31Z",
+    "gmail_message_id": "1a144fb6ffd7c3cd",
+    "rfc_message_id": "<CA+D7CoyYqziWxk6VdAx-njjjdkMama3ZO9+owhOvXsK-NjHrfw@mail.gmail.com>",
+    "body_file": "conductor/tracks/australian_health_source_consolidation_20260829/m106-department-patient-denominator-inquiry.md",
+    "state": "sent_awaiting_source_owner_response",
+    "attachments": 0,
+    "patient_data_requested": false,
+    "custom_or_restricted_data_requested": false,
+    "source_payloads_attached": false,
+    "rights_decision_made": false,
+    "acquisition_authorized": false,
+    "sent_label_readback": true
+  }
+}

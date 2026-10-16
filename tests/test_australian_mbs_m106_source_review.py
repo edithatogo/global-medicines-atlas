@@ -16,6 +16,10 @@ CURRENT_ITEM_DATA = (
     ROOT / "quality/qualifications/"
     "australian-mbs-current-item-data-metadata-20260930.json"
 )
+PATIENT_SOURCE_METADATA = (
+    ROOT / "quality/qualifications/"
+    "australian-mbs-m106-patient-source-metadata-20261016.json"
+)
 
 
 def test_item_demographic_candidate_does_not_qualify_patient_denominator() -> (
@@ -110,3 +114,49 @@ def test_current_item_data_metadata_is_not_patient_or_rights_qualification() -> 
         ensure_ascii=False,
     ).encode()
     assert digest["value"] == hashlib.sha256(encoded).hexdigest()
+
+
+def test_department_patient_metadata_remains_candidate_only() -> None:
+    receipt = cast(
+        "dict[str, Any]", json.loads(PATIENT_SOURCE_METADATA.read_text())
+    )
+    assessment = cast("dict[str, Any]", receipt["assessment"])
+    resources = cast(
+        "list[dict[str, Any]]",
+        receipt["source_metadata_review"]["candidate_resources"],
+    )
+
+    assert len(resources) == 2
+    assert all(item["payload_acquired"] is False for item in resources)
+    assert assessment["status"] == "candidate_metadata_only"
+    assert (
+        assessment["establishes_full_mbs_distinct_patient_denominator"] is False
+    )
+    assert assessment["establishes_item_level_distinct_patient_counts"] is False
+    assert assessment["source_owner_clarification_received"] is False
+    assert assessment["source_specific_maintainer_rights_decision"] is False
+    assert assessment["acquisition_authorized"] is False
+    assert assessment["m106_acceptance"] is False
+    reference = receipt["source_metadata_review"][
+        "authoritative_measurement_context"
+    ]["reference_document_access"]
+    assert reference["content_reviewed_via_web_reader"] is True
+    assert reference["pages_reviewed"] == [91, 92]
+    assert reference["pdf_saved_locally"] is False
+
+    inquiry = cast("dict[str, Any]", receipt["source_owner_inquiry"])
+    assert inquiry["recipient"] == "enquiries@health.gov.au"
+    assert inquiry["gmail_message_id"] == "1a144fb6ffd7c3cd"
+    assert inquiry["state"] == "sent_awaiting_source_owner_response"
+    assert inquiry["attachments"] == 0
+    assert inquiry["patient_data_requested"] is False
+    assert inquiry["rights_decision_made"] is False
+    body = (
+        ROOT
+        / "conductor/tracks/australian_health_source_consolidation_20260829/"
+        "m106-department-patient-denominator-inquiry.md"
+    ).read_text(encoding="utf-8")
+    assert "full MBS population or a defined service/item cohort" in body
+    assert "coverage and suppression rules" in body
+    assert "access, attribution, retention and redistribution terms" in body
+    assert "custom extraction, patient-level records, restricted" in body
