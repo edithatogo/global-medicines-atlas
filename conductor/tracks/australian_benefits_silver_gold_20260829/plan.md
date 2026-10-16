@@ -2313,3 +2313,23 @@
   Exact-head PR #943 passed all 39 reported checks including Codecov and
   Linux/macOS/Windows consumers, all four review threads were reconciled, and
   the change merged as `6201cac4d1e7df98528e9cf581834549a87bc248`.
+
+## M-109 July 2025 MBS six-table value parity (2026-10-12)
+
+- [~] Extend the existing exact-source parity qualification from the services
+  table to all six pinned July 2025 MBS Silver table candidates. Bind each
+  Parquet identity and the candidate manifest digest, compare every generated
+  source-faithful field and row value, and emit a value-free receipt with no
+  rights, admission, publication, or promotion claims. The model and JSON
+  Schema require each of the six tables exactly once and in deterministic
+  order. Final local focused/integration checks pass (17 parity tests; 52
+  parity plus MBS Silver tests), as do targeted `ty`, BasedPyright, Ruff, and
+  formatting checks. Hosted exact-head and exact-main receipt readback remain
+  pending. The full local profile on the pre-cardinality-guard tree had 6,276
+  passed, 3 skipped, and 7 failures; most were existing performance/browser
+  checks under severe host load, with one Hypothesis first-call timeout. The
+  isolated Bronze recovery retry also timed out while spawning `git
+  rev-parse`, without reaching its digest assertion. Do not weaken those
+  limits; protected hosted lanes must validate the final tree. This closes
+  only source-to-candidate value parity for one era; M-109's other eras,
+  semantics, rights, and denominator requirements remain open.

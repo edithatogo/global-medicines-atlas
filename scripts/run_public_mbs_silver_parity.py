@@ -1,4 +1,4 @@
-"""Verify exact existing public MBS B2-to-Silver value parity in memory."""
+"""Verify exact public MBS six-table B2-to-Silver value parity in memory."""
 
 from __future__ import annotations
 
@@ -10,14 +10,13 @@ import httpx
 
 from global_medicines_atlas.mbs_source_silver_parity import (
     DATASET,
+    MBS_SILVER_OBJECTS,
     SILVER_DATASET_REVISION,
-    SILVER_OBJECT_BYTES,
-    SILVER_OBJECT_PATH,
     SOURCE_DATASET_REVISION,
     SOURCE_OBJECT_BYTES,
     SOURCE_OBJECT_PATH,
-    MbsSourceSilverParityReceipt,
-    verify_mbs_source_silver_parity,
+    MbsSourceSilverTablesParityReceipt,
+    verify_mbs_source_silver_tables_parity,
 )
 from global_medicines_atlas.receipts import SourceReceipt
 
@@ -25,10 +24,6 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_URL = (
     f"https://huggingface.co/datasets/{DATASET}/resolve/"
     f"{SOURCE_DATASET_REVISION}/{SOURCE_OBJECT_PATH}"
-)
-SILVER_URL = (
-    f"https://huggingface.co/datasets/{DATASET}/resolve/"
-    f"{SILVER_DATASET_REVISION}/{SILVER_OBJECT_PATH}"
 )
 SOURCE_RECEIPT = ROOT / (
     "quality/bronze/receipts/au-mbs/"
@@ -62,9 +57,19 @@ def main() -> None:
     )
     with httpx.Client(follow_redirects=True, timeout=120) as client:
         source_payload = _fetch(client, SOURCE_URL, SOURCE_OBJECT_BYTES)
-        silver_payload = _fetch(client, SILVER_URL, SILVER_OBJECT_BYTES)
-    result: MbsSourceSilverParityReceipt = verify_mbs_source_silver_parity(
-        source_payload, source_receipt, silver_payload
+        silver_payloads = {
+            table: _fetch(
+                client,
+                f"https://huggingface.co/datasets/{DATASET}/resolve/"
+                f"{SILVER_DATASET_REVISION}/{obj.path}",
+                obj.byte_count,
+            )
+            for table, obj in MBS_SILVER_OBJECTS.items()
+        }
+    result: MbsSourceSilverTablesParityReceipt = (
+        verify_mbs_source_silver_tables_parity(
+            source_payload, source_receipt, silver_payloads
+        )
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(

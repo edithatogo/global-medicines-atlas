@@ -1,0 +1,319 @@
+{
+  "$defs": {
+    "MbsSilverTableParityReceipt": {
+      "additionalProperties": false,
+      "description": "Value-free verification result for one MBS Silver table.",
+      "properties": {
+        "field_count": {
+          "exclusiveMinimum": 0,
+          "title": "Field Count",
+          "type": "integer"
+        },
+        "row_count": {
+          "minimum": 0,
+          "title": "Row Count",
+          "type": "integer"
+        },
+        "silver_object_bytes": {
+          "exclusiveMinimum": 0,
+          "title": "Silver Object Bytes",
+          "type": "integer"
+        },
+        "silver_object_path": {
+          "title": "Silver Object Path",
+          "type": "string"
+        },
+        "silver_object_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Silver Object Sha256",
+          "type": "string"
+        },
+        "table": {
+          "enum": [
+            "services",
+            "hierarchy",
+            "descriptions",
+            "fees",
+            "benefits",
+            "caps"
+          ],
+          "title": "Table",
+          "type": "string"
+        }
+      },
+      "required": [
+        "table",
+        "silver_object_path",
+        "silver_object_bytes",
+        "silver_object_sha256",
+        "row_count",
+        "field_count"
+      ],
+      "title": "MbsSilverTableParityReceipt",
+      "type": "object"
+    }
+  },
+  "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/mbs-source-silver-tables-parity-receipt-v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Value-free receipt for all six exact MBS source-to-Silver tables.",
+  "properties": {
+    "dataset": {
+      "const": "edithatogo/australian-mbs-source-archive",
+      "title": "Dataset",
+      "type": "string"
+    },
+    "production_admission": {
+      "const": false,
+      "default": false,
+      "title": "Production Admission",
+      "type": "boolean"
+    },
+    "production_promotion": {
+      "const": false,
+      "default": false,
+      "title": "Production Promotion",
+      "type": "boolean"
+    },
+    "public_data_mutation": {
+      "const": false,
+      "default": false,
+      "title": "Public Data Mutation",
+      "type": "boolean"
+    },
+    "qualification_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Qualification Sha256",
+      "type": "string"
+    },
+    "rights_conclusion": {
+      "const": false,
+      "default": false,
+      "title": "Rights Conclusion",
+      "type": "boolean"
+    },
+    "schema_id": {
+      "const": "global-medicines-atlas.mbs-source-silver-tables-parity-receipt",
+      "title": "Schema Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "silver_dataset_revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Silver Dataset Revision",
+      "type": "string"
+    },
+    "silver_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Silver Manifest Sha256",
+      "type": "string"
+    },
+    "source_dataset_revision": {
+      "pattern": "^[0-9a-f]{40}$",
+      "title": "Source Dataset Revision",
+      "type": "string"
+    },
+    "source_object_bytes": {
+      "exclusiveMinimum": 0,
+      "title": "Source Object Bytes",
+      "type": "integer"
+    },
+    "source_object_path": {
+      "title": "Source Object Path",
+      "type": "string"
+    },
+    "source_object_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Object Sha256",
+      "type": "string"
+    },
+    "source_receipt_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "title": "Source Receipt Sha256",
+      "type": "string"
+    },
+    "source_revision": {
+      "const": "2025-07-version-3",
+      "title": "Source Revision",
+      "type": "string"
+    },
+    "source_to_silver_value_parity_verified": {
+      "const": true,
+      "default": true,
+      "title": "Source To Silver Value Parity Verified",
+      "type": "boolean"
+    },
+    "source_values_in_receipt": {
+      "const": false,
+      "default": false,
+      "title": "Source Values In Receipt",
+      "type": "boolean"
+    },
+    "tables": {
+      "allOf": [
+        {
+          "contains": {
+            "properties": {
+              "table": {
+                "const": "services"
+              }
+            },
+            "required": [
+              "table"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "table": {
+                "const": "hierarchy"
+              }
+            },
+            "required": [
+              "table"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "table": {
+                "const": "descriptions"
+              }
+            },
+            "required": [
+              "table"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "table": {
+                "const": "fees"
+              }
+            },
+            "required": [
+              "table"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "table": {
+                "const": "benefits"
+              }
+            },
+            "required": [
+              "table"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "properties": {
+              "table": {
+                "const": "caps"
+              }
+            },
+            "required": [
+              "table"
+            ]
+          },
+          "maxContains": 1,
+          "minContains": 1
+        }
+      ],
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/MbsSilverTableParityReceipt",
+          "properties": {
+            "table": {
+              "const": "services"
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/MbsSilverTableParityReceipt",
+          "properties": {
+            "table": {
+              "const": "hierarchy"
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/MbsSilverTableParityReceipt",
+          "properties": {
+            "table": {
+              "const": "descriptions"
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/MbsSilverTableParityReceipt",
+          "properties": {
+            "table": {
+              "const": "fees"
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/MbsSilverTableParityReceipt",
+          "properties": {
+            "table": {
+              "const": "benefits"
+            }
+          }
+        },
+        {
+          "$ref": "#/$defs/MbsSilverTableParityReceipt",
+          "properties": {
+            "table": {
+              "const": "caps"
+            }
+          }
+        }
+      ],
+      "items": {
+        "$ref": "#/$defs/MbsSilverTableParityReceipt"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "title": "Tables",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_id",
+    "schema_version",
+    "dataset",
+    "source_dataset_revision",
+    "source_object_path",
+    "source_object_bytes",
+    "source_object_sha256",
+    "source_receipt_sha256",
+    "silver_dataset_revision",
+    "silver_manifest_sha256",
+    "qualification_sha256",
+    "source_revision",
+    "tables"
+  ],
+  "title": "MbsSourceSilverTablesParityReceipt",
+  "type": "object"
+}
