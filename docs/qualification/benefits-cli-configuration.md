@@ -24,10 +24,14 @@ bytes. Keep it stable when following `next_cursor` with `--cursor`. Never put
 the secret in the trust file or command arguments.
 
 The operator provisions the trust file independently from candidate metadata.
-It has `version: "1.0"` and a nonempty `resources` array (maximum 32). Each
+It has `version: "1.1"` and a nonempty `resources` array (maximum 32). Each
 entry supplies `resource_id`, `semantic_dimension`, `entity_granularity`, a
 serialized `DistributionBinding` under `binding`, the independently expected
-`semantic_sha256`, and relative `contract_path` and `semantic_path` values.
+`semantic_sha256`, a complete typed `AdmissionRecord` under `admission`, and
+relative `contract_path` and `semantic_path` values. The admission record must
+be provisioned from a trusted profile independently of candidate metadata; the
+resolver checks its contract digest and the reader rechecks its full identity
+before retrieval.
 The binding includes the independently expected `contract_sha256`, destination
 dataset/revision and complete produced-object identity. Candidate files are
 bounded regular files below `--metadata-root`; path traversal and symlink

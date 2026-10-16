@@ -79,8 +79,12 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_country_adapter_registry.py",
         "tests/test_au_mbs_source.py",
         "tests/test_australian_source_contracts.py",
+        "tests/test_mbs_xml_v3_field_semantics.py",
+        "tests/test_mbs_measures.py",
+        "tests/test_australian_m109_source_era_register.py",
         "tests/test_mbs_typed_values.py",
         "tests/test_mbs_silver.py",
+        "tests/test_mbs_source_silver_parity.py",
         "tests/test_mbs_silver_qualification.py",
         "tests/test_mbs_silver_publication.py",
         "tests/test_public_mbs_silver_qualification.py",
@@ -114,15 +118,20 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_pbs_gold_graph.py",
         "tests/test_australian_benefits_synthetic_producer.py",
         "tests/test_australian_m112_current_state_reconciliation.py",
+        "tests/test_australian_mbs_root_manifest_append.py",
         "tests/test_australian_m112_tree_object_identity_reconciliation.py",
         "tests/test_australian_m112_deferred_source_candidates.py",
         "tests/test_australian_m112_additional_deferred_candidates.py",
         "tests/test_australian_mbs_utilisation_exact_scope_rights_decision.py",
+        "tests/test_mbs_utilisation_header_inventory.py",
+        "tests/test_mbs_utilisation_value_observer.py",
+        "tests/test_mbs_utilisation_numeric_policy.py",
         "tests/test_mbs_utilisation_rights_hosted.py",
         "tests/test_mbs_utilisation_rights_runner.py",
         "tests/test_australian_m112_mbs_lifecycle_crosswalk.py",
         "tests/test_australian_m112_2025_mbs_v4_receipt_readback.py",
         "tests/test_australian_m112_unhashed_deferred_candidates.py",
+        "tests/test_australian_m112_per_object_gate_reconciliation.py",
         "tests/test_mbs_workbook_values.py",
         "tests/test_australian_mbs_m106_source_review.py",
         "tests/test_mbs_compatibility.py",
@@ -188,6 +197,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_frontier_networkx.py",
         "tests/test_frontier_benchmark.py",
         "tests/test_frontier_graph_parity.py",
+        "tests/test_frontier_neo4j.py",
+        "tests/test_frontier_sparql.py",
         "tests/test_frontier_merkle.py",
         "tests/test_research_package.py",
         "tests/test_research_lineage.py",
@@ -255,6 +266,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_openlineage_conformance.py",
         "tests/test_iceberg_ready.py",
         "tests/test_iceberg_interop.py",
+        "tests/test_iceberg_public_parquet.py",
         "tests/test_datahouse_experiment_matrix.py",
         "tests/test_batch_attestation.py",
         "tests/test_ducklake_experiment.py",
@@ -274,6 +286,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_rxnorm_identifier_projection.py",
         "tests/test_matching_release.py",
         "tests/test_product_contracts.py",
+        "tests/test_result_surface_contract_matrix.py",
         "tests/test_platinum_v2_contracts.py",
         "tests/test_platinum_v2_query_service.py",
         "tests/test_platinum_v2_api.py",
@@ -294,6 +307,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_stable_v1_monitoring.py",
         "tests/test_stable_v1_documentation.py",
         "tests/test_stable_v1_hosted_governance.py",
+        "tests/test_prepare_codecov_cli.py",
+        "tests/test_codecov_tls.py",
         "tests/test_openapi_semantic.py",
         "tests/test_canonical_v2_runtime.py",
         "tests/test_comparison_validity.py",
@@ -323,6 +338,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_temporal_coverage.py",
         "tests/test_platinum_coverage.py",
         "tests/test_research_exports.py",
+        "tests/test_research_export_package.py",
         "tests/test_terminology_resolver.py",
         "tests/test_temporal_evidence.py",
         "tests/test_release_evidence.py",
@@ -340,6 +356,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_test_goblin_harness.py",
     ),
     "integration": (
+        "tests/test_frontier_neo4j_integration.py",
+        "tests/test_frontier_sparql_integration.py",
         "tests/test_nz_asset_inventory.py",
         "tests/test_nz_consolidation.py",
         "tests/test_nz_fixture_indexes.py",
@@ -352,6 +370,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_first_party_adapters.py",
         "tests/test_global_fixture_adapters.py",
         "tests/test_matching_pipeline.py",
+        "tests/test_frontier_candidate_benchmark.py",
         "tests/test_matching_rxnorm.py",
         "tests/test_semantic_retrieval.py",
         "tests/test_matching_indexes.py",
@@ -367,6 +386,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_concept_cli.py",
         "tests/test_consumer_qualification.py",
         "tests/test_product_api.py",
+        "tests/test_platinum_structure.py",
         "tests/test_product_cli.py",
         "tests/test_canada_native_adapters.py",
         "tests/test_eu_uk_native_adapters.py",
@@ -394,8 +414,15 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_canonical_nz_adapter.py",
         "tests/test_country_comparison_e2e.py",
         "tests/test_matching_e2e.py",
+        "tests/test_medallion_e2e.py",
+        "tests/test_coverage_medallion_e2e.py",
+        "tests/test_synthetic_producer_distribution_e2e.py",
         "tests/test_atlas_e2e.py",
+        "tests/test_platinum_surfaces_e2e.py",
+        "tests/test_atlas_browser_e2e.py",
+        "tests/test_installed_atlas_browser_e2e.py",
         "tests/test_atlas_discovery_e2e.py",
+        "tests/test_atlas_federated_qualification_copy.py",
         "tests/test_stable_v1_e2e_qualification.py",
     ),
     "smoke": (
@@ -1082,19 +1109,30 @@ def package() -> None:
     run([sys.executable, "scripts/qualify_clean_consumer.py"])
 
 
-def profile() -> None:
-    """Exercise the canonical workload under Scalene and emit an HTML report."""
-    command = [
-        sys.executable,
+def _scalene_command(*, outfile: str, workload: str) -> list[str]:
+    """Run Scalene with its optional dependency group in clean environments."""
+    return [
+        "uv",
+        "run",
+        "--group",
+        "profiling",
+        "python",
         "-m",
         "scalene",
         "run",
         "--cpu-only",
         "--profile-all",
         "--outfile",
-        "scalene-profile.json",
-        "scripts/profile_smoke.py",
+        outfile,
+        workload,
     ]
+
+
+def profile() -> None:
+    """Exercise the canonical workload under Scalene and emit an HTML report."""
+    command = _scalene_command(
+        outfile="scalene-profile.json", workload="scripts/profile_smoke.py"
+    )
     started = time.perf_counter()
     run(command)
     elapsed_seconds = time.perf_counter() - started
@@ -1115,17 +1153,9 @@ def profile_tests() -> None:
     """Profile a representative pytest workload under Scalene."""
     artifact = PROJECT_ROOT / "build/profiling/scalene-tests-profile.json"
     artifact.parent.mkdir(parents=True, exist_ok=True)
-    command = [
-        sys.executable,
-        "-m",
-        "scalene",
-        "run",
-        "--cpu-only",
-        "--profile-all",
-        "--outfile",
-        artifact.as_posix(),
-        "scripts/profile_test_workload.py",
-    ]
+    command = _scalene_command(
+        outfile=artifact.as_posix(), workload="scripts/profile_test_workload.py"
+    )
     started = time.perf_counter()
     run(command)
     elapsed_seconds = time.perf_counter() - started

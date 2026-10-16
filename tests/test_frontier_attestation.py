@@ -15,7 +15,12 @@ from global_medicines_atlas.frontier_merkle import (
 
 def _manifest(count: int = 3):
     return build_merkle_manifest([
-        MerkleLeaf(path=f"objects/{index}", sha256=f"{index + 1:064x}")
+        MerkleLeaf(
+            dataset_id="synthetic/attestation-test",
+            revision="a" * 40,
+            path=f"objects/{index}",
+            sha256=f"{index + 1:064x}",
+        )
         for index in range(count)
     ])
 

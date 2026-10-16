@@ -1,4 +1,7 @@
+import hashlib
+import json
 from datetime import UTC, datetime
+from typing import Any
 
 import pytest
 
@@ -7,6 +10,7 @@ from global_medicines_atlas.research_exports import (
     ExportSource,
     build_query_snapshot_manifest,
     canonical_manifest_bytes,
+    canonical_result_bytes,
     manifest_sha256,
 )
 
@@ -24,7 +28,7 @@ def _source() -> ExportSource:
 
 @pytest.mark.unit
 def test_manifest_is_order_stable_and_content_addressed() -> None:
-    kwargs = {
+    kwargs: dict[str, Any] = {
         "query": {"filters": {"jurisdiction": "AU"}, "select": ["item_id"]},
         "sources": [_source()],
         "citations": [
@@ -49,6 +53,26 @@ def test_manifest_is_order_stable_and_content_addressed() -> None:
 
 
 @pytest.mark.unit
+def test_canonical_result_bytes_match_manifest_digest_and_ignore_row_order() -> (
+    None
+):
+    rows = [{"item_id": "2"}, {"item_id": "1"}]
+    first = build_query_snapshot_manifest(
+        query={"select": ["item_id"]},
+        result_rows=rows,
+        sources=[_source()],
+        generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+        generator_commit="abc1234",
+    )
+
+    payload = canonical_result_bytes(rows)
+
+    assert payload == canonical_result_bytes(list(reversed(rows)))
+    assert hashlib.sha256(payload).hexdigest() == first.result_sha256
+    assert json.loads(payload) == [{"item_id": "1"}, {"item_id": "2"}]
+
+
+@pytest.mark.unit
 def test_manifest_order_is_stable_when_source_and_citation_keys_tie() -> None:
     source = _source()
     changed_source = source.model_copy(update={"sha256": "b" * 64})
@@ -56,7 +80,7 @@ def test_manifest_order_is_stable_when_source_and_citation_keys_tie() -> None:
         citation_id="mbs", title="Primary", uri="https://example.invalid/a"
     )
     changed_citation = citation.model_copy(update={"title": "Secondary"})
-    kwargs = {
+    kwargs: dict[str, Any] = {
         "query": {"select": ["item_id"]},
         "result_rows": [{"item_id": "1"}],
         "generated_at": datetime(2026, 1, 1, tzinfo=UTC),
@@ -74,6 +98,36 @@ def test_manifest_order_is_stable_when_source_and_citation_keys_tie() -> None:
     )
     assert canonical_manifest_bytes(first) == canonical_manifest_bytes(second)
     assert manifest_sha256(first) == manifest_sha256(second)
+
+
+@pytest.mark.edge
+def test_manifest_query_is_detached_from_mutable_input() -> None:
+    query = {"filters": {"jurisdiction": "AU"}}
+    manifest = build_query_snapshot_manifest(
+        query=query,
+        result_rows=[],
+        sources=[_source()],
+        generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+        generator_commit="abc1234",
+    )
+    original_bytes = canonical_manifest_bytes(manifest)
+
+    query["filters"]["jurisdiction"] = "NZ"
+
+    assert canonical_manifest_bytes(manifest) == original_bytes
+    assert (
+        manifest.query_sha256
+        == hashlib.sha256(
+            json.dumps(
+                manifest.query,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+                allow_nan=False,
+            ).encode("utf-8")
+            + b"\n"
+        ).hexdigest()
+    )
 
 
 @pytest.mark.edge
@@ -95,6 +149,76 @@ def test_manifest_requires_pinned_source() -> None:
             query={},
             result_rows=[],
             sources=[],
+            generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+            generator_commit="abc1234",
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("revision", "main"),
+        ("revision", "a" * 39),
+        ("revision", "A" * 40),
+        ("dataset_id", "owner"),
+        ("dataset_id", "owner/../dataset"),
+        ("dataset_id", "https://huggingface.co/datasets/owner/dataset"),
+        ("path", "/absolute/file.parquet"),
+        ("path", "silver/../private.parquet"),
+        ("path", "silver//items.parquet"),
+        ("path", "silver\\\\items.parquet"),
+        ("path", "silver/items.parquet?download=true"),
+        ("path", "silver/items\x00.parquet"),
+        ("path", "silver/visible\u202eparquet.exe"),
+        ("path", "silver/visible\u200f.parquet"),
+    ],
+)
+@pytest.mark.edge
+def test_export_source_rejects_unpinned_or_ambiguous_identity(
+    field: str, value: str
+) -> None:
+    payload = _source().model_dump()
+    payload[field] = value
+
+    with pytest.raises(ValueError, match=r"dataset|revision|path"):
+        ExportSource.model_validate(payload)
+
+
+@pytest.mark.unit
+def test_export_source_json_schema_exposes_pinned_identity_shapes() -> None:
+    properties = ExportSource.model_json_schema()["properties"]
+
+    assert properties["dataset_id"]["pattern"] == (
+        r"^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$"
+    )
+    assert properties["revision"]["pattern"] == r"^[0-9a-f]{40}$"
+
+
+@pytest.mark.edge
+def test_manifest_revalidates_copied_export_source_instances() -> None:
+    copied = _source().model_copy(update={"revision": "main"})
+
+    with pytest.raises(ValueError, match="revision"):
+        build_query_snapshot_manifest(
+            query={},
+            result_rows=[],
+            sources=[copied],
+            generated_at=datetime(2026, 1, 1, tzinfo=UTC),
+            generator_commit="abc1234",
+        )
+
+
+@pytest.mark.edge
+def test_manifest_rejects_copied_source_with_display_spoofing_path() -> None:
+    copied = _source().model_copy(
+        update={"path": "silver/visible\u202eparquet.exe"}
+    )
+
+    with pytest.raises(ValueError, match="path"):
+        build_query_snapshot_manifest(
+            query={},
+            result_rows=[],
+            sources=[copied],
             generated_at=datetime(2026, 1, 1, tzinfo=UTC),
             generator_commit="abc1234",
         )

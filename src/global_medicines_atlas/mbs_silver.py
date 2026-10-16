@@ -1,8 +1,11 @@
 """Bounded typed MBS projections retaining native fields and exact receipts.
 
 These are rebuildable Silver candidates, not public/promotion receipts.
-Raw XML remains evidentiary truth. The existing parser bounds each input to
-9 MB; output batches add a bounded row buffer, not unbounded source streaming.
+Raw XML remains evidentiary truth. A no-tree safety preflight checks the full
+payload before the event pass streams and detaches completed direct-root
+``Data`` subtrees. Parser memory is bounded by one input chunk of pending
+events and the largest ``Data`` subtree; the Arrow output buffer is separately
+bounded by batch size. This is bounded streaming, not constant-memory parsing.
 """
 
 from __future__ import annotations
@@ -13,7 +16,11 @@ from typing import Any
 
 import pyarrow as pa
 
-from .adapters.au_mbs import MbsSourceRecord, parse_mbs_source_xml
+from .adapters.au_mbs import (
+    MbsSourceRecord,
+    inspect_mbs_source_xml_stream,
+    iter_mbs_source_xml_records,
+)
 from .australian_silver_metadata import receipt_projection_metadata
 from .australian_source_contracts import (
     MbsFieldContract,
@@ -199,13 +206,13 @@ def iter_mbs_silver_batches(
         raise ValueError("unsupported date format profile")
     schema = mbs_silver_schema(table)
     receipt = SourceReceipt.model_validate(receipt.model_dump())
-    batch = parse_mbs_source_xml(payload, receipt)
+    stream = inspect_mbs_source_xml_stream(payload, receipt)
     metadata = dict(schema.metadata or {})
     metadata.update({
         **receipt_projection_metadata(receipt),
-        b"schema_era": batch.schema_era.encode(),
+        b"schema_era": stream.schema_era.encode(),
         b"date_format": (date_format or "unspecified").encode(),
-        b"source_record_count": str(batch.record_count).encode(),
+        b"source_record_count": str(stream.record_count).encode(),
     })
     schema = schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
     contracts = tuple(
@@ -213,7 +220,7 @@ def iter_mbs_silver_batches(
     )
     receipt_sha256 = receipt.digest()
     rows: list[dict[str, Any]] = []
-    for record in batch.records:
+    for record in iter_mbs_source_xml_records(payload, stream):
         rows.append(_row(record, contracts, receipt_sha256, date_format))
         if len(rows) == rows_per_batch:
             yield pa.RecordBatch.from_pylist(rows, schema=schema)

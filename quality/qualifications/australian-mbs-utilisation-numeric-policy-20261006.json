@@ -1,0 +1,35 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-numeric-policy",
+  "schema_version": 1,
+  "recorded_at": "2026-10-06T05:44:39Z",
+  "status": "synthetic_only_exact_numeric_parser_contract",
+  "source_objects_examined": 0,
+  "source_inventory_expanded": false,
+  "policy_contract": {
+    "policy_argument_required": true,
+    "default_decimal_separator": ".",
+    "default_grouping_separator": null,
+    "grouping_enabled_only_by_explicit_policy": true,
+    "supported_grouping_size": 3,
+    "signed_values_preserved": true,
+    "decimal_scale_preserved": true,
+    "binary_float_used": false,
+    "scientific_notation_accepted": false,
+    "whitespace_coerced": false,
+    "invalid_token_values_in_errors": false
+  },
+  "boundaries": {
+    "source_profile_selected": false,
+    "source_row_transformed": false,
+    "semantic_mapping_selected": false,
+    "processing_admitted": false,
+    "silver_published": false,
+    "new_sources_added": false
+  },
+  "verification": {
+    "synthetic_tests": 25,
+    "parser_statement_and_branch_coverage_percent": 100,
+    "source_bytes_read": false
+  },
+  "next_step": "Prepare a synthetic candidate row-mapping contract from reviewed MBS documentation; keep source-specific parsing policy and hosted transformation closed pending semantic evidence."
+}

@@ -1,0 +1,33 @@
+{
+  "api": "sparql-1.1-protocol-rdf-1.2",
+  "cases": {
+    "mbs": {
+      "edge_count": 2,
+      "exact_payload_and_direction_parity": true,
+      "graph_sha256": "ed88a2891cc05c96284130f58a450d6b92193e338caf11eccd93cd0a5c410020",
+      "node_count": 4,
+      "rdf12_reified_triple_term_parity": true
+    },
+    "pbs": {
+      "edge_count": 9,
+      "exact_payload_and_direction_parity": true,
+      "graph_sha256": "27fa80ed1eff17763a2a310bb6d73bf4e519db18d864ee34dd6604ab83b3a13d",
+      "node_count": 10,
+      "rdf12_reified_triple_term_parity": true
+    }
+  },
+  "disposition": "retain-preview",
+  "engine": "oxigraph",
+  "engine_image_digest": "sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e",
+  "engine_version": "0.5.9",
+  "production_authority_promoted": false,
+  "rdf12_reification_query": "sparql-1.2-triple-term-pattern",
+  "rdf12_reified_triple_term_parity": true,
+  "receipt_sha256": "764f780cfe02072980ea8d4fc91c33b2a707993acee072e1da7eaa13de573e41",
+  "recorded_at": "2026-10-11T16:13:33.858921+00:00",
+  "rights_clearance_claimed": false,
+  "schema_id": "global-medicines-atlas.oxigraph-synthetic-graph-parity",
+  "schema_version": 1,
+  "source_payloads_accessed": false,
+  "source_scope": "synthetic-mbs-pbs-only"
+}

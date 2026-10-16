@@ -494,6 +494,34 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   rights decision for this exact resource. No CSV row or source byte was
   retrieved.
 
+## M-106 public patient-statistics metadata recheck (2026-10-16)
+
+- [x] Review the Department's current Medicare statistics collection and
+  linked patient-statistics metadata. The collection page lists a 2025–26
+  per-patient bulk-billing dashboard and annual GP Non-Referred Attendances
+  patient bulk-billing ranges by PHN. The 2024–25 annual report states that
+  the Department counts patients for its MBS population-access measure from
+  claims in its Enterprise Data Warehouse, but the cited methodology does not
+  publish the exact numerator. Record these as metadata-only candidate/source-
+  owner evidence in
+  `quality/qualifications/australian-mbs-m106-patient-source-metadata-20261016.json`.
+  No product payload was downloaded, no count was derived, and no rights or
+  acquisition decision was made.
+- [~] Keep M-106 blocked. Clarify whether a public or releasable dataset gives
+  exact deduplicated distinct-patient counts for the required MBS domain and
+  periods, including coverage, suppression, and reuse terms. Obtain a separate
+  source-specific maintainer rights decision before any acquisition. GP/NRA
+  patient-billing products and rounded population percentages are not a
+  denominator for full MBS coverage. A value-free source-owner inquiry was
+  sent to the Department's published enquiry address on 2026-10-16 and read
+  back under the sent label; its message identity and scope are recorded in
+  the qualification JSON. The exact sent text is preserved in
+  `m106-department-patient-denominator-inquiry.md`. The annual-report PDF was
+  reviewed through the web reader at pages 91–92, but was not saved locally;
+  the dashboard/workbook payloads and patient-level data were not acquired.
+  Await a substantive reply; no data or attachments were sent, and no source
+  rights or acquisition decision was made.
+
 ## M-109 PBS current-distribution transition (2026-09-29)
 
 - [x] Reconcile current official PBS distribution metadata with the pinned
@@ -515,6 +543,26 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   retention and publication rights are resolved and a scoped current API
   corpus is authorized and qualified. Do not reuse the XML profile as current
   API semantics or exceed its 12-month published history window.
+
+## M-109 exact-main July 2025 MBS six-table parity evidence (2026-10-16)
+
+- [x] Reconcile the dependent benefits-track exact-main Test-Goblin receipt
+  into the M-109 source-era register and federation acceptance summary. Run
+  `38908829291` on merge `2666e6e026867be99d85f1e32bc9b381afe50efc`
+  validated artifact `12048749308` (SHA-256
+  `0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6`).
+  Its value-free receipt binds the pinned July 2025 source and Silver manifest,
+  verifies source-to-candidate value parity for exactly six canonical tables,
+  and reports 5,989 rows per table. This is one source-era parity result only;
+  rights, production admission, publication, promotion, other-era semantics,
+  the approved source-era denominator, and full M-109 acceptance remain open.
+- [x] Preserve the exact 2,843-byte value-free receipt in
+  `quality/qualifications/mbs-source-silver-tables-parity-2025-07-v3.json`.
+  Its committed digest is
+  `0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6`;
+  a regression checks this identity and validates the receipt with both the
+  Pydantic model and JSON Schema so evidence remains auditable after the
+  hosted artifact expires.
 
 ## M-107 metadata evidence review fixes (2026-09-28)
 
@@ -653,3 +701,34 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   full-denominator anonymous digest gate remains open. The 20
   utilization-publication digest joins are publication receipts only and do
   not establish source rights or admission.
+
+## M-107 historical snapshot coverage reconciliation (2026-10-05)
+
+- [x] Reconcile the current metadata-only public tree inventory with official
+  MBS download pages, PBS source-era documentation, source rights ledgers, and
+  prior Health.gov workbook receipts. Record exact missing families and
+  periods, retrieval state, rights state, and acceptance evidence in
+  `docs/qualification/australian-mbs-pbs-m107-snapshots.md`.
+- [x] Use the pre-authorized exact-main MBS schedule workflow for independent
+  releases. Run `37282662744` added the `2026-11-01` schedule and verified 21
+  cumulative objects with cleanup. Run `37282945693` selected nine recent
+  release resources, added the `2026-01-01` schedule and two distinct
+  `2026-03-01` XML revisions, and verified 27 cumulative objects with cleanup.
+  Read back B1 receipts at the exact resulting revisions; do not treat the
+  partial recent archive as a full release denominator.
+- [x] Preserve the three Health.gov workbook zero-byte timeout findings and
+  annual page/attachment period mismatch. Read back the Department inquiry
+  thread; only outgoing messages were present. No unchanged workbook retries
+  were made.
+- [x] Record the PBS schedule schema-era ranges and exact April 2026 v3 object;
+  record that older XML rights are unresolved, the API's 12-month route lacks
+  retention/redistribution terms, and the separate PBS utilisation tree has
+  six metadata-observed raw paths with per-object rights/lineage unresolved.
+- [~] Keep M-107 blocked. The enumerated official MBS period set is incomplete;
+  exact January/March 2025 and both November 2025 XML revisions remain without
+  receipts; official historic PDF/Word/software formats are not enumerated or
+  covered by the existing MBS XML publication authorization. The PBS schedule
+  and API periods still lack source-specific rights and period-by-period
+  receipts. Finish only after the expected source/snapshot denominator
+  reconciles to exact source receipts, schema era, validity, retrieval,
+  completeness, rights and immutable archive identities.

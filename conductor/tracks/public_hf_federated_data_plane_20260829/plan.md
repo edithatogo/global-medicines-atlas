@@ -41,11 +41,16 @@
   replica, schema-era, comparison, lineage, and cache fields. (`6055379`)
 - [x] Confirm the intended failure before implementation. (`6055379`;
   missing module, then three trailing-newline identity regressions)
-- [~] Commit immutable v4 schema, valid/invalid fixtures, documentation, and
+- [x] Commit immutable v4 schema, valid/invalid fixtures, documentation, and
   cross-repository conformance canaries.
   Schema, offline semantic validation and portable canary fixtures implemented
   in `6055379`; 54 focused tests pass with 100% semantic-module branch coverage.
-  Downstream adoption and live receipt emission are not yet qualified.
+  reimbursement-atlas PR #816 merged at
+  `a93516ed416118bc51c1db2b71ab540fa4d0fe52`; its binding requires the GMA
+  producer, immutable revision, and content digest. The current GMA contract,
+  compatibility-canary, and consumer suites pass (99 tests). This verifies
+  one pinned consumer and synthetic canaries; live receipt emission and
+  production admission remain open as separate qualification gates.
   This independent Phase 2 contract slice does not close the remaining Phase 1
   complete-estate inventory tasks.
 - [x] Approve the stable `edithatogo/australian-mbs-source-archive` name and
@@ -140,6 +145,15 @@
   Offline exact-profile adapter implemented with immutable admission records;
   actual producer trust profiles and live archive admission remain pending and
   require complete v4 evidence rather than retroactive relabelling.
+  - [x] Preserve the complete contract authority, exact object byte count,
+    source representation/era/cohort, and temporal identity in independently
+    profiled admission records. Twenty-three focused admission tests pass with
+    100% statement and branch coverage; all 380 federation tests and full local
+    Test-Goblin pass on pinned uv 0.11.29. Synthetic fixture only. Independently
+    configured production profiles and live archive admission remain pending;
+    this change does not alter the publication/rights boundary. PR #830 merged
+    as `f70b2419864ef2db1cc740006f9e3e4aa04a5675` on 2026-10-06 after all 39
+    hosted checks passed, including Codecov; see the append-only merge receipt.
 
 - [x] Write failing tests that map every produced Bronze/Silver/Gold/Platinum
   object to one public destination and reject mutable/unpinned references.
@@ -150,16 +164,65 @@
   complete producer denominator. (`620aaf7`; 123 focused federation tests pass,
   new module 100% coverage; full harness and hosted qualification pending.
   Receipt admission and live producer integration remain open.)
+  - [x] Strictly load the bounded synthetic-only producer inventory and
+    reconcile every Bronze/Silver/Gold/Platinum row against a matching pinned
+    v4 contract; reject a partial object or contract denominator. Local E2E
+    uses no network or source bytes, and the inventory is explicitly
+    non-publishable. Full hosted qualification and real producer integration
+    remain open.
+  - [x] Integrate actual synthetic Bronze B1 receipt metadata, Silver Parquet,
+    Gold node/edge Parquet, and Platinum research-package bytes with the strict
+    non-publishable producer inventory loader and v4 distribution reconciler.
+    Every emitted object is matched to its immutable destination, path, digest,
+    byte count, source/acquisition identity, layer, and Bronze stratum. PR #836
+    merged as `08a08a0f8662fefe8cc473272f6cbe2e2252ba68` after all 38 hosted
+    checks passed. This is synthetic qualification only; it does not publish,
+    admit real data, or close the live producer integration gate.
+  - [x] Read every exact reconciled synthetic B1, Silver, Gold, and Platinum
+    object through the typed-admission federated reader; prove anonymous
+    remote verification, exact offline cache replay, fail-closed cache
+    eviction, and remote refetch preserve each object's digest and byte count.
+    Keep B2 raw payloads in the separate source-archive denominator. Code
+    `eceae48`; 136 affected federation/E2E tests and 31 governed E2E tests pass;
+    routine and typing gates pass. Mock transport only; no live admission or
+    publication. PR #840 merged as `71d567f6e4a0346702a38000e9381f96438c97c2`
+    after all 37 hosted checks passed. See the append-only evidence entry.
+  - [x] Add byte-closed synthetic receipt evidence and caller-owned exact
+    admission profiles to the same actual-output journey before reader setup.
+    The B1, Silver, Gold nodes/edges, and Platinum export are independently
+    checked for contract digest, authority, path, object digest/size, source and
+    acquisition, layer/cohort, and receipt roles. Changed contract bytes and a
+    forged expected path are rejected. The resulting records drive the
+    FederatedReader and PBS identity/Atlas path. No source coverage, rights
+    clearance, live admission, or publication is established. PR #972 merged
+    as `1b5c38ed00d549b2b994a9898b9868b2482f0575` from exact head
+    `44c107bb707458d98d73a9f260fbb457b8328d81`; the merge tree matches the
+    qualified head. All 28 distinct required contexts and Codecov patch passed.
+- [x] Reject duplicate JSON member names consistently at v4 distribution,
+  admission, reader, receipt-closure, and consumer boundaries. Three synthetic
+  regressions failed before the shared strict parser; 436 affected federation
+  and Platinum tests pass. The new parser has 100% statement and branch
+  coverage; Ruff, `ty`, and BasedPyright pass. The full Test-Goblin profile
+  reports 5,867 passed, 2 existing clean-clone reproducibility failures caused
+  by local `uv 0.12.23` versus the CI-pinned `0.11.29`, 1 optional PyIceberg
+  skip, and 96.80% coverage. No source bytes, network reads, admission, or
+  publication were involved. This does not close distribution integration.
+  See `quality/qualifications/federation-v4-strict-json-observation-20261006.json`.
 - [ ] Publish source-faithful Parquet, typed tables, graph edge/node tables,
   products, coverage, lineage, and promotions with v4 identities.
-- [~] Implement remote-first readers with bounded cache and offline behavior;
+- [x] Implement remote-first readers with bounded cache and offline behavior;
   verify local cache eviction cannot change content identity.
-  Runtime transport/cache slice in progress; only independently admitted v4
-  documents may be consumed. No live source acquisition or publication planned.
-  `2ed6d8d` (rebased from `78abde9`): 89 focused tests pass, reader 100% branch coverage; optional
-  installed-consumer import passes. Exact-head hosted qualification passed in
-  PR #375 (`5d4f382`, reviewed `96ac770`, all 38 checks passed).
-  Live admission/receipt integration remains pending.
+  The complete synthetic B1/Silver/Gold/Platinum journey verifies anonymous
+  remote reads against exact digest and byte count, exact offline cache replay,
+  fail-closed behavior after eviction without a request, and remote refetch with
+  unchanged digest and byte count. The existing MBS and PBS synthetic fixtures
+  were rerun locally (2 passed; one existing Starlette/httpx deprecation
+  warning). The broader journey records 136 affected tests and 31 governed E2E
+  tests passing; PR #840 merged at
+  `71d567f6e4a0346702a38000e9381f96438c97c2` after all 37 hosted checks passed.
+  No new sources, production source bytes, live admission, or publication were
+  involved. See the append-only reconciliation evidence entry. Live producer
+  admission and publication remain separate open tasks.
 - [ ] Phase Verification & Checkpoint: exact remote revisions reproduce all
   products and local storage is demonstrably transient.
 
@@ -183,6 +246,53 @@
   receipts to the optional-extra change. (`637ab07`; isolated missing-format
   observation and guard regression failed first; 91 reader/contract tests and
   39 receipt/matrix tests pass, reader 100% branch coverage.)
+- [x] Wire exact-profile `AdmissionRecord` identities through the Platinum
+  resolver and bounded reader; compare the complete authority, source, temporal
+  and object identity before remote or cache I/O. The operator trust document
+  now carries the record under configuration version 1.1. Synthetic regression
+  rejects a digest-matched substituted path before any request. Focused reader,
+  admission, resolver, API, configuration and medallion E2E tests pass (168);
+  routine and strict production typing pass. A first combined Darwin
+  Test-Goblin attempt encountered a native subprocess segmentation fault in
+  the mutation lane; the ordinary product-performance test and isolated
+  gremlin lane passed, then a clean full retry passed. It records 97.91% line /
+  93.22% branch coverage, 1,885 killed / 364 survived / 5 suspicious / 2
+  untested mutations, 324 gremlins passed with one warning, randomized suites
+  184/184 each, package, regeneration, Scalene and security lanes passed.
+  Linux remains authoritative for mutation. This connects the offline trust
+  result to the consumer read boundary; configured production profiles, live
+  archive admission and public product publication remain open. PR #832 merged
+  as `ed38571146de342db5f243ea435e6b331ad57112` after all 39 hosted checks
+  passed; the exact receipt is in the append-only evidence log.
+
+- [x] Reject boolean and nonnumeric timeout budgets at reader construction.
+  Failing-first cases reproduced acceptance of `True` and raw `TypeError` for
+  string/`None` values; all invalid budgets now fail with the documented
+  `ValueError`. The focused reader/admission/contract suites pass (129 tests).
+  The pinned full Test-Goblin profile passes with 6,105 tests, one optional
+  PyIceberg skip, 97.92% line coverage and 93.27% branch coverage; 1,960/2,338
+  mutations killed (367 survived, 4 timed out, 5 suspicious, 2 untested), 353
+  Gremlins passed, both randomized 184-test runs passed, and package/API/CLI,
+  routine, typing, security, and regeneration checks passed. Darwin mutation is
+  advisory; Linux hosted mutation remains authoritative. Synthetic contracts
+  only; no source reads, admission, publication, licensing conclusion, or
+  source-coverage claim. PR #939 merged as
+  `6c785f6fed362d9f45a2de57a7b77aa071938206` from exact head
+  `5f7617e6025cd04e720f3d1626736b6f3b9bc4a2` after all 39 hosted checks
+  passed, including Codecov patch and Linux/macOS/Windows consumer lanes.
+- [x] Reject integer timeout budgets too large for Python's finite-float check.
+  The failing-first `10**1000` case reproduced raw `OverflowError`; it now
+  follows the same typed `ValueError` path as other invalid budgets. Reader,
+  admission and contract tests pass (130). The pinned full profile passes with
+  6,106 tests, one optional PyIceberg skip, 97.92% line and 93.27% branch
+  coverage; 1,960/2,338 mutations killed (367 survived, 4 timed out, 5
+  suspicious, 2 untested), 353 Gremlins passed and both randomized 184-test
+  runs passed. Package/API/CLI, typing, security and regeneration pass. Darwin
+  mutation is advisory; Linux hosted mutation is authoritative. Synthetic
+  contract only; no source bytes, admission, publication, rights conclusion or
+  coverage claim. PR #941 merged as `b402191d55ea99bf51562d4a216e0c2053919268`
+  from exact head `73e4f54931f01a167204fa399618ff05585ac978` after all 39
+  hosted checks passed; the merge tree matches the qualified head.
 
 ### Source-metadata review fixes
 
@@ -302,12 +412,29 @@
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
   manifests, and available tree SHA-256 values match manifest digests. The MBS
-  root manifest omits the August XML; exact-revision metadata readback confirms
+  root manifest omitted the August XML at the time of this inventory;
+  exact-revision metadata readback confirms
   its two unreviewed B1 records are distinct append-only events for the same
   raw source identity. Their different source-Parquet digests still require
   separate lineage. The approved candidate denominator does not resolve
   per-object source rights, root-manifest completeness, or v4 admission. See the dependent
   track's `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
+- [x] Reconcile the later exact-main MBS root-manifest append against the
+  anonymous public state. After PR #1067 merged at
+  `320112b821e861c19f4065f550273119ac219831` with all 39 required checks
+  passing, hosted run `38939963456` appended the existing content-addressed
+  August XML identity and anonymously verified public revision
+  `3d2d528439bddf6f42e8e700c88917f0960a9f38`. The pinned parent manifest had
+  27 rows; the new manifest has 28, with only the approved path added, no rows
+  removed or existing rows changed, and the historical alias retained. Both
+  paths bind SHA-256
+  `c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565` and
+  8,293,331 bytes. This is a metadata-only reconciliation: no source payload
+  bytes were read or uploaded, and rights, admission, and the approved
+  denominator did not change. Durable receipt:
+  https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6221047682 .
+  It closes the root-manifest path omission only; M-112 rights, lineage,
+  admission, full-denominator, and consumer-canary gates remain open.
 - [x] Join the MBS/PBS source and utilisation receipt metadata to pinned raw
   paths and existing authorization scopes. All 20 utilisation sidecars match
   path/source/category/digest/size and remain within recorded authorization
@@ -326,12 +453,36 @@
 
 ## Phase 6: Integrated qualification (AC-09)
 
-- [~] Prepare append-only donor-history preservation as a separate public
-  archive transaction: exact heads, CAS, unchanged previous sibling objects,
-  baseline/delta reconstruction and durable anonymous verification before
-  cleanup. The pure contract is implemented; hosted transport and exact newer-
-  history authorization remain pending. Do not infer publication from model
-  validation or reuse the initial private-target replace-all publisher.
+- [x] Separate successful upload from verified public availability. The
+  publication receipt records `uploaded` after gated transport and permits
+  `public` only after anonymous readback confirms every planned file's exact
+  path, SHA-256 digest, and byte count. Preparation and upload reject unbound
+  files; Hugging Face reads are credential-free, host-pinned, bounded, and
+  accept signed query strings only on allow-listed delivery redirects. The
+  archive workflow retains the post-upload receipt separately. The focused
+  publication/archive suite passes (117), routine and static checks pass, and
+  PR #1030 merged with all 29 required checks passing and 100% Codecov diff
+  coverage. The final full Test-Goblin run completed successfully on macOS with
+  97.93% line and 93.36% branch coverage. Two earlier standalone browser tests
+  had intermittent `browser.close()` timeouts; the final full run and hosted
+  cross-platform E2E lane passed. No live upload or public data change was
+  performed; external publication remains subject to its explicit maintainer
+  gate.
+
+- [x] Prepare and execute append-only donor-history preservation as a
+  separate public archive transaction: exact heads, CAS, unchanged previous
+  sibling objects, baseline/delta reconstruction, clean restoration, and
+  durable anonymous verification before cleanup. GitHub Actions run
+  [34005721959](https://github.com/edithatogo/global-medicines-atlas/actions/runs/34005721959)
+  succeeded for the exact approved graph and scraper heads. The durable issue
+  [#340 receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5556271994)
+  records public revision `97038008d17a48f620302f04fe6a3156fb8d5d57`, preserves
+  the 26-object baseline, verifies both appended histories, and records clean
+  restoration of both exact heads. Receipt SHA-256:
+  `835e2532ae88bb38b13a78f54f00f526906c5eaf7071411ec3d92b903b754df0`.
+  This reconciles the already completed, specifically authorized transaction;
+  it does not authorize another publication, confer source admission or
+  rights clearance, or change the separate publication gate for future data.
 
 - [ ] Run focused tests, schema validation, Ruff, `ty`, BasedPyright, security,
   provenance, rights, deterministic regeneration, and full Test-Goblin where

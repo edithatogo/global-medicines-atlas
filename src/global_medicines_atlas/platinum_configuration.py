@@ -15,9 +15,10 @@ from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from .federation_admission import AdmissionRecord
 from .federation_distribution import DistributionBinding
 from .platinum_resolver import ProductResource, StorageNeutralResolver
-from .platinum_types import EntityGranularity, SemanticDimension
+from .platinum_types import EntityGranularity, PlatinumSemanticDimension
 
 _MAX_BYTES = 1024 * 1024
 Digest = Annotated[str, Field(pattern=r"^[0-9a-f]{64}$")]
@@ -28,10 +29,11 @@ class ResourceConfiguration(BaseModel):
 
     model_config = ConfigDict(extra="forbid", frozen=True)
     resource_id: str
-    semantic_dimension: SemanticDimension
+    semantic_dimension: PlatinumSemanticDimension
     entity_granularity: EntityGranularity
     binding: DistributionBinding
     semantic_sha256: Digest
+    admission: AdmissionRecord
     contract_path: str
     semantic_path: str
 
@@ -40,7 +42,7 @@ class DeploymentTrust(BaseModel):
     """Operator-supplied allowlist, never generated from candidate contents."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
-    version: Literal["1.0"]
+    version: Literal["1.1"]
     resources: tuple[ResourceConfiguration, ...] = Field(
         min_length=1, max_length=32
     )
@@ -91,6 +93,8 @@ def load_benefits_resolver(
             != entry.binding.contract_sha256
         ):
             raise ValueError("candidate contract differs from operator trust")
+        if entry.admission.contract_sha256 != entry.binding.contract_sha256:
+            raise ValueError("admission record differs from operator trust")
         if hashlib.sha256(semantic).hexdigest() != entry.semantic_sha256:
             raise ValueError("candidate semantics differ from operator trust")
         resources.append(
@@ -106,9 +110,7 @@ def load_benefits_resolver(
     return StorageNeutralResolver(
         schema=_read(schema_file),
         resources=resources,
-        admitted_contracts=frozenset(
-            entry.binding.contract_sha256 for entry in trust.resources
-        ),
+        admission_records=tuple(entry.admission for entry in trust.resources),
         admitted_semantic_manifests=frozenset(
             entry.semantic_sha256 for entry in trust.resources
         ),

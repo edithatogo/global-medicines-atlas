@@ -66,9 +66,12 @@ def test_donor_successor_map_covers_every_roadmap_commitment() -> None:
 def test_current_donor_successor_readback_preserves_unresolved_gates() -> None:
     path = ROOT / (
         "quality/qualifications/"
-        "australian-donor-successor-link-readback-20261004.json"
+        "australian-donor-successor-link-readback-20261010.json"
     )
     document = json.loads(path.read_text(encoding="utf-8"))
+    assert document["observed_at"] == "2026-10-09T23:47:24Z"
+    assert document["observed_at_local"] == "2026-10-10T09:47:24+10:00"
+    assert document["observed_timezone"] == "Australia/Brisbane"
     donors = {row["repository"]: row for row in document["donors"]}
     assert set(donors) == {
         "edithatogo/aus-health-data-scraper",
@@ -92,6 +95,18 @@ def test_current_donor_successor_readback_preserves_unresolved_gates() -> None:
         not row["private"] and not row["gated"]
         for row in document["successor_datasets"]
     )
+    revisions = {
+        row["dataset"]: row["revision"]
+        for row in document["successor_datasets"]
+    }
+    assert revisions == {
+        "edithatogo/australian-mbs-source-archive": (
+            "44b25bfd87e44998c7c1da4c3930ad4447e9246f"
+        ),
+        "edithatogo/australian-pbs-source-archive": (
+            "48fd7345fb09277bb5b85644dba72804633a2abb"
+        ),
+    }
     assert document["boundaries"]["donor_repository_mutated"] is False
     assert document["boundaries"]["australian_federation_accepted"] is False
 

@@ -15,6 +15,11 @@ import typer
 from pydantic import ValidationError
 
 from .comparison_validity import abstaining_status_comparison_validity
+from .gold_edge_review import (
+    GoldEdgeReviewCase,
+    build_gold_edge_review_queue,
+    regenerate_gold_edge_review_queue,
+)
 from .historical_change_configuration import load_historical_change_service
 from .platinum_edge_configuration import load_gold_edges
 from .platinum_edges import gold_edge_payload
@@ -55,6 +60,7 @@ from .query_service import (
     QueryServiceError,
     ReadOnlyQueryService,
 )
+from .review_queue import load_adjudications
 
 app = typer.Typer(
     add_completion=False,
@@ -751,6 +757,83 @@ def edges_query(
     typer.echo(json.dumps(payload, sort_keys=True, separators=(",", ":")))
 
 
+@app.command("gold-review-queue")
+def gold_review_queue_query(
+    edge_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    queued_at: Annotated[
+        datetime,
+        typer.Option(
+            formats=["%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f%z"],
+            help="Timezone-aware timestamp used to bind review case identity.",
+        ),
+    ],
+    adjudications_file: Annotated[
+        Path | None,
+        typer.Option(
+            exists=True,
+            dir_okay=False,
+            help="Optional append-only caller-supplied adjudication JSONL.",
+        ),
+    ] = None,
+    limit: Annotated[int, typer.Option(min=1, max=1000)] = 1000,
+) -> None:
+    """List pending Gold review cases without authoring decisions or promotion."""
+    try:
+        pending, event_count = _pending_gold_review_cases(
+            edge_file,
+            queued_at=queued_at,
+            adjudications_file=adjudications_file,
+            limit=limit,
+        )
+    except KeyError, OSError, TypeError, ValidationError, ValueError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The Gold edge or adjudication file is invalid",
+        )
+    typer.echo(
+        json.dumps(
+            {
+                "adjudication_event_count": event_count,
+                "adjudication_authority_verified": False,
+                "cases": [case.model_dump(mode="json") for case in pending],
+                "promotion_performed": False,
+                "qualification": "synthetic_silver_candidate_only",
+                "schema_version": 1,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+    )
+
+
+def _pending_gold_review_cases(
+    edge_file: Path,
+    *,
+    queued_at: datetime,
+    adjudications_file: Path | None,
+    limit: int,
+) -> tuple[tuple[GoldEdgeReviewCase, ...], int]:
+    edges = load_gold_edges(edge_file, max_rows=limit)
+    projected_items = gold_edge_payload(edges, max_rows=limit)["items"]
+    models: list[dict[str, object]] = []
+    for item in projected_items:
+        model = {
+            key: value
+            for key, value in item.items()
+            if key not in {"evidence", "controls"}
+        }
+        model["evidence"] = item["evidence"]
+        model.update(item["controls"])
+        models.append(model)
+    cases = build_gold_edge_review_queue(models, queued_at=queued_at)
+    events = (
+        load_adjudications(adjudications_file)
+        if adjudications_file is not None
+        else ()
+    )
+    return regenerate_gold_edge_review_queue(cases, events), len(events)
+
+
 @app.command("benefits")
 def benefits_query(
     resource_id: Annotated[str, typer.Argument()],
@@ -813,6 +896,66 @@ def benefits_query(
         _fail(
             ErrorCode.INVALID_REQUEST,
             "The benefits query or operator configuration is invalid",
+        )
+    typer.echo(page.model_dump_json())
+    if page.status == "unavailable":
+        raise typer.Exit(3)
+
+
+@app.command("source-structure")
+def source_structure_query(
+    resource_id: Annotated[str, typer.Argument()],
+    trust_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    metadata_root: Annotated[Path, typer.Option(exists=True, file_okay=False)],
+    schema_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
+    columns: Annotated[list[str], typer.Option("--column")],
+    limit: Annotated[int, typer.Option(min=1, max=100)] = 100,
+    *,
+    offline: bool = False,
+) -> None:
+    """Query bounded source-structure evidence from operator-pinned trust."""
+    try:
+        resolver = _dataset_resolver_loader()(
+            trust_file=trust_file,
+            metadata_root=metadata_root,
+            schema_file=schema_file,
+        )
+    except ValueError, OSError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The source-structure operator configuration is invalid",
+        )
+
+    from .platinum_identity_service import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+        UnknownPlatinumResourceError,
+    )
+    from .platinum_structure import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
+        SourceStructureQuery,
+        SourceStructureService,
+    )
+
+    try:
+        jurisdictions = {
+            candidate_id: candidate_id.split(".", maxsplit=1)[0].upper()
+            for candidate_id in resolver.resource_ids
+        }
+        page = SourceStructureService(
+            resolver, jurisdictions=jurisdictions
+        ).query(
+            resource_id,
+            SourceStructureQuery(
+                columns=tuple(columns), limit=limit, offline=offline
+            ),
+        )
+    except UnknownPlatinumResourceError:
+        _fail(
+            ErrorCode.NOT_FOUND,
+            "The admitted source-structure resource was not found",
+        )
+    except ValueError, OSError:
+        _fail(
+            ErrorCode.INVALID_REQUEST,
+            "The source-structure query or operator configuration is invalid",
         )
     typer.echo(page.model_dump_json())
     if page.status == "unavailable":

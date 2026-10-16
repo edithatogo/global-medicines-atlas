@@ -4,12 +4,18 @@ import sys
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 from pathlib import Path
+from types import SimpleNamespace
+from typing import Any
 
 import pytest
 from pydantic import ValidationError
 from scripts import run_product_qualification
 from scripts.qualify_product_release import build_evidence
-from scripts.run_product_qualification import implementation_digest, run
+from scripts.run_product_qualification import (
+    implementation_digest,
+    implementation_manifest,
+    run,
+)
 
 from global_medicines_atlas.product_release import (
     ProductReleaseEvidence,
@@ -60,6 +66,7 @@ def test_default_fixture_is_fail_closed():
     assert value.state is ProductReleaseState.BLOCKED
     assert not value.gates["performance_budgets_verified"]
     assert not value.gates["abuse_cases_verified"]
+    assert not value.gates["clean_start_verified"]
     assert all(item.observed_ms is None for item in value.performance)
     assert all(item.receipt_id is None for item in value.threats)
 
@@ -147,6 +154,32 @@ def test_generator_fails_closed_for_stale_and_tampered_receipts(
     assert all(item.receipt_id is None for item in value.performance)
 
 
+def test_clean_start_receipt_rejects_stale_and_wrong_implementation(
+    tmp_path: Path,
+):
+    stale = receipt_payload(
+        kind="clean_start",
+        subject_id="CLEAN-START",
+        executed_at=NOW - timedelta(days=8),
+        implementation_digest=IMPLEMENTATION,
+    )
+    (tmp_path / "stale.json").write_text(json.dumps(stale), encoding="utf-8")
+
+    stale_evidence = build_evidence(
+        receipts_dir=tmp_path,
+        implementation_digest=IMPLEMENTATION,
+        now=NOW,
+    )
+    wrong_implementation_evidence = build_evidence(
+        receipts_dir=tmp_path,
+        implementation_digest="2" * 64,
+        now=NOW,
+    )
+
+    assert not stale_evidence.gates["clean_start_verified"]
+    assert not wrong_implementation_evidence.gates["clean_start_verified"]
+
+
 def test_direct_construction_rejects_forged_release_state():
     payload = build_evidence(now=NOW).model_dump(mode="json")
     payload["state"] = "release_qualified"
@@ -168,9 +201,30 @@ def test_default_regeneration_is_deterministic():
     assert b"1000-row" not in first
 
 
-def test_runner_qualifies_fixture_gates_and_binds_receipts(tmp_path: Path):
+def test_runner_qualifies_fixture_gates_and_binds_receipts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
     output = tmp_path / "evidence.json"
     receipts = tmp_path / "receipts"
+    original_invoke = run_product_qualification.CliRunner.invoke
+    exports: list[tuple[list[str], int, str]] = []
+
+    def capture_cli_invoke(
+        runner: Any,
+        app: Any,
+        args: list[str],
+        **kwargs: Any,
+    ) -> Any:
+        result = original_invoke(runner, app, args, **kwargs)
+        if args and args[0] == "evidence":
+            exports.append((args, result.exit_code, result.stdout))
+        return result
+
+    monkeypatch.setattr(
+        run_product_qualification.CliRunner,
+        "invoke",
+        capture_cli_invoke,
+    )
     run(output, receipts)
     evidence = ProductReleaseEvidence.model_validate_json(output.read_text())
     assert evidence.state is ProductReleaseState.FIXTURE_QUALIFIED
@@ -178,6 +232,98 @@ def test_runner_qualifies_fixture_gates_and_binds_receipts(tmp_path: Path):
     assert evidence.gates["abuse_cases_verified"]
     assert all(item.receipt_id for item in evidence.performance)
     assert all(item.receipt_id for item in evidence.threats)
+    assert len(exports) == run_product_qualification.SAMPLES
+    for arguments, exit_code, stdout in exports:
+        assert exit_code == 0
+        database = Path(arguments[arguments.index("--database") + 1])
+        assert database.name == "export.duckdb"
+        assert database.parent == Path(
+            arguments[arguments.index("--allowed-root") + 1]
+        )
+        assert arguments[arguments.index("--format") + 1] == "jsonl"
+        assert arguments[arguments.index("--limit") + 1] == "250"
+        assert arguments[arguments.index("--max-rows") + 1] == "250"
+        records = [json.loads(line) for line in stdout.splitlines()]
+        assert len(records) == 250
+        assert all(
+            record["metadata"]["page"]
+            == {"limit": 250, "next_cursor": None, "returned": 250}
+            and "export" not in record["metadata"]
+            and record["record"]["concept_id"] == "rx:export-fixture"
+            and record["record"]["provenance"]["source_id"] == "fixture"
+            for record in records
+        )
+        assert [record["record"]["assertion_id"] for record in records] == [
+            f"export-{index:04d}" for index in range(250)
+        ]
+
+
+def test_runner_verifies_clean_start_in_a_fresh_fixture_root(
+    tmp_path: Path,
+):
+    output = tmp_path / "evidence.json"
+    receipts = tmp_path / "receipts"
+
+    run(output, receipts)
+
+    evidence = ProductReleaseEvidence.model_validate_json(output.read_text())
+    receipt = QualificationReceipt.model_validate_json(
+        (receipts / "CLEAN-START.json").read_text()
+    )
+    assert evidence.deployment.clean_start.value == "passed"
+    assert evidence.gates["clean_start_verified"]
+    assert not evidence.gates["live_deployment_verified"]
+    assert receipt.kind == "clean_start"
+    assert receipt.subject_id == "CLEAN-START"
+    assert "CLI comparison matched the API" in receipt.result.detail
+    assert "historical API/CLI results matched" in receipt.result.detail
+    assert "Atlas rendered the historical change" in receipt.result.detail
+
+
+def test_clean_start_fails_clearly_when_cli_output_is_not_json(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(
+        run_product_qualification.CliRunner,
+        "invoke",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            exit_code=0, stdout="not-json"
+        ),
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="clean-start CLI comparison did not return JSON",
+    ):
+        run_product_qualification._clean_start_receipt(IMPLEMENTATION)
+
+
+def test_cli_clean_start_merge_receipt_reconciles_without_promoting_gates():
+    evidence_path = Path(
+        "conductor/tracks/federated_medicines_platinum_20260829/evidence.jsonl"
+    )
+    records = [
+        json.loads(line)
+        for line in evidence_path.read_text(encoding="utf-8").splitlines()
+    ]
+    receipts = [
+        record
+        for record in records
+        if record.get("kind")
+        == "platinum_same_root_cli_clean_start_merge_receipt"
+    ]
+
+    assert len(receipts) == 1
+    receipt = receipts[0]
+    assert receipt["head"] == "d5cbec644c0cd44fd50bc9ae6fc66c0c457ef6f1"
+    assert receipt["merge_commit"] == "ea960b66552031c07715ce5dd21c9a02da6139eb"
+    assert receipt["merge_tree_oid"] == receipt["qualified_head_tree_oid"]
+    assert receipt["verification"]["required_contexts_passed"] == 28
+    assert receipt["verification"]["reported_checks_passed"] == 38
+    assert receipt["boundaries"]["new_sources_added"] is False
+    assert receipt["boundaries"]["source_coverage_claimed"] is False
+    assert receipt["verification"]["live_deployment_verified"] is False
+    assert receipt["verification"]["production_data_verified"] is False
 
 
 def test_runner_publishes_nothing_when_a_check_fails(
@@ -222,7 +368,8 @@ def test_direct_runner_cli_from_repository_root(tmp_path: Path):
     evidence = destination / "evidence.json"
     receipts = destination / "receipts"
     assert evidence.is_file()
-    assert len(tuple(receipts.glob("*.json"))) == 8
+    assert len(tuple(receipts.glob("*.json"))) == 9
+    assert (receipts / "CLEAN-START.json").is_file()
     assert '"state":"fixture_qualified"' in evidence.read_text()
 
 
@@ -272,6 +419,29 @@ def test_runtime_manifest_change_invalidates_receipt(
         )
         or ""
     )
+
+
+def test_runtime_manifest_excludes_generated_vcs_version_file(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+):
+    package = tmp_path / "src/global_medicines_atlas"
+    package.mkdir(parents=True)
+    (package / "runtime.py").write_text("value = 1\n", encoding="utf-8")
+    (package / "_version.py").write_text(
+        "version = 'generated'\n", encoding="utf-8"
+    )
+    monkeypatch.setattr(run_product_qualification, "IMPLEMENTATION_FILES", ())
+    monkeypatch.setattr(
+        run_product_qualification,
+        "IMPLEMENTATION_TREES",
+        (("src/global_medicines_atlas", "*.py"),),
+    )
+
+    manifest = implementation_manifest(tmp_path)
+
+    assert "src/global_medicines_atlas/runtime.py" in manifest
+    assert "src/global_medicines_atlas/_version.py" not in manifest
 
 
 def test_validate_integrity_fields_rejected():

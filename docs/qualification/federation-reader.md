@@ -8,12 +8,16 @@ The core Python/Mojo fallback and v1-v4 schema bytes are unchanged.
 
 `FederatedReader` implements the transport/cache part of the v4 consumer
 contract. It does **not** decide source rights, authenticate producers, or
-approve publication or layer promotion. Before adding an exact document digest
-to `admitted_contracts`, the consuming application must independently verify
-its producer authority, hash-bound authorization/publication/verification
-receipts and v1-v3 lineage/promotion evidence. Never compute an allowlist entry
-from arbitrary downloaded JSON merely to bypass this boundary. An empty
-allowlist admits nothing; changing receipt or policy bytes changes admission.
+approve publication or layer promotion. Callers must provide the immutable
+`AdmissionRecord` emitted after independent trusted-profile, receipt-byte
+closure, authorization and v1-v3 lineage/promotion checks. The reader indexes
+records by exact contract digest and checks every authority, source, time and
+object identity field against the contract before any remote or cache read.
+Never construct a record from arbitrary downloaded JSON merely to bypass this
+boundary. An empty record sequence admits nothing; changing receipt or policy
+bytes changes admission. The record itself is an in-process typed handoff, not
+a cryptographic signature; the trust profile and the caller provisioning it
+remain separate authority.
 
 Supply the unmodified v4 schema bytes. The reader pins their SHA-256, validates
 the document with format checks and existing semantic guards, and checks its
@@ -94,4 +98,6 @@ authority. Dependency versions are unchanged.
 This implementation does not establish live v4 emission, automatic admission,
 downstream deployment, derived-dataset publication or independent recovery.
 Those track requirements remain open. Existing MBS/PBS receipts are not
-retroactively labelled v4.
+retroactively labelled v4. Reader and deployment configurations now require
+complete typed admission records; this wiring does not create production
+profiles or admit live archives.

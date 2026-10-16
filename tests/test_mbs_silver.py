@@ -1,9 +1,13 @@
 """Receipt-bound, loss-aware MBS Arrow projections with synthetic payloads."""
 
+from collections.abc import Iterator
 from datetime import UTC, date, datetime
 from decimal import Decimal, localcontext
 from io import BytesIO
 from typing import cast
+from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import] -- observe parser event parent links
+    ElementTree as ET,
+)
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -12,6 +16,11 @@ from hypothesis import given
 from hypothesis import strategies as st
 from pydantic import AnyUrl
 
+from global_medicines_atlas.adapters import au_mbs
+from global_medicines_atlas.adapters.au_mbs import (
+    inspect_mbs_source_xml_stream,
+    iter_mbs_source_xml_records,
+)
 from global_medicines_atlas.australian_source_contracts import (
     TargetTable,
     mbs_field_contracts,
@@ -20,6 +29,7 @@ from global_medicines_atlas.mbs_silver import (
     iter_mbs_silver_batches,
     mbs_silver_schema,
 )
+from global_medicines_atlas.parser_safety import ParserPolicy
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
@@ -174,6 +184,98 @@ def test_native_schema_drift_fails_before_any_table_is_yielded() -> None:
     payload = _xml("<UnknownField>1</UnknownField>")
     with pytest.raises(ValueError, match="unknown native field"):
         next(iter_mbs_silver_batches(payload, _receipt(payload), table="fees"))
+
+
+def test_late_schema_drift_fails_before_first_streamed_batch() -> None:
+    payload = (
+        b"<MBS_XML><Data><ItemNum>001</ItemNum></Data>"
+        b"<Data><ItemNum>002</ItemNum><UnknownField>bad</UnknownField>"
+        b"</Data></MBS_XML>"
+    )
+    with pytest.raises(ValueError, match="unknown native field"):
+        next(
+            iter_mbs_silver_batches(
+                payload, _receipt(payload), table="services"
+            )
+        )
+
+
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        (b"<WRONG_ROOT><Data><ItemNum>1</ItemNum></Data></WRONG_ROOT>", "root"),
+        (b"<MBS_XML><Unexpected /></MBS_XML>", "non-Data element"),
+    ],
+)
+def test_stream_rejects_unexpected_document_shapes(
+    payload: bytes,
+    message: str,
+) -> None:
+    with pytest.raises(ValueError, match=message):
+        next(
+            iter_mbs_silver_batches(
+                payload, _receipt(payload), table="services"
+            )
+        )
+
+
+def test_streamed_mbs_records_require_the_inspected_payload_identity() -> None:
+    payload = _xml(count=2)
+    metadata = inspect_mbs_source_xml_stream(payload, _receipt(payload))
+    with pytest.raises(ValueError, match="differs from inspected source"):
+        next(iter_mbs_source_xml_records(_xml(count=3), metadata))
+
+
+def test_silver_stream_releases_completed_data_siblings(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    record_count = 4096
+    payload = (
+        b"<MBS_XML>"
+        + b"".join(
+            f"<Data><ItemNum>{index:05d}</ItemNum></Data>".encode()
+            for index in range(record_count)
+        )
+        + b"</MBS_XML>"
+    )
+    original = au_mbs.iter_xml_events
+    invocations = 0
+    root: ET.Element | None = None
+    max_chunk_siblings = 0
+    streamed_sibling_counts: list[int] = []
+
+    def observe_events(
+        event_payload: bytes, *, policy: ParserPolicy
+    ) -> Iterator[tuple[str, ET.Element, ET.Element | None]]:
+        nonlocal invocations, max_chunk_siblings, root
+        invocations += 1
+        current_invocation = invocations
+        if current_invocation == 2:
+            minimum_child_bytes = len(b"<Data><ItemNum>00000</ItemNum></Data>")
+            max_chunk_siblings = policy.chunk_bytes // minimum_child_bytes + 2
+        root = None
+        for event, element, parent in original(event_payload, policy=policy):
+            if event == "start" and parent is None:
+                root = element
+            elif (
+                current_invocation == 2 and event == "start" and parent is root
+            ):
+                assert root is not None
+                streamed_sibling_counts.append(len(root))
+            yield event, element, parent
+
+    monkeypatch.setattr(au_mbs, "iter_xml_events", observe_events)
+    observed_rows = sum(
+        batch.num_rows
+        for batch in iter_mbs_silver_batches(
+            payload, _receipt(payload), table="services", rows_per_batch=128
+        )
+    )
+
+    assert invocations == 2  # complete preflight, then record stream
+    assert observed_rows == record_count
+    assert len(streamed_sibling_counts) == record_count
+    assert max(streamed_sibling_counts) <= max_chunk_siblings
 
 
 def test_receipt_and_raw_identity_follow_every_batch() -> None:

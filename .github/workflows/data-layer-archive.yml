@@ -89,3 +89,12 @@ jobs:
           --output-dir build/data-layer-archive
           --skip-build
           --upload
+          --receipt-output build/publication-receipt.json
+      - name: Upload publication verification receipt
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.publish && hashFiles('build/publication-receipt.json') != ''
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: data-layer-publication-receipt
+          path: build/publication-receipt.json
+          if-no-files-found: error
+          retention-days: 90

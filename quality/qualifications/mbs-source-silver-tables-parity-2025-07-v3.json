@@ -1,0 +1,70 @@
+{
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "production_admission": false,
+  "production_promotion": false,
+  "public_data_mutation": false,
+  "qualification_sha256": "10a91301dfc9846ded0a5e64d98c77c35fa73dc567e6c340d70e2e03cea7662f",
+  "rights_conclusion": false,
+  "schema_id": "global-medicines-atlas.mbs-source-silver-tables-parity-receipt",
+  "schema_version": 1,
+  "silver_dataset_revision": "243f9ff5498816af6e4d9ae4db60528728f01834",
+  "silver_manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+  "source_dataset_revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+  "source_object_bytes": 8194522,
+  "source_object_path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+  "source_object_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+  "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03",
+  "source_revision": "2025-07-version-3",
+  "source_to_silver_value_parity_verified": true,
+  "source_values_in_receipt": false,
+  "tables": [
+    {
+      "field_count": 17,
+      "row_count": 5989,
+      "silver_object_bytes": 100062,
+      "silver_object_path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "silver_object_sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "table": "services"
+    },
+    {
+      "field_count": 8,
+      "row_count": 5989,
+      "silver_object_bytes": 51851,
+      "silver_object_path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "silver_object_sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "table": "hierarchy"
+    },
+    {
+      "field_count": 7,
+      "row_count": 5989,
+      "silver_object_bytes": 620348,
+      "silver_object_path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "silver_object_sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "table": "descriptions"
+    },
+    {
+      "field_count": 10,
+      "row_count": 5989,
+      "silver_object_bytes": 93072,
+      "silver_object_path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "silver_object_sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "table": "fees"
+    },
+    {
+      "field_count": 9,
+      "row_count": 5989,
+      "silver_object_bytes": 114493,
+      "silver_object_path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "silver_object_sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "table": "benefits"
+    },
+    {
+      "field_count": 13,
+      "row_count": 5989,
+      "silver_object_bytes": 60259,
+      "silver_object_path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "silver_object_sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "table": "caps"
+    }
+  ]
+}

@@ -85,18 +85,50 @@ policy or a claim that semantic tests have passed.
 
 ## Next bounded implementation
 
-Implement an exact-reference hosted header inventory for the four standalone
-CSV objects already structurally verified. Check immutable byte identity;
-read the header only; emit source-native header metadata, its canonical
-digest and field count, with no data records or source-cell values. Compare
-candidate schema eras explicitly and preserve unexpected fields internally.
-Public receipts may name only fields already published in the reviewed
-catalogue metadata; unexpected header tokens produce a digest and counts
-instead of arbitrary text. Selection
-must join the reviewed cohort and prior structural receipts, use the existing
-protected environment and acquisition concurrency, and record independent
-outcomes before cleanup.
+The four existing standalone CSVs now have independently verified headers,
+row-shape aggregates, and value-free invalid-token categories. The Q2
+`Services` anomalies match a comma-triplet lexical pattern, but no source
+separator semantics or numeric normalization has been accepted. A synthetic
+exact numeric parser now requires an explicit policy; grouping is disabled by
+default, signed values and decimal scale are preserved, and ambiguous forms
+are rejected without echoing their tokens. This parser has not read or
+transformed a source row.
 
-That first step selects no ZIP or workbook and grants no processing admission.
-Worksheet semantic inventory and archive-member metadata qualification follow
-under their own bounded profiles. Both oversized ZIP holds remain unchanged.
+Synthetic candidate row mappings now describe the already inventoried
+demographics and group fields. They preserve Item Number lexically and record
+period, category, numeric, suppression, and grain questions as unresolved.
+Catalogue type hints are not conversion rules, and no source rows were read.
+The mapping contract is at
+`quality/qualifications/australian-mbs-utilisation-candidate-row-mappings-20261006.json`.
+
+Next, resolve processing-period tokens and safe categorical domains from
+source-specific evidence, and validate them in another bounded hosted pass.
+The candidate-shape observer's exact-main run `37427434385` independently
+verified five durable receipts for the same four exact references: 1,463,030
+rectangular rows, no empty cells, and no repeated proposed candidate keys.
+The run confirms the 4,728 Q2 `Services` comma-triplet forms and retains no raw
+token values. It does not validate semantic meaning or accept the candidate
+grain. Preserve native token spelling and suppression/unknown distinctions
+without publishing values. Keep admission and Silver closed until the
+source-specific questions are answered. Do not add source objects or
+revisions. See
+`quality/qualifications/australian-mbs-utilisation-candidate-shape-observation-20261006.json`.
+
+The next observer stage now binds candidate period policies to each exact
+resource ID and saved description digest. It counts only four-digit expected
+year matches and full or three-letter English month names, without trimming or
+rewriting source tokens. Allowed month bounds follow the captured catalogue
+notes for Q1, the Q2 May cutoff, Q3 July, and the group year-to-date July
+cutoff; they do not assert a start month or completeness. Exact-main run
+`37431102764` recognized all 1,463,030 candidate periods under this grammar,
+but it found that 190,050 Q2 rows classify to June beyond the saved May
+description cutoff. The five durable receipts were independently read back;
+all digests matched and temporary source bytes were removed after receipt.
+This description/payload conflict remains open. The observed classification
+remains a candidate and does not authorize processing admission or Silver
+publication. See
+`quality/qualifications/australian-mbs-utilisation-processing-period-observation-20261006.json`.
+
+No source identities, revisions, or objects may be added. The two oversized
+ZIP holds remain unchanged; rights approval, native admissions, source row
+semantics, Silver/Gold, and M-112 acceptance remain separate gates.

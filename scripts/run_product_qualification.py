@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import tempfile
 from collections.abc import Callable, Iterable
@@ -14,6 +15,7 @@ from pathlib import Path
 from statistics import quantiles
 from time import perf_counter_ns
 from typing import TYPE_CHECKING, Literal, cast
+from unittest.mock import patch
 
 # Support direct repository-root execution before the package is installed.
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +25,7 @@ if str(SOURCE_ROOT) not in sys.path:
 
 import duckdb
 from fastapi.testclient import TestClient
+from typer.testing import CliRunner
 
 if TYPE_CHECKING:
     from httpx import Response
@@ -34,7 +37,23 @@ else:
 
 from global_medicines_atlas.api import create_app
 from global_medicines_atlas.atlas import create_atlas_app
+from global_medicines_atlas.cli import app as cli_app
+from global_medicines_atlas.historical_change import (
+    HistoricalChangePage,
+    HistoricalChangeService,
+    compare_historical_snapshots,
+)
+from global_medicines_atlas.historical_change_configuration import (
+    HistoricalChangeDocument,
+    load_historical_change_service,
+)
+from global_medicines_atlas.historical_comparison import (
+    NativeField,
+    NativeRow,
+    NativeSnapshot,
+)
 from global_medicines_atlas.product_contracts import (
+    MAX_PAGE_SIZE,
     ComparisonQuery,
     EvidenceDimension,
 )
@@ -54,6 +73,11 @@ NOW = datetime(2026, 7, 29, tzinfo=UTC)
 SECRET = b"product-qualification-secret"
 SAMPLES = 20
 METHOD_NOT_ALLOWED = 405
+HTTP_OK = 200
+CLEAN_START_ROWS = 3
+EXPORT_FIXTURE_CONCEPT_ID = "rx:export-fixture"
+HISTORY_BEFORE_VALUE = "clean-start-field-before-unique-7f3a"
+HISTORY_AFTER_VALUE = "clean-start-field-after-unique-9c2d"
 IMPLEMENTATION_FILES = (
     "scripts/qualify_product_release.py",
     "scripts/run_product_qualification.py",
@@ -84,7 +108,9 @@ def implementation_manifest(root: Path = ROOT) -> tuple[str, ...]:
         paths.update(
             path.relative_to(root).as_posix()
             for path in base.rglob(pattern)
-            if path.is_file()
+            # hatch-vcs generates this ignored file during builds; it is not
+            # part of the committed runtime implementation.
+            if path.is_file() and path.name != "_version.py"
         )
     missing = sorted(path for path in paths if not (root / path).is_file())
     if missing:
@@ -186,6 +212,45 @@ def _database(path: Path) -> Path:
     return path
 
 
+def _export_database(path: Path) -> Path:
+    """Build a synthetic database with one maximum-size evidence page."""
+    database = _database(path)
+    connection = duckdb.connect(str(database))
+    rows: list[tuple[object, ...]] = [
+        (
+            f"export-{index:04d}",
+            EXPORT_FIXTURE_CONCEPT_ID,
+            "AUS",
+            "regulatory",
+            "Fixture Authority",
+            "approved",
+            "confirmed",
+            cast("list[str]", []),
+            NOW,
+            None,
+            NOW,
+            None,
+            None,
+            None,
+            "fixture",
+            "https://example.test/evidence",
+            NOW,
+            None,
+            None,
+            None,
+            "synthetic-export-v1",
+            "qualification",
+        )
+        for index in range(MAX_PAGE_SIZE)
+    ]
+    connection.executemany(
+        "INSERT INTO temporal_assertions VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        rows,
+    )
+    connection.close()
+    return database
+
+
 def _query(
     *,
     limit: int = 3,
@@ -203,6 +268,130 @@ def _query(
     )
 
 
+def _synthetic_history(root: Path):
+    """Create one deterministic synthetic historical change in the clean root."""
+    snapshots = tuple(
+        NativeSnapshot(
+            source_id="synthetic:clean-start",
+            table="items",
+            dimension="funding",
+            schema_era="synthetic-v1",
+            identity_profile="synthetic-item-id",
+            source_revision=revision,
+            source_path="fixture/items.json",
+            b1_sha256=sha256(f"receipt:{revision}".encode()).hexdigest(),
+            b2_sha256=sha256(f"payload:{revision}".encode()).hexdigest(),
+            observed_at=NOW,
+            cohort="synthetic",
+            declared_rows=1,
+            complete=True,
+            rows=(
+                NativeRow(
+                    native_id="item-1",
+                    occurrence_id=f"{revision}:item-1",
+                    fields=(
+                        NativeField(
+                            name="description",
+                            state="value",
+                            value=value,
+                        ),
+                    ),
+                ),
+            ),
+        )
+        for revision, value in (
+            ("synthetic-before", HISTORY_BEFORE_VALUE),
+            ("synthetic-after", HISTORY_AFTER_VALUE),
+        )
+    )
+    change = compare_historical_snapshots(*snapshots)
+    history_file = root / "history.json"
+    history_file.write_text(
+        HistoricalChangeDocument(
+            version="1.0", changes=(change,)
+        ).model_dump_json(),
+        encoding="utf-8",
+    )
+    return history_file, load_historical_change_service(history_file)
+
+
+def _qualify_history_api(
+    service: ReadOnlyQueryService, history_service: HistoricalChangeService
+) -> HistoricalChangePage:
+    with TestClient(
+        create_app(service, historical_changes=history_service)
+    ) as client:
+        response = cast(
+            "Response",
+            client.get(  # pyright: ignore[reportUnknownMemberType]
+                "/api/v1/history", params={"limit": 1}
+            ),
+        )
+    if response.status_code != HTTP_OK:
+        raise RuntimeError("clean-start historical API query failed")
+    page = HistoricalChangePage.model_validate_json(response.content)
+    if page.total != 1 or len(page.items) != 1:
+        raise RuntimeError("clean-start historical API result was incomplete")
+    item = page.items[0]
+    if (
+        item.comparison_state != "compared"
+        or item.absence_interpretation != "unknown"
+    ):
+        raise RuntimeError("clean-start historical semantics were incomplete")
+    if not item.changes or item.changes[0].kind != "field_changed":
+        raise RuntimeError("clean-start historical change was incomplete")
+    return page
+
+
+def _qualify_history_cli(
+    history_file: Path, expected: HistoricalChangePage
+) -> None:
+    result = CliRunner().invoke(
+        cli_app,
+        [
+            "history",
+            "--history-file",
+            str(history_file),
+            "--limit",
+            "1",
+        ],
+    )
+    if result.exit_code != 0:
+        raise RuntimeError("clean-start historical CLI query failed")
+    try:
+        page = HistoricalChangePage.model_validate_json(result.stdout)
+    except ValueError as error:
+        raise RuntimeError(
+            "clean-start historical CLI query did not return valid JSON"
+        ) from error
+    if page != expected:
+        raise RuntimeError(
+            "clean-start historical CLI results did not match the API"
+        )
+
+
+def _qualify_history_atlas(
+    service: ReadOnlyQueryService, history_service: HistoricalChangeService
+) -> None:
+    with TestClient(
+        create_atlas_app(service, historical_changes=history_service)
+    ) as client:
+        response = cast(
+            "Response",
+            client.get("/history?limit=1"),  # pyright: ignore[reportUnknownMemberType]
+        )
+    if (
+        response.status_code != HTTP_OK
+        or "Historical comparison 1" not in response.text
+        or "unknown, not a negative status" not in response.text
+        or HISTORY_BEFORE_VALUE not in response.text
+        or HISTORY_AFTER_VALUE not in response.text
+    ):
+        raise RuntimeError(
+            "clean-start Atlas did not render the historical change"
+        )
+
+
 def _p95(workload: Callable[[], object]) -> float:
     samples: list[float] = []
     for _ in range(SAMPLES):
@@ -213,7 +402,7 @@ def _p95(workload: Callable[[], object]) -> float:
 
 
 def _receipt(
-    kind: Literal["performance", "threat"],
+    kind: Literal["performance", "threat", "clean_start"],
     subject: str,
     detail: str,
     digest: str,
@@ -235,8 +424,125 @@ def _receipt(
     )
 
 
+def _clean_start_receipt(digest: str) -> QualificationReceipt:
+    """Verify a fresh synthetic root across API, CLI, and Atlas."""
+    with tempfile.TemporaryDirectory(prefix="gma-product-clean-start-") as raw:
+        root = Path(raw)
+        if any(root.iterdir()):
+            raise RuntimeError("clean-start root was not empty")
+        database = _database(root / "atlas.duckdb")
+        service = ReadOnlyQueryService(
+            database, cursor_secret=SECRET, allowed_root=root
+        )
+        history_file, history_service = _synthetic_history(root)
+        service.readiness_probe()
+        direct = service.comparisons(_query())
+        if len(direct.conclusions) != CLEAN_START_ROWS:
+            raise RuntimeError("clean-start fixture query was incomplete")
+
+        with TestClient(create_app(service)) as client:
+            readiness = cast(
+                "Response",
+                client.get(  # pyright: ignore[reportUnknownMemberType]
+                    "/api/v1/readiness"
+                ),
+            )
+            response = cast(
+                "Response",
+                client.get(  # pyright: ignore[reportUnknownMemberType]
+                    "/api/v1/comparisons",
+                    params={
+                        "concept_id": "rx:fixture",
+                        "jurisdictions": ["AU", "NZ", "US"],
+                        "dimensions": ["regulatory"],
+                        "valid_at": NOW.isoformat(),
+                        "observed_at": NOW.isoformat(),
+                        "limit": 3,
+                    },
+                ),
+            )
+        if readiness.status_code != HTTP_OK or response.status_code != HTTP_OK:
+            raise RuntimeError("clean-start API did not become ready")
+        api_result = response.json()
+        if len(api_result.get("conclusions", [])) != CLEAN_START_ROWS:
+            raise RuntimeError("clean-start API query was incomplete")
+        history_api_page = _qualify_history_api(service, history_service)
+
+        cli_arguments = [
+            "comparison",
+            "--database",
+            str(database),
+            "--allowed-root",
+            str(root),
+            "--concept-id",
+            "rx:fixture",
+            "--jurisdiction",
+            "AU",
+            "--jurisdiction",
+            "NZ",
+            "--jurisdiction",
+            "US",
+            "--valid-at",
+            NOW.isoformat(),
+            "--observed-at",
+            NOW.isoformat(),
+            "--dimension",
+            "regulatory",
+            "--limit",
+            str(CLEAN_START_ROWS),
+        ]
+        with patch.dict(
+            os.environ, {"GMA_CURSOR_SECRET": SECRET.decode("utf-8")}
+        ):
+            cli = CliRunner().invoke(cli_app, cli_arguments)
+        if cli.exit_code != 0:
+            raise RuntimeError("clean-start CLI comparison failed")
+        try:
+            cli_result = json.loads(cli.stdout)
+        except json.JSONDecodeError as error:
+            raise RuntimeError(
+                "clean-start CLI comparison did not return JSON"
+            ) from error
+        if (
+            cli_result.get("conclusions") != api_result.get("conclusions")
+            or cli_result.get("validity") != api_result.get("validity")
+            or cli_result.get("metadata", {}).get("page")
+            != api_result.get("metadata", {}).get("page")
+        ):
+            raise RuntimeError(
+                "clean-start CLI comparison did not match the API"
+            )
+
+        _qualify_history_cli(history_file, history_api_page)
+
+        with TestClient(create_atlas_app(service)) as client:
+            atlas = cast(
+                "Response",
+                client.get("/"),  # pyright: ignore[reportUnknownMemberType]
+            )
+        if (
+            atlas.status_code != HTTP_OK
+            or "Global Medicines Atlas" not in atlas.text
+        ):
+            raise RuntimeError("clean-start Atlas did not render")
+        _qualify_history_atlas(service, history_service)
+
+    return _receipt(
+        "clean_start",
+        "CLEAN-START",
+        "Fresh temporary synthetic database passed readiness and bounded API "
+        "comparison. CLI comparison matched the API; historical API/CLI "
+        "results matched, and Atlas rendered the historical change with unknown "
+        "absence semantics. No live deployment or production data was exercised.",
+        digest,
+    )
+
+
 def _performance_receipts(
-    service: ReadOnlyQueryService, digest: str
+    service: ReadOnlyQueryService,
+    export_database: Path,
+    allowed_root: Path,
+    digest: str,
 ) -> list[QualificationReceipt]:
     checks = (
         (
@@ -245,7 +551,11 @@ def _performance_receipts(
             lambda: ComparisonQuery.model_validate(_query().model_dump()),
         ),
         ("PERF-QUERY", 250.0, lambda: service.comparisons(_query())),
-        ("PERF-EXPORT-PAGE", 1000.0, lambda: _traverse(service)),
+        (
+            "PERF-EXPORT-PAGE",
+            1000.0,
+            lambda: _single_page_jsonl_export(export_database, allowed_root),
+        ),
     )
     receipts: list[QualificationReceipt] = []
     for subject, budget, workload in checks:
@@ -361,10 +671,14 @@ def run(output: Path, receipts_dir: Path) -> None:
     ) as raw:
         work = Path(raw)
         database = _database(work / "atlas.duckdb")
+        export_database = _export_database(work / "export.duckdb")
         service = ReadOnlyQueryService(
             database, cursor_secret=SECRET, allowed_root=work
         )
-        receipts = _performance_receipts(service, digest)
+        receipts = [_clean_start_receipt(digest)]
+        receipts.extend(
+            _performance_receipts(service, export_database, work, digest)
+        )
         receipts.extend(_threat_receipts(service, database, work, digest))
 
         staged = work / "receipts"
@@ -394,15 +708,57 @@ def run(output: Path, receipts_dir: Path) -> None:
         temporary_output.replace(output)
 
 
-def _traverse(service: ReadOnlyQueryService) -> int:
-    cursor: str | None = None
-    count = 0
-    while True:
-        response = service.comparisons(_query(limit=1, cursor=cursor))
-        count += len(response.conclusions)
-        cursor = response.metadata.page.next_cursor
-        if cursor is None:
-            return count
+def _single_page_jsonl_export(database: Path, allowed_root: Path) -> int:
+    """Execute and validate the bounded one-page evidence JSONL export."""
+    arguments = [
+        "evidence",
+        "--database",
+        str(database),
+        "--allowed-root",
+        str(allowed_root),
+        "--concept-id",
+        EXPORT_FIXTURE_CONCEPT_ID,
+        "--valid-at",
+        NOW.isoformat(),
+        "--observed-at",
+        NOW.isoformat(),
+        "--limit",
+        str(MAX_PAGE_SIZE),
+        "--format",
+        "jsonl",
+        "--max-rows",
+        str(MAX_PAGE_SIZE),
+    ]
+    with patch.dict(os.environ, {"GMA_CURSOR_SECRET": SECRET.decode("utf-8")}):
+        result = CliRunner().invoke(cli_app, arguments)
+    if result.exit_code != 0:
+        raise RuntimeError("single-page JSONL export failed")
+    try:
+        records = [
+            json.loads(line)
+            for line in result.stdout.splitlines()
+            if line.strip()
+        ]
+    except json.JSONDecodeError as error:
+        raise RuntimeError("single-page JSONL export was invalid") from error
+    if len(records) != MAX_PAGE_SIZE:
+        raise RuntimeError("single-page JSONL export was incomplete")
+    expected_page = {
+        "limit": MAX_PAGE_SIZE,
+        "returned": MAX_PAGE_SIZE,
+        "next_cursor": None,
+    }
+    if any(
+        record.get("metadata", {}).get("page") != expected_page
+        or record.get("record", {}).get("concept_id")
+        != EXPORT_FIXTURE_CONCEPT_ID
+        for record in records
+    ):
+        raise RuntimeError("single-page JSONL export identity was invalid")
+    identifiers = [record["record"]["assertion_id"] for record in records]
+    if identifiers != [f"export-{index:04d}" for index in range(MAX_PAGE_SIZE)]:
+        raise RuntimeError("single-page JSONL export rows were incomplete")
+    return len(records)
 
 
 def main() -> int:

@@ -10,10 +10,17 @@ from unittest.mock import patch
 
 import duckdb
 import pytest
+from tests.test_support.synthetic_query_database import (
+    create_synthetic_query_database,
+)
 
+from global_medicines_atlas.comparison_validity import (
+    abstaining_status_comparison_validity,
+)
 from global_medicines_atlas.product_contracts import (
     ComparisonQuery,
     CoverageQuery,
+    EvidenceContext,
     EvidenceDimension,
     EvidenceQuery,
     ProductState,
@@ -30,195 +37,7 @@ SECRET = b"query-service-test-secret"
 
 
 def _database(path: Path) -> Path:
-    connection = duckdb.connect(str(path))
-    connection.execute(
-        """
-        CREATE TABLE temporal_assertions (
-            assertion_id VARCHAR NOT NULL,
-            concept_id VARCHAR NOT NULL,
-            jurisdiction VARCHAR NOT NULL,
-            kind VARCHAR NOT NULL,
-            authority VARCHAR NOT NULL,
-            status_code VARCHAR NOT NULL,
-            evidence_status VARCHAR NOT NULL,
-            restrictions VARCHAR[] NOT NULL,
-            valid_from TIMESTAMPTZ NOT NULL,
-            valid_to TIMESTAMPTZ,
-            observed_from TIMESTAMPTZ NOT NULL,
-            observed_to TIMESTAMPTZ,
-            supersedes_assertion_id VARCHAR,
-            conflict_id VARCHAR,
-            source_id VARCHAR NOT NULL,
-            source_uri VARCHAR NOT NULL,
-            retrieved_at TIMESTAMPTZ,
-            source_effective_at TIMESTAMPTZ,
-            source_path VARCHAR,
-            source_sha256 VARCHAR,
-            source_version VARCHAR,
-            transformation VARCHAR
-        );
-        CREATE TABLE temporal_coverage (
-            jurisdiction VARCHAR NOT NULL,
-            source_id VARCHAR NOT NULL,
-            receipt_id VARCHAR NOT NULL,
-            observation_id VARCHAR NOT NULL,
-            population_partition_id VARCHAR NOT NULL,
-            dimension VARCHAR NOT NULL,
-            medicine_concept_id VARCHAR,
-            assertion_type VARCHAR NOT NULL,
-            assertion_status VARCHAR NOT NULL,
-            concept_population VARCHAR NOT NULL,
-            valid_from TIMESTAMPTZ NOT NULL,
-            valid_to TIMESTAMPTZ,
-            observed_from TIMESTAMPTZ NOT NULL,
-            observed_to TIMESTAMPTZ,
-            assertion_count BIGINT NOT NULL,
-            concept_numerator BIGINT NOT NULL,
-            eligible_denominator BIGINT,
-            exclusion_count BIGINT NOT NULL,
-            exclusion_reasons VARCHAR[] NOT NULL,
-            conflicting_assertion_count BIGINT NOT NULL
-        )
-        """
-    )
-    assertions = [
-        (
-            "a-nz-reg",
-            "rx:1",
-            "NZ",
-            "regulatory",
-            "Medsafe",
-            "approved",
-            "confirmed",
-            [],
-            NOW,
-            None,
-            NOW,
-            None,
-            None,
-            None,
-            "medsafe",
-            "https://example.test/medsafe/1",
-            NOW,
-            None,
-            None,
-            "a" * 64,
-            "2026-07",
-            "nz-adapter-v1",
-        ),
-        (
-            "a-nz-fund",
-            "rx:1",
-            "NZ",
-            "funding",
-            "Pharmac",
-            "funded",
-            "confirmed",
-            [],
-            NOW,
-            None,
-            NOW,
-            None,
-            None,
-            None,
-            "pharmac",
-            "https://example.test/pharmac/1",
-            NOW,
-            None,
-            None,
-            None,
-            "2026-07",
-            "nz-adapter-v1",
-        ),
-        (
-            "a-au-reg",
-            "rx:1",
-            "AU",
-            "regulatory",
-            "TGA",
-            "registered",
-            "confirmed",
-            [],
-            NOW,
-            None,
-            NOW,
-            None,
-            None,
-            None,
-            "artg",
-            "https://example.test/artg/1",
-            NOW,
-            None,
-            None,
-            None,
-            "2026-07",
-            "au-adapter-v1",
-        ),
-    ]
-    connection.executemany(
-        """
-        INSERT INTO temporal_assertions VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-        )
-        """,
-        assertions,
-    )
-    coverage = [
-        (
-            "AU",
-            "pbs",
-            "receipt-au",
-            "obs-au-funding",
-            "all",
-            "funding",
-            "rx:1",
-            "medicine",
-            "not_covered",
-            "all listed medicines",
-            NOW,
-            None,
-            NOW,
-            None,
-            0,
-            0,
-            100,
-            0,
-            [],
-            0,
-        ),
-        (
-            "US",
-            "fda",
-            "receipt-us",
-            "obs-us-reg",
-            "all",
-            "regulatory",
-            "rx:1",
-            "medicine",
-            "unknown",
-            "all observed medicines",
-            NOW,
-            None,
-            NOW,
-            None,
-            0,
-            0,
-            None,
-            0,
-            [],
-            0,
-        ),
-    ]
-    connection.executemany(
-        """
-        INSERT INTO temporal_coverage VALUES (
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-        )
-        """,
-        coverage,
-    )
-    connection.close()
-    return path
+    return create_synthetic_query_database(path)
 
 
 @pytest.fixture
@@ -267,6 +86,19 @@ def test_comparisons_preserve_dimensions_and_explicit_absent_states(
     assert ("US", "funding") not in values
     assert values["NZ", "regulatory"].terminology.native_system == "Medsafe"
     assert values["NZ", "regulatory"].provenance[0].source_sha256 == "a" * 64
+    assert values["NZ", "regulatory"].evidence_context.schema_era is None
+    assert (
+        values["NZ", "regulatory"].evidence_context.comparison_cohort
+        == "unknown"
+    )
+    assert (
+        values["NZ", "regulatory"].evidence_context.entity_granularity
+        == "unknown"
+    )
+    assert (
+        values["NZ", "regulatory"].evidence_context.review_state
+        == "not_reported"
+    )
     assert response.validity
     assert all(
         item.outcome.value == "insufficient_evidence"
@@ -277,7 +109,51 @@ def test_comparisons_preserve_dimensions_and_explicit_absent_states(
         == item.right_subject_id.endswith(":regulatory")
         for item in response.validity
     )
+    by_subject = {
+        f"{item.concept_id}:{item.jurisdiction}:{item.dimension.value}": item
+        for item in response.conclusions
+    }
+    assert all(
+        item.left_evidence_context
+        == by_subject[item.left_subject_id].evidence_context
+        and item.right_evidence_context
+        == by_subject[item.right_subject_id].evidence_context
+        for item in response.validity
+    )
     assert all(not item.establishes_equal_benefit for item in response.validity)
+
+
+def test_validity_retains_distinct_context_for_each_subject(
+    service: ReadOnlyQueryService,
+) -> None:
+    response = service.comparisons(_comparison())
+    conclusions = tuple(
+        item.model_copy(
+            update={
+                "evidence_context": EvidenceContext(
+                    schema_era=f"synthetic-{item.jurisdiction}",
+                    comparison_cohort="synthetic",
+                    entity_granularity="medicine_item",
+                )
+            }
+        )
+        for item in response.conclusions
+    )
+    expected = {
+        f"{item.concept_id}:{item.jurisdiction}:{item.dimension.value}": (
+            item.evidence_context
+        )
+        for item in conclusions
+    }
+
+    validity = abstaining_status_comparison_validity(conclusions)
+
+    assert validity
+    assert all(
+        item.left_evidence_context == expected[item.left_subject_id]
+        and item.right_evidence_context == expected[item.right_subject_id]
+        for item in validity
+    )
 
 
 def test_absence_without_coverage_is_not_a_negative_conclusion(

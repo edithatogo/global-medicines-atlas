@@ -27,6 +27,7 @@ class ResearchLineageArtifact(FrozenModel):
     role: Literal["input", "output"]
     public_url: str = Field(min_length=1)
     sha256: str = Field(pattern=_SHA256)
+    revision: str | None = Field(default=None, pattern=_REVISION)
 
     @model_validator(mode="after")
     def require_public_https_url(self) -> ResearchLineageArtifact:
@@ -46,7 +47,7 @@ class ResearchLineageReceipt(FrozenModel):
     """Deterministic lineage envelope for one research-export revision."""
 
     schema_id: Literal["global-medicines-atlas.research-lineage"]
-    schema_version: Literal[1]
+    schema_version: Literal[1, 2]
     export_id: str = Field(min_length=1)
     revision: str = Field(pattern=_REVISION)
     artifacts: tuple[ResearchLineageArtifact, ...] = Field(min_length=1)
@@ -54,6 +55,12 @@ class ResearchLineageReceipt(FrozenModel):
 
     @model_validator(mode="after")
     def require_input_and_output(self) -> ResearchLineageReceipt:
+        if self.schema_version == 1 and any(
+            artifact.revision is not None for artifact in self.artifacts
+        ):
+            raise ValueError(
+                "artifact revisions require research-lineage schema version 2"
+            )
         roles = {artifact.role for artifact in self.artifacts}
         if roles != {"input", "output"}:
             raise ValueError(
@@ -63,12 +70,17 @@ class ResearchLineageReceipt(FrozenModel):
         if len(identifiers) != len(set(identifiers)):
             raise ValueError("lineage artifact identifiers must be unique")
         for artifact in self.artifacts:
+            artifact_revision = artifact.revision or self.revision
+            if artifact.role == "output" and artifact_revision != self.revision:
+                raise ValueError(
+                    "lineage output revision must match the export revision"
+                )
             path_parts = tuple(
                 part
                 for part in urlsplit(artifact.public_url).path.split("/")
                 if part
             )
-            if self.revision not in path_parts:
+            if artifact_revision not in path_parts:
                 raise ValueError(
                     "lineage artifact URL must bind to the declared immutable revision"
                 )
@@ -77,7 +89,7 @@ class ResearchLineageReceipt(FrozenModel):
     def document(self) -> dict[str, object]:
         """Return canonical, payload-free receipt metadata."""
 
-        return self.model_dump(mode="json")
+        return self.model_dump(mode="json", exclude_none=True)
 
     def canonical_bytes(self) -> bytes:
         return (
@@ -104,10 +116,18 @@ def build_research_lineage_receipt(
     def artifact_identifier(artifact: ResearchLineageArtifact) -> str:
         return artifact.identifier
 
+    normalized_artifacts = tuple(sorted(artifacts, key=artifact_identifier))
+    schema_version: Literal[1, 2] = (
+        2
+        if any(
+            artifact.revision is not None for artifact in normalized_artifacts
+        )
+        else 1
+    )
     return ResearchLineageReceipt(
         schema_id="global-medicines-atlas.research-lineage",
-        schema_version=1,
+        schema_version=schema_version,
         export_id=export_id,
         revision=revision,
-        artifacts=tuple(sorted(artifacts, key=artifact_identifier)),
+        artifacts=normalized_artifacts,
     )

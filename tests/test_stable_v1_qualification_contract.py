@@ -401,6 +401,18 @@ def test_inappropriate_comparison_requires_material_mismatch() -> None:
                 "normalization",
             )
         },
+        "left_evidence_context": {
+            "schema_era": None,
+            "comparison_cohort": "unknown",
+            "entity_granularity": "unknown",
+            "review_state": "not_reported",
+        },
+        "right_evidence_context": {
+            "schema_era": None,
+            "comparison_cohort": "unknown",
+            "entity_granularity": "unknown",
+            "review_state": "not_reported",
+        },
         "material_mismatches": [],
         "explanation": "Evidence is not comparable.",
         "establishes_medicine_equivalence": False,

@@ -37,6 +37,45 @@ def test_checked_in_matrix_is_complete_bounded_and_inert() -> None:
     )
 
 
+def test_latency_ceiling_is_predeclared_for_each_workload() -> None:
+    raw = document()
+    for profile, ceiling in zip(
+        raw["workloads"],
+        (30_000_000_000, 120_000_000_000, 600_000_000_000),
+        strict=True,
+    ):
+        profile["maximum_latency_ns"] = ceiling
+
+    matrix = FrontierExperimentMatrix.model_validate(raw)
+
+    assert [item.maximum_latency_ns for item in matrix.workloads] == [
+        30_000_000_000,
+        120_000_000_000,
+        600_000_000_000,
+    ]
+
+
+def test_matrix_rejects_latency_ceiling_drift() -> None:
+    raw = document()
+    raw["workloads"][0]["maximum_latency_ns"] += 1
+
+    with pytest.raises(ValidationError, match="versioned profile"):
+        FrontierExperimentMatrix.model_validate(raw)
+
+
+def test_remote_query_experiment_remains_bound_to_tiny_profile() -> None:
+    raw = document()
+    remote_query = next(
+        item
+        for item in raw["experiments"]
+        if item["experiment_id"] == "remote_query_streaming"
+    )
+    remote_query["profile"] = "medium"
+
+    with pytest.raises(ValidationError, match="versioned tiny profile"):
+        FrontierExperimentMatrix.model_validate(raw)
+
+
 @pytest.mark.parametrize("field", ["revision", "path", "sha256"])
 def test_partial_public_identity_fails(field: str) -> None:
     raw = document()
@@ -65,6 +104,7 @@ def test_unmet_or_unverified_prerequisites_block_start() -> None:
     raw = document()
     row = raw["experiments"][0]
     row["experiment_started"] = True
+    row["prerequisite_evidence"]["exact_public_object"] = False
     with pytest.raises(ValidationError, match="without complete prerequisites"):
         FrontierExperimentMatrix.model_validate(raw)
 
@@ -141,6 +181,7 @@ def test_profiles_require_ordered_unique_bounds() -> None:
         "maximum_source_bytes",
         "maximum_requests",
         "maximum_memory_bytes",
+        "maximum_latency_ns",
     ],
 )
 def test_profiles_require_every_bound_to_strictly_increase(

@@ -3,13 +3,15 @@
   "$id": "https://github.com/edithatogo/global-medicines-atlas/schemas/comparison-validity-v1.json",
   "title": "Cross-jurisdiction comparison validity v1",
   "type": "object",
-  "required": ["schema_id", "schema_version", "left_subject_id", "right_subject_id", "outcome", "dimensions", "material_mismatches", "explanation", "establishes_medicine_equivalence", "establishes_substitutability", "establishes_therapeutic_interchangeability", "establishes_equal_benefit"],
+  "required": ["schema_id", "schema_version", "left_subject_id", "right_subject_id", "outcome", "dimensions", "left_evidence_context", "right_evidence_context", "material_mismatches", "explanation", "establishes_medicine_equivalence", "establishes_substitutability", "establishes_therapeutic_interchangeability", "establishes_equal_benefit"],
   "properties": {
     "schema_id": {"const": "global-medicines-atlas.comparison-validity"},
     "schema_version": {"const": 1},
     "left_subject_id": {"type": "string", "minLength": 1},
     "right_subject_id": {"type": "string", "minLength": 1},
     "outcome": {"enum": ["valid", "valid_with_caveats", "inappropriate_comparison", "insufficient_evidence"]},
+    "left_evidence_context": {"$ref": "#/$defs/evidence_context"},
+    "right_evidence_context": {"$ref": "#/$defs/evidence_context"},
     "dimensions": {
       "type": "object",
       "required": ["granularity", "indication", "population", "mapping", "normalization"],
@@ -44,6 +46,17 @@
     }
   ],
   "$defs": {
+    "evidence_context": {
+      "type": "object",
+      "required": ["schema_era", "comparison_cohort", "entity_granularity", "review_state"],
+      "properties": {
+        "schema_era": {"anyOf": [{"type": "string", "minLength": 1}, {"type": "null"}]},
+        "comparison_cohort": {"enum": ["legacy", "current", "synthetic", "unknown"]},
+        "entity_granularity": {"enum": ["service_item", "medicine_item", "evidence_edge", "history_event", "coverage_record", "provenance_record", "unknown"]},
+        "review_state": {"const": "not_reported"}
+      },
+      "additionalProperties": false
+    },
     "dimension": {
       "type": "object",
       "required": ["state", "left_value", "right_value", "evidence_ids"],

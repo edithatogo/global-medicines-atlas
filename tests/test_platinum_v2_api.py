@@ -7,6 +7,12 @@ from datetime import UTC, datetime
 import pytest
 from fastapi.testclient import TestClient
 
+from global_medicines_atlas.platinum_identity_service import (
+    UnknownPlatinumResourceError,
+)
+from global_medicines_atlas.platinum_surface_contracts import (
+    DatasetIdentityV2Envelope,
+)
 from global_medicines_atlas.platinum_v2_api import create_v2_app
 from global_medicines_atlas.platinum_v2_contracts import (
     V2ComparisonQuery,
@@ -84,6 +90,8 @@ class StubV2Service:
                 page=PageMetadata(limit=query.limit, returned=1),
             ),
             conclusions=(conclusion,),
+            comparison_validity=(),
+            validity_completeness="partial",
         )
 
     def v2_evidence(self, query: V2EvidenceQuery) -> V2EvidenceResponse:
@@ -127,9 +135,76 @@ class StubV2Service:
         )
 
 
+class StubV2IdentityLookup:
+    def identity_v2(self, resource_id: str) -> DatasetIdentityV2Envelope:
+        if resource_id != "au.pbs.structure.current":
+            raise UnknownPlatinumResourceError
+        return DatasetIdentityV2Envelope(
+            api_version="v2",
+            resource_id=resource_id,
+            semantic_dimension="source_structure",
+            entity_granularity="evidence_edge",
+            dataset="edithatogo/australian-benefits-medallion",
+            revision="a" * 40,
+            path="gold/pbs/edges.parquet",
+            object_sha256="b" * 64,
+            byte_count=123,
+            contract_sha256="c" * 64,
+            semantic_manifest_sha256="d" * 64,
+            jurisdiction="AU",
+            source_id="au-pbs",
+            acquisition_id="acq-pbs",
+            layer="gold",
+            schema_era="pbs-3.1",
+            comparison_cohort="current",
+            effective_date=None,
+            retrieved_at=NOW,
+            cache_expires_at=NOW,
+            capabilities=(
+                "exact_v4_resolution",
+                "anonymous_verified_read",
+                "verified_cache_offline",
+            ),
+            coverage_state="not_declared",
+            comparison_validity="not_evaluated",
+            product_admitted=True,
+            rows_queried=False,
+        )
+
+
 def _client() -> tuple[TestClient, StubV2Service]:
     service = StubV2Service()
-    return TestClient(create_v2_app(service)), service
+    return TestClient(
+        create_v2_app(service, dataset_identities=StubV2IdentityLookup())
+    ), service
+
+
+def test_v2_dataset_identity_exposes_source_structure_without_claims() -> None:
+    client, _ = _client()
+    response = client.get("/api/v2/datasets/au.pbs.structure.current")
+
+    assert response.status_code == 200
+    assert response.json()["api_version"] == "v2"
+    assert response.json()["semantic_dimension"] == "source_structure"
+    assert response.json()["entity_granularity"] == "evidence_edge"
+    assert response.json()["comparison_validity"] == "not_evaluated"
+    assert response.json()["coverage_state"] == "not_declared"
+    assert response.headers["cache-control"] == (
+        "public, max-age=0, must-revalidate"
+    )
+
+
+def test_v2_dataset_identity_hides_unconfigured_or_unknown_resources() -> None:
+    unconfigured = TestClient(create_v2_app(StubV2Service())).get(
+        "/api/v2/datasets/au.pbs.structure.current"
+    )
+    unknown, _ = _client()
+    missing = unknown.get("/api/v2/datasets/au.pbs.missing")
+
+    assert unconfigured.status_code == 503
+    assert unconfigured.json()["error"] == "service_unavailable"
+    assert missing.status_code == 404
+    assert missing.json()["error"] == "not_found"
 
 
 def _params() -> dict[str, object]:
@@ -148,6 +223,8 @@ def test_v2_transport_preserves_all_requested_dimensions_and_version() -> None:
     assert response.status_code == 200
     assert response.json()["metadata"]["api_version"] == "v2"
     assert response.json()["conclusions"][0]["dimension"] == "service_benefit"
+    assert response.json()["comparison_validity"] == []
+    assert response.json()["validity_completeness"] == "partial"
     assert service.query is not None
     assert service.query.jurisdictions == ("NZ", "AU")
     assert service.query.dimensions == (
@@ -303,3 +380,6 @@ def test_v2_transport_is_read_only_and_openapi_is_isolated() -> None:
     assert "/api/v2/comparisons" in schema["paths"]
     assert "/api/v2/evidence" in schema["paths"]
     assert not any(path.startswith("/api/v1/") for path in schema["paths"])
+    comparison_schema = schema["components"]["schemas"]["V2ComparisonResponse"]
+    assert "comparison_validity" in comparison_schema["required"]
+    assert "validity_completeness" in comparison_schema["required"]

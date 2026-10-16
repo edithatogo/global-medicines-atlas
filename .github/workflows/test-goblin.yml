@@ -127,6 +127,67 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  neo4j-synthetic-graph-parity:
+    name: Neo4j / synthetic MBS-PBS graph parity
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      neo4j:
+        # Linux amd64 manifest for Neo4j 2026.09.0; auth is disabled only in
+        # this disposable, empty CI service.
+        image: neo4j@sha256:4aa926e358c1081b6b91b7e33d68575502e2e0ce7bcd9d8700e329170a141119
+        ports:
+          - 7474:7474
+        env:
+          NEO4J_AUTH: none
+          NEO4J_server_memory_heap_initial__size: 256m
+          NEO4J_server_memory_heap_max__size: 512m
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize locked Python 3.14 core environment
+        run: uv sync --python 3.14.6 --locked
+      - name: Start disposable synthetic Oxigraph service
+        run: >-
+          docker run --detach --rm --name gma-oxigraph-synthetic
+          --publish 127.0.0.1:7878:7878
+          oxigraph/oxigraph@sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e
+          serve --bind 0.0.0.0:7878 --location /tmp/oxigraph
+      - name: Execute synthetic MBS and PBS graph projections in Neo4j
+        env:
+          NEO4J_HTTP_URL: http://127.0.0.1:7474
+          NEO4J_QUALIFICATION_RECEIPT: build/quality-receipts/neo4j-graph-parity.json
+          OXIGRAPH_HTTP_URL: http://127.0.0.1:7878
+          OXIGRAPH_QUALIFICATION_RECEIPT: build/quality-receipts/oxigraph-graph-parity.json
+        run: >-
+          uv run --python 3.14.6 pytest
+          tests/test_frontier_neo4j_integration.py
+          tests/test_frontier_sparql_integration.py -q
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        if: always()
+        with:
+          name: neo4j-synthetic-graph-parity-receipt
+          path: build/quality-receipts/neo4j-graph-parity.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Stop disposable synthetic Oxigraph service
+        if: always()
+        run: docker stop gma-oxigraph-synthetic || true
+
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        if: always()
+        with:
+          name: oxigraph-synthetic-graph-parity-receipt
+          path: build/quality-receipts/oxigraph-graph-parity.json
+          if-no-files-found: ignore
+          retention-days: 30
+
   iceberg-rest-interoperability:
     name: Iceberg REST / actual fixture
     runs-on: ubuntu-24.04
@@ -169,6 +230,64 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  public-parquet-iceberg-registration:
+    name: Existing public Parquet / Iceberg REST
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    services:
+      iceberg-rest:
+        image: apache/iceberg-rest-fixture@sha256:db8de90b5b7693d4ac334c336f91d9bbe320d7b19f4f514d26de84cdfbcbfe8d
+        ports:
+          - 8181:8181
+        env:
+          CATALOG_WAREHOUSE: file:///tmp/gma-warehouse
+        options: >-
+          --health-cmd "curl --fail http://localhost:8181/v1/config"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.29"
+          enable-cache: true
+      - name: Synchronize locked optional Iceberg environment
+        run: uv sync --python 3.14.6 --locked --extra iceberg
+      - name: Verify and register the exact existing public MBS Parquet object
+        run: >-
+          uv run --python 3.14.6 --extra iceberg python
+          scripts/run_public_parquet_iceberg.py
+          --uri http://127.0.0.1:8181
+          --temporary-directory "$RUNNER_TEMP/gma-public-parquet"
+          --output build/quality-receipts/public-parquet-iceberg.json
+      - name: Record metadata-only public Parquet registration receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: public-parquet-iceberg-registration-receipt
+          path: build/quality-receipts/public-parquet-iceberg.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Remove temporary public Parquet bytes after receipt upload
+        if: success()
+        run: |
+          rm -f "$RUNNER_TEMP/gma-public-parquet/services.parquet"
+          rmdir "$RUNNER_TEMP/gma-public-parquet"
+      - name: Verify exact public MBS six-table B2-to-Silver row-value parity
+        run: >-
+          uv run --python 3.14.6 python
+          scripts/run_public_mbs_silver_parity.py
+          --output build/quality-receipts/public-mbs-source-silver-tables-parity.json
+      - name: Upload value-free MBS six-table parity receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: public-mbs-source-silver-tables-parity-receipt
+          path: build/quality-receipts/public-mbs-source-silver-tables-parity.json
+          if-no-files-found: error
+          retention-days: 30
+
   tests:
     name: Python 3.14 / ${{ matrix.lane }}
     runs-on: ubuntu-24.04
@@ -190,15 +309,27 @@ jobs:
           enable-cache: true
       - name: Synchronize Python 3.14 Test-Goblin environment
         run: uv sync --python 3.14.6 --group test-goblin --locked
+      - name: Install Chromium for browser-backed E2E
+        if: matrix.lane == 'e2e'
+        run: >-
+          uv run --python 3.14.6 --group test-goblin playwright install
+          --with-deps chromium
       - name: Run ${{ matrix.lane }} tests
         env:
           COVERAGE_CORE: sysmon
           TEST_GOBLIN_COVERAGE: "1"
           TEST_GOBLIN_LANE: ${{ matrix.lane }}
         run: uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py "$TEST_GOBLIN_LANE"
+      - name: Verify and prepare Codecov CLI
+        run: |
+          uv sync --project .ci/codecov --python 3.14.6 --locked
+          uv run --project .ci/codecov --python 3.14.6 --locked python scripts/prepare_codecov_cli.py --wheel-directory "$RUNNER_TEMP/codecov-cli"
+      - name: Verify Codecov upload TLS certificate
+        run: python scripts/check_codecov_tls.py
       - name: Upload ${{ matrix.lane }} coverage
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with:
+          binary: ${{ github.workspace }}/.ci/codecov/.venv/bin/codecovcli
           files: coverage-${{ matrix.lane }}.xml
           flags: ${{ matrix.lane }}
           name: ${{ matrix.lane }}
@@ -243,6 +374,11 @@ jobs:
           (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
           steps.scope.outputs.heavy == 'true'
         run: uv sync --python 3.14.6 --group dev --locked
+      - name: Install Chromium for full coverage profile
+        if: matrix.profile == 'coverage'
+        run: >-
+          uv run --python 3.14.6 --group dev playwright install
+          --with-deps chromium
       - name: Restore content-validated gremlins cache
         if: >-
           matrix.profile == 'gremlins' &&
@@ -266,10 +402,19 @@ jobs:
             mkdir -p mutants/scripts
           fi
           uv run --python 3.14.6 --group dev python scripts/test_goblin.py "$TEST_GOBLIN_PROFILE"
+      - name: Verify and prepare Codecov CLI
+        if: matrix.profile == 'coverage'
+        run: |
+          uv sync --project .ci/codecov --python 3.14.6 --locked
+          uv run --project .ci/codecov --python 3.14.6 --locked python scripts/prepare_codecov_cli.py --wheel-directory "$RUNNER_TEMP/codecov-cli"
+      - name: Verify Codecov upload TLS certificate
+        if: matrix.profile == 'coverage'
+        run: python scripts/check_codecov_tls.py
       - name: Upload coverage
         if: matrix.profile == 'coverage'
         uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with:
+          binary: ${{ github.workspace }}/.ci/codecov/.venv/bin/codecovcli
           files: coverage.xml
           flags: full
           name: full
@@ -357,15 +502,18 @@ jobs:
         run: >-
           uv run --python 3.14.6 pytest -q -n 2 --dist worksteal
           tests/test_stable_v1_release_candidate_reproducibility.py
-      - name: Qualify clean wheel and source-distribution consumers
+      - name: Synchronize environment for synthetic end-to-end consumer qualification
+        if: steps.scope.outputs.heavy == 'true'
+        run: uv sync --python 3.14.6 --group dev --locked
+      - name: Qualify exact synthetic Bronze-to-Platinum export on this platform
         if: steps.scope.outputs.heavy == 'true'
         env:
-          OUTPUT_PATH: build/quality-receipts/consumer-${{ matrix.platform }}.json
+          GMA_SYNTHETIC_EXPORT_CONSUMER_RECEIPT: build/quality-receipts/consumer-${{ matrix.platform }}.json
+          GMA_SKIP_SYNTHETIC_EXPORT_BROWSER: "1"
         shell: bash
         run: >-
-          uv run --python 3.14.6 --no-project python
-          scripts/qualify_clean_consumer.py
-          --output "$OUTPUT_PATH"
+          uv run --python 3.14.6 --group dev pytest -q
+          tests/test_medallion_e2e.py::test_synthetic_evidence_flows_from_bronze_to_platinum_query
       - name: Upload consumer qualification receipt
         if: steps.scope.outputs.heavy == 'true'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6

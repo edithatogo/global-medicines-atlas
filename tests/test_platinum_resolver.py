@@ -13,6 +13,7 @@ from typing import Any
 
 import httpx
 import pytest
+from test_support.federation import admission_record
 
 from global_medicines_atlas.federation_distribution import (
     DistributionBinding,
@@ -135,7 +136,7 @@ def resource(raw: bytes | None = None) -> ProductResource:
 def resolver(
     hub: Hub,
     *resources: ProductResource,
-    admitted: frozenset[str] | None = None,
+    admitted: tuple[Any, ...] | None = None,
     admitted_semantics: frozenset[str] | None = None,
     **options: Any,
 ) -> StorageNeutralResolver:
@@ -144,9 +145,9 @@ def resolver(
     return StorageNeutralResolver(
         schema=SCHEMA,
         resources=selected,
-        admitted_contracts=admitted
+        admission_records=admitted
         if admitted is not None
-        else frozenset(item.binding.contract_sha256 for item in selected),
+        else tuple(admission_record(item.contract) for item in selected),
         admitted_semantic_manifests=admitted_semantics
         if admitted_semantics is not None
         else frozenset(
@@ -175,6 +176,29 @@ def test_resolve_is_storage_neutral_and_exact() -> None:
             "anonymous_verified_read",
             "verified_cache_offline",
         )
+    assert not hub.requests
+
+
+def test_source_structure_is_admitted_without_semantic_promotion() -> None:
+    hub = Hub()
+    base = resource()
+    manifest = semantic_manifest(
+        base.binding.contract_sha256,
+        resource_id="au.pbs.source-structure",
+        dimension="source_structure",
+        granularity="evidence_edge",
+    )
+    pbs_resource = replace(
+        base,
+        resource_id="au.pbs.source-structure",
+        semantic_dimension="source_structure",
+        entity_granularity="evidence_edge",
+        semantic_manifest=manifest,
+    )
+    with resolver(hub, pbs_resource) as client:
+        resolved = client.resolve("au.pbs.source-structure")
+        assert resolved.semantic_dimension == "source_structure"
+        assert resolved.entity_granularity == "evidence_edge"
     assert not hub.requests
 
 
@@ -343,7 +367,7 @@ def test_resolution_requires_independently_admitted_exact_contract() -> None:
     item = resource()
     hub = Hub()
     with pytest.raises(ValueError, match="admitted"):
-        resolver(hub, item, admitted=frozenset())
+        resolver(hub, item, admitted=())
     assert not hub.requests
 
 

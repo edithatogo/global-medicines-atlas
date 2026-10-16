@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Global Medicines Atlas</title>
     <link rel="stylesheet" href="/static/atlas.css">
+    <script src="/static/atlas-table-scroll.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#atlas-results">Skip to comparison results</a>
@@ -12,6 +13,15 @@
       <p class="eyebrow">Evidence-backed comparison</p>
       <h1>Global Medicines Atlas</h1>
       <p>Compare regulatory and funding evidence without treating missing data as a negative result.</p>
+      {% if has_federated_benefits %}
+        <p><a href="/federated/benefits">Browse pinned benefit evidence</a></p>
+      {% endif %}
+      {% if has_federated_source_structure %}
+        <p><a href="/federated/source-structure">Browse pinned source-structure evidence</a></p>
+      {% endif %}
+      {% if has_historical_changes %}
+        <p><a href="/history">Review historical changes</a></p>
+      {% endif %}
     </header>
     <main id="atlas-results" tabindex="-1">
       <section aria-labelledby="comparison-heading">
@@ -117,6 +127,12 @@
                     <div><dt>Valid time</dt><dd><time datetime="{{ item.valid_at }}">{{ item.valid_at }}</time></dd></div>
                     <div><dt>Observation time</dt><dd><time datetime="{{ item.observed_at }}">{{ item.observed_at }}</time></dd></div>
                   </dl>
+                  <dl class="evidence-context" aria-label="Evidence context" data-evidence-context>
+                    <div><dt>Schema era</dt><dd>{{ item.schema_era }}</dd></div>
+                    <div><dt>Comparison cohort</dt><dd>{{ item.comparison_cohort }}</dd></div>
+                    <div><dt>Entity granularity</dt><dd>{{ item.entity_granularity }}</dd></div>
+                    <div><dt>Review state</dt><dd>{{ item.review_state }}</dd></div>
+                  </dl>
                   <details>
                     <summary>Review source evidence</summary>
                     <ul class="evidence-list">
@@ -145,7 +161,7 @@
           {% if coverage %}
             <div class="table-scroll" role="region" aria-label="Measured source coverage table" tabindex="0">
               <table>
-                <thead><tr><th scope="col">Jurisdiction</th><th scope="col">Dimension</th><th scope="col">State</th><th scope="col">Measured coverage</th></tr></thead>
+                <thead><tr><th scope="col">Jurisdiction</th><th scope="col">Dimension</th><th scope="col">State</th><th scope="col">Measured coverage</th><th scope="col">Evidence context</th></tr></thead>
                 <tbody>
                   {% for item in coverage %}
                     <tr>
@@ -158,6 +174,14 @@
                         {% else %}
                           {{ item.covered_count }} of {{ item.denominator }}
                         {% endif %}
+                      </td>
+                      <td>
+                        <dl class="evidence-context" aria-label="Evidence context" data-evidence-context>
+                          <div><dt>Schema era</dt><dd>{{ item.schema_era }}</dd></div>
+                          <div><dt>Comparison cohort</dt><dd>{{ item.comparison_cohort }}</dd></div>
+                          <div><dt>Entity granularity</dt><dd>{{ item.entity_granularity }}</dd></div>
+                          <div><dt>Review state</dt><dd>{{ item.review_state }}</dd></div>
+                        </dl>
                       </td>
                     </tr>
                   {% endfor %}

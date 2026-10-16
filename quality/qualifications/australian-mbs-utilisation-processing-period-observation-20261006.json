@@ -1,0 +1,252 @@
+{
+  "aggregates": {
+    "outside_documented_month_count": 190050,
+    "q2_june_row_count": 190050,
+    "record_count": 1463030,
+    "unrecognized_month_count": 0,
+    "year_invalid_count": 0,
+    "year_mismatch_count": 0
+  },
+  "boundaries": {
+    "candidate_period_mapping_accepted": false,
+    "new_sources_added": false,
+    "period_semantics_verified": false,
+    "processing_admitted": false,
+    "raw_period_tokens_emitted": false,
+    "raw_period_tokens_persisted": false,
+    "semantic_validation_complete": false,
+    "silver_published": false,
+    "source_bytes_read_locally": false,
+    "source_inventory_expanded": false
+  },
+  "candidate_source_count": 4,
+  "code_commit": "3fa9fd1d6326e816c4540b49a2dd11a8bf9fcb27",
+  "interpretation": "The candidate parser recognized every Year and Month token under its explicit grammar; all observed years matched the metadata-bound 2016 candidate year. The demographics Q2 resource description is current through May, while 190050 candidate rows classify to June. No normalization, cutoff override, semantic acceptance, or admission is selected.",
+  "observation_profile": "mbs-utilisation-candidate-shape-v1",
+  "period_description_conflict": {
+    "captured_description_cutoff": "current through 31 May 2016",
+    "captured_resource_description_sha256": "7b494fda71b8df57e332006d9b8388528b8aeb517ad92c741b3420a3e3980de6",
+    "observed_candidate_period_beyond_cutoff": "June 2016",
+    "resolution": "open; retain the mismatch and keep source period semantics and processing admission unqualified",
+    "resource_id": "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+    "rows_beyond_captured_cutoff": 190050
+  },
+  "receipts_independently_read_back": true,
+  "recorded_at": "2026-10-06T07:40:51.548633+00:00",
+  "records": [
+    {
+      "acquisition_id": "8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3",
+      "anonymous_digest_verified": true,
+      "byte_count": 23934884,
+      "candidate_key_duplicate_records": 0,
+      "candidate_policy": {
+        "accepted_token_forms": [
+          "English full month name",
+          "English three-letter month abbreviation"
+        ],
+        "allowed_month_numbers": [
+          1,
+          2,
+          3
+        ],
+        "evidence_path": "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json",
+        "evidence_sha256": "af64e7ac68e0e67587ca153023e2dd3ea8779046407f257f9babd425513afdc2",
+        "expected_year": "2016",
+        "resource_description_sha256": "1401931d5f9bbfa6e128196b02ef19016da67bd52b78ebf03b3fda6002abc676",
+        "state": "candidate_observation_only"
+      },
+      "catalogue_resource_id": "ff6d0692-4c6f-466b-9d93-015224d80b14",
+      "empty_cell_count": 0,
+      "month_record_counts": {
+        "01": 171477,
+        "02": 185548,
+        "03": 188045,
+        "04": 0,
+        "05": 0,
+        "06": 0,
+        "07": 0,
+        "08": 0,
+        "09": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0
+      },
+      "outside_documented_month_count": 0,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011696366",
+      "recognized_month_count": 545070,
+      "record_count": 545070,
+      "resource_description_sha256": "1401931d5f9bbfa6e128196b02ef19016da67bd52b78ebf03b3fda6002abc676",
+      "row_width_error_count": 0,
+      "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "source_sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+      "unrecognized_month_count": 0,
+      "year_expected_count": 545070,
+      "year_invalid_count": 0,
+      "year_mismatch_count": 0
+    },
+    {
+      "acquisition_id": "c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd",
+      "anonymous_digest_verified": true,
+      "byte_count": 23436706,
+      "candidate_key_duplicate_records": 0,
+      "candidate_policy": {
+        "accepted_token_forms": [
+          "English full month name",
+          "English three-letter month abbreviation"
+        ],
+        "allowed_month_numbers": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "evidence_path": "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json",
+        "evidence_sha256": "af64e7ac68e0e67587ca153023e2dd3ea8779046407f257f9babd425513afdc2",
+        "expected_year": "2016",
+        "resource_description_sha256": "7b494fda71b8df57e332006d9b8388528b8aeb517ad92c741b3420a3e3980de6",
+        "state": "candidate_observation_only"
+      },
+      "catalogue_resource_id": "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+      "empty_cell_count": 0,
+      "month_record_counts": {
+        "01": 0,
+        "02": 0,
+        "03": 0,
+        "04": 187377,
+        "05": 189908,
+        "06": 190050,
+        "07": 0,
+        "08": 0,
+        "09": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0
+      },
+      "outside_documented_month_count": 190050,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011698503",
+      "recognized_month_count": 567335,
+      "record_count": 567335,
+      "resource_description_sha256": "7b494fda71b8df57e332006d9b8388528b8aeb517ad92c741b3420a3e3980de6",
+      "row_width_error_count": 0,
+      "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "source_sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+      "unrecognized_month_count": 0,
+      "year_expected_count": 567335,
+      "year_invalid_count": 0,
+      "year_mismatch_count": 0
+    },
+    {
+      "acquisition_id": "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb",
+      "anonymous_digest_verified": true,
+      "byte_count": 7680041,
+      "candidate_key_duplicate_records": 0,
+      "candidate_policy": {
+        "accepted_token_forms": [
+          "English full month name",
+          "English three-letter month abbreviation"
+        ],
+        "allowed_month_numbers": [
+          7
+        ],
+        "evidence_path": "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json",
+        "evidence_sha256": "af64e7ac68e0e67587ca153023e2dd3ea8779046407f257f9babd425513afdc2",
+        "expected_year": "2016",
+        "resource_description_sha256": "c8b4114771ad59b2dfc6c2172e94ec4ad3922b739c26d02178efb4355e44d758",
+        "state": "candidate_observation_only"
+      },
+      "catalogue_resource_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "empty_cell_count": 0,
+      "month_record_counts": {
+        "01": 0,
+        "02": 0,
+        "03": 0,
+        "04": 0,
+        "05": 0,
+        "06": 0,
+        "07": 186082,
+        "08": 0,
+        "09": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0
+      },
+      "outside_documented_month_count": 0,
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011699646",
+      "recognized_month_count": 186082,
+      "record_count": 186082,
+      "resource_description_sha256": "c8b4114771ad59b2dfc6c2172e94ec4ad3922b739c26d02178efb4355e44d758",
+      "row_width_error_count": 0,
+      "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "source_sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+      "unrecognized_month_count": 0,
+      "year_expected_count": 186082,
+      "year_invalid_count": 0,
+      "year_mismatch_count": 0
+    },
+    {
+      "acquisition_id": "5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967",
+      "anonymous_digest_verified": true,
+      "byte_count": 12291303,
+      "candidate_key_duplicate_records": 0,
+      "candidate_policy": {
+        "accepted_token_forms": [
+          "English full month name",
+          "English three-letter month abbreviation"
+        ],
+        "allowed_month_numbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "evidence_path": "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json",
+        "evidence_sha256": "af64e7ac68e0e67587ca153023e2dd3ea8779046407f257f9babd425513afdc2",
+        "expected_year": "2016",
+        "resource_description_sha256": "040bc3649754be306a5b76f3d342e040fc2bdad5fbde477e0845e9368302e37f",
+        "state": "candidate_observation_only"
+      },
+      "catalogue_resource_id": "663a7fac-114c-47b5-9017-a9dbb9073260",
+      "empty_cell_count": 0,
+      "month_record_counts": {
+        "01": 22221,
+        "02": 23512,
+        "03": 23690,
+        "04": 23632,
+        "05": 23974,
+        "06": 23843,
+        "07": 23671,
+        "08": 0,
+        "09": 0,
+        "10": 0,
+        "11": 0,
+        "12": 0
+      },
+      "outside_documented_month_count": 0,
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011700806",
+      "recognized_month_count": 164543,
+      "record_count": 164543,
+      "resource_description_sha256": "040bc3649754be306a5b76f3d342e040fc2bdad5fbde477e0845e9368302e37f",
+      "row_width_error_count": 0,
+      "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "source_sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+      "unrecognized_month_count": 0,
+      "year_expected_count": 164543,
+      "year_invalid_count": 0,
+      "year_mismatch_count": 0
+    }
+  ],
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-processing-period-observation",
+  "schema_version": 1,
+  "status": "exact_main_candidate_periods_observed_q2_metadata_discrepancy_open",
+  "summary_receipt_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6011701037",
+  "temporary_source_bytes_removed_after_digest_bound_receipts": true,
+  "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/37431102764"
+}

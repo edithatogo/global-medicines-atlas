@@ -44,6 +44,8 @@ def _receipt(
     evidence_class: EvidenceClass = EvidenceClass.LIVE,
     rights_state: RightsState = RightsState.PERMITTED,
     retrieved_at: datetime = NOW - timedelta(days=1),
+    effective_from: datetime | None = NOW - timedelta(days=2),
+    effective_to: datetime | None = None,
 ) -> SourceReceipt:
     return SourceReceipt(
         receipt_id=receipt_id,
@@ -62,7 +64,8 @@ def _receipt(
             status=AcquisitionStatus.SUCCEEDED,
         ),
         payload=PayloadEvidence(sha256="a" * 64, byte_count=1),
-        effective_from=NOW - timedelta(days=2),
+        effective_from=effective_from,
+        effective_to=effective_to,
         rights_state=rights_state,
         rights_reference=(
             AnyUrl("https://example.test/rights")
@@ -136,9 +139,10 @@ def _input(
     receipts: tuple[SourceReceipt, ...] | None = None,
     coverage_observations: tuple[CoverageObservation, ...] | None = None,
     conflicts: tuple[EvidenceConflict, ...] = (),
+    evaluated_at: datetime = NOW,
 ) -> PublicationGateInput:
     return PublicationGateInput(
-        evaluated_at=NOW,
+        evaluated_at=evaluated_at,
         census=_census() if census is None else census,
         thresholds=PublicationThresholds(
             minimum_regulatory_jurisdiction_ratio=1,
@@ -218,6 +222,54 @@ def test_fixture_discovery_or_stale_receipts_fail_closed(
     assert not decision.publishable
     assert reason in decision.blocking_reasons
     assert decision.qualifying_receipt_ids == ()
+
+
+@pytest.mark.parametrize(
+    ("retrieved_at", "expected_membership"),
+    [
+        (NOW, "included"),
+        (NOW + timedelta(microseconds=1), "excluded"),
+        (NOW - timedelta(days=30), "included"),
+        (NOW - timedelta(days=30, microseconds=1), "excluded"),
+    ],
+)
+def test_receipt_clock_boundaries_are_inclusive_only_at_declared_limits(
+    retrieved_at: datetime,
+    expected_membership: str,
+) -> None:
+    receipt = _receipt(retrieved_at=retrieved_at)
+
+    decision = evaluate_publication_gate(_input(receipts=(receipt,)))
+
+    assert (receipt.receipt_id in decision.qualifying_receipt_ids) is (
+        expected_membership == "included"
+    )
+
+
+@pytest.mark.parametrize(
+    ("effective_from", "effective_to", "expected_membership"),
+    [
+        (NOW, None, "included"),
+        (NOW + timedelta(microseconds=1), None, "excluded"),
+        (NOW - timedelta(days=2), NOW, "excluded"),
+        (NOW - timedelta(days=2), NOW + timedelta(microseconds=1), "included"),
+    ],
+)
+def test_effective_interval_boundaries_are_start_inclusive_end_exclusive(
+    effective_from: datetime,
+    effective_to: datetime | None,
+    expected_membership: str,
+) -> None:
+    receipt = _receipt(
+        effective_from=effective_from,
+        effective_to=effective_to,
+    )
+
+    decision = evaluate_publication_gate(_input(receipts=(receipt,)))
+
+    assert (receipt.receipt_id in decision.qualifying_receipt_ids) is (
+        expected_membership == "included"
+    )
 
 
 def test_declared_denominators_and_thresholds_are_required() -> None:

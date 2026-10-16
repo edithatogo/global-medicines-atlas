@@ -1,7 +1,10 @@
 # M-106 item-level patient-count inquiry
 
 **Status:** sent 2026-09-28 to `statistics@servicesaustralia.gov.au`; no
-substantive reply has been recorded. The message receipt is in
+substantive reply has been recorded. A follow-up was sent in the same thread
+on 2026-10-05. The complete thread was read during the 2026-10-16 exact-subject
+mailbox refresh; it contains those two outbound messages and no inbound reply.
+The current readback is in
 `quality/qualifications/provider-outreach-receipts-20260929.json`. The official Services Australia statistics
 contact is `statistics@servicesaustralia.gov.au`. The question asks
 whether an existing public report provides unique-patient counts by MBS item,

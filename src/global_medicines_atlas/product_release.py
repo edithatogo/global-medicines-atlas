@@ -44,7 +44,7 @@ class QualificationReceipt(FrozenModel):
 
     schema_version: Literal["1"] = "1"
     receipt_id: str = Field(min_length=1)
-    kind: Literal["performance", "threat"]
+    kind: Literal["performance", "threat", "clean_start"]
     subject_id: str = Field(min_length=1)
     executed_at: datetime
     product_version: str = PRODUCT_EVIDENCE_VERSION
@@ -78,7 +78,7 @@ class QualificationReceipt(FrozenModel):
 def create_qualification_receipt(
     *,
     receipt_id: str,
-    kind: Literal["performance", "threat"],
+    kind: Literal["performance", "threat", "clean_start"],
     subject_id: str,
     executed_at: datetime,
     implementation_digest: str,
@@ -240,7 +240,7 @@ class ProductReleaseEvidence(FrozenModel):
 def validate_receipt(
     receipt: QualificationReceipt,
     *,
-    kind: Literal["performance", "threat"],
+    kind: Literal["performance", "threat", "clean_start"],
     subject_id: str,
     implementation_digest: str,
     now: datetime,

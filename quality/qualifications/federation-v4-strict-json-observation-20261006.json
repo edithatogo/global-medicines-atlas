@@ -1,0 +1,39 @@
+{
+  "schema_id": "global-medicines-atlas.federation-v4-strict-json-observation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-06T08:11:52Z",
+  "track_id": "public_hf_federated_data_plane_20260829",
+  "status": "strict_duplicate_member_rejection_verified_synthetically",
+  "code_commit": "4d4dc674363da9649d427bb5213373181af0b7b9",
+  "boundaries": {
+    "new_sources_added": false,
+    "source_bytes_read": false,
+    "network_requests_made": false,
+    "processing_admitted": false,
+    "public_data_published": false,
+    "external_publication_performed": false
+  },
+  "surfaces": [
+    "federation_distribution",
+    "federation_admission",
+    "federation_reader",
+    "federation_receipt_closure",
+    "federation_consumer"
+  ],
+  "verification": {
+    "intended_regressions_failed_before_fix": 3,
+    "affected_tests": "436 passed",
+    "new_parser_coverage": "100% statement and branch",
+    "ruff": "passed",
+    "ty": "passed",
+    "basedpyright": "0 errors, 0 warnings, 0 notes",
+    "full_profile": "5867 passed, 2 clean-clone reproducibility failures requiring uv 0.11.29 while local uv is 0.12.23, 1 optional PyIceberg skip; 96.80% coverage"
+  },
+  "remaining": [
+    "complete producer-denominator integration",
+    "independently authenticated v4 receipt admission",
+    "live source and derived producer qualification",
+    "public derived-product publication",
+    "independent recovery target and restore"
+  ]
+}

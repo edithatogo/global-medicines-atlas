@@ -1,0 +1,29 @@
+{
+  "api": "sparql-1.1-protocol-rdf-1.2",
+  "cases": {
+    "mbs": {
+      "edge_count": 2,
+      "exact_payload_and_direction_parity": true,
+      "graph_sha256": "ed88a2891cc05c96284130f58a450d6b92193e338caf11eccd93cd0a5c410020",
+      "node_count": 4
+    },
+    "pbs": {
+      "edge_count": 9,
+      "exact_payload_and_direction_parity": true,
+      "graph_sha256": "27fa80ed1eff17763a2a310bb6d73bf4e519db18d864ee34dd6604ab83b3a13d",
+      "node_count": 10
+    }
+  },
+  "disposition": "retain-preview",
+  "engine": "oxigraph",
+  "engine_image_digest": "sha256:e68b3625743db4a4b18129a907ae36766f89bb6deeb8ab50d35685dbabe00b0e",
+  "engine_version": "0.5.9",
+  "production_authority_promoted": false,
+  "receipt_sha256": "f2e1b0d38f07d01828367937066673670507f3d2099a274ce441f3fb7ab7c0ab",
+  "recorded_at": "2026-10-11T15:21:06.734220+00:00",
+  "rights_clearance_claimed": false,
+  "schema_id": "global-medicines-atlas.oxigraph-synthetic-graph-parity",
+  "schema_version": 1,
+  "source_payloads_accessed": false,
+  "source_scope": "synthetic-mbs-pbs-only"
+}

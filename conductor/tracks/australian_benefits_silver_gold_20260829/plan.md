@@ -121,7 +121,15 @@
   mappings, then continue source-specific date/currency/value harmonisation.
   Header mapping run passed; value candidates and their per-field outcome
   profiler are now implemented. Value-level real-source execution passed in
-  run `33310284274`, with unsupported values explicitly retained.
+  run `33310284274`, with unsupported values explicitly retained. Exact-main
+  requalification on `02ea12284c86c97c7c4151db58e19fa4d7bcf5c1` passed in run
+  `38165126564`: all 13,742 cells across four sheets were reconciled to 99
+  observed columns, with 97 headers and four unlabelled cells. The value-free
+  report retains 36 unrepresentable numeric outcomes and 1,280 date-shaped
+  cells without selecting date semantics; `semantic_promotion` remains false.
+  See `quality/qualifications/mbs-p7-workbook-field-lineage-20261011.json`.
+  This closes exact-main storage/header/lineage requalification only; broader
+  value harmonisation and source-era date qualification remain open.
 
 ## Workbook value harmonisation
 
@@ -179,6 +187,16 @@
   review. Run `33310284274` passed: all 13,742 cells accounted for, 924
   converted, 36 unrepresentable decimals and 1,280 unqualified dates retained.
   No date-era qualification, semantic promotion or publication is inferred.
+- [x] Re-run the value-free P7 storage, header, field-lineage, and conversion
+  outcome profiler on current main. Hosted run `38165126564` verified source
+  digest `2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8`,
+  recorded all four sheet and 13,742 cell denominators, and retained 99
+  column-lineage records. The field-lineage report digest is
+  `709273b2ce5da48e2efa36dfbfeac1221dc72b6de241eafbdcbaa7fe8bbf9a5b`.
+  No cell values were retained; 36 values remain unrepresentable, the date
+  profile remains unset, semantic promotion is false, and no product was
+  published. Durable aggregate receipt:
+  `quality/qualifications/mbs-p7-workbook-field-lineage-20261011.json`.
 
 - [x] Preserve sheet identity when combining batches and round-tripping
   Parquet, including an explicit empty-sheet manifest and property presence.
@@ -216,9 +234,42 @@
   projection tests likewise failed collection before their module existed.
 - [~] Implement streaming source-faithful MBS service, hierarchy, description,
   fee/benefit, participant, and legacy annotation tables.
-  XML candidates use the existing 9 MB bounded parser and at most 4,096 rows
-  per Arrow batch; this is bounded parsing plus batch output, not unbounded
-  input streaming or complete real-corpus qualification.
+  XML candidates use two-pass bounded streaming: full-document structural,
+  schema, identity, denominator, and receipt preflight precedes row output;
+  record subtrees are detached and Silver output stays within 4,096 rows per
+  Arrow batch. Broader real-corpus and other table-family qualification remain
+  open.
+- [x] Replace tree-retained MBS XML Silver conversion with the bounded stream
+  and verify it under parser, schema-drift, provenance-identity, and full
+  Test-Goblin checks (`35da943a`; PR #966 merged as `56511d48`; evidence in
+  `evidence.jsonl`).
+- [x] Add a synthetic sibling-stream regression proving completed direct-root
+  `Data` subtrees are released during the event pass; document the parser and
+  Arrow buffer bounds. The sibling-retention assertion is bounded by the
+  configured parser chunk and minimum synthetic record size. Focused tests
+  (35), adjacent MBS/Gold tests (75), routine checks, strict typing, and diff
+  validation passed on 2026-10-12. PR #1035 merged as `6bae816e` with all 40
+  hosted check rows passing (29 required), including the E2E lane and Linux,
+  macOS, and Windows consumers. This test-only follow-up does not close the
+  broader real-corpus qualification above.
+- [x] Prove exact existing-source B2-to-Silver row-value parity for the
+  already-qualified July 2025 MBS XML and the pinned v4 services Parquet.
+  The hosted check binds the existing B1 receipt and both immutable public
+  object revisions, compares all rows and fields, and emits a value-free
+  receipt. PR [#929](https://github.com/edithatogo/global-medicines-atlas/pull/929)
+  merged at `f9c56d32af3ad76d347ff1a25a9e5fcfd96c90e2`; the exact-head hosted
+  receipt verified 5,989 rows × 17 fields. No rights, admission, publication,
+  or promotion decision changed.
+- [x] Re-run the exact parity verifier on current main after the bounded
+  streaming-parser replacement. Commit `9c37ecb1589e03de7e63bbed4fc62f8cdf2713a8`
+  reproduced all 5,989 rows × 17 fields from the same exact source and Silver
+  revisions. Its value-free receipt is byte-for-byte identical to
+  `quality/qualifications/mbs-source-silver-parity-2025-07-v3.json`
+  (SHA-256 `009deabf772e91fedd7642f2b8f0e5a524abb76401620f8e93a8f3bd20189ded`).
+  The pinned public objects were read in memory only; no source bytes were
+  retained locally. No source identity, rights, admission, promotion, or
+  publication decision changed. See the append-only current-main revalidation
+  evidence row.
 - [~] Add explicit schema-era mappings and historical/current change events
   without overwriting source values.
   XML candidate mappings now require complete exact field coverage for a
@@ -250,14 +301,51 @@
   blockers (`e6abca6`). XML field-addressed lineage now maps all 40 native
   paths to exact Silver table/field/type destinations and records per-field
   state, conversion and occurrence denominators without copying source values.
-  Real-workbook field lineage and real-source execution remain pending. The
-  public v4 identity was subsequently verified at revision
+  The exact-main P7 workbook run below closes the real-workbook structural
+  lineage subtask. Exact-source execution of the six-table XML aggregate
+  candidate qualification passed on exact-main run `38199208744` at
+  `46eda6025cfb12f861a5dd5d478fc320e56fc47e`: all six tables have 5,989 rows,
+  their declared 40 fields account for 239,560 field occurrences, the official
+  July 2025 release digest matches the pinned archive, and the nine-object
+  public v4 identity is verified. This is candidate-only qualification; the
+  workflow retained no source values or source bytes and made no publication.
+  The public v4 identity was subsequently verified at revision
   `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa` by run `36348699885`; no
   promotion is inferred.
   The hosted P7 qualification command now includes the deterministic
-  value-free column-lineage report alongside existing metadata profiles. Its
-  four-sheet result still requires an exact-main source run before this
-  subtask can close; date semantics remain unselected.
+  value-free column-lineage report alongside existing metadata profiles.
+  Exact-main run `38165126564` on `02ea12284c86c97c7c4151db58e19fa4d7bcf5c1`
+  verifies the pinned 87,727-byte workbook (`2f1cbc2d…e27b8`): four sheets,
+  13,742 cell positions and 99 column-lineage records, of which 97 are mapped
+  and two `AV` columns are explicitly unmapped. The 7,643-byte compressed
+  artifact ZIP has SHA-256
+  `2652330da3465777b013776f5446e8467d1bfefe3a4422865ea22fb052077db5`;
+  its checked-in 43,647-byte JSON member at
+  `quality/qualifications/mbs-p7-workbook-field-lineage-20261011.json` has SHA-256
+  `335a737fec71abc6f502d65417a6a2b40b9ff20933e710abe02fc92453274f74`;
+  field lineage is candidate-only, the date profile is unset, Parquet roundtrip
+  is verified, domain mapping is not qualified, and publication is false.
+  The hosted workflow retained only the aggregate summary and did not retain
+  the source workbook. This closes structural lineage observation for that
+  exact workbook only; no date convention, Silver promotion, or source-coverage
+  claim follows.
+  - [x] Execute and reconcile the exact-main P7 workbook lineage qualifier.
+    The workflow asserts the requested commit equals `GITHUB_SHA` on `main`;
+    its exact-head job passed and the JSON member is bound to the exact source
+    digest above. Its 99 column-lineage records include 97 mapped fields and
+    two unmapped columns. Archive and member sizes/digests are recorded
+    separately. Cell values and raw workbook bytes are absent from the member.
+    No source was added; XML source qualification is recorded separately
+    below.
+  - [x] Requalify the existing pinned July 2025 MBS XML and published v4
+    Silver identity together on exact main. Run `38199208744` verified the
+    source SHA-256 and byte count against the official release, all six table
+    denominators (5,989 rows each; 40 fields; 239,560 field occurrences), and
+    all nine objects at public v4 revision
+    `44b25bfd87e44998c7c1da4c3930ad4447e9246f`. The value-free aggregate report
+    has no current blockers, but retains `candidate_only`; publication is
+    false and source bytes were not retained. This does not establish M-109
+    acceptance, rights clearance, broader source coverage, or promotion.
 
 ## Aggregate qualification review fixes
 
@@ -582,6 +670,18 @@
 - [x] Implement bounded PBS v3 source-faithful tables. PR #460 merged as
   `5b7af3b6`; the table schema and qualifier retain source-native candidate
   status, exact source identity, and rebuildable Parquet boundaries.
+- [x] Stream PBS native-field Silver rows from the existing receipt-bound XML
+  inventory. Preflight the complete XML with the no-tree safety validator
+  before exposing rows, preserve the established depth-first slot order and
+  B1/B2 identities, and release completed direct-root children during the
+  bounded event pass. This retains the parser chunk and largest direct-root
+  subtree; a single large wrapper can still approach the document limit.
+  Synthetic sibling, late-tail text-limit, malformed-input, row/Parquet parity,
+  and batch-bound tests pass. Full Test-Goblin passed on macOS with 6,264 tests,
+  355 gremlin checks, and 96.87% coverage; Darwin mutation observations are
+  advisory and Linux CI remains authoritative. Hosted qualification remains
+  pending. No source bytes were read or acquired. Evidence is appended in the
+  track log.
 - [x] Keep PBS funding/formulary, ARTG regulatory, AMT terminology, and ATC
   classification assertions independent in the source-faithful storage and
   lineage layer. PR #460 records funding/formulary as source structure,
@@ -676,20 +776,20 @@
 - [~] Add adjudication queues, calibrated thresholds, conflict/supersession, and
   review receipts before any candidate promotion. A generic Gold-edge adapter
   now creates deterministic, full-edge-digest-bound `pending_review` cases for
-  explicit PBS controls and the legacy/current MBS edge contract, and can
-  remove cases only when caller-supplied append-only `AdjudicationEvent`
-  records already exist. It creates no reviewer identity, adjudication,
-  threshold, receipt, authority, admission or promotion; those controls remain
-  pending. The queue now retains `needs_information` cases and removes a case
-  only for a complete, unambiguous supersession chain ending in accepted,
-  rejected, or superseded. Conflicting roots, branches, cycles, and missing
-  predecessors fail closed as pending. The regression failed against the old
-  behavior, then all 38 adjacent Gold graph tests passed. Full Test-Goblin:
-  5,264 passed, 2 environment-only release reproducibility failures, 1
-  optional PyIceberg skip, 96.71% coverage; rerunning only those two tests via
-  `uv 0.11.29` passed both. This fixes queue-state derivation only; reviewer
-  authority, receipts, calibration, candidate promotion, and Gold acceptance
-  remain pending.
+  explicit PBS controls and the legacy/current MBS edge contract. The prior
+  implementation removed cases for terminal caller-supplied event chains
+  without verifying reviewer authority; PR #1020 removed that route. Every case
+  now remains pending until an independent authority verifier exists. This
+  adapter creates no reviewer identity, adjudication, threshold, receipt,
+  authority, admission or promotion. Earlier queue-state qualification had 9
+  focused Gold-review tests and 38 adjacent Gold-review/MBS/PBS graph tests.
+  The focused Gold/API/synthetic MBS-PBS E2E suite passes (25). The full local
+  Test-Goblin invocation recorded 6,222 passed, 3 optional skips, and 2
+  failures in stable-v1 reproducibility tests because the environment resolved
+  uv 0.13.0 while the release contract requires uv 0.11.29; both failing tests
+  passed on isolated rerun with the pinned version. Coverage was 96.89%.
+  Reviewer authority, receipts, calibration, candidate promotion, and Gold
+  acceptance remain pending.
 - [ ] Phase Verification & Checkpoint: every edge is evidence-bearing and no
   candidate class can masquerade as an authoritative link.
 
@@ -708,6 +808,111 @@
   receipts, calibration, promotion, real-source controls, and canonical
   cross-source relationships remain unresolved. PR #735 passed all 39 hosted
   checks and merged as `001ded0d3ff3429fa499671f91074209ca0d8106`.
+
+### Gold review portable projection E2E (2026-10-10)
+
+- [x] Exercise the pending-only review queue from Parquet-projected MBS and
+  PBS Gold edges in the Bronze-to-Platinum synthetic E2E paths. Reconstruct
+  each source edge from its separate evidence and controls columns; verify
+  edge identity, exact full-content digest equality with each pre-projection
+  edge, `pending_review`, and no promotion.
+  Focused MBS/PBS E2E tests pass (2); Test-Goblin E2E passes (54); routine
+  Test-Goblin checks pass. This closes projection-to-queue integration
+  coverage only; adjudication authority, promotion, real-source controls, and
+  the Gold phase checkpoint remain pending.
+
+### Gold review append-only ledger E2E (2026-10-10)
+
+- [x] Carry both MBS and PBS Parquet-derived Gold review cases through the
+  append-only adjudication ledger and regenerate the pending queue from its
+  readback. A supplied synthetic `needs_information` event keeps its case
+  pending; a later chronological accepted event supersedes it and clears only
+  that case. The same pending cases and post-adjudication state are now
+  queryable through the bounded `gold-review-queue` CLI. Other PBS cases stay
+  pending, no reviewer rationale is emitted, and no case or event performs
+  promotion. The caller-supplied ledger is byte/event bounded and its serialized
+  sequence must satisfy append-only supersession and chronology before it can
+  affect the queue. This verifies persistence and queue mechanics only; the synthetic
+  reviewer is not an authority grant or substantive review. Real reviewer
+  authority, receipts, calibration, promotion, real-source controls, and the
+  Gold phase checkpoint remain pending.
+
+### Gold review CLI authority boundary (2026-10-11)
+
+- [x] Mark the `gold-review-queue` CLI response with
+  `adjudication_authority_verified: false`, including when a caller-supplied
+  synthetic accepted event removes its case from the pending queue. The
+  response remains candidate-only and performs no promotion. The intended
+  regression failed before the field was added; focused review/API/graph tests
+  pass (89), and full Test-Goblin passes with 6,189 tests and 96.89% coverage.
+  (`edb622bd`; PR #968 merged as `1bc43c17`; evidence in `evidence.jsonl`.)
+  This verifies output labelling only; no reviewer identity or authority is
+  created or inferred, and real adjudication remains pending.
+- [x] Assert the authority boundary through both synthetic MBS and PBS
+  Bronze-to-Platinum review-queue journeys, before and after caller-supplied
+  `needs_information` and accepted events. Every CLI readback remains
+  `adjudication_authority_verified: false`, candidate-only, and
+  `promotion_performed: false`; the accepted event removes only its case from
+  the queue. Caller-supplied reviewer identity and rationale are not emitted
+  by the CLI. Focused journeys pass (2), governed E2E passes (56), and routine
+  checks pass. Test-only follow-up; no reviewer authority or source state is
+  established. PR #970 merged as `efd60390e9734dca079e1f893d1a7b99041190b1`
+  after all required checks, including `codecov/patch`, passed on exact head
+  `9f1f0a999d436fa6bdb66bfa684f85799221dc8c`.
+  Automated review found that the intermediate `needs_information` response
+  also needed an explicit candidate-only assertion. Added it; the focused
+  journeys, governed E2E lane, and routine checks pass again. The review
+  conversation was resolved against corrected commit `8aee112f`; hosted checks
+  passed on the final head before merge.
+- [x] Require independent authority verification for every event in a terminal
+  adjudication chain before it can remove a Gold edge from the review queue.
+  The review CLI has no trusted authority verifier, so caller-supplied terminal
+  events leave all cases pending; a future trusted verifier must identify every
+  event in the chain. Focused Gold review/Platinum API/synthetic MBS-PBS
+  Bronze-to-Platinum tests pass (25), routine checks and typing pass. The full
+  pinned local profile first reached 96.90% coverage with 6,223 passed,
+  3 skipped and one stale CLI expectation failure; after correcting the stale
+  assertion, the affected tests passed. PR #1018 merged at exact head
+  `9eb933facc132c3efb5a91dc761f007ef54454bd` as
+  `adc2c297056e996fb75b52f3293af65a0a5450bb`; all 40 reported hosted check
+  rows passed. No reviewer identity, authority, adjudication, promotion,
+  source, licensing conclusion, or publication is created or inferred.
+- [x] Remove caller-asserted event IDs as a route to clear Gold review cases.
+  No independent authority verifier exists, so the review-queue library now
+  keeps every case pending regardless of caller-supplied terminal events. A
+  failing-first regression confirmed that arbitrary event IDs could previously
+  make a case disappear. Focused Gold/API/synthetic MBS-PBS E2E passed (25).
+  Full local Test-Goblin passed 6,222 tests and 96.89% coverage apart from two
+  existing stable-v1 toolchain tests that passed on rerun with pinned uv
+  0.11.29; 3 optional integrations were skipped. PR #1020 merged at exact head
+  `bc90b25e4fe98244e9f0813fc7e7cd999e3a8389` as
+  `dda9bae85026f91d9f43c321aced1532d0011960`; all 40 hosted check rows passed.
+  This does not create reviewer authority, adjudication, promotion, source,
+  licensing conclusion, or publication.
+
+### Platinum PBS edge readback coverage (2026-10-09)
+
+- [x] Exercise the existing PBS Gold candidate through both the Platinum edge
+  API and CLI, asserting synthetic-only qualification, source identity,
+  containment-only relation, non-inference control, and identical readback.
+  The first assertion exposed a schema-shape difference: PBS stores
+  `inferred=false` in the edge controls object, while MBS exposes it as a
+  top-level Arrow column. The test now checks the PBS contract at its declared
+  location. The five adjacent Gold graph/review and Platinum edge suites pass
+  (50 tests); `ruff`, `ty`, and the routine harness pass. No source or
+  production behavior changed. Full track acceptance remains open.
+
+### Gold edge loopback HTTP E2E (2026-10-11)
+
+- [x] Carry the actual synthetic MBS and PBS Gold Parquet edge outputs through
+  `/api/v1/edges` over an ephemeral loopback HTTP server, then compare the
+  returned pages with the in-process API and CLI readbacks. Assert each source
+  identity and synthetic-only qualification. The full medallion/Atlas E2E
+  selection passes (7) and routine checks pass. No source, rights conclusion,
+  production behavior, or acceptance gate changed. PR #981 merged as
+  `595d44591741ac72a3c5138f80aad0c8e29b3600` after all 38 reported checks
+  passed; merge tree `97ba84bffbd30c2e650711ca5dd7976711f8fcab` matches the
+  qualified head tree.
 
 ## Phase 5: Historical comparisons and publication (AC-06, AC-07)
 
@@ -1224,9 +1429,23 @@
   failed the same local mutation-score gate: 1,880 killed, 363 survived,
   two untested and five suspicious of 2,250. Later local lanes were not
   reached; no baseline changes or whole-run retries.
-- [ ] Run focused, property, metamorphic, mutation, performance, coverage,
+- [x] Run focused, property, metamorphic, mutation, performance, coverage,
   Ruff, `ty`, BasedPyright, security, rights, provenance, regeneration, and full
-  Test-Goblin lanes where supported.
+  Test-Goblin lanes where supported. The focused B0-to-Platinum change passed
+  24 affected tests and its focused E2E. PR #1005 passed all 38 hosted check
+  rows. PR #1006 passed all 38 hosted check rows across 37 contexts after a
+  documentation-only reconciliation; its mutation and Gremlins execution
+  steps were skipped by the workflow's non-heavy-change rules, so those lane
+  results are reused from #1005. The source/test tree is unchanged from the
+  qualified PR #1005 tree; the intervening changes are documentation only.
+  Hosted lanes across these two PRs include Python 3.14 unit,
+  integration, E2E, smoke, property, edge, routine, strict, package, coverage,
+  mutation, Gremlins, dependency, regeneration and profiling; representative
+  performance; Linux/macOS/Windows consumers; security/context, recovery,
+  operational, archive and table-format checks. Automated rights/provenance
+  controls are test evidence only: this does not decide rights, admit or
+  publish source data, or close real-source, representative-user, or release
+  gates.
 - [ ] Run Conductor review, repair findings, open scoped pull requests, wait for
   hosted checks, merge, and reconcile all evidence.
 
@@ -1504,6 +1723,33 @@
   clean-clone release reproducibility checks requiring pinned `uv` 0.11.29,
   unavailable locally (the installed version is 0.12.19).
 - [x] PR #633 merged through protected CI as `0b062f947d2e641a862ff7d9d8e81439c5718efd`; all required checks passed. Exact-main workflow run `36594992662` passed on that commit. The aggregate confirms the canonical B1 receipt digest, nine public objects, six Parquet LFS identities, and matching six-table denominator; `resolved_blockers` includes `public_v4_identity_unverified`, `current_blockers` is empty, and `promotion_status=candidate_only`. Publication was false and source bytes were not retained. This does not establish M-109 acceptance, federation acceptance, or Stable v1 approval.
+
+## M-109 exact MBS XML v3 field semantics (2026-10-05)
+
+- [x] Qualify official field meanings and candidate destination semantics for
+  the exact July 2025 MBS XML v3 era. The field crosswalk covers all 40 native
+  fields contracted by Silver and binds to the exact source digest, 5,989
+  source records and 239,560 field occurrences. Exact-era date parsing remains
+  supported by the separate hosted date receipt. Add a regression that checks
+  the semantic document against the adapter's native field denominator and
+  preserves explicit non-transfer boundaries. This closes field-meaning
+  evidence for this era only; it does not admit Silver or complete M-109.
+- [ ] Repeat native field meaning, temporal semantics and candidate
+  transformation qualification independently for the P7 workbook, each
+  approved later MBS era, each required PBS historical era, and current PBS API
+  only after its access/retention/redistribution gates are resolved.
+
+## M-109 source-era denominator reconciliation (2026-10-05)
+
+- [x] Publish a source-era register that distinguishes exact MBS/PBS profile
+  evidence, historical XML schema families, fixture-only coverage, and current
+  PBS API rights state. Reconcile the M-109 kickoff denominator verbatim and
+  preserve its incompleteness: later-approved MBS snapshots and governed PBS
+  v3 releases are not yet enumerated as exact source identities. Do not mark
+  M-109 accepted from this inventory.
+- [ ] Enumerate the approved exact-source identities and acquire the pending
+  maintainer/provider rights decisions before any PBS public API payload
+  request. Continue semantic qualification era by era after these are explicit.
 
 
 ## M-112 public producer metadata discovery (2026-09-30)
@@ -1798,6 +2044,17 @@
   preserved all 30 baseline objects and durably recorded cleanup. See
   `quality/qualifications/australian-mbs-utilisation-rights-publication-receipt-20261004.json`.
 
+- [x] Reconcile every approved M-112 path individually against current-tree
+  identity, anonymous digest receipts, rights, B1/B2 lineage, v4 admission,
+  consumer canaries, and its preserved deferral group. The 1,759-row ledger
+  confirms all pinned tree identities and sizes, 28 object-level anonymous
+  digest readbacks, and exact-scope rights evidence for the 14 MBS-utilisation
+  objects. No path has complete B1/B2 lineage, v4 admission, or canary proof;
+  all 1,759 remain deferred without changing the approved denominator. The
+  smallest rights-cleared cohort cannot advance because its canonical source
+  receipt, storage receipt, and admission-history fields remain incomplete.
+  See `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261005.json`.
+
 - [x] Restore the exact 14 historical harvest sidecars anonymously and join
   their source IDs, categories, dates, URLs and raw identities to the pinned
   B2 references and published per-object rights supplement. Preserve their
@@ -1886,6 +2143,12 @@
   files were removed after durable outcomes. Twelve cohort objects now have
   structural evidence; two oversized ZIP holds remain, with zero admissions.
   See `quality/qualifications/australian-mbs-workbook-streaming-receipt-20261005.json`.
+  Current-main revalidation run `38944324136` at
+  `8ba21a12f74c6336901abfe6b13cd6d2caae9a91` retested only these two pinned
+  workbooks. Both again passed the same bounded profile, three receipts were
+  read back, and both hosted cache files were removed. The two ZIP holds and
+  zero-admission state are unchanged; see
+  `quality/qualifications/australian-mbs-workbook-streaming-receipt-20261017.json`.
 
 - [x] Define source-specific utilisation semantic validation and admission
   requirements from approved source documentation and native evidence; keep
@@ -1898,6 +2161,239 @@
   payload mappings or granting admission. See
   `quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json`.
 
-- [ ] Implement protected hosted native-header inventory for the four already
+- [x] Implement protected hosted native-header inventory for the four already
   structurally verified standalone CSVs. Bind exact source identities and
   record header metadata only before selecting any semantic conversion.
+  Exact-main run `37410581626` inventoried four existing public CSVs. All four
+  anonymous digests matched; each had eight headers, matched a reviewed
+  catalogue schema candidate, and had zero unexpected fields. The Q1 and Q2
+  demographics headers match the Q3 schema candidate rather than their own
+  resource's schema; this establishes header shape only, not semantic mapping.
+  Durable per-object and summary receipts were independently read back from
+  issue #340; hosted temporary caches were removed after receipts were
+  recorded. No source was
+  added, and no semantic validation, admission, or licensing conclusion
+  changed. See
+  `quality/qualifications/australian-mbs-utilisation-header-inventory-20261006.json`
+  and the cross-resource schema reconciliation in
+  `quality/qualifications/australian-mbs-utilisation-header-schema-reconciliation-20261006.json`.
+
+- [x] Implement and execute bounded, source-value diagnostics for only these
+  four exact-reference standalone CSVs. Synthetic tests cover strict UTF-8/BOM
+  handling, rectangular rows, exact decimal observation (including signed
+  service totals), missing-cell counts, and digest-bound results. Exact-main
+  run `37416203337` at `22ef98006b6002aa5b3b9778b68b54ea4a7f97df` observed
+  1,463,030 rows across the four pinned CSVs; all rows were rectangular and no
+  cells were empty. Q2 demographics has 4,728 `Services` values outside the
+  strict decimal token profile; their lexical forms remain unclassified and
+  must not be treated as zero or silently coerced. Four object receipts and a
+  summary receipt were independently read back from issue #340; all exact
+  digests verified and caches were removed after durable receipts. No raw row
+  values were published, no source was added, and no semantic mappings,
+  processing admission, or Silver publication occurred. See
+  `quality/qualifications/australian-mbs-utilisation-value-observation-20261006.json`.
+
+- [x] Classify invalid numeric tokens into disjoint aggregate lexical
+  categories in the isolated exact-main observer. Run `37417959155` at
+  `a44e18d8ced37019391fef2212262e50da64bc47` verified all four source digests
+  and found all 4,728 Q2 demographics `Services` failures in the separator
+  category; the other three CSVs had zero invalid `Services` tokens, and all
+  `Benefit` values matched the strict decimal profile. Five receipts were
+  independently read back and caches removed after receipt. No token values,
+  mappings, admissions, or Silver rows were published. See
+  `quality/qualifications/australian-mbs-utilisation-invalid-token-category-observation-20261006.json`.
+
+- [x] Refine the Q2 `Services` separator bucket into aggregate-only lexical
+  punctuation-pattern classes. Exact-main run `37419485884` at
+  `e1eae264d7380c600e2a337ac9ac7d4bc84415a9` classified all 4,728 invalid Q2
+  `Services` tokens as matching a comma-triplet pattern; all other separator
+  and invalid-token categories were zero. Four exact-source receipts and the
+  summary were independently read back; digests verified and temporary files
+  removed after receipts. This is a lexical pattern only, not a semantic
+  grouping interpretation or permission to normalize. No new source, mapping,
+  admission, or Silver output. See
+  `quality/qualifications/australian-mbs-utilisation-separator-pattern-observation-20261006.json`.
+
+- [x] Prepare a synthetic-only, explicit-policy exact numeric parser for
+  candidate MBS profiles. A caller must supply the representation policy;
+  grouping is disabled by default, signed values and decimal scale are
+  preserved, malformed grouping and exponent forms are rejected, and errors
+  never echo tokens. Twenty-five synthetic tests pass with 100% statement and
+  branch coverage. No source bytes were read and no source profile, row mapping,
+  transformation, admission, or Silver output was selected. See
+  `quality/qualifications/australian-mbs-utilisation-numeric-policy-20261006.json`.
+
+- [x] Define synthetic candidate row mappings for the existing demographics
+  and group CSV shapes from reviewed documentation. Preserve source-native
+  identifiers and period/category tokens; keep each field's semantic role and
+  row grain explicitly qualified or unresolved. Do not read source rows,
+  normalize numeric values, admit data, or publish Silver in this step. The
+  resulting contract maps only candidate roles and marks the demographics and
+  group grain as unverified. It records each unresolved period, category,
+  numeric, suppression, and identifier rule explicitly. No source bytes or
+  rows were read. See
+  `quality/qualifications/australian-mbs-utilisation-candidate-row-mappings-20261006.json`.
+
+- [x] Extend the protected four-CSV observer contract with aggregate-only
+  non-measure token-shape counts and candidate-grain duplicate-record counts.
+  Candidate keys are held only as bounded in-memory digests; processing fails
+  closed after one million unique keys. No raw token or key is emitted, and
+  the proposed grain remains explicitly unverified. Synthetic observer tests
+  pass with 100% statement and branch coverage. Exact-main execution is still
+  pending; no source bytes were read locally.
+
+- [x] Run the candidate-shape observer on exact main for the same four pinned
+  CSV references. Independently verify the per-object and summary receipts,
+  confirm the new aggregate fields contain no tokens, and remove staged bytes
+  only after digest-bound receipts. Exact run `37427434385` at
+  `07eb1bb8202e4abae4512605ca3e8537fafe66ef` verified all four digests and
+  five receipts. The 1,463,030 rows were rectangular, with no empty cells or
+  repeated candidate keys. Q2 `Services` retained 4,728 comma-triplet lexical
+  failures. The row grain and source semantics remain unverified; no admission
+  was granted. See
+  `quality/qualifications/australian-mbs-utilisation-candidate-shape-observation-20261006.json`.
+
+- [x] Implement a candidate processing-period observer bound to the four
+  exact resource IDs and the saved official resource-description digests.
+  Require a four-digit 2016 year token and recognize only English full or
+  three-letter month names, without trimming or rewriting the source token.
+  The per-resource allowed month sets reflect the documented Q1, through-May
+  Q2, July Q3, and year-to-date-through-July group bounds; they impose no
+  minimum-period or completeness claim. Aggregate output records recognized,
+  invalid, mismatched, and out-of-window counts, with no raw tokens or row
+  transforms. The observer tests pass with 100% statement and branch coverage;
+  no source bytes were read locally.
+
+- [x] Run the candidate processing-period observer on exact main for the same
+  four CSVs and independently read back its five receipts. Confirm the month
+  spellings and resource-specific bounds only through aggregate outcomes.
+  Exact run `37431102764` at `3fa9fd1d6326e816c4540b49a2dd11a8bf9fcb27`
+  recognized all 1,463,030 candidate periods, with no year or month parse
+  failures. Q2 contradicts its saved “current through May” description:
+  190,050 rows classify to June. Five receipts were independently verified,
+  digests matched, and temporary bytes were removed after receipt. The
+  discrepancy remains open; no cutoff override, period semantic acceptance,
+  admission, or Silver output. See
+  `quality/qualifications/australian-mbs-utilisation-processing-period-observation-20261006.json`.
+
+- [~] Resolve the Q2 source-description/payload cutoff conflict before
+  accepting period semantics or admitting the Q2 object. Do not add sources or
+  silently widen the captured May cutoff to make the observer pass.
+
+## Source-neutral aggregate measure contract (2026-10-11)
+
+- [x] Define a candidate-only typed aggregate measure contract that keeps
+  service counts distinct from distinct-patient counts, preserves suppressed,
+  unreported, and unavailable states as unknown, binds source and receipt
+  digests, requires explicit period/time semantics, and excludes patient-level
+  identifiers. A deterministic Arrow schema and Parquet round-trip are tested
+  entirely with synthetic values. The contract performs no source acquisition,
+  semantic qualification, admission, or publication; M-106 remains blocked on
+  its separate source-specific denominator and rights evidence.
+- [x] Register the contract tests in Test-Goblin and run focused, routine, and
+  full local validation. The focused measure/source-review/E2E set passes 27
+  tests; routine and pinned Test-Goblin checks pass. The full local run passes
+  the pytest, package, mutation, Gremlins, randomized-order, provenance,
+  security, and dependency lanes. Four existing optional Hugging Face typing
+  warnings and an unavailable PyPI package audit are retained as limitations.
+- [x] Close hosted patch-coverage findings for missing invalid-state controls:
+  missing source-defined time evidence, incomplete observed values, a typed
+  value on a non-observed state, missing suppression marker, and native values
+  on unreported/unavailable states. Seven new parameterized cases bring the
+  focused measure/source-review/E2E set to 27; the new module reaches 100%
+  statement and branch coverage locally. Exact-head PR #943 later passed all
+  39 reported checks and merged as `6201cac4d1e7df98528e9cf581834549a87bc248`.
+
+### Aggregate measure review corrections (2026-10-11)
+
+- [x] Reconcile observed native integer counts under an explicit representation
+  policy while retaining the exact token, and reject typed counts outside the
+  Arrow `int64` range before projection. Grouped values require policy evidence;
+  malformed groups and unqualified separators fail closed. Synthetic tests
+  cover positive, malformed, missing-policy-evidence, and range-boundary cases.
+- [x] Re-run the focused measure, source-review, and medallion E2E tests plus
+  lint, formatting, `ty`, BasedPyright, and the pinned full Test-Goblin profile.
+  Focused tests pass (31); all local gates pass. Full profile: 6,144 passed,
+  96.94% coverage, 353 Gremlins passed; Darwin mutation is advisory, and the
+  optional PyPI audit is skipped because this project is not published there.
+  Exact-head PR #943 passed all 39 reported checks including Codecov and
+  Linux/macOS/Windows consumers, all four review threads were reconciled, and
+  the change merged as `6201cac4d1e7df98528e9cf581834549a87bc248`.
+
+## M-109 July 2025 MBS six-table value parity (2026-10-12)
+
+- [x] Extend the existing exact-source parity qualification from the services
+  table to all six pinned July 2025 MBS Silver table candidates. Bind each
+  Parquet identity and the candidate manifest digest, compare every generated
+  source-faithful field and row value, and emit a value-free receipt with no
+  rights, admission, publication, or promotion claims. The model and JSON
+  Schema require each of the six tables exactly once and in deterministic
+  order. Final local focused/integration checks pass (17 parity tests; 52
+  parity plus MBS Silver tests), as do targeted `ty`, BasedPyright, Ruff, and
+  formatting checks. PR #1052 passed required exact-head checks and merged as
+  `2666e6e026867be99d85f1e32bc9b381afe50efc`. Exact-main Test-Goblin run
+  `38908829291` passed; its value-free six-table parity receipt was downloaded
+  and validated against both the Pydantic model and Draft 2020-12 JSON Schema.
+  All six tables report 5,989 rows and the expected source-to-Silver value
+  parity. Rights, production admission, publication, and production promotion
+  remain false. The full local profile on the pre-cardinality-guard tree had 6,276
+  passed, 3 skipped, and 7 failures; most were existing performance/browser
+  checks under severe host load, with one Hypothesis first-call timeout. The
+  isolated Bronze recovery retry also timed out while spawning `git
+  rev-parse`, without reaching its digest assertion. Do not weaken those
+  limits; protected hosted lanes must validate the final tree. This closes
+  only source-to-candidate value parity for one era; M-109's other eras,
+  semantics, rights, and denominator requirements remain open.
+
+- [x] Refresh the exact MBS August raw-path root-manifest state with an
+  anonymous metadata-only readback at dataset revision
+  `1e4971c35c0ef45026168a8e2498d1bd57a3c324`. The root manifest lists the
+  matching SHA-256 and byte count under the historical
+  `Downloads-20260801` alias, but does not list the approved content-addressed
+  path. This confirms the path-level manifest gap without reading source bytes,
+  changing rights, changing the denominator, or admitting the object. See
+  `quality/qualifications/australian-m112-root-manifest-readback-20261005.json`.
+
+- [x] Prepare the exact August 2026 MBS root-manifest append as a local,
+  metadata-only candidate. The protected main-only workflow binds the current
+  anonymous manifest revision and digest, the exact existing raw-object blob
+  identity, its historical alias, and the existing MBS publication and source
+  receipt evidence; compare-and-swap writes only `manifest.json`. Focused
+  publisher tests cover stale-head rejection, ambiguous-commit idempotency, and
+  anonymous-readback failure. No source payload is read or uploaded, and no
+  rights, admission, denominator, or M-112 acceptance state changes.
+
+- [x] Execute the exact-main metadata-only append and reconcile its durable
+  anonymous receipt. PR #1067 merged at `320112b821e861c19f4065f550273119ac219831`
+  after all 39 required checks passed on head
+  `3a8b6b83fcd8d417c590c204a602277f1e2f784a`. Hosted run
+  `38939963456` appended the existing content-addressed August MBS XML identity
+  to the root manifest using compare-and-swap; the public dataset advanced from
+  `44b25bfd87e44998c7c1da4c3930ad4447e9246f` to
+  `3d2d528439bddf6f42e8e700c88917f0960a9f38`. Anonymous readback verified the
+  manifest digest, the added path and unchanged historical alias, each bound to
+  SHA-256 `c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565`
+  and 8,293,331 bytes. File count increased from 27 to 28; no other manifest
+  rows, rights, admission, or denominator changed, and no source payload bytes
+  were read or uploaded. Durable receipt:
+  https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6221047682 .
+  This closes only the root-manifest identity gap; M-112's approved denominator,
+  object-level lineage, rights/admission, and consumer-canary acceptance remain
+  open.
+
+### M-110 real-Silver admission gate recheck (2026-10-05)
+
+- [ ] Qualify Gold relationships over admitted real Silver tables. This remains
+  blocked: the MBS 2025-07 v3 Silver qualification and manifest both say
+  `candidate_only`; the PBS 2026-04 v3 aggregate says
+  `structural_storage_candidate_only`, `domain_semantics_qualified=false`,
+  and `date_profile=not-selected`. No Australian Silver admission register or
+  accepted Silver admission receipt is present in the current tree. The MBS
+  and PBS Gold graph candidates still identify their inputs as synthetic
+  Silver candidates. Bronze receipts or admission do not satisfy this gate.
+- [ ] Re-enter M-110 after the applicable source-era Silver semantics, rights,
+  and admission evidence is accepted for the exact input revisions. Then
+  qualify each relationship against those admitted tables, including typed
+  node/edge identity, source spans, temporal validity, review decisions, and
+  negative controls. Keep MBS/PBS cross-source or clinical interpretations
+  excluded unless separately supported and approved.

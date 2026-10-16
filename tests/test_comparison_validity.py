@@ -18,6 +18,7 @@ from global_medicines_atlas.product_contracts import (
     ComparisonValidityDimension,
     ComparisonValidityDimensions,
     ComparisonValidityOutcome,
+    EvidenceContext,
 )
 
 
@@ -82,6 +83,47 @@ def test_unknown_dimension_abstains_with_provenance_preserved() -> None:
     assert verdict.outcome is ComparisonValidityOutcome.INSUFFICIENT_EVIDENCE
     assert verdict.dimensions.granularity.evidence_ids
     assert verdict.dimensions.population.evidence_ids == ()
+    assert verdict.left_evidence_context == EvidenceContext()
+    assert verdict.right_evidence_context == EvidenceContext()
+
+
+@pytest.mark.parametrize(
+    ("left_context", "right_context"),
+    [
+        (
+            EvidenceContext(
+                schema_era="left-v1",
+                comparison_cohort="current",
+                entity_granularity="medicine_item",
+            ),
+            None,
+        ),
+        (
+            None,
+            EvidenceContext(
+                schema_era="right-v2",
+                comparison_cohort="legacy",
+                entity_granularity="service_item",
+            ),
+        ),
+    ],
+)
+def test_one_subject_context_does_not_fill_or_erase_the_other(
+    left_context: EvidenceContext | None,
+    right_context: EvidenceContext | None,
+) -> None:
+    verdict = evaluate_comparison_validity(
+        left_subject_id="nz:medicine",
+        right_subject_id="au:medicine",
+        dimensions=dimensions(),
+        left_evidence_context=left_context,
+        right_evidence_context=right_context,
+    )
+
+    assert verdict.left_evidence_context == (left_context or EvidenceContext())
+    assert verdict.right_evidence_context == (
+        right_context or EvidenceContext()
+    )
 
 
 def test_compatible_dimension_only_allows_caveated_status_comparison() -> None:
@@ -133,7 +175,18 @@ def test_runtime_verdict_conforms_to_versioned_json_schema() -> None:
         Path("schemas/comparison-validity-v1.json").read_text(encoding="utf-8")
     )
 
+    assert "left_evidence_context" in schema["required"]
+    assert "right_evidence_context" in schema["required"]
     jsonschema.validate(verdict.model_dump(mode="json"), schema)
+
+    for context_field in (
+        "left_evidence_context",
+        "right_evidence_context",
+    ):
+        incomplete = verdict.model_dump(mode="json")
+        del incomplete[context_field]
+        with pytest.raises(jsonschema.ValidationError):
+            jsonschema.validate(incomplete, schema)
 
 
 @pytest.mark.parametrize(

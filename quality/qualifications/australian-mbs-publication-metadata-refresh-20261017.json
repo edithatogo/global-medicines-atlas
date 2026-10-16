@@ -1,0 +1,76 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-publication-metadata-refresh",
+  "schema_version": 1,
+  "observed_at": "2026-10-16T16:08:27Z",
+  "publisher": "Australian Government Department of Health, Disability and Ageing",
+  "method": "Read-only review of the current official publication pages and exposed attachment links. Compared exact page and attachment URLs with the September 28 and 29 metadata receipts. Attempts to open XLSX links returned unsupported-content-type errors before workbook content was read or retained.",
+  "prior_observations": [
+    "quality/qualifications/australian-mbs-publication-metadata-observation-20260928.json",
+    "quality/qualifications/australian-mbs-workbook-link-drift-20260929.json"
+  ],
+  "observations": [
+    {
+      "family": "annual_state_and_territory",
+      "page_url": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en",
+      "page_title": "Medicare annual statistics – State and territory (2009-10 to 2025-26)",
+      "page_statement": "Annual statistics about the use of Medicare by state and territory from 2009–10 to 2025–26.",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+      "prior_attachment_url_unchanged": true,
+      "attachment_request_succeeded": false,
+      "attachment_body_read_or_retained": false,
+      "metadata_discrepancy": "The page describes coverage through 2025–26 while the linked filename ends in 2024–25; actual workbook coverage remains unverified."
+    },
+    {
+      "family": "quarterly_state_and_territory",
+      "page_url": "https://www.health.gov.au/resources/publications/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26?language=en",
+      "page_title": "Medicare quarterly statistics – State and territory (June quarter 2025-26)",
+      "page_statement": "Statistics from September quarter 2009–10 to June quarter 2025–26, by state and territory.",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-quarterly-statistics-state-and-territory-june-quarter-2025-26.xlsx",
+      "prior_attachment_url_unchanged": true,
+      "attachment_request_succeeded": false,
+      "attachment_body_read_or_retained": false
+    },
+    {
+      "family": "year_to_date_summary_tables",
+      "page_url": "https://www.health.gov.au/resources/publications/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26",
+      "page_title": "Medicare statistics – year-to-date summary tables (July to June 2025-26)",
+      "page_statement": "July to June 2025–26 compared with the previous year by broad type of service, state and territory, and Modified Monash Model location.",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-statistics-year-to-date-summary-tables-july-to-june-2025-26.xlsx",
+      "prior_attachment_url_unchanged": true,
+      "attachment_request_succeeded": false,
+      "attachment_body_read_or_retained": false
+    },
+    {
+      "family": "rolling_12_months",
+      "page_url": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-rolling-12-months-july-2009-to-june-2026",
+      "page_title": "Medicare annual statistics – Rolling 12 months (July 2009 to June 2026)",
+      "page_statement": "12-month rolling statistics about Medicare use from July 2009 to June 2026.",
+      "publication_date": "2026-08-10",
+      "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-rolling-12-months-july-2009-to-march-2026.xlsx",
+      "prior_observation": "quality/qualifications/australian-mbs-workbook-link-drift-20260929.json",
+      "prior_attachment_url_unchanged": true,
+      "attachment_request_succeeded": false,
+      "attachment_body_read_or_retained": false,
+      "metadata_discrepancy": "The page describes coverage through June 2026 while the linked filename ends in March 2026; actual workbook coverage remains unverified."
+    }
+  ],
+  "comparison": {
+    "page_publication_dates_changed": false,
+    "attachment_urls_changed": false,
+    "hosted_workbook_transport_retested": false,
+    "reason_no_retry": "No changed endpoint or transport was observed; existing hosted timeouts remain the latest byte-delivery evidence."
+  },
+  "limitations": [
+    "This receipt records current page metadata and URLs, not mutable source HTML or workbook contents.",
+    "No source bytes were acquired, read, or retained.",
+    "No rights conclusion, source-owner clarification, mirror availability, historical denominator, or M-107 acceptance is established."
+  ],
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
+    "value": "f74fabe6db84eb0febdc7738f5254026c549ac6e9464a264e1972818af57c4c8"
+  }
+}

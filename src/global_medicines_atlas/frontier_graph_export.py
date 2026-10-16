@@ -11,13 +11,27 @@ import hashlib
 import json
 from dataclasses import dataclass
 from operator import itemgetter
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
+from urllib.parse import quote
 
 if TYPE_CHECKING:
     import pyarrow as pa
 
 from .mbs_gold_graph import MBS_GOLD_EDGE_SCHEMA, MBS_GOLD_NODE_SCHEMA
 from .pbs_gold_graph import PBS_GOLD_EDGE_SCHEMA, PBS_GOLD_NODE_SCHEMA
+from .receipts import (
+    DataSensitivity,
+    PersonalDataState,
+    PublicationDisposition,
+    RightsState,
+)
+
+type GraphPolicy = tuple[
+    RightsState,
+    DataSensitivity,
+    PersonalDataState,
+    PublicationDisposition,
+]
 
 NODE_STATEMENT = (
     "UNWIND $nodes AS row CREATE (n:GmaCandidate "
@@ -30,6 +44,12 @@ EDGE_STATEMENT = (
     "CREATE (s)-[:GMA_CANDIDATE "
     "{edge_id: row.edge_id, payload_json: row.payload_json}]->(t)"
 )
+_RESTRICTED_FIELD_CLASSIFICATIONS = {
+    "rights_state": frozenset({"restricted", "prohibited"}),
+    "data_sensitivity": frozenset({"sensitive", "restricted"}),
+    "personal_data": frozenset({"possible", "present"}),
+    "publication": frozenset({"prohibited"}),
+}
 
 
 @dataclass(frozen=True)
@@ -68,14 +88,14 @@ def export_rdf_star(
     payload = json.loads(exported.reference_json)
     lines: list[str] = []
     for row in payload["nodes"]:
-        subject = _rdf_id("node", row["node_id"])
+        subject = rdf_iri_reference("node", row["node_id"])
         lines.append(
             f"{subject} <urn:gma:payload-json> {_rdf_literal(_json(row))} ."
         )
     for row in payload["edges"]:
-        source = _rdf_id("node", row["source_node_id"])
-        target = _rdf_id("node", row["target_node_id"])
-        edge = _rdf_id("edge", row["edge_id"])
+        source = rdf_iri_reference("node", row["source_node_id"])
+        target = rdf_iri_reference("node", row["target_node_id"])
+        edge = rdf_iri_reference("edge", row["edge_id"])
         quoted = f"<<{source} <urn:gma:connects-to> {target}>>"
         lines.extend((
             f"{quoted} <urn:gma:edge-id> {_rdf_literal(row['edge_id'])} .",
@@ -88,14 +108,47 @@ def export_rdf_star(
     return result
 
 
-def _rdf_id(kind: str, value: str) -> str:
-    return (
-        "<urn:gma:"
-        + kind
-        + ":"
-        + value.replace("%", "%25").replace("#", "%23")
-        + ">"
+def export_rdf12(
+    nodes: pa.Table,
+    edges: pa.Table,
+    *,
+    max_rows: int = 100_000,
+    max_bytes: int = 64 * 1024 * 1024,
+) -> str:
+    """Return a deterministic RDF 1.2 N-Triples projection of Gold tables.
+
+    Each edge resource reifies its source-to-target triple with an RDF 1.2
+    triple term. Explicit endpoint properties keep ordinary SPARQL 1.1
+    readback possible while preserving the full source row as JSON.
+    """
+    exported = export_gold_tables(
+        nodes, edges, max_rows=max_rows, max_bytes=max_bytes
     )
+    payload = json.loads(exported.reference_json)
+    lines: list[str] = []
+    for row in payload["nodes"]:
+        subject = rdf_iri_reference("node", row["node_id"])
+        lines.append(
+            f"{subject} <urn:gma:payload-json> {_rdf_literal(_json(row))} ."
+        )
+    for row in payload["edges"]:
+        source = rdf_iri_reference("node", row["source_node_id"])
+        target = rdf_iri_reference("node", row["target_node_id"])
+        edge = rdf_iri_reference("edge", row["edge_id"])
+        triple_term = f"<<( {source} <urn:gma:connects-to> {target} )>>"
+        lines.extend((
+            f"{edge} <http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies> {triple_term} .",
+            f"{edge} <urn:gma:source> {source} .",
+            f"{edge} <urn:gma:target> {target} .",
+            f"{edge} <urn:gma:edge-id> {_rdf_literal(row['edge_id'])} .",
+            f"{edge} <urn:gma:payload-json> {_rdf_literal(_json(row))} .",
+        ))
+    return "\n".join(lines) + ("\n" if lines else "")
+
+
+def rdf_iri_reference(kind: str, value: str) -> str:
+    """Encode one untrusted graph identifier as an ASCII-safe IRI reference."""
+    return f"<urn:gma:{kind}:{quote(value, safe='-._~:')}>"
 
 
 def _rdf_literal(value: str) -> str:
@@ -111,6 +164,187 @@ def _json(value: object) -> str:
         ensure_ascii=True,
         allow_nan=False,
     )
+
+
+def _pairs_without_duplicates(
+    pairs: list[tuple[str, object]],
+) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate graph metadata key")
+        result[key] = value
+    return result
+
+
+def _metadata_object(value: str, name: str) -> dict[str, object]:
+    try:
+        decoded = json.loads(value, object_pairs_hook=_pairs_without_duplicates)
+    except (TypeError, ValueError, json.JSONDecodeError) as error:
+        raise ValueError(f"invalid graph {name} metadata") from error
+    return _string_keyed_object(decoded, name)
+
+
+def _string_keyed_object(value: object, name: str) -> dict[str, object]:
+    if not isinstance(value, dict):
+        raise TypeError(f"invalid graph {name} metadata")
+    return dict(cast("dict[str, object]", value))
+
+
+def _policy_metadata(
+    metadata: dict[str, object], name: str
+) -> tuple[
+    RightsState,
+    DataSensitivity,
+    PersonalDataState,
+    PublicationDisposition,
+]:
+    rights_state = metadata.get("rights_state")
+    if not isinstance(rights_state, str):
+        raise TypeError(f"invalid graph {name} rights/sensitivity metadata")
+    sensitivity = _string_keyed_object(
+        metadata.get("sensitivity"), f"{name} sensitivity"
+    )
+    data_sensitivity = sensitivity.get("data_sensitivity")
+    personal_data = sensitivity.get("personal_data")
+    publication = sensitivity.get("publication")
+    if not all(
+        isinstance(value, str)
+        for value in (data_sensitivity, personal_data, publication)
+    ):
+        raise TypeError(f"invalid graph {name} rights/sensitivity metadata")
+    try:
+        rights_state = RightsState(rights_state)
+        data_sensitivity = DataSensitivity(data_sensitivity)
+        personal_data = PersonalDataState(personal_data)
+        publication = PublicationDisposition(publication)
+    except ValueError as error:
+        raise ValueError(
+            f"invalid graph {name} rights/sensitivity metadata"
+        ) from error
+    if (
+        rights_state in {RightsState.RESTRICTED, RightsState.PROHIBITED}
+        or data_sensitivity
+        in {DataSensitivity.SENSITIVE, DataSensitivity.RESTRICTED}
+        or personal_data
+        in {PersonalDataState.POSSIBLE, PersonalDataState.PRESENT}
+        or publication is PublicationDisposition.PROHIBITED
+    ):
+        raise ValueError(
+            "graph contains restricted or prohibited rights/sensitivity metadata"
+        )
+    return rights_state, data_sensitivity, personal_data, publication
+
+
+def _check_rights_and_sensitivity(
+    node_rows: list[dict[str, object]], edge_rows: list[dict[str, object]]
+) -> None:
+    """Reject records explicitly classified as restricted from local previews.
+
+    Unknown and review-required classifications are preserved for local preview
+    only. This is a metadata guard, not content scanning or rights clearance.
+    """
+    node_policies: set[GraphPolicy] = set()
+    edge_policies: set[GraphPolicy] = set()
+    for row in node_rows:
+        evidence = _metadata_object(str(row["evidence_json"]), "node evidence")
+        node_policies.add(_policy_metadata(evidence, "node evidence"))
+        _check_field_rights_metadata(str(row["fields_json"]))
+
+    for row in edge_rows:
+        controls = _metadata_object(str(row["controls_json"]), "edge controls")
+        edge_policy = _policy_metadata(controls, "edge controls")
+        evidence = _metadata_object(str(row["evidence_json"]), "edge evidence")
+        evidence_policy = _policy_metadata(evidence, "edge evidence")
+        if edge_policy != evidence_policy:
+            raise ValueError("graph edge rights/sensitivity metadata differs")
+        edge_policies.add(edge_policy)
+
+    if (
+        len(node_policies) > 1
+        or len(edge_policies) > 1
+        or (node_policies and edge_policies and node_policies != edge_policies)
+    ):
+        raise ValueError(
+            "graph rights/sensitivity metadata differs across rows"
+        )
+
+
+def _check_field_rights_metadata(value: str) -> None:
+    """Reject nested restricted classifications before preview export.
+
+    The scanner recognizes structured policy labels at any depth. It does not
+    infer rights or detect personal content expressed as ordinary text.
+    """
+    try:
+        fields = json.loads(value, object_pairs_hook=_pairs_without_duplicates)
+    except (TypeError, ValueError, json.JSONDecodeError) as error:
+        raise ValueError("invalid graph fields metadata") from error
+    if isinstance(fields, dict):
+        field_rows: list[object] = [fields]
+    elif isinstance(fields, list):
+        field_rows = cast("list[object]", fields)
+    else:
+        raise TypeError("invalid graph fields metadata")
+    for field in field_rows:
+        if not isinstance(field, dict):
+            raise TypeError("invalid graph fields metadata")
+        field_metadata = _string_keyed_object(cast("object", field), "field")
+        _check_nested_field_policy(field_metadata)
+
+
+def _check_nested_field_policy(
+    value: object, *, policy_context: bool = False
+) -> None:
+    """Find nested policy envelopes without interpreting native values."""
+    if isinstance(value, dict):
+        field_object = cast("dict[str, object]", value)
+        if "field_policy" in field_object:
+            policy = field_object["field_policy"]
+            try:
+                _policy_metadata(
+                    _string_keyed_object(policy, "field policy"),
+                    "field policy",
+                )
+            except (TypeError, ValueError) as error:
+                if "restricted or prohibited" in str(error):
+                    raise ValueError(
+                        "graph contains restricted field "
+                        "rights/sensitivity metadata"
+                    ) from error
+                try:
+                    _check_nested_field_policy(policy, policy_context=True)
+                except ValueError as nested_error:
+                    if "restricted field rights/sensitivity" in str(
+                        nested_error
+                    ):
+                        raise
+                raise ValueError(
+                    "invalid graph field rights/sensitivity metadata"
+                ) from error
+            _check_nested_field_policy(policy, policy_context=True)
+            for key, item in field_object.items():
+                if key != "field_policy":
+                    _check_nested_field_policy(
+                        item, policy_context=policy_context
+                    )
+            return
+
+        for key, item in field_object.items():
+            blocked = _RESTRICTED_FIELD_CLASSIFICATIONS.get(key)
+            if (
+                policy_context
+                and blocked is not None
+                and isinstance(item, str)
+                and item in blocked
+            ):
+                raise ValueError(
+                    "graph contains restricted field rights/sensitivity metadata"
+                )
+            _check_nested_field_policy(item, policy_context=policy_context)
+    elif isinstance(value, list):
+        for item in cast("list[object]", value):
+            _check_nested_field_policy(item, policy_context=policy_context)
 
 
 def export_gold_tables(
@@ -160,6 +394,7 @@ def export_gold_tables(
         for row in edge_rows
     ):
         raise ValueError("graph edge endpoint missing")
+    _check_rights_and_sensitivity(node_rows, edge_rows)
     reference = _json({"nodes": node_rows, "edges": edge_rows})
     parameters = _json({
         "nodes": [

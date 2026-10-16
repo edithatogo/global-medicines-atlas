@@ -155,59 +155,13 @@ def build_gold_edge_review_queue(
 
 def regenerate_gold_edge_review_queue(
     cases: Iterable[GoldEdgeReviewCase],
-    adjudications: Iterable[AdjudicationEvent],
+    _adjudications: Iterable[AdjudicationEvent],
 ) -> tuple[GoldEdgeReviewCase, ...]:
-    """Filter terminal decisions; keep unresolved or conflicting chains."""
-    events_by_candidate: dict[str, dict[str, AdjudicationEvent]] = {}
-    for event in adjudications:
-        events = events_by_candidate.setdefault(event.candidate_id, {})
-        events[event.event_id] = event
+    """Keep every case pending until a trusted authority verifier exists.
 
-    terminal: set[str] = set()
-    final_states = {
-        ReviewState.ACCEPTED,
-        ReviewState.REJECTED,
-        ReviewState.SUPERSEDED,
-    }
-    for candidate_id, events in events_by_candidate.items():
-        roots = [
-            event
-            for event in events.values()
-            if event.supersedes_event_id is None
-        ]
-        if len(roots) != 1:
-            continue
-        children: dict[str, list[AdjudicationEvent]] = {}
-        for event in events.values():
-            if event.supersedes_event_id is not None:
-                if event.supersedes_event_id not in events:
-                    children.clear()
-                    break
-                children.setdefault(event.supersedes_event_id, []).append(event)
-        if any(len(next_events) != 1 for next_events in children.values()):
-            continue
-        current = roots[0]
-        visited = {current.event_id}
-        chronological = True
-        while (
-            current.event_id in children
-            and children[current.event_id][0].event_id not in visited
-        ):
-            successor = children[current.event_id][0]
-            if successor.occurred_at <= current.occurred_at:
-                chronological = False
-            current = successor
-            visited.add(current.event_id)
-        if (
-            chronological
-            and len(visited) == len(events)
-            and current.state in final_states
-        ):
-            terminal.add(candidate_id)
-
-    pending = {
-        case.review_case_id: case
-        for case in cases
-        if case.review_case_id not in terminal
-    }
+    Append-only event records and their hashes establish integrity, not reviewer
+    authority. This system has no independent verifier, so caller-supplied
+    terminal events cannot remove a case from the queue.
+    """
+    pending = {case.review_case_id: case for case in cases}
     return tuple(pending[key] for key in sorted(pending))

@@ -19,7 +19,9 @@ from global_medicines_atlas.product_contracts import (
     ErrorCode,
     ErrorEnvelope,
     EvidenceAvailability,
+    EvidenceContext,
     EvidenceDimension,
+    EvidenceItem,
     EvidenceQuery,
     ExportFormat,
     ExportRequest,
@@ -284,6 +286,51 @@ def test_absence_states_cannot_imply_a_negative_status(
         )
 
 
+@pytest.mark.parametrize(
+    "state", [ProductState.UNKNOWN, ProductState.NOT_COVERED]
+)
+def test_assertion_rows_cannot_pair_absence_states_with_status_codes(
+    state: ProductState,
+) -> None:
+    with pytest.raises(ValidationError, match="cannot imply a status"):
+        EvidenceItem(
+            assertion_id="assertion:1",
+            concept_id="medicine:123",
+            jurisdiction="NZ",
+            dimension=EvidenceDimension.REGULATORY,
+            state=state,
+            status_code="not_approved",
+            terminology=terminology(),
+            provenance=provenance(),
+            uncertainty=Uncertainty(
+                level=UncertaintyLevel.UNKNOWN,
+                reason="No state could be established.",
+            ),
+            valid_time=clocks(),
+        )
+
+
+def test_assertion_row_allows_status_when_evidence_state_is_confirmed() -> None:
+    value = EvidenceItem(
+        assertion_id="assertion:approved",
+        concept_id="medicine:123",
+        jurisdiction="NZ",
+        dimension=EvidenceDimension.REGULATORY,
+        state=ProductState.CONFIRMED,
+        status_code="approved",
+        terminology=terminology(),
+        provenance=provenance(),
+        uncertainty=Uncertainty(
+            level=UncertaintyLevel.LOW,
+            confidence=0.98,
+        ),
+        valid_time=clocks(),
+    )
+
+    assert value.state is ProductState.CONFIRMED
+    assert value.status_code == "approved"
+
+
 def test_unknown_can_report_explicit_evidence_unavailability() -> None:
     value = conclusion(
         state=ProductState.UNKNOWN,
@@ -362,6 +409,29 @@ def test_nullable_coverage_denominator_does_not_invent_percentage() -> None:
     )
     assert item.denominator is None
     assert "percentage" not in item.model_dump()
+
+
+def test_result_context_serializes_unreported_source_metadata_explicitly() -> (
+    None
+):
+    item = CoverageItem(
+        jurisdiction="NZ",
+        dimension=EvidenceDimension.FUNDING,
+        state=ProductState.UNKNOWN,
+        covered_count=0,
+        denominator=None,
+        valid_time=clocks(),
+    )
+
+    assert item.evidence_context == EvidenceContext()
+    assert item.model_dump(mode="json")["evidence_context"] == {
+        "schema_era": None,
+        "comparison_cohort": "unknown",
+        "entity_granularity": "unknown",
+        "review_state": "not_reported",
+    }
+    with pytest.raises(ValidationError):
+        EvidenceContext.model_validate({"review_state": "reviewed"})
 
 
 def test_coverage_count_cannot_exceed_known_denominator() -> None:

@@ -7,7 +7,19 @@ from typing import Literal
 RESOURCE_ID_PATTERN = r"^[a-z0-9]+(?:[._-][a-z0-9]+)+$"
 
 SemanticDimension = Literal[
-    "service_benefit", "funding", "formulary", "regulatory", "terminology"
+    "service_benefit",
+    "funding",
+    "formulary",
+    "regulatory",
+    "terminology",
+]
+PlatinumSemanticDimension = Literal[
+    "service_benefit",
+    "funding",
+    "formulary",
+    "regulatory",
+    "terminology",
+    "source_structure",
 ]
 EntityGranularity = Literal[
     "service_item",
@@ -27,5 +39,6 @@ __all__ = [
     "RESOURCE_ID_PATTERN",
     "Capability",
     "EntityGranularity",
+    "PlatinumSemanticDimension",
     "SemanticDimension",
 ]

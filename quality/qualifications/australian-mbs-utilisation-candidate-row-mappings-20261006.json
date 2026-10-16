@@ -1,0 +1,52 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-utilisation-candidate-row-mappings",
+  "schema_version": 1,
+  "recorded_at": "2026-10-06T06:12:00Z",
+  "status": "synthetic_candidate_mappings_only",
+  "source_objects_examined": 0,
+  "source_inventory_expanded": false,
+  "input_evidence": {
+    "requirements": "quality/qualifications/australian-mbs-utilisation-semantic-requirements-20261005.json",
+    "header_inventory": "quality/qualifications/australian-mbs-utilisation-header-inventory-20261006.json",
+    "header_schema_reconciliation": "quality/qualifications/australian-mbs-utilisation-header-schema-reconciliation-20261006.json",
+    "numeric_policy": "quality/qualifications/australian-mbs-utilisation-numeric-policy-20261006.json"
+  },
+  "candidate_fields": {
+    "demographics": [
+      {"source_role": "processing_year_token", "candidate_names": ["Year"], "candidate_type_hints": ["numeric", "text"], "mapping_state": "candidate_only", "unresolved": ["native token form", "calendar validity", "period boundary"]},
+      {"source_role": "processing_month_token", "candidate_names": ["MonthofProcessing", "Month of Processing"], "candidate_type_hints": ["text"], "mapping_state": "candidate_only", "unresolved": ["native labels and calendar mapping", "processing period meaning per payload"]},
+      {"source_role": "item_identifier", "candidate_names": ["ItemNumber", "Item Number"], "candidate_type_hints": ["numeric", "text"], "mapping_state": "preserve_lexically_candidate", "unresolved": ["native identifier grammar", "source-era validity"]},
+      {"source_role": "patient_state_category", "candidate_names": ["State"], "candidate_type_hints": ["text"], "mapping_state": "candidate_only", "unresolved": ["category vocabulary", "missing and suppression markers"]},
+      {"source_role": "age_category", "candidate_names": ["AgeRange"], "candidate_type_hints": ["text"], "mapping_state": "candidate_only", "unresolved": ["category vocabulary", "missing and suppression markers"]},
+      {"source_role": "gender_category", "candidate_names": ["Gender"], "candidate_type_hints": ["text"], "mapping_state": "candidate_only", "unresolved": ["category vocabulary", "missing and suppression markers"]},
+      {"source_role": "adjusted_service_measure", "candidate_names": ["Services"], "candidate_type_hints": ["numeric"], "mapping_state": "explicit_numeric_profile_required", "unresolved": ["comma-triplet semantics", "native precision and unit", "suppression markers"]},
+      {"source_role": "benefit_measure", "candidate_names": ["Benefit"], "candidate_type_hints": ["numeric"], "mapping_state": "explicit_numeric_profile_required", "unresolved": ["currency and unit confirmation", "native scale", "suppression markers"]}
+    ],
+    "group": [
+      {"source_role": "processing_year_token", "candidate_names": ["Year"], "candidate_type_hints": ["text"], "mapping_state": "candidate_only", "unresolved": ["native token form", "calendar validity", "period boundary"]},
+      {"source_role": "processing_month_token", "candidate_names": ["Month of Processing"], "candidate_type_hints": ["text"], "mapping_state": "candidate_only", "unresolved": ["native labels and calendar mapping", "processing period meaning per payload"]},
+      {"source_role": "group_category", "candidate_names": ["Group"], "candidate_type_hints": ["text"], "mapping_state": "candidate_only", "unresolved": ["code versus label", "vocabulary and version"]},
+      {"source_role": "subgroup_category", "candidate_names": ["Sub-Group"], "candidate_type_hints": ["text"], "mapping_state": "candidate_only", "unresolved": ["code versus label", "vocabulary and version"]},
+      {"source_role": "item_identifier", "candidate_names": ["Item Number"], "candidate_type_hints": ["text"], "mapping_state": "preserve_lexically_candidate", "unresolved": ["native identifier grammar", "source-era validity"]},
+      {"source_role": "patient_state_category", "candidate_names": ["State"], "candidate_type_hints": ["text"], "mapping_state": "candidate_only", "unresolved": ["category vocabulary", "missing and suppression markers"]},
+      {"source_role": "adjusted_service_measure", "candidate_names": ["Services"], "candidate_type_hints": ["text"], "mapping_state": "explicit_numeric_profile_required", "unresolved": ["native numeric grammar", "precision and unit", "suppression markers"]},
+      {"source_role": "benefit_measure", "candidate_names": ["Benefit"], "candidate_type_hints": ["text"], "mapping_state": "explicit_numeric_profile_required", "unresolved": ["currency and unit confirmation", "native scale", "suppression markers"]}
+    ]
+  },
+  "candidate_grain": {
+    "demographics": ["processing period", "item identifier", "patient state", "age category", "gender category"],
+    "group": ["processing period", "group category", "subgroup category", "item identifier", "patient state"],
+    "state": "unverified_candidate_only",
+    "notes": ["No source rows were read.", "No uniqueness or duplicate assumption is made.", "Catalogue _id is excluded from source identity.", "CSV and workbook periods are not assumed equivalent."]
+  },
+  "boundaries": {
+    "source_bytes_read": false,
+    "source_rows_transformed": false,
+    "numeric_policy_selected_for_source": false,
+    "semantic_mapping_accepted": false,
+    "processing_admitted": false,
+    "silver_published": false,
+    "new_sources_added": false
+  },
+  "next_step": "Implement row-shape and semantic validation only after the maintainer's source rights/licensing gate and a protected exact-reference workflow; preserve unresolved values and fail closed until source-specific rules are evidenced."
+}

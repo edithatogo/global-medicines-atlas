@@ -1,0 +1,17 @@
+{
+  "schema_version": "1",
+  "receipt_id": "performance-perf-export-page-8eb93c37a84d",
+  "kind": "performance",
+  "subject_id": "PERF-EXPORT-PAGE",
+  "executed_at": "2026-10-09T19:10:47.475490Z",
+  "product_version": "0.6",
+  "api_version": "v1",
+  "implementation_digest": "8eb93c37a84dc4ea77f913f1e38d892975e10148f98daed44671d79b07d9c17b",
+  "result": {
+    "passed": true,
+    "observed_ms": 101.34509550000001,
+    "sample_size": 20,
+    "detail": "observed p95 101.345 ms against 1000.0 ms budget"
+  },
+  "payload_digest": "3881ad11e696cbcbc937abc6d8d88e1a13a22f842ce3efba3b2a0ae759eab249"
+}

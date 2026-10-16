@@ -50,8 +50,14 @@
     unsupported directory sync remains best-effort without bypassing budgets.
     (`b9b5ffe`, `86a56aa`; 37 focused tests pass with 100% statement and branch
     coverage; 239 affected tests and the routine harness pass.)
-- [ ] Phase Verification & Checkpoint: an empty machine can run bounded fixture
+- [~] Phase Verification & Checkpoint: an empty machine can run bounded fixture
   queries from pinned public revisions with no durable local lake.
+  - [x] Bind the synthetic MBS/PBS API query path to exact v4 receipt closure
+    and an independently configured trusted admission profile; reject altered
+    contract bytes and a forged expected path. Keep these fixtures explicitly
+    synthetic and non-publishable. PR #975 merged as
+    `18a57a34456bfeb8c486ec646cb5b42d4d037d08` after all 38 reported check
+    rows passed.
   - [x] Verify one exact, anonymously readable, 24,367-byte MBS Bronze
     projection at immutable revision `75f9f20` with a five-row bounded
     structural query. The public-safe receipt binds the object, metadata,
@@ -61,6 +67,56 @@
     `checkpoint_complete=false`. The checkpoint remains open until an
     independently admitted v4 product contract and semantic manifest bind a
     published Australian benefits medallion dataset.
+  - [x] Re-run the pinned public fixture from an isolated temporary working
+    directory with `HOME`, `XDG_CACHE_HOME`, and `GMA_DATA_DIR` redirected;
+    bind the no-lake observation to the bounded query receipt. The exact
+    24,367-byte object at revision `75f9f20` passed anonymous digest and
+    structural verification; five sample rows were queried without writing
+    source bytes or rows to disk. The workspace check confirms only that the
+    configured temporary data/cache paths were absent; the checkout and
+    runtime were already installed. Receipt:
+    `quality/qualifications/platinum-empty-workspace-preflight-20261010.json`.
+    The initial receipt was superseded after review found that only the
+    temporary paths, rather than the query process environment, were isolated.
+    The corrected run changes the working directory and redirects the home,
+    cache, and GMA data roots before transport; the correction is append-only
+    in `evidence.jsonl`.
+    PR #914 merged as `6c0b1e15c6ca8ba54e49851c309ac20c7f4aed36` after all
+    29 required hosted contexts passed; the merge tree matches the qualified
+    head and the review thread is resolved.
+    The checkpoint remains open because no independently admitted v4 product
+    contract or semantic manifest binds this source projection.
+- [x] Verify the same synthetic MBS benefits query across CLI, read-only API,
+  and server-rendered Atlas surfaces. All three preserve the same selected
+  rows; the API and CLI also agree on synthetic identity, service-benefit
+  dimension, undeclared coverage, undeclared confidence, and unevaluated
+  comparison validity. This is source-neutral surface-integration evidence;
+  it does not close the public-dataset product-admission checkpoint or any
+  rights, coverage, production, or release gate. See the
+  `platinum_synthetic_benefits_cross_surface_e2e` evidence receipt.
+  PR #1040 merged at `0990a55899dc3d648e886b187f728cd3b95b8705` after all 38
+  exact-head checks passed; automated review's exact-row finding was fixed and
+  its thread resolved.
+- [x] Verify the synthetic MBS benefits journey in Chromium as well as at the
+  CLI, API, and rendered-response surfaces. Preserve fixture-only identity and
+  explicit unknown coverage/comparison semantics; do not imply production
+  admission or source completeness. The append-order review finding was fixed
+  and resolved. PR #1042 merged at
+  `91a5ea2608064b5cf5c18ed6276f90ec50fdd210` after all 39 reported checks and
+  all 28 required branch-protection contexts passed.
+- [x] Verify synthetic MBS service-benefit and PBS funding queries preserve
+  their separate semantic dimensions through CLI, read-only API, Atlas HTML,
+  and Chromium. No source coverage, production admission, or real-source
+  meaning is inferred from these fixtures. PR #1044 merged at
+  `7dc9c9762209c437da3ee3bec7e7398014cc37fe` after all 39 reported checks
+  passed and automated review completed without findings.
+- [x] Reject cross-dimension identities at the shared benefits query boundary:
+  MBS resources must declare `service_benefit` and PBS resources must declare
+  `funding` before any result rows are queried. Failing-first regressions
+  reproduce both invalid pairings; the guard and affected tests pass. Local
+  focused and broad regressions pass. PR #1046 merged at
+  `77232bbb951a44cf1b2c931ae431ff3bb42a4107` after all 40 reported checks
+  passed. This adds no source or source-coverage claim.
 
 ### Public-fixture checkpoint review fixes
 
@@ -110,9 +166,10 @@
 - [x] Reduce duplicate comparison cohort work while preserving request-local
   validity, bounded provenance and executed SQL pagination. The shared service
   now issues three rather than four comparison statements and binds repeated
-  scope/time values once per statement. Query/API regressions pass. A paired
-  20-sample fixture comparison measured p95 441.374 ms before and 331.128 ms
-  after; the 250 ms performance gate remains failing and is not waived.
+  scope/time values once per statement. Query/API regressions pass. The initial
+  paired 20-sample fixture comparison measured p95 441.374 ms before and
+  331.128 ms after; a later qualification on the merged implementation passes
+  the unchanged 250 ms budget. See the current-host receipt below.
 - [x] Define the strict shared dataset-identity response envelope over an
   already-admitted resolver resource. It preserves the exact public revision,
   object/contract/semantic digests, semantic dimension, entity granularity,
@@ -182,8 +239,125 @@
   passed when rerun after correction with pinned uv 0.11.29. Routine, context,
   ecosystem, typing, format, and diff checks pass; hosted qualification remains
   pending.
-- [ ] Phase Verification & Checkpoint: all result types expose mandatory evidence
+- [x] Phase Verification & Checkpoint: all result types expose mandatory evidence
   and legacy/current metadata and reject semantic overclaim.
+  - [x] Reject v1/v2 assertion rows that combine `unknown` or `not_covered`
+    states with a source status code; conclusion models already enforced the
+    same distinction. Red tests reproduced the contract gap. This closes that
+    semantic-overclaim case only; the broader result-metadata checkpoint stays
+    open.
+  - [x] Add an explicit `EvidenceContext` to v1 and v2 conclusions and evidence
+    rows, and v1 coverage rows. When the query tables do not carry an
+    independently bound schema era, comparison cohort, granularity, or review
+    record, JSON now reports `null`/`unknown`/`not_reported` instead of omitting
+    the metadata. The model cannot assert a reviewed state until a review record
+    is supplied. Focused query/API/OpenAPI checks pass and the schema remains
+    semantically compatible. This does not populate missing lineage or close
+    the checkpoint for every product result surface. The broader local full
+    profile passed its pytest lane at 96.81% coverage; its Darwin mutation stage
+    hit a native segmentation fault, while standalone mutation (2,250 cases),
+    Gremlins (320 tests), regeneration (both 184-test orders), profiling, and
+    security lanes passed. Linux hosted mutation remains authoritative.
+  - [x] Render bound evidence context in Atlas comparison cards and coverage
+    rows. A red accessibility test confirmed those fields were absent from the
+    rendered result. The UI now shows schema era, comparison cohort, entity
+    granularity, and review state; missing values are explicitly “Not
+    reported” or “Unknown.” Focused accessibility/browser tests passed (5),
+    and the governed E2E lane passed (27). The full profile passed with 5,904
+    tests, one optional PyIceberg skip, and 96.82% coverage; mutation examined
+    2,250 cases (1,879 killed, 364 survived, five suspicious, two unmutated),
+    Gremlins passed 322 tests (892 zapped, 100 survived, no errors), both
+    randomized orders passed 184 tests, and profiling/security passed. This
+    displays the current context contract but does not populate missing source
+    metadata or close the broader checkpoint.
+  - [x] Preserve the left and right subjects' evidence contexts on each
+    comparison-validity result. Contexts flow from the compared conclusions
+    through the v1 API; absent metadata remains explicitly unknown per side.
+    The versioned validity schema and additive OpenAPI snapshot are updated,
+    and the consumer compatibility baseline remains unchanged. Synthetic
+    query/API controls verify that distinct contexts are not collapsed. An
+    asymmetric-context regression preserved each side's independent unknown
+    fallback after hosted mutation initially found a small survivor-score
+    regression. PR #824 merged as `c98ab6b0` after all 39 hosted checks passed;
+    Linux mutation killed 1,889/2,256 (83.7323%), above the immutable baseline.
+    The broader checkpoint and production source qualification remain open.
+  - [x] Give the additive v2 comparison endpoint explicit pairwise validity
+    and report whether pagination makes that validity set complete. The v2
+    envelope currently returns cross-jurisdiction conclusions without a
+    validity result; no evidence-backed compatibility dimensions are
+    populated, so the safe outcome must remain insufficient evidence. The
+    intended-red service test confirmed `validity_completeness` was absent.
+    Runtime validity now binds each pair to both subject contexts, enforces
+    complete pair coverage for non-paginated results, and identifies paged
+    outputs as partial. PR #825 merged as `caf05e700e3d77d2076837de6498a36cb5c3d7ac`
+    after all 39 hosted checks passed; Codecov reported 100.00% patch coverage
+    against the 90.01% target, and the full hosted profile passed 5,931 tests
+    with one optional skip at 96.80% coverage. The focused source-neutral result
+    surface matrix subsequently passed 224 tests; `test_goblin.py routine`
+    passed. A deliberately forged BenefitsPage in its fail-closed regression
+    emits a Pydantic serializer warning before revalidation rejects it; it does
+    not bypass the transport boundary. This completes the v2 pairwise validity
+    subtask only. The broader all-result-types checkpoint, production source
+    qualification, source coverage, representative-user acceptance, WCAG
+    conformance, and release gates remain open.
+  - [x] Add one regression matrix across evidence and non-evidence product
+    outputs. Assertion and coverage rows require explicit evidence context and
+    valid-time clocks; v1/v2 response envelopes preserve version, paging, and
+    comparison-validity metadata; identity and benefits results preserve exact
+    admitted-object lineage and explicit not-declared states; historical pages
+    preserve per-snapshot source revision, paths, digests, era, cohort, and
+    observed time; Gold edges remain a schema-versioned synthetic structural
+    projection; discovery explicitly denies equivalence; health/errors remain
+    operational envelopes without product conclusions. Existing fail-closed
+    validator tests cover unsupported status, missing evidence, pagination,
+    incomplete history, and edge qualification. The new cross-surface guard
+    runs in Test-Goblin and the dependency-upgrade contract lane. The affected
+    suite passed 201 tests, and routine checks passed. This closes the bounded
+    result-contract checkpoint only; it does not establish populated source
+    context, source coverage, production qualification, representative-user
+    acceptance, WCAG conformance, or release readiness.
+
+  - [x] Connect the exact reconciled synthetic PBS Gold edge object to the
+    resolver-backed V2 dataset-identity API. The response preserves its pinned
+    revision, path, object digest, `source_structure` dimension and
+    `evidence_edge` granularity while keeping coverage undeclared, comparison
+    unevaluated, and rows unqueried. The identity-only request performs no
+    object read; anonymous transport remains mocked. Two governed medallion
+    E2E tests pass. PR #841 merged as `24ef28a7555cc3746d5fb8cdad79c548998f6780`
+    after all 36 hosted checks passed. This proves synthetic API wiring only
+    and does not qualify a production source or close the broader Phase 2
+    checkpoint.
+  - [x] Exercise schema-level identity adaptation for both legacy and current
+    cohort labels through the mandatory-evidence validator, including explicit
+    conservative states. Keep the benefits API fixture marked synthetic and
+    verify the resolver-backed result retains its exact identity and
+    fail-closed states. A stubbed identity API test is not resolver-admission
+    evidence; real legacy/current resolver qualification remains open until
+    source evidence exists. This does not close the broader all-result-types
+    checkpoint. PR #953 merged as `f6581ec68ee1d8f5a971ee0469e8e013c1f51be8`
+    after all 28 required contexts and 38 reported check runs passed; its tree
+    matches the qualified head. The 64 affected tests and routine profile pass.
+  - [x] Carry the admitted synthetic MBS benefits query through the production
+    FastAPI route over an ephemeral loopback socket. Assert the API page's exact
+    source/revision/path/object digest, semantic dimension, evidence
+    granularity, conservative coverage/comparison states, and exact anonymous
+    metadata/object reads. This closes the in-process-only transport seam for
+    this synthetic API result, not the broader all-result-types checkpoint or
+    live admission/production qualification. PR #979 merged as
+    `cc92a53516d05c5b91e479ac9c53659d1607987c` after all 38 reported checks
+    passed; merge tree `a871e17233e1848c493d0b5b739498b4e74b1368` matches
+    the qualified head tree.
+
+### Deterministic Gold review-queue CLI (2026-10-10)
+
+- [x] Add the read-only `gold-review-queue` CLI over validated MBS/PBS Gold
+  Parquet. Require an explicit timezone-aware queue timestamp and accept only
+  caller-supplied append-only adjudication JSONL; emit pending cases with
+  content-bound identities while omitting reviewer rationales and never
+  promoting a case. CLI contract tests and both synthetic Bronze-to-Platinum
+  journeys cover queue creation, ledger readback, and case-specific queue
+  regeneration. This does not grant reviewer authority or complete the
+  Platinum checkpoint.
 
 ## Phase 3: Historical comparison and atlas (AC-04, AC-05)
 
@@ -197,6 +371,11 @@
   for side-by-side evidence, timelines, change views, coverage/freshness, and
   provenance drill-down. Synthetic validation passes; interactive atlas,
   accessibility, and live-source qualification remain open.
+- [x] Give keyboard focus a dedicated indicator color and assert at least 3:1
+  contrast against the configured Atlas paper and wash surfaces (7.788:1 and
+  7.149:1 for the current palette). A red test first failed because the
+  dedicated token was absent. This is automated color-contrast evidence for
+  those surfaces only; it does not establish full WCAG conformance.
 - [x] Keep service-benefit, medicine funding, regulatory, formulary, and
   terminology panels visually and semantically distinct. The source-backed
   Atlas V2 factory renders all five requested dimensions as distinct
@@ -205,6 +384,209 @@
   `3ea526b32cdc937cf416f8abebd8c59170dd1eb4`; evidence recorded in PR #522).
 - [ ] Phase Verification & Checkpoint: representative users can inspect evidence
   and uncertainty without mistaking legacy or missing data for current status.
+  - [x] Add a federated Atlas view that queries already-admitted benefit
+    evidence from its pinned resolver identity, preserves evidence provenance,
+    and keeps service-benefit edges separate from medicine funding and
+    regulatory conclusions. Mount it through the source-backed Atlas factory
+    and link it from the home page when configured. Exercise the rendered view
+    in the synthetic Bronze-to-Platinum E2E path. PR #848 merged as
+    `075ea0920fd950e54975d941c45ac38b66bed25f` after all 38 hosted checks passed,
+    including all 28 required branch-protection contexts and 100% Codecov patch
+    coverage. Representative-user acceptance remains open at the parent
+    checkpoint.
+  - [x] Expose existing PBS `source_structure` Gold edges through a separate
+    pinned Atlas view with v2 identity, an anonymous bounded query, verified
+    cache reuse, and explicit non-equivalence wording. Track issue #850; no
+    source acquisition, admission, or publication is part of this task. The
+    view renders the full evidence identity and retains it with the bounded
+    receipt on unavailable reads. Focused Atlas/medallion checks (11) and the
+    routine harness pass; exact-head PR #851 passed all 38 checks, including
+    Codecov, then merged as `77dea5a4` on 2026-10-07. This closes only the
+    synthetic source-structure Atlas integration, not representative-user
+    acceptance or the broader Phase 3 checkpoint.
+  - [x] Carry the same independently admitted synthetic MBS/PBS medallion
+    products through the Atlas over an ephemeral loopback ASGI server and
+    Chromium. From the home page, query each pinned view and verify rendered
+    identity including the exact object digest, semantic limits, conservative
+    evidence text, successful assets, and exact anonymous remote object
+    requests. This joins the actual Bronze through Platinum fixture pipeline
+    to browser/HTTP execution; it does not qualify a deployment, production
+    data, source coverage, or user acceptance. PR #977 merged at
+    `d94533da2cfa7c154569e0377d884a8b2517cfbd` after all 38 reported checks
+    passed; merge tree `38e0a65c9d65f147c979daf3ded92ced68889da3` matches the
+    qualified head tree.
+  - [x] Render the existing bounded historical-change service in an opt-in
+    Atlas timeline, preserving source identity, attribution failures, and
+    unknown absence semantics. The synthetic Bronze snapshot pair passes
+    through API, CLI, and Atlas; no sources or acquisition paths were added.
+    Focused Atlas/medallion (9) and governed E2E (32) checks plus routine
+    checks pass. Hosted exact-head PR #862 passed all 38 checks and 100% of
+    patch coverage, then merged as `fb949d5d` on 2026-10-09. The local full
+    profile was attempted with Python 3.14.6; the first run lacked pinned uv
+    0.11.29, and a pinned-toolchain retry passed 5,983 tests with one optional
+    PyIceberg skip before exhausting host disk space during coverage output.
+    The two toolchain-sensitive stable-v1 tests pass when run with uv 0.11.29.
+    No local full-profile pass is claimed. No additional source was added.
+  - [x] Add a Chromium-backed synthetic browser check for the historical Atlas
+    route, exercising skip-link navigation, keyboard access to the snapshot
+    table, snapshot identity, and before/after native values/states. The focused
+    browser tests (2), governed E2E lane (33), routine, Ruff, ty, and BasedPyright
+    passed locally. Review tightened the browser assertions so each labelled
+    table row is bound to its expected revision and path. PR #864 merged as
+    `ba47289513a1f6da2a831d8ca12769886c0687b5` after all 37 hosted checks passed,
+    including Codecov patch coverage and Linux/macOS/Windows consumers.
+    Representative-user acceptance and full WCAG conformance remain open.
+  - [x] Drive the browser from the Atlas home page through the history link and
+    load the stylesheet and autocomplete script through the application's ASGI
+    routes. Playwright fulfills each browser request with the synthetic ASGI
+    test client; this verifies route-to-render wiring without claiming a
+    deployed-server run. Review requires successful (200) stylesheet and script
+    responses, a computed stylesheet effect, and observable autocomplete status
+    after script execution. The focused browser tests (2), combined history and
+    medallion E2E tests (4), Ruff, `ty`, routine harness, and diff checks pass.
+    PR #866 merged as `f9c851df335e6f7051dd4673b15dd73946ad6d5e` after all 37
+    hosted checks passed, including Codecov patch coverage and
+    Linux/macOS/Windows consumers.
+  - [x] Keep federated benefits and source-structure interpretation copy
+    accurate for currently identified resources whose v4 identity declares the
+    `current` cohort. Synthetic route regressions assert that those views do
+    not call the resource fixture-only or synthetic while preserving explicit
+    undeclared-coverage and non-equivalence limits. Focused Atlas, medallion,
+    browser, accessibility, routine, and full Test-Goblin checks passed with
+    pinned uv 0.11.29: 5,998 passed, one optional PyIceberg skip, 96.88%
+    coverage; 332 gremlin checks passed. Local Darwin mutation observations
+    are advisory and Linux CI remains authoritative. This copy correction does
+    not establish source coverage or production qualification.
+  - [x] Add a Chromium-backed synthetic browser E2E check for keyboard medicine
+    selection, live status and active-descendant announcements, skip-link focus,
+    unknown-state wording, and keyboard disclosure of source evidence. Register
+    it in the governed E2E lane and install the pinned Playwright browser in
+    both the E2E and full coverage CI jobs.
+    The first browser readback exposed an invalid synthetic fixture that paired
+    unavailable evidence with provenance; the fixture now models available but
+    non-decisive evidence. This verifies interaction behavior, not WCAG
+    conformance or representative-user acceptance. The test owns and closes
+    its synchronous browser lifecycle instead of using the pytest Playwright
+    session fixture, which interfered with unrelated asyncio-based tests in
+    the full-suite run.
+  - [x] Verify the focus-indicator contract and run the full local profile on
+    the rebased head: the five focused accessibility/browser tests passed;
+    pytest passed 5,904 tests with one optional PyIceberg skip and 96.81%
+    coverage; mutation analyzed 2,250 cases (1,879 killed, 364 survived, five
+    suspicious, two unmutated, zero timeouts); Gremlins passed 322 tests,
+    zapped 864 classified mutations (87%), and reported 125 survivors and one
+    error; both randomized orders passed 184 tests; Scalene qualification
+    passed; offline zizmor found no issues, and pip-audit found no known
+    vulnerabilities (the unpublished local package was skipped). The full
+    harness exited 0. These automated checks do not establish WCAG conformance
+    or representative-user acceptance.
+  - [x] Drive a Chromium browser from Atlas home into the existing federated
+    benefits and source-structure views, load their application assets through
+    the synthetic ASGI client, and submit bounded queries. The journey exposed
+    that a blank optional benefits filter was passed as invalid JSON and
+    returned HTTP 422; normalize only the blank value to no filter, preserving
+    strict parsing for non-empty input. Five focused browser/route tests, the
+    routine harness, Ruff, `ty`, and repository BasedPyright pass. Full
+    Test-Goblin with pinned uv 0.11.29 also passed locally. PR #873 merged as
+    `f496daa20a3ff63640340198e73287ca0305547e` after all 38 hosted checks,
+    including Codecov and protected contexts, passed. This proves a synthetic
+    browser-to-ASGI path only;
+    it adds no source and does not establish source coverage, deployment,
+    WCAG conformance, or representative-user acceptance. Automated review
+    caught a receipt timestamp later than its introducing commit; an appended
+    evidence correction now records the commit timestamp as the first durable
+    verifiable time.
+  - [x] Cover federated browser error recovery for an unknown resource and a
+    malformed non-empty benefits filter. The browser observes the expected
+    404/422 responses, accessible alert messages, and preserved invalid input;
+    the already-verified ASGI fixture exercises both route outcomes. Review
+    tightened the retained-input assertion to compare the complete submitted
+    string. Six focused module tests and Ruff passed after correction;
+    repository typing passed before the assertion-only change, and routine was
+    rerun after it during merge-receipt reconciliation. PR #875 merged as
+    `0f80a02d4ac3e0440250c2bd486ac915bd758938`
+    after all 37 hosted check runs passed, including Codecov, protected
+    contexts, and Linux/macOS/Windows consumers. This is test-only synthetic
+    evidence; it adds no source or runtime behavior and does not establish
+    representative-user acceptance or WCAG conformance.
+  - [x] Exercise an offline verified-cache miss through the federated benefits
+    Atlas in Chromium. The typed unavailable result must render as an accessible
+    status with actionable cache guidance, without an evidence table or a
+    negative-coverage implication. The regression exposed the internal reason
+    code being shown directly; review also caught that an expired cached copy
+    can be refreshed online. Both missing-cache and expired-cache messages now
+    offer that recovery. The eight-test focused module and full pinned
+    Test-Goblin profile pass; this synthetic fixture change adds no source,
+    acquisition, publication, source-coverage claim, or production admission.
+    Representative-user acceptance and WCAG conformance remain open.
+  - [x] Exercise the online `verified_resource_unavailable` result in Chromium
+    in addition to offline cache-miss and expired-cache states. The status copy
+    is actionable, no table is rendered, and the browser path does not turn a
+    failed read into a negative claim. The focused module passes nine tests;
+    repository routine, formatting, and diff checks pass. This is a test-only
+    synthetic follow-up to the current full-profile evidence. PR #878 merged
+    as `bba01ac4277f7f897a048720a175188fb71bc213` after all 37 exact-head hosted
+    checks passed, including protected contexts, Codecov, and all three
+    consumer platforms. No source coverage, admission, or publication claim was
+    added.
+  - [x] Exercise missing-cache, expired-cache, and online verified-read
+    unavailability for source-structure evidence in Chromium. The page provides
+    readable recovery guidance, preserves exact identity and query receipt,
+    announces an accessible status, shows no evidence rows, and rejects an
+    accidental offline flag in the online fixture. The affected browser,
+    API, and medallion set passes 23 tests; full pinned Test-Goblin passed with
+    6,006 tests, one optional PyIceberg skip, and 96.87% coverage. PR #879
+    merged as `2834ed10f5615244cd28f559859c4b36314e877e` after all 39 hosted
+    checks passed, including protected contexts, Codecov, and all consumer
+    platforms. This synthetic fixture adds no source or admission.
+  - [x] Exercise unknown source-structure resources and invalid bounded columns
+    through the Chromium form. Assert accessible 404/422 errors and exact
+    retention of both submitted fields after each response, with no stale
+    evidence table rendered. The focused browser module passes 13 tests; the adjacent Atlas, structure API, and medallion
+    suite passes 24 tests, plus routine, lint, format, and diff checks. PR #880
+    merged as `0a9f1e85a2bf30784802655e604dce8bd1c06e26` after all 28 required
+    branch-protection contexts passed. Thirty-seven of 38 check runs passed;
+    the optional Delta table-format check was still queued at reconciliation.
+    This is test-only synthetic evidence.
+  - [x] Use a generic accessible message for unrecognized source-structure
+    failure reasons so future internal codes are not exposed to users. Synthetic
+    Chromium cases confirm the reason is absent from rendered text and the
+    unavailable receipt JSON is hidden while its digest and retained status
+    remain visible; no evidence rows appear. The adjacent Atlas, structure API,
+    and medallion suite passes 25 tests. Pinned Test-Goblin passes 6,010 tests,
+    one optional PyIceberg skip, and 96.88% coverage; Gremlins reports 332
+    passed, both randomized runs pass 184 tests, and offline zizmor reports no
+    findings. PR #882 merged as `8b68bf9cd2431b39d9e03cb35938f06e5463e50d`
+    after all 28 required branch-protection contexts and all 38 exact-head check
+    runs passed, including Codecov and Linux/macOS/Windows consumers.
+  - [x] Verify keyboard recovery after source-structure 404 and 422 errors.
+    Activate the source-structure link by Enter, then use the skip link and
+    verify the sequential tab order through both text fields, row limit, cache
+    checkbox, and submit button. Keyboard text entry corrects the retained query
+    and resubmits successfully for both errors. The adjacent Atlas, structure
+    API, and medallion suite passes 27 tests; Ruff, format, routine, and diff
+    checks pass. This synthetic test-only follow-up adds no sources and relies
+    on the prior pinned full-profile result recorded under evidence kind
+    `federated_atlas_unavailable_receipt_redaction_full_e2e_local`. PR #883's
+    merge receipt records its hosted lanes separately, without claiming a local
+    full-profile rerun. Linux CI caught and prompted the platform-aware
+    ControlOrMeta+A correction. PR #883 merged as
+    `d1147ba2ca44e000f14cae71a00ffd756a40e67d` after all 28 required
+    branch-protection contexts and all 37 exact-head check runs passed,
+    including Codecov and Linux/macOS/Windows consumers. The 404/422
+    keyboard expansion merged in PR #884 as
+    `758648db239c1a9dc7faa3a8a7ded7b62403fe7a` after all required contexts
+    and exact-head hosted checks passed.
+  - [x] Extend the same-root, empty-start synthetic qualification across
+    historical comparison API, CLI, and Atlas routes. Failing-first control
+    showed that the prior CLEAN-START receipt exercised only ordinary
+    comparison surfaces; implementation builds two synthetic snapshots,
+    verifies exact API/CLI page parity and unknown-absence semantics, and
+    requires unique before/after field values in rendered Atlas output. Merged
+    in PR #951 after all 28 required contexts passed (29 reported rows, with
+    CodeQL duplicated); the merge tree matches the qualified head. Live
+    deployment, production data, source coverage, and representative-user
+    acceptance remain outside this task.
 
 ## Phase 4: Federation and compatibility (AC-06)
 
@@ -219,13 +601,27 @@
   hosted checks passed. It consumes an explicitly revision-pinned, digested
   GMA contract identity and rejects malformed contract sections without
   republishing raw authority.
+- [x] Preserve all contract authority, object-size, source representation,
+  schema-era, cohort, and temporal identity fields in GMA consumer bindings;
+  reject malformed source/verification sections with a bounded error. The
+  intended-red regressions show these fields are currently dropped and malformed
+  JSON object sections can escape as `AttributeError`. Green: 27 focused tests
+  with 100% statement and branch coverage, Ruff, ty, routine, and full
+  Test-Goblin passed with pinned uv 0.11.29 on Darwin/Python 3.14.6. PR #828
+  merged at `8801c8c2` after 38 hosted checks passed, including 100% Codecov
+  patch coverage. Synthetic v4 fixtures only; no source reads, acquisition,
+  admission, or publication.
 - [~] Verify archived donor READMEs and releases resolve to public successor
   data and documentation without redirecting to local files. Current anonymous
   readback confirms both README-to-`SUCCESSOR.md` links and GMA documentation
   links resolve, but the archived notices falsely say the repositories are
   unarchived and point to historical dataset revisions; the scraper `v0.1`
-  tag predates successor links. No GitHub Releases exist. The readback is
-  `quality/qualifications/australian-donor-successor-link-readback-20261004.json`.
+  tag predates successor links. No GitHub Releases exist. The anonymous
+  refresh on 2026-10-10 Australia/Brisbane (2026-10-09 UTC) confirms the MBS
+  dataset head advanced while the PBS head remained unchanged. Current readback:
+  `quality/qualifications/australian-donor-successor-link-readback-20261010.json`.
+  The task remains open pending explicit authorization to update the archived
+  public notices.
   Updating archived public content remains a maintainer authorization gate.
 - [ ] Phase Verification & Checkpoint: federation has one authority per contract
   and every consumer is revision-pinned.
@@ -236,6 +632,15 @@
   blobs, GitHub Release collections and tags, plus anonymous current MBS/PBS
   successor dataset metadata. Record the exact observations in
   `quality/qualifications/australian-donor-successor-link-readback-20261004.json`.
+- [x] Refresh the anonymous readback after the MBS successor dataset revision
+  advanced. Both repositories remain archived at their preserved heads, and
+  their README/SUCCESSOR.md blobs, stale status statements, historical links,
+  release counts, and tags remain unchanged. MBS is now at
+  `44b25bfd87e44998c7c1da4c3930ad4447e9246f`; PBS remains at
+  `48fd7345fb09277bb5b85644dba72804633a2abb`. No source payload bytes were
+  read and no external object was changed. Receipt:
+  `quality/qualifications/australian-donor-successor-link-readback-20261010.json`
+  records `2026-10-09T23:47:24Z` and its `Australia/Brisbane` local date.
 - [x] Apply the maintainer's 2026-10-04 direction to keep both donor
   repositories archived and defer public notice updates. The copy-ready draft
   remains local; neither repository, tag, release nor dataset was changed.
@@ -249,14 +654,674 @@
 
 ## Phase 5: Research exports and qualification (AC-07, AC-08)
 
-- [ ] Write failing determinism, citation, Croissant/RO-Crate, package,
+- [x] Write failing determinism, citation, Croissant/RO-Crate, package,
   clean-room, load, concurrency, security, privacy, and release-gate tests.
-- [ ] Confirm the intended failure before implementation.
+  - [x] Reconcile category coverage against the registered Test-Goblin
+    selections: deterministic manifests/citations and RO-Crate/Croissant in
+    `test_research_exports.py` and `test_research_package.py`; deterministic,
+    payload-free packages and clean-room malformed-archive controls in
+    `test_research_export_package.py`; bounded concurrent workload and receipt
+    store behavior in `test_performance_workload.py` and
+    `test_platinum_receipts.py`; abuse controls and fail-closed release gates
+    in `test_product_security.py`, `test_product_release.py`, and
+    `test_release_qualification.py`. Exact-head PR #893 passed all 38 reported
+    checks, including the registered unit, integration, E2E, coverage,
+    mutation, Gremlins, security, and regeneration lanes and Linux, macOS, and
+    Windows consumers. This closes the automated test task for the synthetic
+    and metadata-only system; it does not establish production source
+    coverage, full accessibility conformance, or public release readiness.
+  - [x] Confirmed and fixed query-manifest instability when callers mutate a
+    nested query mapping after manifest construction.
+  - [x] Add a governed synthetic Bronze-to-Silver-to-Gold-to-Platinum query
+  path to the e2e harness; candidate-only Gold and mocked remote reads remain
+    explicit. The fixture asserts structural Bronze acceptance independently
+    from unknown rights and a false live-source gate (`43aefbf5`; PR #807
+    merged as `3ad69e18`, 38 protected checks passed).
+- [x] Confirm the intended failure before implementation: the new
+  `canonical_result_bytes` contract test initially failed to import that
+  missing API.
+  - [x] The metadata-only package composition test failed collection because
+    the bundle module did not exist.
+- [x] Compose the local metadata-only research export package from the existing
+  manifest, RO-Crate, Croissant, and lineage contracts.
+  - [x] Compose and validate manifest, RO-Crate, Croissant, and lineage
+    metadata into a deterministic offline package with no embedded rows.
+  - [x] Verify a saved package in a clean-room reader using only its archive;
+    reject duplicate JSON members and unexpected ZIP members. Focused tests,
+    malformed ZIP/JSON/RO-Crate negative controls, 100% statement and branch
+    coverage, 32 targeted end-to-end and regression tests, format/lint, `ty`,
+    BasedPyright, routine harness, context, and ecosystem validation passed
+    on 2026-10-06.
+  - [x] Merge the verifier after all 39 hosted checks passed, including
+    Codecov patch coverage, cross-platform consumer tests, and the full
+    protected Test-Goblin lanes (`f5df2e42`; PR #810).
+  - [x] Bind the bounded synthetic Platinum query's order-stable result bytes
+    to its snapshot digest, query receipt, source lineage, and saved package.
+    Read the ZIP back through the clean-room verifier and confirm query rows are
+    absent (`3a3d3b43`; 45 focused tests, 100% statement and branch coverage for
+    both export modules, and the registered E2E lane passes 26 tests). PR #812
+    merged as `244dc212` after all 39 protected checks passed.
+- [x] Require research-export source identities to use immutable revisions and
+  safe repository-relative object paths; reject malformed identities before
+  composing metadata-only packages. The model requires a two-part repository
+  id and full lower-case 40-hex revision, and rejects absolute/traversing or
+  URL-ambiguous paths. The generated JSON Schema also exposes the repository-id
+  and revision patterns. Eleven malformed-input controls failed before the
+  change; export/package tests pass (60), Test-Goblin routine and changed-module
+  typing pass. One isolated MBS Bronze-to-Platinum browser E2E passes; the
+  combined medallion run hit two browser-teardown timeouts under shared host
+  load. Review also found that `model_copy(update=...)` could bypass the new
+  validators; `ExportSource` now revalidates instances and the regression test
+  fails before the correction and passes after it. The final export/package
+  suite passes 62 tests, with routine, `ty`, and BasedPyright passing. See the
+  local receipt in `evidence.jsonl`; PR #1050 merged at `144ebada` on exact
+  head `11f798ab` after all 40 reported checks passed and the review finding was
+  resolved. The merge evidence reconciliation PR #1051 merged at `fa235baa` on
+- [x] Reject Unicode bidirectional format controls from repository-relative
+  object paths so displayed and stored source identities cannot diverge. Both
+  controls failed before the fix; a copied invalid instance is also exercised
+  through manifest construction. The export/package suite passes 65 tests,
+  routine passes, and changed-file BasedPyright reports 0 errors/warnings/notes.
+  The local full profile reported 6,287 passed, three skipped, and three
+  failures under system uv 0.13.1: both clean-clone reproducibility tests pass
+  when rerun with pinned uv 0.11.29, and the Bronze determinism failure passes
+  in isolation. PR #1054 merged on exact head `a9a7f203` as `fc9a5e6c` after all
+  40 reported hosted checks passed, including Codecov and Linux/macOS/Windows
+  consumers. The local full-profile environment limitation remains recorded.
+  Public export remains gated.
 - [ ] Publish deterministic query snapshots and export packages to the public
   data plane with v4 identities and anonymous verification.
-- [ ] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
+- [x] Run focused, end-to-end, accessibility, OpenAPI, CLI, load, typing,
   coverage, security, provenance, rights, regeneration, and full Test-Goblin
-  lanes where supported.
-- [ ] Run Conductor review, repair findings, open scoped pull requests, wait for
+  lanes where supported. Exact-head PR #866 passed all 37 hosted check runs,
+  including the full Test-Goblin coverage, mutation, Gremlins, security,
+  regeneration, browser E2E, Codecov, and Linux/macOS/Windows consumer lanes.
+  This closes automated test execution only. It does not qualify production
+  source coverage, settle licensing or rights, establish full WCAG conformance
+  or representative-user acceptance, or authorize publication or release.
+  - [x] Carry the existing synthetic MBS Gold edges through the public edge
+    API and CLI, and compare their bounded structural evidence readbacks.
+    The existing Bronze-to-Platinum MBS fixture now verifies exact API/CLI
+    page equality, candidate-only qualification, row count, and source
+    identity. Both medallion E2E cases pass locally. PR #855 merged as
+    `7f27ae4b6c2eed9ec9067b4e12b09b119b6b5330` after all 38 hosted checks,
+    including Codecov patch coverage and Linux/macOS/Windows consumers, passed.
+  - [x] Compare a synthetic historical MBS snapshot pair through the bounded
+    history API and `gma history`, preserving explicit change and unknown
+    absence semantics without inferring cessation. Both source snapshots now
+    come from landed XML parsed through MBS Silver. The end-to-end comparison
+    covers a changed description and a left-only native row; both surfaces
+    agree and absence remains `unknown`. The affected E2E tests (2), routine
+    checks, Ruff, formatting, and diff validation pass locally. PR #856 merged
+    as `6484d045ed15f15a5c1004adca3528f2335540ca` after all 37 hosted checks,
+    including Codecov patch coverage and Linux/macOS/Windows consumers, passed.
+  - [x] Extend the synthetic Bronze-to-Platinum end-to-end qualification to
+    query remotely, reproduce from its verified offline cache, prove explicit
+    unavailability after eviction, and refetch the same result. The synthetic
+    contract expiry is bound beyond the fixed qualification clock. PR #834
+    merged as `59b75c9b6445bdb247a20ec7db2a8d5a48e650b9` after all 38 hosted
+    checks, including Codecov and Linux/macOS/Windows consumers, passed. No
+    source data or publication is involved.
+  - [x] Carry the synthetic MBS Gold edge through the bounded `BenefitsService`
+    and read-only `/api/v1/benefits/{resource_id}` endpoint. Verify anonymous
+    metadata and exact-object reads use the reconciled revision and path, the
+    response preserves the exact Gold digest and source/evidence-edge identity,
+    and coverage/comparison remain `not_declared`/`not_evaluated`. The two
+    medallion tests and governed 31-test E2E lane pass; no source bytes or
+    production admission are involved. PR #846 merged as
+    `292b9719147796866cf059b3576f928ff9ed0eb8` after 38 hosted checks passed.
+    This is synthetic API integration only.
+  - [x] Exercise the same synthetic MBS Gold edge through `gma benefits` and
+    compare rows, identity, page/window digests, and conservative coverage and
+    comparison states with the API response. Focused medallion tests (2), the
+    governed E2E lane (31), routine checks, Ruff, `ty`, and BasedPyright pass;
+    the four existing optional `huggingface_hub` source warnings remain.
+    No source acquisition, production admission, or publication is involved.
+  - [x] Add `gma source-structure` for the existing synthetic PBS Gold edge;
+    compare its identity and bounded rows/result digests against the resolver
+    query in the governed E2E test. The final focused suite passes 43 tests;
+    the governed integration and clean-clone probes pass. The local full
+    profile's pytest phase passed; one performance test exceeded budget under
+    full-profile load and passed on isolated rerun. Exact-head hosted
+    performance, coverage, integration, mutation, gremlins, security, and all
+    platform consumer checks passed. PR #853 merged as
+    `b377938b78eb8108868fd240bcf68054b6c18b4b` after 29 required check runs
+    passed. No new source, acquisition, admission, coverage claim, or
+    publication is involved.
+  - [x] Close the Codecov patch gap for this CLI by covering typed unknown
+    resource, invalid request, and I/O error responses. The final exact-head
+    Codecov patch check passes at 100%.
+  - [x] Load the configured resolver before importing optional federation
+    query modules so a base installation receives the existing typed
+    `SERVICE_UNAVAILABLE` response. Configuration and query error controls
+    pass in the focused suite and the hosted exact-head CI.
+  - [x] Use a fixed UTC timestamp in the source-structure Atlas identity
+    fixture so rendered identity evidence is deterministic. Both available
+    and unavailable rendering cases compare the displayed date with the same
+    fixture identity; no calendar-dependent failure was observed.
+  - [x] Run all local full-profile components on 2026-10-06 with the pinned
+    temporary `uv 0.11.29`: full pytest passes with one optional PyIceberg skip
+    and 96.81% coverage; mutation analyzes 2,250 mutants; gremlins passes 317
+    tests (861 zapped, 87%); Scalene profiling and the security audit pass.
+    The first umbrella run exposed the missing pinned uv and optional Scalene
+    group; the pinned clean-clone probes pass, and profiling/security were
+    rerun explicitly after installing the declared profiling group. The
+    broader product qualification remains open for hosted and external gates.
+- [x] Run Conductor review, repair findings, open scoped pull requests, wait for
   hosted checks, merge, and reconcile evidence; stop at public release and
   consequential-interpretation gates.
+  - [x] Self-review the result-bytes diff against the Platinum plan, product
+    guidelines, and Python style guide; no correctness, provenance, privacy, or
+    maintainability findings remain (`3a3d3b43`).
+  - [x] Merge the scoped implementation after all 39 protected checks passed;
+    reconcile exact PR head, merge commit, and hosted state in append-only
+    evidence (PR #812).
+
+### Current-host product performance requalification (2026-10-06)
+
+- [x] Re-run the governed synthetic product qualification on merged
+  implementation `8ccefeeb070ca2b2443b920891819972880705a851ae42aa62bc6931bf4a5eba`.
+  The durable comparison p95 is 144.987 ms against the unchanged 250 ms budget;
+  bounded single-page export traversal is 305.613 ms against 1,000 ms. The
+  resulting release evidence is `fixture_qualified`, with clean-start,
+  live-deployment, accessibility-conformance, and production-data gates still
+  unverified. The value-file receipts and aggregate are in
+  `quality/qualifications/platinum-product-performance-20261006/`.
+
+### Fixture clean-start qualification (2026-10-10)
+
+- [x] Bind a content-addressed clean-start receipt only after an empty
+  temporary root can create a synthetic DuckDB fixture, pass service and API
+  readiness, return a bounded comparison result through the API, and render
+  the Atlas page. The resulting product evidence remains `fixture_qualified`;
+  live deployment, accessibility conformance, and production-data gates stay
+  unverified. The first local receipt set in
+  `quality/qualifications/platinum-product-performance-20261010-clean-start/`
+  included an ignored hatch-vcs generated `_version.py` in its implementation
+  digest and is superseded by the clean-manifest requalification below. No
+  sources, production data, acquisition, publication, or release were used.
+
+### Stable-manifest clean-start requalification (2026-10-10)
+
+- [x] Exclude the ignored hatch-vcs `_version.py` from the implementation
+  manifest so qualification digests are reproducible between local builds and
+  clean Git checkouts. A regression test failed before the fix and passes now.
+  A Git archive of merged PR #895 reproduced its clean-tree digest independently;
+  after the manifest fix, the current implementation digest is bound to all nine
+  newly executed receipts. The focused release suites passed (42); the pinned
+  full Test-Goblin profile passed. Product evidence remains
+  `fixture_qualified`, with live-deployment, accessibility-conformance, and
+  production-data gates unverified. Durable artifacts are in
+  `quality/qualifications/platinum-product-performance-20261010-clean-start-stable-manifest/`.
+
+### Same-root CLI clean-start parity (2026-10-11)
+
+- [x] Extend the empty-root synthetic product qualification so readiness, the
+  bounded API comparison, CLI comparison, and Atlas render all use the same
+  temporary DuckDB fixture. Require CLI conclusions, validity details, and
+  pagination metadata to match the API before issuing the clean-start receipt.
+  The focused release, performance, and security suites passed (25 tests);
+  a malformed-CLI-output regression now confirms clear fail-closed behavior;
+  the focused release suite passes (20 tests). The pinned full Test-Goblin
+  profile passed, including pytest (6,161, 96.95% coverage), mutation,
+  Gremlins (354 passed), profiling, security workflow, and dependency audit.
+  Nine regenerated durable receipts validate against one
+  implementation digest in
+  `quality/qualifications/platinum-product-performance-20261011-clean-start-cli/`.
+  The result remains `fixture_qualified`; production deployment, production
+  data, accessibility, source coverage, and public release remain unverified.
+  PR #947 merged as `ea960b66552031c07715ce5dd21c9a02da6139eb`; all 28
+  required contexts and all 38 reported checks passed. The squash merge tree
+  matches the qualified head, and a clean-main readback reproduced the
+  implementation digest and validated all nine receipts.
+
+### PBS source-structure Platinum integration (2026-10-07)
+
+- [x] Admit `source_structure` as its own internal Platinum semantic value;
+  preserve source-structure edges without funding, formulary, regulatory, or
+  terminology promotion.
+- [x] Keep the established v1 dataset-identity enum unchanged and expose the
+  expanded source-structure identity through the isolated v2 dataset route.
+- [x] Verify synthetic PBS bytes from Bronze B1 receipt through Silver fields,
+  Gold containment edges, Platinum verified query/cache recovery, research
+  export, and non-publishable v4 producer-inventory reconciliation.
+- [x] Complete exact-head protected hosted checks, merge, and append the hosted
+  merge receipt. This remains a fixture-only qualification and makes no claim
+  about populated public sources, source coverage, deployment, or release.
+
+### Bronze acquisition-metadata projection federated E2E (2026-10-09)
+
+- [x] Carry the actual landed B1 acquisition-manifest Parquet projection
+  through v4 distribution reconciliation, remote read, verified cache,
+  eviction, and refetch. Keep the receipt-bound B2 bytes local, and verify the
+  existing distribution gate rejects raw B2 as a derived projection. Use only
+  the existing synthetic MBS/PBS fixtures; no additional source, source claim,
+  or public mutation. PR #858 merged as `8cc48eac` after all 37 hosted checks
+  passed. The review follow-up inspects decoded Parquet columns and Arrow / file
+  metadata for B2 payload and workstation-path sentinels; negative controls
+  inject both sentinels into values and metadata and confirm rejection. The
+  review-control follow-up merged as PR #860 (`9d600070`) after all 37 hosted
+  checks passed. No source acquisition,
+  production admission, coverage claim, public publication, or release.
+
+### Source-neutral explicit coverage product E2E (2026-10-09)
+
+- [x] Carry one fully synthetic explicit-unknown coverage observation through
+  Arrow/DuckDB materialization, the read-only query service, v1 API, CLI, and
+  Atlas rendering. Preserve `state=unknown`, a null denominator, and no
+  negative inference; register the focused test in the governed E2E lane.
+  Focused test passed (1); governed E2E lane passed (50); routine checks passed
+  including formatting, lint, typing, context, and governance validation. The
+  one existing Starlette/httpx deprecation warning remains. Test-only change;
+  pinned full Test-Goblin evidence on main was reused. No new source, source
+  bytes, production admission, source-coverage claim, or publication.
+- [x] Require the complete API and CLI coverage records to match for the
+  synthetic unknown observation, guarding all serialized fields across the
+  shared service adapters. Focused test passed (1), governed E2E lane passed
+  (50), and routine checks passed; the existing Starlette/httpx deprecation
+  warning remains. Test-only refinement; no source or runtime behavior changed.
+- [x] Carry that exact DuckDB-backed unknown observation through the Atlas ASGI
+  app into Chromium. The browser row retains `Status: unknown`, the null-
+  denominator explanation, and no percentage. Focused tests (2), governed E2E
+  lane (51), routine checks, and diff validation pass. This test-only expansion
+  adds no source or runtime behavior; the existing deprecation warning remains.
+- [x] PR #892 merged at `0309efa2b6f3cab824b80e136c22eccb036cf5d4` after all
+  28 required branch-protection contexts passed (38 total reported checks),
+  including Codecov patch, exact-head E2E, routine, security, and Linux/macOS/
+  Windows consumers. No source, runtime behavior, admission, publication, or
+  release changed.
+- [x] Assert the same end-to-end coverage row through the browser accessibility
+  tree using its table and row roles. Focused coverage tests (2), governed E2E
+  lane (51), routine checks, and diff validation pass; one existing
+  Starlette/httpx deprecation warning remains. Test-only; no source or runtime
+  behavior changed.
+- [x] PR #890 merged at `105dd4bb9574f67bba883247afcb54631792f00c` after all 37
+  reported checks passed, including `codecov/patch`, exact-head E2E (50),
+  routine, security, mutation, and Linux/macOS/Windows consumers. A hosted
+  browser render race was corrected before merge. No source, runtime behavior,
+  production admission, publication, or release changed.
+
+- [x] PR #888 merged at `8a62042431cdf1c39c39acb02c73c6b0fff0e3bb` after all 28
+  required branch-protection contexts passed, including `codecov/patch`,
+  Linux/macOS/Windows consumers, and the exact-head E2E and routine lanes.
+
+### Browser-level unknown coverage rendering (2026-10-09)
+
+- [x] Extend the existing synthetic Chromium Atlas journey to assert that an
+  explicit unknown coverage row visibly says `Status: Unknown` and that the
+  denominator remains unknown, preserving the no-percentage interpretation.
+  Do not add a source, source claim, or coverage promotion. The focused browser
+  module passed (2 tests), the governed E2E lane passed (50), and routine
+  checks passed; one existing Starlette/httpx deprecation warning remains.
+
+### Keyboard-only benefits evidence journey (2026-10-10)
+
+- [x] Exercise the successful synthetic benefits query entirely by keyboard:
+  navigate from Atlas home, enter the bounded query, traverse the offline and
+  submit controls, and read the exact evidence identity and returned row. The
+  first audit found the successful benefits browser journey used pointer
+  clicks while keyboard recovery was covered only on source-structure. The
+  initial test used programmatic focus for its first link and resource field;
+  review caught that this bypassed sequential Tab reachability. The corrected
+  journey now starts at document focus and traverses the skip link, benefits
+  link, and resource field with Tab before activation and typing. The three
+  affected accessibility/browser modules pass (24 tests); routine formatting,
+  lint, typing, context, and governance checks pass. One existing Starlette/
+  httpx deprecation warning remains. Test-only; no new source, source
+  acquisition, runtime behavior, admission, coverage claim, publication,
+  WCAG-conformance claim, or representative-user acceptance.
+- [x] Merge the keyboard-only journey after resolving review feedback about
+  programmatic focus; the corrected test now proves natural sequential Tab
+  reachability. PR #909 merged at `022308b6050aa51aa0496d66acad1b9d24d3427b`
+  after all 28 required contexts and 37 reported checks passed, including
+  Codecov, E2E, mutation, Gremlins, and Linux/macOS/Windows consumers. The
+  squash merge tree matches qualified head `519504bcf72c28c7f7506ad59dec18b05c3247e7`.
+  No source, runtime behavior, production admission, publication, or release.
+
+### Hosted browser synchronization follow-up (2026-10-09)
+
+- [x] Address the exact-head Linux E2E failure in the existing federated
+  qualification keyboard-recovery journey. The page received the successful
+  response but the immediate visibility assertion raced with browser render;
+  use Playwright's visibility expectation and rerun the full governed E2E lane.
+  The affected browser module passed (16), governed E2E passed (50), and routine
+  checks passed. One existing Starlette/httpx deprecation warning remains.
+
+- [x] Correct the second exact-head Linux E2E render race in the same
+  keyboard-recovery journey: after the expected 404/422 response arrived, an
+  immediate alert visibility read ran before Chromium finished rendering. Use
+  Playwright's bounded visibility expectation. The two focused cases, full
+  governed E2E lane (50), and routine checks pass; no runtime behavior changed.
+
+### Unknown coverage percentage negative control (2026-10-09)
+
+- [x] Assert the complete unknown-denominator copy and absence of a percent
+  sign in the rendered browser row, so no percentage can be added while the
+  current prefix assertion still passes. Focused browser tests passed (2), the
+  governed E2E lane passed (50), and routine checks passed.
+- [x] PR #889 merged at `be36f4849ff62f1b78115d86085df78f57491e0a` after all 28
+  required branch-protection contexts passed, including `codecov/patch`, the
+  exact-head E2E and routine lanes, and Linux/macOS/Windows consumers. This
+  closes the browser assertion follow-up only; production coverage and the
+  Phase 3 representative-user checkpoint remain open.
+
+### Unavailable source-structure status announcement
+
+- [x] Give the source-structure unavailable live status an accessible name by
+  associating it with its heading. A regression test failed before the template
+  correction and now verifies the `aria-labelledby` target and heading text.
+  Federated browser and Atlas accessibility tests passed (21); the full pinned
+  Test-Goblin profile passed, including 6,028 tests, 96.88% coverage, mutation,
+  Gremlins, both randomized orders, profiling, security, and routine checks.
+  PR #907 merged as `5584ca43aa505b5cdbf73f91ec33f0aef8693e54` after all 28
+  required contexts and all 39 reported checks passed. The exact qualified
+  head and merge tree are both `6af463b76fcaf0c45769f59217f88ac1b6b522b6`;
+  the append-only evidence correction records that the earlier receipt named
+  the wrong tree. Darwin mutation results remain advisory and Linux CI remains
+  authoritative. This closes the named announcement defect only; full WCAG
+  conformance and representative-user acceptance remain open.
+
+### Local ASGI-server browser journey (2026-10-10)
+
+- [x] Add a governed loopback-only Chromium journey against the synthetic Atlas
+  running under a real ASGI server. Verify the server response, Atlas page,
+  stylesheet and script over HTTP, and rendered synthetic evidence. The new
+  test initially failed collection until Uvicorn was pinned in the test group;
+  after correcting the fixture's displayed state casing, it passed. The
+  focused test passed (1), the governed E2E lane passed (54), and routine
+  format/lint/type, context, and governance checks passed. BasedPyright's
+  existing unknown TestClient response diagnostics are outside the new helper
+  and test. The integration lane caught that its committed Stable v1 metadata
+  receipt binds `uv.lock`; the offline receipt was regenerated for the
+  test-only dependency, retained `metadata_qualified_external_gates_blocked`,
+  and the exact-receipt test passed. The integration lane then passed (718).
+  The hosted unit lane identified the datahouse experiment matrix's second
+  explicit `uv.lock` binding; only its lock digest and generation time were
+  refreshed, with experiment outcomes unchanged. It also identified the
+  frontier experiment matrix's imported digest for that file; only that digest
+  was refreshed, with all frontier dispositions unchanged. Focused matrix
+  tests pass for both records.
+  Keep live deployment, production data, source coverage, public release, and
+  full WCAG conformance as separate gates.
+- [x] Merge the loopback-only synthetic Atlas browser journey after the exact
+  cleanup review finding was corrected. PR #911 merged as
+  `f5f804b77ddf9c3343d90a357d98cb82ac6fddec` from qualified head
+  `405eef72ed9efa1b78663757c15f38c7eb6a2b56`; all 28 required contexts passed,
+  including coverage, mutation, Gremlins, exact-head E2E, and Linux/macOS/
+  Windows consumers. Local focused browser tests (3) and routine profile pass.
+  This closes only the synthetic loopback journey; production deployment,
+  admission, source coverage, public release, WCAG conformance, and
+  representative-user acceptance remain separate gates.
+
+### Atlas narrow-viewport reflow (2026-10-11)
+
+- [x] Verify the comparison and historical views at 320 CSS pixels in
+  Chromium. The document stays within the viewport while the wide historical
+  source-identity table remains keyboard-scrollable in its labelled region.
+  The initial regression test verified focus and overflow; PR review then
+  found Chromium arrow keys did not move the table. A scoped keyboard handler
+  now moves only the focused history table region, and the browser test verifies
+  both rightward and leftward scrolling. (Initial test commit
+  `4fa8a586ba699b8fa9c572eb9bb4da18fc4072ed`; the keyboard fix and local
+  verification are recorded in follow-up evidence. PR #960 merged at
+  `9f5d331d412698b979c9a7c161fd0436b9664ca2` from qualified head
+  `3e2d78b7ec165cde6924ec5bd17174467724491b`; all 29 required contexts and 39
+  reported checks passed, and the merge tree matches the qualified head tree.
+  This verifies one responsive and keyboard interaction property; it does not
+  establish full WCAG conformance or representative-user acceptance.
+- [x] Apply the same keyboard scrolling to every Atlas evidence-table surface.
+  The shared script is loaded by the comparison, history, benefits, and
+  source-structure templates. The 320 CSS pixel Chromium test now proves the
+  comparison coverage table and historical identity table move in both arrow
+  directions; the federated browser journey confirms the shared asset loads
+  on both evidence routes and forces each synthetic federated table to overflow
+  before checking both keyboard directions. The pre-fix browser test failed on
+  the comparison table. The focused Atlas/browser/accessibility modules pass
+  (26), governed E2E passes (56), routine checks pass, and full Test-Goblin
+  completes with 97.92% coverage. No source or source-coverage claim changed.
+  This verifies keyboard scrolling across the implemented Atlas table
+  surfaces; full WCAG conformance and representative-user acceptance remain
+  open. PR #962 merged at `3f1702d7c4ff0e6bbab3d03333e8b461b4e7c5ff` from
+  qualified head `a44bca2c8e7e4973f1729b27d8401d757cc0de3d`; all 29 required
+  contexts and all 39 reported checks passed, and the merge tree matches the
+  qualified head tree.
+
+### Benefits offline-cache browser failure recovery (2026-10-11)
+
+- [x] Extend the real loopback Chromium journey through verified offline-cache
+  replay and cache eviction for synthetic MBS and PBS products. The initial
+  browser regression reproduced a gap: the benefits page hid its pinned
+  identity and query-receipt digest after an offline cache miss. Render the
+  exact identity for unavailable benefits reads while withholding rows; the
+  browser now proves cached replay does not issue another resolver request and
+  post-eviction reads show the unavailable state, exact object digest, receipt
+  digest, and no rows. The two MBS/PBS loopback journeys pass; the broader
+  affected Atlas E2E selection passes (20). Routine checks and the full pinned
+  Test-Goblin profile pass. PR #983 merged as
+  `4488666051d043ce1ef97f53d522fc57f4e55142` from qualified head
+  `a19cfb116a6af346e8e1f1d152c304cc80004c54`; all 39 reported check rows
+  passed across 38 distinct contexts, and the merge tree matches the qualified
+  tree `61796d8b94b7b180fd580c6b74017a88d61d3770`. No source, acquisition,
+  coverage claim, admission, publication, or consequential claim was added;
+  WCAG conformance and representative-user acceptance remain open.
+
+### Installed Atlas distribution journey (2026-10-11)
+
+- [x] Extend the clean wheel and source-distribution consumer gate beyond API
+  and CLI startup: retain the default core-fallback probe, install the declared
+  `federation` extra, and request the installed Atlas root page and packaged
+  stylesheet over HTTP. Initial probe execution exposed the intended optional
+  dependency boundary (`jsonschema` belongs to `federation`); the qualification
+  therefore preserves the base core-fallback check before installing that
+  declared extra. Wheel and sdist consumers both pass Atlas, CSS, API, CLI, and
+  reinstall checks. The pinned `uv 0.11.29` full Test-Goblin profile passed:
+  6,189 passed, one optional PyIceberg skip, 96.89% coverage, 355 Gremlins,
+  2,338 mutation cases, both randomized orders (184 each), profiling, and
+  security with no findings. An initial run with ambient `uv 0.13.0` failed
+  only two pre-existing reproducibility tests that enforce the pinned uv; the
+  complete rerun with pinned uv passed. PR review identified and corrected the
+  ordering gap: the core-only API/CLI probe now runs first and proves
+  `jsonschema` absent before the separate Atlas probe installs `federation`.
+  The review thread was resolved; both wheel and sdist passed the corrected
+  focused qualification and routine checks. PR #985 merged at
+  `0a8736771fe87d40fbde9c24a87735efbcbec03e` from head
+  `07d279f36a76197f3cdc612a39ef7d428db3ad65`; all 38 reported checks passed,
+  and the merge tree matches the qualified head tree
+  `27a5af1e932fe5c62d2657ad214968d8b3e27c85`. No source was added or acquired;
+  no source-coverage, production-admission, rights, public-release, or
+  representative-user claim is implied.
+
+### Installed Atlas package-to-browser journey
+
+- [x] Extend the installed wheel and sdist qualification through a real
+  loopback server and Chromium. The existing package check exercises Atlas
+  with in-process ASGI transport, while browser E2E exercises the checkout;
+  this closes the packaged-runtime-to-browser seam using only the synthetic
+  home page and packaged assets. Both isolated wheel and sdist environments
+  serve the actual installed package on loopback; Chromium verifies the page,
+  stylesheet, script, and loopback-only requests. The focused journey passes,
+  the governed E2E lane passes (57), and Test-Goblin routine passes. No source,
+  acquisition, or coverage claim changed. A P2 review finding tightened the
+  stylesheet and script checks to require HTTP 200 rather than response-event
+  presence; the corrected focused journey and routine checks pass.
+  PR #988 merged as `78b7d08a942ca700a208aea3a878db9b6d222bb5` from qualified
+  head `a7f9b27c23b958dce514b5ae0fbeddf23ad86924`; all 39 reported checks
+  passed, and the merge tree matches the qualified head tree.
+
+### Installed Atlas synthetic evidence delivery
+
+- [x] Extend the installed wheel/sdist browser journey to submit a synthetic
+  medicine search, follow its canonical candidate, and inspect the rendered
+  unknown result and coverage without inferring a negative. This verifies the
+  installed package can deliver evidence-shaped product output, while keeping
+  the fixture independent of source acquisition, admission, and publication.
+  Focused wheel/sdist loopback Chromium E2E passes; typing, routine, context,
+  ecosystem, and diff checks pass. The local governed E2E lane reports 54
+  passed and three unrelated existing browser-test teardown timeouts during
+  `browser.close`; hosted Python 3.14 E2E passed. Automated review found
+  negative-sounding native fixture terminology under UNKNOWN; this is corrected
+  to neutral no-assertion wording and guarded in Chromium. Focused rerun passes;
+  corrected exact head passed hosted CI in PR #990 and its review thread was
+  resolved.
+
+  PR #990 merged at `e52e3141526edb0baf004b3b12c6820bc60464a1` from exact head `c6846fcae20ba91dadd0929ddf21ba0d316af0e3`; the merge tree matches `abd906eef0ac0b319eeeec8e785f3a7431f67105`. All 38 reported check rows passed across 37 distinct contexts, including Codecov patch, full Python 3.14 E2E, coverage, mutation, and three consumer platforms. The review thread was resolved.
+
+- [x] Extend the installed wheel/sdist Chromium qualification through the
+  additive v2 comparison surface, independently rendering all five semantic
+  dimensions while retaining the v1 search, coverage, and provenance journey.
+  Synthetic unknown states preserve neutral no-assertion wording and do not
+  create a coverage denominator. The focused installed-artifact test passes
+  against both wheel and sdist; the seven-test Atlas E2E suite, routine,
+  context/ecosystem validation, Ruff, `ty`, BasedPyright, and diff checks pass.
+  No new sources, acquisitions, admissions, rights decisions, or coverage
+  claims are introduced. The exact head passed all 38 reported check rows
+  across 37 distinct contexts, including Python 3.14 E2E, coverage, mutation,
+  CodeQL, archive packaging, and Linux/macOS/Windows consumers. PR #993 merged
+  at `a1f3cc23eeffc097d1f214ea75aa44a6babd8de8`; its merge tree matches the
+  qualified head tree `54b91e6eaed31f5f05b498143609ca7c5697199c`.
+
+- [x] Extend the installed wheel/sdist loopback qualification through the
+  read-only v2 JSON API as well as its browser UI. Confirm the five-dimension
+  unknown comparison envelope and explicit empty evidence page over HTTP;
+  the initial installed-artifact test failed at `/api/v2/comparisons` with 404,
+  demonstrating the package-to-API gap. Both artifacts now pass the real
+  loopback API and Chromium journeys. The v2 API/control suite passes (23), as
+  do routine, Ruff, formatting, `ty`, BasedPyright, and context/ecosystem
+  checks. Synthetic only: no source acquisition, admission, rights, coverage,
+  or publication claim. PR #995 passed all 38 reported check rows across 37
+  distinct contexts, including Python 3.14 E2E, coverage, mutation, CodeQL,
+  archive packaging, and Linux/macOS/Windows consumers. It merged at
+  `ba2d38f0b4873a8973d88c2e24c99749c846db09`; the merge tree matches the
+  qualified head tree `539bc42b1631e7e3ac7b63305f47d0ac7ab1cb46`.
+
+- [x] Stabilize the existing history-page keyboard browser assertion after
+  exact-head Linux E2E showed the stylesheet had not finished loading before
+  computed-style inspection. The test now waits for the required skip-link
+  position; the isolated test passes locally. This is an E2E synchronization
+  fix and does not change product behavior. The complete affected browser
+  module passes (4 tests); routine, Ruff, formatting, and `ty` also pass.
+
+- [x] Reconcile the receipt after PR #986 merged at
+  `ebfcb8722736ce02e83ec1440338574fabe10f65` from qualified head
+  `9d3a6ee9b84f184f67f891dcea370551465306b3`; all 38 reported checks passed,
+  and both trees match at
+  `150e52e788e65323f3e1e3c2debe56db15375a26`. This documentation-only change
+  corrects the merge evidence for PR #985 and adds no sources or runtime
+  behavior.
+
+- [x] Reconcile the installed v2 API receipt after PR #995 merged at
+  `ba2d38f0b4873a8973d88c2e24c99749c846db09`; the qualified head and merge
+  trees match at `539bc42b1631e7e3ac7b63305f47d0ac7ab1cb46`, and all 38
+  reported check rows passed across 37 distinct contexts. The evidence receipt
+  records the installed wheel/sdist loopback API journey. No source or
+  coverage claim was added.
+
+- [x] Extend the installed wheel/sdist qualification through v2 CLI comparison
+  and evidence commands using the existing synthetic DuckDB fixture. Both
+  artifacts exercise all five dimensions, an explicit confirmed result, an
+  explicit `not_covered` fixture case, and a populated evidence response. The
+  affected installed browser/API/CLI and product CLI suite passed (33 tests);
+  all 38 reported hosted check rows passed, including the 28 protected branch
+  contexts, and the qualified head tree matches the merge tree. No source
+  acquisition, production admission, rights decision, coverage claim, or
+  publication is included.
+
+- [x] Extend clean wheel/sdist consumer qualification on Linux, macOS, and
+  Windows through v2 comparison and evidence CLI commands. The local Darwin
+  clean-consumer run passed both artifacts; PR #998 then passed all 38 hosted
+  check rows, including Linux, macOS, and Windows consumer qualification. Its
+  qualified head `a4824da1a8b454855725015551999e57f3bfefb3` merged as
+  `11bfbd9fea6c22e3eda810b5dde7b71eb9e875fd`; both trees match at
+  `fb96f04b1c4ec1795c2feef84b0f0ed2bc4c405d`. No source acquisition,
+  production admission, rights decision, source-coverage claim, or publication
+  is included.
+
+
+### Installed synthetic medallion export handoff (2026-10-11)
+
+- [x] Verify the deterministic Platinum export produced by the full synthetic
+  Bronze-to-Platinum pipeline from clean installed wheel and source-distribution
+  environments. The initial qualification failed because the clean-consumer
+  command did not accept a pipeline export. It now verifies the exact archive
+  in both installed artifacts, requires byte-for-byte rebuild identity and the
+  same SHA-256, and rejects inputs over 8 MiB before building. The combined
+  medallion/consumer tests pass (27); routine, Ruff, formatting, `ty`,
+  BasedPyright for the changed qualifier, context, ecosystem, and diff checks
+  pass locally. PR #1000 merged at 2026-10-11T10:19:17Z as
+  `2b768112a5136f03c025d257c990050f4061ae4f`; all 38 reported check rows and
+  37 distinct contexts passed. The exact export probe ran in hosted Linux E2E
+  and local macOS qualification. Separate hosted Linux/macOS/Windows consumer
+  jobs passed their standard probes but did not receive this export; exact
+  cross-platform export verification remains open. The oversized-input test
+  imports its script inside the test body so mutmut's copied selection can
+  collect without a `scripts` package. No source was added or acquired; the
+  export remains synthetic and unpublished.
+
+### Cross-platform synthetic export probe (2026-10-11)
+
+- [x] Run the same Bronze-to-Platinum synthetic export handoff through clean
+  installed wheel and source-distribution consumers on Linux, macOS, and
+  Windows. Persist platform-specific qualification receipts in CI. This is
+  test-only platform coverage; it does not imply source completeness,
+  production admission, rights clearance, or publication.
+  The CI consumer job runs the existing medallion E2E through its pipeline,
+  API, and CLI stages, then writes its installed-consumer receipt to the
+  platform artifact path. Its browser subcheck is skipped because Chromium is
+  installed in the Linux E2E lane, which continues to cover the browser path.
+  Local macOS E2E emitted both wheel and sdist passes with an identical archive
+  digest; focused tests (27), routine, actionlint, context/ecosystem validators,
+  and diff checks pass. PR #1002 merged at 2026-10-11T11:08:14Z as
+  `476adb7aab3721214562f44d551080eca44f01bb` after all 38 reported check rows
+  and 37 distinct contexts passed. Linux, macOS, and Windows platform receipts
+  each show both wheel and sdist verifiers passed with the same export digest.
+  The separate Linux E2E lane continues to cover Chromium. Following Codex
+  review, all three hosted receipt JSON files were preserved under
+  `receipts/cross-platform-export-probe/` with their content hashes in the
+  append-only evidence record; this remains verifiable after the hosted
+  artifacts expire. The Windows receipt is stored with LF line endings to
+  match repository policy; its original hosted-byte digest is separately
+  recorded. PR #1003 merged at `469a3276f887e51ec112abd13bb0a791db24489f`
+  after all 38 check rows and 37 distinct contexts passed; the merge tree
+  matches its qualified head. No source was added or acquired; the export
+  remains synthetic and unpublished.
+
+### B0-to-Platinum synthetic lineage closure (2026-10-11)
+
+- [x] Extend the existing synthetic Bronze-to-Platinum journey to begin with
+  the current B0 source index, bind its source identifier to the synthetic B1
+  acquisition and B2 manifest, and continue through Silver, Gold, Platinum,
+  federation, and installed export qualification. Assert that index presence
+  is not coverage and that B2 metadata does not contain raw payload bytes.
+  This adds no source and changes no production behavior. The previous full-path
+  test began at B1. The serialized B2 manifest is inspected directly for raw
+  bytes and workstation paths; an injected-payload negative control proves the
+  guard fails closed. Focused (1), affected (24), routine, formatting, lint,
+  context/ecosystem checks, and diff checks pass locally. PR #1005 merged at
+  `d20dedbba090581b8a64b75aafd37d5f019486c6` after all 38 hosted check rows
+  and 37 distinct contexts passed; the merge tree matches its qualified head.
+  No source, catalogue entry, live acquisition, production behavior, admission,
+  or publication changed.
+
+### Current-main B0-to-Platinum revalidation (2026-10-11)
+
+- [x] Re-run the installed synthetic B0-to-Platinum journey on current main
+  after the acceptance reconciliation merge. The test passed (1); it rebuilt
+  and verified both wheel and source distribution. One existing Starlette
+  `httpx` deprecation warning was reported. This confirms the merged synthetic
+  journey on the current tree; it does not change production acceptance,
+  source coverage, rights, admission, or publication status.
+
+## 2026-10-17 product export qualification correction
+
+- [x] Correct `PERF-EXPORT-PAGE` so its measured workload matches the declared
+  bounded single-page JSONL export, using only a synthetic 250-row fixture.
+  Keep the 1,000 ms budget and existing multi-page behavior unchanged. Focused
+  and affected checks pass; the full local profile's two release-reproduction
+  failures passed when pinned uv 0.11.29 was visible to child processes. PR
+  #1065 merged as `0cece90f` on exact head `b800f2cb` after all 39 reported
+  checks passed, including hosted full Test-Goblin, E2E, Codecov, security, and
+  Linux/macOS/Windows consumer lanes. The local full-profile environment
+  failure remains recorded separately. The historical 1,038.454 ms cursor
+  traversal result remains a miss for that distinct workload. This correction
+  does not qualify live source coverage, production deployment, rights,
+  accessibility conformance, public export, or release.

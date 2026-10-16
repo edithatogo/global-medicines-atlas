@@ -13,7 +13,11 @@ from dataclasses import dataclass
 from hashlib import sha256
 from typing import Any, cast
 
-from .frontier_graph_export import EDGE_STATEMENT, NODE_STATEMENT
+from .frontier_graph_export import (
+    EDGE_STATEMENT,
+    NODE_STATEMENT,
+    rdf_iri_reference,
+)
 
 
 @dataclass(frozen=True)
@@ -49,6 +53,7 @@ def validate_graph_previews(
     parameters = _document(parameters_json, "parameters")
     nodes = _rows(reference, "nodes")
     edges = _rows(reference, "edges")
+    _validate_graph_shape(nodes, edges)
     if node_statement != NODE_STATEMENT or edge_statement != EDGE_STATEMENT:
         raise ValueError("graph statements differ from the fixed safe template")
     expected_parameters = {
@@ -90,7 +95,7 @@ def validate_graph_previews(
 
 def _document(value: str, label: str) -> dict[str, Any]:
     try:
-        result = json.loads(value)
+        result = json.loads(value, object_pairs_hook=_unique_object)
     except (TypeError, json.JSONDecodeError) as error:
         raise ValueError(f"invalid {label} JSON") from error
     if not isinstance(result, dict) or set(cast("dict[str, Any]", result)) != {
@@ -101,6 +106,15 @@ def _document(value: str, label: str) -> dict[str, Any]:
     return cast("dict[str, Any]", result)
 
 
+def _unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate JSON key: {key}")
+        result[key] = value
+    return result
+
+
 def _rows(document: dict[str, Any], key: str) -> list[dict[str, Any]]:
     rows = document[key]
     if not isinstance(rows, list) or any(
@@ -108,6 +122,36 @@ def _rows(document: dict[str, Any], key: str) -> list[dict[str, Any]]:
     ):
         raise ValueError("graph rows must be objects")
     return cast("list[dict[str, Any]]", rows)
+
+
+def _validate_graph_shape(
+    nodes: list[dict[str, Any]], edges: list[dict[str, Any]]
+) -> None:
+    """Reject malformed identities, unstable order, and dangling endpoints."""
+    node_ids = _identities(nodes, "node_id")
+    edge_ids = _identities(edges, "edge_id")
+    if node_ids != sorted(node_ids) or edge_ids != sorted(edge_ids):
+        raise ValueError("graph rows are not deterministically ordered")
+    available_nodes = set(node_ids)
+    for edge in edges:
+        endpoints = (
+            edge.get("source_node_id"),
+            edge.get("target_node_id"),
+        )
+        if any(not isinstance(value, str) or not value for value in endpoints):
+            raise ValueError("invalid graph identity")
+        if any(value not in available_nodes for value in endpoints):
+            raise ValueError("graph edge endpoint missing")
+
+
+def _identities(rows: list[dict[str, Any]], key: str) -> list[str]:
+    values = [row.get(key) for row in rows]
+    if any(not isinstance(value, str) or not value for value in values):
+        raise ValueError("invalid graph identity")
+    identities = cast("list[str]", values)
+    if len(set(identities)) != len(identities):
+        raise ValueError("duplicate graph identity")
+    return identities
 
 
 def _json(value: object) -> str:
@@ -120,30 +164,20 @@ def _json(value: object) -> str:
     )
 
 
-def _rdf_id(kind: str, value: str) -> str:
-    return (
-        "<urn:gma:"
-        + kind
-        + ":"
-        + value.replace("%", "%25").replace("#", "%23")
-        + ">"
-    )
-
-
 def _rdf_lines(
     nodes: list[dict[str, Any]], edges: list[dict[str, Any]]
 ) -> list[str]:
     lines = [
-        f"{_rdf_id('node', row['node_id'])} <urn:gma:payload-json> {json.dumps(_json(row), ensure_ascii=True)} ."
+        f"{rdf_iri_reference('node', row['node_id'])} <urn:gma:payload-json> {json.dumps(_json(row), ensure_ascii=True)} ."
         for row in nodes
     ]
     for row in edges:
         source, target = (
-            _rdf_id("node", row["source_node_id"]),
-            _rdf_id("node", row["target_node_id"]),
+            rdf_iri_reference("node", row["source_node_id"]),
+            rdf_iri_reference("node", row["target_node_id"]),
         )
         edge, quoted = (
-            _rdf_id("edge", row["edge_id"]),
+            rdf_iri_reference("edge", row["edge_id"]),
             f"<<{source} <urn:gma:connects-to> {target}>>",
         )
         lines.extend((

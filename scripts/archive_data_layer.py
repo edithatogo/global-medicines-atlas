@@ -13,6 +13,7 @@ from global_medicines_atlas.data_layer_archive import (
     CATALOGUE_PUBLIC_URL,
     CATALOGUE_REPOSITORY,
     HttpPayloadRetriever,
+    HuggingFaceAnonymousArtifactVerifier,
     HuggingFaceAuthError,
     HuggingFaceCliUploader,
     build_data_layer_archive,
@@ -23,9 +24,11 @@ from global_medicines_atlas.data_layer_archive import (
 from global_medicines_atlas.publication_transport import (
     PublicationDestination,
     PublicationTarget,
+    PublicationTransportState,
     authorization_from_environment,
     execute_publication,
     prepare_publication,
+    verify_publication,
 )
 
 
@@ -63,6 +66,12 @@ def _parser() -> argparse.ArgumentParser:
         help="Execute the dual-gated Hugging Face upload.",
     )
     parser.add_argument(
+        "--receipt-output",
+        type=Path,
+        default=None,
+        help="Persist the post-upload receipt outside the published archive.",
+    )
+    parser.add_argument(
         "--recorded-at",
         type=datetime.fromisoformat,
         default=None,
@@ -79,8 +88,22 @@ def _existing_relative_paths(directory: Path) -> tuple[str, ...]:
     return tuple(sorted(paths))
 
 
+def _require_receipt_outside_archive(
+    output_dir: Path, receipt_output: Path | None
+) -> None:
+    if receipt_output is None:
+        return
+    archive_root = output_dir.resolve(strict=False)
+    receipt_path = receipt_output.resolve(strict=False)
+    if receipt_path.is_relative_to(archive_root):
+        raise ValueError(
+            "publication receipt must be outside the uploaded archive"
+        )
+
+
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
+    _require_receipt_outside_archive(args.output_dir, args.receipt_output)
     if args.upload and os.environ.get("GITHUB_ACTIONS") != "true":
         raise PermissionError(
             "dataset archive uploads must run in GitHub Actions"
@@ -141,7 +164,23 @@ def main(argv: list[str] | None = None) -> int:
                 record_path.name
             )
         else:
-            payload["receipt"] = uploaded.model_dump(mode="json")
+            receipt = verify_publication(
+                plan=plan,
+                uploaded_receipt=uploaded,
+                verifier=HuggingFaceAnonymousArtifactVerifier(),
+                recorded_at=recorded_at,
+            )
+            payload["receipt"] = receipt.model_dump(mode="json")
+            if args.receipt_output is not None:
+                args.receipt_output.parent.mkdir(parents=True, exist_ok=True)
+                args.receipt_output.write_text(
+                    json.dumps(payload["receipt"], indent=2, sort_keys=True)
+                    + "\n",
+                    encoding="utf-8",
+                )
+            if receipt.state is not PublicationTransportState.PUBLIC:
+                print(json.dumps(payload, indent=2, sort_keys=True))
+                return 1
     print(json.dumps(payload, indent=2, sort_keys=True))
     return 0
 

@@ -1,9 +1,11 @@
 """PBS native-field Arrow candidates over the receipt-bound XML inventory.
 
-The existing PBS parser retains a bounded XML tree; only the additional Arrow
-row buffer is batch-bounded. This is not a constant-memory streaming parser or
-real-schedule qualification. Source bytes remain evidentiary truth, including
-lexical details (prefixes, comments and entity spelling) outside the inventory.
+The event parser releases completed direct children of the XML root. Tree
+memory is bounded by one parser input chunk and the largest direct-root child;
+a single large wrapper can still approach the document limit. The Arrow row
+buffer is batch-bounded. This is not real-schedule qualification. Source bytes
+remain evidentiary truth, including lexical details (prefixes, comments and
+entity spelling) outside the inventory.
 """
 
 from __future__ import annotations

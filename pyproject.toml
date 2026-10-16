@@ -59,6 +59,7 @@ test = [
   "pytest-cov>=7.0",
   "pytest-xdist>=3.8",
   "lancedb>=0.27",
+  "uvicorn>=0.54,<0.55",
 ]
 test-goblin = [
   { include-group = "test" },
@@ -176,7 +177,7 @@ report = ["console", "json"]
 max_pardons = 0
 
 [tool.edgetest]
-command = "pytest -q tests/test_columnar.py tests/test_settings.py tests/test_product_contracts.py tests/test_product_api.py tests/test_product_cli.py"
+command = "pytest -q tests/test_columnar.py tests/test_settings.py tests/test_product_contracts.py tests/test_result_surface_contract_matrix.py tests/test_product_api.py tests/test_product_cli.py"
 
 [[tool.edgetest.env]]
 name = "contracts"
@@ -267,6 +268,7 @@ ignore = [
 "scripts/**/*.py" = ["print"]
 "scripts/test_goblin.py" = ["suspicious-subprocess-import", "subprocess-without-shell-equals-true"]
 "scripts/qualify_clean_consumer.py" = ["suspicious-subprocess-import", "subprocess-without-shell-equals-true"]
+"tests/test_installed_atlas_browser_e2e.py" = ["suspicious-subprocess-import", "subprocess-without-shell-equals-true"] # Build/install isolated artifacts and run their local ASGI server.
 "scripts/generate_nz_asset_inventory.py" = ["too-many-return-statements", "too-many-branches"]
 "scripts/profile_smoke.py" = ["module-import-not-at-top-of-file", "assert"]
 "tests/test_consumer_qualification.py" = ["import-outside-top-level"]

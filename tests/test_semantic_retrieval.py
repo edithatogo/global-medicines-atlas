@@ -161,6 +161,16 @@ def test_semantic_candidates_only_augment_authoritative_order() -> None:
     )
 
 
+def test_semantic_hit_rejects_infinite_candidate_distance() -> None:
+    with pytest.raises(ValidationError):
+        SemanticHit(
+            concept_id="candidate",
+            mapping_level="ingredient",
+            distance=float("inf"),
+            index_version="semantic-index-v1",
+        )
+
+
 @pytest.mark.parametrize(
     "missing",
     ["index_path", "identity", "expected_identity"],

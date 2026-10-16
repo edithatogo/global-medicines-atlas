@@ -42,9 +42,13 @@ class ParserPolicy:
 DEFAULT_PARSER_POLICY = ParserPolicy()
 
 
-def _reject_declarations(payload: bytes) -> None:
-    """Use Expat's decoded grammar events to reject dangerous declarations."""
+def _validate_xml(payload: bytes, policy: ParserPolicy) -> None:
+    """Preflight size, declarations, structure, and text without building a tree."""
+    if len(payload) > policy.max_bytes:
+        raise ParserSafetyError("XML payload exceeds the byte limit")
+
     parser = expat.ParserCreate()
+    state = [0, 0, 0]
 
     def reject(*_args: object) -> None:
         raise ParserSafetyError("XML payload must not contain a DTD or entity")
@@ -57,15 +61,38 @@ def _reject_declarations(payload: bytes) -> None:
     ) -> int:
         raise ParserSafetyError("XML payload must not contain a DTD or entity")
 
+    def start_element(_name: str, _attributes: dict[str, str]) -> None:
+        state[0] += 1
+        state[1] += 1
+        if state[0] > policy.max_xml_depth:
+            raise ParserSafetyError("XML nesting depth limit exceeded")
+        if state[1] > policy.max_xml_elements:
+            raise ParserSafetyError("XML element count limit exceeded")
+
+    def end_element(_name: str) -> None:
+        state[0] -= 1
+
+    def character_data(value: str) -> None:
+        state[2] += len(value.encode())
+        if state[2] > policy.max_xml_text_bytes:
+            raise ParserSafetyError("XML text size limit exceeded")
+
     parser.StartDoctypeDeclHandler = reject
     parser.EntityDeclHandler = reject
     parser.UnparsedEntityDeclHandler = reject
     parser.ExternalEntityRefHandler = reject_external
+    parser.StartElementHandler = start_element
+    parser.EndElementHandler = end_element
+    parser.CharacterDataHandler = character_data
     try:
-        parser.Parse(
-            payload,
-            True,  # ruff: ignore[boolean-positional-value-in-call]
-        )
+        for offset in range(0, len(payload), policy.chunk_bytes):
+            end = offset + policy.chunk_bytes >= len(payload)
+            parser.Parse(payload[offset : offset + policy.chunk_bytes], end)
+        if not payload:
+            parser.Parse(
+                b"",
+                True,  # ruff: ignore[boolean-positional-value-in-call]
+            )
     except ParserSafetyError:
         raise
     except expat.ExpatError as error:
@@ -108,9 +135,7 @@ def parse_xml(
     policy: ParserPolicy = DEFAULT_PARSER_POLICY,
 ) -> ET.Element:
     """Parse XML incrementally while enforcing structural resource ceilings."""
-    if len(payload) > policy.max_bytes:
-        raise ParserSafetyError("XML payload exceeds the byte limit")
-    _reject_declarations(payload)
+    _validate_xml(payload, policy)
 
     parser: ET.XMLPullParser[ET.Element] = ET.XMLPullParser(
         events=("start", "end")
@@ -129,3 +154,60 @@ def parse_xml(
     if root is None:
         raise ParserSafetyError("XML payload has no document element")
     return root
+
+
+def iter_xml_events(
+    payload: bytes,
+    *,
+    policy: ParserPolicy = DEFAULT_PARSER_POLICY,
+) -> Iterator[tuple[str, ET.Element, ET.Element | None]]:
+    """Preflight, then yield checked XML events with each element's parent.
+
+    A no-tree Expat pass enforces the complete byte, declaration, depth,
+    element, and decoded-text limits before any event is exposed. This also
+    catches character data after an element end tag when that tail arrives in
+    a later input chunk. The event pass then permits consumers to clear and
+    detach completed direct-child records before the parser advances.
+    """
+    _validate_xml(payload, policy)
+
+    parser: ET.XMLPullParser[ET.Element] = ET.XMLPullParser(
+        events=("start", "end")
+    )
+    state = [0, 0, 0]
+    stack: list[ET.Element] = []
+
+    def consume() -> Iterator[tuple[str, ET.Element, ET.Element | None]]:
+        events = cast(
+            "Iterator[tuple[str, ET.Element]]",
+            parser.read_events(),
+        )
+        for event, element in events:
+            if event == "start":
+                parent = stack[-1] if stack else None
+                state[0] += 1
+                state[1] += 1
+                if state[0] > policy.max_xml_depth:
+                    raise ParserSafetyError("XML nesting depth limit exceeded")
+                if state[1] > policy.max_xml_elements:
+                    raise ParserSafetyError("XML element count limit exceeded")
+                stack.append(element)
+            else:
+                parent = stack[-2] if len(stack) > 1 else None
+                state[2] += len((element.text or "").encode())
+                state[2] += len((element.tail or "").encode())
+                if state[2] > policy.max_xml_text_bytes:
+                    raise ParserSafetyError("XML text size limit exceeded")
+            yield event, element, parent
+            if event == "end":
+                stack.pop()
+                state[0] -= 1
+
+    try:
+        for offset in range(0, len(payload), policy.chunk_bytes):
+            parser.feed(payload[offset : offset + policy.chunk_bytes])
+            yield from consume()
+        parser.close()
+        yield from consume()
+    except ET.ParseError as error:
+        raise ParserSafetyError("XML payload is not well formed") from error

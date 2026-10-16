@@ -9,18 +9,21 @@ from __future__ import annotations
 
 import hashlib
 import json
+import unicodedata
 from collections.abc import Mapping, Sequence
 from datetime import datetime
 from ipaddress import ip_address
 from typing import Any
 from urllib.parse import urlsplit
 
-from pydantic import Field, field_validator
+from pydantic import ConfigDict, Field, field_validator
 
 from .models import FrozenModel
 
 EXPORT_MANIFEST_SCHEMA = "global-medicines-atlas.research-export"
 EXPORT_MANIFEST_VERSION = 1
+_ASCII_CONTROL_MAX = 31
+_ASCII_DELETE = 127
 
 
 def _canonical_bytes(value: Any) -> bytes:
@@ -52,15 +55,58 @@ def _citation_sort_key(citation: ExportCitation | Mapping[str, Any]) -> bytes:
     )
 
 
+def canonical_result_bytes(
+    result_rows: Sequence[Mapping[str, Any]],
+) -> bytes:
+    """Serialize query rows to canonical, order-stable JSON bytes.
+
+    Rows are sorted by their canonical object representation, matching the
+    digest algorithm used in query snapshot manifests.
+
+    Args:
+        result_rows: Mapping rows returned by a bounded query.
+
+    Returns:
+        Canonical JSON array bytes whose digest matches the snapshot manifest.
+    """
+    normalized_rows = sorted(_canonical_bytes(row) for row in result_rows)
+    return b"[" + b",".join(normalized_rows) + b"]"
+
+
 class ExportSource(FrozenModel):
     """A pinned public data-plane object used by an export."""
 
-    dataset_id: str = Field(min_length=1)
-    revision: str = Field(min_length=1)
-    path: str = Field(min_length=1)
+    model_config = ConfigDict(revalidate_instances="always")
+
+    dataset_id: str = Field(
+        min_length=3,
+        pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$",
+    )
+    revision: str = Field(pattern=r"^[0-9a-f]{40}$")
+    path: str = Field(min_length=1, pattern=r"^[^?#%\\]+$")
     sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     schema_id: str = Field(min_length=1)
     schema_version: str = Field(min_length=1)
+
+    @field_validator("path")
+    @classmethod
+    def path_is_safe_repository_path(cls, value: str) -> str:
+        """Reject absolute, traversing, or display-spoofing object paths."""
+        parts = value.split("/")
+        if (
+            value.startswith("/")
+            or any(
+                ord(character) <= _ASCII_CONTROL_MAX
+                or ord(character) == _ASCII_DELETE
+                or unicodedata.category(character) == "Cf"
+                for character in value
+            )
+            or any(part in {"", ".", ".."} for part in parts)
+        ):
+            raise ValueError(
+                "path must be a safe repository-relative object path"
+            )
+        return value
 
 
 class ExportCitation(FrozenModel):
@@ -136,11 +182,11 @@ def build_query_snapshot_manifest(
     """
     if not sources:
         raise ValueError("A query snapshot requires at least one source")
-    normalized_rows = sorted(_canonical_bytes(row) for row in result_rows)
-    result_payload = b"[" + b",".join(normalized_rows) + b"]"
+    normalized_query = json.loads(_canonical_bytes(query))
+    result_payload = canonical_result_bytes(result_rows)
     return QuerySnapshotManifest(
-        query=dict(query),
-        query_sha256=_digest(query),
+        query=normalized_query,
+        query_sha256=_digest(normalized_query),
         result_sha256=hashlib.sha256(result_payload).hexdigest(),
         result_row_count=len(result_rows),
         sources=tuple(
