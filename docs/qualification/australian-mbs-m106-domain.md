@@ -93,14 +93,20 @@ patient counts for its MBS population-access measure are extracted from
 Medicare claims held in the Department's Enterprise Data Warehouse (EDW). The
 published measure reports a percentage against ABS Estimated Resident
 Population; it does not publish the underlying exact numerator in the cited
-methodology. This identifies the Department's EDW as an authoritative source
+methodology. The PDF text was reviewed through the web reader at pages 91–92;
+no local PDF copy was saved and no patient-level rows or source dataset values
+were read. This identifies the Department's EDW as an authoritative source
 owner lead, not as a public or project-authorized dataset.
 
-The next source-owner clarification should ask whether an existing public or
-releasable aggregate dataset provides exact, deduplicated distinct-patient
-counts for the required MBS cohort and periods; how patients are deduplicated
-across items and services; what suppression and coverage rules apply; and what
-reuse and redistribution terms govern the exact dataset. Keep the two public
+On 2026-10-16, a value-free inquiry was sent to the Department's published
+enquiry address asking whether an existing public or releasable aggregate
+dataset provides exact, deduplicated distinct-patient counts for the required
+MBS cohort and periods; how patients are deduplicated across items and
+services; what suppression and coverage rules apply; and what reuse and
+redistribution terms govern the exact dataset. The exact sent text and
+message identity are preserved in
+[`m106-department-patient-denominator-inquiry.md`](../../conductor/tracks/australian_health_source_consolidation_20260829/m106-department-patient-denominator-inquiry.md).
+Keep the two public
 GP/NRA products as metadata-only candidates until their contents, source
 denominators, and rights are confirmed. Do not derive a patient count from a
 rounded population percentage, treat item/service counts as people, acquire

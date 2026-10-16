@@ -137,6 +137,12 @@ def test_department_patient_metadata_remains_candidate_only() -> None:
     assert assessment["source_specific_maintainer_rights_decision"] is False
     assert assessment["acquisition_authorized"] is False
     assert assessment["m106_acceptance"] is False
+    reference = receipt["source_metadata_review"][
+        "authoritative_measurement_context"
+    ]["reference_document_access"]
+    assert reference["content_reviewed_via_web_reader"] is True
+    assert reference["pages_reviewed"] == [91, 92]
+    assert reference["pdf_saved_locally"] is False
 
     inquiry = cast("dict[str, Any]", receipt["source_owner_inquiry"])
     assert inquiry["recipient"] == "enquiries@health.gov.au"
@@ -145,3 +151,12 @@ def test_department_patient_metadata_remains_candidate_only() -> None:
     assert inquiry["attachments"] == 0
     assert inquiry["patient_data_requested"] is False
     assert inquiry["rights_decision_made"] is False
+    body = (
+        ROOT
+        / "conductor/tracks/australian_health_source_consolidation_20260829/"
+        "m106-department-patient-denominator-inquiry.md"
+    ).read_text(encoding="utf-8")
+    assert "full MBS population or a defined service/item cohort" in body
+    assert "coverage and suppression rules" in body
+    assert "access, attribution, retention and redistribution terms" in body
+    assert "custom extraction, patient-level records, restricted" in body

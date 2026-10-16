@@ -515,8 +515,12 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   denominator for full MBS coverage. A value-free source-owner inquiry was
   sent to the Department's published enquiry address on 2026-10-16 and read
   back under the sent label; its message identity and scope are recorded in
-  the qualification JSON. Await a substantive reply; no data or attachments
-  were sent, and no source rights or acquisition decision was made.
+  the qualification JSON. The exact sent text is preserved in
+  `m106-department-patient-denominator-inquiry.md`. The annual-report PDF was
+  reviewed through the web reader at pages 91–92, but was not saved locally;
+  the dashboard/workbook payloads and patient-level data were not acquired.
+  Await a substantive reply; no data or attachments were sent, and no source
+  rights or acquisition decision was made.
 
 ## M-109 PBS current-distribution transition (2026-09-29)
 
