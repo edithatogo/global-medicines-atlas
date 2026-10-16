@@ -12,9 +12,11 @@ official MBS-XML-20250701 Version 3 release, verified the existing public
 v4 identity at revision `3d2d528439bddf6f42e8e700c88917f0960a9f38`, and
 reconciled all six table objects and their exact digests. The resolved
 `public_v4_identity_unverified` finding is stale in the committed candidate
-qualification, but the current report confirms that public identity. Its
-aggregate digest is recorded in the
-[machine-readable assessment](../../quality/qualifications/australian-m110-mbs-july-2025-silver-assessment-20261017.json).
+qualification, but the current report confirms that public identity. The
+machine-readable assessment records artifact `12066023734`, its downloaded
+JSON body digest (`de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606`),
+and the distinct embedded candidate report digest
+(`a61681c48e4627f9076dc972e05f1ef61d2edbbd70715ccda26c0d860361cfa3`).
 
 For this exact era, the source release has 5,989 records and 40 mapped native
 fields (239,560 field occurrences). The existing value-free parity receipt

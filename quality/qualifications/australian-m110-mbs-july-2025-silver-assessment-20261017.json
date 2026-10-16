@@ -24,7 +24,10 @@
   "evidence": {
     "qualification_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/38947544328",
     "qualification_commit": "7fe32a8830d9576ebcc4b431031d59e6809ef379",
-    "aggregate_sha256": "a61681c48e4627f9076dc972e05f1ef61d2edbbd70715ccda26c0d860361cfa3",
+    "hosted_artifact_id": "12066023734",
+    "hosted_artifact_name": "australian-mbs-silver-candidate-qualification",
+    "hosted_artifact_body_sha256": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606",
+    "candidate_report_sha256": "a61681c48e4627f9076dc972e05f1ef61d2edbbd70715ccda26c0d860361cfa3",
     "qualification_report_sha256": "f69917ab7457d251bc6c85db76e1eb7b92dd4a72ec63c94e7e58f0110625eb6d",
     "identity_status": "verified",
     "resolved_technical_blockers": ["public_v4_identity_unverified"],

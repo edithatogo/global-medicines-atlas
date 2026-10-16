@@ -68,6 +68,13 @@ def test_assessment_binds_exact_candidate_without_promoting_it() -> None:
         assessment["evidence"]["profile_status_scope"]
         == "schema_compatibility_only"
     )
+    assert assessment["evidence"]["hosted_artifact_id"] == "12066023734"
+    assert assessment["evidence"]["hosted_artifact_body_sha256"] == (
+        "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606"
+    )
+    assert assessment["evidence"]["candidate_report_sha256"] == (
+        "a61681c48e4627f9076dc972e05f1ef61d2edbbd70715ccda26c0d860361cfa3"
+    )
     assert (
         assessment["evidence"]["field_semantics_crosswalk_sha256"]
         == hashlib.sha256(
