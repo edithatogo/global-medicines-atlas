@@ -2472,7 +2472,7 @@
   all five implementation/schema fingerprints are checked by `--check` and the
   assessment test. This remains a candidate with review and consumer
   acceptance pending.
-- [~] Remove the admission verifier's dependency on the full Git object
+- [x] Remove the admission verifier's dependency on the full Git object
   history. GitHub Actions checks out one commit, so the original `git show`
   lookup for the public manifest's historical Decision 0009 failed on PR
   #1072. Preserve the exact historical decision bytes and verify their pinned
@@ -2481,9 +2481,10 @@
   pass; the final 63-test affected selection and routine profile pass. A full
   local profile completed with 6,385 passed, 3 skipped, and 96.85% coverage,
   but its two failures were stale generated admission/Gold snapshots captured
-  before the final schema label and fingerprints were regenerated. Exact-head
-  hosted checks for the corrected PR revision remain pending.
-- [~] Preserve exact M-110 admission and semantic bindings in each admitted
+  before the final schema label and fingerprints were regenerated. The
+  corrected verifier and projection changes subsequently merged in PR #1072
+  after exact-head hosted checks passed; see the 2026-10-17 reconciliation.
+- [x] Preserve exact M-110 admission and semantic bindings in each admitted
   Gold Arrow projection. The review found that equal row bodies from two
   different admission manifests produced byte-equal projected tables because
   Arrow metadata dropped those graph-level identities. Real v3 node and edge
@@ -2493,4 +2494,17 @@
   five-module selection passes 71 tests. The full local profile completed with
   6,394 passed, 3 skipped, 96.89% coverage, and one unrelated PERF-QUERY timing
   overrun (392.588 ms against 250 ms); that same performance test passed alone.
-  Exact-head hosted checks for the final projection change remain pending.
+  The corrected verifier and projection changes subsequently merged in PR
+  #1072 after exact-head hosted checks passed; see the 2026-10-17 reconciliation.
+
+### M-110 implementation hosted-check reconciliation (2026-10-17)
+
+- [x] Reconcile the two implementation follow-ups above against PR #1072's
+  exact head `a6a5b6a15bdeb577d222e6bb686aa47da7d11660`. The Python 3.14 unit,
+  routine, integration, and E2E checks, Codecov patch check, consumer platform
+  checks, and all other reported required checks passed. PR #1072 merged as
+  `b6eccdf89726458ec5476ec1a3bda7832b8a6a98`; the resulting implementation is
+  present on current main. This closes the shallow-checkout verifier and Arrow
+  provenance-binding implementation tasks only. M-110 Gold review and consumer
+  acceptance remain open; no clinical interpretation or review decision is
+  inferred from CI.
