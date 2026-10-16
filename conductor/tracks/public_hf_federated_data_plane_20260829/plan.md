@@ -412,12 +412,29 @@
   metadata only. All 1,736 Australian MBS/PBS candidate paths map to pinned
   manifests or the exact August 2026 MBS hosted receipt; 1,735 appear in root
   manifests, and available tree SHA-256 values match manifest digests. The MBS
-  root manifest omits the August XML; exact-revision metadata readback confirms
+  root manifest omitted the August XML at the time of this inventory;
+  exact-revision metadata readback confirms
   its two unreviewed B1 records are distinct append-only events for the same
   raw source identity. Their different source-Parquet digests still require
   separate lineage. The approved candidate denominator does not resolve
   per-object source rights, root-manifest completeness, or v4 admission. See the dependent
   track's `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
+- [x] Reconcile the later exact-main MBS root-manifest append against the
+  anonymous public state. After PR #1067 merged at
+  `320112b821e861c19f4065f550273119ac219831` with all 39 required checks
+  passing, hosted run `38939963456` appended the existing content-addressed
+  August XML identity and anonymously verified public revision
+  `3d2d528439bddf6f42e8e700c88917f0960a9f38`. The pinned parent manifest had
+  27 rows; the new manifest has 28, with only the approved path added, no rows
+  removed or existing rows changed, and the historical alias retained. Both
+  paths bind SHA-256
+  `c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565` and
+  8,293,331 bytes. This is a metadata-only reconciliation: no source payload
+  bytes were read or uploaded, and rights, admission, and the approved
+  denominator did not change. Durable receipt:
+  https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6221047682 .
+  It closes the root-manifest path omission only; M-112 rights, lineage,
+  admission, full-denominator, and consumer-canary gates remain open.
 - [x] Join the MBS/PBS source and utilisation receipt metadata to pinned raw
   paths and existing authorization scopes. All 20 utilisation sidecars match
   path/source/category/digest/size and remain within recorded authorization
