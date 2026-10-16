@@ -2143,6 +2143,12 @@
   files were removed after durable outcomes. Twelve cohort objects now have
   structural evidence; two oversized ZIP holds remain, with zero admissions.
   See `quality/qualifications/australian-mbs-workbook-streaming-receipt-20261005.json`.
+  Current-main revalidation run `38944324136` at
+  `8ba21a12f74c6336901abfe6b13cd6d2caae9a91` retested only these two pinned
+  workbooks. Both again passed the same bounded profile, three receipts were
+  read back, and both hosted cache files were removed. The two ZIP holds and
+  zero-admission state are unchanged; see
+  `quality/qualifications/australian-mbs-workbook-streaming-receipt-20261017.json`.
 
 - [x] Define source-specific utilisation semantic validation and admission
   requirements from approved source documentation and native evidence; keep
@@ -2355,10 +2361,25 @@
   receipt evidence; compare-and-swap writes only `manifest.json`. Focused
   publisher tests cover stale-head rejection, ambiguous-commit idempotency, and
   anonymous-readback failure. No source payload is read or uploaded, and no
-  rights, admission, denominator, or M-112 acceptance state changes. The hosted
-  append and its durable anonymous receipt remain pending the final merged-main
-  workflow run.
+  rights, admission, denominator, or M-112 acceptance state changes.
 
+- [x] Execute the exact-main metadata-only append and reconcile its durable
+  anonymous receipt. PR #1067 merged at `320112b821e861c19f4065f550273119ac219831`
+  after all 39 required checks passed on head
+  `3a8b6b83fcd8d417c590c204a602277f1e2f784a`. Hosted run
+  `38939963456` appended the existing content-addressed August MBS XML identity
+  to the root manifest using compare-and-swap; the public dataset advanced from
+  `44b25bfd87e44998c7c1da4c3930ad4447e9246f` to
+  `3d2d528439bddf6f42e8e700c88917f0960a9f38`. Anonymous readback verified the
+  manifest digest, the added path and unchanged historical alias, each bound to
+  SHA-256 `c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565`
+  and 8,293,331 bytes. File count increased from 27 to 28; no other manifest
+  rows, rights, admission, or denominator changed, and no source payload bytes
+  were read or uploaded. Durable receipt:
+  https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6221047682 .
+  This closes only the root-manifest identity gap; M-112's approved denominator,
+  object-level lineage, rights/admission, and consumer-canary acceptance remain
+  open.
 
 ### M-110 real-Silver admission gate recheck (2026-10-05)
 
