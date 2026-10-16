@@ -1,0 +1,84 @@
+"""Guard the boundary of the exact-era M-110 MBS input assessment."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).parents[1]
+ASSESSMENT = (
+    ROOT
+    / "quality/qualifications/australian-m110-mbs-july-2025-silver-assessment-20261017.json"
+)
+PARITY = (
+    ROOT
+    / "quality/qualifications/mbs-source-silver-tables-parity-2025-07-v3.json"
+)
+AUTHORIZATION = (
+    ROOT
+    / "quality/qualifications/australian-health-legacy-publication-authorization.json"
+)
+EVIDENCE = (
+    ROOT
+    / "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl"
+)
+
+
+def test_assessment_binds_exact_candidate_without_promoting_it() -> None:
+    assessment = json.loads(ASSESSMENT.read_text())
+    parity = json.loads(PARITY.read_text())
+    authorization = json.loads(AUTHORIZATION.read_text())
+
+    assert (
+        assessment["schema_id"]
+        == "global-medicines-atlas.australian-m110-mbs-silver-assessment"
+    )
+    assert (
+        assessment["scope"]["source_sha256"] == parity["source_object_sha256"]
+    )
+    assert (
+        assessment["scope"]["manifest_sha256"]
+        == parity["silver_manifest_sha256"]
+    )
+    assert (
+        assessment["scope"]["public_revision"]
+        == "3d2d528439bddf6f42e8e700c88917f0960a9f38"
+    )
+    tables = {table["name"]: table for table in assessment["scope"]["tables"]}
+    assert set(tables) == {table["table"] for table in parity["tables"]}
+    assert all(
+        tables[table["table"]]["sha256"] == table["silver_object_sha256"]
+        and tables[table["table"]]["bytes"] == table["silver_object_bytes"]
+        and tables[table["table"]]["rows"] == table["row_count"]
+        for table in parity["tables"]
+    )
+    assert authorization["dataset"] == assessment["scope"]["public_dataset"]
+    assert authorization["external_publication_authorized"] is True
+    assert assessment["evidence"]["profile_status"] == "declared_only"
+    assert assessment["evidence"]["publication_performed"] is False
+    assert assessment["evidence"]["source_bytes_retained"] is False
+    assert parity["rights_conclusion"] is False
+    assert parity["production_admission"] is False
+    assert parity["production_promotion"] is False
+    assert (
+        assessment["status"]
+        == "candidate_only_exact_era_assessed_admission_pending"
+    )
+
+
+def test_evidence_ledger_binds_assessment_digest() -> None:
+    assessment_bytes = ASSESSMENT.read_bytes()
+    assessment_sha256 = hashlib.sha256(assessment_bytes).hexdigest()
+    records = [json.loads(line) for line in EVIDENCE.read_text().splitlines()]
+    record = next(
+        item
+        for item in reversed(records)
+        if item.get("kind") == "m110_mbs_july_2025_silver_candidate_revalidated"
+    )
+
+    assert record["qualification"] == str(ASSESSMENT.relative_to(ROOT))
+    assert record["qualification_sha256"] == assessment_sha256
+    assert record["exact_commit"] == "7fe32a8830d9576ebcc4b431031d59e6809ef379"
+    assert record["production_admission"] is False
+    assert record["m110_acceptance"] is False

@@ -2397,3 +2397,19 @@
   node/edge identity, source spans, temporal validity, review decisions, and
   negative controls. Keep MBS/PBS cross-source or clinical interpretations
   excluded unless separately supported and approved.
+
+### M-110 exact-era MBS candidate revalidation (2026-10-17)
+
+- [x] Revalidate the exact July 2025 MBS v3 public candidate identity and six
+  table digests at current main using the read-only hosted qualifier. Run
+  `38947544328` resolved the stale `public_v4_identity_unverified` finding;
+  the current public revision and all six object identities match. This
+  confirms candidate identity and declared schema compatibility only.
+- [ ] Reconcile the exact-source derived-rights conclusion and record current
+  Silver admission against the verified six-object revision. Existing receipts
+  still say `rights_conclusion=false` and `production_admission=false`; this
+  revalidation does not change either state.
+- [ ] Qualify the M-110 graph against admitted real tables after the prior
+  admission gate passes. Preserve MBS-only scope and the existing M-109/M-112
+  boundaries. See `docs/qualification/australian-m110-mbs-july-2025-silver-assessment.md`
+  and `quality/qualifications/australian-m110-mbs-july-2025-silver-assessment-20261017.json`.
