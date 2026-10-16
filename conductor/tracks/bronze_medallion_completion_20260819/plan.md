@@ -1317,3 +1317,6 @@ for credentialed or rights-unresolved sources.
   as `65cb189262586118b012d54213bc321e9cd63c5f`; the merge tree exactly
   matches the tested head tree. All 29 required branch-protection contexts
   passed, including Codecov patch and Linux/macOS/Windows consumers.
+  The initial failed-check ledger entry is preserved unchanged. A later
+  append-only clarification associates the failure with PR #1060 and keeps its
+  `26d23b5` failing head distinct from the successful `a4764cff` rerun.
