@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import shutil
 
 import pytest
 from jsonschema import Draft202012Validator, ValidationError
@@ -47,6 +48,67 @@ def test_exact_source_semantics_and_admission_are_bound_to_six_real_tables() -> 
         is False
     )
     assert admission["separation"]["public_dataset_mutation"] is False
+
+
+def _copy_authority_inputs(root) -> None:
+    for path in (
+        qualification.QUALIFICATION_PATH,
+        qualification.PUBLIC_MANIFEST_PATH,
+        qualification.PARITY_PATH,
+        qualification.AUTHORIZATION_PATH,
+        qualification.HISTORICAL_DECISION_SNAPSHOT_PATH,
+    ):
+        destination = root / path
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(qualification.ROOT / path, destination)
+
+
+def test_historical_authority_binding_works_in_source_only_checkout(
+    monkeypatch, tmp_path
+) -> None:
+    _copy_authority_inputs(tmp_path)
+    monkeypatch.setattr(qualification, "ROOT", tmp_path)
+    _, public_manifest, _, _ = qualification._verified_inputs()
+    basis = public_manifest["authorization_basis"]
+    assert (
+        public_manifest["producer_commit"]
+        == qualification.EXPECTED_PRODUCER_COMMIT
+    )
+    assert basis["decision_sha256"] == qualification.EXPECTED_DECISION_SHA256
+    assert (
+        basis["source_authorization_sha256"]
+        == qualification.EXPECTED_SOURCE_AUTHORIZATION_SHA256
+    )
+
+
+@pytest.mark.parametrize(
+    ("relative_path", "message"),
+    [
+        (
+            (
+                "quality/qualifications/historical-authority/"
+                "decision-0009-at-decdeca1f3724405b0e085eb77d8ff11b6944ef9.md"
+            ),
+            "preserved historical decision snapshot digest changed",
+        ),
+        (
+            (
+                "quality/qualifications/"
+                "australian-health-legacy-publication-authorization.json"
+            ),
+            "source authorization bytes differ from pinned basis",
+        ),
+    ],
+)
+def test_source_only_authority_binding_rejects_byte_tampering(
+    monkeypatch, tmp_path, relative_path: str, message: str
+) -> None:
+    _copy_authority_inputs(tmp_path)
+    monkeypatch.setattr(qualification, "ROOT", tmp_path)
+    path = tmp_path / relative_path
+    path.write_bytes(path.read_bytes() + b"\n")
+    with pytest.raises(ValueError, match=message):
+        qualification._verified_inputs()
 
 
 @pytest.mark.parametrize(
@@ -140,13 +202,14 @@ def test_current_assessment_supersedes_pre_fix_snapshot_without_accepting_graph(
         "australian-m110-mbs-july-2025-silver-assessment-20261017-8c0090db.json"
     )
     assessment = json.loads(path.read_text(encoding="utf-8"))
-    admission = qualification._json(qualification.ADMISSION_OUTPUT_PATH)
     assert assessment["supersedes_assessment"]["path"].endswith(
         "australian-m110-mbs-july-2025-silver-assessment-20261017.json"
     )
-    assert (
-        assessment["evidence"]["admission_receipt_sha256"]
-        == hashlib.sha256(
+    assert assessment["evidence"]["admission_receipt_sha256"] == (
+        "ca01262520e1dbf3fbc697f21d644a1739c382f9b1652006ef94881302571f63"
+    )
+    assert assessment["evidence"]["admission_receipt_sha256"] != (
+        hashlib.sha256(
             (
                 qualification.ROOT / qualification.ADMISSION_OUTPUT_PATH
             ).read_bytes()
@@ -158,6 +221,7 @@ def test_current_assessment_supersedes_pre_fix_snapshot_without_accepting_graph(
     assert assessment["gate_assessment"]["gold_graph_qualification"].startswith(
         "pending_"
     )
+    admission = qualification._json(qualification.ADMISSION_OUTPUT_PATH)
     assert admission["separation"]["M110_gold_graph_accepted"] is False
 
 

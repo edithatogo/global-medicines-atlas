@@ -2459,3 +2459,14 @@
   all five implementation/schema fingerprints are checked by `--check` and the
   assessment test. This remains a candidate with review and consumer
   acceptance pending.
+- [~] Remove the admission verifier's dependency on the full Git object
+  history. GitHub Actions checks out one commit, so the original `git show`
+  lookup for the public manifest's historical Decision 0009 failed on PR
+  #1072. Preserve the exact historical decision bytes and verify their pinned
+  SHA-256, producer commit, manifest paths and hashes, and current source
+  authorization bytes without invoking Git. Source-only and byte-tamper tests
+  pass; the final 63-test affected selection and routine profile pass. A full
+  local profile completed with 6,385 passed, 3 skipped, and 96.85% coverage,
+  but its two failures were stale generated admission/Gold snapshots captured
+  before the final schema label and fingerprints were regenerated. Exact-head
+  hosted checks for the corrected PR revision remain pending.

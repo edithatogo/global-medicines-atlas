@@ -2,7 +2,7 @@
   "schema_id": "global-medicines-atlas.australian-mbs-silver-admission",
   "schema_version": 1,
   "status": "admitted_scoped_source_era_for_m110_graph_qualification",
-  "recorded_at": "2026-10-16T19:32:16.997256Z",
+  "recorded_at": "2026-10-16T20:41:32.753585Z",
   "admission_scope": "M-110 Gold graph qualification input only",
   "admission_basis": "Existing Decision 0009 and exact-source publication authorization; no new licensing interpretation",
   "source_identity": {
@@ -40,6 +40,14 @@
   "authority": {
     "decision_path": "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md",
     "decision_sha256": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
+    "historical_manifest_basis": {
+      "producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9",
+      "decision_snapshot_path": "quality/qualifications/historical-authority/decision-0009-at-decdeca1f3724405b0e085eb77d8ff11b6944ef9.md",
+      "decision_sha256": "47f3495f397d47bf441b82ef951c41d1de95b32d8eb1a87f52783e10f117d6d9",
+      "source_authorization_path": "quality/qualifications/australian-health-legacy-publication-authorization.json",
+      "source_authorization_sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da",
+      "verification": "pinned_producer_and_sha256_verified_snapshot"
+    },
     "source_authorization_path": "quality/qualifications/australian-health-legacy-publication-authorization.json",
     "source_authorization_sha256": "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da",
     "existing_external_publication_authorization": true,

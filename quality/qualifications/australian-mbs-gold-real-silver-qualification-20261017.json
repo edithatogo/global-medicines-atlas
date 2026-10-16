@@ -2,7 +2,7 @@
   "schema_id": "global-medicines-atlas.australian-mbs-gold-real-silver-qualification",
   "schema_version": 1,
   "status": "real_admitted_silver_graph_candidate_qualified_for_review",
-  "recorded_at": "2026-10-16T19:57:51.919024Z",
+  "recorded_at": "2026-10-16T20:42:17.099210Z",
   "requirement_id": "M-110",
   "implementation_fingerprints": [
     {
@@ -19,7 +19,7 @@
     },
     {
       "path": "schemas/australian-mbs-silver-admission-v1.json",
-      "sha256": "8e6eb11bc83fa1bb16cfe631d4d769db6ddf1a35025c8589b6010ba483f4a24b"
+      "sha256": "07914902841ed042961f10a3283060a882a2cec83282a45bb3abf787fea2c21c"
     },
     {
       "path": "schemas/australian-mbs-silver-semantic-manifest-v1.json",
@@ -44,7 +44,7 @@
   },
   "admission_receipt": {
     "path": "quality/qualifications/australian-mbs-silver-admission-20261017.json",
-    "sha256": "ca01262520e1dbf3fbc697f21d644a1739c382f9b1652006ef94881302571f63",
+    "sha256": "a97289a9b0d4abc864b62606eb6d3356fccbedce5ea656235200353c507be7d4",
     "semantic_manifest_sha256": "9ad5e2747949b8b7142819e981241c1f74105b3570d78025e654e780241c5882"
   },
   "verified_objects": [
@@ -95,7 +95,7 @@
     "source_record_count": 5989,
     "node_count": 11978,
     "edge_count": 5989,
-    "graph_sha256": "a52ad5ca22c0c8edda528a5a02276751198a142ab62e35fbf942dff730e3a7d4",
+    "graph_sha256": "44c6c4f2d3dee80e49efac7bc14cc8965958b476a0e73c3758214645c7f7b27b",
     "candidate_schema_version": 3,
     "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03",
     "rights_state": "permitted",

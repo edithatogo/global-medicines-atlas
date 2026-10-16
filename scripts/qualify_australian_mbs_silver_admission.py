@@ -6,8 +6,6 @@ import argparse
 import hashlib
 import json
 import re
-import shutil
-import subprocess
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
@@ -54,7 +52,18 @@ SEMANTIC_OUTPUT_PATH = Path(
 ADMISSION_OUTPUT_PATH = Path(
     "quality/qualifications/australian-mbs-silver-admission-20261017.json"
 )
+HISTORICAL_DECISION_SNAPSHOT_PATH = Path(
+    "quality/qualifications/historical-authority/"
+    "decision-0009-at-decdeca1f3724405b0e085eb77d8ff11b6944ef9.md"
+)
 EXPECTED_MAIN_COMMIT = "8c0090db41bb4ad2a4de20090a5e0895fffd91ec"
+EXPECTED_PRODUCER_COMMIT = "decdeca1f3724405b0e085eb77d8ff11b6944ef9"
+EXPECTED_DECISION_SHA256 = (
+    "47f3495f397d47bf441b82ef951c41d1de95b32d8eb1a87f52783e10f117d6d9"
+)
+EXPECTED_SOURCE_AUTHORIZATION_SHA256 = (
+    "fdda663c78437edc010bc5f2f606c3d716d6b4e0bfc31d27daf910303a7a16da"
+)
 EXPECTED_PUBLIC_REVISION = "3d2d528439bddf6f42e8e700c88917f0960a9f38"
 EXPECTED_SOURCE_SHA256 = (
     "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556"
@@ -152,6 +161,31 @@ def _validate_json_schema(
     validator_type(schema, format_checker=FormatChecker()).validate(value)
 
 
+def _verify_manifest_authority_basis(
+    public_manifest: dict[str, Any], dataset: str
+) -> None:
+    if public_manifest["producer_commit"] != EXPECTED_PRODUCER_COMMIT:
+        raise ValueError("public manifest producer commit changed")
+    expected_basis = {
+        "decision_path": DECISION_PATH.as_posix(),
+        "decision_sha256": EXPECTED_DECISION_SHA256,
+        "destination": dataset,
+        "source_authorization_path": AUTHORIZATION_PATH.as_posix(),
+        "source_authorization_sha256": EXPECTED_SOURCE_AUTHORIZATION_SHA256,
+    }
+    if public_manifest["authorization_basis"] != expected_basis:
+        raise ValueError("public manifest authority basis changed")
+    snapshot_digest = hashlib.sha256(
+        _bytes(HISTORICAL_DECISION_SNAPSHOT_PATH)
+    ).hexdigest()
+    if snapshot_digest != EXPECTED_DECISION_SHA256:
+        raise ValueError(
+            "preserved historical decision snapshot digest changed"
+        )
+    if _sha256(AUTHORIZATION_PATH) != EXPECTED_SOURCE_AUTHORIZATION_SHA256:
+        raise ValueError("source authorization bytes differ from pinned basis")
+
+
 def _verified_inputs() -> tuple[
     dict[str, Any], dict[str, Any], dict[str, Any], dict[str, Any]
 ]:
@@ -205,31 +239,7 @@ def _verified_inputs() -> tuple[
         is not True
     ):
         raise ValueError("existing source-specific reuse authority is absent")
-    basis = public_manifest["authorization_basis"]
-    producer_commit = public_manifest["producer_commit"]
-    if re.fullmatch(r"[0-9a-f]{40}", producer_commit) is None:
-        raise ValueError(
-            "public manifest producer commit is not a pinned Git object"
-        )
-    git_executable = shutil.which("git")
-    if git_executable is None:
-        raise RuntimeError(
-            "git is required to verify the public manifest authority history"
-        )
-    for path, key in (
-        (DECISION_PATH, "decision_sha256"),
-        (AUTHORIZATION_PATH, "source_authorization_sha256"),
-    ):
-        historical_bytes = subprocess.run(
-            [git_executable, "show", f"{producer_commit}:{path.as_posix()}"],
-            shell=False,
-            check=True,
-            capture_output=True,
-        ).stdout
-        if hashlib.sha256(historical_bytes).hexdigest() != basis[key]:
-            raise ValueError(
-                "public manifest authorization basis is not historical-source bound"
-            )
+    _verify_manifest_authority_basis(public_manifest, identity["dataset"])
     if (
         parity["source_object_sha256"]
         != report["official_release_check"]["source_sha256"]
@@ -462,6 +472,16 @@ def build_admission(
         "authority": {
             "decision_path": str(DECISION_PATH),
             "decision_sha256": _sha256(DECISION_PATH),
+            "historical_manifest_basis": {
+                "producer_commit": EXPECTED_PRODUCER_COMMIT,
+                "decision_snapshot_path": str(
+                    HISTORICAL_DECISION_SNAPSHOT_PATH
+                ),
+                "decision_sha256": EXPECTED_DECISION_SHA256,
+                "source_authorization_path": str(AUTHORIZATION_PATH),
+                "source_authorization_sha256": EXPECTED_SOURCE_AUTHORIZATION_SHA256,
+                "verification": "pinned_producer_and_sha256_verified_snapshot",
+            },
             "source_authorization_path": str(AUTHORIZATION_PATH),
             "source_authorization_sha256": _sha256(AUTHORIZATION_PATH),
             "existing_external_publication_authorization": authorization[
