@@ -226,6 +226,39 @@
 - [ ] Phase Verification & Checkpoint: exact remote revisions reproduce all
   products and local storage is demonstrably transient.
 
+### M-108 live Australian product reconciliation (2026-10-05)
+
+- [x] Inventory the anonymous public Australian dataset heads, accepted Bronze
+  projection executions, and public MBS Silver v4 candidate. Bind current
+  paths, byte counts, digests, source rights receipts, v4 identity/admission,
+  data-card, and readback evidence in
+  `docs/qualification/australian-m108-derived-products.md` and
+  `quality/qualifications/australian-m108-derived-products-20261005.json`.
+- [~] Keep M-108 blocked: Bronze parser acceptance is not typed federation-v4
+  admission; the July 2025 MBS Silver v4 package remains candidate-only and
+  lacks a product-specific card, output-specific v4 rights admission, and
+  independent-replica evidence. Do not publish or relabel these products
+  until their exact per-product gates are satisfied.
+- [ ] Publish newly admitted products through their authorized protected-main
+  workflow, anonymously restore and digest-check every object, and persist
+  readback receipts before removing hosted temporary bytes.
+
+### M-108 exact-current-head metadata refresh (2026-10-17)
+
+- [x] Reconcile the current anonymous public heads and refresh the M-108
+  product inventory. The current MBS archive has three distinct accepted
+  August acquisition records for one source content ID; the third acquisition
+  was missing from the 2026-10-05 inventory. Record the separate public MBS
+  projection whose manifest has no admission state and whose prefix has no
+  admission sidecar, without counting it as accepted. See
+  `docs/qualification/australian-m108-derived-products-20261017.md` and
+  `quality/qualifications/australian-m108-derived-products-20261017.json`.
+- [~] Keep M-108 blocked: all four accepted Bronze projections and the public
+  MBS Silver candidate still lack a complete output-specific rights and typed
+  federation-v4 admission bundle, product-specific card, and independent
+  replica evidence. The unadmitted MBS prefix also needs an explicit
+  disposition. No publication, visibility change, or admission was performed.
+
 ## Review fixes: runtime reader
 
 - [x] Admit the exact observed `us.aws.cdn.hf.co` delivery host, with signed

@@ -11,3 +11,6 @@ GitHub parent: [#340](https://github.com/edithatogo/global-medicines-atlas/issue
 This track makes public Hugging Face datasets the durable data plane for every
 publication-approved Australian raw and derived object while keeping
 publication, rights, sensitivity, and restore evidence independent.
+
+Current M-108 product status: [derived-product reconciliation](../../../docs/qualification/australian-m108-derived-products.md)
+and [machine-readable inventory](../../../quality/qualifications/australian-m108-derived-products-20261005.json).
