@@ -386,6 +386,39 @@ def test_hosted_parity_receipt_is_durably_pinned_and_value_free() -> None:
     )
 
 
+def test_exact_main_six_table_receipt_is_durable_value_free_and_schema_valid() -> (
+    None
+):
+    root = Path(__file__).resolve().parents[1]
+    receipt_path = (
+        root
+        / "quality/qualifications/mbs-source-silver-tables-parity-2025-07-v3.json"
+    )
+    schema_path = (
+        root / "schemas/mbs-source-silver-tables-parity-receipt-v1.json"
+    )
+    payload = receipt_path.read_bytes()
+    receipt = parity.MbsSourceSilverTablesParityReceipt.model_validate_json(
+        payload
+    )
+    schema = json.loads(schema_path.read_text(encoding="utf-8"))
+    Draft202012Validator(schema).validate(json.loads(payload))
+
+    assert hashlib.sha256(payload).hexdigest() == (
+        "0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6"
+    )
+    assert receipt.source_to_silver_value_parity_verified is True
+    assert receipt.source_values_in_receipt is False
+    assert [table.table for table in receipt.tables] == list(
+        parity.MBS_SILVER_TABLES
+    )
+    assert [table.row_count for table in receipt.tables] == [5_989] * 6
+    assert receipt.rights_conclusion is False
+    assert receipt.production_admission is False
+    assert receipt.public_data_mutation is False
+    assert receipt.production_promotion is False
+
+
 def test_six_table_identities_match_the_pinned_candidate_manifest() -> None:
     root = Path(__file__).resolve().parents[1]
     manifest_path = (

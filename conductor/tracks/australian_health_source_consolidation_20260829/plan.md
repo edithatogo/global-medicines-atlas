@@ -544,6 +544,26 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   corpus is authorized and qualified. Do not reuse the XML profile as current
   API semantics or exceed its 12-month published history window.
 
+## M-109 exact-main July 2025 MBS six-table parity evidence (2026-10-16)
+
+- [x] Reconcile the dependent benefits-track exact-main Test-Goblin receipt
+  into the M-109 source-era register and federation acceptance summary. Run
+  `38908829291` on merge `2666e6e026867be99d85f1e32bc9b381afe50efc`
+  validated artifact `12048749308` (SHA-256
+  `0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6`).
+  Its value-free receipt binds the pinned July 2025 source and Silver manifest,
+  verifies source-to-candidate value parity for exactly six canonical tables,
+  and reports 5,989 rows per table. This is one source-era parity result only;
+  rights, production admission, publication, promotion, other-era semantics,
+  the approved source-era denominator, and full M-109 acceptance remain open.
+- [x] Preserve the exact 2,843-byte value-free receipt in
+  `quality/qualifications/mbs-source-silver-tables-parity-2025-07-v3.json`.
+  Its committed digest is
+  `0743f6039e3da1d5bac05d013f3fd629d22da94df014033cdac66b0bb19ef5b6`;
+  a regression checks this identity and validates the receipt with both the
+  Pydantic model and JSON Schema so evidence remains auditable after the
+  hosted artifact expires.
+
 ## M-107 metadata evidence review fixes (2026-09-28)
 
 - [x] Correct the proposed route/contact evidence timestamps to the recorded
