@@ -282,6 +282,203 @@ def test_publish_rejects_stale_parent_before_any_write(
     assert not receipt_path.exists()
 
 
+def _install_recovery_publish_fakes(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    contract: dict[str, Any],
+    base_bytes: bytes,
+    *,
+    ambiguous_commit: bool,
+    mismatching_readback: bool,
+) -> dict[str, Any]:
+    obj = contract["object"]
+    state: dict[str, Any] = {
+        "revision": contract["expected_parent_revision"],
+        "manifests": {
+            contract["expected_parent_revision"]: base_bytes,
+        },
+        "commits": 0,
+        "ambiguous_commit": ambiguous_commit,
+        "mismatching_readback": mismatching_readback,
+    }
+
+    class FakeApi:
+        def dataset_info(
+            self,
+            _dataset: str,
+            *,
+            revision: str | None = None,
+            **_kwargs: Any,
+        ) -> Any:
+            selected = revision or state["revision"]
+            return SimpleNamespace(
+                private=False,
+                gated=False,
+                sha=selected,
+                siblings=[
+                    SimpleNamespace(
+                        rfilename=path,
+                        size=obj["bytes"],
+                        blob_id=obj["expected_blob_id"],
+                    )
+                    for path in (obj["path"], obj["preserved_alias_path"])
+                ],
+            )
+
+        def create_commit(
+            self,
+            *,
+            repo_id: str,
+            repo_type: str,
+            parent_commit: str,
+            commit_message: str,
+            operations: list[Any],
+        ) -> Any:
+            assert repo_id == contract["dataset"]
+            assert repo_type == "dataset"
+            assert parent_commit == contract["expected_parent_revision"]
+            assert commit_message
+            assert len(operations) == 1
+            operation = operations[0]
+            assert operation.path_in_repo == "manifest.json"
+            state["commits"] += 1
+            new_revision = "b" * 40
+            state["revision"] = new_revision
+            updated_bytes = operation.path_or_fileobj.getvalue()
+            state["manifests"][new_revision] = updated_bytes
+            if state["ambiguous_commit"]:
+                raise TimeoutError("simulated timeout after remote commit")
+            return SimpleNamespace(oid=new_revision)
+
+    def fake_download(
+        *,
+        repo_id: str,
+        repo_type: str,
+        filename: str,
+        revision: str,
+        token: bool,
+        cache_dir: Path,
+    ) -> str:
+        assert repo_id == contract["dataset"]
+        assert repo_type == "dataset"
+        assert filename == "manifest.json"
+        assert token is False
+        target = cache_dir / revision / filename
+        target.parent.mkdir(parents=True, exist_ok=True)
+        content = state["manifests"][revision]
+        if state["mismatching_readback"] and revision == "b" * 40:
+            content = base_bytes
+        target.write_bytes(content)
+        return str(target)
+
+    def fake_read_json(_path: Path) -> dict[str, Any]:
+        return contract
+
+    def fake_verify_static_authority(_contract: dict[str, Any]) -> None:
+        return None
+
+    def fake_require_hosted_main(_commit: str) -> None:
+        return None
+
+    def fake_api_factory(**_kwargs: Any) -> FakeApi:
+        return FakeApi()
+
+    def fake_commit_operation(
+        *, path_in_repo: str, path_or_fileobj: Any
+    ) -> Any:
+        return SimpleNamespace(
+            path_in_repo=path_in_repo,
+            path_or_fileobj=path_or_fileobj,
+        )
+
+    monkeypatch.setenv("HF_TOKEN", "test-token")
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    monkeypatch.setattr(manifest_publisher, "ROOT", tmp_path)
+    monkeypatch.setattr(manifest_publisher, "read_json", fake_read_json)
+    monkeypatch.setattr(
+        manifest_publisher,
+        "verify_static_authority",
+        fake_verify_static_authority,
+    )
+    monkeypatch.setattr(
+        manifest_publisher, "_require_hosted_main", fake_require_hosted_main
+    )
+    monkeypatch.setitem(
+        sys.modules,
+        "huggingface_hub",
+        SimpleNamespace(
+            CommitOperationAdd=fake_commit_operation,
+            HfApi=fake_api_factory,
+            hf_hub_download=fake_download,
+        ),
+    )
+    return state
+
+
+def test_ambiguous_commit_retry_is_idempotent_and_never_writes_twice(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    contract = _contract()
+    base_manifest = _manifest(contract)
+    base_bytes = (
+        json.dumps(base_manifest, indent=2, sort_keys=True) + "\n"
+    ).encode()
+    contract["expected_parent_manifest_sha256"] = (
+        manifest_publisher.sha256_bytes(base_bytes)
+    )
+    contract["expected_parent_file_count"] = len(base_manifest["files"])
+    state = _install_recovery_publish_fakes(
+        monkeypatch,
+        tmp_path,
+        contract,
+        base_bytes,
+        ambiguous_commit=True,
+        mismatching_readback=False,
+    )
+
+    first_receipt = tmp_path / "build/first-receipt.json"
+    with pytest.raises(TimeoutError, match="after remote commit"):
+        publish("c" * 40, first_receipt)
+    assert not first_receipt.exists()
+    assert state["commits"] == 1
+
+    retry_receipt = tmp_path / "build/retry-receipt.json"
+    result = publish("c" * 40, retry_receipt)
+
+    assert result["status"] == "already_present_and_verified"
+    assert state["commits"] == 1
+    assert json.loads(retry_receipt.read_text(encoding="utf-8")) == result
+
+
+def test_mismatching_anonymous_readback_never_writes_success_receipt(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    contract = _contract()
+    base_manifest = _manifest(contract)
+    base_bytes = (
+        json.dumps(base_manifest, indent=2, sort_keys=True) + "\n"
+    ).encode()
+    contract["expected_parent_manifest_sha256"] = (
+        manifest_publisher.sha256_bytes(base_bytes)
+    )
+    contract["expected_parent_file_count"] = len(base_manifest["files"])
+    state = _install_recovery_publish_fakes(
+        monkeypatch,
+        tmp_path,
+        contract,
+        base_bytes,
+        ambiguous_commit=False,
+        mismatching_readback=True,
+    )
+
+    receipt_path = tmp_path / "build/receipt.json"
+    with pytest.raises(ValueError, match="Anonymous manifest readback"):
+        publish("c" * 40, receipt_path)
+
+    assert state["commits"] == 1
+    assert not receipt_path.exists()
+
+
 def test_hosted_publish_commits_only_manifest_and_verifies_exact_readback(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
