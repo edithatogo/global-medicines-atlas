@@ -27,6 +27,7 @@ from global_medicines_atlas.australian_source_contracts import (
 )
 from global_medicines_atlas.mbs_silver import (
     iter_mbs_silver_batches,
+    mbs_numeric_field_width_exceeded,
     mbs_silver_schema,
 )
 from global_medicines_atlas.parser_safety import ParserPolicy
@@ -364,6 +365,83 @@ def test_mbs_amount_width_contract_is_independent_of_date_profile(
     assert amount["native_value"] == "123456.78"
     assert amount["typed_value"] is None
     assert amount["conversion_status"] == "invalid"
+
+
+def test_numeric_width_rule_does_not_apply_to_unconstrained_text_fields() -> (
+    None
+):
+    assert mbs_numeric_field_width_exceeded("DerivedFee", "999999999") is False
+
+
+@pytest.mark.parametrize(
+    ("field", "native", "expected"),
+    [
+        ("EMSNFixedCapAmount", "100000.00", Decimal("100000.00")),
+        ("EMSNMaximumCap", "9999999.99", Decimal("9999999.99")),
+        ("EMSNPercentageCap", "9999999.99", Decimal("9999999.99")),
+    ],
+)
+def test_emns_cap_numeric_widths_allow_official_seven_integer_digits(
+    field: str, native: str, expected: Decimal
+) -> None:
+    payload = _xml(f"<{field}>{native}</{field}>")
+    value = next(
+        iter_mbs_silver_batches(payload, _receipt(payload), table="caps")
+    ).to_pylist()[0][field]
+
+    assert value["native_value"] == native
+    assert value["typed_value"] == expected
+    assert value["conversion_status"] == "converted"
+
+
+@pytest.mark.parametrize(
+    ("field", "native", "table"),
+    [
+        ("ScheduleFee", "100000.00", "fees"),
+        ("Benefit75", "100000.00", "benefits"),
+        ("EMSNFixedCapAmount", "10000000.00", "caps"),
+        ("EMSNMaximumCap", "10000000.00", "caps"),
+        ("EMSNPercentageCap", "10000000.00", "caps"),
+    ],
+)
+def test_mbs_numeric_fields_reject_values_beyond_their_official_width(
+    field: str, native: str, table: TargetTable
+) -> None:
+    payload = _xml(f"<{field}>{native}</{field}>")
+    value = next(
+        iter_mbs_silver_batches(payload, _receipt(payload), table=table)
+    ).to_pylist()[0][field]
+
+    assert value["native_value"] == native
+    assert value["typed_value"] is None
+    assert value["conversion_status"] == "invalid"
+
+
+def test_cap_width_normalizes_only_xml_edge_whitespace() -> None:
+    payload = _xml("<EMSNFixedCapAmount> \t100000.00\n</EMSNFixedCapAmount>")
+    value = next(
+        iter_mbs_silver_batches(payload, _receipt(payload), table="caps")
+    ).to_pylist()[0]["EMSNFixedCapAmount"]
+
+    assert value["native_value"] == " \t100000.00\n"
+    assert value["typed_value"] == Decimal("100000.00")
+    assert value["conversion_status"] == "converted"
+
+
+@pytest.mark.parametrize(
+    "native", ["10 0000.00", "10000000.00", "\u00a0100000.00"]
+)
+def test_cap_width_does_not_accept_internal_or_non_xml_whitespace(
+    native: str,
+) -> None:
+    payload = _xml(f"<EMSNFixedCapAmount>{native}</EMSNFixedCapAmount>")
+    value = next(
+        iter_mbs_silver_batches(payload, _receipt(payload), table="caps")
+    ).to_pylist()[0]["EMSNFixedCapAmount"]
+
+    assert value["native_value"] == native
+    assert value["typed_value"] is None
+    assert value["conversion_status"] == "invalid"
 
 
 @pytest.mark.parametrize(

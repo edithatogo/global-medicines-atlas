@@ -42,8 +42,8 @@ from global_medicines_atlas.mbs_schema_profile import (
     iter_profiled_mbs_silver_batches,
 )
 from global_medicines_atlas.mbs_silver import (
-    MAX_MBS_AMOUNT_INTEGER_DIGITS,
     iter_mbs_silver_batches,
+    mbs_numeric_field_width_exceeded,
 )
 from global_medicines_atlas.mbs_silver_qualification import (
     OFFICIAL_MBS_V3_URI,
@@ -801,7 +801,7 @@ def _quality_diagnostics(
     amount_fields = {
         (contract.target_table, contract.native_name)
         for contract in mbs_field_contracts()
-        if contract.value_type == "aud_decimal"
+        if contract.value_type in {"aud_decimal", "percentage"}
     }
     for table in _TABLES:
         field_names = tuple(
@@ -831,7 +831,7 @@ def _quality_diagnostics(
                     ):
                         continue
                     native_value = value["native_value"]
-                    reason = _amount_invalid_reason(native_value)
+                    reason = _amount_invalid_reason(field_name, native_value)
                     amount_issue_ordinals[table, field_name, reason].append(
                         ordinal
                     )
@@ -887,14 +887,13 @@ def _quality_diagnostics(
     }
 
 
-def _amount_invalid_reason(native_value: object) -> str:
+def _amount_invalid_reason(native_name: str, native_value: object) -> str:
     """Classify invalid amount text without retaining or returning its value."""
     if not isinstance(native_value, str) or not _NUMERIC_TEXT.fullmatch(
         native_value
     ):
         return "strict_numeric_grammar_mismatch"
-    integer = native_value.lstrip("+-").partition(".")[0]
-    if len(integer) > MAX_MBS_AMOUNT_INTEGER_DIGITS:
+    if mbs_numeric_field_width_exceeded(native_name, native_value):
         return "integer_width_exceeded"
     return "other_numeric_validation"
 

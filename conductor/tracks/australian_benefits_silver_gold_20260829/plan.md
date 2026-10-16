@@ -2397,3 +2397,32 @@
   node/edge identity, source spans, temporal validity, review decisions, and
   negative controls. Keep MBS/PBS cross-source or clinical interpretations
   excluded unless separately supported and approved.
+
+### M-110 exact-era MBS candidate revalidation (2026-10-17)
+
+- [x] Revalidate the exact July 2025 MBS v3 public candidate identity and six
+  table digests at current main using the read-only hosted qualifier. Run
+  `38947544328` resolved the stale `public_v4_identity_unverified` finding;
+  the current public revision and all six object identities match. This
+  confirms candidate identity and declared schema compatibility only.
+- [ ] Bind the existing Decision 0009 and exact-source publication
+  authorization basis into an immutable Silver admission receipt against the
+  verified six-object revision. The parity receipt's `rights_conclusion=false`
+  means that receipt made no independent conclusion; it does not negate the
+  maintainer authority. Its `production_admission=false` remains unchanged.
+- [ ] Qualify the M-110 graph against admitted real tables after the prior
+  admission gate passes. Preserve MBS-only scope and the existing M-109/M-112
+  boundaries. See `docs/qualification/australian-m110-mbs-july-2025-silver-assessment.md`
+  and `quality/qualifications/australian-m110-mbs-july-2025-silver-assessment-20261017.json`.
+- [x] Correct the MBS XML numeric-width transform so the three EMSN numeric
+  fields use their official seven-integer-digit limit while ScheduleFee and
+  Benefit75/85/100 retain five digits. Boundary tests failed before the fix and
+  pass after it. Focused MBS plus admission-assessment tests: 65 passed; the
+  full profile: 6,362 passed, three skipped, two local reproducibility tests
+  failed only because spawned processes found uv 0.13.1 instead of required
+  0.11.29; those two tests passed when rerun with pinned uv first on PATH.
+  Coverage 96.87%; current-source impact remains unqualified.
+- [ ] Re-run the read-only exact-main source qualifier after the field-width
+  fix. Compare all 5,989 source rows and six table digests; if candidate outputs
+  change, regenerate the qualification and use the approved hosted publication
+  path before admission.

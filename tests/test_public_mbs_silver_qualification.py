@@ -199,9 +199,11 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
     payload = (
         b"<MBS_XML><Data><ItemNum>00123</ItemNum>"
         b"<ItemStartDate>not-a-date</ItemStartDate>"
-        b"<Benefit85>123456.78</Benefit85></Data>"
+        b"<Benefit85>123456.78</Benefit85>"
+        b"<EMSNFixedCapAmount>100000.00</EMSNFixedCapAmount></Data>"
         b"<Data><ItemNum>00456</ItemNum>"
-        b"<Benefit85>bad-amount</Benefit85></Data></MBS_XML>"
+        b"<Benefit85>bad-amount</Benefit85>"
+        b"<EMSNMaximumCap>10000000.00</EMSNMaximumCap></Data></MBS_XML>"
     )
     monkeypatch.setattr(command, "LEGACY_MBS_BYTES", len(payload))
     monkeypatch.setattr(
@@ -232,6 +234,12 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
             "source_ordinals": [0, 1],
         },
         {
+            "table": "caps",
+            "field": "EMSNMaximumCap",
+            "status": "invalid",
+            "source_ordinals": [1],
+        },
+        {
             "table": "services",
             "field": "ItemStartDate",
             "status": "invalid",
@@ -242,6 +250,15 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
         "list[dict[str, object]]",
         diagnostics["invalid_amount_reason_source_ordinals"],
     )
+    field_status_counts = cast(
+        "list[dict[str, object]]", diagnostics["field_status_counts"]
+    )
+    assert {
+        "table": "caps",
+        "field": "EMSNFixedCapAmount",
+        "status": "converted",
+        "count": 1,
+    } in field_status_counts
     assert amount_reasons == [
         {
             "table": "benefits",
@@ -255,10 +272,18 @@ def test_quality_diagnostics_locate_field_and_row_without_values(
             "reason": "strict_numeric_grammar_mismatch",
             "source_ordinals": [1],
         },
+        {
+            "table": "caps",
+            "field": "EMSNMaximumCap",
+            "reason": "integer_width_exceeded",
+            "source_ordinals": [1],
+        },
     ]
     assert diagnostics["source_values_included"] is False
     assert "not-a-date" not in json.dumps(result)
     assert "123456.78" not in json.dumps(result)
+    assert "100000.00" not in json.dumps(result)
+    assert "10000000.00" not in json.dumps(result)
     assert "bad-amount" not in json.dumps(result)
     assert (
         result["candidate_report_sha256"]
