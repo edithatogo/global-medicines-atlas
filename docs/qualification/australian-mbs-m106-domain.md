@@ -106,6 +106,10 @@ services; what suppression and coverage rules apply; and what reuse and
 redistribution terms govern the exact dataset. The exact sent text and
 message identity are preserved in
 [`m106-department-patient-denominator-inquiry.md`](../../conductor/tracks/australian_health_source_consolidation_20260829/m106-department-patient-denominator-inquiry.md).
+The Department's automatic receipt and the separate earlier routing update
+were read on 2026-10-16; neither answers the denominator or reuse questions.
+The sender-scoped mailbox readback also found no Services Australia reply.
+See the [current response receipt](../../quality/qualifications/provider-response-m106-refresh-20261016.json).
 Keep the two public
 GP/NRA products as metadata-only candidates until their contents, source
 denominators, and rights are confirmed. Do not derive a patient count from a
