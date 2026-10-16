@@ -55,6 +55,36 @@ def test_assessment_binds_exact_candidate_without_promoting_it() -> None:
     )
     assert authorization["dataset"] == assessment["scope"]["public_dataset"]
     assert authorization["external_publication_authorized"] is True
+    assert (
+        authorization["maintainer_asserted_redistribution_permission"] is True
+    )
+    assert assessment["gate_assessment"][
+        "source_era_field_semantics"
+    ].startswith("pass_")
+    assert assessment["gate_assessment"][
+        "source_era_date_semantics"
+    ].startswith("pass_")
+    assert (
+        assessment["evidence"]["profile_status_scope"]
+        == "schema_compatibility_only"
+    )
+    assert (
+        assessment["evidence"]["field_semantics_crosswalk_sha256"]
+        == hashlib.sha256(
+            (
+                ROOT / "docs/qualification/mbs-xml-v3-field-semantics.md"
+            ).read_bytes()
+        ).hexdigest()
+    )
+    assert (
+        assessment["evidence"]["date_profile_receipt_sha256"]
+        == hashlib.sha256(
+            (
+                ROOT
+                / "quality/qualifications/mbs-xml-v3-date-profile-qualification-20260929.json"
+            ).read_bytes()
+        ).hexdigest()
+    )
     assert assessment["evidence"]["profile_status"] == "declared_only"
     assert assessment["evidence"]["publication_performed"] is False
     assert assessment["evidence"]["source_bytes_retained"] is False

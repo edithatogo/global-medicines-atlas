@@ -20,16 +20,22 @@ For this exact era, the source release has 5,989 records and 40 mapped native
 fields (239,560 field occurrences). The existing value-free parity receipt
 covers six tables with 5,989 rows each. The fresh report also confirms declared
 schema compatibility for all six tables, with table values matching the
-unprofiled projection and legacy metadata unchanged. The schema profile remains
-`declared_only`; this is not independent semantic validation or an admission.
-The hosted run retained no source bytes and performed no publication.
+unprofiled projection and legacy metadata unchanged. Its `declared_only` label
+applies to schema-profile compatibility. Separately, the exact-era field-
+semantics crosswalk maps all 40 contract fields to official July 2025 XML
+definitions, and the exact-source date receipt qualifies the `DD.MM.YYYY`
+profile across all 11 native date fields. These are source-era semantic
+evidence, not Silver admission. The hosted run retained no source bytes and
+performed no publication.
 
-Decision 0009 supplies maintainer authority for the scoped Australian MBS/PBS
-public data plane. The existing parity receipts nevertheless state
-`rights_conclusion=false`, `production_admission=false`, and
-`production_promotion=false`. This assessment preserves those states rather
-than inferring that publication authority itself is a completed derived-rights
-conclusion or Silver admission.
+Decision 0009 and the exact-source publication authorization supply maintainer
+authority for the scoped MBS/PBS public data plane and exact MBS source. The
+parity receipt's `rights_conclusion=false` records that the parity receipt did
+not make an independent rights conclusion; it does not negate that authority.
+The parity receipt still explicitly says `production_admission=false` and
+`production_promotion=false`, which remain the state of that receipt. This
+assessment records the applicable authority basis without making a new legal
+interpretation or claiming admission.
 
 ## Exact proposed input boundary
 
@@ -42,8 +48,8 @@ vocabularies, participant denominators, or cross-domain/clinical claims.
 
 Before using these tables to qualify Gold, the repository needs a current
 immutable Silver admission receipt bound to the six public object digests and
-the applicable exact-source rights disposition. No such admission is present
-yet. After that prerequisite, M-110 still requires typed graph nodes and edges,
+the existing exact-source authority basis. No such admission is present yet.
+After that prerequisite, M-110 still requires typed graph nodes and edges,
 source lineage/spans, temporal validity, review state, and negative controls
 over the admitted inputs. Full M-109 and M-112 remain separately incomplete.
 

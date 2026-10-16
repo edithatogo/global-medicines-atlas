@@ -2405,10 +2405,11 @@
   `38947544328` resolved the stale `public_v4_identity_unverified` finding;
   the current public revision and all six object identities match. This
   confirms candidate identity and declared schema compatibility only.
-- [ ] Reconcile the exact-source derived-rights conclusion and record current
-  Silver admission against the verified six-object revision. Existing receipts
-  still say `rights_conclusion=false` and `production_admission=false`; this
-  revalidation does not change either state.
+- [ ] Bind the existing Decision 0009 and exact-source publication
+  authorization basis into an immutable Silver admission receipt against the
+  verified six-object revision. The parity receipt's `rights_conclusion=false`
+  means that receipt made no independent conclusion; it does not negate the
+  maintainer authority. Its `production_admission=false` remains unchanged.
 - [ ] Qualify the M-110 graph against admitted real tables after the prior
   admission gate passes. Preserve MBS-only scope and the existing M-109/M-112
   boundaries. See `docs/qualification/australian-m110-mbs-july-2025-silver-assessment.md`
