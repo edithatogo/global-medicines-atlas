@@ -349,14 +349,20 @@ def _replace_focused_text(page: Page, value: str) -> None:
 
 
 def _assert_atlas_assets_loaded(
-    requests: list[str], responses: dict[str, int], page: Page
+    requests: list[str],
+    responses: dict[str, int],
+    page: Page,
+    *,
+    scripts: tuple[str, ...] = (
+        "/static/atlas-autocomplete.js",
+        "/static/atlas-table-scroll.js",
+    ),
 ) -> None:
     assert "/static/atlas.css" in requests
-    assert "/static/atlas-autocomplete.js" in requests
-    assert "/static/atlas-table-scroll.js" in requests
     assert responses["/static/atlas.css"] == 200
-    assert responses["/static/atlas-autocomplete.js"] == 200
-    assert responses["/static/atlas-table-scroll.js"] == 200
+    for script in scripts:
+        assert script in requests
+        assert responses[script] == 200
     assert (
         page.locator(".skip-link").evaluate(
             "element => getComputedStyle(element).position"
@@ -388,19 +394,39 @@ def _assert_keyboard_table_scroll(page: Page, region_name: str) -> None:
     )
 
 
-def _exercise_browser_benefits_route(page: Page) -> None:
+def _exercise_browser_benefits_route(
+    page: Page, requests: list[str], responses: dict[str, int]
+) -> None:
     benefits_link = page.get_by_role(
         "link", name="Browse pinned benefit evidence"
     )
     assert benefits_link.get_attribute("href") == "/federated/benefits"
-    benefits_link.click()
+    requests.clear()
+    responses.clear()
+    with page.expect_navigation(wait_until="load"):
+        benefits_link.click()
+    _assert_atlas_assets_loaded(
+        requests,
+        responses,
+        page,
+        scripts=("/static/atlas-table-scroll.js",),
+    )
     assert page.url == "http://atlas.test/federated/benefits"
     assert page.get_by_role(
         "heading", name="Australian benefit evidence"
     ).is_visible()
     page.get_by_label("Resource identifier").fill(RESOURCE)
     page.get_by_label("Source columns, comma separated").fill("item_code")
-    page.get_by_role("button", name="Read pinned evidence").click()
+    requests.clear()
+    responses.clear()
+    with page.expect_navigation(wait_until="load"):
+        page.get_by_role("button", name="Read pinned evidence").click()
+    _assert_atlas_assets_loaded(
+        requests,
+        responses,
+        page,
+        scripts=("/static/atlas-table-scroll.js",),
+    )
     content = page.locator("main").inner_text()
     assert "Comparison cohort" in content
     assert "current" in content
@@ -412,21 +438,41 @@ def _exercise_browser_benefits_route(page: Page) -> None:
     assert "100" in benefit_rows.first.inner_text()
 
 
-def _exercise_browser_structure_route(page: Page) -> None:
+def _exercise_browser_structure_route(
+    page: Page, requests: list[str], responses: dict[str, int]
+) -> None:
     structure_link = page.get_by_role(
         "link", name="Browse pinned source-structure evidence"
     )
     assert structure_link.get_attribute("href") == (
         "/federated/source-structure"
     )
-    structure_link.click()
+    requests.clear()
+    responses.clear()
+    with page.expect_navigation(wait_until="load"):
+        structure_link.click()
+    _assert_atlas_assets_loaded(
+        requests,
+        responses,
+        page,
+        scripts=("/static/atlas-table-scroll.js",),
+    )
     assert page.url == "http://atlas.test/federated/source-structure"
     assert page.get_by_role(
         "heading", name="Source-structure evidence"
     ).is_visible()
     page.get_by_label("Resource identifier").fill(RESOURCE)
     page.get_by_label("Source columns, comma separated").fill("kind")
-    page.get_by_role("button", name="Read pinned structure").click()
+    requests.clear()
+    responses.clear()
+    with page.expect_navigation(wait_until="load"):
+        page.get_by_role("button", name="Read pinned structure").click()
+    _assert_atlas_assets_loaded(
+        requests,
+        responses,
+        page,
+        scripts=("/static/atlas-table-scroll.js",),
+    )
     content = page.locator("main").inner_text()
     assert "Comparison cohort" in content
     assert "current" in content
@@ -470,16 +516,19 @@ def test_browser_navigates_from_home_to_bounded_federated_evidence() -> None:
             assert home_response is not None
             assert home_response.status == 200
             _assert_atlas_assets_loaded(requests, responses, page)
-            _exercise_browser_benefits_route(page)
-            _assert_keyboard_table_scroll(page, "Federated evidence rows")
-            _assert_atlas_assets_loaded(requests, responses, page)
 
+            # Verify asset requests and responses for each document separately.
+            _exercise_browser_benefits_route(page, requests, responses)
+            _assert_keyboard_table_scroll(page, "Federated evidence rows")
+
+            requests.clear()
+            responses.clear()
             page.goto("http://atlas.test/")
-            _exercise_browser_structure_route(page)
+            _assert_atlas_assets_loaded(requests, responses, page)
+            _exercise_browser_structure_route(page, requests, responses)
             _assert_keyboard_table_scroll(
                 page, "Source-structure evidence rows"
             )
-            _assert_atlas_assets_loaded(requests, responses, page)
         finally:
             browser.close()
 
