@@ -15,6 +15,10 @@ from global_medicines_atlas.federation_consumer import (
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "contracts/medallion/v4/fixtures/valid.json"
+V41_FIXTURE = ROOT / "contracts/medallion/v4.1/fixtures/valid-raw-b2.json"
+V41_SCHEMA = (
+    ROOT / "contracts/medallion/v4.1/federation.schema.json"
+).read_bytes()
 
 
 def contract() -> bytes:
@@ -52,6 +56,47 @@ def test_binding_preserves_producer_and_exact_contract_identity() -> None:
         == "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec"
     )
     assert result.successor == link()
+
+
+def test_binding_preserves_the_matching_v41_schema_pin() -> None:
+    value = json.loads(V41_FIXTURE.read_bytes())
+    digest = "e" * 64
+    value["location"].update(sha256=digest)
+    value["verification"].update(sha256=digest)
+    value["rights"]["subject_sha256"] = digest
+    raw = json.dumps(value, sort_keys=True).encode()
+
+    result = bind_consumer_contract(
+        raw,
+        consumer_repository="edithatogo/reimbursement-atlas",
+        consumer_commit="a" * 40,
+    )
+    assert result.schema_sha256 == hashlib.sha256(V41_SCHEMA).hexdigest()
+
+
+@pytest.mark.parametrize(
+    ("version", "schema_sha256"),
+    [
+        ("4.0.0", hashlib.sha256(V41_SCHEMA).hexdigest()),
+        (
+            "4.1.0",
+            "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec",
+        ),
+    ],
+)
+def test_consumer_rejects_cross_version_schema_pins(
+    version: str, schema_sha256: str
+) -> None:
+    value = json.loads(V41_FIXTURE.read_bytes())
+    value["version"] = version
+    value["authority"]["schema_sha256"] = schema_sha256
+
+    with pytest.raises(ValueError, match="schema pin"):
+        bind_consumer_contract(
+            json.dumps(value).encode(),
+            consumer_repository="edithatogo/reimbursement-atlas",
+            consumer_commit="a" * 40,
+        )
 
 
 def test_binding_preserves_source_era_and_temporal_identity() -> None:

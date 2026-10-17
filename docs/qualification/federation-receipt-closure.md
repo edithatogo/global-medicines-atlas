@@ -1,8 +1,10 @@
 # Offline federation receipt-byte closure
 
 `verify_receipt_closure` checks supplied opaque receipt bytes against every
-receipt reference in an exact, byte-pinned v4 contract. It performs no network
-or filesystem operations and never returns receipt bodies.
+receipt reference in an exact, byte-pinned v4.0 or v4.1 contract. It performs
+no network or filesystem operations and never returns receipt bodies. Each
+schema digest is bound to its exact contract version; the v4.0 schema bytes
+remain unchanged.
 
 The immutable result records the contract digest, every nested JSON-pointer
 role, and one URL/digest/byte-count entry per supplied URL. A shared URL/digest
@@ -32,8 +34,11 @@ fully fabricated but internally matching packet can satisfy byte closure. It
 must never directly populate `FederatedReader.admission_records` or establish
 rights, publication, cleanup, qualification or promotion authority. Consumers
 still need trusted authority/authorization, typed v1–v3 lineage and promotion
-checks, and independent public/non-gated anonymous verification. Existing
-MBS/PBS receipts are not retroactively promoted to v4.
+checks, and independent public/non-gated anonymous verification. For v4.1 raw
+B2, field-level v2 lineage is omitted only with the explicit
+`not_applicable_raw_b2` state; this does not waive source identity, acquisition,
+rights, v1/v3 receipts, or any other gate. Existing MBS/PBS receipts are not
+retroactively promoted to v4.
 
 Tests use synthetic opaque bytes only. No actual receipt acquisition, public
 publication, external authentication or complete federation admission is

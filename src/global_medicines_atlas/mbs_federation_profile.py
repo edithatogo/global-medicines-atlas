@@ -13,7 +13,7 @@ from typing import Any, Literal, cast
 from pydantic import ConfigDict, model_validator
 
 from .federation import validate_federation_semantics
-from .federation_reader import SCHEMA_SHA256
+from .federation_reader import schema_digest_matches_version
 from .historical_comparison import Digest, ProfileName
 from .mbs_schema_profile import (
     MbsNativeProfileBinding,
@@ -175,9 +175,11 @@ def _bind(
         raise ValueError
     source = copied["source"]
     location = copied["location"]
+    if not schema_digest_matches_version(
+        copied["version"], copied["authority"]["schema_sha256"]
+    ):
+        raise ValueError
     identities = (
-        (copied["version"], "4.0.0"),
-        (copied["authority"]["schema_sha256"], SCHEMA_SHA256),
         (source["source_id"], declaration.source_id),
         (source["layer"], "silver"),
         (source["bronze_stratum"], None),

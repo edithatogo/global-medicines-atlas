@@ -4,7 +4,9 @@ Install the opt-in `global-medicines-atlas[federation]` extra. This reuses the
 already-locked JSON Schema library and its `format-nongpl` validators without
 adding them to the default runtime. Startup refuses a validator installation
 missing date, date-time or URI checks; bare jsonschema may silently skip these.
-The core Python/Mojo fallback and v1-v4 schema bytes are unchanged.
+The core Python/Mojo fallback and v1-v3 schema bytes are unchanged. The
+immutable v4.0 schema remains byte-identical; v4.1 adds a separately pinned
+raw-B2 field-lineage applicability state.
 
 `FederatedReader` implements the transport/cache part of the v4 consumer
 contract. It does **not** decide source rights, authenticate producers, or
@@ -19,10 +21,17 @@ bytes changes admission. The record itself is an in-process typed handoff, not
 a cryptographic signature; the trust profile and the caller provisioning it
 remain separate authority.
 
-Supply the unmodified v4 schema bytes. The reader pins their SHA-256, validates
-the document with format checks and existing semantic guards, and checks its
+Supply the unmodified v4.0 or v4.1 schema bytes. The reader accepts only the
+two locally pinned schema digests, binds each digest to its exact version,
+validates the document with format checks and semantic guards, and checks its
 schema identity. The schema is not downloaded at runtime. Synthetic fixtures
 are not real publication evidence.
+
+In v4.1, `v2_field_lineage_applicability` must be `not_applicable_raw_b2` and
+the v2 receipt must be null only for `bronze` / `B2` / `raw` objects. Every
+other object must retain a v2 receipt with state `provided`. This records that
+raw source bytes have no transformed fields to map; it does not waive the
+required v1/v3 receipts or any source, rights, admission, or publication gate.
 
 ## Retrieval and local-data boundary
 

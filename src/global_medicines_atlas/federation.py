@@ -29,9 +29,33 @@ def validate_federation_semantics(document: dict[str, Any]) -> None:
         or rights["path"] != location["path"]
     ):
         raise ValueError("authorization identity mismatch")
+    if document["version"] == "4.1.0":
+        _validate_v2_field_lineage_applicability(document)
     _validate_layers(document)
     _validate_lifecycle(document)
     _validate_recovery(document["recovery"])
+
+
+def _validate_v2_field_lineage_applicability(
+    document: dict[str, Any],
+) -> None:
+    """Allow absent field lineage only for an immutable raw Bronze B2 object."""
+    source = document["source"]
+    lineage = document["lineage"]
+    is_raw_b2 = (
+        source["layer"] == "bronze"
+        and source["bronze_stratum"] == "B2"
+        and source["representation"] == "raw"
+    )
+    applicability = lineage["v2_field_lineage_applicability"]
+    receipt = lineage["v2_field_lineage"]
+    if is_raw_b2:
+        if applicability != "not_applicable_raw_b2" or receipt is not None:
+            raise ValueError(
+                "raw B2 field lineage must be explicitly not applicable"
+            )
+    elif applicability != "provided" or not isinstance(receipt, dict):
+        raise ValueError("non-raw B2 objects require a field-lineage receipt")
 
 
 def _validate_layers(document: dict[str, Any]) -> None:

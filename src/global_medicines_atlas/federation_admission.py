@@ -13,7 +13,7 @@ from typing import Annotated, Literal
 from pydantic import Field
 
 from .federation_identity import AdmissionRecord
-from .federation_reader import SCHEMA_SHA256
+from .federation_reader import supported_schema_digest
 from .federation_receipt_closure import (
     ReceiptClosure,
     ReceiptRole,
@@ -109,7 +109,9 @@ def admit_closed_contract(
         trusted.effective_date,
         trusted.retrieved_at,
     )
-    if actual != expected or trusted.schema_sha256 != SCHEMA_SHA256:
+    if actual != expected or trusted.schema_sha256 != supported_schema_digest(
+        schema
+    ):
         raise ValueError("contract identity is not independently trusted")
     roles = {role.role: role for role in closure.roles}
     if roles.get("/rights/authorization") != trusted.authorization:

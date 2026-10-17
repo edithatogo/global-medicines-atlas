@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from dataclasses import replace
 from pathlib import Path
@@ -17,6 +18,8 @@ from global_medicines_atlas.federation_distribution import (
 
 ROOT = Path(__file__).resolve().parents[1] / "contracts/medallion/v4"
 SCHEMA = (ROOT / "federation.schema.json").read_bytes()
+V41_ROOT = ROOT.parent / "v4.1"
+SCHEMA_V41 = (V41_ROOT / "federation.schema.json").read_bytes()
 
 
 def candidate(layer: str = "silver") -> tuple[ProducedObject, dict[str, Any]]:
@@ -45,12 +48,15 @@ def candidate(layer: str = "silver") -> tuple[ProducedObject, dict[str, Any]]:
 
 
 def reconcile(
-    objects: list[ProducedObject], documents: list[dict[str, Any]]
+    objects: list[ProducedObject],
+    documents: list[dict[str, Any]],
+    *,
+    schema: bytes = SCHEMA,
 ) -> Any:
     return reconcile_distribution(
         objects,
         [json.dumps(document).encode() for document in documents],
-        schema=SCHEMA,
+        schema=schema,
         destinations=dict.fromkeys(
             ("bronze", "silver", "gold", "platinum"), "example/synthetic-mbs"
         ),
@@ -65,6 +71,20 @@ def test_exact_object_has_one_immutable_destination(layer: str) -> None:
     assert bindings[0].object == obj
     assert bindings[0].revision == "a" * 40
     assert bindings[0].dataset == "example/synthetic-mbs"
+
+
+def test_v41_derived_distribution_requires_and_accepts_field_lineage():
+    obj, document = candidate()
+    document["version"] = "4.1.0"
+    document["authority"]["schema_sha256"] = hashlib.sha256(
+        SCHEMA_V41
+    ).hexdigest()
+    document["lineage"]["v2_field_lineage_applicability"] = "provided"
+
+    bindings = reconcile([obj], [document], schema=SCHEMA_V41)
+
+    assert bindings[0].object == obj
+    assert bindings[0].contract_sha256
 
 
 @pytest.mark.parametrize(

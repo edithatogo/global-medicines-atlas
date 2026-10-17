@@ -14,6 +14,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 from global_medicines_atlas.federation import validate_federation_semantics
 
 CONTRACT = Path(__file__).resolve().parents[1] / "contracts/medallion/v4"
+CONTRACT_V41 = Path(__file__).resolve().parents[1] / "contracts/medallion/v4.1"
 
 
 def load(name: str) -> dict[str, Any]:
@@ -36,6 +37,102 @@ def test_schema_digest_is_pinned() -> None:
     ).hexdigest() == (
         "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec"
     )
+
+
+def test_v4_1_raw_b2_has_explicit_non_applicable_field_lineage() -> None:
+    schema_bytes = (CONTRACT_V41 / "federation.schema.json").read_bytes()
+    schema = json.loads(schema_bytes)
+    document = load("fixtures/valid.json")
+    document["version"] = "4.1.0"
+    document["authority"]["schema_sha256"] = hashlib.sha256(
+        schema_bytes
+    ).hexdigest()
+    document["lineage"]["v2_field_lineage"] = None
+    document["lineage"]["v2_field_lineage_applicability"] = (
+        "not_applicable_raw_b2"
+    )
+
+    Draft202012Validator.check_schema(schema)
+    Draft202012Validator(schema, format_checker=FormatChecker()).validate(
+        document
+    )
+    validate_federation_semantics(document)
+
+
+@pytest.mark.parametrize(
+    ("layer", "stratum", "representation", "lineage_state", "has_receipt"),
+    [
+        ("silver", None, "projection", "not_applicable_raw_b2", False),
+        ("bronze", "B2", "raw", "provided", False),
+        ("bronze", "B2", "raw", "not_applicable_raw_b2", True),
+    ],
+)
+def test_v4_1_rejects_inconsistent_field_lineage_applicability(
+    layer: str,
+    stratum: str | None,
+    representation: str,
+    lineage_state: str,
+    *,
+    has_receipt: bool,
+) -> None:
+    schema_bytes = (CONTRACT_V41 / "federation.schema.json").read_bytes()
+    schema = json.loads(schema_bytes)
+    document = load("fixtures/valid.json")
+    document["version"] = "4.1.0"
+    document["authority"]["schema_sha256"] = hashlib.sha256(
+        schema_bytes
+    ).hexdigest()
+    document["source"].update(
+        layer=layer,
+        bronze_stratum=stratum,
+        representation=representation,
+    )
+    document["lineage"].update(
+        v2_field_lineage=(
+            document["verification"]["receipt"] if has_receipt else None
+        ),
+        v2_field_lineage_applicability=lineage_state,
+    )
+
+    validator = Draft202012Validator(schema, format_checker=FormatChecker())
+    assert not validator.is_valid(document)
+
+
+def test_v4_0_schema_digest_remains_immutable() -> None:
+    assert hashlib.sha256(
+        (CONTRACT / "federation.schema.json").read_bytes()
+    ).hexdigest() == (
+        "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec"
+    )
+
+
+def test_v4_1_keeps_v1_v3_and_rights_receipts_mandatory() -> None:
+    schema = json.loads((CONTRACT_V41 / "federation.schema.json").read_bytes())
+    document = json.loads(
+        (CONTRACT_V41 / "fixtures/valid-raw-b2.json").read_bytes()
+    )
+    validator = Draft202012Validator(schema, format_checker=FormatChecker())
+    for group, field in (
+        ("lineage", "v1_conformance"),
+        ("lineage", "v3_replay"),
+        ("rights", "authorization"),
+    ):
+        candidate = copy.deepcopy(document)
+        del candidate[group][field]
+        assert not validator.is_valid(candidate), (group, field)
+
+
+def test_v4_1_semantics_rejects_false_raw_b2_applicability() -> None:
+    schema_bytes = (CONTRACT_V41 / "federation.schema.json").read_bytes()
+    document = json.loads(
+        (CONTRACT_V41 / "fixtures/valid-raw-b2.json").read_bytes()
+    )
+    document["authority"]["schema_sha256"] = hashlib.sha256(
+        schema_bytes
+    ).hexdigest()
+    document["lineage"]["v2_field_lineage_applicability"] = "provided"
+    with pytest.raises(ValueError, match="raw B2 field lineage"):
+        validate_federation_semantics(document)
 
 
 def test_every_field_is_required() -> None:

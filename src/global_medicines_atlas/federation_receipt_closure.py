@@ -15,7 +15,7 @@ from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 from pydantic import ConfigDict, Field, model_validator
 
 from .federation import validate_federation_semantics
-from .federation_reader import METADATA_BYTES, SCHEMA_SHA256
+from .federation_reader import METADATA_BYTES, supported_schema_digest
 from .models import FrozenModel
 from .strict_json import unique_json_object
 
@@ -123,11 +123,8 @@ def _preflight(document: object) -> None:
 def _document(raw: bytes, schema: bytes) -> dict[str, Any]:
     if type(raw) is not bytes or len(raw) > METADATA_BYTES:
         raise ValueError("contract byte limit or type rejected")
-    if (
-        type(schema) is not bytes
-        or len(schema) > METADATA_BYTES
-        or hashlib.sha256(schema).hexdigest() != SCHEMA_SHA256
-    ):
+    schema_digest = supported_schema_digest(schema)
+    if schema_digest is None or len(schema) > METADATA_BYTES:
         raise ValueError("federation schema digest mismatch")
     formats = FormatChecker()
     if not {"date", "date-time", "uri"} <= formats.checkers.keys():
@@ -148,7 +145,7 @@ def _document(raw: bytes, schema: bytes) -> dict[str, Any]:
         validate_federation_semantics(document)
     except ValueError, TypeError, KeyError, RecursionError, ValidationError:
         raise ValueError("invalid federation contract") from None
-    if document["authority"]["schema_sha256"] != SCHEMA_SHA256:
+    if document["authority"]["schema_sha256"] != schema_digest:
         raise ValueError("invalid federation contract schema pin")
     return document
 

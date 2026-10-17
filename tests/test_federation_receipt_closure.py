@@ -15,6 +15,9 @@ from global_medicines_atlas.federation_receipt_closure import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = (ROOT / "contracts/medallion/v4/federation.schema.json").read_bytes()
+SCHEMA_V41 = (
+    ROOT / "contracts/medallion/v4.1/federation.schema.json"
+).read_bytes()
 PAYLOAD = b"synthetic opaque receipt; not a rights or publication decision"
 URL = "https://example.org/receipts/synthetic.json"
 
@@ -62,6 +65,38 @@ def check(document=None, receipts=None):
         else receipts,
         schema=SCHEMA,
     )
+
+
+def test_raw_b2_v41_closure_does_not_invent_v2_field_receipt():
+    document = json.loads(
+        (
+            ROOT / "contracts/medallion/v4.1/fixtures/valid-raw-b2.json"
+        ).read_bytes()
+    )
+    ref = {"url": URL, "sha256": hashlib.sha256(PAYLOAD).hexdigest()}
+
+    def replace(value):
+        if isinstance(value, dict):
+            if set(value) == {"url", "sha256"}:
+                value.update(ref)
+            else:
+                for child in value.values():
+                    replace(child)
+        elif isinstance(value, list):
+            for child in value:
+                replace(child)
+
+    replace(document)
+    raw = json.dumps(document).encode()
+    result = verify_receipt_closure(
+        raw,
+        (ReceiptPayload(url=URL, payload=PAYLOAD),),
+        schema=SCHEMA_V41,
+    )
+    roles = {item.role for item in result.roles}
+    assert "/lineage/v1_conformance" in roles
+    assert "/lineage/v2_field_lineage" not in roles
+    assert "/lineage/v3_replay" in roles
 
 
 def test_all_nested_roles_retained_while_shared_bytes_counted_once():
