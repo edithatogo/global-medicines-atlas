@@ -1,12 +1,12 @@
 {
   "schema_id": "global-medicines-atlas.platinum-public-consumer-preflight",
   "schema_version": 1,
-  "observed_at": "2026-10-16T21:30:22Z",
+  "observed_at": "2026-10-17T04:54:00Z",
   "status": "candidate_identity_verified_consumer_acceptance_blocked",
   "requirement": "M-111",
   "pinned_public_product": {
     "dataset": "edithatogo/australian-mbs-source-archive",
-    "current_archive_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+    "current_archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
     "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
     "prefix": "silver/mbs/v4/2025-07-v3",
     "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
@@ -17,12 +17,54 @@
     "source_era": "2025-07-version-3",
     "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
     "tables": [
-      {"table": "services", "path": "silver/mbs/v4/2025-07-v3/services.parquet", "rows": 5989, "fields": 17, "bytes": 100062, "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"},
-      {"table": "hierarchy", "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet", "rows": 5989, "fields": 8, "bytes": 51851, "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"},
-      {"table": "descriptions", "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet", "rows": 5989, "fields": 7, "bytes": 620348, "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"},
-      {"table": "fees", "path": "silver/mbs/v4/2025-07-v3/fees.parquet", "rows": 5989, "fields": 10, "bytes": 93072, "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"},
-      {"table": "benefits", "path": "silver/mbs/v4/2025-07-v3/benefits.parquet", "rows": 5989, "fields": 9, "bytes": 114493, "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"},
-      {"table": "caps", "path": "silver/mbs/v4/2025-07-v3/caps.parquet", "rows": 5989, "fields": 13, "bytes": 60259, "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"}
+      {
+        "table": "services",
+        "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "rows": 5989,
+        "fields": 17,
+        "bytes": 100062,
+        "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"
+      },
+      {
+        "table": "hierarchy",
+        "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+        "rows": 5989,
+        "fields": 8,
+        "bytes": 51851,
+        "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"
+      },
+      {
+        "table": "descriptions",
+        "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+        "rows": 5989,
+        "fields": 7,
+        "bytes": 620348,
+        "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"
+      },
+      {
+        "table": "fees",
+        "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+        "rows": 5989,
+        "fields": 10,
+        "bytes": 93072,
+        "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"
+      },
+      {
+        "table": "benefits",
+        "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+        "rows": 5989,
+        "fields": 9,
+        "bytes": 114493,
+        "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"
+      },
+      {
+        "table": "caps",
+        "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+        "rows": 5989,
+        "fields": 13,
+        "bytes": 60259,
+        "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"
+      }
     ],
     "identity_evidence": {
       "candidate_qualification": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json",
@@ -32,10 +74,22 @@
     }
   },
   "consumer_surfaces": {
-    "api": {"status": "blocked_no_independently_admitted_public_product", "successful_public_query_performed": false},
-    "cli": {"status": "blocked_no_independently_admitted_public_product", "successful_public_query_performed": false},
-    "atlas": {"status": "blocked_no_independently_admitted_public_product", "successful_public_query_performed": false},
-    "export": {"status": "blocked_no_independently_admitted_public_product", "anonymous_restore_performed": false}
+    "api": {
+      "status": "blocked_no_independently_admitted_public_product",
+      "successful_public_query_performed": false
+    },
+    "cli": {
+      "status": "blocked_no_independently_admitted_public_product",
+      "successful_public_query_performed": false
+    },
+    "atlas": {
+      "status": "blocked_no_independently_admitted_public_product",
+      "successful_public_query_performed": false
+    },
+    "export": {
+      "status": "blocked_no_independently_admitted_public_product",
+      "anonymous_restore_performed": false
+    }
   },
   "negative_controls": {
     "focused_tests": "57 passed",
@@ -66,5 +120,101 @@
     "rights_conclusion_added": false,
     "publication_performed": false,
     "release_authorized": false
+  },
+  "archive_head_readback": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "current_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+    "root_manifest_sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+    "root_manifest_object_count": 212,
+    "root_manifest_bytes": 59818,
+    "root_manifest_scope_note": "The root archive manifest records the source-archive objects and does not list the nested Silver v4 product prefix; the nested v4 manifest is separately addressed and readable at the same immutable dataset revision.",
+    "nested_product_manifest_path": "silver/mbs/v4/2025-07-v3/manifest.json",
+    "nested_product_manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "nested_product_manifest_bytes": 3827,
+    "nested_product_manifest_object_count": 8,
+    "nested_product_manifest_inclusive_file_count": 9,
+    "reconciled_to": "quality/qualifications/australian-m108-derived-products-20261017.json#latest_mbs_archive_append_readback",
+    "readback_scope": "Anonymous metadata GET for the nested manifest and HTTP HEAD for all eight listed objects; no Parquet or source payload bytes read.",
+    "object_readback": {
+      "object_count": 8,
+      "sha256_and_size_verified_count": 8,
+      "small_metadata_sidecar_bytes_read": 4181,
+      "parquet_or_source_payload_bytes_read": 0,
+      "objects": [
+        {
+          "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+          "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+          "byte_count": 114493,
+          "role": "source_faithful_silver_table",
+          "readback_method": "resolve_head_linked_sha256_and_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+          "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+          "byte_count": 60259,
+          "role": "source_faithful_silver_table",
+          "readback_method": "resolve_head_linked_sha256_and_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+          "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+          "byte_count": 620348,
+          "role": "source_faithful_silver_table",
+          "readback_method": "resolve_head_linked_sha256_and_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+          "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+          "byte_count": 93072,
+          "role": "source_faithful_silver_table",
+          "readback_method": "resolve_head_linked_sha256_and_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+          "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+          "byte_count": 51851,
+          "role": "source_faithful_silver_table",
+          "readback_method": "resolve_head_linked_sha256_and_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/qualification.json",
+          "sha256": "b29d7d088a8a0564f2b022cdafa7351564eb5f292421cfe928c3f04ee0409723",
+          "byte_count": 2336,
+          "role": "value_free_qualification",
+          "readback_method": "metadata_body_sha256_and_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+          "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+          "byte_count": 100062,
+          "role": "source_faithful_silver_table",
+          "readback_method": "resolve_head_linked_sha256_and_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/source-receipt.json",
+          "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+          "byte_count": 1845,
+          "role": "b1_source_receipt",
+          "readback_method": "metadata_body_sha256_and_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        }
+      ],
+      "method": "Anonymous exact-revision resolve HEAD with SHA-256/size response headers for six Parquet tables; fetch and hash only the two small value-free JSON metadata sidecars. The nested manifest was separately fetched as metadata."
+    }
   }
 }

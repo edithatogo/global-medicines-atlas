@@ -740,3 +740,72 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   criterion change. The pre-archive sequence remains unsatisfied; no acceptance
   evidence or requirement was altered. The focused text assertions, Conductor
   context validation, and `git diff --check` pass.
+
+## M-109 MBS archive inventory reconciled to latest append (2026-10-17)
+
+- [x] Reconcile the metadata-only MBS source inventory to the latest M-108
+  append receipt: revision `da83cad9116e2f9a5b927be7b080e9a5e5ea6998`, root
+  manifest SHA-256
+  `68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055`, 212
+  root objects. Record all 86 distinct schedule/P7 payload digests and 90
+  manifest paths, keeping duplicate-digest aliases and different path
+  identities visible.
+- [x] Reconcile the four 2025 paths previously listed as missing: the January,
+  March, and two November XML objects are present in the pinned archive
+  manifest. Archive visibility alone does not verify official release
+  provenance, complete history, semantics, rights beyond recorded scopes, or
+  admission.
+- [x] Add regression coverage binding M-109's pinned revision, manifest digest
+  and object count to the M-108 append receipt and checking exact path/digest/
+  byte identities for the four newly observed 2025 paths. Preserve the
+  incomplete denominator, PBS rights boundary, and blocked M-109 acceptance.
+- [ ] Continue source-era official release matching, field/temporal semantics,
+  transformations, source-era denominator reconciliation, PBS-specific rights,
+  and admission. The metadata refresh does not close M-109.
+
+## M-112 approved MBS utilisation digest crosswalk (2026-10-17)
+
+- [x] Bind all 14 exact-scope-approved MBS utilisation paths in the unchanged
+  1,759-path denominator to the existing hosted anonymous digest-verification
+  receipt at revision `dee9a5b0580dfe394474dc26b372559462e157e7`. The object
+  paths, SHA-256 values, byte counts, source IDs, and authorization-scope
+  matches reconcile to the per-object M-112 ledger and imported acquisition
+  events. These 14 objects are already included in the 20-object digest
+  reconciliation; full-denominator digest coverage remains incomplete.
+- [x] Add a regression tying the rights-approved cohort to those exact digest
+  receipt rows. The local reconciliation reads metadata and acquisition-event
+  records only; it downloads no source bytes, reads no source values, and does
+  not alter rights, lineage, v4 admission, consumer canaries, or M-112 status.
+
+## M-112 July 2026 MBS source-object digest crosswalk (2026-10-17)
+
+- [x] Bind the four July 2026 MBS source objects with existing anonymous
+  digest readbacks to their exact rows in the 1,759-path per-object gate ledger.
+  The regression verifies the pinned dataset revision, object size, and
+  digest-evidence report identity while preserving unresolved exact-object
+  rights/B1 binding, incomplete B1/B2 lineage, deferred disposition, and
+  absent v4 admission and consumer canaries. No source bytes were downloaded
+  and no source values were read. See the
+  `m112_july_2026_mbs_digest_gate_crosswalk` evidence record.
+
+## Australian qualification rebase validation (2026-10-17)
+
+- [x] Rebase the consolidated M-109/M-111/M-112 evidence branch onto current
+  `main` after PR #1092 merged. Preserve every distinct append-only record
+  from both histories, retain the exact PR #1093 merge receipt, and verify
+  the focused M-109/M-111/M-112 tests, broader M-112 tests, routine profile,
+  typing, and context checks. No acceptance or rights state changed; see
+  `australian_qualification_rebase_preservation_validation`.
+
+## PR #1094 Gitleaks history finding disposition (2026-10-17)
+
+- [x] Verify the two historical `generic-api-key` findings are the public
+  revision identities recorded in the M-109 metadata readback, then add only
+  their exact Gitleaks fingerprints to `.gitleaksignore`. Keep history
+  scanning and all other findings fail-closed.
+- [x] Add a regression that fixes the allowlist to those two fingerprints and
+  documents the disposition without exposing matched values. Focused tests,
+  routine Test Goblin, Ruff, diff checks, and a fresh full-history Gitleaks
+  scan pass locally. Hosted verification is pending on the updated PR head.
+- [ ] Verify the updated exact-head hosted leak-detection check before treating
+  this PR blocker as cleared.

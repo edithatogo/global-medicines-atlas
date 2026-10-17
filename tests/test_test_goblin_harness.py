@@ -665,6 +665,34 @@ def test_supply_chain_manages_tool_literals_and_scans_history() -> None:
     assert "GITLEAKS_ASSET:" in security
 
 
+def test_gitleaks_history_allowlist_is_limited_to_verified_revisions() -> None:
+    """Only the two reviewed public-revision findings may be ignored."""
+    expected = {
+        "701c8f422195139711b626ac23d96a0d79324a95:conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl:generic-api-key:474",
+        "701c8f422195139711b626ac23d96a0d79324a95:conductor/tracks/australian_health_source_consolidation_20260829/evidence.jsonl:generic-api-key:157",
+    }
+    actual = {
+        line
+        for line in (ROOT / ".gitleaksignore")
+        .read_text(encoding="utf-8")
+        .splitlines()
+        if line
+    }
+    disposition = (
+        ROOT
+        / "docs/qualification/gitleaks-history-false-positive-disposition-20261017.md"
+    ).read_text(encoding="utf-8")
+    normalized_disposition = " ".join(disposition.split())
+
+    assert actual == expected
+    assert "public Git revision" in disposition
+    assert "identities, not credentials" in disposition
+    assert (
+        "No rule, directory, filename, or class of findings is"
+        in normalized_disposition
+    )
+
+
 def test_gitleaks_rejects_publisher_checksum_mismatch(monkeypatch) -> None:
     """Downloaded bytes must match the publisher release checksum manifest."""
     module = load_update_script("update_gitleaks_contract.py")

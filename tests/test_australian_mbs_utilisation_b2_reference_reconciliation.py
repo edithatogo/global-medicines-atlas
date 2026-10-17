@@ -4,6 +4,7 @@ import json
 from collections import Counter
 from hashlib import sha256
 from pathlib import Path
+from typing import Any
 
 import pytest
 from scripts.prepare_m112_imported_b2_manifest import (
@@ -14,6 +15,52 @@ from scripts.prepare_m112_imported_b2_manifest import (
 )
 
 from global_medicines_atlas.bronze_raw_evidence import RawEvidenceState
+
+RIGHTS_DECISION_PATH = (
+    "quality/qualifications/"
+    "australian-mbs-utilisation-exact-scope-rights-decision-20261004.json"
+)
+
+
+def _assert_m112_cohort_member_bound(
+    *,
+    root: Path,
+    approved: dict[str, Any],
+    approved_rights_paths: set[str],
+    rights_decision_sha256: str,
+    acquisitions_by_path: dict[str, dict[str, Any]],
+    bindings_by_acquisition: dict[str, dict[str, Any]],
+    b2_by_acquisition: dict[str, dict[str, Any]],
+) -> None:
+    imported = acquisitions_by_path[approved["path"]]
+    acquisition_id = imported["acquisition_id"]
+    binding = bindings_by_acquisition[acquisition_id]
+    b2 = b2_by_acquisition[acquisition_id]
+    event = json.loads(
+        (root / imported["event_path"]).read_text(encoding="utf-8")
+    )
+    digest = approved["identity"]["sha256"]
+    byte_count = approved["identity"]["byte_count"]
+
+    assert binding["content_id"] == digest
+    assert binding["expected_payload_sha256"] == digest
+    assert binding["expected_byte_count"] == byte_count
+    assert b2["content_id"] == digest
+    assert b2["source_id"] == event["source_id"]
+    assert b2["external_reference"] == binding["external_reference"]
+    assert b2["state"] == RawEvidenceState.EXTERNAL_REFERENCE_ONLY
+    assert b2["payload_sha256"] is None
+    assert b2["byte_count"] is None
+
+    assert approved["path"] in approved_rights_paths
+    assert approved["rights"]["state"].startswith("approved_exact_scope_")
+    assert approved["rights"]["decision_evidence"] == {
+        "path": RIGHTS_DECISION_PATH,
+        "sha256": rights_decision_sha256,
+    }
+    assert approved["v4_admission"] is False
+    assert approved["consumer_canary"] is False
+    assert approved["disposition"] == "deferred_not_admitted"
 
 
 @pytest.mark.unit
@@ -92,6 +139,184 @@ def test_m112_b2_reference_manifest_and_qualification_are_reproducible() -> (
 
     assert (root / OUTPUT_PATH).read_bytes() == manifest_bytes
     assert (root / QUALIFICATION_PATH).read_bytes() == qualification_bytes
+
+
+@pytest.mark.unit
+def test_m112_b2_reference_rows_bind_to_the_exact_approved_14_object_cohort() -> (
+    None
+):
+    root = Path(__file__).resolve().parents[1]
+    m112 = json.loads(
+        (
+            root / "quality/qualifications/"
+            "australian-m112-per-object-gate-reconciliation-20261005.json"
+        ).read_text(encoding="utf-8")
+    )
+    rights_decision_file = root / RIGHTS_DECISION_PATH
+    rights_decision = json.loads(
+        rights_decision_file.read_text(encoding="utf-8")
+    )
+    receipt_join_audit = json.loads(
+        (
+            root / "quality/qualifications/"
+            "australian-m112-receipt-sidecar-join-audit-20260930.json"
+        ).read_text(encoding="utf-8")
+    )
+    acquisition_import = json.loads(
+        (
+            root / "quality/qualifications/"
+            "australian-mbs-utilisation-acquisition-import-20261004.json"
+        ).read_text(encoding="utf-8")
+    )
+    manifest = json.loads((root / OUTPUT_PATH).read_text(encoding="utf-8"))
+    qualification = json.loads(
+        (root / QUALIFICATION_PATH).read_text(encoding="utf-8")
+    )
+
+    cohort = [
+        row
+        for row in m112["objects"]
+        if row["dataset"] == "edithatogo/australian-mbs-utilisation-archive"
+    ]
+    assert len(cohort) == 14
+    assert all(row["approved_denominator_member"] for row in cohort)
+    assert m112["scope"]["approved_denominator"] == 1759
+    approved_rights_paths = {
+        row["path"]
+        for dataset in receipt_join_audit["datasets"]
+        if dataset["dataset"] == "edithatogo/australian-mbs-utilisation-archive"
+        for row in dataset["joined_objects"]
+        if row["authorization_scope_match"]
+    }
+    assert len(approved_rights_paths) == 14
+    assert rights_decision["scope"]["candidate_paths"] == len(
+        approved_rights_paths
+    )
+    rights_decision_sha256 = sha256(
+        rights_decision_file.read_bytes()
+    ).hexdigest()
+    acquisitions_by_path = {
+        row["path"]: row for row in acquisition_import["records"]
+    }
+    bindings_by_acquisition = {
+        row["acquisition_id"]: row for row in qualification["records"]
+    }
+    b2_by_acquisition = {row["acquisition_id"]: row for row in manifest["rows"]}
+    assert len(bindings_by_acquisition) == len(b2_by_acquisition) == 14
+
+    for approved in cohort:
+        _assert_m112_cohort_member_bound(
+            root=root,
+            approved=approved,
+            approved_rights_paths=approved_rights_paths,
+            rights_decision_sha256=rights_decision_sha256,
+            acquisitions_by_path=acquisitions_by_path,
+            bindings_by_acquisition=bindings_by_acquisition,
+            b2_by_acquisition=b2_by_acquisition,
+        )
+
+
+@pytest.mark.unit
+def test_m112_approved_mbs_cohort_matches_historical_digest_receipts() -> None:
+    root = Path(__file__).resolve().parents[1]
+    m112 = json.loads(
+        (
+            root / "quality/qualifications/"
+            "australian-m112-per-object-gate-reconciliation-20261005.json"
+        ).read_text(encoding="utf-8")
+    )
+    acquisition_import = json.loads(
+        (
+            root / "quality/qualifications/"
+            "australian-mbs-utilisation-acquisition-import-20261004.json"
+        ).read_text(encoding="utf-8")
+    )
+    digest_reconciliation = json.loads(
+        (
+            root / "quality/qualifications/"
+            "australian-m112-utilisation-digest-reconciliation-20261004.json"
+        ).read_text(encoding="utf-8")
+    )
+
+    cohort = [
+        row
+        for row in m112["objects"]
+        if row["dataset"] == "edithatogo/australian-mbs-utilisation-archive"
+    ]
+    verified_by_path = {
+        row["path"]: row
+        for row in digest_reconciliation["verified_objects"]
+        if row["dataset"] == "edithatogo/australian-mbs-utilisation-archive"
+    }
+    acquisitions_by_path = {
+        row["path"]: row for row in acquisition_import["records"]
+    }
+    archive = next(
+        row
+        for row in digest_reconciliation["archives"]
+        if row["dataset"] == "edithatogo/australian-mbs-utilisation-archive"
+    )
+
+    assert len(cohort) == len(verified_by_path) == 14
+    assert set(verified_by_path) == {row["path"] for row in cohort}
+    assert m112["scope"]["approved_denominator"] == 1759
+    assert digest_reconciliation["scope"]["approved_total_paths"] == 1759
+    assert (
+        digest_reconciliation["scope"][
+            "full_denominator_digest_readback_complete"
+        ]
+        is False
+    )
+    assert (
+        digest_reconciliation["scope"]["objects_covered_by_this_reconciliation"]
+        == 20
+    )
+    assert archive["revision"] == "dee9a5b0580dfe394474dc26b372559462e157e7"
+    assert archive["current_default_head_equals_pinned_revision"] is True
+    assert (
+        archive["historical_verification_receipt"][
+            "anonymous_digest_verification"
+        ]
+        == "passed"
+    )
+    assert (
+        archive["historical_verification_receipt"]["workflow_run"]
+        == "36333396964"
+    )
+
+    for approved in cohort:
+        verified = verified_by_path[approved["path"]]
+        assert verified["sha256"] == approved["identity"]["sha256"]
+        assert verified["byte_count"] == approved["identity"]["byte_count"]
+        assert verified["revision"] == archive["revision"]
+        event = json.loads(
+            (
+                root / acquisitions_by_path[approved["path"]]["event_path"]
+            ).read_text(encoding="utf-8")
+        )
+        assert verified["source_id"] == event["source_id"]
+        assert verified["matched_hosted_verified_manifest"] is True
+        assert verified["existing_authorization_scope_match"] is True
+
+    assert (
+        digest_reconciliation["boundaries"][
+            "new_source_payload_bytes_downloaded"
+        ]
+        is False
+    )
+    assert (
+        digest_reconciliation["boundaries"]["source_values_decoded_or_read"]
+        is False
+    )
+    assert (
+        digest_reconciliation["boundaries"][
+            "source_rights_or_licensing_conclusion_changed"
+        ]
+        is False
+    )
+    assert (
+        digest_reconciliation["boundaries"]["v4_admission_performed"] is False
+    )
 
 
 @pytest.mark.unit

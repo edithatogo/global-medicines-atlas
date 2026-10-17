@@ -864,9 +864,10 @@
   `uv 0.11.29`: 6,472 passed, 3 skipped, one Hypothesis timing failure,
   96.89% coverage. The failing Unicode round-trip case passed alone on retry
   (1 passed); preserve the full-profile timing failure as recorded. All 40
-  exact-head hosted checks passed, including Linux-authoritative mutation,
-  coverage, consumer, security, and context lanes. PR #1092 remains open until
-  this evidence is reconciled on its final PR head.
+  hosted checks passed on final PR head `a7b2d944`, including
+  Linux-authoritative mutation, coverage, consumer, security, and context
+  lanes. PR #1092 merged as `49c5cc118a06e762d3be08b48fa597454ace59eb`;
+  the merge tree matches the exact checked head.
 
 ### Gold review CLI authority boundary (2026-10-11)
 
@@ -1802,6 +1803,23 @@
   Neither the contextual downloads page nor the donor archive locator proves
   official provenance, date convention, field semantics, or transformation.
 
+## M-109 latest MBS archive metadata reconciliation (2026-10-17)
+
+- [x] Refresh the known-object inventory to the current M-108 append receipt:
+  revision `da83cad9116e2f9a5b927be7b080e9a5e5ea6998`, root manifest digest
+  `68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055`, and
+  212 manifest objects. The MBS schedule/P7 subset contains 86 distinct
+  payload digests across 90 manifest paths, including four 2025 paths that
+  the previous M-109 identity snapshot had listed as missing.
+- [x] Keep exact manifest-path aliases and duplicate payload digests visible;
+  bind the M-109 record to M-108's append and anonymous cleanup receipts. This
+  is metadata reconciliation only and does not establish every path's official
+  provenance, complete the expected historical denominator, or change rights,
+  qualification, or admission.
+- [ ] Continue M-109 source-era denominator, source-owner, semantic, temporal,
+  transformation, PBS rights, and Silver admission gates. M-109 remains
+  blocked.
+
 
 ## M-112 public producer metadata discovery (2026-09-30)
 
@@ -2436,13 +2454,16 @@
 
 - [x] Reconcile the August MBS content-addressed path and preserved historical
   alias against the exact hosted append receipt, the frozen 1,759-path ledger,
-  and a fresh anonymous readback of the current public root manifest. Both
-  manifest rows are present at revision
-  `3d2d528439bddf6f42e8e700c88917f0960a9f38` with the same SHA-256, byte count,
-  and Git blob identity. This refreshes only manifest membership; the alias's
-  prior object-level anonymous digest state is preserved, and both paths remain
-  deferred because per-object rights, complete B1/B2 lineage, v4 admission,
-  and consumer canaries remain incomplete. See
+  and the latest anonymous public root-manifest readback. The append receipt
+  records the historical `3d2d528...` revision; the current archive head is
+  `da83cad9116e2f9a5b927be7b080e9a5e5ea6998`, with 212 root objects and
+  manifest SHA-256
+  `68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055`. Both
+  August paths remain present with the same declared SHA-256 and byte count.
+  This refreshes manifest membership only; the alias's prior object-level
+  anonymous digest state is preserved, and both paths remain deferred because
+  per-object rights, complete B1/B2 lineage, v4 admission, and consumer canaries
+  remain incomplete. See
   `quality/qualifications/australian-m112-root-manifest-path-readback-20261017.json`.
 
 ## M-112 historical imported B1-to-B2 reference reconciliation (2026-10-17)

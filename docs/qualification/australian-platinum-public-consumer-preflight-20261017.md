@@ -15,14 +15,27 @@ qualify a successful query.
 
 The current candidate is `silver/mbs/v4/2025-07-v3` in
 `edithatogo/australian-mbs-source-archive`. The public archive head is
-`3d2d528439bddf6f42e8e700c88917f0960a9f38`; the original product publication
-revision is `ba82cd1d0f9b0f28514df431b8da3a6c207d76fa`. Its manifest SHA-256 is
-`bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59`. The
-current qualification reports six tables and nine verified objects, while
-the existing value-free parity receipt binds the exact table paths, row/field
-counts, byte counts, and SHA-256 values. These identities are preserved in
-the machine-readable report. The current product qualification explicitly
-remains `candidate_only`; successful consumer queries were not attempted.
+`da83cad9116e2f9a5b927be7b080e9a5e5ea6998`; its root archive manifest SHA-256
+is `68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055` and
+contains 212 source-archive objects. The current nested Silver product manifest
+at `silver/mbs/v4/2025-07-v3/manifest.json` has the same SHA-256,
+`bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59`, as the
+previously qualified candidate. All six Parquet table objects match the
+manifest SHA-256 and byte count returned in anonymous resolve response headers;
+the two small, value-free JSON sidecars were fetched and hashed against the
+manifest. All eight identities match at the current revision. No Parquet or
+source payload bytes were read. The root archive manifest does not list this
+separate nested Silver prefix, so its identity is bound by the nested manifest
+and exact object digests rather than root-manifest membership. The original
+product publication revision is
+`ba82cd1d0f9b0f28514df431b8da3a6c207d76fa`. The current product qualification
+explicitly remains `candidate_only`; successful consumer queries were not
+attempted.
+
+The current qualification reports six tables and nine files including the
+nested manifest, while the existing value-free parity receipt binds the exact
+table paths, row/field counts, byte counts, and SHA-256 values. These
+identities are preserved in the machine-readable report.
 
 The parity and identity receipts are technical evidence only. They do not
 provide a new rights conclusion, product admission, representative cohort,

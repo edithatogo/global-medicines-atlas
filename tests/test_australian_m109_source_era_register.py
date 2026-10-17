@@ -68,26 +68,24 @@ def test_m109_identity_inventory_records_current_pinned_sources_only() -> None:
     )
     mbs = report["mbs"]
     sources = mbs["sources"]
-    assert len(sources) == mbs["observed_exact_source_count"] == 8
-    assert len({source["path"] for source in sources}) == 8
+    assert len(sources) == mbs["observed_unique_payload_count"] == 86
+    assert len({source["sha256"] for source in sources}) == 86
     manifest_paths = [
-        path
-        for source in sources
-        for path in source.get("manifest_paths", [source["path"]])
+        path for source in sources for path in source["manifest_paths"]
     ]
-    assert len(manifest_paths) == mbs["observed_manifest_path_entry_count"] == 9
-    assert len(set(manifest_paths)) == 9
+    assert (
+        len(manifest_paths) == mbs["observed_manifest_path_entry_count"] == 90
+    )
+    assert len(set(manifest_paths)) == 90
     assert all(
         source["identity_status"] == "verified_in_current_pinned_root_manifest"
         for source in sources
     )
-    assert (
-        report["readback"]["mbs"]["current_revision"]
-        == "3d2d528439bddf6f42e8e700c88917f0960a9f38"
+    assert report["readback"]["mbs"]["current_revision"] == (
+        "da83cad9116e2f9a5b927be7b080e9a5e5ea6998"
     )
-    assert (
-        report["readback"]["mbs"]["manifest_sha256"]
-        == "7afe928933fece384f8459dd268fcd2c4f26c8325dc52577f7a1582e8d63a0ac"
+    assert report["readback"]["mbs"]["manifest_sha256"] == (
+        "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055"
     )
     assert mbs["expected_source_denominator_complete"] is False
     assert report["acceptance"]["m109_accepted"] is False
@@ -95,46 +93,43 @@ def test_m109_identity_inventory_records_current_pinned_sources_only() -> None:
         report["boundaries"]["source_payload_bytes_requested_or_downloaded"]
         is False
     )
-    expected_mbs = {
-        "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx": (
-            "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
-            87727,
-        ),
-        "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML": (
-            "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
-            8194522,
-        ),
-        "raw/mbs/releases/Downloads-20260101/MBS-XML-20260101.XML": (
-            "352448dc912b3e2125f2acd56b6094da13de7f229022a498c21848a0fcdc2299",
-            8215319,
-        ),
-        "raw/mbs/releases/Downloads-20260301/MBS-XML-20260301.XML": (
-            "252a06590143428ab49aca79302dc0f1e4e4c2726cf36859d1673e6521e31ded",
-            8271558,
-        ),
-        "raw/mbs/releases/Downloads-20260301/MBS-XML-20260301-version 2.XML": (
-            "e6ed9cf794a73e0a9d10c6ffca931f29cce899d720fb7377fe4f5d64dc2b9561",
-            8271294,
-        ),
-        "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML": (
-            "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
-            8291891,
-        ),
-        "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML": (
-            "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
-            8293331,
-        ),
-        "raw/mbs/releases/Downloads-20261101/MBS-XML-20261101.XML": (
-            "11ccca0f16826e5089ae451b51fafd42b2a2a436ac97eea593de077dc4200cc4",
-            8297608,
-        ),
-    }
-    assert {
-        source["path"]: (source["sha256"], source["bytes"])
+    by_path = {
+        path: (source["sha256"], source["bytes"])
         for source in sources
-    } == expected_mbs
+        for path in source["manifest_paths"]
+    }
+    assert by_path[
+        "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx"
+    ] == (
+        "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+        87727,
+    )
+    assert by_path[
+        "raw/mbs/releases/Downloads-250101/MBS-XML-20250101.xml"
+    ] == (
+        "3736a72716158fc034705ede4e695dc470ccc98daff48b0533601eef2458340e",
+        8165147,
+    )
+    assert by_path[
+        "raw/mbs/releases/Downloads-250301/MBS-XML-20250301.XML"
+    ] == (
+        "15140d523b1ea70dc1fd4bdf2b9bbc66cf6af8233315b6fbd61e097df8b21a12",
+        8149632,
+    )
+    assert by_path[
+        "raw/mbs/releases/Downloads-251101/MBS-XML-20251101.XML"
+    ] == (
+        "d738fd6eb0a8a60f276787ec6eab9f860e3de4bfefdd8c81ed5ab83eae1d8624",
+        8215464,
+    )
+    assert by_path[
+        "raw/mbs/releases/Downloads-251101/MBS-XML-20251101 Version 2.XML"
+    ] == (
+        "875a45e690d86925c5531e6d2d1bd692e8235935bd01423b623ba5801fa1c441",
+        8215371,
+    )
     august = next(
-        source for source in sources if source["source_era"] == "2026-08-01"
+        source for source in sources if source.get("source_era") == "2026-08-01"
     )
     assert august["manifest_paths"] == [
         "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
@@ -144,6 +139,36 @@ def test_m109_identity_inventory_records_current_pinned_sources_only() -> None:
         "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
     )
     assert august["bytes"] == 8293331
+
+
+def test_m109_inventory_tracks_latest_mbs_archive_metadata_readback() -> None:
+    report = _json(
+        "quality/qualifications/australian-m109-source-era-identities-20261017.json"
+    )
+    m108 = _json(
+        "quality/qualifications/australian-m108-derived-products-20261017.json"
+    )
+    latest = m108["latest_mbs_archive_append_readback"]
+    mbs = report["mbs"]
+    readback = report["readback"]["mbs"]
+
+    assert readback["current_revision"] == latest["revision"]
+    assert readback["manifest_sha256"] == latest["root_manifest_sha256"]
+    assert (
+        readback["manifest_file_count"] == latest["root_manifest_object_count"]
+    )
+    assert mbs["expected_source_denominator_complete"] is False
+    assert report["acceptance"]["m109_accepted"] is False
+
+    observed_paths = {
+        path for source in mbs["sources"] for path in source["manifest_paths"]
+    }
+    assert {
+        "raw/mbs/releases/Downloads-250101/MBS-XML-20250101.xml",
+        "raw/mbs/releases/Downloads-250301/MBS-XML-20250301.XML",
+        "raw/mbs/releases/Downloads-251101/MBS-XML-20251101.XML",
+        "raw/mbs/releases/Downloads-251101/MBS-XML-20251101 Version 2.XML",
+    } <= observed_paths
 
 
 def test_m109_inventory_keeps_mbs_authorization_and_pbs_rights_separate() -> (
@@ -165,9 +190,18 @@ def test_m109_inventory_keeps_mbs_authorization_and_pbs_rights_separate() -> (
         for payload in donor["payloads"]
     }
     for source in report["mbs"]["sources"]:
-        if source["rights_basis_ref"] == "legacy_exact_payloads":
-            assert legacy_payloads[source["path"]] == source["sha256"]
-        else:
+        assert source["rights_basis_refs"]
+        for path in source["manifest_paths"]:
+            if path in legacy_payloads:
+                assert legacy_payloads[path] == source["sha256"]
+            if path.endswith((".xml", ".XML")) and "releases/" in path:
+                assert "monthly_schedule_xml" in source[
+                    "rights_basis_refs"
+                ] or (
+                    path == "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML"
+                    and "legacy_exact_payloads" in source["rights_basis_refs"]
+                )
+        if "monthly_schedule_xml" in source["rights_basis_refs"]:
             assert "monthly_schedule_xml" in harvest["categories"]
     assert report["pbs"]["approved_for_m109_processing"] is False
     assert (

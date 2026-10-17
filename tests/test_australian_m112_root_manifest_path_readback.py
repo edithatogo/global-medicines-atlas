@@ -25,16 +25,30 @@ def test_two_august_mbs_paths_are_reconciled_without_promoting_other_gates() -> 
 ):
     addendum = _read(ADDENDUM)
     base = _read(BASE)
+    m108 = _read(
+        ROOT
+        / "quality/qualifications/australian-m108-derived-products-20261017.json"
+    )
+    latest = m108["latest_mbs_archive_append_readback"]
     assert addendum["scope"]["approved_denominator"] == 1759
     assert addendum["scope"]["denominator_changed"] is False
     assert addendum["scope"]["m112_accepted"] is False
-    assert addendum["root_manifest"]["dataset_revision"] == (
-        "3d2d528439bddf6f42e8e700c88917f0960a9f38"
+    assert addendum["root_manifest"]["dataset_revision"] == latest["revision"]
+    assert (
+        addendum["root_manifest"]["manifest_sha256"]
+        == latest["root_manifest_sha256"]
     )
-    assert addendum["root_manifest"]["manifest_sha256"] == (
-        "7afe928933fece384f8459dd268fcd2c4f26c8325dc52577f7a1582e8d63a0ac"
+    assert (
+        addendum["root_manifest"]["file_count"]
+        == latest["root_manifest_object_count"]
     )
-    assert addendum["root_manifest"]["file_count"] == 28
+    assert addendum["root_manifest"]["manifest_byte_count"] == 59818
+    assert (
+        addendum["current_head_reconciliation"][
+            "root_object_count_matches_latest_append_receipt"
+        ]
+        is True
+    )
     paths = {row["path"]: row for row in addendum["objects"]}
     assert len(paths) == 2
     base_rows = {
