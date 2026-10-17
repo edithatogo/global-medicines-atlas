@@ -1190,8 +1190,8 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   donor identities, licenses, archive history, and function-specific evidence
   remain required and bound by the waiver dossier.
 - [x] Reconcile Stable v1 from the dossier: M-105 is verified under the narrow
-  chronology waiver; M-106–M-113 and the Australian federation gate remain
-  blocked. The release-readiness receipt remains blocked and no release or
+  chronology waiver; M-106–M-112 remain blocked; M-113 remains verified for donor archival.
+  The Australian federation gate remains blocked. The release-readiness receipt remains blocked and no release or
   source-rights decision is inferred.
 - [x] Validate 54 focused donor/Stable contract tests and 65 broader
   documentation/Test-Goblin harness tests; Ruff, formatting, JSON/JSONL,

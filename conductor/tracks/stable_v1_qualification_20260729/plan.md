@@ -677,8 +677,8 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   Stable v1 qualification from the complete M-105 disposition dossier. M-105
   is verified under the waiver; no pre-archive parity proof is claimed and the
   M-105 criterion itself is unchanged.
-- [x] Keep M-106–M-113, Australian federation acceptance, and stable-release
-  approval blocked. The separate production disaster-recovery authority gate
+- [x] Keep M-106–M-112, Australian federation acceptance, and stable-release
+  approval blocked; M-113 remains verified for donor archival. The separate production disaster-recovery authority gate
   remains outside the release contract. Focused tests (54), broader affected
   checks (65), Ruff, formatting, JSON/JSONL validation, and diff checks pass;
   hosted PR checks remain pending.
