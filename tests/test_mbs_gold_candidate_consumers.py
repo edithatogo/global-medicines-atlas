@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 from importlib import import_module
 from pathlib import Path
@@ -107,12 +108,28 @@ def test_qualification_script_emits_browser_bound_aggregate_receipt(
     script = import_module(
         "scripts.qualify_australian_mbs_gold_candidate_consumers"
     )
-    monkeypatch.setattr(script, "_read_json", lambda _path: qualification)
-    hashes = iter((
-        expected_bindings["input_admission_sha256"],
-        expected_bindings["input_semantic_manifest_sha256"],
-    ))
-    monkeypatch.setattr(script, "_sha256", lambda _path: next(hashes))
+    read_json = script._read_json
+    sha256 = script._sha256
+    monkeypatch.setattr(
+        script,
+        "_read_json",
+        lambda path: (
+            qualification
+            if path == script.QUALIFICATION_PATH
+            else read_json(path)
+        ),
+    )
+    monkeypatch.setattr(
+        script,
+        "_sha256",
+        lambda path: (
+            expected_bindings["input_admission_sha256"]
+            if path == script.ROOT / script.ADMISSION_PATH
+            else expected_bindings["input_semantic_manifest_sha256"]
+            if path == script.ROOT / script.SEMANTIC_PATH
+            else sha256(path)
+        ),
+    )
     output = tmp_path / "consumer-qualification.json"
 
     assert (
@@ -122,6 +139,11 @@ def test_qualification_script_emits_browser_bound_aggregate_receipt(
     receipt = json.loads(output.read_text(encoding="utf-8"))
     assert receipt["surfaces"] == ["API", "Atlas", "Browser", "CLI"]
     assert receipt["edge_count"] == len(candidate.edges)
+    assert (
+        receipt["candidate_v4_use_authorization"]["authorized_object_count"]
+        == 6
+    )
+    assert receipt["candidate_v4_use_authorization"]["candidate_only"] is True
     assert "items" not in receipt
     assert all(
         edge["edge_id"] not in str(receipt)
@@ -392,6 +414,8 @@ def test_continuation_response_must_match_main_frame_and_exact_url(
 
 def test_browser_asset_and_request_scope_checks_fail_closed() -> None:
     with pytest.raises(ValueError, match="stylesheet"):
+        _verify_browser_assets({})
+    with pytest.raises(ValueError, match="stylesheet"):
         _verify_browser_assets({"/static/atlas.css": 404})
     _verify_browser_assets({"/static/atlas.css": 200})
     with pytest.raises(ValueError, match="left the loopback"):
@@ -399,6 +423,41 @@ def test_browser_asset_and_request_scope_checks_fail_closed() -> None:
             {"127.0.0.1:8000", "example.test"}, "127.0.0.1:8000"
         )
     _verify_loopback_requests({"127.0.0.1:8000"}, "127.0.0.1:8000")
+
+
+def test_browser_waits_for_delayed_stylesheet_before_qualifying(
+    tmp_path, monkeypatch
+) -> None:
+    edge_path, _qualification, bindings, _candidate = _candidate_artifact(
+        tmp_path
+    )
+    edges = pq.read_table(edge_path)
+    create_app = browser_qualification.create_atlas_app
+
+    def app_with_delayed_stylesheet(*args, **kwargs):
+        app = create_app(*args, **kwargs)
+
+        @app.middleware("http")
+        async def delay_stylesheet(request, call_next):
+            if request.url.path == "/static/atlas.css":
+                await asyncio.sleep(0.2)
+            return await call_next(request)
+
+        return app
+
+    monkeypatch.setattr(
+        browser_qualification, "create_atlas_app", app_with_delayed_stylesheet
+    )
+    edge_ids, offsets = qualify_candidate_atlas_browser(
+        edges,
+        edges.column("kind")[0].as_py(),
+        edges.num_rows,
+        bindings,
+        1,
+    )
+
+    assert len(edge_ids) == edges.num_rows
+    assert offsets == [0, 1]
 
 
 def test_browser_rejects_a_non_success_loopback_response(
