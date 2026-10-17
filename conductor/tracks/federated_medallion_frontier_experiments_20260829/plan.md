@@ -201,7 +201,11 @@
   confidence/calibration, negative-control, review, rights, and restricted-byte
   tests. Existing MBS/PBS portable-table, NetworkX, and preview parity suites
   cover stable ordering, directed queries, null confidence, explicit candidate
-  controls, and mutation/schema rejection. A synthetic binary-column test
+  controls, and mutation/schema rejection. Review-only matching now keeps the
+  heuristic as `raw_score` and exports `confidence: null` with
+  `confidence_state=not_calibrated`; thresholds still use the heuristic. This
+  closes the score-labeling flaw, not the unresolved calibration requirement.
+  A synthetic binary-column test
   verifies that unrecognized schema extensions are rejected before
   serialization. The exporter recursively rejects explicit structured
   `field_policy` labels inside `fields_json` while preserving native values

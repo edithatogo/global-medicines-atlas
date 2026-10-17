@@ -70,7 +70,7 @@ def _entry(candidate_id: str) -> ReviewQueueEntry:
     )
     decision = PolicyDecision(
         candidate_id=candidate_id,
-        confidence=0.8,
+        raw_score=0.8,
         abstained=False,
         reason_codes=(PolicyReason.REVIEW_REQUIRED,),
         policy_version="v1",

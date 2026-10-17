@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from enum import StrEnum
+from typing import Literal
 
 from pydantic import Field
 
@@ -47,7 +48,9 @@ class MatchCandidate(FrozenModel):
 class PolicyDecision(FrozenModel):
     candidate_id: str
     review_state: ReviewState = ReviewState.PENDING_REVIEW
-    confidence: float = Field(ge=0, le=1)
+    raw_score: float = Field(ge=0, le=1)
+    confidence: None = None
+    confidence_state: Literal["not_calibrated"] = "not_calibrated"
     abstained: bool
     reason_codes: tuple[PolicyReason, ...] = Field(min_length=1)
     policy_version: str = Field(min_length=1)
@@ -110,7 +113,7 @@ class ReviewOnlyPolicy:
             if evidence.rxnorm.contribution > 0:
                 reasons.append(PolicyReason.RXNORM_ONLY)
 
-        confidence = evidence.raw_score
+        raw_score = evidence.raw_score
         has_blocking_conflict = bool(
             set(evidence.conflicts)
             & {
@@ -126,16 +129,16 @@ class ReviewOnlyPolicy:
         abstained = (
             missing_core
             or has_blocking_conflict
-            or confidence < self.review_threshold
+            or raw_score < self.review_threshold
         )
-        if confidence < self.review_threshold:
+        if raw_score < self.review_threshold:
             reasons.append(PolicyReason.INSUFFICIENT_EVIDENCE)
         elif not has_blocking_conflict:
             reasons.append(PolicyReason.AMBIGUOUS_SCORE)
 
         return PolicyDecision(
             candidate_id=candidate.candidate_id,
-            confidence=confidence,
+            raw_score=raw_score,
             abstained=abstained,
             reason_codes=tuple(dict.fromkeys(reasons)),
             policy_version=self.policy_version,

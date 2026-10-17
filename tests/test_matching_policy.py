@@ -1,6 +1,8 @@
+import json
 from datetime import UTC, datetime
 
 import pytest
+from pydantic import ValidationError
 
 from global_medicines_atlas.matching_features import (
     FeatureDisposition as D,
@@ -15,6 +17,7 @@ from global_medicines_atlas.matching_features import (
 from global_medicines_atlas.matching_models import MappingLevel, ReviewState
 from global_medicines_atlas.matching_policy import (
     MatchCandidate,
+    PolicyDecision,
     PolicyReason,
     ReviewOnlyPolicy,
 )
@@ -73,13 +76,34 @@ def _candidate(
 def test_strong_candidate_is_still_pending_human_review() -> None:
     result = ReviewOnlyPolicy().evaluate(_candidate())
     assert result.review_state is ReviewState.PENDING_REVIEW
-    assert result.confidence == pytest.approx(1.0)
+    assert result.raw_score == pytest.approx(1.0)
+    assert result.confidence is None
+    assert result.confidence_state == "not_calibrated"
     assert result.abstained is False
     assert result.reason_codes == (
         PolicyReason.REVIEW_REQUIRED,
         PolicyReason.AMBIGUOUS_SCORE,
     )
     assert result.policy_version == "review-only-v1"
+
+
+def test_uncalibrated_decision_rejects_numeric_confidence_on_json_input() -> (
+    None
+):
+    payload = {
+        "candidate_id": "candidate-1",
+        "raw_score": 0.8,
+        "confidence": 0.95,
+        "confidence_state": "not_calibrated",
+        "abstained": False,
+        "reason_codes": ["review_required"],
+        "policy_version": "review-only-v1",
+    }
+
+    with pytest.raises(ValidationError, match="confidence"):
+        PolicyDecision.model_validate(payload)
+    with pytest.raises(ValidationError, match="confidence"):
+        PolicyDecision.model_validate_json(json.dumps(payload))
 
 
 def test_core_conflict_forces_abstention_and_explains_reason() -> None:
@@ -91,7 +115,8 @@ def test_core_conflict_forces_abstention_and_explains_reason() -> None:
     )
     assert result.review_state is ReviewState.PENDING_REVIEW
     assert result.abstained
-    assert result.confidence == pytest.approx(0.3)
+    assert result.raw_score == pytest.approx(0.3)
+    assert result.confidence is None
     assert result.reason_codes == (
         PolicyReason.REVIEW_REQUIRED,
         PolicyReason.INGREDIENT_CONFLICT,
@@ -148,7 +173,8 @@ def test_confidence_equal_to_threshold_is_reviewable_not_insufficient() -> None:
 
     result = ReviewOnlyPolicy(review_threshold=0.65).evaluate(candidate)
 
-    assert result.confidence == pytest.approx(0.65)
+    assert result.raw_score == pytest.approx(0.65)
+    assert result.confidence is None
     assert result.abstained is False
     assert result.reason_codes == (
         PolicyReason.REVIEW_REQUIRED,
@@ -161,7 +187,8 @@ def test_confidence_below_threshold_abstains_with_exact_reason_order() -> None:
 
     result = ReviewOnlyPolicy(review_threshold=0.65).evaluate(candidate)
 
-    assert result.confidence == pytest.approx(0.64)
+    assert result.raw_score == pytest.approx(0.64)
+    assert result.confidence is None
     assert result.abstained is True
     assert result.reason_codes == (
         PolicyReason.REVIEW_REQUIRED,

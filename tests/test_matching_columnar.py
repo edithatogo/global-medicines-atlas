@@ -64,7 +64,7 @@ def sample_entry(candidate_id: str = "candidate-1") -> ReviewQueueEntry:
     )
     decision = PolicyDecision(
         candidate_id=candidate_id,
-        confidence=0.8,
+        raw_score=0.8,
         abstained=False,
         reason_codes=(PolicyReason.REVIEW_REQUIRED,),
         policy_version="review-only-v1",
@@ -96,6 +96,12 @@ def test_outputs_are_sorted_and_expose_duckdb_views(tmp_path):
     assert manifest.candidate_count == 2
     assert manifest.feature_count == 20
     assert manifest.clinical_equivalence_disclaimer == DISCLAIMER
+    assert table.column("raw_score").to_pylist() == [0.8, 0.8]
+    assert table.column("confidence").to_pylist() == [None, None]
+    assert table.column("confidence_state").to_pylist() == [
+        "not_calibrated",
+        "not_calibrated",
+    ]
 
 
 def test_output_manifest_and_jsonl_are_reproducible(tmp_path):
@@ -107,6 +113,8 @@ def test_output_manifest_and_jsonl_are_reproducible(tmp_path):
     assert first.files == second.files
     assert first_queue == (tmp_path / "review_queue.jsonl").read_bytes()
     assert b'"clinical_equivalence_claim":false' in first_queue
+    assert b'"confidence":null' in first_queue
+    assert b'"confidence_state":"not_calibrated"' in first_queue
 
 
 def test_empty_queue_has_stable_schemas(tmp_path):
