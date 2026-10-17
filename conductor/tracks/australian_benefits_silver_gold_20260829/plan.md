@@ -1823,12 +1823,13 @@
 ## M-109 August 2026 MBS field semantics and date grammar (2026-10-17)
 
 - [x] Bind the exact August 2026 MBS XML v3 candidate to the Department's
-  published native-field guide and release page. The new source-era crosswalk
-  covers all 40 native fields, preserves source-specific conditional absence,
-  and declares the documented `DD.MM.YYYY` date grammar for this exact release
-  only. Its guide was last updated in 2022; the August release page links to it
-  and states no further XML changes compared with 28 May 2026. This does not
-  transfer semantics to another era.
+  published native-field guide and release page as candidate documentation.
+  The crosswalk covers all 40 native fields and preserves source-specific
+  conditional absence. The current guide declares the `DD.MM.YYYY` grammar,
+  but its 2022 update date and missing release-linked field-semantic history
+  do not qualify all field meanings for August 2026. The semantics status
+  record keeps those mappings provisional and blocks their acceptance pending
+  version-linked evidence.
 - [x] Select `mbs-dmy` only in the August 2026 hosted candidate qualifier and
   retain date values and invalid/unsupported status counts in memory/aggregate
   output only. Local focused tests (135), Ruff, `ty`, BasedPyright, context,
@@ -1843,10 +1844,12 @@
   `sha256:982a5e5846a75dfd717a3ca7ad65f3a9906c96f2239944be06aafe270172fbb6`).
   The aggregate DMY profile (`8e8d14f88baabc10a172fd2ec3947f8a89947828d64fb0237398dc230896763e`)
   confirms 6,046 rows in each of 40 fields, matched source/native presence,
-  zero invalid or unsupported conversions, and only
-  `public_v4_identity_unverified` remains. No values or bytes were retained.
-  This closes the August 2026 MBS semantics/date-profile slice only; historical
-  eras, public admission, and the complete M-109 denominator remain open.
+  zero invalid or unsupported conversions, and observed DMY conversion counts.
+  The report's `field_semantics_accepted: true` interpretation is superseded:
+  the historical artifact and its digest remain unchanged, while the corrected
+  qualifier defaults field-semantic acceptance to false and retains the
+  version-history blocker. No values or bytes were retained. Historical eras,
+  public admission, and the complete M-109 denominator remain open.
 
 
 ## M-112 public producer metadata discovery (2026-09-30)

@@ -1,11 +1,11 @@
-# August 2026 MBS XML v3 profile readback
+# August 2026 MBS XML v3 profile readback and correction
 
 This addendum records the hosted result for the exact August 2026 MBS source
-era. It updates the point-in-time note in the
-[source-era field crosswalk](./mbs-xml-v3-field-semantics-2026-08.md) that
-exact-main validation was pending when that crosswalk was authored. The
-crosswalk itself is preserved byte-for-byte at the digest bound by the hosted
-report.
+era and corrects an overstatement in the original run interpretation. The
+[source-era field crosswalk](./mbs-xml-v3-field-semantics-2026-08.md) is
+preserved byte-for-byte at the digest bound by that historical report. Its
+field-semantic acceptance claim is withdrawn; see the current
+[semantics status](./mbs-xml-v3-field-semantics-status-2026-08.md).
 
 ## Exact hosted evidence
 
@@ -34,8 +34,13 @@ were not retained.
 
 ## Remaining qualification boundary
 
-The exact August 2026 MBS field meanings and date grammar are now qualified as
-a candidate. The remaining candidate blocker is `public_v4_identity_unverified`;
-public v4 admission was not performed. Historical MBS/PBS eras, the complete
-approved M-109 denominator, and full M-109 acceptance remain open. The
-candidate was not published or promoted.
+The hosted run proves byte identity, source/native presence alignment, and
+observed date-conversion counts. The current guide supports the declared date
+grammar for candidate profiling, but neither it nor the successful parse proves
+that all field meanings are versioned for this exact release. Therefore
+`field_semantics_accepted` is withdrawn and the field-semantics blocker remains
+open. The historical report's original bytes and digest are retained; no raw
+source rerun is needed to correct this interpretation. Public v4 admission was
+not performed. Historical MBS/PBS eras, the complete approved M-109 denominator,
+and full M-109 acceptance remain open. The candidate was not published or
+promoted.

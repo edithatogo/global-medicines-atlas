@@ -105,7 +105,17 @@ def test_candidate_binds_archive_payload_to_exact_official_release(
     ]
     assert report["source_presence_projection_alignment"] == "matched"
     assert report["qualification"]["date_format"] == "mbs-dmy"
-    assert report["field_semantics_accepted"] is True
+    assert report["field_semantics_accepted"] is False
+    assert report["date_grammar_status"] == (
+        "declared_grammar_profiled_candidate_only"
+    )
+    assert report["field_semantics_blockers"] == [
+        "release_linked_field_semantics_version_history_unverified"
+    ]
+    assert report["candidate_blockers"] == [
+        "release_linked_field_semantics_version_history_unverified",
+        "public_v4_identity_unverified",
+    ]
     assert report["m109_accepted"] is False
 
 
@@ -227,7 +237,7 @@ def test_august_presence_baseline_is_pinned_without_date_semantics() -> None:
     assert report["m109_accepted"] is False
 
 
-def test_august_dmy_profile_binds_semantics_and_remains_candidate_only() -> (
+def test_august_dmy_profile_is_historical_and_semantic_claim_is_superseded() -> (
     None
 ):
     report_bytes = _DMY_PROFILE.read_bytes()
@@ -244,6 +254,8 @@ def test_august_dmy_profile_binds_semantics_and_remains_candidate_only() -> (
 
     assert report["exact_commit"] == "a087acdfb935bb79f894ecd3f91530351f3faac8"
     assert report["official_release_match"] is True
+    # Preserve the exact old hosted artifact, including its overclaim, as
+    # historical evidence; the separate status record withdraws that claim.
     assert report["field_semantics_accepted"] is True
     assert (
         report["field_semantics_sha256"]
@@ -280,6 +292,12 @@ def test_august_dmy_profile_binds_semantics_and_remains_candidate_only() -> (
     assert report["source_bytes_retained"] is False
     assert report["publication_performed"] is False
     assert report["m109_accepted"] is False
+    status = (
+        Path(__file__).resolve().parents[1]
+        / "docs/qualification/mbs-xml-v3-field-semantics-status-2026-08.md"
+    ).read_text(encoding="utf-8")
+    assert "field_semantics_accepted` must remain\nfalse" in status
+    assert "interpretation is superseded" in status
 
 
 def test_august_field_semantics_bind_all_native_fields_and_date_grammar() -> (
@@ -299,3 +317,8 @@ def test_august_field_semantics_bind_all_native_fields_and_date_grammar() -> (
     assert "241,840 field" in document
     assert "DD.MM.YYYY" in document
     assert "M-109 remains partial and blocked" in document
+    status = (
+        Path(__file__).resolve().parents[1]
+        / "docs/qualification/mbs-xml-v3-field-semantics-status-2026-08.md"
+    ).read_text(encoding="utf-8")
+    assert "does not provide a release-linked" in status
