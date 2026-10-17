@@ -36,7 +36,9 @@ from global_medicines_atlas.mbs_silver_qualification import (
 from global_medicines_atlas.receipts import RightsState, SourceReceipt
 
 ROOT = Path(__file__).resolve().parents[1]
-SEMANTICS_PATH = "docs/qualification/mbs-xml-v3-field-semantics-2026-08.md"
+SEMANTICS_PATH = (
+    "docs/qualification/mbs-xml-v3-field-semantics-status-2026-08.md"
+)
 MAX_BYTES = 9_000_000
 EXACT_COMMIT_LENGTH = 40
 DATASET = "edithatogo/australian-mbs-source-archive"
@@ -170,17 +172,26 @@ def qualify_candidate(
         "source_presence_projection_alignment": (
             "matched" if presence_mismatches == 0 else "mismatch_detected"
         ),
-        "field_semantics_accepted": True,
+        "field_semantics_accepted": False,
+        "field_semantics_blockers": [
+            "release_linked_field_semantics_version_history_unverified"
+        ],
         "field_semantics_path": SEMANTICS_PATH,
         "field_semantics_sha256": semantics_sha256,
         "date_format_evidence": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help",
+        "date_grammar_status": "declared_grammar_profiled_candidate_only",
+        "candidate_blockers": [
+            "release_linked_field_semantics_version_history_unverified",
+            *qualification.blockers,
+        ],
         "historical_semantic_parity_accepted": False,
         "public_v4_admission": False,
         "m109_accepted": False,
         "source_bytes_retained": False,
         "publication_performed": False,
         "boundaries": [
-            "Field meanings are qualified only for the exact August 2026 release.",
+            "Field meanings remain unqualified because release-linked version history is unavailable.",
+            "The current Department guide supports the DD.MM.YYYY grammar; observed parseability is candidate evidence, not release-specific semantic acceptance.",
             "Historical semantic parity and other MBS/PBS source eras remain unqualified.",
             "Candidate counts do not establish source-era completeness.",
             "No dataset publication or production admission was performed.",

@@ -1823,25 +1823,33 @@
 ## M-109 August 2026 MBS field semantics and date grammar (2026-10-17)
 
 - [x] Bind the exact August 2026 MBS XML v3 candidate to the Department's
-  published native-field guide and release page. The new source-era crosswalk
-  covers all 40 native fields, preserves source-specific conditional absence,
-  and declares the documented `DD.MM.YYYY` date grammar for this exact release
-  only. Its guide was last updated in 2022; the August release page links to it
-  and states no further XML changes compared with 28 May 2026. This does not
-  transfer semantics to another era.
+  published native-field guide and release page as candidate documentation.
+  The crosswalk covers all 40 native fields and preserves source-specific
+  conditional absence. The current guide declares the `DD.MM.YYYY` grammar,
+  but its 2022 update date and missing release-linked field-semantic history
+  do not qualify all field meanings for August 2026. The semantics status
+  record keeps those mappings provisional and blocks their acceptance pending
+  version-linked evidence.
 - [x] Select `mbs-dmy` only in the August 2026 hosted candidate qualifier and
   retain date values and invalid/unsupported status counts in memory/aggregate
-  output only. Local focused tests (134), Ruff, `ty`, BasedPyright, context,
+  output only. Local focused tests (135), Ruff, `ty`, BasedPyright, context,
   and diff checks passed. Exact-main validation of the selected grammar is
   pending; no source values were read locally.
 - [x] Preserve the prior exact-main no-date field-presence diagnostic as a
   separate, explicitly unqualified baseline report. Its 40 aggregate field
   diagnostics show zero source/native-presence mismatches; they do not validate
   the newly selected date grammar. The report contains no source values.
-- [ ] Run the updated qualifier on its exact merged-main commit, inspect the
-  aggregate date and quality findings, and bind the report digest here. The
-  candidate remains unqualified until that exact-source result is reviewed;
-  public v4 identity, historical eras, and full M-109 denominator remain open.
+- [x] Run the updated qualifier on exact main `a087acdf` (workflow
+  `39029209737`, artifact `12100055332`, artifact digest
+  `sha256:982a5e5846a75dfd717a3ca7ad65f3a9906c96f2239944be06aafe270172fbb6`).
+  The aggregate DMY profile (`8e8d14f88baabc10a172fd2ec3947f8a89947828d64fb0237398dc230896763e`)
+  confirms 6,046 rows in each of 40 fields, matched source/native presence,
+  zero invalid or unsupported conversions, and observed DMY conversion counts.
+  The report's `field_semantics_accepted: true` interpretation is superseded:
+  the historical artifact and its digest remain unchanged, while the corrected
+  qualifier defaults field-semantic acceptance to false and retains the
+  version-history blocker. No values or bytes were retained. Historical eras,
+  public admission, and the complete M-109 denominator remain open.
 
 
 ## M-112 public producer metadata discovery (2026-09-30)
@@ -2718,14 +2726,19 @@
   avoids a second edge-table scan for non-paginated API/CLI calls has focused
   tests and routine/strict checks; protected CI must qualify the exact final
   head.
-- [~] Complete a real, local, candidate-only consumer journey for the exact
+- [x] Complete a real, local, candidate-only consumer journey for the exact
   admitted MBS v3 graph. Generate a bounded Parquet edge projection from the
   six already-pinned Silver tables, load all 5,989 edges within the existing
   file bounds, and traverse them through CLI, API, and Atlas in pages of at
   most 1,000. Verify each page preserves the admission, semantic-manifest, and
-  graph digests and that all edges remain `not_reviewed`. No source is added,
-  no public dataset is written, and this does not establish independent Gold
-  review, M-110 consumer acceptance, product admission, or publication.
+  graph digests and that all edges remain `not_reviewed`. The real graph was
+  traversed by following Atlas-rendered next links through offsets 0, 1000,
+  2000, 3000, 4000, and 5000; all 5,989 unique Atlas edge IDs matched API and
+  CLI output. PR #1106 merged as `13f1a02717c6100dd56e896517781b8383c26981`;
+  its exact head passed all required hosted checks, including Codecov patch and
+  Linux/macOS/Windows consumers. No source was added and no public dataset was
+  written. This completes the candidate-only technical consumer journey, not
+  independent Gold review, M-110 acceptance, product admission, or publication.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 

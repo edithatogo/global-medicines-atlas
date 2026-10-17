@@ -1,0 +1,755 @@
+{
+  "archive_dataset": "edithatogo/australian-mbs-source-archive",
+  "archive_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+  "archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+  "boundaries": [
+    "Field meanings are qualified only for the exact August 2026 release.",
+    "Historical semantic parity and other MBS/PBS source eras remain unqualified.",
+    "Candidate counts do not establish source-era completeness.",
+    "No dataset publication or production admission was performed."
+  ],
+  "candidate_byte_count": 14284,
+  "candidate_sha256": "386bff3916dc39fd7a7e597196c467543f03da3145c797ee701bd36e418ff0e7",
+  "compared_at": "2026-10-17T11:34:40.161579+00:00",
+  "date_format_evidence": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help",
+  "exact_commit": "a087acdfb935bb79f894ecd3f91530351f3faac8",
+  "field_presence_diagnostics": [
+    {
+      "conversion_status_counts": {
+        "missing_field": 2966,
+        "preserved": 3080
+      },
+      "native_field": "Anaes",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "missing_field": 2966,
+        "value": 3080
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 3080,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "AnaesChange",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 486,
+        "null": 5560
+      },
+      "native_field": "BasicUnits",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 5560,
+        "value": 486
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 5560,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 373,
+        "missing_field": 5673
+      },
+      "native_field": "Benefit100",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "missing_field": 5673,
+        "value": 373
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 373,
+      "target_table": "benefits"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 5183,
+        "missing_field": 863
+      },
+      "native_field": "Benefit75",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "missing_field": 863,
+        "value": 5183
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 5183,
+      "target_table": "benefits"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 2803,
+        "missing_field": 3243
+      },
+      "native_field": "Benefit85",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "missing_field": 3243,
+        "value": 2803
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 2803,
+      "target_table": "benefits"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 6046
+      },
+      "native_field": "BenefitStartDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "benefits"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "BenefitType",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "benefits"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "Category",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "hierarchy"
+    },
+    {
+      "conversion_status_counts": {
+        "missing_field": 5962,
+        "preserved": 84
+      },
+      "native_field": "DerivedFee",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "missing_field": 5962,
+        "value": 84
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 84,
+      "target_table": "fees"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 84,
+        "missing_field": 5962
+      },
+      "native_field": "DerivedFeeStartDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "missing_field": 5962,
+        "value": 84
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 84,
+      "target_table": "fees"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "Description",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "descriptions"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 6046
+      },
+      "native_field": "DescriptionStartDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "descriptions"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "DescriptorChange",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "descriptions"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "EMSNCap",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "caps"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "EMSNChange",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "caps"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 6046
+      },
+      "native_field": "EMSNChangeDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 6046,
+      "source_present": 6046,
+      "target_table": "caps"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 5997,
+        "preserved": 49
+      },
+      "native_field": "EMSNDescription",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 5997,
+        "value": 49
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 5997,
+      "source_present": 6046,
+      "target_table": "caps"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 6046
+      },
+      "native_field": "EMSNEndDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 6046,
+      "source_present": 6046,
+      "target_table": "caps"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 80,
+        "null": 5966
+      },
+      "native_field": "EMSNFixedCapAmount",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 5966,
+        "value": 80
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 5966,
+      "source_present": 6046,
+      "target_table": "caps"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 939,
+        "null": 5107
+      },
+      "native_field": "EMSNMaximumCap",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 5107,
+        "value": 939
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 5107,
+      "source_present": 6046,
+      "target_table": "caps"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 999,
+        "null": 5047
+      },
+      "native_field": "EMSNPercentageCap",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 5047,
+        "value": 999
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 5047,
+      "source_present": 6046,
+      "target_table": "caps"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 1079,
+        "null": 4967
+      },
+      "native_field": "EMSNStartDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 4967,
+        "value": 1079
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 4967,
+      "source_present": 6046,
+      "target_table": "caps"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "FeeChange",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "fees"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 5962,
+        "missing_field": 84
+      },
+      "native_field": "FeeStartDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "missing_field": 84,
+        "value": 5962
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 5962,
+      "target_table": "fees"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "FeeType",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "fees"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "Group",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "hierarchy"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "ItemChange",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 6046
+      },
+      "native_field": "ItemEndDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 6046,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "ItemNum",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 6046
+      },
+      "native_field": "ItemStartDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "ItemType",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "preserved": 6046
+      },
+      "native_field": "NewItem",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "value": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 6046
+      },
+      "native_field": "ProviderType",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 6046,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 6046
+      },
+      "native_field": "QFEEndDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 6046,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 6046
+      },
+      "native_field": "QFEStartDate",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 6046,
+      "source_present": 6046,
+      "target_table": "services"
+    },
+    {
+      "conversion_status_counts": {
+        "converted": 5962,
+        "missing_field": 84
+      },
+      "native_field": "ScheduleFee",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "missing_field": 84,
+        "value": 5962
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 0,
+      "source_present": 5962,
+      "target_table": "fees"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 1198,
+        "preserved": 4848
+      },
+      "native_field": "SubGroup",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 1198,
+        "value": 4848
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 1198,
+      "source_present": 6046,
+      "target_table": "hierarchy"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 4484,
+        "preserved": 1562
+      },
+      "native_field": "SubHeading",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 4484,
+        "value": 1562
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 4484,
+      "source_present": 6046,
+      "target_table": "hierarchy"
+    },
+    {
+      "conversion_status_counts": {
+        "null": 6046
+      },
+      "native_field": "SubItemNum",
+      "presence_state_mismatches": 0,
+      "projected_states": {
+        "null": 6046
+      },
+      "requiredness_accepted": false,
+      "rows": 6046,
+      "source_null": 6046,
+      "source_present": 6046,
+      "target_table": "services"
+    }
+  ],
+  "field_semantics_accepted": true,
+  "field_semantics_path": "docs/qualification/mbs-xml-v3-field-semantics-2026-08.md",
+  "field_semantics_sha256": "8d942dfcf988b74abfca24d4c5883582c86478c4cc829a906b45239612676545",
+  "historical_semantic_parity_accepted": false,
+  "m109_accepted": false,
+  "official_release_byte_count": 8293331,
+  "official_release_match": true,
+  "official_release_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+  "official_source_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801",
+  "official_source_uri": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
+  "public_v4_admission": false,
+  "publication_performed": false,
+  "qualification": {
+    "blockers": [
+      "public_v4_identity_unverified"
+    ],
+    "date_format": "mbs-dmy",
+    "promotion_status": "candidate_only",
+    "qualification_sha256": "6828bb65921960f1bee686a868f78045d2b81fe73b0639a4018f29b22cbe7860",
+    "quality": [
+      {
+        "count": 42088,
+        "status": "converted"
+      },
+      {
+        "count": 24837,
+        "status": "missing_field"
+      },
+      {
+        "count": 80648,
+        "status": "null"
+      },
+      {
+        "count": 94267,
+        "status": "preserved"
+      }
+    ],
+    "receipt_sha256": "e741e662dcdf1d64a187af46d8069effe6323b8664cdc90398c4adcb04cad90d",
+    "schema_era": "2026-08-01",
+    "schema_version": 1,
+    "source_byte_count": 8293331,
+    "source_era_verification": {
+      "compared_at": "2026-10-17T11:34:40.161579Z",
+      "effective_at": "2026-08-01",
+      "official_source_byte_count": 8293331,
+      "official_source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "official_source_uri": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
+      "release_id": "MBS-XML-20260801",
+      "released_at": "2026-07-29",
+      "schema_era": "2026-08-01"
+    },
+    "source_id": "au-mbs",
+    "source_record_count": 6046,
+    "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+    "tables": [
+      {
+        "field_count": 13,
+        "field_occurrence_count": 78598,
+        "lineage_sha256": "06fdb5d470177dcaf87925be9c7691a7d69c66141be8607028e2e131420feaad",
+        "row_count": 6046,
+        "table": "services"
+      },
+      {
+        "field_count": 4,
+        "field_occurrence_count": 24184,
+        "lineage_sha256": "82a3000e944e9e687035e71f457b42c424a24586f175586041c4174af5ca56cf",
+        "row_count": 6046,
+        "table": "hierarchy"
+      },
+      {
+        "field_count": 3,
+        "field_occurrence_count": 18138,
+        "lineage_sha256": "afc5c26b4a89b07e3b969a363c70f6756c5556d830d2772cb4010c36ac06940c",
+        "row_count": 6046,
+        "table": "descriptions"
+      },
+      {
+        "field_count": 6,
+        "field_occurrence_count": 36276,
+        "lineage_sha256": "2e6cb8bcd5ef6ee127fa35f9d1e069b4eb31e708f2430806724205d0d6bd4e32",
+        "row_count": 6046,
+        "table": "fees"
+      },
+      {
+        "field_count": 5,
+        "field_occurrence_count": 30230,
+        "lineage_sha256": "06ee4593e207d5790a77dd85c3389bdeb88218a421c7a3c04df8387d918b126d",
+        "row_count": 6046,
+        "table": "benefits"
+      },
+      {
+        "field_count": 9,
+        "field_occurrence_count": 54414,
+        "lineage_sha256": "8903ecd80a611ff747a7b26e8846ac00c79fadfbbe996f3ac944c344bd658b02",
+        "row_count": 6046,
+        "table": "caps"
+      }
+    ]
+  },
+  "schema_id": "global-medicines-atlas.mbs-source-era-candidate",
+  "schema_version": 1,
+  "source_bytes_retained": false,
+  "source_era": "2026-08-01",
+  "source_presence_projection_alignment": "matched",
+  "status": "candidate_only"
+}
