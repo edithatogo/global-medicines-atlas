@@ -8,9 +8,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from collections import Counter
 from datetime import date, datetime
-from typing import Literal
+from typing import Literal, cast
+from urllib.parse import unquote
 
 from pydantic import AnyUrl, Field, model_validator
 
@@ -74,7 +76,7 @@ class MbsSilverQualityCount(FrozenModel):
 
 
 class MbsSourceEraVerification(FrozenModel):
-    """Digest-bound identity for the official July 2025 MBS XML release."""
+    """Digest-bound identity for one official MBS XML source era."""
 
     official_source_uri: AnyUrl
     release_id: str = Field(min_length=1)
@@ -83,18 +85,104 @@ class MbsSourceEraVerification(FrozenModel):
     official_source_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     official_source_byte_count: int = Field(strict=True, ge=1, le=9_000_000)
     compared_at: datetime
+    # Empty is accepted only for the exact legacy July 2025 qualification.
+    schema_era: str = ""
+
+    @model_validator(mode="before")
+    @classmethod
+    def restore_legacy_july_schema_era(cls, value: object) -> object:
+        """Backfill only the known July 2025 serialized identity shape."""
+        if not isinstance(value, dict):
+            return value
+        fields = cast("dict[str, object]", value)
+        if fields.get("schema_era"):
+            return fields
+        if (
+            str(fields.get("official_source_uri")) == OFFICIAL_MBS_V3_URI
+            and fields.get("release_id") == "MBS-XML-20250701 Version 3"
+            and str(fields.get("released_at")) == "2025-06-16"
+            and str(fields.get("effective_at")) == "2025-07-01"
+        ):
+            return {**fields, "schema_era": "2025-07-version-3"}
+        return fields
 
     @model_validator(mode="after")
     def official_release_identity_matches(self) -> MbsSourceEraVerification:
-        """Reject an unrelated object mislabeled as this source era."""
-        if str(self.official_source_uri) != OFFICIAL_MBS_V3_URI:
-            raise ValueError("official MBS release URI differs")
+        """Accept only an HTTPS release identity on the official MBS host."""
         if (
-            self.release_id != "MBS-XML-20250701 Version 3"
-            or self.released_at != date(2025, 6, 16)
-            or self.effective_at != date(2025, 7, 1)
+            self.official_source_uri.scheme != "https"
+            or self.official_source_uri.host
+            not in {"mbsonline.gov.au", "www.mbsonline.gov.au"}
+        ):
+            raise ValueError("official MBS release URI host differs")
+        if (
+            self.official_source_uri.username is not None
+            or self.official_source_uri.password is not None
+            or self.official_source_uri.port not in {None, 443}
+            or self.official_source_uri.query is not None
+            or self.official_source_uri.fragment is not None
+        ):
+            raise ValueError("official MBS release URI authority differs")
+        release_match = re.fullmatch(
+            r"MBS-XML-(\d{8})(?: Version (\d+))?", self.release_id
+        )
+        uri_path = unquote(self.official_source_uri.path or "")
+        uri_match = re.search(
+            r"MBS-XML-(\d{8})(?: Version (\d+))?\.XML\Z",
+            uri_path,
+            flags=re.IGNORECASE,
+        )
+        if (
+            release_match is None
+            or uri_match is None
+            or release_match.group(1) != uri_match.group(1)
+            or release_match.group(2) != uri_match.group(2)
         ):
             raise ValueError("official MBS release metadata differs")
+        release_token = release_match.group(1)
+        release_date = date.fromisoformat(
+            f"{release_token[:4]}-{release_token[4:6]}-{release_token[6:]}"
+        )
+        if release_date != self.effective_at:
+            raise ValueError("official MBS effective date differs from release")
+        if self.compared_at.date() < self.released_at:
+            raise ValueError("official MBS comparison predates release")
+        if not self.schema_era:
+            raise ValueError("official MBS schema era is required")
+        era_match = re.fullmatch(
+            r"(\d{4})-(\d{2})(?:-(\d{2}|version-\d+))?",
+            self.schema_era,
+        )
+        if era_match is None:
+            raise ValueError("official MBS schema era differs from release")
+        if (
+            int(era_match.group(1)) != self.effective_at.year
+            or int(era_match.group(2)) != self.effective_at.month
+        ):
+            raise ValueError("official MBS schema era differs from release")
+        era_day = era_match.group(3)
+        release_version = release_match.group(2)
+        if release_version is None and (
+            era_day is None or not era_day.isdigit()
+        ):
+            raise ValueError(
+                "official MBS unversioned schema era requires effective day"
+            )
+        era_version = (
+            era_day.removeprefix("version-")
+            if era_day is not None and era_day.startswith("version-")
+            else None
+        )
+        if era_version != release_version:
+            raise ValueError(
+                "official MBS schema era version differs from release"
+            )
+        if (
+            era_day is not None
+            and era_day.isdigit()
+            and int(era_day) != self.effective_at.day
+        ):
+            raise ValueError("official MBS schema era differs from release")
         return self
 
 
@@ -169,9 +257,8 @@ class MbsSilverQualification(FrozenModel):
             raise ValueError(
                 "official source identity differs from B2 identity"
             )
-        if (
-            self.source_era_verification is not None
-            and self.schema_era != "2025-07-version-3"
+        if self.source_era_verification is not None and (
+            self.source_era_verification.schema_era != self.schema_era
         ):
             raise ValueError("official source era differs from catalog era")
         if tuple(item.status for item in self.quality) != tuple(
@@ -216,9 +303,21 @@ def _canonical(value: object) -> bytes:
 
 
 def report_digest(report: MbsSilverQualification) -> str:
-    values = report.model_dump(
-        exclude={"qualification_sha256"}, exclude_computed_fields=True
+    values = cast(
+        "dict[str, object]",
+        report.model_dump(
+            exclude={"qualification_sha256"}, exclude_computed_fields=True
+        ),
     )
+    verification = values.get("source_era_verification")
+    if (
+        isinstance(verification, dict)
+        and cast("dict[str, object]", verification).get("schema_era")
+        == "2025-07-version-3"
+    ):
+        # The field was added after the pinned July 2025 reports were created.
+        # Preserve their original digest while binding non-default eras.
+        cast("dict[str, object]", verification).pop("schema_era")
     return hashlib.sha256(_canonical(values)).hexdigest()
 
 
