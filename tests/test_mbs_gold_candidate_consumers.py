@@ -68,7 +68,6 @@ def test_candidate_consumer_receipt_traverses_each_surface_without_edge_ids(
     edge_path, qualification, expected_bindings, candidate = (
         _candidate_artifact(tmp_path)
     )
-
     receipt = qualify_consumers(
         edge_path,
         qualification,
@@ -96,6 +95,86 @@ def test_candidate_consumer_receipt_traverses_each_surface_without_edge_ids(
     )
 
 
+def test_candidate_v4_lineage_binds_exact_six_source_faithful_tables(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.syspath_prepend(
+        str(Path(__file__).resolve().parents[1] / "scripts")
+    )
+    script = import_module(
+        "scripts.qualify_australian_mbs_gold_candidate_consumers"
+    )
+    admission = script._read_json(script.ROOT / script.ADMISSION_PATH)
+    semantic = script._read_json(script.ROOT / script.SEMANTIC_PATH)
+    authorization = script._read_json(
+        script.ROOT / script.V4_USE_AUTHORIZATION_PATH
+    )
+    manifest = script._read_json(script.ROOT / script.MBS_V4_MANIFEST_PATH)
+    qualification = script._read_json(
+        script.ROOT / script.MBS_V4_QUALIFICATION_PATH
+    )["qualification"]
+    source_report = script._read_json(
+        script.ROOT / script.SOURCE_CANDIDATE_REPORT_PATH
+    )
+
+    binding = script.candidate_v4_lineage_binding(
+        admission,
+        semantic,
+        authorization,
+        manifest,
+        qualification,
+        source_report,
+    )
+
+    assert binding["candidate_only"] is True
+    assert binding["status"] == (
+        "verified_candidate_source_faithful_silver_lineage"
+    )
+    tables = binding["tables"]
+    assert isinstance(tables, list)
+    assert [table["name"] for table in tables] == [
+        "benefits",
+        "caps",
+        "descriptions",
+        "fees",
+        "hierarchy",
+        "services",
+    ]
+    assert all(table["row_count"] == 5989 for table in tables)
+    boundaries = binding["boundaries"]
+    assert isinstance(boundaries, dict)
+    assert boundaries["production_admission_or_promotion"] is False
+    assert boundaries["new_rights_or_licensing_conclusion"] is False
+    assert boundaries["m112_federation_acceptance"] is False
+    assert "native_value" not in str(binding)
+
+    changed_admission = json.loads(json.dumps(admission))
+    changed_admission["tables"][0]["path"] = "silver/forged.parquet"
+    with pytest.raises(ValueError, match="table identity differs"):
+        script.candidate_v4_lineage_binding(
+            changed_admission,
+            semantic,
+            authorization,
+            manifest,
+            qualification,
+            source_report,
+        )
+
+    duplicate_semantic = json.loads(json.dumps(semantic))
+    conflicting = json.loads(json.dumps(duplicate_semantic["tables"][0]))
+    conflicting["sha256"] = "0" * 64
+    duplicate_semantic["tables"][-1] = conflicting
+    with pytest.raises(ValueError, match="duplicate table identities"):
+        script.candidate_v4_lineage_binding(
+            admission,
+            duplicate_semantic,
+            authorization,
+            manifest,
+            qualification,
+            source_report,
+        )
+
+
 def test_qualification_script_emits_browser_bound_aggregate_receipt(
     tmp_path, monkeypatch, capsys
 ) -> None:
@@ -107,6 +186,17 @@ def test_qualification_script_emits_browser_bound_aggregate_receipt(
     )
     script = import_module(
         "scripts.qualify_australian_mbs_gold_candidate_consumers"
+    )
+    candidate_ids = sorted(
+        pq.read_table(edge_path).column("edge_id").to_pylist()
+    )
+    monkeypatch.setattr(
+        script,
+        "qualify_candidate_atlas_browser",
+        lambda *_args: (
+            candidate_ids,
+            list(range(0, len(candidate_ids), 1000)),
+        ),
     )
     read_json = script._read_json
     sha256 = script._sha256
@@ -133,23 +223,85 @@ def test_qualification_script_emits_browser_bound_aggregate_receipt(
     output = tmp_path / "consumer-qualification.json"
 
     assert (
-        script.main(["--edge-file", str(edge_path), "--output", str(output)])
+        script.main([
+            "--edge-file",
+            str(edge_path),
+            "--output",
+            str(output),
+            "--workflow-commit",
+            "a" * 40,
+            "--workflow-repository",
+            "edithatogo/global-medicines-atlas",
+            "--workflow-run-id",
+            "123456",
+            "--workflow-run-attempt",
+            "2",
+        ])
         == 0
     )
     receipt = json.loads(output.read_text(encoding="utf-8"))
     assert receipt["surfaces"] == ["API", "Atlas", "Browser", "CLI"]
+    assert receipt["hosted_workflow"] == {
+        "repository": "edithatogo/global-medicines-atlas",
+        "workflow": script.WORKFLOW_PATH,
+        "commit": "a" * 40,
+        "run_id": 123456,
+        "run_attempt": 2,
+        "run_url": (
+            "https://github.com/edithatogo/global-medicines-atlas/"
+            "actions/runs/123456"
+        ),
+    }
     assert receipt["edge_count"] == len(candidate.edges)
     assert (
         receipt["candidate_v4_use_authorization"]["authorized_object_count"]
         == 6
     )
     assert receipt["candidate_v4_use_authorization"]["candidate_only"] is True
+    source_lineage = receipt["candidate_v4_source_lineage"]
+    assert isinstance(source_lineage, dict)
+    assert source_lineage["candidate_only"] is True
+    assert len(source_lineage["tables"]) == 6
+    assert source_lineage["source"]["source_receipt_sha256"] == (
+        "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03"
+    )
     assert "items" not in receipt
     assert all(
         edge["edge_id"] not in str(receipt)
         for edge in pq.read_table(edge_path).to_pylist()
     )
     assert json.loads(capsys.readouterr().out) == receipt
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("commit", "not-a-commit"),
+        ("repository", "someone/else"),
+        ("run_id", "0"),
+        ("run_id", "1x"),
+        ("run_attempt", "0"),
+        ("run_attempt", "1x"),
+    ],
+)
+def test_hosted_workflow_binding_rejects_untrusted_identity(
+    field: str, value: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.syspath_prepend(
+        str(Path(__file__).resolve().parents[1] / "scripts")
+    )
+    script = import_module(
+        "scripts.qualify_australian_mbs_gold_candidate_consumers"
+    )
+    values = {
+        "commit": "a" * 40,
+        "repository": "edithatogo/global-medicines-atlas",
+        "run_id": "123",
+        "run_attempt": "1",
+    }
+    values[field] = value
+    with pytest.raises(ValueError, match="hosted qualification"):
+        script.hosted_workflow_binding(**values)
 
 
 def test_candidate_consumer_rejects_surfaces_agreeing_on_wrong_edge_ids(

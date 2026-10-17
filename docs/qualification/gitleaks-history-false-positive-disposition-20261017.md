@@ -24,13 +24,17 @@ fields, so the exact merge-commit fingerprints are also listed below.
 ## Disposition
 
 The repository-root `.gitleaks.toml` extends Gitleaks defaults and adds one
-allowlist scoped to `generic-api-key`. Its anchored match requires the exact
-`huggingface_api_revision` field and the public revision recorded in the
-qualification readback. It does not exclude a rule, directory, filename,
-source record, or class of values. A local Gitleaks 8.30.1 discrimination check
-reported zero findings for that exact field/value, and one finding when the
-value changed or the same value appeared under `api_key`. The complete-history
-scanner remains enabled. The source records and Git history are unchanged.
+allowlist scoped to `generic-api-key`. Its anchored matches require either the
+exact `huggingface_api_revision` field and public revision recorded in the
+qualification readback, or the exact `API` field and edge-set SHA-256 in the
+candidate consumer receipt. The latter was reported in PR #1116 at line 525 of
+the MBS track evidence. Both values were verified against their public
+evidence records and are not credentials. The allowlist does not exclude a
+rule, directory, filename, source record, or class of values. Local Gitleaks
+8.30.1 discrimination checks report no finding for each exact field/value;
+changed values and the same values under `api_key` remain findings. The
+complete-history scanner remains enabled. The source records and Git history
+are unchanged.
 
 ## Evidence
 
