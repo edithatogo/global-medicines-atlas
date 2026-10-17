@@ -258,3 +258,33 @@ records the exact URL identities and receipt paths. This closes the current
 index-to-B1-receipt matching gap only. It does not establish the complete
 historical MBS/PBS period denominator, utilisation-family coverage, historical
 PBS rights or schema eras, or M-107 acceptance.
+
+## M-107 2011–2019 official historical-page inventory (2026-10-17)
+
+The Department's [2010–2019 overview](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/MBSOnline-2010)
+links year-specific MBS file pages. Page-level metadata from those official
+pages identifies these PDF publication-link counts:
+
+| Year | Listed PDF links | Official source page |
+| --- | ---: | --- |
+| 2011 | 14 | [2011 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2011-PDF) |
+| 2012 | 25 | [2012 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2012-PDF) |
+| 2013 | 21 | [2013 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2013-PDF) |
+| 2014 | 18 | [2014 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2014-PDF) |
+| 2015 | 10 | [2015 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2015-PDF) |
+| 2016 | 9 | [2016 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2016-PDF) |
+| 2017 | 7 | [2017 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2017-PDF) |
+| 2018 | 7 | [2018 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2018-PDF); official search-index excerpt only because the direct page open timed out |
+| 2019 | 9 | [2019 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2019-PDF) |
+| **Total** | **120** | Nine year-specific pages linked from the official overview |
+
+This is an index-page inventory only. No PDF or software payload was requested,
+downloaded, or read. The nine pages are identified as PDF-download pages; the
+overview also refers to software files, so this list does not claim complete
+pre-2020 format coverage. The 2010 year itself remains outside this set. The
+existing MBS archive authorization covers monthly schedule XML, basic service
+descriptions, and relative value guides; it does not establish rights to retain
+or redistribute these historical PDFs/software files. Therefore this metadata
+does not count as an acquired snapshot and M-107 remains blocked pending a
+complete expected-period/format denominator, per-object rights, authorized
+retrieval evidence, and schema-era acceptance.

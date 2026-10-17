@@ -980,3 +980,17 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   M-109 acceptance; continue those requirements against authorized evidence.
 - [x] Parse the append-only evidence ledger, run Conductor context validation,
   and pass `git diff --check` after recording the hosted result.
+
+## M-107 official historical-page inventory (2026-10-17)
+
+- [x] Record page-level metadata from the Department's 2010–2019 historical
+  landing page and the 2011–2019 year-page listings, totaling 120 listed PDF
+  links. The 2018 count is from an official search-index excerpt because its
+  direct page open timed out. This is metadata-only; no historical file or
+  software payload was requested or downloaded.
+- [~] Keep M-107 blocked. The official overview also refers to software files,
+  the 2010 period and the complete historical MBS/PBS denominator are not
+  reconciled, and the existing MBS publication authorization does not cover
+  historical PDF/software retention or redistribution. Do not acquire those
+  objects until source-specific rights and exact snapshot requirements are
+  resolved.
