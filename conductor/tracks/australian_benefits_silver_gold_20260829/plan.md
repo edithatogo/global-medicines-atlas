@@ -1802,6 +1802,23 @@
   Neither the contextual downloads page nor the donor archive locator proves
   official provenance, date convention, field semantics, or transformation.
 
+## M-109 latest MBS archive metadata reconciliation (2026-10-17)
+
+- [x] Refresh the known-object inventory to the current M-108 append receipt:
+  revision `da83cad9116e2f9a5b927be7b080e9a5e5ea6998`, root manifest digest
+  `68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055`, and
+  212 manifest objects. The MBS schedule/P7 subset contains 86 distinct
+  payload digests across 90 manifest paths, including four 2025 paths that
+  the previous M-109 identity snapshot had listed as missing.
+- [x] Keep exact manifest-path aliases and duplicate payload digests visible;
+  bind the M-109 record to M-108's append and anonymous cleanup receipts. This
+  is metadata reconciliation only and does not establish every path's official
+  provenance, complete the expected historical denominator, or change rights,
+  qualification, or admission.
+- [ ] Continue M-109 source-era denominator, source-owner, semantic, temporal,
+  transformation, PBS rights, and Silver admission gates. M-109 remains
+  blocked.
+
 
 ## M-112 public producer metadata discovery (2026-09-30)
 

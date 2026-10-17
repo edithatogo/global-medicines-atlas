@@ -5,15 +5,19 @@
   "requirement": "M-109",
   "status": "known_pinned_identities_enumerated_expected_denominator_incomplete",
   "readback": {
-    "method": "Anonymous HTTPS reads of the two pinned public manifest.json metadata files and dataset revision metadata; no source payload or Parquet bytes were requested.",
+    "method": "Anonymous HTTPS manifest and revision metadata readback, reconciled to the latest MBS archive append receipt recorded by M-108. No source payload or Parquet bytes were requested in this reconciliation.",
     "mbs": {
       "dataset": "edithatogo/australian-mbs-source-archive",
-      "current_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+      "current_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
       "manifest_path": "manifest.json",
-      "manifest_sha256": "7afe928933fece384f8459dd268fcd2c4f26c8325dc52577f7a1582e8d63a0ac",
-      "manifest_bytes": 7555,
-      "manifest_file_count": 28,
-      "manifest_generated_at": "2026-10-16T17:28:59Z"
+      "manifest_sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+      "manifest_bytes": 59818,
+      "manifest_file_count": 212,
+      "manifest_generated_at": "2026-10-17T03:50:56Z",
+      "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39000296702",
+      "publication_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285185",
+      "cleanup_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285346",
+      "reconciled_to": "quality/qualifications/australian-m108-derived-products-20261017.json#latest_mbs_archive_append_readback"
     },
     "pbs": {
       "dataset": "edithatogo/australian-pbs-source-archive",
@@ -31,118 +35,1251 @@
       "later_schedule_category_value": "monthly_schedule_xml",
       "scope_note": "These existing authorizations are recorded as their stated scopes; this inventory creates no new rights conclusion."
     },
-    "observed_exact_source_count": 8,
-    "observed_manifest_path_entry_count": 9,
+    "observed_manifest_path_entry_count": 90,
     "expected_source_denominator_complete": false,
     "sources": [
       {
         "source_id": "au-mbs",
-        "source_era": "2024-07-p7-legacy-workbook",
-        "effective_at": "2024-07-01",
-        "kind": "legacy_workbook",
-        "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
-        "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
-        "bytes": 87727,
+        "kind": "monthly_schedule_xml",
+        "sha256": "0e205e343815d2dbeb2c373ac2817c66186e2696bb992142af9046edbb31e51a",
+        "bytes": 8119954,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200801/mbs-xml-200804.xml"
+        ],
         "identity_status": "verified_in_current_pinned_root_manifest",
-        "rights_basis_ref": "legacy_exact_payloads",
-        "semantic_status": "structure_and_field_lineage_candidate_only; date convention and P7 meanings unresolved"
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
       },
       {
         "source_id": "au-mbs",
-        "source_era": "2025-07-version-3",
-        "effective_at": "2025-07-01",
-        "kind": "schedule_xml",
-        "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
-        "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
-        "bytes": 8194522,
+        "kind": "monthly_schedule_xml",
+        "sha256": "0f24816b67579df8f9f5834fb7c35184c2c88b0f62d50497807f4721764fb689",
+        "bytes": 8456589,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210701/mbs-xml210721e.xml"
+        ],
         "identity_status": "verified_in_current_pinned_root_manifest",
-        "rights_basis_ref": "legacy_exact_payloads",
-        "semantic_status": "exact-era field semantics, date profile and six-table value parity qualified; candidate-only and not M-109 accepted"
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
       },
       {
         "source_id": "au-mbs",
-        "source_era": "2026-01-01",
-        "effective_at": "2026-01-01",
-        "kind": "schedule_xml",
-        "path": "raw/mbs/releases/Downloads-20260101/MBS-XML-20260101.XML",
-        "sha256": "352448dc912b3e2125f2acd56b6094da13de7f229022a498c21848a0fcdc2299",
-        "bytes": 8215319,
+        "kind": "monthly_schedule_xml",
+        "sha256": "0f6e0b56acb3e10f569c7fc49cf66b1a50b076a199163feeabda4011d1db2cb7",
+        "bytes": 8073841,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200701a/mbs-xml-200701r2.xml"
+        ],
         "identity_status": "verified_in_current_pinned_root_manifest",
-        "rights_basis_ref": "later_schedule_category",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "10de7cf43a6f4e743de9ceaa4347303b1330966c62e544f92ca53887d8cb067d",
+        "bytes": 8117908,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200801/mbs-xml-200801.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "schedule_xml",
+        "sha256": "11ccca0f16826e5089ae451b51fafd42b2a2a436ac97eea593de077dc4200cc4",
+        "bytes": 8297608,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-20261101/MBS-XML-20261101.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified",
+        "source_era": "2026-11-01",
+        "effective_at": "2026-11-01",
         "semantic_status": "identity only; source-era semantics and transformation parity not qualified"
       },
       {
         "source_id": "au-mbs",
-        "source_era": "2026-03-01-original",
-        "effective_at": "2026-03-01",
+        "kind": "monthly_schedule_xml",
+        "sha256": "144f96759550394678d2b95adafa59d8851ff91f56064d05ec69fa2c406c9948",
+        "bytes": 8069023,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230701/MBS-XML-20230701.V2.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "15140d523b1ea70dc1fd4bdf2b9bbc66cf6af8233315b6fbd61e097df8b21a12",
+        "bytes": 8149632,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-250301/MBS-XML-20250301.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "159f92286f18ce913840da63e85cba06da6c8de0fef64615290a4a7e2cd318f8",
+        "bytes": 8449445,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210701/mbs-xml-210701a1.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "1be3bf8f26a3dfa8c367a5424ff0107ad8293178f953516a93fefbaa34f74cfe",
+        "bytes": 8119386,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220901/MBS-XML-220901.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "1f8b6d7a2f898777801d49c91db053e1343128c972191a6c333d377e6ece7525",
+        "bytes": 8003592,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230301/MBS-XML-20230301-v2.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
         "kind": "schedule_xml_revision",
-        "path": "raw/mbs/releases/Downloads-20260301/MBS-XML-20260301.XML",
         "sha256": "252a06590143428ab49aca79302dc0f1e4e4c2726cf36859d1673e6521e31ded",
         "bytes": 8271558,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-20260301/MBS-XML-20260301.XML"
+        ],
         "identity_status": "verified_in_current_pinned_root_manifest",
-        "rights_basis_ref": "later_schedule_category",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified",
+        "source_era": "2026-03-01-original",
+        "effective_at": "2026-03-01",
         "semantic_status": "identity only; distinct from and superseded by version 2; source-era semantics and parity not qualified"
       },
       {
         "source_id": "au-mbs",
-        "source_era": "2026-03-01-version-2",
-        "effective_at": "2026-03-01",
-        "kind": "schedule_xml_revision",
-        "path": "raw/mbs/releases/Downloads-20260301/MBS-XML-20260301-version 2.XML",
-        "sha256": "e6ed9cf794a73e0a9d10c6ffca931f29cce899d720fb7377fe4f5d64dc2b9561",
-        "bytes": 8271294,
+        "kind": "monthly_schedule_xml",
+        "sha256": "2a5f1d007b945dde45f0f85750295847f443c143406e73661e26412e1aa8a14d",
+        "bytes": 8166959,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-241101/MBS-XML-20241101.xml"
+        ],
         "identity_status": "verified_in_current_pinned_root_manifest",
-        "rights_basis_ref": "later_schedule_category",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "2bbf99a94f1a0cd7d1c85157143f262481645ce46110bf2f10098af4b3702fd1",
+        "bytes": 8561510,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-211101/MBS-xml-211108.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "2d98f98cf8cd2e01ab798b33f7ef4b5b125f75f82d40ac1215e1881e48242ea3",
+        "bytes": 7982445,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230101/MBS-XML-20230101.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "legacy_workbook",
+        "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+        "bytes": 87727,
+        "manifest_paths": [
+          "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "legacy_exact_payloads"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified",
+        "source_era": "2024-07-p7-legacy-workbook",
+        "effective_at": "2024-07-01",
+        "semantic_status": "structure_and_field_lineage_candidate_only; date convention and P7 meanings unresolved"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "31b1e98a7e447f889ba9a6b02b57b88860d4e854949560cb2a19a2c8f5090fd0",
+        "bytes": 8145212,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201101a/MBS-XML-20201101r.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "333c985d12f5e5c086f39bc35c21370122027810293a2bea0156df5694f9fb0f",
+        "bytes": 8560256,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-211101/MBS-XML-211101-v2.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "schedule_xml",
+        "sha256": "352448dc912b3e2125f2acd56b6094da13de7f229022a498c21848a0fcdc2299",
+        "bytes": 8215319,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-20260101/MBS-XML-20260101.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified",
+        "source_era": "2026-01-01",
+        "effective_at": "2026-01-01",
         "semantic_status": "identity only; source-era semantics and transformation parity not qualified"
       },
       {
         "source_id": "au-mbs",
-        "source_era": "2026-07-01",
-        "effective_at": "2026-07-01",
+        "kind": "monthly_schedule_xml",
+        "sha256": "3736a72716158fc034705ede4e695dc470ccc98daff48b0533601eef2458340e",
+        "bytes": 8165147,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-250101/MBS-XML-20250101.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "3e1990c61133dc2f8e83f3ffd2b7cbdee5fc695547fded0dd8c16f73be55ade3",
+        "bytes": 8194521,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-250701/MBS-XML-20250701.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "42275b90bc442e38a9cf827885a3512ac956fb2a8541438b7f3faf522a951206",
+        "bytes": 8113688,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220701/MBS-xml-220706.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "429e7bbbaada63a14601090fd28d961264dca7407a0dbbbed33a1cdda01c4083",
+        "bytes": 8119706,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200801/mbs-xml-200801r.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "4efa2e2761f14fcc433fd6ae18373deaf935ec7122f04be980123013c0e96ecf",
+        "bytes": 8304981,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220101/MBS-xml-220101 V4.0.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "5163c29f062a8a03ab48d76035d6394f6b4e1fbbd58c024ec21bfff32e40317d",
+        "bytes": 8150621,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-240701/MBS-XML-20240701-V2.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "55ffc6faa7c2485fdba51a8bf1baf49be67e054ba082693701c1e6b77f519dbf",
+        "bytes": 8125590,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-221101/MBS-XML-20221101v2.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "563263c531f06d1a0d131934a9325446a1e2121fe33cb1e9006c64cc38c3d824",
+        "bytes": 8155425,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201201a/mbs-xml-201201a.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
         "kind": "schedule_xml",
-        "path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
         "sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
         "bytes": 8291891,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML"
+        ],
         "identity_status": "verified_in_current_pinned_root_manifest",
-        "rights_basis_ref": "later_schedule_category",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified",
+        "source_era": "2026-07-01",
+        "effective_at": "2026-07-01",
         "semantic_status": "identity only; source-era semantics and transformation parity not qualified"
       },
       {
         "source_id": "au-mbs",
-        "source_era": "2026-08-01",
-        "effective_at": "2026-08-01",
+        "kind": "monthly_schedule_xml",
+        "sha256": "5e3b21f73ee46bc8196c3e17a30a16c572ec3b44bc70ac9e461d4ae805397add",
+        "bytes": 8431867,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220301/mbs-xml-20220301v2.revised.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "601ffe95b55ab4964241850f88b4b666eff2caefe2af70eacbcd4cffba1c4198",
+        "bytes": 8118630,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220801/MBS-XML-20220801.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "60820a2bcae6cfd811b9d9da47007836cafd95b9db5a300f02e80dd81a7090c8",
+        "bytes": 8150741,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-240701/MBS-XML-20240701.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "614a8796ebeb06e07a83131a6aa085dd42c39518f286ce0becef43f1a9ef9e34",
+        "bytes": 8194232,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-240301/MBS-XML-20240301.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "6439faf48ab26e7d9c6e617f11dbcaadc6b6038520dbad15b6a0d80510f11fc6",
+        "bytes": 8436193,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220301/MBS-XML-20220301-version 3.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "6778c1ee3e649522baad56b4b0f64b200b107482065f6d0c534fba7b93bd5cf9",
+        "bytes": 8106419,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220701/MBS-XML-20220701.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "6862edd50b631b20c9b4e566968460d843f98293ce5a9d6faad96ea0b4b33fc4",
+        "bytes": 8439411,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210615/source-url-sha256/61236422fa4dcba6a87cdca7d5155fd931bb6e2ccce220e299617cc0af023c5e/mbs-xml-210615.xml",
+          "raw/mbs/releases/Downloads-210615/source-url-sha256/ed625187597aaa024991bdad909dd145e800afd1d919261310aeedf478af7d31/mbs-xml-210615.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "6947f392ef5eef45c1c01faed3d89605dd1fe00ab42e6d38dc9b70b965c715aa",
+        "bytes": 8073840,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200701a/mbs-xml-200728.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "6ac3aa94ce8e572e630af8d50f1c5d24d8d35ecd3e58839f93cac75c0bfba50f",
+        "bytes": 8461083,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210226/mbs-xml-210226.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "6d65141dcaa805acb4caa89385fd278ca769ef508737349c2b6a22fd52f49c47",
+        "bytes": 8142730,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201201a/mbs-xml-201201.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "6eafb3f81ece50a5005c16ce1413c3c3590438b173ec2cbeac22c2c98c621821",
+        "bytes": 8430765,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210101/mbs-xml-210101a.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "70c04e83ed8e0731617687075babf87d246feb71b37e43c078a342d4a3a27a26",
+        "bytes": 8193566,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-2023-11/MBS-XML-20231101.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "75e5a7b81612eebdc0d8114826fee40088df05debc24963308187857a5566620",
+        "bytes": 8442862,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220401/MBS-XML220411.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "77e9777e1cb16076d54b91ec8b01639fc8859c973bb6f46fbafade17646bcb12",
+        "bytes": 8395199,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210301/mbs-xml-210301a.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "78ad314c074a5537634c74b6d16c6a9fb56439f04f4e084a2affe78a4f6495ed",
+        "bytes": 8160744,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-240101/MBS-XML-20240101.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "7d5691b03bdf239dc49d592d3500a59f03f3e282f8332096adefc14bd47a5d9a",
+        "bytes": 8138884,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201101a/mbs-xml-201101a.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "7d9068fb9a857d0fd2eda089c2d72cd8f57c5794be7a00a1a4d0b8800bd5d502",
+        "bytes": 8442470,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220401/MBS-XML-20220401.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "80ff02e8a8ba8e3b73aa98837b1fc8373956f06de4241c0feda8951e3c811123",
+        "bytes": 8112470,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220701/MBS-XML-20220701v2.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "8180a67c39e35cca758a611230071479029f8a608dbbb0b87484e5fcd58b4937",
+        "bytes": 8424922,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201201a/mbs-xml-201210r.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "833eacfb99311fe4f6ff777a1d60de1238e1d8008fb0d42c6ddf55876f80d4d0",
+        "bytes": 8302765,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220301/MBS-XML.211220 V3.0.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "84689b5637578db278fdafff2ed1d465a60673c035a8cdc5a922d8517cd8475a",
+        "bytes": 8192285,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200901/mbs-xml-200901.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "85ae8d457dba096f90bfdb4bc4aebfc55a64ab7556f284bec3756cb0a261b775",
+        "bytes": 8206511,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200901/mbs-xml-200915a.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "875a45e690d86925c5531e6d2d1bd692e8235935bd01423b623ba5801fa1c441",
+        "bytes": 8215371,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-251101/MBS-XML-20251101 Version 2.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "8c72dfc3cd4caf2f1e140f6bdc3e2ccc4b0c6fbef8c36eac9ad0c5582f1e8871",
+        "bytes": 8068835,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230701/MBS-XML-20230701.V4.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "90671b3c7da2b96dad21113939652e693c3809e0cd02593a536d1d149f1451ed",
+        "bytes": 8439132,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210101/mbs-xml-210101r1.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "94dcd31e70aa4b5cb17940d0102a06af5f7323d909c1790b6968aee330690bbd",
+        "bytes": 8129098,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-221001/MBS-XML-20221001.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "9519a9c2394dc41f26d18fad57386ab9e54e2b0c38d6a40a3d8ee09189e9cc33",
+        "bytes": 8154862,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-240101/MBS-XML-20240101 Version 2.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "9dfaa782ddaac097cbcdcd01f88ab11caa89703b8a4761a99900edd4b6839ec1",
+        "bytes": 8434931,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210301/mbs-xml-210301b.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "9ef1d7c62cded7f944223467a081a19b3d19eec545e6e7fbf54dd0bac3be9b3e",
+        "bytes": 8441396,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210801/mbs-xml-210801.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "a21db5fd80de025bde80f50365522492b5ec59449c906aea548526ec9f564c7f",
+        "bytes": 7900297,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230301/MBS-XML-20230301.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "a99d387d0c7e8f21c4c39b305977c307ac546279b1567580314de0a9a979162e",
+        "bytes": 8194521,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-250701/MBS-XML-20250701 Version 2.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "aff272b46b6c313aae4df3a09c0a82dd7a00e7037bcd310f29ac81e58ba9d838",
+        "bytes": 8554108,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-211101/MBS-XML.211101.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "b1bbaaf6781147be48065e719daba86d831e70dd2ead0eab5658fdc2295d5836",
+        "bytes": 8443401,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210615/source-url-sha256/a2f96e01a07348986e988937f0fe8c6ec54f90e9eff27d33074ad1649e98a3d2/mbs-xml-210601a.xml",
+          "raw/mbs/releases/Downloads-210615/source-url-sha256/e5eb3923c58c1d019bf1c41316b12ec9bcc6294ea77a666c352a3386eaad226b/MBS-xml-210601a.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "b2ab4e7b2139343d71d19341803a3f1a5ccfd14abc8f3c413e27428f78ddab37",
+        "bytes": 7965141,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230201/MBS-XML-20230201.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "b314f6c4c42ba7502713d7a60619f2fdbf39b9f2b69b3bb921adebdac6b8d6bf",
+        "bytes": 8444345,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210701/mbs-xml-210701a.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "b42862b386e39cb66330651598fc9b121e45f3615fd82602c4eaf1ee669f3b77",
+        "bytes": 8003641,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230405/MBS-XML-20230405.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "be8280667c6c65a7c527d94d0d21fef4d784f5faec7e6020526d4c3a2d7d71e3",
+        "bytes": 8167106,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201001a/mbs-xml-201009.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "c4224dc50adb0c1b404b51c02b5310a30268af8e2ace926310e9737274c68f94",
+        "bytes": 8432463,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210701/mbs-xml-210701a2.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "c5b7c1fb87377450df1a0fa1e20891aa673f4055b20019404923af69be56774c",
+        "bytes": 8075853,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-221101/MBS-XML-20221101.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
         "kind": "schedule_xml",
-        "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "bytes": 8293331,
         "manifest_paths": [
           "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
           "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML"
         ],
-        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
-        "bytes": 8293331,
         "identity_status": "verified_in_current_pinned_root_manifest",
-        "rights_basis_ref": "later_schedule_category",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified",
+        "source_era": "2026-08-01",
+        "effective_at": "2026-08-01",
         "semantic_status": "identity only; source-era semantics and transformation parity not qualified"
       },
       {
         "source_id": "au-mbs",
-        "source_era": "2026-11-01",
-        "effective_at": "2026-11-01",
-        "kind": "schedule_xml",
-        "path": "raw/mbs/releases/Downloads-20261101/MBS-XML-20261101.XML",
-        "sha256": "11ccca0f16826e5089ae451b51fafd42b2a2a436ac97eea593de077dc4200cc4",
-        "bytes": 8297608,
+        "kind": "monthly_schedule_xml",
+        "sha256": "c5fb9f25e5094e60ae6ee2dc4a3142683a817ecf8146f8f9fff29896ae960994",
+        "bytes": 8117230,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220701/MBS-XML-20220719.XML"
+        ],
         "identity_status": "verified_in_current_pinned_root_manifest",
-        "rights_basis_ref": "later_schedule_category",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "ca57d0ed38bdfa637a123f02a0c112fcd5053a5222b74a7b364730adc7fe023d",
+        "bytes": 8468272,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-210701/mbs-xml-210701-.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "cad1e4084c24402dd031c6cd7828c9e38c0ad9f2e70ee2bf4d0a00ea0c1e989b",
+        "bytes": 8142483,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201101a/mbs-xml-201101ba.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "cd7100554ca34d1f4b23b490ed48ddeb63b53470d55b34bab75b006ff4a08a3e",
+        "bytes": 8426156,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220101/mbs-xml20220101-revised.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "d61c785488a565cf54b5e8f1cc1b3f52d3c04e9ba53ee99cabde09900fb83d4b",
+        "bytes": 8416672,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201201a/mbs-xml-201210.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "d738fd6eb0a8a60f276787ec6eab9f860e3de4bfefdd8c81ed5ab83eae1d8624",
+        "bytes": 8215464,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-251101/MBS-XML-20251101.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "d8ca2eb16bc16a89cea75ccf37e73dba4c5726e3c98305318e826b536e6fe3c8",
+        "bytes": 8303661,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220101/mbs-xml-211217 v2.0.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "schedule_xml",
+        "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+        "bytes": 8194522,
+        "manifest_paths": [
+          "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+          "raw/mbs/releases/Downloads-250701/MBS-XML-20250701 Version 3.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "legacy_exact_payloads",
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified",
+        "source_era": "2025-07-version-3",
+        "effective_at": "2025-07-01",
+        "semantic_status": "exact-era field semantics, date profile and six-table value parity qualified; candidate-only and not M-109 accepted"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "dcfbb59aa0ddf3bdceca31bd2a074495dec61863883997cb9154188351acc9df",
+        "bytes": 8426057,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-220101/mbs-xml-20220118.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "de262425ad186c469d5388703e96549aad49599ec563ee326a7a4f251b28ce22",
+        "bytes": 8020804,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230701/MBS-XML-20230701.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "e125e0b7412f6ae23cdc0f57e3e91a45a95d02a09c20f82e6c2e43dc3482b43c",
+        "bytes": 8205855,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200901/mbs-xml-200915.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "e132e8a641079fcd312d1fc5b41226d6a23a631f6ca65bf37fb4eb99f2d17be1",
+        "bytes": 8142486,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201101a/mbs-xml-201101b.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "schedule_xml_revision",
+        "sha256": "e6ed9cf794a73e0a9d10c6ffca931f29cce899d720fb7377fe4f5d64dc2b9561",
+        "bytes": 8271294,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-20260301/MBS-XML-20260301-version 2.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified",
+        "source_era": "2026-03-01-version-2",
+        "effective_at": "2026-03-01",
         "semantic_status": "identity only; source-era semantics and transformation parity not qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "ef017db2d90d529e0a0f7a37c9ddac8c0c4a1418dd23bed30e71358bd76f661f",
+        "bytes": 8127129,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-221101/MBS-XML-20221108.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "efe007a5c0666ed1cf7637d1965ba58ecb500af9eaa083b15472199c4e92cbc2",
+        "bytes": 8068832,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230701/MBS-XML-20230701.V3.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "f6d8a8250b265049438a776b8ce24d56bda0fed0d31aa35c4270a40e2205a33b",
+        "bytes": 8192419,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200801/mbs-xml-200807.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "f9328bd452b99cc4be59e4bc921c9517f9d87dfc88b9155c27d1eb2b1c5bd246",
+        "bytes": 8068941,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-230901/MBS-XML-20230901.XML"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "fbbd90eb79a1598ca1084f83b652ef79b733074723186950fa1d6c5a1546718c",
+        "bytes": 8175674,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-201001a/mbs-xml-201001.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
+      },
+      {
+        "source_id": "au-mbs",
+        "kind": "monthly_schedule_xml",
+        "sha256": "fd07947bbec97aa5f2cd75c179fd383a1751b871efcb75db4603b10517d37c65",
+        "bytes": 8072041,
+        "manifest_paths": [
+          "raw/mbs/releases/Downloads-200701a/mbs-xml-200720.xml"
+        ],
+        "identity_status": "verified_in_current_pinned_root_manifest",
+        "rights_basis_refs": [
+          "monthly_schedule_xml"
+        ],
+        "qualification_status": "identity_only_source_era_semantics_and_transformation_not_qualified"
       }
     ],
-    "known_missing_official_releases": [
-      "2025-01-01",
-      "2025-03-01",
-      "2025-11-01-original",
-      "2025-11-01-version-2"
-    ],
-    "completeness_boundary": "These eight unique source objects occupy nine exact MBS schedule/P7 manifest path entries in the pinned raw manifest, not the full official release history or proof of a complete expected MBS denominator."
+    "completeness_boundary": "The current pinned archive metadata exposes 86 distinct schedule/P7 payload digests across 90 exact manifest paths. This is an observed-object inventory only; it is not an official-release match for every path, a complete expected MBS release denominator, source-era semantic qualification, rights expansion, or admission.",
+    "observed_unique_payload_count": 86,
+    "previously_unobserved_expected_release_paths_now_present": [
+      "raw/mbs/releases/Downloads-250101/MBS-XML-20250101.xml",
+      "raw/mbs/releases/Downloads-250301/MBS-XML-20250301.XML",
+      "raw/mbs/releases/Downloads-251101/MBS-XML-20251101.XML",
+      "raw/mbs/releases/Downloads-251101/MBS-XML-20251101 Version 2.XML"
+    ]
   },
   "pbs": {
     "observed_exact_source_count": 1,
