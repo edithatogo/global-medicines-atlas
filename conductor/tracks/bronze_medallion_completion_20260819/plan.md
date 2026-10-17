@@ -1365,3 +1365,8 @@ for credentialed or rights-unresolved sources.
   the qualification remains 42 active, 159 public, 117 deferred, 29 direct
   receipts, and 130 without direct receipts. Focused maturity and Stable v1
   contract tests pass; M-112 acceptance and Stable release gates remain open.
+
+
+## PR #1079 review correction (2026-10-17)
+
+- [x] Correct the two newly recorded Git tree identifiers as `*_tree_oid`, record `git_object_format: sha1`, and validate both JSONL rows and exact Git trees; focused receipt validation and `git diff --check` pass. Fix commit `24246a1f`.

@@ -2593,3 +2593,8 @@
   bounded scope, and 1,759-path M-112 denominator remain unchanged. M-112
   rights, native lifecycle, admission, canaries, and federation acceptance
   remain open.
+
+
+## PR #1079 review correction (2026-10-17)
+
+- [x] Correct the two newly recorded Git tree identifiers as `*_tree_oid`, record `git_object_format: sha1`, and validate both JSONL rows and exact Git trees; focused receipt validation and `git diff --check` pass. Fix commit `24246a1f`.
