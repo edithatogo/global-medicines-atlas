@@ -11,6 +11,10 @@ QUALIFICATION = (
     REPOSITORY_ROOT
     / "quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json"
 )
+PRIMARY_DOWNLOADS = (
+    REPOSITORY_ROOT
+    / "quality/qualifications/australian-mbs-primary-downloads-metadata-20261018.json"
+)
 
 
 def _qualification() -> dict[str, Any]:
@@ -127,3 +131,44 @@ def test_previous_downloads_formats_remain_outside_schedule_claims() -> None:
         "historical_pdf_file_links_not_acquired_or_claimed_authorized"
     ]
     assert "No MBS/PBS source payload" in record["method"]
+
+
+def test_primary_downloads_candidates_are_metadata_only_and_rights_blocked() -> (
+    None
+):
+    record = json.loads(PRIMARY_DOWNLOADS.read_text(encoding="utf-8"))
+    assert record["requirement"] == "M-107"
+    assert record["status"] == "metadata_gap_recorded_rights_unqualified"
+    assert record["source_page"]["http_status"] == 200
+    assert record["source_page"]["page_last_updated"] == "2026-10-07"
+    assert record["source_page"]["html_sha256"] == (
+        "f8e30ca57c8c99ba0cb04731383b62e80e1afc086ce0e97b4749e1baf6cce521"
+    )
+    resources = record["listed_resources"]
+    assert len(resources) == 4
+    assert {resource["category_label"] for resource in resources} == {
+        "Item Map",
+        "Item Descriptors",
+        "Re-use Item Map",
+        "MBS Historical Information Documentation",
+    }
+    assert len({resource["source_url"] for resource in resources}) == 4
+    assert all(resource["archive_path_matches"] == 0 for resource in resources)
+    assert all(
+        resource["exact_source_url_b1_receipt_matches"] == 0
+        for resource in resources
+    )
+    assert all(
+        not resource["authorization_category_match"] for resource in resources
+    )
+    assert record["archive_readback"]["revision"] == (
+        "da83cad9116e2f9a5b927be7b080e9a5e5ea6998"
+    )
+    assert record["archive_readback"]["manifest_sha256"] == (
+        "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055"
+    )
+    assert record["authorization_boundary"]["acquisition_authorized"] is False
+    assert record["authorization_boundary"]["publication_authorized"] is False
+    assert record["boundaries"]["source_payloads_read"] is False
+    assert record["boundaries"]["rights_scope_changed"] is False
+    assert record["boundaries"]["m107_accepted"] is False

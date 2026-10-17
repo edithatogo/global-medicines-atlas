@@ -994,3 +994,16 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   historical PDF/software retention or redistribution. Do not acquire those
   objects until source-specific rights and exact snapshot requirements are
   resolved.
+
+## M-107 primary Downloads page resources (2026-10-18)
+
+- [x] Compare the live official Downloads landing-page rows to the exact
+  archive manifest and source-specific authorization. Record four top-level
+  resources (two item-lookup files labeled `20261101`, re-use item map,
+  historical information PDF) and zero matching source-URL receipts/archive paths at
+  revision `da83cad`. This is metadata-only; no linked payload was requested
+  or read. See
+  `quality/qualifications/australian-mbs-primary-downloads-metadata-20261018.json`.
+- [~] Keep the four resources unacquired pending a source-specific rights and
+  publication decision. Continue independent expected-period and source-era
+  reconciliation; M-107 remains blocked.
