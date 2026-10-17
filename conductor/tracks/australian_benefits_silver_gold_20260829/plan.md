@@ -2488,22 +2488,22 @@
   UTF-8 composed-size assertion. M-112 rights, complete B1/B2 lifecycle,
   admission, v4 admission, and consumer canaries remain open.
 
-### M-110 real-Silver admission gate recheck (2026-10-05)
+### M-110 real-Silver admission gate recheck (opened 2026-10-05; reconciled 2026-10-17)
 
-- [ ] Qualify Gold relationships over admitted real Silver tables. This remains
-  blocked: the MBS 2025-07 v3 Silver qualification and manifest both say
-  `candidate_only`; the PBS 2026-04 v3 aggregate says
+- [x] Qualify Gold relationships over the admitted real MBS Silver tables for
+  the exact July 2025 v3 source era. PR #1072 records the scoped admission and
+  qualifies a value-free candidate graph from all six exact-revision objects,
+  with 5,989 same-source-record service-benefit edges, typed nodes, provenance,
+  and negative controls. This closes only the MBS graph-input qualification;
+  the candidate remains `not_reviewed`, without consumer acceptance or
+  promotion. The PBS 2026-04 v3 aggregate remains
   `structural_storage_candidate_only`, `domain_semantics_qualified=false`,
-  and `date_profile=not-selected`. No Australian Silver admission register or
-  accepted Silver admission receipt is present in the current tree. The MBS
-  and PBS Gold graph candidates still identify their inputs as synthetic
-  Silver candidates. Bronze receipts or admission do not satisfy this gate.
-- [ ] Re-enter M-110 after the applicable source-era Silver semantics, rights,
-  and admission evidence is accepted for the exact input revisions. Then
-  qualify each relationship against those admitted tables, including typed
-  node/edge identity, source spans, temporal validity, review decisions, and
-  negative controls. Keep MBS/PBS cross-source or clinical interpretations
-  excluded unless separately supported and approved.
+  and `date_profile=not-selected`; it is not included in this qualification.
+- [ ] Complete the remaining M-110 acceptance work after applicable
+  source-era Silver semantics and rights are accepted for each exact input
+  revision. Resolve the real MBS Gold edge review and consumer acceptance;
+  qualify PBS separately after its prerequisites. Keep MBS/PBS cross-source or
+  clinical interpretations excluded unless separately supported and approved.
 
 ### M-110 exact-era MBS candidate revalidation (2026-10-17)
 
