@@ -3032,3 +3032,24 @@
   admission, and consumer-canary evidence under the existing approved
   denominator. This historical metadata crosswalk does not complete M-112 or
   promote any deferred object.
+
+## M-109 July/August 2026 MBS predecessor comparison implementation (2026-10-17)
+
+- [~] Implement the bounded exact-main comparator at
+  `scripts/compare_mbs_source_eras.py` and add it to the existing August
+  candidate workflow. It verifies both July/August harvest sidecars, pinned
+  archive objects, and current official endpoints in GitHub Actions memory;
+  emits only aggregate field presence and change counts; and produces an
+  `incomplete` aggregate artifact before failing the workflow on endpoint,
+  identity, or structure errors. July's recorded `monthly_schedule_xml`
+  authorization and the August exact-release approval are separately bound.
+  It creates no Silver output, public mutation, or semantic promotion. Focused
+  comparator/source-era tests (23), actionlint, Ruff, `ty`, BasedPyright,
+  context/ecosystem, and routine Test-Goblin passed. Harvest sidecars are parsed
+  through a typed JSON boundary and checked against their pinned content digest.
+- [ ] Run the comparator from exact current `main`; read back its artifact and
+  reconcile the July official-byte identity and aggregate deltas. Do not infer
+  semantic continuity or M-109 acceptance from this comparison.
+- [ ] Obtain release-linked schema/change history or source-owner clarification
+  for the 2022-03-04 to 2026-05-28 field guide gap. Keep M-109 blocked until
+  required source-era meaning and transformation evidence is accepted.

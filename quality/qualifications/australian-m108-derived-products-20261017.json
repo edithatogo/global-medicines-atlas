@@ -677,9 +677,9 @@
       "before_authorization": "Do not generate or publish the six derived outputs.",
       "if_future_release_is_withdrawn": "Append a withdrawal/supersession record, remove active discovery and consumer pointers, and preserve the immutable revision, payload digests, and receipts. Public copies already retrieved by others cannot be recalled."
     },
-    "smallest_next_action": "Implement and run the bounded July 2026 predecessor comparison described above using the existing exact-main read-only qualifier; do not rerun the completed 390292/390320 profiles.",
+    "smallest_next_action": "Merge the bounded July/August source-era comparator, run it on exact main, and read back its aggregate-only artifact; do not rerun the completed 390292/390320 profiles.",
     "predecessor_comparison_plan": {
-      "status": "planned_not_run",
+      "status": "implemented_local_pass_hosted_exact_main_run_pending",
       "exact_predecessor": {
         "edition": "MBS-XML-20260701.XML",
         "official_publication_date": "2026-05-28",
@@ -716,7 +716,33 @@
         "rollback": "No source or public state is mutated, so no source rollback is needed. Preserve the previous M-108/M-109 candidate records and keep admission/publication false."
       },
       "interpretation_boundary": "Structural or value-difference counts are evidence about these two source editions only. They do not establish that field meanings remained unchanged. The official field guide was last updated 2022-03-04; its version history through 2026-05-28 remains unverified.",
-      "next_after_comparison": "Obtain exact-release versioned schema/change history or source-owner clarification before accepting August field semantics or temporal meaning."
+      "next_after_comparison": "Obtain exact-release versioned schema/change history or source-owner clarification before accepting August field semantics or temporal meaning.",
+      "implementation": {
+        "script": "scripts/compare_mbs_source_eras.py",
+        "workflow": ".github/workflows/australian-mbs-202608-source-era-candidate.yml",
+        "test": "tests/test_mbs_source_era_comparison.py",
+        "local_verification": {
+          "focused_tests": "23 passed",
+          "routine_test_goblin": "passed",
+          "ruff_ty_basedpyright_actionlint_context_ecosystem": "passed"
+        },
+        "full_profile": {
+          "status": "completed_with_unrelated_performance_failure",
+          "passed": 6567,
+          "skipped": 3,
+          "failed": 1,
+          "failure": "test_product_performance.py::test_runner_measures_real_fixture_workloads: PERF-QUERY p95 279.225 ms exceeded 250.0 ms",
+          "coverage_percent": 96.9,
+          "python": "3.14.6",
+          "uv": "0.11.29",
+          "applicability": "Earlier local implementation snapshot only; after it, rights-reference and failure-artifact corrections were tested with the current focused suite and routine checks. Hosted required CI remains the exact-head qualification."
+        }
+      },
+      "rights_references": {
+        "july_2026": "https://github.com/edithatogo/global-medicines-atlas/blob/2ceafb1b889a701506a6c8f0ec9b1fc86fdddbda/quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+        "august_2026": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        "boundary": "The July monthly_schedule_xml category authorization and August exact-release approval remain distinct; neither authorizes the derived Silver products."
+      }
     }
   }
 }

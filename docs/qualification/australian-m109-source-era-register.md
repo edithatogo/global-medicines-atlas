@@ -97,19 +97,24 @@ August object at the same revision is 8,293,331 bytes with SHA-256
 sidecar SHA-256 is
 `9bca6260ea9d25d7ee9c184b59eed03b059d8da486dea31ec1d058965aae55ed`.
 The current archive metadata joins both identities to the existing
-`monthly_schedule_xml` authorization. The July exact official-byte match still
-needs a bounded readback; current evidence proves its pinned archive identity,
-not a new comparison with the live Department endpoint.
+`monthly_schedule_xml` authorization. The July/August comparison is now
+implemented in `scripts/compare_mbs_source_eras.py` and attached to the bounded
+exact-main Actions workflow. It binds each edition to its own pinned harvest
+sidecar and rights reference; the July category authorization is not replaced
+by the August exact-release approval. Focused tests and workflow lint pass, but
+the hosted comparison has not run yet. Until its exact-main artifact is read
+back, there is no new July official-byte match or comparative result.
 
-The smallest useful comparison reuses the existing read-only MBS candidate
-qualification route on exact `main`: fetch the July and August pinned archive
-objects and their official endpoints, verify each pair against its sidecar
-digest and byte count, then emit only aggregate record counts, native-field
-sets, per-field presence/null counts, and counts of changed/added/removed
-records and fields. Match records by source identity only in memory; never emit
-item identifiers or source values. Keep payloads in Actions memory and retain
-only the aggregate diagnostic. Do not generate Silver Parquet, publish a
-derived product, change archive manifests, or promote field/date semantics.
+The bounded comparator runs on exact `main`: fetch both harvest sidecars, both
+pinned archive objects, and both official endpoints in Actions memory; verify
+each sidecar, archive payload, and official payload against its pinned identity;
+then emit only aggregate record counts, native-field sets, per-field
+presence/null counts, and counts of changed/added/removed records and fields.
+Match records by source identity only in memory; never emit item identifiers or
+source values. Retain an aggregate incomplete artifact on source timeout or
+identity/structure mismatch, and fail the workflow after uploading that
+diagnostic. Do not generate Silver Parquet, publish a derived product, change
+archive manifests, or promote field/date semantics.
 If either official endpoint times out or its bytes disagree, mark the
 comparison incomplete and preserve both existing archive objects and receipts;
 do not treat missing data as equality or repeat an unchanged failing request.

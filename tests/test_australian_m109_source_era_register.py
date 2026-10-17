@@ -226,7 +226,9 @@ def test_august_predecessor_comparison_is_bounded_and_non_promoting() -> None:
     plan = handoff["predecessor_comparison_plan"]
     predecessor = plan["exact_predecessor"]
 
-    assert plan["status"] == "planned_not_run"
+    assert plan["status"] == (
+        "implemented_local_pass_hosted_exact_main_run_pending"
+    )
     assert predecessor["edition"] == "MBS-XML-20260701.XML"
     assert predecessor["official_publication_date"] == "2026-05-28"
     assert predecessor["effective_date"] == "2026-07-01"
@@ -236,6 +238,11 @@ def test_august_predecessor_comparison_is_bounded_and_non_promoting() -> None:
     assert plan["authorization"]["derived_output_authority"] == (
         "absent; this comparison does not authorize derived Parquet distribution"
     )
+    assert plan["implementation"]["script"] == (
+        "scripts/compare_mbs_source_eras.py"
+    )
+    assert plan["implementation"]["full_profile"]["failed"] == 1
+    assert "monthly_schedule_xml" in plan["rights_references"]["boundary"]
     assert (
         "keep record keys and source values in memory" in plan["procedure"][2]
     )

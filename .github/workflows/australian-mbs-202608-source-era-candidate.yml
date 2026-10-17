@@ -47,3 +47,23 @@ jobs:
           path: mbs-202608-source-era-candidate.json
           if-no-files-found: error
           retention-days: 90
+      - name: Compare July and August source eras in memory
+        id: predecessor_comparison
+        continue-on-error: true
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          uv run --locked --python 3.14.6 python scripts/compare_mbs_source_eras.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --output mbs-202607-202608-predecessor-comparison.json
+      - name: Retain aggregate predecessor comparison only
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-202607-202608-predecessor-comparison-${{ github.run_id }}-${{ github.run_attempt }}
+          path: mbs-202607-202608-predecessor-comparison.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Fail the run when predecessor comparison is incomplete
+        if: steps.predecessor_comparison.outcome != 'success'
+        run: exit 1
