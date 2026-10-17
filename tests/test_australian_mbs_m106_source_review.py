@@ -24,6 +24,10 @@ METADATA_RECHECK = (
     ROOT / "quality/qualifications/"
     "australian-mbs-m106-source-metadata-recheck-20261017.json"
 )
+AUSTRALIAN_TRACK_EVIDENCE = (
+    ROOT / "conductor/tracks/australian_health_source_consolidation_20260829/"
+    "evidence.jsonl"
+)
 
 
 def test_item_demographic_candidate_does_not_qualify_patient_denominator() -> (
@@ -194,3 +198,35 @@ def test_annual_patient_candidate_uses_existing_scoped_authorization() -> None:
     assert provider["substantive_source_owner_clarification_found"] is False
     assert provider["new_rights_decision_required_for_annual_series"] is False
     assert provider["existing_annual_series_authorization_applies"] is True
+
+
+def test_annual_patient_readback_preserves_pending_source_and_rights_gates() -> (
+    None
+):
+    records = [
+        cast("dict[str, Any]", json.loads(line))
+        for line in AUSTRALIAN_TRACK_EVIDENCE.read_text(
+            encoding="utf-8"
+        ).splitlines()
+        if line
+    ]
+    receipt = next(
+        record
+        for record in records
+        if record.get("kind")
+        == "m106_annual_patient_measure_and_owner_followup"
+    )
+    metadata = cast("dict[str, Any]", receipt["official_metadata"])
+    contact = cast("dict[str, Any]", receipt["contact"])
+    boundaries = cast("dict[str, Any]", receipt["boundaries"])
+
+    assert "patients" in metadata["page_claim"]
+    assert any("do not specify" in item for item in metadata["observations"])
+    assert contact["sent_message_id"] == "1a14abd12b459daf"
+    assert contact["substantive_response_received"] is False
+    assert contact["auto_replies"][0]["meaning"].startswith("receipt_only")
+    assert boundaries["source_bytes_or_rows_read"] is False
+    assert boundaries["acquisition_performed"] is False
+    assert boundaries["source_rights_changed"] is False
+    assert boundaries["distinct_patient_denominator_qualified"] is False
+    assert boundaries["m106_accepted"] is False
