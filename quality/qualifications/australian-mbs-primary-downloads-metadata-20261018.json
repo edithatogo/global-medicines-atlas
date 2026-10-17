@@ -1,0 +1,99 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-primary-downloads-metadata-observation",
+  "schema_version": 1,
+  "requirement": "M-107",
+  "recorded_at": "2026-10-17T16:10:41Z",
+  "status": "metadata_gap_recorded_rights_unqualified",
+  "scope": "Metadata-only read of the official MBS Downloads landing page and exact B1 receipt metadata in the pinned public archive manifest. No linked source payload was requested or read.",
+  "source_page": {
+    "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads",
+    "final_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads",
+    "http_status": 200,
+    "content_type": "text/html; charset=ISO-8859-1",
+    "html_bytes": 38692,
+    "html_sha256": "f8e30ca57c8c99ba0cb04731383b62e80e1afc086ce0e97b4749e1baf6cce521",
+    "page_last_updated": "2026-10-07"
+  },
+  "listed_resources": [
+    {
+      "category_label": "Item Map",
+      "source_label": "20261101_MBSONLINE_IMAP 21SEP26.TXT",
+      "filename": "20261101_MBSONLINE_IMAP 21SEP26.TXT",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/1bc94358d4f276d3ca257ccf0000aa73/$FILE/20261101_MBSONLINE_IMAP%2021SEP26.TXT",
+      "listed_update_date": "2026-10-07",
+      "source_period_or_effective_date_inferred": false,
+      "archive_path_matches": 0,
+      "exact_source_url_b1_receipt_matches": 0,
+      "authorization_category_match": false
+    },
+    {
+      "category_label": "Item Descriptors",
+      "source_label": "20261101_MBSONLINE_DESC out.TXT",
+      "filename": "20261101_MBSONLINE_DESC out.TXT",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/1bc94358d4f276d3ca257ccf0000aa73/$FILE/20261101_MBSONLINE_DESC%20out.TXT",
+      "listed_update_date": "2026-10-07",
+      "source_period_or_effective_date_inferred": false,
+      "archive_path_matches": 0,
+      "exact_source_url_b1_receipt_matches": 0,
+      "authorization_category_match": false
+    },
+    {
+      "category_label": "Re-use Item Map",
+      "source_label": "Re-use Item map 200519",
+      "filename": "MBSONLINE_REUSE_IMAP.TXT",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/1BC94358D4F276D3CA257CCF0000AA73/$File/MBSONLINE_REUSE_IMAP.TXT",
+      "listed_update_date": "2020-05-19",
+      "source_period_or_effective_date_inferred": false,
+      "archive_path_matches": 0,
+      "exact_source_url_b1_receipt_matches": 0,
+      "authorization_category_match": false
+    },
+    {
+      "category_label": "MBS Historical Information Documentation",
+      "source_label": "MBS Historical data (PDF 661 KB)",
+      "filename": "MBS Item Information.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/1BC94358D4F276D3CA257CCF0000AA73/$File/MBS%20Item%20Information.pdf",
+      "listed_update_date": "2016-04-07",
+      "source_period_or_effective_date_inferred": false,
+      "archive_path_matches": 0,
+      "exact_source_url_b1_receipt_matches": 0,
+      "authorization_category_match": false
+    }
+  ],
+  "archive_readback": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+    "manifest_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/da83cad9116e2f9a5b927be7b080e9a5e5ea6998/manifest.json",
+    "http_status": 200,
+    "manifest_bytes": 59818,
+    "manifest_sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+    "file_count": 212,
+    "b1_monthly_schedule_receipt_count": 87,
+    "exact_source_url_receipt_matches_for_listed_resources": 0,
+    "all_listed_archive_path_match_counts": 0
+  },
+  "authorization_boundary": {
+    "authorization_record": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+    "authorized_categories": [
+      "monthly_schedule_xml",
+      "basic_service_description",
+      "relative_value_guide"
+    ],
+    "covered_categories_for_listed_resources": [],
+    "exact_donor_payload_permission_generalizes_to_these_resources": false,
+    "source_rights_ledger_has_an_exact_resource_permission": false,
+    "acquisition_authorized": false,
+    "publication_authorized": false
+  },
+  "boundaries": {
+    "source_payloads_requested": false,
+    "source_payloads_read": false,
+    "source_payloads_retained": false,
+    "source_rights_concluded": false,
+    "rights_scope_changed": false,
+    "public_archive_mutated": false,
+    "complete_mbs_pbs_snapshot_denominator": false,
+    "m107_accepted": false
+  },
+  "next_evidence": "Obtain a source-specific rights and publication decision for any subset proposed for retention; then acquire only through the authorized hosted workflow and verify anonymous digests. Continue reconciling independent MBS/PBS source families without treating these four links as a complete period denominator."
+}

@@ -288,3 +288,24 @@ or redistribute these historical PDFs/software files. Therefore this metadata
 does not count as an acquired snapshot and M-107 remains blocked pending a
 complete expected-period/format denominator, per-object rights, authorized
 retrieval evidence, and schema-era acceptance.
+
+### Official Downloads landing-page resources, 2026-10-18
+
+A fresh metadata-only read of the official [Downloads landing page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads)
+identified four top-level resources separate from the 55 linked release pages:
+two item-lookup files labeled `20261101`, the re-use item map, and MBS
+historical-information documentation. The source page was last updated
+7 October 2026. Exact link identities, update labels, HTML digest, and archive
+comparison are in the [2026-10-18 metadata observation](../../quality/qualifications/australian-mbs-primary-downloads-metadata-20261018.json).
+
+The pinned public archive manifest at revision
+`da83cad9116e2f9a5b927be7b080e9a5e5ea6998` contains 212 files and 87 B1
+monthly-schedule receipts. None of the four exact source URLs has a matching
+receipt or archive path there. The current MBS publication authorization
+covers monthly schedule XML, Basic Service Description, and Relative Value
+Guide only; the existing exact-donor permission does not extend to these
+resources. No payload was requested or read and no rights conclusion was made.
+These links add four metadata-level source identities to the gap register,
+not four accepted snapshots. Acquisition and publication stay blocked pending
+a source-specific rights decision; the complete MBS/PBS snapshot denominator
+also remains unresolved.
