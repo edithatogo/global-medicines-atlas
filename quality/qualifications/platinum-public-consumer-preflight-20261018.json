@@ -1,0 +1,227 @@
+{
+  "schema_id": "global-medicines-atlas.platinum-public-consumer-preflight",
+  "schema_version": 1,
+  "observed_at": "2026-10-17T22:56:30Z",
+  "status": "current_archive_head_reconciled_candidate_only_consumer_acceptance_blocked",
+  "requirement": "M-111",
+  "pinned_public_product": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "current_archive_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+    "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+    "prefix": "silver/mbs/v4/2025-07-v3",
+    "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "candidate_only": true,
+    "independently_admitted": false,
+    "object_count_verified": 9,
+    "table_count": 6,
+    "source_era": "2025-07-version-3",
+    "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "tables": [
+      {
+        "table": "services",
+        "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "rows": 5989,
+        "fields": 17,
+        "bytes": 100062,
+        "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"
+      },
+      {
+        "table": "hierarchy",
+        "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+        "rows": 5989,
+        "fields": 8,
+        "bytes": 51851,
+        "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"
+      },
+      {
+        "table": "descriptions",
+        "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+        "rows": 5989,
+        "fields": 7,
+        "bytes": 620348,
+        "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"
+      },
+      {
+        "table": "fees",
+        "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+        "rows": 5989,
+        "fields": 10,
+        "bytes": 93072,
+        "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"
+      },
+      {
+        "table": "benefits",
+        "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+        "rows": 5989,
+        "fields": 9,
+        "bytes": 114493,
+        "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"
+      },
+      {
+        "table": "caps",
+        "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+        "rows": 5989,
+        "fields": 13,
+        "bytes": 60259,
+        "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"
+      }
+    ],
+    "identity_evidence": {
+      "candidate_qualification": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json",
+      "candidate_qualification_sha256": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606",
+      "table_parity_receipt": "quality/qualifications/mbs-source-silver-tables-parity-2025-07-v3.json",
+      "table_parity_qualification_sha256": "10a91301dfc9846ded0a5e64d98c77c35fa73dc567e6c340d70e2e03cea7662f"
+    }
+  },
+  "consumer_surfaces": {
+    "api": {
+      "status": "blocked_no_independently_admitted_public_product",
+      "successful_public_query_performed": false
+    },
+    "cli": {
+      "status": "blocked_no_independently_admitted_public_product",
+      "successful_public_query_performed": false
+    },
+    "atlas": {
+      "status": "blocked_no_independently_admitted_public_product",
+      "successful_public_query_performed": false
+    },
+    "export": {
+      "status": "blocked_no_independently_admitted_public_product",
+      "anonymous_restore_performed": false
+    }
+  },
+  "negative_controls": {
+    "focused_tests": "57 passed",
+    "test_paths": [
+      "tests/test_platinum_checkpoint.py::test_verified_transport_remains_explicitly_unadmitted",
+      "tests/test_platinum_configuration.py::test_candidate_mutation_does_not_self_admit",
+      "tests/test_platinum_configuration.py::test_empty_trust_is_not_an_admission_policy",
+      "tests/test_platinum_benefits_api.py::test_api_unavailable_validation_and_read_only",
+      "tests/test_product_cli.py::test_runtime_query_failures_are_service_unavailable_without_internal_leakage",
+      "tests/test_atlas_e2e.py::test_complete_comparison_keeps_unknown_states_and_nullable_coverage",
+      "tests/test_research_exports.py",
+      "tests/test_research_package.py"
+    ],
+    "warning": "Existing Starlette/httpx TestClient deprecation warning."
+  },
+  "unresolved": [
+    "Independent exact-product rights and admission",
+    "Full source-era and denominator coverage",
+    "Freshness and cohort comparability",
+    "Per-surface successful query canaries against admitted pinned objects",
+    "Confidence and review evidence",
+    "Public export and anonymous restore"
+  ],
+  "boundaries": {
+    "source_or_parquet_payload_bytes_downloaded": false,
+    "consumer_query_performed": false,
+    "product_admission_changed": false,
+    "rights_conclusion_added": false,
+    "publication_performed": false,
+    "release_authorized": false
+  },
+  "archive_head_readback": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "current_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+    "head_api_observation": {
+      "endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/revision/main",
+      "last_modified": "2026-10-17T22:05:24.000Z",
+      "private": false,
+      "gated": false
+    },
+    "root_manifest_path": "manifest.json",
+    "root_manifest_sha256": "f2945d7d4d4c32cb1d4cd2e89244327c2ebe595964401b5730cb43ee9d87944b",
+    "root_manifest_object_count": 228,
+    "root_manifest_bytes": 64792,
+    "root_manifest_scope_note": "The root archive manifest records the source-archive objects and does not list the nested Silver v4 product prefix; the nested v4 manifest is separately addressed and readable at the same immutable dataset revision.",
+    "nested_product_manifest_path": "silver/mbs/v4/2025-07-v3/manifest.json",
+    "nested_product_manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "nested_product_manifest_bytes": 3827,
+    "nested_product_manifest_object_count": 8,
+    "nested_product_manifest_inclusive_file_count": 9,
+    "reconciled_to": "quality/qualifications/australian-mbs-july-metadata-hosted-readback-20261018.json#manifest_readback",
+    "readback_scope": "Anonymous current-head Dataset API lookup; root and nested manifests fetched and hashed as metadata; HTTP HEAD confirmed all eight product objects; expanded tree metadata bound six Parquet LFS SHA-256 identities and sizes; fetched and hashed only two small value-free JSON sidecars. No Parquet or source payload bytes read.",
+    "object_readback": {
+      "object_count": 8,
+      "sha256_and_size_verified_count": 8,
+      "parquet_or_source_payload_bytes_read": 0,
+      "small_metadata_sidecar_bytes_read": 4181,
+      "method": "Current HF main revision via the public Dataset API; nested product manifest metadata GET; all eight objects HTTP HEAD at the exact revision; six Parquet digests from expanded tree LFS OIDs and sizes; only the two small JSON sidecars GET and SHA-256 hashed.",
+      "objects": [
+        {
+          "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+          "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+          "byte_count": 114493,
+          "role": "source_faithful_silver_table",
+          "readback_method": "huggingface_tree_lfs_oid_and_head_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+          "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+          "byte_count": 60259,
+          "role": "source_faithful_silver_table",
+          "readback_method": "huggingface_tree_lfs_oid_and_head_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+          "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+          "byte_count": 620348,
+          "role": "source_faithful_silver_table",
+          "readback_method": "huggingface_tree_lfs_oid_and_head_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+          "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+          "byte_count": 93072,
+          "role": "source_faithful_silver_table",
+          "readback_method": "huggingface_tree_lfs_oid_and_head_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+          "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+          "byte_count": 51851,
+          "role": "source_faithful_silver_table",
+          "readback_method": "huggingface_tree_lfs_oid_and_head_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/qualification.json",
+          "sha256": "b29d7d088a8a0564f2b022cdafa7351564eb5f292421cfe928c3f04ee0409723",
+          "byte_count": 2336,
+          "role": "value_free_qualification",
+          "readback_method": "metadata_body_sha256_and_head_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+          "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+          "byte_count": 100062,
+          "role": "source_faithful_silver_table",
+          "readback_method": "huggingface_tree_lfs_oid_and_head_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        },
+        {
+          "path": "silver/mbs/v4/2025-07-v3/source-receipt.json",
+          "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+          "byte_count": 1845,
+          "role": "b1_source_receipt",
+          "readback_method": "metadata_body_sha256_and_head_size",
+          "status": "resolved_200",
+          "identity_verified": true
+        }
+      ]
+    }
+  }
+}

@@ -1111,8 +1111,8 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [x] Verify the focused crosswalk (7 passed), broader M-112/rights suite
   (79 passed), routine profile, Ruff, `ty`, BasedPyright, context/ecosystem
   checks, and `git diff --check`.
-- [~] Hosted exact-head checks remain pending on PR #1144; proceed with other
-  independent gates while they run.
+- [x] Merge PR #1144 after all 39 exact-head required checks passed. The
+  verified squash merge is `c538472e4985454a434c22e51aa0f4c5ed47f2a8`.
 
 ## M-112 July metadata hosted readback reconciliation (2026-10-18)
 
@@ -1140,5 +1140,22 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   coverage, 126 broader M-112 tests, Ruff, `ty`, BasedPyright, deterministic
   regeneration, and `git diff --check`. Do not repeat the previously recorded
   full local profile solely for this bounded qualification refresh.
-- [~] Exact-head protected checks remain pending; M-112 and Stable v1 are not
-  accepted by this raw B1/B2 metadata reconciliation.
+- [x] Merge PR #1150 after all 39 exact-head required checks passed. The
+  verified squash merge is `90766f14f49ee810be14d86df4368a02d3ffbdbe`.
+- [~] M-112 and Stable v1 remain unaccepted by this raw B1/B2 metadata
+  reconciliation; v4 admission, consumer canaries, projection lineage and
+  full-denominator qualification remain open.
+
+## M-111 current public MBS archive-head refresh (2026-10-18)
+
+- [x] Refresh the public current-head identity after the July metadata append.
+  Bind the public Dataset API main revision and root-manifest digest/count to
+  the latest hosted M-112 readback, then recheck the nested July 2025 MBS
+  product manifest and all eight product objects at that exact revision.
+- [x] Verify six Parquet LFS digests and sizes using public tree metadata, and
+  hash only the two small value-free JSON sidecars. No Parquet or source
+  payload bytes were read. Preserve the unchanged candidate-only status and
+  blocked API, CLI, Atlas and export consumer claims.
+- [~] M-111 consumer acceptance remains blocked pending independently admitted
+  product rights, full source-era coverage, freshness/cohort and confidence
+  evidence, successful per-surface canaries, and public export restore.
