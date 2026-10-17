@@ -583,6 +583,24 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   source data, and all external rights or admission evidence. The validator
   generalization does not close those gates.
 
+## M-109 August 2026 MBS candidate qualification route (2026-10-17)
+
+- [x] Add a read-only GitHub Actions qualification route for the exact
+  authorized August 2026 MBS object. It binds the B1 receipt, immutable B2
+  archive identity, and live official release by SHA-256 and byte count, then
+  emits aggregate six-table candidate counts and lineage only. The route
+  processes source bytes in memory in Actions, retains only a 90-day aggregate
+  artifact, and does not publish or admit data.
+- [x] Add regression tests for exact source identity, successful candidate
+  boundaries, and fail-closed mismatch between the archived and official bytes.
+  The report explicitly leaves field semantics, temporal semantics, public v4
+  admission, and M-109 acceptance open. Record exact qualification state in
+  `docs/qualification/australian-m109-source-era-register.md`.
+- [~] Run the qualification on exact `main` after merge and reconcile its
+  value-free readback. Use that result only to advance source structure and
+  diagnostics; separately qualify field meanings, temporal semantics,
+  transformations, and the approved era denominator.
+
 ## M-107 metadata evidence review fixes (2026-09-28)
 
 - [x] Correct the proposed route/contact evidence timestamps to the recorded
