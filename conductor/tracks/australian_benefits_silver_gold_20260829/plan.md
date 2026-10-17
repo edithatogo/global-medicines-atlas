@@ -860,6 +860,13 @@
   attempts 1–4 on head `8fababb5` each received runner shutdown near
   2,329/2,398 mutants; no mutation verdict was produced and the cause remains
   unresolved. The updated head requires fresh hosted checks.
+- [x] Re-run the changed-source full profile on head `9a309008` with pinned
+  `uv 0.11.29`: 6,472 passed, 3 skipped, one Hypothesis timing failure,
+  96.89% coverage. The failing Unicode round-trip case passed alone on retry
+  (1 passed); preserve the full-profile timing failure as recorded. All 40
+  exact-head hosted checks passed, including Linux-authoritative mutation,
+  coverage, consumer, security, and context lanes. PR #1092 remains open until
+  this evidence is reconciled on its final PR head.
 
 ### Gold review CLI authority boundary (2026-10-11)
 
