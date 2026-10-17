@@ -1197,3 +1197,18 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   documentation/Test-Goblin harness tests; Ruff, formatting, JSON/JSONL,
   and `git diff --check` pass. Exact-head hosted checks are required before
   merge.
+
+## M-105 waiver validator fail-closed review correction (2026-10-18)
+
+- [x] Restrict the chronology waiver to disposition-specific accepted row
+  states and required row evidence. Require the complete explicit not-waived
+  list, M-105 identity, waiver schema version, and false rights/publication/
+  release/archive boundary flags.
+- [x] Add eight adversarial regressions that coherently refresh the matrix and
+  report digests while injecting failed or mismatched row state, missing
+  behavior evidence, removed scope boundaries, or widened approval flags. Each
+  leaves M-105 blocked.
+- [x] Revalidate 62 focused M-105/Stable contract tests and 65 broader
+  documentation/Test-Goblin tests; Ruff, formatting, BasedPyright on the
+  reconciliation script, `ty`, and `git diff --check` pass. Hosted exact-head
+  checks are pending for the updated PR.

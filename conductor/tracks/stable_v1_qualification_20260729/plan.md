@@ -682,3 +682,14 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   remains outside the release contract. Focused tests (54), broader affected
   checks (65), Ruff, formatting, JSON/JSONL validation, and diff checks pass;
   hosted PR checks remain pending.
+
+## 2026-10-18 M-105 waiver validator review correction
+
+- [x] Make the waiver reconciliation fail closed on disposition/state mismatch,
+  failed or unknown row states, missing behavior evidence, incomplete
+  not-waived boundaries, and widened source-rights/publication/release flags.
+  Eight adversarial cases refresh the matrix and dossier digests before checking
+  rejection. Focused M-105/Stable tests (62) and broader affected tests (65),
+  Ruff, formatting, BasedPyright, `ty`, and diff checks pass. Updated PR hosted
+  checks remain pending; the independent Australian and release gates remain
+  blocked.

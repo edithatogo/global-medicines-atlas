@@ -63,6 +63,27 @@ M105_FINAL_DISPOSITIONS = {
     "supersede",
     "exclude-with-reason",
 }
+M105_DISPOSITION_ACCEPTANCE_STATES = {
+    "adapt": {"verified_adaptation"},
+    "exclude-with-reason": {"verified_exclusion"},
+    "replace-with-equivalent": {"verified_replacement"},
+    "retain-legacy": {
+        "history_or_bytes_preserved",
+        "history_preserved",
+        "verified_legacy_retention",
+    },
+    "supersede": {"verified_supersession"},
+}
+M105_NOT_WAIVED = (
+    "exact donor artifact denominator and identity",
+    "explicit donor dispositions",
+    "required behavioral or byte/history evidence for each disposition",
+    "donor commits, licences, and preserved history",
+    "source rights and future-source authorization",
+    "M-106 through M-113",
+    "Australian federation acceptance",
+    "Stable v1 release approval",
+)
 M105_BASELINE_ROWS = 54
 M105_DELTA_ROWS = 10
 
@@ -236,24 +257,59 @@ def _m105_qualification_with_approved_waiver() -> bool:
     ).hexdigest()
     decision_text = (ROOT / M105_DECISION_REGISTER).read_text(encoding="utf-8")
     rows = [*baseline, *delta]
+    row_evidence_valid = all(
+        row.get("disposition") in M105_DISPOSITION_ACCEPTANCE_STATES
+        and row.get("acceptance_state")
+        in M105_DISPOSITION_ACCEPTANCE_STATES[row["disposition"]]
+        and all(
+            row.get(key)
+            for key in ("repository", "commit", "path", "git_object_sha1")
+        )
+        and (
+            row["acceptance_state"] != "history_or_bytes_preserved"
+            or bool(row.get("sha256"))
+        )
+        and (
+            row["acceptance_state"]
+            not in {
+                "verified_adaptation",
+                "verified_exclusion",
+                "verified_legacy_retention",
+                "verified_replacement",
+                "verified_supersession",
+            }
+            or (
+                isinstance(row.get("parity_evidence"), dict)
+                and bool(row["parity_evidence"])
+            )
+        )
+        for row in rows
+    )
+    boundaries = waiver["boundaries"]
     return bool(
         waiver["schema_id"]
         == "global-medicines-atlas.australian-donor-m105-chronology-waiver"
+        and waiver["schema_version"] == 1
+        and waiver["requirement"] == "M-105"
         and waiver["decision_id"] == "D-006-10"
         and waiver["decision"] == "approved_narrow_chronology_waiver"
         and waiver["maintainer_approval"]["approval_text"]
         == "Grant narrow chronology waiver"
         and waiver["waiver_scope"]["criterion_text_changed"] is False
         and waiver["waiver_scope"]["pre_archive_parity_proof_claimed"] is False
+        and waiver["waiver_scope"]["only"]
+        == "Waive the requirement that complete parity evidence predate either donor archive."
+        and waiver["not_waived"] == list(M105_NOT_WAIVED)
         and waiver["chronology"]["pre_archive_complete_parity_receipt_found"]
         is False
         and waiver["reassessment"]["qualification_state"]
         == "qualified_with_narrow_chronology_waiver"
-        and waiver["boundaries"]["source_rights_changed"] is False
-        and waiver["boundaries"]["stable_release_approved"] is False
+        and boundaries["source_rights_changed"] is False
+        and boundaries["public_release_approved"] is False
+        and boundaries["stable_release_approved"] is False
+        and boundaries["donor_archives_changed"] is False
+        and boundaries["source_payloads_read"] is False
         and "## D-006-10 — M-105 narrow chronology waiver" in decision_text
-        and waiver["waiver_scope"]["only"]
-        == "Waive the requirement that complete parity evidence predate either donor archive."
         and report_matrix["sha256"]
         == hashlib.sha256(matrix_path.read_bytes()).hexdigest()
         and report_matrix["baseline_rows"]
@@ -267,10 +323,7 @@ def _m105_qualification_with_approved_waiver() -> bool:
         and report_matrix["pending_behavioral_parity_rows"] == 0
         and report_matrix["final_dispositions_present"] is True
         and all(row["disposition"] in M105_FINAL_DISPOSITIONS for row in rows)
-        and all(
-            row["acceptance_state"] != "pending_behavioral_parity"
-            for row in rows
-        )
+        and row_evidence_valid
         and matrix["qualification_state"]
         == "qualified_with_narrow_chronology_waiver"
         and _donor_archive_acceptance_observed()

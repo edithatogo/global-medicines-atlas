@@ -319,6 +319,92 @@ def test_m105_waiver_clears_only_the_chronology_blocker(
     )
 
 
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "failed_row_state",
+        "mismatched_disposition_state",
+        "missing_behavior_evidence",
+        "source_rights_changed",
+        "public_release_approved",
+        "stable_release_approved",
+        "not_waived_removed",
+        "pre_archive_claimed",
+    ],
+)
+def test_m105_waiver_rejects_invalid_dossier_even_with_refreshed_digests(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+) -> None:
+    matrix = _load(
+        ROOT / "quality/qualifications/australian-donor-m105-dispositions.json"
+    )
+    waiver = _load(
+        ROOT
+        / "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
+    )
+    rows = [*matrix["baseline"], *matrix["post_baseline_delta"]]
+    if mutation == "failed_row_state":
+        rows[0]["acceptance_state"] = "failed"
+    elif mutation == "mismatched_disposition_state":
+        row = next(item for item in rows if item["disposition"] == "adapt")
+        row["disposition"] = "retain-legacy"
+    elif mutation == "missing_behavior_evidence":
+        row = next(item for item in rows if item["disposition"] == "adapt")
+        row.pop("parity_evidence")
+    elif mutation == "source_rights_changed":
+        waiver["boundaries"]["source_rights_changed"] = True
+    elif mutation == "public_release_approved":
+        waiver["boundaries"]["public_release_approved"] = True
+    elif mutation == "stable_release_approved":
+        waiver["boundaries"]["stable_release_approved"] = True
+    elif mutation == "not_waived_removed":
+        waiver["not_waived"].remove(
+            "source rights and future-source authorization"
+        )
+    elif mutation == "pre_archive_claimed":
+        waiver["waiver_scope"]["pre_archive_parity_proof_claimed"] = True
+
+    matrix_path = tmp_path / "m105-matrix.json"
+    waiver_path = tmp_path / "m105-waiver.json"
+    matrix_path.write_text(
+        json.dumps(matrix, indent=2) + "\n", encoding="utf-8"
+    )
+    report = waiver["reassessment"]["disposition_matrix"]
+    report["sha256"] = hashlib.sha256(matrix_path.read_bytes()).hexdigest()
+    report["baseline_rows_digest"] = hashlib.sha256(
+        json.dumps(
+            matrix["baseline"],
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+    ).hexdigest()
+    report["later_rows_digest"] = hashlib.sha256(
+        json.dumps(
+            matrix["post_baseline_delta"],
+            sort_keys=True,
+            separators=(",", ":"),
+            ensure_ascii=False,
+        ).encode("utf-8")
+    ).hexdigest()
+    waiver_path.write_text(
+        json.dumps(waiver, indent=2) + "\n", encoding="utf-8"
+    )
+    raw = _load(QUALIFICATION)
+    with monkeypatch.context() as patch:
+        patch.setattr(reconciliation, "M105_WAIVER", str(waiver_path))
+        patch.setattr(reconciliation, "M105_DISPOSITIONS", str(matrix_path))
+        observed = build_contract(raw)
+    invalid_m105 = next(
+        row
+        for row in observed["requirements"]
+        if row["requirement_id"] == "M-105"
+    )
+    assert invalid_m105["state"] == "blocked"
+
+
 def test_donor_archival_acceptance_rejects_missing_restore_or_approval(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
