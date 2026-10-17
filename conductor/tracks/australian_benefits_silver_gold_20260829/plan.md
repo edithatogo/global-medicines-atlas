@@ -3207,3 +3207,25 @@
   limitations are in the metadata qualification.
 - [~] M-109 remains blocked on the complete approved source-era denominator,
   field semantics, lineage and source-specific rights/admission evidence.
+
+## M-107 PBS official schedule-link crosswalk (2026-10-18)
+
+- [x] Enumerate all 316 schedule-data links across the 197 periods exposed by
+  the 24 official PBS archive year pages. Bind each link to its source-family
+  rights-ledger record and enumerate the acceptance evidence still required.
+  The value-free report is
+  `quality/qualifications/australian-pbs-m107-link-crosswalk-20261018.json`.
+- [x] Match one April 2026 XML V3 link by effective date, displayed version
+  label, and archive filename to the known public object. Preserve the exact
+  identity boundary: this does not prove source-URL-to-receipt lineage. The
+  object remains deferred with unknown upstream redistribution terms and
+  incomplete B1/B2 lineage.
+- [~] Leave the other 315 archive-identity mappings unresolved. This is not
+  evidence that those periods or source objects are absent. No source payload
+  was requested or read, no rights decision changed, and M-107 remains blocked
+  on the complete approved denominator, source-specific rights, receipt
+  lineage, and source-era qualification.
+- [x] Register the focused crosswalk regression test in Test-Goblin. The
+  focused and affected qualification/ledger tests passed (82 tests); the
+  routine Test-Goblin profile, context, ecosystem, Ruff, formatting, and diff
+  checks passed.
