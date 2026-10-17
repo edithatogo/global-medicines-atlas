@@ -1,0 +1,105 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-july-source-sidecar-readback",
+  "schema_version": 1,
+  "observed_at": "2026-10-18",
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+  "manifest": {
+    "path": "manifest.json",
+    "sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+    "file_count": 212
+  },
+  "objects": [
+    {
+      "archive_path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+      "archive_blob_oid": "d980eca2c5072dc2ddd4c41fda2e192af1a42ddf",
+      "sidecar_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv.receipt.json",
+      "sidecar_blob_oid": "17adba5d879fa77becfcac1221c2ea94e93b63f1",
+      "sidecar_sha256": "813cd05fa18d9f6b4bf5f8d21973d3f1478e2f6dfcedbb09728e35d28a1ad9cd",
+      "sidecar_bytes": 1087,
+      "sidecar": {
+        "archive_path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+        "byte_count": 135983,
+        "category": "basic_service_description",
+        "final_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/54354662.csv/Health%20Insurance%20Regulations%202018%20-%20Basic%20Service%20Description%20for%20Assignment%20of%20Medicare%20Benefits.csv",
+        "period_label": "Downloads-20260701",
+        "retrieved_at": "2026-10-05T08:20:25Z",
+        "schema_id": "global-medicines-atlas.australian-harvest-receipt",
+        "schema_version": 1,
+        "sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+        "source_id": "au-mbs",
+        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/54354662.csv/Health%20Insurance%20Regulations%202018%20-%20Basic%20Service%20Description%20for%20Assignment%20of%20Medicare%20Benefits.csv"
+      }
+    },
+    {
+      "archive_path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+      "archive_blob_oid": "c373fe0ce2e68a5d027c17847f51ef14f1aeaa41",
+      "sidecar_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml.receipt.json",
+      "sidecar_blob_oid": "0a62a2abf165fb03369b5cc01aa9ad7806a1bcb4",
+      "sidecar_sha256": "fc60bfc4b3ae99f2cfd34c5290fe7ed8fb5e276a32e63ea2ccda82e2dd64bd08",
+      "sidecar_bytes": 1087,
+      "sidecar": {
+        "archive_path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+        "byte_count": 615386,
+        "category": "basic_service_description",
+        "final_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/96831039.xml/Health%20Insurance%20Regulations%202018%20-%20Basic%20Service%20Description%20for%20Assignment%20of%20Medicare%20Benefits.xml",
+        "period_label": "Downloads-20260701",
+        "retrieved_at": "2026-10-05T08:20:26Z",
+        "schema_id": "global-medicines-atlas.australian-harvest-receipt",
+        "schema_version": 1,
+        "sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+        "source_id": "au-mbs",
+        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/96831039.xml/Health%20Insurance%20Regulations%202018%20-%20Basic%20Service%20Description%20for%20Assignment%20of%20Medicare%20Benefits.xml"
+      }
+    },
+    {
+      "archive_path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+      "archive_blob_oid": "a5a23b30d9846630e81ffcc164c7217a2f7e67be",
+      "sidecar_path": "bronze/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML.receipt.json",
+      "sidecar_blob_oid": "85f5aa36c25729153756bbb5dea152e7f8942689",
+      "sidecar_sha256": "01988fb6cf56c4a23bba680e8c9ee6d9b3b39d504d044676e49b4b78d1f5ba56",
+      "sidecar_bytes": 771,
+      "sidecar": {
+        "archive_path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+        "byte_count": 8291891,
+        "category": "monthly_schedule_xml",
+        "final_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/MBS-XML-20260701.XML",
+        "period_label": "Downloads-20260701",
+        "retrieved_at": "2026-10-05T08:20:30Z",
+        "schema_id": "global-medicines-atlas.australian-harvest-receipt",
+        "schema_version": 1,
+        "sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+        "source_id": "au-mbs",
+        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/MBS-XML-20260701.XML"
+      }
+    },
+    {
+      "archive_path": "raw/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT",
+      "archive_blob_oid": "19b5444f406d5c97059b560719acd53a98583de9",
+      "sidecar_path": "bronze/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT.receipt.json",
+      "sidecar_blob_oid": "d2d866582069913153e2b4f805ea094d4160f815",
+      "sidecar_sha256": "953a43c2f3373118de299e65bf60a2902b89173f7f5e2f99d8edf06edf7fc49f",
+      "sidecar_bytes": 835,
+      "sidecar": {
+        "archive_path": "raw/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT",
+        "byte_count": 11865,
+        "category": "relative_value_guide",
+        "final_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/RVG%20file%2020260701.002.TXT/RVG%20file%2020260701.TXT",
+        "period_label": "Downloads-20260701",
+        "retrieved_at": "2026-10-05T08:20:30Z",
+        "schema_id": "global-medicines-atlas.australian-harvest-receipt",
+        "schema_version": 1,
+        "sha256": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+        "source_id": "au-mbs",
+        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/RVG%20file%2020260701.002.TXT/RVG%20file%2020260701.TXT"
+      }
+    }
+  ],
+  "boundaries": {
+    "anonymous_raw_payload_digest_readback": false,
+    "metadata_only": true,
+    "raw_payload_bytes_read": false,
+    "source_sidecar_metadata_read_anonymously": true,
+    "source_payload_sha256_claimed_from": "existing_harvest_sidecar_only"
+  }
+}

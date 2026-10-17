@@ -135,6 +135,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_australian_m112_additional_deferred_candidates.py",
         "tests/test_australian_mbs_utilisation_exact_scope_rights_decision.py",
         "tests/test_australian_mbs_utilisation_b2_reference_reconciliation.py",
+        "tests/test_mbs_historical_lifecycle.py",
+        "tests/test_australian_mbs_july_metadata_contract.py",
         "tests/test_mbs_utilisation_header_inventory.py",
         "tests/test_mbs_utilisation_value_observer.py",
         "tests/test_mbs_utilisation_numeric_policy.py",

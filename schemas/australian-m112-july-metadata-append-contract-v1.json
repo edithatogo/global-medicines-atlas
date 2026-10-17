@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.github.io/schemas/australian-m112-july-metadata-append-contract-v1.json",
+  "title": "Australian M-112 July MBS metadata append contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "observed_at",
+    "dataset",
+    "expected_parent_revision",
+    "expected_parent_manifest_sha256",
+    "expected_parent_file_count",
+    "authorization",
+    "m112_gate_report",
+    "source_sidecar_readback",
+    "objects",
+    "boundary"
+  ],
+  "properties": {
+    "schema_id": { "const": "global-medicines-atlas.australian-m112-july-metadata-append-contract" },
+    "schema_version": { "const": 1 },
+    "observed_at": { "const": "2026-10-18" },
+    "dataset": { "const": "edithatogo/australian-mbs-source-archive" },
+    "expected_parent_revision": { "const": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998" },
+    "expected_parent_manifest_sha256": { "const": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055" },
+    "expected_parent_file_count": { "const": 212 },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "reference_commit"],
+      "properties": {
+        "path": { "const": "quality/qualifications/australian-mbs-harvest-publication-authorization.json" },
+        "sha256": { "const": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b" },
+        "reference_commit": { "const": "c538472e4985454a434c22e51aa0f4c5ed47f2a8" }
+      }
+    },
+    "m112_gate_report": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "const": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018.json" },
+        "sha256": { "const": "4af5037a171f0f427499ce1d8d14929a2fc3ec9ce726bc30f448be9ab2b71361" }
+      }
+    },
+    "source_sidecar_readback": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "const": "quality/qualifications/australian-mbs-july-source-sidecar-readback-20261018.json" },
+        "sha256": { "const": "b68c68b776bab736ee112d169f01f42addac09cb61bf89a44a80a5df0d82b8a9" }
+      }
+    },
+    "objects": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "archive_path",
+          "sidecar_path",
+          "sidecar_blob_oid",
+          "sidecar_sha256",
+          "sidecar_bytes",
+          "git_blob_oid",
+          "sha256",
+          "bytes",
+          "category",
+          "retrieved_at",
+          "source_url"
+        ],
+        "properties": {
+          "archive_path": { "type": "string", "minLength": 1 },
+          "sidecar_path": { "type": "string", "minLength": 1 },
+          "sidecar_blob_oid": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "sidecar_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "sidecar_bytes": { "type": "integer", "minimum": 1 },
+          "git_blob_oid": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "bytes": { "type": "integer", "minimum": 1 },
+          "category": { "enum": ["basic_service_description", "monthly_schedule_xml", "relative_value_guide"] },
+          "retrieved_at": { "type": "string", "format": "date-time" },
+          "source_url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "boundary": { "type": "string", "minLength": 80 }
+  }
+}
