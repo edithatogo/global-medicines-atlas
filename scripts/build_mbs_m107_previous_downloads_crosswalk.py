@@ -7,7 +7,7 @@ import json
 import re
 from collections import Counter
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = (
@@ -80,16 +80,21 @@ def _period_comparison(label: str, filename: str) -> dict[str, Any]:
 
 
 def build_report() -> dict[str, Any]:
-    index = json.loads(INDEX.read_text(encoding="utf-8"))
-    authorization = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
-    previous = index["previous_downloads"]
+    index = cast(
+        "dict[str, Any]", json.loads(INDEX.read_text(encoding="utf-8"))
+    )
+    authorization = cast(
+        "dict[str, Any]",
+        json.loads(AUTHORIZATION.read_text(encoding="utf-8")),
+    )
+    previous = cast("dict[str, Any]", index["previous_downloads"])
     if previous["http_status"] != HTTP_OK_STATUS:
         raise ValueError(
             "Previous Downloads metadata observation is not successful"
         )
-    files = previous["files"]
+    files = cast("list[dict[str, str]]", previous["files"])
     url_occurrences: Counter[str] = Counter(item["url"] for item in files)
-    rows = [
+    rows: list[dict[str, Any]] = [
         {
             "page_id": "Previous Downloads",
             "displayed_label": item["label"],
@@ -110,8 +115,8 @@ def build_report() -> dict[str, Any]:
         }
         for item in files
     ]
-    comparison_counts = Counter(
-        item["label_filename_period_comparison"]["status"] for item in rows
+    comparison_counts: Counter[str] = Counter(
+        str(item["label_filename_period_comparison"]["status"]) for item in rows
     )
     report: dict[str, Any] = {
         "schema_id": "global-medicines-atlas.australian-mbs-m107-previous-downloads-crosswalk",
