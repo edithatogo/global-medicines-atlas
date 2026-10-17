@@ -2690,3 +2690,41 @@
   protected checks passed before merge. This correction preserves the exact
   source identity of the subsequently acquired MBS objects; it does not close
   the remaining M-107 source-family and denominator gaps.
+
+## M-107 official historical index reconciliation (2026-10-17)
+
+- [x] Reconcile the official MBS Downloads index, its linked release pages,
+  and the distinct Previous Downloads file list as metadata only. The current
+  Downloads index exposes 55 pages and 531 links (417 distinct resource URLs),
+  including 82 distinct MBS-XML resource URLs across 41 page IDs. Exact
+  comparison with B1 receipt source URLs at MBS archive revision
+  `52ad5c31cfe101c487a4c7a9c382540642e6110a` matches 10 and leaves 72 without
+  a current receipt. The Previous Downloads page lists 105 historical PDFs
+  for 1974–2010; its XML link is a site-wide RSS feed and is excluded from the
+  historical file count. The current harvest authorization does not establish
+  rights for those historical PDF/Word products. No source payload was
+  acquired. See
+  `quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json`
+  and `docs/qualification/australian-mbs-pbs-m107-snapshots.md`.
+- [x] Apply the review correction that separates the Previous Downloads
+  page's 105 historical PDF files from its site-wide RSS feed link. The RSS
+  XML is now classified as a feed and excluded from historical file totals;
+  the qualification regression test asserts this distinction.
+- [x] Extend and qualify the bounded exact-page selector for observed
+  historical IDs such as `Downloads-200701a` and `Downloads-2023-11`. Preserve
+  each exact ID as the page identity; never infer a release date from a suffix.
+  Reject full URLs, paths, queries, fragments, control characters, and encoded
+  path separators before any fetch. The 24-page limit and pre-staging failure
+  for a page with no supported XML or an archive-path collision remain
+  fail-closed. Focused tests (76), the broader affected harness (84), local
+  full profile (6,461 passed, 3 optional skips; the two local uv-version
+  failures were rerun successfully with the pinned official uv), 98% affected
+  module coverage, `ty`, BasedPyright, Ruff, context validation, and JSON/diff
+  checks pass. See the append-only evidence entry and the pinned-tool
+  reproducibility reference recorded there.
+- [~] Harvest only the eligible authorized monthly-schedule XML pages in exact
+  main cohorts of at most 24 and reconcile exact B1 receipts, source
+  identities, and supersession chronology. Keep any page with an archive-path
+  collision out of the acquisition cohort until source identities can be
+  preserved without collision. M-107 remains blocked pending full MBS/PBS
+  period, source-era, utilisation, and rights reconciliation.

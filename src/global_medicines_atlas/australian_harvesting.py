@@ -56,6 +56,9 @@ MAX_XLSX_METADATA_BYTES: Final[int] = 8 * 1024 * 1024
 MAX_XLSX_MEMBERS: Final[int] = 20_000
 MAX_XLSX_UNCOMPRESSED_BYTES: Final[int] = 128 * 1024 * 1024
 MAX_EXACT_MBS_RELEASE_PAGES: Final[int] = 24
+EXACT_MBS_RELEASE_PAGE_PATTERN: Final[re.Pattern[str]] = re.compile(
+    r"Downloads-(?:20[0-9]{6}|[0-9]{6}[a-z]?|20[0-9]{2}-[0-9]{2}(?:-[0-9]{2})?)"
+)
 
 DEFAULT_HARVEST_USER_AGENT: Final[str] = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -534,9 +537,11 @@ def discover_mbs_schedule_resources_detailed(
     """Discover recent and explicitly named release pages with page outcomes.
 
     Exact page names are useful for historical releases absent from the current
-    index. They are restricted to official ``Downloads-<date>`` identifiers;
-    the caller supplies a bounded list and receives metadata-only outcomes for
-    every requested page, including failures.
+    index. They accept only a path-safe ``Downloads-`` identifier form used by
+    official MBS pages, including historical suffixed and hyphenated IDs. The
+    caller supplies a bounded list and receives metadata-only outcomes for
+    every requested page, including failures. Page-ID suffixes are preserved
+    verbatim and are not interpreted as release dates.
     """
     if max_releases < 0:
         raise ValueError("max_releases must be non-negative")
@@ -546,7 +551,7 @@ def discover_mbs_schedule_resources_detailed(
             f"At most {MAX_EXACT_MBS_RELEASE_PAGES} exact MBS release pages may be requested"
         )
     for page in exact_pages:
-        if not re.fullmatch(r"Downloads-(?:20\d{6}|\d{6})", page):
+        if not EXACT_MBS_RELEASE_PAGE_PATTERN.fullmatch(page):
             raise ValueError(
                 f"Invalid exact MBS release page identifier: {page!r}"
             )

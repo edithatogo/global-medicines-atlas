@@ -184,3 +184,37 @@ page publication date, so the prior hosted timeout evidence remains unchanged
 and an identical hosted retry is not justified. It does not resolve the
 annual/rolling filename mismatches, prove workbook coverage, establish rights,
 or change M-107's blocked status.
+
+## Official MBS historical index reconciliation, 2026-10-17
+
+The official [MBS Downloads index](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads)
+listed 55 download pages and 531 resource links (417 distinct resource URLs)
+at the observation time. Metadata was read from all 55 linked pages; no source
+files were requested. The linked pages expose 82 distinct `MBS-XML` resource
+URLs across 41 page IDs. Comparing their exact source URLs with the B1 receipt
+sidecars in the anonymous MBS archive revision
+`52ad5c31cfe101c487a4c7a9c382540642e6110a` found 10 receipt matches and 72
+listed resources without a matching receipt at that revision. A missing
+receipt is an acquisition/reconciliation gap, not evidence that a release or
+service was absent. The list includes revisions and corrections; page IDs and
+XML link counts do not themselves establish a monthly period denominator.
+
+The official [Previous Downloads page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Prev-Downloads)
+lists 105 historical PDF files covering 1974–2010. Its separate site-wide RSS
+feed link is not a historical MBS download and is classified separately in
+the machine-readable observation.
+Those legacy formats remain distinct from the currently authorized
+`monthly_schedule_xml`, `basic_service_description`, and
+`relative_value_guide` categories. No historical PDF payload was acquired,
+and the current MBS harvest authorization does not establish rights for those
+families. The RSS link was not treated as historical data. The complete
+page/resource listing, exact URLs, current-receipt
+matches, manifest and HTML digests, and scope limits are recorded in the
+[machine-readable observation](../../quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json).
+
+This creates a format-aware inventory starting point, not a complete historical
+MBS/PBS denominator. The next authorized MBS work is to harvest eligible
+monthly-schedule XML pages in bounded exact-page cohorts, preserving each
+revision and stopping before unsupported or ambiguous resources are staged.
+M-107 remains **blocked** pending source-era reconciliation, Health.gov workbook
+recovery, historical PBS evidence, and a complete expected-period denominator.
