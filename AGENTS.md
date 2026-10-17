@@ -79,7 +79,14 @@ When a coordinator owns broad local validation, send that owner the frozen
 commit/tree, worktree, required runtime, exact command, log path and terminal
 exit-marker path. Wait for its launch handle; do not launch a competing full
 profile. Focused checks and hosted CI remain independent. When no launch owner
-is assigned, follow the normal local validation workflow.
+is assigned, follow the normal local validation workflow and acquire any
+existing host-level shared validation guard before a broad local run. Keep the
+guard held until the command exits; do not add a repository-specific runner or
+lock implementation solely for this purpose. Put the contract-pinned tool
+directory first in `PATH` for the parent and child processes, especially for
+clean-clone release reproduction that discovers tools from child `PATH`, and
+record the resolved tool paths and versions. Host-level guards are local
+coordination aids and do not change hosted CI requirements.
 
 Before a broad run, record the tested commit and tree, any uncommitted input
 changes, and the Python and uv versions. Use the runtime required by the

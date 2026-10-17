@@ -102,6 +102,15 @@ serial after the parallel phase. CI behavior is unchanged unless the workflow
 explicitly sets this variable. Four workers is the recommended local default
 to avoid starving performance and subprocess tests.
 
+Before a broad local validation run, use any shared host-level guard already
+provided on that machine so full profiles from separate repositories do not
+compete for CPU, memory, or browser services. Keep the guard around the whole
+command. Set the contract-pinned tool directory first in `PATH` for both the
+launcher and child processes; clean-clone reproducibility tests resolve build
+tools from child `PATH`. Record the actual paths and versions. The guard is a
+host coordination facility, not a repository dependency, and does not replace
+hosted CI.
+
 ```bash
 TEST_GOBLIN_WORKERS=4 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
 ```
