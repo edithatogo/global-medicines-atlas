@@ -2747,6 +2747,13 @@
   written. This completes the candidate-only technical consumer journey, not
   independent Gold review, M-110 acceptance, product admission, or publication.
 
+- [~] Make the real MBS v3 candidate journey reproducible in a protected,
+  main-only `workflow_dispatch` qualification. Require exact commit identity,
+  verify the six pinned public Silver objects, traverse API/CLI/Atlas through
+  their real pagination paths, and retain only an aggregate receipt. Keep the
+  temporary derived Parquet out of artifacts and clean it on success or
+  failure. Hosted exact-main execution remains pending this workflow's merge.
+
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 
 - [x] Add the imported MBS demographics source identity to the B0 catalogue
