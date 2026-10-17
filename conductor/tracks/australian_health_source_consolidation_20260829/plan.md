@@ -776,3 +776,14 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   receipt rows. The local reconciliation reads metadata and acquisition-event
   records only; it downloads no source bytes, reads no source values, and does
   not alter rights, lineage, v4 admission, consumer canaries, or M-112 status.
+
+## M-112 July 2026 MBS source-object digest crosswalk (2026-10-17)
+
+- [x] Bind the four July 2026 MBS source objects with existing anonymous
+  digest readbacks to their exact rows in the 1,759-path per-object gate ledger.
+  The regression verifies the pinned dataset revision, object size, and
+  digest-evidence report identity while preserving unresolved exact-object
+  rights/B1 binding, incomplete B1/B2 lineage, deferred disposition, and
+  absent v4 admission and consumer canaries. No source bytes were downloaded
+  and no source values were read. See the
+  `m112_july_2026_mbs_digest_gate_crosswalk` evidence record.

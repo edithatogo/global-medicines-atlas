@@ -172,6 +172,9 @@ def test_additional_mbs_hashes_match_existing_authorized_sidecars() -> None:
     source_join = _read(
         "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json"
     )
+    per_object = _read(
+        "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261005.json"
+    )
     authorization = _read(
         "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
     )
@@ -189,9 +192,13 @@ def test_additional_mbs_hashes_match_existing_authorized_sidecars() -> None:
         for match in item["receipt_or_authorization_matches"]
         if match.get("kind") == "sidecar"
     }
+    gate_rows = {item["path"]: item for item in per_object["objects"]}
     categories = set(authorization["categories"])
+    identity_report_sha256 = hashlib.sha256(REPORT.read_bytes()).hexdigest()
+    assert set(gate_rows) >= {item["path"] for item in readback["objects"]}
     for item in readback["objects"]:
         sidecar = sidecars[item["path"]]
+        gate = gate_rows[item["path"]]
         assert item["http_status"] == 200
         assert item["anonymous"] is True
         assert item["streamed_without_persistence"] is True
@@ -207,6 +214,25 @@ def test_additional_mbs_hashes_match_existing_authorized_sidecars() -> None:
             == item["observed_sha256"]
             == sidecar["sha256"]
         )
+        assert gate["dataset"] == readback["dataset"]
+        assert gate["revision"] == readback["revision"]
+        assert gate["approved_denominator_member"] is True
+        assert gate["identity"]["anonymous_digest_readback"] is True
+        assert gate["identity"]["byte_count"] == item["observed_bytes"]
+        assert (
+            gate["identity"]["sha256_evidence"] == "anonymous_digest_readback"
+        )
+        assert gate["identity"]["digest_evidence"] == {
+            "path": REPORT.relative_to(ROOT).as_posix(),
+            "sha256": identity_report_sha256,
+        }
+        assert gate["rights"]["state"] == (
+            "maintainer authorization covers source/category/domain; exact sidecar per-object authorization and B1 binding incomplete"
+        )
+        assert gate["b1_b2_lineage"]["complete"] is False
+        assert gate["v4_admission"] is False
+        assert gate["consumer_canary"] is False
+        assert gate["disposition"] == "deferred_not_admitted"
 
 
 def test_digest_gaps_and_rights_gates_remain_explicit() -> None:
