@@ -160,3 +160,44 @@ use the existing governed annual-series authorization; do not require a
 redundant rights decision or extend that scope to other candidate sources.
 M-106 remains blocked until the patient denominator and its semantics are
 qualified.
+
+## Annual patient measure and direct owner follow-up, 2026-10-18
+
+The current [annual statistics page](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en)
+still identifies a 2 MB workbook published 10 August 2026 and describes annual
+state/territory measures for all services, out-of-hospital services, patients,
+and broad types of service. The linked [explanatory notes](https://www.health.gov.au/resources/publications/explanatory-notes-for-medicare-statistics?language=en),
+published 25 May 2026, say the statistics cover qualifying services with a
+claim processed by Services Australia, use claim-processing rather than
+service-provided dates, and group services by sets of MBS item groups. The
+notes also describe patient billing categories where many patients have more
+than one service in a period. They do not define the annual workbook's exact
+patient-count deduplication across items or broad service groups. This supports
+the annual workbook as a distinct-patient candidate, not as an admitted
+denominator or item-level patient measure.
+
+The workbook page does not display a dataset-specific licence. The Department's
+[general website copyright terms](https://www.health.gov.au/using-our-websites/copyright?language=en)
+describe personal/internal non-commercial reuse unless otherwise indicated;
+they do not by themselves determine the exact workbook's terms. The existing
+[MBS utilisation publication authorization](../../quality/qualifications/australian-mbs-utilisation-publication-authorization.json)
+includes the annual-statistics source category. This record neither changes
+that maintainer authorization nor makes a separate legal conclusion.
+
+On 2026-10-17T16:41:07Z, a targeted clarification was sent to the Department's
+published data-release and copyright contacts. It asks whether the workbook's
+patient values are distinct within each reported period/geography/service
+group, how categories overlap, and what exact terms cover raw retention and
+public derived-table redistribution. The sent message ID is
+`1a14abd12b459daf`; the data-release and copyright auto-replies are
+`1a14abd90cd487b0` and `1a14abda50fa86a4`. The data-release auto-reply gives a
+ten-working-day response estimate. Both are receipt-only; no measurement
+definition or reuse permission has arrived. The earlier general Department
+inquiry remains separately recorded in
+[`m106-department-patient-denominator-inquiry.md`](../../conductor/tracks/australian_health_source_consolidation_20260829/m106-department-patient-denominator-inquiry.md).
+
+No source workbook or values were read, acquired, admitted, or published.
+Continue to keep M-106 blocked until substantive owner clarification is
+reconciled with the exact workbook identity, the existing authorization scope,
+and the source-native denominator. Do not substitute service counts or sum
+overlapping patient groups.
