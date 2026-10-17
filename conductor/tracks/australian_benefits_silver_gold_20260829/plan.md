@@ -2645,6 +2645,13 @@
   `PATH`. The product-security abuse-control test failed once in the full
   profile and passed on isolated rerun. Preserve the initial full-profile
   result; this is not recorded as a clean full local profile.
+- [x] Close the follow-up Codecov patch-coverage gap with public-validator tests
+  for complete and nested mapping envelopes carrying `effective_date: null`,
+  rejection when the field is omitted, and rejection when another required
+  state is null. The focused evidence suite now has 10 passing tests; Ruff,
+  formatting, diff checks, and Test-Goblin routine pass. The initial Codecov
+  patch result (75.00% against 90.01%) is retained; final-head hosted checks
+  are rerunning for the added mapping-branch coverage.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 
