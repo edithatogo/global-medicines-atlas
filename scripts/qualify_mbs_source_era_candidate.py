@@ -24,6 +24,7 @@ from global_medicines_atlas.adapters.au_mbs import (
     iter_mbs_source_xml_records,
 )
 from global_medicines_atlas.australian_source_contracts import (
+    TargetTable,
     mbs_field_contracts,
 )
 from global_medicines_atlas.federation_reader import HOSTS
@@ -67,6 +68,14 @@ RIGHTS_REFERENCE = (
 RECEIPT_PATH = Path(
     "quality/bronze/receipts/au-mbs/"
     "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json"
+)
+_TABLES: tuple[TargetTable, ...] = (
+    "services",
+    "hierarchy",
+    "descriptions",
+    "fees",
+    "benefits",
+    "caps",
 )
 
 
@@ -192,7 +201,7 @@ def field_presence_diagnostics(
         }
         for field in contracts
     }
-    for table in sorted({field.target_table for field in contracts}):
+    for table in _TABLES:
         table_contracts = tuple(
             field for field in contracts if field.target_table == table
         )
