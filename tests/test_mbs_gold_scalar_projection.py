@@ -351,6 +351,22 @@ def _trusted_synthetic_scalar_resolver(  # ruff: ignore[too-many-locals, too-man
     return resolver, resource_id, path
 
 
+def synthetic_scalar_candidate_parquet(
+    field_name: str, values: list[str]
+) -> tuple[bytes, str]:
+    """Build an exact typed candidate table for installed consumer tests."""
+    return _candidate_parquet(field_name, values)
+
+
+def create_synthetic_trusted_scalar_resolver(
+    payload: bytes, *, metadata_root: Path | None = None
+) -> tuple[StorageNeutralResolver, str, str]:
+    """Create the explicit synthetic trust fixture used by product tests."""
+    return _trusted_synthetic_scalar_resolver(
+        payload, metadata_root=metadata_root
+    )
+
+
 def _typed_benefits(
     native_name: str, values: list[str], status: str
 ) -> pa.Table:

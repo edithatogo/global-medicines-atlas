@@ -112,9 +112,12 @@
   passed and automated review completed without findings.
 - [~] Extend the exact synthetic scalar trust path through Chromium for the
   Decimal and date filters, preserving exact row identity, object path/digest,
-  synthetic cohort, and unknown coverage wording. Local validation passes;
-  hosted exact-head checks and merge receipt are pending. This adds no source,
-  coverage, admission, or rights claim.
+  synthetic cohort, and unknown coverage wording. Extend the same journey to
+  isolated installed wheel and sdist consumers through CLI, API, and Chromium.
+  Focused installed-artifact E2E passes; the governed E2E lane passes (129),
+  routine/context/ecosystem checks pass, `ty` and repository BasedPyright pass.
+  Hosted exact-head checks and merge receipt remain pending. This uses only
+  synthetic fixtures and adds no source, coverage, admission, or rights claim.
 - [x] Reject cross-dimension identities at the shared benefits query boundary:
   MBS resources must declare `service_benefit` and PBS resources must declare
   `funding` before any result rows are queried. Failing-first regressions
