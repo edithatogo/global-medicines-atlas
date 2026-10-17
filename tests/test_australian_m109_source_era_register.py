@@ -212,10 +212,8 @@ def test_august_six_table_handoff_keeps_rights_and_candidate_state_separate() ->
         ]
         is False
     )
-    assert (
-        "do not rerun the completed 390292/390320 profiles"
-        in handoff["smallest_next_action"]
-    )
+    assert "source-owner clarification" in handoff["smallest_next_action"]
+    assert "keep derived outputs blocked" in handoff["smallest_next_action"]
 
 
 def test_august_predecessor_comparison_is_bounded_and_non_promoting() -> None:
@@ -227,7 +225,7 @@ def test_august_predecessor_comparison_is_bounded_and_non_promoting() -> None:
     predecessor = plan["exact_predecessor"]
 
     assert plan["status"] == (
-        "implemented_local_pass_hosted_exact_main_run_pending"
+        "exact_main_aggregate_comparison_complete_semantics_unqualified"
     )
     assert predecessor["edition"] == "MBS-XML-20260701.XML"
     assert predecessor["official_publication_date"] == "2026-05-28"
@@ -249,10 +247,50 @@ def test_august_predecessor_comparison_is_bounded_and_non_promoting() -> None:
     assert plan["failure_and_recovery"]["mismatch_or_timeout"].startswith(
         "Mark the comparison incomplete"
     )
+    readback = plan["exact_main_readback"]
+    assert readback["commit"] == ("f6cccb0beb66d5a1322149f33dc61820eea05166")
+    assert readback["workflow_run"].endswith("/39047005443")
+    assert readback["matched_records"] == 6045
+    assert readback["added_records"] == 1
+    assert readback["removed_records"] == 0
+    assert readback["semantics_accepted"] is False
+    assert readback["m109_accepted"] is False
     assert (
         "do not establish that field meanings remained unchanged"
         in plan["interpretation_boundary"]
     )
+
+
+def test_exact_main_predecessor_comparison_receipt_stays_aggregate_only() -> (
+    None
+):
+    report = _json(
+        "quality/qualifications/"
+        "australian-m109-july-august-predecessor-comparison-20261018.json"
+    )
+
+    assert report["status"] == "aggregate_comparison_complete"
+    assert report["exact_commit"] == (
+        "f6cccb0beb66d5a1322149f33dc61820eea05166"
+    )
+    assert [release["record_count"] for release in report["releases"]] == [
+        6045,
+        6046,
+    ]
+    assert all(
+        release["archive_official_identity_match"] is True
+        for release in report["releases"]
+    )
+    comparison = report["comparison"]
+    assert comparison["matched_record_count"] == 6045
+    assert comparison["added_record_count"] == 1
+    assert comparison["removed_record_count"] == 0
+    assert comparison["changed_record_count"] == 5445
+    assert report["source_identifiers_emitted"] is False
+    assert report["source_values_retained"] is False
+    assert report["silver_generated"] is False
+    assert report["semantics_accepted"] is False
+    assert report["m109_accepted"] is False
 
 
 def test_m109_inventory_keeps_mbs_authorization_and_pbs_rights_separate() -> (

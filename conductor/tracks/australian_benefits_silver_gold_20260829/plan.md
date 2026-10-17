@@ -3072,7 +3072,7 @@
 
 ## M-109 July/August 2026 MBS predecessor comparison implementation (2026-10-17)
 
-- [~] Implement the bounded exact-main comparator at
+- [x] Implement the bounded exact-main comparator at
   `scripts/compare_mbs_source_eras.py` and add it to the existing August
   candidate workflow. It verifies both July/August harvest sidecars, pinned
   archive objects, and current official endpoints in GitHub Actions memory;
@@ -3084,9 +3084,17 @@
   comparator/source-era tests (25), actionlint, Ruff, `ty`, BasedPyright,
   context/ecosystem, and routine Test-Goblin passed. Harvest sidecars are parsed
   through a typed JSON boundary and checked against their pinned content digest.
-- [ ] Run the comparator from exact current `main`; read back its artifact and
-  reconcile the July official-byte identity and aggregate deltas. Do not infer
-  semantic continuity or M-109 acceptance from this comparison.
+- [x] Run the comparator from exact current `main` commit
+  `f6cccb0beb66d5a1322149f33dc61820eea05166`. Run
+  [39047005443](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39047005443)
+  completed successfully and matched both archived releases to their exact
+  official bytes. The value-free report is preserved at
+  `quality/qualifications/australian-m109-july-august-predecessor-comparison-20261018.json`
+  (artifact 12105683236; downloaded report SHA-256
+  `73ef383cd36ca2703ddd70344b572f8904b67b8d85a1f6420036fa76e4d4954b`). It
+  records 6,045 matched records, one added record, no removed records, and
+  aggregate field changes only. This establishes structural/content comparison
+  for these two exact releases, not semantic continuity or M-109 acceptance.
 - [ ] Obtain release-linked schema/change history or source-owner clarification
   for the 2022-03-04 to 2026-05-28 field guide gap. Keep M-109 blocked until
   required source-era meaning and transformation evidence is accepted.

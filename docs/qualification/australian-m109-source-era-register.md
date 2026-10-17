@@ -128,12 +128,28 @@ If either official endpoint times out or its bytes disagree, mark the
 comparison incomplete and preserve both existing archive objects and receipts;
 do not treat missing data as equality or repeat an unchanged failing request.
 
-This comparison can verify the release chronology and describe structural or
-content differences. Those results cannot establish that field meanings stayed
-unchanged. The field guide was last updated in 2022, leaving its versioned
-history between 2022-03-04 and 2026-05-28 unverified; the source-owner/schema
-history gate remains open after comparison. Source-level archive authorization
-does not authorize the six derived outputs proposed in the M-108 assessment.
+Exact-main run
+[39047005443](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39047005443)
+completed successfully at commit `f6cccb0beb66d5a1322149f33dc61820eea05166`.
+It matched both archived release payloads to their official endpoints and
+retained the aggregate-only artifact `12105683236`. The report is preserved at
+[`australian-m109-july-august-predecessor-comparison-20261018.json`](../../quality/qualifications/australian-m109-july-august-predecessor-comparison-20261018.json);
+its SHA-256 is
+`73ef383cd36ca2703ddd70344b572f8904b67b8d85a1f6420036fa76e4d4954b`. It
+records 6,045 matched records, one added record, no removed records, and
+aggregate counts for changed native fields. No record identifiers or source
+values were emitted or retained, no Silver was generated, and M-109 remains
+false. The previous exact-main attempt `39037457764` remains a historical
+incomplete result; this successful rerun supersedes it for the comparison task.
+
+This comparison verifies the release chronology and describes structural or
+content differences. Those results cannot establish that field meanings
+stayed unchanged. The Department's field-guide page was last updated on
+2022-03-04, and current release pages and news entries do not supply a
+versioned field-meaning history from 2022-03-04 through 2026-05-28. The
+source-owner/schema-history gate remains open. Source-level archive
+authorization does not authorize the six derived outputs proposed in the M-108
+assessment.
 
 ## Qualification rule
 

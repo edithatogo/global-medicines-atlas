@@ -1,0 +1,877 @@
+{
+  "boundary": "Aggregate structural/content comparison only. It does not establish field-semantic continuity, temporal meaning, Silver admission, rights for derived products, or M-109 acceptance.",
+  "compared_at": "2026-10-17T15:54:12.690417+00:00",
+  "comparison": {
+    "added_field_counts": [],
+    "added_record_count": 1,
+    "changed_field_counts": [
+      {
+        "count": 1,
+        "native_field": "Benefit75"
+      },
+      {
+        "count": 79,
+        "native_field": "DescriptorChange"
+      },
+      {
+        "count": 5431,
+        "native_field": "FeeChange"
+      },
+      {
+        "count": 5437,
+        "native_field": "ItemChange"
+      },
+      {
+        "count": 8,
+        "native_field": "NewItem"
+      },
+      {
+        "count": 2,
+        "native_field": "ScheduleFee"
+      }
+    ],
+    "changed_record_count": 5445,
+    "fields_on_added_records": [
+      {
+        "count": 1,
+        "native_field": "AnaesChange"
+      },
+      {
+        "count": 1,
+        "native_field": "BasicUnits"
+      },
+      {
+        "count": 1,
+        "native_field": "Benefit75"
+      },
+      {
+        "count": 1,
+        "native_field": "Benefit85"
+      },
+      {
+        "count": 1,
+        "native_field": "BenefitStartDate"
+      },
+      {
+        "count": 1,
+        "native_field": "BenefitType"
+      },
+      {
+        "count": 1,
+        "native_field": "Category"
+      },
+      {
+        "count": 1,
+        "native_field": "Description"
+      },
+      {
+        "count": 1,
+        "native_field": "DescriptionStartDate"
+      },
+      {
+        "count": 1,
+        "native_field": "DescriptorChange"
+      },
+      {
+        "count": 1,
+        "native_field": "EMSNCap"
+      },
+      {
+        "count": 1,
+        "native_field": "EMSNChange"
+      },
+      {
+        "count": 1,
+        "native_field": "EMSNChangeDate"
+      },
+      {
+        "count": 1,
+        "native_field": "EMSNDescription"
+      },
+      {
+        "count": 1,
+        "native_field": "EMSNEndDate"
+      },
+      {
+        "count": 1,
+        "native_field": "EMSNFixedCapAmount"
+      },
+      {
+        "count": 1,
+        "native_field": "EMSNMaximumCap"
+      },
+      {
+        "count": 1,
+        "native_field": "EMSNPercentageCap"
+      },
+      {
+        "count": 1,
+        "native_field": "EMSNStartDate"
+      },
+      {
+        "count": 1,
+        "native_field": "FeeChange"
+      },
+      {
+        "count": 1,
+        "native_field": "FeeStartDate"
+      },
+      {
+        "count": 1,
+        "native_field": "FeeType"
+      },
+      {
+        "count": 1,
+        "native_field": "Group"
+      },
+      {
+        "count": 1,
+        "native_field": "ItemChange"
+      },
+      {
+        "count": 1,
+        "native_field": "ItemEndDate"
+      },
+      {
+        "count": 1,
+        "native_field": "ItemNum"
+      },
+      {
+        "count": 1,
+        "native_field": "ItemStartDate"
+      },
+      {
+        "count": 1,
+        "native_field": "ItemType"
+      },
+      {
+        "count": 1,
+        "native_field": "NewItem"
+      },
+      {
+        "count": 1,
+        "native_field": "ProviderType"
+      },
+      {
+        "count": 1,
+        "native_field": "QFEEndDate"
+      },
+      {
+        "count": 1,
+        "native_field": "QFEStartDate"
+      },
+      {
+        "count": 1,
+        "native_field": "ScheduleFee"
+      },
+      {
+        "count": 1,
+        "native_field": "SubGroup"
+      },
+      {
+        "count": 1,
+        "native_field": "SubHeading"
+      },
+      {
+        "count": 1,
+        "native_field": "SubItemNum"
+      }
+    ],
+    "fields_on_removed_records": [],
+    "matched_record_count": 6045,
+    "removed_field_counts": [],
+    "removed_record_count": 0
+  },
+  "comparison_byte_count": 13495,
+  "comparison_sha256": "704b483ea04cb976b7c02fb7b0ba3b83021ea1f5d3aa0166c080800f57f5eb25",
+  "exact_commit": "f6cccb0beb66d5a1322149f33dc61820eea05166",
+  "m109_accepted": false,
+  "publication_performed": false,
+  "releases": [
+    {
+      "archive_official_identity_match": true,
+      "archive_path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+      "archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+      "byte_count": 8291891,
+      "field_presence_counts": [
+        {
+          "absent": 2965,
+          "native_field": "Anaes",
+          "present_non_null": 3080,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "AnaesChange",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "BasicUnits",
+          "present_non_null": 486,
+          "present_null": 5559,
+          "rows": 6045
+        },
+        {
+          "absent": 5672,
+          "native_field": "Benefit100",
+          "present_non_null": 373,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 863,
+          "native_field": "Benefit75",
+          "present_non_null": 5182,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 3243,
+          "native_field": "Benefit85",
+          "present_non_null": 2802,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "BenefitStartDate",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "BenefitType",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "Category",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 5961,
+          "native_field": "DerivedFee",
+          "present_non_null": 84,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 5961,
+          "native_field": "DerivedFeeStartDate",
+          "present_non_null": 84,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "Description",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "DescriptionStartDate",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "DescriptorChange",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNCap",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNChange",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNChangeDate",
+          "present_non_null": 0,
+          "present_null": 6045,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNDescription",
+          "present_non_null": 49,
+          "present_null": 5996,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNEndDate",
+          "present_non_null": 0,
+          "present_null": 6045,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNFixedCapAmount",
+          "present_non_null": 80,
+          "present_null": 5965,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNMaximumCap",
+          "present_non_null": 939,
+          "present_null": 5106,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNPercentageCap",
+          "present_non_null": 999,
+          "present_null": 5046,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNStartDate",
+          "present_non_null": 1079,
+          "present_null": 4966,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "FeeChange",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 84,
+          "native_field": "FeeStartDate",
+          "present_non_null": 5961,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "FeeType",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "Group",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemChange",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemEndDate",
+          "present_non_null": 0,
+          "present_null": 6045,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemNum",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemStartDate",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemType",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "NewItem",
+          "present_non_null": 6045,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "ProviderType",
+          "present_non_null": 0,
+          "present_null": 6045,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "QFEEndDate",
+          "present_non_null": 0,
+          "present_null": 6045,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "QFEStartDate",
+          "present_non_null": 0,
+          "present_null": 6045,
+          "rows": 6045
+        },
+        {
+          "absent": 84,
+          "native_field": "ScheduleFee",
+          "present_non_null": 5961,
+          "present_null": 0,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "SubGroup",
+          "present_non_null": 4848,
+          "present_null": 1197,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "SubHeading",
+          "present_non_null": 1562,
+          "present_null": 4483,
+          "rows": 6045
+        },
+        {
+          "absent": 0,
+          "native_field": "SubItemNum",
+          "present_non_null": 0,
+          "present_null": 6045,
+          "rows": 6045
+        }
+      ],
+      "harvest_receipt_archive_path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+      "harvest_receipt_sha256": "01988fb6cf56c4a23bba680e8c9ee6d9b3b39d504d044676e49b4b78d1f5ba56",
+      "native_fields": [
+        "Anaes",
+        "AnaesChange",
+        "BasicUnits",
+        "Benefit100",
+        "Benefit75",
+        "Benefit85",
+        "BenefitStartDate",
+        "BenefitType",
+        "Category",
+        "DerivedFee",
+        "DerivedFeeStartDate",
+        "Description",
+        "DescriptionStartDate",
+        "DescriptorChange",
+        "EMSNCap",
+        "EMSNChange",
+        "EMSNChangeDate",
+        "EMSNDescription",
+        "EMSNEndDate",
+        "EMSNFixedCapAmount",
+        "EMSNMaximumCap",
+        "EMSNPercentageCap",
+        "EMSNStartDate",
+        "FeeChange",
+        "FeeStartDate",
+        "FeeType",
+        "Group",
+        "ItemChange",
+        "ItemEndDate",
+        "ItemNum",
+        "ItemStartDate",
+        "ItemType",
+        "NewItem",
+        "ProviderType",
+        "QFEEndDate",
+        "QFEStartDate",
+        "ScheduleFee",
+        "SubGroup",
+        "SubHeading",
+        "SubItemNum"
+      ],
+      "official_download_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701",
+      "official_source_uri": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/MBS-XML-20260701.XML",
+      "record_count": 6045,
+      "release_id": "MBS-XML-20260701",
+      "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/blob/2ceafb1b889a701506a6c8f0ec9b1fc86fdddbda/quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+      "sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+      "source_era": "2026-07-01"
+    },
+    {
+      "archive_official_identity_match": true,
+      "archive_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+      "byte_count": 8293331,
+      "field_presence_counts": [
+        {
+          "absent": 2966,
+          "native_field": "Anaes",
+          "present_non_null": 3080,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "AnaesChange",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "BasicUnits",
+          "present_non_null": 486,
+          "present_null": 5560,
+          "rows": 6046
+        },
+        {
+          "absent": 5673,
+          "native_field": "Benefit100",
+          "present_non_null": 373,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 863,
+          "native_field": "Benefit75",
+          "present_non_null": 5183,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 3243,
+          "native_field": "Benefit85",
+          "present_non_null": 2803,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "BenefitStartDate",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "BenefitType",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "Category",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 5962,
+          "native_field": "DerivedFee",
+          "present_non_null": 84,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 5962,
+          "native_field": "DerivedFeeStartDate",
+          "present_non_null": 84,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "Description",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "DescriptionStartDate",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "DescriptorChange",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNCap",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNChange",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNChangeDate",
+          "present_non_null": 0,
+          "present_null": 6046,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNDescription",
+          "present_non_null": 49,
+          "present_null": 5997,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNEndDate",
+          "present_non_null": 0,
+          "present_null": 6046,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNFixedCapAmount",
+          "present_non_null": 80,
+          "present_null": 5966,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNMaximumCap",
+          "present_non_null": 939,
+          "present_null": 5107,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNPercentageCap",
+          "present_non_null": 999,
+          "present_null": 5047,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "EMSNStartDate",
+          "present_non_null": 1079,
+          "present_null": 4967,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "FeeChange",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 84,
+          "native_field": "FeeStartDate",
+          "present_non_null": 5962,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "FeeType",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "Group",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemChange",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemEndDate",
+          "present_non_null": 0,
+          "present_null": 6046,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemNum",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemStartDate",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "ItemType",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "NewItem",
+          "present_non_null": 6046,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "ProviderType",
+          "present_non_null": 0,
+          "present_null": 6046,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "QFEEndDate",
+          "present_non_null": 0,
+          "present_null": 6046,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "QFEStartDate",
+          "present_non_null": 0,
+          "present_null": 6046,
+          "rows": 6046
+        },
+        {
+          "absent": 84,
+          "native_field": "ScheduleFee",
+          "present_non_null": 5962,
+          "present_null": 0,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "SubGroup",
+          "present_non_null": 4848,
+          "present_null": 1198,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "SubHeading",
+          "present_non_null": 1562,
+          "present_null": 4484,
+          "rows": 6046
+        },
+        {
+          "absent": 0,
+          "native_field": "SubItemNum",
+          "present_non_null": 0,
+          "present_null": 6046,
+          "rows": 6046
+        }
+      ],
+      "harvest_receipt_archive_path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "harvest_receipt_sha256": "9bca6260ea9d25d7ee9c184b59eed03b059d8da486dea31ec1d058965aae55ed",
+      "native_fields": [
+        "Anaes",
+        "AnaesChange",
+        "BasicUnits",
+        "Benefit100",
+        "Benefit75",
+        "Benefit85",
+        "BenefitStartDate",
+        "BenefitType",
+        "Category",
+        "DerivedFee",
+        "DerivedFeeStartDate",
+        "Description",
+        "DescriptionStartDate",
+        "DescriptorChange",
+        "EMSNCap",
+        "EMSNChange",
+        "EMSNChangeDate",
+        "EMSNDescription",
+        "EMSNEndDate",
+        "EMSNFixedCapAmount",
+        "EMSNMaximumCap",
+        "EMSNPercentageCap",
+        "EMSNStartDate",
+        "FeeChange",
+        "FeeStartDate",
+        "FeeType",
+        "Group",
+        "ItemChange",
+        "ItemEndDate",
+        "ItemNum",
+        "ItemStartDate",
+        "ItemType",
+        "NewItem",
+        "ProviderType",
+        "QFEEndDate",
+        "QFEStartDate",
+        "ScheduleFee",
+        "SubGroup",
+        "SubHeading",
+        "SubItemNum"
+      ],
+      "official_download_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801",
+      "official_source_uri": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
+      "record_count": 6046,
+      "release_id": "MBS-XML-20260801",
+      "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "source_era": "2026-08-01"
+    }
+  ],
+  "schema_id": "global-medicines-atlas.mbs-predecessor-comparison",
+  "schema_version": 1,
+  "semantics_accepted": false,
+  "silver_generated": false,
+  "source_identifiers_emitted": false,
+  "source_values_retained": false,
+  "status": "aggregate_comparison_complete"
+}
