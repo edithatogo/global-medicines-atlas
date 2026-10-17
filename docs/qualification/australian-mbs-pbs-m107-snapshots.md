@@ -240,16 +240,21 @@ processed eight pages and recorded 15 monthly XML links; its final
 reports 204 cumulative files verified at revision
 `51da37714b2ea3ac3b0376d28769595e8c6e9c14`. Both runs record complete
 targeted pages, anonymous digest verification, and temporary-byte cleanup.
-The current immutable
-[manifest](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/51da37714b2ea3ac3b0376d28769595e8c6e9c14/manifest.json)
-was anonymously read back (204 files; SHA-256
-`22acb944fbca1a0bd68bb961a1342321c4a020cf1af4525cd0140177d5afbf60`).
-Reading the 83 B1 schedule receipt sidecars as metadata only and matching exact
-source URLs against the official index now yields 78 of 82 links with a
-receipt. The four unmatched URLs all belong to `Downloads-210615`, which has
-two distinct URL identity collisions on case-folded archive filenames. No raw
-XML was fetched during this reconciliation. The collision-safe path fix is
-under review; this page remains unacquired until that fix is merged and the
-same authorized hosted workflow verifies it. M-107 remains blocked on the
-complete historical MBS/PBS denominator, source-era qualification, utilisation
-families, and rights evidence.
+The follow-up [collision-safe harvest](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39000296702)
+completed for `Downloads-210615` after the path-identity fix merged in PR
+[#1087](https://github.com/edithatogo/global-medicines-atlas/pull/1087).
+Its durable [publication receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285185)
+and [cleanup receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285346)
+record four distinct XML objects, anonymous digest verification, and verified
+temporary-byte removal. At public revision
+`da83cad9116e2f9a5b927be7b080e9a5e5ea6998`, the [manifest](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/da83cad9116e2f9a5b927be7b080e9a5e5ea6998/manifest.json)
+contains 212 files (SHA-256
+`68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055`). Reading
+the 87 B1 schedule-receipt sidecars as metadata only now matches all 82
+distinct MBS-XML URLs on the current official Downloads index, including all
+four URLs on `Downloads-210615`; no raw XML was fetched during reconciliation.
+The [machine-readable index qualification](../../quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json)
+records the exact URL identities and receipt paths. This closes the current
+index-to-B1-receipt matching gap only. It does not establish the complete
+historical MBS/PBS period denominator, utilisation-family coverage, historical
+PBS rights or schema eras, or M-107 acceptance.
