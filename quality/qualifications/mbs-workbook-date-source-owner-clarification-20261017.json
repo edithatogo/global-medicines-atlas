@@ -1,0 +1,65 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-workbook-date-source-owner-clarification",
+  "schema_version": 1,
+  "observed_at": "2026-10-17T00:55:42Z",
+  "source_id": "au-mbs-p7-legacy-workbook",
+  "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+  "correspondence": {
+    "sender": "mbsonline@health.gov.au",
+    "response_date": "2026-10-13",
+    "response_message_id": "1a137984cf9a7186",
+    "response_summary": "MBS Online could not identify the workbook from its name and asked for the webpage where it is available.",
+    "original_inquiry_locator_correction": "The original inquiry incorrectly stated that the workbook was identified in public July 2024 MBS downloads. The official downloads page does not list P7; the first follow-up supplied it only as context, and the second follow-up supplied the exact donor-archive copy locator.",
+    "follow_ups": [
+      {
+        "date": "2026-10-17",
+        "message_id": "1a1475b8396d9dc1",
+        "in_reply_to": "1a137984cf9a7186",
+        "locator_type": "official_downloads_context_page",
+        "locator": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-240701",
+        "official_page_lists_workbook": false,
+        "question": "Please confirm whether textual dates in this exact workbook edition are day-month-year, month-day-year, or have no documented convention; if another team owns the format, identify that source owner or documentation.",
+        "source_payload_attached": false,
+        "cell_values_included": false
+      },
+      {
+        "date": "2026-10-17",
+        "message_id": "1a14763bf92064a6",
+        "in_reply_to": "1a1475b8396d9dc1",
+        "locator_type": "pinned_donor_archive_copy",
+        "question": "Please confirm or deny Department provenance for this exact archived copy and, if confirmed, its date convention; otherwise state that the Department cannot confirm provenance or convention.",
+        "source_payload_attached": false,
+        "cell_values_included": false
+      }
+    ],
+    "source_payload_attached": false,
+    "cell_values_included": false
+  },
+  "donor_archive_locator": {
+    "repository": "edithatogo/aus-health-data-scraper",
+    "commit": "931da0b9b6ae3e3cec0743568abb71a50d62b7cf",
+    "path": "data/source/MBS - 2024.07 - Group P7 (Genetics).xlsx",
+    "url": "https://github.com/edithatogo/aus-health-data-scraper/blob/931da0b9b6ae3e3cec0743568abb71a50d62b7cf/data/source/MBS%20-%202024.07%20-%20Group%20P7%20(Genetics).xlsx",
+    "git_blob_sha1": "a9d302b8a278f9e65659a1f5da09ded21723a239",
+    "bytes": 87727,
+    "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "provenance_boundary": "Identifies the exact donor-archived copy only; it does not establish Department publication or authorship. No workbook bytes or cell values were transmitted."
+  },
+  "qualification": {
+    "exact_archived_copy_identified": true,
+    "source_owner_confirmed_official_provenance": false,
+    "date_convention_confirmed": false,
+    "date_profile": null,
+    "semantic_promotion": false,
+    "status": "awaiting_source_owner_confirmation"
+  },
+  "boundaries": {
+    "source_bytes_requested_or_downloaded": false,
+    "source_values_read_or_transmitted": false,
+    "rights_conclusion_made": false,
+    "rights_scope_changed": false,
+    "source_admission_changed": false,
+    "m109_accepted": false
+  },
+  "next_evidence": "A source-owner response confirming or denying Department provenance for the exact donor-archived copy and, if confirmed, identifying its date convention; otherwise record that provenance or convention cannot be confirmed. Keep date conversion disabled until then."
+}

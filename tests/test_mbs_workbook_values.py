@@ -191,7 +191,11 @@ def test_official_xml_date_spec_does_not_select_legacy_workbook_profile() -> (
         / "conductor/tracks/australian_health_source_consolidation_20260829/"
         "mbs-workbook-date-convention-request.md"
     ).read_text(encoding="utf-8")
-    assert "**Status:** sent 2026-09-28" in request
+    assert "MBS Online replied on 2026-10-13" in request
+    assert "First follow-up sent 2026-10-17" in request
+    assert "does not list the P7 workbook" in request
+    assert "date convention" in request
+    assert "remain unconfirmed" in request
     assert "1,276 date cells" in request
     assert "four valid only under day-month-year" in request
     assert "No cell values are included" in request
@@ -210,6 +214,57 @@ def test_official_xml_date_spec_does_not_select_legacy_workbook_profile() -> (
     assert message["recipient"] == "enquiries@health.gov.au"
     assert message["source_payloads_attached"] is False
     assert message["cell_values_included"] is False
+
+
+def test_p7_source_owner_follow_up_does_not_select_workbook_date_profile() -> (
+    None
+):
+    root = Path(__file__).resolve().parents[1]
+    clarification = json.loads(
+        (
+            root
+            / "quality/qualifications/mbs-workbook-date-source-owner-clarification-20261017.json"
+        ).read_text(encoding="utf-8")
+    )
+    assert clarification["source_id"] == "au-mbs-p7-legacy-workbook"
+    assert clarification["correspondence"]["response_message_id"] == (
+        "1a137984cf9a7186"
+    )
+    follow_ups = clarification["correspondence"]["follow_ups"]
+    assert [item["message_id"] for item in follow_ups] == [
+        "1a1475b8396d9dc1",
+        "1a14763bf92064a6",
+    ]
+    assert follow_ups[0]["official_page_lists_workbook"] is False
+    assert follow_ups[1]["locator_type"] == "pinned_donor_archive_copy"
+    assert (
+        "original inquiry incorrectly stated"
+        in clarification["correspondence"][
+            "original_inquiry_locator_correction"
+        ]
+    )
+    assert all(item["source_payload_attached"] is False for item in follow_ups)
+    assert all(item["cell_values_included"] is False for item in follow_ups)
+    donor = clarification["donor_archive_locator"]
+    assert donor["repository"] == "edithatogo/aus-health-data-scraper"
+    assert donor["commit"] == "931da0b9b6ae3e3cec0743568abb71a50d62b7cf"
+    assert (
+        donor["path"] == "data/source/MBS - 2024.07 - Group P7 (Genetics).xlsx"
+    )
+    assert donor["bytes"] == 87727
+    assert donor["sha256"] == clarification["source_sha256"]
+    assert (
+        clarification["qualification"]["exact_archived_copy_identified"] is True
+    )
+    assert (
+        clarification["qualification"][
+            "source_owner_confirmed_official_provenance"
+        ]
+        is False
+    )
+    assert clarification["qualification"]["date_convention_confirmed"] is False
+    assert clarification["qualification"]["date_profile"] is None
+    assert clarification["qualification"]["semantic_promotion"] is False
 
 
 def test_null_empty_annotations_and_text_encoded_money() -> None:
