@@ -816,14 +816,25 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   record that older XML rights are unresolved, the API's 12-month route lacks
   retention/redistribution terms, and the separate PBS utilisation tree has
   six metadata-observed raw paths with per-object rights/lineage unresolved.
-- [~] Keep M-107 blocked. The enumerated official MBS period set is incomplete;
-  exact January/March 2025 and both November 2025 XML revisions remain without
-  receipts; official historic PDF/Word/software formats are not enumerated or
-  covered by the existing MBS XML publication authorization. The PBS schedule
-  and API periods still lack source-specific rights and period-by-period
-  receipts. Finish only after the expected source/snapshot denominator
-  reconciles to exact source receipts, schema era, validity, retrieval,
-  completeness, rights and immutable archive identities.
+- [x] Reconcile all 82 distinct MBS-XML URLs listed across 41 current Downloads
+  pages to B1 receipts in archive revision `da83cad9116e2f9a5b927be7b080e9a5e5ea6998`.
+  The metadata-only readback checked 87 schedule receipt sidecars against the
+  212-object manifest, found 82 exact source-URL matches, and found no
+  unmatched URL or identity conflict. This closes the present-index link to
+  receipt check, including the January/March/November 2025 releases; it does
+  not prove a complete historical period denominator. See
+  `quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json`
+  and `docs/qualification/australian-mbs-pbs-m107-snapshots.md`.
+- [~] Keep M-107 blocked. The complete expected historical source/period
+  denominator remains unresolved: historical MBS PDF/Word/software formats
+  are not fully enumerated or covered by the existing MBS XML authorization;
+  four current Downloads resources remain without source-specific rights or
+  receipts; PBS schedule/API periods still lack source-specific rights and
+  period-by-period receipts; and the Health.gov workbook families remain
+  unavailable through the unchanged hosted route. Finish only after the
+  expected source/snapshot denominator reconciles to exact source receipts,
+  schema era, validity, retrieval, completeness, rights and immutable archive
+  identities.
 
 ## M-105 recorded-disposition wording alignment (2026-10-17)
 

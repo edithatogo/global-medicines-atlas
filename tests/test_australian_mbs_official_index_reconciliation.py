@@ -15,6 +15,10 @@ PRIMARY_DOWNLOADS = (
     REPOSITORY_ROOT
     / "quality/qualifications/australian-mbs-primary-downloads-metadata-20261018.json"
 )
+M107_PLAN = (
+    REPOSITORY_ROOT
+    / "conductor/tracks/australian_health_source_consolidation_20260829/plan.md"
+)
 
 
 def _qualification() -> dict[str, Any]:
@@ -131,6 +135,21 @@ def test_previous_downloads_formats_remain_outside_schedule_claims() -> None:
         "historical_pdf_file_links_not_acquired_or_claimed_authorized"
     ]
     assert "No MBS/PBS source payload" in record["method"]
+
+
+def test_m107_plan_does_not_relist_receipted_current_index_releases_as_missing() -> (
+    None
+):
+    plan = M107_PLAN.read_text(encoding="utf-8")
+
+    assert "82 distinct MBS-XML URLs listed across 41 current Downloads" in plan
+    assert "87 schedule receipt sidecars" in plan
+    assert (
+        "exact January/March 2025 and both November 2025 XML revisions remain without"
+        not in plan
+    )
+    assert "The complete expected historical source/period" in plan
+    assert "Keep M-107 blocked" in plan
 
 
 def test_primary_downloads_candidates_are_metadata_only_and_rights_blocked() -> (
