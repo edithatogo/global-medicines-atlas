@@ -732,3 +732,11 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   receipts. Finish only after the expected source/snapshot denominator
   reconciles to exact source receipts, schema era, validity, retrieval,
   completeness, rights and immutable archive identities.
+
+## M-105 recorded-disposition wording alignment (2026-10-17)
+
+- [x] Align the parity-gap audit with D-006-07: the maintainer chose to keep
+  M-105 blocked, continue M-106–M-112 independently, and grant no waiver or
+  criterion change. The pre-archive sequence remains unsatisfied; no acceptance
+  evidence or requirement was altered. The focused text assertions, Conductor
+  context validation, and `git diff --check` pass.

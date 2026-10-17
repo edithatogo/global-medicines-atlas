@@ -70,15 +70,13 @@ distinct evidence. No donor PBS payload existed in the pinned repositories,
 and this does not claim all historical or future PBS releases.
 
 The artifact denominator is reconciled, with exact history and the applicable
-public payload receipts linked. M-105's historical sequence remains an explicit exception
-for maintainer disposition: later proof cannot make earlier parity precede the
-archives. M-106–M-112 and the federation gate remain independent.
+public payload receipts linked. On 2026-09-29 the maintainer recorded the
+chronology disposition in [D-006-07](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-07--m-105-donor-chronology-exception):
+keep M-105 blocked and continue M-106–M-112 independently. This acknowledges
+the historical exception; it is not a waiver or criterion change. Later proof
+cannot make earlier parity precede the archives.
 
 The archival chronology cannot be retroactively described as pre-archive M-105
 parity. The separate maintainer approvals and observed archives are recorded in
 the [scraper](../../quality/qualifications/scraper-archival-20260906.json) and
 [graph](../../quality/qualifications/graph-archival-20260906.json) receipts.
-On 2026-09-29 the maintainer approved recording this chronology exception
-while keeping M-105 blocked; see decision
-[D-006-07](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-07--m-105-donor-chronology-exception).
-This records no waiver or change to the pre-archive acceptance criterion.
