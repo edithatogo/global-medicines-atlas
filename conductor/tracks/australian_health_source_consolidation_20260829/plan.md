@@ -1057,6 +1057,32 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   M-107 remains blocked; do not infer absent coverage from missing archive-page
   links or the API's documented current window.
 
+## M-112 August 2026 raw-object rights and lifecycle refresh (2026-10-18)
+
+- [x] Refresh the exact 1,759-path M-112 per-object report from its preserved
+  October 5 baseline using the current August source receipt, source-specific
+  publication authorization, raw B1/B2 lifecycle crosswalk, anonymous digest
+  reconciliation, and current public root-manifest readback. Keep the approved
+  denominator unchanged and all 1,759 objects deferred pending v4 admission and
+  consumer canaries.
+- [x] Bind both August raw aliases to the existing `au-mbs` monthly-schedule
+  authorization and exact permitted source receipt. The content-addressed XML
+  path now records its complete raw B1/B2 chain and existing anonymous digest
+  receipt. Keep the alias's direct anonymous digest and B1/B2 lineage gates
+  open; shared Git blob identity and root-manifest metadata are not a separate
+  payload digest receipt. Producer projection lineage remains unqualified.
+- [x] Record the refreshed result in
+  `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018.json`:
+  two exact-source-rights rows, one complete raw B1/B2 row, zero v4 admissions,
+  and zero consumer canaries. This does not create or expand rights, read or
+  upload source bytes, admit objects, or accept M-112.
+- [x] Validate the refresh with the focused M-112 tests (9 passed), the broader
+  M-112/rights suite (81 passed), Ruff, `ty`, BasedPyright, context validation,
+  and `git diff --check`. The full Test-Goblin run recorded 6,665 passed, 3
+  skipped, and 2 failures because its subprocess selected uv 0.13.1 instead of
+  pinned uv 0.11.29; both failed reproducibility tests passed in isolation with
+  the pinned uv. Preserve the full-profile result as failed.
+
 ## M-105 hosted donor-history search follow-up (2026-10-18)
 
 - [x] Recheck both donor repositories' complete available PR histories and
