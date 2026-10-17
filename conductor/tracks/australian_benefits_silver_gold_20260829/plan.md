@@ -3268,3 +3268,8 @@
   affected tests; Test-Goblin routine, context, ecosystem, Ruff, formatting,
   and diff checks passed. Protected hosted checks remain required for the
   amended PR head.
+- [x] Resolve the Python 3.14 strict-profile failure on the first expanded
+  PR head by typing JSON-loaded previous-download records and comparison keys.
+  Post-rebase validation passed 69 affected tests and strict/routine
+  Test-Goblin checks; the strict profile reports zero errors and four existing
+  optional-import warnings.
