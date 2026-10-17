@@ -86,16 +86,16 @@ def test_exact_main_candidate_consumer_receipt_preserves_lineage_and_limits() ->
     receipt = json.loads(receipt_bytes)
 
     assert hashlib.sha256(receipt_bytes).hexdigest() == (
-        "a4adf65fed0439fd1c17001fbc2d6ee63a5af81601f505d1248bc9486aceb80c"
+        "ce2634a5061d27b017f733020b04f1084646bc51c4c7a4c29369b662fab7107a"
     )
     assert receipt["hosted_workflow"] == {
-        "commit": "c68c6d4dbb0600ea464f2d98e716fd7b47fe4326",
+        "commit": "82a6fce4807151bee277c9a96a88dc0c5db17504",
         "repository": "edithatogo/global-medicines-atlas",
         "run_attempt": 1,
-        "run_id": 39049481566,
+        "run_id": 39055455167,
         "run_url": (
             "https://github.com/edithatogo/global-medicines-atlas/"
-            "actions/runs/39049481566"
+            "actions/runs/39055455167"
         ),
         "workflow": (
             ".github/workflows/"
@@ -115,6 +115,27 @@ def test_exact_main_candidate_consumer_receipt_preserves_lineage_and_limits() ->
     assert receipt["source_payload_bytes_retained"] is False
     assert receipt["page_offsets"] == [0, 1000, 2000, 3000, 4000, 5000]
     assert receipt["browser_page_offsets"] == receipt["page_offsets"]
+    scalar = receipt["candidate_scalar_query_canary"]
+    assert scalar["candidate_only"] is True
+    assert scalar["consumer_admission_performed"] is False
+    assert scalar["row_count"] == 5989
+    assert scalar["parquet_sha256"] == (
+        "12e1caf015737060753eba689e41a883dff2ec2b46dd7b63dd2225fbe6797bb8"
+    )
+    assert scalar["query_cases"] == {
+        "decimal": {
+            "engines": ["duckdb", "polars"],
+            "returned_rows": 360,
+            "row_limit": 1000,
+            "parity": True,
+        },
+        "date": {
+            "engines": ["duckdb", "polars"],
+            "returned_rows": 0,
+            "row_limit": 1000,
+            "parity": True,
+        },
+    }
     edge_digest = (
         "7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d"
     )

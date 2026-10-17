@@ -2784,16 +2784,27 @@
 
 ### M-110 real scalar engine canary (2026-10-18)
 
-- [~] Extend the protected exact-main candidate workflow to build a temporary
+- [x] Extend the protected exact-main candidate workflow to build a temporary
   contract-typed scalar projection from the same six digest-verified July 2025
   MBS v3 Silver tables, bind it to the existing B1 receipt and Gold graph, and
   exercise exact Decimal and date predicates in DuckDB and Polars. Retain only
   the aggregate receipt and remove both candidate Parquet files in the
-  workflow's always-run cleanup. Local regression and typing checks pass;
-  exact-main hosted execution remains pending. The canary directly exercises
-  existing query adapters and does not enter the trusted product resolver,
-  establish product admission, or change `not_reviewed`, M-110 acceptance,
-  M-112, rights, publication, or source coverage.
+  workflow's always-run cleanup. Exact-main run
+  [39055455167](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39055455167)
+  passed on `82a6fce4807151bee277c9a96a88dc0c5db17504`: both engines returned
+  360 rows for `Benefit100 > 10.00` and 0 rows for
+  `BenefitStartDate >= 2025-08-01`, with each query capped at 1,000 rows.
+  The refreshed aggregate receipt is
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261018.json`
+  (2,357 bytes; SHA-256
+  `ce2634a5061d27b017f733020b04f1084646bc51c4c7a4c29369b662fab7107a`).
+  The same run traversed all 5,989 edges across API, CLI, Atlas, and Chromium.
+  The exact receipt test now pins this artifact and asserts both scalar query
+  outcomes and candidate/admission boundaries; 63 affected tests and the
+  routine validation pass.
+  This direct adapter canary does not enter the trusted product resolver or
+  establish product admission; edge review, M-110 acceptance, M-112, rights,
+  publication, and source coverage remain unchanged.
 
 ### M-110 candidate Gold edges in Atlas (2026-10-17)
 
