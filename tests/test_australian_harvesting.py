@@ -30,6 +30,7 @@ from global_medicines_atlas.australian_harvesting import (
     build_harvest_manifest,
     discover_health_gov_medicare_workbooks,
     discover_mbs_schedule_resources,
+    discover_mbs_schedule_resources_detailed,
     discover_mbs_utilisation_resources,
     discover_pbs_dos_resources,
     discover_pbs_expenditure_resources,
@@ -534,6 +535,10 @@ def test_harvest_workflows_enforce_governed_controls() -> None:
         assert "temporary_source_bytes_removed" in text
         assert "environment: australian-hf-publication" in text
 
+    mbs_workflow = MBS_WORKFLOW.read_text(encoding="utf-8")
+    assert "release_pages:" in mbs_workflow
+    assert '--release-pages "$RELEASE_PAGES"' in mbs_workflow
+
 
 def test_discover_pbs_dos_misc_and_duplicate() -> None:
     html = """
@@ -581,6 +586,49 @@ def test_discover_mbs_schedule_subpage_error_and_filtering() -> None:
     res2 = discover_mbs_schedule_resources(index_html2, mock_fetcher)
     assert len(res2) == 1
     assert res2[0].category == "monthly_schedule_xml"
+
+
+def test_discover_mbs_schedule_exact_historical_pages_and_failures() -> None:
+    pages = {
+        "Downloads-250101": '<a href="/files/MBS-XML-20250101.XML">XML</a>',
+        "Downloads-250301": OSError("timeout"),
+    }
+
+    def fetch_page(url: str) -> str:
+        page_id = url.rsplit("/", maxsplit=1)[-1]
+        result = pages[page_id]
+        if isinstance(result, Exception):
+            raise result
+        return result
+
+    resources, attempts = discover_mbs_schedule_resources_detailed(
+        "",
+        fetch_page,
+        exact_release_pages=["Downloads-250101", "Downloads-250301"],
+    )
+
+    assert [resource.period_label for resource in resources] == [
+        "Downloads-250101"
+    ]
+    assert [attempt["outcome"] for attempt in attempts] == [
+        "resources_found",
+        "fetch_error",
+    ]
+    assert attempts[1]["error_class"] == "OSError"
+    assert attempts[1]["resource_count"] == 0
+
+
+@pytest.mark.parametrize(
+    "pages",
+    [["https://evil.example/Downloads-250101"], ["Downloads-latest"]],
+)
+def test_discover_mbs_schedule_rejects_noncanonical_exact_page_ids(
+    pages: list[str],
+) -> None:
+    with pytest.raises(ValueError, match="Invalid exact MBS release page"):
+        discover_mbs_schedule_resources_detailed(
+            "", lambda _url: "", exact_release_pages=pages
+        )
 
 
 def test_discover_mbs_utilisation_demographics_and_edge_cases() -> None:

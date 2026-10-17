@@ -55,6 +55,7 @@ MAX_XLSX_PAYLOAD_BYTES: Final[int] = 32 * 1024 * 1024
 MAX_XLSX_METADATA_BYTES: Final[int] = 8 * 1024 * 1024
 MAX_XLSX_MEMBERS: Final[int] = 20_000
 MAX_XLSX_UNCOMPRESSED_BYTES: Final[int] = 128 * 1024 * 1024
+MAX_EXACT_MBS_RELEASE_PAGES: Final[int] = 24
 
 DEFAULT_HARVEST_USER_AGENT: Final[str] = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -415,7 +416,55 @@ def discover_mbs_schedule_resources(
     ),
     max_releases: int = 3,
 ) -> list[DiscoveredHarvestResource]:
-    """Discover monthly MBS schedule releases from mbsonline.gov.au."""
+    """Discover the newest monthly MBS schedule releases."""
+    return discover_mbs_schedule_resources_detailed(
+        index_html,
+        subpage_fetcher,
+        base_url=base_url,
+        max_releases=max_releases,
+    )[0]
+
+
+def _mbs_archive_location(page: str, filename: str) -> tuple[str, str] | None:
+    lower_name = filename.lower()
+    if "mbs-xml" in lower_name and lower_name.endswith(".xml"):
+        return "monthly_schedule_xml", f"raw/mbs/releases/{page}/{filename}"
+    if "basic service description" in lower_name:
+        return "basic_service_description", f"raw/mbs/bsd/{page}/{filename}"
+    if "rvg" in lower_name:
+        return "relative_value_guide", f"raw/mbs/rvg/{page}/{filename}"
+    return None
+
+
+def discover_mbs_schedule_resources_detailed(
+    index_html: str,
+    subpage_fetcher: Callable[[str], str],
+    base_url: str = (
+        "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads"
+    ),
+    max_releases: int = 3,
+    exact_release_pages: list[str] | None = None,
+) -> tuple[list[DiscoveredHarvestResource], list[dict[str, object]]]:
+    """Discover recent and explicitly named release pages with page outcomes.
+
+    Exact page names are useful for historical releases absent from the current
+    index. They are restricted to official ``Downloads-<date>`` identifiers;
+    the caller supplies a bounded list and receives metadata-only outcomes for
+    every requested page, including failures.
+    """
+    if max_releases < 0:
+        raise ValueError("max_releases must be non-negative")
+    exact_pages = exact_release_pages or []
+    if len(exact_pages) > MAX_EXACT_MBS_RELEASE_PAGES:
+        raise ValueError(
+            f"At most {MAX_EXACT_MBS_RELEASE_PAGES} exact MBS release pages may be requested"
+        )
+    for page in exact_pages:
+        if not re.fullmatch(r"Downloads-(?:20\d{6}|\d{6})", page):
+            raise ValueError(
+                f"Invalid exact MBS release page identifier: {page!r}"
+            )
+
     release_pages = re.findall(
         r"href=[\"\']([^\"\']*Downloads-(?:20\d{6}|\d{6})[^\"]*)[\"\']",
         index_html,
@@ -434,14 +483,23 @@ def discover_mbs_schedule_resources(
     unique_releases = sorted(
         set(release_pages), key=_mbs_sort_key, reverse=True
     )[:max_releases]
+    unique_releases = list(dict.fromkeys([*unique_releases, *exact_pages]))
     discovered: list[DiscoveredHarvestResource] = []
+    page_attempts: list[dict[str, object]] = []
     seen: set[str] = set()
 
     for rp in unique_releases:
         rp_url = urllib.parse.urljoin(base_url, rp)
         try:
             rp_html = subpage_fetcher(rp_url)
-        except OSError, TimeoutError, ValueError:
+        except (OSError, TimeoutError, ValueError) as exc:
+            page_attempts.append({
+                "page": rp,
+                "url": rp_url,
+                "outcome": "fetch_error",
+                "error_class": type(exc).__name__,
+                "resource_count": 0,
+            })
             continue
 
         files = re.findall(
@@ -449,6 +507,7 @@ def discover_mbs_schedule_resources(
             rp_html,
             re.IGNORECASE,
         )
+        resource_count_before = len(discovered)
         for f in sorted(set(files)):
             # Skip RSS feeds, templates, and styles
             if any(
@@ -462,19 +521,10 @@ def discover_mbs_schedule_resources(
                 continue
             seen.add(filename)
 
-            if "mbs-xml" in filename.lower() and filename.lower().endswith(
-                ".xml"
-            ):
-                cat = "monthly_schedule_xml"
-                arch_path = f"raw/mbs/releases/{rp}/{filename}"
-            elif "basic service description" in filename.lower():
-                cat = "basic_service_description"
-                arch_path = f"raw/mbs/bsd/{rp}/{filename}"
-            elif "rvg" in filename.lower():
-                cat = "relative_value_guide"
-                arch_path = f"raw/mbs/rvg/{rp}/{filename}"
-            else:
+            location = _mbs_archive_location(rp, filename)
+            if location is None:
                 continue
+            cat, arch_path = location
 
             discovered.append(
                 DiscoveredHarvestResource(
@@ -486,7 +536,15 @@ def discover_mbs_schedule_resources(
                     period_label=rp,
                 )
             )
-    return discovered
+        page_attempts.append({
+            "page": rp,
+            "url": rp_url,
+            "outcome": "resources_found"
+            if len(discovered) > resource_count_before
+            else "no_supported_resources",
+            "resource_count": len(discovered) - resource_count_before,
+        })
+    return discovered, page_attempts
 
 
 def generate_medicare_candidate_slugs(now: datetime) -> list[str]:

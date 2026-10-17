@@ -23,7 +23,7 @@ from global_medicines_atlas.australian_harvesting import (
     HarvestStageResult,
     build_cumulative_harvest_manifest,
     build_harvest_manifest,
-    discover_mbs_schedule_resources,
+    discover_mbs_schedule_resources_detailed,
     fetch_url_bytes_governed,
     stage_harvest_payload,
     validate_resources_against_contract,
@@ -205,6 +205,11 @@ def main() -> int:
         help="Max monthly releases to probe",
     )
     parser.add_argument(
+        "--release-pages",
+        default="",
+        help="Comma-separated exact official page IDs, e.g. Downloads-250101",
+    )
+    parser.add_argument(
         "--receipt-output",
         type=Path,
         default=Path("build/mbs-schedule-harvest-receipt.json"),
@@ -217,13 +222,19 @@ def main() -> int:
     index_html = fetch_url_text(
         "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads"
     )
-    resources = discover_mbs_schedule_resources(
+    exact_release_pages = [
+        page.strip() for page in args.release_pages.split(",") if page.strip()
+    ]
+    resources, page_attempts = discover_mbs_schedule_resources_detailed(
         index_html,
         subpage_fetcher=fetch_url_text,
         max_releases=args.max_releases,
+        exact_release_pages=exact_release_pages,
     )
     validate_resources_against_contract(contract_path, DATASET, resources)
     print(f"Selected {len(resources)} candidate MBS schedule resources.")
+    for attempt in page_attempts:
+        print(json.dumps(attempt, sort_keys=True))
 
     if args.dry_run:
         return 0
@@ -259,6 +270,12 @@ def main() -> int:
         "workflow_commit": os.environ.get("GITHUB_SHA", "local"),
         "anonymous_digest_verification": "passed",
         "verified_file_count": final_manifest["file_count"],
+        "page_attempts": page_attempts,
+        "targeted_pages_complete": all(
+            attempt["outcome"] == "resources_found"
+            for attempt in page_attempts
+            if attempt["page"] in exact_release_pages
+        ),
         "temporary_source_bytes_removed": False,
     }
     args.receipt_output.parent.mkdir(parents=True, exist_ok=True)
