@@ -574,4 +574,36 @@
   v1/v3 receipts, full-denominator admission, independent recovery, or consumer
   canaries. The approved 1,759-path denominator and all source-specific gates
   remain in force.
-- [ ] Complete Conductor review and exact-head hosted checks before merging.
+- [x] Complete Conductor review and exact-head hosted checks before merging.
+  PR #1142 merged as `fa2091d`; all 39 required check rows passed on
+  `47042af`, and the merge tree matches the tested head tree
+  (`c4832b6fe8cb07724c9c17e26da874303e934992`).
+
+## M-112 August alias anonymous digest readback (2026-10-18)
+
+- [x] Stream the approved August MBS alias from its exact immutable public
+  revision without credentials or local retention. The 8,293,331-byte
+  response returned HTTP 200 and SHA-256
+  `c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565`,
+  matching the existing source receipt and content-addressed object. No source
+  values were inspected.
+- [x] Bind the path-specific readback in
+  `quality/qualifications/australian-m112-august-alias-anonymous-readback-20261018.json`
+  and the reproducible 1,759-path crosswalk. Anonymous digest readbacks rise
+  from 28 to 29; the denominator remains 1,759, both August paths remain
+  deferred, complete raw B1/B2 lineage remains one path, and v4 admissions and
+  consumer canaries remain zero. The alias's B1/B2 lifecycle gap is unchanged.
+- [x] Verify the focused crosswalk tests (6 passed), broader M-112/rights
+  tests (78 passed), routine profile, Ruff, `ty`, and BasedPyright. The full
+  Test-Goblin run's pytest stage passed (6,682 passed, 3 skipped; 96.89%
+  coverage); Gremlins recorded one unrelated PERF-QUERY failure at 266.068 ms
+  against 250 ms in `test_direct_runner_cli_from_repository_root`. Its isolated
+  serialized rerun passed (1 test, 7.52 s). Preserve the full-profile result
+  as failed; do not infer a full pass from the isolated timing rerun.
+- [x] Conductor review found no findings: the alias readback is pinned to the
+  exact dataset revision/path, the digest and byte count bind to the approved
+  source receipt, the report preserves deferral, and the negative revision
+  test verifies fail-closed behavior.
+- [~] Open a scoped PR and reconcile hosted exact-head checks before merging
+  this crosswalk update. M-112 remains unaccepted until per-object lineage,
+  v4 admission, recovery, and consumer-canary gates pass.

@@ -1,0 +1,19 @@
+{
+  "schema_id": "global-medicines-atlas.public-object-anonymous-digest-readback",
+  "schema_version": 1,
+  "observed_at": "2026-10-17T19:58:42Z",
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+  "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+  "request_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/40891976f77ee5e7688edceed25c9ac98a77547e/raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+  "method": "GET",
+  "http_status": 200,
+  "anonymous": true,
+  "authorization_header_sent": false,
+  "byte_count": 8293331,
+  "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+  "digest_method": "sha256_stream",
+  "payload_retained": false,
+  "source_values_inspected": false,
+  "scope": "Direct immutable-path readback of the preserved alias only. This is not a new source acquisition, rights decision, B1/B2 lifecycle receipt, v4 admission, consumer canary, or M-112 acceptance."
+}

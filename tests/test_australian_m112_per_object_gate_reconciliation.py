@@ -5,8 +5,11 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
+import pytest
+import scripts.refresh_m112_august_release_crosswalk as crosswalk
 from scripts.refresh_m112_august_release_crosswalk import (
     ALIAS_PATH,
+    ALIAS_READBACK,
     AUTHORIZATION,
     BASELINE,
     DATASET,
@@ -142,7 +145,13 @@ def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:
 
     assert rows[RAW_PATH]["identity"]["anonymous_digest_readback"] is True
     assert rows[RAW_PATH]["b1_b2_lineage"]["complete"] is True
-    assert rows[ALIAS_PATH]["identity"]["anonymous_digest_readback"] is False
+    assert rows[ALIAS_PATH]["identity"]["anonymous_digest_readback"] is True
+    assert rows[ALIAS_PATH]["identity"]["sha256"] == (
+        "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+    )
+    assert rows[ALIAS_PATH]["identity"]["digest_evidence"]["path"] == (
+        ALIAS_READBACK
+    )
     assert rows[ALIAS_PATH]["b1_b2_lineage"]["complete"] is False
 
     for path, row in rows.items():
@@ -167,11 +176,16 @@ def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:
     assert (
         report["aggregate_gates"]["paths_with_exact_source_release_rights"] == 2
     )
+    assert (
+        report["aggregate_gates"]["paths_with_anonymous_digest_readback"] == 29
+    )
     assert report["aggregate_gates"]["paths_with_complete_b1_b2_lineage"] == 1
     assert report["aggregate_gates"]["paths_admitted_to_v4"] == 0
     assert report["aggregate_gates"]["paths_with_consumer_canary"] == 0
     assert report["boundaries"]["rights_decision_created_or_expanded"] is False
-    assert report["boundaries"]["source_payload_bytes_read"] is False
+    assert report["boundaries"]["source_payload_bytes_read"] is True
+    assert report["boundaries"]["source_payload_bytes_retained"] is False
+    assert report["boundaries"]["source_values_inspected"] is False
     assert report["boundaries"]["v4_admission_performed"] is False
 
 
@@ -182,6 +196,7 @@ def test_august_crosswalk_inputs_are_digest_bound() -> None:
         LIFECYCLE,
         ROOT_READBACK,
         SOURCE_DIGEST,
+        ALIAS_READBACK,
         SOURCE_RECEIPT,
         AUTHORIZATION,
         "quality/qualifications/mbs-current-release-contract.json",
@@ -192,3 +207,16 @@ def test_august_crosswalk_inputs_are_digest_bound() -> None:
             (ROOT / binding["path"]).read_bytes()
         ).hexdigest()
         assert digest == binding["sha256"]
+
+
+def test_alias_readback_rejects_a_different_immutable_revision(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    readback = _load(ROOT / ALIAS_READBACK)
+    readback["revision"] = "0" * 40
+    invalid_readback = tmp_path / "invalid-readback.json"
+    invalid_readback.write_text(json.dumps(readback), encoding="utf-8")
+    monkeypatch.setattr(crosswalk, "ALIAS_READBACK", str(invalid_readback))
+    with pytest.raises(ValueError, match="does not bind the alias"):
+        crosswalk.build_report()

@@ -17,6 +17,9 @@ ROOT_READBACK = (
 SOURCE_DIGEST = (
     f"{BASE}australian-m112-source-archive-digest-reconciliation-20261004.json"
 )
+ALIAS_READBACK = (
+    f"{BASE}australian-m112-august-alias-anonymous-readback-20261018.json"
+)
 SOURCE_RECEIPT = f"{BASE}australian-mbs-bronze-source-receipt-20261004.json"
 AUTHORIZATION = f"{BASE}australian-mbs-harvest-publication-authorization.json"
 RELEASE_CONTRACT = f"{BASE}mbs-current-release-contract.json"
@@ -260,6 +263,59 @@ def _validate_payload_digest(report: dict[str, Any]) -> None:
         raise ValueError("anonymous digest readback does not bind the raw path")
 
 
+def _validate_alias_readback(report: dict[str, Any]) -> None:
+    readback = _read(ALIAS_READBACK)
+    actual = (
+        readback["dataset"],
+        readback["revision"],
+        readback["path"],
+        readback["request_url"],
+        readback["method"],
+        readback["http_status"],
+        readback["anonymous"],
+        readback["authorization_header_sent"],
+        readback["byte_count"],
+        readback["sha256"],
+        readback["digest_method"],
+        readback["payload_retained"],
+        readback["source_values_inspected"],
+    )
+    expected = (
+        DATASET,
+        "40891976f77ee5e7688edceed25c9ac98a77547e",
+        ALIAS_PATH,
+        (
+            "https://huggingface.co/datasets/"
+            f"{DATASET}/resolve/40891976f77ee5e7688edceed25c9ac98a77547e/"
+            f"{ALIAS_PATH}"
+        ),
+        "GET",
+        200,
+        True,
+        False,
+        PAYLOAD_BYTES,
+        PAYLOAD_SHA256,
+        "sha256_stream",
+        False,
+        False,
+    )
+    if actual != expected:
+        raise ValueError("anonymous digest readback does not bind the alias")
+
+    row = next(
+        item
+        for item in report["objects"]
+        if item["dataset"] == DATASET and item["path"] == ALIAS_PATH
+    )
+    identity = row["identity"]
+    identity.update({
+        "sha256_evidence": "anonymous_digest_readback",
+        "sha256": PAYLOAD_SHA256,
+        "anonymous_digest_readback": True,
+        "digest_evidence": _binding(ALIAS_READBACK),
+    })
+
+
 def _apply_object_crosswalk(report: dict[str, Any]) -> None:
     rows = [row for row in report["objects"] if row["dataset"] == DATASET]
     by_path = {row["path"]: row for row in rows}
@@ -306,6 +362,7 @@ def build_report() -> dict[str, Any]:
     _validate_bronze_chain(receipt, lifecycle["canonical_bronze_lifecycle"])
     _validate_public_manifest(_read(ROOT_READBACK))
     _validate_payload_digest(report)
+    _validate_alias_readback(report)
     _apply_object_crosswalk(report)
 
     report.update({
@@ -320,6 +377,7 @@ def build_report() -> dict[str, Any]:
                 LIFECYCLE,
                 ROOT_READBACK,
                 SOURCE_DIGEST,
+                ALIAS_READBACK,
                 SOURCE_RECEIPT,
                 AUTHORIZATION,
                 RELEASE_CONTRACT,
@@ -328,7 +386,9 @@ def build_report() -> dict[str, Any]:
         "boundaries": {
             "approved_denominator_changed": False,
             "rights_decision_created_or_expanded": False,
-            "source_payload_bytes_read": False,
+            "source_payload_bytes_read": True,
+            "source_payload_bytes_retained": False,
+            "source_values_inspected": False,
             "source_payload_bytes_uploaded": False,
             "v4_admission_performed": False,
             "consumer_canaries_performed": False,
@@ -344,6 +404,10 @@ def build_report() -> dict[str, Any]:
         "consumer_canaries_passed": 0,
     })
     report["aggregate_gates"].update({
+        "paths_with_anonymous_digest_readback": sum(
+            row["identity"]["anonymous_digest_readback"]
+            for row in report["objects"]
+        ),
         "paths_with_exact_source_release_rights": 2,
         "paths_with_complete_b1_b2_lineage": 1,
         "paths_admitted_to_v4": 0,
