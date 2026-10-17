@@ -74,3 +74,19 @@ tests and routine checks; do not repeat the local full profile solely because
 the test changed. Complete protected CI lanes still run on every pull request.
 Linux CI is authoritative for mutmut and Mojo. Record evidence in the active
 track and reconcile plan markers only with observable results.
+
+Before a broad run, record the tested commit and tree, any uncommitted input
+changes, and the Python and uv versions. Use the runtime required by the
+affected release/reproducibility contract, including child-process PATH, and
+keep executable inputs fixed until the run exits. A remote `main` advance
+does not invalidate evidence for that tested state. After integration, check
+the actual delta: documentation, receipts, or test-only changes require affected
+and routine checks; changed production behavior or release gates require the
+applicable full profile. Preserve failed invocations separately from successful
+recovery checks. Required hosted checks must pass on the final PR head.
+
+Record the checked PR head, required CI results, merge commit and resulting
+tree as observable completion evidence. GitHub provides the immediate merge
+record; fold its final track receipt into the next substantive change rather
+than opening a receipt-only successor PR or a receipt-of-receipt chain. Use a
+literal body file or structured argument for multiline PR descriptions.
