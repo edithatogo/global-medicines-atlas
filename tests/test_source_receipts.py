@@ -106,6 +106,15 @@ def test_non_live_evidence_never_satisfies_live_gate(
 
 
 @pytest.mark.unit
+def test_historical_source_receipt_does_not_satisfy_live_gate() -> None:
+    historical = EvidenceClass("historical")
+    receipt = source_receipt(evidence_class=historical)
+
+    assert receipt.evidence_class.value == "historical"
+    assert not receipt.satisfies_live_gate
+
+
+@pytest.mark.unit
 def test_receipts_are_deeply_immutable() -> None:
     receipt = source_receipt()
 

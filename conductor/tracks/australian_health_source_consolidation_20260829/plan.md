@@ -830,3 +830,53 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   protected checks before merging. PR #1094 head `dde310c8` passed all 39
   checks, including Gitleaks and Codecov patch coverage, and squash-merged as
   `4781e94c`; the merge tree matches the tested head tree.
+
+## M-112 historical canonical receipt projections (2026-10-17)
+
+- [x] Build 14 deterministic historical `SourceReceipt` projections from the
+  exact-scope-approved MBS cohort. Bind every projection to its indexed
+  historical raw-reference sidecar, acquisition event, B1 harvest receipt,
+  data.gov.au catalog metadata snapshot, exact rights decision, per-object
+  denominator row, and existing B2 immutable public reference. Read no source
+  payload bytes or values, perform no new acquisition, and classify every
+  projection as `historical`; none satisfies the live-source gate. Preserve
+  unknown sensitivity and review-required publication state.
+- [x] Add regeneration/check mode and regressions for canonical serialization,
+  all 14 identities, transformation-output identity, and historical/live gate
+  separation. Rebind the source-contract fingerprint in the MBS lifecycle
+  record and its M-112 dependent identity records; refresh the generated
+  Bronze cohort projection without changing the 1,759-object denominator.
+- [x] Verify the affected M-112/receipt/Bronze tests (113 passed), context
+  validation, Ruff, `ty`, and BasedPyright. The full local Test-Goblin run
+  completed with 6,501 passed, 3 skipped, and 3 failures: two release
+  reproducibility cases could not find pinned uv 0.11.29 (both pass in an
+  isolated rerun using that exact version); one Chromium benefits case passed
+  on isolated rerun. Preserve the full-profile result as failed; hosted Linux
+  CI remains required.
+- [~] Keep M-112 blocked. These projections do not create native/live receipts,
+  independent storage or restore evidence, v4 admission histories, consumer
+  canaries, or full-denominator reconciliation. M-112 acceptance remains open.
+
+## PR #1102 exact-manifest rights review correction (2026-10-17)
+
+- [x] Close the review finding that a count-only 14-object check could have
+  allowed a different cohort to inherit exact-scope permission. Validate the
+  maintainer decision's dataset, revision, manifest path/digest, source counts,
+  and rights disposition; bind the per-object rights list and receipt-sidecar
+  join audit by their exact digests; then compare each source ID/category,
+  path, payload digest, and byte count against both the approved rights row and
+  manifest-join row before constructing a permitted historical receipt. Also
+  bind the per-object gate identity to the same row.
+- [x] Add negative tests for changed dataset/revision/manifest identity,
+  object path, digest, size, and manifest-join controls. The expanded affected
+  suite passed 121 tests; Ruff, BasedPyright, `ty`, context validation, and
+  historical generator checks passed.
+- [x] Run full Test-Goblin with pinned uv 0.11.29: 6,513 passed, 3 skipped,
+  1 failed; coverage was 96.90%. The only failure was the PBS Chromium
+  benefits browser timing out during close; its exact isolated rerun passed.
+  Keep this recorded as a failed full profile. Hosted checks on the prior PR
+  head passed; checks for the corrected head remain pending.
+- [~] Keep M-112 blocked. The generated rows are historical projections, not
+  native/live acquisition evidence. Independent storage/replication and
+  restore proof, v4 admission histories, consumer canaries, and complete
+  1,759-object reconciliation remain outstanding.
