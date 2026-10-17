@@ -2598,3 +2598,12 @@
 ## PR #1079 review correction (2026-10-17)
 
 - [x] Correct the two newly recorded Git tree identifiers as `*_tree_oid`, record `git_object_format: sha1`, and validate both JSONL rows and exact Git trees; focused receipt validation and `git diff --check` pass. Fix commit `24246a1f`.
+
+## Bronze maturity rebind after PR #1079 (2026-10-17)
+
+- [x] Verify PR #1079 merged at `50a0655269bc79f22cf9577a11118f7928892d37`
+  with its exact tested tree; rebind the Bronze maturity report and M5 status
+  to that source commit. The 176-catalogue, 159-public, 117-deferred,
+  42-bounded, 29-direct-receipt, and 1,759-path M-112 counts remain unchanged.
+  The 224 focused maturity/contract tests, measured-coverage check, and context
+  validation pass. M-112 admission and federation acceptance remain blocked.
