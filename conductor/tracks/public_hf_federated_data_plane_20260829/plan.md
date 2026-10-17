@@ -279,6 +279,23 @@
   cards, independent replica evidence, and disposition of the unadmitted MBS
   projection remain unresolved.
 
+### M-108 exact MBS archive refresh after collision-page append (2026-10-17)
+
+- [x] Refresh only the MBS source archive's current metadata references in the
+  2026-10-17 M-108 inventory after the final M-107 append. Current revision
+  `da83cad9116e2f9a5b927be7b080e9a5e5ea6998` has a 212-object root manifest
+  with SHA-256
+  `68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055`.
+  Compared with the preserved prior current observation at `52ad5c31` (40
+  objects), this adds 172 manifest entries without changing or removing prior
+  entries. The MBS Silver candidate's nine-file tree remains visible in the
+  exact current dataset tree metadata. The derivative publication revision,
+  candidate manifest digest, output digests, admission, and rights findings
+  are unchanged. No raw source or Parquet bytes were read.
+- [~] M-108 remains blocked by output-specific derived rights, typed
+  federation-v4 admission, product cards, independent replica evidence, and
+  disposition of the unadmitted MBS projection.
+
 ## Review fixes: runtime reader
 
 - [x] Admit the exact observed `us.aws.cdn.hf.co` delivery host, with signed

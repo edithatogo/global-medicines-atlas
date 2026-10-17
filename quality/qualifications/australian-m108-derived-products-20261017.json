@@ -1,23 +1,32 @@
 {
   "schema_id": "global-medicines-atlas.australian-m108-derived-products-reconciliation",
   "schema_version": 1,
-  "recorded_at": "2026-10-16T21:21:14Z",
+  "recorded_at": "2026-10-17T03:53:08Z",
   "status": "blocked_current_public_metadata_reconciled_no_product_has_complete_v4_rights_admission_bundle",
   "requirement": "M-108",
   "method": "Anonymous Hugging Face dataset/tree metadata plus public manifest, qualification, admission, receipt, and workflow-receipt metadata. No raw source or Parquet payload bytes were downloaded in this reconciliation.",
   "live_datasets": [
     {
       "dataset": "edithatogo/australian-mbs-source-archive",
-      "revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
+      "revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
       "private": false,
       "gated": false,
-      "root_manifest_sha256": "9f9dbe6f5ccf3a6119177bbcbb5d942ce9e9db5ea35d2142c7696a3139cab796",
-      "root_manifest_object_count": 40,
+      "root_manifest_sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+      "root_manifest_object_count": 212,
       "previous_observation": {
         "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
         "root_manifest_sha256": "7afe928933fece384f8459dd268fcd2c4f26c8325dc52577f7a1582e8d63a0ac",
         "root_manifest_object_count": 28
-      }
+      },
+      "prior_current_observation": {
+        "revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
+        "root_manifest_sha256": "9f9dbe6f5ccf3a6119177bbcbb5d942ce9e9db5ea35d2142c7696a3139cab796",
+        "root_manifest_object_count": 40,
+        "observed_at": "2026-10-17T02:19:37Z",
+        "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228342987"
+      },
+      "observed_at": "2026-10-17T03:53:08Z",
+      "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285346"
     },
     {
       "dataset": "edithatogo/australian-pbs-source-archive",
@@ -46,7 +55,7 @@
       "layer": "bronze",
       "source_version": "2026-08-01",
       "dataset": "edithatogo/australian-mbs-source-archive",
-      "current_revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
+      "current_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
       "product_prefix": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64",
       "admission": {
         "state": "accepted",
@@ -99,7 +108,7 @@
       "layer": "bronze",
       "source_version": "2026-08-01",
       "dataset": "edithatogo/australian-mbs-source-archive",
-      "current_revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
+      "current_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
       "product_prefix": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc",
       "admission": {
         "state": "accepted",
@@ -201,7 +210,7 @@
       "source_version": "2025-07-version-3",
       "dataset": "edithatogo/australian-mbs-source-archive",
       "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
-      "current_revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
+      "current_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
       "product_prefix": "silver/mbs/v4/2025-07-v3",
       "candidate_only": true,
       "typed_federation_v4_admission": false,
@@ -292,7 +301,7 @@
       "layer": "bronze",
       "source_version": "2026-08-01",
       "dataset": "edithatogo/australian-mbs-source-archive",
-      "current_revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
+      "current_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
       "product_prefix": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
       "admission": {
         "state": "accepted",
@@ -365,17 +374,24 @@
     "Required collection and independent-replica evidence under the public data-plane track."
   ],
   "current_metadata_readback": {
-    "observed_at": "2026-10-17T02:19:37Z",
-    "method": "Anonymous Hugging Face dataset/tree metadata and public manifest/admission/source-receipt sidecar JSON; no source or Parquet payload bytes downloaded.",
+    "observed_at": "2026-10-17T03:53:08Z",
+    "method": "Anonymous Hugging Face dataset tree and root manifest metadata plus authorized hosted publication and cleanup receipts; no raw source or Parquet payload bytes were downloaded.",
     "mbs_root_manifest": {
-      "revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
-      "sha256": "9f9dbe6f5ccf3a6119177bbcbb5d942ce9e9db5ea35d2142c7696a3139cab796",
-      "object_count": 40,
-      "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228342987",
+      "revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+      "sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+      "object_count": 212,
+      "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285346",
       "previous_observation": {
         "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
         "sha256": "7afe928933fece384f8459dd268fcd2c4f26c8325dc52577f7a1582e8d63a0ac",
         "object_count": 28
+      },
+      "prior_current_observation": {
+        "revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
+        "sha256": "9f9dbe6f5ccf3a6119177bbcbb5d942ce9e9db5ea35d2142c7696a3139cab796",
+        "object_count": 40,
+        "observed_at": "2026-10-17T02:19:37Z",
+        "durable_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228342987"
       }
     },
     "mbs_august_parser_admissions": {
@@ -412,11 +428,17 @@
     },
     "mbs_silver_v4_candidate": {
       "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
-      "current_archive_revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
+      "current_archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
       "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
       "current_tree_object_count": 9,
       "current_tree_matches_candidate_manifest": true,
-      "typed_v4_admission": false
+      "typed_v4_admission": false,
+      "current_tree_metadata_readback": {
+        "revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+        "tree_object_count": 9,
+        "metadata_source": "anonymous Hugging Face tree API",
+        "all_six_parquet_lfs_oids_match_recorded_digests": true
+      }
     },
     "previous_observation_at": "2026-10-16T21:21:14Z",
     "mbs_exact_historical_harvest_delta": {
@@ -528,5 +550,18 @@
       "boundary": "Manifest metadata only in this refresh; the hosted receipt is the evidence for raw object digest verification and temporary-byte cleanup. Four monthly MBS XML objects, two BSD payloads, and six B1 receipt sidecars were added. This does not qualify M-108 products or extend derived-data rights."
     }
   },
-  "refreshed_at": "2026-10-17T02:19:37Z"
+  "refreshed_at": "2026-10-17T02:19:37Z",
+  "latest_mbs_archive_append_readback": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+    "root_manifest_sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+    "root_manifest_object_count": 212,
+    "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39000296702",
+    "merge_commit": "c374cff2c0225beaf170887dd54dbfe0ccb77022",
+    "publication_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285185",
+    "cleanup_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285346",
+    "anonymous_digest_verification": "passed",
+    "temporary_source_bytes_removed": true,
+    "source_payloads_read_during_metadata_refresh": false
+  }
 }
