@@ -86,16 +86,16 @@ def test_exact_main_candidate_consumer_receipt_preserves_lineage_and_limits() ->
     receipt = json.loads(receipt_bytes)
 
     assert hashlib.sha256(receipt_bytes).hexdigest() == (
-        "ce2634a5061d27b017f733020b04f1084646bc51c4c7a4c29369b662fab7107a"
+        "6350063e40ce7a715bf676192605a3a7b9d0afb45ff1a6100985b1d565142220"
     )
     assert receipt["hosted_workflow"] == {
-        "commit": "82a6fce4807151bee277c9a96a88dc0c5db17504",
+        "commit": "7f1cdf457a93d4fa03a38aebca72febfdf029191",
         "repository": "edithatogo/global-medicines-atlas",
         "run_attempt": 1,
-        "run_id": 39055455167,
+        "run_id": 39074277060,
         "run_url": (
             "https://github.com/edithatogo/global-medicines-atlas/"
-            "actions/runs/39055455167"
+            "actions/runs/39074277060"
         ),
         "workflow": (
             ".github/workflows/"
@@ -131,11 +131,16 @@ def test_exact_main_candidate_consumer_receipt_preserves_lineage_and_limits() ->
         },
         "date": {
             "engines": ["duckdb", "polars"],
-            "returned_rows": 0,
+            "returned_rows": 1000,
             "row_limit": 1000,
             "parity": True,
         },
     }
+    assert (
+        0
+        < scalar["query_cases"]["date"]["returned_rows"]
+        <= (scalar["query_cases"]["date"]["row_limit"])
+    )
     edge_digest = (
         "7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d"
     )
