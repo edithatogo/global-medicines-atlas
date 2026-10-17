@@ -2768,8 +2768,11 @@
   `ed518ae06e821bc35efd3ad53c95b03af7a0c24b`, local Chromium checks cover the
   positive two-page fixture and refusals for malformed rows, bindings,
   review-state changes, pagination drift, missing assets, non-success pages,
-  and off-host requests. The focused set passes (47 tests; 95.35% combined
-  coverage), and Test-Goblin E2E passes (113 tests). Ruff, `ty`, BasedPyright,
+  and off-host requests. A loopback 503 response with valid page markup was
+  reproduced and refused. The response matcher binds each continuation to an
+  HTTP 200 main-frame response at the exact expected URL, rejecting iframe or
+  unrelated responses. The focused set passes (52 tests; 95.44% combined
+  coverage), and Test-Goblin E2E passes (114 tests). Ruff, `ty`, BasedPyright,
   actionlint, pedantic zizmor, context, and ecosystem checks pass. Exact-main
   browser qualification remains pending merge.
 

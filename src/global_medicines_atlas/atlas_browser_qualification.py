@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, cast
 from urllib.parse import parse_qs, urlencode, urljoin, urlsplit
 
 import uvicorn
-from playwright.sync_api import Page, sync_playwright
+from playwright.sync_api import Page, Response, sync_playwright
 
 from .atlas import AtlasQueryService, create_atlas_app
 
@@ -153,7 +153,29 @@ def _follow_next_link(
         raise ValueError("Atlas browser continuation changed its filters")
     if params.get("offset") != [str(next_offset)]:
         raise ValueError("Atlas browser continuation skipped a page")
-    link.click()
+    target_url = urljoin(page.url, href)
+    with page.expect_response(
+        lambda response: _is_expected_main_frame_response(
+            response, page, target_url
+        )
+    ) as continuation:
+        link.click()
+    if continuation.value.status != _HTTP_OK:
+        raise ValueError(
+            "Atlas browser continuation response status was not 200"
+        )
+    page.wait_for_load_state("domcontentloaded")
+
+
+def _is_expected_main_frame_response(
+    response: Response, page: Page, expected_url: str
+) -> bool:
+    request = response.request
+    return (
+        request.is_navigation_request()
+        and request.frame == page.main_frame
+        and response.url == expected_url
+    )
 
 
 def _verify_browser_assets(asset_statuses: Mapping[str, int]) -> None:

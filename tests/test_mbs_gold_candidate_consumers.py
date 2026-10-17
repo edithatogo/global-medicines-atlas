@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from importlib import import_module
 from pathlib import Path
+from unittest.mock import Mock
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -17,6 +18,7 @@ import global_medicines_atlas.mbs_gold_consumer_qualification as consumer_qualif
 from global_medicines_atlas.atlas_browser_qualification import (
     _check_page_identity,  # ruff: ignore[import-private-name] -- direct contract test
     _follow_next_link,  # ruff: ignore[import-private-name] -- direct contract test
+    _is_expected_main_frame_response,  # ruff: ignore[import-private-name] -- direct response matcher contract
     _read_edge_ids,  # ruff: ignore[import-private-name] -- direct contract test
     _verify_browser_assets,  # ruff: ignore[import-private-name] -- direct contract test
     _verify_loopback_requests,  # ruff: ignore[import-private-name] -- direct contract test
@@ -357,6 +359,37 @@ def test_browser_continuation_requires_a_link_target() -> None:
         )
 
 
+@pytest.mark.parametrize(
+    ("navigation", "main_frame", "response_url", "expected"),
+    [
+        (True, True, "http://atlas/gold/edges?offset=1", True),
+        (False, True, "http://atlas/gold/edges?offset=1", False),
+        (True, False, "http://atlas/gold/edges?offset=1", False),
+        (True, True, "http://atlas/gold/edges?offset=2", False),
+    ],
+)
+def test_continuation_response_must_match_main_frame_and_exact_url(
+    navigation, main_frame, response_url, expected
+) -> None:
+    page = Mock()
+    page.main_frame = object()
+    request = Mock()
+    request.is_navigation_request.return_value = navigation
+    request.frame = page.main_frame if main_frame else object()
+    response = Mock()
+    response.request = request
+    response.url = response_url
+
+    assert (
+        _is_expected_main_frame_response(
+            response,
+            page,
+            "http://atlas/gold/edges?offset=1",
+        )
+        is expected
+    )
+
+
 def test_browser_asset_and_request_scope_checks_fail_closed() -> None:
     with pytest.raises(ValueError, match="stylesheet"):
         _verify_browser_assets({"/static/atlas.css": 404})
@@ -390,6 +423,43 @@ def test_browser_rejects_a_non_success_loopback_response(
         lambda *_args, **_kwargs: not_found_app,
     )
     with pytest.raises(ValueError, match="page was not served"):
+        qualify_candidate_atlas_browser(
+            edges,
+            edges.column("kind")[0].as_py(),
+            edges.num_rows,
+            bindings,
+            1,
+        )
+
+
+def test_browser_rejects_failed_continuation_with_valid_candidate_markup(
+    tmp_path, monkeypatch
+) -> None:
+    edge_path, _qualification, bindings, _candidate = _candidate_artifact(
+        tmp_path
+    )
+    edges = pq.read_table(edge_path)
+    create_app = browser_qualification.create_atlas_app
+
+    def app_with_failed_second_page(*args, **kwargs):
+        app = create_app(*args, **kwargs)
+
+        @app.middleware("http")
+        async def mark_second_page_unavailable(request, call_next):
+            response = await call_next(request)
+            if (
+                request.url.path == "/gold/edges"
+                and request.query_params.get("offset") == "1"
+            ):
+                response.status_code = 503
+            return response
+
+        return app
+
+    monkeypatch.setattr(
+        browser_qualification, "create_atlas_app", app_with_failed_second_page
+    )
+    with pytest.raises(ValueError, match="continuation response status"):
         qualify_candidate_atlas_browser(
             edges,
             edges.column("kind")[0].as_py(),
