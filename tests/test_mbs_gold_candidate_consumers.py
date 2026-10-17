@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import json
+from importlib import import_module
+from pathlib import Path
+from unittest.mock import Mock
+
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
@@ -8,7 +13,17 @@ from test_mbs_gold_graph import (
     _admitted_table,  # ruff: ignore[import-private-name] -- shared fixture
 )
 
+import global_medicines_atlas.atlas_browser_qualification as browser_qualification
 import global_medicines_atlas.mbs_gold_consumer_qualification as consumer_qualification
+from global_medicines_atlas.atlas_browser_qualification import (
+    _check_page_identity,  # ruff: ignore[import-private-name] -- direct contract test
+    _follow_next_link,  # ruff: ignore[import-private-name] -- direct contract test
+    _is_expected_main_frame_response,  # ruff: ignore[import-private-name] -- direct response matcher contract
+    _read_edge_ids,  # ruff: ignore[import-private-name] -- direct contract test
+    _verify_browser_assets,  # ruff: ignore[import-private-name] -- direct contract test
+    _verify_loopback_requests,  # ruff: ignore[import-private-name] -- direct contract test
+    qualify_candidate_atlas_browser,
+)
 from global_medicines_atlas.mbs_gold_candidate_export import (
     write_mbs_gold_candidate_edges,
 )
@@ -58,15 +73,18 @@ def test_candidate_consumer_receipt_traverses_each_surface_without_edge_ids(
         qualification,
         page_size=1,
         expected_bindings=expected_bindings,
+        browser_qualifier=qualify_candidate_atlas_browser,
     )
 
     assert receipt["candidate_only"] is True
     assert receipt["edge_count"] == len(candidate.edges)
-    assert receipt["surfaces"] == ["API", "Atlas", "CLI"]
+    assert receipt["surfaces"] == ["API", "Atlas", "Browser", "CLI"]
     assert receipt["page_offsets"] == [0, 1]
+    assert receipt["browser_page_offsets"] == [0, 1]
     assert receipt["surface_edge_id_sha256"] == {
         "API": receipt["surface_edge_id_sha256"]["CLI"],
         "Atlas": receipt["surface_edge_id_sha256"]["CLI"],
+        "Browser": receipt["surface_edge_id_sha256"]["CLI"],
         "CLI": receipt["surface_edge_id_sha256"]["CLI"],
     }
     assert receipt["review_state"] == "not_reviewed"
@@ -75,6 +93,41 @@ def test_candidate_consumer_receipt_traverses_each_surface_without_edge_ids(
         edge["edge_id"] not in str(receipt)
         for edge in pq.read_table(edge_path).to_pylist()
     )
+
+
+def test_qualification_script_emits_browser_bound_aggregate_receipt(
+    tmp_path, monkeypatch, capsys
+) -> None:
+    edge_path, qualification, expected_bindings, candidate = (
+        _candidate_artifact(tmp_path)
+    )
+    monkeypatch.syspath_prepend(
+        str(Path(__file__).resolve().parents[1] / "scripts")
+    )
+    script = import_module(
+        "scripts.qualify_australian_mbs_gold_candidate_consumers"
+    )
+    monkeypatch.setattr(script, "_read_json", lambda _path: qualification)
+    hashes = iter((
+        expected_bindings["input_admission_sha256"],
+        expected_bindings["input_semantic_manifest_sha256"],
+    ))
+    monkeypatch.setattr(script, "_sha256", lambda _path: next(hashes))
+    output = tmp_path / "consumer-qualification.json"
+
+    assert (
+        script.main(["--edge-file", str(edge_path), "--output", str(output)])
+        == 0
+    )
+    receipt = json.loads(output.read_text(encoding="utf-8"))
+    assert receipt["surfaces"] == ["API", "Atlas", "Browser", "CLI"]
+    assert receipt["edge_count"] == len(candidate.edges)
+    assert "items" not in receipt
+    assert all(
+        edge["edge_id"] not in str(receipt)
+        for edge in pq.read_table(edge_path).to_pylist()
+    )
+    assert json.loads(capsys.readouterr().out) == receipt
 
 
 def test_candidate_consumer_rejects_surfaces_agreeing_on_wrong_edge_ids(
@@ -110,6 +163,21 @@ def test_candidate_consumer_rejects_surfaces_agreeing_on_wrong_edge_ids(
         )
 
 
+def test_candidate_consumer_rejects_browser_page_offset_drift(tmp_path) -> None:
+    edge_path, qualification, expected_bindings, _candidate = (
+        _candidate_artifact(tmp_path)
+    )
+    ids = sorted(pq.read_table(edge_path).column("edge_id").to_pylist())
+    with pytest.raises(ValueError, match="page offsets differ"):
+        qualify_consumers(
+            edge_path,
+            qualification,
+            page_size=1,
+            expected_bindings=expected_bindings,
+            browser_qualifier=lambda *_args: (ids, [0]),
+        )
+
+
 def _valid_payload(bindings, *, offset=0, edge_count=1, items=None):
     return {
         "qualification": "admitted_real_silver_candidate_only",
@@ -126,6 +194,279 @@ def _valid_payload(bindings, *, offset=0, edge_count=1, items=None):
         ],
         "has_more": offset + 1 < edge_count,
     }
+
+
+class _BrowserLocator:
+    def __init__(self, *, count=1, text="", rows=None, href=None):
+        self._count = count
+        self._text = text
+        self._rows = rows or []
+        self._href = href
+        self.clicked = False
+
+    def count(self):
+        return self._count
+
+    def inner_text(self):
+        return self._text
+
+    def evaluate_all(self, _script):
+        return self._rows
+
+    def get_attribute(self, _name):
+        return self._href
+
+    def click(self):
+        self.clicked = True
+
+
+class _BrowserPage:
+    def __init__(self, *, url, locator):
+        self.url = url
+        self._locator = locator
+
+    def locator(self, _selector):
+        return self._locator
+
+    def get_by_role(self, _role, name=None):
+        if name is not None and "candidate edges" in str(name):
+            return self._locator
+        return self._locator
+
+
+@pytest.mark.parametrize(
+    ("url", "count", "message"),
+    [
+        ("http://127.0.0.1/gold/edges?kind=k&limit=1&offset=1", 1, "skipped"),
+        (
+            "http://127.0.0.1/gold/edges?kind=wrong&limit=1&offset=0",
+            1,
+            "filters",
+        ),
+        (
+            "http://127.0.0.1/gold/edges?kind=k&limit=1&offset=0",
+            0,
+            "full edge count",
+        ),
+    ],
+)
+def test_browser_page_identity_rejects_changed_or_missing_state(
+    url, count, message
+) -> None:
+    page = _BrowserPage(url=url, locator=_BrowserLocator(count=count))
+    with pytest.raises(ValueError, match=message):
+        _check_page_identity(
+            page, edge_count=1, offset=0, kind="k", page_size=1
+        )
+
+
+@pytest.mark.parametrize(
+    ("body", "rows", "message", "error"),
+    [
+        (
+            "",
+            [
+                {
+                    "Edge identifier": "mbs-gold-edge:" + "a" * 64,
+                    "Review state": "not_reviewed",
+                }
+            ],
+            "binding",
+            ValueError,
+        ),
+        ("binding", [], "page size", ValueError),
+        ("binding", [None], "invalid edge row", TypeError),
+        (
+            "binding",
+            [{"Edge identifier": "bad", "Review state": "not_reviewed"}],
+            "edge identity",
+            ValueError,
+        ),
+        (
+            "binding",
+            [
+                {
+                    "Edge identifier": "mbs-gold-edge:" + "a" * 64,
+                    "Review state": "reviewed",
+                }
+            ],
+            "review state",
+            ValueError,
+        ),
+    ],
+)
+def test_browser_edge_rows_reject_malformed_or_reviewed_data(
+    body, rows, message, error
+) -> None:
+    page = _BrowserPage(
+        url="http://127.0.0.1/gold/edges?kind=k&limit=1&offset=0",
+        locator=_BrowserLocator(text=body, rows=rows),
+    )
+    with pytest.raises(error, match=message):
+        _read_edge_ids(
+            page,
+            edge_count=1,
+            offset=0,
+            page_size=1,
+            bindings={"graph_sha256": "binding"},
+        )
+
+
+@pytest.mark.parametrize(
+    ("href", "has_more", "offset", "message"),
+    [
+        ("/gold/edges?kind=k&limit=1&offset=1", False, 1, "extra continuation"),
+        (None, True, 1, "next-page link"),
+        (
+            "/gold/edges?kind=other&limit=1&offset=1",
+            True,
+            1,
+            "changed its filters",
+        ),
+        ("/gold/edges?kind=k&limit=1&offset=2", True, 1, "skipped a page"),
+    ],
+)
+def test_browser_continuation_rejects_invalid_targets(
+    href, has_more, offset, message
+) -> None:
+    link_count = 1 if href is not None or not has_more else 0
+    page = _BrowserPage(
+        url="http://127.0.0.1/gold/edges?kind=k&limit=1&offset=0",
+        locator=_BrowserLocator(count=link_count, href=href),
+    )
+    with pytest.raises(ValueError, match=message):
+        _follow_next_link(
+            page,
+            has_more=has_more,
+            kind="k",
+            page_size=1,
+            next_offset=offset,
+        )
+
+
+def test_browser_continuation_requires_a_link_target() -> None:
+    page = _BrowserPage(
+        url="http://127.0.0.1/gold/edges?kind=k&limit=1&offset=0",
+        locator=_BrowserLocator(count=1),
+    )
+    with pytest.raises(ValueError, match="no target"):
+        _follow_next_link(
+            page,
+            has_more=True,
+            kind="k",
+            page_size=1,
+            next_offset=1,
+        )
+
+
+@pytest.mark.parametrize(
+    ("navigation", "main_frame", "response_url", "expected"),
+    [
+        (True, True, "http://atlas/gold/edges?offset=1", True),
+        (False, True, "http://atlas/gold/edges?offset=1", False),
+        (True, False, "http://atlas/gold/edges?offset=1", False),
+        (True, True, "http://atlas/gold/edges?offset=2", False),
+    ],
+)
+def test_continuation_response_must_match_main_frame_and_exact_url(
+    navigation, main_frame, response_url, expected
+) -> None:
+    page = Mock()
+    page.main_frame = object()
+    request = Mock()
+    request.is_navigation_request.return_value = navigation
+    request.frame = page.main_frame if main_frame else object()
+    response = Mock()
+    response.request = request
+    response.url = response_url
+
+    assert (
+        _is_expected_main_frame_response(
+            response,
+            page,
+            "http://atlas/gold/edges?offset=1",
+        )
+        is expected
+    )
+
+
+def test_browser_asset_and_request_scope_checks_fail_closed() -> None:
+    with pytest.raises(ValueError, match="stylesheet"):
+        _verify_browser_assets({"/static/atlas.css": 404})
+    _verify_browser_assets({"/static/atlas.css": 200})
+    with pytest.raises(ValueError, match="left the loopback"):
+        _verify_loopback_requests(
+            {"127.0.0.1:8000", "example.test"}, "127.0.0.1:8000"
+        )
+    _verify_loopback_requests({"127.0.0.1:8000"}, "127.0.0.1:8000")
+
+
+def test_browser_rejects_a_non_success_loopback_response(
+    tmp_path, monkeypatch
+) -> None:
+    edge_path, _qualification, bindings, _candidate = _candidate_artifact(
+        tmp_path
+    )
+    edges = pq.read_table(edge_path)
+
+    async def not_found_app(_scope, _receive, send):
+        await send({
+            "type": "http.response.start",
+            "status": 404,
+            "headers": [],
+        })
+        await send({"type": "http.response.body", "body": b"not found"})
+
+    monkeypatch.setattr(
+        browser_qualification,
+        "create_atlas_app",
+        lambda *_args, **_kwargs: not_found_app,
+    )
+    with pytest.raises(ValueError, match="page was not served"):
+        qualify_candidate_atlas_browser(
+            edges,
+            edges.column("kind")[0].as_py(),
+            edges.num_rows,
+            bindings,
+            1,
+        )
+
+
+def test_browser_rejects_failed_continuation_with_valid_candidate_markup(
+    tmp_path, monkeypatch
+) -> None:
+    edge_path, _qualification, bindings, _candidate = _candidate_artifact(
+        tmp_path
+    )
+    edges = pq.read_table(edge_path)
+    create_app = browser_qualification.create_atlas_app
+
+    def app_with_failed_second_page(*args, **kwargs):
+        app = create_app(*args, **kwargs)
+
+        @app.middleware("http")
+        async def mark_second_page_unavailable(request, call_next):
+            response = await call_next(request)
+            if (
+                request.url.path == "/gold/edges"
+                and request.query_params.get("offset") == "1"
+            ):
+                response.status_code = 503
+            return response
+
+        return app
+
+    monkeypatch.setattr(
+        browser_qualification, "create_atlas_app", app_with_failed_second_page
+    )
+    with pytest.raises(ValueError, match="continuation response status"):
+        qualify_candidate_atlas_browser(
+            edges,
+            edges.column("kind")[0].as_py(),
+            edges.num_rows,
+            bindings,
+            1,
+        )
 
 
 def test_mapping_and_binding_validation_fail_closed(tmp_path) -> None:

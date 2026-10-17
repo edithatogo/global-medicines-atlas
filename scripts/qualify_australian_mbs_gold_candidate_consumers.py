@@ -19,6 +19,9 @@ from qualify_australian_mbs_gold_real_silver import (
     OUTPUT_PATH as QUALIFICATION_PATH,
 )
 
+from global_medicines_atlas.atlas_browser_qualification import (
+    qualify_candidate_atlas_browser,
+)
 from global_medicines_atlas.mbs_gold_consumer_qualification import (
     qualify_consumers,
 )
@@ -43,6 +46,7 @@ def main(argv: list[str] | None = None) -> int:
             "input_semantic_manifest_sha256": _sha256(ROOT / SEMANTIC_PATH),
             "graph_sha256": cast("str", qualification["graph"]["graph_sha256"]),
         },
+        browser_qualifier=qualify_candidate_atlas_browser,
     )
     with output.open("x", encoding="utf-8") as stream:
         stream.write(json.dumps(receipt, sort_keys=True, separators=(",", ":")))

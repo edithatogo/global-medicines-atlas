@@ -103,6 +103,17 @@ class _TestClient(Protocol):
     ) -> _TestResponse: ...
 
 
+class _BrowserQualifier(Protocol):
+    def __call__(
+        self,
+        edges: pa.Table,
+        kind: str,
+        edge_count: int,
+        bindings: Mapping[str, str],
+        page_size: int,
+    ) -> tuple[list[str], list[int]]: ...
+
+
 def _mapping(value: object, message: str) -> Mapping[str, object]:
     if not isinstance(value, dict):
         raise TypeError(message)
@@ -318,6 +329,7 @@ def qualify_consumers(
     *,
     page_size: int = MAX_EDGE_ROWS,
     expected_bindings: Mapping[str, str] | None = None,
+    browser_qualifier: _BrowserQualifier | None = None,
 ) -> dict[str, object]:
     """Traverse the complete candidate graph without returning edge values."""
     if not 1 <= page_size <= MAX_EDGE_ROWS:
@@ -346,6 +358,14 @@ def qualify_consumers(
         edges, kind, edge_count, bindings, page_size
     )
     traversals["Atlas"] = atlas_ids
+    browser_offsets: list[int] | None = None
+    if browser_qualifier is not None:
+        browser_ids, browser_offsets = browser_qualifier(
+            edges, kind, edge_count, bindings, page_size
+        )
+        if browser_offsets != offsets:
+            raise ValueError("browser and Atlas page offsets differ")
+        traversals["Browser"] = browser_ids
     digests = {surface: _id_digest(ids) for surface, ids in traversals.items()}
     authoritative_ids = sorted(
         cast("list[str]", edges.column("edge_id").to_pylist())
@@ -363,7 +383,7 @@ def qualify_consumers(
         raise ValueError("consumer did not traverse every candidate edge")
     if len(set(digests.values())) != 1:
         raise ValueError("consumer surfaces returned different edge sequences")
-    return {
+    receipt: dict[str, object] = {
         "candidate_only": True,
         "edge_count": edge_count,
         "graph_sha256": bindings["graph_sha256"],
@@ -379,3 +399,6 @@ def qualify_consumers(
         "surface_edge_id_sha256": digests,
         "surfaces": sorted(traversals),
     }
+    if browser_offsets is not None:
+        receipt["browser_page_offsets"] = browser_offsets
+    return receipt
