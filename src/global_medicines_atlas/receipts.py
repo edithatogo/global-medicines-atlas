@@ -66,6 +66,7 @@ class EvidenceClass(StrEnum):
     SYNTHETIC = "synthetic"
     DRY_RUN = "dry_run"
     LIVE = "live"
+    HISTORICAL = "historical"
     UNAVAILABLE = "unavailable"
 
 

@@ -14,7 +14,7 @@
     },
     "source_receipt_contract": {
       "path": "src/global_medicines_atlas/receipts.py",
-      "sha256": "de20bf6fd3760c048a23ed2485eff1d5c50a3f3bd328c967980c6b3ba60e1275"
+      "sha256": "c2073ab60d24a87084c96d8223f59d74729c908d8b24381c01a9123c7c882296"
     },
     "storage_contract": {
       "path": "src/global_medicines_atlas/bronze_storage.py",

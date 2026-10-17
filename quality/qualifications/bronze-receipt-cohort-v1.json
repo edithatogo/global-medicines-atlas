@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "4dbdec29a298911cef685cd40901d492993902f3b66c56986769e9be2f00b962",
+      "sha256": "d397fff88d148bd2d7c10b5fdd51429017b9b5810e1b329ed3b37636fd4448e6",
       "file_count": 148,
       "files": [
         {
@@ -482,7 +482,7 @@
         {
           "path": "src/global_medicines_atlas/receipts.py",
           "exists": true,
-          "sha256": "de20bf6fd3760c048a23ed2485eff1d5c50a3f3bd328c967980c6b3ba60e1275"
+          "sha256": "c2073ab60d24a87084c96d8223f59d74729c908d8b24381c01a9123c7c882296"
         },
         {
           "path": "src/global_medicines_atlas/reuse_gate.py",
@@ -767,7 +767,7 @@
         {
           "path": "tests/test_source_receipts.py",
           "exists": true,
-          "sha256": "5199c36a29673c3af043c1c4df3172568f47e0788ec8551de7d6c6b985687696"
+          "sha256": "ff33cb7b505876fc37c6a5a1988ff96f23d88919d77ec12e49628d12192ffe67"
         },
         {
           "path": "tests/test_temporal_identity.py",
