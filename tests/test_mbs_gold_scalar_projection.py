@@ -1,12 +1,14 @@
 """Tests for the candidate-only MBS Gold scalar consumer bridge."""
 
+import hashlib
 import io
 import json
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import cast
 
+import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
@@ -26,6 +28,20 @@ from global_medicines_atlas.api import create_app
 from global_medicines_atlas.australian_source_contracts import (
     mbs_field_contracts,
 )
+from global_medicines_atlas.federation_admission import (
+    TrustedAdmissionProfile,
+    admit_closed_contract,
+)
+from global_medicines_atlas.federation_distribution import (
+    ProducedObject,
+    reconcile_distribution,
+)
+from global_medicines_atlas.federation_receipt_closure import (
+    ReceiptPayload,
+    ReceiptRole,
+    contract_receipt_roles,
+    verify_receipt_closure,
+)
 from global_medicines_atlas.mbs_gold_graph import (
     MbsGoldFieldEvidence,
     MbsGoldGraphCandidate,
@@ -35,7 +51,15 @@ from global_medicines_atlas.mbs_gold_scalar_projection import (
     project_mbs_gold_scalar_candidate,
 )
 from global_medicines_atlas.mbs_typed_values import ConversionStatus
-from global_medicines_atlas.platinum_benefits import BenefitsPage
+from global_medicines_atlas.platinum_benefits import (
+    BenefitsPage,
+    BenefitsService,
+)
+from global_medicines_atlas.platinum_evidence import validate_result_evidence
+from global_medicines_atlas.platinum_resolver import (
+    ProductResource,
+    StorageNeutralResolver,
+)
 from global_medicines_atlas.query_service import ReadOnlyQueryService
 from global_medicines_atlas.receipts import (
     SensitivityClassification,
@@ -85,6 +109,192 @@ def _benefits_client(payload: bytes) -> TestClient:
             benefits=benefits_service(payload=payload),
         )
     )
+
+
+def _trusted_synthetic_scalar_resolver(  # ruff: ignore[too-many-locals] -- keeps the synthetic trust chain explicit
+    payload: bytes,
+) -> tuple[StorageNeutralResolver, str, str]:
+    """Build an ephemeral v4 product with independent synthetic trust inputs."""
+    schema = (
+        _ROOT / "contracts/medallion/v4/federation.schema.json"
+    ).read_bytes()
+    source_receipt = SourceReceipt.model_validate_json(_RECEIPT.read_bytes())
+    temporal = source_receipt.temporal
+    assert temporal is not None
+    receipt_bytes = source_receipt.canonical_json()
+    receipt_url = "https://fixtures.invalid/receipts/source.json"
+    receipt_sha256 = hashlib.sha256(receipt_bytes).hexdigest()
+    receipt_ref = {"url": receipt_url, "sha256": receipt_sha256}
+    dataset = "example/australian-benefits-synthetic"
+    revision = "a" * 40
+    path = "platinum/mbs-scalar.parquet"
+    object_sha256 = hashlib.sha256(payload).hexdigest()
+    document = json.loads(
+        (_ROOT / "contracts/medallion/v4/fixtures/valid.json").read_bytes()
+    )
+    document["authority"].update(
+        producer_repository="edithatogo/global-medicines-atlas",
+        contract_repository="edithatogo/global-medicines-atlas",
+    )
+    document["publication"].update(
+        run=(
+            "https://github.com/edithatogo/global-medicines-atlas/"
+            "actions/runs/1"
+        ),
+        commit=revision,
+        receipt=receipt_ref,
+    )
+    document["source"].update(
+        source_id=source_receipt.source.source_id,
+        acquisition_id=temporal.acquisition_id,
+        layer="platinum",
+        bronze_stratum=None,
+        representation="projection",
+        schema_era="synthetic-mbs-v3-test",
+        comparison_cohort="synthetic",
+        effective_date=None,
+        retrieved_at=temporal.retrieved_at.isoformat().replace("+00:00", "Z"),
+    )
+    for group in ("location", "verification"):
+        document[group].update(dataset=dataset, revision=revision, path=path)
+    document["rights"].update(dataset=dataset, path=path)
+    for group in ("location", "verification"):
+        document[group].update(bytes=len(payload), sha256=object_sha256)
+    document["verification"].update(
+        status="passed", verified_at="2026-10-17T00:05:00Z", receipt=receipt_ref
+    )
+    document["rights"].update(
+        subject_sha256=object_sha256,
+        basis="Synthetic fixture only; grants no real publication authority",
+        authorization=receipt_ref,
+        publication="approved_exact_scope",
+    )
+    document["discovery"]["estate_entry"] = receipt_ref
+    document["lineage"].update(
+        inputs=[receipt_ref],
+        v1_conformance=receipt_ref,
+        v2_field_lineage=receipt_ref,
+        v3_replay=receipt_ref,
+        promotion_receipt=receipt_ref,
+    )
+    document["recovery"]["checksum_inventory"] = receipt_ref
+    document["cache"].update(
+        max_bytes=max(1024, len(payload)),
+        expires_at="2026-10-18T00:00:00Z",
+        offline_behavior="verified_exact_digest_only",
+        cleanup_receipt=receipt_ref,
+    )
+    contract = json.dumps(
+        document, sort_keys=True, separators=(",", ":")
+    ).encode()
+    closure = verify_receipt_closure(
+        contract,
+        (ReceiptPayload(url=receipt_url, payload=receipt_bytes),),
+        schema=schema,
+    )
+    roles = contract_receipt_roles(contract, schema=schema)
+
+    def trusted_role(role: str) -> ReceiptRole:
+        return ReceiptRole(role=role, url=receipt_url, sha256=receipt_sha256)
+
+    trusted_lineage = tuple(
+        trusted_role(role)
+        for role in (
+            "/lineage/inputs/0",
+            "/lineage/promotion_receipt",
+            "/lineage/v1_conformance",
+            "/lineage/v2_field_lineage",
+            "/lineage/v3_replay",
+        )
+    )
+    profile = TrustedAdmissionProfile(
+        producer_repository="edithatogo/global-medicines-atlas",
+        contract_repository="edithatogo/global-medicines-atlas",
+        contract_commit=revision,
+        schema_sha256=hashlib.sha256(schema).hexdigest(),
+        dataset=dataset,
+        revision=revision,
+        path=path,
+        byte_count=len(payload),
+        sha256=object_sha256,
+        source_id=source_receipt.source.source_id,
+        acquisition_id=temporal.acquisition_id,
+        layer="platinum",
+        bronze_stratum=None,
+        representation="projection",
+        schema_era="synthetic-mbs-v3-test",
+        comparison_cohort="synthetic",
+        effective_date=None,
+        retrieved_at=temporal.retrieved_at.isoformat().replace("+00:00", "Z"),
+        evidence_kind="synthetic",
+        authorization=trusted_role("/rights/authorization"),
+        lineage=trusted_lineage,
+    )
+    admission = admit_closed_contract(
+        contract, closure, schema=schema, trusted=profile
+    )
+    binding = reconcile_distribution(
+        [
+            ProducedObject(
+                producer_repository="edithatogo/global-medicines-atlas",
+                source_id=source_receipt.source.source_id,
+                acquisition_id=temporal.acquisition_id,
+                layer="platinum",
+                bronze_stratum=None,
+                path=path,
+                sha256=object_sha256,
+                byte_count=len(payload),
+                evidence_kind="synthetic",
+            )
+        ],
+        [contract],
+        schema=schema,
+        destinations={"platinum": dataset},
+    )[0]
+    resource_id = "au.mbs.service-items"
+    semantic = json.dumps(
+        {
+            "contract_sha256": binding.contract_sha256,
+            "entity_granularity": "service_item",
+            "resource_id": resource_id,
+            "semantic_dimension": "service_benefit",
+            "version": "1.0",
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    resource = ProductResource(
+        resource_id=resource_id,
+        semantic_dimension="service_benefit",
+        entity_granularity="service_item",
+        binding=binding,
+        contract=contract,
+        semantic_manifest=semantic,
+    )
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        assert "authorization" not in request.headers
+        assert "cookie" not in request.headers
+        if request.url.path.startswith("/api/datasets/"):
+            return httpx.Response(
+                200, json={"sha": revision, "private": False, "gated": False}
+            )
+        if request.url.path.endswith(f"/{path}"):
+            return httpx.Response(200, content=payload)
+        return httpx.Response(404)
+
+    resolver = StorageNeutralResolver(
+        schema=schema,
+        resources=[resource],
+        admission_records=(admission,),
+        admitted_semantic_manifests=frozenset({
+            hashlib.sha256(semantic).hexdigest()
+        }),
+        transport_factory=lambda: httpx.MockTransport(handle),
+        clock=lambda: datetime.fromisoformat("2026-10-17T00:10:00+00:00"),
+    )
+    assert closure.roles == roles
+    return resolver, resource_id, path
 
 
 def _typed_benefits(
@@ -387,6 +597,85 @@ def test_scalar_projection_parquet_reaches_benefits_api_with_date_filter():
         {
             "source_record_id": "au-mbs:3::2025-07-0",
             value_column: "2025-07-01",
+        },
+    )
+
+
+@pytest.mark.parametrize(
+    ("field_name", "values", "operator", "filter_value", "expected"),
+    [
+        (
+            "Benefit100",
+            ["10.25", "2.75"],
+            ">=",
+            Decimal("10.00"),
+            "10.250000000",
+        ),
+        (
+            "BenefitStartDate",
+            ["2025-07-01", "2025-08-01"],
+            "=",
+            {"type": "date", "value": "2025-07-01"},
+            "2025-07-01",
+        ),
+    ],
+)
+def test_scalar_candidate_traverses_exact_synthetic_v4_admission_and_api(
+    field_name: str,
+    values: list[str],
+    operator: str,
+    filter_value: str | dict[str, str],
+    expected: str,
+) -> None:
+    """Prove exact synthetic artifact trust without promoting the candidate."""
+    payload, value_column = _candidate_parquet(field_name, values)
+    metadata = pq.read_table(io.BytesIO(payload)).schema.metadata or {}
+    assert metadata[b"qualification"] == b"candidate_only"
+    assert metadata[b"consumer_admission"] == b"not_performed"
+    resolver, resource_id, path = _trusted_synthetic_scalar_resolver(payload)
+    filter_value_json = (
+        str(filter_value)
+        if isinstance(filter_value, Decimal)
+        else json.dumps(filter_value, separators=(",", ":"))
+    )
+    filters = (
+        '[{"column":'
+        + json.dumps(value_column)
+        + ',"operator":'
+        + json.dumps(operator)
+        + ',"value":'
+        + filter_value_json
+        + "}]"
+    )
+    app = create_app(
+        cast("ReadOnlyQueryService", object()),
+        benefits=BenefitsService(
+            resolver,
+            cursor_key=b"synthetic-scalar-v4-cursor-key-32",
+        ),
+    )
+    with resolver:
+        response = TestClient(app).get(
+            f"/api/v1/benefits/{resource_id}",
+            params=[
+                ("columns", "source_record_id"),
+                ("columns", value_column),
+                ("filters", filters),
+                ("limit", "2"),
+            ],
+        )
+    assert response.status_code == 200, response.json()
+    page = BenefitsPage.model_validate(response.json())
+    assert validate_result_evidence(page) is page
+    assert page.identity.path == path
+    assert page.identity.object_sha256 == hashlib.sha256(payload).hexdigest()
+    assert page.identity.comparison_cohort == "synthetic"
+    assert page.review_state == "not_declared"
+    assert page.coverage_state == "not_declared"
+    assert page.rows == (
+        {
+            "source_record_id": "au-mbs:3::2025-07-0",
+            value_column: expected,
         },
     )
 

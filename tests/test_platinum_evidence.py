@@ -107,6 +107,15 @@ def test_result_evidence_accepts_complete_conservative_envelope() -> None:
     assert validate_result_evidence(result) is result
 
 
+def test_result_evidence_accepts_explicit_unknown_effective_date() -> None:
+    result = _Result(_Evidence(effective_date=None))
+    assert validate_result_evidence(result) is result
+    without_date = vars(_Evidence())
+    del without_date["effective_date"]
+    with pytest.raises(PlatinumEvidenceError, match="effective_date"):
+        validate_result_evidence(without_date)
+
+
 def test_result_evidence_rejects_missing_claim_bearing_field() -> None:
     result = _Result(_Evidence(confidence_state=""))
     with pytest.raises(PlatinumEvidenceError, match="confidence_state"):
