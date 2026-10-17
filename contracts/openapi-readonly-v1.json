@@ -1269,12 +1269,34 @@
     },
     "GoldEdgePage": {
       "properties": {
+        "admission_bindings": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Admission Bindings"
+        },
+        "has_more": {
+          "title": "Has More",
+          "type": "boolean"
+        },
         "items": {
           "items": {
             "$ref": "#/components/schemas/GoldEdgeItem"
           },
           "title": "Items",
           "type": "array"
+        },
+        "offset": {
+          "title": "Offset",
+          "type": "integer"
         },
         "qualification": {
           "title": "Qualification",
@@ -1298,7 +1320,9 @@
         "schema_version",
         "qualification",
         "total",
-        "items"
+        "items",
+        "offset",
+        "has_more"
       ],
       "type": "object"
     },
@@ -2832,6 +2856,16 @@
             "schema": {
               "maximum": 1000,
               "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "maximum": 10000,
+              "minimum": 0,
               "type": "integer"
             }
           },

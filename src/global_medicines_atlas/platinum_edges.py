@@ -153,6 +153,7 @@ def gold_edge_payload(
             )
             and (kind is None or row["kind"] == kind)
         )
+        payload["total"] = matching_count
         payload.update(
             offset=offset,
             has_more=offset + len(items) < matching_count,

@@ -64,7 +64,7 @@ def test_candidate_edges_are_bounded_and_visible_in_atlas(tmp_path) -> None:
     assert "Next 1 candidate edges" not in next_page.text
     filtered = client.get(
         "/gold/edges",
-        params={"source_node_id": edges["source_node_id"][0].as_py()},
+        params={"source_node_id": edges.to_pylist()[0]["source_node_id"]},
     )
     assert filtered.status_code == 200
     assert filtered.text.count('<article class="result-card"') == 1

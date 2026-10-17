@@ -79,7 +79,7 @@
               {% endfor %}
             </div>
             {% if payload.has_more %}
-              <p><a href="?source_node_id={{ source_node_id | urlencode }}&amp;target_node_id={{ target_node_id | urlencode }}&amp;kind={{ kind | urlencode }}&amp;limit={{ limit }}&amp;offset={{ payload.offset + payload.total }}">Next {{ payload.total }} candidate edges</a></p>
+              <p><a href="?source_node_id={{ source_node_id | urlencode }}&amp;target_node_id={{ target_node_id | urlencode }}&amp;kind={{ kind | urlencode }}&amp;limit={{ limit }}&amp;offset={{ payload.offset + (payload["items"] | length) }}">Next {{ payload["items"] | length }} candidate edges</a></p>
             {% endif %}
           {% else %}
             <p class="notice" role="status">No candidate edges match these filters. Absence is not evidence of a negative relationship.</p>

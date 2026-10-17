@@ -25,7 +25,8 @@ from .platinum_benefits import (
     BenefitsQuery,
     parse_benefits_filters,
 )
-from .platinum_edges import gold_edge_payload
+from .platinum_edge_configuration import MAX_EDGE_FILE_ROWS
+from .platinum_edges import MAX_EDGE_ROWS, gold_edge_payload
 from .platinum_identity_service import (
     DatasetIdentityLookup,
     DatasetIdentityPage,
@@ -93,6 +94,9 @@ class GoldEdgePage(BaseModel):
     qualification: str
     total: int
     items: list[GoldEdgeItem]
+    offset: int
+    has_more: bool
+    admission_bindings: dict[str, str] | None = None
 
 
 def _request_id(request: Request) -> str:
@@ -256,6 +260,7 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
     @app.get(
         f"{API_BASE_PATH}/edges",
         response_model=GoldEdgePage,
+        response_model_exclude_unset=True,
         responses=_ERROR_RESPONSES,
         tags=["evidence"],
     )
@@ -264,7 +269,8 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
         source_node_id: Annotated[str | None, Query(max_length=512)] = None,
         target_node_id: Annotated[str | None, Query(max_length=512)] = None,
         kind: Annotated[str | None, Query(max_length=512)] = None,
-        limit: Annotated[int, Query(ge=1, le=1000)] = 1000,
+        limit: Annotated[int, Query(ge=1, le=MAX_EDGE_ROWS)] = 1000,
+        offset: Annotated[int, Query(ge=0, le=MAX_EDGE_FILE_ROWS)] = 0,
     ) -> GoldEdgePage | JSONResponse:
         if gold_edges is None:
             return _error_response(
@@ -282,6 +288,8 @@ def create_app(  # ruff: ignore[too-many-statements] - route registration is int
                     target_node_id=target_node_id,
                     kind=kind,
                     max_rows=limit,
+                    offset=offset,
+                    include_pagination=True,
                 )
             )
         except ValueError:

@@ -21,8 +21,8 @@ from .gold_edge_review import (
     regenerate_gold_edge_review_queue,
 )
 from .historical_change_configuration import load_historical_change_service
-from .platinum_edge_configuration import load_gold_edges
-from .platinum_edges import gold_edge_payload
+from .platinum_edge_configuration import MAX_EDGE_FILE_ROWS, load_gold_edges
+from .platinum_edges import MAX_EDGE_ROWS, gold_edge_payload
 from .platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -736,18 +736,19 @@ def edges_query(
     source_node_id: Annotated[str | None, typer.Option()] = None,
     target_node_id: Annotated[str | None, typer.Option()] = None,
     kind: Annotated[str | None, typer.Option()] = None,
-    limit: Annotated[int, typer.Option(min=1, max=1000)] = 1000,
+    limit: Annotated[int, typer.Option(min=1, max=MAX_EDGE_ROWS)] = 1000,
+    offset: Annotated[int, typer.Option(min=0, max=MAX_EDGE_FILE_ROWS)] = 0,
 ) -> None:
     """Inspect bounded structural Gold evidence edges."""
     try:
         payload = gold_edge_payload(
-            load_gold_edges(
-                edge_file,
-                source_node_id=source_node_id,
-                target_node_id=target_node_id,
-                kind=kind,
-                max_rows=limit,
-            ),
+            load_gold_edges(edge_file),
+            source_node_id=source_node_id,
+            target_node_id=target_node_id,
+            kind=kind,
+            max_rows=limit,
+            offset=offset,
+            include_pagination=True,
         )
     except OSError, ValueError:
         _fail(
@@ -813,7 +814,9 @@ def _pending_gold_review_cases(
     adjudications_file: Path | None,
     limit: int,
 ) -> tuple[tuple[GoldEdgeReviewCase, ...], int]:
-    edges = load_gold_edges(edge_file, max_rows=limit)
+    edges = load_gold_edges(edge_file)
+    if edges.num_rows > limit:
+        raise ValueError("review queue edge row bound exceeded")
     projected_items = gold_edge_payload(edges, max_rows=limit)["items"]
     models: list[dict[str, object]] = []
     for item in projected_items:
