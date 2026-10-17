@@ -1,12 +1,16 @@
 """Tests for the candidate-only MBS Gold scalar consumer bridge."""
 
+import io
+import json
 from datetime import date
 from decimal import Decimal
 from pathlib import Path
 from typing import cast
 
 import pyarrow as pa
+import pyarrow.parquet as pq
 import pytest
+from fastapi.testclient import TestClient
 from test_mbs_gold_graph import (
     _admitted_input,  # ruff: ignore[import-private-name] -- shared fixture
     _admitted_table,  # ruff: ignore[import-private-name] -- shared fixture
@@ -14,9 +18,11 @@ from test_mbs_gold_graph import (
 from test_mbs_gold_graph import (
     graph as synthetic_graph,
 )
+from test_platinum_benefits_api import service as benefits_service
 
 import global_medicines_atlas.mbs_gold_graph as graph_module
 import global_medicines_atlas.mbs_gold_scalar_projection as projection_module
+from global_medicines_atlas.api import create_app
 from global_medicines_atlas.australian_source_contracts import (
     mbs_field_contracts,
 )
@@ -29,6 +35,8 @@ from global_medicines_atlas.mbs_gold_scalar_projection import (
     project_mbs_gold_scalar_candidate,
 )
 from global_medicines_atlas.mbs_typed_values import ConversionStatus
+from global_medicines_atlas.platinum_benefits import BenefitsPage
+from global_medicines_atlas.query_service import ReadOnlyQueryService
 from global_medicines_atlas.receipts import (
     SensitivityClassification,
     SourceReceipt,
@@ -50,6 +58,33 @@ def _real_candidate():
     )
     receipt = SourceReceipt.model_validate_json(_RECEIPT.read_bytes())
     return graph, receipt
+
+
+def _candidate_parquet(field_name: str, values: list[str]) -> tuple[bytes, str]:
+    graph = build_mbs_gold_graph_from_admitted_silver(
+        _admitted_table("services", "ItemNum"),
+        _typed_benefits(field_name, values, "converted"),
+        _admitted_input(),
+    )
+    receipt = SourceReceipt.model_validate_json(_RECEIPT.read_bytes())
+    projected = project_mbs_gold_scalar_candidate(graph, receipt)
+    sink = io.BytesIO()
+    pq.write_table(projected, sink)
+    payload = sink.getvalue()
+    round_tripped = pq.read_table(io.BytesIO(payload))
+    metadata = round_tripped.schema.metadata or {}
+    assert metadata[b"qualification"] == b"candidate_only"
+    assert metadata[b"consumer_admission"] == b"not_performed"
+    return payload, f"benefit__{field_name}__typed_value"
+
+
+def _benefits_client(payload: bytes) -> TestClient:
+    return TestClient(
+        create_app(
+            cast("ReadOnlyQueryService", object()),
+            benefits=benefits_service(payload=payload),
+        )
+    )
 
 
 def _typed_benefits(
@@ -288,6 +323,72 @@ def test_scalar_projection_rejects_mixed_source_payload_cohorts():
 
     with pytest.raises(ValueError, match="receipt differs"):
         project_mbs_gold_scalar_candidate(mixed, receipt)
+
+
+def test_scalar_projection_parquet_reaches_benefits_api_with_exact_decimal():
+    """Exercise only a synthetic product wrapper, not real admission."""
+    payload, value_column = _candidate_parquet("Benefit100", ["10.25", "2.75"])
+    filters = (
+        '[{"column":'
+        + json.dumps(value_column)
+        + ',"operator":">=","value":10.00}]'
+    )
+
+    response = _benefits_client(payload).get(
+        "/api/v1/benefits/au.mbs.service-items",
+        params=[
+            ("columns", "source_record_id"),
+            ("columns", value_column),
+            ("filters", filters),
+            ("limit", "2"),
+        ],
+    )
+
+    assert response.status_code == 200, response.json()
+    page = BenefitsPage.model_validate(response.json())
+    assert page.identity.comparison_cohort == "synthetic"
+    assert page.review_state == "not_declared"
+    assert page.rows == (
+        {
+            "source_record_id": "au-mbs:3::2025-07-0",
+            value_column: "10.250000000",
+        },
+    )
+
+
+def test_scalar_projection_parquet_reaches_benefits_api_with_date_filter():
+    """Exercise tagged date filters under a synthetic product wrapper."""
+    payload, value_column = _candidate_parquet(
+        "BenefitStartDate", ["2025-07-01", "2025-08-01"]
+    )
+    filters = json.dumps([
+        {
+            "column": value_column,
+            "operator": "=",
+            "value": {"type": "date", "value": "2025-07-01"},
+        }
+    ])
+
+    response = _benefits_client(payload).get(
+        "/api/v1/benefits/au.mbs.service-items",
+        params=[
+            ("columns", "source_record_id"),
+            ("columns", value_column),
+            ("filters", filters),
+            ("limit", "2"),
+        ],
+    )
+
+    assert response.status_code == 200, response.json()
+    page = BenefitsPage.model_validate(response.json())
+    assert page.identity.comparison_cohort == "synthetic"
+    assert page.review_state == "not_declared"
+    assert page.rows == (
+        {
+            "source_record_id": "au-mbs:3::2025-07-0",
+            value_column: "2025-07-01",
+        },
+    )
 
 
 def test_field_contract_rejects_missing_classes_mixed_fields_and_bad_names():

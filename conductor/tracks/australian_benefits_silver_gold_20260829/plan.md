@@ -2626,6 +2626,17 @@
   still scopes Silver admission to graph input; consumer acceptance and graph
   review remain open. No source was added and no public object was written.
 
+### M-110 synthetic scalar consumer path verification (2026-10-17)
+
+- [x] Exercise the candidate scalar projection through Parquet and the
+  read-only Benefits API using the existing synthetic test product wrapper.
+  Verify exact decimal filtering, tagged ISO date filtering, and preservation
+  of `candidate_only`, `consumer_admission=not_performed`, synthetic cohort,
+  and `review_state=not_declared`.
+- [x] Run focused projection, Benefits API, and Platinum query tests. This
+  closes a source-neutral integration-test gap only; it does not qualify the
+  real M-110 artifact, establish consumer admission, or record a review.
+
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 
 - [x] Add the imported MBS demographics source identity to the B0 catalogue
