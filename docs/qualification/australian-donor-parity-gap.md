@@ -130,3 +130,28 @@ Neither donor PR establishes full parity across all 54 baseline blobs and ten
 later changed paths before either 2026-09-06 archive. The direct donor PR
 records therefore add narrow contemporaneous evidence, not a waiver or a
 criterion change. The M-105 chronology gate remains blocked under D-006-07.
+
+## Complete hosted donor-history recheck, 2026-10-18
+
+A final metadata-only search covered the accessible pull-request histories and
+Actions runs in both donor repositories up to their exact archive times. The
+scraper history contains PR #4, which adds narrow successor and synthetic
+request/output checks, and PR #5, an unmerged Renovate update. The graph history
+contains the 2025 initial parsing setup, PR #5's successor notice, and PR #6,
+an unmerged Renovate update. None establishes parity for the full 54-blob
+baseline and ten later changed paths.
+
+The scraper Actions history includes 14 scheduled monthly runs before archival;
+their green workflow conclusions are not data-success evidence. The last
+pre-archive run, [33461653233](https://github.com/edithatogo/aus-health-data-scraper/actions/runs/33461653233),
+was already reconciled as six 404 responses and no data commit. The graph
+history returned two Dependency Graph runs and no functional parity workflow.
+These Actions records concern donor-side operation, not a complete comparison
+against the GMA successors before archival.
+
+This closes the bounded search of preserved GitHub PR and Actions records, not
+unpreserved external or local evidence. No full pre-archive parity proof was
+found. The exact archived histories and post-archive dispositions remain useful
+preservation evidence but cannot satisfy the chronology rule. M-105 remains
+blocked; no waiver or criterion change is recorded, and M-106–M-112 continue
+independently.

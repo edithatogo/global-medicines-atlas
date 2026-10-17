@@ -1056,3 +1056,18 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] Continue reconciling exact historical schedule identities and receipts.
   M-107 remains blocked; do not infer absent coverage from missing archive-page
   links or the API's documented current window.
+
+## M-105 hosted donor-history search follow-up (2026-10-18)
+
+- [x] Recheck both donor repositories' complete available PR histories and
+  hosted Actions metadata through their exact archive times. The scraper had
+  14 pre-archive monthly runs, whose green workflow conclusions do not establish
+  data success or GMA parity; the last run remains six 404s with no data commit.
+  The graph history showed only two Dependency Graph runs and no functional
+  parity workflow. PR #4/#5 (scraper) and #1/#5/#6 (graph) still do not cover
+  all 54 baseline blobs and ten later changed paths. Details are in the
+  [M-105 parity-gap audit](../../../docs/qualification/australian-donor-parity-gap.md).
+- [~] M-105 remains blocked: this search found no full pre-archive parity proof.
+  Keep the criterion unchanged and request a maintainer decision only if choosing
+  a narrow chronology exception or an explicit criterion change. Continue
+  independent M-106–M-112 work.
