@@ -596,10 +596,28 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   The report explicitly leaves field semantics, temporal semantics, public v4
   admission, and M-109 acceptance open. Record exact qualification state in
   `docs/qualification/australian-m109-source-era-register.md`.
-- [~] Run the qualification on exact `main` after merge and reconcile its
-  value-free readback. Use that result only to advance source structure and
-  diagnostics; separately qualify field meanings, temporal semantics,
-  transformations, and the approved era denominator.
+- [~] Reconcile source structure and diagnostics without advancing field
+  meanings, temporal semantics, transformations, or the approved era
+  denominator until their exact-era evidence is independently qualified.
+- [x] Run the candidate workflow on exact `main` commit
+  `b566e9980fd14d9d94caa7235002af94f6f53533` (run `39025588261`) and preserve
+  the 4,542-byte aggregate report at
+  `quality/qualifications/mbs-source-era-candidate-2026-08-01.json`. Archive
+  bytes and official bytes matched the approved B1 SHA-256 and byte count.
+  The candidate reports 6,046 rows across six tables and remains blocked by
+  `public_v4_identity_unverified` and `quality_findings_present`; it does not
+  accept field meanings or semantics.
+- [x] Implement the per-field presence/state comparison with exact row
+  identity checks and no source-value output. Tests show native absence is
+  represented as `missing_field` without calling it invalid or optional.
+  Also report per-field conversion-status counts so `unsupported_format` is
+  distinct from native absence. The report leaves requiredness unaccepted and
+  will report mismatches without promoting the candidate. Focused/broader MBS
+  checks passed; the exact-main profile with these diagnostics remains pending.
+- [~] Run the updated hosted profile on exact `main` and reconcile its
+  per-field source-presence versus projected-state counts. Use official source
+  docs to evaluate field requiredness and semantics; do not derive those
+  claims from presence counts or date-format diagnostics alone.
 
 ## M-107 metadata evidence review fixes (2026-09-28)
 
