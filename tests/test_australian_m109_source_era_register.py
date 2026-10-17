@@ -182,7 +182,9 @@ def test_august_six_table_handoff_keeps_rights_and_candidate_state_separate() ->
     authority = handoff["authorization"]
     destination = handoff["proposed_destination"]
 
-    assert source["archive_revision"] == "da83cad9116e2f9a5b927be7b080e9a5e5ea6998"
+    assert (
+        source["archive_revision"] == "da83cad9116e2f9a5b927be7b080e9a5e5ea6998"
+    )
     assert source["sha256"] == (
         "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
     )
@@ -190,7 +192,10 @@ def test_august_six_table_handoff_keeps_rights_and_candidate_state_separate() ->
     assert authority["raw_archive_approval"].endswith("comment-5467052330")
     assert authority["derived_output_authority"] == "absent"
     assert authority["publication_performed"] is False
-    assert destination["identity_status"] == "proposal_only_not_created_or_admitted"
+    assert (
+        destination["identity_status"]
+        == "proposal_only_not_created_or_admitted"
+    )
     outputs = destination["outputs"]
     assert [output["table"] for output in outputs] == [
         "services",
@@ -201,12 +206,46 @@ def test_august_six_table_handoff_keeps_rights_and_candidate_state_separate() ->
         "caps",
     ]
     assert all(output["rows"] == 6046 for output in outputs)
-    assert handoff["candidate_diagnostics"]["run_39032003723"][
-        "field_semantics_accepted"
-    ] is False
-    assert "Do not rerun completed 390292/390320 diagnostics" in handoff[
-        "smallest_next_action"
-    ]
+    assert (
+        handoff["candidate_diagnostics"]["run_39032003723"][
+            "field_semantics_accepted"
+        ]
+        is False
+    )
+    assert (
+        "do not rerun the completed 390292/390320 profiles"
+        in handoff["smallest_next_action"]
+    )
+
+
+def test_august_predecessor_comparison_is_bounded_and_non_promoting() -> None:
+    m108 = _json(
+        "quality/qualifications/australian-m108-derived-products-20261017.json"
+    )
+    handoff = m108["august_2026_six_table_operation_assessment"]
+    plan = handoff["predecessor_comparison_plan"]
+    predecessor = plan["exact_predecessor"]
+
+    assert plan["status"] == "planned_not_run"
+    assert predecessor["edition"] == "MBS-XML-20260701.XML"
+    assert predecessor["official_publication_date"] == "2026-05-28"
+    assert predecessor["effective_date"] == "2026-07-01"
+    assert predecessor["sha256"] == (
+        "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805"
+    )
+    assert plan["authorization"]["derived_output_authority"] == (
+        "absent; this comparison does not authorize derived Parquet distribution"
+    )
+    assert (
+        "keep record keys and source values in memory" in plan["procedure"][2]
+    )
+    assert plan["failure_and_recovery"]["mismatch_or_timeout"].startswith(
+        "Mark the comparison incomplete"
+    )
+    assert (
+        "do not establish that field meanings remained unchanged"
+        in plan["interpretation_boundary"]
+    )
 
 
 def test_m109_inventory_keeps_mbs_authorization_and_pbs_rights_separate() -> (

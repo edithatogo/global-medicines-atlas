@@ -1865,10 +1865,16 @@
   six-table lineage and the proposed M-108 output prefix are recorded in
   `docs/qualification/australian-m108-derived-products-20261017.md`; no
   Parquet output, derived-rights approval, v4 admission, or publication exists.
-- [ ] Next action: obtain exact-release versioned MBS schema/change history or
-  source-owner clarification for the 2026-08 field meanings and temporal
-  semantics. Do not rerun completed workflows `39029209737` or `39032003723`;
-  do not generate or publish the proposed derived outputs until their
+- [ ] First compare the exact archived July 2026 XML (the edition released
+  2026-05-28 and referenced by the August page) with the August 2026 XML using
+  a bounded, aggregate-only read in the existing exact-main qualifier. Verify
+  both official endpoints against their pinned sidecar digests/sizes; emit no
+  record identifiers or values and create no Parquet products or publication.
+  This can document release structure/content chronology but cannot establish
+  semantic continuity by itself. After that comparison, obtain versioned
+  schema/change history or source-owner clarification for field meanings and
+  temporal semantics. Do not rerun completed workflows `39029209737` or
+  `39032003723`; do not generate or publish the proposed derived outputs until
   output-specific rights and admission gates are separately resolved. M-105's
   D-006-07 chronology disposition remains blocked; the bounded pre-archive
   record search is complete and must not be restarted absent newly surfaced

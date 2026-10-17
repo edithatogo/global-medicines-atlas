@@ -677,6 +677,46 @@
       "before_authorization": "Do not generate or publish the six derived outputs.",
       "if_future_release_is_withdrawn": "Append a withdrawal/supersession record, remove active discovery and consumer pointers, and preserve the immutable revision, payload digests, and receipts. Public copies already retrieved by others cannot be recalled."
     },
-    "smallest_next_action": "Obtain the versioned official MBS schema/change history or source-owner clarification linked to the 2026-08 release. Do not rerun completed 390292/390320 diagnostics while that evidence is pending."
+    "smallest_next_action": "Implement and run the bounded July 2026 predecessor comparison described above using the existing exact-main read-only qualifier; do not rerun the completed 390292/390320 profiles.",
+    "predecessor_comparison_plan": {
+      "status": "planned_not_run",
+      "exact_predecessor": {
+        "edition": "MBS-XML-20260701.XML",
+        "official_publication_date": "2026-05-28",
+        "effective_date": "2026-07-01",
+        "official_download_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701",
+        "official_source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/MBS-XML-20260701.XML",
+        "archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+        "archive_path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+        "sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+        "byte_count": 8291891,
+        "sidecar_sha256": "01988fb6cf56c4a23bba680e8c9ee6d9b3b39d504d044676e49b4b78d1f5ba56"
+      },
+      "august_identity": {
+        "archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+        "archive_path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "byte_count": 8293331,
+        "sidecar_sha256": "9bca6260ea9d25d7ee9c184b59eed03b059d8da486dea31ec1d058965aae55ed"
+      },
+      "authorization": {
+        "existing_scope": "au-mbs monthly_schedule_xml source archive; exact source read and archive publication are separately receipt-bound",
+        "new_acquisition_or_publication": "not proposed",
+        "derived_output_authority": "absent; this comparison does not authorize derived Parquet distribution"
+      },
+      "procedure": [
+        "Reuse the existing bounded read-only exact-main Actions qualifier.",
+        "Fetch both pinned archive objects and both official edition endpoints in Actions memory; check each hash and byte count against its source sidecar and official identity.",
+        "Compare record counts, native-field sets, per-field presence/null counts, and aggregate added/removed/changed record and field counts; keep record keys and source values in memory and omit them from output.",
+        "Retain only the aggregate comparison report; do not create Silver Parquet, publish, edit archive manifests, or promote semantic/date gates."
+      ],
+      "failure_and_recovery": {
+        "mismatch_or_timeout": "Mark the comparison incomplete, retain both archive objects and existing receipts, and record the exact endpoint/hash failure. Do not infer equality from unavailable bytes.",
+        "retry": "Retry only after a transport/endpoint change or a diagnosed transient condition; do not repeat an unchanged failing request.",
+        "rollback": "No source or public state is mutated, so no source rollback is needed. Preserve the previous M-108/M-109 candidate records and keep admission/publication false."
+      },
+      "interpretation_boundary": "Structural or value-difference counts are evidence about these two source editions only. They do not establish that field meanings remained unchanged. The official field guide was last updated 2022-03-04; its version history through 2026-05-28 remains unverified.",
+      "next_after_comparison": "Obtain exact-release versioned schema/change history or source-owner clarification before accepting August field semantics or temporal meaning."
+    }
   }
 }

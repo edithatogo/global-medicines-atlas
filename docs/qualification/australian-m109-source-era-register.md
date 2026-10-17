@@ -76,6 +76,51 @@ completeness, source-era semantics, and M-109 acceptance remain open.
 | Current PBS public API / API CSV (model 3.7.8, observed 2026-08) | Current distribution metadata and model documentation reviewed; no payload requested or acquired. Public history is limited to the most recent 12 months per the recorded documentation. | Current API field meanings and crosswalk to historical XML remain unqualified. | Current-effective schedule and monthly update metadata are not a field-level temporal mapping. | No API transformation run. | Public access is documented, but project retention and external redistribution authority remain unresolved. Obtain provider clarification and a source-specific maintainer rights decision before acquisition. |
 | Minimal PBS fixture | Synthetic fixture only; not a source era or real corpus. | Fixture contract only. | No real-source temporal evidence. | Test-only transformation behavior. | Must not count toward M-109 source-era completion. |
 
+## August 2026 MBS predecessor comparison plan
+
+The official [August 2026 downloads page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801)
+identifies the XML as released 29 July and effective 1 August 2026. It says
+the file includes item 73331 and that no further changes are reflected compared
+with the version last published on 28 May 2026. The official [July 2026 downloads
+page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701)
+identifies `MBS-XML-20260701.XML` as released on 28 May, effective 1 July,
+and records fee corrections for items 5200, 5203, 5207, 5208 and 5209. This
+identifies the exact predecessor edition referenced by the August page: the
+July 2026 XML published on 28 May, not a separate unnamed May release. The
+archive sidecar at current revision `da83cad9116e2f9a5b927be7b080e9a5e5ea6998`
+binds that July object to `raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML`,
+SHA-256 `5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805`,
+8,291,891 bytes, sidecar SHA-256
+`01988fb6cf56c4a23bba680e8c9ee6d9b3b39d504d044676e49b4b78d1f5ba56`. The
+August object at the same revision is 8,293,331 bytes with SHA-256
+`c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565`; its
+sidecar SHA-256 is
+`9bca6260ea9d25d7ee9c184b59eed03b059d8da486dea31ec1d058965aae55ed`.
+The current archive metadata joins both identities to the existing
+`monthly_schedule_xml` authorization. The July exact official-byte match still
+needs a bounded readback; current evidence proves its pinned archive identity,
+not a new comparison with the live Department endpoint.
+
+The smallest useful comparison reuses the existing read-only MBS candidate
+qualification route on exact `main`: fetch the July and August pinned archive
+objects and their official endpoints, verify each pair against its sidecar
+digest and byte count, then emit only aggregate record counts, native-field
+sets, per-field presence/null counts, and counts of changed/added/removed
+records and fields. Match records by source identity only in memory; never emit
+item identifiers or source values. Keep payloads in Actions memory and retain
+only the aggregate diagnostic. Do not generate Silver Parquet, publish a
+derived product, change archive manifests, or promote field/date semantics.
+If either official endpoint times out or its bytes disagree, mark the
+comparison incomplete and preserve both existing archive objects and receipts;
+do not treat missing data as equality or repeat an unchanged failing request.
+
+This comparison can verify the release chronology and describe structural or
+content differences. Those results cannot establish that field meanings stayed
+unchanged. The field guide was last updated in 2022, leaving its versioned
+history between 2022-03-04 and 2026-05-28 unverified; the source-owner/schema
+history gate remains open after comparison. Source-level archive authorization
+does not authorize the six derived outputs proposed in the M-108 assessment.
+
 ## Qualification rule
 
 An era may be marked qualified only when exact source identity and native

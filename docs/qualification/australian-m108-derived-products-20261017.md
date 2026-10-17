@@ -163,5 +163,10 @@ append a new withdrawal/supersession record, remove its active discovery and
 consumer pointers, and retain the published revision, output digests, and
 receipts as immutable history; public bytes already copied by others cannot be
 recalled. The smallest next action is to obtain the exact-release versioned
-MBS field/schema history or source-owner clarification. Do not rerun the
-completed 390292/390320 diagnostics while that evidence is pending.
+MBS predecessor comparison specified in the [M-109 source-era register](australian-m109-source-era-register.md#august-2026-mbs-predecessor-comparison-plan).
+This read-only comparison can verify source identities and characterize
+aggregate differences; it cannot by itself establish field semantics or
+authorize the derived outputs. If complete, the remaining semantic evidence is
+versioned field/schema history or source-owner clarification. Do not rerun the
+completed 390292/390320 diagnostics while this separate comparison is being
+prepared.
