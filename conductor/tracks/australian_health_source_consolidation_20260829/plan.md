@@ -796,3 +796,16 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   the focused M-109/M-111/M-112 tests, broader M-112 tests, routine profile,
   typing, and context checks. No acceptance or rights state changed; see
   `australian_qualification_rebase_preservation_validation`.
+
+## PR #1094 Gitleaks history finding disposition (2026-10-17)
+
+- [x] Verify the two historical `generic-api-key` findings are the public
+  revision identities recorded in the M-109 metadata readback, then add only
+  their exact Gitleaks fingerprints to `.gitleaksignore`. Keep history
+  scanning and all other findings fail-closed.
+- [x] Add a regression that fixes the allowlist to those two fingerprints and
+  documents the disposition without exposing matched values. Focused tests,
+  routine Test Goblin, Ruff, diff checks, and a fresh full-history Gitleaks
+  scan pass locally. Hosted verification is pending on the updated PR head.
+- [ ] Verify the updated exact-head hosted leak-detection check before treating
+  this PR blocker as cleared.
