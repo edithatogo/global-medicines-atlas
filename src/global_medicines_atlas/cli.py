@@ -9,7 +9,7 @@ import secrets
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Annotated, Any, NoReturn, cast
+from typing import TYPE_CHECKING, Annotated, Any, NoReturn, cast
 
 import typer
 from pydantic import ValidationError
@@ -62,6 +62,13 @@ from .query_service import (
 )
 from .review_queue import load_adjudications
 
+if TYPE_CHECKING:
+    from .platinum_benefits import (
+        BenefitsLookup,
+        BenefitsPage,
+        BenefitsQuery,
+    )
+
 app = typer.Typer(
     add_completion=False,
     help="Read-only medicine comparison, coverage, and evidence queries.",
@@ -79,6 +86,8 @@ app.add_typer(source_app, name="source", help="Inspect governed sources.")
 _CURSOR_ENV = "GMA_CURSOR_" + "SECRET"
 _MINIMUM_CURSOR_KEY_BYTES = 16
 _BENEFITS_CURSOR_KEY_BYTES = 32
+_BENEFITS_EXPORT_MAX_ROWS = 1000
+_BENEFITS_EXPORT_MAX_BYTES = 8 * 1024 * 1024
 _ROW_COLLECTIONS = frozenset({
     "conclusions",
     "concepts",
@@ -837,6 +846,144 @@ def _pending_gold_review_cases(
     return regenerate_gold_edge_review_queue(cases, events), len(events)
 
 
+def _benefits_jsonl_export(  # ruff: ignore[too-many-locals,too-many-statements] -- keep cursor, identity, and output bounds in one auditable traversal.
+    service: BenefitsLookup,
+    resource_id: str,
+    query: BenefitsQuery,
+    max_rows: int,
+    page_payload: Callable[[BenefitsPage], dict[str, object]],
+) -> tuple[str, bool]:
+    """Collect and validate a bounded page chain before emitting any bytes."""
+
+    pages: list[dict[str, object]] = []
+    row_count = 0
+    page_size = min(query.limit, max_rows)
+    seen_cursors: set[str] = (
+        {query.cursor} if query.cursor is not None else set()
+    )
+    cursor = query.cursor
+    baseline: dict[str, object] | None = None
+    truncated = False
+    rows_by_page: list[list[dict[str, object]]] = []
+    while True:
+        page_query = query.model_copy(
+            update={
+                "cursor": cursor,
+                "limit": page_size,
+            }
+        )
+        page = service.query(resource_id, page_query)
+        payload = page_payload(page)
+        if page.status == "unavailable":
+            return _benefits_serialize_jsonl({
+                "type": "summary",
+                "status": "unavailable",
+                "source_completeness": "not_established",
+                "page": payload,
+            }), True
+
+        current = {
+            "identity": payload["identity"],
+            "query_sha256": payload["query_sha256"],
+            "window_sha256": payload["window_sha256"],
+            "applied_filters": payload["applied_filters"],
+            "window_rows": payload["window_rows"],
+            "window_limit": payload["window_limit"],
+        }
+        if baseline is None:
+            baseline = current
+        elif current != baseline:
+            raise ValueError(
+                "benefits pages changed identity or query evidence"
+            )
+        page_rows = payload["rows"]
+        if not isinstance(page_rows, list):
+            raise TypeError("benefits page rows must be a list")
+        raw_rows = cast("list[object]", page_rows)
+        if any(not isinstance(row, dict) for row in raw_rows):
+            raise TypeError("benefits page contains an invalid row")
+        typed_rows = cast("list[dict[str, object]]", raw_rows)
+        if row_count + len(typed_rows) > max_rows:
+            raise ValueError(
+                "benefits page exceeded the requested export bound"
+            )
+        row_count += len(typed_rows)
+        rows_by_page.append(typed_rows)
+        pages.append(payload)
+        next_cursor = payload["next_cursor"]
+        if next_cursor is None:
+            cursor = None
+            break
+        if not isinstance(next_cursor, str) or next_cursor in seen_cursors:
+            raise ValueError("benefits cursor loop detected")
+        cursor = next_cursor
+        seen_cursors.add(next_cursor)
+        if row_count + page_size > max_rows:
+            truncated = True
+            break
+    metadata_keys = (
+        "identity",
+        "query_sha256",
+        "window_sha256",
+        "applied_filters",
+        "coverage_state",
+        "confidence_state",
+        "uncertainty_state",
+        "review_state",
+        "comparison_validity",
+    )
+    records: list[str] = []
+    for page_number, (payload, page_rows) in enumerate(
+        zip(pages, rows_by_page, strict=True), start=1
+    ):
+        records.extend(
+            _benefits_serialize_jsonl({
+                "type": "record",
+                "page": page_number,
+                **{key: payload[key] for key in metadata_keys},
+                "page_sha256": payload["page_sha256"],
+                "receipt_sha256": payload["receipt_sha256"],
+                "record": row,
+            })
+            for row in page_rows
+        )
+    final_page = pages[-1]
+    summary = {
+        "type": "summary",
+        "status": "available",
+        "row_count": row_count,
+        "page_count": len(pages),
+        "page_size": page_size,
+        "max_rows": max_rows,
+        "source_completeness": "not_established",
+        "truncated": truncated,
+        "next_cursor": cursor,
+        "window_rows": final_page["window_rows"],
+        "window_limit": final_page["window_limit"],
+        "window_complete": final_page["window_complete"],
+        "page_sha256s": [page["page_sha256"] for page in pages],
+        "receipt_sha256s": [page["receipt_sha256"] for page in pages],
+        **{key: baseline[key] for key in metadata_keys[:4]},
+        **{key: final_page[key] for key in metadata_keys[4:]},
+    }
+    records.append(_benefits_serialize_jsonl(summary))
+    output = "\n".join(records)
+    if len(output.encode("utf-8")) + 1 > _BENEFITS_EXPORT_MAX_BYTES:
+        raise ValueError("benefits JSONL export exceeds the byte limit")
+    return output, False
+
+
+def _benefits_serialize_jsonl(record: dict[str, object]) -> str:
+    """Serialize strict JSONL records with finite values and stable keys."""
+    return json.dumps(
+        record,
+        ensure_ascii=False,
+        allow_nan=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+
+
 @app.command("benefits")
 def benefits_query(
     resource_id: Annotated[str, typer.Argument()],
@@ -847,13 +994,27 @@ def benefits_query(
     limit: Annotated[int, typer.Option(min=1, max=100)] = 100,
     cursor: str | None = None,
     filters_json: Annotated[str | None, typer.Option("--filters-json")] = None,
+    output_format: Annotated[
+        ExportFormat,
+        typer.Option("--format", case_sensitive=False, help="json or jsonl."),
+    ] = ExportFormat.JSON,
+    max_rows: Annotated[
+        int,
+        typer.Option(
+            "--max-rows",
+            min=1,
+            max=_BENEFITS_EXPORT_MAX_ROWS,
+            help="Maximum rows in a JSONL export (at most 1,000).",
+        ),
+    ] = _BENEFITS_EXPORT_MAX_ROWS,
     *,
     offline: bool = False,
 ) -> None:
-    """Query one trusted page; dates use tagged ISO values and decimals stay exact."""
+    """Query trusted benefits pages; JSONL exports are bounded and paged."""
     from .platinum_benefits import (  # ruff: ignore[import-outside-top-level] -- optional federation boundary
         BenefitsQuery,
         BenefitsService,
+        benefits_page_payload,
         parse_benefits_filters,
     )
 
@@ -875,7 +1036,7 @@ def benefits_query(
     secret = os.environ.get(_CURSOR_ENV, "")
     if len(secret.encode()) < _BENEFITS_CURSOR_KEY_BYTES:
         _fail(ErrorCode.SERVICE_UNAVAILABLE, f"{_CURSOR_ENV} requires 32 bytes")
-    try:
+    try:  # ruff: ignore[too-many-statements-in-try-clause] -- one stable CLI error envelope covers resolver and page traversal errors.
         query = BenefitsQuery(
             columns=tuple(columns),
             limit=limit,
@@ -888,21 +1049,28 @@ def benefits_query(
             metadata_root=metadata_root,
             schema_file=schema_file,
         )
-        page = BenefitsService(resolver, cursor_key=secret.encode()).query(
-            resource_id, query
+        service = BenefitsService(resolver, cursor_key=secret.encode())
+        if output_format == ExportFormat.JSON:
+            page = service.query(resource_id, query)
+            typer.echo(page.model_dump_json())
+            if page.status == "unavailable":
+                raise typer.Exit(3)
+            return
+        output, unavailable = _benefits_jsonl_export(
+            service, resource_id, query, max_rows, benefits_page_payload
         )
+        typer.echo(output)
+        if unavailable:
+            raise typer.Exit(3)
     except UnknownPlatinumResourceError:
         _fail(
             ErrorCode.NOT_FOUND, "The admitted benefits resource was not found"
         )
-    except ValueError, OSError:
+    except ValueError, OSError, TypeError:
         _fail(
             ErrorCode.INVALID_REQUEST,
             "The benefits query or operator configuration is invalid",
         )
-    typer.echo(page.model_dump_json())
-    if page.status == "unavailable":
-        raise typer.Exit(3)
 
 
 @app.command("source-structure")
