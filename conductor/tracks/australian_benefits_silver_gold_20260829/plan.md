@@ -1005,15 +1005,24 @@
   See `quality/qualifications/australian-m112-object-inventory-20260930.json`,
   `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`,
   and `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
-- [~] Bind the maintainer's exact six-object July 2025 MBS v3 authorization
+- [x] Bind the maintainer's exact six-object July 2025 MBS v3 authorization
   to the candidate v4 consumer qualification. The authorization artifact
   enumerates each pinned path, SHA-256, and byte count, and explicitly excludes
   publication, production admission, new rights conclusions, Gold review,
-  M-112 acceptance, and source expansion. The consumer receipt now verifies
-  exact agreement with the scoped Silver admission and carries the artifact
-  digest. A bounded stylesheet-response fix is being qualified after the
-  latest exact-main Chromium canary failed to observe its CSS response; no
-  M-112 gate is closed by this candidate-use permission alone.
+  M-112 acceptance, and source expansion. The refreshed exact-main run
+  [39049481566](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39049481566)
+  passed on `c68c6d4dbb0600ea464f2d98e716fd7b47fe4326`; its 5,107-byte aggregate
+  receipt is retained at
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261018.json`
+  (SHA-256 `a4adf65fed0439fd1c17001fbc2d6ee63a5af81601f505d1248bc9486aceb80c`).
+  It binds the exact authorization digest and all six table identities,
+  per-table lineage digests, scoped admission, source receipt, manifest, and
+  semantic manifest. API, CLI, Atlas, and Chromium matched the same ordered
+  edge-ID digest across all 5,989 edges. The receipt remains candidate-only
+  and `not_reviewed`, retains no source payload bytes, and records no public
+  publication. This closes only exact-six candidate qualification and canary
+  traversal; it closes no M-110 review, M-112 admission, federation, rights,
+  or release gate.
 - [x] Reconcile the 20 MBS/PBS utilisation raw-object digests against each
   exact current public manifest and its prior hosted anonymous all-object
   verification receipt. The pinned MBS revision remains `dee9a5b...` with
@@ -2605,14 +2614,20 @@
   The report records exact hashes for the graph builder, qualifier, and three
   schemas; its readback rejects stale implementation fingerprints. No public
   dataset mutation or graph publication occurred.
-- [ ] Complete M-110 Gold graph review and consumer acceptance. The current
-  assessment is
-  `quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261017.json`;
-  the maintainer's 2026-10-17 disposition accepts the 5,989 MBS v3 edges as a
-  candidate. This disposition does not set calibrated confidence, mark the
-  graph independently reviewed, or establish consumer acceptance. The
-  existing Platinum scalar-query bridge remains open. This candidate does not
-  accept M-110, M-109, or M-112.
+- [x] Record the maintainer's bounded disposition: accept the exact July 2025
+  MBS v3 edge set as a candidate for consumer-canary use. Exact-main run
+  `39045806438` traversed all 5,989 candidate edges through API, CLI, Atlas,
+  and Chromium with identical ordered edge-ID digests and complete six-table
+  lineage; receipt SHA-256 is
+  `8d1db8c5fa9376a9f786078114e7bb7682decb8709fde6bf7992113065d8488f`.
+  This acceptance leaves each edge `not_reviewed`, sets no calibrated
+  confidence, and makes no M-110, M-109, M-112, production-admission, rights,
+  source-coverage, or publication claim.
+- [~] Complete independent M-110 Gold graph review. The current assessment is
+  `quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261017.json`.
+  Candidate traversal and maintainer acceptance do not substitute for review
+  of edge evidence, calibrated confidence, or the still-open Platinum scalar
+  query bridge. M-110 Gold acceptance remains open.
 - [x] Correct the MBS XML numeric-width transform so the three EMSN numeric
   fields use their official seven-integer-digit limit while ScheduleFee and
   Benefit75/85/100 retain five digits. Boundary tests failed before the fix and
