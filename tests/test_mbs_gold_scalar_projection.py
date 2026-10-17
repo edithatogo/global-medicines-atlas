@@ -82,6 +82,22 @@ _RECEIPT = (
     _ROOT
     / "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json"
 )
+_EXACT_SCALAR_CASES = [
+    (
+        "Benefit100",
+        ["10.25", "2.75"],
+        ">=",
+        Decimal("10.00"),
+        "10.250000000",
+    ),
+    (
+        "BenefitStartDate",
+        ["2025-07-01", "2025-08-01"],
+        "=",
+        {"type": "date", "value": "2025-07-01"},
+        "2025-07-01",
+    ),
+]
 
 
 def _real_candidate():
@@ -641,22 +657,7 @@ def test_scalar_projection_parquet_reaches_benefits_api_with_date_filter():
 
 @pytest.mark.parametrize(
     ("field_name", "values", "operator", "filter_value", "expected"),
-    [
-        (
-            "Benefit100",
-            ["10.25", "2.75"],
-            ">=",
-            Decimal("10.00"),
-            "10.250000000",
-        ),
-        (
-            "BenefitStartDate",
-            ["2025-07-01", "2025-08-01"],
-            "=",
-            {"type": "date", "value": "2025-07-01"},
-            "2025-07-01",
-        ),
-    ],
+    _EXACT_SCALAR_CASES,
 )
 def test_scalar_candidate_traverses_exact_synthetic_v4_admission_and_api(
     field_name: str,
@@ -720,22 +721,7 @@ def test_scalar_candidate_traverses_exact_synthetic_v4_admission_and_api(
 
 @pytest.mark.parametrize(
     ("field_name", "values", "operator", "filter_value", "expected"),
-    [
-        (
-            "Benefit100",
-            ["10.25", "2.75"],
-            ">=",
-            Decimal("10.00"),
-            "10.250000000",
-        ),
-        (
-            "BenefitStartDate",
-            ["2025-07-01", "2025-08-01"],
-            "=",
-            {"type": "date", "value": "2025-07-01"},
-            "2025-07-01",
-        ),
-    ],
+    _EXACT_SCALAR_CASES,
 )
 def _exercise_exact_synthetic_scalar_trust_path(  # ruff: ignore[too-many-locals, too-many-statements] -- keep the four product surfaces explicit
     tmp_path: Path,
