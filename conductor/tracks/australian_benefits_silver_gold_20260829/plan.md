@@ -1023,11 +1023,18 @@
   publication. This closes only exact-six candidate qualification and canary
   traversal; it closes no M-110 review, M-112 admission, federation, rights,
   or release gate.
-- [~] Require a positive-row real-candidate date filter in the exact-six scalar
-  canary. The current aggregate receipt reports zero matches for its date case,
-  so it verifies empty-result handling but does not prove typed date selection
-  on candidate values. Keep the result aggregate-only and candidate-only; do
-  not retain source values or change consumer admission.
+- [x] Require a positive-row real-candidate date filter in the exact-six scalar
+  canary. Exact-main run
+  [39074277060](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39074277060)
+  passed on `7f1cdf457a93d4fa03a38aebca72febfdf029191`; DuckDB and Polars
+  agree on 1,000 selected rows within the 1,000-row query limit. The updated
+  aggregate receipt
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261018.json`
+  has SHA-256 `6350063e40ce7a715bf676192605a3a7b9d0afb45ff1a6100985b1d565142220`.
+  Source values and payload bytes were not retained; candidate-only scope and
+  the exact-six authorization remain bound. No consumer admission, M-110
+  review/acceptance, M-112 acceptance, rights conclusion, source expansion, or
+  publication was performed.
 - [x] Reconcile the 20 MBS/PBS utilisation raw-object digests against each
   exact current public manifest and its prior hosted anonymous all-object
   verification receipt. The pinned MBS revision remains `dee9a5b...` with
