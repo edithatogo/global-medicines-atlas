@@ -1005,6 +1005,15 @@
   See `quality/qualifications/australian-m112-object-inventory-20260930.json`,
   `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`,
   and `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
+- [~] Bind the maintainer's exact six-object July 2025 MBS v3 authorization
+  to the candidate v4 consumer qualification. The authorization artifact
+  enumerates each pinned path, SHA-256, and byte count, and explicitly excludes
+  publication, production admission, new rights conclusions, Gold review,
+  M-112 acceptance, and source expansion. The consumer receipt now verifies
+  exact agreement with the scoped Silver admission and carries the artifact
+  digest. A bounded stylesheet-response fix is being qualified after the
+  latest exact-main Chromium canary failed to observe its CSS response; no
+  M-112 gate is closed by this candidate-use permission alone.
 - [x] Reconcile the 20 MBS/PBS utilisation raw-object digests against each
   exact current public manifest and its prior hosted anonymous all-object
   verification receipt. The pinned MBS revision remains `dee9a5b...` with

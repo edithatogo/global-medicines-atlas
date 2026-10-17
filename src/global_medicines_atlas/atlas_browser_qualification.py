@@ -21,6 +21,8 @@ if TYPE_CHECKING:
     from starlette.types import ASGIApp
 
 _HTTP_OK = 200
+_STYLESHEET_PATH = "/static/atlas.css"
+_STYLESHEET_TIMEOUT_MS = 10_000
 
 
 @contextmanager
@@ -179,8 +181,17 @@ def _is_expected_main_frame_response(
 
 
 def _verify_browser_assets(asset_statuses: Mapping[str, int]) -> None:
-    if asset_statuses.get("/static/atlas.css") != _HTTP_OK:
+    if asset_statuses.get(_STYLESHEET_PATH) != _HTTP_OK:
         raise ValueError("Atlas browser stylesheet did not load")
+
+
+def _wait_for_stylesheet_response(
+    page: Page, asset_statuses: Mapping[str, int]
+) -> None:
+    deadline = monotonic() + _STYLESHEET_TIMEOUT_MS / 1000
+    while _STYLESHEET_PATH not in asset_statuses and monotonic() < deadline:
+        page.wait_for_timeout(50)
+    _verify_browser_assets(asset_statuses)
 
 
 def _verify_loopback_requests(request_hosts: set[str], host: str) -> None:
@@ -208,6 +219,7 @@ def qualify_candidate_atlas_browser(
         host = urlsplit(base_url).netloc
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch()
+            page: Page | None = None
             try:
                 page = browser.new_page()
                 page.on(
@@ -228,6 +240,7 @@ def qualify_candidate_atlas_browser(
                 )
                 if response is None or response.status != _HTTP_OK:
                     raise ValueError("Atlas browser page was not served")
+                _wait_for_stylesheet_response(page, asset_statuses)
                 for offset in range(0, edge_count, page_size):
                     _check_page_identity(
                         page,
@@ -255,5 +268,9 @@ def qualify_candidate_atlas_browser(
                 _verify_browser_assets(asset_statuses)
                 _verify_loopback_requests(request_hosts, host)
             finally:
-                browser.close()
+                try:
+                    if page is not None:
+                        page.close(run_before_unload=False)
+                finally:
+                    browser.close()
     return edge_ids, page_offsets
