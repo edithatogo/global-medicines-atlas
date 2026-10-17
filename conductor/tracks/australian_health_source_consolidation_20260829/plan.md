@@ -599,7 +599,7 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] Reconcile source structure and diagnostics without advancing field
   meanings, temporal semantics, transformations, or the approved era
   denominator until their exact-era evidence is independently qualified.
-- [x] Run the candidate workflow on exact `main` commit
+- [x] Run the initial candidate workflow on exact `main` commit
   `b566e9980fd14d9d94caa7235002af94f6f53533` (run `39025588261`) and preserve
   the 4,542-byte aggregate report at
   `quality/qualifications/mbs-source-era-candidate-2026-08-01.json`. Archive
@@ -612,12 +612,31 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   represented as `missing_field` without calling it invalid or optional.
   Also report per-field conversion-status counts so `unsupported_format` is
   distinct from native absence. The report leaves requiredness unaccepted and
-  will report mismatches without promoting the candidate. Focused/broader MBS
-  checks passed; the exact-main profile with these diagnostics remains pending.
-- [~] Run the updated hosted profile on exact `main` and reconcile its
-  per-field source-presence versus projected-state counts. Use official source
-  docs to evaluate field requiredness and semantics; do not derive those
-  claims from presence counts or date-format diagnostics alone.
+  reports mismatches without promoting the candidate. The exact-main profile
+  is recorded below; do not repeat it absent changed source bytes or profile
+  code.
+- [x] Run the updated hosted profile on exact `main` commit
+  `b5b4d3ce6e3400e0fdb84ab2b56854776c4878e6` (run `39032003723`) and retain
+  its aggregate-only output at
+  `quality/qualifications/mbs-source-era-candidate-2026-08-01-run-39032003723.json`.
+  All 40 source fields align with projected presence/state across 6,046 rows
+  each (zero mismatches); the report remains candidate-only and records no
+  source values or bytes. The profile applies the official DMY grammar as a
+  candidate and reports no unsupported/invalid date values, but does not
+  accept release-specific semantics, requiredness, or temporal meaning.
+- [~] Reconcile the field-guide meanings with release-linked version history.
+  MBS Online identifies the predecessor as `MBS-XML-20260701.XML`, released
+  2026-05-28 and effective 1 July, and says the August file includes item
+  73331 with no further changes compared with that May-published edition. The
+  exact July/ August archive identities and sidecars are verified in current
+  metadata, but a live official-byte comparison and source field diff remain
+  pending. First use the bounded aggregate-only predecessor comparison in the
+  [M-109 register](../../../docs/qualification/australian-m109-source-era-register.md#august-2026-mbs-predecessor-comparison-plan).
+  A structural/content comparison cannot establish semantic continuity; the
+  field guide's version history after 2022 remains unverified. The consolidated
+  M-108/M-109 assessment records source-archive-only authority, absent
+  derived-output authority, and preservation/reversal steps. No further
+  `39029209737`/`39032003723` diagnostic run is needed.
 
 ## M-107 metadata evidence review fixes (2026-09-28)
 

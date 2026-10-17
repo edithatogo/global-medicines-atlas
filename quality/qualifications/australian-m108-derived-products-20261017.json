@@ -563,5 +563,186 @@
     "anonymous_digest_verification": "passed",
     "temporary_source_bytes_removed": true,
     "source_payloads_read_during_metadata_refresh": false
+  },
+  "august_2026_six_table_operation_assessment": {
+    "status": "proposed_only_derived_rights_and_release_linked_semantics_open",
+    "source": {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+      "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "byte_count": 8293331,
+      "official_release_match": true
+    },
+    "candidate_diagnostics": {
+      "run_39029209737": {
+        "exact_commit": "a087acdfb935bb79f894ecd3f91530351f3faac8",
+        "artifact_id": 12100055332,
+        "artifact_sha256": "982a5e5846a75dfd717a3ca7ad65f3a9906c96f2239944be06aafe270172fbb6",
+        "report_sha256": "8e8d14f88baabc10a172fd2ec3947f8a89947828d64fb0237398dc230896763e",
+        "field_count": 40,
+        "rows_per_field": 6046,
+        "presence_mismatches": 0,
+        "dmy_profile": "candidate_only",
+        "original_field_semantics_acceptance": "withdrawn_by_PR_1110_correction"
+      },
+      "run_39032003723": {
+        "exact_commit": "b5b4d3ce6e3400e0fdb84ab2b56854776c4878e6",
+        "artifact_id": 12101145223,
+        "artifact_sha256": "b4f6a995b47ab23d79d127e6f85498a58631bf2905764a6ba264f745578bd2b1",
+        "report_path": "quality/qualifications/mbs-source-era-candidate-2026-08-01-run-39032003723.json",
+        "report_sha256": "35265bb883a6dde7f99e349a272c29a6592a65a160d096f05600091c455e90a2",
+        "source_records": 6046,
+        "native_fields": 40,
+        "field_occurrences": 241840,
+        "presence_mismatches": 0,
+        "field_semantics_accepted": false,
+        "release_linked_field_history_verified": false,
+        "source_values_retained": false,
+        "source_bytes_retained": false,
+        "parquet_outputs_generated": false
+      },
+      "semantic_boundary": "The 2022 field guide and the release page statement of no XML changes since 2026-05-28 do not provide version-linked field semantics for the 2026-08 release."
+    },
+    "authorization": {
+      "raw_archive_approval": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+      "approved_scope": "Exact 2026-08-01 official MBS XML archived through GitHub Actions with anonymous digest verification.",
+      "derived_output_authority": "absent",
+      "publication_performed": false
+    },
+    "proposed_destination": {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "prefix": "silver/mbs/v4/2026-08-01-v3",
+      "immutable_revision": null,
+      "identity_status": "proposal_only_not_created_or_admitted",
+      "outputs": [
+        {
+          "table": "services",
+          "path": "silver/mbs/v4/2026-08-01-v3/services.parquet",
+          "rows": 6046,
+          "field_occurrences": 78598,
+          "candidate_lineage_sha256": "06fdb5d470177dcaf87925be9c7691a7d69c66141be8607028e2e131420feaad"
+        },
+        {
+          "table": "hierarchy",
+          "path": "silver/mbs/v4/2026-08-01-v3/hierarchy.parquet",
+          "rows": 6046,
+          "field_occurrences": 24184,
+          "candidate_lineage_sha256": "82a3000e944e9e687035e71f457b42c424a24586f175586041c4174af5ca56cf"
+        },
+        {
+          "table": "descriptions",
+          "path": "silver/mbs/v4/2026-08-01-v3/descriptions.parquet",
+          "rows": 6046,
+          "field_occurrences": 18138,
+          "candidate_lineage_sha256": "afc5c26b4a89b07e3b969a363c70f6756c5556d830d2772cb4010c36ac06940c"
+        },
+        {
+          "table": "fees",
+          "path": "silver/mbs/v4/2026-08-01-v3/fees.parquet",
+          "rows": 6046,
+          "field_occurrences": 36276,
+          "candidate_lineage_sha256": "2e6cb8bcd5ef6ee127fa35f9d1e069b4eb31e708f2430806724205d0d6bd4e32"
+        },
+        {
+          "table": "benefits",
+          "path": "silver/mbs/v4/2026-08-01-v3/benefits.parquet",
+          "rows": 6046,
+          "field_occurrences": 30230,
+          "candidate_lineage_sha256": "06ee4593e207d5790a77dd85c3389bdeb88218a421c7a3c04df8387d918b126d"
+        },
+        {
+          "table": "caps",
+          "path": "silver/mbs/v4/2026-08-01-v3/caps.parquet",
+          "rows": 6046,
+          "field_occurrences": 54414,
+          "candidate_lineage_sha256": "8903ecd80a611ff747a7b26e8846ac00c79fadfbbe996f3ac944c344bd658b02"
+        }
+      ],
+      "other_required_objects": [
+        "manifest.json",
+        "qualification.json",
+        "source-receipt.json",
+        "product-specific data card"
+      ]
+    },
+    "preservation_and_reversal": {
+      "preserve_unchanged": [
+        "pinned raw XML and B1 receipt",
+        "root manifest",
+        "three accepted August Bronze acquisitions",
+        "unadmitted August Bronze projection",
+        "July 2025 Silver candidate and receipts"
+      ],
+      "before_authorization": "Do not generate or publish the six derived outputs.",
+      "if_future_release_is_withdrawn": "Append a withdrawal/supersession record, remove active discovery and consumer pointers, and preserve the immutable revision, payload digests, and receipts. Public copies already retrieved by others cannot be recalled."
+    },
+    "smallest_next_action": "Merge the bounded July/August source-era comparator, run it on exact main, and read back its aggregate-only artifact; do not rerun the completed 390292/390320 profiles.",
+    "predecessor_comparison_plan": {
+      "status": "implemented_local_pass_hosted_exact_main_run_pending",
+      "exact_predecessor": {
+        "edition": "MBS-XML-20260701.XML",
+        "official_publication_date": "2026-05-28",
+        "effective_date": "2026-07-01",
+        "official_download_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701",
+        "official_source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/MBS-XML-20260701.XML",
+        "archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+        "archive_path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+        "sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+        "byte_count": 8291891,
+        "sidecar_sha256": "01988fb6cf56c4a23bba680e8c9ee6d9b3b39d504d044676e49b4b78d1f5ba56"
+      },
+      "august_identity": {
+        "archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+        "archive_path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "byte_count": 8293331,
+        "sidecar_sha256": "9bca6260ea9d25d7ee9c184b59eed03b059d8da486dea31ec1d058965aae55ed"
+      },
+      "authorization": {
+        "existing_scope": "au-mbs monthly_schedule_xml source archive; exact source read and archive publication are separately receipt-bound",
+        "new_acquisition_or_publication": "not proposed",
+        "derived_output_authority": "absent; this comparison does not authorize derived Parquet distribution"
+      },
+      "procedure": [
+        "Reuse the existing bounded read-only exact-main Actions qualifier.",
+        "Fetch both pinned archive objects and both official edition endpoints in Actions memory; check each hash and byte count against its source sidecar and official identity.",
+        "Compare record counts, native-field sets, per-field presence/null counts, and aggregate added/removed/changed record and field counts; keep record keys and source values in memory and omit them from output.",
+        "Retain only the aggregate comparison report; do not create Silver Parquet, publish, edit archive manifests, or promote semantic/date gates."
+      ],
+      "failure_and_recovery": {
+        "mismatch_or_timeout": "Mark the comparison incomplete, retain both archive objects and existing receipts, and record the exact endpoint/hash failure. Do not infer equality from unavailable bytes.",
+        "retry": "Retry only after a transport/endpoint change or a diagnosed transient condition; do not repeat an unchanged failing request.",
+        "rollback": "No source or public state is mutated, so no source rollback is needed. Preserve the previous M-108/M-109 candidate records and keep admission/publication false."
+      },
+      "interpretation_boundary": "Structural or value-difference counts are evidence about these two source editions only. They do not establish that field meanings remained unchanged. The official field guide was last updated 2022-03-04; its version history through 2026-05-28 remains unverified.",
+      "next_after_comparison": "Obtain exact-release versioned schema/change history or source-owner clarification before accepting August field semantics or temporal meaning.",
+      "implementation": {
+        "script": "scripts/compare_mbs_source_eras.py",
+        "workflow": ".github/workflows/australian-mbs-202608-source-era-candidate.yml",
+        "test": "tests/test_mbs_source_era_comparison.py",
+        "local_verification": {
+          "focused_tests": "25 passed",
+          "routine_test_goblin": "passed",
+          "ruff_ty_basedpyright_actionlint_context_ecosystem": "passed"
+        },
+        "full_profile": {
+          "status": "completed_with_unrelated_performance_failure",
+          "passed": 6567,
+          "skipped": 3,
+          "failed": 1,
+          "failure": "test_product_performance.py::test_runner_measures_real_fixture_workloads: PERF-QUERY p95 279.225 ms exceeded 250.0 ms",
+          "coverage_percent": 96.9,
+          "python": "3.14.6",
+          "uv": "0.11.29",
+          "applicability": "Earlier local implementation snapshot only; after it, rights-reference and failure-artifact corrections were tested with the current focused suite and routine checks. Hosted required CI remains the exact-head qualification."
+        }
+      },
+      "rights_references": {
+        "july_2026": "https://github.com/edithatogo/global-medicines-atlas/blob/2ceafb1b889a701506a6c8f0ec9b1fc86fdddbda/quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+        "august_2026": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+        "boundary": "The July monthly_schedule_xml category authorization and August exact-release approval remain distinct; neither authorizes the derived Silver products."
+      }
+    }
   }
 }

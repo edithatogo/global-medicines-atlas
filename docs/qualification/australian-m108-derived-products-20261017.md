@@ -102,3 +102,71 @@ for admission.
 No newly admitted product or publication resulted from this audit. M-108,
 M-109, and M-112 remain incomplete; this reconciliation does not accept any of
 them.
+
+## August 2026 MBS six-table operation assessment
+
+This is the consolidated M-108/M-109 handoff for the exact 2026-08-01 MBS
+release. The pinned source is
+`raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml`
+in `edithatogo/australian-mbs-source-archive` revision
+`da83cad9116e2f9a5b927be7b080e9a5e5ea6998`; its SHA-256 is
+`c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565`
+(8,293,331 bytes). Exact-main read-only qualification run
+[39032003723](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39032003723)
+matched the official release and covered all 6,046 records, 40 fields and
+241,840 field occurrences. It reports zero source-presence/projected-state
+mismatches across the 40 fields. The earlier run
+[39029209737](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39029209737)
+provides DMY candidate diagnostics; PR #1110 withdrew that run's original
+field-semantic acceptance interpretation. The current run retains
+`field_semantics_accepted: false`, the release-linked history blocker, and
+candidate-only date grammar. Neither run retained source values or bytes, and
+neither produced Parquet outputs or publication authority.
+
+The proposed six outputs, if separately qualified and authorized, belong in
+the existing public source-archive dataset under the new product prefix
+`silver/mbs/v4/2026-08-01-v3/`:
+
+| Output | Candidate row count | Field occurrences | Candidate lineage digest |
+| --- | ---: | ---: | --- |
+| `services.parquet` | 6,046 | 78,598 | `06fdb5d470177dcaf87925be9c7691a7d69c66141be8607028e2e131420feaad` |
+| `hierarchy.parquet` | 6,046 | 24,184 | `82a3000e944e9e687035e71f457b42c424a24586f175586041c4174af5ca56cf` |
+| `descriptions.parquet` | 6,046 | 18,138 | `afc5c26b4a89b07e3b969a363c70f6756c5556d830d2772cb4010c36ac06940c` |
+| `fees.parquet` | 6,046 | 36,276 | `2e6cb8bcd5ef6ee127fa35f9d1e069b4eb31e708f2430806724205d0d6bd4e32` |
+| `benefits.parquet` | 6,046 | 30,230 | `06ee4593e207d5790a77dd85c3389bdeb88218a421c7a3c04df8387d918b126d` |
+| `caps.parquet` | 6,046 | 54,414 | `8903ecd80a611ff747a7b26e8846ac00c79fadfbbe996f3ac944c344bd658b02` |
+
+These are candidate lineage digests, not output-file digests. No six-table
+Parquet outputs have been generated or admitted for this August release. A
+future product package also needs its exact manifest, qualification, source
+receipt and product-specific data card. The prefix and paths above are a
+proposal, not a committed identity or publication.
+
+The maintainer receipt
+[5467052330](https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330)
+authorizes archiving the exact official XML into the named raw-source archive
+through GitHub Actions with anonymous digest verification. It does not give a
+source-specific decision for distributing these six derived Parquet outputs.
+The current source receipt's `permitted` state and Decision 0009 do not fill
+that product-specific gap. Before output generation or publication, obtain
+release-linked field/schema history or source-owner clarification, reconcile
+the three distinct August Bronze acquisition projections to one exact B1/B2
+lineage, and record the maintainer's derived-output rights and admission
+decision against the six exact output digests. Keep M-108 and M-109 blocked
+until their respective gates pass.
+
+Preservation and reversal boundary: leave the pinned XML, B1 receipt, root
+manifest, all three accepted Bronze acquisitions, the unadmitted projection,
+and the July Silver candidate untouched. Do not overwrite a public revision or
+delete raw evidence. If a future authorized derived release must be withdrawn,
+append a new withdrawal/supersession record, remove its active discovery and
+consumer pointers, and retain the published revision, output digests, and
+receipts as immutable history; public bytes already copied by others cannot be
+recalled. The smallest next action is to obtain the exact-release versioned
+MBS predecessor comparison specified in the [M-109 source-era register](australian-m109-source-era-register.md#august-2026-mbs-predecessor-comparison-plan).
+This read-only comparison can verify source identities and characterize
+aggregate differences; it cannot by itself establish field semantics or
+authorize the derived outputs. If complete, the remaining semantic evidence is
+versioned field/schema history or source-owner clarification. Do not rerun the
+completed 390292/390320 diagnostics while this separate comparison is being
+prepared.

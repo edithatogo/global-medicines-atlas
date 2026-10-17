@@ -1857,6 +1857,28 @@
   checks; the review finding is resolved. The historical profile bytes remain
   preserved and explicitly superseded only for its prior field-semantic
   acceptance interpretation.
+- [x] Reconcile the corrected candidate against exact current main
+  `b5b4d3ce6e3400e0fdb84ab2b56854776c4878e6` using hosted run `39032003723`.
+  The pinned 2026-08 XML identity matched; 40 fields across 6,046 rows each
+  have zero source-presence/projected-state mismatches. The report keeps
+  `field_semantics_accepted: false` and records no source values or bytes. The
+  six-table lineage and the proposed M-108 output prefix are recorded in
+  `docs/qualification/australian-m108-derived-products-20261017.md`; no
+  Parquet output, derived-rights approval, v4 admission, or publication exists.
+- [ ] First compare the exact archived July 2026 XML (the edition released
+  2026-05-28 and referenced by the August page) with the August 2026 XML using
+  a bounded, aggregate-only read in the existing exact-main qualifier. Verify
+  both official endpoints against their pinned sidecar digests/sizes; emit no
+  record identifiers or values and create no Parquet products or publication.
+  This can document release structure/content chronology but cannot establish
+  semantic continuity by itself. After that comparison, obtain versioned
+  schema/change history or source-owner clarification for field meanings and
+  temporal semantics. Do not rerun completed workflows `39029209737` or
+  `39032003723`; do not generate or publish the proposed derived outputs until
+  output-specific rights and admission gates are separately resolved. M-105's
+  D-006-07 chronology disposition remains blocked; the bounded pre-archive
+  record search is complete and must not be restarted absent newly surfaced
+  pre-archive evidence.
 
 
 ## M-112 public producer metadata discovery (2026-09-30)
@@ -3010,3 +3032,28 @@
   admission, and consumer-canary evidence under the existing approved
   denominator. This historical metadata crosswalk does not complete M-112 or
   promote any deferred object.
+
+## M-109 July/August 2026 MBS predecessor comparison implementation (2026-10-17)
+
+- [~] Implement the bounded exact-main comparator at
+  `scripts/compare_mbs_source_eras.py` and add it to the existing August
+  candidate workflow. It verifies both July/August harvest sidecars, pinned
+  archive objects, and current official endpoints in GitHub Actions memory;
+  emits only aggregate field presence and change counts; and produces an
+  `incomplete` aggregate artifact before failing the workflow on endpoint,
+  identity, or structure errors. July's recorded `monthly_schedule_xml`
+  authorization and the August exact-release approval are separately bound.
+  It creates no Silver output, public mutation, or semantic promotion. Focused
+  comparator/source-era tests (25), actionlint, Ruff, `ty`, BasedPyright,
+  context/ecosystem, and routine Test-Goblin passed. Harvest sidecars are parsed
+  through a typed JSON boundary and checked against their pinned content digest.
+- [ ] Run the comparator from exact current `main`; read back its artifact and
+  reconcile the July official-byte identity and aggregate deltas. Do not infer
+  semantic continuity or M-109 acceptance from this comparison.
+- [ ] Obtain release-linked schema/change history or source-owner clarification
+  for the 2022-03-04 to 2026-05-28 field guide gap. Keep M-109 blocked until
+  required source-era meaning and transformation evidence is accepted.
+
+### Comparator transport-failure review correction (2026-10-17)
+
+- [x] Correct review finding [discussion_r4302792284](https://github.com/edithatogo/global-medicines-atlas/pull/1114#discussion_r4302792284): DNS `OSError` and `DestinationPolicyError` now produce a value-free `incomplete` artifact with a safe failure class and a nonzero exit. Add CLI regressions for HTTP, DNS, and rejected-redirect failures. Focused tests (25), Ruff, `ty`, BasedPyright, routine Test-Goblin, and `git diff --check` pass. No retry, endpoint change, or destination-policy weakening was introduced. Exact-head hosted revalidation remains pending.
