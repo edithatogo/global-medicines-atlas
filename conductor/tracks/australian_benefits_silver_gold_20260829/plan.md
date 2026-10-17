@@ -3044,7 +3044,7 @@
   identity, or structure errors. July's recorded `monthly_schedule_xml`
   authorization and the August exact-release approval are separately bound.
   It creates no Silver output, public mutation, or semantic promotion. Focused
-  comparator/source-era tests (23), actionlint, Ruff, `ty`, BasedPyright,
+  comparator/source-era tests (25), actionlint, Ruff, `ty`, BasedPyright,
   context/ecosystem, and routine Test-Goblin passed. Harvest sidecars are parsed
   through a typed JSON boundary and checked against their pinned content digest.
 - [ ] Run the comparator from exact current `main`; read back its artifact and
@@ -3053,3 +3053,7 @@
 - [ ] Obtain release-linked schema/change history or source-owner clarification
   for the 2022-03-04 to 2026-05-28 field guide gap. Keep M-109 blocked until
   required source-era meaning and transformation evidence is accepted.
+
+### Comparator transport-failure review correction (2026-10-17)
+
+- [x] Correct review finding [discussion_r4302792284](https://github.com/edithatogo/global-medicines-atlas/pull/1114#discussion_r4302792284): DNS `OSError` and `DestinationPolicyError` now produce a value-free `incomplete` artifact with a safe failure class and a nonzero exit. Add CLI regressions for HTTP, DNS, and rejected-redirect failures. Focused tests (25), Ruff, `ty`, BasedPyright, routine Test-Goblin, and `git diff --check` pass. No retry, endpoint change, or destination-policy weakening was introduced. Exact-head hosted revalidation remains pending.

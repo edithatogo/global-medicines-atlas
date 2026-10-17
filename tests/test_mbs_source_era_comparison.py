@@ -188,14 +188,43 @@ def test_incomplete_report_is_explicit_and_does_not_emit_exception_text() -> (
     assert "10001" not in rendered
 
 
-def test_cli_writes_incomplete_artifact_and_fails_on_endpoint_error(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+@pytest.mark.parametrize(
+    ("error", "failure_class", "sensitive_text"),
+    [
+        pytest.param(
+            httpx.ConnectError("endpoint secret 10.00"),
+            "source_endpoint_unavailable",
+            "10.00",
+            id="httpx-endpoint-error",
+        ),
+        pytest.param(
+            OSError("dns lookup secret.internal for 10.00"),
+            "source_endpoint_unavailable",
+            "secret.internal",
+            id="dns-os-error",
+        ),
+        pytest.param(
+            command.DestinationPolicyError(
+                "redirect-host-not-allowed", "blocked redirect secret.internal"
+            ),
+            "destination_policy_rejected",
+            "secret.internal",
+            id="destination-policy-error",
+        ),
+    ],
+)
+def test_cli_writes_incomplete_artifact_and_fails_on_transport_errors(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    error: Exception,
+    failure_class: str,
+    sensitive_text: str,
 ) -> None:
     output = tmp_path / "comparison.json"
 
     def unavailable(*, exact_commit: str) -> dict[str, object]:
         assert len(exact_commit) == 40
-        raise httpx.ConnectError("endpoint leaked source value 10.00")
+        raise error
 
     monkeypatch.setattr(command, "compare", unavailable)
     monkeypatch.setattr(
@@ -214,5 +243,5 @@ def test_cli_writes_incomplete_artifact_and_fails_on_endpoint_error(
     rendered = output.read_text(encoding="utf-8")
     report = json.loads(rendered)
     assert report["status"] == "incomplete"
-    assert report["failure_class"] == "source_endpoint_unavailable"
-    assert "10.00" not in rendered
+    assert report["failure_class"] == failure_class
+    assert sensitive_text not in rendered

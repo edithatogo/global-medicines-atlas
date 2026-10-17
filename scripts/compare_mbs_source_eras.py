@@ -18,6 +18,7 @@ from pydantic import AnyUrl, TypeAdapter
 from global_medicines_atlas.acquisition import (
     AcquisitionPolicy,
     BoundIPAddressTransport,
+    DestinationPolicyError,
 )
 from global_medicines_atlas.adapters.au_mbs import (
     MBS_NATIVE_FIELDS,
@@ -385,11 +386,12 @@ def compare(*, exact_commit: str) -> dict[str, Any]:
 def _incomplete_report(
     *, exact_commit: str, compared_at: datetime, error: Exception
 ) -> dict[str, Any]:
-    failure_class = (
-        "source_endpoint_unavailable"
-        if isinstance(error, httpx.HTTPError)
-        else "identity_or_structure_mismatch"
-    )
+    if isinstance(error, DestinationPolicyError):
+        failure_class = "destination_policy_rejected"
+    elif isinstance(error, (httpx.HTTPError, OSError)):
+        failure_class = "source_endpoint_unavailable"
+    else:
+        failure_class = "identity_or_structure_mismatch"
     return {
         "schema_id": "global-medicines-atlas.mbs-predecessor-comparison",
         "schema_version": 1,
@@ -434,7 +436,13 @@ def main() -> int:
     try:
         report = compare(exact_commit=args.exact_commit)
         exit_code = 0
-    except (httpx.HTTPError, SyntaxError, ValueError) as error:
+    except (
+        DestinationPolicyError,
+        httpx.HTTPError,
+        OSError,
+        SyntaxError,
+        ValueError,
+    ) as error:
         report = _incomplete_report(
             exact_commit=args.exact_commit,
             compared_at=datetime.now(UTC),

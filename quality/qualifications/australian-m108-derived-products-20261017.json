@@ -722,7 +722,7 @@
         "workflow": ".github/workflows/australian-mbs-202608-source-era-candidate.yml",
         "test": "tests/test_mbs_source_era_comparison.py",
         "local_verification": {
-          "focused_tests": "23 passed",
+          "focused_tests": "25 passed",
           "routine_test_goblin": "passed",
           "ruff_ty_basedpyright_actionlint_context_ecosystem": "passed"
         },
