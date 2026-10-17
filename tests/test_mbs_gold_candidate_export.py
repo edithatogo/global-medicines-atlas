@@ -82,6 +82,108 @@ def test_export_rejects_graph_digest_mismatch_and_oversized_projection(
     assert not output.exists()
 
 
+@pytest.mark.parametrize(
+    ("suffix", "max_file_bytes", "create_parent", "message"),
+    [
+        (".parquet", 0, True, "byte bound"),
+        (".bin", 1024, True, "suffix"),
+        (".parquet", 1024, False, "directory must exist"),
+    ],
+)
+def test_export_rejects_invalid_local_output_bounds(
+    tmp_path,
+    *,
+    suffix: str,
+    max_file_bytes: int,
+    create_parent: bool,
+    message: str,
+) -> None:
+    candidate = _candidate()
+    parent = tmp_path / "candidate-dir"
+    if create_parent:
+        parent.mkdir()
+    output = parent / f"candidate{suffix}"
+
+    with pytest.raises(ValueError, match=message):
+        write_mbs_gold_candidate_edges(
+            candidate,
+            output,
+            expected_graph_sha256=candidate.graph_sha256,
+            max_file_bytes=max_file_bytes,
+        )
+    assert not output.exists()
+
+
+def test_export_rejects_non_real_or_unbound_candidates(tmp_path) -> None:
+    candidate = _candidate()
+    output = tmp_path / "candidate.parquet"
+
+    with pytest.raises(ValueError, match="only the admitted real"):
+        write_mbs_gold_candidate_edges(
+            candidate.model_copy(
+                update={"qualification": "synthetic_silver_candidate_only"}
+            ),
+            output,
+            expected_graph_sha256=candidate.graph_sha256,
+        )
+    with pytest.raises(ValueError, match="missing admission bindings"):
+        write_mbs_gold_candidate_edges(
+            candidate.model_copy(
+                update={
+                    "input_admission_sha256": None,
+                    "input_semantic_manifest_sha256": None,
+                }
+            ),
+            output,
+            expected_graph_sha256=candidate.graph_sha256,
+        )
+    assert not output.exists()
+
+
+def test_export_rejects_lost_projection_bindings(tmp_path, monkeypatch) -> None:
+    candidate = _candidate()
+    original_project = mbs_gold_candidate_export.project_mbs_gold_graph_arrow
+
+    def project_with_wrong_binding(graph):
+        nodes, edges = original_project(graph)
+        metadata = dict(edges.schema.metadata or {})
+        metadata[b"graph_sha256"] = b"f" * 64
+        return nodes, edges.replace_schema_metadata(metadata)
+
+    monkeypatch.setattr(
+        mbs_gold_candidate_export,
+        "project_mbs_gold_graph_arrow",
+        project_with_wrong_binding,
+    )
+    with pytest.raises(ValueError, match="lost its exact bindings"):
+        write_mbs_gold_candidate_edges(
+            candidate,
+            tmp_path / "candidate.parquet",
+            expected_graph_sha256=candidate.graph_sha256,
+        )
+
+
+def test_export_rejects_changed_bytes_from_open_descriptor(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    candidate = _candidate()
+    output = tmp_path / "candidate.parquet"
+    reads = iter((b"changed", b""))
+    monkeypatch.setattr(
+        mbs_gold_candidate_export.os,
+        "read",
+        lambda _descriptor, _size: next(reads),
+    )
+
+    with pytest.raises(ValueError, match="bytes differ from payload"):
+        write_mbs_gold_candidate_edges(
+            candidate,
+            output,
+            expected_graph_sha256=candidate.graph_sha256,
+        )
+    assert not output.exists()
+
+
 def test_exported_table_preserves_exact_admission_bindings(tmp_path) -> None:
     candidate = _candidate()
     output = tmp_path / "candidate-edges.parquet"

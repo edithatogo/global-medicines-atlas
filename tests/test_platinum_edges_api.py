@@ -470,3 +470,33 @@ def test_edge_loader_rejects_file_over_row_bound_before_read(tmp_path) -> None:
 
     with pytest.raises(ValueError, match="row bound"):
         load_gold_edges(path)
+
+
+def test_edge_loader_rechecks_row_bound_after_parquet_read(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _, sample = project_mbs_gold_graph_arrow(graph())
+    sample_row = sample.to_pylist()[0]
+    rows = [
+        {**sample_row, "edge_id": f"edge:{index:05d}"}
+        for index in range(MAX_EDGE_FILE_ROWS + 1)
+    ]
+    oversized = pa.Table.from_pylist(rows, schema=sample.schema)
+    path = tmp_path / "metadata-underreports-rows.parquet"
+    pq.write_table(oversized, path)
+
+    class MisreportedParquetFile:
+        metadata = type("Metadata", (), {"num_rows": 0})()
+
+        def __init__(self, _stream) -> None:
+            pass
+
+        def read(self) -> pa.Table:
+            return oversized
+
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_edge_configuration.pq.ParquetFile",
+        MisreportedParquetFile,
+    )
+    with pytest.raises(ValueError, match="row bound"):
+        load_gold_edges(path)
