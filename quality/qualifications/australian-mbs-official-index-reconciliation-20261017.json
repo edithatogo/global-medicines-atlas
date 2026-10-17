@@ -2,8 +2,8 @@
   "schema_id": "global-medicines-atlas.australian-mbs-official-index-reconciliation",
   "schema_version": 1,
   "requirement": "M-107",
-  "recorded_at": "2026-10-17T03:28:25Z",
-  "status": "current_official_index_receipts_reconciled_collision_page_outstanding",
+  "recorded_at": "2026-10-17T03:54:00Z",
+  "status": "current_official_index_receipts_reconciled",
   "scope": "Metadata-only observation of the official MBS Downloads index, its linked page/resource metadata, the Previous Downloads file listing, and exact B1 receipt metadata from immutable public archive manifests; raw source payloads were not read.",
   "method": "Bounded public HTML metadata reads and anonymous public manifest/B1-sidecar JSON readbacks. No MBS/PBS source payload, workbook, PDF, or Parquet payload bytes were requested or retained.",
   "authorization": {
@@ -3935,14 +3935,14 @@
   },
   "current_public_archive": {
     "dataset": "edithatogo/australian-mbs-source-archive",
-    "revision": "51da37714b2ea3ac3b0376d28769595e8c6e9c14",
-    "manifest_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/51da37714b2ea3ac3b0376d28769595e8c6e9c14/manifest.json",
+    "revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+    "manifest_url": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/da83cad9116e2f9a5b927be7b080e9a5e5ea6998/manifest.json",
     "manifest_http_status": 200,
-    "manifest_bytes": 56954,
-    "manifest_sha256": "22acb944fbca1a0bd68bb961a1342321c4a020cf1af4525cd0140177d5afbf60",
-    "file_count": 204,
-    "b1_monthly_schedule_receipt_count": 83,
-    "receipt_metadata_read_count": 83,
+    "manifest_bytes": 59818,
+    "manifest_sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+    "file_count": 212,
+    "b1_monthly_schedule_receipt_count": 87,
+    "receipt_metadata_read_count": 87,
     "receipt_metadata_errors": 0,
     "receipts": [
       {
@@ -4691,6 +4691,42 @@
         "source_page_id": "Downloads-251101",
         "archive_path": "raw/mbs/releases/Downloads-251101/MBS-XML-20251101.XML",
         "payload_sha256": "d738fd6eb0a8a60f276787ec6eab9f860e3de4bfefdd8c81ed5ab83eae1d8624"
+      },
+      {
+        "receipt_path": "bronze/mbs/releases/Downloads-210615/source-url-sha256/61236422fa4dcba6a87cdca7d5155fd931bb6e2ccce220e299617cc0af023c5e/mbs-xml-210615.xml.receipt.json",
+        "receipt_bytes": 844,
+        "receipt_sha256": "449630391d777068ea730a028d1839676676e402da2d88ad20beb10aba62e7c2",
+        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/c38de338f277d243ca2586f500821760/$FILE/mbs-xml-210615.xml",
+        "source_page_id": "Downloads-210615",
+        "archive_path": "raw/mbs/releases/Downloads-210615/source-url-sha256/61236422fa4dcba6a87cdca7d5155fd931bb6e2ccce220e299617cc0af023c5e/mbs-xml-210615.xml",
+        "payload_sha256": "6862edd50b631b20c9b4e566968460d843f98293ce5a9d6faad96ea0b4b33fc4"
+      },
+      {
+        "receipt_path": "bronze/mbs/releases/Downloads-210615/source-url-sha256/a2f96e01a07348986e988937f0fe8c6ec54f90e9eff27d33074ad1649e98a3d2/mbs-xml-210601a.xml.receipt.json",
+        "receipt_bytes": 797,
+        "receipt_sha256": "d75c70b15d78d20b8acf2d81cc90878ef8b160b533e9d7f59949291ed3234768",
+        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/C38DE338F277D243CA2586F500821760/$File/mbs-xml-210601a.xml",
+        "source_page_id": "Downloads-210615",
+        "archive_path": "raw/mbs/releases/Downloads-210615/source-url-sha256/a2f96e01a07348986e988937f0fe8c6ec54f90e9eff27d33074ad1649e98a3d2/mbs-xml-210601a.xml",
+        "payload_sha256": "b1bbaaf6781147be48065e719daba86d831e70dd2ead0eab5658fdc2295d5836"
+      },
+      {
+        "receipt_path": "bronze/mbs/releases/Downloads-210615/source-url-sha256/e5eb3923c58c1d019bf1c41316b12ec9bcc6294ea77a666c352a3386eaad226b/MBS-xml-210601a.xml.receipt.json",
+        "receipt_bytes": 847,
+        "receipt_sha256": "2fc58dbdef2eae631dc8e88eaa3337cdfcc382e1d9cc0257ac54694ec24286e8",
+        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/c38de338f277d243ca2586f500821760/$FILE/MBS-xml-210601a.xml",
+        "source_page_id": "Downloads-210615",
+        "archive_path": "raw/mbs/releases/Downloads-210615/source-url-sha256/e5eb3923c58c1d019bf1c41316b12ec9bcc6294ea77a666c352a3386eaad226b/MBS-xml-210601a.xml",
+        "payload_sha256": "b1bbaaf6781147be48065e719daba86d831e70dd2ead0eab5658fdc2295d5836"
+      },
+      {
+        "receipt_path": "bronze/mbs/releases/Downloads-210615/source-url-sha256/ed625187597aaa024991bdad909dd145e800afd1d919261310aeedf478af7d31/mbs-xml-210615.xml.receipt.json",
+        "receipt_bytes": 794,
+        "receipt_sha256": "f4b5430fe295915316a405ac17f46ecbdd3d187a5634dea3c022f57561500b93",
+        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/C38DE338F277D243CA2586F500821760/$File/mbs-xml-210615.xml",
+        "source_page_id": "Downloads-210615",
+        "archive_path": "raw/mbs/releases/Downloads-210615/source-url-sha256/ed625187597aaa024991bdad909dd145e800afd1d919261310aeedf478af7d31/mbs-xml-210615.xml",
+        "payload_sha256": "6862edd50b631b20c9b4e566968460d843f98293ce5a9d6faad96ea0b4b33fc4"
       }
     ]
   },
@@ -4698,8 +4734,8 @@
     "listed_xml_link_count": 82,
     "distinct_source_url_count": 82,
     "page_count": 41,
-    "receipt_matched_count": 78,
-    "no_matching_current_receipt_count": 4,
+    "receipt_matched_count": 82,
+    "no_matching_current_receipt_count": 0,
     "resources": [
       {
         "page_id": "Downloads-200701a",
@@ -5187,7 +5223,14 @@
         "page_label": "June 2021 downloads page",
         "filename": "MBS-xml-210601a.xml",
         "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/c38de338f277d243ca2586f500821760/$FILE/MBS-xml-210601a.xml",
-        "current_archive_receipt": false
+        "current_archive_receipt": true,
+        "matching_archive_receipts": [
+          {
+            "receipt_path": "bronze/mbs/releases/Downloads-210615/source-url-sha256/e5eb3923c58c1d019bf1c41316b12ec9bcc6294ea77a666c352a3386eaad226b/MBS-xml-210601a.xml.receipt.json",
+            "archive_path": "raw/mbs/releases/Downloads-210615/source-url-sha256/e5eb3923c58c1d019bf1c41316b12ec9bcc6294ea77a666c352a3386eaad226b/MBS-xml-210601a.xml",
+            "payload_sha256": "b1bbaaf6781147be48065e719daba86d831e70dd2ead0eab5658fdc2295d5836"
+          }
+        ]
       },
       {
         "page_id": "Downloads-210615",
@@ -5195,7 +5238,14 @@
         "page_label": "June 2021 downloads page",
         "filename": "mbs-xml-210601a.xml",
         "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/C38DE338F277D243CA2586F500821760/$File/mbs-xml-210601a.xml",
-        "current_archive_receipt": false
+        "current_archive_receipt": true,
+        "matching_archive_receipts": [
+          {
+            "receipt_path": "bronze/mbs/releases/Downloads-210615/source-url-sha256/a2f96e01a07348986e988937f0fe8c6ec54f90e9eff27d33074ad1649e98a3d2/mbs-xml-210601a.xml.receipt.json",
+            "archive_path": "raw/mbs/releases/Downloads-210615/source-url-sha256/a2f96e01a07348986e988937f0fe8c6ec54f90e9eff27d33074ad1649e98a3d2/mbs-xml-210601a.xml",
+            "payload_sha256": "b1bbaaf6781147be48065e719daba86d831e70dd2ead0eab5658fdc2295d5836"
+          }
+        ]
       },
       {
         "page_id": "Downloads-210615",
@@ -5203,7 +5253,14 @@
         "page_label": "June 2021 downloads page",
         "filename": "mbs-xml-210615.xml",
         "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/c38de338f277d243ca2586f500821760/$FILE/mbs-xml-210615.xml",
-        "current_archive_receipt": false
+        "current_archive_receipt": true,
+        "matching_archive_receipts": [
+          {
+            "receipt_path": "bronze/mbs/releases/Downloads-210615/source-url-sha256/61236422fa4dcba6a87cdca7d5155fd931bb6e2ccce220e299617cc0af023c5e/mbs-xml-210615.xml.receipt.json",
+            "archive_path": "raw/mbs/releases/Downloads-210615/source-url-sha256/61236422fa4dcba6a87cdca7d5155fd931bb6e2ccce220e299617cc0af023c5e/mbs-xml-210615.xml",
+            "payload_sha256": "6862edd50b631b20c9b4e566968460d843f98293ce5a9d6faad96ea0b4b33fc4"
+          }
+        ]
       },
       {
         "page_id": "Downloads-210615",
@@ -5211,7 +5268,14 @@
         "page_label": "June 2021 downloads page",
         "filename": "mbs-xml-210615.xml",
         "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/C38DE338F277D243CA2586F500821760/$File/mbs-xml-210615.xml",
-        "current_archive_receipt": false
+        "current_archive_receipt": true,
+        "matching_archive_receipts": [
+          {
+            "receipt_path": "bronze/mbs/releases/Downloads-210615/source-url-sha256/ed625187597aaa024991bdad909dd145e800afd1d919261310aeedf478af7d31/mbs-xml-210615.xml.receipt.json",
+            "archive_path": "raw/mbs/releases/Downloads-210615/source-url-sha256/ed625187597aaa024991bdad909dd145e800afd1d919261310aeedf478af7d31/mbs-xml-210615.xml",
+            "payload_sha256": "6862edd50b631b20c9b4e566968460d843f98293ce5a9d6faad96ea0b4b33fc4"
+          }
+        ]
       },
       {
         "page_id": "Downloads-210701",
@@ -5914,8 +5978,8 @@
     "historical_pdf_file_links_not_acquired_or_claimed_authorized": true,
     "unavailable_or_unlisted_pages_not_assumed_absent": true
   },
-  "next_unblocked_work": "Extend the exact-page selector to accept only safe exact Downloads identifiers observed in official MBS link forms (without accepting URLs, paths, queries, fragments, or encoded separators); then publish eligible monthly_schedule_xml pages in cohorts of at most 24 under the existing protected hosted workflow, reconciling exact receipts and identity conflicts.",
-  "denominator_boundary": "The current Downloads index lists 55 page URLs and 531 resource links, including 82 distinct MBS-XML links across 41 pages. The initial exact-source-URL comparison at archive revision 52ad5c31cfe101c487a4c7a9c382540642e6110a matched 10 links and left 72 without a receipt at that earlier revision. The refreshed comparison at revision 51da37714b2ea3ac3b0376d28769595e8c6e9c14 read 83 B1 schedule receipt sidecars as metadata and matched 78 links; the four unmatched URLs all appear on Downloads-210615 and remain pending collision-safe acquisition. The separate Previous Downloads page lists 105 historical PDF files spanning 1974–2010. Its 106th resource link is the site-wide RSS feed, classified separately and excluded from the historical-file count. This is an index-level, format-separated starting inventory, not a complete expected MBS/PBS period denominator or M-107 acceptance.",
+  "next_unblocked_work": "Reconcile the broader expected MBS/PBS historical period and source-family denominators, source-era semantics, utilization evidence, and source-specific rights; receipt coverage for current-index MBS-XML links alone does not establish complete historical, PBS, or M-107 qualification.",
+  "denominator_boundary": "The current Downloads index lists 55 page URLs and 531 resource links, including 82 distinct MBS-XML links across 41 pages. The initial exact-source-URL comparison at archive revision 52ad5c31cfe101c487a4c7a9c382540642e6110a matched 10 links and left 72 without a receipt at that earlier revision. The refreshed comparison at revision 51da37714b2ea3ac3b0376d28769595e8c6e9c14 matched 78 links; the remaining four URLs on Downloads-210615 were then published using collision-safe URL-derived paths. The current revision da83cad9116e2f9a5b927be7b080e9a5e5ea6998 now has exact receipts for all 82 current-index MBS-XML URLs, based on 87 B1 schedule receipt sidecars. The separate Previous Downloads page lists 105 historical PDF files spanning 1974–2010; its 106th resource link is site-wide RSS, excluded from the historical-file count. This is an index-level format-separated starting inventory, not a complete expected MBS/PBS period denominator or M-107 acceptance.",
   "previous_public_archive_observation": {
     "dataset": "edithatogo/australian-mbs-source-archive",
     "revision": "52ad5c31cfe101c487a4c7a9c382540642e6110a",
@@ -6019,33 +6083,16 @@
     ]
   },
   "archive_receipt_refresh": {
-    "recorded_at": "2026-10-17T03:28:25Z",
-    "basis": "Exact URL match between the 82 official Downloads-index MBS-XML links and all B1 receipt metadata listed under bronze/mbs/releases in the anonymously readable immutable manifest; no raw XML payload was fetched.",
-    "revision": "51da37714b2ea3ac3b0376d28769595e8c6e9c14",
-    "manifest_sha256": "22acb944fbca1a0bd68bb961a1342321c4a020cf1af4525cd0140177d5afbf60",
-    "manifest_file_count": 204,
-    "monthly_schedule_receipt_metadata_read": 83,
+    "recorded_at": "2026-10-17T03:54:00Z",
+    "basis": "Exact URL match between all 82 official Downloads-index MBS-XML links and the B1 receipt metadata read from the anonymously readable immutable public archive manifest; only manifest and B1 JSON sidecars were requested, not raw XML payloads.",
+    "revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+    "manifest_sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+    "manifest_file_count": 212,
+    "monthly_schedule_receipt_metadata_read": 87,
     "read_errors": 0,
     "official_index_xml_urls": 82,
-    "exact_source_url_matches": 78,
-    "unmatched_urls": [
-      {
-        "page_id": "Downloads-210615",
-        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/c38de338f277d243ca2586f500821760/$FILE/MBS-xml-210601a.xml"
-      },
-      {
-        "page_id": "Downloads-210615",
-        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/C38DE338F277D243CA2586F500821760/$File/mbs-xml-210601a.xml"
-      },
-      {
-        "page_id": "Downloads-210615",
-        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/c38de338f277d243ca2586f500821760/$FILE/mbs-xml-210615.xml"
-      },
-      {
-        "page_id": "Downloads-210615",
-        "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/C38DE338F277D243CA2586F500821760/$File/mbs-xml-210615.xml"
-      }
-    ],
+    "exact_source_url_matches": 82,
+    "unmatched_urls": [],
     "publication_runs": [
       {
         "run": "38997283135",
@@ -6068,9 +6115,22 @@
         "cleanup_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228907197"
       }
     ],
-    "remaining_page_ids": [
-      "Downloads-210615"
-    ],
-    "m107_accepted": false
+    "remaining_page_ids": [],
+    "m107_accepted": false,
+    "targeted_page_run": {
+      "run": "39000296702",
+      "exact_main_commit": "c374cff2c0225beaf170887dd54dbfe0ccb77022",
+      "page_id": "Downloads-210615",
+      "monthly_schedule_xml_count": 4,
+      "identity_conflict_count": 0,
+      "targeted_pages_complete": true,
+      "manifest_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+      "manifest_file_count": 212,
+      "anonymous_digest_verification": "passed",
+      "temporary_source_bytes_removed": true,
+      "intent_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229268855",
+      "publication_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285185",
+      "cleanup_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285346"
+    }
   }
 }

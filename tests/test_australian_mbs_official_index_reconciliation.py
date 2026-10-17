@@ -28,9 +28,7 @@ def test_official_mbs_index_counts_bind_to_exact_observation_scope() -> None:
         "global-medicines-atlas.australian-mbs-official-index-reconciliation"
     )
     assert record["requirement"] == "M-107"
-    assert record["status"] == (
-        "current_official_index_receipts_reconciled_collision_page_outstanding"
-    )
+    assert record["status"] == "current_official_index_receipts_reconciled"
     assert downloads["http_status"] == 200
     assert downloads["page_count"] == 55
     assert downloads["resource_link_count"] == 531
@@ -51,28 +49,32 @@ def test_current_mbs_xml_links_are_receipt_reconciled_without_accepting_m107() -
     assert inventory["listed_xml_link_count"] == 82
     assert inventory["distinct_source_url_count"] == 82
     assert inventory["page_count"] == 41
-    assert inventory["receipt_matched_count"] == 78
-    assert inventory["no_matching_current_receipt_count"] == 4
+    assert inventory["receipt_matched_count"] == 82
+    assert inventory["no_matching_current_receipt_count"] == 0
     assert len(resources) == 82
     assert (
-        sum(resource["current_archive_receipt"] for resource in resources) == 78
+        sum(resource["current_archive_receipt"] for resource in resources) == 82
     )
     assert all(
         resource["filename"].lower().startswith("mbs-xml-")
         for resource in resources
     )
     assert record["current_public_archive"]["revision"] == (
-        "51da37714b2ea3ac3b0376d28769595e8c6e9c14"
+        "da83cad9116e2f9a5b927be7b080e9a5e5ea6998"
     )
     assert record["current_public_archive"]["manifest_sha256"] == (
-        "22acb944fbca1a0bd68bb961a1342321c4a020cf1af4525cd0140177d5afbf60"
+        "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055"
     )
     refresh = record["archive_receipt_refresh"]
-    assert refresh["monthly_schedule_receipt_metadata_read"] == 83
+    assert refresh["monthly_schedule_receipt_metadata_read"] == 87
     assert refresh["read_errors"] == 0
-    assert refresh["exact_source_url_matches"] == 78
-    assert refresh["remaining_page_ids"] == ["Downloads-210615"]
-    assert len(refresh["unmatched_urls"]) == 4
+    assert refresh["exact_source_url_matches"] == 82
+    assert refresh["remaining_page_ids"] == []
+    assert refresh["unmatched_urls"] == []
+    assert refresh["targeted_page_run"]["run"] == "39000296702"
+    assert refresh["targeted_page_run"]["identity_conflict_count"] == 0
+    assert refresh["targeted_page_run"]["anonymous_digest_verification"] == "passed"
+    assert refresh["targeted_page_run"]["temporary_source_bytes_removed"] is True
     assert refresh["m107_accepted"] is False
     assert record["previous_public_archive_observation"]["revision"] == (
         "52ad5c31cfe101c487a4c7a9c382540642e6110a"
