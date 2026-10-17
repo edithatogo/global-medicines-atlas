@@ -564,6 +564,24 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   Pydantic model and JSON Schema so evidence remains auditable after the
   hosted artifact expires.
 
+## M-109 source-era identity validator generalization (2026-10-17)
+
+- [x] Generalize MBS source-era verification beyond the pinned July 2025
+  release. Bind official HTTPS host and URI authority, filename date and
+  version, release ID, effective date, schema-era year/month/day/version, and
+  comparison chronology.
+  Preserve backward loading and report digests only for the exact legacy July
+  2025 identity; other eras must name their schema era explicitly. Tests cover
+  the official August 2026 identity shape, missing-era rejection, identity
+  contradictions, and a correction released after its effective date.
+  The qualification model is now capable of representing additional official
+  eras, but no additional source-era schema or semantic profile was read or
+  accepted by this change.
+- [~] M-109 still requires the complete approved source-era denominator,
+  source-specific Silver schema and semantic qualification, admitted real
+  source data, and all external rights or admission evidence. The validator
+  generalization does not close those gates.
+
 ## M-107 metadata evidence review fixes (2026-09-28)
 
 - [x] Correct the proposed route/contact evidence timestamps to the recorded
@@ -807,5 +825,7 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   documents the disposition without exposing matched values. Focused tests,
   routine Test Goblin, Ruff, diff checks, and a fresh full-history Gitleaks
   scan pass locally. Hosted verification is pending on the updated PR head.
-- [ ] Verify the updated exact-head hosted leak-detection check before treating
-  this PR blocker as cleared.
+- [x] Verify the updated exact-head hosted leak-detection check and all
+  protected checks before merging. PR #1094 head `dde310c8` passed all 39
+  checks, including Gitleaks and Codecov patch coverage, and squash-merged as
+  `4781e94c`; the merge tree matches the tested head tree.

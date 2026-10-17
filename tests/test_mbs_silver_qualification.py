@@ -1,6 +1,8 @@
 """Aggregate qualification for receipt-bound MBS Silver candidates."""
 
+import json
 from datetime import UTC, date, datetime
+from pathlib import Path
 
 import pytest
 from pydantic import AnyUrl, ValidationError
@@ -238,6 +240,32 @@ def test_source_era_verification_is_bound_to_archive_identity() -> None:
     ("change", "message"),
     [
         ({"official_source_uri": AnyUrl("https://example.org/mbs.xml")}, "URI"),
+        (
+            {
+                "official_source_uri": AnyUrl(
+                    OFFICIAL_MBS_V3_URI.replace(
+                        "https://www.mbsonline.gov.au/",
+                        "https://user@www.mbsonline.gov.au/",
+                    )
+                )
+            },
+            "URI",
+        ),
+        (
+            {
+                "official_source_uri": AnyUrl(
+                    OFFICIAL_MBS_V3_URI.replace(
+                        "https://www.mbsonline.gov.au/",
+                        "https://www.mbsonline.gov.au:8443/",
+                    )
+                )
+            },
+            "URI",
+        ),
+        (
+            {"official_source_uri": AnyUrl(f"{OFFICIAL_MBS_V3_URI}?mirror=1")},
+            "URI",
+        ),
         ({"release_id": "unrelated release"}, "metadata"),
     ],
 )
@@ -257,3 +285,116 @@ def test_source_era_verification_rejects_unrelated_official_identity(
             }
             | change
         )
+
+
+def test_source_era_verification_supports_other_official_mbs_releases() -> None:
+    verification = MbsSourceEraVerification(
+        official_source_uri=AnyUrl(
+            "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/"
+            "650f3eec0dfb990fca25692100069854/"
+            "81efb2067580a870ca258e28007f588c/"
+            "$FILE/MBS-XML-20260801.XML"
+        ),
+        release_id="MBS-XML-20260801",
+        released_at=date(2026, 7, 29),
+        effective_at=date(2026, 8, 1),
+        official_source_sha256="a" * 64,
+        official_source_byte_count=8_293_331,
+        compared_at=datetime(2026, 10, 17, tzinfo=UTC),
+        schema_era="2026-08-01",
+    )
+
+    assert verification.schema_era == "2026-08-01"
+    assert verification.release_id == "MBS-XML-20260801"
+
+    missing_era = verification.model_dump()
+    missing_era.pop("schema_era")
+    with pytest.raises(ValidationError, match="schema era is required"):
+        MbsSourceEraVerification.model_validate(missing_era)
+
+
+def test_legacy_july_2025_identity_can_load_without_explicit_schema_era() -> (
+    None
+):
+    legacy = MbsSourceEraVerification(
+        official_source_uri=AnyUrl(OFFICIAL_MBS_V3_URI),
+        release_id="MBS-XML-20250701 Version 3",
+        released_at=date(2025, 6, 16),
+        effective_at=date(2025, 7, 1),
+        official_source_sha256="a" * 64,
+        official_source_byte_count=8_293_331,
+        compared_at=datetime(2026, 10, 17, tzinfo=UTC),
+        schema_era="",
+    )
+    serialized = legacy.model_dump()
+    serialized.pop("schema_era")
+
+    restored = MbsSourceEraVerification.model_validate(serialized)
+
+    assert restored.schema_era == "2025-07-version-3"
+
+
+@pytest.mark.parametrize(
+    ("change", "message"),
+    [
+        ({"release_id": "MBS-XML-20260802"}, "metadata differs"),
+        ({"effective_at": date(2026, 8, 2)}, "effective date differs"),
+        ({"schema_era": "2026-07-31"}, "schema era differs"),
+        ({"release_id": "MBS-XML-20250701 Version 99"}, "metadata differs"),
+        ({"schema_era": "2026-08-version-2"}, "schema era version differs"),
+        (
+            {"released_at": date(2035, 1, 1)},
+            "comparison predates release",
+        ),
+    ],
+)
+def test_source_era_verification_binds_release_date_and_schema_era(
+    change: dict[str, object], message: str
+) -> None:
+    values = {
+        "official_source_uri": AnyUrl(
+            "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/"
+            "650f3eec0dfb990fca25692100069854/"
+            "81efb2067580a870ca258e28007f588c/"
+            "$FILE/MBS-XML-20260801.XML"
+        ),
+        "release_id": "MBS-XML-20260801",
+        "released_at": date(2026, 7, 29),
+        "effective_at": date(2026, 8, 1),
+        "official_source_sha256": "a" * 64,
+        "official_source_byte_count": 8_293_331,
+        "compared_at": datetime(2026, 10, 17, tzinfo=UTC),
+        "schema_era": "2026-08-01",
+    }
+
+    with pytest.raises(ValidationError, match=message):
+        MbsSourceEraVerification.model_validate(values | change)
+
+
+def test_versioned_mbs_release_can_be_published_after_its_effective_date() -> (
+    None
+):
+    verification = MbsSourceEraVerification(
+        official_source_uri=AnyUrl(OFFICIAL_MBS_V3_URI),
+        release_id="MBS-XML-20250701 Version 3",
+        released_at=date(2026, 1, 2),
+        effective_at=date(2025, 7, 1),
+        official_source_sha256="a" * 64,
+        official_source_byte_count=8_293_331,
+        compared_at=datetime(2026, 1, 3, tzinfo=UTC),
+        schema_era="2025-07-version-3",
+    )
+
+    assert verification.released_at > verification.effective_at
+
+
+def test_pinned_legacy_candidate_reports_keep_their_original_digest() -> None:
+    root = Path(__file__).resolve().parents[1]
+    path = root / "quality/qualifications/"
+    path /= "australian-mbs-silver-candidate-qualification-20261017.json"
+    candidate = json.loads(path.read_text(encoding="utf-8"))
+    report = MbsSilverQualification.model_validate(candidate["qualification"])
+
+    assert report.schema_era == "2025-07-version-3"
+    assert report.source_era_verification is not None
+    assert report.source_era_verification.schema_era == "2025-07-version-3"
