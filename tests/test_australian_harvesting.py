@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import sys
 import urllib.request
 import zipfile
 from datetime import UTC, datetime
@@ -12,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from scripts import harvest_australian_mbs_schedule
 from scripts.harvest_australian_mbs_utilisation import (
     discover_selected_resources,
     stage_resources,
@@ -616,6 +618,87 @@ def test_discover_mbs_schedule_exact_historical_pages_and_failures() -> None:
     ]
     assert attempts[1]["error_class"] == "OSError"
     assert attempts[1]["resource_count"] == 0
+    assert attempts[1]["monthly_schedule_xml_count"] == 0
+
+
+def test_discover_mbs_exact_pages_keep_page_scoped_same_name_files() -> None:
+    def fetch_page(url: str) -> str:
+        page_id = url.rsplit("/", maxsplit=1)[-1]
+        return f'<a href="/files/{page_id}/MBS-XML.xml">XML</a>'
+
+    resources, attempts = discover_mbs_schedule_resources_detailed(
+        "",
+        fetch_page,
+        max_releases=0,
+        exact_release_pages=["Downloads-250101", "Downloads-250301"],
+    )
+
+    assert len(resources) == 2
+    assert len({resource.archive_path for resource in resources}) == 2
+    assert [attempt["monthly_schedule_xml_count"] for attempt in attempts] == [
+        1,
+        1,
+    ]
+
+
+def test_targeted_page_completeness_requires_xml_for_every_page() -> None:
+    assert (
+        harvest_australian_mbs_schedule.targeted_pages_complete(
+            [
+                {
+                    "page": "Downloads-250101",
+                    "monthly_schedule_xml_count": 1,
+                },
+                {
+                    "page": "Downloads-250301",
+                    "monthly_schedule_xml_count": 0,
+                },
+            ],
+            ["Downloads-250101", "Downloads-250301"],
+        )
+        is False
+    )
+    assert (
+        harvest_australian_mbs_schedule.targeted_pages_complete(
+            [], ["Downloads-250101"]
+        )
+        is False
+    )
+    assert (
+        harvest_australian_mbs_schedule.targeted_pages_complete([], []) is None
+    )
+
+
+def test_exact_only_harvest_skips_current_index_fetch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    requested_urls: list[str] = []
+
+    def fetch_page(url: str) -> str:
+        requested_urls.append(url)
+        assert url.endswith("Downloads-250101")
+        return '<a href="/files/MBS-XML-20250101.XML">XML</a>'
+
+    monkeypatch.setattr(
+        harvest_australian_mbs_schedule, "fetch_url_text", fetch_page
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "harvest_australian_mbs_schedule.py",
+            "--dry-run",
+            "--max-releases",
+            "0",
+            "--release-pages",
+            "Downloads-250101",
+        ],
+    )
+
+    assert harvest_australian_mbs_schedule.main() == 0
+    assert requested_urls == [
+        "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-250101"
+    ]
 
 
 @pytest.mark.parametrize(

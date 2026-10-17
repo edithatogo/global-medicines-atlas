@@ -486,7 +486,7 @@ def discover_mbs_schedule_resources_detailed(
     unique_releases = list(dict.fromkeys([*unique_releases, *exact_pages]))
     discovered: list[DiscoveredHarvestResource] = []
     page_attempts: list[dict[str, object]] = []
-    seen: set[str] = set()
+    seen_archive_paths: set[str] = set()
 
     for rp in unique_releases:
         rp_url = urllib.parse.urljoin(base_url, rp)
@@ -499,6 +499,7 @@ def discover_mbs_schedule_resources_detailed(
                 "outcome": "fetch_error",
                 "error_class": type(exc).__name__,
                 "resource_count": 0,
+                "monthly_schedule_xml_count": 0,
             })
             continue
 
@@ -517,14 +518,13 @@ def discover_mbs_schedule_resources_detailed(
                 continue
             full_url = urllib.parse.urljoin(rp_url, f)
             filename = urllib.parse.unquote(full_url.split("/")[-1])
-            if filename in seen:
-                continue
-            seen.add(filename)
-
             location = _mbs_archive_location(rp, filename)
             if location is None:
                 continue
             cat, arch_path = location
+            if arch_path in seen_archive_paths:
+                continue
+            seen_archive_paths.add(arch_path)
 
             discovered.append(
                 DiscoveredHarvestResource(
@@ -543,6 +543,10 @@ def discover_mbs_schedule_resources_detailed(
             if len(discovered) > resource_count_before
             else "no_supported_resources",
             "resource_count": len(discovered) - resource_count_before,
+            "monthly_schedule_xml_count": sum(
+                resource.category == "monthly_schedule_xml"
+                for resource in discovered[resource_count_before:]
+            ),
         })
     return discovered, page_attempts
 

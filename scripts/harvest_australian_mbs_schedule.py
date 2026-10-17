@@ -181,6 +181,24 @@ def publish_to_huggingface(
     return published_revision, cumulative_manifest
 
 
+def targeted_pages_complete(
+    page_attempts: list[dict[str, object]], exact_release_pages: list[str]
+) -> bool | None:
+    """Return whether every requested page yielded at least one MBS XML file."""
+    if not exact_release_pages:
+        return None
+    targeted = {
+        str(attempt["page"]): attempt
+        for attempt in page_attempts
+        if attempt["page"] in exact_release_pages
+    }
+    return len(targeted) == len(set(exact_release_pages)) and all(
+        int(targeted[page]["monthly_schedule_xml_count"]) > 0
+        for page in set(exact_release_pages)
+        if page in targeted
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Harvest ongoing Australian MBS schedule releases"
@@ -219,12 +237,18 @@ def main() -> int:
     contract_path = Path(
         "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
     )
-    index_html = fetch_url_text(
-        "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads"
-    )
     exact_release_pages = [
         page.strip() for page in args.release_pages.split(",") if page.strip()
     ]
+    if args.max_releases == 0 and not exact_release_pages:
+        raise ValueError(
+            "--max-releases 0 requires at least one --release-pages identifier"
+        )
+    index_html = ""
+    if args.max_releases:
+        index_html = fetch_url_text(
+            "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads"
+        )
     resources, page_attempts = discover_mbs_schedule_resources_detailed(
         index_html,
         subpage_fetcher=fetch_url_text,
@@ -271,10 +295,8 @@ def main() -> int:
         "anonymous_digest_verification": "passed",
         "verified_file_count": final_manifest["file_count"],
         "page_attempts": page_attempts,
-        "targeted_pages_complete": all(
-            attempt["outcome"] == "resources_found"
-            for attempt in page_attempts
-            if attempt["page"] in exact_release_pages
+        "targeted_pages_complete": targeted_pages_complete(
+            page_attempts, exact_release_pages
         ),
         "temporary_source_bytes_removed": False,
     }
