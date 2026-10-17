@@ -2641,6 +2641,15 @@
   no heuristic score or confidence value is claimed. The maintainer review
   decision, edge-state acceptance, and Platinum scalar-query bridge remain
   open; no second reviewer is assigned.
+  A separate technical review verified that the admitted-table builder pairs
+  `services` and `benefits` only on matching source-record ID, ordinal, source
+  digest, and receipt digest; the exact qualification reports all 5,989 edges
+  bound to that shared record identity and passes cross-record, forged-digest,
+  and unpermitted-rights controls. This verifies row pairing and provenance
+  mechanics only. It does not establish a positive or payable benefit, clinical
+  meaning, or cross-era equivalence. The edge model and consumer contract keep
+  `review_state=not_reviewed`; this technical result does not record semantic
+  edge acceptance or M-110 acceptance.
 - [x] Correct the MBS XML numeric-width transform so the three EMSN numeric
   fields use their official seven-integer-digit limit while ScheduleFee and
   Benefit75/85/100 retain five digits. Boundary tests failed before the fix and
