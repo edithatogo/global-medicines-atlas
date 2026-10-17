@@ -16,6 +16,11 @@ two field values were independently confirmed to equal the public MBS archive
 revision recorded in the M-109 metadata readback. They are public Git revision
 identities, not credentials.
 
+The merge commit for PR #1094 (`4781e94c7fbbd518201bbbf1c0d964e85f3da938`)
+was subsequently reported with the same two paths, rules, and line numbers.
+The merged evidence records retain the same already-classified public revision
+fields, so the exact merge-commit fingerprints are also listed below.
+
 ## Disposition
 
 The two exact Gitleaks fingerprints are listed in the repository-root
