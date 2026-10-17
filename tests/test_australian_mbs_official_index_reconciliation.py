@@ -29,7 +29,7 @@ def test_official_mbs_index_counts_bind_to_exact_observation_scope() -> None:
     )
     assert record["requirement"] == "M-107"
     assert record["status"] == (
-        "current_official_index_metadata_reconciled_historical_schedule_receipts_partial"
+        "current_official_index_receipts_reconciled_collision_page_outstanding"
     )
     assert downloads["http_status"] == 200
     assert downloads["page_count"] == 55
@@ -51,21 +51,31 @@ def test_current_mbs_xml_links_are_receipt_reconciled_without_accepting_m107() -
     assert inventory["listed_xml_link_count"] == 82
     assert inventory["distinct_source_url_count"] == 82
     assert inventory["page_count"] == 41
-    assert inventory["receipt_matched_count"] == 10
-    assert inventory["no_matching_current_receipt_count"] == 72
+    assert inventory["receipt_matched_count"] == 78
+    assert inventory["no_matching_current_receipt_count"] == 4
     assert len(resources) == 82
     assert (
-        sum(resource["current_archive_receipt"] for resource in resources) == 10
+        sum(resource["current_archive_receipt"] for resource in resources) == 78
     )
     assert all(
         resource["filename"].lower().startswith("mbs-xml-")
         for resource in resources
     )
     assert record["current_public_archive"]["revision"] == (
-        "52ad5c31cfe101c487a4c7a9c382540642e6110a"
+        "51da37714b2ea3ac3b0376d28769595e8c6e9c14"
     )
     assert record["current_public_archive"]["manifest_sha256"] == (
-        "9f9dbe6f5ccf3a6119177bbcbb5d942ce9e9db5ea35d2142c7696a3139cab796"
+        "22acb944fbca1a0bd68bb961a1342321c4a020cf1af4525cd0140177d5afbf60"
+    )
+    refresh = record["archive_receipt_refresh"]
+    assert refresh["monthly_schedule_receipt_metadata_read"] == 83
+    assert refresh["read_errors"] == 0
+    assert refresh["exact_source_url_matches"] == 78
+    assert refresh["remaining_page_ids"] == ["Downloads-210615"]
+    assert len(refresh["unmatched_urls"]) == 4
+    assert refresh["m107_accepted"] is False
+    assert record["previous_public_archive_observation"]["revision"] == (
+        "52ad5c31cfe101c487a4c7a9c382540642e6110a"
     )
     assert record["limits"][
         "missing_current_receipt_is_not_failed_retrieval_or_negative_evidence"

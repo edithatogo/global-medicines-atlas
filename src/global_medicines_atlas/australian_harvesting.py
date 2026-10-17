@@ -443,34 +443,32 @@ def _mbs_resource_from_link(
     page: str,
     page_url: str,
     link: str,
-    seen_archive_paths: dict[str, str],
-) -> tuple[DiscoveredHarvestResource | None, bool]:
+) -> DiscoveredHarvestResource | None:
     if any(
         skip in link.lower()
         for skip in ["rss", "latestnews", "template", ".css"]
     ):
-        return None, False
+        return None
     full_url = urllib.parse.urljoin(page_url, link)
     filename = urllib.parse.unquote(full_url.split("/")[-1])
     location = _mbs_archive_location(page, filename)
     if location is None:
-        return None, False
+        return None
     category, archive_path = location
-    prior_url = seen_archive_paths.get(archive_path)
-    if prior_url is not None:
-        return None, prior_url != full_url
-    seen_archive_paths[archive_path] = full_url
-    return (
-        DiscoveredHarvestResource(
-            source_id="au-mbs",
-            category=category,
-            url=full_url,
-            filename=filename,
-            archive_path=archive_path,
-            period_label=page,
-        ),
-        False,
+    return DiscoveredHarvestResource(
+        source_id="au-mbs",
+        category=category,
+        url=full_url,
+        filename=filename,
+        archive_path=archive_path,
+        period_label=page,
     )
+
+
+def _mbs_collision_path(resource: DiscoveredHarvestResource) -> str:
+    parent = resource.archive_path.rsplit("/", maxsplit=1)[0]
+    source_digest = hashlib.sha256(resource.url.encode("utf-8")).hexdigest()
+    return f"{parent}/source-url-sha256/{source_digest}/{resource.filename}"
 
 
 def _discover_mbs_schedule_page(
@@ -496,15 +494,40 @@ def _discover_mbs_schedule_page(
         page_html,
         re.IGNORECASE,
     )
+    resources_by_url: dict[str, DiscoveredHarvestResource] = {}
+    for link in sorted(set(files)):
+        resource = _mbs_resource_from_link(page, page_url, link)
+        if resource is not None:
+            resources_by_url.setdefault(resource.url, resource)
+
+    by_archive_path: dict[str, list[DiscoveredHarvestResource]] = {}
+    for resource in resources_by_url.values():
+        by_archive_path.setdefault(resource.archive_path.casefold(), []).append(
+            resource
+        )
+
+    candidates: list[DiscoveredHarvestResource] = []
+    for group in by_archive_path.values():
+        if len(group) > 1:
+            candidates.extend(
+                resource.model_copy(
+                    update={"archive_path": _mbs_collision_path(resource)}
+                )
+                for resource in group
+            )
+        else:
+            candidates.extend(group)
+
     discovered: list[DiscoveredHarvestResource] = []
     identity_conflict_count = 0
-    for link in sorted(set(files)):
-        resource, has_identity_conflict = _mbs_resource_from_link(
-            page, page_url, link, seen_archive_paths
-        )
-        identity_conflict_count += has_identity_conflict
-        if resource is not None:
-            discovered.append(resource)
+    for resource in sorted(candidates, key=lambda item: item.archive_path):
+        collision_key = resource.archive_path.casefold()
+        prior_url = seen_archive_paths.get(collision_key)
+        if prior_url is not None and prior_url != resource.url:
+            identity_conflict_count += 1
+            continue
+        seen_archive_paths[collision_key] = resource.url
+        discovered.append(resource)
     attempt: dict[str, object] = {
         "page": page,
         "url": page_url,
