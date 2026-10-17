@@ -110,14 +110,18 @@
   meaning is inferred from these fixtures. PR #1044 merged at
   `7dc9c9762209c437da3ee3bec7e7398014cc37fe` after all 39 reported checks
   passed and automated review completed without findings.
-- [~] Extend the exact synthetic scalar trust path through Chromium for the
+- [x] Extend the exact synthetic scalar trust path through Chromium for the
   Decimal and date filters, preserving exact row identity, object path/digest,
   synthetic cohort, and unknown coverage wording. Extend the same journey to
   isolated installed wheel and sdist consumers through CLI, API, and Chromium.
-  Focused installed-artifact E2E passes; the governed E2E lane passes (129),
-  routine/context/ecosystem checks pass, `ty` and repository BasedPyright pass.
-  Hosted exact-head checks and merge receipt remain pending. This uses only
-  synthetic fixtures and adds no source, coverage, admission, or rights claim.
+  Chromium scalar parity merged in PR #1138 as
+  `30507d9c88a5ce88eb09fa0835d4029614bac95b`; installed wheel/sdist parity
+  merged in PR #1140 as `08fdcbdf230c34c874b7df3abbf3491c5b12b35a`. Both PRs'
+  hosted checks passed. Current-main Test-Goblin E2E on
+  `c4911d3d41182579558c7de010b71a0ef3fb7d55` passed 129 tests. The fixtures
+  preserve exact row identity, object path/digest, synthetic cohort, and
+  explicitly unknown coverage; no source, production admission, rights
+  conclusion, or publication is involved.
 - [x] Reject cross-dimension identities at the shared benefits query boundary:
   MBS resources must declare `service_benefit` and PBS resources must declare
   `funding` before any result rows are queried. Failing-first regressions
