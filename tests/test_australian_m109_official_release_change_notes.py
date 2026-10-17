@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import datetime
 from pathlib import Path
 from typing import Any, cast
 
@@ -18,6 +19,27 @@ REGISTER = Path("docs/qualification/australian-m109-source-era-register.md")
 
 def _json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _assert_page_receipt(
+    observation: dict[str, Any], expected_sha256: str
+) -> datetime:
+    receipt = cast("dict[str, Any]", observation["page_retrieval_receipt"])
+    assert receipt["requested_url"] == observation["source_url"]
+    assert receipt["final_url"] == observation["source_url"]
+    assert receipt["http_status"] == 200
+    assert receipt["sha256"] == expected_sha256
+    assert receipt["content_type"].startswith("text/html")
+    assert receipt["observed_bytes"] == receipt["content_length_header"]
+    assert re.fullmatch(r"[0-9a-f]{64}", receipt["sha256"])
+    started = datetime.fromisoformat(receipt["client_request_started_at"])
+    completed = datetime.fromisoformat(receipt["client_response_received_at"])
+    assert started <= completed
+    assert receipt["server_date"]
+    assert receipt["body_retained"] is False
+    checks = cast("dict[str, bool]", observation["claim_checks_in_response"])
+    assert all(checks.values())
+    return completed
 
 
 def test_official_release_notes_bind_dates_and_corrections_without_inference() -> (
@@ -43,17 +65,20 @@ def test_official_release_notes_bind_dates_and_corrections_without_inference() -
         observation["source_url"].startswith("https://www.mbsonline.gov.au/")
         for observation in observations
     )
+    expected_page_digests = {
+        "2026-03-01": "9278233e251f728cb1f1457f9c0fe71565561d5777ad0e65a3631e48f5e9fd25",
+        "2026-07-01": "f2948263acc5a3f390c373db799b6aeb644a6eba8b495becf753a63782e64ec2",
+        "2026-08-01": "c7babeb5b7df9a53b6cec02472d285a443c007c3d69d902baa373b175f083033",
+    }
+    client_completions: list[datetime] = []
     for observation in observations:
-        receipt = observation["page_retrieval_receipt"]
-        assert receipt["requested_url"] == observation["source_url"]
-        assert receipt["final_url"] == observation["source_url"]
-        assert receipt["http_status"] == 200
-        assert receipt["content_type"].startswith("text/html")
-        assert receipt["observed_bytes"] == receipt["content_length_header"]
-        assert re.fullmatch(r"[0-9a-f]{64}", receipt["sha256"])
-        assert receipt["body_retained"] is False
-        assert all(observation["claim_checks_in_response"].values())
+        expected_sha256 = expected_page_digests[observation["effective_date"]]
+        client_completions.append(
+            _assert_page_receipt(observation, expected_sha256)
+        )
     assert "HTML bodies were discarded" in report["page_retrieval_boundary"]
+    recorded_at = datetime.fromisoformat(report["recorded_at"])
+    assert recorded_at >= max(client_completions)
 
     march, july, august = observations
     assert march["xml_filename"] == "MBS-XML-20260301-version 2.XML"

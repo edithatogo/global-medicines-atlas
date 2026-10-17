@@ -80,8 +80,9 @@ completeness, source-era semantics, and M-109 acceptance remain open.
 
 The [value-free release-change record](../../quality/qualifications/australian-mbs-official-release-change-notes-20261018.json)
 captures three official release-page observations and metadata-only HTTP
-retrieval receipts. Each binds the exact response URL, status, retrieval and
-last-modified times, byte length, and SHA-256; the observations' item/column
+retrieval receipts. Each binds the exact response URL, status, client-observed
+request/response times separately from the server `Date`, last-modified time,
+byte length, and SHA-256; the observations' item/column
 tokens and release statement were checked against that response. The page
 bodies were discarded after hashing. The March 2026 version 2 page describes
 removal of incorrectly included EMSN caps for 12 items and changes to columns
