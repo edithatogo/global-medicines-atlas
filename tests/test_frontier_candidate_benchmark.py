@@ -20,6 +20,10 @@ from global_medicines_atlas.matching import (
 )
 
 FIXTURES = Path(__file__).parent / "fixtures" / "matching"
+BENCHMARK_RECEIPT = (
+    Path(__file__).parents[1]
+    / "quality/benchmarks/frontier-candidate-benchmark-20261018.json"
+)
 
 
 def test_synthetic_candidate_benchmark_is_deterministic_and_bounded() -> None:
@@ -36,7 +40,7 @@ def test_synthetic_candidate_benchmark_is_deterministic_and_bounded() -> None:
     assert first.lexical.status == "measured"
     assert first.lexical.calibration_evaluated is False
     assert first.lexical.retrieval_case_count > 0
-    assert first.lexical.candidate_recall_at_k == pytest.approx(0.25)
+    assert first.lexical.candidate_recall_at_k == pytest.approx(0.5)
     assert first.lexical.negative_candidate_case_count == 2
     assert first.lexical.negative_candidate_rate == pytest.approx(1.0)
     assert first.lexical.operation_count == sum(
@@ -45,6 +49,62 @@ def test_synthetic_candidate_benchmark_is_deterministic_and_bounded() -> None:
     assert canonical_candidate_benchmark_bytes(first) == (
         canonical_candidate_benchmark_bytes(second)
     )
+
+
+def test_multilingual_identifier_positive_has_shared_source_identifier() -> (
+    None
+):
+    case = next(
+        item
+        for item in load_synthetic_matching_cases(FIXTURES)
+        if item.case_id == "multilingual-positive"
+    )
+    target = next(
+        item
+        for item in case.targets
+        if item.concept_id in case.relevant_target_ids
+    )
+    source = MatchingRecord(
+        record_id=case.source.concept_id,
+        jurisdiction=case.source.jurisdiction,
+        name=case.source.preferred_name,
+        identifiers=case.source.identifiers,
+    )
+    target_record = MatchingRecord(
+        record_id=target.concept_id,
+        jurisdiction=target.jurisdiction,
+        name=target.preferred_name,
+        identifiers=target.identifiers,
+    )
+
+    result = frontier_candidate_benchmark.generate_candidates(
+        source, (target_record,), lexical_threshold=0.65, limit=5
+    )
+
+    assert {item.target_record_id for item in result.candidates} == {
+        target.concept_id
+    }
+
+
+def test_corrected_synthetic_benchmark_receipt_keeps_candidate_boundaries() -> (
+    None
+):
+    receipt_bytes = BENCHMARK_RECEIPT.read_bytes()
+    receipt = json.loads(receipt_bytes)
+
+    assert hashlib.sha256(receipt_bytes).hexdigest() == (
+        "8c2faa37fcd2c576a633f85925c3929b6ebc117024fed3df0340a16412a4a601"
+    )
+    assert receipt["fixture_sha256"] == (
+        "6a1a65da416335dfcdddad85069f5cee1b1b9e2d3404f96554e64a3f2afb4d03"
+    )
+    assert receipt["case_count"] == 6
+    assert receipt["synthetic"] is True
+    assert receipt["clinical_equivalence_claims"] is False
+    assert receipt["production_dependency_adopted"] is False
+    assert receipt["lexical"]["candidate_recall_at_k"] == pytest.approx(0.5)
+    assert receipt["lexical"]["negative_candidate_rate"] == pytest.approx(1.0)
+    assert receipt["lexical"]["calibration_evaluated"] is False
 
 
 def test_candidate_benchmark_discloses_unavailable_and_unjustified_methods() -> (
