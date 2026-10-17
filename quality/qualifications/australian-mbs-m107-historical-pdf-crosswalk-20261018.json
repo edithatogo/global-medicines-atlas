@@ -1,0 +1,2978 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-m107-historical-pdf-crosswalk",
+  "schema_version": 1,
+  "recorded_at": "2026-10-18",
+  "requirement": "M-107",
+  "status": "official_page_metadata_crosswalk_rights_and_acceptance_open",
+  "scope": {
+    "official_pages": 9,
+    "pdf_link_occurrences": 119,
+    "distinct_pdf_source_urls": 113,
+    "duplicate_url_identity_count": 5,
+    "duplicate_link_occurrence_excess": 6,
+    "rss_link_occurrences_excluded_from_pdf_files": 18,
+    "distinct_rss_source_urls": 2,
+    "label_filename_period_comparison_counts": {
+      "different_tokens": 8,
+      "not_comparable_from_label_and_filename": 1,
+      "same_tokens": 110
+    },
+    "source_payloads_requested": false,
+    "source_payloads_read": false,
+    "m107_accepted": false
+  },
+  "source_observation": {
+    "path": "quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json",
+    "recorded_at": "2026-10-17T03:54:00Z",
+    "sha256": "9f6ac27b6d967e704c90ac2105ea1e8e22a0a6ea750e4157f596e8ebd4a606dd",
+    "page_observation_window": "2026-10-17T02:25:55Z/2026-10-17T02:26:35Z"
+  },
+  "authorization_input": {
+    "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+    "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b",
+    "allowed_categories": [
+      "monthly_schedule_xml",
+      "basic_service_description",
+      "relative_value_guide"
+    ],
+    "historical_pdf_word_scope": "not established by this authorization"
+  },
+  "per_year": {
+    "2011": {
+      "pdf_link_occurrences": 14
+    },
+    "2012": {
+      "pdf_link_occurrences": 24
+    },
+    "2013": {
+      "pdf_link_occurrences": 21
+    },
+    "2014": {
+      "pdf_link_occurrences": 18
+    },
+    "2015": {
+      "pdf_link_occurrences": 10
+    },
+    "2016": {
+      "pdf_link_occurrences": 9
+    },
+    "2017": {
+      "pdf_link_occurrences": 7
+    },
+    "2018": {
+      "pdf_link_occurrences": 7
+    },
+    "2019": {
+      "pdf_link_occurrences": 9
+    }
+  },
+  "duplicate_url_identities": [
+    {
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201312-Optom.PDF",
+      "link_occurrence_count": 3,
+      "labels": [
+        "2014 April Optometrist",
+        "2014 March Optometrist",
+        "2014 January Optometrist"
+      ]
+    },
+    {
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201403-Allied.PDF",
+      "link_occurrence_count": 2,
+      "labels": [
+        "2014 April Allied Health",
+        "2014 March Allied Health"
+      ]
+    },
+    {
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201408-Allied.PDF",
+      "link_occurrence_count": 2,
+      "labels": [
+        "2014 November Allied Health",
+        "2014 August Allied Health"
+      ]
+    },
+    {
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201408-MBS.PDF",
+      "link_occurrence_count": 2,
+      "labels": [
+        "2014 November MBS",
+        "2014 August MBS"
+      ]
+    },
+    {
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201408-Optom.PDF",
+      "link_occurrence_count": 2,
+      "labels": [
+        "2014 November Optometrist",
+        "2014 August Optometrist"
+      ]
+    }
+  ],
+  "interpretation": {
+    "period_boundary": "Displayed labels and filename tokens are compared only as metadata; neither is accepted as a verified effective date.",
+    "duplicate_boundary": "Repeated source URLs are counted as link appearances and distinct URL identities separately; different labels on one URL need source-owner clarification before treating them as different snapshots.",
+    "rights_boundary": "The current MBS authorization covers listed source categories and does not establish historical PDF rights. No acquisition or publication is authorized by this crosswalk.",
+    "completeness_boundary": "This is a nine-page index observation, not a complete historical MBS/PBS period denominator or M-107 acceptance."
+  },
+  "links": [
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 November Dental",
+      "filename": "201111-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201111-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201111",
+        "filename_token": "201111"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 November Allied Health",
+      "filename": "201111-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201111-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201111",
+        "filename_token": "201111"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 November MBS",
+      "filename": "201111-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201111-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201111",
+        "filename_token": "201111"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 November Optometrists",
+      "filename": "201111-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201111-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201111",
+        "filename_token": "201111"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 July Summary",
+      "filename": "201107-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201107-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201107",
+        "filename_token": "201107"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 July Optometrists",
+      "filename": "201107-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201107-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201107",
+        "filename_token": "201107"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 July MBS",
+      "filename": "201107-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201107-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201107",
+        "filename_token": "201107"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 July Dental",
+      "filename": "201107-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201107-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201107",
+        "filename_token": "201107"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 July Allied Health",
+      "filename": "201107-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201107-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201107",
+        "filename_token": "201107"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 January Dental",
+      "filename": "201101-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201101-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201101",
+        "filename_token": "201101"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 January Allied Health",
+      "filename": "201101-allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201101-allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201101",
+        "filename_token": "201101"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 January MBS",
+      "filename": "201101-MBS2.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201101-MBS2.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201101",
+        "filename_token": "201101"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 January Optometrists",
+      "filename": "201101-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201101-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201101",
+        "filename_token": "201101"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2011-PDF",
+      "displayed_label": "2011 January Summary",
+      "filename": "201101-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/317ACF6351081DB5CA2585FF00086C40/$File/201101-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201101",
+        "filename_token": "201101"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 December Optometrists",
+      "filename": "201212-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201212-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201212",
+        "filename_token": "201212"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 December MBS",
+      "filename": "201212-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201212-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201212",
+        "filename_token": "201212"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 December Allied Health",
+      "filename": "201212-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201212-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201212",
+        "filename_token": "201212"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 November Optometrists",
+      "filename": "201211-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201211-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201211",
+        "filename_token": "201211"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 November MBS",
+      "filename": "201211-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201211-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201211",
+        "filename_token": "201211"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 November Dental",
+      "filename": "201211-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201211-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201211",
+        "filename_token": "201211"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 November Allied Health",
+      "filename": "201211-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201211-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201211",
+        "filename_token": "201211"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 July Optometrists",
+      "filename": "201207-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201207-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201207",
+        "filename_token": "201207"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 July MBS",
+      "filename": "201207-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201207-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201207",
+        "filename_token": "201207"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 July Dental",
+      "filename": "201207-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201207-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201207",
+        "filename_token": "201207"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 July Allied Health",
+      "filename": "201207-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201207-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201207",
+        "filename_token": "201207"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 May Optometrists",
+      "filename": "201205-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201205-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201205",
+        "filename_token": "201205"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 May MBS",
+      "filename": "201205-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201205-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201205",
+        "filename_token": "201205"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 May Dental",
+      "filename": "201205-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201205-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201205",
+        "filename_token": "201205"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 May Allied Health",
+      "filename": "201205-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201205-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201205",
+        "filename_token": "201205"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 March MRI Services for patients with PIP Implants",
+      "filename": "MRI-SERVICES-FOR-PATIENTS-WITH-PIP-IMPLANTS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/MRI-SERVICES-FOR-PATIENTS-WITH-PIP-IMPLANTS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 March Optometrists",
+      "filename": "201203-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201203-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201203",
+        "filename_token": "201203"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 March MBS",
+      "filename": "201203-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201203-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201203",
+        "filename_token": "201203"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 March Dental",
+      "filename": "201203-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201203-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201203",
+        "filename_token": "201203"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 March Allied Health",
+      "filename": "201203-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201203-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201203",
+        "filename_token": "201203"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 January Allied Health",
+      "filename": "201201-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201201-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201201",
+        "filename_token": "201201"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 January Dental",
+      "filename": "201201-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201201-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201201",
+        "filename_token": "201201"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 January MBS",
+      "filename": "201201-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201201-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201201",
+        "filename_token": "201201"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2012-PDF",
+      "displayed_label": "2012 January Optometrists",
+      "filename": "201201-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/E137A6BDE8494881CA2585FF000A72FF/$File/201201-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201201",
+        "filename_token": "201201"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 December MBS",
+      "filename": "201312-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201312-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201312",
+        "filename_token": "201312"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 December Allied Health",
+      "filename": "201312-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201312-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201312",
+        "filename_token": "201312"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 December Optometrists",
+      "filename": "201312-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201312-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201312",
+        "filename_token": "201312"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 November MBS",
+      "filename": "201311-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201311-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201311",
+        "filename_token": "201311"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 November Allied Health",
+      "filename": "201311-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201311-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201311",
+        "filename_token": "201311"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 November Optometrists",
+      "filename": "201311-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201311-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201311",
+        "filename_token": "201311"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 October MBS",
+      "filename": "201310-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201310-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201310",
+        "filename_token": "201310"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 October Allied Health",
+      "filename": "201310-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201310-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201310",
+        "filename_token": "201310"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 October Optometrists",
+      "filename": "201310-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201310-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201310",
+        "filename_token": "201310"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 July MBS",
+      "filename": "201307-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201307-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201307",
+        "filename_token": "201307"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 July Allied Health",
+      "filename": "201307-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201307-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201307",
+        "filename_token": "201307"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 July Optometrists",
+      "filename": "201307-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201307-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201307",
+        "filename_token": "201307"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 May MBS",
+      "filename": "201305-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201305-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201305",
+        "filename_token": "201305"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 May Allied Health",
+      "filename": "201305-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201305-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201305",
+        "filename_token": "201305"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 May Optometrists",
+      "filename": "201305-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201305-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201305",
+        "filename_token": "201305"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 March MBS",
+      "filename": "201303-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201303-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201303",
+        "filename_token": "201303"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 March Allied Health",
+      "filename": "201303-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201303-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201303",
+        "filename_token": "201303"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 March Optometrist",
+      "filename": "201303-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201303-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201303",
+        "filename_token": "201303"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 JanuaryMBS",
+      "filename": "201301-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201301-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201301",
+        "filename_token": "201301"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 January Allied Health",
+      "filename": "201301-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201301-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201301",
+        "filename_token": "201301"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2013-PDF",
+      "displayed_label": "2013 January Optometrist",
+      "filename": "201301-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/94D54B959677561ECA2585FF000015E3/$File/201301-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201301",
+        "filename_token": "201301"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 November MBS",
+      "filename": "201408-MBS.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201408-MBS.PDF",
+      "same_url_link_occurrence_count": 2,
+      "label_filename_period_comparison": {
+        "status": "different_tokens",
+        "displayed_label_token": "201411",
+        "filename_token": "201408"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 November Allied Health",
+      "filename": "201408-Allied.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201408-Allied.PDF",
+      "same_url_link_occurrence_count": 2,
+      "label_filename_period_comparison": {
+        "status": "different_tokens",
+        "displayed_label_token": "201411",
+        "filename_token": "201408"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 November Optometrist",
+      "filename": "201408-Optom.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201408-Optom.PDF",
+      "same_url_link_occurrence_count": 2,
+      "label_filename_period_comparison": {
+        "status": "different_tokens",
+        "displayed_label_token": "201411",
+        "filename_token": "201408"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 August MBS",
+      "filename": "201408-MBS.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201408-MBS.PDF",
+      "same_url_link_occurrence_count": 2,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201408",
+        "filename_token": "201408"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 August Allied Health",
+      "filename": "201408-Allied.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201408-Allied.PDF",
+      "same_url_link_occurrence_count": 2,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201408",
+        "filename_token": "201408"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 August Optometrist",
+      "filename": "201408-Optom.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201408-Optom.PDF",
+      "same_url_link_occurrence_count": 2,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201408",
+        "filename_token": "201408"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 July MBS",
+      "filename": "201407-MBS.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201407-MBS.PDF",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201407",
+        "filename_token": "201407"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 July Allied Health",
+      "filename": "201407-Allied.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201407-Allied.PDF",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201407",
+        "filename_token": "201407"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 July Optometrist",
+      "filename": "201407-Optom.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201407-Optom.PDF",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201407",
+        "filename_token": "201407"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 April MBS",
+      "filename": "201404-MBS.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201404-MBS.PDF",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201404",
+        "filename_token": "201404"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 April Allied Health",
+      "filename": "201403-Allied.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201403-Allied.PDF",
+      "same_url_link_occurrence_count": 2,
+      "label_filename_period_comparison": {
+        "status": "different_tokens",
+        "displayed_label_token": "201404",
+        "filename_token": "201403"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 April Optometrist",
+      "filename": "201312-Optom.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201312-Optom.PDF",
+      "same_url_link_occurrence_count": 3,
+      "label_filename_period_comparison": {
+        "status": "different_tokens",
+        "displayed_label_token": "201404",
+        "filename_token": "201312"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 March MBS",
+      "filename": "201403-MBS.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201403-MBS.PDF",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201403",
+        "filename_token": "201403"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 March Allied Health",
+      "filename": "201403-Allied.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201403-Allied.PDF",
+      "same_url_link_occurrence_count": 2,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201403",
+        "filename_token": "201403"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 March Optometrist",
+      "filename": "201312-Optom.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201312-Optom.PDF",
+      "same_url_link_occurrence_count": 3,
+      "label_filename_period_comparison": {
+        "status": "different_tokens",
+        "displayed_label_token": "201403",
+        "filename_token": "201312"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 January MBS",
+      "filename": "201401-MBS.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201401-MBS.PDF",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201401",
+        "filename_token": "201401"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 January Allied Health",
+      "filename": "201401-Allied.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201401-Allied.PDF",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201401",
+        "filename_token": "201401"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2014-PDF",
+      "displayed_label": "2014 January Optometrist",
+      "filename": "201312-Optom.PDF",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/B900536D4B582E61CA2585FF0006926F/$File/201312-Optom.PDF",
+      "same_url_link_occurrence_count": 3,
+      "label_filename_period_comparison": {
+        "status": "different_tokens",
+        "displayed_label_token": "201401",
+        "filename_token": "201312"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 December MBS",
+      "filename": "201512-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201512-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201512",
+        "filename_token": "201512"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 November MBS",
+      "filename": "201511-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201511-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201511",
+        "filename_token": "201511"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 September MBS",
+      "filename": "201509-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201509-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201509",
+        "filename_token": "201509"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 September Optometrist",
+      "filename": "201509-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201509-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201509",
+        "filename_token": "201509"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 July MBS",
+      "filename": "201507-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201507-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201507",
+        "filename_token": "201507"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 July Optometrist",
+      "filename": "201507-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201507-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201507",
+        "filename_token": "201507"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 April MBS",
+      "filename": "201504-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201504-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201504",
+        "filename_token": "201504"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 April Optometrist",
+      "filename": "201504-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201504-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201504",
+        "filename_token": "201504"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 January MBS",
+      "filename": "201501-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201501-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201501",
+        "filename_token": "201501"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2015-PDF",
+      "displayed_label": "2015 January Optom",
+      "filename": "201501-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/A7F6A9DA0E280DCCCA2586140008B368/$File/201501-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201501",
+        "filename_token": "201501"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2016-PDF",
+      "displayed_label": "2016 December MBS",
+      "filename": "201612-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/70CAF134CEE45219CA258614007874F8/$File/201612-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201612",
+        "filename_token": "201612"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2016-PDF",
+      "displayed_label": "2016 November MBS",
+      "filename": "201611-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/70CAF134CEE45219CA258614007874F8/$File/201611-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201611",
+        "filename_token": "201611"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2016-PDF",
+      "displayed_label": "2016 July MBS",
+      "filename": "201607-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/70CAF134CEE45219CA258614007874F8/$File/201607-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201607",
+        "filename_token": "201607"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2016-PDF",
+      "displayed_label": "2016 May MBS",
+      "filename": "201605-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/70CAF134CEE45219CA258614007874F8/$File/201605-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201605",
+        "filename_token": "201605"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2016-PDF",
+      "displayed_label": "2016 May Optometrist",
+      "filename": "201605-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/70CAF134CEE45219CA258614007874F8/$File/201605-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201605",
+        "filename_token": "201605"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2016-PDF",
+      "displayed_label": "2016 April MBS",
+      "filename": "201604-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/70CAF134CEE45219CA258614007874F8/$File/201604-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201604",
+        "filename_token": "201604"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2016-PDF",
+      "displayed_label": "2016 April Optometrist",
+      "filename": "201604-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/70CAF134CEE45219CA258614007874F8/$File/201604-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201604",
+        "filename_token": "201604"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2016-PDF",
+      "displayed_label": "2016 January MBS",
+      "filename": "2015601-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/70CAF134CEE45219CA258614007874F8/$File/2015601-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "different_tokens",
+        "displayed_label_token": "201601",
+        "filename_token": "201560"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2016-PDF",
+      "displayed_label": "2016 January Optometrist",
+      "filename": "201601-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/70CAF134CEE45219CA258614007874F8/$File/201601-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201601",
+        "filename_token": "201601"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2017-PDF",
+      "displayed_label": "2017 December MBS",
+      "filename": "201712-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/40901A5DCA1CD593CA258614007F45C1/$File/201712-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201712",
+        "filename_token": "201712"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2017-PDF",
+      "displayed_label": "2017 November MBS",
+      "filename": "201711-MBS-16-Nov.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/40901A5DCA1CD593CA258614007F45C1/$File/201711-MBS-16-Nov.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201711",
+        "filename_token": "201711"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2017-PDF",
+      "displayed_label": "2017 October MBS",
+      "filename": "201710-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/40901A5DCA1CD593CA258614007F45C1/$File/201710-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201710",
+        "filename_token": "201710"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2017-PDF",
+      "displayed_label": "2017 September MBS",
+      "filename": "201709-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/40901A5DCA1CD593CA258614007F45C1/$File/201709-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201709",
+        "filename_token": "201709"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2017-PDF",
+      "displayed_label": "2017 July MBS",
+      "filename": "201707-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/40901A5DCA1CD593CA258614007F45C1/$File/201707-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201707",
+        "filename_token": "201707"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2017-PDF",
+      "displayed_label": "2017 May MBS",
+      "filename": "201705-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/40901A5DCA1CD593CA258614007F45C1/$File/201705-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201705",
+        "filename_token": "201705"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2017-PDF",
+      "displayed_label": "2017 February MBS",
+      "filename": "201702-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/40901A5DCA1CD593CA258614007F45C1/$File/201702-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201702",
+        "filename_token": "201702"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2018-PDF",
+      "displayed_label": "2018 November MBS",
+      "filename": "201811-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/90CB91EE0B6FB8A9CA2586140082584E/$File/201811-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201811",
+        "filename_token": "201811"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2018-PDF",
+      "displayed_label": "2018 September MBS",
+      "filename": "201809-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/90CB91EE0B6FB8A9CA2586140082584E/$File/201809-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201809",
+        "filename_token": "201809"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2018-PDF",
+      "displayed_label": "2018 July MBS",
+      "filename": "201807-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/90CB91EE0B6FB8A9CA2586140082584E/$File/201807-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201807",
+        "filename_token": "201807"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2018-PDF",
+      "displayed_label": "2018 May MBS",
+      "filename": "201805-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/90CB91EE0B6FB8A9CA2586140082584E/$File/201805-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201805",
+        "filename_token": "201805"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2018-PDF",
+      "displayed_label": "2018 March MBS",
+      "filename": "201803-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/90CB91EE0B6FB8A9CA2586140082584E/$File/201803-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201803",
+        "filename_token": "201803"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2018-PDF",
+      "displayed_label": "2018 February MBS",
+      "filename": "201802-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/90CB91EE0B6FB8A9CA2586140082584E/$File/201802-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201802",
+        "filename_token": "201802"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2018-PDF",
+      "displayed_label": "2018 January MBS",
+      "filename": "201801-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/90CB91EE0B6FB8A9CA2586140082584E/$File/201801-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201801",
+        "filename_token": "201801"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2019-PDF",
+      "displayed_label": "2019 November MBS",
+      "filename": "201911-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/F540E955EFE9BFD5CA25861500000C28/$File/201911-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201911",
+        "filename_token": "201911"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2019-PDF",
+      "displayed_label": "2019 September MBS",
+      "filename": "201909-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/F540E955EFE9BFD5CA25861500000C28/$File/201909-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201909",
+        "filename_token": "201909"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2019-PDF",
+      "displayed_label": "2019 August MBS",
+      "filename": "201908-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/F540E955EFE9BFD5CA25861500000C28/$File/201908-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201908",
+        "filename_token": "201908"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2019-PDF",
+      "displayed_label": "2019 July MBS",
+      "filename": "201907-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/F540E955EFE9BFD5CA25861500000C28/$File/201907-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201907",
+        "filename_token": "201907"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2019-PDF",
+      "displayed_label": "2019 May MBS",
+      "filename": "201905-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/F540E955EFE9BFD5CA25861500000C28/$File/201905-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201905",
+        "filename_token": "201905"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2019-PDF",
+      "displayed_label": "2019 April MBS",
+      "filename": "201904-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/F540E955EFE9BFD5CA25861500000C28/$File/201904-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201904",
+        "filename_token": "201904"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2019-PDF",
+      "displayed_label": "2019 March MBS",
+      "filename": "201903-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/F540E955EFE9BFD5CA25861500000C28/$File/201903-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201903",
+        "filename_token": "201903"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2019-PDF",
+      "displayed_label": "2019 February MBS",
+      "filename": "201902-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/F540E955EFE9BFD5CA25861500000C28/$File/201902-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201902",
+        "filename_token": "201902"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Downloads-2019-PDF",
+      "displayed_label": "2019 January MBS",
+      "filename": "201901-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/F540E955EFE9BFD5CA25861500000C28/$File/201901-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201901",
+        "filename_token": "201901"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    }
+  ],
+  "digest": {
+    "algorithm": "sha256-canonical-json",
+    "value": "155ed49b90aebc8ebef29a7e5e6f920d2273cf43d9659f32fac8916e9e3ea2cf"
+  }
+}
