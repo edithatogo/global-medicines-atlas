@@ -16,11 +16,18 @@ from scripts.prepare_m112_imported_b2_manifest import (
 
 from global_medicines_atlas.bronze_raw_evidence import RawEvidenceState
 
+RIGHTS_DECISION_PATH = (
+    "quality/qualifications/"
+    "australian-mbs-utilisation-exact-scope-rights-decision-20261004.json"
+)
+
 
 def _assert_m112_cohort_member_bound(
     *,
     root: Path,
     approved: dict[str, Any],
+    approved_rights_paths: set[str],
+    rights_decision_sha256: str,
     acquisitions_by_path: dict[str, dict[str, Any]],
     bindings_by_acquisition: dict[str, dict[str, Any]],
     b2_by_acquisition: dict[str, dict[str, Any]],
@@ -45,12 +52,12 @@ def _assert_m112_cohort_member_bound(
     assert b2["payload_sha256"] is None
     assert b2["byte_count"] is None
 
+    assert approved["path"] in approved_rights_paths
     assert approved["rights"]["state"].startswith("approved_exact_scope_")
-    assert (
-        approved["rights"]["decision_evidence"]["path"]
-        == "quality/qualifications/"
-        "australian-mbs-utilisation-exact-scope-rights-decision-20261004.json"
-    )
+    assert approved["rights"]["decision_evidence"] == {
+        "path": RIGHTS_DECISION_PATH,
+        "sha256": rights_decision_sha256,
+    }
     assert approved["v4_admission"] is False
     assert approved["consumer_canary"] is False
     assert approved["disposition"] == "deferred_not_admitted"
@@ -145,6 +152,16 @@ def test_m112_b2_reference_rows_bind_to_the_exact_approved_14_object_cohort() ->
             "australian-m112-per-object-gate-reconciliation-20261005.json"
         ).read_text(encoding="utf-8")
     )
+    rights_decision_file = root / RIGHTS_DECISION_PATH
+    rights_decision = json.loads(
+        rights_decision_file.read_text(encoding="utf-8")
+    )
+    receipt_join_audit = json.loads(
+        (
+            root / "quality/qualifications/"
+            "australian-m112-receipt-sidecar-join-audit-20260930.json"
+        ).read_text(encoding="utf-8")
+    )
     acquisition_import = json.loads(
         (
             root / "quality/qualifications/"
@@ -164,6 +181,20 @@ def test_m112_b2_reference_rows_bind_to_the_exact_approved_14_object_cohort() ->
     assert len(cohort) == 14
     assert all(row["approved_denominator_member"] for row in cohort)
     assert m112["scope"]["approved_denominator"] == 1759
+    approved_rights_paths = {
+        row["path"]
+        for dataset in receipt_join_audit["datasets"]
+        if dataset["dataset"] == "edithatogo/australian-mbs-utilisation-archive"
+        for row in dataset["joined_objects"]
+        if row["authorization_scope_match"]
+    }
+    assert len(approved_rights_paths) == 14
+    assert rights_decision["scope"]["candidate_paths"] == len(
+        approved_rights_paths
+    )
+    rights_decision_sha256 = sha256(
+        rights_decision_file.read_bytes()
+    ).hexdigest()
     acquisitions_by_path = {
         row["path"]: row for row in acquisition_import["records"]
     }
@@ -177,6 +208,8 @@ def test_m112_b2_reference_rows_bind_to_the_exact_approved_14_object_cohort() ->
         _assert_m112_cohort_member_bound(
             root=root,
             approved=approved,
+            approved_rights_paths=approved_rights_paths,
+            rights_decision_sha256=rights_decision_sha256,
             acquisitions_by_path=acquisitions_by_path,
             bindings_by_acquisition=bindings_by_acquisition,
             b2_by_acquisition=b2_by_acquisition,
