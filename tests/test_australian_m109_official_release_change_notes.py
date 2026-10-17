@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any, cast
 
@@ -42,6 +43,17 @@ def test_official_release_notes_bind_dates_and_corrections_without_inference() -
         observation["source_url"].startswith("https://www.mbsonline.gov.au/")
         for observation in observations
     )
+    for observation in observations:
+        receipt = observation["page_retrieval_receipt"]
+        assert receipt["requested_url"] == observation["source_url"]
+        assert receipt["final_url"] == observation["source_url"]
+        assert receipt["http_status"] == 200
+        assert receipt["content_type"].startswith("text/html")
+        assert receipt["observed_bytes"] == receipt["content_length_header"]
+        assert re.fullmatch(r"[0-9a-f]{64}", receipt["sha256"])
+        assert receipt["body_retained"] is False
+        assert all(observation["claim_checks_in_response"].values())
+    assert "HTML bodies were discarded" in report["page_retrieval_boundary"]
 
     march, july, august = observations
     assert march["xml_filename"] == "MBS-XML-20260301-version 2.XML"

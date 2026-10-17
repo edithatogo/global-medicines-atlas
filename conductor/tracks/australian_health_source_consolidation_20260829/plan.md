@@ -1167,11 +1167,13 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   `quality/qualifications/australian-mbs-official-release-change-notes-20261018.json`.
   Preserve release/effective dates and item-level correction scope without
   requesting or reading XML payloads.
-- [x] Add a regression that binds the official page observations and records
-  the unresolved column-to-element and field-guide conflicts. Update the MBS
-  source-era register while preserving the blocked M-109 status; assign the
-  new regression to the Test-Goblin unit lane.
-- [x] Run the focused regression and 110 broader M-109/MBS source-era,
+- [x] Add content-addressed metadata-only retrieval receipts for all three
+  official pages, verify their recorded item/column tokens in the matching
+  response, and test URL/status/length/digest binding without retaining page
+  bodies. Record unresolved column-to-element and field-guide conflicts; update
+  the MBS source-era register while preserving blocked M-109 status; assign the
+  regression to the Test-Goblin unit lane.
+- [x] Run the focused receipt regression and 110 broader M-109/MBS source-era,
   donor-disposition, and Test-Goblin harness tests; routine formatting, typing,
   context validation, JSON checks, and `git diff --check` pass.
 - [~] M-109 still requires source-owner or exact-era schema clarification to

@@ -79,13 +79,17 @@ completeness, source-era semantics, and M-109 acceptance remain open.
 ## Official release-change metadata, 2026-10-18
 
 The [value-free release-change record](../../quality/qualifications/australian-mbs-official-release-change-notes-20261018.json)
-captures three official release-page observations. The March 2026 version 2
-page describes removal of incorrectly included EMSN caps for 12 items and
-changes to columns Y, AB, and AC. The July 2026 page documents corrections to
-Schedule Fee and 100% benefit for five items whose prior indexing was wrong.
-The August 2026 page identifies new item 73331 and states that no further XML
-changes occurred relative to the file published on 28 May. No schedule XML or
-source payload was requested or read for this metadata review.
+captures three official release-page observations and metadata-only HTTP
+retrieval receipts. Each binds the exact response URL, status, retrieval and
+last-modified times, byte length, and SHA-256; the observations' item/column
+tokens and release statement were checked against that response. The page
+bodies were discarded after hashing. The March 2026 version 2 page describes
+removal of incorrectly included EMSN caps for 12 items and changes to columns
+Y, AB, and AC. The July 2026 page documents corrections to Schedule Fee and
+100% benefit for five items whose prior indexing was wrong. The August 2026
+page identifies new item 73331 and states that no further XML changes occurred
+relative to the file published on 28 May. No schedule XML source payload was
+requested or read for this metadata review.
 
 These notes narrow the release chronology but do not identify XML element
 names for the column labels, resolve the conflicting `EMSNCap` descriptions,

@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.australian-mbs-official-release-change-notes",
   "schema_version": 1,
-  "recorded_at": "2026-10-17T23:10:45Z",
+  "recorded_at": "2026-10-17T23:25:54Z",
   "status": "release_changes_observed_semantic_mapping_unqualified",
   "requirement": "M-109",
   "observation_method": "metadata_only_official_release_pages",
@@ -29,10 +29,43 @@
         "2495"
       ],
       "source_statement": "The corrected file removes EMSN caps incorrectly included in the file released on 5 February 2026 and amends columns Y, AB, and AC; the page says the changes align the file with prescribed legislation.",
-      "column_labels": ["Y", "AB", "AC"],
+      "column_labels": [
+        "Y",
+        "AB",
+        "AC"
+      ],
       "xml_element_mapping": "not established by the release page",
       "source_payload_requested": false,
-      "source_payload_read": false
+      "source_payload_read": false,
+      "page_retrieval_receipt": {
+        "requested_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260301",
+        "final_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260301",
+        "http_status": 200,
+        "retrieved_at": "Sat, 17 Oct 2026 23:28:16 GMT",
+        "last_modified": "Sat, 17 Oct 2026 23:28:14 GMT",
+        "etag": null,
+        "content_type": "text/html; charset=ISO-8859-1",
+        "content_length_header": 40227,
+        "observed_bytes": 40227,
+        "sha256": "9278233e251f728cb1f1457f9c0fe71565561d5777ad0e65a3631e48f5e9fd25",
+        "body_retained": false
+      },
+      "claim_checks_in_response": {
+        "2484": true,
+        "2485": true,
+        "2486": true,
+        "2487": true,
+        "2488": true,
+        "2489": true,
+        "2490": true,
+        "2491": true,
+        "2492": true,
+        "2493": true,
+        "2494": true,
+        "2495": true,
+        "EMSN caps": true,
+        "release_statement": true
+      }
     },
     {
       "release": "MBS July 2026 XML",
@@ -42,11 +75,40 @@
       "release_date": "2026-05-28",
       "effective_date": "2026-07-01",
       "change_class": "correction_to_prior_schedule_fees_and_benefits",
-      "corrected_item_codes": ["5200", "5203", "5207", "5208", "5209"],
+      "corrected_item_codes": [
+        "5200",
+        "5203",
+        "5207",
+        "5208",
+        "5209"
+      ],
       "source_statement": "The page says these items were incorrectly indexed from 1 July 2025 and the revised MBS fee file corrects the Schedule Fee and corresponding 100% benefit to align with legislation.",
       "xml_element_mapping": "not established by the release page",
       "source_payload_requested": false,
-      "source_payload_read": false
+      "source_payload_read": false,
+      "page_retrieval_receipt": {
+        "requested_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701",
+        "final_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701",
+        "http_status": 200,
+        "retrieved_at": "Sat, 17 Oct 2026 23:28:17 GMT",
+        "last_modified": "Sat, 17 Oct 2026 23:28:15 GMT",
+        "etag": null,
+        "content_type": "text/html; charset=ISO-8859-1",
+        "content_length_header": 41142,
+        "observed_bytes": 41142,
+        "sha256": "f2948263acc5a3f390c373db799b6aeb644a6eba8b495becf753a63782e64ec2",
+        "body_retained": false
+      },
+      "claim_checks_in_response": {
+        "5200": true,
+        "5203": true,
+        "5207": true,
+        "5208": true,
+        "5209": true,
+        "Schedule Fee": true,
+        "100% benefit": true,
+        "release_statement": true
+      }
     },
     {
       "release": "MBS August 2026 XML",
@@ -61,7 +123,25 @@
       "source_statement": "The page identifies new item 73331 and says no further XML changes are reflected compared with the last published version on 28 May 2026.",
       "xml_element_mapping": "not established by the release page",
       "source_payload_requested": false,
-      "source_payload_read": false
+      "source_payload_read": false,
+      "page_retrieval_receipt": {
+        "requested_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801",
+        "final_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801",
+        "http_status": 200,
+        "retrieved_at": "Sat, 17 Oct 2026 23:28:17 GMT",
+        "last_modified": "Sat, 17 Oct 2026 23:28:15 GMT",
+        "etag": null,
+        "content_type": "text/html; charset=ISO-8859-1",
+        "content_length_header": 33018,
+        "observed_bytes": 33018,
+        "sha256": "c7babeb5b7df9a53b6cec02472d285a443c007c3d69d902baa373b175f083033",
+        "body_retained": false
+      },
+      "claim_checks_in_response": {
+        "73331": true,
+        "28 May": true,
+        "release_statement": true
+      }
     }
   ],
   "field_guide_reconciliation": {
@@ -83,5 +163,6 @@
     "silver_generated": false,
     "m109_accepted": false
   },
-  "interpretation": "These official release pages add release-date and correction-history evidence but do not map column labels to XML element names, resolve the conflicting EMSNCap documentation, or establish semantics for the complete source-era denominator."
+  "interpretation": "These official release pages add release-date and correction-history evidence but do not map column labels to XML element names, resolve the conflicting EMSNCap documentation, or establish semantics for the complete source-era denominator.",
+  "page_retrieval_boundary": "Each official HTML response was read transiently in memory; release facts and item/column tokens were checked in that response and SHA-256 was computed. Only response metadata, claim-check results and digests are retained; HTML bodies were discarded. No MBS XML payload was requested or read."
 }
