@@ -268,24 +268,30 @@ pages identifies these PDF publication-link counts:
 | Year | Listed PDF links | Official source page |
 | --- | ---: | --- |
 | 2011 | 14 | [2011 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2011-PDF) |
-| 2012 | 25 | [2012 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2012-PDF) |
+| 2012 | 24 | [2012 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2012-PDF) |
 | 2013 | 21 | [2013 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2013-PDF) |
 | 2014 | 18 | [2014 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2014-PDF) |
 | 2015 | 10 | [2015 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2015-PDF) |
 | 2016 | 9 | [2016 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2016-PDF) |
 | 2017 | 7 | [2017 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2017-PDF) |
-| 2018 | 7 | [2018 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2018-PDF); official search-index excerpt only because the direct page open timed out |
+| 2018 | 7 | [2018 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2018-PDF) |
 | 2019 | 9 | [2019 downloads](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-2019-PDF) |
-| **Total** | **120** | Nine year-specific pages linked from the official overview |
+| **Total** | **119 link appearances; 113 distinct PDF URLs** | Nine year-specific pages linked from the official overview; exact resource metadata is in the [2026-10-17 official index qualification](../../quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json) |
 
-This is an index-page inventory only. No PDF or software payload was requested,
-downloaded, or read. The nine pages are identified as PDF-download pages; the
-overview also refers to software files, so this list does not claim complete
-pre-2020 format coverage. The 2010 year itself remains outside this set. The
-existing MBS archive authorization covers monthly schedule XML, basic service
-descriptions, and relative value guides; it does not establish rights to retain
-or redistribute these historical PDFs/software files. Therefore this metadata
-does not count as an acquired snapshot and M-107 remains blocked pending a
+This is an index-page inventory only. The exact-page metadata crosswalk
+[`australian-mbs-m107-historical-pdf-crosswalk-20261018.json`](../../quality/qualifications/australian-mbs-m107-historical-pdf-crosswalk-20261018.json)
+reconciles 119 PDF link appearances to 113 distinct source URLs; six duplicate
+link appearances across five URLs carry different displayed period labels.
+Eight date-like labels also differ from the leading filename month token, and
+one link has no comparable month token. These are unresolved metadata
+discrepancies, not evidence of the effective date or of separate snapshots.
+The 18 non-PDF RSS links are excluded from the PDF count. No PDF or software
+payload was requested, downloaded, or read. The overview also refers to
+software files, so this does not claim complete pre-2020 format coverage; 2010
+remains outside this year-specific set. The existing MBS archive authorization
+covers monthly schedule XML, basic service descriptions, and relative value
+guides, but does not establish historical PDF/software rights. The inventory
+does not count as acquired snapshots. M-107 remains blocked pending the
 complete expected-period/format denominator, per-object rights, authorized
 retrieval evidence, and schema-era acceptance.
 

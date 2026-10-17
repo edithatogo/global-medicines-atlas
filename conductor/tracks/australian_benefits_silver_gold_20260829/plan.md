@@ -3229,3 +3229,23 @@
   focused and affected qualification/ledger tests passed (82 tests); the
   routine Test-Goblin profile, context, ecosystem, Ruff, formatting, and diff
   checks passed.
+
+## M-107 2011–2019 historical MBS PDF link reconciliation (2026-10-18)
+
+- [x] Reconcile the nine preserved official-page observations by PDF link
+  occurrence and exact URL identity. The pages contain 119 PDF link
+  appearances but 113 distinct URLs; six repeated appearances span five URLs.
+  The earlier hand-count of 120 was one too high because the 2012 page has 24
+  PDF links, not 25. See
+  `quality/qualifications/australian-mbs-m107-historical-pdf-crosswalk-20261018.json`.
+- [x] Compare displayed labels with filename month tokens without assigning
+  effective dates. Eight date-like labels differ from filename tokens, one
+  cannot be compared, and 110 match. Repeated URLs with multiple labels remain
+  unresolved source-identity questions.
+- [~] Keep all historical PDF rights and acquisition open. The existing
+  authorization does not cover historical PDFs; no PDF or software payload was
+  requested or read. This nine-page metadata slice does not complete the
+  pre-2010/2020+ format denominator or M-107.
+- [x] Validate the report and documentation with 66 focused and affected tests;
+  Test-Goblin routine, context, and ecosystem checks; Ruff, formatting, and
+  diff checks all passed.
