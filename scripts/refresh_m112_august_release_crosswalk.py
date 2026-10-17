@@ -17,6 +17,9 @@ ROOT_READBACK = (
 SOURCE_DIGEST = (
     f"{BASE}australian-m112-source-archive-digest-reconciliation-20261004.json"
 )
+ALIAS_READBACK = (
+    f"{BASE}australian-m112-august-alias-anonymous-readback-20261018.json"
+)
 SOURCE_RECEIPT = f"{BASE}australian-mbs-bronze-source-receipt-20261004.json"
 AUTHORIZATION = f"{BASE}australian-mbs-harvest-publication-authorization.json"
 RELEASE_CONTRACT = f"{BASE}mbs-current-release-contract.json"
@@ -260,6 +263,119 @@ def _validate_payload_digest(report: dict[str, Any]) -> None:
         raise ValueError("anonymous digest readback does not bind the raw path")
 
 
+def _validate_alias_readback(report: dict[str, Any]) -> None:
+    readback = _read(ALIAS_READBACK)
+    actual = (
+        readback["dataset"],
+        readback["revision"],
+        readback["path"],
+        readback["request_url"],
+        readback["method"],
+        readback["http_status"],
+        readback["anonymous"],
+        readback["authorization_header_sent"],
+        readback["byte_count"],
+        readback["sha256"],
+        readback["digest_method"],
+        readback["payload_retained"],
+        readback["source_values_inspected"],
+    )
+    expected = (
+        DATASET,
+        "40891976f77ee5e7688edceed25c9ac98a77547e",
+        ALIAS_PATH,
+        (
+            "https://huggingface.co/datasets/"
+            f"{DATASET}/resolve/40891976f77ee5e7688edceed25c9ac98a77547e/"
+            f"{ALIAS_PATH}"
+        ),
+        "GET",
+        200,
+        True,
+        False,
+        PAYLOAD_BYTES,
+        PAYLOAD_SHA256,
+        "sha256_stream",
+        False,
+        False,
+    )
+    if actual != expected:
+        raise ValueError("anonymous digest readback does not bind the alias")
+
+    rows = [
+        item
+        for item in report["objects"]
+        if item["dataset"] == DATASET and item["path"] == ALIAS_PATH
+    ]
+    if len(rows) != 1:
+        raise ValueError("anonymous digest readback does not bind the alias")
+    row = rows[0]
+    identity = row["identity"]
+    if (
+        row["revision"] != expected[1]
+        or identity["byte_count"] != PAYLOAD_BYTES
+    ):
+        raise ValueError("anonymous digest readback does not bind the alias")
+    identity.update({
+        "sha256_evidence": "anonymous_digest_readback",
+        "sha256": PAYLOAD_SHA256,
+        "anonymous_digest_readback": True,
+        "digest_evidence": _binding(ALIAS_READBACK),
+    })
+
+
+def _validate_alias_b1_b2_identity(
+    report: dict[str, Any], lifecycle: dict[str, Any]
+) -> None:
+    """Require the alias to resolve to the exact canonical raw B1/B2 object."""
+    by_path = {
+        item["path"]: item
+        for item in report["objects"]
+        if item["dataset"] == DATASET
+    }
+    canonical = by_path[RAW_PATH]
+    alias = by_path[ALIAS_PATH]
+    canonical_identity = canonical["identity"]
+    alias_identity = alias["identity"]
+    lifecycle_identity = lifecycle["producer_archive_objects"]
+
+    expected_identity = (
+        PAYLOAD_SHA256,
+        PAYLOAD_BYTES,
+        True,
+        "025c714ecd1fa69f91fdb4de002d285d47272e40",
+    )
+    canonical_actual = (
+        canonical_identity["sha256"],
+        canonical_identity["byte_count"],
+        canonical_identity["anonymous_digest_readback"],
+        canonical_identity["git_blob_oid"],
+    )
+    alias_actual = (
+        alias_identity["sha256"],
+        alias_identity["byte_count"],
+        alias_identity["anonymous_digest_readback"],
+        alias_identity["git_blob_oid"],
+    )
+    lifecycle_actual = (
+        lifecycle_identity["source_sha256"],
+        lifecycle_identity["byte_count"],
+        lifecycle_identity["path_alias_git_blob_oid"],
+    )
+    if (
+        canonical_actual != expected_identity
+        or alias_actual != expected_identity
+        or lifecycle_actual
+        != (PAYLOAD_SHA256, PAYLOAD_BYTES, expected_identity[3])
+        or lifecycle["reconciliation"]["source_identity_joined"] is not True
+        or lifecycle["reconciliation"]["local_b1_b2_lifecycle_complete"]
+        is not True
+    ):
+        raise ValueError(
+            "August alias does not resolve to the canonical raw B1/B2 object"
+        )
+
+
 def _apply_object_crosswalk(report: dict[str, Any]) -> None:
     rows = [row for row in report["objects"] if row["dataset"] == DATASET]
     by_path = {row["path"]: row for row in rows}
@@ -291,6 +407,27 @@ def _apply_object_crosswalk(report: dict[str, Any]) -> None:
         ),
         "evidence": _binding(LIFECYCLE),
     }
+    by_path[ALIAS_PATH]["b1_b2_lineage"] = {
+        "complete": True,
+        "state": (
+            "complete for the shared raw B1/B2 payload object: the alias and "
+            "canonical path have the same pinned Git blob, byte count, and "
+            "SHA-256; the alias also has its own exact-revision anonymous "
+            "digest readback. Historical producer-archive records remain "
+            "preserved, and their separate projection lineage is unqualified"
+        ),
+        "evidence": {
+            "canonical_object": {
+                "archive_path": RAW_PATH,
+                "payload_sha256": PAYLOAD_SHA256,
+                "byte_count": PAYLOAD_BYTES,
+                "git_blob_oid": "025c714ecd1fa69f91fdb4de002d285d47272e40",
+            },
+            "bronze_lifecycle": _binding(LIFECYCLE),
+            "source_receipt": _binding(SOURCE_RECEIPT),
+            "alias_anonymous_readback": _binding(ALIAS_READBACK),
+        },
+    }
 
 
 def build_report() -> dict[str, Any]:
@@ -306,6 +443,8 @@ def build_report() -> dict[str, Any]:
     _validate_bronze_chain(receipt, lifecycle["canonical_bronze_lifecycle"])
     _validate_public_manifest(_read(ROOT_READBACK))
     _validate_payload_digest(report)
+    _validate_alias_readback(report)
+    _validate_alias_b1_b2_identity(report, lifecycle)
     _apply_object_crosswalk(report)
 
     report.update({
@@ -320,6 +459,7 @@ def build_report() -> dict[str, Any]:
                 LIFECYCLE,
                 ROOT_READBACK,
                 SOURCE_DIGEST,
+                ALIAS_READBACK,
                 SOURCE_RECEIPT,
                 AUTHORIZATION,
                 RELEASE_CONTRACT,
@@ -328,7 +468,9 @@ def build_report() -> dict[str, Any]:
         "boundaries": {
             "approved_denominator_changed": False,
             "rights_decision_created_or_expanded": False,
-            "source_payload_bytes_read": False,
+            "source_payload_bytes_read": True,
+            "source_payload_bytes_retained": False,
+            "source_values_inspected": False,
             "source_payload_bytes_uploaded": False,
             "v4_admission_performed": False,
             "consumer_canaries_performed": False,
@@ -344,8 +486,12 @@ def build_report() -> dict[str, Any]:
         "consumer_canaries_passed": 0,
     })
     report["aggregate_gates"].update({
+        "paths_with_anonymous_digest_readback": sum(
+            row["identity"]["anonymous_digest_readback"]
+            for row in report["objects"]
+        ),
         "paths_with_exact_source_release_rights": 2,
-        "paths_with_complete_b1_b2_lineage": 1,
+        "paths_with_complete_b1_b2_lineage": 2,
         "paths_admitted_to_v4": 0,
         "paths_with_consumer_canary": 0,
     })

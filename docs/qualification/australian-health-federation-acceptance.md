@@ -53,3 +53,15 @@ MBS/PBS source semantics, and then admit only evidenced derived products to v4.
 The current future-source registers account for all M-112 candidate paths but
 do not satisfy those gates. Restricted terminology and an administratively
 independent replica retain their separate authority gates.
+
+### M-112 August raw alias identity update, 2026-10-18
+
+The exact August MBS content-addressed path and legacy alias now bind to one
+shared raw B1/B2 payload identity: the pinned Git blob, 8,293,331-byte size,
+SHA-256, canonical source receipt, landed-to-accepted lifecycle, and immutable
+B2 reference agree, and both public paths have independent anonymous digest
+readbacks. See the [current per-object gate reconciliation](../../quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018.json)
+and [alias readback receipt](../../quality/qualifications/australian-m112-august-alias-anonymous-readback-20261018.json).
+Both paths remain deferred. Historical producer-archive records are preserved;
+their projection lineage, v4 admission, consumer canaries, full-denominator
+readback, and M-112 federation acceptance remain open.
