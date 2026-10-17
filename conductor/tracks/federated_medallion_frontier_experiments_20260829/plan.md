@@ -434,3 +434,21 @@
   classify every matrix row. No preview passed its production-promotion gate.
 - [x] Do not promote dependencies or production authority in this track; open a
   separate ADR/implementation track for any candidate that passes.
+
+## 2026-10-18 synthetic candidate fixture identity correction
+
+- [x] Align the governed multilingual identifier-positive case with its
+  existing rationale by giving the synthetic source the same UNII already
+  declared for its relevant target. A failing-first benchmark regression
+  reproduced the missing candidate. The regenerated deterministic receipt
+  reports 2/4 relevant cases retrieved (previously 1/4); both negative cases
+  still produce candidates, and confidence calibration remains unevaluated.
+  The old 2026-10-11 receipt is retained as historical evidence. The new
+  receipt is `quality/benchmarks/frontier-candidate-benchmark-20261018.json`
+  (SHA-256
+  `8c2faa37fcd2c576a633f85925c3929b6ebc117024fed3df0340a16412a4a601`).
+  Focused tests pass (7), the broader matching suite passes (113), the routine
+  harness passes, and Ruff, `ty`, and BasedPyright pass. The derived Bronze
+  receipt-cohort input digest was regenerated and its focused tests pass (13);
+  cohort counts did not change. No source, model, production behavior, rights
+  conclusion, or authority state changed.

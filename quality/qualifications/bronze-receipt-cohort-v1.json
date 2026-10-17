@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "4244617cf719e4ca3d9b53ee7fa4df3f3ce50b49ebdc0f67eb5c3c6e8825eabc",
+      "sha256": "a4e14eade231614dc7dc8ba7076166fad34bfc5a3f56d90ae739f90d025ad026",
       "file_count": 148,
       "files": [
         {
@@ -597,7 +597,7 @@
         {
           "path": "tests/fixtures/matching/cases.jsonl",
           "exists": true,
-          "sha256": "b32cd3be9a46735894794a49bb8b5cb06eee68dd6e3550a713a85c73ba68cd57"
+          "sha256": "a1295e00c03144b1328c281ad1f44605df10c4a0731cbb2f7fab784f789dfa80"
         },
         {
           "path": "tests/fixtures/matching/expected_review_queue.jsonl",
