@@ -70,6 +70,13 @@ def test_m109_identity_inventory_records_current_pinned_sources_only() -> None:
     sources = mbs["sources"]
     assert len(sources) == mbs["observed_exact_source_count"] == 8
     assert len({source["path"] for source in sources}) == 8
+    manifest_paths = [
+        path
+        for source in sources
+        for path in source.get("manifest_paths", [source["path"]])
+    ]
+    assert len(manifest_paths) == mbs["observed_manifest_path_entry_count"] == 9
+    assert len(set(manifest_paths)) == 9
     assert all(
         source["identity_status"] == "verified_in_current_pinned_root_manifest"
         for source in sources
@@ -126,6 +133,17 @@ def test_m109_identity_inventory_records_current_pinned_sources_only() -> None:
         source["path"]: (source["sha256"], source["bytes"])
         for source in sources
     } == expected_mbs
+    august = next(
+        source for source in sources if source["source_era"] == "2026-08-01"
+    )
+    assert august["manifest_paths"] == [
+        "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+        "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+    ]
+    assert august["sha256"] == (
+        "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+    )
+    assert august["bytes"] == 8293331
 
 
 def test_m109_inventory_keeps_mbs_authorization_and_pbs_rights_separate() -> (

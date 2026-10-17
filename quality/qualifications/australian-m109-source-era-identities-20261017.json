@@ -32,6 +32,7 @@
       "scope_note": "These existing authorizations are recorded as their stated scopes; this inventory creates no new rights conclusion."
     },
     "observed_exact_source_count": 8,
+    "observed_manifest_path_entry_count": 9,
     "expected_source_denominator_complete": false,
     "sources": [
       {
@@ -112,6 +113,10 @@
         "effective_at": "2026-08-01",
         "kind": "schedule_xml",
         "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+        "manifest_paths": [
+          "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+          "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML"
+        ],
         "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
         "bytes": 8293331,
         "identity_status": "verified_in_current_pinned_root_manifest",
@@ -137,7 +142,7 @@
       "2025-11-01-original",
       "2025-11-01-version-2"
     ],
-    "completeness_boundary": "These eight objects are the exact MBS schedule/P7 entries of the pinned raw manifest, not the full official release history or proof of a complete expected MBS denominator."
+    "completeness_boundary": "These eight unique source objects occupy nine exact MBS schedule/P7 manifest path entries in the pinned raw manifest, not the full official release history or proof of a complete expected MBS denominator."
   },
   "pbs": {
     "observed_exact_source_count": 1,
