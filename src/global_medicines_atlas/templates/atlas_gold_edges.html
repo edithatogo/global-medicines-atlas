@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gold edge candidates — Global Medicines Atlas</title>
+    <link rel="stylesheet" href="/static/atlas.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#edge-results">Skip to edge results</a>
+    <header>
+      <p class="eyebrow">Structural evidence</p>
+      <h1>Gold edge candidates</h1>
+      <p>These typed relationships are candidates for review. They do not establish clinical equivalence, regulatory status, or funding eligibility.</p>
+      <p><a href="/">Return to the Atlas</a></p>
+    </header>
+    <main id="edge-results" tabindex="-1">
+      <section aria-labelledby="filters-heading">
+        <h2 id="filters-heading">Filter candidate edges</h2>
+        <form method="get">
+          <div class="form-grid">
+            <label>Results per page
+              <input type="number" name="limit" value="{{ limit }}" min="1" max="1000">
+            </label>
+            <label>Source node identifier
+              <input name="source_node_id" value="{{ source_node_id }}" maxlength="512">
+            </label>
+            <label>Target node identifier
+              <input name="target_node_id" value="{{ target_node_id }}" maxlength="512">
+            </label>
+            <label>Relationship kind
+              <input name="kind" value="{{ kind }}" maxlength="512">
+            </label>
+          </div>
+          <input type="hidden" name="offset" value="0">
+          <button type="submit">Apply filters</button>
+        </form>
+      </section>
+
+      {% if error %}
+        <section class="notice error" role="alert"><h2>Edge selection unavailable</h2><p>{{ error }}</p></section>
+      {% elif payload %}
+        <section aria-labelledby="edge-list-heading">
+          <h2 id="edge-list-heading">{{ payload.total }} candidate edge{% if payload.total != 1 %}s{% endif %}</h2>
+          <p>Qualification: <code>{{ payload.qualification }}</code>. Review each edge with its source evidence before use. Absence is not evidence of a negative relationship.</p>
+          {% if payload.admission_bindings is defined %}
+            <dl aria-label="Admitted graph identity">
+              <div><dt>Graph SHA-256</dt><dd><code>{{ payload.admission_bindings.graph_sha256 }}</code></dd></div>
+              <div><dt>Silver admission SHA-256</dt><dd><code>{{ payload.admission_bindings.input_admission_sha256 }}</code></dd></div>
+              <div><dt>Semantic manifest SHA-256</dt><dd><code>{{ payload.admission_bindings.input_semantic_manifest_sha256 }}</code></dd></div>
+            </dl>
+          {% endif %}
+          {% if payload["items"] %}
+            <div class="card-grid">
+              {% for edge in payload["items"] %}
+                <article class="result-card" aria-labelledby="edge-{{ loop.index }}">
+                  <h3 id="edge-{{ loop.index }}">{{ edge.kind }}</h3>
+                  <dl>
+                    <div><dt>Edge identifier</dt><dd><code>{{ edge.edge_id }}</code></dd></div>
+                    <div><dt>Source node</dt><dd><code>{{ edge.source_node_id }}</code></dd></div>
+                    <div><dt>Target node</dt><dd><code>{{ edge.target_node_id }}</code></dd></div>
+                    <div><dt>Source record</dt><dd><code>{{ edge.evidence.source_record_id }}</code></dd></div>
+                    <div><dt>Confidence</dt><dd>{% if edge.confidence is defined %}{{ edge.confidence if edge.confidence is not none else "Not calibrated" }}{% else %}{{ edge.controls.confidence if edge.controls.confidence is not none else "Not calibrated" }}{% endif %}</dd></div>
+                    <div><dt>Review state</dt><dd>{% if edge.review_state is defined %}{{ edge.review_state or "Not declared" }}{% else %}{{ edge.controls.review_state or "Not declared" }}{% endif %}</dd></div>
+                    <div><dt>Qualification</dt><dd>{{ payload.qualification }}</dd></div>
+                  </dl>
+                  <details>
+                    <summary>Review provenance and controls</summary>
+                    <dl>
+                      {% for key, value in edge.evidence.items() %}
+                        <div><dt>{{ key }}</dt><dd>{{ value }}</dd></div>
+                      {% endfor %}
+                      {% for key, value in edge.controls.items() %}
+                        <div><dt>{{ key }}</dt><dd>{{ value }}</dd></div>
+                      {% endfor %}
+                    </dl>
+                  </details>
+                </article>
+              {% endfor %}
+            </div>
+            {% if payload.has_more %}
+              <p><a href="?source_node_id={{ source_node_id | urlencode }}&amp;target_node_id={{ target_node_id | urlencode }}&amp;kind={{ kind | urlencode }}&amp;limit={{ limit }}&amp;offset={{ payload.offset + payload.total }}">Next {{ payload.total }} candidate edges</a></p>
+            {% endif %}
+          {% else %}
+            <p class="notice" role="status">No candidate edges match these filters. Absence is not evidence of a negative relationship.</p>
+          {% endif %}
+        </section>
+      {% endif %}
+    </main>
+  </body>
+</html>

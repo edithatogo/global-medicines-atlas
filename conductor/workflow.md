@@ -55,6 +55,11 @@
 
 ## Validation State and Merge Evidence
 
+- If a coordinator owns broad local validation, hand over the frozen commit/tree,
+  worktree, required runtime, exact command, log path and terminal exit-marker
+  path. Wait for its launch handle instead of starting a competing full profile.
+  Continue focused checks and hosted CI independently. Without an assigned
+  launch owner, use the normal local workflow.
 - Record the exact tested commit/tree, uncommitted input changes, Python and uv
   versions before broad validation. Use the runtime required by the affected
   release/reproducibility contract throughout child-process PATH. Keep executable

@@ -2661,7 +2661,7 @@
 
 ### M-110 exact synthetic scalar path across product surfaces (2026-10-17)
 
-- [~] Exercise the same exact synthetic scalar Parquet through the actual
+- [x] Exercise the same exact synthetic scalar Parquet through the actual
   operator trust, contract, semantic-manifest, schema, and admission
   configuration loader, then query it through CLI, API, and Atlas. Replace only
   network transport and the clock; no product handler or trust loader is
@@ -2670,7 +2670,31 @@
   review state; the implementation and tests now add these values alongside
   coverage and the exact object identity. The fixture grants no real
   publication or rights authority and changes no source. This adds a bounded
-  Atlas evidence-display behavior; exact-head protected CI remains required.
+  Atlas evidence-display behavior. PR #1101 merged as `2987e07d` (tree
+  `498390ca`); all required hosted checks passed for head `a31ee05a`, including
+  Codecov and Linux/macOS/Windows consumer lanes. The merged tree matches
+  current main. This verifies the synthetic cross-surface route only; exact
+  real M-110 consumer acceptance remains open.
+
+### M-110 candidate Gold edges in Atlas (2026-10-17)
+
+- [x] Add an optional read-only `/gold/edges` Atlas page over the existing
+  qualified edge table. Reuse bounded deterministic selection; expose filters
+  and pages of at most 1,000 edges, preserving edge identity, endpoints, kind,
+  source-record provenance, qualification, confidence, review state, and
+  source controls. Empty results explicitly state that absence is not negative
+  evidence. Label candidate scope and exclude clinical-equivalence, regulatory,
+  and funding inferences. The MBS v3 maintainer disposition remains
+  candidate-only; no additional source, source bytes, admission, or publication
+  was introduced. Focused Atlas/API/CLI tests pass locally; full profile and
+  exact-head hosted checks remain pending. The local full Test-Goblin main
+  suite reached 100%, but its later randomized Hypothesis stage failed when
+  `test_round_trip_preserves_arbitrary_source_native_labels` exceeded its
+  200 ms deadline (252.73 ms on the first call); the isolated case passed in
+  5.17 seconds. Retain the full profile as non-clean. The small follow-up that
+  avoids a second edge-table scan for non-paginated API/CLI calls has focused
+  tests and routine/strict checks; protected CI must qualify the exact final
+  head.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 

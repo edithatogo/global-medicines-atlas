@@ -75,6 +75,12 @@ the test changed. Complete protected CI lanes still run on every pull request.
 Linux CI is authoritative for mutmut and Mojo. Record evidence in the active
 track and reconcile plan markers only with observable results.
 
+When a coordinator owns broad local validation, send that owner the frozen
+commit/tree, worktree, required runtime, exact command, log path and terminal
+exit-marker path. Wait for its launch handle; do not launch a competing full
+profile. Focused checks and hosted CI remain independent. When no launch owner
+is assigned, follow the normal local validation workflow.
+
 Before a broad run, record the tested commit and tree, any uncommitted input
 changes, and the Python and uv versions. Use the runtime required by the
 affected release/reproducibility contract, including child-process PATH, and

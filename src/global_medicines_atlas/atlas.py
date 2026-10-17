@@ -6,7 +6,7 @@ import json
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Annotated, Protocol
+from typing import TYPE_CHECKING, Annotated, Protocol
 from urllib.parse import urlsplit
 
 from fastapi import FastAPI, Query, Request
@@ -25,6 +25,7 @@ from .platinum_benefits import (
     BenefitsQuery,
     parse_benefits_filters,
 )
+from .platinum_edges import MAX_EDGE_ROWS, gold_edge_payload
 from .platinum_identity_service import UnknownPlatinumResourceError
 from .platinum_structure import (
     SourceStructureLookup,
@@ -52,6 +53,9 @@ from .product_contracts import (
     ProductConclusion,
     ProvenanceLink,
 )
+
+if TYPE_CHECKING:
+    import pyarrow as pa
 
 _PACKAGE_ROOT = Path(__file__).resolve().parent
 _TEMPLATES = Jinja2Templates(directory=_PACKAGE_ROOT / "templates")
@@ -244,6 +248,7 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
     federated_benefits: BenefitsLookup | None = None,
     federated_source_structure: SourceStructureLookup | None = None,
     historical_changes: HistoricalChangeService | None = None,
+    gold_edges: pa.Table | None = None,
 ) -> FastAPI:
     """Create an atlas app with explicitly injected read-only services."""
     app = FastAPI(
@@ -298,6 +303,50 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
                 request=request,
                 name="atlas_history.html",
                 context={"page": page, "error": error},
+                status_code=status_code,
+            )
+            response.headers["cache-control"] = "no-store"
+            return response
+
+    if gold_edges is not None:
+
+        @app.get("/gold/edges", response_class=HTMLResponse)
+        def gold_edges_page(  # pyright: ignore[reportUnusedFunction]
+            request: Request,
+            source_node_id: Annotated[str | None, Query(max_length=512)] = None,
+            target_node_id: Annotated[str | None, Query(max_length=512)] = None,
+            kind: Annotated[str | None, Query(max_length=512)] = None,
+            limit: Annotated[int, Query(ge=1, le=MAX_EDGE_ROWS)] = 100,
+            offset: Annotated[int, Query(ge=0)] = 0,
+        ) -> HTMLResponse:
+            error: str | None = None
+            payload: dict[str, object] | None = None
+            status_code = 200
+            try:
+                payload = gold_edge_payload(
+                    gold_edges,
+                    source_node_id=source_node_id or None,
+                    target_node_id=target_node_id or None,
+                    kind=kind or None,
+                    max_rows=limit,
+                    offset=offset,
+                    include_pagination=True,
+                )
+            except ValueError:
+                error = "The Gold edge selection is invalid or exceeds the page limit."
+                status_code = 422
+            response = _TEMPLATES.TemplateResponse(
+                request=request,
+                name="atlas_gold_edges.html",
+                context={
+                    "payload": payload,
+                    "error": error,
+                    "source_node_id": source_node_id or "",
+                    "target_node_id": target_node_id or "",
+                    "kind": kind or "",
+                    "offset": offset,
+                    "limit": limit,
+                },
                 status_code=status_code,
             )
             response.headers["cache-control"] = "no-store"
@@ -380,6 +429,7 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
                     federated_source_structure is not None
                 ),
                 "has_historical_changes": historical_changes is not None,
+                "has_gold_edges": gold_edges is not None,
             },
         )
 
@@ -496,6 +546,7 @@ def create_source_backed_v2_atlas_app(
     federated_benefits: BenefitsLookup | None = None,
     federated_source_structure: SourceStructureLookup | None = None,
     historical_changes: HistoricalChangeService | None = None,
+    gold_edges: pa.Table | None = None,
 ) -> FastAPI:
     """Create Atlas with canonical V2 dimensions and federated evidence."""
     service = V2ReadOnlyQueryService(
@@ -509,4 +560,5 @@ def create_source_backed_v2_atlas_app(
         federated_benefits=federated_benefits,
         federated_source_structure=federated_source_structure,
         historical_changes=historical_changes,
+        gold_edges=gold_edges,
     )
