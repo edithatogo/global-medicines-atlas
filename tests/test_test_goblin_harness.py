@@ -687,7 +687,9 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     )["readback"]["mbs"]["current_revision"]
     revision_pattern = re.compile(allowlist["regexes"][0])
     digest_pattern = re.compile(allowlist["regexes"][1])
-    assert revision_pattern.fullmatch(f'huggingface_api_revision": "{revision}"')
+    assert revision_pattern.fullmatch(
+        f'huggingface_api_revision": "{revision}"'
+    )
     changed_revision = revision[:-1] + ("0" if revision[-1] != "0" else "1")
     assert not revision_pattern.fullmatch(
         f'huggingface_api_revision": "{changed_revision}"'
@@ -708,7 +710,10 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     ).read_text(encoding="utf-8")
     normalized_disposition = " ".join(disposition.split())
 
-    assert "public Git revision identities, not credentials" in normalized_disposition
+    assert (
+        "public Git revision identities, not credentials"
+        in normalized_disposition
+    )
     assert (
         "does not exclude a rule, directory, filename, source record, or class of values."
         in normalized_disposition
