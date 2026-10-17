@@ -916,3 +916,16 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   native/live acquisition evidence. Independent storage/replication and
   restore proof, v4 admission histories, consumer canaries, and complete
   1,759-object reconciliation remain outstanding.
+
+## PR #1111 Test-Goblin inventory correction (2026-10-17)
+
+- [x] Classify the new M-112 historical receipt gate-crosswalk test module in
+  the governed unit lane after the exact-head hosted run failed closed on the
+  unassigned test file. Preserve the failed run as evidence; do not interpret
+  downstream skipped uploads as separate failures.
+- [x] Run the affected module (18 passed), Test-Goblin contracts including
+  complete test collection (6,565 collected), and `git diff --check`. Rerun
+  protected hosted checks on the corrected exact head before merging.
+- [~] M-112 remains blocked pending current/live receipts, independent storage
+  and restore evidence, v4 admission, consumer canaries, and full-denominator
+  reconciliation.
