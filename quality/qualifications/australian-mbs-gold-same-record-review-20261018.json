@@ -1,0 +1,50 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-gold-edge-review-disposition",
+  "schema_version": 1,
+  "recorded_at": "2026-10-18",
+  "decision_by": "maintainer",
+  "decision": "Accept the exact same-record edge set as reviewed",
+  "disposition": "accepted_candidate_only",
+  "scope": {
+    "source_id": "au-mbs",
+    "schema_era": "2025-07-version-3",
+    "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "qualification_path": "quality/qualifications/australian-mbs-gold-real-silver-qualification-20261017.json",
+    "qualification_sha256": "eaafab075e10a0af810d746385726adc2f5fc546735087b14c97af71b9283b5c",
+    "candidate_graph_sha256": "44c6c4f2d3dee80e49efac7bc14cc8965958b476a0e73c3758214645c7f7b27b",
+    "admission_sha256": "a97289a9b0d4abc864b62606eb6d3356fccbedce5ea656235200353c507be7d4",
+    "semantic_manifest_sha256": "9ad5e2747949b8b7142819e981241c1f74105b3570d78025e654e780241c5882",
+    "candidate_v4_use_authorization_sha256": "ee5951226e105acbaa9b3180c672582b71d3b2d3f110bd0c0abb9c2eb10968b2"
+  },
+  "reviewed_edge_set": {
+    "edge_count": 5989,
+    "edge_id_sha256": "7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d",
+    "edge_kind": "source_record_has_benefit",
+    "semantic_dimension": "service_benefit",
+    "mapping_method": "source-explicit",
+    "assertion_basis": "same_source_record",
+    "all_edges_same_record_bound": true,
+    "negative_controls_passed": true,
+    "pre_review_graph_state": "not_reviewed",
+    "reviewed_state": "reviewed_candidate"
+  },
+  "decision_basis": "The exact July 2025 MBS v3 qualification binds every service-to-benefit edge to the same source record identity, ordinal, source digest, receipt digest, and source era. Cross-record, forged-digest, and unpermitted-rights negative controls passed. The reviewed assertion is only that the paired rows describe a same-record service-benefit relationship.",
+  "limitations": [
+    "This is a candidate relationship review, not M-110 overall acceptance or product admission.",
+    "It does not establish that a benefit is payable, a clinical meaning, therapeutic equivalence, or cross-era equivalence.",
+    "It does not establish PBS or terminology relationships, source completeness, patient denominators, or M-112 federation acceptance.",
+    "The underlying candidate graph and the earlier consumer canary remain immutable historical evidence with review_state=not_reviewed; this receipt records the subsequent maintainer review disposition."
+  ],
+  "boundaries": {
+    "source_values_inspected": false,
+    "new_rights_or_licensing_conclusion": false,
+    "public_dataset_mutation": false,
+    "production_admission_or_promotion": false,
+    "clinical_or_payability_claim": false,
+    "cross_era_equivalence_claim": false,
+    "m110_overall_accepted": false,
+    "m112_federation_accepted": false,
+    "source_coverage_expansion": false
+  },
+  "receipt_sha256": "800a9d72488523b80aa7a49d21d7badf5d2a83a0a2feb26446c3ea66200fd228"
+}
