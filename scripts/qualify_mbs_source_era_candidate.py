@@ -180,7 +180,8 @@ def qualify_candidate(
         "source_bytes_retained": False,
         "publication_performed": False,
         "boundaries": [
-            "Source-field meanings require release-specific crosswalk review.",
+            "Field meanings are qualified only for the exact August 2026 release.",
+            "Historical semantic parity and other MBS/PBS source eras remain unqualified.",
             "Candidate counts do not establish source-era completeness.",
             "No dataset publication or production admission was performed.",
         ],

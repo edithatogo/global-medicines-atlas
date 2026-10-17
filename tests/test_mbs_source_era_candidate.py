@@ -37,6 +37,10 @@ _RECORDED_PROFILE = (
     Path(__file__).resolve().parents[1]
     / "quality/qualifications/mbs-source-era-candidate-2026-08-01.json"
 )
+_PRESENCE_BASELINE = (
+    Path(__file__).resolve().parents[1]
+    / "quality/qualifications/mbs-source-era-candidate-2026-08-01-presence-baseline.json"
+)
 
 
 def _receipt(payload: bytes) -> SourceReceipt:
@@ -188,6 +192,34 @@ def test_committed_august_candidate_profile_is_pinned_and_value_free() -> None:
         "quality_findings_present",
     )
     assert report["field_semantics_accepted"] is False
+    assert report["m109_accepted"] is False
+
+
+def test_august_presence_baseline_is_pinned_without_date_semantics() -> None:
+    report_bytes = _PRESENCE_BASELINE.read_bytes()
+    report = json.loads(report_bytes)
+    core = {
+        key: value
+        for key, value in report.items()
+        if key not in {"candidate_sha256", "candidate_byte_count"}
+    }
+    canonical = json.dumps(core, sort_keys=True, separators=(",", ":")).encode()
+
+    assert report["exact_commit"] == "19420a008b8b33919aa4a837779e0fb6a15b4a88"
+    assert report["qualification"]["date_format"] is None
+    assert report["field_semantics_accepted"] is False
+    assert report["source_presence_projection_alignment"] == "matched"
+    assert len(report["field_presence_diagnostics"]) == 40
+    assert all(
+        item["presence_state_mismatches"] == 0
+        for item in report["field_presence_diagnostics"]
+    )
+    assert report["candidate_sha256"] == hashlib.sha256(canonical).hexdigest()
+    assert report["candidate_byte_count"] == len(canonical)
+    assert hashlib.sha256(report_bytes).hexdigest() == (
+        "5af143a416918113ebb4dc2a625c3a14ab66015d413f7c7de92ee13a3995f181"
+    )
+    assert "source_values" not in report
     assert report["m109_accepted"] is False
 
 

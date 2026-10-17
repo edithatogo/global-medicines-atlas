@@ -1831,9 +1831,13 @@
   transfer semantics to another era.
 - [x] Select `mbs-dmy` only in the August 2026 hosted candidate qualifier and
   retain date values and invalid/unsupported status counts in memory/aggregate
-  output only. Local focused tests (133), Ruff, `ty`, BasedPyright, context,
+  output only. Local focused tests (134), Ruff, `ty`, BasedPyright, context,
   and diff checks passed. Exact-main validation of the selected grammar is
   pending; no source values were read locally.
+- [x] Preserve the prior exact-main no-date field-presence diagnostic as a
+  separate, explicitly unqualified baseline report. Its 40 aggregate field
+  diagnostics show zero source/native-presence mismatches; they do not validate
+  the newly selected date grammar. The report contains no source values.
 - [ ] Run the updated qualifier on its exact merged-main commit, inspect the
   aggregate date and quality findings, and bind the report digest here. The
   candidate remains unqualified until that exact-source result is reviewed;

@@ -11,11 +11,13 @@ The source is MBS XML release `MBS-XML-20260801`, released 29 July 2026 and
 effective 1 August 2026. Its bytes match both the B1 receipt and the official
 [August release page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801):
 SHA-256 `c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565`,
-8,293,331 bytes. The exact-main hosted candidate report is
-[`mbs-source-era-candidate-2026-08-01-field-profile.json`](../../quality/qualifications/mbs-source-era-candidate-2026-08-01-field-profile.json).
+8,293,331 bytes. The exact-main hosted no-date presence baseline is
+[`mbs-source-era-candidate-2026-08-01-presence-baseline.json`](../../quality/qualifications/mbs-source-era-candidate-2026-08-01-presence-baseline.json).
 It counts 6,046 source records, all 40 native fields, and 241,840 field
 occurrences. Every per-field source-presence state matches its projected
-native state; the report contains aggregate counts only, no source values.
+native state; this baseline has no selected date grammar and contains
+aggregate counts only, no source values. The updated DMY candidate report is
+pending its own exact-main hosted run.
 
 The Department's [XML field descriptions](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help)
 define field meanings, optionality, conditions, value types, numeric widths,
@@ -44,10 +46,11 @@ that the 2022 page is a complete version history.
 | `QFEStartDate`, `QFEEndDate` | Start and end of time-limited listing evaluation. These do not represent item commencement, cessation, or funding conclusions. |
 
 The typed candidate retains source-native fields and distinguishes missing XML
-elements from present null values. The date grammar is selected only for this
-exact August release; the qualification report records converted, invalid, and
-unsupported values separately. It does not use values from this release to
-retrofit an older source era.
+elements from present null values. The updated qualifier selects the date
+grammar only for this exact August release and records converted, invalid, and
+unsupported values separately. Exact-main validation of that selection
+remains pending; it does not use values from this release to retrofit an
+older source era.
 
 ## Limits
 
