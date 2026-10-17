@@ -1,10 +1,19 @@
+import hashlib
+import json
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pytest
 from pydantic import AnyUrl
 from scripts import qualify_mbs_source_era_candidate as command
-from scripts.qualify_mbs_source_era_candidate import qualify_candidate
+from scripts.qualify_mbs_source_era_candidate import (
+    field_presence_diagnostics,
+    qualify_candidate,
+)
 
+from global_medicines_atlas.mbs_silver_qualification import (
+    MbsSilverQualification,
+)
 from global_medicines_atlas.receipts import (
     AcquisitionMethod,
     AcquisitionStatus,
@@ -22,6 +31,10 @@ _URI = (
     "650f3eec0dfb990fca25692100069854/"
     "81efb2067580a870ca258e28007f588c/"
     "$FILE/MBS-XML-20260801.XML"
+)
+_RECORDED_PROFILE = (
+    Path(__file__).resolve().parents[1]
+    / "quality/qualifications/mbs-source-era-candidate-2026-08-01.json"
 )
 
 
@@ -81,6 +94,7 @@ def test_candidate_binds_archive_payload_to_exact_official_release(
     assert report["qualification"]["blockers"] == [
         "public_v4_identity_unverified"
     ]
+    assert report["source_presence_projection_alignment"] == "matched"
     assert report["field_semantics_accepted"] is False
     assert report["m109_accepted"] is False
 
@@ -101,3 +115,66 @@ def test_candidate_rejects_official_payload_that_differs_from_b1_receipt(
             compared_at=datetime(2026, 10, 17, tzinfo=UTC),
             exact_commit="a" * 40,
         )
+
+
+def test_field_presence_diagnostics_distinguish_missing_from_parser_loss() -> (
+    None
+):
+    payload = b"""<MBS_XML><Data><ItemNum>00123</ItemNum>
+      <ItemStartDate>01.08.2026</ItemStartDate></Data></MBS_XML>"""
+    receipt = _receipt(payload)
+    diagnostics = {
+        item["native_field"]: item
+        for item in field_presence_diagnostics(payload, receipt)
+    }
+
+    assert diagnostics["ItemNum"]["source_present"] == 1
+    assert diagnostics["ItemNum"]["projected_states"] == {"value": 1}
+    assert diagnostics["ItemNum"]["conversion_status_counts"] == {
+        "preserved": 1
+    }
+    assert diagnostics["ItemNum"]["presence_state_mismatches"] == 0
+    assert diagnostics["ItemStartDate"]["source_present"] == 1
+    assert diagnostics["ItemStartDate"]["projected_states"] == {"value": 1}
+    assert diagnostics["ItemStartDate"]["conversion_status_counts"] == {
+        "unsupported_format": 1
+    }
+    assert diagnostics["ItemStartDate"]["presence_state_mismatches"] == 0
+    assert diagnostics["Benefit75"]["source_present"] == 0
+    assert diagnostics["Benefit75"]["projected_states"] == {"missing_field": 1}
+    assert diagnostics["Benefit75"]["presence_state_mismatches"] == 0
+    assert diagnostics["Benefit75"]["requiredness_accepted"] is False
+
+
+def test_committed_august_candidate_profile_is_pinned_and_value_free() -> None:
+    report_bytes = _RECORDED_PROFILE.read_bytes()
+    report = json.loads(report_bytes)
+    qualification = MbsSilverQualification.model_validate(
+        report["qualification"]
+    )
+    core = {
+        key: value
+        for key, value in report.items()
+        if key not in {"candidate_sha256", "candidate_byte_count"}
+    }
+    canonical = json.dumps(core, sort_keys=True, separators=(",", ":")).encode()
+
+    assert report["exact_commit"] == "b566e9980fd14d9d94caa7235002af94f6f53533"
+    assert report["official_release_match"] is True
+    assert report["candidate_sha256"] == hashlib.sha256(canonical).hexdigest()
+    assert report["candidate_byte_count"] == len(canonical)
+    assert hashlib.sha256(report_bytes).hexdigest() == (
+        "f6703c0bbc17ed529dbb7e32b696b9551fc6b6ad7500acb8318935bca02b5d39"
+    )
+    assert qualification.source_record_count == 6046
+    assert sum(table.field_count for table in qualification.tables) == 40
+    assert (
+        sum(table.field_occurrence_count for table in qualification.tables)
+        == 241840
+    )
+    assert qualification.blockers == (
+        "public_v4_identity_unverified",
+        "quality_findings_present",
+    )
+    assert report["field_semantics_accepted"] is False
+    assert report["m109_accepted"] is False
