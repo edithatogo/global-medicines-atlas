@@ -2581,3 +2581,20 @@
   29 direct-receipt sources, and 130 without a direct receipt. The 42-source
   bounded cohort and 1,759-path M-112 denominator are unchanged. No source
   payload bytes were read, acquired, admitted, or published.
+
+
+## M-112 B0 identity pull request closeout (2026-10-17)
+
+- [x] Merge PR #1077 after all 29 required protected contexts passed on exact
+  head `a5aac47f2e4948bde14515e848419388686eeb0e` and the lineage review thread
+  was resolved. Merge commit `68fc74506809a436de9ab245b674e802d53279f2` has
+  the exact tested tree. Rebind Bronze maturity to current main; the 176-row
+  catalogue, 159-source public universe, 117 deferred sources, 42-source
+  bounded scope, and 1,759-path M-112 denominator remain unchanged. M-112
+  rights, native lifecycle, admission, canaries, and federation acceptance
+  remain open.
+
+
+## PR #1079 review correction (2026-10-17)
+
+- [x] Correct the two newly recorded Git tree identifiers as `*_tree_oid`, record `git_object_format: sha1`, and validate both JSONL rows and exact Git trees; focused receipt validation and `git diff --check` pass. Fix commit `24246a1f`.

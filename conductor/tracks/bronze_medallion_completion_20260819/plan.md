@@ -1356,3 +1356,17 @@ for credentialed or rights-unresolved sources.
   current catalogue is 176, public Bronze universe 159, deferred 117, and
   direct-receipt cohort 29 / 130 without a direct receipt. No source bytes were
   acquired, and no rights, admission, or federation state changed.
+
+
+## Post-merge Bronze maturity provenance rebind (2026-10-17)
+
+- [x] Rebuild the Bronze maturity report on current main after M-112 PR #1077
+  merged. The report is bound to `68fc74506809a436de9ab245b674e802d53279f2`;
+  the qualification remains 42 active, 159 public, 117 deferred, 29 direct
+  receipts, and 130 without direct receipts. Focused maturity and Stable v1
+  contract tests pass; M-112 acceptance and Stable release gates remain open.
+
+
+## PR #1079 review correction (2026-10-17)
+
+- [x] Correct the two newly recorded Git tree identifiers as `*_tree_oid`, record `git_object_format: sha1`, and validate both JSONL rows and exact Git trees; focused receipt validation and `git diff --check` pass. Fix commit `24246a1f`.
