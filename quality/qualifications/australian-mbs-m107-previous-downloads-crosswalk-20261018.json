@@ -1,0 +1,2448 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-m107-previous-downloads-crosswalk",
+  "schema_version": 1,
+  "recorded_at": "2026-10-18",
+  "requirement": "M-107",
+  "status": "official_page_metadata_crosswalk_rights_and_acceptance_open",
+  "scope": {
+    "official_page": "Previous Downloads",
+    "listed_pdf_files": 105,
+    "pdf_link_occurrences": 105,
+    "distinct_pdf_source_urls": 105,
+    "duplicate_url_identity_count": 0,
+    "duplicate_link_occurrence_excess": 0,
+    "listed_period_years": [
+      "1974",
+      "1975",
+      "1976",
+      "1977",
+      "1978",
+      "1979",
+      "1980",
+      "1981",
+      "1982",
+      "1983",
+      "1984",
+      "1985",
+      "1986",
+      "1987",
+      "1988",
+      "1989",
+      "1990",
+      "1991",
+      "1992",
+      "1993",
+      "1994",
+      "1995",
+      "1996",
+      "1997",
+      "1998",
+      "1999",
+      "2000",
+      "2001",
+      "2002",
+      "2003",
+      "2004",
+      "2005",
+      "2006",
+      "2007",
+      "2008",
+      "2009",
+      "2010"
+    ],
+    "label_filename_period_comparison_counts": {
+      "not_comparable_from_label_and_filename": 80,
+      "same_tokens": 25
+    },
+    "source_payloads_requested": false,
+    "source_payloads_read": false,
+    "m107_accepted": false
+  },
+  "source_observation": {
+    "path": "quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json",
+    "recorded_at": "2026-10-17T03:54:00Z",
+    "sha256": "9f6ac27b6d967e704c90ac2105ea1e8e22a0a6ea750e4157f596e8ebd4a606dd",
+    "page_observation_window": "2026-10-17T02:25:55Z/2026-10-17T02:26:35Z"
+  },
+  "authorization_input": {
+    "path": "quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+    "sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b",
+    "allowed_categories": [
+      "monthly_schedule_xml",
+      "basic_service_description",
+      "relative_value_guide"
+    ],
+    "historical_pdf_word_scope": "not established by this authorization"
+  },
+  "interpretation": {
+    "period_boundary": "The label and filename are compared only as metadata; neither is accepted as a verified effective date.",
+    "rights_boundary": "The current MBS authorization covers listed source categories and does not establish historical PDF rights.",
+    "completeness_boundary": "This is the Previous Downloads page inventory, not a complete historical MBS/PBS period denominator or M-107 acceptance."
+  },
+  "links": [
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 November MBS",
+      "filename": "201011-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201011-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201011",
+        "filename_token": "201011"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 November Dental",
+      "filename": "201011-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201011-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201011",
+        "filename_token": "201011"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 November Allied Health",
+      "filename": "201011-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201011-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201011",
+        "filename_token": "201011"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 November Optometrists",
+      "filename": "201011-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201011-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201011",
+        "filename_token": "201011"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 July Complete MBS",
+      "filename": "201007-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201007-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201007",
+        "filename_token": "201007"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 July Summary MBS",
+      "filename": "201007-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201007-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201007",
+        "filename_token": "201007"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 May Complete MBS",
+      "filename": "201005-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201005-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201005",
+        "filename_token": "201005"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 May Summary MBS",
+      "filename": "201005-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201005-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201005",
+        "filename_token": "201005"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 January Complete MBS",
+      "filename": "201001-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201001-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201001",
+        "filename_token": "201001"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2010 January Summary MBS",
+      "filename": "201001-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/201001-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "201001",
+        "filename_token": "201001"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2009 November MBS",
+      "filename": "200911-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200911-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200911",
+        "filename_token": "200911"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2009 November Dental",
+      "filename": "200911-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200911-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200911",
+        "filename_token": "200911"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2009 November Allied Health",
+      "filename": "200911-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200911-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200911",
+        "filename_token": "200911"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2009 November Optometrists",
+      "filename": "200911-Optometrical.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200911-Optometrical.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200911",
+        "filename_token": "200911"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2009 August MBS",
+      "filename": "200908-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200908-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200908",
+        "filename_token": "200908"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2009 July MBS",
+      "filename": "200907-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200907-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200907",
+        "filename_token": "200907"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2009 May MBS",
+      "filename": "200905-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200905-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200905",
+        "filename_token": "200905"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2009 March MBS",
+      "filename": "200903-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200903-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200903",
+        "filename_token": "200903"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2009 February MBS",
+      "filename": "200902-Summary.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200902-Summary.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200902",
+        "filename_token": "200902"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2008 November MBS",
+      "filename": "200811Complete.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200811Complete.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200811",
+        "filename_token": "200811"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2008 November Dental",
+      "filename": "200811Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200811Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200811",
+        "filename_token": "200811"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2008 November Allied Health",
+      "filename": "200811Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200811Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200811",
+        "filename_token": "200811"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2008 November Optometrists",
+      "filename": "200811Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200811Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200811",
+        "filename_token": "200811"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2008 July MBS",
+      "filename": "200807.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200807.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200807",
+        "filename_token": "200807"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2008 May MBS",
+      "filename": "200805.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/200805.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "same_tokens",
+        "displayed_label_token": "200805",
+        "filename_token": "200805"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2007 November MBS",
+      "filename": "2007-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2007-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2007 November Dental",
+      "filename": "2007-11-Dental.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2007-11-Dental.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2007 November Cleft Lip and Cleft Palate",
+      "filename": "2007-11-CLACP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2007-11-CLACP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2007 November Allied Health",
+      "filename": "2007-11-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2007-11-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2007 August MBS",
+      "filename": "2007-08-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2007-08-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2007 May MBS",
+      "filename": "2007-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2007-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2007 May Pathology",
+      "filename": "2007-05-Pathology.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2007-05-Pathology.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2006 November MBS",
+      "filename": "2006-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2006-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2006 November Optometrists",
+      "filename": "2006-11-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2006-11-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2006 November Cleft Lip and Cleft Palate",
+      "filename": "2006-11-CLACP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2006-11-CLACP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2006 November Allied Health",
+      "filename": "2006-11-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2006-11-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2006 May MBS",
+      "filename": "2006-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2006-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2005 November MBS",
+      "filename": "2005-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2005-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2005 November Optometrists",
+      "filename": "2005-11-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2005-11-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2005 November Cleft Lip and Cleft Palate",
+      "filename": "2005-11-CLACP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2005-11-CLACP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2005 November Allied Health",
+      "filename": "2005-11-Allied.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2005-11-Allied.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2005 May MBS",
+      "filename": "2005-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2005-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2004 November MBS",
+      "filename": "2004-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2004-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2004 November Cleft Lip and Cleft Palate",
+      "filename": "2004-11-CLACP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2004-11-CLACP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2004 November Optometrists",
+      "filename": "2004-11-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2004-11-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2004 May MBS",
+      "filename": "2004-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2004-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2003 November MBS",
+      "filename": "2003-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2003-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2003 November Cleft Lip and Cleft Palate",
+      "filename": "2003-11-CLACP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2003-11-CLACP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2003 November Optometrists",
+      "filename": "2003-11-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2003-11-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2003 May MBS",
+      "filename": "2003-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2003-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2002 November MBS",
+      "filename": "2002-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2002-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2002 November Cleft Lip and Cleft Palate",
+      "filename": "2002-11-CLACP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2002-11-CLACP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2002 November Optometrists",
+      "filename": "2002-11-Optom.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2002-11-Optom.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2002 May MBS",
+      "filename": "2002-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2002-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2001 November MBS",
+      "filename": "2001-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2001-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2000 November MBS",
+      "filename": "2000-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2000-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2000 November Cleft Lip and Cleft Palate",
+      "filename": "2000-11-CLaCP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2000-11-CLaCP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2000 November Optometrists",
+      "filename": "2000-11-Optometrists.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2000-11-Optometrists.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "2000 February Diagnostic Imaging",
+      "filename": "2000-02-DI.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/2000-02-DI.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1999 November MBS",
+      "filename": "1999-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1999-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1999 November Cleft Lip and Cleft Palate",
+      "filename": "1999-11-CLaCP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1999-11-CLaCP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1999 November Optometrists",
+      "filename": "1999-11-Optometrists.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1999-11-Optometrists.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1999 March MBS",
+      "filename": "1999-03-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1999-03-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1998 November MBS",
+      "filename": "1998-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1998-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1998 November Cleft Lip and Cleft Palate",
+      "filename": "1998-11-CLaCP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1998-11-CLaCP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1998 November Optometrists",
+      "filename": "1998-11-Optometrists.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1998-11-Optometrists.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1998 September Magnetic Resonance Imaging",
+      "filename": "1998-09-MRI.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1998-09-MRI.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1997 November MBS",
+      "filename": "1997-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1997-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1997 November Cleft Lip and Cleft Palate",
+      "filename": "1997-11-CLaCP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1997-11-CLaCP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1997 November Optometrists",
+      "filename": "1997-11-Optometrists.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1997-11-Optometrists.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1997 May MBS",
+      "filename": "1997-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1997-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1996 November MBS",
+      "filename": "1996-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1996-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1996 November Cleft Lip and Cleft Palate",
+      "filename": "1996-11-CLaCP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1996-11-CLaCP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1996 July MBS",
+      "filename": "1996-07-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1996-07-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1995 November MBS",
+      "filename": "1995-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1995-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1995 November Cleft Lip and Cleft Palate",
+      "filename": "1995-11-CLaCP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1995-11-CLaCP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1995 July Pathology",
+      "filename": "1995-07-Pathology.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1995-07-Pathology.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1995 July MBS",
+      "filename": "1995-07-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1995-07-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1994 November MBS",
+      "filename": "1994-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1994-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1994 May MBS",
+      "filename": "1994-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1994-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1993 November MBS",
+      "filename": "1993-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1993-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1993 November Cleft Lip and Cleft Palate",
+      "filename": "1993-11-CLaCP.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1993-11-CLaCP.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1993 May MBS",
+      "filename": "1993-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1993-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1992 November MBS",
+      "filename": "1992-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1992-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1992 February MBS",
+      "filename": "1992-02-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1992-02-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1992 February Diagnostic Imaging",
+      "filename": "1992-02-DI.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1992-02-DI.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1992 February Pathology",
+      "filename": "1992-02-Pathology.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1992-02-Pathology.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1991 November MBS",
+      "filename": "1991-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1991-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1991 May MBS",
+      "filename": "1991-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1991-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1990 November MBS",
+      "filename": "1990-11-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1990-11-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1990 May MBS",
+      "filename": "1990-05-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1990-05-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1988 August, 1989 February, 1989 August, 1989 September and 1989 December",
+      "filename": "1988-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1988-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1987 December Pathology",
+      "filename": "1987-Pathology.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1987-Pathology.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1986 November and 1987 August MBS",
+      "filename": "1987-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1987-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1986 August, 1986 November, 1987 August and 1987 December MBS",
+      "filename": "1986-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1986-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1984 November and 1985 July MBS",
+      "filename": "1985-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1985-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1984 November, 1985 July, 1986 January and 1986 August MBS",
+      "filename": "1984-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1984-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1983 November, 1984 February, 1984 March and 1984 June MBS",
+      "filename": "1983-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1983-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1982 November, 1983 January and 1983 May MBS",
+      "filename": "1982-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1982-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1980 November, 1981 April, 1981 September and 1981 November MBS",
+      "filename": "1980-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1980-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1979 November and 1980 July MBS",
+      "filename": "1979-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1979-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1978 January, 1978 July, 1978 November, 1979 February and 1979 September MBS",
+      "filename": "1978-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1978-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1976 October, 1977 January and 1977 August MBS",
+      "filename": "1976-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1976-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1975 April, 1975 June, 1975 July and 1976 January MBS",
+      "filename": "1975-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1975-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "page_id": "Previous Downloads",
+      "displayed_label": "1974 April and 1975 May MBS",
+      "filename": "1974-MBS.pdf",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1974-MBS.pdf",
+      "same_url_link_occurrence_count": 1,
+      "label_filename_period_comparison": {
+        "status": "not_comparable_from_label_and_filename"
+      },
+      "authorization": {
+        "allowed_categories": [
+          "monthly_schedule_xml",
+          "basic_service_description",
+          "relative_value_guide"
+        ],
+        "historical_pdf_word_scope": "not established by this authorization",
+        "category_match": false,
+        "source_rights_decision": "not established for this link"
+      },
+      "source_payload_requested": false,
+      "source_payload_read": false
+    }
+  ],
+  "digest": {
+    "algorithm": "sha256-canonical-json",
+    "value": "2b2dbbc2410cf2268f2744226d2d4b940b2512f906923a70afdaa95fc2310a2f"
+  }
+}

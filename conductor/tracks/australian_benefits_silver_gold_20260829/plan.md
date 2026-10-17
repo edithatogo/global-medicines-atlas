@@ -3249,3 +3249,22 @@
 - [x] Validate the report and documentation with 66 focused and affected tests;
   Test-Goblin routine, context, and ecosystem checks; Ruff, formatting, and
   diff checks all passed.
+
+## M-107 Previous Downloads PDF links, 1974–2010 (2026-10-18)
+
+- [x] Reconcile the official Previous Downloads page's 105 PDF link identities
+  against the preserved 2026-10-17 metadata observation. Each URL is distinct;
+  25 displayed label/filename month tokens match and 80 cannot be compared.
+  The row-level crosswalk is
+  `quality/qualifications/australian-mbs-m107-previous-downloads-crosswalk-20261018.json`.
+- [x] Cross-check against the 2011–2019 page inventory: the two observations
+  have disjoint URL sets, totaling 224 PDF link appearances across 218 URLs.
+  This is a metadata denominator for observed PDF listings only, not an
+  expected schedule period denominator.
+- [~] Keep acquisition, source-specific rights, and effective-date semantics
+  open. Existing authorization does not cover these historical PDFs; no
+  payload was requested or read. M-107 remains blocked.
+- [x] Validate both PDF inventories and the documentation with 69 focused and
+  affected tests; Test-Goblin routine, context, ecosystem, Ruff, formatting,
+  and diff checks passed. Protected hosted checks remain required for the
+  amended PR head.

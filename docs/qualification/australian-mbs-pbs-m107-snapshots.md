@@ -295,6 +295,19 @@ does not count as acquired snapshots. M-107 remains blocked pending the
 complete expected-period/format denominator, per-object rights, authorized
 retrieval evidence, and schema-era acceptance.
 
+### Previous Downloads historical PDFs, 1974–2010
+
+The same [official index observation](../../quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json)
+lists 105 PDF URLs on the separate Previous Downloads page, covering labels
+from 1974 through 2010. The [row-level crosswalk](../../quality/qualifications/australian-mbs-m107-previous-downloads-crosswalk-20261018.json)
+retains all 105 link identities: 25 displayed label/filename month tokens
+match, while 80 labels have no comparable month token. This metadata does not
+infer effective dates. Combined with the 2011–2019 year-page inventory, the two
+observations contain 224 PDF link appearances across 218 distinct URLs. The
+existing source authorization does not establish historical PDF rights; no
+payloads were requested or read, and this remains an index inventory rather
+than a complete expected-period denominator or M-107 acceptance.
+
 ## PBS official schedule-link crosswalk, 2026-10-18
 
 The [machine-readable M-107 crosswalk](../../quality/qualifications/australian-pbs-m107-link-crosswalk-20261018.json)
