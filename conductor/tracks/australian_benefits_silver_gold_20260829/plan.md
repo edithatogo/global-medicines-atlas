@@ -1023,6 +1023,11 @@
   publication. This closes only exact-six candidate qualification and canary
   traversal; it closes no M-110 review, M-112 admission, federation, rights,
   or release gate.
+- [~] Require a positive-row real-candidate date filter in the exact-six scalar
+  canary. The current aggregate receipt reports zero matches for its date case,
+  so it verifies empty-result handling but does not prove typed date selection
+  on candidate values. Keep the result aggregate-only and candidate-only; do
+  not retain source values or change consumer admission.
 - [x] Reconcile the 20 MBS/PBS utilisation raw-object digests against each
   exact current public manifest and its prior hosted anonymous all-object
   verification receipt. The pinned MBS revision remains `dee9a5b...` with
