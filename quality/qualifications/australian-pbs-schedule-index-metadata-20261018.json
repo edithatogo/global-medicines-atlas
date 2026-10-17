@@ -1,0 +1,3303 @@
+{
+  "schema_id": "global-medicines-atlas.pbs-schedule-public-index-metadata-observation",
+  "schema_version": 1,
+  "requirements": [
+    "M-107",
+    "M-109"
+  ],
+  "recorded_at": "2026-10-17T17:13:17Z",
+  "status": "official_index_metadata_observed_rights_and_corpus_unqualified",
+  "scope": "Read the official PBS schedule archive landing page and linked year-page HTML metadata (2003-2026); followed no schedule XML, API CSV, ZIP, or PDF data links. A follow-on metadata review consulted official schema-history documentation and the API information page only. No schedule source payload bytes were requested or read.",
+  "archive_index": {
+    "url": "https://www.pbs.gov.au/publication/schedule/archive",
+    "final_url": "https://www.pbs.gov.au/publication/schedule/archive",
+    "http_status": 200,
+    "html_bytes": 124890,
+    "html_sha256": "6a0f4b3341ad084bfdf2fa6108d673f58a0ebca7ed6955101efc8afc2c22f4e4",
+    "year_pages_visible": [
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ],
+    "year_pages_inventoried": [
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014,
+      2015,
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025,
+      2026
+    ],
+    "year_pages_failed": []
+  },
+  "release_link_summary": {
+    "inventoried_year_page_count": 24,
+    "year_pages_with_schedule_data_links": 18,
+    "distinct_schedule_periods_with_data_links": 197,
+    "effective_date_min": "2007-04-01",
+    "effective_date_max": "2026-09-01",
+    "total_schedule_data_link_count": 316,
+    "format_label_classification_counts": {
+      "xml_version_unspecified": 88,
+      "xml_v3": 105,
+      "xml_v2_down_converted": 105,
+      "pbs_api_csv": 18
+    },
+    "period_span_by_label_classification": {
+      "xml_version_unspecified": {
+        "distinct_period_count": 88,
+        "effective_date_min": "2007-04-01",
+        "effective_date_max": "2017-08-01"
+      },
+      "xml_v3": {
+        "distinct_period_count": 105,
+        "effective_date_min": "2017-09-01",
+        "effective_date_max": "2026-05-01"
+      },
+      "xml_v2_down_converted": {
+        "distinct_period_count": 105,
+        "effective_date_min": "2017-09-01",
+        "effective_date_max": "2026-05-01"
+      },
+      "pbs_api_csv": {
+        "distinct_period_count": 18,
+        "effective_date_min": "2025-04-01",
+        "effective_date_max": "2026-09-01"
+      }
+    },
+    "classifications_are_page_label_only": true,
+    "duplicate_periods_for_multiple_formats_are_preserved": true
+  },
+  "authorization_and_qualification": {
+    "historical_xml_reuse_status": "unknown",
+    "current_api_retention_authorized": false,
+    "current_api_external_redistribution_authorized": false,
+    "provider_clarification_received": false,
+    "source_payload_acquisition_performed": false,
+    "source_semantics_qualified": false,
+    "silver_admission_performed": false,
+    "m109_accepted": false,
+    "m107_accepted": false
+  },
+  "interpretation": "The official archive page links yearly schedule pages for 2003-2026. This observation lists schedule-data links labeled XML or PBS API CSV on those pages. XML labels without V2/V3 remain version-unspecified; a V2 down-converted link is a distinct distribution representation, not proof of an original source era. The API CSV links appear in schedule page metadata from 2025-05 onward; the XML link labels extend through 2026-05 in this capture. The pages do not prove the complete approved source denominator, source byte identity, reuse rights, field semantics, or Silver eligibility. Absence of an XML/API CSV link from these pages is not evidence no source existed elsewhere.",
+  "year_pages": [
+    {
+      "year": 2003,
+      "url": "https://www.pbs.gov.au/publication/schedule/2003",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2003",
+      "http_status": 200,
+      "html_bytes": 124548,
+      "html_sha256": "ce8fa2516e75d15261461afb139eb5a9f0230f1014ed8a7d5334d25c2eafb053",
+      "listed_schedule_data_link_count": 0,
+      "distinct_schedule_data_url_count": 0,
+      "schedule_data_links": []
+    },
+    {
+      "year": 2004,
+      "url": "https://www.pbs.gov.au/publication/schedule/2004",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2004",
+      "http_status": 200,
+      "html_bytes": 125773,
+      "html_sha256": "75ebdfdd2d691064da69ee5b12cd23d5f0f5deb1e504e1b9ec73a0415c7cddcf",
+      "listed_schedule_data_link_count": 0,
+      "distinct_schedule_data_url_count": 0,
+      "schedule_data_links": []
+    },
+    {
+      "year": 2005,
+      "url": "https://www.pbs.gov.au/publication/schedule/2005",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2005",
+      "http_status": 200,
+      "html_bytes": 125215,
+      "html_sha256": "c2e50fcfbb9267b31083d66d41db0f59e25d8d7ab56882b222c7b1ccbc23b2e6",
+      "listed_schedule_data_link_count": 0,
+      "distinct_schedule_data_url_count": 0,
+      "schedule_data_links": []
+    },
+    {
+      "year": 2006,
+      "url": "https://www.pbs.gov.au/publication/schedule/2006",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2006",
+      "http_status": 200,
+      "html_bytes": 125538,
+      "html_sha256": "ba713cd5887e2898b678ee483097c608c0b7101abc7839c8b16b74dd90aff11d",
+      "listed_schedule_data_link_count": 0,
+      "distinct_schedule_data_url_count": 0,
+      "schedule_data_links": []
+    },
+    {
+      "year": 2007,
+      "url": "https://www.pbs.gov.au/publication/schedule/2007",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2007",
+      "http_status": 200,
+      "html_bytes": 146451,
+      "html_sha256": "96833f61732bc9fb654c13ef673f3642d5ce2c44a0f851c1e8849996ed6ff250",
+      "listed_schedule_data_link_count": 9,
+      "distinct_schedule_data_url_count": 9,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2007",
+          "label": "XML files - 1 December 2007 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2007/2007-12-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2007-12-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2007",
+          "label": "XML files - 1 November 2007 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2007/2007-11-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2007-11-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2007",
+          "label": "XML files - 1 October 2007 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2007/2007-10-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2007-10-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2007",
+          "label": "XML files - 1 September 2007 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2007/2007-09-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2007-09-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2007",
+          "label": "XML files - 1 August 2007 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2007/2007-08-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2007-08-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2007",
+          "label": "XML files - 1 July 2007 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2007/2007-07-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2007-07-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2007",
+          "label": "XML files - 1 June 2007 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2007/2007-06-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2007-06-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2007",
+          "label": "XML files - 1 May 2007 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2007/2007-05-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2007-05-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2007",
+          "label": "XML files - 1 April 2007 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2007/2007-04-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2007-04-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2008,
+      "url": "https://www.pbs.gov.au/publication/schedule/2008",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2008",
+      "http_status": 200,
+      "html_bytes": 148008,
+      "html_sha256": "78683920e99f5364eba014dd2711d8ddd8ba8af986de40c6a7c901def52c3b80",
+      "listed_schedule_data_link_count": 12,
+      "distinct_schedule_data_url_count": 12,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2008",
+          "label": "XML files - 1 December 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-12-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-12-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2008",
+          "label": "XML files - 1 November 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-11-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-11-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2008",
+          "label": "XML files - 1 October 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-10-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-10-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2008",
+          "label": "XML files - 1 September 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-09-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-09-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2008",
+          "label": "XML files - 1 August 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-08-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-08-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2008",
+          "label": "XML files - 1 July 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-07-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-07-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2008",
+          "label": "XML files - 1 June 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-06-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-06-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2008",
+          "label": "XML files - 1 May 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-05-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-05-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2008",
+          "label": "XML files - 1 April 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-04-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-04-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2008",
+          "label": "XML files - 1 March 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-03-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-03-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2008",
+          "label": "XML files - 1 February 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-02-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-02-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2008",
+          "label": "XML files - 1 January 2008 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2008/2008-01-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2008-01-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2009,
+      "url": "https://www.pbs.gov.au/publication/schedule/2009",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2009",
+      "http_status": 200,
+      "html_bytes": 148542,
+      "html_sha256": "f646feae175f60688cd87814aae16e0debd3aa3e05965b3fe85d037707900cb8",
+      "listed_schedule_data_link_count": 12,
+      "distinct_schedule_data_url_count": 12,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2009",
+          "label": "XML files - 1 December 2009 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-12-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-12-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2009",
+          "label": "XML files - 1 November 2009 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-11-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-11-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2009",
+          "label": "XML files - 1 October 2009 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-10-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-10-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2009",
+          "label": "XML files - 1 September 2009 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-09-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-09-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2009",
+          "label": "XML files - 1 August 2009 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-08-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-08-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2009",
+          "label": "XML files - 1 July 2009 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-07-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-07-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2009",
+          "label": "XML files - 1 June (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-06-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-06-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2009",
+          "label": "XML files - 1 May (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-05-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-05-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2009",
+          "label": "XML files - 1 April (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-04-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-04-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2009",
+          "label": "XML files - 1 March (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-03-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-03-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2009",
+          "label": "XML files - 1 February (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-02-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-02-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2009",
+          "label": "XML files - 1 January (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2009/2009-01-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2009-01-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2010,
+      "url": "https://www.pbs.gov.au/publication/schedule/2010",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2010",
+      "http_status": 200,
+      "html_bytes": 154125,
+      "html_sha256": "ac414cda0265d279e8a8fdef19db169ab5ff069bbea303154c8c8bbfe401d823",
+      "listed_schedule_data_link_count": 12,
+      "distinct_schedule_data_url_count": 12,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2010",
+          "label": "XML files - 1 December 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-12-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-12-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2010",
+          "label": "XML files - 1 November 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-11-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-11-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2010",
+          "label": "XML files - 1 October 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-10-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-10-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2010",
+          "label": "XML files - 1 September 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-09-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-09-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2010",
+          "label": "XML files - 1 August 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-08-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-08-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2010",
+          "label": "XML files - 1 July 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-07-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-07-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2010",
+          "label": "XML files - 1 June 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-06-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-06-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2010",
+          "label": "XML files - 1 May 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-05-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-05-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2010",
+          "label": "XML files - 1 April 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-04-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-04-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2010",
+          "label": "XML files - 1 March 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-03-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-03-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2010",
+          "label": "XML files - 1 February 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-02-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-02-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2010",
+          "label": "XML files - 1 January 2010 (ZIP 1367KB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2010/2010-01-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2010-01-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2011,
+      "url": "https://www.pbs.gov.au/publication/schedule/2011",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2011",
+      "http_status": 200,
+      "html_bytes": 160230,
+      "html_sha256": "c84040cd6d090e11f448d84f15cfde51e6cf8135175c816ce088d0b92eef23dd",
+      "listed_schedule_data_link_count": 8,
+      "distinct_schedule_data_url_count": 8,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 August 2011",
+          "label": "XML files - 1 August 2011 (ZIP 1.5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2011/08/2011-08-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2011-08-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2011",
+          "label": "XML files - 1 July 2011 (ZIP 1.5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2011/07/2011-07-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2011-07-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2011",
+          "label": "XML files - 1 June 2011 (ZIP 1.5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2011/06/2011-06-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2011-06-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2011",
+          "label": "XML files - 1 May 2011 (ZIP 1.5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2011/05/2011-05-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2011-05-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2011",
+          "label": "XML files - 1 April 2011 (ZIP 1.4MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2011/04/2011-04-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2011-04-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2011",
+          "label": "XML files - 1 March 2011 (ZIP 1.4MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2011/03/2011-03-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2011-03-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2011",
+          "label": "XML files - 1 February 2011 (ZIP 1.4MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2011/01/2011-02-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2011-02-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2011",
+          "label": "XML files - 1 January 2011 (ZIP 1.4MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2011/01/2011-01-01-general-schedule-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2011-01-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2012,
+      "url": "https://www.pbs.gov.au/publication/schedule/2012",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2012",
+      "http_status": 200,
+      "html_bytes": 164693,
+      "html_sha256": "e7f0f712f74fc798c2c487e8623ffe3509f492ba32b5cb3e83fd18c1fd65f82d",
+      "listed_schedule_data_link_count": 0,
+      "distinct_schedule_data_url_count": 0,
+      "schedule_data_links": []
+    },
+    {
+      "year": 2013,
+      "url": "https://www.pbs.gov.au/publication/schedule/2013",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2013",
+      "http_status": 200,
+      "html_bytes": 152424,
+      "html_sha256": "d755cdfa8a158d21f63f6ab5e1839e79d1c066442b939a47676651cbe36b78a7",
+      "listed_schedule_data_link_count": 0,
+      "distinct_schedule_data_url_count": 0,
+      "schedule_data_links": []
+    },
+    {
+      "year": 2014,
+      "url": "https://www.pbs.gov.au/publication/schedule/2014",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2014",
+      "http_status": 200,
+      "html_bytes": 152054,
+      "html_sha256": "a47683012649428a4e6589ba95e38703a07af38b68f503166b523333b3ddaf92",
+      "listed_schedule_data_link_count": 4,
+      "distinct_schedule_data_url_count": 4,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2014",
+          "label": "XML file (ZIP 4.6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2014/12/2014-12-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2014-12-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2014",
+          "label": "XML file (ZIP 4.6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2014/11/2014-11-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2014-11-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2014",
+          "label": "XML file (ZIP 4.6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2014/10/2014-10-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2014-10-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2014",
+          "label": "XML file (ZIP 4.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2014/09/2014-09-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2014-09-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2015,
+      "url": "https://www.pbs.gov.au/publication/schedule/2015",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2015",
+      "http_status": 200,
+      "html_bytes": 154571,
+      "html_sha256": "80b049497a41b15c151ee22614f96ed651442b89525f1fa93a953998e9d36cbe",
+      "listed_schedule_data_link_count": 12,
+      "distinct_schedule_data_url_count": 12,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2015",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/12/2015-12-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-12-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2015",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/11/2015-11-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-11-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2015",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/10/2015-10-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-10-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2015",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/09/2015-09-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-09-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2015",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/08/2015-08-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-08-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2015",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/07/2015-07-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-07-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2015",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/06/2015-06-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-06-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2015",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/05/2015-05-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-05-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2015",
+          "label": "PBS XML file (ZIP 4 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/04/2015-04-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-04-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2015",
+          "label": "PBS XML file (ZIP 4 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/03/2015-03-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-03-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2015",
+          "label": "XML file (ZIP 4.6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/02/2015-02-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-02-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2015",
+          "label": "XML file (ZIP 4.6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2015/01/2015-01-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2015-01-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "url": "https://www.pbs.gov.au/publication/schedule/2016",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2016",
+      "http_status": 200,
+      "html_bytes": 149253,
+      "html_sha256": "0001232eeb19d292e0f30b05e4e6f38b986b55b7c956b9bb0652a3454ed5af0d",
+      "listed_schedule_data_link_count": 12,
+      "distinct_schedule_data_url_count": 12,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2016",
+          "label": "PBS XML file (ZIP 6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/12/2016-12-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-12-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2016",
+          "label": "PBS XML file (ZIP 6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/11/2016-11-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-11-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2016",
+          "label": "PBS XML file (ZIP 6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/10/2016-10-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-10-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2016",
+          "label": "PBS XML file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/09/2016-09-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-09-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2016",
+          "label": "PBS XML file (ZIP 4.4 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/08/2016-08-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-08-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2016",
+          "label": "PBS XML file (ZIP 4.4 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/07/2016-07-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-07-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2016",
+          "label": "PBS XML file (ZIP 4.4 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/06/2016-06-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-06-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2016",
+          "label": "PBS XML file (ZIP 4.4 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/05/2016-05-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-05-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2016",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/04/2016-04-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-04-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2016",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/03/2016-03-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-03-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2016",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/02/2016-02-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-02-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2016",
+          "label": "PBS XML file (ZIP 5.5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2016/01/2016-01-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2016-01-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "url": "https://www.pbs.gov.au/publication/schedule/2017",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2017",
+      "http_status": 200,
+      "html_bytes": 149296,
+      "html_sha256": "0d0f66eafe35631ff0ada7f419f00986db4882950dd0c28574a7ebba5d5e326a",
+      "listed_schedule_data_link_count": 15,
+      "distinct_schedule_data_url_count": 15,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2017",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/12/2017-12-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2017-12-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2017",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/12/2017-12-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2017-12-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2017",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/11/2017-11-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2017-11-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2017",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/11/2017-11-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2017-11-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2017",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/10/2017-10-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2017-10-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2017",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/10/2017-10-01-xml-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2017-10-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2017",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/09/2017-09-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2017-09-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2017",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/09/2017-09-01-xml-V2.zip?variant=3",
+          "effective_date_from_page_heading": "2017-09-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2017",
+          "label": "PBS XML file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/08/2017-08-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2017-08-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2017",
+          "label": "PBS XML file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/07/2017-07-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2017-07-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2017",
+          "label": "PBS XML file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/06/2017-06-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2017-06-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2017",
+          "label": "PBS XML file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/05/2017-05-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2017-05-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2017",
+          "label": "PBS XML file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/04/2017-04-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2017-04-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2017",
+          "label": "PBS XML file (ZIP 6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/02/2017-02-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2017-02-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2017",
+          "label": "PBS XML file (ZIP 6 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2017/01/2017-01-01-xml.zip?variant=3",
+          "effective_date_from_page_heading": "2017-01-01",
+          "format_label_classification": "xml_version_unspecified",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "url": "https://www.pbs.gov.au/publication/schedule/2018",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2018",
+      "http_status": 200,
+      "html_bytes": 153586,
+      "html_sha256": "d304cdc62ee1456f0ea4b1eec51fcbd03d3e9dfeea074cd804561443b1bac307",
+      "listed_schedule_data_link_count": 24,
+      "distinct_schedule_data_url_count": 24,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/12/2018-12-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-12-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/12/2018-12-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-12-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/11/2018-11-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-11-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/11/2018-11-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-11-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/10/2018-10-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-10-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/10/2018-10-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-10-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/09/2018-09-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-09-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/09/2018-09-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-09-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/08/2018-08-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-08-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/08/2018-08-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-08-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/07/2018-07-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-07-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/07/2018-07-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-07-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/06/2018-06-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-06-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/06/2018-06-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-06-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/05/2018-05-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-05-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/05/2018-05-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-05-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/04/2018-04-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-04-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/04/2018-04-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-04-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/03/2018-03-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-03-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/03/2018-03-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-03-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/02/2018-02-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-02-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/02/2018-02-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-02-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2018",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/01/2018-01-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2018-01-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2018",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2018/01/2018-01-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2018-01-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "url": "https://www.pbs.gov.au/publication/schedule/2019",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2019",
+      "http_status": 200,
+      "html_bytes": 157697,
+      "html_sha256": "3d938287e13fbe582c4225200ed5b1ed42234b2bc855ed9b3bde898dd888c59d",
+      "listed_schedule_data_link_count": 24,
+      "distinct_schedule_data_url_count": 24,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/12/2019-12-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-12-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/12/2019-12-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-12-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/11/2019-11-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-11-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/11/2019-11-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-11-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/10/2019-10-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-10-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/10/2019-10-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-10-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/09/2019-09-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-09-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/09/2019-09-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-09-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/08/2019-08-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-08-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/08/2019-08-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-08-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/07/2019-07-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-07-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/07/2019-07-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-07-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/06/2019-06-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-06-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/06/2019-06-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-06-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/05/2019-05-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-05-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/05/2019-05-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-05-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/04/2019-04-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-04-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/04/2019-04-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-04-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/03/2019-03-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-03-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/03/2019-03-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-03-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/02/2019-02-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-02-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/02/2019-02-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-02-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2019",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/01/2019-01-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2019-01-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2019",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2019/01/2019-01-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2019-01-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "url": "https://www.pbs.gov.au/publication/schedule/2020",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2020",
+      "http_status": 200,
+      "html_bytes": 160617,
+      "html_sha256": "483ceb6eca89fab09e90e6af5d4e923158a33684cade6e2174e525baa91ae931",
+      "listed_schedule_data_link_count": 24,
+      "distinct_schedule_data_url_count": 24,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/12/2020-12-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-12-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/12/2020-12-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-12-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/11/2020-11-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-11-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/11/2020-11-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-11-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/10/2020-10-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-10-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/10/2020-10-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-10-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/09/2020-09-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-09-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/09/2020-09-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-09-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/08/2020-08-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-08-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/08/2020-08-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-08-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/07/2020-07-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-07-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/07/2020-07-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-07-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/06/2020-06-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-06-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/06/2020-06-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-06-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/05/2020-05-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-05-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/05/2020-05-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-05-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/04/2020-04-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-04-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/04/2020-04-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-04-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/03/2020-03-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-03-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/03/2020-03-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-03-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/02/2020-02-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-02-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/02/2020-02-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-02-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2020",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/01/2020-01-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2020-01-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2020",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2020/01/2020-01-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2020-01-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "url": "https://www.pbs.gov.au/publication/schedule/2021",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2021",
+      "http_status": 200,
+      "html_bytes": 163776,
+      "html_sha256": "7cc86268fc3dc150033575b93dc4cbe58ceb2f835036f3c648c658065b19ebc2",
+      "listed_schedule_data_link_count": 24,
+      "distinct_schedule_data_url_count": 24,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/12/2021-12-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-12-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/12/2021-12-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-12-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/11/2021-11-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-11-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/11/2021-11-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-11-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/10/2021-10-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-10-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/10/2021-10-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-10-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/09/2021-09-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-09-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/09/2021-09-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-09-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/08/2021-08-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-08-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/08/2021-08-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-08-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/07/2021-07-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-07-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/07/2021-07-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-07-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/06/2021-06-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-06-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/06/2021-06-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-06-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/05/2021-05-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-05-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/05/2021-05-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-05-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/04/2021-04-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-04-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/04/2021-04-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-04-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/03/2021-03-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-03-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/03/2021-03-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-03-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/02/2021-02-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-02-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/02/2021-02-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-02-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2021",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/01/2021-01-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2021-01-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2021",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2021/01/2021-01-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2021-01-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "url": "https://www.pbs.gov.au/publication/schedule/2022",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2022",
+      "http_status": 200,
+      "html_bytes": 165122,
+      "html_sha256": "46daa3aaabe94bf9e305d4320d24d3d8188becaa3845c405151b732cb4bbed0c",
+      "listed_schedule_data_link_count": 24,
+      "distinct_schedule_data_url_count": 24,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2022",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/12/2022-12-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-12-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/12/2022-12-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-12-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2022",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/11/2022-11-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-11-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/11/2022-11-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-11-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2022",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/10/2022-10-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-10-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/10/2022-10-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-10-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2022",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/09/2022-09-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-09-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/09/2022-09-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-09-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2022",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/08/2022-08-01-sch.zip?variant=3",
+          "effective_date_from_page_heading": "2022-08-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/08/2022-08-01-down.zip?variant=3",
+          "effective_date_from_page_heading": "2022-08-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2022",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/07/2022-07-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-07-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/07/2022-07-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-07-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2022",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/06/2022-06-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-06-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/06/2022-06-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-06-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2022",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/05/2022-05-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-05-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/05/2022-05-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-05-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2022",
+          "label": "PBS XML file V3 file (ZIP 5 MB) - Release 2",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/04/2022-04-01-xml-V3-release-2.zip?variant=3",
+          "effective_date_from_page_heading": "2022-04-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB) - Release 2",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/04/2022-04-01-V2-down-converted-release-2.zip?variant=3",
+          "effective_date_from_page_heading": "2022-04-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2022",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/03/2022-03-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-03-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/03/2022-03-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-03-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2022",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/02/2022-02-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-02-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/02/2022-02-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-02-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2022",
+          "label": "PBS XML file V3 file (ZIP 5 MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/01/2022-01-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2022-01-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2022",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2022/01/2022-01-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2022-01-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2023,
+      "url": "https://www.pbs.gov.au/publication/schedule/2023",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2023",
+      "http_status": 200,
+      "html_bytes": 164267,
+      "html_sha256": "3ac146a75b0fe98a407b8fcd3215bcfc5c359413f3897e14e149018250768e4e",
+      "listed_schedule_data_link_count": 24,
+      "distinct_schedule_data_url_count": 24,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/12/2023-12-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-12-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/12/2023-12-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-12-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/11/2023-11-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-11-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/11/2023-11-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-11-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/10/2023-10-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-10-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/10/2023-10-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-10-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/09/2023-09-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-09-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/09/2023-09-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-09-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/08/2023-08-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-08-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/08/2023-08-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-08-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/07/2023-07-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-07-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/07/2023-07-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-07-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/06/2023-06-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-06-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/06/2023-06-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-06-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/05/2023-05-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-05-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/05/2023-05-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-05-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/04/2023-04-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-04-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/04/2023-04-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-04-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/03/2023-03-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-03-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/03/2023-03-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-03-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/02/2023-02-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-02-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/02/2023-02-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-02-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2023",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/01/2023-01-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2023-01-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2023",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2023/01/2023-01-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2023-01-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2024,
+      "url": "https://www.pbs.gov.au/publication/schedule/2024",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2024",
+      "http_status": 200,
+      "html_bytes": 165351,
+      "html_sha256": "af6aebfaaa5b2c63657e7ffe542fab164ec2cef0313e10bd0986096a0b6416a2",
+      "listed_schedule_data_link_count": 24,
+      "distinct_schedule_data_url_count": 24,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/12/2024-12-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-12-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/12/2024-12-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-12-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/11/2024-11-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-11-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/11/2024-11-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-11-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/10/2024-10-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-10-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/10/2024-10-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-10-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/09/2024-09-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-09-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/09/2024-09-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-09-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/08/2024-08-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-08-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/08/2024-08-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-08-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/07/2024-07-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-07-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/07/2024-07-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-07-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/06/2024-06-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-06-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/06/2024-06-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-06-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/05/2024-05-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-05-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/05/2024-05-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-05-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/04/2024-04-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-04-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/04/2024-04-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-04-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/03/2024-03-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-03-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/03/2024-03-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-03-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/02/2024-02-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-02-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/02/2024-02-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-02-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2024",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/01/2024-01-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2024-01-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2024",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/01/2024-01-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2024-01-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2025,
+      "url": "https://www.pbs.gov.au/publication/schedule/2025",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2025",
+      "http_status": 200,
+      "html_bytes": 161496,
+      "html_sha256": "5b8c46ccb77a34bdfaffa30f6618b88224e89c38a35b8e77d4a8640bbdac2d2d",
+      "listed_schedule_data_link_count": 33,
+      "distinct_schedule_data_url_count": 33,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 December 2025",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/12/2025-12-01-PBS-API-CSV.zip?variant=3",
+          "effective_date_from_page_heading": "2025-12-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/12/2025-12-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-12-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 December 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/12/2025-12-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-12-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2025",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/11/2025-11-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2025-11-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/11/2025-11-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-11-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 November 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/11/2025-11-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-11-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2025",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/10/2025-10-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2025-10-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/10/2025-10-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-10-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 October 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/10/2025-10-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-10-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2025",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/09/2025-09-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2025-09-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2024/09/2024-09-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-09-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 September 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/09/2025-09-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-09-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2025",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/08/2025-08-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2025-08-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/08/2025-08-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-08-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/08/2025-08-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-08-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2025",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/07/2025-07-01-pbs-api-csv-files.zip?variant=3",
+          "effective_date_from_page_heading": "2025-07-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/07/2025-07-01-xml-v3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-07-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/07/2025-07-01-v2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-07-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2025",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/06/2025-06-01-pbs-api-csv-files.zip?variant=3",
+          "effective_date_from_page_heading": "2025-06-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/06/2025-06-01-xml-v3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-06-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/06/2025-06-01-v2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-06-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2025",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/05/2025-05-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2025-05-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/05/2025-05-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-05-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/05/2025-05-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-05-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2025",
+          "label": "PBS API CSV files (ZIP 5MB)​​​​​​​",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/04/2025-04-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2025-04-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/04/2025-04-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-04-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/04/2025-04-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-04-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/03/2025-03-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-03-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/03/2025-03-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-03-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/02/2025-02-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-02-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/02/2025-02-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-02-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2025",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/01/2025-01-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2025-01-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2025",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2025/01/2025-01-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2025-01-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    },
+    {
+      "year": 2026,
+      "url": "https://www.pbs.gov.au/publication/schedule/2026",
+      "final_url": "https://www.pbs.gov.au/publication/schedule/2026",
+      "http_status": 200,
+      "html_bytes": 141219,
+      "html_sha256": "53166d382b145b764a7292ff9b1cbc51f83f288ec93040f2c4d5e1a0cad8cd92",
+      "listed_schedule_data_link_count": 19,
+      "distinct_schedule_data_url_count": 19,
+      "schedule_data_links": [
+        {
+          "period_heading": "1 September 2026",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/09/2026-09-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2026-09-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 August 2026",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/08/2026-08-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2026-08-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 July 2026",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/07/2026-07-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2026-07-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 June 2026",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/06/2026-06-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2026-06-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2026",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/05/2026-05-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2026-05-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2026",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/05/2026-05-01-XML-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2026-05-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 May 2026",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/05/2026-05-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2026-05-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2026",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2026-04-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2026",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2026-04-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 April 2026",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2026-04-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2026",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/03/2026-03-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2026-03-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2026",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/03/2026-03-01-XML-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2026-03-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 March 2026",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/03/2026-03-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2026-03-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2026",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/02/2026-02-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2026-02-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2026",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/02/2026-02-01-XML-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2026-02-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 February 2026",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/02/2026-02-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2026-02-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2026",
+          "label": "PBS API CSV files (ZIP 5MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/01/2026-01-01-PBS-API-CSV-files.zip?variant=3",
+          "effective_date_from_page_heading": "2026-01-01",
+          "format_label_classification": "pbs_api_csv",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2026",
+          "label": "PBS XML V3 file (ZIP 8MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/01/2026-01-01-xml-V3.zip?variant=3",
+          "effective_date_from_page_heading": "2026-01-01",
+          "format_label_classification": "xml_v3",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        },
+        {
+          "period_heading": "1 January 2026",
+          "label": "PBS XML V2 down-converted file (ZIP 6MB)",
+          "url": "https://www.pbs.gov.au/publication/schedule/2026/01/2026-01-01-V2-down-converted.zip?variant=3",
+          "effective_date_from_page_heading": "2026-01-01",
+          "format_label_classification": "xml_v2_down_converted",
+          "schema_version_inferred": false,
+          "source_file_requested": false
+        }
+      ]
+    }
+  ],
+  "source_payloads_requested": false,
+  "source_payloads_read": false,
+  "source_rights_concluded": false,
+  "source_rights_changed": false,
+  "public_archive_mutated": false,
+  "digest": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
+    "value": "4c37492ff51049ebb2740cdac9425007605d2a733caba7270ba374bb87520343"
+  },
+  "official_documentation_review": {
+    "xml_schema_history": {
+      "url": "https://data.pbs.gov.au/download/88817",
+      "document_title": "PBS XML Schema, Version 2.1",
+      "document_date": "2008-04-28",
+      "reported_milestones": [
+        {
+          "version": "1.1.1",
+          "date": "2006-12"
+        },
+        {
+          "version": "1.3",
+          "date": "2007-05"
+        },
+        {
+          "version": "1.4",
+          "date": "2007-07"
+        },
+        {
+          "version": "1.5",
+          "date": "2007-09"
+        },
+        {
+          "version": "2.0 draft",
+          "date": "2007-11"
+        },
+        {
+          "version": "1.6",
+          "date": "2008-07"
+        },
+        {
+          "version": "2.1",
+          "date": "2008-04-28"
+        }
+      ],
+      "boundary": "Documented schema milestones only; not evidence of complete schedule release identities, public payload availability, rights, or assignment of a schema to an archive link."
+    },
+    "public_api_information": {
+      "url": "https://data.pbs.gov.au/api/pbs-api.html",
+      "page_updated": "2025-12-11",
+      "documented_schedule_window": "Every effective PBS schedule for the most recent 12 months is in the API.",
+      "boundary": "The current API documentation does not establish a complete long-range historical schedule corpus or GMA retention and redistribution rights."
+    }
+  }
+}

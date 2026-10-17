@@ -3152,3 +3152,29 @@
 - [x] Compare the official November 2013 and February 2022 XML field guides and bind their exact public URLs and downloaded PDF SHA-256 digests in `quality/qualifications/australian-mbs-field-guide-semantic-history-20261018.json`. `ItemChange` retains the same one-character mandatory shape while its wording broadens from item-number change to change to the item. The linked February 2022 PDF conflicts with the current help-page `EMSNCap` legend and its own conditional rule. These are documentary observations only; no release meanings are assigned.
 - [x] Re-run the aggregate July/August source comparator on exact main `4b8ea386b20b1f9b034e5d8cf80ca3e05430bb4c`; hosted run `39048554153` succeeded and the aggregate report SHA-256 is `09b1263b8724b4cce187bbaef9a2fec033c579c2aeaa94b503faecc7b672c210`.
 - [ ] Obtain a versioned source-owner clarification or release-linked schema/change record establishing field meanings and effective dates for each required source era. The 2022-03-04 to 2026-05-28 gap and source-era denominator remain open; M-109 remains blocked.
+
+## M-109 official PBS archive index reconciliation (2026-10-18)
+
+- [x] Inventory the official PBS schedule archive's 24 linked year pages from
+  2003 through 2026 without fetching the listed data files. The pages expose
+  316 XML/API-CSV links across 197 schedule dates: 88 XML links with no
+  version label (April 2007–August 2017), 105 V3 and 105 down-converted V2
+  links (September 2017–May 2026), and 18 API CSV links (April 2025–September
+  2026). This is an official-page link inventory, not an approved corpus
+  denominator or a schema qualification. See
+  `quality/qualifications/australian-pbs-schedule-index-metadata-20261018.json`
+  and `docs/qualification/pbs-schedule-index-metadata-20261018.md`.
+- [~] Keep historical XML reuse and current PBS API retention/redistribution
+  blocked pending source-specific clarification and the maintainer rights
+  decision. Reconcile the 2006–2014 source-era identities outside this
+  schedule archive before declaring the PBS denominator complete; do not infer
+  source absence from a missing archive-page link.
+- [x] Reconcile official schema and API documentation metadata. The PBS XML
+  Schema v2.1 document records schema milestones from December 2006, before
+  the archive index's first XML link in April 2007; the current API information
+  page documents a rolling most-recent-12-month schedule window. These facts
+  narrow the source-era questions but do not identify every schedule release,
+  assign schemas to every file, or establish reuse rights. Exact URLs and
+  limitations are in the metadata qualification.
+- [~] M-109 remains blocked on the complete approved source-era denominator,
+  field semantics, lineage and source-specific rights/admission evidence.

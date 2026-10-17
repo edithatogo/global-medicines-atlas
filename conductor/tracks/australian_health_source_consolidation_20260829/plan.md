@@ -1030,3 +1030,29 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] Keep the four resources unacquired pending a source-specific rights and
   publication decision. Continue independent expected-period and source-era
   reconciliation; M-107 remains blocked.
+
+## M-107 PBS official schedule archive metadata inventory (2026-10-18)
+
+- [x] Inventory all 24 official PBS schedule year pages linked for 2003–2026.
+  The metadata-only read found 316 XML/API-CSV links across 197 schedule dates,
+  including 88 version-unspecified XML links, 105 V3 links, 105 down-converted
+  V2 links, and 18 API CSV links. No data-file link was followed. The observation
+  is recorded at
+  `quality/qualifications/australian-pbs-schedule-index-metadata-20261018.json`.
+- [~] Keep acquisition and reuse blocked pending source-specific rights and
+  retention decisions. Reconcile exact source identities for historical PBS
+  eras not represented by these pages; a missing link is not evidence of source
+  absence. This inventory does not establish the expected historical period
+  denominator or M-107 acceptance.
+
+
+## M-107 PBS schema-history metadata follow-up (2026-10-18)
+
+- [x] Record the official PBS XML Schema v2.1 document's reported schema
+  milestones beginning in December 2006 and the API information page's
+  documented rolling 12-month schedule window. These metadata narrow the
+  historical source-era gap but do not identify all required snapshots or
+  establish source rights; see the value-free index qualification.
+- [~] Continue reconciling exact historical schedule identities and receipts.
+  M-107 remains blocked; do not infer absent coverage from missing archive-page
+  links or the API's documented current window.
