@@ -2762,6 +2762,8 @@
   `a7da966aea77c73cb845e39ab5af9bb07d21144e`, Codecov reported 89.28% against
   the 90.01% target and identified the remaining-conflict fail-closed branch at
   lines 527–528. Added a regression that forces a collision after URL-hash
-  disambiguation and verifies the page remains incomplete. The production
-  implementation did not change. The updated focused, broader, typing, and
-  lint checks pass; await the new exact-head Codecov result.
+  disambiguation, invokes the CLI, and verifies the conflict is reported and
+  refused before staging or receipt writes. The production implementation did
+  not change. The updated focused set (78), broader release harness (11),
+  typing, lint, and formatting checks pass; await the new exact-head Codecov
+  result.

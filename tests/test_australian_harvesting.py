@@ -794,12 +794,10 @@ def test_discover_mbs_exact_pages_disambiguates_source_url_path_collisions(
 
 def test_mbs_page_fails_closed_if_disambiguated_paths_still_collide(
     monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     page = "Downloads-250101"
-    page_url = (
-        "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/"
-        f"Content/{page}"
-    )
     html = (
         '<a href="/first/MBS-XML.xml">First</a>'
         '<a href="/second/MBS-XML.xml">Second</a>'
@@ -809,20 +807,47 @@ def test_mbs_page_fails_closed_if_disambiguated_paths_still_collide(
         "_mbs_collision_path",
         lambda _resource: "raw/mbs/releases/Downloads-250101/collision.xml",
     )
-
-    resources, attempt = australian_harvesting._discover_mbs_schedule_page(
-        page, page_url, lambda _url: html, {}
+    monkeypatch.setattr(
+        harvest_australian_mbs_schedule,
+        "fetch_url_text",
+        lambda _url: html,
     )
 
-    assert len(resources) == 1
-    assert attempt["identity_conflict_count"] == 1
-    assert attempt["outcome"] == "archive_path_collision"
-    assert (
-        harvest_australian_mbs_schedule.targeted_pages_complete(
-            [attempt], [page]
-        )
-        is False
+    def fail_staging(
+        _resources: list[DiscoveredHarvestResource], _stage_dir: Path
+    ) -> tuple[list[Never], dict[str, object]]:
+        pytest.fail("an incomplete exact page must fail before staging")
+
+    monkeypatch.setattr(
+        harvest_australian_mbs_schedule, "stage_resources", fail_staging
     )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "harvest_australian_mbs_schedule.py",
+            "--max-releases",
+            "0",
+            "--release-pages",
+            page,
+            "--stage-dir",
+            str(tmp_path / "stage"),
+            "--receipt-output",
+            str(tmp_path / "receipt.json"),
+        ],
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="Exact MBS release pages must each resolve to an unambiguous XML resource",
+    ):
+        harvest_australian_mbs_schedule.main()
+
+    output = capsys.readouterr().out
+    assert '"identity_conflict_count": 1' in output
+    assert '"outcome": "archive_path_collision"' in output
+    assert not (tmp_path / "stage").exists()
+    assert not (tmp_path / "receipt.json").exists()
 
 
 def test_discover_mbs_exact_pages_deduplicates_identical_urls() -> None:
