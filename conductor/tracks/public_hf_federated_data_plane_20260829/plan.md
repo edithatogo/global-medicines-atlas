@@ -559,3 +559,19 @@
   supported.
 - [ ] Run Conductor review, repair findings, open scoped pull requests, wait for
   hosted checks and publication workflows, merge, and reconcile exact receipts.
+
+## Raw B2 field-lineage contract gap (2026-10-18)
+
+- [x] Add an immutable federation v4.1 schema that records field-lineage
+  applicability explicitly. Raw Bronze B2 objects may carry a null v2
+  field-lineage receipt only with `not_applicable_raw_b2`; all other layers and
+  representations still require a receipt. Keep the v4.0 schema and digest
+  unchanged. Bind the new pin through semantic validation, typed admission,
+  receipt closure, the anonymous reader, consumer binding, distribution
+  reconciliation, and the MBS profile.
+- [ ] M-112 remains unaccepted. This change removes a contract-level blocker
+  for raw B2 identity only; it does not supply source rights, object receipts,
+  v1/v3 receipts, full-denominator admission, independent recovery, or consumer
+  canaries. The approved 1,759-path denominator and all source-specific gates
+  remain in force.
+- [ ] Complete Conductor review and exact-head hosted checks before merging.

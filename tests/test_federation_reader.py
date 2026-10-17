@@ -19,6 +19,9 @@ from global_medicines_atlas.federation_reader import FederatedReader
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = (ROOT / "contracts/medallion/v4/federation.schema.json").read_bytes()
+SCHEMA_V41 = (
+    ROOT / "contracts/medallion/v4.1/federation.schema.json"
+).read_bytes()
 PAYLOAD = b"synthetic payload"
 NOW = datetime(2026, 8, 30, 1, tzinfo=UTC)
 
@@ -34,6 +37,20 @@ def document(**changes: Any) -> bytes:
     value["cache"]["offline_behavior"] = "verified_exact_digest_only"
     for group, fields in changes.items():
         value[group].update(fields)
+    return json.dumps(value).encode()
+
+
+def raw_b2_v41_document() -> bytes:
+    value = json.loads(
+        (
+            ROOT / "contracts/medallion/v4.1/fixtures/valid-raw-b2.json"
+        ).read_bytes()
+    )
+    digest = hashlib.sha256(PAYLOAD).hexdigest()
+    for group in ("location", "verification"):
+        value[group].update(sha256=digest, bytes=len(PAYLOAD))
+    value["rights"]["subject_sha256"] = digest
+    value["cache"]["offline_behavior"] = "verified_exact_digest_only"
     return json.dumps(value).encode()
 
 
@@ -57,9 +74,14 @@ class Hub:
         return httpx.Response(self.status, content=self.payload)
 
 
-def reader(hub: Hub, *documents: bytes, **kwargs: Any) -> FederatedReader:
+def reader(
+    hub: Hub,
+    *documents: bytes,
+    schema: bytes = SCHEMA,
+    **kwargs: Any,
+) -> FederatedReader:
     return FederatedReader(
-        schema=SCHEMA,
+        schema=schema,
         admission_records=tuple(admission_record(item) for item in documents),
         transport_factory=lambda: httpx.MockTransport(hub.handle),
         clock=lambda: NOW,
@@ -91,6 +113,16 @@ def test_remote_roundtrip_offline_and_eviction() -> None:
     assert client.cached_bytes == 0
     with pytest.raises(ValueError, match="closed"), client.open(raw):
         pytest.fail("closed reader")
+
+
+def test_raw_b2_v41_contract_uses_typed_admission_for_remote_read() -> None:
+    raw = raw_b2_v41_document()
+    hub = Hub()
+    with reader(hub, raw, schema=SCHEMA_V41) as client:
+        with client.open(raw) as result:
+            assert result.origin == "remote"
+            assert result.stream.read() == PAYLOAD
+        assert len(hub.requests) == 2
 
 
 def test_unadmitted_or_invalid_contract_never_fetches() -> None:

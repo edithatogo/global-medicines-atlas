@@ -25,7 +25,7 @@ from pydantic import (
 )
 
 from .federation import validate_federation_semantics
-from .federation_reader import METADATA_BYTES, SCHEMA_SHA256
+from .federation_reader import METADATA_BYTES, supported_schema_digest
 from .models import FrozenModel
 from .strict_json import unique_json_object
 
@@ -193,7 +193,8 @@ def reconcile_distribution(
     Raises:
         ValueError: Invalid, missing, extra, duplicate or contradictory evidence.
     """
-    if hashlib.sha256(schema).hexdigest() != SCHEMA_SHA256:
+    schema_digest = supported_schema_digest(schema)
+    if schema_digest is None:
         raise ValueError("federation schema digest mismatch")
     if not produced:
         raise ValueError("empty produced inventory")
@@ -209,7 +210,7 @@ def reconcile_distribution(
     found: dict[tuple[str, ...], DistributionBinding] = {}
     locations: set[tuple[str, str, str]] = set()
     for raw in contracts:
-        document = _document(raw, validator)
+        document = _document(raw, validator, schema_digest)
         source = document["source"]
         location = document["location"]
         if (
@@ -260,7 +261,7 @@ def _key(obj: ProducedObject) -> tuple[str, ...]:
     )
 
 
-def _document(raw: bytes, validator: Any) -> dict[str, Any]:
+def _document(raw: bytes, validator: Any, schema_digest: str) -> dict[str, Any]:
     if len(raw) > METADATA_BYTES:
         raise ValueError("contract exceeds metadata budget")
     try:
@@ -271,6 +272,6 @@ def _document(raw: bytes, validator: Any) -> dict[str, Any]:
         validate_federation_semantics(document)
     except ValueError, TypeError, KeyError, ValidationError:
         raise ValueError("invalid federation contract") from None
-    if document["authority"]["schema_sha256"] != SCHEMA_SHA256:
+    if document["authority"]["schema_sha256"] != schema_digest:
         raise ValueError("invalid federation contract schema pin")
     return document

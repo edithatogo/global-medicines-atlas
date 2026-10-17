@@ -14,7 +14,7 @@ import re
 from dataclasses import dataclass
 from typing import Any, Literal, cast
 
-from .federation_reader import SCHEMA_SHA256
+from .federation_reader import schema_digest_matches_version
 from .strict_json import unique_json_object
 
 _REPOSITORY = re.compile(r"[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+")
@@ -66,6 +66,7 @@ class _ValidatedIdentity:
     producer: str
     contract_repository: str
     contract_commit: str
+    schema_sha256: str
     evidence_kind: Literal["synthetic", "live"]
     dataset: str
     revision: str
@@ -110,7 +111,7 @@ def bind_consumer_contract(
         producer_repository=identity.producer,
         contract_repository=identity.contract_repository,
         contract_commit=identity.contract_commit,
-        schema_sha256=SCHEMA_SHA256,
+        schema_sha256=identity.schema_sha256,
         evidence_kind=identity.evidence_kind,
         dataset=identity.dataset,
         revision=identity.revision,
@@ -152,9 +153,12 @@ def _validated_identity(document: dict[str, Any]) -> _ValidatedIdentity:
     source = _object_section(document, "source")
     location = _object_section(document, "location")
     verification = _object_section(document, "verification")
-    producer, contract_repository, contract_commit = _validate_authority(
-        authority
-    )
+    (
+        producer,
+        contract_repository,
+        contract_commit,
+        schema_sha256,
+    ) = _validate_authority(authority, document.get("version"))
     object_identity = _validate_object(location, verification)
     source_identity = _validate_source(source)
     evidence_kind = document.get("evidence_kind")
@@ -167,14 +171,20 @@ def _validated_identity(document: dict[str, Any]) -> _ValidatedIdentity:
         producer=producer,
         contract_repository=contract_repository,
         contract_commit=contract_commit,
+        schema_sha256=schema_sha256,
         evidence_kind=cast("Literal['synthetic', 'live']", evidence_kind),
         **object_identity,
         **source_identity,
     )
 
 
-def _validate_authority(authority: dict[str, Any]) -> tuple[str, str, str]:
-    if authority.get("schema_sha256") != SCHEMA_SHA256:
+def _validate_authority(
+    authority: dict[str, Any], version: object
+) -> tuple[str, str, str, str]:
+    schema_sha256 = _digest_value(
+        authority.get("schema_sha256"), "schema digest"
+    )
+    if not schema_digest_matches_version(version, schema_sha256):
         raise ValueError("consumer contract schema pin mismatch")
     producer = _repo(
         authority.get("producer_repository"), "producer repository"
@@ -185,7 +195,7 @@ def _validate_authority(authority: dict[str, Any]) -> tuple[str, str, str]:
     contract_commit = _commit_value(
         authority.get("contract_commit"), "contract commit"
     )
-    return producer, contract_repository, contract_commit
+    return producer, contract_repository, contract_commit, schema_sha256
 
 
 def _validate_object(

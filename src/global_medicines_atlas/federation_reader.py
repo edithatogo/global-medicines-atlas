@@ -33,9 +33,18 @@ from .federation import validate_federation_semantics
 from .federation_identity import AdmissionRecord
 from .strict_json import unique_json_object
 
-SCHEMA_SHA256 = (
+SCHEMA_SHA256_V4_0 = (
     "ac28485a70e0853266e4c140f9a07cd557eb27816b0b408b9bf2927a4cffacec"
 )
+SCHEMA_SHA256_V4_1 = (
+    "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+)
+SCHEMA_SHA256 = SCHEMA_SHA256_V4_0
+SCHEMA_SHA256_BY_VERSION = {
+    "4.0.0": SCHEMA_SHA256_V4_0,
+    "4.1.0": SCHEMA_SHA256_V4_1,
+}
+SUPPORTED_SCHEMA_SHA256 = frozenset({SCHEMA_SHA256_V4_0, SCHEMA_SHA256_V4_1})
 HUB = "https://huggingface.co"
 HOSTS = (
     "huggingface.co",
@@ -47,6 +56,23 @@ HOSTS = (
 )
 CHUNK_BYTES = 64 * 1024
 METADATA_BYTES = 1024 * 1024
+
+
+def supported_schema_digest(schema: bytes) -> str | None:
+    """Return the digest of a pinned supported federation schema."""
+    if type(schema) is not bytes:
+        return None
+    digest = hashlib.sha256(schema).hexdigest()
+    return digest if digest in SUPPORTED_SCHEMA_SHA256 else None
+
+
+def schema_digest_matches_version(version: object, digest: object) -> bool:
+    """Require the v4 schema pin to match the contract's exact version."""
+    return (
+        isinstance(version, str)
+        and isinstance(digest, str)
+        and SCHEMA_SHA256_BY_VERSION.get(version) == digest
+    )
 
 
 @dataclass(frozen=True)
@@ -90,8 +116,10 @@ class FederatedReader:
         clock: Callable[[], datetime] = lambda: datetime.now(UTC),
         transport_factory: Callable[[], httpx.BaseTransport] | None = None,
     ) -> None:
-        if hashlib.sha256(schema).hexdigest() != SCHEMA_SHA256:
+        schema_digest = supported_schema_digest(schema)
+        if schema_digest is None:
             raise ValueError("federation schema digest mismatch")
+        self._schema_sha256 = schema_digest
         for value in (
             max_object_bytes,
             cache_bytes,
@@ -190,7 +218,7 @@ class FederatedReader:
             validate_federation_semantics(document)
         except ValueError, TypeError, KeyError, ValidationError:
             raise ValueError("invalid federation contract") from None
-        if document["authority"]["schema_sha256"] != SCHEMA_SHA256:
+        if document["authority"]["schema_sha256"] != self._schema_sha256:
             raise ValueError("invalid federation contract schema pin")
         identity = (
             document["authority"]["producer_repository"],
@@ -236,7 +264,7 @@ class FederatedReader:
         )
         if (
             identity != admitted_identity
-            or admission.schema_sha256 != SCHEMA_SHA256
+            or admission.schema_sha256 != self._schema_sha256
         ):
             raise ValueError("contract identity differs from admission record")
         self._source_origin(document)

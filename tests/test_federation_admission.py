@@ -19,6 +19,9 @@ from global_medicines_atlas.federation_receipt_closure import (
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = (ROOT / "contracts/medallion/v4/federation.schema.json").read_bytes()
+SCHEMA_V41 = (
+    ROOT / "contracts/medallion/v4.1/federation.schema.json"
+).read_bytes()
 BODY = b"independently supplied synthetic receipt"
 URL = "https://example.org/receipts/trusted.json"
 
@@ -77,6 +80,62 @@ def evidence():
     return raw, closed, trusted
 
 
+def raw_b2_v41_evidence():
+    document: dict[str, Any] = json.loads(
+        (
+            ROOT / "contracts/medallion/v4.1/fixtures/valid-raw-b2.json"
+        ).read_bytes()
+    )
+    ref = {"url": URL, "sha256": hashlib.sha256(BODY).hexdigest()}
+
+    def replace(value: Any) -> None:
+        if isinstance(value, dict):
+            node = cast("dict[str, object]", value)
+            if set(node) == {"url", "sha256"}:
+                node.update(ref)
+            else:
+                for child in node.values():
+                    replace(child)
+        elif isinstance(value, list):
+            for child in cast("list[object]", value):
+                replace(child)
+
+    replace(document)
+    raw = json.dumps(document).encode()
+    closed = verify_receipt_closure(
+        raw,
+        (ReceiptPayload(url=URL, payload=BODY),),
+        schema=SCHEMA_V41,
+    )
+    roles = {role.role: role for role in closed.roles}
+    trusted = TrustedAdmissionProfile(
+        producer_repository="example/producer",
+        contract_repository="edithatogo/global-medicines-atlas",
+        contract_commit="a" * 40,
+        schema_sha256=hashlib.sha256(SCHEMA_V41).hexdigest(),
+        dataset="example/synthetic-mbs",
+        revision="a" * 40,
+        path="raw/synthetic.xml",
+        byte_count=11,
+        sha256="d" * 64,
+        source_id="synthetic-mbs",
+        acquisition_id="synthetic-acquisition",
+        layer="bronze",
+        bronze_stratum="B2",
+        representation="raw",
+        schema_era="synthetic-v1",
+        comparison_cohort="synthetic",
+        effective_date="2026-08-01",
+        retrieved_at="2026-08-30T00:00:00Z",
+        evidence_kind="synthetic",
+        authorization=roles["/rights/authorization"],
+        lineage=tuple(
+            role for role in closed.roles if role.role.startswith("/lineage/")
+        ),
+    )
+    return raw, closed, trusted
+
+
 def test_exact_independent_profile_admits_without_io():
     raw, closed, trusted = evidence()
     result = admit_closed_contract(raw, closed, schema=SCHEMA, trusted=trusted)
@@ -93,6 +152,18 @@ def test_exact_independent_profile_admits_without_io():
     assert result.effective_date == "2026-08-01"
     assert result.retrieved_at == "2026-08-30T00:00:00Z"
     assert "authorization" not in result.model_dump()
+
+
+def test_raw_b2_v41_admits_without_a_synthetic_v2_receipt():
+    raw, closed, trusted = raw_b2_v41_evidence()
+    result = admit_closed_contract(
+        raw, closed, schema=SCHEMA_V41, trusted=trusted
+    )
+    assert result.schema_sha256 == hashlib.sha256(SCHEMA_V41).hexdigest()
+    assert result.representation == "raw"
+    assert all(
+        role.role != "/lineage/v2_field_lineage" for role in closed.roles
+    )
 
 
 @pytest.mark.parametrize(
