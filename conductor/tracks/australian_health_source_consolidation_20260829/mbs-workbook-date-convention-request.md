@@ -1,8 +1,13 @@
 # Legacy Group P7 workbook date convention inquiry
 
-**Status:** sent 2026-09-28 to `enquiries@health.gov.au`; no substantive reply
-has been recorded. The sent-message receipt is in
-`quality/qualifications/provider-outreach-receipts-20260929.json`. The official XML specification documents
+**Status:** MBS Online replied on 2026-10-13 asking for the official webpage
+identifying the workbook. A value-free follow-up with the July 2024 downloads
+page was sent on 2026-10-17; the workbook-specific date convention remains
+unconfirmed. The original sent-message receipt is in
+`quality/qualifications/provider-outreach-receipts-20260929.json`; the reply and
+follow-up metadata are recorded in
+`quality/qualifications/mbs-workbook-date-source-owner-clarification-20261017.json`.
+The official XML specification documents
 `DD.MM.YYYY` for XML fields but does not establish the convention for the
 separate legacy Group P7 workbook. Keep the workbook date profile unset until
 source-specific evidence is obtained.
@@ -31,6 +36,14 @@ attached or transmitted workbook contents.
 
 Thank you,
 Global Medicines Atlas
+
+## Follow-up sent 2026-10-17
+
+MBS Online requested the webpage where the named workbook is available. The
+official [July 2024 MBS downloads page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-240701)
+was provided, and the source owner was asked to confirm whether this workbook
+edition uses day-month-year, month-day-year, or has no documented convention.
+No workbook bytes or cell values were sent. No date profile was selected.
 
 ## Boundary
 

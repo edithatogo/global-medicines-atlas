@@ -1,0 +1,37 @@
+{
+  "schema_id": "global-medicines-atlas.mbs-workbook-date-source-owner-clarification",
+  "schema_version": 1,
+  "observed_at": "2026-10-17T00:55:42Z",
+  "source_id": "au-mbs-p7-legacy-workbook",
+  "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+  "correspondence": {
+    "sender": "mbsonline@health.gov.au",
+    "response_date": "2026-10-13",
+    "response_message_id": "1a137984cf9a7186",
+    "response_summary": "MBS Online could not identify the workbook from its name and asked for the webpage where it is available.",
+    "follow_up_recipient": "mbsonline@health.gov.au",
+    "follow_up_date": "2026-10-17",
+    "follow_up_message_id": "1a1475b8396d9dc1",
+    "follow_up_in_reply_to": "1a137984cf9a7186",
+    "official_workbook_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-240701",
+    "follow_up_question": "Please confirm whether textual dates in this exact workbook edition are day-month-year, month-day-year, or have no documented convention; if another team owns the format, identify that source owner or documentation.",
+    "source_payload_attached": false,
+    "cell_values_included": false
+  },
+  "qualification": {
+    "source_owner_identified_workbook": false,
+    "date_convention_confirmed": false,
+    "date_profile": null,
+    "semantic_promotion": false,
+    "status": "awaiting_source_owner_confirmation"
+  },
+  "boundaries": {
+    "source_bytes_requested_or_downloaded": false,
+    "source_values_read_or_transmitted": false,
+    "rights_conclusion_made": false,
+    "rights_scope_changed": false,
+    "source_admission_changed": false,
+    "m109_accepted": false
+  },
+  "next_evidence": "A source-owner response that specifically identifies the date convention for the July 2024 Group P7 workbook, or states that no authoritative convention is available. Keep date conversion disabled until then."
+}

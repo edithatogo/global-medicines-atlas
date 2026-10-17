@@ -1757,6 +1757,18 @@
   API payload request. Continue semantic qualification era by era only after
   exact identity and authority are established.
 
+### M-109 P7 workbook source-owner clarification follow-up (2026-10-17)
+
+- [x] Respond to MBS Online's request for the exact webpage identifying the
+  July 2024 Group P7 workbook. The official downloads page was provided with a
+  value-free question asking whether this exact edition uses day-month-year,
+  month-day-year, or has no documented date convention. The response and
+  follow-up metadata are preserved in
+  `quality/qualifications/mbs-workbook-date-source-owner-clarification-20261017.json`.
+- [ ] Keep P7 date conversion disabled and await source-owner clarification.
+  The message confirms only that MBS Online requested a locator; it does not
+  qualify a date convention, field semantics, or transformation.
+
 
 ## M-112 public producer metadata discovery (2026-09-30)
 
