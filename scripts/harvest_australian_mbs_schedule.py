@@ -192,11 +192,13 @@ def targeted_pages_complete(
         for attempt in page_attempts
         if attempt["page"] in exact_release_pages
     }
-    return len(targeted) == len(set(exact_release_pages)) and all(
-        int(targeted[page]["monthly_schedule_xml_count"]) > 0
-        for page in set(exact_release_pages)
-        if page in targeted
-    )
+    if len(targeted) != len(set(exact_release_pages)):
+        return False
+    for page in set(exact_release_pages):
+        count = targeted[page].get("monthly_schedule_xml_count")
+        if not isinstance(count, int) or isinstance(count, bool) or count <= 0:
+            return False
+    return True
 
 
 def main() -> int:

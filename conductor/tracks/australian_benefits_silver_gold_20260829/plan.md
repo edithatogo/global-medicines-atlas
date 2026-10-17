@@ -2656,7 +2656,7 @@
   Record one metadata-only attempt for every selected page, including a safe
   exception class on fetch failure; restrict requests to canonical dated page
   IDs and 24 pages per run. The existing monthly discovery remains the default.
-  Focused harvesting and workflow tests pass (51), as do Ruff, repository
+  Focused harvesting and workflow tests pass (55), as do Ruff, repository
   context validation, and diff checks. The MBS publication authorization
   already covers monthly schedule XML on MBS Online and hosted public
   publication. This implementation has not acquired or published source

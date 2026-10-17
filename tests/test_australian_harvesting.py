@@ -669,6 +669,24 @@ def test_targeted_page_completeness_requires_xml_for_every_page() -> None:
     )
 
 
+@pytest.mark.parametrize("count", [None, "1", True, 0])
+def test_targeted_page_completeness_rejects_invalid_xml_counts(
+    count: object,
+) -> None:
+    assert (
+        harvest_australian_mbs_schedule.targeted_pages_complete(
+            [
+                {
+                    "page": "Downloads-250101",
+                    "monthly_schedule_xml_count": count,
+                }
+            ],
+            ["Downloads-250101"],
+        )
+        is False
+    )
+
+
 def test_exact_only_harvest_skips_current_index_fetch(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
