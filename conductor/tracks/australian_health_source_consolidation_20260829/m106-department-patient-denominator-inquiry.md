@@ -73,3 +73,22 @@ credentials, or access to the Department's EDW. It does not establish a patient
 denominator or any rights decision. No product payload or attachment was sent;
 acquisition remains blocked pending owner clarification and a separate
 source-specific maintainer decision.
+
+## Targeted annual-workbook follow-up, 2026-10-17
+
+A second, more specific request was sent to the Department's published data
+release contact (`data.release@health.gov.au`) with the copyright enquiries
+contact (`copyright@health.gov.au`) copied. The request identifies the annual
+state-and-territory workbook and asks whether patient values are distinct within
+each period/geography/service group, how those groups overlap, and which terms
+govern raw retention and public derived-table redistribution. This supplements
+the broader 2026-10-16 inquiry above; it does not replace it or authorize
+acquisition.
+
+The sent Gmail message is `1a14abd12b459daf` (RFC Message-ID
+`<CA+D7Coy3OhLTfNt5f0LH3U3-mkNqQqQSNx6gAgjKTvfQ28TmtA@mail.gmail.com>`).
+Automatic receipts from data release (`1a14abd90cd487b0`) and copyright
+(`1a14abda50fa86a4`) arrived at 2026-10-17T16:41:21Z and 16:41:37Z. The data
+release message estimates ten working days for a response. Neither contains a
+substantive answer. No additional outreach is planned while this request is
+pending.
