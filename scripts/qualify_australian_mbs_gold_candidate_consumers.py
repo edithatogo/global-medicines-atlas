@@ -98,7 +98,7 @@ def qualify_candidate_scalar_queries(
     query_cases: dict[str, object] = {}
     query_specs: tuple[tuple[str, str, Operator, Decimal | date], ...] = (
         ("decimal", SCALAR_DECIMAL_COLUMN, ">", Decimal("10.00")),
-        ("date", SCALAR_DATE_COLUMN, ">=", date(2025, 8, 1)),
+        ("date", SCALAR_DATE_COLUMN, "<", date(2025, 8, 1)),
     )
     for case, column, operator, value in query_specs:
         spec = QuerySpec(
@@ -116,6 +116,8 @@ def qualify_candidate_scalar_queries(
             engine_rows[adapter.name] = adapter.execute(read, spec)
         if engine_rows["duckdb"] != engine_rows["polars"]:
             raise ValueError(f"candidate scalar {case} engine parity failed")
+        if not engine_rows["duckdb"]:
+            raise ValueError(f"candidate scalar {case} filter returned no rows")
         query_cases[case] = {
             "engines": ["duckdb", "polars"],
             "returned_rows": len(engine_rows["duckdb"]),
