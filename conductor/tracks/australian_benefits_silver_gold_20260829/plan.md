@@ -1747,9 +1747,15 @@
   preserve its incompleteness: later-approved MBS snapshots and governed PBS
   v3 releases are not yet enumerated as exact source identities. Do not mark
   M-109 accepted from this inventory.
-- [ ] Enumerate the approved exact-source identities and acquire the pending
-  maintainer/provider rights decisions before any PBS public API payload
-  request. Continue semantic qualification era by era after these are explicit.
+- [x] Enumerate currently pinned exact MBS identities and the one observed
+  PBS v3 archive member from anonymous manifest metadata. Record the source
+  rights, semantic-qualification and completeness boundaries separately in
+  `quality/qualifications/australian-m109-source-era-identities-20261017.json`;
+  this is not a complete expected denominator and makes no admission claim.
+- [ ] Reconcile the complete approved MBS/PBS source-era denominator and obtain
+  the pending PBS maintainer/provider rights decisions before any PBS public
+  API payload request. Continue semantic qualification era by era only after
+  exact identity and authority are established.
 
 
 ## M-112 public producer metadata discovery (2026-09-30)
