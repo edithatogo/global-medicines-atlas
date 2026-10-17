@@ -2667,14 +2667,17 @@
   denominator, missing artifacts, source-specific rights, and other historical
   PBS/MBS coverage.
 
-## PR #1084 patch-coverage correction (2026-10-17)
+## PR #1084 patch coverage and source-identity correction (2026-10-17)
 
 - [~] Address Codecov's exact-head patch-coverage finding on `36f38f1`: add
-  regressions for negative recent-release limits, more than 24 exact pages,
-  duplicate page-scoped archive identities, and pages with no supported
-  resources. The affected 117-test set passes; local coverage executes all 33
-  changed statements in `australian_harvesting.py`, Ruff, context validation,
-  and diff checks pass. Push the correction, then require Codecov and all
-  protected checks to pass on the new exact head before merge. No source was
-  acquired or published; M-107 remains blocked pending hosted exact-page
-  receipts and the other historical source-family evidence.
+  regressions for negative recent-release limits and more than 24 exact pages.
+  Review then identified that distinct URLs with the same archive path must
+  make the targeted page incomplete; only identical URLs are deduplicated.
+  The workflow now fails before staging on an ambiguous collision, with
+  regressions for both collision and exact-duplicate cases. The affected
+  119-test set passes; local coverage executes all 58 changed statements in
+  `australian_harvesting.py` (98% total module coverage), Ruff, BasedPyright,
+  context validation, and diff checks pass. Push the correction, then require
+  Codecov and all protected checks to pass on the new exact head before merge.
+  No source was acquired or published; M-107 remains blocked pending hosted
+  exact-page receipts and the other historical source-family evidence.

@@ -195,6 +195,9 @@ def targeted_pages_complete(
     if len(targeted) != len(set(exact_release_pages)):
         return False
     for page in set(exact_release_pages):
+        conflicts = targeted[page].get("identity_conflict_count", 0)
+        if conflicts != 0:
+            return False
         count = targeted[page].get("monthly_schedule_xml_count")
         if not isinstance(count, int) or isinstance(count, bool) or count <= 0:
             return False
@@ -261,6 +264,12 @@ def main() -> int:
     print(f"Selected {len(resources)} candidate MBS schedule resources.")
     for attempt in page_attempts:
         print(json.dumps(attempt, sort_keys=True))
+    if exact_release_pages and not targeted_pages_complete(
+        page_attempts, exact_release_pages
+    ):
+        raise RuntimeError(
+            "Exact MBS release pages must each resolve to an unambiguous XML resource"
+        )
 
     if args.dry_run:
         return 0
