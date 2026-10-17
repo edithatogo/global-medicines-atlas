@@ -1159,3 +1159,24 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] M-111 consumer acceptance remains blocked pending independently admitted
   product rights, full source-era coverage, freshness/cohort and confidence
   evidence, successful per-surface canaries, and public export restore.
+
+## M-109 official release-change metadata crosswalk (2026-10-18)
+
+- [x] Reconcile the official March, July, and August 2026 MBS release-page
+  change notes into
+  `quality/qualifications/australian-mbs-official-release-change-notes-20261018.json`.
+  Preserve release/effective dates and item-level correction scope without
+  requesting or reading XML payloads.
+- [x] Add content-addressed metadata-only retrieval receipts for all three
+  official pages, verify their recorded item/column tokens in the matching
+  response, and test URL/status/length/digest binding without retaining page
+  bodies. Record unresolved column-to-element and field-guide conflicts; update
+  the MBS source-era register while preserving blocked M-109 status; assign the
+  regression to the Test-Goblin unit lane.
+- [x] Run the focused receipt regression and 110 broader M-109/MBS source-era,
+  donor-disposition, and Test-Goblin harness tests; routine formatting, typing,
+  context validation, JSON checks, and `git diff --check` pass.
+- [~] M-109 still requires source-owner or exact-era schema clarification to
+  map the documented changes to XML element semantics, plus the approved
+  denominator, rights, and admission evidence. Release-page notes do not
+  qualify field meaning or complete source-era semantics.
