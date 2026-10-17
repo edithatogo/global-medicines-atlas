@@ -954,3 +954,29 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] M-112 remains blocked pending current/live receipts, independent storage
   and restore evidence, v4 admission, consumer canaries, and full-denominator
   reconciliation.
+
+## M-109 exact-main July/August MBS comparison (2026-10-17)
+
+- [x] Merge PR #1117 after all 39 exact-head required checks passed. The
+  squash merge is `0d665975ae504cbe681ae09817bfcff618d66640`.
+- [x] Run the bounded exact-main workflow at that commit. Run
+  [39043594884](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39043594884)
+  completed successfully. Both official source identities matched their
+  immutable archive digests and sizes, including the distinct August B1
+  receipt path and B2 content-addressed path.
+- [x] Read back aggregate-only reports. The July/August comparison report
+  artifact `12105111369` records 6,045 matched records, one added record,
+  5,445 changed records, no removed records, and aggregate counts for six
+  changed native fields. Its report digest is
+  `efeea889b3ce805c3a431073de02c78ba3b211157707750e0b3ab5948e2eb3c4`;
+  the downloaded JSON artifact SHA-256 is
+  `a80cfb25b88eb32a8fe1326c1f907328a37957ef542768d8367e6c39b5f9e6b2`.
+  No source values or identifiers were retained, no local source payload was
+  downloaded, and publication or admission did not occur.
+- [~] Keep M-109 blocked. The separate candidate report remains `candidate_only`
+  with release-linked field-semantic history and public v4 identity
+  unverified. Structural comparison does not establish meanings, temporal
+  semantics, the full MBS/PBS denominator, rights, Silver admission, or
+  M-109 acceptance; continue those requirements against authorized evidence.
+- [x] Parse the append-only evidence ledger, run Conductor context validation,
+  and pass `git diff --check` after recording the hosted result.
