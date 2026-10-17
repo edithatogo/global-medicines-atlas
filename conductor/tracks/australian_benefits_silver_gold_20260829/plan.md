@@ -2605,14 +2605,20 @@
   The report records exact hashes for the graph builder, qualifier, and three
   schemas; its readback rejects stale implementation fingerprints. No public
   dataset mutation or graph publication occurred.
-- [ ] Complete M-110 Gold graph review and consumer acceptance. The current
-  assessment is
-  `quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261017.json`;
-  the maintainer's 2026-10-17 disposition accepts the 5,989 MBS v3 edges as a
-  candidate. This disposition does not set calibrated confidence, mark the
-  graph independently reviewed, or establish consumer acceptance. The
-  existing Platinum scalar-query bridge remains open. This candidate does not
-  accept M-110, M-109, or M-112.
+- [x] Record the maintainer's bounded disposition: accept the exact July 2025
+  MBS v3 edge set as a candidate for consumer-canary use. Exact-main run
+  `39045806438` traversed all 5,989 candidate edges through API, CLI, Atlas,
+  and Chromium with identical ordered edge-ID digests and complete six-table
+  lineage; receipt SHA-256 is
+  `8d1db8c5fa9376a9f786078114e7bb7682decb8709fde6bf7992113065d8488f`.
+  This acceptance leaves each edge `not_reviewed`, sets no calibrated
+  confidence, and makes no M-110, M-109, M-112, production-admission, rights,
+  source-coverage, or publication claim.
+- [~] Complete independent M-110 Gold graph review. The current assessment is
+  `quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261017.json`.
+  Candidate traversal and maintainer acceptance do not substitute for review
+  of edge evidence, calibrated confidence, or the still-open Platinum scalar
+  query bridge. M-110 Gold acceptance remains open.
 - [x] Correct the MBS XML numeric-width transform so the three EMSN numeric
   fields use their official seven-integer-digit limit while ScheduleFee and
   Benefit75/85/100 retain five digits. Boundary tests failed before the fix and
