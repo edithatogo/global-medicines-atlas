@@ -40,13 +40,26 @@ def test_m111_candidate_head_reconciles_without_claiming_consumer_acceptance() -
     assert object_readback["object_count"] == 8
     assert object_readback["sha256_and_size_verified_count"] == 8
     assert object_readback["parquet_or_source_payload_bytes_read"] == 0
-    assert {obj["path"] for obj in object_readback["objects"]} == {
-        obj["path"] for obj in gold["verified_objects"]
-    } | {
+    expected_tables = {
+        obj["path"]: (obj["sha256"], obj["byte_count"])
+        for obj in gold["verified_objects"]
+    }
+    observed_objects = {obj["path"]: obj for obj in object_readback["objects"]}
+    assert {
+        path: (
+            observed_objects[path]["sha256"],
+            observed_objects[path]["byte_count"],
+        )
+        for path in expected_tables
+    } == expected_tables
+    assert set(observed_objects) == set(expected_tables) | {
         "silver/mbs/v4/2025-07-v3/source-receipt.json",
         "silver/mbs/v4/2025-07-v3/qualification.json",
     }
-    assert all(obj["identity_verified"] for obj in object_readback["objects"])
+    assert all(
+        obj["identity_verified"] and obj["status"] == "resolved_200"
+        for obj in object_readback["objects"]
+    )
     assert all(
         surface["successful_public_query_performed"] is False
         for surface in report["consumer_surfaces"].values()
