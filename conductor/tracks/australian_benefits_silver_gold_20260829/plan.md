@@ -2651,33 +2651,42 @@
 
 ## M-107 targeted historical schedule page harvesting (2026-10-17)
 
-- [~] Add a bounded workflow-dispatch path for exact official MBS Downloads
+- [x] Add a bounded workflow-dispatch path for exact official MBS Downloads
   page IDs when historical releases are absent from the newest-release index.
   Record one metadata-only attempt for every selected page, including a safe
   exception class on fetch failure; restrict requests to canonical dated page
   IDs and 24 pages per run. The existing monthly discovery remains the default.
-  Focused harvesting and workflow tests pass (55), as do Ruff, repository
-  context validation, and diff checks. The MBS publication authorization
-  already covers monthly schedule XML on MBS Online and hosted public
-  publication. This implementation has not acquired or published source
-  bytes. After merge, target only `Downloads-250101`, `Downloads-250301`, and
-  `Downloads-251101` with `max_releases=0`; verify the anonymous receipt,
-  cleanup receipt, per-page outcomes, and exact source identities before
-  updating M-107 coverage. M-107 remains blocked on the expected snapshot
-  denominator, missing artifacts, source-specific rights, and other historical
-  PBS/MBS coverage.
+  The implementation passed its focused and broader local tests, hosted
+  protected checks, and Codecov on exact head `0c2bd5ad3a3583234434224effff892e8c0fb99c`; PR #1084 merged as
+  `17a853b6259b8494c207afd44e1100992fc0bf51` with the exact tested tree.
+- [x] Run the authorized exact-main harvest for `Downloads-250101`,
+  `Downloads-250301`, and `Downloads-251101` with `max_releases=0` at merge
+  commit `17a853b6259b8494c207afd44e1100992fc0bf51`. Run
+  [38993834387](https://github.com/edithatogo/global-medicines-atlas/actions/runs/38993834387)
+  recorded one XML for January, one for March, and two distinct November
+  revisions with zero archive-identity conflicts. The public immutable
+  revision is `52ad5c31cfe101c487a4c7a9c382540642e6110a`; its public manifest
+  readback binds all four paths, byte sizes, and SHA-256 digests. The final
+  [receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228342987)
+  records all three pages complete, anonymous digest verification for the
+  40-object cumulative archive, and verified temporary-byte cleanup.
+- [~] Reconcile the full expected MBS/PBS period and source denominator.
+  These four exact MBS objects add historical snapshot coverage but do not
+  qualify the timed-out Health.gov workbook families, historical PBS schemas,
+  or a complete M-107 series. Keep M-107 blocked until the remaining
+  source-specific evidence is reconciled.
 
 ## PR #1084 patch coverage and source-identity correction (2026-10-17)
 
-- [~] Address Codecov's exact-head patch-coverage finding on `36f38f1`: add
+- [x] Address Codecov's exact-head patch-coverage finding on `36f38f1`: add
   regressions for negative recent-release limits and more than 24 exact pages.
   Review then identified that distinct URLs with the same archive path must
   make the targeted page incomplete; only identical URLs are deduplicated.
   The workflow now fails before staging on an ambiguous collision, with
   regressions for both collision and exact-duplicate cases. The affected
-  119-test set passes; local coverage executes all 58 changed statements in
-  `australian_harvesting.py` (98% total module coverage), Ruff, BasedPyright,
-  context validation, and diff checks pass. Push the correction, then require
-  Codecov and all protected checks to pass on the new exact head before merge.
-  No source was acquired or published; M-107 remains blocked pending hosted
-  exact-page receipts and the other historical source-family evidence.
+  The affected 119-test set passes; local coverage executes all 58 changed
+  statements in `australian_harvesting.py` (98% total module coverage), and
+  Ruff, BasedPyright, context validation, diff checks, Codecov, and all
+  protected checks passed before merge. This correction preserves the exact
+  source identity of the subsequently acquired MBS objects; it does not close
+  the remaining M-107 source-family and denominator gaps.

@@ -259,6 +259,26 @@
   replica evidence. The unadmitted MBS prefix also needs an explicit
   disposition. No publication, visibility change, or admission was performed.
 
+### M-108 MBS archive head refresh after M-107 publication (2026-10-17)
+
+- [x] Reconcile the MBS root manifest at the exact revision produced by hosted
+  M-107 run `38993834387`. Anonymous manifest readback at revision
+  `52ad5c31cfe101c487a4c7a9c382540642e6110a` (SHA-256
+  `9f9dbe6f5ccf3a6119177bbcbb5d942ce9e9db5ea35d2142c7696a3139cab796`)
+  contains 40 entries. Full comparison with prior revision
+  `3d2d528439bddf6f42e8e700c88917f0960a9f38` finds 12 additions, no changed
+  existing rows, and no removals: four monthly schedule XML payloads, two
+  November 2025 Basic Service Description payloads, and their six B1 receipt
+  sidecars. Per-object metadata and the prior observation are retained in
+  `quality/qualifications/australian-m108-derived-products-20261017.json`;
+  the hosted anonymous digest and cleanup receipt remains the raw-byte proof.
+  No raw or Parquet payload was fetched for this refresh.
+- [~] M-108 remains blocked. The additive Bronze archive change does not alter
+  the four accepted Bronze product admissions or the MBS Silver candidate;
+  output-specific derived rights, typed federation-v4 admission, product
+  cards, independent replica evidence, and disposition of the unadmitted MBS
+  projection remain unresolved.
+
 ## Review fixes: runtime reader
 
 - [x] Admit the exact observed `us.aws.cdn.hf.co` delivery host, with signed
