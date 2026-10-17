@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 from importlib import import_module
 from pathlib import Path
@@ -12,6 +13,9 @@ import pytest
 from test_mbs_gold_graph import (
     _admitted_input,  # ruff: ignore[import-private-name] -- shared fixture
     _admitted_table,  # ruff: ignore[import-private-name] -- shared fixture
+)
+from test_mbs_gold_scalar_projection import (
+    _typed_benefits,  # ruff: ignore[import-private-name] -- shared fixture
 )
 
 import global_medicines_atlas.atlas_browser_qualification as browser_qualification
@@ -34,6 +38,10 @@ from global_medicines_atlas.mbs_gold_consumer_qualification import (
 from global_medicines_atlas.mbs_gold_graph import (
     build_mbs_gold_graph_from_admitted_silver,
 )
+from global_medicines_atlas.mbs_gold_scalar_projection import (
+    project_mbs_gold_scalar_candidate,
+)
+from global_medicines_atlas.receipts import SourceReceipt
 
 
 def _candidate_artifact(tmp_path):
@@ -93,6 +101,93 @@ def test_candidate_consumer_receipt_traverses_each_surface_without_edge_ids(
         edge["edge_id"] not in str(receipt)
         for edge in pq.read_table(edge_path).to_pylist()
     )
+
+
+def test_candidate_scalar_query_canary_preserves_decimal_and_date_engine_parity(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source_receipt_path = (
+        Path(__file__).resolve().parents[1] / "quality/bronze/receipts/au-mbs/"
+        "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json"
+    )
+    source_receipt = SourceReceipt.model_validate_json(
+        source_receipt_path.read_bytes()
+    )
+    benefits = _typed_benefits("Benefit100", ["10.25", "2.75"], "converted")
+    rows = benefits.to_pylist()
+    for row, value in zip(rows, ["2025-07-01", "2025-08-01"], strict=True):
+        row["BenefitStartDate"] = {
+            "native_value": value,
+            "native_state": "value",
+            "conversion_status": "converted",
+            "typed_value": value,
+        }
+    benefits = pa.Table.from_pylist(rows).replace_schema_metadata(
+        benefits.schema.metadata
+    )
+    graph = build_mbs_gold_graph_from_admitted_silver(
+        _admitted_table("services", "ItemNum"),
+        benefits,
+        _admitted_input(),
+    )
+    projection = project_mbs_gold_scalar_candidate(graph, source_receipt)
+    scalar_path = tmp_path / "candidate-scalar.parquet"
+    pq.write_table(projection, scalar_path)
+    qualification = {
+        "graph": {
+            "edge_count": len(graph.edges),
+            "graph_sha256": graph.graph_sha256,
+            "input_admission_sha256": graph.input_admission_sha256,
+            "input_semantic_manifest_sha256": (
+                graph.input_semantic_manifest_sha256
+            ),
+            "source_receipt_sha256": graph.nodes[0].evidence.receipt_sha256,
+        },
+        "source_identity": {
+            "source_sha256": graph.nodes[0].evidence.source_sha256,
+            "source_record_count": graph.source_record_count,
+            "schema_era": graph.nodes[0].evidence.catalog_version,
+        },
+    }
+
+    monkeypatch.syspath_prepend(
+        str(Path(__file__).resolve().parents[1] / "scripts")
+    )
+    script = import_module(
+        "scripts.qualify_australian_mbs_gold_candidate_consumers"
+    )
+    receipt = script.qualify_candidate_scalar_queries(
+        scalar_path, qualification
+    )
+
+    assert receipt["candidate_only"] is True
+    assert receipt["consumer_admission_performed"] is False
+    assert receipt["row_count"] == 2
+    assert (
+        receipt["parquet_sha256"]
+        == hashlib.sha256(scalar_path.read_bytes()).hexdigest()
+    )
+    assert receipt["query_cases"]["decimal"]["engines"] == [
+        "duckdb",
+        "polars",
+    ]
+    assert receipt["query_cases"]["date"]["engines"] == [
+        "duckdb",
+        "polars",
+    ]
+    assert receipt["query_cases"]["decimal"]["returned_rows"] == 1
+    assert receipt["query_cases"]["date"]["returned_rows"] == 1
+    assert receipt["query_cases"]["decimal"]["row_limit"] == 1000
+    assert "10.25" not in json.dumps(receipt)
+    assert "2025-07-01" not in json.dumps(receipt)
+    assert "rows" not in receipt
+
+    forged = pq.read_table(scalar_path)
+    metadata = dict(forged.schema.metadata or {})
+    metadata[b"graph_sha256"] = b"0" * 64
+    pq.write_table(forged.replace_schema_metadata(metadata), scalar_path)
+    with pytest.raises(ValueError, match="metadata differs"):
+        script.qualify_candidate_scalar_queries(scalar_path, qualification)
 
 
 def test_candidate_v4_lineage_binds_exact_six_source_faithful_tables(
@@ -221,11 +316,25 @@ def test_qualification_script_emits_browser_bound_aggregate_receipt(
         ),
     )
     output = tmp_path / "consumer-qualification.json"
+    scalar_path = tmp_path / "candidate-scalar.parquet"
+    scalar_path.write_bytes(b"candidate scalar placeholder")
+    monkeypatch.setattr(
+        script,
+        "qualify_candidate_scalar_queries",
+        lambda *_args: {
+            "candidate_only": True,
+            "consumer_admission_performed": False,
+            "row_count": 1,
+            "query_cases": {},
+        },
+    )
 
     assert (
         script.main([
             "--edge-file",
             str(edge_path),
+            "--scalar-file",
+            str(scalar_path),
             "--output",
             str(output),
             "--workflow-commit",
@@ -261,6 +370,7 @@ def test_qualification_script_emits_browser_bound_aggregate_receipt(
     source_lineage = receipt["candidate_v4_source_lineage"]
     assert isinstance(source_lineage, dict)
     assert source_lineage["candidate_only"] is True
+    assert receipt["candidate_scalar_query_canary"]["candidate_only"] is True
     assert len(source_lineage["tables"]) == 6
     assert source_lineage["source"]["source_receipt_sha256"] == (
         "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03"
