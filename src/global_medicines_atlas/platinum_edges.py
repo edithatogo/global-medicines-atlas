@@ -121,13 +121,24 @@ def gold_edge_payload(
     for item in items:
         item["evidence"] = json.loads(item.pop("evidence_json"))
         item["controls"] = json.loads(item.pop("controls_json"))
-    payload = {
+    payload: dict[str, Any] = {
         "schema_name": selected.schema.metadata[b"schema_name"].decode(),
         "schema_version": selected.schema.metadata[b"schema_version"].decode(),
         "qualification": selected.schema.metadata[b"qualification"].decode(),
         "total": len(items),
         "items": items,
     }
+    metadata = selected.schema.metadata or {}
+    if metadata.get(b"qualification") == b"admitted_real_silver_candidate_only":
+        payload["admission_bindings"] = {
+            "input_admission_sha256": metadata[
+                b"input_admission_sha256"
+            ].decode(),
+            "input_semantic_manifest_sha256": metadata[
+                b"input_semantic_manifest_sha256"
+            ].decode(),
+            "graph_sha256": metadata[b"graph_sha256"].decode(),
+        }
     if include_pagination:
         matching_count = sum(
             1

@@ -98,6 +98,12 @@ def test_atlas_renders_admitted_mbs_v3_candidate_metadata() -> None:
     assert "admitted_real_silver_candidate_only" in response.text
     assert "not_reviewed" in response.text
     assert "Not calibrated" in response.text
+    for binding in (
+        b"input_admission_sha256",
+        b"input_semantic_manifest_sha256",
+        b"graph_sha256",
+    ):
+        assert edges.schema.metadata[binding].decode() in response.text
 
 
 def test_atlas_renders_pbs_top_level_review_controls() -> None:

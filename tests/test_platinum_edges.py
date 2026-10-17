@@ -75,6 +75,11 @@ def test_edge_selection_accepts_exact_admitted_mbs_v3_metadata() -> None:
     assert payload["schema_version"] == "3.0"
     assert payload["qualification"] == "admitted_real_silver_candidate_only"
     assert payload["items"][0]["controls"]["review_state"] == "not_reviewed"
+    assert payload["admission_bindings"] == {
+        "input_admission_sha256": "a" * 64,
+        "input_semantic_manifest_sha256": "b" * 64,
+        "graph_sha256": candidate.graph_sha256,
+    }
 
 
 def test_edge_selection_rejects_unbound_admitted_metadata() -> None:

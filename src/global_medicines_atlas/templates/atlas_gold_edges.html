@@ -43,6 +43,13 @@
         <section aria-labelledby="edge-list-heading">
           <h2 id="edge-list-heading">{{ payload.total }} candidate edge{% if payload.total != 1 %}s{% endif %}</h2>
           <p>Qualification: <code>{{ payload.qualification }}</code>. Review each edge with its source evidence before use. Absence is not evidence of a negative relationship.</p>
+          {% if payload.admission_bindings is defined %}
+            <dl aria-label="Admitted graph identity">
+              <div><dt>Graph SHA-256</dt><dd><code>{{ payload.admission_bindings.graph_sha256 }}</code></dd></div>
+              <div><dt>Silver admission SHA-256</dt><dd><code>{{ payload.admission_bindings.input_admission_sha256 }}</code></dd></div>
+              <div><dt>Semantic manifest SHA-256</dt><dd><code>{{ payload.admission_bindings.input_semantic_manifest_sha256 }}</code></dd></div>
+            </dl>
+          {% endif %}
           {% if payload["items"] %}
             <div class="card-grid">
               {% for edge in payload["items"] %}
