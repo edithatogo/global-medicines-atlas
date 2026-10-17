@@ -23,7 +23,7 @@ from global_medicines_atlas.australian_harvesting import (
     HarvestStageResult,
     build_cumulative_harvest_manifest,
     build_harvest_manifest,
-    discover_mbs_schedule_resources,
+    discover_mbs_schedule_resources_detailed,
     fetch_url_bytes_governed,
     stage_harvest_payload,
     validate_resources_against_contract,
@@ -181,6 +181,29 @@ def publish_to_huggingface(
     return published_revision, cumulative_manifest
 
 
+def targeted_pages_complete(
+    page_attempts: list[dict[str, object]], exact_release_pages: list[str]
+) -> bool | None:
+    """Return whether every requested page yielded at least one MBS XML file."""
+    if not exact_release_pages:
+        return None
+    targeted = {
+        str(attempt["page"]): attempt
+        for attempt in page_attempts
+        if attempt["page"] in exact_release_pages
+    }
+    if len(targeted) != len(set(exact_release_pages)):
+        return False
+    for page in set(exact_release_pages):
+        conflicts = targeted[page].get("identity_conflict_count", 0)
+        if conflicts != 0:
+            return False
+        count = targeted[page].get("monthly_schedule_xml_count")
+        if not isinstance(count, int) or isinstance(count, bool) or count <= 0:
+            return False
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Harvest ongoing Australian MBS schedule releases"
@@ -205,6 +228,11 @@ def main() -> int:
         help="Max monthly releases to probe",
     )
     parser.add_argument(
+        "--release-pages",
+        default="",
+        help="Comma-separated exact official page IDs, e.g. Downloads-250101",
+    )
+    parser.add_argument(
         "--receipt-output",
         type=Path,
         default=Path("build/mbs-schedule-harvest-receipt.json"),
@@ -214,16 +242,34 @@ def main() -> int:
     contract_path = Path(
         "quality/qualifications/australian-mbs-harvest-publication-authorization.json"
     )
-    index_html = fetch_url_text(
-        "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads"
-    )
-    resources = discover_mbs_schedule_resources(
+    exact_release_pages = [
+        page.strip() for page in args.release_pages.split(",") if page.strip()
+    ]
+    if args.max_releases == 0 and not exact_release_pages:
+        raise ValueError(
+            "--max-releases 0 requires at least one --release-pages identifier"
+        )
+    index_html = ""
+    if args.max_releases:
+        index_html = fetch_url_text(
+            "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads"
+        )
+    resources, page_attempts = discover_mbs_schedule_resources_detailed(
         index_html,
         subpage_fetcher=fetch_url_text,
         max_releases=args.max_releases,
+        exact_release_pages=exact_release_pages,
     )
     validate_resources_against_contract(contract_path, DATASET, resources)
     print(f"Selected {len(resources)} candidate MBS schedule resources.")
+    for attempt in page_attempts:
+        print(json.dumps(attempt, sort_keys=True))
+    if exact_release_pages and not targeted_pages_complete(
+        page_attempts, exact_release_pages
+    ):
+        raise RuntimeError(
+            "Exact MBS release pages must each resolve to an unambiguous XML resource"
+        )
 
     if args.dry_run:
         return 0
@@ -259,6 +305,10 @@ def main() -> int:
         "workflow_commit": os.environ.get("GITHUB_SHA", "local"),
         "anonymous_digest_verification": "passed",
         "verified_file_count": final_manifest["file_count"],
+        "page_attempts": page_attempts,
+        "targeted_pages_complete": targeted_pages_complete(
+            page_attempts, exact_release_pages
+        ),
         "temporary_source_bytes_removed": False,
     }
     args.receipt_output.parent.mkdir(parents=True, exist_ok=True)

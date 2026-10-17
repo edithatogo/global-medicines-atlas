@@ -2647,3 +2647,37 @@
   only if the exact object or use falls outside its approved scope.
   Keep M-106 blocked; do not treat public-page metadata, item counts, or the
   dashboard percentage as the required distinct-patient denominator.
+
+
+## M-107 targeted historical schedule page harvesting (2026-10-17)
+
+- [~] Add a bounded workflow-dispatch path for exact official MBS Downloads
+  page IDs when historical releases are absent from the newest-release index.
+  Record one metadata-only attempt for every selected page, including a safe
+  exception class on fetch failure; restrict requests to canonical dated page
+  IDs and 24 pages per run. The existing monthly discovery remains the default.
+  Focused harvesting and workflow tests pass (55), as do Ruff, repository
+  context validation, and diff checks. The MBS publication authorization
+  already covers monthly schedule XML on MBS Online and hosted public
+  publication. This implementation has not acquired or published source
+  bytes. After merge, target only `Downloads-250101`, `Downloads-250301`, and
+  `Downloads-251101` with `max_releases=0`; verify the anonymous receipt,
+  cleanup receipt, per-page outcomes, and exact source identities before
+  updating M-107 coverage. M-107 remains blocked on the expected snapshot
+  denominator, missing artifacts, source-specific rights, and other historical
+  PBS/MBS coverage.
+
+## PR #1084 patch coverage and source-identity correction (2026-10-17)
+
+- [~] Address Codecov's exact-head patch-coverage finding on `36f38f1`: add
+  regressions for negative recent-release limits and more than 24 exact pages.
+  Review then identified that distinct URLs with the same archive path must
+  make the targeted page incomplete; only identical URLs are deduplicated.
+  The workflow now fails before staging on an ambiguous collision, with
+  regressions for both collision and exact-duplicate cases. The affected
+  119-test set passes; local coverage executes all 58 changed statements in
+  `australian_harvesting.py` (98% total module coverage), Ruff, BasedPyright,
+  context validation, and diff checks pass. Push the correction, then require
+  Codecov and all protected checks to pass on the new exact head before merge.
+  No source was acquired or published; M-107 remains blocked pending hosted
+  exact-page receipts and the other historical source-family evidence.

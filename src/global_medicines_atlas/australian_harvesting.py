@@ -55,6 +55,7 @@ MAX_XLSX_PAYLOAD_BYTES: Final[int] = 32 * 1024 * 1024
 MAX_XLSX_METADATA_BYTES: Final[int] = 8 * 1024 * 1024
 MAX_XLSX_MEMBERS: Final[int] = 20_000
 MAX_XLSX_UNCOMPRESSED_BYTES: Final[int] = 128 * 1024 * 1024
+MAX_EXACT_MBS_RELEASE_PAGES: Final[int] = 24
 
 DEFAULT_HARVEST_USER_AGENT: Final[str] = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -415,7 +416,141 @@ def discover_mbs_schedule_resources(
     ),
     max_releases: int = 3,
 ) -> list[DiscoveredHarvestResource]:
-    """Discover monthly MBS schedule releases from mbsonline.gov.au."""
+    """Discover the newest monthly MBS schedule releases."""
+    return discover_mbs_schedule_resources_detailed(
+        index_html,
+        subpage_fetcher,
+        base_url=base_url,
+        max_releases=max_releases,
+    )[0]
+
+
+def _mbs_archive_location(page: str, filename: str) -> tuple[str, str] | None:
+    lower_name = filename.lower()
+    if "mbs-xml" in lower_name and lower_name.endswith(".xml"):
+        return "monthly_schedule_xml", f"raw/mbs/releases/{page}/{filename}"
+    if "basic service description" in lower_name:
+        return "basic_service_description", f"raw/mbs/bsd/{page}/{filename}"
+    if "rvg" in lower_name:
+        return "relative_value_guide", f"raw/mbs/rvg/{page}/{filename}"
+    return None
+
+
+def _mbs_resource_from_link(
+    page: str,
+    page_url: str,
+    link: str,
+    seen_archive_paths: dict[str, str],
+) -> tuple[DiscoveredHarvestResource | None, bool]:
+    if any(
+        skip in link.lower()
+        for skip in ["rss", "latestnews", "template", ".css"]
+    ):
+        return None, False
+    full_url = urllib.parse.urljoin(page_url, link)
+    filename = urllib.parse.unquote(full_url.split("/")[-1])
+    location = _mbs_archive_location(page, filename)
+    if location is None:
+        return None, False
+    category, archive_path = location
+    prior_url = seen_archive_paths.get(archive_path)
+    if prior_url is not None:
+        return None, prior_url != full_url
+    seen_archive_paths[archive_path] = full_url
+    return (
+        DiscoveredHarvestResource(
+            source_id="au-mbs",
+            category=category,
+            url=full_url,
+            filename=filename,
+            archive_path=archive_path,
+            period_label=page,
+        ),
+        False,
+    )
+
+
+def _discover_mbs_schedule_page(
+    page: str,
+    page_url: str,
+    subpage_fetcher: Callable[[str], str],
+    seen_archive_paths: dict[str, str],
+) -> tuple[list[DiscoveredHarvestResource], dict[str, object]]:
+    try:
+        page_html = subpage_fetcher(page_url)
+    except (OSError, TimeoutError, ValueError) as exc:
+        return [], {
+            "page": page,
+            "url": page_url,
+            "outcome": "fetch_error",
+            "error_class": type(exc).__name__,
+            "resource_count": 0,
+            "identity_conflict_count": 0,
+            "monthly_schedule_xml_count": 0,
+        }
+    files = re.findall(
+        r"href=[\"\']([^\"\']+\.(?:xml|csv|txt|zip))[\"\']",
+        page_html,
+        re.IGNORECASE,
+    )
+    discovered: list[DiscoveredHarvestResource] = []
+    identity_conflict_count = 0
+    for link in sorted(set(files)):
+        resource, has_identity_conflict = _mbs_resource_from_link(
+            page, page_url, link, seen_archive_paths
+        )
+        identity_conflict_count += has_identity_conflict
+        if resource is not None:
+            discovered.append(resource)
+    attempt: dict[str, object] = {
+        "page": page,
+        "url": page_url,
+        "outcome": (
+            "archive_path_collision"
+            if identity_conflict_count
+            else "resources_found"
+            if discovered
+            else "no_supported_resources"
+        ),
+        "resource_count": len(discovered),
+        "identity_conflict_count": identity_conflict_count,
+        "monthly_schedule_xml_count": sum(
+            resource.category == "monthly_schedule_xml"
+            for resource in discovered
+        ),
+    }
+    return discovered, attempt
+
+
+def discover_mbs_schedule_resources_detailed(
+    index_html: str,
+    subpage_fetcher: Callable[[str], str],
+    base_url: str = (
+        "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads"
+    ),
+    max_releases: int = 3,
+    exact_release_pages: list[str] | None = None,
+) -> tuple[list[DiscoveredHarvestResource], list[dict[str, object]]]:
+    """Discover recent and explicitly named release pages with page outcomes.
+
+    Exact page names are useful for historical releases absent from the current
+    index. They are restricted to official ``Downloads-<date>`` identifiers;
+    the caller supplies a bounded list and receives metadata-only outcomes for
+    every requested page, including failures.
+    """
+    if max_releases < 0:
+        raise ValueError("max_releases must be non-negative")
+    exact_pages = exact_release_pages or []
+    if len(exact_pages) > MAX_EXACT_MBS_RELEASE_PAGES:
+        raise ValueError(
+            f"At most {MAX_EXACT_MBS_RELEASE_PAGES} exact MBS release pages may be requested"
+        )
+    for page in exact_pages:
+        if not re.fullmatch(r"Downloads-(?:20\d{6}|\d{6})", page):
+            raise ValueError(
+                f"Invalid exact MBS release page identifier: {page!r}"
+            )
+
     release_pages = re.findall(
         r"href=[\"\']([^\"\']*Downloads-(?:20\d{6}|\d{6})[^\"]*)[\"\']",
         index_html,
@@ -434,59 +569,19 @@ def discover_mbs_schedule_resources(
     unique_releases = sorted(
         set(release_pages), key=_mbs_sort_key, reverse=True
     )[:max_releases]
+    unique_releases = list(dict.fromkeys([*unique_releases, *exact_pages]))
     discovered: list[DiscoveredHarvestResource] = []
-    seen: set[str] = set()
+    page_attempts: list[dict[str, object]] = []
+    seen_archive_paths: dict[str, str] = {}
 
-    for rp in unique_releases:
-        rp_url = urllib.parse.urljoin(base_url, rp)
-        try:
-            rp_html = subpage_fetcher(rp_url)
-        except OSError, TimeoutError, ValueError:
-            continue
-
-        files = re.findall(
-            r"href=[\"\']([^\"\']+\.(?:xml|csv|txt|zip))[\"\']",
-            rp_html,
-            re.IGNORECASE,
+    for page in unique_releases:
+        page_url = urllib.parse.urljoin(base_url, page)
+        page_resources, attempt = _discover_mbs_schedule_page(
+            page, page_url, subpage_fetcher, seen_archive_paths
         )
-        for f in sorted(set(files)):
-            # Skip RSS feeds, templates, and styles
-            if any(
-                skip in f.lower()
-                for skip in ["rss", "latestnews", "template", ".css"]
-            ):
-                continue
-            full_url = urllib.parse.urljoin(rp_url, f)
-            filename = urllib.parse.unquote(full_url.split("/")[-1])
-            if filename in seen:
-                continue
-            seen.add(filename)
-
-            if "mbs-xml" in filename.lower() and filename.lower().endswith(
-                ".xml"
-            ):
-                cat = "monthly_schedule_xml"
-                arch_path = f"raw/mbs/releases/{rp}/{filename}"
-            elif "basic service description" in filename.lower():
-                cat = "basic_service_description"
-                arch_path = f"raw/mbs/bsd/{rp}/{filename}"
-            elif "rvg" in filename.lower():
-                cat = "relative_value_guide"
-                arch_path = f"raw/mbs/rvg/{rp}/{filename}"
-            else:
-                continue
-
-            discovered.append(
-                DiscoveredHarvestResource(
-                    source_id="au-mbs",
-                    category=cat,
-                    url=full_url,
-                    filename=filename,
-                    archive_path=arch_path,
-                    period_label=rp,
-                )
-            )
-    return discovered
+        discovered.extend(page_resources)
+        page_attempts.append(attempt)
+    return discovered, page_attempts
 
 
 def generate_medicare_candidate_slugs(now: datetime) -> list[str]:
