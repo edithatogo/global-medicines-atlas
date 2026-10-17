@@ -18,7 +18,7 @@ from .matching_features import FeatureEvidence
 from .models import FrozenModel
 from .review_queue import ReviewQueueEntry
 
-MATCHING_OUTPUT_SCHEMA_VERSION = "matching-output-v1"
+MATCHING_OUTPUT_SCHEMA_VERSION = "matching-output-v2"
 
 
 class MatchingOutputManifest(FrozenModel):
@@ -53,7 +53,9 @@ CANDIDATE_SCHEMA = pa.schema([
     ("source_jurisdiction", pa.string()),
     ("target_jurisdiction", pa.string()),
     ("mapping_level", pa.string()),
+    ("raw_score", pa.float64()),
     ("confidence", pa.float64()),
+    ("confidence_state", pa.string()),
     ("abstained", pa.bool_()),
     ("review_state", pa.string()),
     ("reason_codes", pa.list_(pa.string())),
@@ -108,7 +110,9 @@ def _candidate_row(entry: ReviewQueueEntry) -> dict[str, object]:
         "source_jurisdiction": candidate.source_jurisdiction,
         "target_jurisdiction": candidate.target_jurisdiction,
         "mapping_level": candidate.mapping_level.value,
+        "raw_score": decision.raw_score,
         "confidence": decision.confidence,
+        "confidence_state": decision.confidence_state,
         "abstained": decision.abstained,
         "review_state": decision.review_state.value,
         "reason_codes": [item.value for item in decision.reason_codes],
