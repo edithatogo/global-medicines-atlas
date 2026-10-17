@@ -787,3 +787,12 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   absent v4 admission and consumer canaries. No source bytes were downloaded
   and no source values were read. See the
   `m112_july_2026_mbs_digest_gate_crosswalk` evidence record.
+
+## Australian qualification rebase validation (2026-10-17)
+
+- [x] Rebase the consolidated M-109/M-111/M-112 evidence branch onto current
+  `main` after PR #1092 merged. Preserve every distinct append-only record
+  from both histories, retain the exact PR #1093 merge receipt, and verify
+  the focused M-109/M-111/M-112 tests, broader M-112 tests, routine profile,
+  typing, and context checks. No acceptance or rights state changed; see
+  `australian_qualification_rebase_preservation_validation`.

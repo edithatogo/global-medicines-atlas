@@ -864,9 +864,10 @@
   `uv 0.11.29`: 6,472 passed, 3 skipped, one Hypothesis timing failure,
   96.89% coverage. The failing Unicode round-trip case passed alone on retry
   (1 passed); preserve the full-profile timing failure as recorded. All 40
-  exact-head hosted checks passed, including Linux-authoritative mutation,
-  coverage, consumer, security, and context lanes. PR #1092 remains open until
-  this evidence is reconciled on its final PR head.
+  hosted checks passed on final PR head `a7b2d944`, including
+  Linux-authoritative mutation, coverage, consumer, security, and context
+  lanes. PR #1092 merged as `49c5cc118a06e762d3be08b48fa597454ace59eb`;
+  the merge tree matches the exact checked head.
 
 ### Gold review CLI authority boundary (2026-10-11)
 
