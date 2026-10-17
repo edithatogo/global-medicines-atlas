@@ -3102,3 +3102,17 @@
 ### Comparator transport-failure review correction (2026-10-17)
 
 - [x] Correct review finding [discussion_r4302792284](https://github.com/edithatogo/global-medicines-atlas/pull/1114#discussion_r4302792284): DNS `OSError` and `DestinationPolicyError` now produce a value-free `incomplete` artifact with a safe failure class and a nonzero exit. Add CLI regressions for HTTP, DNS, and rejected-redirect failures. Focused tests (25), Ruff, `ty`, BasedPyright, routine Test-Goblin, and `git diff --check` pass. No retry, endpoint change, or destination-policy weakening was introduced. Exact-head hosted revalidation remains pending.
+
+## M-107 primary Downloads page inventory (2026-10-18)
+
+- [x] Compare the live official Downloads landing-page resources to the pinned
+  public archive manifest and the exact source-specific authorization. Record
+  the two item-lookup files labeled `20261101`, re-use item map, and historical
+  information PDF as metadata-only source candidates. None has a matching B1
+  source-URL receipt or archive path at revision `da83cad`; the existing
+  authorization categories do not cover these files. No source payload was
+  requested or read, and no rights or publication decision was inferred.
+- [~] Keep any acquisition of these four candidates blocked pending an exact
+  source-specific rights and publication decision. Continue independent MBS,
+  PBS, and utilisation denominator work; these links do not establish period
+  completeness or M-107 acceptance.
