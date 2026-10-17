@@ -76,3 +76,17 @@ def test_pbs_schedule_index_observation_keeps_rights_and_acceptance_open() -> (
     assert authorization["m107_accepted"] is False
     assert report["source_payloads_read"] is False
     assert report["source_rights_concluded"] is False
+
+    documentation = report["official_documentation_review"]
+    schema = documentation["xml_schema_history"]
+    assert schema["reported_milestones"][0] == {
+        "version": "1.1.1",
+        "date": "2006-12",
+    }
+    assert (
+        "not evidence of complete schedule release identities"
+        in schema["boundary"]
+    )
+    api = documentation["public_api_information"]
+    assert "most recent 12 months" in api["documented_schedule_window"]
+    assert "does not establish" in api["boundary"]

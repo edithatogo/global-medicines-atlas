@@ -7,7 +7,7 @@
   ],
   "recorded_at": "2026-10-17T17:13:17Z",
   "status": "official_index_metadata_observed_rights_and_corpus_unqualified",
-  "scope": "Read the official PBS schedule archive landing page and HTML metadata for all year pages it links (2003-2026). Followed no listed XML, API CSV, ZIP, or PDF payload links and read no source payload bytes.",
+  "scope": "Read the official PBS schedule archive landing page and linked year-page HTML metadata (2003-2026); followed no schedule XML, API CSV, ZIP, or PDF data links. A follow-on metadata review consulted official schema-history documentation and the API information page only. No schedule source payload bytes were requested or read.",
   "archive_index": {
     "url": "https://www.pbs.gov.au/publication/schedule/archive",
     "final_url": "https://www.pbs.gov.au/publication/schedule/archive",
@@ -3254,6 +3254,50 @@
   "digest": {
     "algorithm": "sha256",
     "canonicalization": "UTF-8 JSON with sorted keys, compact separators, ensure_ascii=false; digest field excluded",
-    "value": "d471add6652ed14be2b575ac7361a55df998a6c5669efc77fd39918f535e06cf"
+    "value": "4c37492ff51049ebb2740cdac9425007605d2a733caba7270ba374bb87520343"
+  },
+  "official_documentation_review": {
+    "xml_schema_history": {
+      "url": "https://data.pbs.gov.au/download/88817",
+      "document_title": "PBS XML Schema, Version 2.1",
+      "document_date": "2008-04-28",
+      "reported_milestones": [
+        {
+          "version": "1.1.1",
+          "date": "2006-12"
+        },
+        {
+          "version": "1.3",
+          "date": "2007-05"
+        },
+        {
+          "version": "1.4",
+          "date": "2007-07"
+        },
+        {
+          "version": "1.5",
+          "date": "2007-09"
+        },
+        {
+          "version": "2.0 draft",
+          "date": "2007-11"
+        },
+        {
+          "version": "1.6",
+          "date": "2008-07"
+        },
+        {
+          "version": "2.1",
+          "date": "2008-04-28"
+        }
+      ],
+      "boundary": "Documented schema milestones only; not evidence of complete schedule release identities, public payload availability, rights, or assignment of a schema to an archive link."
+    },
+    "public_api_information": {
+      "url": "https://data.pbs.gov.au/api/pbs-api.html",
+      "page_updated": "2025-12-11",
+      "documented_schedule_window": "Every effective PBS schedule for the most recent 12 months is in the API.",
+      "boundary": "The current API documentation does not establish a complete long-range historical schedule corpus or GMA retention and redistribution rights."
+    }
   }
 }

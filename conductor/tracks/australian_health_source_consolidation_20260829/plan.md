@@ -1044,3 +1044,15 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   eras not represented by these pages; a missing link is not evidence of source
   absence. This inventory does not establish the expected historical period
   denominator or M-107 acceptance.
+
+
+## M-107 PBS schema-history metadata follow-up (2026-10-18)
+
+- [x] Record the official PBS XML Schema v2.1 document's reported schema
+  milestones beginning in December 2006 and the API information page's
+  documented rolling 12-month schedule window. These metadata narrow the
+  historical source-era gap but do not identify all required snapshots or
+  establish source rights; see the value-free index qualification.
+- [~] Continue reconciling exact historical schedule identities and receipts.
+  M-107 remains blocked; do not infer absent coverage from missing archive-page
+  links or the API's documented current window.

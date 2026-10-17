@@ -3168,4 +3168,13 @@
   blocked pending source-specific clarification and the maintainer rights
   decision. Reconcile the 2006–2014 source-era identities outside this
   schedule archive before declaring the PBS denominator complete; do not infer
-  source absence from a missing archive-page link. M-109 remains blocked.
+  source absence from a missing archive-page link.
+- [x] Reconcile official schema and API documentation metadata. The PBS XML
+  Schema v2.1 document records schema milestones from December 2006, before
+  the archive index's first XML link in April 2007; the current API information
+  page documents a rolling most-recent-12-month schedule window. These facts
+  narrow the source-era questions but do not identify every schedule release,
+  assign schemas to every file, or establish reuse rights. Exact URLs and
+  limitations are in the metadata qualification.
+- [~] M-109 remains blocked on the complete approved source-era denominator,
+  field semantics, lineage and source-specific rights/admission evidence.
