@@ -336,6 +336,18 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   `conductor/decisions/0006-external-gate-decision-register.md` (D-006-07).
   Keep M-105 blocked without waiving or amending the pre-archive criterion;
   continue M-106–M-112 independently.
+- [x] Recheck pre-archive GitHub evidence on 2026-10-18. PRs #349, #364, #476,
+  and #477 establish only scoped parser/rehearsal/history-preservation evidence;
+  #476 and #477 explicitly leave participant/async parity and full donor
+  behavior coverage unclaimed. No pre-archive record for the complete 54-blob,
+  ten-path denominator was found in the searched PR/issue evidence. This does
+  not claim that the search covered unpreserved external records and does not
+  waive the criterion. See the updated M-105 gap audit.
+- [x] Query the archived donor repositories' own PR records on 2026-10-18.
+  Scraper PR #4 records bounded synthetic request/output tests and limited
+  parser/CI changes; graph PR #5 is a successor notice with explicit
+  compatibility limits. Neither supplies complete pre-archive parity for the
+  full denominator. See the updated M-105 gap audit; D-006-07 remains in force.
 
 ## M-107 source-family gap preservation follow-up (2026-09-28)
 

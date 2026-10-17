@@ -80,3 +80,53 @@ The archival chronology cannot be retroactively described as pre-archive M-105
 parity. The separate maintainer approvals and observed archives are recorded in
 the [scraper](../../quality/qualifications/scraper-archival-20260906.json) and
 [graph](../../quality/qualifications/graph-archival-20260906.json) receipts.
+
+## Bounded pre-archive record recheck, 2026-10-18
+
+A second review queried merged GMA pull requests in the archive window and the
+available #339/#340 issue comments, then inspected the most relevant earlier
+consolidation and archival records. It found partial, source-specific evidence,
+not a complete proof of parity for all 54 pinned blobs and ten later changed
+paths before the first archive:
+
+- [PR #349](https://github.com/edithatogo/global-medicines-atlas/pull/349)
+  inventories both donor repositories and qualifies the exact 5,989-record MBS
+  XML parser slice. Its scope does not establish parity for every scraper and
+  graph artifact.
+- [PR #364](https://github.com/edithatogo/global-medicines-atlas/pull/364)
+  adds a synthetic MockTransport rehearsal. The historical scheduled URLs
+  returned six 404s; this is not live participant coverage or full async API
+  parity.
+- [PR #476](https://github.com/edithatogo/global-medicines-atlas/pull/476),
+  merged 2026-09-06T01:31:13Z before the scraper archive at 02:12:07Z, prepares
+  preservation and archival readiness. It explicitly does not claim historical
+  participant counts or literal async API parity.
+- [PR #477](https://github.com/edithatogo/global-medicines-atlas/pull/477),
+  merged 2026-09-06T02:08:30Z before the scraper archive, binds authorization
+  for the exact history-preservation append. It proves the publication and
+  restoration transaction, not behavioral parity for the complete donor
+  inventory.
+
+The searched pre-archive records therefore corroborate specific rows and
+preservation steps but do not show that the full M-105 denominator passed before
+either donor was archived. The 2026-09-27 disposition matrix and subsequent
+reconciliation remain post-archive evidence and cannot close that chronology
+criterion. No waiver or criterion change is recorded; D-006-07 still directs
+that M-105 remain blocked while independent M-106–M-112 work continues.
+
+## Donor-hosted PR record recheck, 2026-10-18
+
+The archived donor repositories' available pull-request records were also
+queried directly. The scraper's [PR #4](https://github.com/edithatogo/aus-health-data-scraper/pull/4),
+merged 2026-08-30T06:00:29Z, adds a successor notice, repairs CI commands,
+narrows parser exception handling, and adds synthetic checks for bounded async
+requests and output bytes. These are useful pre-archive changes and evidence for
+specific behaviors, but they do not disposition or qualify the full scraper
+and graph donor denominator. The graph's [PR #5](https://github.com/edithatogo/aus_mbs_pbs_graph/pull/5),
+merged 2026-08-30T05:56:15Z, is a successor notice with compatibility
+boundaries; it explicitly does not claim complete current graph functionality.
+
+Neither donor PR establishes full parity across all 54 baseline blobs and ten
+later changed paths before either 2026-09-06 archive. The direct donor PR
+records therefore add narrow contemporaneous evidence, not a waiver or a
+criterion change. The M-105 chronology gate remains blocked under D-006-07.
