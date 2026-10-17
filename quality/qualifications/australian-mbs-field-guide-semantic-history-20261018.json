@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "schema_id": "global-medicines-atlas.australian-mbs-field-guide-semantic-history",
+  "checked_at": "2026-10-18",
+  "status": "documented_wording_delta_and_source_conflict_observed_history_gap_open",
+  "official_current_page": {
+    "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help",
+    "page_last_updated": "2022-03-04",
+    "page_states_default_xml_elements_are_null": true,
+    "current_pdf_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/DD1EE844DE6A60D0CA257CD0000A4485/$File/202202-XML-Field-Descriptions.pdf",
+    "current_pdf_sha256": "0dda6662d14e950906512a94e1d30ed014a0092f177e249697c9a9ca565692bc"
+  },
+  "historical_pdf": {
+    "edition": "November 2013",
+    "url": "https://mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/4106D64C0906845FCA257CCF000B1173/$File/November%202013%20XML%20data%20specifications.pdf",
+    "sha256": "b12368b56a952f3b56dc0ef50eaaa675e21a77f2bb69ba3adfa275b5fb3ff650"
+  },
+  "field_comparisons": [
+    {
+      "field": "ItemChange",
+      "identity_and_shape": "Both PDFs define one mandatory alphanumeric character.",
+      "november_2013_description": "Y means the item number changed; N means the item number has not changed.",
+      "february_2022_description": "Y means there has been a change to the item; N means no changes to the item.",
+      "finding": "The official documentary wording broadens between the two editions; the precise operational meaning and effective release boundary are not established by these documents alone."
+    },
+    {
+      "field": "EMSNCap",
+      "november_2013_pdf": "N means no current EMSN cap; P means a current normal-fee percentage cap; F means a current fixed cap.",
+      "february_2022_pdf": "Y means a current EMSN cap; P means a current normal-fee percentage cap; F means a current fixed cap. The same PDF also says that when EMSNCap=N all other EMSN tags are NULL.",
+      "current_official_help_page": "N means no current EMSN cap; P means a current normal-fee percentage cap; F means a current fixed cap.",
+      "finding": "The linked February 2022 PDF conflicts with both the current official help-page table and its own conditional rule. No code meaning or source-era mapping is selected."
+    }
+  ],
+  "unresolved_history": {
+    "from": "2022-03-04",
+    "through": "2026-05-28",
+    "required_evidence": "A versioned source-owner clarification or release-linked schema/change record that establishes field meaning and effective dates for each required source era.",
+    "release_semantics_qualified": false
+  },
+  "qualification_boundaries": {
+    "source_release_mapping_selected": false,
+    "semantic_promotion": false,
+    "silver_generated": false,
+    "rights_decision_changed": false,
+    "source_payload_bytes_retained": false,
+    "source_values_retained_or_emitted": false,
+    "m109_accepted": false
+  },
+  "provenance": {
+    "official_page_reviewed": true,
+    "historical_pdf_sha256_verified_after_download": true,
+    "current_pdf_sha256_verified_after_download": true,
+    "primary_source_line_references": {
+      "official_page_last_updated": "page text: Page last updated 04 March 2022",
+      "historical_pdf_item_change": "page 2: ItemChange definition",
+      "current_pdf_item_change": "page 2: ItemChange definition",
+      "historical_pdf_emsncap": "page 2: EMSNCap value legend and conditional rule",
+      "current_pdf_emsncap": "page 2: EMSNCap value legend and conditional rule",
+      "current_help_page_emsncap": "HTML table: EMSNCap value legend and conditional rule"
+    }
+  }
+}

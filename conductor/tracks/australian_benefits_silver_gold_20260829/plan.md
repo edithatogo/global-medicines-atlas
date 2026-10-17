@@ -3133,7 +3133,6 @@
 ### Comparator transport-failure review correction (2026-10-17)
 
 - [x] Correct review finding [discussion_r4302792284](https://github.com/edithatogo/global-medicines-atlas/pull/1114#discussion_r4302792284): DNS `OSError` and `DestinationPolicyError` now produce a value-free `incomplete` artifact with a safe failure class and a nonzero exit. Add CLI regressions for HTTP, DNS, and rejected-redirect failures. Focused tests (25), Ruff, `ty`, BasedPyright, routine Test-Goblin, and `git diff --check` pass. No retry, endpoint change, or destination-policy weakening was introduced. Exact-head hosted revalidation remains pending.
-
 ## M-107 primary Downloads page inventory (2026-10-18)
 
 - [x] Compare the live official Downloads landing-page resources to the pinned
@@ -3147,3 +3146,9 @@
   source-specific rights and publication decision. Continue independent MBS,
   PBS, and utilisation denominator work; these links do not establish period
   completeness or M-107 acceptance.
+
+### Official MBS field-guide semantic-history comparison (2026-10-18)
+
+- [x] Compare the official November 2013 and February 2022 XML field guides and bind their exact public URLs and downloaded PDF SHA-256 digests in `quality/qualifications/australian-mbs-field-guide-semantic-history-20261018.json`. `ItemChange` retains the same one-character mandatory shape while its wording broadens from item-number change to change to the item. The linked February 2022 PDF conflicts with the current help-page `EMSNCap` legend and its own conditional rule. These are documentary observations only; no release meanings are assigned.
+- [x] Re-run the aggregate July/August source comparator on exact main `4b8ea386b20b1f9b034e5d8cf80ca3e05430bb4c`; hosted run `39048554153` succeeded and the aggregate report SHA-256 is `09b1263b8724b4cce187bbaef9a2fec033c579c2aeaa94b503faecc7b672c210`.
+- [ ] Obtain a versioned source-owner clarification or release-linked schema/change record establishing field meanings and effective dates for each required source era. The 2022-03-04 to 2026-05-28 gap and source-era denominator remain open; M-109 remains blocked.

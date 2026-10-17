@@ -293,6 +293,34 @@ def test_exact_main_predecessor_comparison_receipt_stays_aggregate_only() -> (
     assert report["m109_accepted"] is False
 
 
+def test_field_guide_semantic_history_preserves_the_unresolved_boundary() -> (
+    None
+):
+    report = _json(
+        "quality/qualifications/"
+        "australian-mbs-field-guide-semantic-history-20261018.json"
+    )
+
+    assert report["status"] == (
+        "documented_wording_delta_and_source_conflict_observed_history_gap_open"
+    )
+    item_change, emsn_cap = report["field_comparisons"]
+    assert item_change["field"] == "ItemChange"
+    assert "item number" in item_change["november_2013_description"]
+    assert "change to the item" in item_change["february_2022_description"]
+    assert emsn_cap["field"] == "EMSNCap"
+    assert "N means no current" in emsn_cap["current_official_help_page"]
+    assert "Y means a current" in emsn_cap["february_2022_pdf"]
+    assert "conflicts" in emsn_cap["finding"]
+    assert report["unresolved_history"]["release_semantics_qualified"] is False
+    assert (
+        report["qualification_boundaries"]["source_release_mapping_selected"]
+        is False
+    )
+    assert report["qualification_boundaries"]["semantic_promotion"] is False
+    assert report["qualification_boundaries"]["m109_accepted"] is False
+
+
 def test_m109_inventory_keeps_mbs_authorization_and_pbs_rights_separate() -> (
     None
 ):
