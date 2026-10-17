@@ -1,0 +1,77 @@
+{
+  "schema_id": "global-medicines-atlas.australian-donor-m105-chronology-waiver",
+  "schema_version": 1,
+  "recorded_at": "2026-10-17T23:33:00Z",
+  "requirement": "M-105",
+  "decision_id": "D-006-10",
+  "decision": "approved_narrow_chronology_waiver",
+  "maintainer_approval": {
+    "accountable_role": "sole maintainer",
+    "approval_text": "Grant narrow chronology waiver",
+    "approval_source": "direct user selection in current task"
+  },
+  "waiver_scope": {
+    "only": "Waive the requirement that complete parity evidence predate either donor archive.",
+    "criterion_text_changed": false,
+    "pre_archive_parity_proof_claimed": false
+  },
+  "chronology": {
+    "pre_archive_complete_parity_receipt_found": false,
+    "prior_decision": "D-006-07; superseded only for the chronology condition by D-006-10",
+    "recheck_evidence": {
+      "path": "conductor/tracks/australian_health_source_consolidation_20260829/evidence.jsonl",
+      "line": 154,
+      "sha256": "c24bf039452c91a6e99c6fb3a53655cc1171c13a5519d68da00b28ed47bb0193",
+      "kind": "m105_prearchive_record_chronology_recheck",
+      "status": "bounded_prearchive_record_search_confirms_no_full_parity_receipt"
+    },
+    "donor_archives": [
+      {
+        "path": "quality/qualifications/scraper-archival-20260906.json",
+        "sha256": "bccfe469af837eaea94925dab263690c459fc0cb39fc6dcd7464ded5c213d1fc",
+        "repository": "edithatogo/aus-health-data-scraper",
+        "archived_at": "2026-09-06T02:12:07Z",
+        "head": "009e80544588a956c8922aaab052ee08947e2b30"
+      },
+      {
+        "path": "quality/qualifications/graph-archival-20260906.json",
+        "sha256": "3b2fe80d5c4920b00751ef6a0b4031381de59e7e5b7ba579f90214ec7cf2585c",
+        "repository": "edithatogo/aus_mbs_pbs_graph",
+        "archived_at": "2026-09-06T03:02:52Z",
+        "head": "3993e5e331eb2d3d9e9d354d80e52c684ad26a1e"
+      }
+    ]
+  },
+  "reassessment": {
+    "qualification_state": "qualified_with_narrow_chronology_waiver",
+    "disposition_matrix": {
+      "path": "quality/qualifications/australian-donor-m105-dispositions.json",
+      "sha256": "a4e5f18f3df3f7192b239876b27cf0f72d544d669f33612e633ae1a5808df801",
+      "baseline_rows": 54,
+      "baseline_rows_digest": "ef0011573b251c9d40822b819c5a9a2d2b0fc794ae85d2dd5301dc9ae77dd305",
+      "later_changed_path_rows": 10,
+      "later_rows_digest": "b1e770d138434f966c168cfb25478edbd69c2c5ff1aa626cb2cc0249165d4f99",
+      "pending_behavioral_parity_rows": 0,
+      "final_dispositions_present": true
+    },
+    "archive_history": "both exact donor heads, branches, licenses and public history objects are verified by the bound archive qualifications",
+    "reassessment_scope": "Verify current post-archive parity/disposition evidence under the chronology waiver; do not treat waiver itself as evidence."
+  },
+  "not_waived": [
+    "exact donor artifact denominator and identity",
+    "explicit donor dispositions",
+    "required behavioral or byte/history evidence for each disposition",
+    "donor commits, licences, and preserved history",
+    "source rights and future-source authorization",
+    "M-106 through M-113",
+    "Australian federation acceptance",
+    "Stable v1 release approval"
+  ],
+  "boundaries": {
+    "source_rights_changed": false,
+    "source_payloads_read": false,
+    "public_release_approved": false,
+    "donor_archives_changed": false,
+    "stable_release_approved": false
+  }
+}

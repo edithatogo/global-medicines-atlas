@@ -148,6 +148,30 @@ publication remain excluded.
 
 See [the dated decision receipt](../../quality/qualifications/sweden-socialstyrelsen-acquisition-decision-20260929.json).
 
+## D-006-10 — M-105 narrow chronology waiver
+
+**Status:** approved by the sole maintainer (2026-10-18) after the bounded
+pre-archive record recheck found no complete parity receipt before either donor
+archive.
+
+Decision: waive only the timing requirement that complete parity evidence must
+predate donor archival. The existing post-archive donor inventory and parity
+evidence may be used to reassess M-105. Do not describe that evidence as
+pre-archive proof. This waiver does not waive the exact donor denominator,
+artifact dispositions, required behavioral or byte/history evidence, donor
+commit/licence preservation, or any M-106–M-113 source, rights, admission, or
+federation gate. Stable v1 release approval remains separate.
+
+- **Option A — Recommended and selected:** grant only the chronology waiver,
+  then independently verify the exact current M-105 evidence. This preserves
+  the historical record and does not claim that pre-archive parity existed.
+- **Option B:** keep M-105 blocked without a waiver. Superseded only for the
+  chronology condition by this explicit maintainer decision.
+- **Option C:** waive all parity, inventory, licence, or source requirements or
+  change the written criterion. Not selected.
+
+See the [digest-bound chronology-waiver qualification](../../quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json).
+
 ## Autonomous continuation
 
 While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, redistribute restricted data, sign or promote a public stable release, or claim production qualification without the relevant decision and durable evidence. OSF is deprecated and must not be treated as an open submission gate.

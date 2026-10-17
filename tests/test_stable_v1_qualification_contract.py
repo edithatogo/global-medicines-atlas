@@ -252,7 +252,6 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         if item["state"] != "verified"
     }
     assert blocked_requirements == {
-        "M-105",
         "M-106",
         "M-107",
         "M-108",
@@ -275,6 +274,49 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
     invalid["unresolved_gate_ids"] = []
     with pytest.raises(ValidationError):
         _validator(QUALIFICATION_SCHEMA).validate(invalid)
+
+
+def test_m105_waiver_clears_only_the_chronology_blocker(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    raw = _load(QUALIFICATION)
+    reconciled = build_contract(raw)
+    requirements = {
+        row["requirement_id"]: row for row in reconciled["requirements"]
+    }
+    assert requirements["M-105"]["state"] == "verified"
+    assert requirements["M-105"]["blocker_ids"] == []
+    assert (
+        "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
+        in requirements["M-105"]["evidence"]
+    )
+    assert all(
+        requirements[f"M-{number}"]["state"] == "blocked"
+        for number in range(106, 113)
+    )
+    gates = {row["gate_id"]: row for row in reconciled["release_gates"]}
+    assert gates["stable-v1-australian-health-federation"]["state"] == "blocked"
+
+    invalid_waiver = _load(
+        ROOT
+        / "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
+    )
+    invalid_waiver["waiver_scope"]["criterion_text_changed"] = True
+    path = tmp_path / "invalid-m105-waiver.json"
+    path.write_text(json.dumps(invalid_waiver), encoding="utf-8")
+    with monkeypatch.context() as patch:
+        patch.setattr(reconciliation, "M105_WAIVER", str(path))
+        invalid = build_contract(raw)
+    invalid_m105 = next(
+        row
+        for row in invalid["requirements"]
+        if row["requirement_id"] == "M-105"
+    )
+    assert invalid_m105["state"] == "blocked"
+    assert (
+        "stable-v1-australian-health-federation" in invalid_m105["blocker_ids"]
+    )
 
 
 def test_donor_archival_acceptance_rejects_missing_restore_or_approval(

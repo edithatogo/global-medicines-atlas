@@ -1,9 +1,20 @@
-# Australian donor parity gap, 2026-09-27
+# Australian donor parity review, updated 2026-10-18
 
-M-105 remains blocked on its pre-archive parity requirement. The pinned
-inventory covers 54 tracked blobs (16 graph, 38 scraper), including every
-Python function and both workflows. The later
-delta review covers two changed graph paths and eight changed scraper paths.
+On 2026-10-18, the sole maintainer approved a narrow chronology waiver under
+[D-006-10](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-10--m-105-narrow-chronology-waiver).
+M-105 is now qualified under that waiver: the complete post-archive evidence
+may be used for reassessment, but no pre-archive complete-parity proof is
+claimed. The waiver changes no other M-105 evidence requirement and leaves
+M-106–M-113, source rights, and Stable v1 release approval separate.
+
+The pinned inventory covers 54 tracked blobs (16 graph, 38 scraper), including
+every Python function and both workflows. The later delta review covers two
+changed graph paths and eight changed scraper paths. The [M-105 disposition
+matrix](../../quality/qualifications/australian-donor-m105-dispositions.json)
+binds all 64 rows to final dispositions; no row remains pending behavioral
+parity. The [waiver qualification](../../quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json)
+binds the exact matrix, archived heads, and public history receipts.
+
 The two donor heads and complete histories were subsequently preserved and
 anonymously restored at the exact public revision recorded by the archival
 receipts. Those receipts close history preservation and the separately approved
@@ -14,9 +25,10 @@ uses broad dispositions such as `adapt_or_replace_with_tests` and
 `preserve_provenance`. The new [M-105 disposition matrix](../../quality/qualifications/australian-donor-m105-dispositions.json)
 maps all 54 baseline blobs and ten later changed paths to M-105's final
 six-value vocabulary, preserving exact Git identities and baseline payload
-digests. Every matrix row now has a final disposition and evidence, but this
-post-archive reconciliation cannot satisfy M-105's requirement that parity
-precede donor archival. The donor monthly workflow is retained as exact legacy
+digests. Every matrix row now has a final disposition and evidence. Under the
+approved chronology waiver, this post-archive dossier is used for M-105
+reassessment without changing the historical sequence or asserting that the
+evidence preceded archival. The donor monthly workflow is retained as exact legacy
 history: its scheduled HTML scrape produced six 404s and no Git data commit.
 GMA's separate scheduled workflow acquired and anonymously verified only the
 approved August 2026 XML release on 2 September. Its verified
@@ -72,9 +84,10 @@ and this does not claim all historical or future PBS releases.
 The artifact denominator is reconciled, with exact history and the applicable
 public payload receipts linked. On 2026-09-29 the maintainer recorded the
 chronology disposition in [D-006-07](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-07--m-105-donor-chronology-exception):
-keep M-105 blocked and continue M-106–M-112 independently. This acknowledges
-the historical exception; it is not a waiver or criterion change. Later proof
-cannot make earlier parity precede the archives.
+keep M-105 blocked and continue M-106–M-112 independently. That was the
+operative disposition at the time; D-006-10 later supersedes it only for the
+chronology condition. The archival chronology remains historical and later
+proof cannot make parity precede the archives.
 
 The archival chronology cannot be retroactively described as pre-archive M-105
 parity. The separate maintainer approvals and observed archives are recorded in
@@ -109,10 +122,9 @@ paths before the first archive:
 
 The searched pre-archive records therefore corroborate specific rows and
 preservation steps but do not show that the full M-105 denominator passed before
-either donor was archived. The 2026-09-27 disposition matrix and subsequent
-reconciliation remain post-archive evidence and cannot close that chronology
-criterion. No waiver or criterion change is recorded; D-006-07 still directs
-that M-105 remain blocked while independent M-106–M-112 work continues.
+either donor was archived. This remains the historical chronology finding.
+D-006-10 subsequently waived only the sequence requirement, allowing the
+post-archive evidence to be assessed without relabeling it as pre-archive proof.
 
 ## Donor-hosted PR record recheck, 2026-10-18
 
@@ -128,8 +140,9 @@ boundaries; it explicitly does not claim complete current graph functionality.
 
 Neither donor PR establishes full parity across all 54 baseline blobs and ten
 later changed paths before either 2026-09-06 archive. The direct donor PR
-records therefore add narrow contemporaneous evidence, not a waiver or a
-criterion change. The M-105 chronology gate remains blocked under D-006-07.
+records therefore add narrow contemporaneous evidence. D-006-10 later waives
+only the chronology condition; it does not make these records proof of
+pre-archive parity.
 
 ## Complete hosted donor-history recheck, 2026-10-18
 
@@ -152,6 +165,6 @@ against the GMA successors before archival.
 This closes the bounded search of preserved GitHub PR and Actions records, not
 unpreserved external or local evidence. No full pre-archive parity proof was
 found. The exact archived histories and post-archive dispositions remain useful
-preservation evidence but cannot satisfy the chronology rule. M-105 remains
-blocked; no waiver or criterion change is recorded, and M-106–M-112 continue
-independently.
+preservation evidence. D-006-10 now waives only the chronology rule so that
+this evidence can support M-105 qualification; no retroactive pre-archive
+proof is claimed. M-106–M-113 and Stable v1 release approval remain separate.
