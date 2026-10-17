@@ -29,6 +29,13 @@ EVIDENCE = (
 )
 
 
+def _read_evidence_records() -> list[dict[str, object]]:
+    lines = EVIDENCE.read_text(encoding="utf-8").splitlines()
+    conflict_markers = ("<<<<<<<", "|||||||", "=======", ">>>>>>>")
+    assert not any(line.startswith(conflict_markers) for line in lines)
+    return [json.loads(line) for line in lines]
+
+
 def test_assessment_binds_exact_candidate_without_promoting_it() -> None:
     assessment = json.loads(ASSESSMENT.read_text())
     hosted_report_bytes = HOSTED_REPORT.read_bytes()
@@ -135,7 +142,7 @@ def test_assessment_binds_exact_candidate_without_promoting_it() -> None:
 def test_evidence_ledger_binds_assessment_digest() -> None:
     assessment_bytes = ASSESSMENT.read_bytes()
     assessment_sha256 = hashlib.sha256(assessment_bytes).hexdigest()
-    records = [json.loads(line) for line in EVIDENCE.read_text().splitlines()]
+    records = _read_evidence_records()
     record = next(
         item
         for item in reversed(records)
@@ -152,7 +159,7 @@ def test_evidence_ledger_binds_assessment_digest() -> None:
 def test_evidence_ledger_binds_exact_hosted_report() -> None:
     report_bytes = HOSTED_REPORT.read_bytes()
     report_sha256 = hashlib.sha256(report_bytes).hexdigest()
-    records = [json.loads(line) for line in EVIDENCE.read_text().splitlines()]
+    records = _read_evidence_records()
     record = next(
         item
         for item in reversed(records)
