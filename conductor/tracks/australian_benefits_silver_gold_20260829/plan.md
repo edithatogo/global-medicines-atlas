@@ -2789,7 +2789,7 @@
   six page offsets, and the matching ordered edge-ID digest across API, CLI,
   and rendered Atlas response. This remains candidate-only, `not_reviewed`, and
   unpublished.
-- [~] Extend the exact-main MBS candidate qualification through a real
+- [x] Extend the exact-main MBS candidate qualification through a real
   Chromium session against the loopback Atlas route. Follow each rendered
   continuation link and compare the browser's ordered edge IDs and review
   states with the authoritative candidate table; retain only aggregate counts,
@@ -2805,7 +2805,17 @@
   unrelated responses. The focused set passes (52 tests; 95.44% combined
   coverage), and Test-Goblin E2E passes (114 tests). Ruff, `ty`, BasedPyright,
   actionlint, pedantic zizmor, context, and ecosystem checks pass. Exact-main
-  browser qualification remains pending merge.
+  browser qualification passed on merge `2cf0fe0d` in exact-main run
+  `39039867923`; its aggregate receipt binds the six-object authorization and
+  matching browser/API/Atlas/CLI edge digests across all 5,989 edges and six
+  pages. This remains candidate-only, `not_reviewed`, and unpublished.
+- [~] Bind the exact six authorized MBS v4 Silver tables to their source
+  receipt, current manifest, exact source-era report, scoped admission,
+  semantic manifest, and per-table source-lineage digests in the aggregate
+  consumer receipt. Preserve candidate-only status and every M-112 rights,
+  admission, promotion, and federation boundary; no new source or public write.
+  Implementation and focused checks are complete locally. Exact-main hosted
+  qualification with the expanded receipt remains pending.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 

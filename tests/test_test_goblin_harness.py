@@ -665,8 +665,8 @@ def test_supply_chain_manages_tool_literals_and_scans_history() -> None:
     assert "GITLEAKS_ASSET:" in security
 
 
-def test_gitleaks_history_allowlist_is_limited_to_verified_revisions() -> None:
-    """Only the qualified public revision in its exact evidence field is allowed."""
+def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
+    """Only exact public revision and graph digest evidence are allowed."""
     config = tomllib.loads(
         (ROOT / ".gitleaks.toml").read_text(encoding="utf-8")
     )
@@ -676,7 +676,7 @@ def test_gitleaks_history_allowlist_is_limited_to_verified_revisions() -> None:
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
-    assert len(allowlist["regexes"]) == 1
+    assert len(allowlist["regexes"]) == 2
     assert not (ROOT / ".gitleaksignore").exists()
 
     revision = json.loads(
@@ -685,13 +685,24 @@ def test_gitleaks_history_allowlist_is_limited_to_verified_revisions() -> None:
             / "quality/qualifications/australian-m109-source-era-identities-20261017.json"
         ).read_text(encoding="utf-8")
     )["readback"]["mbs"]["current_revision"]
-    pattern = re.compile(allowlist["regexes"][0])
-    assert pattern.fullmatch(f'huggingface_api_revision": "{revision}"')
+    revision_pattern = re.compile(allowlist["regexes"][0])
+    digest_pattern = re.compile(allowlist["regexes"][1])
+    assert revision_pattern.fullmatch(
+        f'huggingface_api_revision": "{revision}"'
+    )
     changed_revision = revision[:-1] + ("0" if revision[-1] != "0" else "1")
-    assert not pattern.fullmatch(
+    assert not revision_pattern.fullmatch(
         f'huggingface_api_revision": "{changed_revision}"'
     )
-    assert not pattern.fullmatch(f'api_key": "{revision}"')
+    assert not revision_pattern.fullmatch(f'api_key": "{revision}"')
+
+    edge_digest = (
+        "7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d"
+    )
+    assert digest_pattern.fullmatch(f'API":"{edge_digest}"')
+    changed_digest = edge_digest[:-1] + ("0" if edge_digest[-1] != "0" else "1")
+    assert not digest_pattern.fullmatch(f'API":"{changed_digest}"')
+    assert not digest_pattern.fullmatch(f'api_key":"{edge_digest}"')
 
     disposition = (
         ROOT
@@ -704,7 +715,7 @@ def test_gitleaks_history_allowlist_is_limited_to_verified_revisions() -> None:
         in normalized_disposition
     )
     assert (
-        "It does not exclude a rule, directory, filename, source record, or class of values."
+        "does not exclude a rule, directory, filename, source record, or class of values."
         in normalized_disposition
     )
 

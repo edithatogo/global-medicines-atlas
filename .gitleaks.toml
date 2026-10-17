@@ -4,7 +4,10 @@ title = "Global Medicines Atlas Gitleaks configuration"
 useDefault = true
 
 [[allowlists]]
-description = "The qualified public MBS revision is not a credential in its source evidence field."
+description = "Qualified public MBS revision and consumer graph-edge digest evidence are not credentials in their exact source evidence fields."
 targetRules = ["generic-api-key"]
 regexTarget = "match"
-regexes = ['''^huggingface_api_revision"\s*:\s*"da83cad9116e2f9a5b927be7b080e9a5e5ea6998"\s*$''']
+regexes = [
+  '''^huggingface_api_revision"\s*:\s*"da83cad9116e2f9a5b927be7b080e9a5e5ea6998"\s*$''',
+  '''^API":"7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d"$''',
+]
