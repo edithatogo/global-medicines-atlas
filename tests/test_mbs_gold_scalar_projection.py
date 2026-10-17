@@ -857,14 +857,15 @@ def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # r
         schema_file=schema_file,
     )
     with atlas_resolver:
-        atlas_response = TestClient(
+        atlas_client = TestClient(
             create_atlas_app(
                 StateService(),
                 federated_benefits=BenefitsService(
                     atlas_resolver, cursor_key=cursor_secret.encode()
                 ),
             )
-        ).get(
+        )
+        atlas_response = atlas_client.get(
             "/federated/benefits",
             params={
                 "resource_id": resource_id,
@@ -873,8 +874,31 @@ def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # r
                 "filters": filters_json,
             },
         )
+        unfiltered_atlas_response = atlas_client.get(
+            "/federated/benefits",
+            params={
+                "resource_id": resource_id,
+                "columns": ",".join(columns),
+                "limit": 2,
+            },
+        )
     assert atlas_response.status_code == 200
-    assert f"<td><code>{expected}</code></td>" in atlas_response.text
+    assert unfiltered_atlas_response.status_code == 200
+    expected_source_record_id = "au-mbs:3::2025-07-0"
+    other_source_record_id = "au-mbs:3::2025-07-1"
+    exact_rendered_table = (
+        "<tbody><tr><td><code>"
+        + expected_source_record_id
+        + "</code></td><td><code>"
+        + expected
+        + "</code></td></tr></tbody>"
+    )
+    assert exact_rendered_table in atlas_response.text
+    assert atlas_response.text.count("<tr>") == 2
+    assert other_source_record_id not in atlas_response.text
+    assert exact_rendered_table not in unfiltered_atlas_response.text
+    assert other_source_record_id in unfiltered_atlas_response.text
+    assert unfiltered_atlas_response.text.count("<tr>") == 3
     assert f"<dd><code>{path}</code></dd>" in atlas_response.text
     object_sha256 = hashlib.sha256(payload).hexdigest()
     assert f"<dd><code>{object_sha256}</code></dd>" in atlas_response.text
@@ -889,7 +913,7 @@ def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # r
     assert "<dt>Review state</dt><dd>not declared</dd>" in atlas_response.text
 
     row = {
-        "source_record_id": "au-mbs:3::2025-07-0",
+        "source_record_id": expected_source_record_id,
         value_column: expected,
     }
     for page in (cli_page, api_page):
