@@ -53,8 +53,8 @@
                     <div><dt>Source node</dt><dd><code>{{ edge.source_node_id }}</code></dd></div>
                     <div><dt>Target node</dt><dd><code>{{ edge.target_node_id }}</code></dd></div>
                     <div><dt>Source record</dt><dd><code>{{ edge.evidence.source_record_id }}</code></dd></div>
-                    <div><dt>Confidence</dt><dd>{{ edge.controls.confidence if edge.controls.confidence is not none else "Not calibrated" }}</dd></div>
-                    <div><dt>Review state</dt><dd>{{ edge.controls.review_state or "Not declared" }}</dd></div>
+                    <div><dt>Confidence</dt><dd>{% if edge.confidence is defined %}{{ edge.confidence if edge.confidence is not none else "Not calibrated" }}{% else %}{{ edge.controls.confidence if edge.controls.confidence is not none else "Not calibrated" }}{% endif %}</dd></div>
+                    <div><dt>Review state</dt><dd>{% if edge.review_state is defined %}{{ edge.review_state or "Not declared" }}{% else %}{{ edge.controls.review_state or "Not declared" }}{% endif %}</dd></div>
                     <div><dt>Qualification</dt><dd>{{ payload.qualification }}</dd></div>
                   </dl>
                   <details>

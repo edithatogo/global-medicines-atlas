@@ -19,6 +19,39 @@ from .pbs_gold_graph import PBS_GOLD_EDGE_SCHEMA
 
 MAX_SELECTOR_LENGTH = 512
 MAX_EDGE_ROWS = 1_000
+_SHA256_HEX_LENGTH = 64
+_ADMITTED_MBS_METADATA_KEYS = frozenset({
+    b"schema_name",
+    b"schema_version",
+    b"qualification",
+    b"input_admission_sha256",
+    b"input_semantic_manifest_sha256",
+    b"graph_sha256",
+})
+
+
+def _is_supported_edge_schema(edges: pa.Table) -> bool:
+    """Accept only the pinned synthetic schemas or bound MBS v3 metadata."""
+    if edges.schema.equals(MBS_GOLD_EDGE_SCHEMA, check_metadata=False):
+        metadata = edges.schema.metadata or {}
+        if metadata == MBS_GOLD_EDGE_SCHEMA.metadata:
+            return True
+        if frozenset(metadata) != _ADMITTED_MBS_METADATA_KEYS:
+            return False
+        return (
+            metadata[b"schema_name"]
+            == MBS_GOLD_EDGE_SCHEMA.metadata[b"schema_name"]
+            and metadata[b"schema_version"] == b"3.0"
+            and metadata[b"qualification"]
+            == b"admitted_real_silver_candidate_only"
+            and all(
+                len(metadata[key]) == _SHA256_HEX_LENGTH
+                and all(byte in b"0123456789abcdef" for byte in metadata[key])
+                for key in _ADMITTED_MBS_METADATA_KEYS
+                - {b"schema_name", b"schema_version", b"qualification"}
+            )
+        )
+    return edges.schema.equals(PBS_GOLD_EDGE_SCHEMA, check_metadata=True)
 
 
 def select_gold_edges(
@@ -36,10 +69,7 @@ def select_gold_edges(
         raise ValueError("edge row bound must be a positive integer")
     if type(offset) is not int or isinstance(offset, bool) or offset < 0:
         raise ValueError("edge offset must be a non-negative integer")
-    if not any(
-        edges.schema.equals(schema, check_metadata=True)
-        for schema in (MBS_GOLD_EDGE_SCHEMA, PBS_GOLD_EDGE_SCHEMA)
-    ):
+    if not _is_supported_edge_schema(edges):
         raise ValueError("unsupported Gold edge schema")
     for name, value in (
         ("source_node_id", source_node_id),
