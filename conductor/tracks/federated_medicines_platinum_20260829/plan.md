@@ -110,6 +110,11 @@
   meaning is inferred from these fixtures. PR #1044 merged at
   `7dc9c9762209c437da3ee3bec7e7398014cc37fe` after all 39 reported checks
   passed and automated review completed without findings.
+- [~] Extend the exact synthetic scalar trust path through Chromium for the
+  Decimal and date filters, preserving exact row identity, object path/digest,
+  synthetic cohort, and unknown coverage wording. Local validation passes;
+  hosted exact-head checks and merge receipt are pending. This adds no source,
+  coverage, admission, or rights claim.
 - [x] Reject cross-dimension identities at the shared benefits query boundary:
   MBS resources must declare `service_benefit` and PBS resources must declare
   `funding` before any result rows are queried. Failing-first regressions

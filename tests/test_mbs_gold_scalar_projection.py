@@ -8,12 +8,14 @@ from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import cast
+from urllib.parse import urlsplit
 
 import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
+from playwright.sync_api import expect, sync_playwright
 from test_atlas_e2e import StateService
 from test_mbs_gold_graph import (
     _admitted_input,  # ruff: ignore[import-private-name] -- shared fixture
@@ -735,6 +737,7 @@ def test_scalar_candidate_traverses_exact_synthetic_v4_admission_and_api(
         ),
     ],
 )
+@pytest.mark.e2e
 def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # ruff: ignore[too-many-locals, too-many-statements] -- keep the three product consumers explicit
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -856,6 +859,7 @@ def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # r
         metadata_root=metadata_root,
         schema_file=schema_file,
     )
+    expected_source_record_id = "au-mbs:3::2025-07-0"
     with atlas_resolver:
         atlas_client = TestClient(
             create_atlas_app(
@@ -882,9 +886,61 @@ def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # r
                 "limit": 2,
             },
         )
+        browser_base_url = "http://atlas.test"
+
+        def fulfill_from_atlas(route) -> None:
+            parsed_url = urlsplit(route.request.url)
+            app_path = parsed_url.path
+            if parsed_url.query:
+                app_path = f"{app_path}?{parsed_url.query}"
+            response = atlas_client.get(app_path)
+            route.fulfill(
+                status=response.status_code,
+                headers=dict(response.headers),
+                body=response.content,
+            )
+
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch()
+            try:
+                browser_page = browser.new_page()
+                browser_page.route(f"{browser_base_url}/**", fulfill_from_atlas)
+                browser_page.goto(browser_base_url + "/federated/benefits")
+                browser_page.get_by_label("Resource identifier").fill(
+                    resource_id
+                )
+                browser_page.get_by_label(
+                    "Source columns, comma separated"
+                ).fill(",".join(columns))
+                browser_page.get_by_label(
+                    "Optional bounded filters (JSON array)"
+                ).fill(filters_json)
+                browser_page.get_by_role(
+                    "button", name="Read pinned evidence"
+                ).click()
+                expect(
+                    browser_page.get_by_role(
+                        "heading", name="Exact evidence identity"
+                    )
+                ).to_be_visible()
+                browser_rows = browser_page.get_by_role(
+                    "region", name="Federated evidence rows"
+                ).locator("tbody tr")
+                expect(browser_rows).to_have_count(1)
+                browser_row = browser_rows.first.inner_text()
+                assert expected_source_record_id in browser_row
+                assert expected in browser_row
+                browser_text = browser_page.locator("main").inner_text()
+                assert path in browser_text
+                assert hashlib.sha256(payload).hexdigest() in browser_text
+                assert "Comparison cohort" in browser_text
+                assert "synthetic" in browser_text
+                assert "Coverage is not declared here" in browser_text
+                assert "synthetic qualification fixtures" in browser_text
+            finally:
+                browser.close()
     assert atlas_response.status_code == 200
     assert unfiltered_atlas_response.status_code == 200
-    expected_source_record_id = "au-mbs:3::2025-07-0"
     other_source_record_id = "au-mbs:3::2025-07-1"
     exact_rendered_table = (
         "<tbody><tr><td><code>"
