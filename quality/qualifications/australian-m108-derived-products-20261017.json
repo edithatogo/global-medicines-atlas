@@ -677,9 +677,30 @@
       "before_authorization": "Do not generate or publish the six derived outputs.",
       "if_future_release_is_withdrawn": "Append a withdrawal/supersession record, remove active discovery and consumer pointers, and preserve the immutable revision, payload digests, and receipts. Public copies already retrieved by others cannot be recalled."
     },
-    "smallest_next_action": "Merge the bounded July/August source-era comparator, run it on exact main, and read back its aggregate-only artifact; do not rerun the completed 390292/390320 profiles.",
+    "smallest_next_action": "Obtain exact-release versioned schema/change history or source-owner clarification before accepting August field semantics or temporal meaning; keep derived outputs blocked until their separate rights decision.",
     "predecessor_comparison_plan": {
-      "status": "implemented_local_pass_hosted_exact_main_run_pending",
+      "status": "exact_main_aggregate_comparison_complete_semantics_unqualified",
+      "exact_main_readback": {
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39047005443",
+        "commit": "f6cccb0beb66d5a1322149f33dc61820eea05166",
+        "conclusion": "success",
+        "artifact_id": 12105683236,
+        "artifact_name": "mbs-202607-202608-predecessor-comparison-39047005443-1",
+        "artifact_digest": "sha256:9e14e31717cc26379872beae23551c801cec69f16f817b018f9ebaed488a08bb",
+        "artifact_bytes": 2606,
+        "report_path": "quality/qualifications/australian-m109-july-august-predecessor-comparison-20261018.json",
+        "report_sha256": "73ef383cd36ca2703ddd70344b572f8904b67b8d85a1f6420036fa76e4d4954b",
+        "matched_records": 6045,
+        "added_records": 1,
+        "removed_records": 0,
+        "changed_records": 5445,
+        "archive_official_identity_matches": 2,
+        "source_identifiers_emitted": false,
+        "source_values_retained": false,
+        "silver_generated": false,
+        "semantics_accepted": false,
+        "m109_accepted": false
+      },
       "exact_predecessor": {
         "edition": "MBS-XML-20260701.XML",
         "official_publication_date": "2026-05-28",
