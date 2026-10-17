@@ -302,12 +302,20 @@ def _validate_alias_readback(report: dict[str, Any]) -> None:
     if actual != expected:
         raise ValueError("anonymous digest readback does not bind the alias")
 
-    row = next(
+    rows = [
         item
         for item in report["objects"]
         if item["dataset"] == DATASET and item["path"] == ALIAS_PATH
-    )
+    ]
+    if len(rows) != 1:
+        raise ValueError("anonymous digest readback does not bind the alias")
+    row = rows[0]
     identity = row["identity"]
+    if (
+        row["revision"] != expected[1]
+        or identity["byte_count"] != PAYLOAD_BYTES
+    ):
+        raise ValueError("anonymous digest readback does not bind the alias")
     identity.update({
         "sha256_evidence": "anonymous_digest_readback",
         "sha256": PAYLOAD_SHA256,

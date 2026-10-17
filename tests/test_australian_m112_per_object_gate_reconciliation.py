@@ -234,6 +234,34 @@ def test_alias_readback_rejects_a_different_immutable_revision(
         crosswalk.build_report()
 
 
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [("revision", "0" * 40), ("byte_count", 1)],
+)
+def test_alias_readback_rejects_reconciliation_row_identity_drift(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field: str,
+    value: str | int,
+) -> None:
+    baseline = _load(ROOT / crosswalk.BASELINE)
+    alias = next(
+        row
+        for row in baseline["objects"]
+        if row["dataset"] == DATASET and row["path"] == ALIAS_PATH
+    )
+    if field == "revision":
+        alias[field] = value
+    else:
+        alias["identity"][field] = value
+    invalid_baseline = tmp_path / "invalid-baseline.json"
+    invalid_baseline.write_text(json.dumps(baseline), encoding="utf-8")
+    monkeypatch.setattr(crosswalk, "BASELINE", str(invalid_baseline))
+
+    with pytest.raises(ValueError, match="does not bind the alias"):
+        crosswalk.build_report()
+
+
 def test_alias_lineage_rejects_a_different_git_object_identity(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
