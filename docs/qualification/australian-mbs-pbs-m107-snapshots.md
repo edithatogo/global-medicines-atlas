@@ -289,6 +289,24 @@ does not count as an acquired snapshot and M-107 remains blocked pending a
 complete expected-period/format denominator, per-object rights, authorized
 retrieval evidence, and schema-era acceptance.
 
+## PBS official schedule-link crosswalk, 2026-10-18
+
+The [machine-readable M-107 crosswalk](../../quality/qualifications/australian-pbs-m107-link-crosswalk-20261018.json)
+enumerates all 316 schedule-data links across the 197 periods observed on the
+24 official year pages. It maps each link to the relevant PBS source-rights
+ledger entry and lists the evidence still needed for snapshot acceptance. One
+April 2026 XML V3 link matches the date, version label, and filename of the
+known public `raw/2026-04-01/2026-04-01-XML-V3.zip` object. That match does not
+establish exact URL-to-receipt lineage; the M-112 object remains deferred,
+with upstream redistribution terms unknown and B1/B2 lineage unresolved.
+
+The remaining 315 links have unresolved mappings to known archive identities.
+This is not evidence that their source objects or periods are absent. The
+crosswalk is based on existing metadata and rights records only: no PBS source
+payload was requested or read, no rights conclusion was made, and M-107 remains
+blocked pending a complete approved denominator, rights, authorized receipt
+lineage, and source-era qualification.
+
 ### Official Downloads landing-page resources, 2026-10-18
 
 A fresh metadata-only read of the official [Downloads landing page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads)
