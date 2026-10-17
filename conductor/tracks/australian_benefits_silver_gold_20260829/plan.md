@@ -2695,14 +2695,19 @@
   avoids a second edge-table scan for non-paginated API/CLI calls has focused
   tests and routine/strict checks; protected CI must qualify the exact final
   head.
-- [~] Complete a real, local, candidate-only consumer journey for the exact
+- [x] Complete a real, local, candidate-only consumer journey for the exact
   admitted MBS v3 graph. Generate a bounded Parquet edge projection from the
   six already-pinned Silver tables, load all 5,989 edges within the existing
   file bounds, and traverse them through CLI, API, and Atlas in pages of at
   most 1,000. Verify each page preserves the admission, semantic-manifest, and
-  graph digests and that all edges remain `not_reviewed`. No source is added,
-  no public dataset is written, and this does not establish independent Gold
-  review, M-110 consumer acceptance, product admission, or publication.
+  graph digests and that all edges remain `not_reviewed`. The real graph was
+  traversed by following Atlas-rendered next links through offsets 0, 1000,
+  2000, 3000, 4000, and 5000; all 5,989 unique Atlas edge IDs matched API and
+  CLI output. PR #1106 merged as `13f1a02717c6100dd56e896517781b8383c26981`;
+  its exact head passed all required hosted checks, including Codecov patch and
+  Linux/macOS/Windows consumers. No source was added and no public dataset was
+  written. This completes the candidate-only technical consumer journey, not
+  independent Gold review, M-110 acceptance, product admission, or publication.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 
