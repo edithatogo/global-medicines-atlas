@@ -110,13 +110,22 @@ def write_mbs_gold_candidate_edges(
         os.O_RDWR | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0),
         0o600,
     )
+    descriptor_open = True
     try:
         verified_sha256 = _write_and_verify(descriptor, payload, edges)
-    except BaseException:
-        output_path.unlink(missing_ok=True)
+    except BaseException as error:
+        os.close(descriptor)
+        descriptor_open = False
+        try:
+            output_path.unlink(missing_ok=True)
+        except OSError as cleanup_error:
+            error.add_note(
+                f"could not remove partial candidate export: {cleanup_error}"
+            )
         raise
     finally:
-        os.close(descriptor)
+        if descriptor_open:
+            os.close(descriptor)
 
     return GoldCandidateExport(
         edge_count=edges.num_rows,

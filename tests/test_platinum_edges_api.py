@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import UTC, datetime, timedelta
+from html import unescape
 from typing import cast
+from urllib.parse import parse_qs, urlsplit
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -110,6 +113,60 @@ def test_admitted_mbs_v3_api_preserves_all_three_graph_bindings() -> None:
     }
 
 
+def _traverse_atlas_edge_pages(atlas, edge_kind: str) -> list[str]:
+    edge_ids: list[str] = []
+    offsets: list[int] = []
+    params = {"limit": "1000", "offset": "0", "kind": edge_kind}
+    while True:
+        offset = int(params["offset"])
+        offsets.append(offset)
+        response = atlas.get("/gold/edges", params=params)
+        assert response.status_code == 200
+        page_ids = re.findall(r"<code>(edge:\d{4})</code>", response.text)
+        edge_ids.extend(page_ids)
+        next_link = re.search(r'<a href="([^"]+)">Next ', response.text)
+        if next_link is None:
+            break
+        next_query = parse_qs(urlsplit(unescape(next_link.group(1))).query)
+        assert next_query["kind"] == [edge_kind]
+        assert next_query["limit"] == ["1000"]
+        params = {key: values[0] for key, values in next_query.items()}
+        assert int(params["offset"]) == offset + len(page_ids)
+
+    assert offsets == [0, 1000]
+    return edge_ids
+
+
+def _assert_cli_api_edge_pages(
+    api, edge_path, edge_kind: str, total: int
+) -> None:
+    for offset in (0, 1000):
+        params = {"limit": 1000, "offset": offset, "kind": edge_kind}
+        api_response = api.get("/api/v1/edges", params=params)
+        cli_result = CliRunner().invoke(
+            app,
+            [
+                "edges",
+                "--edge-file",
+                str(edge_path),
+                "--limit",
+                "1000",
+                "--offset",
+                str(offset),
+                "--kind",
+                edge_kind,
+            ],
+        )
+        assert api_response.status_code == 200
+        assert cli_result.exit_code == 0, cli_result.stderr
+        api_page = api_response.json()
+        assert api_page == json.loads(cli_result.stdout)
+        assert api_page["offset"] == offset
+        assert api_page["total"] == total
+        assert len(api_page["items"]) == min(1000, total - offset)
+        assert api_page["has_more"] is (offset + len(api_page["items"]) < total)
+
+
 def test_file_backed_edge_consumers_traverse_multiple_pages(tmp_path) -> None:
     _, sample = project_mbs_gold_graph_arrow(graph())
     sample_row = sample.to_pylist()[0]
@@ -124,47 +181,11 @@ def test_file_backed_edge_consumers_traverse_multiple_pages(tmp_path) -> None:
         create_app(cast("ReadOnlyQueryService", object()), gold_edges=loaded)
     )
     atlas = TestClient(create_atlas_app(StateService(), gold_edges=loaded))
+    edge_kind = sample_row["kind"]
 
-    for offset, expected_count, expected_has_more in (
-        (0, 1000, True),
-        (1000, 1, False),
-    ):
-        params = {"limit": 1000, "offset": offset}
-        api_response = api.get("/api/v1/edges", params=params)
-        cli_result = CliRunner().invoke(
-            app,
-            [
-                "edges",
-                "--edge-file",
-                str(edge_path),
-                "--limit",
-                "1000",
-                "--offset",
-                str(offset),
-            ],
-        )
-        atlas_response = atlas.get("/gold/edges", params=params)
-
-        assert api_response.status_code == 200
-        assert cli_result.exit_code == 0, cli_result.stderr
-        assert atlas_response.status_code == 200
-        api_page = api_response.json()
-        cli_page = json.loads(cli_result.stdout)
-        assert api_page == cli_page
-        assert api_page["offset"] == offset
-        assert api_page["total"] == edges.num_rows
-        assert len(api_page["items"]) == expected_count
-        assert api_page["has_more"] is expected_has_more
-        assert f"edge:{offset:04d}" in atlas_response.text
-        if expected_has_more:
-            assert (
-                f"Next {edges.num_rows} candidate edges" in atlas_response.text
-            )
-        else:
-            assert (
-                f"Next {edges.num_rows} candidate edges"
-                not in atlas_response.text
-            )
+    _assert_cli_api_edge_pages(api, edge_path, edge_kind, edges.num_rows)
+    atlas_ids = _traverse_atlas_edge_pages(atlas, edge_kind)
+    assert atlas_ids == [f"edge:{index:04d}" for index in range(edges.num_rows)]
 
 
 def test_pbs_edge_route_and_cli_preserve_source_structure(tmp_path) -> None:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import errno
 import hashlib
 
 import pyarrow as pa
@@ -182,6 +183,47 @@ def test_export_rejects_changed_bytes_from_open_descriptor(
             expected_graph_sha256=candidate.graph_sha256,
         )
     assert not output.exists()
+
+
+def test_export_closes_descriptor_before_failed_cleanup(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    candidate = _candidate()
+    output = tmp_path / "candidate.parquet"
+    descriptors: list[int] = []
+
+    def fail_verification(descriptor, _payload, _edges):
+        descriptors.append(descriptor)
+        raise ValueError("original readback failure")
+
+    def fail_cleanup(_path, *, missing_ok=False):
+        assert missing_ok is True
+        with pytest.raises(OSError, match=r".+") as closed_descriptor:
+            mbs_gold_candidate_export.os.fstat(descriptors[0])
+        assert closed_descriptor.value.errno == errno.EBADF
+        raise OSError("simulated cleanup failure")
+
+    with monkeypatch.context() as scoped:
+        scoped.setattr(
+            mbs_gold_candidate_export,
+            "_write_and_verify",
+            fail_verification,
+        )
+        scoped.setattr(type(output), "unlink", fail_cleanup)
+        with pytest.raises(
+            ValueError,
+            match="original readback failure",
+        ) as error:
+            write_mbs_gold_candidate_edges(
+                candidate,
+                output,
+                expected_graph_sha256=candidate.graph_sha256,
+            )
+    assert any(
+        "could not remove partial candidate export" in note
+        for note in error.value.__notes__
+    )
+    output.unlink(missing_ok=True)
 
 
 def test_exported_table_preserves_exact_admission_bindings(tmp_path) -> None:
