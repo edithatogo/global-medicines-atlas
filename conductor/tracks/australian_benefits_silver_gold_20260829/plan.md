@@ -2693,8 +2693,25 @@
   200 ms deadline (252.73 ms on the first call); the isolated case passed in
   5.17 seconds. Retain the full profile as non-clean. The small follow-up that
   avoids a second edge-table scan for non-paginated API/CLI calls has focused
-  tests and routine/strict checks; protected CI must qualify the exact final
-  head.
+  tests and routine/strict checks; the final tested head passed protected CI.
+  PR #1103 merged as `5a8d15909e56223b6b22d974808822bbae2aa960` from
+  tested head `cc129c4dd902610205f3d7d7568a3e21dfae7475`; all 40 reported
+  check rows passed and the merged tree matches the tested tree.
+- [x] Record the maintainer's 2026-10-17 disposition of the exact MBS July
+  2025 XML v3 Gold graph as **accepted as a candidate**. The disposition is
+  bound to the Silver admission SHA-256
+  `a97289a9b0d4abc864b62606eb6d3356fccbedce5ea656235200353c507be7d4`, Gold
+  qualification SHA-256
+  `eaafab075e10a0af810d746385726adc2f5fc546735087b14c97af71b9283b5c`, and
+  graph SHA-256
+  `44c6c4f2d3dee80e49efac7bc14cc8965958b476a0e73c3758214645c7f7b27b`.
+  This is an aggregate candidate-only disposition, not individual edge review:
+  all 5,989 edges retain `review_state=not_reviewed`. M-110 independent Gold
+  review and real consumer acceptance, M-109 full denominator acceptance,
+  M-112 acceptance, product admission, and publication remain open. The
+  admission and Gold qualification generators' `--check` modes both pass
+  without downloading source objects. No source, payload, rights conclusion,
+  or public dataset state changed.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 
