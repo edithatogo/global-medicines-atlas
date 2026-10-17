@@ -141,6 +141,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_australian_m112_per_object_gate_reconciliation.py",
         "tests/test_australian_m112_root_manifest_path_readback.py",
         "tests/test_australian_m112_historical_source_receipts.py",
+        "tests/test_australian_m112_historical_receipt_gate_crosswalk.py",
         "tests/test_mbs_workbook_values.py",
         "tests/test_australian_mbs_m106_source_review.py",
         "tests/test_mbs_compatibility.py",
