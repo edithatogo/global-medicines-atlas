@@ -2600,7 +2600,7 @@
   binds the exact six-table semantic manifest. It makes no new rights
   conclusion, does not promote the public candidate, and does not accept M-109,
   M-110 Gold, or M-112.
-- [ ] Qualify the M-110 graph against admitted real tables after the prior
+- [x] Qualify the M-110 graph against admitted real tables after the prior
   admission gate passes. Preserve MBS-only scope and the existing M-109/M-112
   boundaries. The earlier assessment snapshots remain historical.
 - [x] Build a value-free M-110 graph candidate from all six exact-revision
@@ -3273,3 +3273,32 @@
   Post-rebase validation passed 69 affected tests and strict/routine
   Test-Goblin checks; the strict profile reports zero errors and four existing
   optional-import warnings.
+
+## M-112 exact-six MBS v4 candidate qualification and consumer canary (2026-10-18)
+
+- [x] Reconfirm the maintainer's candidate-use authorization for the exact six
+  July 2025 MBS v3 Silver Parquet identities in
+  `quality/qualifications/australian-mbs-v4-candidate-use-authorization-20261017.json`.
+  Its scope is candidate v4 qualification and consumer canaries only; it grants
+  no publication, production admission, rights conclusion, M-110 review, or
+  M-112 acceptance.
+- [x] Requalify the pinned public candidate on exact current `main` with hosted
+  run [39061440432](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39061440432)
+  at `08fdcbdf230c34c874b7df3abbf3491c5b12b35a`. The aggregate report SHA-256
+  is `460f1ea97503bb694fa7ba3e82339164196c7efc69e62bda169e6a8817529ffe`;
+  it verified the July 2025 source digest, all six table digests, the pinned
+  manifest, and all nine expected public objects at current revision
+  `da83cad9116e2f9a5b927be7b080e9a5e5ea6998`. There were no current technical
+  blockers. The report is aggregate-only; source bytes were not retained and
+  publication was not performed.
+- [x] Run the exact-main consumer canary at
+  [39061576513](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39061576513)
+  on the same commit. The aggregate receipt SHA-256 is
+  `496c5bbfa9f7d3bf8c9630f8fd212612d49684542b042167097260b185fd4d0e`; all
+  5,989 edges traversed API, CLI, Atlas, and Chromium with the same ordered
+  edge-ID digest, bound to the six-table lineage. Temporary Parquet was
+  removed by the workflow. This remains a candidate canary with
+  `review_state=not_reviewed` and does not accept M-110 or M-112.
+- [x] Keep the separately recorded maintainer disposition limited to accepting
+  this MBS v3 edge set as a candidate for consumer-canary use. The M-110
+  semantic edge review and M-112 federation acceptance remain open.

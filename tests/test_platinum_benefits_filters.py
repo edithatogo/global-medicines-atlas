@@ -21,7 +21,10 @@ from global_medicines_atlas.generated.openapi_client import (
 )
 from global_medicines_atlas.platinum_benefits import (
     BenefitsFilter,
+    BenefitsPage,
     BenefitsQuery,
+    BenefitsService,
+    benefits_page_payload,
     parse_benefits_filters,
 )
 from global_medicines_atlas.query_service import ReadOnlyQueryService
@@ -158,6 +161,341 @@ def test_cli_offline_attempt_preserves_filter_evidence(tmp_path):
     assert response["status"] == "unavailable"
     assert response["applied_filters"] == json.loads(filters)
     assert len(response["query_sha256"]) == 64
+
+
+def test_cli_benefits_jsonl_traverses_pages_and_emits_receipt_summary(
+    tmp_path,
+    monkeypatch,
+):
+    configuration(tmp_path)
+    backend = service()
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_configuration.load_benefits_resolver",
+        lambda **_: backend._resolver,
+    )
+    result = CliRunner().invoke(
+        app,
+        [
+            "benefits",
+            "au.mbs.service-items",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+            "--column",
+            "item_code",
+            "--limit",
+            "1",
+            "--format",
+            "jsonl",
+            "--max-rows",
+            "3",
+        ],
+        env={"GMA_CURSOR_SECRET": "k" * 32},
+    )
+
+    assert result.exit_code == 0, (result.output, repr(result.exception))
+    lines = [json.loads(line) for line in result.stdout.splitlines()]
+    records, summary = lines[:-1], lines[-1]
+    assert [line["record"]["item_code"] for line in records] == [
+        "100",
+        "200",
+        "300",
+    ]
+    assert all(line["type"] == "record" for line in records)
+    assert all(line["identity"]["source_id"] == "au-mbs" for line in records)
+    assert all(len(line["receipt_sha256"]) == 64 for line in records)
+    assert summary["type"] == "summary"
+    assert summary["status"] == "available"
+    assert summary["row_count"] == 3
+    assert summary["page_count"] == 3
+    assert summary["source_completeness"] == "not_established"
+    assert summary["truncated"] is False
+    assert summary["window_complete"] is True
+
+
+def test_cli_benefits_jsonl_max_rows_returns_cursor_and_never_partial_summary(
+    tmp_path,
+    monkeypatch,
+):
+    configuration(tmp_path)
+    backend = service()
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_configuration.load_benefits_resolver",
+        lambda **_: backend._resolver,
+    )
+    result = CliRunner().invoke(
+        app,
+        [
+            "benefits",
+            "au.mbs.service-items",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+            "--column",
+            "item_code",
+            "--limit",
+            "1",
+            "--format",
+            "jsonl",
+            "--max-rows",
+            "2",
+        ],
+        env={"GMA_CURSOR_SECRET": "k" * 32},
+    )
+
+    assert result.exit_code == 0, (result.output, repr(result.exception))
+    lines = [json.loads(line) for line in result.stdout.splitlines()]
+    assert len(lines) == 3
+    assert lines[-1]["row_count"] == 2
+    assert lines[-1]["truncated"] is True
+    assert lines[-1]["next_cursor"]
+
+
+def test_cli_benefits_jsonl_keeps_cursor_page_size_when_row_cap_is_not_multiple(
+    tmp_path, monkeypatch
+):
+    configuration(tmp_path)
+    backend = service()
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_configuration.load_benefits_resolver",
+        lambda **_: backend._resolver,
+    )
+    result = CliRunner().invoke(
+        app,
+        [
+            "benefits",
+            "au.mbs.service-items",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+            "--column",
+            "item_code",
+            "--limit",
+            "2",
+            "--format",
+            "jsonl",
+            "--max-rows",
+            "3",
+        ],
+        env={"GMA_CURSOR_SECRET": "k" * 32},
+    )
+
+    assert result.exit_code == 0, (result.output, repr(result.exception))
+    lines = [json.loads(line) for line in result.stdout.splitlines()]
+    assert len(lines) == 3
+    assert [line["record"]["item_code"] for line in lines[:-1]] == [
+        "100",
+        "200",
+    ]
+    assert lines[-1]["row_count"] == 2
+    assert lines[-1]["page_size"] == 2
+    assert lines[-1]["truncated"] is True
+    assert lines[-1]["next_cursor"]
+
+
+def test_cli_benefits_jsonl_rejects_cursor_loop_without_partial_output(
+    tmp_path, monkeypatch
+):
+    configuration(tmp_path)
+    backend = service()
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_configuration.load_benefits_resolver",
+        lambda **_: backend._resolver,
+    )
+    original_query = BenefitsService.query
+    first_pages: list[BenefitsPage] = []
+
+    def repeating_query(
+        self: BenefitsService,
+        resource_id: str,
+        query: BenefitsQuery,
+        *,
+        consumer_id: str = "anonymous",
+    ) -> BenefitsPage:
+        if not first_pages:
+            first_pages.append(
+                original_query(
+                    self, resource_id, query, consumer_id=consumer_id
+                ).model_copy(update={"next_cursor": "repeat"})
+            )
+        return first_pages[0]
+
+    monkeypatch.setattr(BenefitsService, "query", repeating_query)
+    result = CliRunner().invoke(
+        app,
+        [
+            "benefits",
+            "au.mbs.service-items",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+            "--column",
+            "item_code",
+            "--limit",
+            "1",
+            "--format",
+            "jsonl",
+            "--max-rows",
+            "3",
+        ],
+        env={"GMA_CURSOR_SECRET": "k" * 32},
+    )
+
+    assert result.exit_code == 2
+    assert not result.stdout
+    assert json.loads(result.stderr)["error"] == "invalid_request"
+
+
+def test_cli_benefits_jsonl_byte_limit_fails_before_output(
+    tmp_path, monkeypatch
+):
+    configuration(tmp_path)
+    backend = service()
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_configuration.load_benefits_resolver",
+        lambda **_: backend._resolver,
+    )
+    monkeypatch.setattr(
+        "global_medicines_atlas.cli._BENEFITS_EXPORT_MAX_BYTES", 1
+    )
+    result = CliRunner().invoke(
+        app,
+        [
+            "benefits",
+            "au.mbs.service-items",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+            "--column",
+            "item_code",
+            "--format",
+            "jsonl",
+        ],
+        env={"GMA_CURSOR_SECRET": "k" * 32},
+    )
+
+    assert result.exit_code == 2
+    assert not result.stdout
+    assert json.loads(result.stderr)["error"] == "invalid_request"
+
+
+@pytest.mark.parametrize(
+    ("mutation", "max_rows", "limit"),
+    [
+        ("identity", 3, 1),
+        ("rows_type", 3, 1),
+        ("row_type", 3, 1),
+        ("row_bound", 1, 1),
+    ],
+)
+def test_cli_benefits_jsonl_rejects_invalid_page_payload_without_partial_output(
+    tmp_path, monkeypatch, mutation: str, max_rows: int, limit: int
+):
+    configuration(tmp_path)
+    backend = service()
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_configuration.load_benefits_resolver",
+        lambda **_: backend._resolver,
+    )
+    original_payload = benefits_page_payload
+    payload_count = 0
+
+    def corrupt_payload(page: BenefitsPage) -> dict[str, object]:
+        nonlocal payload_count
+        payload_count += 1
+        payload = original_payload(page)
+        if mutation == "identity" and payload_count == 2:
+            identity = payload["identity"]
+            assert isinstance(identity, dict)
+            identity["revision"] = "b" * 40
+        elif mutation == "rows_type":
+            payload["rows"] = "not-a-list"
+        elif mutation == "row_type":
+            payload["rows"] = ["not-a-record"]
+        elif mutation == "row_bound":
+            payload["rows"] = [{"item_code": "100"}, {"item_code": "200"}]
+        return payload
+
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_benefits.benefits_page_payload",
+        corrupt_payload,
+    )
+    result = CliRunner().invoke(
+        app,
+        [
+            "benefits",
+            "au.mbs.service-items",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+            "--column",
+            "item_code",
+            "--limit",
+            str(limit),
+            "--format",
+            "jsonl",
+            "--max-rows",
+            str(max_rows),
+        ],
+        env={"GMA_CURSOR_SECRET": "k" * 32},
+    )
+
+    assert result.exit_code == 2
+    assert not result.stdout
+    assert json.loads(result.stderr)["error"] == "invalid_request"
+
+
+def test_cli_benefits_jsonl_offline_miss_has_explicit_unavailable_summary(
+    tmp_path, monkeypatch
+):
+    configuration(tmp_path)
+    backend = service()
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_configuration.load_benefits_resolver",
+        lambda **_: backend._resolver,
+    )
+    result = CliRunner().invoke(
+        app,
+        [
+            "benefits",
+            "au.mbs.service-items",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+            "--column",
+            "item_code",
+            "--format",
+            "jsonl",
+            "--offline",
+        ],
+        env={"GMA_CURSOR_SECRET": "k" * 32},
+    )
+
+    assert result.exit_code == 3
+    summary = json.loads(result.stdout)
+    assert summary["status"] == "unavailable"
+    assert summary["source_completeness"] == "not_established"
 
 
 @pytest.mark.parametrize(

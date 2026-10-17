@@ -333,6 +333,54 @@ def _exercise_scalar_cli(
             value_column: expected,
         }
     ]
+
+    jsonl_result = subprocess.run(
+        [
+            str(_cli_in(environment)),
+            "benefits",
+            resource_id,
+            "--trust-file",
+            str(metadata_root / "trust.json"),
+            "--metadata-root",
+            str(metadata_root),
+            "--schema-file",
+            str(metadata_root / "schema.json"),
+            "--column",
+            "source_record_id",
+            "--column",
+            value_column,
+            "--limit",
+            "1",
+            "--format",
+            "jsonl",
+            "--max-rows",
+            "2",
+        ],
+        cwd=metadata_root,
+        check=False,
+        capture_output=True,
+        text=True,
+        env=cli_environment,
+    )
+    assert jsonl_result.returncode == 0, jsonl_result.stderr
+    jsonl_lines = [
+        json.loads(line) for line in jsonl_result.stdout.splitlines()
+    ]
+    assert len(jsonl_lines) == 3
+    assert [
+        line["record"]["source_record_id"] for line in jsonl_lines[:-1]
+    ] == [
+        "au-mbs:3::2025-07-0",
+        "au-mbs:3::2025-07-1",
+    ]
+    assert jsonl_lines[0]["record"][value_column] == expected
+    assert all(line["type"] == "record" for line in jsonl_lines[:-1])
+    assert all(line["identity"]["path"] == path for line in jsonl_lines[:-1])
+    assert all(len(line["receipt_sha256"]) == 64 for line in jsonl_lines[:-1])
+    assert jsonl_lines[-1]["type"] == "summary"
+    assert jsonl_lines[-1]["row_count"] == 2
+    assert jsonl_lines[-1]["page_count"] == 2
+    assert jsonl_lines[-1]["source_completeness"] == "not_established"
     return page
 
 

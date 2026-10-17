@@ -1364,3 +1364,46 @@
   remain unverified. See
   `docs/qualification/australian-platinum-public-consumer-preflight-20261017.md`
   and `quality/qualifications/platinum-public-consumer-preflight-20261017.json`.
+
+## 2026-10-18 bounded multi-page benefits JSONL export
+
+- [x] Extend the existing read-only `benefits` CLI with `--format jsonl` and a
+  strict `--max-rows` ceiling of 1,000. Preserve the single-page JSON default.
+  The JSONL path follows signed cursors, binds each row to dataset identity,
+  query/window/page/receipt digests and conservative evidence states, and emits
+  one final summary with `source_completeness=not_established`. It rejects
+  cursor loops, page identity/query drift, malformed rows, and exports over
+  eight MiB before writing output. No source or product admission changed.
+- [x] Add synthetic unit controls for page traversal, row truncation with
+  resumable cursor (including a row cap that is not divisible by page size),
+  cursor loops, invalid page identity and row payloads, oversized pages,
+  offline-unavailable summaries, and the output byte ceiling; remove an
+  unreachable empty-page guard; add installed
+  wheel/sdist E2E coverage for exact scalar values and two-page JSONL output.
+  The focused benefits selection passed (45 tests), the broader affected
+  selection passed (119), and the installed browser/wheel/sdist E2E passed (1).
+  On the then-current base, the full production profile's main pytest pass
+  completed at 100%; its Darwin gremlins follow-up had one unrelated
+  `test_runner_measures_real_fixture_workloads` failure because `PERF-QUERY`
+  p95 was 288.846 ms against a 250 ms budget while another full validation was
+  active on the host. Mutation analysis completed (982 zapped, 137 survived);
+  Darwin observations are advisory. The serialized retry remained queued
+  behind another repository's full validation and was cancelled before it
+  started. After rebasing onto current main, protected hosted CI passed unit,
+  E2E, coverage, gremlins, performance, mutation, routine, strict, regeneration,
+  package, security, and consumer-platform lanes. Codecov patch coverage failed
+  at 81.08 percent against its 90.01 percent target; the annotated JSONL error
+  and unavailable branches were covered by the follow-up tests below. On implementation head
+  `250a2682fa51fcfbe8d4eb4836970cfe492d44a1`, the follow-up coverage passed at
+  100.00 percent against the 90.01 percent target, with all 40 hosted checks
+  passing. The isolated local performance retry also passed (1 test).
+- [x] Run the full local production profile on diff tree
+  `c39ccc33afae442983fb3784d1c93ecf800424793c7585743857d9a0c7b5280e` with
+  Python 3.14.6 and uv 0.13.1. It reported 6,667 passed, 3 optional skips,
+  2 failures in unrelated stable-release clean-clone reproduction tests, and
+  96.87% total coverage. Preserve that full-run outcome separately. The two
+  exact failing tests passed (2) under pinned uv 0.11.29 with the repository's
+  local serialized-validation lock. Hosted protected checks remain required.
+- [x] Keep the product and acceptance boundaries explicit: no new source,
+  source coverage claim, candidate admission, rights decision, publication, or
+  M-110/M-112 acceptance is implied by the CLI export or its synthetic tests.
