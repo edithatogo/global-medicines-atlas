@@ -1857,6 +1857,22 @@
   checks; the review finding is resolved. The historical profile bytes remain
   preserved and explicitly superseded only for its prior field-semantic
   acceptance interpretation.
+- [x] Reconcile the corrected candidate against exact current main
+  `b5b4d3ce6e3400e0fdb84ab2b56854776c4878e6` using hosted run `39032003723`.
+  The pinned 2026-08 XML identity matched; 40 fields across 6,046 rows each
+  have zero source-presence/projected-state mismatches. The report keeps
+  `field_semantics_accepted: false` and records no source values or bytes. The
+  six-table lineage and the proposed M-108 output prefix are recorded in
+  `docs/qualification/australian-m108-derived-products-20261017.md`; no
+  Parquet output, derived-rights approval, v4 admission, or publication exists.
+- [ ] Next action: obtain exact-release versioned MBS schema/change history or
+  source-owner clarification for the 2026-08 field meanings and temporal
+  semantics. Do not rerun completed workflows `39029209737` or `39032003723`;
+  do not generate or publish the proposed derived outputs until their
+  output-specific rights and admission gates are separately resolved. M-105's
+  D-006-07 chronology disposition remains blocked; the bounded pre-archive
+  record search is complete and must not be restarted absent newly surfaced
+  pre-archive evidence.
 
 
 ## M-112 public producer metadata discovery (2026-09-30)

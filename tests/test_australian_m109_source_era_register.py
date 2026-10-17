@@ -171,6 +171,44 @@ def test_m109_inventory_tracks_latest_mbs_archive_metadata_readback() -> None:
     } <= observed_paths
 
 
+def test_august_six_table_handoff_keeps_rights_and_candidate_state_separate() -> (
+    None
+):
+    m108 = _json(
+        "quality/qualifications/australian-m108-derived-products-20261017.json"
+    )
+    handoff = m108["august_2026_six_table_operation_assessment"]
+    source = handoff["source"]
+    authority = handoff["authorization"]
+    destination = handoff["proposed_destination"]
+
+    assert source["archive_revision"] == "da83cad9116e2f9a5b927be7b080e9a5e5ea6998"
+    assert source["sha256"] == (
+        "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+    )
+    assert source["official_release_match"] is True
+    assert authority["raw_archive_approval"].endswith("comment-5467052330")
+    assert authority["derived_output_authority"] == "absent"
+    assert authority["publication_performed"] is False
+    assert destination["identity_status"] == "proposal_only_not_created_or_admitted"
+    outputs = destination["outputs"]
+    assert [output["table"] for output in outputs] == [
+        "services",
+        "hierarchy",
+        "descriptions",
+        "fees",
+        "benefits",
+        "caps",
+    ]
+    assert all(output["rows"] == 6046 for output in outputs)
+    assert handoff["candidate_diagnostics"]["run_39032003723"][
+        "field_semantics_accepted"
+    ] is False
+    assert "Do not rerun completed 390292/390320 diagnostics" in handoff[
+        "smallest_next_action"
+    ]
+
+
 def test_m109_inventory_keeps_mbs_authorization_and_pbs_rights_separate() -> (
     None
 ):
