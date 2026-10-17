@@ -21,8 +21,6 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
-    env:
-      QUALIFICATION_DIR: ${{ runner.temp }}/gma-mbs-gold-candidate-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
@@ -38,6 +36,7 @@ jobs:
       - name: Verify pinned source objects and build the local candidate
         run: |
           set -euo pipefail
+          QUALIFICATION_DIR="$RUNNER_TEMP/gma-mbs-gold-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           mkdir -p "$QUALIFICATION_DIR"
           uv run --locked --python 3.14.6 python scripts/qualify_australian_mbs_gold_real_silver.py --check
           uv run --locked --python 3.14.6 python scripts/export_australian_mbs_gold_candidate_edges.py \
@@ -45,6 +44,7 @@ jobs:
       - name: Traverse every candidate edge through all consumers
         run: |
           set -euo pipefail
+          QUALIFICATION_DIR="$RUNNER_TEMP/gma-mbs-gold-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           uv run --locked --python 3.14.6 python scripts/qualify_australian_mbs_gold_candidate_consumers.py \
             --edge-file "$QUALIFICATION_DIR/candidate-edges.parquet" \
             --output "$QUALIFICATION_DIR/candidate-consumer-qualification.json"
@@ -57,4 +57,4 @@ jobs:
           retention-days: 90
       - name: Remove temporary candidate Parquet and workspace
         if: always()
-        run: rm -rf "$QUALIFICATION_DIR"
+        run: rm -rf "$RUNNER_TEMP/gma-mbs-gold-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
