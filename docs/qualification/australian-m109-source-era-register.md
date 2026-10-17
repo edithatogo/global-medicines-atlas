@@ -76,6 +76,23 @@ completeness, source-era semantics, and M-109 acceptance remain open.
 | Current PBS public API / API CSV (model 3.7.8, observed 2026-08) | Current distribution metadata and model documentation reviewed; no payload requested or acquired. Public history is limited to the most recent 12 months per the recorded documentation. | Current API field meanings and crosswalk to historical XML remain unqualified. | Current-effective schedule and monthly update metadata are not a field-level temporal mapping. | No API transformation run. | Public access is documented, but project retention and external redistribution authority remain unresolved. Obtain provider clarification and a source-specific maintainer rights decision before acquisition. |
 | Minimal PBS fixture | Synthetic fixture only; not a source era or real corpus. | Fixture contract only. | No real-source temporal evidence. | Test-only transformation behavior. | Must not count toward M-109 source-era completion. |
 
+## Official release-change metadata, 2026-10-18
+
+The [value-free release-change record](../../quality/qualifications/australian-mbs-official-release-change-notes-20261018.json)
+captures three official release-page observations. The March 2026 version 2
+page describes removal of incorrectly included EMSN caps for 12 items and
+changes to columns Y, AB, and AC. The July 2026 page documents corrections to
+Schedule Fee and 100% benefit for five items whose prior indexing was wrong.
+The August 2026 page identifies new item 73331 and states that no further XML
+changes occurred relative to the file published on 28 May. No schedule XML or
+source payload was requested or read for this metadata review.
+
+These notes narrow the release chronology but do not identify XML element
+names for the column labels, resolve the conflicting `EMSNCap` descriptions,
+or qualify semantics across the approved source-era denominator. The report
+therefore preserves M-109's blocked semantic status and the need for source-
+owner clarification or an exact-era schema/change record.
+
 ## August 2026 MBS predecessor comparison plan
 
 The official [August 2026 downloads page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801)

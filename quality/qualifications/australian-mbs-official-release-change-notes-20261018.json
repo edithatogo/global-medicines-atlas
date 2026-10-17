@@ -1,0 +1,87 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-official-release-change-notes",
+  "schema_version": 1,
+  "recorded_at": "2026-10-17T23:10:45Z",
+  "status": "release_changes_observed_semantic_mapping_unqualified",
+  "requirement": "M-109",
+  "observation_method": "metadata_only_official_release_pages",
+  "release_observations": [
+    {
+      "release": "MBS March 2026 corrected revision",
+      "xml_filename": "MBS-XML-20260301-version 2.XML",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260301",
+      "page_last_updated": "2026-04-10",
+      "release_date": "2026-02-10",
+      "effective_date": "2026-03-01",
+      "change_class": "correction_to_prior_release",
+      "corrected_item_codes": [
+        "2484",
+        "2485",
+        "2486",
+        "2487",
+        "2488",
+        "2489",
+        "2490",
+        "2491",
+        "2492",
+        "2493",
+        "2494",
+        "2495"
+      ],
+      "source_statement": "The corrected file removes EMSN caps incorrectly included in the file released on 5 February 2026 and amends columns Y, AB, and AC; the page says the changes align the file with prescribed legislation.",
+      "column_labels": ["Y", "AB", "AC"],
+      "xml_element_mapping": "not established by the release page",
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "release": "MBS July 2026 XML",
+      "xml_filename": "MBS-XML-20260701.XML",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701",
+      "page_last_updated": "2026-08-10",
+      "release_date": "2026-05-28",
+      "effective_date": "2026-07-01",
+      "change_class": "correction_to_prior_schedule_fees_and_benefits",
+      "corrected_item_codes": ["5200", "5203", "5207", "5208", "5209"],
+      "source_statement": "The page says these items were incorrectly indexed from 1 July 2025 and the revised MBS fee file corrects the Schedule Fee and corresponding 100% benefit to align with legislation.",
+      "xml_element_mapping": "not established by the release page",
+      "source_payload_requested": false,
+      "source_payload_read": false
+    },
+    {
+      "release": "MBS August 2026 XML",
+      "xml_filename": "MBS-XML-20260801.XML",
+      "source_url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801",
+      "page_last_updated": "2026-07-29",
+      "release_date": "2026-07-29",
+      "effective_date": "2026-08-01",
+      "change_class": "new_item_with_no_further_change_from_prior_published_release",
+      "new_item_code": "73331",
+      "unchanged_from_release_date": "2026-05-28",
+      "source_statement": "The page identifies new item 73331 and says no further XML changes are reflected compared with the last published version on 28 May 2026.",
+      "xml_element_mapping": "not established by the release page",
+      "source_payload_requested": false,
+      "source_payload_read": false
+    }
+  ],
+  "field_guide_reconciliation": {
+    "existing_report": "quality/qualifications/australian-mbs-field-guide-semantic-history-20261018.json",
+    "existing_conflict_status": "documented_wording_delta_and_source_conflict_observed_history_gap_open",
+    "column_to_xml_tag_mapping_established": false,
+    "release_linked_field_semantics_established": false,
+    "source_owner_clarification_obtained": false
+  },
+  "qualification_boundaries": {
+    "source_payload_bytes_requested": false,
+    "source_payload_bytes_read": false,
+    "xml_element_mapping_selected": false,
+    "field_guide_conflict_resolved": false,
+    "release_semantics_qualified": false,
+    "source_era_denominator_changed": false,
+    "rights_decision_changed": false,
+    "source_bytes_retained": false,
+    "silver_generated": false,
+    "m109_accepted": false
+  },
+  "interpretation": "These official release pages add release-date and correction-history evidence but do not map column labels to XML element names, resolve the conflicting EMSNCap documentation, or establish semantics for the complete source-era denominator."
+}
