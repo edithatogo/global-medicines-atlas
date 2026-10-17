@@ -218,3 +218,31 @@ monthly-schedule XML pages in bounded exact-page cohorts, preserving each
 revision and stopping before unsupported or ambiguous resources are staged.
 M-107 remains **blocked** pending source-era reconciliation, Health.gov workbook
 recovery, historical PBS evidence, and a complete expected-period denominator.
+
+### Exact-main receipt refresh, 2026-10-17
+
+Two authorized exact-main harvests on commit
+`832814cfd1b6859b511fc6c5134b8a45a3383096` completed for 32 official pages.
+[Run 38997283135](https://github.com/edithatogo/global-medicines-atlas/actions/runs/38997283135)
+processed 24 pages and recorded 58 monthly XML links; its final
+[anonymous-verification and cleanup receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228873129)
+reports 164 cumulative files verified at dataset revision
+`18cfdaa7ba826f0de8b2a3cd0960a55f7364a398`. [Run 38997740404](https://github.com/edithatogo/global-medicines-atlas/actions/runs/38997740404)
+processed eight pages and recorded 15 monthly XML links; its final
+[anonymous-verification and cleanup receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228907197)
+reports 204 cumulative files verified at revision
+`51da37714b2ea3ac3b0376d28769595e8c6e9c14`. Both runs record complete
+targeted pages, anonymous digest verification, and temporary-byte cleanup.
+The current immutable
+[manifest](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/51da37714b2ea3ac3b0376d28769595e8c6e9c14/manifest.json)
+was anonymously read back (204 files; SHA-256
+`22acb944fbca1a0bd68bb961a1342321c4a020cf1af4525cd0140177d5afbf60`).
+Reading the 83 B1 schedule receipt sidecars as metadata only and matching exact
+source URLs against the official index now yields 78 of 82 links with a
+receipt. The four unmatched URLs all belong to `Downloads-210615`, which has
+two distinct URL identity collisions on case-folded archive filenames. No raw
+XML was fetched during this reconciliation. The collision-safe path fix is
+under review; this page remains unacquired until that fix is merged and the
+same authorized hosted workflow verifies it. M-107 remains blocked on the
+complete historical MBS/PBS denominator, source-era qualification, utilisation
+families, and rights evidence.

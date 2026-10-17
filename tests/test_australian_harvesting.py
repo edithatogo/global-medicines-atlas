@@ -728,29 +728,68 @@ def test_discover_mbs_exact_pages_enforces_page_limit() -> None:
     assert requested == []
 
 
-def test_discover_mbs_exact_pages_flags_distinct_urls_with_same_archive_path() -> (
-    None
-):
-    def fetch_page(_url: str) -> str:
-        return (
-            '<a href="/first/MBS-XML.xml">First</a>'
-            '<a href="/second/MBS-XML.xml">Duplicate archive identity</a>'
-        )
+@pytest.mark.parametrize(
+    "filenames",
+    [
+        ("MBS-XML.xml", "MBS-XML.xml"),
+        ("MBS-XML-210601a.xml", "mbs-xml-210601a.xml"),
+    ],
+)
+def test_discover_mbs_exact_pages_disambiguates_source_url_path_collisions(
+    filenames: tuple[str, str],
+    tmp_path: Path,
+) -> None:
+    first_link = f'<a href="/first/{filenames[0]}">First</a>'
+    second_link = f'<a href="/second/{filenames[1]}">Second</a>'
 
-    resources, attempts = discover_mbs_schedule_resources_detailed(
-        "", fetch_page, exact_release_pages=["Downloads-250101"]
-    )
-
-    assert len(resources) == 1
-    assert attempts[0]["resource_count"] == 1
-    assert attempts[0]["identity_conflict_count"] == 1
-    assert attempts[0]["outcome"] == "archive_path_collision"
-    assert (
-        harvest_australian_mbs_schedule.targeted_pages_complete(
-            attempts, ["Downloads-250101"]
+    def discover(html: str, stage_dir: Path) -> dict[str, str]:
+        resources, attempts = discover_mbs_schedule_resources_detailed(
+            "", lambda _url: html, exact_release_pages=["Downloads-250101"]
         )
-        is False
-    )
+        assert len(resources) == 2
+        assert attempts[0]["resource_count"] == 2
+        assert attempts[0]["identity_conflict_count"] == 0
+        assert attempts[0]["outcome"] == "resources_found"
+        assert (
+            harvest_australian_mbs_schedule.targeted_pages_complete(
+                attempts, ["Downloads-250101"]
+            )
+            is True
+        )
+        paths = {resource.url: resource.archive_path for resource in resources}
+        assert len({path.casefold() for path in paths.values()}) == 2
+        for resource in resources:
+            assert resource.filename in resource.archive_path
+            source_digest = hashlib.sha256(
+                resource.url.encode("utf-8")
+            ).hexdigest()
+            assert (
+                f"/source-url-sha256/{source_digest}/" in resource.archive_path
+            )
+        staged = [
+            stage_harvest_payload(
+                resource,
+                stage_dir,
+                data_reader=lambda url: url.encode("utf-8"),
+                allowed_domains=ALLOWED_MBS_DOMAINS,
+            )
+            for resource in resources
+        ]
+        assert len({result.staged_payload_path for result in staged}) == 2
+        assert len({result.staged_receipt_path for result in staged}) == 2
+        for result in staged:
+            expected_payload = result.resource.url.encode("utf-8")
+            assert result.staged_payload_path.read_bytes() == expected_payload
+            assert (
+                result.receipt.sha256
+                == hashlib.sha256(expected_payload).hexdigest()
+            )
+        return paths
+
+    forward = discover(first_link + second_link, tmp_path / "forward")
+    reverse = discover(second_link + first_link, tmp_path / "reverse")
+
+    assert forward == reverse
 
 
 def test_discover_mbs_exact_pages_deduplicates_identical_urls() -> None:
@@ -772,7 +811,7 @@ def test_discover_mbs_exact_pages_deduplicates_identical_urls() -> None:
     )
 
 
-def test_ambiguous_exact_page_fails_before_staging(
+def test_distinct_source_urls_with_same_filename_can_be_staged(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     def fetch_page(_url: str) -> str:
@@ -781,10 +820,13 @@ def test_ambiguous_exact_page_fails_before_staging(
             '<a href="/second/MBS-XML.xml">Second</a>'
         )
 
-    def fail_staging(
-        _resources: list[DiscoveredHarvestResource], _stage_dir: Path
-    ) -> Never:
-        pytest.fail("ambiguous pages must not be staged")
+    staged_paths: list[str] = []
+
+    def stage_colliding_source_ids(
+        resources: list[DiscoveredHarvestResource], _stage_dir: Path
+    ) -> tuple[list[Never], dict[str, object]]:
+        staged_paths.extend(resource.archive_path for resource in resources)
+        return [], {"file_count": 2}
 
     monkeypatch.setattr(
         harvest_australian_mbs_schedule,
@@ -792,7 +834,9 @@ def test_ambiguous_exact_page_fails_before_staging(
         fetch_page,
     )
     monkeypatch.setattr(
-        harvest_australian_mbs_schedule, "stage_resources", fail_staging
+        harvest_australian_mbs_schedule,
+        "stage_resources",
+        stage_colliding_source_ids,
     )
     monkeypatch.setattr(
         sys,
@@ -806,8 +850,9 @@ def test_ambiguous_exact_page_fails_before_staging(
         ],
     )
 
-    with pytest.raises(RuntimeError, match="unambiguous XML resource"):
-        harvest_australian_mbs_schedule.main()
+    assert harvest_australian_mbs_schedule.main() == 0
+    assert len(staged_paths) == 2
+    assert len({path.casefold() for path in staged_paths}) == 2
 
 
 def test_discover_mbs_exact_pages_records_no_supported_resources() -> None:

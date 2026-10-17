@@ -2722,9 +2722,37 @@
   module coverage, `ty`, BasedPyright, Ruff, context validation, and JSON/diff
   checks pass. See the append-only evidence entry and the pinned-tool
   reproducibility reference recorded there.
-- [~] Harvest only the eligible authorized monthly-schedule XML pages in exact
-  main cohorts of at most 24 and reconcile exact B1 receipts, source
-  identities, and supersession chronology. Keep any page with an archive-path
-  collision out of the acquisition cohort until source identities can be
-  preserved without collision. M-107 remains blocked pending full MBS/PBS
-  period, source-era, utilisation, and rights reconciliation.
+- [~] Harvest eligible authorized monthly-schedule XML pages in exact main
+  cohorts of at most 24 and reconcile exact B1 receipts, source identities, and
+  supersession chronology. Two hosted cohorts of 24 and eight pages completed
+  at exact main `832814cfd1b6859b511fc6c5134b8a45a3383096`, adding immutable
+  dataset revisions `18cfdaa7ba826f0de8b2a3cd0960a55f7364a398` and
+  `51da37714b2ea3ac3b0376d28769595e8c6e9c14`; both receipts report anonymous
+  digest verification and cleanup. Exact URL reconciliation of the current
+  index now matches 78 of 82 XML links. The four unmatched URLs are all from
+  `Downloads-210615`; retain them out of acquisition until collision-safe
+  identity paths pass review, merge, and a targeted exact-main run. M-107
+  remains blocked pending the full MBS/PBS period, source-era, utilisation, and
+  rights reconciliation.
+
+## M-107 collision-safe source identity (2026-10-17)
+
+- [~] Preserve distinct official XML URLs that share an exact or
+  case-insensitive archive filename. The targeted page harvester now assigns
+  every member of a colliding group a deterministic
+  `source-url-sha256/<full URL digest>/<original filename>` path, while keeping
+  ordinary archive paths unchanged and deduplicating only identical URLs.
+  Regressions prove exact and case-only collision handling, input-order
+  independence, staging of separate payload and receipt paths, and
+  page-completeness behavior. Focused tests (74 harvesting plus 3 index
+  qualification; 77 total), adjacent publication/workflow tests (11),
+  BasedPyright, `ty`, Ruff, formatting, context validation, and diff checks
+  pass. Full Test-Goblin completed with 6,461 passed, 3 skipped,
+  and 3 failures at 96.88% total coverage. The three failed tests were rerun
+  individually with the pinned `uv 0.11.29` and all passed (3 passed); do not
+  treat the full profile itself as uninterrupted green. The change is not yet
+  merged.
+  The official `Downloads-210615` page has two filename collision classes and
+  remains unacquired until this implementation is merged and run through the
+  authorized exact-main workflow. M-107 remains blocked on its wider source
+  denominator and other historical MBS/PBS gaps.
