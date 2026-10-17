@@ -25,6 +25,7 @@ from .platinum_benefits import (
     BenefitsQuery,
     parse_benefits_filters,
 )
+from .platinum_edge_configuration import MAX_EDGE_FILE_ROWS
 from .platinum_edges import MAX_EDGE_ROWS, gold_edge_payload
 from .platinum_identity_service import UnknownPlatinumResourceError
 from .platinum_structure import (
@@ -317,7 +318,7 @@ def create_atlas_app(  # ruff: ignore[too-many-statements] - route registration 
             target_node_id: Annotated[str | None, Query(max_length=512)] = None,
             kind: Annotated[str | None, Query(max_length=512)] = None,
             limit: Annotated[int, Query(ge=1, le=MAX_EDGE_ROWS)] = 100,
-            offset: Annotated[int, Query(ge=0)] = 0,
+            offset: Annotated[int, Query(ge=0, le=MAX_EDGE_FILE_ROWS)] = 0,
         ) -> HTMLResponse:
             error: str | None = None
             payload: dict[str, object] | None = None

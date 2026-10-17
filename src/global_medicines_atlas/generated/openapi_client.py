@@ -221,6 +221,7 @@ class GlobalMedicinesAtlasClient:
         *,
         kind: str | None = None,
         limit: int | None = None,
+        offset: int | None = None,
         source_node_id: str | None = None,
         target_node_id: str | None = None,
     ) -> JsonValue:
@@ -228,6 +229,7 @@ class GlobalMedicinesAtlasClient:
         query = _query((
             ("kind", kind),
             ("limit", limit),
+            ("offset", offset),
             ("source_node_id", source_node_id),
             ("target_node_id", target_node_id),
         ))

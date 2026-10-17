@@ -58,13 +58,13 @@ def test_candidate_edges_are_bounded_and_visible_in_atlas(tmp_path) -> None:
     assert command.exit_code == 0, command.stderr
     cli_payload = json.loads(command.stdout)
     assert api.json() == cli_payload
-    assert "Next 1 candidate edges" in page.text
+    assert f"Next {edges.num_rows} candidate edges" in page.text
     next_page = client.get("/gold/edges", params={"limit": 1, "offset": 1})
     assert next_page.status_code == 200
-    assert "Next 1 candidate edges" not in next_page.text
+    assert f"Next {edges.num_rows} candidate edges" not in next_page.text
     filtered = client.get(
         "/gold/edges",
-        params={"source_node_id": edges["source_node_id"][0].as_py()},
+        params={"source_node_id": edges.to_pylist()[0]["source_node_id"]},
     )
     assert filtered.status_code == 200
     assert filtered.text.count('<article class="result-card"') == 1

@@ -6,24 +6,35 @@ import json
 from datetime import UTC, datetime, timedelta
 from typing import cast
 
+import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
-from test_mbs_gold_graph import graph
+from test_atlas_e2e import StateService
+from test_mbs_gold_graph import (
+    _admitted_input,  # ruff: ignore[import-private-name] -- shared fixture
+    _admitted_table,  # ruff: ignore[import-private-name] -- shared fixture
+    graph,
+)
 from test_pbs_gold_graph import graph as pbs_graph
 from typer.testing import CliRunner
 
 from global_medicines_atlas.api import create_app
+from global_medicines_atlas.atlas import create_atlas_app
 from global_medicines_atlas.cli import app
 from global_medicines_atlas.gold_edge_review import build_gold_edge_review_queue
 from global_medicines_atlas.matching_models import (
     AdjudicationEvent,
     ReviewState,
 )
-from global_medicines_atlas.mbs_gold_graph import project_mbs_gold_graph_arrow
+from global_medicines_atlas.mbs_gold_graph import (
+    build_mbs_gold_graph_from_admitted_silver,
+    project_mbs_gold_graph_arrow,
+)
 from global_medicines_atlas.pbs_gold_graph import project_pbs_gold_graph_arrow
 from global_medicines_atlas.platinum_edge_configuration import (
     MAX_EDGE_FILE_BYTES,
+    MAX_EDGE_FILE_ROWS,
     load_gold_edges,
 )
 from global_medicines_atlas.query_service import ReadOnlyQueryService
@@ -74,6 +85,86 @@ def test_edge_route_returns_structural_evidence() -> None:
     payload = response.json()
     assert payload["qualification"] == "synthetic_silver_candidate_only"
     assert payload["items"][0]["evidence"]["source_id"] == "au-mbs"
+    assert payload["offset"] == 0
+    assert payload["has_more"] is False
+
+
+def test_admitted_mbs_v3_api_preserves_all_three_graph_bindings() -> None:
+    candidate = build_mbs_gold_graph_from_admitted_silver(
+        _admitted_table("services", "ItemNum"),
+        _admitted_table("benefits", "Benefit100"),
+        _admitted_input(),
+    )
+    _, edges = project_mbs_gold_graph_arrow(candidate)
+    response = TestClient(
+        create_app(cast("ReadOnlyQueryService", object()), gold_edges=edges)
+    ).get("/api/v1/edges", params={"limit": 1})
+
+    assert response.status_code == 200
+    assert response.json()["admission_bindings"] == {
+        "input_admission_sha256": candidate.input_admission_sha256,
+        "input_semantic_manifest_sha256": (
+            candidate.input_semantic_manifest_sha256
+        ),
+        "graph_sha256": candidate.graph_sha256,
+    }
+
+
+def test_file_backed_edge_consumers_traverse_multiple_pages(tmp_path) -> None:
+    _, sample = project_mbs_gold_graph_arrow(graph())
+    sample_row = sample.to_pylist()[0]
+    rows = [
+        {**sample_row, "edge_id": f"edge:{index:04d}"} for index in range(1001)
+    ]
+    edges = pa.Table.from_pylist(rows, schema=sample.schema)
+    edge_path = tmp_path / "many-edges.parquet"
+    pq.write_table(edges, edge_path)
+    loaded = load_gold_edges(edge_path)
+    api = TestClient(
+        create_app(cast("ReadOnlyQueryService", object()), gold_edges=loaded)
+    )
+    atlas = TestClient(create_atlas_app(StateService(), gold_edges=loaded))
+
+    for offset, expected_count, expected_has_more in (
+        (0, 1000, True),
+        (1000, 1, False),
+    ):
+        params = {"limit": 1000, "offset": offset}
+        api_response = api.get("/api/v1/edges", params=params)
+        cli_result = CliRunner().invoke(
+            app,
+            [
+                "edges",
+                "--edge-file",
+                str(edge_path),
+                "--limit",
+                "1000",
+                "--offset",
+                str(offset),
+            ],
+        )
+        atlas_response = atlas.get("/gold/edges", params=params)
+
+        assert api_response.status_code == 200
+        assert cli_result.exit_code == 0, cli_result.stderr
+        assert atlas_response.status_code == 200
+        api_page = api_response.json()
+        cli_page = json.loads(cli_result.stdout)
+        assert api_page == cli_page
+        assert api_page["offset"] == offset
+        assert api_page["total"] == edges.num_rows
+        assert len(api_page["items"]) == expected_count
+        assert api_page["has_more"] is expected_has_more
+        assert f"edge:{offset:04d}" in atlas_response.text
+        if expected_has_more:
+            assert (
+                f"Next {edges.num_rows} candidate edges" in atlas_response.text
+            )
+        else:
+            assert (
+                f"Next {edges.num_rows} candidate edges"
+                not in atlas_response.text
+            )
 
 
 def test_pbs_edge_route_and_cli_preserve_source_structure(tmp_path) -> None:
@@ -240,6 +331,46 @@ def test_gold_review_queue_cli_keeps_unverified_adjudications_pending(
     assert rationale not in result.stdout
 
 
+def test_gold_review_queue_refuses_truncated_paginated_candidates(
+    tmp_path,
+) -> None:
+    candidate = graph()
+    _, edges = project_mbs_gold_graph_arrow(candidate)
+    edge_file = tmp_path / "oversized-queue.parquet"
+    pq.write_table(pa.concat_tables([edges] * 201), edge_file)
+    first_case = build_gold_edge_review_queue(
+        candidate.edges,
+        queued_at=QUEUED_AT,
+    )[0]
+    adjudications_file = tmp_path / "adjudications.jsonl"
+    append_adjudication(
+        adjudications_file,
+        _synthetic_event(
+            first_case.review_case_id,
+            ReviewState.ACCEPTED,
+            QUEUED_AT,
+            None,
+        ),
+    )
+    result = CliRunner().invoke(
+        app,
+        [
+            "gold-review-queue",
+            "--edge-file",
+            str(edge_file),
+            "--queued-at",
+            QUEUED_AT.isoformat(),
+            "--adjudications-file",
+            str(adjudications_file),
+            "--limit",
+            "1",
+        ],
+    )
+    assert result.exit_code == 2
+    assert "invalid_request" in result.stderr
+    assert "review queue edge row bound exceeded" not in result.stderr
+
+
 def test_gold_review_queue_cli_rejects_reordered_adjudication_events(
     tmp_path,
 ) -> None:
@@ -324,3 +455,18 @@ def test_edge_loader_rejects_directory_and_oversized_file(tmp_path) -> None:
     oversized.write_bytes(b" " * (MAX_EDGE_FILE_BYTES + 1))
     with pytest.raises(ValueError, match="byte bound"):
         load_gold_edges(oversized)
+
+
+def test_edge_loader_rejects_file_over_row_bound_before_read(tmp_path) -> None:
+    _, sample = project_mbs_gold_graph_arrow(graph())
+    sample_row = sample.to_pylist()[0]
+    rows = [
+        {**sample_row, "edge_id": f"edge:{index:05d}"}
+        for index in range(MAX_EDGE_FILE_ROWS + 1)
+    ]
+    oversized = pa.Table.from_pylist(rows, schema=sample.schema)
+    path = tmp_path / "too-many-edges.parquet"
+    pq.write_table(oversized, path)
+
+    with pytest.raises(ValueError, match="row bound"):
+        load_gold_edges(path)
