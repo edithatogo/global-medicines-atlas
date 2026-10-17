@@ -4,6 +4,7 @@ import json
 from collections import Counter
 from hashlib import sha256
 from pathlib import Path
+from typing import Any
 
 import pytest
 from scripts.prepare_m112_imported_b2_manifest import (
@@ -14,6 +15,45 @@ from scripts.prepare_m112_imported_b2_manifest import (
 )
 
 from global_medicines_atlas.bronze_raw_evidence import RawEvidenceState
+
+
+def _assert_m112_cohort_member_bound(
+    *,
+    root: Path,
+    approved: dict[str, Any],
+    acquisitions_by_path: dict[str, dict[str, Any]],
+    bindings_by_acquisition: dict[str, dict[str, Any]],
+    b2_by_acquisition: dict[str, dict[str, Any]],
+) -> None:
+    imported = acquisitions_by_path[approved["path"]]
+    acquisition_id = imported["acquisition_id"]
+    binding = bindings_by_acquisition[acquisition_id]
+    b2 = b2_by_acquisition[acquisition_id]
+    event = json.loads(
+        (root / imported["event_path"]).read_text(encoding="utf-8")
+    )
+    digest = approved["identity"]["sha256"]
+    byte_count = approved["identity"]["byte_count"]
+
+    assert binding["content_id"] == digest
+    assert binding["expected_payload_sha256"] == digest
+    assert binding["expected_byte_count"] == byte_count
+    assert b2["content_id"] == digest
+    assert b2["source_id"] == event["source_id"]
+    assert b2["external_reference"] == binding["external_reference"]
+    assert b2["state"] == RawEvidenceState.EXTERNAL_REFERENCE_ONLY
+    assert b2["payload_sha256"] is None
+    assert b2["byte_count"] is None
+
+    assert approved["rights"]["state"].startswith("approved_exact_scope_")
+    assert (
+        approved["rights"]["decision_evidence"]["path"]
+        == "quality/qualifications/"
+        "australian-mbs-utilisation-exact-scope-rights-decision-20261004.json"
+    )
+    assert approved["v4_admission"] is False
+    assert approved["consumer_canary"] is False
+    assert approved["disposition"] == "deferred_not_admitted"
 
 
 @pytest.mark.unit
@@ -92,6 +132,55 @@ def test_m112_b2_reference_manifest_and_qualification_are_reproducible() -> (
 
     assert (root / OUTPUT_PATH).read_bytes() == manifest_bytes
     assert (root / QUALIFICATION_PATH).read_bytes() == qualification_bytes
+
+
+@pytest.mark.unit
+def test_m112_b2_reference_rows_bind_to_the_exact_approved_14_object_cohort() -> (
+    None
+):
+    root = Path(__file__).resolve().parents[1]
+    m112 = json.loads(
+        (
+            root / "quality/qualifications/"
+            "australian-m112-per-object-gate-reconciliation-20261005.json"
+        ).read_text(encoding="utf-8")
+    )
+    acquisition_import = json.loads(
+        (
+            root / "quality/qualifications/"
+            "australian-mbs-utilisation-acquisition-import-20261004.json"
+        ).read_text(encoding="utf-8")
+    )
+    manifest = json.loads((root / OUTPUT_PATH).read_text(encoding="utf-8"))
+    qualification = json.loads(
+        (root / QUALIFICATION_PATH).read_text(encoding="utf-8")
+    )
+
+    cohort = [
+        row
+        for row in m112["objects"]
+        if row["dataset"] == "edithatogo/australian-mbs-utilisation-archive"
+    ]
+    assert len(cohort) == 14
+    assert all(row["approved_denominator_member"] for row in cohort)
+    assert m112["scope"]["approved_denominator"] == 1759
+    acquisitions_by_path = {
+        row["path"]: row for row in acquisition_import["records"]
+    }
+    bindings_by_acquisition = {
+        row["acquisition_id"]: row for row in qualification["records"]
+    }
+    b2_by_acquisition = {row["acquisition_id"]: row for row in manifest["rows"]}
+    assert len(bindings_by_acquisition) == len(b2_by_acquisition) == 14
+
+    for approved in cohort:
+        _assert_m112_cohort_member_bound(
+            root=root,
+            approved=approved,
+            acquisitions_by_path=acquisitions_by_path,
+            bindings_by_acquisition=bindings_by_acquisition,
+            b2_by_acquisition=b2_by_acquisition,
+        )
 
 
 @pytest.mark.unit
