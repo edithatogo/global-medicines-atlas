@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 from collections import Counter
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, TypedDict
@@ -54,8 +55,24 @@ class ReleaseIdentity(TypedDict):
     official_uri: str
     official_page: str
     rights_reference: str
+    harvest_receipt_archive_path: str
     harvest_receipt_path: str
     harvest_receipt_sha256: str
+
+
+class ComparisonFailureError(ValueError):
+    """A safe, static failure label for the aggregate-only hosted report."""
+
+    def __init__(
+        self,
+        stage: str,
+        code: str,
+        failure_class: str = "identity_or_structure_mismatch",
+    ) -> None:
+        self.stage = stage
+        self.code = code
+        self.failure_class = failure_class
+        super().__init__(code)
 
 
 JULY: ReleaseIdentity = {
@@ -69,6 +86,7 @@ JULY: ReleaseIdentity = {
     "official_uri": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/d4bd04ca56657072ca258df70023b066/$FILE/MBS-XML-20260701.XML",
     "official_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701",
     "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/blob/2ceafb1b889a701506a6c8f0ec9b1fc86fdddbda/quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+    "harvest_receipt_archive_path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
 }
 AUGUST: ReleaseIdentity = {
     "source_era": "2026-08-01",
@@ -79,6 +97,7 @@ AUGUST: ReleaseIdentity = {
     "official_uri": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/650f3eec0dfb990fca25692100069854/81efb2067580a870ca258e28007f588c/$FILE/MBS-XML-20260801.XML",
     "official_page": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801",
     "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/339#issuecomment-5467052330",
+    "harvest_receipt_archive_path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
     "harvest_receipt_path": "bronze/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML.receipt.json",
     "harvest_receipt_sha256": "9bca6260ea9d25d7ee9c184b59eed03b059d8da486dea31ec1d058965aae55ed",
 }
@@ -136,7 +155,9 @@ def _record_identity(fields: dict[str, str | None]) -> tuple[str, ...]:
     )
 
 
-def _profile(payload: bytes, receipt: SourceReceipt) -> dict[str, Any]:
+def _profile(
+    payload: bytes, receipt: SourceReceipt, *, stage: str
+) -> dict[str, Any]:
     metadata = inspect_mbs_source_xml_stream(payload, receipt)
     field_counts: dict[str, Counter[str]] = {
         name: Counter() for name in MBS_NATIVE_FIELDS
@@ -146,8 +167,9 @@ def _profile(payload: bytes, receipt: SourceReceipt) -> dict[str, Any]:
         values = {field.name: field.value for field in record.fields}
         identity = _record_identity(values)
         if identity in records:
-            raise ValueError(
-                "ambiguous repeated MBS item identity; comparison is incomplete"
+            raise ComparisonFailureError(
+                stage,
+                "duplicate_release_independent_record_identity",
             )
         records[identity] = values
         for field in MBS_NATIVE_FIELDS:
@@ -170,6 +192,8 @@ def compare_releases(
     *,
     july_payload: bytes,
     august_payload: bytes,
+    july_harvest_payload: bytes | None = None,
+    august_harvest_payload: bytes | None = None,
     july_official_payload: bytes,
     august_official_payload: bytes,
     compared_at: datetime,
@@ -178,21 +202,54 @@ def compare_releases(
     """Verify both source identities and return aggregate-only diagnostics."""
     july_receipt = _receipt(JULY, compared_at)
     august_receipt = _receipt(AUGUST, compared_at)
-    payloads: tuple[tuple[ReleaseIdentity, bytes, bytes], ...] = (
-        (JULY, july_payload, july_official_payload),
-        (AUGUST, august_payload, august_official_payload),
+    payloads: tuple[tuple[ReleaseIdentity, bytes, bytes, bytes], ...] = (
+        (
+            JULY,
+            july_payload,
+            july_payload
+            if july_harvest_payload is None
+            else july_harvest_payload,
+            july_official_payload,
+        ),
+        (
+            AUGUST,
+            august_payload,
+            august_payload
+            if august_harvest_payload is None
+            else august_harvest_payload,
+            august_official_payload,
+        ),
     )
-    for era, archived, official in payloads:
-        for label, payload in (("archive", archived), ("official", official)):
+    for era, archived, harvest_archive, official in payloads:
+        for label, payload in (
+            ("archive", archived),
+            ("harvest_archive", harvest_archive),
+            ("official", official),
+        ):
             if (
                 len(payload) != era["byte_count"]
                 or hashlib.sha256(payload).hexdigest() != era["sha256"]
             ):
-                raise ValueError(
-                    f"{era['source_era']} {label} bytes differ from pinned identity"
+                raise ComparisonFailureError(
+                    f"{era['source_era']}_{label}_payload_identity",
+                    "pinned_payload_identity_mismatch",
                 )
-    july = _profile(july_payload, july_receipt)
-    august = _profile(august_payload, august_receipt)
+    july = _run_stage(
+        "2026-07-01_archive_xml_profile",
+        lambda: _profile(
+            july_payload, july_receipt, stage="2026-07-01_archive_xml_profile"
+        ),
+        code="source_xml_profile_failed",
+    )
+    august = _run_stage(
+        "2026-08-01_archive_xml_profile",
+        lambda: _profile(
+            august_payload,
+            august_receipt,
+            stage="2026-08-01_archive_xml_profile",
+        ),
+        code="source_xml_profile_failed",
+    )
     july_records = july["records"]
     august_records = august["records"]
     july_ids = set(july_records)
@@ -254,6 +311,9 @@ def compare_releases(
                 "release_id": era["release_id"],
                 "archive_revision": ARCHIVE_REVISION,
                 "archive_path": era["archive_path"],
+                "harvest_receipt_archive_path": era[
+                    "harvest_receipt_archive_path"
+                ],
                 "official_source_uri": era["official_uri"],
                 "official_download_page": era["official_page"],
                 "sha256": era["sha256"],
@@ -316,10 +376,17 @@ def _validate_harvest_receipt(
         hashlib.sha256(receipt_bytes).hexdigest()
         != era["harvest_receipt_sha256"]
     ):
-        raise ValueError(
-            f"{era['source_era']} harvest receipt differs from pinned sidecar identity"
+        raise ComparisonFailureError(
+            f"{era['source_era']}_harvest_receipt_digest",
+            "pinned_harvest_receipt_digest_mismatch",
         )
-    receipt = TypeAdapter(dict[str, object]).validate_json(receipt_bytes)
+    try:
+        receipt = TypeAdapter(dict[str, object]).validate_json(receipt_bytes)
+    except (SyntaxError, ValueError) as error:
+        raise ComparisonFailureError(
+            f"{era['source_era']}_harvest_receipt_schema",
+            "harvest_receipt_schema_invalid",
+        ) from error
     expected: dict[str, object] = {
         "schema_id": "global-medicines-atlas.australian-harvest-receipt",
         "schema_version": 1,
@@ -327,16 +394,41 @@ def _validate_harvest_receipt(
         "category": "monthly_schedule_xml",
         "source_url": era["official_uri"],
         "final_url": era["official_uri"],
-        "archive_path": era["archive_path"],
+        "archive_path": era["harvest_receipt_archive_path"],
         "sha256": era["sha256"],
         "byte_count": era["byte_count"],
     }
     if any(receipt.get(key) != value for key, value in expected.items()):
-        raise ValueError(
-            f"{era['source_era']} harvest receipt identity is not approved"
+        raise ComparisonFailureError(
+            f"{era['source_era']}_harvest_receipt_identity",
+            "harvest_receipt_identity_mismatch",
         )
 
 
+def _run_stage(
+    stage: str,
+    operation: Callable[[], Any],
+    *,
+    code: str = "identity_or_structure_mismatch",
+) -> Any:
+    """Run one bounded validation stage and retain only static failure labels."""
+    try:
+        return operation()
+    except ComparisonFailureError:
+        raise
+    except DestinationPolicyError as error:
+        raise ComparisonFailureError(
+            stage, "destination_policy_rejected", "destination_policy_rejected"
+        ) from error
+    except (httpx.HTTPError, OSError) as error:
+        raise ComparisonFailureError(
+            stage, "source_endpoint_unavailable", "source_endpoint_unavailable"
+        ) from error
+    except (SyntaxError, ValueError) as error:
+        raise ComparisonFailureError(stage, code) from error
+
+
+# ruff: ignore[too-many-locals] - keep each source identity in one bounded hosted scope
 def compare(*, exact_commit: str) -> dict[str, Any]:
     if os.environ.get("GITHUB_ACTIONS") != "true":
         raise RuntimeError(
@@ -356,6 +448,8 @@ def compare(*, exact_commit: str) -> dict[str, Any]:
     )
     july_archive = base + JULY["archive_path"]
     august_archive = base + AUGUST["archive_path"]
+    july_harvest_archive = base + JULY["harvest_receipt_archive_path"]
+    august_harvest_archive = base + AUGUST["harvest_receipt_archive_path"]
     july_sidecar = base + JULY["harvest_receipt_path"]
     august_sidecar = base + AUGUST["harvest_receipt_path"]
     with httpx.Client(
@@ -365,17 +459,69 @@ def compare(*, exact_commit: str) -> dict[str, Any]:
         max_redirects=policy.max_redirects,
         transport=BoundIPAddressTransport(policy=policy),
     ) as client:
-        july_sidecar_bytes = _fetch(client, july_sidecar)
-        august_sidecar_bytes = _fetch(client, august_sidecar)
-        _validate_harvest_receipt(JULY, july_sidecar_bytes)
-        _validate_harvest_receipt(AUGUST, august_sidecar_bytes)
-        july_payload = _fetch(client, july_archive)
-        august_payload = _fetch(client, august_archive)
-        july_official = _fetch(client, JULY["official_uri"])
-        august_official = _fetch(client, AUGUST["official_uri"])
+        july_sidecar_bytes = _run_stage(
+            "2026-07-01_harvest_receipt_fetch",
+            lambda: _fetch(client, july_sidecar),
+            code="harvest_receipt_fetch_failed",
+        )
+        august_sidecar_bytes = _run_stage(
+            "2026-08-01_harvest_receipt_fetch",
+            lambda: _fetch(client, august_sidecar),
+            code="harvest_receipt_fetch_failed",
+        )
+        _run_stage(
+            "2026-07-01_harvest_receipt_validation",
+            lambda: _validate_harvest_receipt(JULY, july_sidecar_bytes),
+            code="harvest_receipt_identity_mismatch",
+        )
+        _run_stage(
+            "2026-08-01_harvest_receipt_validation",
+            lambda: _validate_harvest_receipt(AUGUST, august_sidecar_bytes),
+            code="harvest_receipt_identity_mismatch",
+        )
+        july_payload = _run_stage(
+            "2026-07-01_archive_payload_fetch",
+            lambda: _fetch(client, july_archive),
+            code="archive_payload_fetch_failed",
+        )
+        august_payload = _run_stage(
+            "2026-08-01_archive_payload_fetch",
+            lambda: _fetch(client, august_archive),
+            code="archive_payload_fetch_failed",
+        )
+        july_harvest_payload = (
+            july_payload
+            if JULY["harvest_receipt_archive_path"] == JULY["archive_path"]
+            else _run_stage(
+                "2026-07-01_harvest_archive_payload_fetch",
+                lambda: _fetch(client, july_harvest_archive),
+                code="harvest_archive_payload_fetch_failed",
+            )
+        )
+        august_harvest_payload = (
+            august_payload
+            if AUGUST["harvest_receipt_archive_path"] == AUGUST["archive_path"]
+            else _run_stage(
+                "2026-08-01_harvest_archive_payload_fetch",
+                lambda: _fetch(client, august_harvest_archive),
+                code="harvest_archive_payload_fetch_failed",
+            )
+        )
+        july_official = _run_stage(
+            "2026-07-01_official_payload_fetch",
+            lambda: _fetch(client, JULY["official_uri"]),
+            code="official_payload_fetch_failed",
+        )
+        august_official = _run_stage(
+            "2026-08-01_official_payload_fetch",
+            lambda: _fetch(client, AUGUST["official_uri"]),
+            code="official_payload_fetch_failed",
+        )
     return compare_releases(
         july_payload=july_payload,
         august_payload=august_payload,
+        july_harvest_payload=july_harvest_payload,
+        august_harvest_payload=august_harvest_payload,
         july_official_payload=july_official,
         august_official_payload=august_official,
         compared_at=datetime.now(UTC),
@@ -386,12 +532,22 @@ def compare(*, exact_commit: str) -> dict[str, Any]:
 def _incomplete_report(
     *, exact_commit: str, compared_at: datetime, error: Exception
 ) -> dict[str, Any]:
-    if isinstance(error, DestinationPolicyError):
+    if isinstance(error, ComparisonFailureError):
+        failure_class = error.failure_class
+        failure_stage = error.stage
+        failure_code = error.code
+    elif isinstance(error, DestinationPolicyError):
         failure_class = "destination_policy_rejected"
+        failure_stage = "unclassified"
+        failure_code = failure_class
     elif isinstance(error, (httpx.HTTPError, OSError)):
         failure_class = "source_endpoint_unavailable"
+        failure_stage = "unclassified"
+        failure_code = failure_class
     else:
         failure_class = "identity_or_structure_mismatch"
+        failure_stage = "unclassified"
+        failure_code = failure_class
     return {
         "schema_id": "global-medicines-atlas.mbs-predecessor-comparison",
         "schema_version": 1,
@@ -399,12 +555,17 @@ def _incomplete_report(
         "exact_commit": exact_commit,
         "compared_at": compared_at.astimezone(UTC).isoformat(),
         "failure_class": failure_class,
+        "failure_stage": failure_stage,
+        "failure_code": failure_code,
         "releases": [
             {
                 "source_era": era["source_era"],
                 "release_id": era["release_id"],
                 "archive_revision": ARCHIVE_REVISION,
                 "archive_path": era["archive_path"],
+                "harvest_receipt_archive_path": era[
+                    "harvest_receipt_archive_path"
+                ],
                 "official_source_uri": era["official_uri"],
                 "official_download_page": era["official_page"],
                 "sha256": era["sha256"],

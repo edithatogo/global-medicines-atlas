@@ -1,14 +1,16 @@
 """Aggregate-only regression tests for adjacent MBS release comparison."""
 
+# pyright: reportPrivateUsage=false
+
 import hashlib
 import json
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import cast
 
 import httpx
 import pytest
-from pydantic import ValidationError
 from scripts import compare_mbs_source_eras as command
 
 
@@ -36,6 +38,19 @@ def _pin(monkeypatch: pytest.MonkeyPatch, july: bytes, august: bytes) -> None:
     )
     monkeypatch.setattr(command, "JULY", july_era)
     monkeypatch.setattr(command, "AUGUST", august_era)
+
+
+def _replace_receipt_hash(
+    monkeypatch: pytest.MonkeyPatch,
+    era_name: str,
+    era: command.ReleaseIdentity,
+    digest: str,
+) -> None:
+    updated = cast(
+        "command.ReleaseIdentity",
+        {**era, "harvest_receipt_sha256": digest},
+    )
+    monkeypatch.setattr(command, era_name, updated)
 
 
 def test_comparison_emits_aggregate_counts_without_source_values_or_ids(
@@ -66,6 +81,13 @@ def test_comparison_emits_aggregate_counts_without_source_values_or_ids(
     ]
     assert report["source_values_retained"] is False
     assert report["source_identifiers_emitted"] is False
+    assert report["releases"][1]["archive_path"] == (
+        "raw/mbs/releases/2026-08-01/"
+        "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml"
+    )
+    assert report["releases"][1]["harvest_receipt_archive_path"] == (
+        "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML"
+    )
     july_rights, august_rights = [
         release["rights_reference"] for release in report["releases"]
     ]
@@ -88,7 +110,7 @@ def test_comparison_rejects_archive_or_official_identity_mismatch(
     august = _payload(_record("10001", "10.00"))
     _pin(monkeypatch, july, august)
 
-    with pytest.raises(ValueError, match="2026-07-01 archive bytes"):
+    with pytest.raises(command.ComparisonFailureError) as failure:
         command.compare_releases(
             july_payload=july + b" ",
             august_payload=august,
@@ -97,6 +119,8 @@ def test_comparison_rejects_archive_or_official_identity_mismatch(
             compared_at=datetime(2026, 10, 17, tzinfo=UTC),
             exact_commit="a" * 40,
         )
+    assert failure.value.stage == "2026-07-01_archive_payload_identity"
+    assert failure.value.code == "pinned_payload_identity_mismatch"
 
 
 def test_comparison_rejects_ambiguous_item_identity(
@@ -106,9 +130,7 @@ def test_comparison_rejects_ambiguous_item_identity(
     august = _payload(_record("10001", "11.00"))
     _pin(monkeypatch, july, august)
 
-    with pytest.raises(
-        ValueError, match="ambiguous repeated MBS item identity"
-    ):
+    with pytest.raises(command.ComparisonFailureError) as failure:
         command.compare_releases(
             july_payload=july,
             august_payload=august,
@@ -117,6 +139,8 @@ def test_comparison_rejects_ambiguous_item_identity(
             compared_at=datetime(2026, 10, 17, tzinfo=UTC),
             exact_commit="a" * 40,
         )
+    assert failure.value.code == "duplicate_release_independent_record_identity"
+    assert failure.value.stage == "2026-07-01_archive_xml_profile"
 
 
 def test_harvest_receipt_must_bind_exact_source_category_and_payload(
@@ -134,40 +158,121 @@ def test_harvest_receipt_must_bind_exact_source_category_and_payload(
         "byte_count": command.JULY["byte_count"],
     }
     receipt_bytes = json.dumps(receipt).encode()
-    monkeypatch.setitem(
+    _replace_receipt_hash(
+        monkeypatch,
+        "JULY",
         command.JULY,
-        "harvest_receipt_sha256",
         hashlib.sha256(receipt_bytes).hexdigest(),
     )
     command._validate_harvest_receipt(command.JULY, receipt_bytes)
 
-    monkeypatch.setitem(command.JULY, "harvest_receipt_sha256", "0" * 64)
-    with pytest.raises(ValueError, match="pinned sidecar identity"):
+    _replace_receipt_hash(monkeypatch, "JULY", command.JULY, "0" * 64)
+    with pytest.raises(command.ComparisonFailureError) as failure:
         command._validate_harvest_receipt(command.JULY, receipt_bytes)
+    assert failure.value.code == "pinned_harvest_receipt_digest_mismatch"
 
     receipt["source_url"] = command.AUGUST["official_uri"]
     wrong_source_bytes = json.dumps(receipt).encode()
-    monkeypatch.setitem(
+    _replace_receipt_hash(
+        monkeypatch,
+        "JULY",
         command.JULY,
-        "harvest_receipt_sha256",
         hashlib.sha256(wrong_source_bytes).hexdigest(),
     )
-    with pytest.raises(ValueError, match="harvest receipt identity"):
+    with pytest.raises(command.ComparisonFailureError) as failure:
         command._validate_harvest_receipt(command.JULY, wrong_source_bytes)
+    assert failure.value.code == "harvest_receipt_identity_mismatch"
 
 
 def test_harvest_receipt_must_be_a_json_object(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     receipt_bytes = b"[]"
-    monkeypatch.setitem(
+    _replace_receipt_hash(
+        monkeypatch,
+        "JULY",
         command.JULY,
-        "harvest_receipt_sha256",
         hashlib.sha256(receipt_bytes).hexdigest(),
     )
 
-    with pytest.raises(ValidationError, match="Input should be an object"):
+    with pytest.raises(command.ComparisonFailureError) as failure:
         command._validate_harvest_receipt(command.JULY, receipt_bytes)
+    assert failure.value.code == "harvest_receipt_schema_invalid"
+
+
+def test_august_identity_matches_the_pinned_harvest_receipt_shape(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    receipt = {
+        "schema_id": "global-medicines-atlas.australian-harvest-receipt",
+        "schema_version": 1,
+        "source_id": "au-mbs",
+        "category": "monthly_schedule_xml",
+        "source_url": command.AUGUST["official_uri"],
+        "final_url": command.AUGUST["official_uri"],
+        "archive_path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "byte_count": 8_293_331,
+    }
+    receipt_bytes = json.dumps(receipt).encode()
+    assert (
+        command.AUGUST["harvest_receipt_sha256"]
+        == "9bca6260ea9d25d7ee9c184b59eed03b059d8da486dea31ec1d058965aae55ed"
+    )
+    _replace_receipt_hash(
+        monkeypatch,
+        "AUGUST",
+        command.AUGUST,
+        hashlib.sha256(receipt_bytes).hexdigest(),
+    )
+
+    assert command.AUGUST["archive_path"] == (
+        "raw/mbs/releases/2026-08-01/"
+        "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml"
+    )
+    assert (
+        command.AUGUST["harvest_receipt_archive_path"]
+        == receipt["archive_path"]
+    )
+    assert command.AUGUST["sha256"] == receipt["sha256"]
+    assert command.AUGUST["byte_count"] == receipt["byte_count"]
+    command._validate_harvest_receipt(command.AUGUST, receipt_bytes)
+
+    receipt["archive_path"] = command.AUGUST["archive_path"]
+    content_addressed_bytes = json.dumps(receipt).encode()
+    _replace_receipt_hash(
+        monkeypatch,
+        "AUGUST",
+        command.AUGUST,
+        hashlib.sha256(content_addressed_bytes).hexdigest(),
+    )
+    with pytest.raises(command.ComparisonFailureError) as failure:
+        command._validate_harvest_receipt(
+            command.AUGUST, content_addressed_bytes
+        )
+    assert failure.value.code == "harvest_receipt_identity_mismatch"
+
+
+def test_comparison_rejects_harvest_locator_with_different_pinned_bytes(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    july = _payload(_record("10001", "10.00"))
+    august = _payload(_record("10001", "11.00"))
+    _pin(monkeypatch, july, august)
+
+    with pytest.raises(command.ComparisonFailureError) as failure:
+        command.compare_releases(
+            july_payload=july,
+            august_payload=august,
+            august_harvest_payload=august + b" ",
+            july_official_payload=july,
+            august_official_payload=august,
+            compared_at=datetime(2026, 10, 17, tzinfo=UTC),
+            exact_commit="a" * 40,
+        )
+
+    assert failure.value.stage == "2026-08-01_harvest_archive_payload_identity"
+    assert failure.value.code == "pinned_payload_identity_mismatch"
 
 
 def test_incomplete_report_is_explicit_and_does_not_emit_exception_text() -> (
@@ -184,8 +289,30 @@ def test_incomplete_report_is_explicit_and_does_not_emit_exception_text() -> (
     assert report["failure_class"] == "identity_or_structure_mismatch"
     assert report["source_values_retained"] is False
     assert report["m109_accepted"] is False
+    assert report["failure_stage"] == "unclassified"
+    assert report["failure_code"] == "identity_or_structure_mismatch"
     assert "10.00" not in rendered
     assert "10001" not in rendered
+
+
+def test_incomplete_report_preserves_only_static_failure_stage_and_code() -> (
+    None
+):
+    report = command._incomplete_report(
+        exact_commit="a" * 40,
+        compared_at=datetime(2026, 10, 17, tzinfo=UTC),
+        error=command.ComparisonFailureError(
+            "2026-07-01_official_payload_identity",
+            "pinned_payload_identity_mismatch",
+        ),
+    )
+
+    rendered = json.dumps(report)
+    assert report["failure_class"] == "identity_or_structure_mismatch"
+    assert report["failure_stage"] == "2026-07-01_official_payload_identity"
+    assert report["failure_code"] == "pinned_payload_identity_mismatch"
+    assert "source value" not in rendered
+    assert "item identifier" not in rendered
 
 
 @pytest.mark.parametrize(
@@ -244,4 +371,6 @@ def test_cli_writes_incomplete_artifact_and_fails_on_transport_errors(
     report = json.loads(rendered)
     assert report["status"] == "incomplete"
     assert report["failure_class"] == failure_class
+    assert report["failure_code"] == failure_class
+    assert report["failure_stage"] == "unclassified"
     assert sensitive_text not in rendered

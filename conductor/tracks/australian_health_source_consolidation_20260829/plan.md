@@ -628,15 +628,21 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   MBS Online identifies the predecessor as `MBS-XML-20260701.XML`, released
   2026-05-28 and effective 1 July, and says the August file includes item
   73331 with no further changes compared with that May-published edition. The
-  exact July/ August archive identities and sidecars are verified in current
-  metadata, but a live official-byte comparison and source field diff remain
-  pending. First use the bounded aggregate-only predecessor comparison in the
-  [M-109 register](../../../docs/qualification/australian-m109-source-era-register.md#august-2026-mbs-predecessor-comparison-plan).
-  A structural/content comparison cannot establish semantic continuity; the
-  field guide's version history after 2022 remains unverified. The consolidated
-  M-108/M-109 assessment records source-archive-only authority, absent
-  derived-output authority, and preservation/reversal steps. No further
-  `39029209737`/`39032003723` diagnostic run is needed.
+  exact July/August archive identities and sidecars are verified in current
+  metadata. The bounded comparison ran on exact `main` commit
+  `0979b7f6c395986636e48aefbeeac8c579d36283` (run `39037457764`) and failed
+  closed; its aggregate artifact is `12102413530`. The August sidecar binds
+  the original acquisition path while the B2 archive uses a content-addressed
+  path. Metadata-only inspection confirms both August paths resolve to the
+  same pinned LFS object identity and byte count. The local repair preserves
+  both identities, validates each against the pinned digest, and adds static
+  failure-stage diagnostics. Exact-main verification of that repair remains
+  pending its protected PR and merge. A structural/content comparison cannot
+  establish semantic continuity; the field guide's version history after
+  2022 remains unverified. The consolidated M-108/M-109 assessment records
+  source-archive-only authority, absent derived-output authority, and
+  preservation/reversal steps. No further `39029209737`/`39032003723`
+  diagnostic run is needed.
 
 ## M-107 metadata evidence review fixes (2026-09-28)
 
