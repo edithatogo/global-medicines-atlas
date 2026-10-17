@@ -23,19 +23,22 @@ fields, so the exact merge-commit fingerprints are also listed below.
 
 ## Disposition
 
-The two exact Gitleaks fingerprints are listed in the repository-root
-`.gitleaksignore`, following the [Gitleaks fingerprint exception
-format](https://github.com/gitleaks/gitleaks#additional-configuration). No
-rule, directory, filename, or class of findings is excluded. The
-complete-history scanner remains enabled, and any new finding with a different
-commit, path, rule, or line still fails the check. The source records and Git
-history are unchanged.
+The repository-root `.gitleaks.toml` extends Gitleaks defaults and adds one
+allowlist scoped to `generic-api-key`. Its anchored match requires the exact
+`huggingface_api_revision` field and the public revision recorded in the
+qualification readback. It does not exclude a rule, directory, filename,
+source record, or class of values. A local Gitleaks 8.30.1 discrimination check
+reported zero findings for that exact field/value, and one finding when the
+value changed or the same value appeared under `api_key`. The complete-history
+scanner remains enabled. The source records and Git history are unchanged.
 
 ## Evidence
 
 - PR #1094 check run `39007251575`, job `117322128729`;
-- redacted artifact `gitleaks-history-report` (two findings);
+- PR #1095 rebased check run `39008220332`, job `117324968229` (the same
+  findings were attributed to merge commit `4781e94c7fbbd518201bbbf1c0d964e85f3da938`);
+- redacted artifacts `gitleaks-history-report` (two findings per report);
 - public revision readback:
   `quality/qualifications/australian-m109-source-era-identities-20261017.json`;
-- Gitleaks 8.30.1 local full-history scan after the exact-fingerprint
-  dispositions: passed with no findings; hosted exact-head check pending.
+- Gitleaks 8.30.1 local discrimination check: exact field/value passed;
+  changed value and wrong field each remained findings.
