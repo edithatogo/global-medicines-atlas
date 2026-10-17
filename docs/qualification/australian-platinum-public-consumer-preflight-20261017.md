@@ -55,6 +55,28 @@ rights, lineage, and semantic evidence. After admission, M-111 still requires
 freshness, denominator and cohort coverage, confidence/review canaries,
 per-surface query results, and public export restore evidence.
 
-No source or Parquet payload bytes were downloaded for this preflight. No
-consumer query, admission, rights decision, publication, or release was
-performed.
+The initial 2026-10-17 metadata preflight downloaded no source or Parquet
+payload bytes and performed no consumer query, admission, rights decision,
+publication, or release.
+
+## 2026-10-18 exact-main candidate traversal
+
+Exact-main run [39045806438](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39045806438)
+completed successfully at `1182ab71a44c9e72fce6031ec244848e6919f096`. Its
+aggregate artifact `12105656905` has SHA-256
+`8d1db8c5fa9376a9f786078114e7bb7682decb8709fde6bf7992113065d8488f` and is
+preserved in
+[`australian-mbs-gold-candidate-consumers-20261018.json`](../../quality/qualifications/australian-mbs-gold-candidate-consumers-20261018.json).
+The receipt binds all six table identities and per-table lineage digests to
+the pinned B1 source-receipt object, Silver manifest, source-era report,
+scoped admission, and semantic manifest. API, CLI, Atlas, and Chromium
+returned the same ordered edge-ID digest for all 5,989 candidate edges across
+six pages. It contains aggregate metadata only; no source values or payload
+bytes were retained. The public export canary was not part of this workflow.
+
+This closes the exact-main candidate traversal and lineage-readback task. The
+graph remains `candidate_only` and `not_reviewed`; the run does not qualify
+successful consumers of an independently admitted public product, resolve
+M-110 review, or change M-109, M-110, M-111, or M-112 acceptance. Public
+product freshness, coverage, cohort, confidence, rights, and admission gates
+remain open.

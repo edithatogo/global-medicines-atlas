@@ -2809,13 +2809,25 @@
   `39039867923`; its aggregate receipt binds the six-object authorization and
   matching browser/API/Atlas/CLI edge digests across all 5,989 edges and six
   pages. This remains candidate-only, `not_reviewed`, and unpublished.
-- [~] Bind the exact six authorized MBS v4 Silver tables to their source
+- [x] Bind the exact six authorized MBS v4 Silver tables to their source
   receipt, current manifest, exact source-era report, scoped admission,
   semantic manifest, and per-table source-lineage digests in the aggregate
   consumer receipt. Preserve candidate-only status and every M-112 rights,
   admission, promotion, and federation boundary; no new source or public write.
-  Implementation and focused checks are complete locally. Exact-main hosted
-  qualification with the expanded receipt remains pending.
+  Exact-main run [39045806438](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39045806438)
+  passed on `1182ab71a44c9e72fce6031ec244848e6919f096`; artifact
+  `12105656905` (`australian-mbs-gold-candidate-consumers-39045806438-1`,
+  2,207 bytes) is retained as
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261018.json`
+  with SHA-256
+  `8d1db8c5fa9376a9f786078114e7bb7682decb8709fde6bf7992113065d8488f`.
+  It binds all six table identities and per-table source-lineage digests to
+  the B1 source-receipt object, manifest, exact source-era report, scoped
+  admission, and semantic manifest. The API, CLI, Atlas, and Chromium browser
+  returned the same ordered edge-ID digest across all 5,989 candidate edges
+  and six pages. The report contains no edge IDs or source values and records
+  no retained source bytes or public publication. M-110 review and M-111
+  admitted-product acceptance remain open.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 
