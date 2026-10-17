@@ -115,7 +115,7 @@ def test_candidate_scalar_query_canary_preserves_decimal_and_date_engine_parity(
     )
     benefits = _typed_benefits("Benefit100", ["10.25", "2.75"], "converted")
     rows = benefits.to_pylist()
-    for row, value in zip(rows, ["2025-07-01", "2025-08-01"], strict=True):
+    for row, value in zip(rows, ["2025-07-01", "2025-07-15"], strict=True):
         row["BenefitStartDate"] = {
             "native_value": value,
             "native_state": "value",
@@ -176,11 +176,40 @@ def test_candidate_scalar_query_canary_preserves_decimal_and_date_engine_parity(
         "polars",
     ]
     assert receipt["query_cases"]["decimal"]["returned_rows"] == 1
-    assert receipt["query_cases"]["date"]["returned_rows"] == 1
+    assert receipt["query_cases"]["date"]["returned_rows"] == 2
+    assert receipt["query_cases"]["date"]["returned_rows"] > 0
     assert receipt["query_cases"]["decimal"]["row_limit"] == 1000
     assert "10.25" not in json.dumps(receipt)
     assert "2025-07-01" not in json.dumps(receipt)
     assert "rows" not in receipt
+
+    original_duckdb_adapter = script.DuckDBQueryAdapter
+    original_polars_adapter = script.PolarsQueryAdapter
+
+    class EmptyDateAdapter:
+        def __init__(self, name, adapter) -> None:
+            self.name = name
+            self.adapter = adapter
+
+        def execute(self, read, spec):
+            if spec.filters[0].column == script.SCALAR_DATE_COLUMN:
+                return ()
+            return self.adapter.execute(read, spec)
+
+    monkeypatch.setattr(
+        script,
+        "DuckDBQueryAdapter",
+        lambda: EmptyDateAdapter("duckdb", original_duckdb_adapter()),
+    )
+    monkeypatch.setattr(
+        script,
+        "PolarsQueryAdapter",
+        lambda: EmptyDateAdapter("polars", original_polars_adapter()),
+    )
+    with pytest.raises(
+        ValueError, match="candidate scalar date filter returned no rows"
+    ):
+        script.qualify_candidate_scalar_queries(scalar_path, qualification)
 
     forged = pq.read_table(scalar_path)
     metadata = dict(forged.schema.metadata or {})
