@@ -2638,9 +2638,12 @@
   Candidate traversal and maintainer acceptance do not substitute for review
   of the source-explicit same-record relationship and its limits. The graph
   correctly has null confidence with calibration `not_applicable_source_record`;
-  no heuristic score or confidence value is claimed. The maintainer review
-  decision, edge-state acceptance, and Platinum scalar-query bridge remain
-  open; no second reviewer is assigned.
+  no heuristic score or confidence value is claimed. The maintainer's semantic
+  edge review and edge-state acceptance remain open; no second reviewer is
+  assigned. An exact-six candidate scalar-query canary now verifies Decimal and
+  date predicates with DuckDB/Polars parity, but uses a direct candidate
+  adapter rather than the trusted product resolver and does not establish
+  product admission or acceptance.
   A separate technical review verified that the admitted-table builder pairs
   `services` and `benefits` only on matching source-record ID, ordinal, source
   digest, and receipt digest; the exact qualification reports all 5,989 edges
@@ -2798,10 +2801,22 @@
   `quality/qualifications/australian-mbs-gold-candidate-consumers-20261018.json`
   (2,357 bytes; SHA-256
   `ce2634a5061d27b017f733020b04f1084646bc51c4c7a4c29369b662fab7107a`).
-  The same run traversed all 5,989 edges across API, CLI, Atlas, and Chromium.
-  The exact receipt test now pins this artifact and asserts both scalar query
-  outcomes and candidate/admission boundaries; 63 affected tests and the
-  routine validation pass.
+  That run traversed all 5,989 edges across API, CLI, Atlas, and Chromium.
+  The later exact-main canary run `39061576513` refreshed the same candidate
+  query and four-surface edge traversal. Its exact 5,498-byte value-free
+  artifact is preserved at
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-39061576513.json`
+  (SHA-256
+  `496c5bbfa9f7d3bf8c9630f8fd212612d49684542b042167097260b185fd4d0e`).
+  DuckDB and Polars both returned 360 rows for the bounded Decimal query and 0
+  for the bounded date query; the query cap was 1,000. The four ordered edge-ID
+  digests still match across API, CLI, Atlas, and Chromium. The exact receipt
+  regression pins the run ID, artifact hash, six-object authorization, lineage,
+  query results, and candidate/admission boundaries. Focused assessment tests
+  pass (3); the unit lane produced 5,704 passes and one skip, with one unrelated
+  PERF-QUERY test exceeding budget under full-suite load (382 ms versus 250 ms).
+  That same test passed in isolation. Routine, Ruff, `ty`, and BasedPyright
+  pass; BasedPyright reports zero errors with four optional-import warnings.
   This direct adapter canary does not enter the trusted product resolver or
   establish product admission; edge review, M-110 acceptance, M-112, rights,
   publication, and source coverage remain unchanged.

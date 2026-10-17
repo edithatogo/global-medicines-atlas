@@ -23,6 +23,10 @@ CONSUMER_RECEIPT = ROOT / (
     "quality/qualifications/"
     "australian-mbs-gold-candidate-consumers-20261018.json"
 )
+EXACT_MAIN_CONSUMER_RECEIPT = ROOT / (
+    "quality/qualifications/"
+    "australian-mbs-gold-candidate-consumers-39061576513.json"
+)
 
 
 def test_real_gold_candidate_binds_admission_and_stays_unaccepted() -> None:
@@ -167,3 +171,69 @@ def test_exact_main_candidate_consumer_receipt_preserves_lineage_and_limits() ->
     receipt_text = receipt_bytes.decode()
     assert '"edge_id":' not in receipt_text
     assert '"items":' not in receipt_text
+
+
+def test_exact_six_current_main_canary_artifact_is_preserved() -> None:
+    receipt_bytes = EXACT_MAIN_CONSUMER_RECEIPT.read_bytes()
+    receipt = json.loads(receipt_bytes)
+
+    assert hashlib.sha256(receipt_bytes).hexdigest() == (
+        "496c5bbfa9f7d3bf8c9630f8fd212612d49684542b042167097260b185fd4d0e"
+    )
+    assert len(receipt_bytes) == 5498
+    assert receipt["hosted_workflow"]["commit"] == (
+        "08fdcbdf230c34c874b7df3abbf3491c5b12b35a"
+    )
+    assert receipt["hosted_workflow"]["run_id"] == 39061576513
+    assert receipt["candidate_v4_use_authorization"]["sha256"] == (
+        "ee5951226e105acbaa9b3180c672582b71d3b2d3f110bd0c0abb9c2eb10968b2"
+    )
+    assert receipt["candidate_only"] is True
+    assert receipt["edge_count"] == 5989
+    assert receipt["review_state"] == "not_reviewed"
+    assert receipt["public_publication_performed"] is False
+    assert receipt["source_payload_bytes_retained"] is False
+
+    edge_digest = (
+        "7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d"
+    )
+    assert receipt["surface_edge_id_sha256"] == {
+        "API": edge_digest,
+        "Atlas": edge_digest,
+        "Browser": edge_digest,
+        "CLI": edge_digest,
+    }
+    scalar = receipt["candidate_scalar_query_canary"]
+    assert scalar["candidate_only"] is True
+    assert scalar["consumer_admission_performed"] is False
+    assert scalar["row_count"] == 5989
+    assert scalar["query_cases"]["decimal"] == {
+        "engines": ["duckdb", "polars"],
+        "parity": True,
+        "returned_rows": 360,
+        "row_limit": 1000,
+    }
+    assert scalar["query_cases"]["date"] == {
+        "engines": ["duckdb", "polars"],
+        "parity": True,
+        "returned_rows": 0,
+        "row_limit": 1000,
+    }
+
+    lineage = receipt["candidate_v4_source_lineage"]
+    assert lineage["candidate_only"] is True
+    assert lineage["admission_sha256"] == (
+        "a97289a9b0d4abc864b62606eb6d3356fccbedce5ea656235200353c507be7d4"
+    )
+    assert lineage["semantic_manifest_sha256"] == (
+        "9ad5e2747949b8b7142819e981241c1f74105b3570d78025e654e780241c5882"
+    )
+    assert [table["name"] for table in lineage["tables"]] == [
+        "benefits",
+        "caps",
+        "descriptions",
+        "fees",
+        "hierarchy",
+        "services",
+    ]
+    assert all(table["row_count"] == 5989 for table in lineage["tables"])
