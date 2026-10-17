@@ -2754,5 +2754,7 @@
   merged.
   The official `Downloads-210615` page has two filename collision classes and
   remains unacquired until this implementation is merged and run through the
-  authorized exact-main workflow. M-107 remains blocked on its wider source
-  denominator and other historical MBS/PBS gaps.
+  authorized exact-main workflow. Implementation commit `de4d6d94` is under
+  review in PR [#1087](https://github.com/edithatogo/global-medicines-atlas/pull/1087).
+  M-107 remains blocked on its wider source denominator and other historical
+  MBS/PBS gaps.
