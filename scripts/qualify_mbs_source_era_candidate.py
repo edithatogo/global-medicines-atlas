@@ -36,7 +36,9 @@ from global_medicines_atlas.mbs_silver_qualification import (
 from global_medicines_atlas.receipts import RightsState, SourceReceipt
 
 ROOT = Path(__file__).resolve().parents[1]
-SEMANTICS_PATH = "docs/qualification/mbs-xml-v3-field-semantics-status-2026-08.md"
+SEMANTICS_PATH = (
+    "docs/qualification/mbs-xml-v3-field-semantics-status-2026-08.md"
+)
 MAX_BYTES = 9_000_000
 EXACT_COMMIT_LENGTH = 40
 DATASET = "edithatogo/australian-mbs-source-archive"
