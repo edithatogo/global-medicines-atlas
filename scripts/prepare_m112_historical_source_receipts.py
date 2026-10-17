@@ -43,6 +43,14 @@ RIGHTS_DECISION = Path(
     "quality/qualifications/"
     "australian-mbs-utilisation-exact-scope-rights-decision-20261004.json"
 )
+OBJECT_RIGHTS_METADATA = Path(
+    "quality/qualifications/"
+    "australian-mbs-utilisation-object-rights-metadata-20261004.json"
+)
+RECEIPT_JOIN_AUDIT = Path(
+    "quality/qualifications/"
+    "australian-m112-receipt-sidecar-join-audit-20260930.json"
+)
 PER_OBJECT_GATES = Path(
     "quality/qualifications/"
     "australian-m112-per-object-gate-reconciliation-20261005.json"
@@ -58,6 +66,15 @@ TRANSFORMATION_SHA256 = hashlib.sha256(
     TRANSFORMATION_ID.encode("utf-8")
 ).hexdigest()
 EXPECTED_OBJECT_COUNT = 14
+EXPECTED_DATASET = "edithatogo/australian-mbs-utilisation-archive"
+EXPECTED_REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
+EXPECTED_MANIFEST_SHA256 = (
+    "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab"
+)
+EXPECTED_SOURCE_COUNTS = {
+    "au-data-gov-mbs-demographics": 10,
+    "au-data-gov-mbs-group": 4,
+}
 
 SOURCE_IDENTITIES: dict[str, dict[str, str]] = {
     "au-data-gov-mbs-demographics": {
@@ -93,29 +110,148 @@ def _pinned_rights_url() -> str:
     )
 
 
+def validate_approved_manifest_scope(  # ruff: ignore[too-many-branches] -- fail-closed rights and manifest identity validation
+    rights_decision: dict[str, Any],
+    rights_bytes: bytes,
+    object_rights_metadata: dict[str, Any],
+    receipt_join_audit: dict[str, Any],
+    receipt_join_bytes: bytes,
+) -> tuple[dict[str, dict[str, Any]], dict[str, dict[str, Any]]]:
+    """Bind each permitted object to the maintainer-approved manifest row."""
+
+    scope = rights_decision["scope"]
+    if (
+        scope["dataset"] != EXPECTED_DATASET
+        or scope["revision"] != EXPECTED_REVISION
+        or scope["manifest_path"] != "manifest.json"
+        or scope["manifest_sha256"] != EXPECTED_MANIFEST_SHA256
+    ):
+        raise ValueError("rights decision manifest identity changed")
+    if (
+        scope["candidate_paths"] != EXPECTED_OBJECT_COUNT
+        or scope["raw_paths"] != EXPECTED_OBJECT_COUNT
+        or scope["projection_paths"] != 0
+        or scope["source_id_counts"] != EXPECTED_SOURCE_COUNTS
+    ):
+        raise ValueError("rights decision no longer covers the exact cohort")
+    if (
+        rights_decision["disposition"]["redistribute"] != "permitted"
+        or rights_decision["disposition"]["transform"]
+        != "permitted_with_attribution"
+        or rights_decision["disposition"]["publish_source_bytes"]
+        != "permitted_for_exact_manifest_scope"
+    ):
+        raise ValueError("exact-scope rights decision is not permissive")
+
+    decision_sha256 = _sha256(rights_bytes)
+    if (
+        object_rights_metadata["dataset"] != EXPECTED_DATASET
+        or object_rights_metadata["source_revision"] != EXPECTED_REVISION
+        or object_rights_metadata["manifest_sha256"] != EXPECTED_MANIFEST_SHA256
+        or object_rights_metadata["rights_decision"]
+        != {"path": RIGHTS_DECISION.as_posix(), "sha256": decision_sha256}
+        or object_rights_metadata["historical_receipts_modified"] is not False
+    ):
+        raise ValueError("per-object rights metadata is not bound to approval")
+    join_binding = object_rights_metadata["receipt_join_audit"]
+    if join_binding["path"] != RECEIPT_JOIN_AUDIT.as_posix() or join_binding[
+        "sha256"
+    ] != _sha256(receipt_join_bytes):
+        raise ValueError("per-object rights metadata join audit changed")
+    if (
+        object_rights_metadata["complete_b1_b2_lineage"] is not False
+        or object_rights_metadata["v4_admission"] is not False
+        or object_rights_metadata["consumer_canaries"] is not False
+    ):
+        raise ValueError("historical rights metadata overstates open gates")
+
+    manifest_audit = next(
+        (
+            item
+            for item in receipt_join_audit["datasets"]
+            if item["dataset"] == EXPECTED_DATASET
+        ),
+        None,
+    )
+    if manifest_audit is None or any((
+        manifest_audit["revision"] != EXPECTED_REVISION,
+        manifest_audit["manifest_path"] != scope["manifest_path"],
+        manifest_audit["manifest_sha256"] != EXPECTED_MANIFEST_SHA256,
+        manifest_audit["raw_manifest_rows"] != EXPECTED_OBJECT_COUNT,
+        manifest_audit["receipt_sidecar_count"] != EXPECTED_OBJECT_COUNT,
+        manifest_audit["joined_sidecar_count"] != EXPECTED_OBJECT_COUNT,
+        manifest_audit["unmatched_sidecars"] != [],
+        manifest_audit["all_manifest_fields_match"] is not True,
+        manifest_audit["objects_outside_authorized_source_category_or_domains"]
+        != 0,
+    )):
+        raise ValueError(
+            "receipt join audit does not prove exact manifest scope"
+        )
+
+    rights_records = object_rights_metadata["records"]
+    manifest_records = manifest_audit["joined_objects"]
+    if (
+        len(rights_records) != EXPECTED_OBJECT_COUNT
+        or len(manifest_records) != EXPECTED_OBJECT_COUNT
+    ):
+        raise ValueError("approved manifest object rows are incomplete")
+    rights_by_path = {item["path"]: item for item in rights_records}
+    manifest_by_path = {item["path"]: item for item in manifest_records}
+    if (
+        len(rights_by_path) != EXPECTED_OBJECT_COUNT
+        or len(manifest_by_path) != EXPECTED_OBJECT_COUNT
+        or rights_by_path.keys() != manifest_by_path.keys()
+    ):
+        raise ValueError("approved rights and manifest paths do not match")
+
+    for path, rights_item in rights_by_path.items():
+        manifest_item = manifest_by_path[path]
+        if (
+            rights_item["rights_state"] != "maintainer-approved-exact-object"
+            or rights_item["approval_record"]
+            != {"path": RIGHTS_DECISION.as_posix(), "sha256": decision_sha256}
+            or rights_item["reuse"]["redistribute"] != "permitted"
+            or rights_item["reuse"]["transform"] != "permitted_with_attribution"
+        ):
+            raise ValueError(
+                f"object lacks exact-scope rights approval: {path}"
+            )
+        if any((
+            manifest_item["path_matches_manifest"] is not True,
+            manifest_item["source_id_matches_manifest"] is not True,
+            manifest_item["category_matches_manifest"] is not True,
+            manifest_item["sha256_matches_manifest"] is not True,
+            manifest_item["byte_count_matches_manifest"] is not True,
+            manifest_item["authorization_scope_match"] is not True,
+        )):
+            raise ValueError(f"object does not match approved manifest: {path}")
+        for key in ("source_id", "category", "sha256", "byte_count"):
+            if rights_item[key] != manifest_item[key]:
+                raise ValueError(f"rights/manifest {key} mismatch: {path}")
+    return rights_by_path, manifest_by_path
+
+
 def build_receipts() -> tuple[dict[str, SourceReceipt], dict[str, Any]]:  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements] -- one auditable 14-object historical join
     acquisition_bytes = (ROOT / ACQUISITION_IMPORT).read_bytes()
     reference_bytes = (ROOT / RAW_REFERENCE_IMPORT).read_bytes()
     rights_bytes = (ROOT / RIGHTS_DECISION).read_bytes()
+    object_rights_bytes = (ROOT / OBJECT_RIGHTS_METADATA).read_bytes()
+    receipt_join_bytes = (ROOT / RECEIPT_JOIN_AUDIT).read_bytes()
     gates_bytes = (ROOT / PER_OBJECT_GATES).read_bytes()
     acquisition_import = json.loads(acquisition_bytes)
     reference_import = json.loads(reference_bytes)
     rights_decision = json.loads(rights_bytes)
+    object_rights_metadata = json.loads(object_rights_bytes)
+    receipt_join_audit = json.loads(receipt_join_bytes)
     gates = json.loads(gates_bytes)
-
-    if rights_decision["scope"]["candidate_paths"] != EXPECTED_OBJECT_COUNT:
-        raise ValueError("rights decision no longer covers the exact 14 paths")
-    if rights_decision["scope"]["raw_paths"] != EXPECTED_OBJECT_COUNT:
-        raise ValueError("rights decision no longer covers 14 raw objects")
-    if rights_decision["disposition"]["redistribute"] != "permitted":
-        raise ValueError(
-            "exact-scope redistribution permission is not permitted"
-        )
-    if (
-        rights_decision["disposition"]["transform"]
-        != "permitted_with_attribution"
-    ):
-        raise ValueError("exact-scope transformation permission changed")
+    approved_rights, approved_manifest = validate_approved_manifest_scope(
+        rights_decision,
+        rights_bytes,
+        object_rights_metadata,
+        receipt_join_audit,
+        receipt_join_bytes,
+    )
 
     acquisition_by_id = {
         item["acquisition_id"]: item for item in acquisition_import["records"]
@@ -172,6 +308,12 @@ def build_receipts() -> tuple[dict[str, SourceReceipt], dict[str, Any]]:  # ruff
 
         raw_reference = sidecar["raw_reference"]
         source_record = sidecar["source"]
+        approved_rights_row = approved_rights.get(raw_reference["path"])
+        approved_manifest_row = approved_manifest.get(raw_reference["path"])
+        if approved_rights_row is None or approved_manifest_row is None:
+            raise ValueError(
+                f"object is outside the exact rights-approved manifest: {acquisition_id}"
+            )
         if (
             sidecar["acquisition_event"]["sha256"]
             != event_record["event_sha256"]
@@ -194,6 +336,22 @@ def build_receipts() -> tuple[dict[str, SourceReceipt], dict[str, Any]]:  # ruff
             if imported["b2_raw_reference"].get(key) != raw_reference.get(key):
                 raise ValueError(
                     f"B2 reference import mismatch ({key}): {acquisition_id}"
+                )
+        observed_identity = {
+            "source_id": source_record["source_id"],
+            "category": source_record["category"],
+            "sha256": raw_reference["sha256"],
+            "byte_count": raw_reference["byte_count"],
+        }
+        for key, observed_value in observed_identity.items():
+            expected_value = approved_manifest_row[key]
+            if (
+                observed_value != expected_value
+                or approved_rights_row.get(key) != expected_value
+                or (key == "source_id" and event.source_id != expected_value)
+            ):
+                raise ValueError(
+                    f"approved manifest object mismatch ({key}): {acquisition_id}"
                 )
         if sidecar["acquisition_event"]["acquisition_id"] != acquisition_id:
             raise ValueError(
@@ -232,6 +390,15 @@ def build_receipts() -> tuple[dict[str, SourceReceipt], dict[str, Any]]:  # ruff
         ):
             raise ValueError(
                 f"rights decision digest mismatch: {acquisition_id}"
+            )
+        if (
+            gate["identity"]["sha256"] != approved_manifest_row["sha256"]
+            or gate["identity"]["byte_count"]
+            != approved_manifest_row["byte_count"]
+            or gate["path"] != approved_manifest_row["path"]
+        ):
+            raise ValueError(
+                f"M-112 gate identity differs from approved manifest: {acquisition_id}"
             )
         if raw_reference["sha256"] != event.payload_sha256:
             raise ValueError(f"B2 content identity mismatch: {acquisition_id}")
@@ -337,6 +504,8 @@ def build_receipts() -> tuple[dict[str, SourceReceipt], dict[str, Any]]:  # ruff
         "acquisition_import_sha256": _sha256(acquisition_bytes),
         "raw_reference_import_sha256": _sha256(reference_bytes),
         "rights_decision_sha256": _sha256(rights_bytes),
+        "object_rights_metadata_sha256": _sha256(object_rights_bytes),
+        "receipt_join_audit_sha256": _sha256(receipt_join_bytes),
         "per_object_gate_reconciliation_sha256": _sha256(gates_bytes),
     }
     qualification = {

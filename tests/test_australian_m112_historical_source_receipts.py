@@ -1,14 +1,20 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from hashlib import sha256
 
 import pytest
 from scripts.prepare_m112_historical_source_receipts import (
+    OBJECT_RIGHTS_METADATA,
     OUTPUT_ROOT,
     QUALIFICATION,
+    RECEIPT_JOIN_AUDIT,
+    RIGHTS_DECISION,
+    ROOT,
     build_receipts,
     render_outputs,
+    validate_approved_manifest_scope,
 )
 
 from global_medicines_atlas.receipts import EvidenceClass, SourceReceipt
@@ -66,3 +72,57 @@ def test_m112_historical_source_receipts_are_canonical_and_reproducible() -> (
         rebuilt = SourceReceipt.model_validate_json(encoded)
         assert rebuilt == receipt
         assert sha256(encoded.rstrip(b"\n")).hexdigest() == receipt.digest()
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("target", "key", "replacement"),
+    [
+        ("decision_scope", "dataset", "unapproved/dataset"),
+        ("decision_scope", "revision", "0" * 40),
+        ("decision_scope", "manifest_sha256", "0" * 64),
+        ("rights_record", "path", "raw/outside-approved-scope.csv"),
+        ("rights_record", "sha256", "0" * 64),
+        ("rights_record", "byte_count", 1),
+        ("manifest_record", "sha256_matches_manifest", False),
+        ("manifest_record", "byte_count", 1),
+    ],
+)
+def test_exact_rights_scope_rejects_manifest_identity_drift(
+    target: str,
+    key: str,
+    replacement: object,
+) -> None:
+    rights_decision_path = ROOT / RIGHTS_DECISION
+    object_rights_path = ROOT / OBJECT_RIGHTS_METADATA
+    receipt_join_path = ROOT / RECEIPT_JOIN_AUDIT
+    rights_bytes = rights_decision_path.read_bytes()
+    object_rights_bytes = object_rights_path.read_bytes()
+    receipt_join_bytes = receipt_join_path.read_bytes()
+    decision = json.loads(rights_bytes)
+    rights_metadata = json.loads(object_rights_bytes)
+    join_audit = json.loads(receipt_join_bytes)
+
+    if target == "decision_scope":
+        decision = deepcopy(decision)
+        decision["scope"][key] = replacement
+    elif target == "rights_record":
+        rights_metadata = deepcopy(rights_metadata)
+        rights_metadata["records"][0][key] = replacement
+    else:
+        join_audit = deepcopy(join_audit)
+        dataset = next(
+            item
+            for item in join_audit["datasets"]
+            if item["dataset"] == decision["scope"]["dataset"]
+        )
+        dataset["joined_objects"][0][key] = replacement
+
+    with pytest.raises(ValueError, match=r".+"):
+        validate_approved_manifest_scope(
+            decision,
+            rights_bytes,
+            rights_metadata,
+            join_audit,
+            receipt_join_bytes,
+        )

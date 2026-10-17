@@ -856,3 +856,27 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] Keep M-112 blocked. These projections do not create native/live receipts,
   independent storage or restore evidence, v4 admission histories, consumer
   canaries, or full-denominator reconciliation. M-112 acceptance remains open.
+
+## PR #1102 exact-manifest rights review correction (2026-10-17)
+
+- [x] Close the review finding that a count-only 14-object check could have
+  allowed a different cohort to inherit exact-scope permission. Validate the
+  maintainer decision's dataset, revision, manifest path/digest, source counts,
+  and rights disposition; bind the per-object rights list and receipt-sidecar
+  join audit by their exact digests; then compare each source ID/category,
+  path, payload digest, and byte count against both the approved rights row and
+  manifest-join row before constructing a permitted historical receipt. Also
+  bind the per-object gate identity to the same row.
+- [x] Add negative tests for changed dataset/revision/manifest identity,
+  object path, digest, size, and manifest-join controls. The expanded affected
+  suite passed 121 tests; Ruff, BasedPyright, `ty`, context validation, and
+  historical generator checks passed.
+- [x] Run full Test-Goblin with pinned uv 0.11.29: 6,513 passed, 3 skipped,
+  1 failed; coverage was 96.90%. The only failure was the PBS Chromium
+  benefits browser timing out during close; its exact isolated rerun passed.
+  Keep this recorded as a failed full profile. Hosted checks on the prior PR
+  head passed; checks for the corrected head remain pending.
+- [~] Keep M-112 blocked. The generated rows are historical projections, not
+  native/live acquisition evidence. Independent storage/replication and
+  restore proof, v4 admission histories, consumer canaries, and complete
+  1,759-object reconciliation remain outstanding.

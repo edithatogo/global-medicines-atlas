@@ -8,8 +8,10 @@
   },
   "inputs": {
     "acquisition_import_sha256": "9c5743418e90da2586fb78b3b1e817517d0aaf240d288ff7cd3c693787dd3dfa",
+    "object_rights_metadata_sha256": "03b024e6954bb3204abfd83de037031e2908b26fdc83a30cfa950daf4c3b6054",
     "per_object_gate_reconciliation_sha256": "bdc06876a4aa5d38fdb4ec23e05fba6d4325468efd74c87f88aa5cac8946be63",
     "raw_reference_import_sha256": "24b44fe33af8d55691db8afdbd0949df266289d9cf5fc4c830a4b5a8deadb9f6",
+    "receipt_join_audit_sha256": "53e7a1659f57f24290dfe08e534131dde59e930ff386655cf0fa047a0dae657b",
     "rights_decision_sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13"
   },
   "observed_at": "2026-10-17",
