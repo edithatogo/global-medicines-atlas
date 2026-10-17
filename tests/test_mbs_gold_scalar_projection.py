@@ -3,6 +3,7 @@
 import hashlib
 import io
 import json
+from dataclasses import asdict
 from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
@@ -13,6 +14,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
 from fastapi.testclient import TestClient
+from test_atlas_e2e import StateService
 from test_mbs_gold_graph import (
     _admitted_input,  # ruff: ignore[import-private-name] -- shared fixture
     _admitted_table,  # ruff: ignore[import-private-name] -- shared fixture
@@ -21,10 +23,14 @@ from test_mbs_gold_graph import (
     graph as synthetic_graph,
 )
 from test_platinum_benefits_api import service as benefits_service
+from typer.testing import CliRunner
 
 import global_medicines_atlas.mbs_gold_graph as graph_module
 import global_medicines_atlas.mbs_gold_scalar_projection as projection_module
+from global_medicines_atlas import cli
+from global_medicines_atlas.acquisition import AcquisitionPolicy
 from global_medicines_atlas.api import create_app
+from global_medicines_atlas.atlas import create_atlas_app
 from global_medicines_atlas.australian_source_contracts import (
     mbs_field_contracts,
 )
@@ -54,6 +60,9 @@ from global_medicines_atlas.mbs_typed_values import ConversionStatus
 from global_medicines_atlas.platinum_benefits import (
     BenefitsPage,
     BenefitsService,
+)
+from global_medicines_atlas.platinum_configuration import (
+    load_benefits_resolver,
 )
 from global_medicines_atlas.platinum_evidence import validate_result_evidence
 from global_medicines_atlas.platinum_resolver import (
@@ -111,8 +120,10 @@ def _benefits_client(payload: bytes) -> TestClient:
     )
 
 
-def _trusted_synthetic_scalar_resolver(  # ruff: ignore[too-many-locals] -- keeps the synthetic trust chain explicit
+def _trusted_synthetic_scalar_resolver(  # ruff: ignore[too-many-locals, too-many-statements] -- keeps the synthetic trust chain explicit
     payload: bytes,
+    *,
+    metadata_root: Path | None = None,
 ) -> tuple[StorageNeutralResolver, str, str]:
     """Build an ephemeral v4 product with independent synthetic trust inputs."""
     schema = (
@@ -271,6 +282,31 @@ def _trusted_synthetic_scalar_resolver(  # ruff: ignore[too-many-locals] -- keep
         contract=contract,
         semantic_manifest=semantic,
     )
+
+    if metadata_root is not None:
+        metadata_root.mkdir(parents=True, exist_ok=True)
+        (metadata_root / "contract.json").write_bytes(contract)
+        (metadata_root / "semantic.json").write_bytes(semantic)
+        (metadata_root / "schema.json").write_bytes(schema)
+        trust = {
+            "version": "1.1",
+            "resources": [
+                {
+                    "resource_id": resource_id,
+                    "semantic_dimension": "service_benefit",
+                    "entity_granularity": "service_item",
+                    "binding": asdict(binding),
+                    "admission": admission.model_dump(mode="json"),
+                    "semantic_sha256": hashlib.sha256(semantic).hexdigest(),
+                    "contract_path": "contract.json",
+                    "semantic_path": "semantic.json",
+                }
+            ],
+        }
+        (metadata_root / "trust.json").write_text(
+            json.dumps(trust, sort_keys=True, separators=(",", ":")),
+            encoding="utf-8",
+        )
 
     def handle(request: httpx.Request) -> httpx.Response:
         assert "authorization" not in request.headers
@@ -678,6 +714,220 @@ def test_scalar_candidate_traverses_exact_synthetic_v4_admission_and_api(
             value_column: expected,
         },
     )
+
+
+@pytest.mark.parametrize(
+    ("field_name", "values", "operator", "filter_value", "expected"),
+    [
+        (
+            "Benefit100",
+            ["10.25", "2.75"],
+            ">=",
+            Decimal("10.00"),
+            "10.250000000",
+        ),
+        (
+            "BenefitStartDate",
+            ["2025-07-01", "2025-08-01"],
+            "=",
+            {"type": "date", "value": "2025-07-01"},
+            "2025-07-01",
+        ),
+    ],
+)
+def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # ruff: ignore[too-many-locals, too-many-statements] -- keep the three product consumers explicit
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field_name: str,
+    values: list[str],
+    operator: str,
+    filter_value: str | dict[str, str],
+    expected: str,
+) -> None:
+    """Carry the exact synthetic artifact through all existing product surfaces."""
+    payload, value_column = _candidate_parquet(field_name, values)
+    columns = ("source_record_id", value_column)
+    filter_json_value = (
+        str(filter_value)
+        if isinstance(filter_value, Decimal)
+        else json.dumps(filter_value, separators=(",", ":"))
+    )
+    filters_json = (
+        '[{"column":'
+        + json.dumps(value_column)
+        + ',"operator":'
+        + json.dumps(operator)
+        + ',"value":'
+        + filter_json_value
+        + "}]"
+    )
+    resource_id = "au.mbs.service-items"
+    cursor_secret = "synthetic-scalar-v4-cli-cursor-key-32"  # ruff: ignore[hardcoded-password-string] -- synthetic cursor fixture, not a credential.
+    monkeypatch.setenv("GMA_CURSOR_SECRET", cursor_secret)
+    metadata_root = tmp_path / "metadata"
+    _, _, path = _trusted_synthetic_scalar_resolver(
+        payload, metadata_root=metadata_root
+    )
+
+    def handle(request: httpx.Request) -> httpx.Response:
+        assert "authorization" not in request.headers
+        assert "cookie" not in request.headers
+        if request.url.path.startswith("/api/datasets/"):
+            return httpx.Response(
+                200, json={"sha": "a" * 40, "private": False, "gated": False}
+            )
+        if request.url.path.endswith(f"/{path}"):
+            return httpx.Response(200, content=payload)
+        return httpx.Response(404)
+
+    def mocked_bound_transport(
+        *, policy: AcquisitionPolicy
+    ) -> httpx.MockTransport:
+        assert "huggingface.co" in policy.allowed_hosts
+        return httpx.MockTransport(handle)
+
+    monkeypatch.setattr(
+        "global_medicines_atlas.federation_reader.BoundIPAddressTransport",
+        mocked_bound_transport,
+    )
+
+    class _FrozenDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            value = cls.fromisoformat("2026-10-17T00:10:00+00:00")
+            return value if tz is None else value.astimezone(tz)
+
+    monkeypatch.setattr(
+        "global_medicines_atlas.federation_reader.datetime", _FrozenDateTime
+    )
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_resolver.datetime", _FrozenDateTime
+    )
+    trust_file = metadata_root / "trust.json"
+    schema_file = metadata_root / "schema.json"
+
+    cli_result = CliRunner().invoke(
+        cli.app,
+        [
+            "benefits",
+            resource_id,
+            "--trust-file",
+            str(trust_file),
+            "--metadata-root",
+            str(metadata_root),
+            "--schema-file",
+            str(schema_file),
+            "--column",
+            columns[0],
+            "--column",
+            columns[1],
+            "--limit",
+            "2",
+            "--filters-json",
+            filters_json,
+        ],
+    )
+    assert cli_result.exit_code == 0, cli_result.output
+    cli_page = json.loads(cli_result.stdout)
+
+    api_resolver = load_benefits_resolver(
+        trust_file=trust_file,
+        metadata_root=metadata_root,
+        schema_file=schema_file,
+    )
+    with api_resolver:
+        api_response = TestClient(
+            create_app(
+                cast("ReadOnlyQueryService", object()),
+                benefits=BenefitsService(
+                    api_resolver, cursor_key=cursor_secret.encode()
+                ),
+            )
+        ).get(
+            f"/api/v1/benefits/{resource_id}",
+            params=[("columns", column) for column in columns]
+            + [("limit", "2"), ("filters", filters_json)],
+        )
+    assert api_response.status_code == 200, api_response.text
+    api_page = api_response.json()
+
+    atlas_resolver = load_benefits_resolver(
+        trust_file=trust_file,
+        metadata_root=metadata_root,
+        schema_file=schema_file,
+    )
+    with atlas_resolver:
+        atlas_client = TestClient(
+            create_atlas_app(
+                StateService(),
+                federated_benefits=BenefitsService(
+                    atlas_resolver, cursor_key=cursor_secret.encode()
+                ),
+            )
+        )
+        atlas_response = atlas_client.get(
+            "/federated/benefits",
+            params={
+                "resource_id": resource_id,
+                "columns": ",".join(columns),
+                "limit": 2,
+                "filters": filters_json,
+            },
+        )
+        unfiltered_atlas_response = atlas_client.get(
+            "/federated/benefits",
+            params={
+                "resource_id": resource_id,
+                "columns": ",".join(columns),
+                "limit": 2,
+            },
+        )
+    assert atlas_response.status_code == 200
+    assert unfiltered_atlas_response.status_code == 200
+    expected_source_record_id = "au-mbs:3::2025-07-0"
+    other_source_record_id = "au-mbs:3::2025-07-1"
+    exact_rendered_table = (
+        "<tbody><tr><td><code>"
+        + expected_source_record_id
+        + "</code></td><td><code>"
+        + expected
+        + "</code></td></tr></tbody>"
+    )
+    assert exact_rendered_table in atlas_response.text
+    assert atlas_response.text.count("<tr>") == 2
+    assert other_source_record_id not in atlas_response.text
+    assert exact_rendered_table not in unfiltered_atlas_response.text
+    assert other_source_record_id in unfiltered_atlas_response.text
+    assert unfiltered_atlas_response.text.count("<tr>") == 3
+    assert f"<dd><code>{path}</code></dd>" in atlas_response.text
+    object_sha256 = hashlib.sha256(payload).hexdigest()
+    assert f"<dd><code>{object_sha256}</code></dd>" in atlas_response.text
+    assert "synthetic qualification fixtures" in atlas_response.text
+    assert "<dt>Coverage</dt><dd>not declared</dd>" in atlas_response.text
+    assert (
+        "<dt>Confidence state</dt><dd>not declared</dd>" in atlas_response.text
+    )
+    assert (
+        "<dt>Uncertainty state</dt><dd>not declared</dd>" in atlas_response.text
+    )
+    assert "<dt>Review state</dt><dd>not declared</dd>" in atlas_response.text
+
+    row = {
+        "source_record_id": expected_source_record_id,
+        value_column: expected,
+    }
+    for page in (cli_page, api_page):
+        assert page["status"] == "available"
+        assert page["rows"] == [row]
+        assert page["identity"]["path"] == path
+        assert (
+            page["identity"]["object_sha256"]
+            == hashlib.sha256(payload).hexdigest()
+        )
+        assert page["identity"]["comparison_cohort"] == "synthetic"
+        assert page["review_state"] == "not_declared"
+        assert page["coverage_state"] == "not_declared"
+    assert cli_page["rows"] == api_page["rows"]
 
 
 def test_field_contract_rejects_missing_classes_mixed_fields_and_bad_names():

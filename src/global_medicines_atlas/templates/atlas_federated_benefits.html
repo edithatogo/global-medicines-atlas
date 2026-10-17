@@ -78,6 +78,9 @@
               <div><dt>Semantic dimension</dt><dd><code>{{ page.identity.semantic_dimension }}</code></dd></div>
               <div><dt>Entity granularity</dt><dd><code>{{ page.identity.entity_granularity }}</code></dd></div>
               <div><dt>Coverage</dt><dd>{{ page.coverage_state | replace("_", " ") }}</dd></div>
+              <div><dt>Confidence state</dt><dd>{{ page.confidence_state | replace("_", " ") }}</dd></div>
+              <div><dt>Uncertainty state</dt><dd>{{ page.uncertainty_state | replace("_", " ") }}</dd></div>
+              <div><dt>Review state</dt><dd>{{ page.review_state | replace("_", " ") }}</dd></div>
               <div><dt>Comparison validity</dt><dd>{{ page.comparison_validity | replace("_", " ") }}</dd></div>
               <div><dt>Query SHA-256</dt><dd><code>{{ page.query_sha256 }}</code></dd></div>
               <div><dt>Page SHA-256</dt><dd><code>{{ page.page_sha256 or "Not available" }}</code></dd></div>

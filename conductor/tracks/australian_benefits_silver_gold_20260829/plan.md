@@ -2539,8 +2539,11 @@
 - [ ] Complete M-110 Gold graph review and consumer acceptance. The current
   assessment is
   `quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261017.json`;
-  maintainer review decisions and the existing Platinum scalar-query bridge
-  remain open. This candidate does not accept M-110, M-109, or M-112.
+  the maintainer's 2026-10-17 disposition accepts the 5,989 MBS v3 edges as a
+  candidate. This disposition does not set calibrated confidence, mark the
+  graph independently reviewed, or establish consumer acceptance. The
+  existing Platinum scalar-query bridge remains open. This candidate does not
+  accept M-110, M-109, or M-112.
 - [x] Correct the MBS XML numeric-width transform so the three EMSN numeric
   fields use their official seven-integer-digit limit while ScheduleFee and
   Benefit75/85/100 retain five digits. Boundary tests failed before the fix and
@@ -2650,8 +2653,24 @@
   rejection when the field is omitted, and rejection when another required
   state is null. The focused evidence suite now has 10 passing tests; Ruff,
   formatting, diff checks, and Test-Goblin routine pass. The initial Codecov
-  patch result (75.00% against 90.01%) is retained; final-head hosted checks
-  are rerunning for the added mapping-branch coverage.
+  patch result (75.00% against 90.01%) is retained. The added mapping-branch
+  coverage passed Codecov on final head `d4c018d2`. PR #1099 merged as
+  `ff7076fa`; all 40 reported check rows passed, including Codecov patch,
+  full hosted Test-Goblin, and Linux/macOS/Windows consumer lanes. The merge
+  tree `9d5fbd07` matches both the qualified head and current main.
+
+### M-110 exact synthetic scalar path across product surfaces (2026-10-17)
+
+- [~] Exercise the same exact synthetic scalar Parquet through the actual
+  operator trust, contract, semantic-manifest, schema, and admission
+  configuration loader, then query it through CLI, API, and Atlas. Replace only
+  network transport and the clock; no product handler or trust loader is
+  mocked. Exact decimal and tagged-date cases return equal CLI/API rows and
+  object identities. Atlas previously omitted confidence, uncertainty, and
+  review state; the implementation and tests now add these values alongside
+  coverage and the exact object identity. The fixture grants no real
+  publication or rights authority and changes no source. This adds a bounded
+  Atlas evidence-display behavior; exact-head protected CI remains required.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 
