@@ -6,14 +6,14 @@
   "qualification_state": "qualified",
   "scope_decision": {
     "path": "quality/qualifications/bronze-bounded-scope-decision-v1.json",
-    "sha256": "89dc6492b432d8a3e8d6800b85a0f4049e26b811179d21b1033cb97c51143448"
+    "sha256": "b97ab6e3632db4434186d1a4107f7253ffa54a2a96f9bafc6fd0f86219f4cd98"
   },
   "source_accounting": {
-    "catalog_source_count": 174,
-    "full_public_source_count": 157,
+    "catalog_source_count": 176,
+    "full_public_source_count": 159,
     "active_source_count": 42,
-    "deferred_source_count": 115,
-    "full_scope_missing_evidence_count": 115,
+    "deferred_source_count": 117,
+    "full_scope_missing_evidence_count": 117,
     "partition_complete": true
   },
   "deferred_sources": [
@@ -48,6 +48,28 @@
       "queue_state": "manual_only_documented_acquisition",
       "reason": "public interactive or document surface requires a documented reproducible acquisition step",
       "next_action": "execute and receipt the documented public manual acquisition",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "au-data-gov-mbs-demographics",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "title": "Medicare Benefits Schedule (MBS) - Items by Patient Demographics Report",
+      "queue_state": "rights_blocked",
+      "reason": "Maintainer approval is limited to the exact 14 historical objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission.",
+      "next_action": "Obtain source-specific rights and define a qualified acquisition profile before handling any resources outside the approved 14-object archive scope; do not infer distinct-patient counts.",
+      "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
+    },
+    {
+      "source_id": "au-data-gov-mbs-group",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "title": "Medicare Benefits Schedule (MBS) - Group Statistics Report",
+      "queue_state": "rights_blocked",
+      "reason": "Maintainer approval is limited to the exact 4 historical group-statistics objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission.",
+      "next_action": "Obtain source-specific rights and define a qualified acquisition profile before handling resources outside the approved 4-object archive scope; do not infer distinct-patient counts.",
       "reentry_trigger": "A source-specific admission decision under existing rights, acquisition, reuse, provenance, retention, and publication gates; missing coverage is not negative evidence."
     },
     {

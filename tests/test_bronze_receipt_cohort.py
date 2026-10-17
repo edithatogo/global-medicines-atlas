@@ -513,7 +513,7 @@ def test_committed_cohort_is_current_and_does_not_hide_full_scope_gaps() -> (
     )
     assert (
         report["scope_accounting"]["current_scope_evaluator_missing_count"]
-        == 115
+        == 117
     )
     assert report["scope_accounting"]["deferred_queue_landed_count"] == 13
     assert report["preserved_current_scope"]["qualification_state"] == "blocked"
@@ -559,4 +559,4 @@ def test_open_medic_all_release_bronze_receipt_qualifies_exact_source() -> None:
     }
     report = build_bronze_receipt_cohort(ROOT)
     assert report["qualified_cohort"]["source_count"] == 29
-    assert report["deferred_source_ledger"]["source_count"] == 128
+    assert report["deferred_source_ledger"]["source_count"] == 130

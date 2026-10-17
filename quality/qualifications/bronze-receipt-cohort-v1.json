@@ -7,7 +7,7 @@
   "inputs": {
     "receipt_validator": {
       "path": "src/global_medicines_atlas/bronze_maturity.py",
-      "sha256": "97fbbe0b9e49a9a64fa9632064db39d033886566782160fd8f39ef7710260b53"
+      "sha256": "fa14b75ee958fa5317c315fc8947f0b08584445e28e847c08c661897a2a2ad00"
     },
     "cohort_generator": {
       "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
@@ -19,19 +19,19 @@
     },
     "source_catalog": {
       "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
-      "sha256": "84d25c8b63024d95398ce92e518d1156c53afb45401a2e719a4016f798b96438"
+      "sha256": "5e0fb779c8c692b4b8fdaa845b7339df0cfe1a217106ce1aa5f185f91a5efdac"
     },
     "source_landing_queue": {
       "path": "quality/qualifications/bronze-source-landing-queue.json",
-      "sha256": "b8e27eabf880f9b618a3d7a6da7469cc578854ef647b42289eed3ec3dde74eb5"
+      "sha256": "e16597266cadf588bec545a3ba9b2d2ddc161485a8ec62119e8c41afa7c49000"
     },
     "landing_overrides": {
       "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
-      "sha256": "b74a8e3a236dbeb3414966788d263cb06b855c68de456f1d996b9980109e96ad"
+      "sha256": "0b1b004b1d75d52c8f9ceff9207a1d2ee6eaf6e866c476a9d5378d049eb60b9f"
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "abba1384d195938ea232fb7507b1ac353f34f44005eb6ef53cb45e498f9eb37e",
+      "sha256": "4dbdec29a298911cef685cd40901d492993902f3b66c56986769e9be2f00b962",
       "file_count": 148,
       "files": [
         {
@@ -52,7 +52,7 @@
         {
           "path": "conductor/tracks/bronze_medallion_completion_20260819/spec.md",
           "exists": true,
-          "sha256": "78d0bed75bd2415b935108030eeb9b98aab69618790d3eb12ed77aed3f48a500"
+          "sha256": "512545bc03b917146e2b729e0fde2d807fc201610f1dfd6ad2bb7fbca3798232"
         },
         {
           "path": "docs/ECOSYSTEM_REUSE.md",
@@ -142,7 +142,7 @@
         {
           "path": "quality/qualifications/bronze-source-landing-queue.json",
           "exists": true,
-          "sha256": "b8e27eabf880f9b618a3d7a6da7469cc578854ef647b42289eed3ec3dde74eb5"
+          "sha256": "e16597266cadf588bec545a3ba9b2d2ddc161485a8ec62119e8c41afa7c49000"
         },
         {
           "path": "quality/qualifications/cms-partd-public-huggingface-20260829.json",
@@ -287,12 +287,12 @@
         {
           "path": "quality/qualifications/source-rights-disposition.json",
           "exists": true,
-          "sha256": "be92c9ccaa35f8f96095b6cff4737c3fc14575d2613e5ac0e7d8ce8c0234ce12"
+          "sha256": "24cf8898cad1f77b1a467ea60aa5df99c72ec4713e599badbf8d5868b8cc5dca"
         },
         {
           "path": "quality/qualifications/source-rights-review-ledger.json",
           "exists": true,
-          "sha256": "74cd6ffb44111dcbf2a2b2d11dd3be0fc62b4136757a33c61c5a839ed29d63d7"
+          "sha256": "d2e8b8eb9f593c3a01be5bad99cb05e07a9a0904d85db86d009759fc88727fef"
         },
         {
           "path": "quality/qualifications/sweden-socialstyrelsen-acquisition-decision-20260929.json",
@@ -427,7 +427,7 @@
         {
           "path": "src/global_medicines_atlas/bronze_maturity.py",
           "exists": true,
-          "sha256": "97fbbe0b9e49a9a64fa9632064db39d033886566782160fd8f39ef7710260b53"
+          "sha256": "fa14b75ee958fa5317c315fc8947f0b08584445e28e847c08c661897a2a2ad00"
         },
         {
           "path": "src/global_medicines_atlas/bronze_receipt_cohort.py",
@@ -457,12 +457,12 @@
         {
           "path": "src/global_medicines_atlas/data/medicine_source_catalog.json",
           "exists": true,
-          "sha256": "84d25c8b63024d95398ce92e518d1156c53afb45401a2e719a4016f798b96438"
+          "sha256": "5e0fb779c8c692b4b8fdaa845b7339df0cfe1a217106ce1aa5f185f91a5efdac"
         },
         {
           "path": "src/global_medicines_atlas/data/source_landing_overrides.json",
           "exists": true,
-          "sha256": "b74a8e3a236dbeb3414966788d263cb06b855c68de456f1d996b9980109e96ad"
+          "sha256": "0b1b004b1d75d52c8f9ceff9207a1d2ee6eaf6e866c476a9d5378d049eb60b9f"
         },
         {
           "path": "src/global_medicines_atlas/iceberg_ready.py",
@@ -1046,7 +1046,7 @@
   },
   "deferred_source_ledger": {
     "state": "tracked_not_qualified",
-    "source_count": 128,
+    "source_count": 130,
     "membership_rule": "All current-scope source IDs without a direct successful receipt accepted by the Bronze maturity receipt validator remain listed, including sources with other landing evidence.",
     "items": [
       {
@@ -1099,6 +1099,32 @@
         "defer_reason_code": "fixture_is_not_a_live_source_receipt",
         "reason": "catalogue implementation claim has committed qualification evidence",
         "next_action": "verify receipt freshness on schedule",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-data-gov-mbs-demographics",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "Medicare Benefits Schedule (MBS) - Items by Patient Demographics Report",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "Maintainer approval is limited to the exact 14 historical objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission.",
+        "next_action": "Obtain source-specific rights and define a qualified acquisition profile before handling any resources outside the approved 14-object archive scope; do not infer distinct-patient counts.",
+        "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
+      },
+      {
+        "source_id": "au-data-gov-mbs-group",
+        "jurisdictions": [
+          "AUS"
+        ],
+        "title": "Medicare Benefits Schedule (MBS) - Group Statistics Report",
+        "queue_state": "rights_blocked",
+        "evidence_scope": "none",
+        "defer_reason_code": "no_qualifying_direct_receipt",
+        "reason": "Maintainer approval is limited to the exact 4 historical group-statistics objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission.",
+        "next_action": "Obtain source-specific rights and define a qualified acquisition profile before handling resources outside the approved 4-object archive scope; do not infer distinct-patient counts.",
         "reentry_trigger": "Re-evaluate after a source-specific successful Bronze receipt is validated under the existing rights, credential, reuse, admission, and provenance gates. This ledger does not authorize acquisition."
       },
       {
@@ -2716,12 +2742,12 @@
     ]
   },
   "scope_accounting": {
-    "catalog_source_count": 174,
-    "current_scope_count": 157,
+    "catalog_source_count": 176,
+    "current_scope_count": 159,
     "qualified_cohort_count": 29,
-    "deferred_current_scope_count": 128,
+    "deferred_current_scope_count": 130,
     "current_scope_evaluator_landing_count": 42,
-    "current_scope_evaluator_missing_count": 115,
+    "current_scope_evaluator_missing_count": 117,
     "deferred_queue_landed_count": 13,
     "fixture_only_count": 2,
     "excluded_count": 15,
@@ -2732,9 +2758,9 @@
     "qualification_state": "blocked",
     "completeness_state": "blocked",
     "bronze_mature": false,
-    "in_scope_count": 157,
+    "in_scope_count": 159,
     "evaluator_landing_count": 42,
-    "in_scope_without_landing_or_blocker": 115
+    "in_scope_without_landing_or_blocker": 117
   },
   "boundaries": {
     "current_scope_definition_changed": false,

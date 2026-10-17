@@ -4,10 +4,10 @@ This report qualifies only the listed source-specific successful receipts. It do
 
 - Cohort: `bronze-receipt-backed-cohort-v1`
 - Receipt-qualified sources: `29`
-- Deferred current-scope sources: `128`
+- Deferred current-scope sources: `130`
 - Full-scope evaluator landing evidence: `42`
 - Deferred but queue-marked landed: `13`
-- Full-scope evaluator missing landing evidence: `115`
+- Full-scope evaluator missing landing evidence: `117`
 - Current-scope Bronze status: `blocked`
 - Current-scope completeness: `blocked`
 - Current-scope Bronze mature: `false`
@@ -59,6 +59,8 @@ These sources remain in the original Bronze denominator. Their absence from the 
 | ae-ede-register | ARE | Registered product directory | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
 | ar-anmat-vademecum | ARG | Vademecum Nacional | manual_only_documented_acquisition | public interactive or document surface requires a documented reproducible acquisition step | execute and receipt the documented public manual acquisition |
 | au-artg | AUS | Australian Register of Therapeutic Goods | landed_and_evidenced | catalogue implementation claim has committed qualification evidence | verify receipt freshness on schedule |
+| au-data-gov-mbs-demographics | AUS | Medicare Benefits Schedule (MBS) - Items by Patient Demographics Report | rights_blocked | Maintainer approval is limited to the exact 14 historical objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission. | Obtain source-specific rights and define a qualified acquisition profile before handling any resources outside the approved 14-object archive scope; do not infer distinct-patient counts. |
+| au-data-gov-mbs-group | AUS | Medicare Benefits Schedule (MBS) - Group Statistics Report | rights_blocked | Maintainer approval is limited to the exact 4 historical group-statistics objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission. | Obtain source-specific rights and define a qualified acquisition profile before handling resources outside the approved 4-object archive scope; do not infer distinct-patient counts. |
 | au-mbs-p7-legacy-workbook | AUS | July 2024 MBS Group P7 genetics workbook | landed_and_evidenced | The exact July 2024 P7 workbook is publicly retained as immutable legacy B2 evidence at a pinned Hugging Face revision with its donor Git ancestry, and every manifest object passed a token-free clean-room digest restore. Its archived storage SourceReceipt has been reconstructed byte-identically from the committed metadata, but that workflow retrieved from the Hugging Face archive boundary and emitted no source-origin B1 admission lifecycle. The legacy schema era remains explicit for comparison and does not imply current coverage. | Keep the workbook deferred until a source-origin retrieval from the pinned donor Git commit is recorded under the rights and reuse gates with a typed B1 receipt, acquisition event, chronological landed-to-accepted admission, and exact B2 reference or retained bytes. Re-evaluate the direct receipt cohort after that evidence exists. Keep the legacy date profile unset and M-112 federation acceptance separate. |
 | au-pbs-api | AUS | Pharmaceutical Benefits Scheme public data API | rights_blocked | source-specific retention and transformation rights unresolved: terms_review_required | record source-specific retention and transformation rights |
 | au-pbs-historical-xml | AUS | Historical PBS XML releases | landed_and_evidenced | catalogue implementation claim has committed qualification evidence | verify receipt freshness on schedule |

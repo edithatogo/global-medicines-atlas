@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +20,10 @@ FAMILIES = DATA / "source_rights_policy_families.json"
 DECISIONS = DATA / "source_rights_source_decisions.json"
 DISCOVERY = (
     ROOT / "quality/qualifications/source-rights-discovery-20260821.json"
+)
+MBS_UTILISATION_RIGHTS = (
+    ROOT
+    / "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json"
 )
 DEFAULT_OUTPUT = (
     ROOT / "quality/qualifications/source-rights-review-ledger.json"
@@ -37,6 +41,46 @@ def _unresolved(
 ) -> SourceRightsReview:
     source_id = str(source["source_id"])
     authentication = str(source["authentication"])
+    if source_id in {"au-data-gov-mbs-demographics", "au-data-gov-mbs-group"}:
+        decision = _load(MBS_UTILISATION_RIGHTS)
+        official = next(
+            item
+            for item in decision["official_evidence"]
+            if item["source_id"] == source_id
+        )
+        return SourceRightsReview.model_validate({
+            "source_id": source_id,
+            "policy_family_id": "unresolved-source-specific-terms",
+            "evidence": [
+                {
+                    "official_url": official["official_url"],
+                    "observed_at": official["observed_at"],
+                    "content_sha256": official["metadata_response_sha256"],
+                    "scope": "dataset",
+                    "reuse_statement": (
+                        "Official metadata and maintainer approval cover only "
+                        "the exact 14-object archived M-112 manifest scope; "
+                        "they establish no broader resource or revision rights."
+                    ),
+                }
+            ],
+            "redistribute": "unknown",
+            "transform": "unknown",
+            "publish_source_bytes": "unknown",
+            "sensitivity": "unknown",
+            "disposition": "rights_blocked",
+            "maintainer_licence_approved": False,
+            "maintainer_publication_approved": False,
+            "reviewed_at": official["observed_at"],
+            "review_trigger": (
+                "resolve rights for resources and revisions outside the "
+                "exact 14-object approved manifest"
+            ),
+            "blocker": (
+                "M-112 approval is limited to the exact 14-object archived "
+                "manifest; broader source rights remain unresolved"
+            ),
+        })
     evidence: list[dict[str, str]] = []
     if discovery["content_sha256"] is not None:
         evidence.append({
@@ -187,7 +231,11 @@ def build() -> dict[str, Any]:
     validate_catalogue_reviews(
         source_ids,
         reviews,
-        as_of=datetime(2026, 8, 30, tzinfo=UTC),
+        as_of=datetime.combine(
+            date.fromisoformat(catalog["reviewed_at"]),
+            datetime.min.time(),
+            tzinfo=UTC,
+        ),
     )
     entries = [
         review.model_dump(mode="json")
@@ -196,7 +244,7 @@ def build() -> dict[str, Any]:
     return {
         "schema_id": "global-medicines-atlas.source-rights-review-ledger",
         "schema_version": 1,
-        "generated_at": REVIEWED_AT,
+        "generated_at": f"{catalog['reviewed_at']}T00:00:00Z",
         "catalogue_source_count": len(source_ids),
         "review_count": len(entries),
         "publication_gate": decision_file["publication_gate"],

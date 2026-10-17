@@ -1,10 +1,10 @@
 {
-  "catalog_reviewed_at": "2026-10-02",
+  "catalog_reviewed_at": "2026-10-17",
   "catalog_schema_version": 5,
   "family_counts": {
     "archive_release": 9,
     "document_collection": 27,
-    "manual_reproducible_export": 9,
+    "manual_reproducible_export": 11,
     "paginated_rest_api": 12,
     "regulator_search_export": 79,
     "static_file_download": 38
@@ -141,6 +141,66 @@
       "reason": "catalogue implementation claim has committed qualification evidence",
       "source_id": "au-artg",
       "state": "landed_and_evidenced"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group-by-patient-demographics-report",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "csv",
+          "xlsx",
+          "zip"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-data-gov-mbs-demographics"
+      },
+      "evidence_references": [
+        "quality/qualifications/australian-mbs-item-demographic-source-review-20260929.json",
+        "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-b2-reference-reconciliation-20261017.json"
+      ],
+      "evidence_scope": "none",
+      "next_action": "Obtain source-specific rights and define a qualified acquisition profile before handling any resources outside the approved 14-object archive scope; do not infer distinct-patient counts.",
+      "priority": 20,
+      "reason": "Maintainer approval is limited to the exact 14 historical objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission.",
+      "source_id": "au-data-gov-mbs-demographics",
+      "state": "rights_blocked"
+    },
+    {
+      "adapter": {
+        "acquisition_instructions": "Follow the documented public retrieval steps, record parameters, and receipt the source-native export.",
+        "acquisition_profile": null,
+        "credentials_persisted": false,
+        "endpoint": "https://data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group",
+        "family": "manual_reproducible_export",
+        "formats": [
+          "csv",
+          "xlsx",
+          "zip"
+        ],
+        "pagination": "manual",
+        "preserves_source_bytes": true,
+        "requires_reuse_gate": true,
+        "requires_rights_gate": true,
+        "source_id": "au-data-gov-mbs-group"
+      },
+      "evidence_references": [
+        "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-object-rights-metadata-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-b2-reference-reconciliation-20261017.json"
+      ],
+      "evidence_scope": "none",
+      "next_action": "Obtain source-specific rights and define a qualified acquisition profile before handling resources outside the approved 4-object archive scope; do not infer distinct-patient counts.",
+      "priority": 20,
+      "reason": "Maintainer approval is limited to the exact 4 historical group-statistics objects in the M-112 rights decision; broader resources and revisions remain outside that scope. Imported B1/B2 references do not constitute native receipts, payload-storage receipts, or admission.",
+      "source_id": "au-data-gov-mbs-group",
+      "state": "rights_blocked"
     },
     {
       "adapter": {
@@ -4709,13 +4769,13 @@
   "schema_id": "global-medicines-atlas.bronze-source-landing-queue",
   "schema_version": 1,
   "silver_transformations_included": false,
-  "source_count": 174,
+  "source_count": 176,
   "state_counts": {
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
     "manual_only_documented_acquisition": 91,
     "not_yet_implemented": 0,
-    "rights_blocked": 25,
+    "rights_blocked": 27,
     "superseded_by_reused_source": 0,
     "temporarily_unavailable": 1
   }

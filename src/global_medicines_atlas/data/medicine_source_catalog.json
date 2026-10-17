@@ -1,6 +1,6 @@
 {
   "schema_version": 5,
-  "reviewed_at": "2026-10-02",
+  "reviewed_at": "2026-10-17",
   "monitoring_contract": {
     "source_health": "weekly",
     "schema_drift": "monthly"
@@ -978,6 +978,116 @@
         "tests/fixtures/adapters/au_artg.csv"
       ],
       "discovery_status": "declaration_verified"
+    },
+    {
+      "source_id": "au-data-gov-mbs-demographics",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Services Australia",
+      "title": "Medicare Benefits Schedule (MBS) - Items by Patient Demographics Report",
+      "dimension": "service_benefit",
+      "access_mode": "web_search",
+      "landing_page": "https://data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group-by-patient-demographics-report",
+      "update_cadence": "monthly (catalogue-declared; resource revisions are not fully qualified)",
+      "rights_status": "maintainer-approved exact 14-object archive scope only; rights for broader resources and revisions remain unresolved",
+      "readiness": "blocked",
+      "discovery_status": "declaration_verified",
+      "implemented_ingestion": false,
+      "evidence_limit": "Only the exact 14 historical objects enumerated in the M-112 rights decision are approved and have imported B1/B2 references; they have no native GMA source or storage receipts and no admission. Broader resources and revisions remain outside the approved rights scope. Metadata reports item-level service and benefit statistics, but patient_denominator_qualified=false; current and complete series coverage is also unqualified.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "csv",
+        "xlsx",
+        "zip"
+      ],
+      "authentication": "none",
+      "product_grain": "MBS service statistics by item and demographic category",
+      "historical_scope": "Public report resources recorded in the data.gov.au catalogue; selected historical objects only, with incomplete and current coverage unqualified",
+      "native_identifier": "data.gov.au package UUID 8a19a28f-35b0-4035-8cd5-5b611b3cfa6f and resource UUIDs",
+      "last_verified_at": "2026-10-04",
+      "integration_layer": "catalogued",
+      "documentation_url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "information_domains": [
+        "service_benefit"
+      ],
+      "record_entities": [
+        "service_item"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "unknown",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "benefit_amounts"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/australian-mbs-item-demographic-source-review-20260929.json",
+        "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-b2-reference-reconciliation-20261017.json"
+      ]
+    },
+    {
+      "source_id": "au-data-gov-mbs-group",
+      "jurisdictions": [
+        "AUS"
+      ],
+      "authority": "Services Australia",
+      "title": "Medicare Benefits Schedule (MBS) - Group Statistics Report",
+      "dimension": "service_benefit",
+      "access_mode": "web_search",
+      "landing_page": "https://data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group",
+      "update_cadence": "monthly (catalogue-declared; resource revisions are not fully qualified)",
+      "rights_status": "maintainer-approved exact 4-object archive scope only; rights for broader resources and revisions remain unresolved",
+      "readiness": "blocked",
+      "discovery_status": "declaration_verified",
+      "implemented_ingestion": false,
+      "evidence_limit": "Only the exact 4 historical group-statistics objects enumerated in the M-112 rights decision are approved and have imported B1/B2 references; they have no native GMA source or storage receipts and no admission. Broader resources and revisions remain outside the approved rights scope. Group-level service and benefit statistics do not establish a distinct-patient denominator; current and complete series coverage is also unqualified.",
+      "interface_status": "interactive_only",
+      "formats": [
+        "csv",
+        "xlsx",
+        "zip"
+      ],
+      "authentication": "none",
+      "product_grain": "MBS service and benefit statistics by service group and reporting period",
+      "historical_scope": "Public group-statistics resources recorded in the data.gov.au catalogue; selected historical objects only, with incomplete and current coverage unqualified",
+      "native_identifier": "data.gov.au package UUID 5335e112-d91e-47ba-b5f8-5364c8e428dc and resource UUIDs",
+      "last_verified_at": "2026-10-04",
+      "integration_layer": "catalogued",
+      "documentation_url": "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group",
+      "information_domains": [
+        "service_benefit"
+      ],
+      "record_entities": [
+        "service_item"
+      ],
+      "status_semantics": [
+        "mixed"
+      ],
+      "geographic_scope": "national",
+      "population_scope": "unknown",
+      "languages": [
+        "en"
+      ],
+      "change_semantics": "snapshot",
+      "available_fields": [
+        "identifiers",
+        "benefit_amounts"
+      ],
+      "qualification_state": "documentation_verified",
+      "qualification_references": [
+        "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-object-rights-metadata-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-b2-reference-reconciliation-20261017.json"
+      ]
     },
     {
       "source_id": "au-mbs",

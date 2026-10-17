@@ -23,10 +23,10 @@ def _entries() -> list[dict[str, Any]]:
 def test_ledger_is_deterministic_and_covers_all_sources() -> None:
     ledger = _ledger()
     assert ledger == build()
-    assert ledger["catalogue_source_count"] == 174
-    assert ledger["review_count"] == 174
+    assert ledger["catalogue_source_count"] == 176
+    assert ledger["review_count"] == 176
     entries = _entries()
-    assert len({entry["source_id"] for entry in entries}) == 174
+    assert len({entry["source_id"] for entry in entries}) == 176
 
 
 def test_fda_sources_bind_exact_manifest_approval() -> None:
@@ -74,11 +74,28 @@ def test_non_approved_sources_remain_explicitly_fail_closed() -> None:
     non_public = [
         entry
         for entry in entries
-        if entry["disposition"] in {"catalogue_only", "credentialed_excluded"}
+        if entry["disposition"]
+        in {"catalogue_only", "credentialed_excluded", "rights_blocked"}
     ]
-    assert len(non_public) == 146
+    assert len(non_public) == 148
     assert all(entry["blocker"] for entry in non_public)
     assert all(entry["public_source_eligible"] is False for entry in non_public)
+    demographics = next(
+        entry
+        for entry in non_public
+        if entry["source_id"] == "au-data-gov-mbs-demographics"
+    )
+    assert demographics["redistribute"] == "unknown"
+    assert demographics["transform"] == "unknown"
+    assert demographics["publish_source_bytes"] == "unknown"
+    assert demographics["disposition"] == "rights_blocked"
+    assert demographics["evidence"][0]["scope"] == "dataset"
+    assert demographics["evidence"][0]["content_sha256"] == (
+        "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a"
+    )
+    assert "exact 14-object" in demographics["evidence"][0]["reuse_statement"]
+    assert demographics["maintainer_licence_approved"] is False
+    assert demographics["maintainer_publication_approved"] is False
 
 
 def test_permissive_international_candidates_have_official_evidence() -> None:
@@ -158,7 +175,7 @@ def test_every_international_review_has_observation_or_failure_receipt() -> (
     None
 ):
     entries = _entries()
-    assert sum(bool(entry["evidence"]) for entry in entries) == 156
+    assert sum(bool(entry["evidence"]) for entry in entries) == 158
     unavailable = [entry for entry in entries if not entry["evidence"]]
     assert len(unavailable) == 18
     assert all(

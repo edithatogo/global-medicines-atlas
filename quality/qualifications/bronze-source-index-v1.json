@@ -1,16 +1,16 @@
 {
-  "catalog_reviewed_at": "2026-10-02",
+  "catalog_reviewed_at": "2026-10-17",
   "catalog_schema_version": 5,
   "dataset_id": "global-medicines-source-index",
   "discovery_state_counts": {
-    "declaration_verified": 147,
+    "declaration_verified": 149,
     "discovery_only": 26,
     "receipt_backed": 1
   },
   "evidence_scope_counts": {
     "governed_fixture": 11,
     "live_receipt": 30,
-    "none": 132,
+    "none": 134,
     "parser_contract": 1
   },
   "generated_from": "src/global_medicines_atlas/data/medicine_source_catalog.json",
@@ -19,21 +19,21 @@
     "credentialed_and_excluded": 15,
     "landed_and_evidenced": 42,
     "manual_only_documented_acquisition": 91,
-    "rights_blocked": 25,
+    "rights_blocked": 27,
     "temporarily_unavailable": 1
   },
   "missing_source_is_negative_evidence": false,
   "qualification_state_counts": {
     "declared": 75,
-    "documentation_verified": 57,
+    "documentation_verified": 59,
     "fixture_verified": 12,
     "live_verified": 30
   },
   "schema_id": "global-medicines-atlas.b0-source-index",
   "schema_version": 1,
-  "snapshot_id": "sha256:10d07d4b160bffbc6639d26851ab793d9a8910320307e6a55d178f5242f9eaa2",
-  "snapshot_sha256": "10d07d4b160bffbc6639d26851ab793d9a8910320307e6a55d178f5242f9eaa2",
-  "source_count": 174,
+  "snapshot_id": "sha256:018d58d9dc5f047f23022cc80bb19f180e3847d178b43bb3efd6c6ae3312c60a",
+  "snapshot_sha256": "018d58d9dc5f047f23022cc80bb19f180e3847d178b43bb3efd6c6ae3312c60a",
+  "source_count": 176,
   "sources": [
     {
       "access_mode": "download",
@@ -60,7 +60,7 @@
         "ARE"
       ],
       "landing_page": "https://dha.gov.ae/en/HealthRegulationSector/DrugControl",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -100,7 +100,7 @@
         "ARE"
       ],
       "landing_page": "https://services.ede.gov.ae/drugdirectory?lang=en-US",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -140,7 +140,7 @@
         "ARG"
       ],
       "landing_page": "https://www.argentina.gob.ar/anmat",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -180,7 +180,7 @@
         "AUS"
       ],
       "landing_page": "https://www.healthterminologies.gov.au/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -220,7 +220,7 @@
         "AUS"
       ],
       "landing_page": "https://www.tga.gov.au/resources/artg",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -237,6 +237,92 @@
       "supersession_or_reuse_reference": "",
       "title": "Australian Register of Therapeutic Goods",
       "update_cadence": "continuous"
+    },
+    {
+      "access_mode": "web_search",
+      "acquisition_family": "manual_reproducible_export",
+      "api_url": "",
+      "authentication": "none",
+      "authority": "Services Australia",
+      "current_landing_disposition": "rights_blocked",
+      "discovery_state": "declaration_verified",
+      "documentation_url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "download_url": "",
+      "evidence_scope": "none",
+      "expected_formats": [
+        "csv",
+        "xlsx",
+        "zip"
+      ],
+      "index_presence_implies_coverage": false,
+      "indexed": true,
+      "information_domains": [
+        "service_benefit"
+      ],
+      "jurisdictions": [
+        "AUS"
+      ],
+      "landing_page": "https://data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group-by-patient-demographics-report",
+      "last_reviewed_at": "2026-10-17",
+      "last_verified_at": "2026-10-04",
+      "metadata_verified": true,
+      "missing_source_is_negative_evidence": false,
+      "qualification_references": [
+        "quality/qualifications/australian-mbs-item-demographic-source-review-20260929.json",
+        "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-b2-reference-reconciliation-20261017.json"
+      ],
+      "qualification_state": "documentation_verified",
+      "rights_review_state": "maintainer-approved exact 14-object archive scope only; rights for broader resources and revisions remain unresolved",
+      "schema_drift_policy": "monthly",
+      "source_health_policy": "weekly",
+      "source_id": "au-data-gov-mbs-demographics",
+      "supersession_or_reuse_reference": "",
+      "title": "Medicare Benefits Schedule (MBS) - Items by Patient Demographics Report",
+      "update_cadence": "monthly (catalogue-declared; resource revisions are not fully qualified)"
+    },
+    {
+      "access_mode": "web_search",
+      "acquisition_family": "manual_reproducible_export",
+      "api_url": "",
+      "authentication": "none",
+      "authority": "Services Australia",
+      "current_landing_disposition": "rights_blocked",
+      "discovery_state": "declaration_verified",
+      "documentation_url": "https://data.gov.au/data/api/3/action/package_show?id=medicare-benefits-schedule-mbs-group",
+      "download_url": "",
+      "evidence_scope": "none",
+      "expected_formats": [
+        "csv",
+        "xlsx",
+        "zip"
+      ],
+      "index_presence_implies_coverage": false,
+      "indexed": true,
+      "information_domains": [
+        "service_benefit"
+      ],
+      "jurisdictions": [
+        "AUS"
+      ],
+      "landing_page": "https://data.gov.au/data/dataset/medicare-benefits-schedule-mbs-group",
+      "last_reviewed_at": "2026-10-17",
+      "last_verified_at": "2026-10-04",
+      "metadata_verified": true,
+      "missing_source_is_negative_evidence": false,
+      "qualification_references": [
+        "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-object-rights-metadata-20261004.json",
+        "quality/qualifications/australian-mbs-utilisation-b2-reference-reconciliation-20261017.json"
+      ],
+      "qualification_state": "documentation_verified",
+      "rights_review_state": "maintainer-approved exact 4-object archive scope only; rights for broader resources and revisions remain unresolved",
+      "schema_drift_policy": "monthly",
+      "source_health_policy": "weekly",
+      "source_id": "au-data-gov-mbs-group",
+      "supersession_or_reuse_reference": "",
+      "title": "Medicare Benefits Schedule (MBS) - Group Statistics Report",
+      "update_cadence": "monthly (catalogue-declared; resource revisions are not fully qualified)"
     },
     {
       "access_mode": "download",
@@ -262,7 +348,7 @@
         "AUS"
       ],
       "landing_page": "https://www.mbsonline.gov.au/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -311,7 +397,7 @@
         "AUS"
       ],
       "landing_page": "https://github.com/edithatogo/aus-health-data-scraper/blob/931da0b9b6ae3e3cec0743568abb71a50d62b7cf/data/source/MBS%20-%202024.07%20-%20Group%20P7%20(Genetics).xlsx",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -355,7 +441,7 @@
         "AUS"
       ],
       "landing_page": "https://data.pbs.gov.au/data-distribution/data-distribution.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -396,7 +482,7 @@
         "AUS"
       ],
       "landing_page": "https://data.pbs.gov.au/document/90473.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -436,7 +522,7 @@
         "AUS"
       ],
       "landing_page": "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -479,7 +565,7 @@
         "AUS"
       ],
       "landing_page": "https://www.tga.gov.au/safety/adverse-events/database-adverse-event-notifications-daen",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -521,7 +607,7 @@
         "AUS"
       ],
       "landing_page": "https://www.tga.gov.au/products/regulations-all-products/about-australian-register-therapeutic-goods-artg/product-information-pi",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -562,7 +648,7 @@
         "AUS"
       ],
       "landing_page": "https://www.tga.gov.au/resources/datasets",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -603,7 +689,7 @@
         "BHR"
       ],
       "landing_page": "https://www.moh.gov.bh/OtherPages/Faq?lang=en",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -643,7 +729,7 @@
         "BRA"
       ],
       "landing_page": "https://consultas.anvisa.gov.br/#/medicamentos/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -684,7 +770,7 @@
         "BRA"
       ],
       "landing_page": "https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -725,7 +811,7 @@
         "BRA"
       ],
       "landing_page": "https://www.gov.br/conitec/pt-br",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -767,7 +853,7 @@
         "CAN"
       ],
       "landing_page": "https://open.canada.ca/data/en/dataset/9cbaef00-b52c-4a70-9fed-d9aa8263ab74",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -809,7 +895,7 @@
         "CAN"
       ],
       "landing_page": "https://www.cda-amc.ca/reimbursement-reviews",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -851,7 +937,7 @@
         "CAN"
       ],
       "landing_page": "https://www.cihi.ca/en/national-health-expenditure-trends/nhex-trends-data",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-21",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -892,7 +978,7 @@
         "CAN"
       ],
       "landing_page": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/drug-product-database.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -935,7 +1021,7 @@
         "CAN"
       ],
       "landing_page": "https://www.canada.ca/en/health-canada/services/drugs-health-products/drug-products/notice-compliance/database/data-extract.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -982,7 +1068,7 @@
         "CAN"
       ],
       "landing_page": "https://open.canada.ca/data/en/dataset/e49db542-48db-8656-c4d5-f1f32516ddad",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1022,7 +1108,7 @@
         "CAN"
       ],
       "landing_page": "https://www.ontario.ca/document/ontario-drug-benefit-odb-formulary-comparative-drug-index-cdi-and-monthly-formulary-0",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1062,7 +1148,7 @@
         "CHE"
       ],
       "landing_page": "https://sl.bag.admin.ch/resources/current-and-archived-data",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1102,7 +1188,7 @@
         "CHE"
       ],
       "landing_page": "https://www.spezialitaetenliste.ch/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -1143,7 +1229,7 @@
         "CHE"
       ],
       "landing_page": "https://www.swissmedic.ch/swissmedic/en/home/humanarzneimittel/authorisations/aips.html/1000",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1183,7 +1269,7 @@
         "CHE"
       ],
       "landing_page": "https://www.swissmedic.ch/swissmedic/en/home/services/listen_neu.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -1223,7 +1309,7 @@
         "CHL"
       ],
       "landing_page": "https://registrosanitario.ispch.gob.cl/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1263,7 +1349,7 @@
         "COL"
       ],
       "landing_page": "https://mesagil.invima.gov.co/productos-vigilados/medicamentos-y-productos-biologicos/autorizacion-de-comercializacion-registros",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1303,7 +1389,7 @@
         "COL"
       ],
       "landing_page": "https://www.invima.gov.co/consulta-registros-sanitarios",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1343,7 +1429,7 @@
         "DEU"
       ],
       "landing_page": "https://www.bfarm.de/DE/Arzneimittel/Arzneimittelinformationen/Arzneimittel-recherchieren/AMIce/_artikel.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1383,7 +1469,7 @@
         "DNK"
       ],
       "landing_page": "https://laegemiddelstyrelsen.dk/en/reimbursement/prices/medicine-prices-for-companies",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1423,7 +1509,7 @@
         "DNK"
       ],
       "landing_page": "https://medstat.dk/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1463,7 +1549,7 @@
         "EGY"
       ],
       "landing_page": "https://www.edaegypt.gov.eg/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1504,7 +1590,7 @@
         "EGY"
       ],
       "landing_page": "https://www.edaegypt.gov.eg/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1545,7 +1631,7 @@
         "EGY"
       ],
       "landing_page": "https://www.edaegypt.gov.eg/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1585,7 +1671,7 @@
         "EU"
       ],
       "landing_page": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation/public-data-article-57-database",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1627,7 +1713,7 @@
         "EU"
       ],
       "landing_page": "https://www.ema.europa.eu/en/medicines",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1668,7 +1754,7 @@
         "EU"
       ],
       "landing_page": "https://www.ema.europa.eu/en/about-us/about-website/download-website-data-json-data-format",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1708,7 +1794,7 @@
         "EU"
       ],
       "landing_page": "https://www.ema.europa.eu/en/medicines",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1751,7 +1837,7 @@
         "EU"
       ],
       "landing_page": "https://www.ema.europa.eu/en/human-regulatory-overview/orphan-designation-overview",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1792,7 +1878,7 @@
         "EU"
       ],
       "landing_page": "https://api.pms.ema.europa.eu/public/v1/swagger",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1833,7 +1919,7 @@
         "EU"
       ],
       "landing_page": "https://www.ema.europa.eu/en/medicines",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1875,7 +1961,7 @@
         "EU"
       ],
       "landing_page": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/pharmacovigilance-post-authorisation/safety-communication",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1915,7 +2001,7 @@
         "EU"
       ],
       "landing_page": "https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/data-medicines-iso-idmp-standards-post-authorisation",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1956,7 +2042,7 @@
         "EU"
       ],
       "landing_page": "https://www.adrreports.eu/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -1996,7 +2082,7 @@
         "EU"
       ],
       "landing_page": "https://spor.ema.europa.eu/sporwi/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2038,7 +2124,7 @@
         "EU"
       ],
       "landing_page": "https://spor.ema.europa.eu/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2078,7 +2164,7 @@
         "EU"
       ],
       "landing_page": "https://health.ec.europa.eu/medicinal-products/union-register_en",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-21",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2121,7 +2207,7 @@
         "FRA"
       ],
       "landing_page": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2163,7 +2249,7 @@
         "FRA"
       ],
       "landing_page": "https://base-donnees-publique.medicaments.gouv.fr/index.php/telechargement",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2206,7 +2292,7 @@
         "FRA"
       ],
       "landing_page": "https://www.assurance-maladie.ameli.fr/etudes-et-donnees/open-medic-base-complete-depenses-medicaments",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-21",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2252,7 +2338,7 @@
         "GBR"
       ],
       "landing_page": "https://www.gov.uk/government/publications/drugs-and-pharmaceutical-electronic-market-information-emit",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2294,7 +2380,7 @@
         "GBR"
       ],
       "landing_page": "https://products.mhra.gov.uk/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2337,7 +2423,7 @@
         "GBR"
       ],
       "landing_page": "https://yellowcard.mhra.gov.uk/idaps",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2378,7 +2464,7 @@
         "GBR"
       ],
       "landing_page": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -2418,7 +2504,7 @@
         "GBR"
       ],
       "landing_page": "https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/drug-tariff",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2462,7 +2548,7 @@
         "GBR"
       ],
       "landing_page": "https://www.england.nhs.uk/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2505,7 +2591,7 @@
         "GBR"
       ],
       "landing_page": "https://www.nice.org.uk/what-nice-does/our-guidance/about-technology-appraisal-guidance",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2548,7 +2634,7 @@
         "GBR"
       ],
       "landing_page": "https://openprescribing.net/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2594,7 +2680,7 @@
         "GBR"
       ],
       "landing_page": "https://digital.nhs.uk/developer/api-catalogue/technology-reference-update-distribution-api",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2634,7 +2720,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://ghc.sa/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2674,7 +2760,7 @@
         "GHA"
       ],
       "landing_page": "https://fdaghana.gov.gh/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2715,7 +2801,7 @@
         "GHA"
       ],
       "landing_page": "https://fdaghana.gov.gh/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2756,7 +2842,7 @@
         "GHA"
       ],
       "landing_page": "https://fdaghana.gov.gh/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2800,7 +2886,7 @@
         "USA"
       ],
       "landing_page": "https://www.nlm.nih.gov/research/umls/rxnorm/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -2842,7 +2928,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://who-umc.org/vigibase/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2885,7 +2971,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://www.who.int/teams/global-hiv-hepatitis-and-stis-programmes/hiv/treatment/aids-medicines-and-diagnostics-service",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2926,7 +3012,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -2966,7 +3052,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://www.who.int/tools/monitoring-and-evaluation/databases",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -3008,7 +3094,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://www.who.int/groups/expert-committee-on-selection-and-use-of-essential-medicines/essential-medicines-lists",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3053,7 +3139,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://www.who.int/teams/health-product-and-policy-standards/medicines-selection-ip-and-affordability/affordability-pricing",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3096,7 +3182,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://www.who.int/teams/immunization-vaccines-and-biologicals/vaccine-access/mi4a",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3137,7 +3223,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://www.who.int/teams/health-product-policy-and-standards/assistive-and-medical-technology/essential-medicines/national-emls",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-10-02",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3180,7 +3266,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://www.who.int/teams/regulation-prequalification",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3220,7 +3306,7 @@
         "GLOBAL"
       ],
       "landing_page": "https://www.who.int/initiatives/who-listed-authority-reg-authorities",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -3260,7 +3346,7 @@
         "IDN"
       ],
       "landing_page": "https://cekbpom.pom.go.id/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3301,7 +3387,7 @@
         "IRL"
       ],
       "landing_page": "https://about.hse.ie/publications/pcrs-statistical-analysis-of-claims-and-payments-2024/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-21",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3341,7 +3427,7 @@
         "IND"
       ],
       "landing_page": "https://cdsco.gov.in/opencms/opencms/en/Approval_new/Approved-New-Drugs/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -3381,7 +3467,7 @@
         "IND"
       ],
       "landing_page": "https://cdsco.gov.in/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3421,7 +3507,7 @@
         "IND"
       ],
       "landing_page": "https://main.mohfw.gov.in/newshighlights-104",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -3464,7 +3550,7 @@
         "IND"
       ],
       "landing_page": "https://www.nppaindia.nic.in/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3505,7 +3591,7 @@
         "IND"
       ],
       "landing_page": "https://gem.gov.in/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3546,7 +3632,7 @@
         "IND"
       ],
       "landing_page": "https://www.ipc.gov.in/PvPI/pv_home.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3586,7 +3672,7 @@
         "JPN"
       ],
       "landing_page": "https://www.mhlw.go.jp/ndb/opendatasite/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-21",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3627,7 +3713,7 @@
         "JPN"
       ],
       "landing_page": "https://www.mhlw.go.jp/topics/2025/04/tp20250401-01.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3669,7 +3755,7 @@
         "JPN"
       ],
       "landing_page": "https://www.pmda.go.jp/english/review-services/reviews/approved-information/drugs/0001.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3712,7 +3798,7 @@
         "JPN"
       ],
       "landing_page": "https://www.info.pmda.go.jp/psearch/tenpulist.jsp",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3754,7 +3840,7 @@
         "JPN"
       ],
       "landing_page": "https://www.pmda.go.jp/english/safety/info-services/0001.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3796,7 +3882,7 @@
         "KEN"
       ],
       "landing_page": "https://www.pharmacyboardkenya.org/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3836,7 +3922,7 @@
         "KEN"
       ],
       "landing_page": "https://www.pharmacyboardkenya.org/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3877,7 +3963,7 @@
         "KEN"
       ],
       "landing_page": "https://www.pharmacyboardkenya.org/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3917,7 +4003,7 @@
         "KOR"
       ],
       "landing_page": "https://www.data.go.kr/data/15118958/fileData.do",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -3958,7 +4044,7 @@
         "KOR"
       ],
       "landing_page": "https://www.hira.or.kr/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -3998,7 +4084,7 @@
         "KOR"
       ],
       "landing_page": "https://www.data.go.kr/data/15067462/fileData.do",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4038,7 +4124,7 @@
         "KOR"
       ],
       "landing_page": "https://nedrug.mfds.go.kr/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -4078,7 +4164,7 @@
         "KWT"
       ],
       "landing_page": "https://www.moh.gov.kw/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4119,7 +4205,7 @@
         "MUS"
       ],
       "landing_page": "https://health.govmu.org/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4159,7 +4245,7 @@
         "MUS"
       ],
       "landing_page": "https://health.govmu.org/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4199,7 +4285,7 @@
         "MUS"
       ],
       "landing_page": "https://health.govmu.org/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4240,7 +4326,7 @@
         "MUS"
       ],
       "landing_page": "https://health.govmu.org/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4280,7 +4366,7 @@
         "MEX"
       ],
       "landing_page": "https://www.gob.mx/cofepris",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -4320,7 +4406,7 @@
         "MEX"
       ],
       "landing_page": "https://www.csg.gob.mx/Compendio/CNIS/cnis.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -4360,7 +4446,7 @@
         "MYS"
       ],
       "landing_page": "https://quest3plus.bpfk.gov.my/front-end/product-search.php",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4400,7 +4486,7 @@
         "NGA"
       ],
       "landing_page": "https://greenbook.nafdac.gov.ng/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -4441,7 +4527,7 @@
         "NGA"
       ],
       "landing_page": "https://www.nafdac.gov.ng/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4481,7 +4567,7 @@
         "NGA"
       ],
       "landing_page": "https://www.nhia.gov.ng/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -4523,7 +4609,7 @@
         "NLD"
       ],
       "landing_page": "https://www.gipdatabank.nl/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4566,7 +4652,7 @@
         "NLD"
       ],
       "landing_page": "https://www.medicijnkosten.nl/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4607,7 +4693,7 @@
         "NOR"
       ],
       "landing_page": "https://www.dmp.no/om-oss/distribusjon-av-legemiddeldata/FHIR-tjenesten/innhold-i-tjenesten",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4649,7 +4735,7 @@
         "NOR"
       ],
       "landing_page": "https://www.dmp.no/en/about-us/distribution-of-data-on-medicinal-products/electronic-prescription-support-system-fest/downloading-fest-and-safest",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4689,7 +4775,7 @@
         "NOR"
       ],
       "landing_page": "https://statistikk.fhi.no/lmr/default.aspx",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4731,7 +4817,7 @@
         "NZL"
       ],
       "landing_page": "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4771,7 +4857,7 @@
         "NZL"
       ],
       "landing_page": "https://www.medsafe.govt.nz/DbSearch/InfoSearch",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4814,7 +4900,7 @@
         "NZL"
       ],
       "landing_page": "https://www.healthnz.govt.nz/health-professionals/guidance-standards/topic/data-and-standards/health-information-standards/nz-health-terminology-service-nzhts",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4854,7 +4940,7 @@
         "NZL"
       ],
       "landing_page": "https://info.nzulm.org.nz/data-access",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4894,7 +4980,7 @@
         "NZL"
       ],
       "landing_page": "https://schedule.pharmac.govt.nz/pub/HML/archive/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -4936,7 +5022,7 @@
         "NZL"
       ],
       "landing_page": "https://schedule.pharmac.govt.nz/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -4977,7 +5063,7 @@
         "NZL"
       ],
       "landing_page": "https://schedule.pharmac.govt.nz/pub/Schedule/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5021,7 +5107,7 @@
         "OMN"
       ],
       "landing_page": "https://www.moh.gov.om/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5061,7 +5147,7 @@
         "PHL"
       ],
       "landing_page": "https://verification.fda.gov.ph/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5101,7 +5187,7 @@
         "PAK"
       ],
       "landing_page": "https://www.dra.gov.pk/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5142,7 +5228,7 @@
         "PAK"
       ],
       "landing_page": "https://www.dra.gov.pk/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5183,7 +5269,7 @@
         "PAK"
       ],
       "landing_page": "https://www.dra.gov.pk/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5223,7 +5309,7 @@
         "QAT"
       ],
       "landing_page": "https://www.moph.gov.qa/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5264,7 +5350,7 @@
         "RWA"
       ],
       "landing_page": "https://rwandafda.gov.rw/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5304,7 +5390,7 @@
         "RWA"
       ],
       "landing_page": "https://rwandafda.gov.rw/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5345,7 +5431,7 @@
         "RWA"
       ],
       "landing_page": "https://rwandafda.gov.rw/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5385,7 +5471,7 @@
         "SAU"
       ],
       "landing_page": "https://www.chi.gov.sa/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -5425,7 +5511,7 @@
         "SAU"
       ],
       "landing_page": "https://www.sfda.gov.sa/en/drugs-list",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -5466,7 +5552,7 @@
         "SWE"
       ],
       "landing_page": "https://www.lakemedelsverket.se/sv/om-webbplatsen/oppna-data",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5507,7 +5593,7 @@
         "SWE"
       ],
       "landing_page": "https://www.socialstyrelsen.se/statistik-och-data/statistik/statistikamnen/lakemedel/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5550,7 +5636,7 @@
         "SWE"
       ],
       "landing_page": "https://www.tlv.se/lakemedelsforetag/pris-och-subvention-av-lakemedel/subventionerade-lakemedel.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5590,7 +5676,7 @@
         "SGP"
       ],
       "landing_page": "https://www.hsa.gov.sg/therapeutic-products/registration-of-therapeutic-products/tools-and-resources/listing-of-approvals-and-post-registration-actions/listing-of-approvals/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5630,7 +5716,7 @@
         "SGP"
       ],
       "landing_page": "https://www.hsa.gov.sg/therapeutic-products/register",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -5670,7 +5756,7 @@
         "SGP"
       ],
       "landing_page": "https://www.moh.gov.sg/managing-expenses/schemes-and-subsidies/drug-subsidies-schemes",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -5710,7 +5796,7 @@
         "SEN"
       ],
       "landing_page": "https://www.sante.gouv.sn/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5751,7 +5837,7 @@
         "SEN"
       ],
       "landing_page": "https://www.sante.gouv.sn/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5792,7 +5878,7 @@
         "SEN"
       ],
       "landing_page": "https://www.sante.gouv.sn/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5832,7 +5918,7 @@
         "THA"
       ],
       "landing_page": "https://pertento.fda.moph.go.th/FDA_SEARCH_DRUG/SEARCH_DRUG/FRM_SEARCH_PAGE.aspx",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5873,7 +5959,7 @@
         "TZA"
       ],
       "landing_page": "https://www.tmda.go.tz/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5913,7 +5999,7 @@
         "TZA"
       ],
       "landing_page": "https://www.tmda.go.tz/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5954,7 +6040,7 @@
         "TZA"
       ],
       "landing_page": "https://www.tmda.go.tz/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -5995,7 +6081,7 @@
         "UGA"
       ],
       "landing_page": "https://www.nda.or.ug/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6035,7 +6121,7 @@
         "UGA"
       ],
       "landing_page": "https://www.nda.or.ug/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6076,7 +6162,7 @@
         "UGA"
       ],
       "landing_page": "https://www.nda.or.ug/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6117,7 +6203,7 @@
         "USA"
       ],
       "landing_page": "https://data.medicaid.gov/datasets",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6159,7 +6245,7 @@
         "USA"
       ],
       "landing_page": "https://data.medicaid.gov/datasets",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6199,7 +6285,7 @@
         "USA"
       ],
       "landing_page": "https://data.cms.gov/provider-summary-by-type-of-service/medicare-part-d-prescribers/quarterly-prescription-drug-plan-formulary-pharmacy-network-and-pricing-information",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6245,7 +6331,7 @@
         "USA"
       ],
       "landing_page": "https://data.cms.gov/summary-statistics-on-use-and-payments/medicare-medicaid-spending-by-drug/medicare-part-d-spending-by-drug",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6290,7 +6376,7 @@
         "USA"
       ],
       "landing_page": "https://dailymed.nlm.nih.gov/dailymed/spl-resources-all-drug-labels.cfm",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6332,7 +6418,7 @@
         "USA"
       ],
       "landing_page": "https://www.accessdata.fda.gov/scripts/cder/daf/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6375,7 +6461,7 @@
         "USA"
       ],
       "landing_page": "https://www.accessdata.fda.gov/scripts/drugshortages/default.cfm",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6418,7 +6504,7 @@
         "USA"
       ],
       "landing_page": "https://fis.fda.gov/extensions/FPD-QDE-FAERS/FPD-QDE-FAERS.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6462,7 +6548,7 @@
         "USA"
       ],
       "landing_page": "https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6503,7 +6589,7 @@
         "USA"
       ],
       "landing_page": "https://www.fda.gov/industry/structured-product-labeling-resources/nsde",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6544,7 +6630,7 @@
         "USA"
       ],
       "landing_page": "https://www.fda.gov/drugs/drug-approvals-and-databases/orange-book-data-files",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -6590,7 +6676,7 @@
         "USA"
       ],
       "landing_page": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6632,7 +6718,7 @@
         "USA"
       ],
       "landing_page": "https://www.accessdata.fda.gov/scripts/cder/rems/index.cfm",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6673,7 +6759,7 @@
         "USA"
       ],
       "landing_page": "https://gsrs.ncats.nih.gov/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6715,7 +6801,7 @@
         "USA"
       ],
       "landing_page": "https://open.fda.gov/apis/drug/drugsfda/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6757,7 +6843,7 @@
         "USA"
       ],
       "landing_page": "https://open.fda.gov/apis/drug/enforcement/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6798,7 +6884,7 @@
         "USA"
       ],
       "landing_page": "https://open.fda.gov/apis/drug/event/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6838,7 +6924,7 @@
         "USA"
       ],
       "landing_page": "https://open.fda.gov/apis/drug/ndc/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -6878,7 +6964,7 @@
         "USA"
       ],
       "landing_page": "https://open.fda.gov/apis/other/nsde/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6919,7 +7005,7 @@
         "USA"
       ],
       "landing_page": "https://www.nlm.nih.gov/research/umls/rxnorm/index.html",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -6961,7 +7047,7 @@
         "ZAF"
       ],
       "landing_page": "https://www.health.gov.za/national-essential-medicine-list/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -7001,7 +7087,7 @@
         "ZAF"
       ],
       "landing_page": "https://www.sahpra.org.za/registered-health-products/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": false,
       "missing_source_is_negative_evidence": false,
@@ -7042,7 +7128,7 @@
         "ZAF"
       ],
       "landing_page": "https://www.sahpra.org.za/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -7083,7 +7169,7 @@
         "ZAF"
       ],
       "landing_page": "https://www.health.gov.za/nhi-pee/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-07-29",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -7123,7 +7209,7 @@
         "ZWE"
       ],
       "landing_page": "https://www.mcaz.co.zw/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -7164,7 +7250,7 @@
         "ZWE"
       ],
       "landing_page": "https://www.mcaz.co.zw/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,
@@ -7205,7 +7291,7 @@
         "ZWE"
       ],
       "landing_page": "https://www.mcaz.co.zw/",
-      "last_reviewed_at": "2026-10-02",
+      "last_reviewed_at": "2026-10-17",
       "last_verified_at": "2026-08-20",
       "metadata_verified": true,
       "missing_source_is_negative_evidence": false,

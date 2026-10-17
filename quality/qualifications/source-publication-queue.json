@@ -1,7 +1,7 @@
 {
   "schema_id": "global-medicines-atlas.source-publication-queue",
   "schema_version": 1,
-  "generated_at": "2026-08-21T00:00:00Z",
+  "generated_at": "2026-10-17T00:00:00Z",
   "publication_gate": "satisfied_exact_manifest_maintainer_approval",
   "public_eligible_count": 28,
   "published_count": 28,

@@ -2394,6 +2394,28 @@
   and consumer canaries remain incomplete. See
   `quality/qualifications/australian-m112-root-manifest-path-readback-20261017.json`.
 
+## M-112 historical imported B1-to-B2 reference reconciliation (2026-10-17)
+
+- [x] Build deterministic B2 external-reference rows for the selected 14
+  historical MBS utilisation objects from their imported acquisition events.
+  The generator verifies both import manifests, per-record and event digests,
+  B1 acquisition/content identity, successful retrieval, and the immutable
+  public revision locator. It writes
+  `quality/bronze/imported-raw-evidence/australian-mbs-utilisation-20261017.json`
+  and the hash-bound qualification
+  `quality/qualifications/australian-mbs-utilisation-b2-reference-reconciliation-20261017.json`.
+  This is a 14-object subset of the approved 1,759-path denominator. It reads
+  no source payload bytes or values and creates no native source receipt,
+  payload-storage receipt, replication qualification, or admission history.
+  The final focused 25-test selection passes; 231 broader affected tests passed
+  before the final scope annotation was added, which was covered by the final
+  focused selection. The local full profile completed with 6,394 passed,
+  7 failed, 3 skipped and 96.89% coverage. Failures were outside this B2 path:
+  product query performance budgets, the local uv 0.13.1 versus required
+  0.11.29 release-build mismatch, one product-security runner, and one PBS
+  UTF-8 composed-size assertion. M-112 rights, complete B1/B2 lifecycle,
+  admission, v4 admission, and consumer canaries remain open.
+
 ### M-110 real-Silver admission gate recheck (2026-10-05)
 
 - [ ] Qualify Gold relationships over admitted real Silver tables. This remains
@@ -2531,3 +2553,31 @@
   deployment trust accept the exact artifact. The current M-110 assessment
   still scopes Silver admission to graph input; consumer acceptance and graph
   review remain open. No source was added and no public object was written.
+
+### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
+
+- [x] Add the imported MBS demographics source identity to the B0 catalogue
+  and landing queue so its historical B1/B2 references resolve to a known
+  source. Keep the queue `rights_blocked` with `evidence_scope=none`: the
+  existing maintainer decision covers only 10 demographics and 4
+  group-statistics objects in the exact 14-object archive manifest. The new
+  source row does not qualify a distinct-patient denominator, current
+  coverage, native receipts, storage receipts, or admission. The catalogue
+  now has 176 sources; the approved bounded Bronze scope remains 42, and the
+  full public universe is 159 with 117 deferred. A separate B0 identity for
+  the four group-statistics objects resolves all 14 approved imported source
+  identities across demographics and group statistics; this adds no receipt,
+  admission, or distinct-patient denominator evidence. M-112's approved 1,759-path
+  denominator is unchanged. Focused tests, rights-generator checks, B0
+  byte-for-byte regeneration, Ruff, BasedPyright, and diff checks pass. The
+  full local profile was not repeated while the shared validation run was
+  active.
+- [x] Add the separate `au-data-gov-mbs-group` B0 identity for the four
+  group-statistics references in the same exact 14-object authorization. A
+  source-event digest audit and regression now verify 10 demographics and 4
+  group-statistics identities resolve to B0; queue rights remain blocked and
+  source evidence remains `none`. Reconcile catalogue-derived Bronze and Stable
+  projections to 176 catalogue rows, 159 public Bronze sources, 117 deferred,
+  29 direct-receipt sources, and 130 without a direct receipt. The 42-source
+  bounded cohort and 1,759-path M-112 denominator are unchanged. No source
+  payload bytes were read, acquired, admitted, or published.

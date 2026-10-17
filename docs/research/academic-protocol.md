@@ -62,7 +62,7 @@ data is not interpreted as unapproved or unfunded.
 
 The governed denominator is catalog schema v5
 at `src/global_medicines_atlas/data/medicine_source_catalog.json`: 45 jurisdictions and
-174 source surfaces. The prospective census is every jurisdiction and source row in catalog schema v5; implementation and current-receipt coverage are reported separately and never inferred from catalog presence.
+176 source surfaces. The prospective census is every jurisdiction and source row in catalog schema v5; implementation and current-receipt coverage are reported separately and never inferred from catalog presence.
 
 ### Jurisdiction inclusion
 
@@ -80,6 +80,7 @@ at `src/global_medicines_atlas/data/medicine_source_catalog.json`: 45 jurisdicti
 - Exclude secondary aggregators from authoritative status claims unless explicitly classified as terminology or discovery evidence.
 - Exclude source payloads whose provenance, scope, or retrieval identity cannot be established; record the gap rather than a negative status.
 - Exclude restricted or rights-unknown payload bytes from public packages while retaining lawful metadata and retrieval instructions.
+- Catalogued health-service-benefit sources remain in the global source census but are outside medicine regulatory and funding estimands unless a separate estimand and semantic qualification is approved; item or service statistics are not participant denominators.
 
 ### Rights boundary
 

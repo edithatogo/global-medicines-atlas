@@ -42,9 +42,9 @@ FULL_SCOPE_HORIZON = "bronze-current-public-scope"
 SCOPE_DECISION_RELATIVE = (
     "quality/qualifications/bronze-bounded-scope-decision-v1.json"
 )
-BOUNDED_SCOPE_FULL_SOURCE_COUNT = 157
+BOUNDED_SCOPE_FULL_SOURCE_COUNT = 159
 BOUNDED_SCOPE_ACTIVE_SOURCE_COUNT = 42
-BOUNDED_SCOPE_DEFERRED_SOURCE_COUNT = 115
+BOUNDED_SCOPE_DEFERRED_SOURCE_COUNT = 117
 CATALOG_RELATIVE = (
     "src/global_medicines_atlas/data/medicine_source_catalog.json"
 )

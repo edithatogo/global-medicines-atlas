@@ -11,6 +11,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "quality/qualifications/stable-v1-contract.json"
 SUPPORT = ROOT / "quality/qualifications/stable-v1-support-readiness.json"
+SOURCE_CATALOG = (
+    ROOT / "src/global_medicines_atlas/data/medicine_source_catalog.json"
+)
 
 STABLE_LEDGER = (
     "conductor/tracks/stable_v1_qualification_20260729/evidence.jsonl"
@@ -204,6 +207,9 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
     Failed or unverified observations must survive regeneration unchanged.
     """
     contract = deepcopy(raw)
+    contract["source_maturity"]["catalog_source_count"] = len(
+        json.loads(SOURCE_CATALOG.read_text(encoding="utf-8"))["sources"]
+    )
     renovate_observed = _renovate_output_observed()
     bronze_scope_qualified = _bronze_bounded_scope_qualified()
     for requirement in contract["requirements"]:
