@@ -762,3 +762,17 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [ ] Continue source-era official release matching, field/temporal semantics,
   transformations, source-era denominator reconciliation, PBS-specific rights,
   and admission. The metadata refresh does not close M-109.
+
+## M-112 approved MBS utilisation digest crosswalk (2026-10-17)
+
+- [x] Bind all 14 exact-scope-approved MBS utilisation paths in the unchanged
+  1,759-path denominator to the existing hosted anonymous digest-verification
+  receipt at revision `dee9a5b0580dfe394474dc26b372559462e157e7`. The object
+  paths, SHA-256 values, byte counts, source IDs, and authorization-scope
+  matches reconcile to the per-object M-112 ledger and imported acquisition
+  events. These 14 objects are already included in the 20-object digest
+  reconciliation; full-denominator digest coverage remains incomplete.
+- [x] Add a regression tying the rights-approved cohort to those exact digest
+  receipt rows. The local reconciliation reads metadata and acquisition-event
+  records only; it downloads no source bytes, reads no source values, and does
+  not alter rights, lineage, v4 admission, consumer canaries, or M-112 status.
