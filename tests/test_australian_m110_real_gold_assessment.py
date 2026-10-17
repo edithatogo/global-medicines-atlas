@@ -86,22 +86,28 @@ def test_exact_main_candidate_consumer_receipt_preserves_lineage_and_limits() ->
     receipt = json.loads(receipt_bytes)
 
     assert hashlib.sha256(receipt_bytes).hexdigest() == (
-        "8d1db8c5fa9376a9f786078114e7bb7682decb8709fde6bf7992113065d8488f"
+        "a4adf65fed0439fd1c17001fbc2d6ee63a5af81601f505d1248bc9486aceb80c"
     )
     assert receipt["hosted_workflow"] == {
-        "commit": "1182ab71a44c9e72fce6031ec244848e6919f096",
+        "commit": "c68c6d4dbb0600ea464f2d98e716fd7b47fe4326",
         "repository": "edithatogo/global-medicines-atlas",
         "run_attempt": 1,
-        "run_id": 39045806438,
+        "run_id": 39049481566,
         "run_url": (
             "https://github.com/edithatogo/global-medicines-atlas/"
-            "actions/runs/39045806438"
+            "actions/runs/39049481566"
         ),
         "workflow": (
             ".github/workflows/"
             "australian-mbs-gold-candidate-consumer-qualification.yml"
         ),
     }
+    authorization = receipt["candidate_v4_use_authorization"]
+    assert authorization["authorized_object_count"] == 6
+    assert authorization["candidate_only"] is True
+    assert authorization["sha256"] == (
+        "ee5951226e105acbaa9b3180c672582b71d3b2d3f110bd0c0abb9c2eb10968b2"
+    )
     assert receipt["edge_count"] == 5989
     assert receipt["candidate_only"] is True
     assert receipt["review_state"] == "not_reviewed"

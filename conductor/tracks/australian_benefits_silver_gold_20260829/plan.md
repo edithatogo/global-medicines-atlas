@@ -1005,15 +1005,24 @@
   See `quality/qualifications/australian-m112-object-inventory-20260930.json`,
   `quality/qualifications/australian-m112-source-rights-lineage-crosswalk-20260930.json`,
   and `quality/qualifications/australian-m112-manifest-join-audit-20260930.json`.
-- [~] Bind the maintainer's exact six-object July 2025 MBS v3 authorization
+- [x] Bind the maintainer's exact six-object July 2025 MBS v3 authorization
   to the candidate v4 consumer qualification. The authorization artifact
   enumerates each pinned path, SHA-256, and byte count, and explicitly excludes
   publication, production admission, new rights conclusions, Gold review,
-  M-112 acceptance, and source expansion. The consumer receipt now verifies
-  exact agreement with the scoped Silver admission and carries the artifact
-  digest. A bounded stylesheet-response fix is being qualified after the
-  latest exact-main Chromium canary failed to observe its CSS response; no
-  M-112 gate is closed by this candidate-use permission alone.
+  M-112 acceptance, and source expansion. The refreshed exact-main run
+  [39049481566](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39049481566)
+  passed on `c68c6d4dbb0600ea464f2d98e716fd7b47fe4326`; its 5,107-byte aggregate
+  receipt is retained at
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261018.json`
+  (SHA-256 `a4adf65fed0439fd1c17001fbc2d6ee63a5af81601f505d1248bc9486aceb80c`).
+  It binds the exact authorization digest and all six table identities,
+  per-table lineage digests, scoped admission, source receipt, manifest, and
+  semantic manifest. API, CLI, Atlas, and Chromium matched the same ordered
+  edge-ID digest across all 5,989 edges. The receipt remains candidate-only
+  and `not_reviewed`, retains no source payload bytes, and records no public
+  publication. This closes only exact-six candidate qualification and canary
+  traversal; it closes no M-110 review, M-112 admission, federation, rights,
+  or release gate.
 - [x] Reconcile the 20 MBS/PBS utilisation raw-object digests against each
   exact current public manifest and its prior hosted anonymous all-object
   verification receipt. The pinned MBS revision remains `dee9a5b...` with
