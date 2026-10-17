@@ -837,6 +837,37 @@
   authority, receipts, calibration, promotion, real-source controls, and the
   Gold phase checkpoint remain pending.
 
+### Gold review ledger append/read boundary hardening (2026-10-17)
+
+- [x] Keep adjudication JSONL readable and within its declared bounds after
+  appends. Failing-first tests showed that appending could exceed the reader's
+  byte/event limits, join onto a valid final record without a newline, and
+  split legal U+0085/U+2028/U+2029 rationale text as if it were physical JSONL
+  delimiters. Physical CR, LF, and CRLF boundaries are now parsed consistently;
+  appends preserve old bytes, insert a missing record separator, and reject
+  writes that would make the ledger unreadable by either bound. Focused review,
+  API, and matching journeys pass (49); routine, Ruff, `ty`, BasedPyright, and
+  diff checks pass. Commit `1a3bf114`. No adjudications, reviewer authority,
+  promotion, source, licensing conclusion, or publication were created.
+- [x] Replace the hand-indexed physical-line scanner with the standard byte
+  splitter, which preserves the same CR/LF/CRLF and Unicode behavior while
+  reducing custom parser logic. The affected 49-test selection and routine
+  checks pass on the updated implementation. A local full profile completed
+  with 6,469 passed, 3 skipped, and 4 failures (one Hypothesis timing/flaky,
+  installed-browser E2E, and two stable-v1 subprocess/toolchain reproducibility).
+  All four failed cases passed in a targeted rerun with pinned `uv 0.11.29`;
+  this does not convert the full profile into a green run. Hosted mutation
+  attempts 1–4 on head `8fababb5` each received runner shutdown near
+  2,329/2,398 mutants; no mutation verdict was produced and the cause remains
+  unresolved. The updated head requires fresh hosted checks.
+- [x] Re-run the changed-source full profile on head `9a309008` with pinned
+  `uv 0.11.29`: 6,472 passed, 3 skipped, one Hypothesis timing failure,
+  96.89% coverage. The failing Unicode round-trip case passed alone on retry
+  (1 passed); preserve the full-profile timing failure as recorded. All 40
+  exact-head hosted checks passed, including Linux-authoritative mutation,
+  coverage, consumer, security, and context lanes. PR #1092 remains open until
+  this evidence is reconciled on its final PR head.
+
 ### Gold review CLI authority boundary (2026-10-11)
 
 - [x] Mark the `gold-review-queue` CLI response with

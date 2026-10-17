@@ -107,6 +107,15 @@ def _event(
     )
 
 
+def _event_line(event: AdjudicationEvent) -> str:
+    return json.dumps(
+        event.model_dump(mode="json"),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+
+
 def test_append_only_events_require_explicit_supersession(
     tmp_path: Path,
 ) -> None:
@@ -273,6 +282,110 @@ def test_loader_rejects_event_count_over_bound(tmp_path: Path) -> None:
         match=r"^Adjudication file exceeds event bound$",
     ):
         load_adjudications(path)
+
+
+def test_append_rejects_event_that_would_exceed_byte_bound(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "byte-bounded-append.jsonl"
+    first = _event("a")
+    path.write_bytes(_event_line(first).encode() + b" ")
+    original = path.read_bytes()
+    monkeypatch.setattr(
+        review_queue_module, "MAX_ADJUDICATION_FILE_BYTES", len(original)
+    )
+
+    with pytest.raises(
+        ValueError, match=r"^Adjudication file exceeds byte bound$"
+    ):
+        append_adjudication(path, _event("b"))
+
+    assert path.read_bytes() == original
+
+
+def test_append_rejects_event_that_would_exceed_event_bound(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "event-bounded-append.jsonl"
+    first = _event("a")
+    append_adjudication(path, first)
+    original = path.read_bytes()
+    monkeypatch.setattr(review_queue_module, "MAX_ADJUDICATION_EVENTS", 1)
+
+    with pytest.raises(
+        ValueError, match=r"^Adjudication file exceeds event bound$"
+    ):
+        append_adjudication(path, _event("b"))
+
+    assert path.read_bytes() == original
+
+
+def test_append_separates_valid_final_line_without_newline(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "missing-final-newline.jsonl"
+    first = _event("a")
+    path.write_text(_event_line(first), encoding="utf-8")
+
+    second = _event("b", at=NOW + timedelta(seconds=1))
+    append_adjudication(path, second)
+
+    assert load_adjudications(path) == (first, second)
+
+
+@pytest.mark.parametrize("newline", [b"\r", b"\r\n"])
+def test_append_preserves_cr_delimited_records(
+    tmp_path: Path, newline: bytes
+) -> None:
+    path = tmp_path / "cr-delimited.jsonl"
+    first = _event("first")
+    second = _event("second", at=NOW + timedelta(seconds=1))
+    path.write_bytes(
+        _event_line(first).encode()
+        + newline
+        + _event_line(second).encode()
+        + newline
+    )
+
+    third = _event("third", at=NOW + timedelta(seconds=2))
+    append_adjudication(path, third)
+
+    assert load_adjudications(path) == (first, second, third)
+
+
+@pytest.mark.parametrize("separator", ["\u0085", "\u2028", "\u2029"])
+def test_unicode_line_separator_in_rationale_round_trips_and_supersedes(
+    tmp_path: Path, separator: str
+) -> None:
+    path = tmp_path / "unicode-rationale.jsonl"
+    base = _event("unicode")
+    rationale = f"reviewed{separator}source record"
+    first = AdjudicationEvent(
+        event_id=event_id(
+            base.candidate_id,
+            base.occurred_at,
+            base.state,
+            base.reviewer_id,
+            rationale,
+        ),
+        candidate_id=base.candidate_id,
+        state=base.state,
+        occurred_at=base.occurred_at,
+        reviewer_id=base.reviewer_id,
+        rationale=rationale,
+    )
+    append_adjudication(path, first)
+    assert load_adjudications(path) == (first,)
+
+    second = _event(
+        "unicode",
+        state=ReviewState.REJECTED,
+        at=NOW + timedelta(seconds=1),
+        supersedes=first.event_id,
+    )
+    append_adjudication(path, second)
+
+    assert load_adjudications(path) == (first, second)
 
 
 def test_loader_rejects_non_regular_file(tmp_path: Path) -> None:
