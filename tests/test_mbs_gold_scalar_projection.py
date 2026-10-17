@@ -737,8 +737,7 @@ def test_scalar_candidate_traverses_exact_synthetic_v4_admission_and_api(
         ),
     ],
 )
-@pytest.mark.e2e
-def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # ruff: ignore[too-many-locals, too-many-statements] -- keep the three product consumers explicit
+def _exercise_exact_synthetic_scalar_trust_path(  # ruff: ignore[too-many-locals, too-many-statements] -- keep the four product surfaces explicit
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     field_name: str,
@@ -746,6 +745,8 @@ def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # r
     operator: str,
     filter_value: str | dict[str, str],
     expected: str,
+    *,
+    exercise_browser: bool,
 ) -> None:
     """Carry the exact synthetic artifact through all existing product surfaces."""
     payload, value_column = _candidate_parquet(field_name, values)
@@ -886,59 +887,62 @@ def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # r
                 "limit": 2,
             },
         )
-        browser_base_url = "http://atlas.test"
+        if exercise_browser:
+            browser_base_url = "http://atlas.test"
 
-        def fulfill_from_atlas(route) -> None:
-            parsed_url = urlsplit(route.request.url)
-            app_path = parsed_url.path
-            if parsed_url.query:
-                app_path = f"{app_path}?{parsed_url.query}"
-            response = atlas_client.get(app_path)
-            route.fulfill(
-                status=response.status_code,
-                headers=dict(response.headers),
-                body=response.content,
-            )
-
-        with sync_playwright() as playwright:
-            browser = playwright.chromium.launch()
-            try:
-                browser_page = browser.new_page()
-                browser_page.route(f"{browser_base_url}/**", fulfill_from_atlas)
-                browser_page.goto(browser_base_url + "/federated/benefits")
-                browser_page.get_by_label("Resource identifier").fill(
-                    resource_id
+            def fulfill_from_atlas(route) -> None:
+                parsed_url = urlsplit(route.request.url)
+                app_path = parsed_url.path
+                if parsed_url.query:
+                    app_path = f"{app_path}?{parsed_url.query}"
+                response = atlas_client.get(app_path)
+                route.fulfill(
+                    status=response.status_code,
+                    headers=dict(response.headers),
+                    body=response.content,
                 )
-                browser_page.get_by_label(
-                    "Source columns, comma separated"
-                ).fill(",".join(columns))
-                browser_page.get_by_label(
-                    "Optional bounded filters (JSON array)"
-                ).fill(filters_json)
-                browser_page.get_by_role(
-                    "button", name="Read pinned evidence"
-                ).click()
-                expect(
-                    browser_page.get_by_role(
-                        "heading", name="Exact evidence identity"
+
+            with sync_playwright() as playwright:
+                browser = playwright.chromium.launch()
+                try:
+                    browser_page = browser.new_page()
+                    browser_page.route(
+                        f"{browser_base_url}/**", fulfill_from_atlas
                     )
-                ).to_be_visible()
-                browser_rows = browser_page.get_by_role(
-                    "region", name="Federated evidence rows"
-                ).locator("tbody tr")
-                expect(browser_rows).to_have_count(1)
-                browser_row = browser_rows.first.inner_text()
-                assert expected_source_record_id in browser_row
-                assert expected in browser_row
-                browser_text = browser_page.locator("main").inner_text()
-                assert path in browser_text
-                assert hashlib.sha256(payload).hexdigest() in browser_text
-                assert "Comparison cohort" in browser_text
-                assert "synthetic" in browser_text
-                assert "Coverage is not declared here" in browser_text
-                assert "synthetic qualification fixtures" in browser_text
-            finally:
-                browser.close()
+                    browser_page.goto(browser_base_url + "/federated/benefits")
+                    browser_page.get_by_label("Resource identifier").fill(
+                        resource_id
+                    )
+                    browser_page.get_by_label(
+                        "Source columns, comma separated"
+                    ).fill(",".join(columns))
+                    browser_page.get_by_label(
+                        "Optional bounded filters (JSON array)"
+                    ).fill(filters_json)
+                    browser_page.get_by_role(
+                        "button", name="Read pinned evidence"
+                    ).click()
+                    expect(
+                        browser_page.get_by_role(
+                            "heading", name="Exact evidence identity"
+                        )
+                    ).to_be_visible()
+                    browser_rows = browser_page.get_by_role(
+                        "region", name="Federated evidence rows"
+                    ).locator("tbody tr")
+                    expect(browser_rows).to_have_count(1)
+                    browser_row = browser_rows.first.inner_text()
+                    assert expected_source_record_id in browser_row
+                    assert expected in browser_row
+                    browser_text = browser_page.locator("main").inner_text()
+                    assert path in browser_text
+                    assert hashlib.sha256(payload).hexdigest() in browser_text
+                    assert "Comparison cohort" in browser_text
+                    assert "synthetic" in browser_text
+                    assert "Coverage is not declared here" in browser_text
+                    assert "synthetic qualification fixtures" in browser_text
+                finally:
+                    browser.close()
     assert atlas_response.status_code == 200
     assert unfiltered_atlas_response.status_code == 200
     other_source_record_id = "au-mbs:3::2025-07-1"
@@ -984,6 +988,47 @@ def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(  # r
         assert page["review_state"] == "not_declared"
         assert page["coverage_state"] == "not_declared"
     assert cli_page["rows"] == api_page["rows"]
+
+
+@pytest.mark.parametrize(
+    ("field_name", "values", "operator", "filter_value", "expected"),
+    [
+        (
+            "Benefit100",
+            ["10.25", "2.75"],
+            ">=",
+            Decimal("10.00"),
+            "10.250000000",
+        ),
+        (
+            "BenefitStartDate",
+            ["2025-07-01", "2025-08-01"],
+            "=",
+            {"type": "date", "value": "2025-07-01"},
+            "2025-07-01",
+        ),
+    ],
+)
+def test_exact_synthetic_scalar_trust_path_agrees_across_cli_api_and_atlas(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    field_name: str,
+    values: list[str],
+    operator: str,
+    filter_value: str | dict[str, str],
+    expected: str,
+) -> None:
+    """Check exact scalar projection agreement across the API surfaces."""
+    _exercise_exact_synthetic_scalar_trust_path(
+        tmp_path,
+        monkeypatch,
+        field_name,
+        values,
+        operator,
+        filter_value,
+        expected,
+        exercise_browser=False,
+    )
 
 
 def test_field_contract_rejects_missing_classes_mixed_fields_and_bad_names():
