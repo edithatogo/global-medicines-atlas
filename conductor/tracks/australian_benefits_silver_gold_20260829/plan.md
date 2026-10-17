@@ -2747,12 +2747,31 @@
   written. This completes the candidate-only technical consumer journey, not
   independent Gold review, M-110 acceptance, product admission, or publication.
 
-- [~] Make the real MBS v3 candidate journey reproducible in a protected,
+- [x] Make the real MBS v3 candidate journey reproducible in a protected,
   main-only `workflow_dispatch` qualification. Require exact commit identity,
   verify the six pinned public Silver objects, traverse API/CLI/Atlas through
   their real pagination paths, and retain only an aggregate receipt. Keep the
   temporary derived Parquet out of artifacts and clean it on success or
-  failure. Hosted exact-main execution remains pending this workflow's merge.
+  failure. PR #1112 merged at `ed518ae06e821bc35efd3ad53c95b03af7a0c24b`;
+  exact-main run `39033590329` passed and retained one 763-byte aggregate
+  receipt. It binds all 5,989 edges, pinned admission/semantic/graph digests,
+  six page offsets, and the matching ordered edge-ID digest across API, CLI,
+  and rendered Atlas response. This remains candidate-only, `not_reviewed`, and
+  unpublished.
+- [~] Extend the exact-main MBS candidate qualification through a real
+  Chromium session against the loopback Atlas route. Follow each rendered
+  continuation link and compare the browser's ordered edge IDs and review
+  states with the authoritative candidate table; retain only aggregate counts,
+  offsets, and digests. Keep the temporary Parquet out of artifacts and clean
+  it on success or failure. Do not infer Gold review, product admission,
+  licensing, source coverage, or publication. On base main
+  `ed518ae06e821bc35efd3ad53c95b03af7a0c24b`, local Chromium checks cover the
+  positive two-page fixture and refusals for malformed rows, bindings,
+  review-state changes, pagination drift, missing assets, non-success pages,
+  and off-host requests. The focused set passes (47 tests; 95.35% combined
+  coverage), and Test-Goblin E2E passes (113 tests). Ruff, `ty`, BasedPyright,
+  actionlint, pedantic zizmor, context, and ecosystem checks pass. Exact-main
+  browser qualification remains pending merge.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 

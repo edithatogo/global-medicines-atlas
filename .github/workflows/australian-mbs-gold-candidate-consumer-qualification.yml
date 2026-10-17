@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   qualify:
-    name: Traverse pinned candidate through Atlas, API, and CLI
+    name: Traverse pinned candidate in Chromium, Atlas, API, and CLI
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -33,6 +33,10 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+      - name: Install Chromium for the candidate Atlas browser traversal
+        run: >-
+          uv run --locked --python 3.14.6 --group test-goblin
+          playwright install --with-deps chromium
       - name: Verify pinned source objects and build the local candidate
         run: |
           set -euo pipefail
@@ -45,7 +49,7 @@ jobs:
         run: |
           set -euo pipefail
           QUALIFICATION_DIR="$RUNNER_TEMP/gma-mbs-gold-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_australian_mbs_gold_candidate_consumers.py \
+          uv run --locked --python 3.14.6 --group test-goblin python scripts/qualify_australian_mbs_gold_candidate_consumers.py \
             --edge-file "$QUALIFICATION_DIR/candidate-edges.parquet" \
             --output "$QUALIFICATION_DIR/candidate-consumer-qualification.json"
       - name: Retain the aggregate-only consumer receipt
