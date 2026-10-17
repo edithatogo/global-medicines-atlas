@@ -13,6 +13,32 @@ v3 corpus a complete list of required releases. Until those identities are
 reconciled into a canonical source-era list, completeness cannot be counted.
 Fixtures are not real-source evidence.
 
+The metadata-only identity inventory dated 2026-10-17 now enumerates the exact
+MBS schedule/P7 objects present in the current pinned MBS archive and the one
+exact PBS v3 archive member currently observed. It is a **known-object
+inventory**, not the complete expected-release denominator: official MBS
+releases remain missing, PBS historical releases are not enumerated, and the
+current PBS API rolling window has no source-specific retention or
+redistribution decision. The inventory records those distinctions and does
+not convert public archive visibility into rights or admission. See
+[`australian-m109-source-era-identities-20261017.json`](../../quality/qualifications/australian-m109-source-era-identities-20261017.json).
+
+### Known exact identities at the pinned public revisions
+
+| Source family | Exact objects observed | Rights and qualification boundary |
+| --- | --- | --- |
+| MBS schedule and P7 | Eight unique source objects across nine manifest path entries in MBS archive revision `3d2d528439bddf6f42e8e700c88917f0960a9f38`: the July 2024 P7 workbook; July 2025 XML v3; January 2026 XML; both March 2026 XML revisions; July 2026 XML; August 2026 XML; and November 2026 XML. The August object has both its content-addressed path (`raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml`) and legacy alias (`raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML`), with the same digest and byte count. The metadata-only root manifest SHA-256 is `7afe928933fece384f8459dd268fcd2c4f26c8325dc52577f7a1582e8d63a0ac`. | The two donor payloads are exact-item covered by the legacy authorization. The later XML snapshots are within the maintainer-approved `monthly_schedule_xml` category. Only July 2025 v3 has the recorded full source-field semantic crosswalk and six-table value parity; identity and category authorization do not transfer those semantics to another release. |
+| PBS historical schedule | One April 2026 XML v3 member in the current archive revision `48fd7345fb09277bb5b85644dba72804633a2abb`; the manifest SHA-256 is unchanged at `e6c9abbc62bd44fc47049306a92cc8efc9700031908586262c2b82a907546460`. | The exact member has a date-role profile only. The source-rights ledger still records historical XML reuse as unknown, so it is listed as observed evidence, not as an approved M-109 processing denominator. |
+| PBS historical eras and current API | Exact required release identities are not yet enumerated. | G2B 1.8, XML 2.8–2.12, alternate 2.12, later XML 3.x, and the current rolling API remain distinct. No API payload was requested or acquired; retention and redistribution decisions remain open. |
+
+The MBS archive's observed file list is not a complete official schedule
+history. The January, March, and November 2025 releases remain absent, and the
+official MBS history extends beyond the observed archive set. The PBS archive
+contains one known schedule snapshot and cannot establish its historical
+denominator. Therefore the exact identities for currently held objects are
+now recorded, while expected-period completeness and M-109 acceptance remain
+open.
+
 ## Source-era evidence
 
 | Source era | Native structure / denominator | Field meanings | Temporal semantics | Transformations | State and next evidence |
