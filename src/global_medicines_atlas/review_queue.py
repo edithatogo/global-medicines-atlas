@@ -17,6 +17,8 @@ from .models import FrozenModel
 
 MAX_ADJUDICATION_FILE_BYTES = 16 * 1024 * 1024
 MAX_ADJUDICATION_EVENTS = 10_000
+LF_BYTE = ord("\n")
+CR_BYTE = ord("\r")
 
 
 class ReviewQueueEntry(FrozenModel):
@@ -62,7 +64,8 @@ def event_id(
 
 def append_adjudication(path: Path, event: AdjudicationEvent) -> None:
     """Append a unique event without rewriting prior human decisions."""
-    existing = load_adjudications(path)
+    payload = _read_adjudication_payload(path)
+    existing = _parse_adjudications(payload)
     if any(item.event_id == event.event_id for item in existing):
         raise ValueError(f"Duplicate adjudication event: {event.event_id}")
     prior = [
@@ -74,14 +77,30 @@ def append_adjudication(path: Path, event: AdjudicationEvent) -> None:
         raise ValueError("Adjudication events must be strictly chronological")
     if not prior and event.supersedes_event_id is not None:
         raise ValueError("First decision cannot supersede an event")
+
+    line_count = len(_physical_jsonl_lines(payload))
+    if line_count + 1 > MAX_ADJUDICATION_EVENTS:
+        raise ValueError("Adjudication file exceeds event bound")
+    line = _json_line(event).encode("utf-8")
+    separator = (
+        b"" if not payload or payload.endswith((b"\n", b"\r")) else b"\n"
+    )
+    appended = separator + line + b"\n"
+    if len(payload) + len(appended) > MAX_ADJUDICATION_FILE_BYTES:
+        raise ValueError("Adjudication file exceeds byte bound")
+
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8", newline="\n") as stream:
-        stream.write(_json_line(event) + "\n")
+    with path.open("ab") as stream:
+        stream.write(appended)
 
 
 def load_adjudications(path: Path) -> tuple[AdjudicationEvent, ...]:
+    return _parse_adjudications(_read_adjudication_payload(path))
+
+
+def _read_adjudication_payload(path: Path) -> bytes:
     if not path.exists():
-        return ()
+        return b""
     descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NONBLOCK", 0))
     try:
         file_status = os.fstat(descriptor)
@@ -95,7 +114,12 @@ def load_adjudications(path: Path) -> tuple[AdjudicationEvent, ...]:
         os.close(descriptor)
     if len(payload) > MAX_ADJUDICATION_FILE_BYTES:
         raise ValueError("Adjudication file exceeds byte bound")
-    lines = payload.decode("utf-8").splitlines()
+
+    return payload
+
+
+def _parse_adjudications(payload: bytes) -> tuple[AdjudicationEvent, ...]:
+    lines = _physical_jsonl_lines(payload)
     if len(lines) > MAX_ADJUDICATION_EVENTS:
         raise ValueError("Adjudication file exceeds event bound")
     events = tuple(
@@ -103,6 +127,36 @@ def load_adjudications(path: Path) -> tuple[AdjudicationEvent, ...]:
     )
     _validate_adjudication_sequence(events)
     return events
+
+
+def _physical_jsonl_lines(payload: bytes) -> tuple[bytes, ...]:
+    """Split physical CR, LF, or CRLF delimiters without Unicode splitting."""
+    if not payload:
+        return ()
+    lines: list[bytes] = []
+    start = 0
+    index = 0
+    while index < len(payload):
+        if payload[index] == LF_BYTE:
+            end = (
+                index - 1
+                if index > start and payload[index - 1] == CR_BYTE
+                else index
+            )
+            lines.append(payload[start:end])
+            index += 1
+            start = index
+        elif payload[index] == CR_BYTE:
+            lines.append(payload[start:index])
+            index += 1
+            if index < len(payload) and payload[index] == LF_BYTE:
+                index += 1
+            start = index
+        else:
+            index += 1
+    if start < len(payload):
+        lines.append(payload[start:])
+    return tuple(lines)
 
 
 def _validate_adjudication_sequence(
