@@ -1344,6 +1344,12 @@
 - [x] Re-run the four-surface fail-closed consumer controls on current main:
   57 focused tests passed, including API/CLI unavailable behavior, Atlas
   unknown-state handling, export guards, and controls against self-admission.
+- [x] Assign `tests/test_australian_m111_preflight.py` to the Test-Goblin unit
+  lane so the new current-head identity regression is included in governed
+  profiles. The combined M-109/M-111/M-112 focused set passed (13 tests), the
+  harness and M-111 checks passed (57 tests), routine checks passed, and
+  BasedPyright reported zero errors. The candidate-only and blocked gates are
+  unchanged.
 - [~] Keep M-111 blocked. Do not query a successful consumer result from a
   candidate-only product. Exact admitted-product API/CLI/Atlas/export canaries,
   freshness, cohort/coverage, confidence/review, and public export restore
