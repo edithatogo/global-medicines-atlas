@@ -51,7 +51,11 @@ jobs:
           QUALIFICATION_DIR="$RUNNER_TEMP/gma-mbs-gold-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           uv run --locked --python 3.14.6 --group test-goblin python scripts/qualify_australian_mbs_gold_candidate_consumers.py \
             --edge-file "$QUALIFICATION_DIR/candidate-edges.parquet" \
-            --output "$QUALIFICATION_DIR/candidate-consumer-qualification.json"
+            --output "$QUALIFICATION_DIR/candidate-consumer-qualification.json" \
+            --workflow-commit "$GITHUB_SHA" \
+            --workflow-repository "$GITHUB_REPOSITORY" \
+            --workflow-run-id "$GITHUB_RUN_ID" \
+            --workflow-run-attempt "$GITHUB_RUN_ATTEMPT"
       - name: Retain the aggregate-only consumer receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
