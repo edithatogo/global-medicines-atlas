@@ -44,13 +44,15 @@ jobs:
           mkdir -p "$QUALIFICATION_DIR"
           uv run --locked --python 3.14.6 python scripts/qualify_australian_mbs_gold_real_silver.py --check
           uv run --locked --python 3.14.6 python scripts/export_australian_mbs_gold_candidate_edges.py \
-            --output "$QUALIFICATION_DIR/candidate-edges.parquet"
+            --output "$QUALIFICATION_DIR/candidate-edges.parquet" \
+            --scalar-output "$QUALIFICATION_DIR/candidate-scalar.parquet"
       - name: Traverse every candidate edge through all consumers
         run: |
           set -euo pipefail
           QUALIFICATION_DIR="$RUNNER_TEMP/gma-mbs-gold-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           uv run --locked --python 3.14.6 --group test-goblin python scripts/qualify_australian_mbs_gold_candidate_consumers.py \
             --edge-file "$QUALIFICATION_DIR/candidate-edges.parquet" \
+            --scalar-file "$QUALIFICATION_DIR/candidate-scalar.parquet" \
             --output "$QUALIFICATION_DIR/candidate-consumer-qualification.json" \
             --workflow-commit "$GITHUB_SHA" \
             --workflow-repository "$GITHUB_REPOSITORY" \

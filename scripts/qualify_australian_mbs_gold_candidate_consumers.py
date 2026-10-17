@@ -4,12 +4,18 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import re
 import sys
+from datetime import date
+from decimal import Decimal
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, cast
 
+import pyarrow as pa
+import pyarrow.parquet as pq
 from qualify_australian_mbs_gold_real_silver import (
     ADMISSION_PATH,
     ROOT,
@@ -26,6 +32,15 @@ from global_medicines_atlas.atlas_browser_qualification import (
 from global_medicines_atlas.mbs_gold_consumer_qualification import (
     qualify_consumers,
 )
+from global_medicines_atlas.platinum_query import (
+    DuckDBQueryAdapter,
+    Operator,
+    PolarsQueryAdapter,
+    QueryFilter,
+    QuerySpec,
+    Scalar,
+)
+from global_medicines_atlas.platinum_resolver import ProductRead
 
 V4_USE_AUTHORIZATION_PATH = Path(
     "quality/qualifications/"
@@ -48,6 +63,72 @@ WORKFLOW_PATH = (
 )
 REPOSITORY = "edithatogo/global-medicines-atlas"
 MBS_DATASET = "edithatogo/australian-mbs-source-archive"
+SCALAR_DECIMAL_COLUMN = "benefit__Benefit100__typed_value"
+SCALAR_DATE_COLUMN = "benefit__BenefitStartDate__typed_value"
+
+
+def qualify_candidate_scalar_queries(
+    scalar_path: Path, qualification: dict[str, Any]
+) -> dict[str, object]:
+    """Run value-free exact decimal/date engine canaries on candidate bytes."""
+    if not scalar_path.is_file():
+        raise ValueError("candidate scalar Parquet is missing")
+    payload = scalar_path.read_bytes()
+    if not payload:
+        raise ValueError("candidate scalar Parquet is empty")
+    parquet_module: Any = pq
+    read_table: Any = parquet_module.read_table
+    table = cast("pa.Table", read_table(io.BytesIO(payload)))
+    metadata = table.schema.metadata or {}
+    expected = {
+        b"schema_name": b"global-medicines-atlas.mbs-gold-scalar-candidate",
+        b"schema_version": b"1",
+        b"qualification": b"candidate_only",
+        b"consumer_admission": b"not_performed",
+        b"graph_sha256": str(qualification["graph"]["graph_sha256"]).encode(),
+        b"source_receipt_sha256": str(
+            qualification["graph"]["source_receipt_sha256"]
+        ).encode(),
+    }
+    if any(metadata.get(key) != value for key, value in expected.items()):
+        raise ValueError("candidate scalar metadata differs from qualification")
+    if not table.num_rows:
+        raise ValueError("candidate scalar has no source-record rows")
+
+    query_cases: dict[str, object] = {}
+    query_specs: tuple[tuple[str, str, Operator, Decimal | date], ...] = (
+        ("decimal", SCALAR_DECIMAL_COLUMN, ">", Decimal("10.00")),
+        ("date", SCALAR_DATE_COLUMN, ">=", date(2025, 8, 1)),
+    )
+    for case, column, operator, value in query_specs:
+        spec = QuerySpec(
+            columns=("source_ordinal",),
+            filters=(QueryFilter(column, operator, value),),
+            limit=1000,
+        )
+        engine_rows: dict[str, tuple[dict[str, Scalar], ...]] = {}
+        for adapter in (DuckDBQueryAdapter(), PolarsQueryAdapter()):
+            stream = io.BytesIO(payload)
+            read = cast(
+                "ProductRead",
+                SimpleNamespace(verified=SimpleNamespace(stream=stream)),
+            )
+            engine_rows[adapter.name] = adapter.execute(read, spec)
+        if engine_rows["duckdb"] != engine_rows["polars"]:
+            raise ValueError(f"candidate scalar {case} engine parity failed")
+        query_cases[case] = {
+            "engines": ["duckdb", "polars"],
+            "returned_rows": len(engine_rows["duckdb"]),
+            "row_limit": spec.limit,
+            "parity": True,
+        }
+    return {
+        "candidate_only": True,
+        "consumer_admission_performed": False,
+        "row_count": table.num_rows,
+        "parquet_sha256": hashlib.sha256(payload).hexdigest(),
+        "query_cases": query_cases,
+    }
 
 
 def candidate_v4_use_binding(
@@ -465,6 +546,7 @@ def hosted_workflow_binding(
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--edge-file", required=True, type=Path)
+    parser.add_argument("--scalar-file", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--workflow-commit", required=True)
     parser.add_argument("--workflow-repository", required=True)
@@ -504,6 +586,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     receipt["candidate_v4_use_authorization"] = authorization_binding
     receipt["candidate_v4_source_lineage"] = lineage_binding
+    receipt["candidate_scalar_query_canary"] = qualify_candidate_scalar_queries(
+        args.scalar_file.expanduser(), qualification
+    )
     receipt["hosted_workflow"] = hosted_workflow_binding(
         commit=args.workflow_commit,
         repository=args.workflow_repository,

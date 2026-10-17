@@ -2782,6 +2782,19 @@
   current main. This verifies the synthetic cross-surface route only; exact
   real M-110 consumer acceptance remains open.
 
+### M-110 real scalar engine canary (2026-10-18)
+
+- [~] Extend the protected exact-main candidate workflow to build a temporary
+  contract-typed scalar projection from the same six digest-verified July 2025
+  MBS v3 Silver tables, bind it to the existing B1 receipt and Gold graph, and
+  exercise exact Decimal and date predicates in DuckDB and Polars. Retain only
+  the aggregate receipt and remove both candidate Parquet files in the
+  workflow's always-run cleanup. Local regression and typing checks pass;
+  exact-main hosted execution remains pending. The canary directly exercises
+  existing query adapters and does not enter the trusted product resolver,
+  establish product admission, or change `not_reviewed`, M-110 acceptance,
+  M-112, rights, publication, or source coverage.
+
 ### M-110 candidate Gold edges in Atlas (2026-10-17)
 
 - [x] Add an optional read-only `/gold/edges` Atlas page over the existing
