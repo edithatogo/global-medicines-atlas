@@ -2613,3 +2613,21 @@
   42-bounded, 29-direct-receipt, and 1,759-path M-112 counts remain unchanged.
   The 224 focused maturity/contract tests, measured-coverage check, and context
   validation pass. M-112 admission and federation acceptance remain blocked.
+
+## M-106 patient-denominator source metadata refresh (2026-10-17)
+
+- [x] Recheck official public metadata and both existing source-owner inquiry
+  threads without acquiring source content. The Department's current annual
+  statistics page lists patient measures for 2009-10 to 2025-26 by state and
+  territory; this is a stronger aggregate-denominator lead, but no count
+  definition, cross-item deduplication, coverage, suppression, exact workbook
+  identity, or reuse right is established. The Services Australia item-report
+  page returned HTTP 503, and the narrow GP non-referred bulk-billing product
+  does not represent the full MBS denominator. The Department thread contains
+  only an automatic receipt and Services Australia has no inbound reply.
+  Details are preserved in
+  `quality/qualifications/australian-mbs-m106-source-metadata-recheck-20261017.json`.
+- [ ] Obtain substantive source-owner clarification and the source-specific
+  maintainer rights decision before acquiring the candidate annual workbook.
+  Keep M-106 blocked; do not treat public-page metadata, item counts, or the
+  dashboard percentage as the required distinct-patient denominator.

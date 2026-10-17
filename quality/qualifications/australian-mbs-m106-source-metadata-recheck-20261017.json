@@ -1,0 +1,63 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-m106-source-metadata-recheck",
+  "schema_version": 1,
+  "observed_at": "2026-10-17T01:22:28Z",
+  "requirement": "M-106",
+  "status": "blocked_candidate_source_metadata_only",
+  "candidate": {
+    "source_owner": "Australian Government Department of Health, Disability and Ageing",
+    "publication_title": "Medicare annual statistics - State and territory (2009-10 to 2025-26)",
+    "publication_url": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en",
+    "collection_url": "https://www.health.gov.au/resources/collections/medicare-statistics-collection?language=en",
+    "publication_date": "2026-08-10",
+    "listed_format_and_size": "Excel, 2 MB",
+    "page_describes": [
+      "annual statistics by state and territory for 2009-10 through 2025-26",
+      "all services",
+      "out-of-hospital services",
+      "patients",
+      "broad type of service"
+    ],
+    "assessment": "Strong candidate for an aggregate annual patient denominator, but page metadata does not establish the exact count definition, cross-item deduplication, coverage, suppression, workbook identity, or project reuse rights. It does not provide item-level patient counts."
+  },
+  "other_public_leads": [
+    {
+      "title": "Medicare statistics - per patient bulk billing dashboard 2025-26",
+      "url": "https://www.health.gov.au/resources/publications/medicare-statistics-per-patient-bulk-billing-dashboard-2025-26?language=en",
+      "page_scope": "Proportion of patients fully bulk billed for GP non-referred attendances",
+      "assessment": "Narrow population and measure; not the distinct-patient denominator for the full MBS service domain."
+    },
+    {
+      "title": "Services Australia Medicare item statistics report page",
+      "url": "https://medicarestatistics.humanservices.gov.au/statistics/mbs_item.jsp",
+      "observation": "The official collection-page link returned HTTP 503 when opened on 2026-10-17. No report or data were retrieved.",
+      "assessment": "Availability failure does not establish absence of a patient measure or negative coverage."
+    }
+  ],
+  "provider_correspondence_readback": {
+    "department_query": "subject:\"Public MBS distinct-patient denominator source and reuse terms\" after:2026/10/15 -in:spam -in:trash",
+    "department_inquiry_message_id": "1a144fb6ffd7c3cd",
+    "department_auto_ack_message_id": "1a144fbfde8847c4",
+    "department_auto_ack_only": true,
+    "services_australia_query": "subject:\"Public item-level MBS patient-count statistics and reuse terms\" after:2026/09/27 -in:spam -in:trash",
+    "services_australia_messages_found": [
+      "1a0e93bc557578ea",
+      "1a10b08c07b6a7dd"
+    ],
+    "services_australia_inbound_reply_found": false,
+    "substantive_source_owner_clarification_found": false,
+    "source_specific_maintainer_rights_decision": false
+  },
+  "boundaries": {
+    "publication_page_metadata_only": true,
+    "workbook_downloaded_or_inspected": false,
+    "dashboard_downloaded_or_inspected": false,
+    "item_report_or_csv_retrieved": false,
+    "source_values_read": false,
+    "source_payload_acquired": false,
+    "rights_inferred_from_public_access_or_catalog_license": false,
+    "acquisition_authorized": false,
+    "m106_accepted": false
+  },
+  "next_evidence": "Substantive source-owner clarification of the annual patient measure, exact workbook identity, deduplication, coverage and suppression, plus a source-specific maintainer rights decision before any acquisition."
+}
