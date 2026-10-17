@@ -177,6 +177,20 @@ release or promote these fields into harmonised Silver meanings. M-109 still
 needs versioned, release-linked source history for each required era; no source
 values were retained or emitted.
 
+### Official March 2026 release correction
+
+The official [March 2026 Downloads page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260301)
+identifies `MBS-XML-20260301-version 2.XML`, released 10 February and effective
+1 March 2026, as removing EMSN caps incorrectly included in the 5 February
+revision for 12 items. It also says corresponding columns Y, AB, and AC were
+amended in line with no EMSN caps to align with prescribed legislation. The
+page provides a release-specific correction, but it does not map those column
+labels to XML tags or resolve the conflicting `EMSNCap` field-guide legend.
+This observation is recorded in
+[`australian-mbs-release-corrections-20261018.json`](../../quality/qualifications/australian-mbs-release-corrections-20261018.json).
+It does not establish semantics for other fields or eras, source rights, or
+M-109 acceptance.
+
 The July/August comparator was also rerun on exact current main commit
 `4b8ea386b20b1f9b034e5d8cf80ca3e05430bb4c` in hosted run
 [`39048554153`](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39048554153).

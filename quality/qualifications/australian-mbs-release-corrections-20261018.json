@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "schema_id": "global-medicines-atlas.australian-mbs-release-corrections",
+  "checked_at": "2026-10-18",
+  "status": "release_specific_correction_observed_history_open",
+  "official_release_page": {
+    "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260301",
+    "title": "March 2026 Downloads",
+    "page_last_updated": "2026-04-10",
+    "observed_at": "2026-10-18"
+  },
+  "release_specific_corrections": [
+    {
+      "source_release": "MBS-XML-20260301-version 2.XML",
+      "released_at": "2026-02-10",
+      "effective_at": "2026-03-01",
+      "supersedes_release": "MBS-XML-20260301.XML",
+      "superseded_release_date": "2026-02-05",
+      "affected_item_count": 12,
+      "correction": "Removes EMSN caps incorrectly included in the earlier XML revision; the page also says corresponding columns Y, AB, and AC are amended in line with no EMSN caps.",
+      "stated_basis": "The Department says the changes are necessary to align the file with prescribed legislation.",
+      "xml_tag_mapping_asserted": false
+    }
+  ],
+  "boundaries": {
+    "field_guide_conflict_resolved": false,
+    "release_semantic_mapping_accepted": false,
+    "source_payload_acquired": false,
+    "rights_decision_changed": false,
+    "m109_accepted": false
+  }
+}
