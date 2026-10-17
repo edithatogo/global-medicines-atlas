@@ -73,8 +73,13 @@ def test_current_mbs_xml_links_are_receipt_reconciled_without_accepting_m107() -
     assert refresh["unmatched_urls"] == []
     assert refresh["targeted_page_run"]["run"] == "39000296702"
     assert refresh["targeted_page_run"]["identity_conflict_count"] == 0
-    assert refresh["targeted_page_run"]["anonymous_digest_verification"] == "passed"
-    assert refresh["targeted_page_run"]["temporary_source_bytes_removed"] is True
+    assert (
+        refresh["targeted_page_run"]["anonymous_digest_verification"]
+        == "passed"
+    )
+    assert (
+        refresh["targeted_page_run"]["temporary_source_bytes_removed"] is True
+    )
     assert refresh["m107_accepted"] is False
     assert record["previous_public_archive_observation"]["revision"] == (
         "52ad5c31cfe101c487a4c7a9c382540642e6110a"
