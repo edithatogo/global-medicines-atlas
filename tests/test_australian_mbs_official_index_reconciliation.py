@@ -84,9 +84,23 @@ def test_previous_downloads_formats_remain_outside_schedule_claims() -> None:
     previous = record["previous_downloads"]
 
     assert previous["http_status"] == 200
-    assert previous["listed_file_link_count"] == 106
-    assert previous["distinct_url_count"] == 106
-    assert previous["file_extension_counts"] == {"pdf": 105, "xml": 1}
+    assert previous["listed_resource_link_count"] == 106
+    assert previous["distinct_resource_url_count"] == 106
+    assert previous["listed_file_count"] == 105
+    assert previous["distinct_file_url_count"] == 105
+    assert previous["file_extension_counts"] == {"pdf": 105}
+    assert previous["rss_feed_link_count"] == 1
+    assert previous["rss_feed_links"] == [
+        {
+            "classification": "site_wide_rss_feed_not_historical_mbs_download",
+            "filename": "mbsonline.xml",
+            "label": "RSS",
+            "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/AttachmentsByTitle/rss/$FILE/mbsonline.xml",
+        }
+    ]
+    assert all(
+        file["filename"].lower().endswith(".pdf") for file in previous["files"]
+    )
     assert previous["listed_period_years"][0] == "1974"
     assert previous["listed_period_years"][-1] == "2010"
     assert record["authorization"]["historical_pdf_word_scope"] == (

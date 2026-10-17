@@ -2699,12 +2699,17 @@
   including 82 distinct MBS-XML resource URLs across 41 page IDs. Exact
   comparison with B1 receipt source URLs at MBS archive revision
   `52ad5c31cfe101c487a4c7a9c382540642e6110a` matches 10 and leaves 72 without
-  a current receipt. The Previous Downloads page lists 106 direct files for
-  1974–2010 (105 PDF, one XML); the current harvest authorization does not
-  establish rights for those historical PDF/Word products. No source payload
-  was acquired. See
+  a current receipt. The Previous Downloads page lists 105 historical PDFs
+  for 1974–2010; its XML link is a site-wide RSS feed and is excluded from the
+  historical file count. The current harvest authorization does not establish
+  rights for those historical PDF/Word products. No source payload was
+  acquired. See
   `quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json`
   and `docs/qualification/australian-mbs-pbs-m107-snapshots.md`.
+- [x] Apply the review correction that separates the Previous Downloads
+  page's 105 historical PDF files from its site-wide RSS feed link. The RSS
+  XML is now classified as a feed and excluded from historical file totals;
+  the qualification regression test asserts this distinction.
 - [x] Extend and qualify the bounded exact-page selector for observed
   historical IDs such as `Downloads-200701a` and `Downloads-2023-11`. Preserve
   each exact ID as the page identity; never infer a release date from a suffix.

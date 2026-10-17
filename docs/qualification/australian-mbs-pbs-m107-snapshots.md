@@ -200,12 +200,15 @@ service was absent. The list includes revisions and corrections; page IDs and
 XML link counts do not themselves establish a monthly period denominator.
 
 The official [Previous Downloads page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Prev-Downloads)
-lists 106 direct file links covering 1974–2010: 105 PDFs and one XML file.
+lists 105 historical PDF files covering 1974–2010. Its separate site-wide RSS
+feed link is not a historical MBS download and is classified separately in
+the machine-readable observation.
 Those legacy formats remain distinct from the currently authorized
 `monthly_schedule_xml`, `basic_service_description`, and
-`relative_value_guide` categories. No PDF or legacy XML payload was acquired,
+`relative_value_guide` categories. No historical PDF payload was acquired,
 and the current MBS harvest authorization does not establish rights for those
-families. The complete page/resource listing, exact URLs, current-receipt
+families. The RSS link was not treated as historical data. The complete
+page/resource listing, exact URLs, current-receipt
 matches, manifest and HTML digests, and scope limits are recorded in the
 [machine-readable observation](../../quality/qualifications/australian-mbs-official-index-reconciliation-20261017.json).
 

@@ -2795,7 +2795,7 @@
             "filename": "Word%20version%20of%20the%201%20July%202023%20Complete%20MBS.docx"
           },
           {
-            "label": "PDF version of the July 2023 Category 1 - Attendances�",
+            "label": "PDF version of the July 2023 Category 1 - Attendances\ufffd",
             "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/4C767FC45843CB02CA25898500825ACA/$File/PDF%20version%20of%20the%20July%202023%20Category%201%20-%20Attendances.pdf",
             "filename": "PDF%20version%20of%20the%20July%202023%20Category%201%20-%20Attendances.pdf"
           },
@@ -3350,12 +3350,22 @@
     "html_bytes": 42535,
     "html_sha256": "bc0a5fd2dfac0de476f41da4346bd23a92b32a4c45b2f6eaa09ce2dd46509348",
     "title": "MBS Online - Previous Downloads.",
-    "listed_file_link_count": 106,
-    "distinct_url_count": 106,
+    "listed_resource_link_count": 106,
+    "distinct_resource_url_count": 106,
+    "listed_file_count": 105,
+    "distinct_file_url_count": 105,
     "file_extension_counts": {
-      "pdf": 105,
-      "xml": 1
+      "pdf": 105
     },
+    "rss_feed_link_count": 1,
+    "rss_feed_links": [
+      {
+        "label": "RSS",
+        "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/AttachmentsByTitle/rss/$FILE/mbsonline.xml",
+        "filename": "mbsonline.xml",
+        "classification": "site_wide_rss_feed_not_historical_mbs_download"
+      }
+    ],
     "listed_period_years": [
       "1974",
       "1975",
@@ -3920,11 +3930,6 @@
         "label": "1974 April and 1975 May MBS",
         "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/515793D58E889BD0CA257CD100033990/$File/1974-MBS.pdf",
         "filename": "1974-MBS.pdf"
-      },
-      {
-        "label": "RSS",
-        "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/AttachmentsByTitle/rss/$FILE/mbsonline.xml",
-        "filename": "mbsonline.xml"
       }
     ]
   },
@@ -4705,5 +4710,5 @@
     "unavailable_or_unlisted_pages_not_assumed_absent": true
   },
   "next_unblocked_work": "Extend the exact-page selector to accept only safe exact Downloads identifiers observed in official MBS link forms (without accepting URLs, paths, queries, fragments, or encoded separators); then publish eligible monthly_schedule_xml pages in cohorts of at most 24 under the existing protected hosted workflow, reconciling exact receipts and identity conflicts.",
-  "denominator_boundary": "The current Downloads index lists 55 page URLs and 531 downloadable resource links, including 82 distinct MBS-XML links across 41 pages. Ten of those 82 links match current public B1 receipt source URLs at revision 52ad5c31cfe101c487a4c7a9c382540642e6110a; 72 have no matching receipt in this pinned archive head. The separate Previous Downloads page lists 106 direct file links spanning 1974–2010, 105 PDF and one XML. This is an index-level, format-separated starting inventory, not a complete expected MBS/PBS period denominator or M-107 acceptance."
+  "denominator_boundary": "The current Downloads index lists 55 page URLs and 531 downloadable resource links, including 82 distinct MBS-XML links across 41 pages. Ten of those 82 links match current public B1 receipt source URLs at revision 52ad5c31cfe101c487a4c7a9c382540642e6110a; 72 have no matching receipt in this pinned archive head. The separate Previous Downloads page lists 105 historical PDF files spanning 1974\u20132010. Its 106th resource link is the site-wide RSS feed, classified separately and excluded from the historical-file count. This is an index-level, format-separated starting inventory, not a complete expected MBS/PBS period denominator or M-107 acceptance."
 }
