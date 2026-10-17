@@ -321,6 +321,27 @@ def test_field_guide_semantic_history_preserves_the_unresolved_boundary() -> (
     assert report["qualification_boundaries"]["m109_accepted"] is False
 
 
+def test_march_2026_release_correction_stays_revision_specific() -> None:
+    report = _json(
+        "quality/qualifications/"
+        "australian-mbs-release-corrections-20261018.json"
+    )
+
+    assert (
+        report["status"] == "release_specific_correction_observed_history_open"
+    )
+    correction = report["release_specific_corrections"][0]
+    assert correction["source_release"] == "MBS-XML-20260301-version 2.XML"
+    assert correction["released_at"] == "2026-02-10"
+    assert correction["effective_at"] == "2026-03-01"
+    assert correction["supersedes_release"] == "MBS-XML-20260301.XML"
+    assert correction["affected_item_count"] == 12
+    assert correction["xml_tag_mapping_asserted"] is False
+    assert report["boundaries"]["field_guide_conflict_resolved"] is False
+    assert report["boundaries"]["release_semantic_mapping_accepted"] is False
+    assert report["boundaries"]["m109_accepted"] is False
+
+
 def test_m109_inventory_keeps_mbs_authorization_and_pbs_rights_separate() -> (
     None
 ):

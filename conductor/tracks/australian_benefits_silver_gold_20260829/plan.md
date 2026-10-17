@@ -3166,6 +3166,11 @@
 - [x] Re-run the aggregate July/August source comparator on exact main `4b8ea386b20b1f9b034e5d8cf80ca3e05430bb4c`; hosted run `39048554153` succeeded and the aggregate report SHA-256 is `09b1263b8724b4cce187bbaef9a2fec033c579c2aeaa94b503faecc7b672c210`.
 - [ ] Obtain a versioned source-owner clarification or release-linked schema/change record establishing field meanings and effective dates for each required source era. The 2022-03-04 to 2026-05-28 gap and source-era denominator remain open; M-109 remains blocked.
 
+### Official March 2026 release correction (2026-10-18)
+
+- [x] Record the official March 2026 page's corrected XML revision, its release/effective dates, and its stated EMSN-cap correction for 12 items. Preserve the page's wording that columns Y, AB, and AC changed without mapping those labels to XML tags. This narrows one release-specific correction record but does not resolve the conflicting field guide, qualify other eras, or change M-109 acceptance. See `quality/qualifications/australian-mbs-release-corrections-20261018.json`.
+- [ ] Obtain release-linked schema/change history or source-owner clarification establishing field meanings and effective dates across the required source-era denominator. M-109 remains blocked.
+
 ## M-109 official PBS archive index reconciliation (2026-10-18)
 
 - [x] Inventory the official PBS schedule archive's 24 linked year pages from
