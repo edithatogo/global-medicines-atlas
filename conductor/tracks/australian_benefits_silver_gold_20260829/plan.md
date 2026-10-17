@@ -1850,6 +1850,13 @@
   qualifier defaults field-semantic acceptance to false and retains the
   version-history blocker. No values or bytes were retained. Historical eras,
   public admission, and the complete M-109 denominator remain open.
+- [x] Merge the semantic-acceptance correction in PR #1110 at
+  `764ee7c757c60243e8963e7482883728b768dc74`, tested exact head
+  `2e90182c7b1e6bd0655ce02f55e1646a3dc13a91`. All 39 required hosted
+  contexts passed, including Codecov patch and Linux/macOS/Windows consumer
+  checks; the review finding is resolved. The historical profile bytes remain
+  preserved and explicitly superseded only for its prior field-semantic
+  acceptance interpretation.
 
 
 ## M-112 public producer metadata discovery (2026-09-30)
@@ -2955,3 +2962,22 @@
   match does not establish the full historical MBS/PBS expected-period
   denominator, source-era semantics, utilization-family coverage, source
   rights, or admission.
+
+## M-112 historical receipt-to-gate crosswalk (2026-10-17)
+
+- [x] Crosswalk all 14 historical utilisation `SourceReceipt` projections to
+  their exact immutable B2 identities and approved per-object rows in the
+  unchanged 1,759-path denominator. The deterministic value-free report binds
+  the gate reconciliation, historical receipt inventory, acquisition import,
+  and every sidecar digest; all 14 are explicitly historical and satisfy none
+  of the live-source, independent-storage, complete B1/B2, v4-admission, or
+  consumer-canary gates. No source bytes or values were read, acquired, or
+  published. On `origin/main` `764ee7c757c60243e8963e7482883728b768dc74`,
+  the focused 18 tests and broader 55-test M-112 suite passed; changed-module
+  branch coverage was 98.70%, and Ruff, `ty`, BasedPyright, context validation,
+  deterministic `--check`, formatting, and diff checks passed. The report is
+  `quality/qualifications/australian-m112-historical-receipt-gate-crosswalk-20261017.json`.
+- [~] Continue per-object lineage, independent storage/readback, rights,
+  admission, and consumer-canary evidence under the existing approved
+  denominator. This historical metadata crosswalk does not complete M-112 or
+  promote any deferred object.
