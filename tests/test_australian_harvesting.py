@@ -621,6 +621,64 @@ def test_discover_mbs_schedule_exact_historical_pages_and_failures() -> None:
     assert attempts[1]["monthly_schedule_xml_count"] == 0
 
 
+@pytest.mark.parametrize(
+    "page_id",
+    ["Downloads-200701a", "Downloads-200801", "Downloads-2023-11"],
+)
+def test_discover_mbs_schedule_accepts_indexed_historical_page_id_verbatim(
+    page_id: str,
+) -> None:
+    requested_urls: list[str] = []
+
+    def fetch_page(url: str) -> str:
+        requested_urls.append(url)
+        return '<a href="/files/mbs-xml-200701r2.xml">XML</a>'
+
+    resources, attempts = discover_mbs_schedule_resources_detailed(
+        "",
+        fetch_page,
+        exact_release_pages=[page_id],
+    )
+
+    assert requested_urls == [
+        (
+            "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/"
+            f"{page_id}"
+        )
+    ]
+    assert [resource.period_label for resource in resources] == [page_id]
+    assert attempts[0]["page"] == page_id
+    assert attempts[0]["monthly_schedule_xml_count"] == 1
+
+
+@pytest.mark.parametrize(
+    "page",
+    [
+        "https://www.mbsonline.gov.au/Downloads-250101",
+        "Downloads-250101/../Downloads-250301",
+        "Downloads-250101?next=Downloads-250301",
+        "Downloads-250101#fragment",
+        "Downloads-25%2f0101",
+        "Downloads-25%5c0101",
+        "Downloads-2011-PDF",
+        "Downloads-2011-PDF/../../secret",
+        "Downloads-2020-04-01\\suffix",
+        "Downloads-2020-04-01\nDownloads-250101",
+    ],
+)
+def test_discover_mbs_schedule_rejects_unsafe_exact_page_ids_without_fetch(
+    page: str,
+) -> None:
+    requested_urls: list[str] = []
+    with pytest.raises(ValueError, match="Invalid exact MBS release page"):
+        discover_mbs_schedule_resources_detailed(
+            "",
+            lambda url: requested_urls.append(url) or "",
+            exact_release_pages=[page],
+        )
+    assert requested_urls == []
+
+
 def test_discover_mbs_exact_pages_keep_page_scoped_same_name_files() -> None:
     def fetch_page(url: str) -> str:
         page_id = url.rsplit("/", maxsplit=1)[-1]
