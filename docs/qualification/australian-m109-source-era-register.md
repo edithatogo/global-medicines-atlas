@@ -162,12 +162,20 @@ February 2022 guide and says it was last updated 2022-03-04. Source PDF digests,
 URLs, and exact comparison boundaries are recorded in
 [`australian-mbs-field-guide-semantic-history-20261018.json`](../../quality/qualifications/australian-mbs-field-guide-semantic-history-20261018.json).
 
+The same comparison found a conflicting `EMSNCap` legend: the November 2013
+PDF and the current official help-page table say `N` means no current cap,
+whereas the linked February 2022 PDF says `Y` means a current cap. That PDF
+also states that `N` makes the other EMSN tags null. The pages and PDF agree on
+`P` and `F` meanings. This records a source-document conflict; it does not
+establish which statement applies to any release, and no code interpretation
+or field mapping is selected.
+
 This establishes a documentary wording difference, not the exact date when the
 operational meaning changed, the meaning applicable to a particular release,
-or the semantic history of other fields. Do not transfer the current wording
-to older releases or use this comparison to promote `ItemChange` into a
-harmonised Silver meaning. M-109 still needs versioned, release-linked source
-history for each required era; no source values were retained or emitted.
+or the semantic history of other fields. Do not transfer either wording to a
+release or promote these fields into harmonised Silver meanings. M-109 still
+needs versioned, release-linked source history for each required era; no source
+values were retained or emitted.
 
 The July/August comparator was also rerun on exact current main commit
 `4b8ea386b20b1f9b034e5d8cf80ca3e05430bb4c` in hosted run
