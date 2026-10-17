@@ -11,6 +11,7 @@ from scripts.qualify_mbs_source_era_candidate import (
     qualify_candidate,
 )
 
+from global_medicines_atlas.adapters.au_mbs import MBS_NATIVE_FIELDS
 from global_medicines_atlas.mbs_silver_qualification import (
     MbsSilverQualification,
 )
@@ -35,6 +36,10 @@ _URI = (
 _RECORDED_PROFILE = (
     Path(__file__).resolve().parents[1]
     / "quality/qualifications/mbs-source-era-candidate-2026-08-01.json"
+)
+_PRESENCE_BASELINE = (
+    Path(__file__).resolve().parents[1]
+    / "quality/qualifications/mbs-source-era-candidate-2026-08-01-presence-baseline.json"
 )
 
 
@@ -95,7 +100,8 @@ def test_candidate_binds_archive_payload_to_exact_official_release(
         "public_v4_identity_unverified"
     ]
     assert report["source_presence_projection_alignment"] == "matched"
-    assert report["field_semantics_accepted"] is False
+    assert report["qualification"]["date_format"] == "mbs-dmy"
+    assert report["field_semantics_accepted"] is True
     assert report["m109_accepted"] is False
 
 
@@ -139,6 +145,15 @@ def test_field_presence_diagnostics_distinguish_missing_from_parser_loss() -> (
     assert diagnostics["ItemStartDate"]["conversion_status_counts"] == {
         "unsupported_format": 1
     }
+    qualified = {
+        item["native_field"]: item
+        for item in field_presence_diagnostics(
+            payload, receipt, date_format="mbs-dmy"
+        )
+    }
+    assert qualified["ItemStartDate"]["conversion_status_counts"] == {
+        "converted": 1
+    }
     assert diagnostics["ItemStartDate"]["presence_state_mismatches"] == 0
     assert diagnostics["Benefit75"]["source_present"] == 0
     assert diagnostics["Benefit75"]["projected_states"] == {"missing_field": 1}
@@ -178,3 +193,50 @@ def test_committed_august_candidate_profile_is_pinned_and_value_free() -> None:
     )
     assert report["field_semantics_accepted"] is False
     assert report["m109_accepted"] is False
+
+
+def test_august_presence_baseline_is_pinned_without_date_semantics() -> None:
+    report_bytes = _PRESENCE_BASELINE.read_bytes()
+    report = json.loads(report_bytes)
+    core = {
+        key: value
+        for key, value in report.items()
+        if key not in {"candidate_sha256", "candidate_byte_count"}
+    }
+    canonical = json.dumps(core, sort_keys=True, separators=(",", ":")).encode()
+
+    assert report["exact_commit"] == "19420a008b8b33919aa4a837779e0fb6a15b4a88"
+    assert report["qualification"]["date_format"] is None
+    assert report["field_semantics_accepted"] is False
+    assert report["source_presence_projection_alignment"] == "matched"
+    assert len(report["field_presence_diagnostics"]) == 40
+    assert all(
+        item["presence_state_mismatches"] == 0
+        for item in report["field_presence_diagnostics"]
+    )
+    assert report["candidate_sha256"] == hashlib.sha256(canonical).hexdigest()
+    assert report["candidate_byte_count"] == len(canonical)
+    assert hashlib.sha256(report_bytes).hexdigest() == (
+        "5af143a416918113ebb4dc2a625c3a14ab66015d413f7c7de92ee13a3995f181"
+    )
+    assert "source_values" not in report
+    assert report["m109_accepted"] is False
+
+
+def test_august_field_semantics_bind_all_native_fields_and_date_grammar() -> (
+    None
+):
+    document = (
+        Path(__file__).resolve().parents[1]
+        / "docs/qualification/mbs-xml-v3-field-semantics-2026-08.md"
+    ).read_text(encoding="utf-8")
+
+    assert all(f"`{field}`" in document for field in MBS_NATIVE_FIELDS)
+    assert (
+        "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+        in document
+    )
+    assert "6,046 source records" in document
+    assert "241,840 field" in document
+    assert "DD.MM.YYYY" in document
+    assert "M-109 remains partial and blocked" in document

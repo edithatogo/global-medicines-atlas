@@ -10,7 +10,7 @@ import os
 import re
 from datetime import UTC, date, datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import httpx
 from pydantic import AnyUrl
@@ -36,9 +36,11 @@ from global_medicines_atlas.mbs_silver_qualification import (
 from global_medicines_atlas.receipts import RightsState, SourceReceipt
 
 ROOT = Path(__file__).resolve().parents[1]
+SEMANTICS_PATH = "docs/qualification/mbs-xml-v3-field-semantics-2026-08.md"
 MAX_BYTES = 9_000_000
 EXACT_COMMIT_LENGTH = 40
 DATASET = "edithatogo/australian-mbs-source-archive"
+SOURCE_DATE_FORMAT: Literal["mbs-dmy"] = "mbs-dmy"
 ARCHIVE_REVISION = "da83cad9116e2f9a5b927be7b080e9a5e5ea6998"
 ARCHIVE_PATH = (
     "raw/mbs/releases/2026-08-01/"
@@ -137,9 +139,15 @@ def qualify_candidate(
     qualification = qualify_mbs_silver(
         payload,
         receipt,
+        date_format=SOURCE_DATE_FORMAT,
         source_era_verification=verification,
     )
-    field_presence = field_presence_diagnostics(payload, receipt)
+    field_presence = field_presence_diagnostics(
+        payload, receipt, date_format=SOURCE_DATE_FORMAT
+    )
+    semantics_sha256 = hashlib.sha256(
+        (ROOT / SEMANTICS_PATH).read_bytes()
+    ).hexdigest()
     presence_mismatches = sum(
         int(item["presence_state_mismatches"]) for item in field_presence
     )
@@ -162,14 +170,18 @@ def qualify_candidate(
         "source_presence_projection_alignment": (
             "matched" if presence_mismatches == 0 else "mismatch_detected"
         ),
-        "field_semantics_accepted": False,
+        "field_semantics_accepted": True,
+        "field_semantics_path": SEMANTICS_PATH,
+        "field_semantics_sha256": semantics_sha256,
+        "date_format_evidence": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/FAQ-XML_Help",
         "historical_semantic_parity_accepted": False,
         "public_v4_admission": False,
         "m109_accepted": False,
         "source_bytes_retained": False,
         "publication_performed": False,
         "boundaries": [
-            "Source-field meanings require release-specific crosswalk review.",
+            "Field meanings are qualified only for the exact August 2026 release.",
+            "Historical semantic parity and other MBS/PBS source eras remain unqualified.",
             "Candidate counts do not establish source-era completeness.",
             "No dataset publication or production admission was performed.",
         ],
@@ -185,7 +197,10 @@ def qualify_candidate(
 
 # ruff: ignore[too-many-locals] - bounded per-field state reconciliation
 def field_presence_diagnostics(
-    payload: bytes, receipt: SourceReceipt
+    payload: bytes,
+    receipt: SourceReceipt,
+    *,
+    date_format: Literal["iso", "mbs-dmy"] | None = None,
 ) -> list[dict[str, Any]]:
     """Compare source field presence and projected native state by field."""
     stream_metadata = inspect_mbs_source_xml_stream(payload, receipt)
@@ -209,7 +224,7 @@ def field_presence_diagnostics(
         projected_rows = (
             row
             for batch in iter_mbs_silver_batches(
-                payload, receipt, table=table, date_format=None
+                payload, receipt, table=table, date_format=date_format
             )
             for row in batch.to_pylist()
         )
