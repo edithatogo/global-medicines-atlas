@@ -110,14 +110,20 @@
   meaning is inferred from these fixtures. PR #1044 merged at
   `7dc9c9762209c437da3ee3bec7e7398014cc37fe` after all 39 reported checks
   passed and automated review completed without findings.
-- [~] Extend the exact synthetic scalar trust path through Chromium for the
+- [x] Extend the exact synthetic scalar trust path through Chromium for the
   Decimal and date filters, preserving exact row identity, object path/digest,
   synthetic cohort, and unknown coverage wording. Extend the same journey to
   isolated installed wheel and sdist consumers through CLI, API, and Chromium.
-  Focused installed-artifact E2E passes; the governed E2E lane passes (129),
-  routine/context/ecosystem checks pass, `ty` and repository BasedPyright pass.
-  Hosted exact-head checks and merge receipt remain pending. This uses only
-  synthetic fixtures and adds no source, coverage, admission, or rights claim.
+  Both installed artifact journeys pass, including bounded multi-page JSONL CLI
+  output with resumable identities and `source_completeness=not_established`.
+  The focused installed-artifact E2E passes; the governed E2E lane passes
+  (129), routine/context/ecosystem checks pass, Ruff and `ty` pass, and
+  BasedPyright reports zero errors with four existing optional-import warnings.
+  PR #1143 revalidated the exact tree on main: all 39 reported check rows passed,
+  including hosted E2E; merge commit `3cc3a63264eb323c33ed81043aea4bf021742d66`
+  has the same tree as tested head `9655964d4ec48f2d0b6d44906cbde948e7405f47`.
+  This uses only synthetic fixtures and adds no source, coverage, admission,
+  or rights claim.
 - [x] Reject cross-dimension identities at the shared benefits query boundary:
   MBS resources must declare `service_benefit` and PBS resources must declare
   `funding` before any result rows are queried. Failing-first regressions
