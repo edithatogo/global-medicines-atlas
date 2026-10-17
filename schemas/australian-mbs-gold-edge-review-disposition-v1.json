@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.example/schemas/australian-mbs-gold-edge-review-disposition-v1.json",
+  "title": "Maintainer disposition for an exact Australian MBS Gold edge set",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "recorded_at",
+    "decision_by",
+    "decision",
+    "disposition",
+    "scope",
+    "reviewed_edge_set",
+    "decision_basis",
+    "limitations",
+    "boundaries",
+    "receipt_sha256"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "global-medicines-atlas.mbs-gold-edge-review-disposition"
+    },
+    "schema_version": { "const": 1 },
+    "recorded_at": { "type": "string", "format": "date" },
+    "decision_by": { "const": "maintainer" },
+    "decision": {
+      "const": "Accept the exact same-record edge set as reviewed"
+    },
+    "disposition": { "const": "accepted_candidate_only" },
+    "scope": {
+      "type": "object",
+      "required": [
+        "source_id",
+        "schema_era",
+        "source_sha256",
+        "qualification_path",
+        "qualification_sha256",
+        "candidate_graph_sha256",
+        "admission_sha256",
+        "semantic_manifest_sha256",
+        "candidate_v4_use_authorization_sha256"
+      ],
+      "properties": {
+        "source_id": { "const": "au-mbs" },
+        "schema_era": { "const": "2025-07-version-3" },
+        "source_sha256": { "$ref": "#/$defs/sha256" },
+        "qualification_path": { "type": "string", "minLength": 1 },
+        "qualification_sha256": { "$ref": "#/$defs/sha256" },
+        "candidate_graph_sha256": { "$ref": "#/$defs/sha256" },
+        "admission_sha256": { "$ref": "#/$defs/sha256" },
+        "semantic_manifest_sha256": { "$ref": "#/$defs/sha256" },
+        "candidate_v4_use_authorization_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "additionalProperties": false
+    },
+    "reviewed_edge_set": {
+      "type": "object",
+      "required": [
+        "edge_count",
+        "edge_id_sha256",
+        "edge_kind",
+        "semantic_dimension",
+        "mapping_method",
+        "assertion_basis",
+        "all_edges_same_record_bound",
+        "negative_controls_passed",
+        "pre_review_graph_state",
+        "reviewed_state"
+      ],
+      "properties": {
+        "edge_count": { "const": 5989 },
+        "edge_id_sha256": { "$ref": "#/$defs/sha256" },
+        "edge_kind": { "const": "source_record_has_benefit" },
+        "semantic_dimension": { "const": "service_benefit" },
+        "mapping_method": { "const": "source-explicit" },
+        "assertion_basis": { "const": "same_source_record" },
+        "all_edges_same_record_bound": { "const": true },
+        "negative_controls_passed": { "const": true },
+        "pre_review_graph_state": { "const": "not_reviewed" },
+        "reviewed_state": { "const": "reviewed_candidate" }
+      },
+      "additionalProperties": false
+    },
+    "decision_basis": { "type": "string", "minLength": 1 },
+    "limitations": { "type": "array", "minItems": 4, "items": { "type": "string", "minLength": 1 } },
+    "boundaries": {
+      "type": "object",
+      "required": [
+        "source_values_inspected",
+        "new_rights_or_licensing_conclusion",
+        "public_dataset_mutation",
+        "production_admission_or_promotion",
+        "clinical_or_payability_claim",
+        "cross_era_equivalence_claim",
+        "m110_overall_accepted",
+        "m112_federation_accepted",
+        "source_coverage_expansion"
+      ],
+      "properties": {
+        "source_values_inspected": { "const": false },
+        "new_rights_or_licensing_conclusion": { "const": false },
+        "public_dataset_mutation": { "const": false },
+        "production_admission_or_promotion": { "const": false },
+        "clinical_or_payability_claim": { "const": false },
+        "cross_era_equivalence_claim": { "const": false },
+        "m110_overall_accepted": { "const": false },
+        "m112_federation_accepted": { "const": false },
+        "source_coverage_expansion": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "receipt_sha256": { "$ref": "#/$defs/sha256" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "additionalProperties": false
+}

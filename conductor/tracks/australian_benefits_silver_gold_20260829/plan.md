@@ -2591,9 +2591,10 @@
   and `date_profile=not-selected`; it is not included in this qualification.
 - [ ] Complete the remaining M-110 acceptance work after applicable
   source-era Silver semantics and rights are accepted for each exact input
-  revision. Resolve the real MBS Gold edge review and consumer acceptance;
-  qualify PBS separately after its prerequisites. Keep MBS/PBS cross-source or
-  clinical interpretations excluded unless separately supported and approved.
+  revision. The exact July 2025 MBS v3 same-record Gold edge review is recorded
+  as candidate-only, and its consumer canaries are complete. Qualify PBS
+  separately after its prerequisites. Keep MBS/PBS cross-source or clinical
+  interpretations excluded unless separately supported and approved.
 
 ### M-110 exact-era MBS candidate revalidation (2026-10-17)
 
@@ -2624,8 +2625,10 @@
   and unpermitted-rights negative controls reject. The graph is candidate schema
   v3. `confidence` is null and `confidence_calibration` is
   `not_applicable_source_record` because the relation is explicit within one
-  source record; it is not a scored or uncalibrated similarity match. Review
-  state remains `not_reviewed`. The report records exact hashes for the graph
+  source record; it is not a scored or uncalibrated similarity match. At
+  qualification time review state was `not_reviewed`; the later maintainer
+  disposition is recorded below without rewriting this immutable receipt. The
+  report records exact hashes for the graph
   builder, qualifier, and three
   schemas; its readback rejects stale implementation fingerprints. No public
   dataset mutation or graph publication occurred.
@@ -2644,15 +2647,21 @@
   `not_applicable_source_record`, and makes no M-110, M-109, M-112,
   production-admission, rights,
   source-coverage, or publication claim.
-- [~] Complete the maintainer's M-110 Gold graph review, independently of
-  candidate generation. The current assessment is
-  `quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261017.json`.
-  Candidate traversal and maintainer acceptance do not substitute for review
-  of the source-explicit same-record relationship and its limits. The graph
-  correctly has null confidence with calibration `not_applicable_source_record`;
-  no heuristic score or confidence value is claimed. The maintainer review
-  decision, edge-state acceptance, and Platinum scalar-query bridge remain
-  open; no second reviewer is assigned.
+- [x] Complete the maintainer's M-110 Gold graph review for the exact July 2025
+  MBS v3 same-record edge set. The maintainer accepted all 5,989
+  `source_record_has_benefit` edges as reviewed candidates, bound to graph
+  digest `44c6c4f2d3dee80e49efac7bc14cc8965958b476a0e73c3758214645c7f7b27b`
+  and ordered edge-ID digest
+  `7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d`.
+  Receipt: `quality/qualifications/australian-mbs-gold-same-record-review-20261018.json`.
+  It accepts only the source-explicit same-record service-benefit relationship;
+  the pre-review graph and canary remain immutable historical evidence with
+  `review_state=not_reviewed`. Confidence remains null with calibration
+  `not_applicable_source_record`. No payable-benefit, clinical, cross-era,
+  product-admission, rights, or federation claim is made.
+  `quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261018.json`
+  records this bounded review. Broader M-110 acceptance, product admission,
+  other MBS/PBS eras, and M-112 remain open; no second reviewer is assigned.
   A separate technical review verified that the admitted-table builder pairs
   `services` and `benefits` only on matching source-record ID, ordinal, source
   digest, and receipt digest; the exact qualification reports all 5,989 edges
@@ -2660,8 +2669,9 @@
   and unpermitted-rights controls. This verifies row pairing and provenance
   mechanics only. It does not establish a positive or payable benefit, clinical
   meaning, or cross-era equivalence. The edge model and consumer contract keep
-  `review_state=not_reviewed`; this technical result does not record semantic
-  edge acceptance or M-110 acceptance.
+  the pre-review `review_state=not_reviewed`; the later maintainer disposition
+  below records review of the bounded candidate edge set only, not M-110
+  acceptance.
 - [x] Correct the MBS XML numeric-width transform so the three EMSN numeric
   fields use their official seven-integer-digit limit while ScheduleFee and
   Benefit75/85/100 retain five digits. Boundary tests failed before the fix and
@@ -3312,5 +3322,5 @@
   removed by the workflow. This remains a candidate canary with
   `review_state=not_reviewed` and does not accept M-110 or M-112.
 - [x] Keep the separately recorded maintainer disposition limited to accepting
-  this MBS v3 edge set as a candidate for consumer-canary use. The M-110
-  semantic edge review and M-112 federation acceptance remain open.
+  this MBS v3 edge set as reviewed candidate edges. M-110 overall acceptance,
+  product admission, and M-112 federation acceptance remain open.
