@@ -152,7 +152,19 @@ def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:
     assert rows[ALIAS_PATH]["identity"]["digest_evidence"]["path"] == (
         ALIAS_READBACK
     )
-    assert rows[ALIAS_PATH]["b1_b2_lineage"]["complete"] is False
+    assert rows[ALIAS_PATH]["b1_b2_lineage"]["complete"] is True
+    assert (
+        rows[ALIAS_PATH]["b1_b2_lineage"]["evidence"]["canonical_object"][
+            "archive_path"
+        ]
+        == RAW_PATH
+    )
+    assert (
+        rows[ALIAS_PATH]["b1_b2_lineage"]["evidence"][
+            "alias_anonymous_readback"
+        ]["path"]
+        == ALIAS_READBACK
+    )
 
     for path, row in rows.items():
         original = old_rows[DATASET, path]
@@ -179,7 +191,7 @@ def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:
     assert (
         report["aggregate_gates"]["paths_with_anonymous_digest_readback"] == 29
     )
-    assert report["aggregate_gates"]["paths_with_complete_b1_b2_lineage"] == 1
+    assert report["aggregate_gates"]["paths_with_complete_b1_b2_lineage"] == 2
     assert report["aggregate_gates"]["paths_admitted_to_v4"] == 0
     assert report["aggregate_gates"]["paths_with_consumer_canary"] == 0
     assert report["boundaries"]["rights_decision_created_or_expanded"] is False
@@ -219,4 +231,26 @@ def test_alias_readback_rejects_a_different_immutable_revision(
     invalid_readback.write_text(json.dumps(readback), encoding="utf-8")
     monkeypatch.setattr(crosswalk, "ALIAS_READBACK", str(invalid_readback))
     with pytest.raises(ValueError, match="does not bind the alias"):
+        crosswalk.build_report()
+
+
+def test_alias_lineage_rejects_a_different_git_object_identity(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    baseline = _load(ROOT / BASELINE)
+    alias = next(
+        row
+        for row in baseline["objects"]
+        if row["dataset"] == DATASET and row["path"] == ALIAS_PATH
+    )
+    alias["identity"]["git_blob_oid"] = "0" * 40
+    invalid_baseline = tmp_path / "invalid-baseline.json"
+    invalid_baseline.write_text(json.dumps(baseline), encoding="utf-8")
+    monkeypatch.setattr(crosswalk, "BASELINE", str(invalid_baseline))
+
+    with pytest.raises(
+        ValueError,
+        match="does not resolve to the canonical raw B1/B2 object",
+    ):
         crosswalk.build_report()

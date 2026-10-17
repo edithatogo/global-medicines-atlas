@@ -1097,3 +1097,19 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   Keep the criterion unchanged and request a maintainer decision only if choosing
   a narrow chronology exception or an explicit criterion change. Continue
   independent M-106–M-112 work.
+
+## M-112 August raw alias B1/B2 identity reconciliation (2026-10-18)
+
+- [x] Bind the August legacy path to the canonical content-addressed raw
+  object's existing source receipt and landed-to-accepted B1 lifecycle, its
+  immutable B2 reference, exact shared Git blob/digest/size identity, and its
+  own anonymous digest readback. Historical producer-archive records are
+  preserved; source-Parquet projection lineage remains separately open.
+- [x] Update the 1,759-path M-112 gate report to count two raw paths with
+  complete shared-payload B1/B2 lineage. Both paths remain deferred; no v4
+  admission, consumer canary, rights change, or acceptance is inferred.
+- [x] Verify the focused crosswalk (7 passed), broader M-112/rights suite
+  (79 passed), routine profile, Ruff, `ty`, BasedPyright, context/ecosystem
+  checks, and `git diff --check`.
+- [~] Hosted exact-head checks remain pending on PR #1144; proceed with other
+  independent gates while they run.

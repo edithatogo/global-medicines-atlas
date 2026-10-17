@@ -607,3 +607,20 @@
 - [~] Open a scoped PR and reconcile hosted exact-head checks before merging
   this crosswalk update. M-112 remains unaccepted until per-object lineage,
   v4 admission, recovery, and consumer-canary gates pass.
+
+## M-112 August alias shared raw B1/B2 identity (2026-10-18)
+
+- [x] Reconcile the alias path against the canonical August raw object using the
+  exact pinned Git blob identity, byte count, SHA-256, source receipt, landed to
+  accepted B1 lifecycle, immutable B2 reference, and the alias's own anonymous
+  digest receipt. Keep historical producer-archive records intact; their
+  separate projection lineage remains unqualified.
+- [x] Refresh the path ledger: both August raw paths now bind to one qualified
+  raw B1/B2 payload identity. The approved denominator remains 1,759; all
+  1,759 paths remain deferred; v4 admissions and consumer canaries remain zero.
+- [x] Verify focused tests (7 passed), broader M-112/rights tests (79 passed),
+  routine Test-Goblin, Ruff, `ty`, BasedPyright, context/ecosystem checks, and
+  `git diff --check`. The previously recorded full profile remains failed for
+  its isolated performance-threshold finding; it was not repeated.
+- [~] Reconcile hosted exact-head checks on PR #1144 before merging. This
+  identity join does not resolve projection lineage or admit either path.
