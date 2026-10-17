@@ -41,6 +41,10 @@ _PRESENCE_BASELINE = (
     Path(__file__).resolve().parents[1]
     / "quality/qualifications/mbs-source-era-candidate-2026-08-01-presence-baseline.json"
 )
+_DMY_PROFILE = (
+    Path(__file__).resolve().parents[1]
+    / "quality/qualifications/mbs-source-era-candidate-2026-08-01-dmy-profile.json"
+)
 
 
 def _receipt(payload: bytes) -> SourceReceipt:
@@ -220,6 +224,61 @@ def test_august_presence_baseline_is_pinned_without_date_semantics() -> None:
         "5af143a416918113ebb4dc2a625c3a14ab66015d413f7c7de92ee13a3995f181"
     )
     assert "source_values" not in report
+    assert report["m109_accepted"] is False
+
+
+def test_august_dmy_profile_binds_semantics_and_remains_candidate_only() -> (
+    None
+):
+    report_bytes = _DMY_PROFILE.read_bytes()
+    report = json.loads(report_bytes)
+    qualification = MbsSilverQualification.model_validate(
+        report["qualification"]
+    )
+    core = {
+        key: value
+        for key, value in report.items()
+        if key not in {"candidate_sha256", "candidate_byte_count"}
+    }
+    canonical = json.dumps(core, sort_keys=True, separators=(",", ":")).encode()
+
+    assert report["exact_commit"] == "a087acdfb935bb79f894ecd3f91530351f3faac8"
+    assert report["official_release_match"] is True
+    assert report["field_semantics_accepted"] is True
+    assert (
+        report["field_semantics_sha256"]
+        == hashlib.sha256(
+            (
+                Path(__file__).resolve().parents[1]
+                / "docs/qualification/mbs-xml-v3-field-semantics-2026-08.md"
+            ).read_bytes()
+        ).hexdigest()
+    )
+    assert qualification.date_format == "mbs-dmy"
+    assert qualification.source_record_count == 6046
+    assert sum(table.field_count for table in qualification.tables) == 40
+    assert sum(
+        table.field_occurrence_count for table in qualification.tables
+    ) == (241840)
+    assert qualification.blockers == ("public_v4_identity_unverified",)
+    assert report["source_presence_projection_alignment"] == "matched"
+    assert len(report["field_presence_diagnostics"]) == 40
+    assert all(
+        item["rows"] == 6046 and item["presence_state_mismatches"] == 0
+        for item in report["field_presence_diagnostics"]
+    )
+    assert all(
+        "unsupported_format" not in item["conversion_status_counts"]
+        and "invalid" not in item["conversion_status_counts"]
+        for item in report["field_presence_diagnostics"]
+    )
+    assert report["candidate_sha256"] == hashlib.sha256(canonical).hexdigest()
+    assert report["candidate_byte_count"] == len(canonical)
+    assert hashlib.sha256(report_bytes).hexdigest() == (
+        "8e8d14f88baabc10a172fd2ec3947f8a89947828d64fb0237398dc230896763e"
+    )
+    assert report["source_bytes_retained"] is False
+    assert report["publication_performed"] is False
     assert report["m109_accepted"] is False
 
 

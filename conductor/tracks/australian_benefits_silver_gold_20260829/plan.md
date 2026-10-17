@@ -1831,17 +1831,22 @@
   transfer semantics to another era.
 - [x] Select `mbs-dmy` only in the August 2026 hosted candidate qualifier and
   retain date values and invalid/unsupported status counts in memory/aggregate
-  output only. Local focused tests (134), Ruff, `ty`, BasedPyright, context,
+  output only. Local focused tests (135), Ruff, `ty`, BasedPyright, context,
   and diff checks passed. Exact-main validation of the selected grammar is
   pending; no source values were read locally.
 - [x] Preserve the prior exact-main no-date field-presence diagnostic as a
   separate, explicitly unqualified baseline report. Its 40 aggregate field
   diagnostics show zero source/native-presence mismatches; they do not validate
   the newly selected date grammar. The report contains no source values.
-- [ ] Run the updated qualifier on its exact merged-main commit, inspect the
-  aggregate date and quality findings, and bind the report digest here. The
-  candidate remains unqualified until that exact-source result is reviewed;
-  public v4 identity, historical eras, and full M-109 denominator remain open.
+- [x] Run the updated qualifier on exact main `a087acdf` (workflow
+  `39029209737`, artifact `12100055332`, artifact digest
+  `sha256:982a5e5846a75dfd717a3ca7ad65f3a9906c96f2239944be06aafe270172fbb6`).
+  The aggregate DMY profile (`8e8d14f88baabc10a172fd2ec3947f8a89947828d64fb0237398dc230896763e`)
+  confirms 6,046 rows in each of 40 fields, matched source/native presence,
+  zero invalid or unsupported conversions, and only
+  `public_v4_identity_unverified` remains. No values or bytes were retained.
+  This closes the August 2026 MBS semantics/date-profile slice only; historical
+  eras, public admission, and the complete M-109 denominator remain open.
 
 
 ## M-112 public producer metadata discovery (2026-09-30)
