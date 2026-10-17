@@ -792,6 +792,39 @@ def test_discover_mbs_exact_pages_disambiguates_source_url_path_collisions(
     assert forward == reverse
 
 
+def test_mbs_page_fails_closed_if_disambiguated_paths_still_collide(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    page = "Downloads-250101"
+    page_url = (
+        "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/"
+        f"Content/{page}"
+    )
+    html = (
+        '<a href="/first/MBS-XML.xml">First</a>'
+        '<a href="/second/MBS-XML.xml">Second</a>'
+    )
+    monkeypatch.setattr(
+        australian_harvesting,
+        "_mbs_collision_path",
+        lambda _resource: "raw/mbs/releases/Downloads-250101/collision.xml",
+    )
+
+    resources, attempt = australian_harvesting._discover_mbs_schedule_page(
+        page, page_url, lambda _url: html, {}
+    )
+
+    assert len(resources) == 1
+    assert attempt["identity_conflict_count"] == 1
+    assert attempt["outcome"] == "archive_path_collision"
+    assert (
+        harvest_australian_mbs_schedule.targeted_pages_complete(
+            [attempt], [page]
+        )
+        is False
+    )
+
+
 def test_discover_mbs_exact_pages_deduplicates_identical_urls() -> None:
     def fetch_page(_url: str) -> str:
         href = '<a href="/files/MBS-XML.xml">XML</a>'
