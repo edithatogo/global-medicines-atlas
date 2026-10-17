@@ -18,7 +18,7 @@
       "patients",
       "broad type of service"
     ],
-    "assessment": "Strong candidate for an aggregate annual patient denominator, but page metadata does not establish the exact count definition, cross-item deduplication, coverage, suppression, workbook identity, or project reuse rights. It does not provide item-level patient counts."
+    "assessment": "Strong candidate for an aggregate annual patient denominator, but page metadata does not establish the exact count definition, cross-item deduplication, coverage, suppression, or workbook identity. It does not provide item-level patient counts. The existing MBS utilisation authorization covers this source family and annual-statistics category; this page alone is not the rights basis."
   },
   "other_public_leads": [
     {
@@ -46,7 +46,8 @@
     ],
     "services_australia_inbound_reply_found": false,
     "substantive_source_owner_clarification_found": false,
-    "source_specific_maintainer_rights_decision": false
+    "new_rights_decision_required_for_annual_series": false,
+    "existing_annual_series_authorization_applies": true
   },
   "boundaries": {
     "publication_page_metadata_only": true,
@@ -56,8 +57,17 @@
     "source_values_read": false,
     "source_payload_acquired": false,
     "rights_inferred_from_public_access_or_catalog_license": false,
-    "acquisition_authorized": false,
+    "existing_annual_series_authorization": {
+      "qualification": "quality/qualifications/australian-mbs-utilisation-publication-authorization.json",
+      "source_id": "au-health-medicare-statistics",
+      "category": "medicare_annual_statistics_state_territory",
+      "covers_acquisition_and_publication_within_scope": true
+    },
+    "new_rights_decision_required_for_annual_series": false,
+    "acquisition_authorized_within_existing_scope": true,
+    "acquisition_preconditions_satisfied": false,
+    "acquisition_performed": false,
     "m106_accepted": false
   },
-  "next_evidence": "Substantive source-owner clarification of the annual patient measure, exact workbook identity, deduplication, coverage and suppression, plus a source-specific maintainer rights decision before any acquisition."
+  "next_evidence": "Substantive source-owner clarification of the annual patient measure, exact workbook identity, deduplication, coverage and suppression before acquisition under the existing annual-series authorization. Do not extend that authorization to the rolling series, item report or other categories."
 }

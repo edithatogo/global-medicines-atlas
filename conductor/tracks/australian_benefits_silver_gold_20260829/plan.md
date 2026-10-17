@@ -2635,13 +2635,15 @@
   statistics page lists patient measures for 2009-10 to 2025-26 by state and
   territory; this is a stronger aggregate-denominator lead, but no count
   definition, cross-item deduplication, coverage, suppression, exact workbook
-  identity, or reuse right is established. The Services Australia item-report
-  page returned HTTP 503, and the narrow GP non-referred bulk-billing product
+  identity; the existing annual-series authorization is separately established.
+  The Services Australia item-report page returned HTTP 503, and the narrow GP non-referred bulk-billing product
   does not represent the full MBS denominator. The Department thread contains
   only an automatic receipt and Services Australia has no inbound reply.
   Details are preserved in
   `quality/qualifications/australian-mbs-m106-source-metadata-recheck-20261017.json`.
-- [ ] Obtain substantive source-owner clarification and the source-specific
-  maintainer rights decision before acquiring the candidate annual workbook.
+- [ ] Obtain substantive source-owner clarification of the annual patient-count
+  definition and exact workbook identity before acquisition. Use the existing
+  annual-series authorization for this category; require a new rights decision
+  only if the exact object or use falls outside its approved scope.
   Keep M-106 blocked; do not treat public-page metadata, item counts, or the
   dashboard percentage as the required distinct-patient denominator.

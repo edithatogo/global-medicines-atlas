@@ -20,6 +20,10 @@ PATIENT_SOURCE_METADATA = (
     ROOT / "quality/qualifications/"
     "australian-mbs-m106-patient-source-metadata-20261016.json"
 )
+METADATA_RECHECK = (
+    ROOT / "quality/qualifications/"
+    "australian-mbs-m106-source-metadata-recheck-20261017.json"
+)
 
 
 def test_item_demographic_candidate_does_not_qualify_patient_denominator() -> (
@@ -160,3 +164,33 @@ def test_department_patient_metadata_remains_candidate_only() -> None:
     assert "coverage and suppression rules" in body
     assert "access, attribution, retention and redistribution terms" in body
     assert "custom extraction, patient-level records, restricted" in body
+
+
+def test_annual_patient_candidate_uses_existing_scoped_authorization() -> None:
+    receipt = cast("dict[str, Any]", json.loads(METADATA_RECHECK.read_text()))
+    boundaries = cast("dict[str, Any]", receipt["boundaries"])
+    authorization = cast(
+        "dict[str, Any]", boundaries["existing_annual_series_authorization"]
+    )
+    provider = cast(
+        "dict[str, Any]", receipt["provider_correspondence_readback"]
+    )
+
+    assert authorization["qualification"].endswith(
+        "australian-mbs-utilisation-publication-authorization.json"
+    )
+    assert authorization["source_id"] == "au-health-medicare-statistics"
+    assert authorization["category"] == (
+        "medicare_annual_statistics_state_territory"
+    )
+    assert (
+        authorization["covers_acquisition_and_publication_within_scope"] is True
+    )
+    assert boundaries["acquisition_authorized_within_existing_scope"] is True
+    assert boundaries["new_rights_decision_required_for_annual_series"] is False
+    assert boundaries["acquisition_preconditions_satisfied"] is False
+    assert boundaries["acquisition_performed"] is False
+    assert boundaries["m106_accepted"] is False
+    assert provider["substantive_source_owner_clarification_found"] is False
+    assert provider["new_rights_decision_required_for_annual_series"] is False
+    assert provider["existing_annual_series_authorization_applies"] is True
