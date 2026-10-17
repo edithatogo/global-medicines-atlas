@@ -2610,8 +2610,11 @@
   Parquet digests, and qualifies 5,989 source-record service-benefit edges
   (11,978 nodes) from the real July 2025 tables. Cross-record, forged-digest,
   and unpermitted-rights negative controls reject. The graph is candidate schema
-  v3; edge confidence is uncalibrated and review state remains `not_reviewed`.
-  The report records exact hashes for the graph builder, qualifier, and three
+  v3. `confidence` is null and `confidence_calibration` is
+  `not_applicable_source_record` because the relation is explicit within one
+  source record; it is not a scored or uncalibrated similarity match. Review
+  state remains `not_reviewed`. The report records exact hashes for the graph
+  builder, qualifier, and three
   schemas; its readback rejects stale implementation fingerprints. No public
   dataset mutation or graph publication occurred.
 - [x] Record the maintainer's bounded disposition: accept the exact July 2025
@@ -2620,14 +2623,24 @@
   and Chromium with identical ordered edge-ID digests and complete six-table
   lineage; receipt SHA-256 is
   `8d1db8c5fa9376a9f786078114e7bb7682decb8709fde6bf7992113065d8488f`.
-  This acceptance leaves each edge `not_reviewed`, sets no calibrated
-  confidence, and makes no M-110, M-109, M-112, production-admission, rights,
+  The retained current receipt was refreshed on exact main by run
+  [39049481566](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39049481566)
+  at `c68c6d4dbb0600ea464f2d98e716fd7b47fe4326`; its SHA-256 is
+  `a4adf65fed0439fd1c17001fbc2d6ee63a5af81601f505d1248bc9486aceb80c`.
+  This refresh repeats the four-surface canary only. It leaves each edge
+  `not_reviewed`, preserves null confidence with calibration marked
+  `not_applicable_source_record`, and makes no M-110, M-109, M-112,
+  production-admission, rights,
   source-coverage, or publication claim.
-- [~] Complete independent M-110 Gold graph review. The current assessment is
+- [~] Complete the maintainer's M-110 Gold graph review, independently of
+  candidate generation. The current assessment is
   `quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261017.json`.
   Candidate traversal and maintainer acceptance do not substitute for review
-  of edge evidence, calibrated confidence, or the still-open Platinum scalar
-  query bridge. M-110 Gold acceptance remains open.
+  of the source-explicit same-record relationship and its limits. The graph
+  correctly has null confidence with calibration `not_applicable_source_record`;
+  no heuristic score or confidence value is claimed. The maintainer review
+  decision, edge-state acceptance, and Platinum scalar-query bridge remain
+  open; no second reviewer is assigned.
 - [x] Correct the MBS XML numeric-width transform so the three EMSN numeric
   fields use their official seven-integer-digit limit while ScheduleFee and
   Benefit75/85/100 retain five digits. Boundary tests failed before the fix and
