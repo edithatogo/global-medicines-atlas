@@ -1330,10 +1330,17 @@
 
 - [x] Refresh the MBS candidate identity against the current public archive
   head and bind the six table paths, row/field counts, byte counts, and digests
-  from the preserved source-to-Silver parity receipt. The current head is
-  `3d2d528439bddf6f42e8e700c88917f0960a9f38`, and the manifest SHA-256 remains
-  `bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59`.
-  Product status remains candidate-only with no independent admission.
+  from the preserved source-to-Silver parity receipt. A later exact-head
+  metadata recheck found archive head
+  `da83cad9116e2f9a5b927be7b080e9a5e5ea6998` with root manifest SHA-256
+  `68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055` and
+  212 source-archive objects. The nested Silver v4 manifest still has digest
+  `bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59`; all
+  six table identities matched anonymous resolve SHA-256/size headers, and the
+  two small JSON sidecars matched their manifest SHA-256/size after metadata
+  reads. The root archive manifest does not list this nested Silver prefix. No
+  Parquet or source payload bytes were read. Product status remains
+  candidate-only with no independent admission.
 - [x] Re-run the four-surface fail-closed consumer controls on current main:
   57 focused tests passed, including API/CLI unavailable behavior, Atlas
   unknown-state handling, export guards, and controls against self-admission.

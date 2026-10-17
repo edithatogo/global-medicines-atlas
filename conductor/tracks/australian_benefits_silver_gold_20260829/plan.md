@@ -2453,13 +2453,16 @@
 
 - [x] Reconcile the August MBS content-addressed path and preserved historical
   alias against the exact hosted append receipt, the frozen 1,759-path ledger,
-  and a fresh anonymous readback of the current public root manifest. Both
-  manifest rows are present at revision
-  `3d2d528439bddf6f42e8e700c88917f0960a9f38` with the same SHA-256, byte count,
-  and Git blob identity. This refreshes only manifest membership; the alias's
-  prior object-level anonymous digest state is preserved, and both paths remain
-  deferred because per-object rights, complete B1/B2 lineage, v4 admission,
-  and consumer canaries remain incomplete. See
+  and the latest anonymous public root-manifest readback. The append receipt
+  records the historical `3d2d528...` revision; the current archive head is
+  `da83cad9116e2f9a5b927be7b080e9a5e5ea6998`, with 212 root objects and
+  manifest SHA-256
+  `68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055`. Both
+  August paths remain present with the same declared SHA-256 and byte count.
+  This refreshes manifest membership only; the alias's prior object-level
+  anonymous digest state is preserved, and both paths remain deferred because
+  per-object rights, complete B1/B2 lineage, v4 admission, and consumer canaries
+  remain incomplete. See
   `quality/qualifications/australian-m112-root-manifest-path-readback-20261017.json`.
 
 ## M-112 historical imported B1-to-B2 reference reconciliation (2026-10-17)
