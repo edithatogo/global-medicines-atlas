@@ -107,6 +107,25 @@ def test_result_evidence_accepts_complete_conservative_envelope() -> None:
     assert validate_result_evidence(result) is result
 
 
+def test_result_evidence_accepts_explicit_unknown_effective_date() -> None:
+    result = _Result(_Evidence(effective_date=None))
+    assert validate_result_evidence(result) is result
+    complete_mapping = vars(_Evidence(effective_date=None))
+    assert validate_result_evidence(complete_mapping) is complete_mapping
+    nested_mapping = {"evidence": complete_mapping}
+    assert validate_result_evidence(nested_mapping) is nested_mapping
+
+    without_date = vars(_Evidence())
+    del without_date["effective_date"]
+    with pytest.raises(PlatinumEvidenceError, match="effective_date"):
+        validate_result_evidence(without_date)
+
+    with_unknown_required_state = vars(_Evidence(effective_date=None))
+    with_unknown_required_state["confidence_state"] = None
+    with pytest.raises(PlatinumEvidenceError, match="confidence_state"):
+        validate_result_evidence(with_unknown_required_state)
+
+
 def test_result_evidence_rejects_missing_claim_bearing_field() -> None:
     result = _Result(_Evidence(confidence_state=""))
     with pytest.raises(PlatinumEvidenceError, match="confidence_state"):

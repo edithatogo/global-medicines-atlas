@@ -2629,13 +2629,29 @@
 ### M-110 synthetic scalar consumer path verification (2026-10-17)
 
 - [x] Exercise the candidate scalar projection through Parquet and the
-  read-only Benefits API using the existing synthetic test product wrapper.
-  Verify exact decimal filtering, tagged ISO date filtering, and preservation
-  of `candidate_only`, `consumer_admission=not_performed`, synthetic cohort,
-  and `review_state=not_declared`.
-- [x] Run focused projection, Benefits API, and Platinum query tests. This
-  closes a source-neutral integration-test gap only; it does not qualify the
-  real M-110 artifact, establish consumer admission, or record a review.
+  read-only Benefits API using exact synthetic v4 receipt-byte closure,
+  independently configured `TrustedAdmissionProfile`, distribution binding,
+  and anonymous object read. Verify exact decimal and tagged ISO date filters,
+  and preserve `candidate_only`, `consumer_admission=not_performed`, synthetic
+  cohort, and `review_state=not_declared`. Explicitly unknown effective date
+  passes the evidence validator; an omitted effective-date field still fails.
+- [x] Run projection, Benefits API, identity API, and Platinum evidence tests
+  (83 passed). This qualifies the synthetic exact-artifact consumer route only;
+  it does not qualify the real M-110 artifact, establish consumer admission,
+  or record a Gold review. Required full local Test-Goblin also ran: 6,480
+  passed, 3 skipped, and 3 failed at 96.89% coverage. Both Stable v1
+  reproducibility failures were due to the shell exposing `uv 0.13.1` instead
+  of pinned `0.11.29`; both passed on isolated rerun with pinned uv first on
+  `PATH`. The product-security abuse-control test failed once in the full
+  profile and passed on isolated rerun. Preserve the initial full-profile
+  result; this is not recorded as a clean full local profile.
+- [x] Close the follow-up Codecov patch-coverage gap with public-validator tests
+  for complete and nested mapping envelopes carrying `effective_date: null`,
+  rejection when the field is omitted, and rejection when another required
+  state is null. The focused evidence suite now has 10 passing tests; Ruff,
+  formatting, diff checks, and Test-Goblin routine pass. The initial Codecov
+  patch result (75.00% against 90.01%) is retained; final-head hosted checks
+  are rerunning for the added mapping-branch coverage.
 
 ### M-112 B0 source identity and Bronze denominator reconciliation (2026-10-17)
 

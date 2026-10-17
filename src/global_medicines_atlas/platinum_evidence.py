@@ -69,6 +69,17 @@ def _evidence_value(result: object, field: str) -> Any:
     return None
 
 
+def _evidence_field_present(result: object, field: str) -> bool:
+    """Distinguish an explicit unknown value from an omitted field."""
+    for source in _evidence_sources(result):
+        if isinstance(source, Mapping):
+            if field in source:
+                return True
+        elif hasattr(source, field):
+            return True
+    return False
+
+
 def validate_result_evidence(result: object) -> object:
     """Validate mandatory evidence metadata and return ``result`` unchanged.
 
@@ -91,6 +102,9 @@ def validate_result_evidence(result: object) -> object:
         field
         for field in REQUIRED_EVIDENCE_FIELDS
         if _evidence_value(result, field) is None
+        and not (
+            field == "effective_date" and _evidence_field_present(result, field)
+        )
     )
     if missing:
         raise PlatinumEvidenceError(

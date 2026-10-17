@@ -53,6 +53,27 @@
 9. Record evidence and deviations in the active track.
 10. Commit only scoped work, record the commit identifier, and update the plan.
 
+## Validation State and Merge Evidence
+
+- Record the exact tested commit/tree, uncommitted input changes, Python and uv
+  versions before broad validation. Use the runtime required by the affected
+  release/reproducibility contract throughout child-process PATH. Keep executable
+  inputs fixed while the run is live.
+- Preserve a run's result for its tested state when remote `main` advances.
+  After rebasing or otherwise integrating, inspect the actual delta. Use affected
+  and routine checks for documentation, receipts, or test-only changes; rerun the
+  applicable full profile for changed production behavior or release gates, or
+  when a demonstrated failure requires it. Complete protected CI still qualifies
+  the final PR head.
+- Retain original failed invocations and the exact recovery checks separately.
+  A successful isolated rerun does not turn the original full run into a pass.
+- Verify the checked head, required CI, merge commit and resulting tree. Use
+  GitHub's observable merge record immediately and fold the final track receipt
+  into the next substantive change. Do not create receipt-only successor PRs or
+  chains that merely record the previous receipt's merge.
+- Supply multiline PR descriptions through a literal body file or structured
+  argument so shell interpolation cannot corrupt the review text.
+
 ## Required Test Lanes
 
 - Unit tests.
