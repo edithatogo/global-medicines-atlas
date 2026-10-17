@@ -1,0 +1,395 @@
+{
+  "boundaries": {
+    "approved_denominator_changed": false,
+    "consumer_canaries_performed": false,
+    "m112_accepted": false,
+    "metadata_files_read_anonymously": true,
+    "raw_source_bytes_read_by_hosted_verifier": true,
+    "raw_source_bytes_read_locally": false,
+    "raw_source_bytes_retained_locally": false,
+    "raw_source_bytes_uploaded": false,
+    "rights_scope_expanded": false,
+    "v4_admission_performed": false
+  },
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "gates": {
+    "accepted_admissions": 0,
+    "anonymous_digest_verification": "passed",
+    "anonymous_metadata_readback": "passed",
+    "consumer_canaries": 0,
+    "landed_only": true,
+    "result_gated": false,
+    "result_public": true,
+    "source_objects_preserved": true,
+    "temporary_hosted_cache_removed": true,
+    "v4_admissions": 0
+  },
+  "manifest_readback": {
+    "file_count": 228,
+    "new_paths_count": 16,
+    "new_paths_exactly_match_receipt": true,
+    "parent_file_count": 212,
+    "parent_rows_preserved": true,
+    "parent_sha256": "68e6bb97ee43117b860ff1c57e625a00075c734e933d08b3cd67de673432d055",
+    "path": "manifest.json",
+    "sha256": "f2945d7d4d4c32cb1d4cd2e89244327c2ebe595964401b5730cb43ee9d87944b"
+  },
+  "metadata_additions": [
+    {
+      "bytes": 2534,
+      "kind": "b1_acquisition_event",
+      "manifest_row_matches": true,
+      "path": "bronze/acquisitions/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295.json",
+      "sha256": "3f67ea39a0e45670115fe8bb8fb46bdec2250f03a9d45d6bb4adf214ee69e778",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 2534,
+      "kind": "b1_acquisition_event",
+      "manifest_row_matches": true,
+      "path": "bronze/acquisitions/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c.json",
+      "sha256": "e423e77239310e6fdba6dca577f167e0e35c28b360805be2186234a1d737cf15",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 2168,
+      "kind": "b1_acquisition_event",
+      "manifest_row_matches": true,
+      "path": "bronze/acquisitions/au-mbs/cb86b286233c1ead9234a6db72991a64e26e1366cae6e2adafb2f5a405dc7be1.json",
+      "sha256": "3a289f27d58ca9136cd0b59ecc8d3f83086c30aa8913bb06e5cb23606662e3a0",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 2279,
+      "kind": "b1_acquisition_event",
+      "manifest_row_matches": true,
+      "path": "bronze/acquisitions/au-mbs/db0409c11dd2858440f90ca095948c84c4a480b9dbe9cf23c83055fa1d8eedd5.json",
+      "sha256": "c5597f21b0c97b74dfda5fd436cf467d421ed5db7d7a370a360ce38fea7182ed",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 902,
+      "kind": "b1_landed_admission",
+      "manifest_row_matches": true,
+      "path": "bronze/admissions/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295/70fccee415201c6562f627f8dc6e73055c52718a36f207ad0b6eb75a59f7087c.json",
+      "sha256": "efc6e3770630ecfc627d2784ead5939625c7c81ed75d7de933e27bb6b5c40ac2",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 902,
+      "kind": "b1_landed_admission",
+      "manifest_row_matches": true,
+      "path": "bronze/admissions/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c/bfc36be2a9cc3361dd017783e0260a090303d6f8bf0f61a6768435d0e70b59f0.json",
+      "sha256": "d6eeb9822f15c341521938087089e257988a28837d02e69cb31d88ac7840bb99",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 903,
+      "kind": "b1_landed_admission",
+      "manifest_row_matches": true,
+      "path": "bronze/admissions/au-mbs/cb86b286233c1ead9234a6db72991a64e26e1366cae6e2adafb2f5a405dc7be1/44254998998f0d98934544fb1bdcf03cb8502a41b50fd2307989a06f3b40e9ec.json",
+      "sha256": "34d2f5b1cabe0e1c4cd5621b5cbb5a5892b11a3f05bc6483df646e8e73319310",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 901,
+      "kind": "b1_landed_admission",
+      "manifest_row_matches": true,
+      "path": "bronze/admissions/au-mbs/db0409c11dd2858440f90ca095948c84c4a480b9dbe9cf23c83055fa1d8eedd5/a28d8264fca7c5319e57a22e2bb5854ee0c7ecac6bc8cced5bd7570fbc3d94f5.json",
+      "sha256": "1e997e22eac6dc88a0e511d27aa735390a77e5f4c40fbde152fc58ba80789b53",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 1002,
+      "kind": "b2_raw_reference",
+      "manifest_row_matches": true,
+      "path": "bronze/raw-evidence/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295/manifest.json",
+      "sha256": "c558fd93e162b4b0df4247b962cebb224593d5a76ee701a29bb002eef3b5a4df",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 1002,
+      "kind": "b2_raw_reference",
+      "manifest_row_matches": true,
+      "path": "bronze/raw-evidence/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c/manifest.json",
+      "sha256": "e14cdfbef33e72d0336dd719d71cb87ac63348cbe99d80f35e8ad5f69dd21318",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 926,
+      "kind": "b2_raw_reference",
+      "manifest_row_matches": true,
+      "path": "bronze/raw-evidence/au-mbs/cb86b286233c1ead9234a6db72991a64e26e1366cae6e2adafb2f5a405dc7be1/manifest.json",
+      "sha256": "d6984ed054a732c5fbd79bceecf1ec8608023a662d2985519897b7ed4d005d6e",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 922,
+      "kind": "b2_raw_reference",
+      "manifest_row_matches": true,
+      "path": "bronze/raw-evidence/au-mbs/db0409c11dd2858440f90ca095948c84c4a480b9dbe9cf23c83055fa1d8eedd5/manifest.json",
+      "sha256": "1493398e7b02e518c3a2a2fac7bc9b8dc32c7ebfbc7d009d96e44a1163c7949b",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 2904,
+      "kind": "b1_receipt",
+      "manifest_row_matches": true,
+      "path": "bronze/receipts/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295.json",
+      "sha256": "4d7585d5c54e9aeee721806cb0ebb80c80d47ac05c3ef1e515ea78aa6d62fdec",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 2904,
+      "kind": "b1_receipt",
+      "manifest_row_matches": true,
+      "path": "bronze/receipts/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c.json",
+      "sha256": "9c6a437bc5999a8ed5889b69331ca72f4bca0a6c42ac98eb1f2553afd5fdae48",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 2540,
+      "kind": "b1_receipt",
+      "manifest_row_matches": true,
+      "path": "bronze/receipts/au-mbs/cb86b286233c1ead9234a6db72991a64e26e1366cae6e2adafb2f5a405dc7be1.json",
+      "sha256": "bfcdbe413b8530eebc5158dfdb692b64dc19c6fc3c56b52d8730d8c96eacfeda",
+      "source_id": "au-mbs"
+    },
+    {
+      "bytes": 2647,
+      "kind": "b1_receipt",
+      "manifest_row_matches": true,
+      "path": "bronze/receipts/au-mbs/db0409c11dd2858440f90ca095948c84c4a480b9dbe9cf23c83055fa1d8eedd5.json",
+      "sha256": "8ad4a2d6ba70f964b7d4ec986e6306a708301336961776bf19fc5d28a082227d",
+      "source_id": "au-mbs"
+    }
+  ],
+  "objects": [
+    {
+      "archive_path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+      "b1_acquisition": {
+        "bytes": 2533,
+        "content_id": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+        "path": "bronze/acquisitions/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c.json",
+        "payload_sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+        "retrieval_status": "succeeded",
+        "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/blob/c538472e4985454a434c22e51aa0f4c5ed47f2a8/quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+        "rights_state": "permitted",
+        "sha256": "e423e77239310e6fdba6dca577f167e0e35c28b360805be2186234a1d737cf15",
+        "source_id": "au-mbs"
+      },
+      "b1_source_receipt": {
+        "byte_count": 135983,
+        "content_sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+        "path": "bronze/receipts/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c.json",
+        "receipt_id": "historical-mbs-harvest:07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6:2026-10-05T08:20:25+00:00",
+        "rights_state": "permitted",
+        "sha256": "9c6a437bc5999a8ed5889b69331ca72f4bca0a6c42ac98eb1f2553afd5fdae48"
+      },
+      "b2_raw_reference": {
+        "byte_count": null,
+        "content_id": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+        "external_reference": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/da83cad9116e2f9a5b927be7b080e9a5e5ea6998/raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+        "path": "bronze/raw-evidence/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c/manifest.json",
+        "payload_sha256": null,
+        "sha256": "e14cdfbef33e72d0336dd719d71cb87ac63348cbe99d80f35e8ad5f69dd21318",
+        "source_id": "au-mbs",
+        "state": "external_reference_only"
+      },
+      "bytes": 135983,
+      "category": "basic_service_description",
+      "git_blob_oid": "d980eca2c5072dc2ddd4c41fda2e192af1a42ddf",
+      "landed_admission": {
+        "decision_id": "bfc36be2a9cc3361dd017783e0260a090303d6f8bf0f61a6768435d0e70b59f0",
+        "path": "bronze/admissions/au-mbs/6c69df9385a42832716be30975e824a0715414f6b3bbfb3ac9cc630372611f1c/bfc36be2a9cc3361dd017783e0260a090303d6f8bf0f61a6768435d0e70b59f0.json",
+        "reviewer_status": "unreviewed",
+        "sha256": "d6eeb9822f15c341521938087089e257988a28837d02e69cb31d88ac7840bb99",
+        "state": "landed"
+      },
+      "raw_manifest_row_preserved": true,
+      "sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6",
+      "sidecar_bytes": 1087,
+      "sidecar_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv.receipt.json",
+      "sidecar_sha256": "813cd05fa18d9f6b4bf5f8d21973d3f1478e2f6dfcedbb09728e35d28a1ad9cd"
+    },
+    {
+      "archive_path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+      "b1_acquisition": {
+        "bytes": 2533,
+        "content_id": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+        "path": "bronze/acquisitions/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295.json",
+        "payload_sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+        "retrieval_status": "succeeded",
+        "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/blob/c538472e4985454a434c22e51aa0f4c5ed47f2a8/quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+        "rights_state": "permitted",
+        "sha256": "3f67ea39a0e45670115fe8bb8fb46bdec2250f03a9d45d6bb4adf214ee69e778",
+        "source_id": "au-mbs"
+      },
+      "b1_source_receipt": {
+        "byte_count": 615386,
+        "content_sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+        "path": "bronze/receipts/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295.json",
+        "receipt_id": "historical-mbs-harvest:b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3:2026-10-05T08:20:26+00:00",
+        "rights_state": "permitted",
+        "sha256": "4d7585d5c54e9aeee721806cb0ebb80c80d47ac05c3ef1e515ea78aa6d62fdec"
+      },
+      "b2_raw_reference": {
+        "byte_count": null,
+        "content_id": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+        "external_reference": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/da83cad9116e2f9a5b927be7b080e9a5e5ea6998/raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+        "path": "bronze/raw-evidence/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295/manifest.json",
+        "payload_sha256": null,
+        "sha256": "c558fd93e162b4b0df4247b962cebb224593d5a76ee701a29bb002eef3b5a4df",
+        "source_id": "au-mbs",
+        "state": "external_reference_only"
+      },
+      "bytes": 615386,
+      "category": "basic_service_description",
+      "git_blob_oid": "c373fe0ce2e68a5d027c17847f51ef14f1aeaa41",
+      "landed_admission": {
+        "decision_id": "70fccee415201c6562f627f8dc6e73055c52718a36f207ad0b6eb75a59f7087c",
+        "path": "bronze/admissions/au-mbs/581821a762f9c4f0fccddabfd2682280666b2ac623041db9fde29cfb4a4c1295/70fccee415201c6562f627f8dc6e73055c52718a36f207ad0b6eb75a59f7087c.json",
+        "reviewer_status": "unreviewed",
+        "sha256": "efc6e3770630ecfc627d2784ead5939625c7c81ed75d7de933e27bb6b5c40ac2",
+        "state": "landed"
+      },
+      "raw_manifest_row_preserved": true,
+      "sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3",
+      "sidecar_bytes": 1087,
+      "sidecar_path": "bronze/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml.receipt.json",
+      "sidecar_sha256": "fc60bfc4b3ae99f2cfd34c5290fe7ed8fb5e276a32e63ea2ccda82e2dd64bd08"
+    },
+    {
+      "archive_path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+      "b1_acquisition": {
+        "bytes": 2167,
+        "content_id": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+        "path": "bronze/acquisitions/au-mbs/cb86b286233c1ead9234a6db72991a64e26e1366cae6e2adafb2f5a405dc7be1.json",
+        "payload_sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+        "retrieval_status": "succeeded",
+        "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/blob/c538472e4985454a434c22e51aa0f4c5ed47f2a8/quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+        "rights_state": "permitted",
+        "sha256": "3a289f27d58ca9136cd0b59ecc8d3f83086c30aa8913bb06e5cb23606662e3a0",
+        "source_id": "au-mbs"
+      },
+      "b1_source_receipt": {
+        "byte_count": 8291891,
+        "content_sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+        "path": "bronze/receipts/au-mbs/cb86b286233c1ead9234a6db72991a64e26e1366cae6e2adafb2f5a405dc7be1.json",
+        "receipt_id": "historical-mbs-harvest:5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805:2026-10-05T08:20:30+00:00",
+        "rights_state": "permitted",
+        "sha256": "bfcdbe413b8530eebc5158dfdb692b64dc19c6fc3c56b52d8730d8c96eacfeda"
+      },
+      "b2_raw_reference": {
+        "byte_count": null,
+        "content_id": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+        "external_reference": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/da83cad9116e2f9a5b927be7b080e9a5e5ea6998/raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+        "path": "bronze/raw-evidence/au-mbs/cb86b286233c1ead9234a6db72991a64e26e1366cae6e2adafb2f5a405dc7be1/manifest.json",
+        "payload_sha256": null,
+        "sha256": "d6984ed054a732c5fbd79bceecf1ec8608023a662d2985519897b7ed4d005d6e",
+        "source_id": "au-mbs",
+        "state": "external_reference_only"
+      },
+      "bytes": 8291891,
+      "category": "monthly_schedule_xml",
+      "git_blob_oid": "a5a23b30d9846630e81ffcc164c7217a2f7e67be",
+      "landed_admission": {
+        "decision_id": "44254998998f0d98934544fb1bdcf03cb8502a41b50fd2307989a06f3b40e9ec",
+        "path": "bronze/admissions/au-mbs/cb86b286233c1ead9234a6db72991a64e26e1366cae6e2adafb2f5a405dc7be1/44254998998f0d98934544fb1bdcf03cb8502a41b50fd2307989a06f3b40e9ec.json",
+        "reviewer_status": "unreviewed",
+        "sha256": "34d2f5b1cabe0e1c4cd5621b5cbb5a5892b11a3f05bc6483df646e8e73319310",
+        "state": "landed"
+      },
+      "raw_manifest_row_preserved": true,
+      "sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805",
+      "sidecar_bytes": 771,
+      "sidecar_path": "bronze/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML.receipt.json",
+      "sidecar_sha256": "01988fb6cf56c4a23bba680e8c9ee6d9b3b39d504d044676e49b4b78d1f5ba56"
+    },
+    {
+      "archive_path": "raw/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT",
+      "b1_acquisition": {
+        "bytes": 2278,
+        "content_id": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+        "path": "bronze/acquisitions/au-mbs/db0409c11dd2858440f90ca095948c84c4a480b9dbe9cf23c83055fa1d8eedd5.json",
+        "payload_sha256": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+        "retrieval_status": "succeeded",
+        "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/blob/c538472e4985454a434c22e51aa0f4c5ed47f2a8/quality/qualifications/australian-mbs-harvest-publication-authorization.json",
+        "rights_state": "permitted",
+        "sha256": "c5597f21b0c97b74dfda5fd436cf467d421ed5db7d7a370a360ce38fea7182ed",
+        "source_id": "au-mbs"
+      },
+      "b1_source_receipt": {
+        "byte_count": 11865,
+        "content_sha256": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+        "path": "bronze/receipts/au-mbs/db0409c11dd2858440f90ca095948c84c4a480b9dbe9cf23c83055fa1d8eedd5.json",
+        "receipt_id": "historical-mbs-harvest:26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f:2026-10-05T08:20:30+00:00",
+        "rights_state": "permitted",
+        "sha256": "8ad4a2d6ba70f964b7d4ec986e6306a708301336961776bf19fc5d28a082227d"
+      },
+      "b2_raw_reference": {
+        "byte_count": null,
+        "content_id": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+        "external_reference": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/da83cad9116e2f9a5b927be7b080e9a5e5ea6998/raw/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT",
+        "path": "bronze/raw-evidence/au-mbs/db0409c11dd2858440f90ca095948c84c4a480b9dbe9cf23c83055fa1d8eedd5/manifest.json",
+        "payload_sha256": null,
+        "sha256": "1493398e7b02e518c3a2a2fac7bc9b8dc32c7ebfbc7d009d96e44a1163c7949b",
+        "source_id": "au-mbs",
+        "state": "external_reference_only"
+      },
+      "bytes": 11865,
+      "category": "relative_value_guide",
+      "git_blob_oid": "19b5444f406d5c97059b560719acd53a98583de9",
+      "landed_admission": {
+        "decision_id": "a28d8264fca7c5319e57a22e2bb5854ee0c7ecac6bc8cced5bd7570fbc3d94f5",
+        "path": "bronze/admissions/au-mbs/db0409c11dd2858440f90ca095948c84c4a480b9dbe9cf23c83055fa1d8eedd5/a28d8264fca7c5319e57a22e2bb5854ee0c7ecac6bc8cced5bd7570fbc3d94f5.json",
+        "reviewer_status": "unreviewed",
+        "sha256": "1e997e22eac6dc88a0e511d27aa735390a77e5f4c40fbde152fc58ba80789b53",
+        "state": "landed"
+      },
+      "raw_manifest_row_preserved": true,
+      "sha256": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f",
+      "sidecar_bytes": 835,
+      "sidecar_path": "bronze/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT.receipt.json",
+      "sidecar_sha256": "953a43c2f3373118de299e65bf60a2902b89173f7f5e2f99d8edf06edf7fc49f"
+    }
+  ],
+  "observed_at": "2026-10-18",
+  "parent_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+  "raw_object_digests": [
+    {
+      "bytes": 135983,
+      "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.csv",
+      "sha256": "07563bbba8bad0a8e5b51cf383edcf21f347b8dd3880757df6e19ef0ee3eb5b6"
+    },
+    {
+      "bytes": 615386,
+      "path": "raw/mbs/bsd/Downloads-20260701/Health Insurance Regulations 2018 - Basic Service Description for Assignment of Medicare Benefits.xml",
+      "sha256": "b71f1f540e5441ca18bb93b7ac9b23b4edfa37dcb096d37682e5db936be9f4a3"
+    },
+    {
+      "bytes": 8291891,
+      "path": "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML",
+      "sha256": "5834d849743a3eab2b8c03e826a5ed6a488a6f65cf4c4148da3ec227e5007805"
+    },
+    {
+      "bytes": 11865,
+      "path": "raw/mbs/rvg/Downloads-20260701/RVG file 20260701.TXT",
+      "sha256": "26ded0e092c786d3031c582766cd2734010793072d224bd63b35f3274b8e541f"
+    }
+  ],
+  "revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+  "schema_id": "global-medicines-atlas.australian-mbs-july-metadata-hosted-readback",
+  "schema_version": 1,
+  "workflow": {
+    "authorization_sha256": "0fdc4d147d637c679ba0cc3eb165642974e533bb3ba044c99ee01f86127eb41b",
+    "cas_acknowledgement_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6241927995",
+    "code_commit": "3333d0b5a9a975eb64c2e07dc028643467e1b987",
+    "contract_sha256": "a87a30d2be51ffe2142a335c30194c86448863751c4e6ab9d67266688ba22e25",
+    "intent_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6241919516",
+    "run_id": 39073582047,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39073582047",
+    "status": "anonymously_verified",
+    "verification_url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6241919746"
+  }
+}

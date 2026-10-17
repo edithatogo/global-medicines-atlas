@@ -1113,3 +1113,28 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   checks, and `git diff --check`.
 - [~] Hosted exact-head checks remain pending on PR #1144; proceed with other
   independent gates while they run.
+
+## M-112 July metadata hosted readback reconciliation (2026-10-18)
+
+- [x] Bind the hosted July lifecycle append to its exact main-branch workflow
+  run, contract and authorization digests, anonymous digest verification,
+  anonymous metadata readback, parent and final manifest identities, and the
+  four approved July MBS raw-object paths. Preserve the parent manifest and
+  verify the 16 metadata-only additions; no raw bytes were downloaded,
+  retained, or uploaded locally.
+- [x] Reject duplicate or widened identities across the frozen 1,759-object
+  M-112 report and the contract, hosted object, raw digest, and metadata
+  addition cohorts before indexing them. Conflicting duplicate rows are
+  rejected regardless of ordering.
+- [x] Produce
+  `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018-post-july-readback.json`
+  from the preserved prior report. Reconcile four additional exact source
+  rights decisions and raw B1/B2 lineages while preserving all 1,759
+  deferrals, the approved denominator, zero v4 admissions, and zero consumer
+  canaries. Producer projection lineage remains separate and unqualified.
+- [x] Validate the refresh with 84 focused July-contract tests at 97.25% module
+  coverage, 104 broader M-112 tests, Ruff, `ty`, BasedPyright, deterministic
+  regeneration, and `git diff --check`. Do not repeat the previously recorded
+  full local profile solely for this bounded qualification refresh.
+- [~] Exact-head protected checks remain pending; M-112 and Stable v1 are not
+  accepted by this raw B1/B2 metadata reconciliation.

@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import pytest
+import scripts.refresh_m112_july_metadata_readback as m112_july_refresh
 from jsonschema import Draft202012Validator, FormatChecker
 
 import global_medicines_atlas.australian_mbs_july_lifecycle_append as contract_module
@@ -54,6 +55,14 @@ REPORT_PATH = Path(
 SCHEMA_PATH = Path(
     "schemas/australian-m112-july-metadata-append-contract-v1.json"
 )
+HOSTED_READBACK_PATH = Path(
+    "quality/qualifications/"
+    "australian-mbs-july-metadata-hosted-readback-20261018.json"
+)
+SOURCE_REPORT_PATH = Path(
+    "quality/qualifications/"
+    "australian-m112-per-object-gate-reconciliation-20261018.json"
+)
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -64,6 +73,11 @@ def _load(path: Path) -> dict[str, Any]:
 
 def _private_call(name: str, *args: Any) -> Any:
     function = cast("Callable[..., Any]", getattr(contract_module, name))
+    return function(*args)
+
+
+def _refresh_private_call(name: str, *args: Any) -> Any:
+    function = cast("Callable[..., Any]", getattr(m112_july_refresh, name))
     return function(*args)
 
 
@@ -516,6 +530,431 @@ def test_metadata_builder_rejects_changed_anonymous_payload_identity(
             anonymous_digests=digests,
             decided_at=datetime(2026, 10, 18, 7, 0, tzinfo=UTC),
         )
+
+
+@pytest.mark.unit
+def test_july_hosted_metadata_readback_refreshes_four_m112_rows_only() -> None:
+    original_report_bytes = (ROOT / SOURCE_REPORT_PATH).read_bytes()
+    source = _load(SOURCE_REPORT_PATH)
+    original_rows = {row["path"]: row for row in source["objects"]}
+    contract = _load(CONTRACT_PATH)
+    authorization = _load(AUTHORIZATION_PATH)
+    hosted_readback = _load(HOSTED_READBACK_PATH)
+
+    refreshed = m112_july_refresh.build_report(
+        source,
+        contract,
+        authorization,
+        hosted_readback,
+    )
+    refreshed_rows = {row["path"]: row for row in refreshed["objects"]}
+    july_paths = {item["archive_path"] for item in contract["objects"]}
+
+    assert len(refreshed["objects"]) == 1759
+    assert refreshed["scope"]["approved_denominator"] == 1759
+    assert refreshed["scope"]["preserved_deferrals"] == 1759
+    assert (
+        refreshed["aggregate_gates"]["paths_with_sha256_metadata_or_binding"]
+        == 1655
+    )
+    assert (
+        refreshed["aggregate_gates"]["paths_with_anonymous_digest_readback"]
+        == 29
+    )
+    assert (
+        refreshed["aggregate_gates"][
+            "paths_with_exact_scope_rights_decision_and_public_readback"
+        ]
+        == 14
+    )
+    assert (
+        refreshed["aggregate_gates"]["paths_with_exact_source_release_rights"]
+        == 6
+    )
+    assert (
+        refreshed["aggregate_gates"]["paths_with_complete_b1_b2_lineage"] == 6
+    )
+    assert refreshed["aggregate_gates"]["paths_admitted_to_v4"] == 0
+    assert refreshed["aggregate_gates"]["paths_with_consumer_canary"] == 0
+    assert (
+        refreshed["deferral_group_counts"]["au-mbs-july-2026-raw-object-paths"]
+        == 4
+    )
+    assert (
+        refreshed["deferral_group_counts"][
+            "au-mbs-six-exact-receipt-and-authorization-gaps"
+        ]
+        == 2
+    )
+    assert (
+        refreshed["july_metadata_readback"]["revision"]
+        == hosted_readback["revision"]
+    )
+    assert (
+        refreshed["july_metadata_readback"]["metadata_objects_verified"] == 16
+    )
+    assert refreshed["boundaries"]["m112_federation_accepted"] is False
+
+    for path in original_rows.keys() - july_paths:
+        assert refreshed_rows[path] == original_rows[path]
+    for spec in contract["objects"]:
+        row = refreshed_rows[spec["archive_path"]]
+        assert row["revision"] == hosted_readback["revision"]
+        assert row["identity"]["sha256"] == spec["sha256"]
+        assert row["identity"]["anonymous_digest_readback"] is True
+        assert (
+            row["rights"]["state"]
+            == "authorized_exact_source_release_permitted"
+        )
+        assert row["b1_b2_lineage"]["complete"] is True
+        assert row["v4_admission"] is False
+        assert row["consumer_canary"] is False
+        assert row["disposition"] == "deferred_not_admitted"
+
+    serialized = _refresh_private_call("_serialize_report", refreshed)
+    assert json.loads(serialized) == refreshed
+    assert (ROOT / SOURCE_REPORT_PATH).read_bytes() == original_report_bytes
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("target", "value", "message"),
+    [
+        ("status", "failed", "not anonymously verified"),
+        ("digest", "0" * 64, "hosted raw digest or identity differs"),
+        ("admission", "accepted", "July B1/B2 lifecycle state differs"),
+    ],
+)
+def test_july_hosted_readback_refresh_rejects_forged_evidence(
+    target: str,
+    value: str,
+    message: str,
+) -> None:
+    source = _load(SOURCE_REPORT_PATH)
+    contract = _load(CONTRACT_PATH)
+    authorization = _load(AUTHORIZATION_PATH)
+    readback = _load(HOSTED_READBACK_PATH)
+    if target == "status":
+        readback["workflow"]["status"] = value
+    elif target == "digest":
+        readback["objects"][0]["sha256"] = value
+    else:
+        readback["objects"][0]["landed_admission"]["state"] = value
+
+    with pytest.raises(ValueError, match=message):
+        m112_july_refresh.build_report(
+            source,
+            contract,
+            authorization,
+            readback,
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("target", "field", "value", "message"),
+    [
+        ("contract", "m112_gate_report", {}, "does not bind the frozen"),
+        ("readback", "dataset", "other/dataset", "different dataset"),
+        ("readback", "parent_revision", "0" * 40, "parent revision differs"),
+        ("workflow", "contract_sha256", "0" * 64, "does not bind the contract"),
+        (
+            "workflow",
+            "authorization_sha256",
+            "0" * 64,
+            "does not bind authorization",
+        ),
+        (
+            "authorization",
+            "external_publication_authorized",
+            False,
+            "authorization is absent",
+        ),
+        (
+            "manifest",
+            "parent_rows_preserved",
+            False,
+            "manifest readback diverges",
+        ),
+        ("manifest", "new_paths_count", 15, "manifest readback diverges"),
+        (
+            "gates",
+            "anonymous_metadata_readback",
+            "failed",
+            "different publication state",
+        ),
+        ("gates", "accepted_admissions", 1, "different publication state"),
+        (
+            "boundaries",
+            "rights_scope_expanded",
+            True,
+            "crosses an M-112 boundary",
+        ),
+        ("report_scope", "approved_denominator", 1758, "denominator changed"),
+        (
+            "report_objects",
+            "truncate",
+            True,
+            "object denominator is incomplete",
+        ),
+        ("contract_objects", "truncate", True, "contract cohort"),
+        ("metadata_additions", "truncate", True, "metadata addition cohort"),
+        (
+            "metadata_addition",
+            "manifest_row_matches",
+            False,
+            "does not match its manifest",
+        ),
+        ("raw_digest", "bytes", 1, "raw digest or identity differs"),
+        ("raw_object", "category", "other", "raw digest or identity differs"),
+        (
+            "raw_object",
+            "raw_manifest_row_preserved",
+            False,
+            "raw digest or identity differs",
+        ),
+        (
+            "source_report_row",
+            "approved_denominator_member",
+            False,
+            "expected deferred row",
+        ),
+        (
+            "metadata_link",
+            "sha256",
+            "0" * 64,
+            "metadata identity or digest differs",
+        ),
+        (
+            "metadata_addition",
+            "kind",
+            "wrong_kind",
+            "metadata identity or digest differs",
+        ),
+        (
+            "metadata_addition",
+            "source_id",
+            "other-source",
+            "metadata identity or digest differs",
+        ),
+        ("lifecycle", "rights_state", "unknown", "lifecycle state differs"),
+    ],
+)
+def test_july_hosted_readback_refresh_rejects_inconsistent_bindings(  # ruff: ignore[too-many-branches] -- mutation targets are explicit adversarial cases
+    target: str,
+    field: str,
+    value: Any,
+    message: str,
+) -> None:
+    source = _load(SOURCE_REPORT_PATH)
+    contract = _load(CONTRACT_PATH)
+    authorization = _load(AUTHORIZATION_PATH)
+    readback = _load(HOSTED_READBACK_PATH)
+    path = contract["objects"][0]["archive_path"]
+    observed = next(
+        row for row in readback["objects"] if row["archive_path"] == path
+    )
+
+    if target == "contract":
+        contract[field] = value
+    elif target == "readback":
+        readback[field] = value
+    elif target == "workflow":
+        readback["workflow"][field] = value
+    elif target == "authorization":
+        authorization[field] = value
+    elif target == "manifest":
+        readback["manifest_readback"][field] = value
+    elif target in {"gates", "boundaries"}:
+        readback[target][field] = value
+    elif target == "report_scope":
+        source["scope"][field] = value
+    elif target == "report_objects":
+        source["objects"].pop()
+    elif target == "contract_objects":
+        contract["objects"].pop()
+    elif target == "metadata_additions":
+        readback["metadata_additions"].pop()
+    elif target == "metadata_addition":
+        next(
+            row
+            for row in readback["metadata_additions"]
+            if row["path"] == observed["b1_acquisition"]["path"]
+        )[field] = value
+    elif target == "raw_digest":
+        next(
+            row for row in readback["raw_object_digests"] if row["path"] == path
+        )[field] = value
+    elif target == "raw_object":
+        observed[field] = value
+    elif target == "source_report_row":
+        row = next(row for row in source["objects"] if row["path"] == path)
+        row[field] = value
+    elif target == "metadata_link":
+        link_path = observed["b1_acquisition"]["path"]
+        link = next(
+            row
+            for row in readback["metadata_additions"]
+            if row["path"] == link_path
+        )
+        link[field] = value
+    else:
+        observed["b1_acquisition"][field] = value
+
+    with pytest.raises(ValueError, match=message):
+        m112_july_refresh.build_report(
+            source, contract, authorization, readback
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("collection", "identity_key", "value_key"),
+    [
+        ("contract", "archive_path", "sha256"),
+        ("objects", "archive_path", "sha256"),
+        ("raw_object_digests", "path", "sha256"),
+        ("metadata_additions", "path", "sha256"),
+        ("report", "path", "disposition"),
+    ],
+)
+@pytest.mark.parametrize("duplicate_first", [False, True])
+def test_july_hosted_readback_refresh_rejects_conflicting_duplicate_identities(
+    collection: str,
+    identity_key: str,
+    value_key: str,
+    *,
+    duplicate_first: bool,
+) -> None:
+    source = _load(SOURCE_REPORT_PATH)
+    contract = _load(CONTRACT_PATH)
+    authorization = _load(AUTHORIZATION_PATH)
+    readback = _load(HOSTED_READBACK_PATH)
+
+    if collection == "contract":
+        rows = contract["objects"]
+    elif collection == "report":
+        rows = source["objects"]
+    else:
+        rows = readback[collection]
+    first, second = rows[0], rows[1]
+    second[identity_key] = first[identity_key]
+    if value_key == "disposition":
+        second[value_key] = "conflicting-disposition"
+    else:
+        second[value_key] = "0" * 64
+    if duplicate_first:
+        rows[0], rows[1] = rows[1], rows[0]
+
+    message = (
+        "duplicate identities"
+        if collection == "report"
+        else "not exact and unique"
+    )
+    with pytest.raises(ValueError, match=message):
+        m112_july_refresh.build_report(
+            source, contract, authorization, readback
+        )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("collection", "identity_key"),
+    [
+        ("contract", "archive_path"),
+        ("objects", "archive_path"),
+        ("raw_object_digests", "path"),
+        ("metadata_additions", "path"),
+    ],
+)
+def test_july_hosted_readback_refresh_rejects_widened_cohorts(
+    collection: str,
+    identity_key: str,
+) -> None:
+    source = _load(SOURCE_REPORT_PATH)
+    contract = _load(CONTRACT_PATH)
+    authorization = _load(AUTHORIZATION_PATH)
+    readback = _load(HOSTED_READBACK_PATH)
+
+    if collection == "contract":
+        rows = contract["objects"]
+    else:
+        rows = readback[collection]
+    extra = json.loads(json.dumps(rows[0]))
+    extra[identity_key] = f"{extra[identity_key]}-unexpected"
+    rows.append(extra)
+
+    with pytest.raises(ValueError, match="not exact and unique"):
+        m112_july_refresh.build_report(
+            source, contract, authorization, readback
+        )
+
+
+@pytest.mark.unit
+def test_july_hosted_readback_refresh_rejects_source_identity_and_json_shape(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source_bytes = (ROOT / SOURCE_REPORT_PATH).read_bytes()
+    contract_bytes = (ROOT / CONTRACT_PATH).read_bytes()
+    authorization_bytes = (ROOT / AUTHORIZATION_PATH).read_bytes()
+    readback_bytes = (ROOT / HOSTED_READBACK_PATH).read_bytes()
+    contract = _load(CONTRACT_PATH)
+    readback = _load(HOSTED_READBACK_PATH)
+    first = contract["objects"][0]
+    valid = _load(SOURCE_REPORT_PATH)
+    source_row = next(
+        row for row in valid["objects"] if row["path"] == first["archive_path"]
+    )
+    source_row["path"] = "raw/mbs/unmatched.xml"
+    with pytest.raises(ValueError, match="expected deferred row"):
+        m112_july_refresh.build_report(
+            valid,
+            contract,
+            _load(AUTHORIZATION_PATH),
+            readback,
+        )
+
+    identity_source = _load(SOURCE_REPORT_PATH)
+    identity_row = next(
+        row
+        for row in identity_source["objects"]
+        if row["path"] == first["archive_path"]
+    )
+    identity_row["identity"]["git_blob_oid"] = "0" * 40
+    with pytest.raises(ValueError, match="July raw identity differs"):
+        _refresh_private_call(
+            "_apply_july_rows",
+            identity_source,
+            contract,
+            {first["archive_path"]: {"revision": readback["revision"]}},
+        )
+
+    monkeypatch.setattr(m112_july_refresh, "ROOT", tmp_path)
+    tmp_report = tmp_path / m112_july_refresh.SOURCE_REPORT
+    tmp_report.parent.mkdir(parents=True)
+    for relative, content in (
+        (m112_july_refresh.SOURCE_REPORT, source_bytes),
+        (m112_july_refresh.CONTRACT, contract_bytes),
+        (m112_july_refresh.AUTHORIZATION, authorization_bytes),
+        (m112_july_refresh.READBACK, readback_bytes),
+    ):
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(content)
+    json_path = tmp_path / "not-object.json"
+    json_path.write_text("[]", encoding="utf-8")
+    with pytest.raises(TypeError, match="expected a JSON object"):
+        _refresh_private_call("_read", "not-object.json")
+
+    m112_july_refresh.main()
+    output = tmp_path / m112_july_refresh.OUTPUT
+    assert (
+        json.loads(output.read_text(encoding="utf-8"))["scope"][
+            "preserved_deferrals"
+        ]
+        == 1759
+    )
 
 
 @pytest.mark.unit
