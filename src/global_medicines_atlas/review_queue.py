@@ -17,8 +17,6 @@ from .models import FrozenModel
 
 MAX_ADJUDICATION_FILE_BYTES = 16 * 1024 * 1024
 MAX_ADJUDICATION_EVENTS = 10_000
-LF_BYTE = ord("\n")
-CR_BYTE = ord("\r")
 
 
 class ReviewQueueEntry(FrozenModel):
@@ -131,32 +129,7 @@ def _parse_adjudications(payload: bytes) -> tuple[AdjudicationEvent, ...]:
 
 def _physical_jsonl_lines(payload: bytes) -> tuple[bytes, ...]:
     """Split physical CR, LF, or CRLF delimiters without Unicode splitting."""
-    if not payload:
-        return ()
-    lines: list[bytes] = []
-    start = 0
-    index = 0
-    while index < len(payload):
-        if payload[index] == LF_BYTE:
-            end = (
-                index - 1
-                if index > start and payload[index - 1] == CR_BYTE
-                else index
-            )
-            lines.append(payload[start:end])
-            index += 1
-            start = index
-        elif payload[index] == CR_BYTE:
-            lines.append(payload[start:index])
-            index += 1
-            if index < len(payload) and payload[index] == LF_BYTE:
-                index += 1
-            start = index
-        else:
-            index += 1
-    if start < len(payload):
-        lines.append(payload[start:])
-    return tuple(lines)
+    return tuple(payload.splitlines())
 
 
 def _validate_adjudication_sequence(
