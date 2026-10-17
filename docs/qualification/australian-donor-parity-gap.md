@@ -113,3 +113,20 @@ either donor was archived. The 2026-09-27 disposition matrix and subsequent
 reconciliation remain post-archive evidence and cannot close that chronology
 criterion. No waiver or criterion change is recorded; D-006-07 still directs
 that M-105 remain blocked while independent M-106–M-112 work continues.
+
+## Donor-hosted PR record recheck, 2026-10-18
+
+The archived donor repositories' available pull-request records were also
+queried directly. The scraper's [PR #4](https://github.com/edithatogo/aus-health-data-scraper/pull/4),
+merged 2026-08-30T06:00:29Z, adds a successor notice, repairs CI commands,
+narrows parser exception handling, and adds synthetic checks for bounded async
+requests and output bytes. These are useful pre-archive changes and evidence for
+specific behaviors, but they do not disposition or qualify the full scraper
+and graph donor denominator. The graph's [PR #5](https://github.com/edithatogo/aus_mbs_pbs_graph/pull/5),
+merged 2026-08-30T05:56:15Z, is a successor notice with compatibility
+boundaries; it explicitly does not claim complete current graph functionality.
+
+Neither donor PR establishes full parity across all 54 baseline blobs and ten
+later changed paths before either 2026-09-06 archive. The direct donor PR
+records therefore add narrow contemporaneous evidence, not a waiver or a
+criterion change. The M-105 chronology gate remains blocked under D-006-07.

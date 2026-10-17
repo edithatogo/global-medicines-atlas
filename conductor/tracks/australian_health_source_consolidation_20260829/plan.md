@@ -343,6 +343,11 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   ten-path denominator was found in the searched PR/issue evidence. This does
   not claim that the search covered unpreserved external records and does not
   waive the criterion. See the updated M-105 gap audit.
+- [x] Query the archived donor repositories' own PR records on 2026-10-18.
+  Scraper PR #4 records bounded synthetic request/output tests and limited
+  parser/CI changes; graph PR #5 is a successor notice with explicit
+  compatibility limits. Neither supplies complete pre-archive parity for the
+  full denominator. See the updated M-105 gap audit; D-006-07 remains in force.
 
 ## M-107 source-family gap preservation follow-up (2026-09-28)
 
