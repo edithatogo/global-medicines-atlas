@@ -2,7 +2,7 @@
 
 ## Result
 
-M-108 remains **blocked**. A current anonymous metadata readback identifies
+M-108 remains **blocked**. The latest anonymous metadata readback identifies
 four accepted Bronze parser executions and the public July 2025 MBS Silver v4
 candidate. Three of the accepted Bronze executions are distinct August 2026
 MBS acquisitions of the same source content; their acquisition identities and
@@ -18,17 +18,19 @@ acceptance, `source_receipt.rights_state = permitted`, and a directory called
 `v4` do not establish those gates.
 
 The prior [2026-10-05 inventory](australian-m108-derived-products.md) remains
-as the historical snapshot. The current exact identities are recorded in the
+as the historical snapshot. The machine-readable inventory was refreshed
+after the 2026-10-17 exact-page MBS harvest; its first readback is retained as
+the `previous_observation` and the latest exact identities are recorded in the
 [2026-10-17 machine-readable inventory](../../quality/qualifications/australian-m108-derived-products-20261017.json).
 
 ## Current public archive heads
 
-Anonymous Hugging Face API readbacks at the recorded observation time
+Anonymous Hugging Face API readbacks at the refreshed observation time
 confirmed these public, non-gated heads:
 
 | Archive | Immutable head | Current relevant contents |
 | --- | --- | --- |
-| `australian-mbs-source-archive` | `3d2d528439bddf6f42e8e700c88917f0960a9f38` | Three accepted August MBS Bronze acquisitions, one additional unadmitted projection, and the July 2025 Silver v4 candidate. The 28-object root manifest and its append receipt are linked in the inventory. |
+| `australian-mbs-source-archive` | `52ad5c31cfe101c487a4c7a9c382540642e6110a` | Three accepted August MBS Bronze acquisitions, one additional unadmitted projection, the July 2025 Silver v4 candidate, and the 40-object root manifest. The exact-page harvest added four monthly XML payloads, two November 2025 Basic Service Description payloads, and six B1 receipt sidecars; full before/after manifest comparison found 12 additions, no changed rows, and no removals. The manifest SHA-256 is `9f9dbe6f5ccf3a6119177bbcbb5d942ce9e9db5ea35d2142c7696a3139cab796`; the [hosted digest and cleanup receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228342987) is linked in the inventory. |
 | `australian-pbs-source-archive` | `48fd7345fb09277bb5b85644dba72804633a2abb` | One accepted April 2026 PBS Bronze projection. |
 | `australian-mbs-utilisation-archive` | `be94e1c69a55b598598ab362b7dbf7ac4f0bf19c` | Raw objects and receipt sidecars; no derived Parquet tables under Bronze. |
 | `australian-pbs-utilisation-archive` | `9f1d53cd50eea251b326da42a96f3ac72ebce97a` | Raw objects and receipt sidecars; no derived Parquet tables under Bronze. |
@@ -36,7 +38,11 @@ confirmed these public, non-gated heads:
 All four archive API responses reported `private=false` and `gated=false`.
 The readback used public dataset/tree metadata and manifest, admission, and
 source-receipt sidecar JSON. It did not download raw source or Parquet payload
-bytes, change visibility, or publish anything.
+bytes, change visibility, or publish anything during this reconciliation. The
+MBS manifest delta is metadata reconciliation of the already published
+harvest; its hosted receipt separately proves payload digest verification and
+temporary-byte cleanup. These added Bronze source objects do not change the
+M-108 derived-product admission, rights, card, or replica findings.
 
 ## Accepted Bronze executions and the unadmitted projection
 
