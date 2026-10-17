@@ -1820,6 +1820,25 @@
   transformation, PBS rights, and Silver admission gates. M-109 remains
   blocked.
 
+## M-109 August 2026 MBS field semantics and date grammar (2026-10-17)
+
+- [x] Bind the exact August 2026 MBS XML v3 candidate to the Department's
+  published native-field guide and release page. The new source-era crosswalk
+  covers all 40 native fields, preserves source-specific conditional absence,
+  and declares the documented `DD.MM.YYYY` date grammar for this exact release
+  only. Its guide was last updated in 2022; the August release page links to it
+  and states no further XML changes compared with 28 May 2026. This does not
+  transfer semantics to another era.
+- [x] Select `mbs-dmy` only in the August 2026 hosted candidate qualifier and
+  retain date values and invalid/unsupported status counts in memory/aggregate
+  output only. Local focused tests (133), Ruff, `ty`, BasedPyright, context,
+  and diff checks passed. Exact-main validation of the selected grammar is
+  pending; no source values were read locally.
+- [ ] Run the updated qualifier on its exact merged-main commit, inspect the
+  aggregate date and quality findings, and bind the report digest here. The
+  candidate remains unqualified until that exact-source result is reviewed;
+  public v4 identity, historical eras, and full M-109 denominator remain open.
+
 
 ## M-112 public producer metadata discovery (2026-09-30)
 
