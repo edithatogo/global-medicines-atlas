@@ -266,6 +266,18 @@ def test_source_era_verification_is_bound_to_archive_identity() -> None:
             {"official_source_uri": AnyUrl(f"{OFFICIAL_MBS_V3_URI}?mirror=1")},
             "URI",
         ),
+        (
+            {"official_source_uri": AnyUrl(f"{OFFICIAL_MBS_V3_URI}#section")},
+            "URI",
+        ),
+        (
+            {
+                "official_source_uri": AnyUrl(
+                    OFFICIAL_MBS_V3_URI.replace("MBS-XML-20250701", "other")
+                )
+            },
+            "metadata",
+        ),
         ({"release_id": "unrelated release"}, "metadata"),
     ],
 )
@@ -312,6 +324,13 @@ def test_source_era_verification_supports_other_official_mbs_releases() -> None:
     with pytest.raises(ValidationError, match="schema era is required"):
         MbsSourceEraVerification.model_validate(missing_era)
 
+    with pytest.raises(
+        ValidationError, match="unversioned schema era requires effective day"
+    ):
+        MbsSourceEraVerification.model_validate(
+            verification.model_dump() | {"schema_era": "2026-08"}
+        )
+
 
 def test_legacy_july_2025_identity_can_load_without_explicit_schema_era() -> (
     None
@@ -334,14 +353,20 @@ def test_legacy_july_2025_identity_can_load_without_explicit_schema_era() -> (
     assert restored.schema_era == "2025-07-version-3"
 
 
+def test_source_era_verification_rejects_non_object_input() -> None:
+    with pytest.raises(ValidationError):
+        MbsSourceEraVerification.model_validate(None)
+
+
 @pytest.mark.parametrize(
     ("change", "message"),
     [
         ({"release_id": "MBS-XML-20260802"}, "metadata differs"),
         ({"effective_at": date(2026, 8, 2)}, "effective date differs"),
         ({"schema_era": "2026-07-31"}, "schema era differs"),
+        ({"schema_era": "August-2026"}, "schema era differs"),
+        ({"schema_era": "2026-08-02"}, "schema era differs"),
         ({"release_id": "MBS-XML-20250701 Version 99"}, "metadata differs"),
-        ({"schema_era": "2026-08-version-2"}, "schema era version differs"),
         (
             {"released_at": date(2035, 1, 1)},
             "comparison predates release",
@@ -369,6 +394,22 @@ def test_source_era_verification_binds_release_date_and_schema_era(
 
     with pytest.raises(ValidationError, match=message):
         MbsSourceEraVerification.model_validate(values | change)
+
+
+def test_versioned_release_schema_era_must_match_release_version() -> None:
+    values = {
+        "official_source_uri": AnyUrl(OFFICIAL_MBS_V3_URI),
+        "release_id": "MBS-XML-20250701 Version 3",
+        "released_at": date(2025, 6, 16),
+        "effective_at": date(2025, 7, 1),
+        "official_source_sha256": "a" * 64,
+        "official_source_byte_count": 8_293_331,
+        "compared_at": datetime(2026, 10, 17, tzinfo=UTC),
+        "schema_era": "2025-07-version-2",
+    }
+
+    with pytest.raises(ValidationError, match="schema era version differs"):
+        MbsSourceEraVerification.model_validate(values)
 
 
 def test_versioned_mbs_release_can_be_published_after_its_effective_date() -> (

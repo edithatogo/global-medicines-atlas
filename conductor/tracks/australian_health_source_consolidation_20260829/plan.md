@@ -569,7 +569,8 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [x] Generalize MBS source-era verification beyond the pinned July 2025
   release. Bind official HTTPS host and URI authority, filename date and
   version, release ID, effective date, schema-era year/month/day/version, and
-  comparison chronology.
+  comparison chronology. Unversioned releases require the exact effective
+  day in their schema-era identity.
   Preserve backward loading and report digests only for the exact legacy July
   2025 identity; other eras must name their schema era explicitly. Tests cover
   the official August 2026 identity shape, missing-era rejection, identity

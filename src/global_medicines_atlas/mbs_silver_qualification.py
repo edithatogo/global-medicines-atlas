@@ -162,6 +162,12 @@ class MbsSourceEraVerification(FrozenModel):
             raise ValueError("official MBS schema era differs from release")
         era_day = era_match.group(3)
         release_version = release_match.group(2)
+        if release_version is None and (
+            era_day is None or not era_day.isdigit()
+        ):
+            raise ValueError(
+                "official MBS unversioned schema era requires effective day"
+            )
         era_version = (
             era_day.removeprefix("version-")
             if era_day is not None and era_day.startswith("version-")
