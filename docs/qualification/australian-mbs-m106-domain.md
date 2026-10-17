@@ -117,7 +117,46 @@ No further messages were sent during the refresh. See the [current response
 receipt](../../quality/qualifications/provider-response-m106-refresh-20261016.json).
 Keep the two public
 GP/NRA products as metadata-only candidates until their contents, source
-denominators, and rights are confirmed. Do not derive a patient count from a
-rounded population percentage, treat item/service counts as people, acquire
-any payload before source-owner clarification and a separate source-specific
-maintainer rights decision, or change M-106's blocked state on this evidence.
+denominators, and rights are confirmed. They are outside the existing annual
+statistics authorization. Do not derive a patient count from a rounded
+population percentage or treat item/service counts as people. For the separate
+annual state-and-territory series, wait for source-owner clarification before
+acquisition, then use its existing scoped authorization; do not require a
+second rights decision unless the exact object or use falls outside that scope.
+
+## Public candidate and provider status refresh, 2026-10-17
+
+The live Department collection now lists [Medicare annual statistics – State
+and territory (2009-10 to 2025-26)](https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en),
+published 10 August 2026 as a 2 MB Excel dataset. Its page says it presents
+annual state/territory statistics for all services, out-of-hospital services,
+patients, and broad service types. This is a stronger metadata lead for an
+aggregate annual patient measure than the GP/NRA bulk-billing products, but
+does not establish exact count meaning, deduplication across items/services,
+coverage, suppression, or the exact workbook identity. The workbook was not
+downloaded or inspected, and item-level patient counts are not claimed. The
+existing [MBS utilisation publication authorization](../../quality/qualifications/australian-mbs-utilisation-publication-authorization.json)
+covers this source family and the `medicare_annual_statistics_state_territory`
+category; no new rights decision is required to acquire and publish within
+that scope. This does not authorize the rolling series, Services Australia
+item report, or other categories.
+
+The collection page also links Services Australia's [Medicare item statistics
+report](https://medicarestatistics.humanservices.gov.au/statistics/mbs_item.jsp),
+which returned HTTP 503 when opened during this metadata-only check. No report
+or data were retrieved; the failure says nothing about whether a patient
+measure exists. The published [per-patient bulk-billing dashboard](https://www.health.gov.au/resources/publications/medicare-statistics-per-patient-bulk-billing-dashboard-2025-26?language=en)
+is limited to the proportion of patients fully bulk billed for GP
+non-referred attendances and does not supply the full-domain denominator.
+
+Exact-subject mailbox searches on 2026-10-17 found only the Department's
+automatic receipt for the denominator inquiry and the two sent messages in the
+Services Australia item-count thread; no substantive provider clarification
+has arrived. The detailed page, availability, authorization scope, and message
+observations are in the [metadata refresh receipt](../../quality/qualifications/australian-mbs-m106-source-metadata-recheck-20261017.json).
+Keep acquisition pending until substantive source-owner clarification
+establishes the annual measure definition and exact workbook identity. Then
+use the existing governed annual-series authorization; do not require a
+redundant rights decision or extend that scope to other candidate sources.
+M-106 remains blocked until the patient denominator and its semantics are
+qualified.
