@@ -101,14 +101,23 @@ The current archive metadata joins both identities to the existing
 implemented in `scripts/compare_mbs_source_eras.py` and attached to the bounded
 exact-main Actions workflow. It binds each edition to its own pinned harvest
 sidecar and rights reference; the July category authorization is not replaced
-by the August exact-release approval. Focused tests and workflow lint pass, but
-the hosted comparison has not run yet. Until its exact-main artifact is read
-back, there is no new July official-byte match or comparative result.
+by the August exact-release approval. Exact-main run
+[39037457764](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39037457764)
+passed the August candidate-profile step but failed the predecessor comparison
+closed, preserving incomplete aggregate artifact `12102413530`. The August
+sidecar names the original acquisition path, while the B2 archive also exposes
+a content-addressed path. Metadata-only inspection confirms both August paths
+identify the same pinned LFS object and byte count; this alone is not a new
+comparison or official-byte match. The local repair preserves both locators
+and checks each against the pinned digest and byte count, alongside the exact
+official payload. A new exact-main comparison remains pending merge and
+readback. There is no July official-byte match or comparative result yet.
 
-The bounded comparator runs on exact `main`: fetch both harvest sidecars, both
-pinned archive objects, and both official endpoints in Actions memory; verify
-each sidecar, archive payload, and official payload against its pinned identity;
-then emit only aggregate record counts, native-field sets, per-field
+The bounded comparator runs on exact `main`: fetch both harvest sidecars, each
+B2 archive object and any distinct original receipt locator, and both official
+endpoints in Actions memory; verify each sidecar, archive payload, and official
+payload against its pinned identity; then emit only aggregate record counts,
+native-field sets, per-field
 presence/null counts, and counts of changed/added/removed records and fields.
 Match records by source identity only in memory; never emit item identifiers or
 source values. Retain an aggregate incomplete artifact on source timeout or
