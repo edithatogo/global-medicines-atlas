@@ -5,6 +5,20 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
+from scripts.refresh_m112_august_release_crosswalk import (
+    ALIAS_PATH,
+    AUTHORIZATION,
+    BASELINE,
+    DATASET,
+    LIFECYCLE,
+    OUTPUT,
+    RAW_PATH,
+    ROOT_READBACK,
+    SOURCE_DIGEST,
+    SOURCE_RECEIPT,
+    build_report,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_PATH = (
     ROOT
@@ -86,3 +100,95 @@ def test_report_input_digests_match_current_evidence() -> None:
         path = ROOT / source
         assert path.is_file()
         assert hashlib.sha256(path.read_bytes()).hexdigest() == expected_sha256
+
+
+def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:
+    report = _load(ROOT / OUTPUT)
+    assert report == build_report()
+
+    baseline = _load(ROOT / BASELINE)
+    old_rows = {
+        (row["dataset"], row["path"]): row for row in baseline["objects"]
+    }
+    rows = {
+        row["path"]: row
+        for row in report["objects"]
+        if row["dataset"] == DATASET
+    }
+    assert report["scope"]["approved_denominator"] == 1759
+    assert report["scope"]["reconciled_paths"] == 1759
+    assert report["scope"]["denominator_changed"] is False
+    assert report["scope"]["preserved_deferrals"] == 1759
+    assert len(report["objects"]) == 1759
+    assert len(rows) == sum(
+        row["dataset"] == DATASET for row in report["objects"]
+    )
+
+    assert (
+        rows[RAW_PATH]["rights"]["state"]
+        == "authorized_exact_source_release_permitted"
+    )
+    assert (
+        rows[ALIAS_PATH]["rights"]["state"]
+        == "authorized_exact_source_release_permitted"
+    )
+    assert rows[RAW_PATH]["rights"]["evidence"]["path"] == SOURCE_RECEIPT
+    assert (
+        rows[RAW_PATH]["rights"]["decision_evidence"]["path"] == AUTHORIZATION
+    )
+    assert (
+        rows[ALIAS_PATH]["rights"]["decision_evidence"]["path"] == AUTHORIZATION
+    )
+
+    assert rows[RAW_PATH]["identity"]["anonymous_digest_readback"] is True
+    assert rows[RAW_PATH]["b1_b2_lineage"]["complete"] is True
+    assert rows[ALIAS_PATH]["identity"]["anonymous_digest_readback"] is False
+    assert rows[ALIAS_PATH]["b1_b2_lineage"]["complete"] is False
+
+    for path, row in rows.items():
+        original = old_rows[DATASET, path]
+        if path not in {RAW_PATH, ALIAS_PATH}:
+            assert row == original
+        else:
+            assert (
+                row["disposition"]
+                == original["disposition"]
+                == "deferred_not_admitted"
+            )
+            assert row["v4_admission"] is False
+            assert row["consumer_canary"] is False
+
+    assert (
+        report["aggregate_gates"][
+            "paths_with_exact_scope_rights_decision_and_public_readback"
+        ]
+        == 14
+    )
+    assert (
+        report["aggregate_gates"]["paths_with_exact_source_release_rights"] == 2
+    )
+    assert report["aggregate_gates"]["paths_with_complete_b1_b2_lineage"] == 1
+    assert report["aggregate_gates"]["paths_admitted_to_v4"] == 0
+    assert report["aggregate_gates"]["paths_with_consumer_canary"] == 0
+    assert report["boundaries"]["rights_decision_created_or_expanded"] is False
+    assert report["boundaries"]["source_payload_bytes_read"] is False
+    assert report["boundaries"]["v4_admission_performed"] is False
+
+
+def test_august_crosswalk_inputs_are_digest_bound() -> None:
+    report = _load(ROOT / OUTPUT)
+    expected_paths = {
+        BASELINE,
+        LIFECYCLE,
+        ROOT_READBACK,
+        SOURCE_DIGEST,
+        SOURCE_RECEIPT,
+        AUTHORIZATION,
+        "quality/qualifications/mbs-current-release-contract.json",
+    }
+    assert {row["path"] for row in report["inputs"]} == expected_paths
+    for binding in report["inputs"]:
+        digest = hashlib.sha256(
+            (ROOT / binding["path"]).read_bytes()
+        ).hexdigest()
+        assert digest == binding["sha256"]
