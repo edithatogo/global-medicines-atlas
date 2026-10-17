@@ -229,6 +229,7 @@ def _validate_readback(  # ruff: ignore[too-many-branches, too-many-statements, 
         if (
             observed["b1_acquisition"]["payload_sha256"] != expected["sha256"]  # ruff: ignore[too-many-boolean-expressions] -- every B1/B2 lifecycle field is independently required
             or observed["b1_acquisition"]["rights_state"] != "permitted"
+            or observed["b1_acquisition"]["retrieval_status"] != "succeeded"
             or observed["b1_source_receipt"]["content_sha256"]
             != expected["sha256"]
             or observed["b1_source_receipt"]["byte_count"] != expected["bytes"]
@@ -237,6 +238,12 @@ def _validate_readback(  # ruff: ignore[too-many-branches, too-many-statements, 
             or observed["b2_raw_reference"]["content_id"] != expected["sha256"]
             or observed["b2_raw_reference"]["state"]
             != "external_reference_only"
+            or observed["b2_raw_reference"]["external_reference"]
+            != (
+                "https://huggingface.co/datasets/"
+                f"{contract['dataset']}/resolve/"
+                f"{contract['expected_parent_revision']}/{path}"
+            )
             or observed["b2_raw_reference"]["byte_count"] is not None
             or observed["b2_raw_reference"]["payload_sha256"] is not None
         ):

@@ -738,9 +738,28 @@ def test_july_hosted_readback_refresh_rejects_forged_evidence(
             "metadata identity or digest differs",
         ),
         ("lifecycle", "rights_state", "unknown", "lifecycle state differs"),
+        ("lifecycle", "retrieval_status", "failed", "lifecycle state differs"),
+        (
+            "b2_reference",
+            "external_reference",
+            "wrong_dataset",
+            "lifecycle state differs",
+        ),
+        (
+            "b2_reference",
+            "external_reference",
+            "wrong_revision",
+            "lifecycle state differs",
+        ),
+        (
+            "b2_reference",
+            "external_reference",
+            "wrong_path",
+            "lifecycle state differs",
+        ),
     ],
 )
-def test_july_hosted_readback_refresh_rejects_inconsistent_bindings(  # ruff: ignore[too-many-branches] -- mutation targets are explicit adversarial cases
+def test_july_hosted_readback_refresh_rejects_inconsistent_bindings(  # ruff: ignore[too-many-branches, too-many-statements] -- mutation targets are explicit adversarial cases
     target: str,
     field: str,
     value: Any,
@@ -798,6 +817,18 @@ def test_july_hosted_readback_refresh_rejects_inconsistent_bindings(  # ruff: ig
             if row["path"] == link_path
         )
         link[field] = value
+    elif target == "b2_reference":
+        reference = observed["b2_raw_reference"][field]
+        if value == "wrong_dataset":
+            observed["b2_raw_reference"][field] = reference.replace(
+                contract["dataset"], "other/dataset", 1
+            )
+        elif value == "wrong_revision":
+            observed["b2_raw_reference"][field] = reference.replace(
+                contract["expected_parent_revision"], "0" * 40, 1
+            )
+        else:
+            observed["b2_raw_reference"][field] = f"{reference}.wrong"
     else:
         observed["b1_acquisition"][field] = value
 

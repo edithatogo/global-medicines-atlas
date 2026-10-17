@@ -1132,8 +1132,12 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   rights decisions and raw B1/B2 lineages while preserving all 1,759
   deferrals, the approved denominator, zero v4 admissions, and zero consumer
   canaries. Producer projection lineage remains separate and unqualified.
-- [x] Validate the refresh with 84 focused July-contract tests at 97.25% module
-  coverage, 104 broader M-112 tests, Ruff, `ty`, BasedPyright, deterministic
+- [x] Address review findings by requiring successful B1 retrieval status and
+  binding each B2 external reference to the exact dataset, parent revision, and
+  raw object path. Add adversarial cases for failed retrieval and incorrect
+  dataset, revision, and path.
+- [x] Validate the refresh with 88 focused July-contract tests at 97.25% module
+  coverage, 126 broader M-112 tests, Ruff, `ty`, BasedPyright, deterministic
   regeneration, and `git diff --check`. Do not repeat the previously recorded
   full local profile solely for this bounded qualification refresh.
 - [~] Exact-head protected checks remain pending; M-112 and Stable v1 are not
