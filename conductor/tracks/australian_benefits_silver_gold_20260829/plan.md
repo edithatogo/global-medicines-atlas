@@ -3624,3 +3624,9 @@
   Ruff, formatting, and BasedPyright checks pass. Exact Windows Actions rerun is
   pending. The local release-reproduction test cannot complete because the
   available `uv` is 0.13.1 while the committed build toolchain pins 0.11.29.
+
+- [x] Correct review finding #4307864545: the reconciler now validates the
+  current B2-manifest and landed-admission SHA-256 values against both the
+  per-object qualification and its `output_bindings` map. Two regression cases
+  reject stale artifact and stale output-binding hashes; focused tests, Ruff,
+  formatting, and BasedPyright pass. Broader suite and hosted rerun pending.

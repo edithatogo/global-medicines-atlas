@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, Literal, cast
 
+import pytest
 from scripts.reconcile_m112_historical_mbs_utilisation_lineages import (
     BASE_OVERLAY,
     EXPECTED_COMPLETE,
@@ -14,6 +16,7 @@ from scripts.reconcile_m112_historical_mbs_utilisation_lineages import (
     LINEAGE_QUALIFICATION,
     OUTPUT,
     build_report,
+    verify_output_binding,
 )
 
 from global_medicines_atlas.bronze_admission import (
@@ -23,6 +26,35 @@ from global_medicines_atlas.bronze_admission import (
 from global_medicines_atlas.bronze_raw_evidence import RawEvidenceManifest
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.parametrize("stale_field", ["artifact_digest", "output_binding"])
+def test_changed_output_artifact_cannot_complete_lineage(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    stale_field: Literal["artifact_digest", "output_binding"],
+) -> None:
+    relative_path = Path("quality/bronze/admissions/record.json")
+    artifact = tmp_path / relative_path
+    artifact.parent.mkdir(parents=True)
+    artifact.write_bytes(b"changed artifact")
+    actual_sha256 = hashlib.sha256(artifact.read_bytes()).hexdigest()
+    monkeypatch.setattr(
+        "scripts.reconcile_m112_historical_mbs_utilisation_lineages.ROOT",
+        tmp_path,
+    )
+    output_bindings = {
+        relative_path.as_posix(): (
+            "0" * 64 if stale_field == "output_binding" else actual_sha256
+        )
+    }
+
+    with pytest.raises(ValueError, match="qualified output digest differs"):
+        verify_output_binding(
+            relative_path,
+            "f" * 64 if stale_field == "artifact_digest" else actual_sha256,
+            output_bindings,
+        )
 
 
 def _read(path: Path) -> dict[str, Any]:

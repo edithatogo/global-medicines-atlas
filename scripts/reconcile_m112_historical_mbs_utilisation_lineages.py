@@ -48,10 +48,22 @@ def _sha(path: Path) -> str:
     return hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
 
 
+def verify_output_binding(
+    path: Path, expected_sha256: str, output_bindings: dict[str, str]
+) -> None:
+    actual_sha256 = _sha(path)
+    if (
+        actual_sha256 != expected_sha256
+        or output_bindings.get(path.as_posix()) != actual_sha256
+    ):
+        raise ValueError(f"qualified output digest differs: {path}")
+
+
 def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-statements] -- keep the overlay's 14 exact path validations together
     """Verify all 14 newly recorded events, then update only their lineage rows."""
     prior = _read(BASE_OVERLAY)
     qualification = _read(LINEAGE_QUALIFICATION)
+    output_bindings = qualification["output_bindings"]
     rows = copy.deepcopy(prior["objects"])
     path_key = itemgetter("dataset", "revision", "path")
     by_key = {path_key(row): row for row in rows}
@@ -106,6 +118,14 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-s
         event_path = Path(item["acquisition_event_path"])
         b2_path = Path(item["b2_manifest_path"])
         admission_path = Path(item["landed_admission_path"])
+        verify_output_binding(
+            b2_path, item["b2_manifest_sha256"], output_bindings
+        )
+        verify_output_binding(
+            admission_path,
+            item["landed_admission_sha256"],
+            output_bindings,
+        )
         receipt = SourceReceipt.model_validate_json(
             (ROOT / receipt_path).read_bytes()
         )
