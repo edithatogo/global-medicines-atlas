@@ -3408,9 +3408,14 @@
   BasedPyright, and diff checks pass.
 - [x] Project context and ecosystem validation pass on the updated track
   ledger and plan.
-- [~] Run the required full production profile on this exact frozen change
-  after the active source-owner validation finishes, using the existing host
-  guard and pinned uv 0.11.29 in parent and child PATH. Then bind real receipts
-  and independent trust expectations for the six raw MBS paths. No real
-  contract, admission, remote read, or consumer canary is created by this
+- [x] Run the required full production profile on this exact frozen change
+  under the existing host guard with pinned uv 0.11.29 in parent and child
+  PATH. The run completed with 6,877 passed, 3 skipped, and one failure at
+  96.89% coverage: the pre-existing product-release fixture measured query
+  p95 275.915 ms against its 250 ms budget. The exact test passed when rerun
+  alone under the same guard (1 passed, 1 existing deprecation warning). Record
+  the full-profile result as a host-sensitive timing miss, not a pass. The
+  adapter's focused checks and exact-head hosted checks passed. Next, bind real
+  receipts and independent trust expectations for the six raw MBS paths. No
+  real contract, admission, remote read, or consumer canary is created by this
   adapter increment; M-112 remains blocked for all 1,759 approved paths.
