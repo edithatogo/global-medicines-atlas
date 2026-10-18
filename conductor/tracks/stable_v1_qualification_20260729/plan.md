@@ -734,3 +734,18 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   automated review finding P1 on PR #1156. Focused tests (78), Ruff, formatting,
   `ty`, BasedPyright, actionlint, and diff checks pass. Hosted checks are pending
   for the corrected head. Federation remains blocked; no release action occurred.
+
+## 2026-10-18 M5 Australian requirement status reconciliation
+
+- [x] Reconcile the M5 maturity summary with merged PR #1155 and D-006-10:
+  M-105 is verified under the narrow chronology waiver; M-106–M-112 remain
+  blocked. State explicitly that no pre-archive parity proof is claimed and
+  keep Australian federation as the remaining unresolved qualification gate.
+  Reflect the verified contract totals (85 verified, 7 blocked; 16 of 17
+  release gates passed) and D-006-11 as a passed conditional software-only
+  release-approval gate, while making clear that promotion has not been
+  executed and awaits completion of qualification and exact-candidate checks.
+- [x] Leave qualification counts and gate results unchanged; this corrects
+  stale prose only. Review correction updates counts and gate wording to the
+  authoritative contract. Context/ecosystem validation and `git diff --check`
+  pass.
