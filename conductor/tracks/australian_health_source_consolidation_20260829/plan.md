@@ -1291,3 +1291,11 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   validation, and `git diff --check`. Exact-head hosted checks must rerun on
   the correction commit; the preceding local full run remains recorded with
   its four unrelated browser teardown failures.
+- [x] Run the pinned full profile on the corrected head `2e92dd6c`. It recorded
+  6,883 passed, 1 failed, 3 skipped and 96.90% coverage. The sole local failure
+  was `tests/test_mbs_gold_candidate_consumers.py::test_browser_waits_for_delayed_stylesheet_before_qualifying`, a Playwright
+  `browser.close()` timeout at `atlas_browser_qualification.py:275`; no
+  timeout was changed and the profile is not marked passed. The earlier
+  pre-correction four-failure result is superseded for current local status.
+  All 28 required hosted checks passed on this exact head; later local Goblin
+  lanes were not reached after the coverage-profile failure.
