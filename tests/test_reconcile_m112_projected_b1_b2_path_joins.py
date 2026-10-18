@@ -45,4 +45,4 @@ def test_exact_digest_path_matches_do_not_equal_complete_lineages() -> None:
         count_complete_lineages_for_keys(raw_objects, exact_keys)
         == EXPECTED_COMPLETE_LINEAGES_WITHIN_EXISTING_PATH_JOINS
     )
-    assert sum(row["b1_b2_lineage"]["complete"] for row in raw_objects) == 6
+    assert sum(row["b1_b2_lineage"]["complete"] for row in raw_objects) == 20

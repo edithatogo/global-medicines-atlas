@@ -15,8 +15,8 @@
   },
   "inputs": [
     {
-      "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018-retained-joins.json",
-      "sha256": "87f0ca584a210de0abc4c8ee671fe9fccb39212130e039c1f884cffc21ec97d5"
+      "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json",
+      "sha256": "35e4bcbb1b459c78dff837d75c6bf5ae81f307f7211e383f938d9ffc05a07f89"
     },
     {
       "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
@@ -106,7 +106,7 @@
   },
   "summary": {
     "existing_exact_raw_digest_path_joins": 26,
-    "existing_exact_raw_digest_path_joins_with_complete_lineage": 5,
+    "existing_exact_raw_digest_path_joins_with_complete_lineage": 19,
     "cumulative_exact_raw_digest_path_joins": 118,
     "raw_paths_outside_cumulative_exact_digest_join_subset": 1618,
     "anonymous_raw_digest_readbacks": 92,
@@ -120,9 +120,9 @@
     "raw_paths_with_any_path_identity_binding": 1736,
     "raw_paths_without_any_path_identity_binding": 0,
     "pbs_archive_variant_metadata_identity_matches": 5,
-    "complete_b1_b2_lineages_before_audit": 6,
+    "complete_b1_b2_lineages_before_audit": 20,
     "complete_b1_b2_lineages_added": 0,
-    "complete_b1_b2_lineages_after_audit": 6,
+    "complete_b1_b2_lineages_after_audit": 20,
     "b1_b2_projection_matches_with_path_receipt_identity_evidence": 1706,
     "exact_b1_source_download_receipt_projection_joins": 1705,
     "path_specific_receipts_with_b1_locator_discrepancies": 1,
