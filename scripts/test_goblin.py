@@ -153,6 +153,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_australian_m112_per_object_gate_reconciliation.py",
         "tests/test_australian_m112_root_manifest_path_readback.py",
         "tests/test_australian_m112_raw_b2_metadata_reconciliation.py",
+        "tests/test_australian_m112_inventory_freeze.py",
         "tests/test_australian_m112_retained_evidence_joins.py",
         "tests/test_australian_m112_historical_source_receipts.py",
         "tests/test_australian_m112_historical_receipt_gate_crosswalk.py",

@@ -19,11 +19,15 @@ SOURCE_ARCHIVE_PATH = "quality/qualifications/australian-m112-source-archive-dig
 MANIFEST_JOIN_PATH = (
     "quality/qualifications/australian-m112-manifest-join-audit-20260930.json"
 )
+FROZEN_INVENTORY_PATH = "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json"
 OUTPUT = (
     QUAL
     / "australian-m112-per-object-gate-reconciliation-20261018-retained-joins.json"
 )
 EXPECTED_DENOMINATOR = 1759
+EXPECTED_PATH_MEMBERSHIP_SHA256 = (
+    "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b"
+)
 EXPECTED_RAW_PATHS = 1736
 EXPECTED_PROJECTIONS = 23
 EXPECTED_PRIOR_RAW_JOINS = 22
@@ -68,9 +72,19 @@ def _denominator_digest(objects: list[dict[str, Any]]) -> str:
     return hashlib.sha256(body.encode("utf-8")).hexdigest()
 
 
+def _path_membership_digest(objects: list[dict[str, Any]]) -> str:
+    keys = sorted((row["dataset"], row["path"]) for row in objects)
+    body = "\n".join(
+        json.dumps(row, ensure_ascii=False, separators=(",", ":"))
+        for row in keys
+    )
+    return hashlib.sha256(body.encode("utf-8")).hexdigest()
+
+
 def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-branches,too-many-statements] -- keep each retained-evidence gate auditable in one deterministic qualification
     """Build a small evidence overlay and updated 1,759-row inventory."""
     baseline = _read_json(BASELINE_PATH)
+    frozen_inventory = _read_json(FROZEN_INVENTORY_PATH)
     tree_identity = _read_json(TREE_IDENTITY_PATH)
     raw_b2 = _read_json(RAW_B2_PATH)
     utilisation = _read_json(UTILISATION_PATH)
@@ -81,6 +95,19 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
     if len(source_objects) != EXPECTED_DENOMINATOR:
         raise ValueError("the frozen M-112 denominator changed")
     denominator_digest = _denominator_digest(source_objects)
+    path_membership_digest = _path_membership_digest(source_objects)
+    frozen_path_keys = {
+        (row["dataset"], row["path"])
+        for row in cast("list[dict[str, Any]]", frozen_inventory["members"])
+    }
+    if (
+        path_membership_digest != EXPECTED_PATH_MEMBERSHIP_SHA256
+        or frozen_inventory["scope"]["path_membership_sha256"]
+        != EXPECTED_PATH_MEMBERSHIP_SHA256
+        or frozen_path_keys
+        != {(row["dataset"], row["path"]) for row in source_objects}
+    ):
+        raise ValueError("the frozen M-112 path membership changed")
     baseline_complete_lineages = sum(
         row["b1_b2_lineage"]["complete"] for row in source_objects
     )
@@ -144,6 +171,7 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             UTILISATION_PATH,
             SOURCE_ARCHIVE_PATH,
             MANIFEST_JOIN_PATH,
+            FROZEN_INVENTORY_PATH,
         )
     }
     new_joins: list[dict[str, Any]] = []
@@ -347,10 +375,12 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
         ),
         "scope": scope,
         "denominator_object_id_sha256": denominator_digest,
+        "approved_path_membership_sha256": path_membership_digest,
         "evidence_inputs": list(input_bindings.values()),
         "retained_evidence_join_increment": {
             "denominator_object_count": len(rows),
             "denominator_object_id_sha256": denominator_digest,
+            "approved_path_membership_sha256": path_membership_digest,
             "prior_raw_path_joins": len(prior_keys),
             "new_exact_raw_path_joins": len(new_joins),
             "cumulative_exact_raw_path_joins": len(cumulative_keys),

@@ -14,6 +14,7 @@
     "consumer_canaries_passed": 0
   },
   "denominator_object_id_sha256": "7d2e0ced272ae6c785e8136d5a653618975761116c0f717bf17ade4e83251b4a",
+  "approved_path_membership_sha256": "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b",
   "evidence_inputs": [
     {
       "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018.json",
@@ -38,11 +39,16 @@
     {
       "path": "quality/qualifications/australian-m112-manifest-join-audit-20260930.json",
       "sha256": "34441cd4d6dcaa3de214ca504b168a98eaa506d8e90164b857f5fd63d7922b3c"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json",
+      "sha256": "eaa1d84325c7672100398acf8116f0312369ca336d42ed21eee110452d3fefa4"
     }
   ],
   "retained_evidence_join_increment": {
     "denominator_object_count": 1759,
     "denominator_object_id_sha256": "7d2e0ced272ae6c785e8136d5a653618975761116c0f717bf17ade4e83251b4a",
+    "approved_path_membership_sha256": "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b",
     "prior_raw_path_joins": 22,
     "new_exact_raw_path_joins": 4,
     "cumulative_exact_raw_path_joins": 26,

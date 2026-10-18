@@ -62,6 +62,12 @@ def test_join_increment_preserves_inventory_ids_and_separate_gates() -> None:
             / "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018.json"
         ).read_text(encoding="utf-8")
     )
+    frozen_inventory = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json"
+        ).read_text(encoding="utf-8")
+    )
 
     updated_by_key = {
         (row["dataset"], row["revision"], row["path"]): row
@@ -82,6 +88,10 @@ def test_join_increment_preserves_inventory_ids_and_separate_gates() -> None:
     }
 
     assert increment["denominator_object_count"] == 1759
+    assert (
+        increment["approved_path_membership_sha256"]
+        == frozen_inventory["scope"]["path_membership_sha256"]
+    )
     assert set(updated_by_key) == set(baseline_by_key)
     assert changed_keys == expected_changed_keys
     assert len(increment["denominator_object_id_sha256"]) == 64
