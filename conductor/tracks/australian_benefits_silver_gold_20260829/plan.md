@@ -3617,3 +3617,10 @@
   leaves 1,716 raw paths incomplete, including PBS/M107 owner-managed work and
   the separately reserved July derivative. These remain outside this MBS
   increment.
+
+- [~] Recheck the Windows consumer failure introduced by the new hashed
+  admission paths. The clean-clone test now uses `RUNNER_TEMP` with a short
+  prefix so checkout paths stay below Windows path limits; local dual-clone,
+  Ruff, formatting, and BasedPyright checks pass. Exact Windows Actions rerun is
+  pending. The local release-reproduction test cannot complete because the
+  available `uv` is 0.13.1 while the committed build toolchain pins 0.11.29.
