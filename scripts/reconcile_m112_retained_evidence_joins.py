@@ -503,6 +503,18 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
     }
     if len(cumulative_keys) != EXPECTED_PRIOR_RAW_DIGEST_JOINS + len(new_joins):
         raise ValueError("the cumulative raw-object join keys are not unique")
+    raw_identity_keys = observed_raw_identity_keys
+    if raw_identity_keys & cumulative_keys:
+        raise ValueError(
+            "anonymous raw readbacks overlap retained digest joins"
+        )
+    all_exact_raw_digest_keys = cumulative_keys | raw_identity_keys
+    if len(all_exact_raw_digest_keys) != (
+        EXPECTED_PRIOR_RAW_DIGEST_JOINS
+        + len(new_joins)
+        + len(raw_identity_rows)
+    ):
+        raise ValueError("the exact raw digest/path match sets overlap")
 
     complete_lineages = sum(row["b1_b2_lineage"]["complete"] for row in rows)
     exact_source_rights = baseline["aggregate_gates"][
@@ -553,16 +565,22 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             "denominator_object_id_sha256": denominator_digest,
             "approved_path_membership_sha256": path_membership_digest,
             "prior_raw_digest_path_joins": len(prior_keys),
-            "new_exact_raw_digest_path_matches": len(new_joins),
+            "new_exact_raw_digest_path_matches": len(new_joins)
+            + len(raw_identity_rows),
             "new_exact_b1_b2_receipt_joins": len(new_joins),
-            "cumulative_exact_raw_digest_path_joins": len(cumulative_keys),
+            "cumulative_exact_raw_digest_path_joins": len(
+                all_exact_raw_digest_keys
+            ),
             "raw_paths_outside_digest_join_subset": EXPECTED_RAW_PATHS
-            - len(cumulative_keys),
+            - len(all_exact_raw_digest_keys),
             "prior_complete_b1_b2_lineage_paths": EXPECTED_BASE_COMPLETE_LINEAGES,
             "new_complete_b1_b2_lineage_paths": len(new_joins),
             "cumulative_complete_b1_b2_lineage_paths": complete_lineages,
             "existing_same_content_alias_path_bindings": 1,
-            "cumulative_raw_path_identity_bindings": len(cumulative_keys) + 1,
+            "cumulative_raw_path_identity_bindings": len(
+                all_exact_raw_digest_keys
+            )
+            + 1,
             "projection_paths_bound_by_anonymous_readback": len(
                 projection_rows
             ),
@@ -580,15 +598,14 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             "unmatched_records": [],
             "incompatible_role_records": [],
             "raw_path_records_outside_exact_digest_join_subset": (
-                EXPECTED_RAW_PATHS - len(cumulative_keys)
+                EXPECTED_RAW_PATHS - len(all_exact_raw_digest_keys)
             ),
             "outside_subset_interpretation": (
-                "These 1,710 raw paths are not among the 26 exact prior-plus-new "
-                "digest/path matches summarized here. This digest-match subset "
-                "is not a B1/B2 receipt count: two path lineages were complete "
-                "before this increment and four are added here. Per-object "
-                "identity, rights, and lineage states remain in the preserved "
-                "1,759-member inventory."
+                "These 1,618 raw paths are outside the 118 exact SHA-256/path "
+                "matches: 22 retained matches, four July MBS receipt joins, "
+                "and 92 anonymous PBS raw readbacks. The 92 readbacks do not "
+                "establish B1/B2 lineage. Six raw path lineages are complete; "
+                "rights, lineage, and admission remain independent gates."
             ),
             "existing_alias_binding": {
                 "path": alias_path,
@@ -636,9 +653,11 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             "raw_paths": EXPECTED_RAW_PATHS,
             "projection_paths": EXPECTED_PROJECTIONS,
             "complete_raw_b1_b2_lineage": complete_lineages,
-            "exact_raw_digest_path_joins": len(cumulative_keys),
+            "exact_raw_digest_path_joins": len(all_exact_raw_digest_keys),
             "complete_raw_b1_b2_lineage_paths": complete_lineages,
-            "including_existing_same_content_alias": len(cumulative_keys) + 1,
+            "including_existing_same_content_alias": (
+                len(all_exact_raw_digest_keys) + 1
+            ),
             "exact_source_release_rights": exact_source_rights,
             "v4_admissions": 0,
             "consumer_canaries": 0,

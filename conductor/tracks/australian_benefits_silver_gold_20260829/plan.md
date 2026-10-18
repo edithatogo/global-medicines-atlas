@@ -3558,8 +3558,11 @@
   Every recorded 64-character filename digest matches the streamed SHA-256.
 - [x] Bind both readback receipts into the retained per-object overlay. All
   1,759 paths now carry direct SHA-256 evidence or the existing verified alias
-  binding; raw and projection identity gaps are zero. The approved denominator
-  and all deferrals are unchanged. This adds no rights or admission conclusion;
-  PBS B1/B2 lineage and source-owner crosswalks remain open and unchanged.
+  binding; raw and projection identity gaps are zero. There are 118 exact raw
+  digest/path matches (119 path identities including the existing alias), of
+  which six have complete B1/B2 lineage; the 92 PBS hash reads do not create
+  lineage. The approved denominator and all deferrals are unchanged. This adds
+  no rights or admission conclusion; PBS B1/B2 lineage and source-owner
+  crosswalks remain open and unchanged.
 - [x] Verify with the focused join tests, the full 80-test M-112 suite, Ruff,
   and exact frozen-membership and per-object identity assertions.

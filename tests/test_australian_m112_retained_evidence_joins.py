@@ -21,15 +21,15 @@ def test_retained_evidence_adds_four_exact_current_revision_joins() -> None:
     assert report["scope"]["approved_raw_paths"] == 1736
     assert report["scope"]["approved_projection_paths"] == 23
     assert increment["prior_raw_digest_path_joins"] == 22
-    assert increment["new_exact_raw_digest_path_matches"] == 4
+    assert increment["new_exact_raw_digest_path_matches"] == 96
     assert increment["new_exact_b1_b2_receipt_joins"] == 4
-    assert increment["cumulative_exact_raw_digest_path_joins"] == 26
-    assert increment["raw_paths_outside_digest_join_subset"] == 1710
+    assert increment["cumulative_exact_raw_digest_path_joins"] == 118
+    assert increment["raw_paths_outside_digest_join_subset"] == 1618
     assert increment["prior_complete_b1_b2_lineage_paths"] == 2
     assert increment["new_complete_b1_b2_lineage_paths"] == 4
     assert increment["cumulative_complete_b1_b2_lineage_paths"] == 6
     assert increment["existing_same_content_alias_path_bindings"] == 1
-    assert increment["cumulative_raw_path_identity_bindings"] == 27
+    assert increment["cumulative_raw_path_identity_bindings"] == 119
     assert increment["candidate_path_disposition"] == {
         "verified_new_join": 4,
         "already_joined_canonical": 1,
@@ -137,7 +137,7 @@ def test_join_increment_preserves_inventory_ids_and_separate_gates() -> None:
     assert changed_keys == expected_changed_keys
     assert len(increment["denominator_object_id_sha256"]) == 64
     assert gates["complete_raw_b1_b2_lineage"] == 6
-    assert gates["exact_raw_digest_path_joins"] == 26
+    assert gates["exact_raw_digest_path_joins"] == 118
     assert gates["complete_raw_b1_b2_lineage_paths"] == 6
     assert gates["v4_admissions"] == 0
     assert gates["consumer_canaries"] == 0
@@ -153,6 +153,7 @@ def test_join_increment_preserves_inventory_ids_and_separate_gates() -> None:
         increment["raw_payload_bytes_streamed_without_local_persistence"]
         == 5018706
     )
+    assert gates["including_existing_same_content_alias"] == 119
     assert report["boundaries"]["rights_or_licensing_conclusion_added"] is False
     assert report["boundaries"]["source_payload_bytes_read_this_run"] is True
     assert (
