@@ -711,3 +711,16 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   publication, production deployment, or production DR action was performed.
   The approval is usable only after every qualification gate passes and the
   exact candidate, protected checks, and attestation are verified.
+
+## 2026-10-18 protected Stable v1 promotion workflow
+
+- [x] Add an explicit release-type choice that defaults to the existing
+  prerelease authority. The stable path accepts only the separately approved
+  software-only `v1.0.0` scope after validating the qualification schema, all 17
+  required gates, no unresolved blockers, and the digest-bound readiness and
+  approval receipts. The publication workflow remains manual, protected, and
+  draft-only; the Australian federation gate is still blocked, so it has not
+  been dispatched and no release action has occurred.
+- [x] Focused authority/workflow tests (26), Ruff, BasedPyright, and the pinned
+  full Test-Goblin profile pass on macOS arm64 with Python 3.14.6 and uv
+  0.11.29. Hosted checks for the rebased PR remain pending.

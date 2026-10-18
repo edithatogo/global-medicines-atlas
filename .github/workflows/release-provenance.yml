@@ -58,6 +58,8 @@ jobs:
           RELEASE_TYPE: ${{ inputs.release_type }}
         run: |
           set -euo pipefail
+          test "$GITHUB_REF" = "refs/heads/main"
+          test "$(git rev-parse refs/heads/main)" = "$GITHUB_SHA"
           case "$RELEASE_TYPE" in
             prerelease|stable) ;;
             *) echo "unsupported release type" >&2; exit 1 ;;

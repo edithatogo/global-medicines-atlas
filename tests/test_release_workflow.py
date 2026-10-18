@@ -243,6 +243,22 @@ def test_release_jobs_have_least_permissions() -> None:
     )
 
 
+def test_release_publication_is_bound_to_the_protected_main_commit() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    identity_gate = workflow[
+        workflow.index(
+            "  - name: Require publishable GitHub software identity and licence"
+        ) : workflow.index("      - name: Resolve VCS-derived version")
+    ]
+
+    assert "if: inputs.publish" in identity_gate
+    assert 'test "$GITHUB_REF" = "refs/heads/main"' in identity_gate
+    assert (
+        'test "$(git rev-parse refs/heads/main)" = "$GITHUB_SHA"'
+        in identity_gate
+    )
+
+
 def test_failed_qualification_cannot_reach_release_job() -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
     draft = workflow[workflow.index("  draft-release:") :]
