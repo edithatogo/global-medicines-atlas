@@ -5,8 +5,10 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
+from scripts.build_pbs_m107_link_crosswalk import validate_public_tree_readback
 from scripts.pbs_m107_receipt_binding import validate_pbs_receipt_binding
 
 REPORT = Path(
@@ -24,6 +26,9 @@ M112 = Path(
 )
 READBACK = Path(
     "quality/qualifications/australian-pbs-m107-known-object-manifest-readback-20261018.json"
+)
+PUBLIC_TREE = Path(
+    "quality/qualifications/australian-pbs-m107-public-tree-readback-20261018.json"
 )
 
 
@@ -56,6 +61,33 @@ def _report() -> dict[str, object]:
     return json.loads(REPORT.read_text(encoding="utf-8"))
 
 
+def _public_tree_binding_inputs() -> tuple[
+    dict[str, Any], dict[str, Any], dict[str, Any]
+]:
+    identities = json.loads(IDENTITIES.read_text(encoding="utf-8"))
+    source = next(
+        item
+        for item in identities["pbs"]["sources"]
+        if item["source_era"] == "2026-04-01-xml-v3"
+    )
+    tree = json.loads(PUBLIC_TREE.read_text(encoding="utf-8"))
+    return identities, source, tree
+
+
+def _validate_public_tree(
+    tree: dict[str, Any],
+    identities: dict[str, Any],
+    source: dict[str, Any],
+) -> dict[str, Any]:
+    return validate_public_tree_readback(
+        tree,
+        expected_revision=identities["readback"]["pbs"]["current_revision"],
+        expected_source_path=source["archive"]["path"],
+        expected_source_bytes=source["archive"]["bytes"],
+        expected_source_sha256=source["archive"]["sha256"],
+    )
+
+
 def test_pbs_m107_crosswalk_is_complete_for_observed_schedule_links() -> None:
     report = _report()
     digest = report["digest"]
@@ -74,9 +106,81 @@ def test_pbs_m107_crosswalk_is_complete_for_observed_schedule_links() -> None:
     assert scope["official_schedule_link_count"] == len(links)
     assert scope["distinct_schedule_periods"] == 197
     assert scope["known_public_object_link_count"] == 1
+    assert scope["public_archive_raw_file_count"] == 1
     assert scope["exact_official_url_to_b1_receipt_metadata_count"] == 1
     assert scope["unresolved_archive_identity_link_count"] == 315
     assert all(link["source_payload_requested"] is False for link in links)
+
+
+def test_pbs_m107_crosswalk_binds_the_complete_public_raw_tree_inventory() -> (
+    None
+):
+    report = _report()
+    inventory = report["public_archive_inventory"]
+
+    assert inventory["dataset"] == "edithatogo/australian-pbs-source-archive"
+    assert inventory["revision"] == "48fd7345fb09277bb5b85644dba72804633a2abb"
+    assert inventory["tree_http_status"] == 200
+    assert inventory["tree_response_bytes"] == 2388
+    assert inventory["tree_response_sha256"] == (
+        "6e85e905b139d04c84f77f42de988866ecf0ab780c7d5e2a1388a5348a5da33a"
+    )
+    assert inventory["file_count"] == 9
+    raw_files = inventory["raw_files"]
+    assert raw_files == [
+        {
+            "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+            "bytes": 11156706,
+            "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+            "sha256_evidence": "independent_manifest_and_receipt_readback",
+            "official_url": (
+                "https://www.pbs.gov.au/publication/schedule/2026/04/"
+                "2026-04-01-XML-V3.zip?variant=3"
+            ),
+            "url_binding_status": "exact_official_url_to_b1_receipt_metadata",
+        }
+    ]
+    assert inventory["source_payload_bytes_read"] == 0
+    assert inventory["response_body_retained"] is False
+    assert inventory["interpretation"] == (
+        "The pinned public tree contains one raw schedule path; other official "
+        "links remain unresolved, not absent."
+    )
+    input_digests = {item["path"]: item["sha256"] for item in report["inputs"]}
+    assert (
+        input_digests[
+            "quality/qualifications/australian-pbs-m107-public-tree-readback-20261018.json"
+        ]
+        == hashlib.sha256(PUBLIC_TREE.read_bytes()).hexdigest()
+    )
+
+
+def test_public_tree_readback_rejects_an_unpinned_revision() -> None:
+    identities, source, tree = _public_tree_binding_inputs()
+    tree["revision"] = "0" * 40
+
+    with pytest.raises(ValueError, match="revision differs"):
+        _validate_public_tree(tree, identities, source)
+
+
+def test_public_tree_readback_rejects_changed_raw_path_or_size() -> None:
+    identities, source, tree = _public_tree_binding_inputs()
+    raw = next(
+        item for item in tree["files"] if item["path"].startswith("raw/")
+    )
+    raw["bytes"] += 1
+
+    with pytest.raises(ValueError, match="known B1/B2 identity"):
+        _validate_public_tree(tree, identities, source)
+
+
+def test_public_tree_readback_rejects_duplicate_paths() -> None:
+    identities, source, tree = _public_tree_binding_inputs()
+    tree["files"].append(dict(tree["files"][0]))
+    tree["file_count"] += 1
+
+    with pytest.raises(ValueError, match="duplicate paths"):
+        _validate_public_tree(tree, identities, source)
 
 
 def test_pbs_m107_crosswalk_keeps_identity_rights_and_absence_claims_bounded() -> (

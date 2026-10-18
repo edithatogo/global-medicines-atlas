@@ -1,0 +1,66 @@
+{
+  "schema_id": "global-medicines-atlas.australian-pbs-m107-public-tree-readback",
+  "schema_version": 1,
+  "observed_at": "2026-10-18T13:48:42Z",
+  "dataset": "edithatogo/australian-pbs-source-archive",
+  "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+  "dataset_info": {
+    "url": "https://huggingface.co/api/datasets/edithatogo/australian-pbs-source-archive",
+    "http_status": 200,
+    "response_bytes": 1394,
+    "response_sha256": "f3a3e21df56090124ae683515008beaf409d4cfdbcfe51adcf4f967d872ea9e6"
+  },
+  "tree": {
+    "url": "https://huggingface.co/api/datasets/edithatogo/australian-pbs-source-archive/tree/48fd7345fb09277bb5b85644dba72804633a2abb?recursive=true&expand=false",
+    "http_status": 200,
+    "response_bytes": 2388,
+    "response_sha256": "6e85e905b139d04c84f77f42de988866ecf0ab780c7d5e2a1388a5348a5da33a"
+  },
+  "file_count": 9,
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 2580
+    },
+    {
+      "path": "README.md",
+      "bytes": 495
+    },
+    {
+      "path": "bronze/2026-04-01/admission.json",
+      "bytes": 1044
+    },
+    {
+      "path": "bronze/2026-04-01/pbs-v3-source.parquet",
+      "bytes": 158134
+    },
+    {
+      "path": "bronze/2026-04-01/sch-2026-04-01-r1.xml",
+      "bytes": 313437585
+    },
+    {
+      "path": "bronze/2026-04-01/source-receipt.json",
+      "bytes": 3143
+    },
+    {
+      "path": "manifest.json",
+      "bytes": 7513
+    },
+    {
+      "path": "metadata/source/au-pbs/cb7f9647d77372faa091664a1337e70574a5dee4afe6a55a535fb204ed16f2b8.json",
+      "bytes": 2555
+    },
+    {
+      "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+      "bytes": 11156706
+    }
+  ],
+  "boundaries": {
+    "metadata_response_bytes_read": 3782,
+    "source_payload_bytes_read": 0,
+    "metadata_response_bodies_retained": false,
+    "rights_concluded": false,
+    "missing_official_links_declared_absent": false,
+    "m107_accepted": false
+  }
+}
