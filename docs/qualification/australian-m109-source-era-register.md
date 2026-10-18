@@ -270,3 +270,24 @@ semantics. The 82-link current-index denominator is unchanged; the five
 receipt-only sources are a separately reported reconciliation scope. Neither
 scope establishes the full historical denominator, rights, field meanings, or
 M-109 acceptance.
+
+## August no-further-change statement reconciliation (2026-10-18)
+
+The official [August 2026 page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260801)
+claims one new item and no further XML changes relative to the version last
+published on 28 May 2026. The [July 2026 page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-20260701)
+identifies its XML as released on 28 May. The saved aggregate predecessor
+comparison for those exact pages reports 6,045 matched records, one added
+record, zero removed records, and 5,445 changed records. Its largest changed
+field counts are `ItemChange` (5,437) and `FeeChange` (5,431).
+
+The value-free reconciliation in
+[`australian-m109-release-note-delta-reconciliation-20261018.json`](../../quality/qualifications/australian-m109-release-note-delta-reconciliation-20261018.json)
+binds the official page observations and comparison report digests. It marks
+the observed delta unresolved. It emits no item code, row identity, or source
+value, and cannot verify that the added record is the item named by the page.
+The comparison also cannot determine whether the changed indicator fields are
+release-relative flags or substantive item changes. No field semantics are
+inferred and M-109 remains blocked pending an authoritative explanation or
+release-linked evidence that resolves the discrepancy, plus the complete
+approved source-era denominator and rights/admission evidence.
