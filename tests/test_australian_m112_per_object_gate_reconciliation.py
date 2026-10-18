@@ -15,6 +15,10 @@ from scripts.refresh_m112_august_release_crosswalk import (
     DATASET,
     LIFECYCLE,
     OUTPUT,
+    PBS_IDENTITIES,
+    PBS_INDEX,
+    PBS_READBACK,
+    PBS_RIGHTS_LEDGER,
     RAW_PATH,
     ROOT_READBACK,
     SOURCE_DIGEST,
@@ -105,7 +109,7 @@ def test_report_input_digests_match_current_evidence() -> None:
         assert hashlib.sha256(path.read_bytes()).hexdigest() == expected_sha256
 
 
-def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:
+def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:  # ruff: ignore[too-many-statements] -- explicit assertions are the gate contract
     report = _load(ROOT / OUTPUT)
     assert report == build_report()
 
@@ -126,6 +130,23 @@ def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:
     assert len(rows) == sum(
         row["dataset"] == DATASET for row in report["objects"]
     )
+    pbs_path = "raw/2026-04-01/2026-04-01-XML-V3.zip"
+    pbs_row = next(
+        row
+        for row in report["objects"]
+        if row["dataset"] == "edithatogo/australian-pbs-source-archive"
+        and row["path"] == pbs_path
+    )
+    assert pbs_row["rights"]["receipt_claim_status"] == (
+        "receipt_permitted_claim_source_ledger_unknown"
+    )
+    assert pbs_row["rights"]["decision_evidence"] is None
+    assert pbs_row["rights"]["state"].startswith("unresolved:")
+    assert pbs_row["b1_b2_lineage"]["complete"] is True
+    assert pbs_row["identity"]["anonymous_digest_readback"] is True
+    assert pbs_row["v4_admission"] is False
+    assert pbs_row["consumer_canary"] is False
+    assert pbs_row["disposition"] == "deferred_not_admitted"
 
     assert (
         rows[RAW_PATH]["rights"]["state"]
@@ -178,6 +199,15 @@ def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:
             )
             assert row["v4_admission"] is False
             assert row["consumer_canary"] is False
+    pbs_original = next(
+        row
+        for row in old_rows.values()
+        if row["dataset"] == "edithatogo/australian-pbs-source-archive"
+        and row["path"] == pbs_path
+    )
+    assert pbs_row["disposition"] == pbs_original["disposition"]
+    assert pbs_row["v4_admission"] == pbs_original["v4_admission"]
+    assert pbs_row["consumer_canary"] == pbs_original["consumer_canary"]
 
     assert (
         report["aggregate_gates"][
@@ -191,7 +221,10 @@ def test_august_raw_crosswalk_reconciles_exact_denominator_and_gates() -> None:
     assert (
         report["aggregate_gates"]["paths_with_anonymous_digest_readback"] == 29
     )
-    assert report["aggregate_gates"]["paths_with_complete_b1_b2_lineage"] == 2
+    assert report["aggregate_gates"]["paths_with_complete_b1_b2_lineage"] == 3
+    assert (
+        report["aggregate_gates"]["paths_with_conflicting_rights_evidence"] == 1
+    )
     assert report["aggregate_gates"]["paths_admitted_to_v4"] == 0
     assert report["aggregate_gates"]["paths_with_consumer_canary"] == 0
     assert report["boundaries"]["rights_decision_created_or_expanded"] is False
@@ -212,6 +245,10 @@ def test_august_crosswalk_inputs_are_digest_bound() -> None:
         SOURCE_RECEIPT,
         AUTHORIZATION,
         "quality/qualifications/mbs-current-release-contract.json",
+        PBS_INDEX,
+        PBS_IDENTITIES,
+        PBS_RIGHTS_LEDGER,
+        PBS_READBACK,
     }
     assert {row["path"] for row in report["inputs"]} == expected_paths
     for binding in report["inputs"]:

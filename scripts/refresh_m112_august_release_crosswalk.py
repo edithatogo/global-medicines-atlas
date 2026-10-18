@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
+from scripts.pbs_m107_receipt_binding import validate_pbs_receipt_binding
+
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "quality/qualifications/"
 BASELINE = f"{BASE}australian-m112-per-object-gate-reconciliation-20261005.json"
@@ -23,7 +25,19 @@ ALIAS_READBACK = (
 SOURCE_RECEIPT = f"{BASE}australian-mbs-bronze-source-receipt-20261004.json"
 AUTHORIZATION = f"{BASE}australian-mbs-harvest-publication-authorization.json"
 RELEASE_CONTRACT = f"{BASE}mbs-current-release-contract.json"
-OUTPUT = f"{BASE}australian-m112-per-object-gate-reconciliation-20261018.json"
+PREVIOUS_OUTPUT = (
+    f"{BASE}australian-m112-per-object-gate-reconciliation-20261018.json"
+)
+OUTPUT = (
+    f"{BASE}australian-m112-per-object-gate-reconciliation-"
+    "20261018-pbs-receipt-binding.json"
+)
+PBS_INDEX = f"{BASE}australian-pbs-schedule-index-metadata-20261018.json"
+PBS_IDENTITIES = f"{BASE}australian-m109-source-era-identities-20261017.json"
+PBS_RIGHTS_LEDGER = f"{BASE}source-rights-review-ledger.json"
+PBS_READBACK = (
+    f"{BASE}australian-pbs-m107-known-object-manifest-readback-20261018.json"
+)
 
 RAW_PATH = (
     "raw/mbs/releases/2026-08-01/"
@@ -376,7 +390,9 @@ def _validate_alias_b1_b2_identity(
         )
 
 
-def _apply_object_crosswalk(report: dict[str, Any]) -> None:
+def _apply_object_crosswalk(
+    report: dict[str, Any], pbs_receipt_binding: dict[str, Any]
+) -> None:
     rows = [row for row in report["objects"] if row["dataset"] == DATASET]
     by_path = {row["path"]: row for row in rows}
     if (
@@ -429,6 +445,60 @@ def _apply_object_crosswalk(report: dict[str, Any]) -> None:
         },
     }
 
+    pbs_dataset = "edithatogo/australian-pbs-source-archive"
+    pbs_path = "raw/2026-04-01/2026-04-01-XML-V3.zip"
+    pbs_rows = [
+        row
+        for row in report["objects"]
+        if row["dataset"] == pbs_dataset and row["path"] == pbs_path
+    ]
+    if len(pbs_rows) != 1:
+        raise ValueError(
+            "April 2026 PBS object is not unique in the denominator"
+        )
+    pbs_row = pbs_rows[0]
+    if (
+        not pbs_row["approved_denominator_member"]
+        or pbs_row["disposition"] != "deferred_not_admitted"
+    ):
+        raise ValueError("April 2026 PBS object disposition changed")
+    pbs_row["rights"] = {
+        "state": (
+            "unresolved: the public B1 receipt claims permitted reuse, while the "
+            "source-rights ledger records upstream redistribution terms as unknown"
+        ),
+        "evidence": _binding(PBS_RIGHTS_LEDGER),
+        "observed_receipt_evidence": _binding(PBS_READBACK),
+        "decision_evidence": None,
+    }
+    pbs_row["b1_b2_lineage"] = {
+        "complete": True,
+        "state": (
+            "complete for the raw B1/B2 identity chain: the exact official PBS "
+            "listing URL matches the public manifest and source-receipt retrieval "
+            "URI; receipt payload digest and byte count match the manifest and "
+            "anonymous current-revision object readback. Rights remain unresolved, "
+            "and this does not qualify a producer projection."
+        ),
+        "evidence": {
+            "public_manifest_and_receipt_readback": _binding(PBS_READBACK),
+            "official_link_index": _binding(PBS_INDEX),
+            "source_era_identity": _binding(PBS_IDENTITIES),
+            "current_object_identity": {
+                "revision": pbs_row["revision"],
+                "path": pbs_path,
+                "sha256": pbs_row["identity"]["sha256"],
+                "byte_count": pbs_row["identity"]["byte_count"],
+                "anonymous_digest_readback": pbs_row["identity"][
+                    "anonymous_digest_readback"
+                ],
+            },
+        },
+    }
+    pbs_row["rights"]["receipt_claim_status"] = pbs_receipt_binding[
+        "rights_reconciliation_status"
+    ]
+
 
 def build_report() -> dict[str, Any]:
     """Reconcile existing evidence without acquisition, publication, or promotion."""
@@ -436,6 +506,22 @@ def build_report() -> dict[str, Any]:
     lifecycle = _read(LIFECYCLE)
     receipt = _read(SOURCE_RECEIPT)
     authorization = _read(AUTHORIZATION)
+    pbs_index = _read(PBS_INDEX)
+    pbs_identities = _read(PBS_IDENTITIES)
+    pbs_readback = _read(PBS_READBACK)
+    pbs_rights_doc = _read(PBS_RIGHTS_LEDGER)
+    pbs_rights = next(
+        row
+        for row in pbs_rights_doc["entries"]
+        if row["source_id"] == "au-pbs-historical-xml"
+    )
+    pbs_receipt_binding = validate_pbs_receipt_binding(
+        pbs_index,
+        pbs_identities,
+        report,
+        pbs_readback,
+        pbs_rights,
+    )
     _validate_scope(report, lifecycle)
     _validate_authority(
         lifecycle, receipt, authorization, _read(RELEASE_CONTRACT)
@@ -445,13 +531,13 @@ def build_report() -> dict[str, Any]:
     _validate_payload_digest(report)
     _validate_alias_readback(report)
     _validate_alias_b1_b2_identity(report, lifecycle)
-    _apply_object_crosswalk(report)
+    _apply_object_crosswalk(report, pbs_receipt_binding)
 
     report.update({
         "schema_id": "global-medicines-atlas.australian-m112-per-object-gate-reconciliation",
         "schema_version": 2,
         "observed_at": "2026-10-18",
-        "supersedes": BASELINE,
+        "supersedes": PREVIOUS_OUTPUT,
         "inputs": [
             _binding(path)
             for path in (
@@ -463,12 +549,19 @@ def build_report() -> dict[str, Any]:
                 SOURCE_RECEIPT,
                 AUTHORIZATION,
                 RELEASE_CONTRACT,
+                PBS_INDEX,
+                PBS_IDENTITIES,
+                PBS_RIGHTS_LEDGER,
+                PBS_READBACK,
             )
         ],
         "boundaries": {
             "approved_denominator_changed": False,
             "rights_decision_created_or_expanded": False,
+            "source_rights_concluded": False,
+            "pbs_receipt_permission_claim_reconciled_to_source_terms": False,
             "source_payload_bytes_read": True,
+            "pbs_source_payload_bytes_read_by_this_reconciliation": False,
             "source_payload_bytes_retained": False,
             "source_values_inspected": False,
             "source_payload_bytes_uploaded": False,
@@ -491,7 +584,14 @@ def build_report() -> dict[str, Any]:
             for row in report["objects"]
         ),
         "paths_with_exact_source_release_rights": 2,
-        "paths_with_complete_b1_b2_lineage": 2,
+        "paths_with_complete_b1_b2_lineage": sum(
+            row["b1_b2_lineage"]["complete"] for row in report["objects"]
+        ),
+        "paths_with_conflicting_rights_evidence": sum(
+            row["rights"].get("receipt_claim_status")
+            == "receipt_permitted_claim_source_ledger_unknown"
+            for row in report["objects"]
+        ),
         "paths_admitted_to_v4": 0,
         "paths_with_consumer_canary": 0,
     })

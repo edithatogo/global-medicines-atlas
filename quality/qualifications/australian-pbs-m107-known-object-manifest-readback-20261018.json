@@ -1,0 +1,67 @@
+{
+  "boundaries": {
+    "m107_accepted": false,
+    "m109_accepted": false,
+    "m112_rights_accepted": false,
+    "m112_v4_admission": false,
+    "source_rights_concluded": false
+  },
+  "bronze_admission": {
+    "decision_id": "90ab628f11715b23b8f1005c6649c850f01de9cf292bb1e637c1c90165552141",
+    "path": "bronze/2026-04-01/admission.json",
+    "sha256": "e80079760391d339ccfea4e1ceb59686ec7cfacbf91fac66333b113027b7fc1c",
+    "state": "accepted"
+  },
+  "canonical_byte_count": 2803,
+  "canonical_sha256": "2737bcfb1401306e11eea1d50a164e4a4afa378b1bb5831ef5b799fb5a93c803",
+  "dataset": "edithatogo/australian-pbs-source-archive",
+  "interpretation": "The observed official listing URL equals the source URL in the anonymous public manifest and the B1 receipt retrieval URI. Receipt payload identity matches the manifest archive metadata. The receipt claims permitted reuse, while the current source-rights ledger still records upstream terms as unknown; this readback does not resolve that conflict or grant M-112 admission.",
+  "manifest": {
+    "byte_count": 7513,
+    "http_status": 200,
+    "path": "manifest.json",
+    "sha256": "e6c9abbc62bd44fc47049306a92cc8efc9700031908586262c2b82a907546460"
+  },
+  "official_object": {
+    "archive": {
+      "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+      "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "size_bytes": 11156706
+    },
+    "source_effective_date": "2026-04-01",
+    "source_id": "au-pbs-historical-xml",
+    "source_url": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3"
+  },
+  "recorded_at": "2026-10-18T02:22:57Z",
+  "request_boundary": {
+    "authenticated": false,
+    "only_manifest_and_b1_receipt_metadata_read": true,
+    "source_payload_read": false,
+    "source_payload_requested": false
+  },
+  "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+  "schema_id": "global-medicines-atlas.australian-pbs-m107-known-object-manifest-readback",
+  "schema_version": 1,
+  "source_receipt": {
+    "acquisition_id": "7c964aef63666d334fafd9a461f5a4f8476018a4da5809cf8fefe3a6b8bee727",
+    "final_uri": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3",
+    "http_status": 200,
+    "original_uri": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3",
+    "path": "bronze/2026-04-01/source-receipt.json",
+    "payload": {
+      "byte_count": 11156706,
+      "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
+    },
+    "receipt_id": "hosted-pbs-v3:f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20:2026-08-30T03:31:25+00:00",
+    "receipt_type": "source",
+    "retrieval_status": "succeeded",
+    "retrieval_uri": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3",
+    "retrieved_at": "2026-08-30T03:31:25Z",
+    "rights_policy": null,
+    "rights_reference": "https://github.com/edithatogo/global-medicines-atlas/issues/340",
+    "rights_state_claimed_by_receipt": "permitted",
+    "sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1",
+    "source_id": "au-pbs-historical-xml"
+  },
+  "status": "anonymous_manifest_and_source_receipt_metadata_readback"
+}

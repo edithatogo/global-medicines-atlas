@@ -1244,3 +1244,19 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] Exact-head hosted checks and review-thread resolution remain pending;
   M-109's historical denominator, rights, semantics, and admission gates remain
   open.
+
+## M-107 PBS known-object receipt join (2026-10-18)
+
+- [x] Bind the 1 April 2026 official PBS XML V3 listing URL to the exact
+  anonymous public manifest, B1 source receipt, and current raw-object digest.
+  Read metadata only; do not request or inspect the ZIP payload.
+- [x] Reconcile the raw PBS B1/B2 identity chain in a new superseding M-112
+  report and its July metadata derivative. Keep the receipt/ledger rights
+  conflict explicit, with no v4 admission, consumer canary, rights decision,
+  or M-112 acceptance.
+- [x] Refresh the M-107 link crosswalk: one exact official URL-to-receipt
+  binding; 315 unresolved links remain from 316 official schedule links.
+  M-107 and federation remain blocked.
+- [x] Validate 102 focused tests, Test-Goblin routine, Ruff, formatting, `ty`,
+  BasedPyright, context/ecosystem validation, deterministic report
+  regeneration, and `git diff --check`.
