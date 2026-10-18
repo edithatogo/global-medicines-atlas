@@ -3566,3 +3566,22 @@
   crosswalks remain open and unchanged.
 - [x] Verify with the focused join tests, the full 80-test M-112 suite, Ruff,
   and exact frozen-membership and per-object identity assertions.
+
+### M-112 producer receipt projection joins (2026-10-19)
+
+- [x] Join the 1,706 pinned-revision B1/B2 raw projection matches against the
+  existing producer's immutable source-download metadata. Exact digest, byte
+  count, source version, locator, and source ID match for 1,705 objects. The
+  remaining MBS XML object has a path-specific receipt matching its path,
+  digest, and size; its URL differs from the parallel reimbursement-atlas B1
+  projection locator. The object's existing MBS B1/B2 lifecycle evidence
+  remains complete.
+- [x] Preserve evidence strength: historical download rows are producer
+  projections, not native receipt artifacts or admission histories. The
+  receipt matches add no complete lineages; the total remains 6. No rights,
+  source admissions, release decisions, new sources, or denominator changes
+  were made.
+- [~] Locate persisted landed-admission histories for the 1,703 incomplete
+  B1/B2 projection matches. Their acquisition/B2 projection records and source
+  receipt rows do not supply a landed event. Continue only from existing
+  evidence; do not synthesize admission history.

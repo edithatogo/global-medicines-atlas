@@ -40,6 +40,30 @@ JULY_RECEIPT = (
 OUTPUT = QUAL / "australian-m112-projected-b1-b2-path-joins-20261019.json"
 DATASET = "edithatogo/reimbursement-atlas"
 REVISION = "8e062578f14e12cf3238700a93946339da9c5d88"
+SOURCE_REPO = "edithatogo/reimbursement-atlas"
+SOURCE_REPO_REVISION = "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
+SOURCE_RECEIPT_FILES = {
+    "data/derived/historical_sources/historical_source_downloads.jsonl": {
+        "byte_count": 313081,
+        "sha256": "8ae141cf09f298669a8421583063a0b0d3ea1bcafb245d1d03288cc7a107df8f",
+    },
+    "data/derived/historical_sources/pbs_archive_v1/historical_source_downloads.jsonl": {
+        "byte_count": 969952,
+        "sha256": "aff99a68d7f7af7e7d2766b80599f75365c06f8c7620f317cf4b15104473772e",
+    },
+    "data/derived/historical_sources/pbs_structured_archive_v1/historical_source_downloads.jsonl": {
+        "byte_count": 634150,
+        "sha256": "597831281f9f3dea5b83c9af2fe02ca6d6165626b139899244789a4053917ee8",
+    },
+}
+MBS_SOURCE_DATASET = "edithatogo/australian-mbs-source-archive"
+MBS_SOURCE_REVISION = "40891976f77ee5e7688edceed25c9ac98a77547e"
+MBS_SOURCE_RECEIPT_PATH = (
+    "bronze/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML.receipt.json"
+)
+MBS_SOURCE_RECEIPT_SHA256 = (
+    "01f052db621eb1a03ec08198cdcafbc04b8a98238fc06c391e788b7ec73112eb"
+)
 TABLES = (
     "data/medallion/acquisition_b1/data.jsonl",
     "data/medallion/evidence_b2/data.jsonl",
@@ -90,6 +114,52 @@ def stream_table(path: str, identity: dict[str, Any]) -> list[dict[str, Any]]:
     if any(not isinstance(row, dict) for row in rows):
         raise TypeError(f"expected JSON objects in {path}")
     return rows
+
+
+def read_source_receipt_file(path: str) -> tuple[bytes, list[dict[str, Any]]]:
+    url = (
+        f"https://raw.githubusercontent.com/{SOURCE_REPO}/"
+        f"{SOURCE_REPO_REVISION}/{quote(path, safe='/')}"
+    )
+    request = urllib.request.Request(
+        url,
+        headers={"User-Agent": "global-medicines-atlas-m112-lineage-audit/1.0"},
+    )
+    with urllib.request.urlopen(  # ruff: ignore[suspicious-url-open-usage] -- fixed HTTPS host and immutable repository revision above
+        request, timeout=60
+    ) as response:
+        body = response.read()
+    identity = SOURCE_RECEIPT_FILES[path]
+    if (
+        len(body) != identity["byte_count"]
+        or hashlib.sha256(body).hexdigest() != identity["sha256"]
+    ):
+        raise ValueError(f"source receipt projection identity mismatch: {path}")
+    rows = [json.loads(line) for line in body.splitlines()]
+    if any(not isinstance(row, dict) for row in rows):
+        raise TypeError(f"expected JSON objects in {path}")
+    return body, cast("list[dict[str, Any]]", rows)
+
+
+def read_pinned_mbs_receipt() -> tuple[bytes, dict[str, Any]]:
+    url = (
+        f"https://huggingface.co/datasets/{MBS_SOURCE_DATASET}/resolve/"
+        f"{MBS_SOURCE_REVISION}/{quote(MBS_SOURCE_RECEIPT_PATH, safe='/')}"
+    )
+    request = urllib.request.Request(
+        url,
+        headers={"User-Agent": "global-medicines-atlas-m112-lineage-audit/1.0"},
+    )
+    with urllib.request.urlopen(  # ruff: ignore[suspicious-url-open-usage] -- fixed HTTPS host and immutable dataset revision above
+        request, timeout=60
+    ) as response:
+        body = response.read()
+    if hashlib.sha256(body).hexdigest() != MBS_SOURCE_RECEIPT_SHA256:
+        raise ValueError("pinned MBS receipt identity mismatch")
+    value: Any = json.loads(body)
+    if not isinstance(value, dict):
+        raise TypeError("expected a JSON object in the pinned MBS receipt")
+    return body, cast("dict[str, Any]", value)
 
 
 def read_pinned_tree_paths() -> list[str]:
@@ -207,6 +277,40 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
             promotions_by_subject.setdefault(row["subject_id"], []).append(row)
     provenance = [*tables[TABLES[3]], *tables[TABLES[4]]]
 
+    source_receipt_files: dict[str, dict[str, Any]] = {}
+    source_receipts_by_identity: dict[
+        tuple[str, int, str, str, str], list[tuple[str, dict[str, Any]]]
+    ] = {}
+    for path, expected_identity in SOURCE_RECEIPT_FILES.items():
+        _, receipt_rows = read_source_receipt_file(path)
+        source_receipt_files[path] = {
+            **expected_identity,
+            "git_repository": SOURCE_REPO,
+            "git_revision": SOURCE_REPO_REVISION,
+            "record_count": len(receipt_rows),
+        }
+        for receipt_row in receipt_rows:
+            sha = receipt_row.get("checksum_sha256")
+            size = receipt_row.get("byte_size")
+            source_version = receipt_row.get("source_version_id")
+            source_locator = receipt_row.get("source_url")
+            source_id = receipt_row.get("source_id")
+            if (
+                isinstance(sha, str)
+                and isinstance(size, int)
+                and isinstance(source_version, str)
+                and isinstance(source_locator, str)
+                and isinstance(source_id, str)
+            ):
+                key = (sha, size, source_version, source_locator, source_id)
+                source_receipts_by_identity.setdefault(key, []).append((
+                    path,
+                    receipt_row,
+                ))
+
+    mbs_receipt_bytes, mbs_receipt = read_pinned_mbs_receipt()
+    mbs_receipt_sha256 = hashlib.sha256(mbs_receipt_bytes).hexdigest()
+
     matches: list[dict[str, Any]] = []
     for item in raw:
         identity = item["identity"]
@@ -236,6 +340,36 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
             raise ValueError(
                 f"non-unique B2/promotion projection match: {item['path']}"
             )
+        source_receipt_candidates = source_receipts_by_identity.get(
+            (
+                identity["sha256"],
+                identity["byte_count"],
+                acquisition.get("source_version_id"),
+                acquisition.get("source_locator"),
+                acquisition.get("source_id"),
+            ),
+            [],
+        )
+        if len(source_receipt_candidates) > 1:
+            raise ValueError(
+                f"non-unique source receipt projection match: {item['path']}"
+            )
+        source_receipt_binding: dict[str, Any] | None = None
+        if source_receipt_candidates:
+            receipt_path, receipt_row = source_receipt_candidates[0]
+            receipt_row_bytes = json.dumps(
+                receipt_row,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+            source_receipt_binding = {
+                "evidence_kind": "producer_historical_source_download_receipt_projection",
+                "receipt_projection_path": receipt_path,
+                "receipt_record_sha256": hashlib.sha256(
+                    receipt_row_bytes
+                ).hexdigest(),
+            }
         provenance_matches = [
             row
             for row in provenance
@@ -278,14 +412,119 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
                 == "1970-01-01T00:00:00Z",
             },
             "source_provenance_projection_count": len(provenance_matches),
+            "b1_b2_lineage_complete_before_receipt_audit": item[
+                "b1_b2_lineage"
+            ]["complete"],
+            "source_receipt_binding": source_receipt_binding,
+            "parallel_b1_projection_locator_discrepancy": bool(
+                source_receipt_binding
+                and source_receipt_binding.get(
+                    "b1_source_locator_matches_receipt"
+                )
+                is False
+            ),
             "disposition": "projection_join_candidate_only",
             "unresolved_roles": [
-                "source-receipt identity and receipt artifact",
-                "persisted landed-admission history",
+                *(
+                    []
+                    if source_receipt_binding
+                    else ["source receipt identity"]
+                ),
+                *(
+                    []
+                    if item["b1_b2_lineage"]["complete"]
+                    else ["persisted landed-admission history"]
+                ),
+                *(
+                    [
+                        "B1 source locator does not match path-specific source receipt"
+                    ]
+                    if (
+                        source_receipt_binding
+                        and source_receipt_binding.get(
+                            "b1_source_locator_matches_receipt"
+                        )
+                        is False
+                        and not item["b1_b2_lineage"]["complete"]
+                    )
+                    else []
+                ),
             ],
         })
     if len(matches) != EXPECTED_B1_MATCHES:
         raise ValueError("exact B1 projection match count changed")
+
+    mbs_raw_path = "raw/mbs/releases/Downloads-20260701/MBS-XML-20260701.XML"
+    mbs_match = next(
+        row
+        for row in matches
+        if row["dataset"] == MBS_SOURCE_DATASET and row["path"] == mbs_raw_path
+    )
+    if not (
+        mbs_receipt.get("archive_path") == mbs_raw_path
+        and mbs_receipt.get("sha256") == mbs_match["sha256"]
+        and mbs_receipt.get("byte_count") == mbs_match["byte_count"]
+    ):
+        raise ValueError("pinned MBS source receipt does not bind the raw path")
+    if mbs_match["source_receipt_binding"] is not None:
+        raise ValueError(
+            "MBS raw path unexpectedly matched two receipt records"
+        )
+    mbs_match["source_receipt_binding"] = {
+        "evidence_kind": "pinned_path_specific_australian_harvest_receipt",
+        "source_dataset": MBS_SOURCE_DATASET,
+        "source_dataset_revision": MBS_SOURCE_REVISION,
+        "receipt_path": MBS_SOURCE_RECEIPT_PATH,
+        "receipt_sha256": mbs_receipt_sha256,
+        "receipt_byte_count": len(mbs_receipt_bytes),
+        "source_id": mbs_receipt["source_id"],
+        "source_url": mbs_receipt["source_url"],
+        "identity_join": ["archive_path", "sha256", "byte_count"],
+        "is_native_b1_source_receipt_artifact": False,
+        "b1_source_locator": mbs_match["b1_source_locator"],
+        "b1_source_locator_matches_receipt": (
+            mbs_match["b1_source_locator"] == mbs_receipt["source_url"]
+        ),
+    }
+    mbs_match["parallel_b1_projection_locator_discrepancy"] = not mbs_match[
+        "source_receipt_binding"
+    ]["b1_source_locator_matches_receipt"]
+    mbs_match["unresolved_roles"] = [
+        role
+        for role in mbs_match["unresolved_roles"]
+        if role != "source receipt identity"
+    ]
+    if (
+        not mbs_match["source_receipt_binding"][
+            "b1_source_locator_matches_receipt"
+        ]
+        and not mbs_match["b1_b2_lineage_complete_before_receipt_audit"]
+    ):
+        mbs_match["unresolved_roles"].append(
+            "B1 source locator does not match path-specific source receipt"
+        )
+    receipt_matched = sum(
+        row["source_receipt_binding"] is not None for row in matches
+    )
+    receipt_projection_matched = sum(
+        row["source_receipt_binding"]["evidence_kind"]
+        == "producer_historical_source_download_receipt_projection"
+        for row in matches
+        if row["source_receipt_binding"] is not None
+    )
+    exact_b1_receipt_matches = sum(
+        row["source_receipt_binding"] is not None
+        and row["source_receipt_binding"].get(
+            "b1_source_locator_matches_receipt", True
+        )
+        for row in matches
+    )
+    if (
+        receipt_matched,
+        receipt_projection_matched,
+        exact_b1_receipt_matches,
+    ) != (1706, 1705, 1705):
+        raise ValueError("source receipt/path join totals changed")
 
     joined = existing_keys | {
         (row["dataset"], row["revision"], row["path"]) for row in matches
@@ -424,6 +663,7 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
         },
         "method": {
             "metadata_readback": "anonymous pinned-revision HTTPS; SHA-256 and byte count verified",
+            "producer_receipt_projection_readback": "pinned GitHub source-repository commit; file SHA-256 verified",
             "raw_payloads_requested": False,
             "raw_payload_values_inspected": False,
         },
@@ -432,6 +672,41 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
             for path in inputs
         ],
         "projection_revision": REVISION,
+        "source_receipt_readback": {
+            "producer_repository": SOURCE_REPO,
+            "producer_repository_revision": SOURCE_REPO_REVISION,
+            "historical_download_receipt_projection_identity_join": [
+                "payload_sha256",
+                "byte_count",
+                "source_version_id",
+                "source_locator",
+                "source_id",
+            ],
+            "historical_download_receipt_projections": source_receipt_files,
+            "historical_download_receipt_projection_matches": receipt_projection_matched,
+            "exact_b1_source_download_receipt_projection_joins": exact_b1_receipt_matches,
+            "path_specific_receipts_with_b1_locator_discrepancies": receipt_matched
+            - exact_b1_receipt_matches,
+            "path_specific_mbs_receipt": {
+                "dataset": MBS_SOURCE_DATASET,
+                "revision": MBS_SOURCE_REVISION,
+                "path": MBS_SOURCE_RECEIPT_PATH,
+                "sha256": mbs_receipt_sha256,
+                "byte_count": len(mbs_receipt_bytes),
+                "matched_object_path": mbs_raw_path,
+            },
+            "unique_b1_b2_projection_matches_with_path_receipt_identity_evidence": receipt_matched,
+            "b1_b2_projection_matches_without_source_receipt_evidence": len(
+                matches
+            )
+            - receipt_matched,
+            "projection_matches_still_missing_persisted_landed_admission_history": sum(
+                "persisted landed-admission history" in row["unresolved_roles"]
+                for row in matches
+            ),
+            "complete_b1_b2_lineages_added": 0,
+            "interpretation": "Historical download rows bind content identity and source version/locator but remain producer projections, not native per-object receipt artifacts or admission history. The MBS sidecar binds its exact path, digest, and byte count, but its source URL differs from the parallel reimbursement-atlas B1 projection locator. Existing MBS path-specific B1/B2 lineage evidence remains authoritative for that already-complete object. Receipt matches do not create a landed admission event.",
+        },
         "pinned_dataset_tree_inventory": {
             "path_count": len(pinned_tree_paths),
             "sorted_path_list_sha256": hashlib.sha256(
@@ -458,7 +733,7 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
                 - existing_keys
             ),
             "raw_paths_bound_by_existing_join_or_projection": len(joined),
-            "source_receipt_path_bindings": 1,
+            "prior_m112_source_receipt_path_bindings": 1,
             "historic_publication_receipt_path_bindings": 1,
             "separate_same_content_alias_path_bindings": 1,
             "raw_paths_with_any_path_identity_binding": len(path_bindings),
@@ -469,6 +744,14 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
             "complete_b1_b2_lineages_before_audit": complete,
             "complete_b1_b2_lineages_added": 0,
             "complete_b1_b2_lineages_after_audit": complete,
+            "b1_b2_projection_matches_with_path_receipt_identity_evidence": receipt_matched,
+            "exact_b1_source_download_receipt_projection_joins": exact_b1_receipt_matches,
+            "path_specific_receipts_with_b1_locator_discrepancies": receipt_matched
+            - exact_b1_receipt_matches,
+            "b1_b2_projection_matches_missing_landed_admission_history": sum(
+                "persisted landed-admission history" in row["unresolved_roles"]
+                for row in matches
+            ),
             "b2_projection_links": sum(
                 row["b2_projection_linked"] for row in matches
             ),
