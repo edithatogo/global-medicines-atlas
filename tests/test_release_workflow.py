@@ -134,7 +134,8 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "--require-object software-source-release" in workflow
     assert "scripts/validate_release_authority.py" in workflow
     assert '--tag "$RELEASE_TAG"' in workflow
-    assert "--release-type prerelease" in workflow
+    assert "RELEASE_TYPE: ${{ inputs.release_type }}" in workflow
+    assert '--release-type "$RELEASE_TYPE"' in workflow
     assert "--artifact-scope software-only" in workflow
     identity_gate = workflow.index(
         "Require publishable GitHub software identity and licence"
@@ -170,7 +171,10 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "--clobber" not in workflow
     assert "gh release upload" not in workflow
     assert "--draft" in workflow
-    assert "--prerelease" in workflow
+    assert "release_flags+=(--prerelease)" in workflow
+    assert "type: choice" in workflow
+    assert "default: prerelease" in workflow
+    assert "options:\n          - prerelease\n          - stable" in workflow
 
 
 def test_release_identity_and_sbom_are_semantically_qualified() -> None:

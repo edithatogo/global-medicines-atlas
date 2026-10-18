@@ -8,6 +8,14 @@ on:
         required: true
         type: boolean
         default: false
+      release_type:
+        description: Exact release authority to qualify; stable remains gate-bound
+        required: true
+        type: choice
+        options:
+          - prerelease
+          - stable
+        default: prerelease
       release_tag:
         description: Existing canonical vSemVer tag (required for publish only)
         required: false
@@ -47,13 +55,18 @@ jobs:
         if: inputs.publish
         env:
           RELEASE_TAG: ${{ inputs.release_tag }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
         run: |
           set -euo pipefail
+          case "$RELEASE_TYPE" in
+            prerelease|stable) ;;
+            *) echo "unsupported release type" >&2; exit 1 ;;
+          esac
           uv run python scripts/validate_publication_identities.py \
             --require-object software-source-release
           uv run python scripts/validate_release_authority.py \
             --tag "$RELEASE_TAG" \
-            --release-type prerelease \
+            --release-type "$RELEASE_TYPE" \
             --artifact-scope software-only
       - name: Resolve VCS-derived version
         id: version
@@ -248,15 +261,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.release_tag }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
           QUALIFIED_COMMIT: ${{ github.sha }}
         run: |
           set -euo pipefail
           mapfile -d '' assets < <(find stage -type f -print0 | sort -z)
           test "${#assets[@]}" -gt 0
+          release_flags=()
+          if [[ "$RELEASE_TYPE" == "prerelease" ]]; then
+            release_flags+=(--prerelease)
+          fi
           gh release create \
             --repo "$GITHUB_REPOSITORY" \
             --draft \
-            --prerelease \
+            "${release_flags[@]}" \
             --target "$QUALIFIED_COMMIT" \
             --title "$RELEASE_TAG" \
             --notes "Qualified immutable assets from $QUALIFIED_COMMIT" \
