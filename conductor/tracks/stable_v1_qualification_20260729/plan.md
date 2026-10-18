@@ -724,3 +724,13 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Focused authority/workflow tests (26), Ruff, BasedPyright, and the pinned
   full Test-Goblin profile pass on macOS arm64 with Python 3.14.6 and uv
   0.11.29. Hosted checks for the rebased PR remain pending.
+
+
+## 2026-10-18 protected-checkout identity review fix
+
+- [x] Correct the stable publication identity guard for GitHub Actions exact-SHA
+  checkout: require the protected `refs/heads/main` event and compare `HEAD`
+  directly with `GITHUB_SHA`, without assuming a local main ref exists. Address
+  automated review finding P1 on PR #1156. Focused tests (78), Ruff, formatting,
+  `ty`, BasedPyright, actionlint, and diff checks pass. Hosted checks are pending
+  for the corrected head. Federation remains blocked; no release action occurred.

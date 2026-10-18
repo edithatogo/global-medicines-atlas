@@ -253,10 +253,7 @@ def test_release_publication_is_bound_to_the_protected_main_commit() -> None:
 
     assert "if: inputs.publish" in identity_gate
     assert 'test "$GITHUB_REF" = "refs/heads/main"' in identity_gate
-    assert (
-        'test "$(git rev-parse refs/heads/main)" = "$GITHUB_SHA"'
-        in identity_gate
-    )
+    assert 'test "$(git rev-parse HEAD)" = "$GITHUB_SHA"' in identity_gate
 
 
 def test_failed_qualification_cannot_reach_release_job() -> None:
