@@ -116,21 +116,20 @@ def _scan_value(
                         value_sha256=key_digest,
                     )
                 )
-            field_tokens = (
-                frozenset(re.findall(r"[a-z0-9]+", item.casefold()))
-                if isinstance(item, str) and key in _FIELD_NAME_CARRIERS
-                else frozenset()
-            )
-            if field_tokens & _SENSITIVE_KEY_PARTS:
-                findings.append(
-                    ContentScreenFinding(
-                        path=f"{path}.{key_digest[:12]}",
-                        category="sensitive_field_name",
-                        value_sha256=hashlib.sha256(
-                            item.encode("utf-8")
-                        ).hexdigest(),
-                    )
+            if isinstance(item, str) and key in _FIELD_NAME_CARRIERS:
+                field_tokens = frozenset(
+                    re.findall(r"[a-z0-9]+", item.casefold())
                 )
+                if field_tokens & _SENSITIVE_KEY_PARTS:
+                    findings.append(
+                        ContentScreenFinding(
+                            path=f"{path}.{key_digest[:12]}",
+                            category="sensitive_field_name",
+                            value_sha256=hashlib.sha256(
+                                item.encode("utf-8")
+                            ).hexdigest(),
+                        )
+                    )
             _scan_value(
                 item,
                 path=f"{path}.{key_digest[:12]}",
