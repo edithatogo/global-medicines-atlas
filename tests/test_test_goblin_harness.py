@@ -26,6 +26,13 @@ HARNESS = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(HARNESS)
 
 
+def test_m109_release_note_reconciliation_is_in_unit_lane() -> None:
+    assert (
+        "tests/test_australian_m109_release_note_delta_reconciliation.py"
+        in HARNESS.TEST_LANES["unit"]
+    )
+
+
 @pytest.mark.parametrize(
     "signature",
     [

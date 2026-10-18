@@ -3359,3 +3359,35 @@
   routine, Ruff, `ty`, BasedPyright, context/ecosystem, and diff checks passed.
 - [~] These report-integrity corrections do not complete the historical
   denominator, source-era semantics, rights, admission, or M-109.
+
+
+## M-109 official August no-further-change claim reconciliation (2026-10-18)
+
+- [x] Bind the August release-page statement and exact July/August aggregate
+  report by input digests. The page states one new item and no further XML
+  changes from the release published on 28 May; the comparison reports 6,045
+  matched, one added, zero removed, and 5,445 changed records. Preserve this as
+  `unresolved_observed_delta`; do not infer the named item identity or whether
+  change-indicator differences are snapshot-relative.
+- [x] Add a reproducible, value-free qualification, four focused negative and
+  boundary tests, and a Test-Goblin unit-lane registration regression. The
+  report does not emit the item code, source identifiers, or source values and
+  leaves field semantics and M-109 blocked. The full Test-Goblin unit lane was
+  interrupted at 39% because it exceeded the bounded affected-test scope; no
+  test failure was observed or represented as a pass.
+- [~] Await authoritative clarification of the release-note/comparison delta
+  and field-flag temporal scope, as well as the complete approved source-era
+  denominator, source-specific rights, and admission evidence.
+
+### M-109 reconciliation provenance review fixes (2026-10-18)
+
+- [x] Bind each parsed evidence object to the exact bytes whose SHA-256 is
+  recorded; reject caller-supplied objects that differ from those bytes.
+- [x] Record the actual paths passed to the CLI, including supported input
+  overrides, and add regressions for both provenance boundaries.
+- [x] Re-run the focused reconciliation and Test-Goblin harness tests (64
+  passed), Ruff, formatting, `ty`, BasedPyright on changed files, report
+  regeneration, and `git diff --check`.
+- [~] Push the review correction to PR #1160 and wait for protected checks on
+  its new exact head. No M-109 semantics, rights, admission, or acceptance
+  status changes.
