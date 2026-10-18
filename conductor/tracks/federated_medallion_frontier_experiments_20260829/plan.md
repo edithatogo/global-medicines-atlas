@@ -416,20 +416,34 @@
   control passed with 400 calibration and 400 disjoint holdout cases
   (Brier 0.1911; ten-bin ECE 0.0149). This validates the fitting path only;
   it is explicitly not a calibration result for the retrieval method.
-- [ ] Calibrate the actual synthetic candidate retrieval method. The current
-  six-case corpus yields only four scored top candidates (two correct, two
-  incorrect), no independent holdout, and no confidence output; the fixed
-  100-per-class exploratory floor is not met. Do not infer clinical or source
-  performance from generated calibration-control scores.
+- [x] Screen the exact July 2025 MBS Gold candidate relationship cohort for
+  candidate eligibility independently of engine parity. The value-free graph
+  qualification binds 5,989 source-explicit `source_record_has_benefit` edges;
+  all 5,989 satisfy the same-source-record, non-inferred screen and zero are
+  excluded. The screen does not set review state, establish semantic or
+  clinical equivalence, clear rights, admit the graph, or authorize release.
+  The expanded qualification is versioned as receipt/schema v2; the existing
+  v1 schema and receipt remain unchanged and valid.
+- [~] Calibrate the actual synthetic candidate retrieval method. A generated
+  400-case calibration partition and disjoint 400-case holdout were scored by
+  the actual matcher, with 200 positive and 200 negative cases per partition.
+  The fit is `measured_synthetic_only` but performs poorly on holdout
+  (Brier 0.2108; ten-bin ECE 0.2068); confidence remains un-emitted. This
+  experiment replaces the fake score-curve control as method evidence, but it
+  does not establish representative source performance or adequate calibration.
+  Keep this lane open; do not infer clinical or source performance from the
+  generated cases.
 - [ ] Phase Verification & Checkpoint: all engines reproduce portable Gold
   semantics and no model/index is an authority. Hosted synthetic exact parity
   is now evidenced for Neo4j 2026.09.0 and Oxigraph 0.5.9 RDF 1.2, including
   RDF 1.2 reification source/target semantics; the local `tests/test_frontier_*.py`
-  suite passes 197 tests with two expected skips because local Neo4j and
+  suite and new relationship-screen/matcher-calibration tests pass 231 tests
+  with two expected skips because local Neo4j and
   Oxigraph services are not configured. These results cover the existing
   synthetic MBS/PBS projections only. Bounded canary screening now runs before
-  export, but exhaustive/source-specific restricted-content screening and
-  actual candidate-model calibration remain unresolved, so the phase
+  export, and candidate relationship eligibility is screened separately.
+  Exhaustive/source-specific restricted-content screening and representative
+  candidate-model calibration remain unresolved, so the phase
   checkpoint stays open. No source expansion, rights clearance,
   source-coverage claim, or production authority is implied.
 
@@ -440,12 +454,20 @@
   The synthetic benchmark has full local and 38/38 hosted evidence. The hosted
   graph lanes now verify exact synthetic MBS/PBS parity on Neo4j 2026.09.0 and
   Oxigraph 0.5.9 RDF 1.2, including reification direction; the local Frontier
-  module suite passes 197 tests with two expected service-absent skips;
-  routine, Ruff, `ty`, and BasedPyright pass. The local full Test-Goblin run was
-  interrupted at 35% before completion and is not qualification evidence.
-  Bounded content-pattern screening and the calibration mechanics control pass;
-  actual restricted-content clearance and actual matcher calibration remain
-  open. This is not public-graph qualification or production promotion.
+  module suite and relationship/calibration receipts pass 231 tests with two
+  expected service-absent skips;
+  routine, Ruff, `ty`, and BasedPyright pass. The local full Test-Goblin run
+  completed with 6,911 passed, 3 skipped, 4 failed, and 96.89% coverage. Two
+  clean-clone reproducibility failures passed in isolation after exposing the
+  required uv 0.11.29. One Chromium test passed in isolation; the PBS Chromium
+  test still timed out in isolation, and the second browser timeout occurred
+  under full-suite load. These failures remain distinct from the Frontier
+  focused pass; hosted protected checks are still required.
+  Bounded content-pattern and candidate relationship screening pass. Generated
+  matcher cases yield poor holdout calibration metrics and no confidence
+  output; representative matcher calibration and actual restricted-content
+  clearance remain open. This is not public-graph qualification or production
+  promotion.
 - [x] Record free-tier/resource use, threat model, supply-chain impact,
   operational burden, fallback, rollback, and withdrawal behavior.
 - [x] Review the current experiment matrix and evidence, record bounded
