@@ -3583,5 +3583,9 @@
   were made.
 - [~] Locate persisted landed-admission histories for the 1,703 incomplete
   B1/B2 projection matches. Their acquisition/B2 projection records and source
-  receipt rows do not supply a landed event. Continue only from existing
-  evidence; do not synthesize admission history.
+  receipt rows do not supply a landed event. A bounded search of the pinned
+  producer's tracked path history (536 commits across fetched refs), its
+  current source tree, and all current Actions artifact pages found no
+  joinable landed-admission records. This narrows the retained-evidence search
+  without proving that no other existing record exists. Continue only from
+  existing evidence; do not synthesize admission history.

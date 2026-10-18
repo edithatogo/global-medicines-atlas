@@ -340,16 +340,30 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
             raise ValueError(
                 f"non-unique B2/promotion projection match: {item['path']}"
             )
-        source_receipt_candidates = source_receipts_by_identity.get(
-            (
-                identity["sha256"],
-                identity["byte_count"],
-                acquisition.get("source_version_id"),
-                acquisition.get("source_locator"),
-                acquisition.get("source_id"),
-            ),
-            [],
-        )
+        receipt_sha = identity.get("sha256")
+        receipt_byte_count = identity.get("byte_count")
+        source_version_id = acquisition.get("source_version_id")
+        source_locator = acquisition.get("source_locator")
+        source_id = acquisition.get("source_id")
+        if (
+            isinstance(receipt_sha, str)
+            and isinstance(receipt_byte_count, int)
+            and isinstance(source_version_id, str)
+            and isinstance(source_locator, str)
+            and isinstance(source_id, str)
+        ):
+            source_receipt_candidates = source_receipts_by_identity.get(
+                (
+                    receipt_sha,
+                    receipt_byte_count,
+                    source_version_id,
+                    source_locator,
+                    source_id,
+                ),
+                [],
+            )
+        else:
+            source_receipt_candidates = []
         if len(source_receipt_candidates) > 1:
             raise ValueError(
                 f"non-unique source receipt projection match: {item['path']}"
