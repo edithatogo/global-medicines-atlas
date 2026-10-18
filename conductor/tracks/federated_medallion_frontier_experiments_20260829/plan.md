@@ -405,16 +405,33 @@
   Automated review caught that the hashed lexical threshold was not passed to
   candidate generation. The benchmark now uses one shared threshold constant
   for execution and query identity; a regression test checks both bindings.
+- [x] Add content screening to the portable, RDF-star, and RDF 1.2 graph
+  exporters before serialization. It rejects synthetic sensitive-field-name
+  and email-like canaries plus exact caller-supplied SHA-256 canaries, bounds
+  inputs, rejects ambiguous JSON, and records no matched values. MBS and PBS
+  integration controls pass. A clean result is not exhaustive inspection,
+  restricted-terminology detection, or rights clearance.
+- [x] Add a case-disjoint, sample-gated Platt calibration evaluator with
+  dataset digests and held-out Brier/ECE. A generated synthetic mechanics
+  control passed with 400 calibration and 400 disjoint holdout cases
+  (Brier 0.1911; ten-bin ECE 0.0149). This validates the fitting path only;
+  it is explicitly not a calibration result for the retrieval method.
+- [ ] Calibrate the actual synthetic candidate retrieval method. The current
+  six-case corpus yields only four scored top candidates (two correct, two
+  incorrect), no independent holdout, and no confidence output; the fixed
+  100-per-class exploratory floor is not met. Do not infer clinical or source
+  performance from generated calibration-control scores.
 - [ ] Phase Verification & Checkpoint: all engines reproduce portable Gold
   semantics and no model/index is an authority. Hosted synthetic exact parity
   is now evidenced for Neo4j 2026.09.0 and Oxigraph 0.5.9 RDF 1.2, including
   RDF 1.2 reification source/target semantics; the local `tests/test_frontier_*.py`
-  suite passes 175 tests with two expected skips because local Neo4j and
+  suite passes 197 tests with two expected skips because local Neo4j and
   Oxigraph services are not configured. These results cover the existing
-  synthetic MBS/PBS projections only. Graph rights-content screening and
-  confidence calibration remain unresolved, so the phase checkpoint stays
-  open. No source expansion, rights clearance, source-coverage claim, or
-  production authority is implied.
+  synthetic MBS/PBS projections only. Bounded canary screening now runs before
+  export, but exhaustive/source-specific restricted-content screening and
+  actual candidate-model calibration remain unresolved, so the phase
+  checkpoint stays open. No source expansion, rights clearance,
+  source-coverage claim, or production authority is implied.
 
 ## Phase 6: Threat, cost, and disposition review (AC-07, AC-08)
 
@@ -423,8 +440,11 @@
   The synthetic benchmark has full local and 38/38 hosted evidence. The hosted
   graph lanes now verify exact synthetic MBS/PBS parity on Neo4j 2026.09.0 and
   Oxigraph 0.5.9 RDF 1.2, including reification direction; the local Frontier
-  module suite passes 175 tests with two expected service-absent skips.
-  Broader graph rights-content screening and confidence calibration remain
+  module suite passes 197 tests with two expected service-absent skips;
+  routine, Ruff, `ty`, and BasedPyright pass. The local full Test-Goblin run was
+  interrupted at 35% before completion and is not qualification evidence.
+  Bounded content-pattern screening and the calibration mechanics control pass;
+  actual restricted-content clearance and actual matcher calibration remain
   open. This is not public-graph qualification or production promotion.
 - [x] Record free-tier/resource use, threat model, supply-chain impact,
   operational burden, fallback, rollback, and withdrawal behavior.
