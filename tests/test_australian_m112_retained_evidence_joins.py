@@ -103,6 +103,30 @@ def test_join_increment_preserves_inventory_ids_and_separate_gates() -> None:
         (join["dataset"], join["dataset_revision"], join["path"])
         for join in increment["new_joins"]
     }
+    projection_receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-m112-projection-identity-readback-20261018.json"
+        ).read_text(encoding="utf-8")
+    )
+    expected_changed_keys.update(
+        (
+            projection_receipt["scope"]["dataset"],
+            projection_receipt["scope"]["revision"],
+            row["path"],
+        )
+        for row in projection_receipt["objects"]
+    )
+    raw_receipt = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-m112-raw-identity-readback-20261018.json"
+        ).read_text(encoding="utf-8")
+    )
+    expected_changed_keys.update(
+        (row["dataset"], row["revision"], row["path"])
+        for row in raw_receipt["objects"]
+    )
 
     assert increment["denominator_object_count"] == 1759
     assert (
@@ -117,10 +141,32 @@ def test_join_increment_preserves_inventory_ids_and_separate_gates() -> None:
     assert gates["complete_raw_b1_b2_lineage_paths"] == 6
     assert gates["v4_admissions"] == 0
     assert gates["consumer_canaries"] == 0
-    assert gates["raw_paths_without_direct_or_alias_sha256"] == 92
-    assert gates["projection_paths_without_direct_or_alias_sha256"] == 12
+    assert gates["raw_paths_without_direct_or_alias_sha256"] == 0
+    assert gates["projection_paths_without_direct_or_alias_sha256"] == 0
+    assert increment["projection_paths_bound_by_anonymous_readback"] == 12
+    assert (
+        increment["projection_bytes_streamed_without_local_persistence"]
+        == 7201352
+    )
+    assert increment["raw_paths_bound_by_anonymous_readback"] == 92
+    assert (
+        increment["raw_payload_bytes_streamed_without_local_persistence"]
+        == 5018706
+    )
     assert report["boundaries"]["rights_or_licensing_conclusion_added"] is False
-    assert report["boundaries"]["source_payload_bytes_read_this_run"] is False
+    assert report["boundaries"]["source_payload_bytes_read_this_run"] is True
+    assert (
+        report["boundaries"]["source_payload_bytes_streamed_this_run"]
+        == 5018706
+    )
+    assert (
+        report["boundaries"]["source_payload_bytes_persisted_this_run"] is False
+    )
+    assert (
+        report["boundaries"]["source_payload_values_inspected_this_run"]
+        is False
+    )
+    assert report["boundaries"]["projection_bytes_streamed_this_run"] == 7201352
 
 
 def test_join_increment_inputs_are_digest_bound_and_output_is_reproducible() -> (
@@ -130,6 +176,21 @@ def test_join_increment_inputs_are_digest_bound_and_output_is_reproducible() -> 
     for item in report["evidence_inputs"]:
         content = (ROOT / item["path"]).read_bytes()
         assert hashlib.sha256(content).hexdigest() == item["sha256"]
+
+    by_path = {
+        (row["dataset"], row["revision"], row["path"]): row
+        for row in report["objects"]
+    }
+    assert len(by_path) == 1759
+    assert all(row["identity"].get("sha256") for row in by_path.values())
+    assert all(
+        row["identity"]["sha256"]
+        == row["identity"]["content_addressed_path_binding"][
+            "path_basename_sha256"
+        ]
+        for row in report["objects"]
+        if row["identity"].get("content_addressed_path_binding")
+    )
 
     if OUTPUT.exists():
         observed: Any = json.loads(OUTPUT.read_text(encoding="utf-8"))

@@ -2055,9 +2055,12 @@
   path-presence evidence; full-denominator anonymous object-digest readback,
   current-tree digest comparison, source rights, per-object lineage, v4
   admission, and compatibility canaries remain open.
-- [ ] Complete the remaining per-object rights, B1/B2 lineage, anonymous
-  payload-digest readback, v4 admission, and consumer canary gates. M-112
-  remains blocked until every approved object satisfies its independent gates.
+- [x] Complete anonymous SHA-256 identity readback for all 1,759 frozen raw
+  and projection paths. The 92 raw PBS gaps and 12 projection gaps are bound
+  to same-path digests at immutable revisions; this closes identity only.
+- [ ] Complete the remaining per-object rights, B1/B2 lineage, v4 admission,
+  and consumer canary gates. M-112 remains blocked until each eligible object
+  satisfies its independent gates.
 
 ## Source archive digest reconciliation (2026-10-04)
 
@@ -3544,3 +3547,19 @@
 - [ ] Keep M-112 per-object federation-reader canaries blocked until an eligible
   object receives v4 admission. The frozen 1,759-object overlay therefore still
   correctly reports zero M-112 consumer canaries and preserves all deferrals.
+
+### M-112 complete frozen-object identity readback (2026-10-18)
+
+- [x] Stream the 12 previously unbound projection objects at their frozen
+  public revision and verify their byte counts and SHA-256 digests without
+  local persistence or value inspection.
+- [x] Stream the 92 previously unbound PBS raw objects anonymously at their
+  exact immutable revision, without local persistence or value inspection.
+  Every recorded 64-character filename digest matches the streamed SHA-256.
+- [x] Bind both readback receipts into the retained per-object overlay. All
+  1,759 paths now carry direct SHA-256 evidence or the existing verified alias
+  binding; raw and projection identity gaps are zero. The approved denominator
+  and all deferrals are unchanged. This adds no rights or admission conclusion;
+  PBS B1/B2 lineage and source-owner crosswalks remain open and unchanged.
+- [x] Verify with the focused join tests, the full 80-test M-112 suite, Ruff,
+  and exact frozen-membership and per-object identity assertions.
