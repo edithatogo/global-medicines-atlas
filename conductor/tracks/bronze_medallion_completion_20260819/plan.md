@@ -1385,3 +1385,44 @@ for credentialed or rights-unresolved sources.
   224 focused maturity/contract tests, measured-coverage check, and Conductor
   context validation pass. Source rights, admissions, and federation gates are
   unchanged.
+
+## July 2025 MBS source B1/B2 lineage (2026-10-19)
+
+- [x] Bind the existing public-archive SourceReceipt for
+  `raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML` to its exact frozen inventory
+  revision, digest, and byte count. Add the missing acquisition event,
+  external-reference-only B2 manifest, and landed unreviewed admission using
+  the same acquisition identity. No source payload was requested or inspected.
+- [x] Update one object in the M-112 overlay: complete B1/B2 lineages increase
+  from 21 to 22; exact receipt/acquisition path joins increase from 26 to 27.
+  The separate path-digest total stays 118, the frozen denominator stays 1,759,
+  all 1,759 deferrals remain, and the separate per-object rights gate, v4
+  admission, and consumer-canary gates remain open.
+- [x] Regenerate the dependent Bronze receipt cohort; it remains 29 qualified
+  and 130 deferred.
+- [x] Focused M-112, Bronze cohort, and P7 regression tests pass (36); Ruff,
+  `ty`, BasedPyright, and diff checks pass.
+- [~] Run the full Test-Goblin profile: 6,924 passed, 3 skipped, 10 failed,
+  with 96.89% coverage. The failures are existing browser/runtime consumer
+  paths and stable-v1 clean-clone reproductions; the new lineage tests pass.
+  Hosted protected checks on the candidate head remain pending and are
+  authoritative for merge readiness.
+
+### Review hardening follow-up (2026-10-19)
+
+- [x] Validate the public archive dataset and immutable revision headers before
+  binding its July 2025 payload row. Validate the matching current-tree record's
+  exact dataset, revision, path, blob ID, and byte count against the frozen
+  object row before completing lineage.
+- [x] Preserve the first qualification and overlay as history; emit a reviewed
+  successor qualification and overlay with the validated current-tree identity
+  included in the report.
+- [x] Focused lineage, receipt-cohort, P7, utilisation-lineage, and M-112
+  reconciliation checks pass (35). Ruff, `ty`, BasedPyright, context, ecosystem,
+  and JSONL checks pass.
+- [~] The full local Test-Goblin run completed: 6,931 passed, 3 skipped, 7
+  failed, and 96.89% coverage. Failures remain in existing stable-v1 clean-clone,
+  browser/E2E, consumer, and performance tests; the changed lineage tests pass.
+  The initial candidate head's hosted checks pass, but its two review findings
+  remain open until this hardening is pushed. Hosted checks must run on the
+  revised head before merge.
