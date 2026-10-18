@@ -1420,9 +1420,30 @@ for credentialed or rights-unresolved sources.
 - [x] Focused lineage, receipt-cohort, P7, utilisation-lineage, and M-112
   reconciliation checks pass (35). Ruff, `ty`, BasedPyright, context, ecosystem,
   and JSONL checks pass.
-- [~] The full local Test-Goblin run completed: 6,931 passed, 3 skipped, 7
+- [x] The full local Test-Goblin run completed: 6,931 passed, 3 skipped, 7
   failed, and 96.89% coverage. Failures remain in existing stable-v1 clean-clone,
   browser/E2E, consumer, and performance tests; the changed lineage tests pass.
-  The initial candidate head's hosted checks pass, but its two review findings
-  remain open until this hardening is pushed. Hosted checks must run on the
-  revised head before merge.
+  Both review findings were resolved, every protected check passed on revised
+  head `865211d`, and PR [#1176](https://github.com/edithatogo/global-medicines-atlas/pull/1176)
+  merged as `f897924`.
+
+## July 2025 MBS Silver projection lineage (2026-10-19)
+
+- [x] Bind the six existing July 2025 Silver tables to the exact frozen M-112
+  paths and output digests, the existing July MBS source receipt and raw B2
+  identity, each table's source-lineage digest, the candidate manifest, and
+  anonymous public metadata readback. No source payload or Parquet bytes were
+  requested or inspected.
+- [x] Mark only those six projection rows lineage-complete. Raw lineage remains
+  22; projection lineage is now 6 of 23; total complete object lineages are 28
+  of 1,759. Exact raw digest/path joins remain 118 and exact receipt/acquisition
+  joins remain 27.
+- [x] Preserve all 1,759 deferrals. The derived-table rights gate remains open;
+  v4 admissions and consumer canaries remain zero. No source or dataset was
+  added and no release was performed.
+- [x] Focused Silver/raw lineage tests pass (8); Ruff, `ty`, BasedPyright,
+  context, ecosystem, and Test-Goblin test-inventory checks pass.
+- [~] The full Test-Goblin profile completed with 6,929 passed, 3 skipped, 11
+  failed, and 96.89% coverage. Failures were in existing browser/E2E, consumer,
+  and stable-v1 clean-clone tests; the new lineage tests passed in the focused
+  run. Protected hosted checks remain required before merge.

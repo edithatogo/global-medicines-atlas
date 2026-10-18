@@ -1,0 +1,277 @@
+{
+  "schema_id": "global-medicines-atlas.m112-july-mbs-silver-source-lineage",
+  "schema_version": 1,
+  "observed_at": "2026-10-19T05:50:00+10:00",
+  "status": "six_candidate_silver_tables_bound_to_frozen_source_lineage",
+  "scope": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "inventory_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+    "frozen_denominator": 1759,
+    "frozen_projection_count": 23,
+    "objects_qualified": 6,
+    "all_objects_candidate_only": true
+  },
+  "source": {
+    "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+    "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "byte_count": 8194522,
+    "source_version": "2025-07-version-3",
+    "receipt_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+    "receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03",
+    "source_payload_bytes_requested_or_inspected": false
+  },
+  "candidate_product": {
+    "prefix": "silver/mbs/v4/2025-07-v3",
+    "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+    "current_tree_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+    "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "candidate_only": true,
+    "typed_v4_admission": false,
+    "derived_product_rights_conclusion": false,
+    "publication_performed": false
+  },
+  "outputs": [
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "inventory_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "table": "benefits",
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "byte_count": 114493,
+      "source": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+        "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+        "byte_count": 8194522,
+        "source_version": "2025-07-version-3",
+        "source_receipt_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+        "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03"
+      },
+      "transformation": {
+        "candidate_report_path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json",
+        "candidate_report_sha256": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606",
+        "producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9",
+        "table_lineage_sha256": "0cbdc12fb2c17c4b69802535e27f2b24afa13759b65745bb3ff227c84929d67c",
+        "row_count": 5989,
+        "field_count": 5,
+        "field_occurrence_count": 29945,
+        "candidate_only": true
+      },
+      "public_identity": {
+        "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+        "anonymous_readback_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+        "manifest_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+        "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+        "readback_matches_manifest": true,
+        "lfs_oid_and_byte_count_match": true
+      }
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "inventory_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "table": "caps",
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "byte_count": 60259,
+      "source": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+        "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+        "byte_count": 8194522,
+        "source_version": "2025-07-version-3",
+        "source_receipt_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+        "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03"
+      },
+      "transformation": {
+        "candidate_report_path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json",
+        "candidate_report_sha256": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606",
+        "producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9",
+        "table_lineage_sha256": "9ec56a8b5b2a255ac987fb33f38671111450e19703dfcbb04f7b9d2b547cf075",
+        "row_count": 5989,
+        "field_count": 9,
+        "field_occurrence_count": 53901,
+        "candidate_only": true
+      },
+      "public_identity": {
+        "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+        "anonymous_readback_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+        "manifest_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+        "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+        "readback_matches_manifest": true,
+        "lfs_oid_and_byte_count_match": true
+      }
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "inventory_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "table": "descriptions",
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "byte_count": 620348,
+      "source": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+        "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+        "byte_count": 8194522,
+        "source_version": "2025-07-version-3",
+        "source_receipt_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+        "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03"
+      },
+      "transformation": {
+        "candidate_report_path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json",
+        "candidate_report_sha256": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606",
+        "producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9",
+        "table_lineage_sha256": "c035e3035fca84f1b28509246b95c05b70b6f6662b7283bd6daf084644cc524f",
+        "row_count": 5989,
+        "field_count": 3,
+        "field_occurrence_count": 17967,
+        "candidate_only": true
+      },
+      "public_identity": {
+        "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+        "anonymous_readback_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+        "manifest_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+        "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+        "readback_matches_manifest": true,
+        "lfs_oid_and_byte_count_match": true
+      }
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "inventory_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "table": "fees",
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "byte_count": 93072,
+      "source": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+        "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+        "byte_count": 8194522,
+        "source_version": "2025-07-version-3",
+        "source_receipt_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+        "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03"
+      },
+      "transformation": {
+        "candidate_report_path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json",
+        "candidate_report_sha256": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606",
+        "producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9",
+        "table_lineage_sha256": "14b882ff721a77c8ce929756d1c0747561edb29b6d9fbde77f9e05ea29891958",
+        "row_count": 5989,
+        "field_count": 6,
+        "field_occurrence_count": 35934,
+        "candidate_only": true
+      },
+      "public_identity": {
+        "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+        "anonymous_readback_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+        "manifest_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+        "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+        "readback_matches_manifest": true,
+        "lfs_oid_and_byte_count_match": true
+      }
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "inventory_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "table": "hierarchy",
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "byte_count": 51851,
+      "source": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+        "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+        "byte_count": 8194522,
+        "source_version": "2025-07-version-3",
+        "source_receipt_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+        "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03"
+      },
+      "transformation": {
+        "candidate_report_path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json",
+        "candidate_report_sha256": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606",
+        "producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9",
+        "table_lineage_sha256": "a2ee7bbf2a6781a67734bd1b458734ad0bdb1afdaaa7a97804f893388eb5ac93",
+        "row_count": 5989,
+        "field_count": 4,
+        "field_occurrence_count": 23956,
+        "candidate_only": true
+      },
+      "public_identity": {
+        "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+        "anonymous_readback_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+        "manifest_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+        "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+        "readback_matches_manifest": true,
+        "lfs_oid_and_byte_count_match": true
+      }
+    },
+    {
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "inventory_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "table": "services",
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "byte_count": 100062,
+      "source": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+        "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+        "byte_count": 8194522,
+        "source_version": "2025-07-version-3",
+        "source_receipt_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+        "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03"
+      },
+      "transformation": {
+        "candidate_report_path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json",
+        "candidate_report_sha256": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606",
+        "producer_commit": "decdeca1f3724405b0e085eb77d8ff11b6944ef9",
+        "table_lineage_sha256": "fb107c220a2dfcd558e5312ecc9b01c3bcb44d0cac971254a96c09496bc8dd51",
+        "row_count": 5989,
+        "field_count": 13,
+        "field_occurrence_count": 77857,
+        "candidate_only": true
+      },
+      "public_identity": {
+        "publication_revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+        "anonymous_readback_revision": "44b25bfd87e44998c7c1da4c3930ad4447e9246f",
+        "manifest_path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+        "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+        "readback_matches_manifest": true,
+        "lfs_oid_and_byte_count_match": true
+      }
+    }
+  ],
+  "input_bindings": {
+    "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json": "cf62413bd6edecedd1cb7178393526921f3a35125789e0dbfdbdb1a2853fb243",
+    "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json": "eaa1d84325c7672100398acf8116f0312369ca336d42ed21eee110452d3fefa4",
+    "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae",
+    "quality/qualifications/australian-m112-july-mbs-source-lineage-reviewed-20261019.json": "ee2b89fb5cdfc35fa42b650d1d30f3cb0e6085a6a655e1ce9b8f2e9f1604d97f",
+    "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+    "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "quality/qualifications/australian-mbs-v4-candidate-2025-07/qualification.json": "b29d7d088a8a0564f2b022cdafa7351564eb5f292421cfe928c3f04ee0409723",
+    "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606",
+    "quality/qualifications/australian-m108-derived-products-20261017.json": "f9da44a9fc61ebaff83e7784f56d2376db33e2d9a7b834142ee60c3a1ad5fd7c"
+  },
+  "implementation": {
+    "path": "scripts/reconcile_m112_july_mbs_silver_lineage.py",
+    "sha256": "a07a3ea6a25df38b95205be082d29be2eda2bfa2bb949cd7d2d48812457979de"
+  },
+  "scope_limits": {
+    "new_source_or_dataset_added": false,
+    "frozen_inventory_changed": false,
+    "rights_or_licensing_conclusion_added": false,
+    "per_object_rights_gate_closed": false,
+    "v4_admission_performed": false,
+    "consumer_canary_performed": false,
+    "source_payload_bytes_requested_or_inspected": false,
+    "source_values_retained": false,
+    "public_release_performed": false
+  }
+}

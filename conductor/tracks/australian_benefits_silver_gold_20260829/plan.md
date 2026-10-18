@@ -3656,3 +3656,49 @@
   three Gold/browser consumer tests, the PBS and coverage browser E2E tests,
   two scalar Chromium tests, and one Platinum browser test. Hosted PR checks
   are still required for this increment.
+
+### M-112 August MBS Bronze projection lineage (2026-10-19)
+
+- [x] Rebuild the four frozen August 2026 MBS `source.parquet` and `p7.parquet`
+  projections from the exact pinned raw B2 stream and each run's public source
+  receipt. All four output byte counts and SHA-256 values reproduce exactly and
+  match the run manifests, M-108 metadata readback, and frozen tree inventory.
+  Preserve both run-specific receipts, acquisitions, and accepted/unreviewed
+  admission events; no event was collapsed or rewritten.
+- [x] Bind the four output rows to the existing complete raw B1/B2 lineage and
+  source transformation implementation. Raw source bytes were streamed and
+  parsed in memory, then discarded; no source values or Parquet outputs were
+  persisted. Rights, v4 admission, and release gates remain unchanged.
+- [x] Reconcile the retained overlay and verify the exact four changed
+  projection members. The frozen 1,759-object denominator is unchanged; 22 raw
+  and 10 projection B1/B2 lineages are complete (32 total), 1,714 raw and 13
+  projection lineages remain incomplete, all objects remain deferred, and v4
+  admissions and M-112 federation-reader canaries remain zero.
+- [~] Continue B1/B2 lineage work for remaining objects. The 1,707
+  reimbursement-atlas raw rows and 12 medallion projections lack persisted
+  landed-admission/source-receipt joins; PBS/M107 owner-managed objects remain
+  in their separate lane.
+
+- [~] Audit remaining lineage candidates against the pinned producer history.
+  The 1,714 incomplete raw lineages are PBS objects: 1,707 reimbursement-atlas
+  payloads, six PBS-utilisation objects, and one PBS-source object. The remaining
+  13 incomplete projections are 12 reimbursement-atlas medallion tables and one
+  PBS source Parquet. The pinned producer revision exposes B1/B2 metadata
+  projections, but its existing retained Actions artifact contains no exact
+  per-object landed-admission or B2 receipt records for this inventory. The
+  source-owner lane remains unchanged; 32 of 1,759 objects have complete lineage.
+  See the `m112_remaining_lineage_owner_lane_audit` evidence record.
+
+### M-112 July Silver review correction (2026-10-19)
+
+- [x] Address review findings #4308597850 and #4308597853. The reconciler now
+  compares current-tree expected and observed Git blob, LFS digest, and byte
+  count against each frozen object identity, validates both Silver qualification
+  reports, and requires exact table-lineage equality with the manifest-bound
+  public qualification. Four targeted tests and the 15-test focused suite pass;
+  Ruff, formatting, BasedPyright, Test-Goblin routine, and repository metadata
+  checks pass. Hosted rerun is pending.
+- [~] Remaining owner-controlled PBS lineage remains unchanged pending an
+  explicit decision about creating current-time B1/B2 records from pinned
+  public objects. The exact gap counts and producer-history audit are recorded
+  under `m112_remaining_lineage_owner_lane_audit`.
