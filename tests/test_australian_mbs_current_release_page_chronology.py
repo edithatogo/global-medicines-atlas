@@ -56,6 +56,56 @@ def test_matching_rows_requires_exact_source_url_and_keeps_no_row_text() -> (
     assert "row_text" not in row
 
 
+def test_limited_stream_stops_after_first_oversize_chunk() -> None:
+    def chunks():
+        yield b"1234"
+        yield b"56"
+        raise AssertionError("stream must stop after exceeding the limit")
+
+    body, observed, complete = chronology.collect_limited(chunks(), 4)
+
+    assert body == b"1234"
+    assert observed == 6
+    assert complete is False
+
+
+def test_unavailable_page_preserves_expected_source_links(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fail_read(_url: str, _max_bytes: int) -> chronology.BoundedHTTPResponse:
+        raise chronology.httpx.ConnectError("offline")
+
+    monkeypatch.setattr(chronology, "_bounded_get", fail_read)
+    page = {
+        "page_id": "Downloads-test",
+        "url": "https://www.mbsonline.gov.au/Downloads-test",
+        "resources": [
+            {
+                "source_url": "https://www.mbsonline.gov.au/MBS-test.XML",
+                "filename": "MBS-test.XML",
+                "matching_archive_receipts": [
+                    {
+                        "receipt_path": "receipts/test.json",
+                        "archive_path": "raw/test.XML",
+                        "payload_sha256": "a" * 64,
+                    }
+                ],
+            }
+        ],
+    }
+
+    result = chronology.read_page(
+        page, ["https://www.mbsonline.gov.au/MBS-test.XML"]
+    )
+
+    assert result["status"] == "unavailable"
+    assert result["resources"][0]["source_url"].endswith("MBS-test.XML")
+    assert result["resources"][0]["page_observation_status"] == "unavailable"
+    assert result["resources"][0]["archive_receipts"][0]["receipt_path"] == (
+        "receipts/test.json"
+    )
+
+
 def test_report_digest_is_valid() -> None:
     report = _report()
     digest = cast("dict[str, str]", report["digest"])
@@ -80,6 +130,9 @@ def test_report_reconciles_only_observed_current_index_links() -> None:
     assert len(scope["archive_revision"]) == 40
     assert scope["current_receipt_sidecars_verified"] == 87
     assert scope["current_receipt_sidecars_unresolved"] == 0
+    assert scope["resource_receipt_bindings_expected"] == 82
+    assert scope["resource_receipt_bindings_verified"] == 82
+    assert scope["resource_receipt_bindings_unresolved"] == 0
     assert scope["expected_historical_denominator_complete"] is False
     assert scope["m109_accepted"] is False
     assert scope["source_payloads_requested"] is False
@@ -117,6 +170,67 @@ def test_public_archive_failure_is_recorded_as_incomplete(
     assert result["receipt_sidecars_expected"] == 1
     assert result["receipt_sidecars_verified"] == 0
     assert result["receipt_sidecars_unresolved"] == 1
+
+
+def test_missing_resource_receipt_fails_the_per_resource_binding() -> None:
+    resources: list[dict[str, Any]] = [
+        {
+            "source_url": "https://www.mbsonline.gov.au/MBS-test.XML",
+            "archive_receipts": [{"receipt_path": "receipts/missing.json"}],
+        },
+        {
+            "source_url": "https://www.mbsonline.gov.au/MBS-empty.XML",
+            "archive_receipts": [],
+        },
+        {
+            "source_url": "https://www.mbsonline.gov.au/MBS-mismatch.XML",
+            "archive_receipts": [
+                {
+                    "receipt_path": "receipts/mismatch.json",
+                    "archive_path": "raw/mismatch.XML",
+                    "payload_sha256": "a" * 64,
+                }
+            ],
+        },
+    ]
+
+    result = chronology.bind_current_receipts(
+        resources,
+        {
+            "revision": "b" * 40,
+            "receipt_sidecars": [
+                {
+                    "receipt_path": "receipts/mismatch.json",
+                    "status": "exact_current_receipt",
+                    "source_url": "https://www.mbsonline.gov.au/OTHER.XML",
+                    "archive_path": "raw/mismatch.XML",
+                    "payload_sha256": "a" * 64,
+                    "receipt": {"sha256": "c" * 64},
+                }
+            ],
+        },
+    )
+
+    assert result == {"expected": 3, "verified": 0, "unresolved": 3}
+    assert resources[0]["current_receipt_binding_status"] == (
+        "current_receipts_unresolved"
+    )
+    assert resources[1]["current_receipt_binding_status"] == (
+        "invalid_receipt_mapping"
+    )
+    assert resources[2]["current_receipt_binding_status"] == (
+        "current_receipts_unresolved"
+    )
+    assert (
+        chronology.qualification_status(
+            0,
+            0,
+            0,
+            result["unresolved"],
+            "exact_current_revision_receipts_verified",
+        )
+        == "incomplete_official_page_observation"
+    )
 
 
 def _index() -> dict[str, Any]:
@@ -191,6 +305,9 @@ def test_source_rows_bind_to_current_receipts_without_source_values() -> None:
         )
         expected = expected_resources[resource["source_url"]]
         assert resource["filename"] == expected["filename"]
+        assert resource["current_receipt_binding_status"] == (
+            "exact_current_receipts_verified"
+        )
         expected_for_source = expected["matching_archive_receipts"]
         actual_for_source = resource["archive_receipts"]
         assert len(actual_for_source) == len(expected_for_source) == 1

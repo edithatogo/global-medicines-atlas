@@ -9,6 +9,7 @@ import json
 import re
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, cast
@@ -27,6 +28,7 @@ OUTPUT = (
     / "quality/qualifications/australian-mbs-current-release-page-chronology-20261018.json"
 )
 MAX_PAGE_BYTES = 2_000_000
+STREAM_CHUNK_BYTES = 64 * 1024
 MAX_WORKERS = 4
 HTTP_OK = 200
 USER_AGENT = "global-medicines-atlas-metadata-audit/1.0"
@@ -47,6 +49,73 @@ PAGE_UPDATED = re.compile(
     r"(?P<date>\d{1,2}\s+[A-Za-z]+\s+\d{4})"
 )
 ALLOWED_HOSTS = {"www.mbsonline.gov.au", "mbsonline.gov.au"}
+
+
+@dataclass(frozen=True)
+class BoundedHTTPResponse:
+    """Response metadata and at most the requested in-memory body limit."""
+
+    final_url: str
+    status_code: int
+    headers: httpx.Headers
+    body: bytes
+    observed_bytes: int
+    body_read_complete: bool
+
+
+def collect_limited(chunks: Any, max_bytes: int) -> tuple[bytes, int, bool]:
+    """Consume response chunks until complete or the bounded read is exceeded."""
+    body = bytearray()
+    observed_bytes = 0
+    for chunk in chunks:
+        next_size = observed_bytes + len(chunk)
+        if next_size > max_bytes:
+            return bytes(body), next_size, False
+        body.extend(chunk)
+        observed_bytes = next_size
+    return bytes(body), observed_bytes, True
+
+
+def _bounded_get(url: str, max_bytes: int) -> BoundedHTTPResponse:
+    """Stream a response, stopping after the first chunk over the size limit."""
+    with httpx.stream(
+        "GET",
+        url,
+        follow_redirects=True,
+        headers={"User-Agent": USER_AGENT},
+        timeout=30,
+    ) as response:
+        body, observed_bytes, complete = collect_limited(
+            response.iter_bytes(chunk_size=STREAM_CHUNK_BYTES), max_bytes
+        )
+        return BoundedHTTPResponse(
+            final_url=str(response.url),
+            status_code=response.status_code,
+            headers=response.headers,
+            body=body,
+            observed_bytes=observed_bytes,
+            body_read_complete=complete,
+        )
+
+
+def _resource_metadata(
+    resource: dict[str, Any], page_status: str, rows: list[dict[str, Any]]
+) -> dict[str, Any]:
+    """Preserve an expected index resource even if its page cannot be read."""
+    return {
+        "source_url": resource["source_url"],
+        "filename": resource["filename"],
+        "page_observation_status": page_status,
+        "archive_receipts": [
+            {
+                "receipt_path": receipt.get("receipt_path"),
+                "archive_path": receipt.get("archive_path"),
+                "payload_sha256": receipt.get("payload_sha256"),
+            }
+            for receipt in resource["matching_archive_receipts"]
+        ],
+        "matching_official_rows": rows,
+    }
 
 
 def _sha256(value: bytes) -> str:
@@ -104,22 +173,19 @@ def match_official_rows(
     return matches
 
 
-def _read_page(
-    page: dict[str, Any], expected_urls: list[str]
-) -> dict[str, Any]:
+def read_page(page: dict[str, Any], expected_urls: list[str]) -> dict[str, Any]:
     """Read one official HTML page in memory and discard its body."""
     requested_url = cast("str", page["url"])
     started = datetime.now(UTC)
     try:
-        response = httpx.get(
-            requested_url,
-            follow_redirects=True,
-            headers={"User-Agent": USER_AGENT},
-            timeout=30,
-        )
+        response = _bounded_get(requested_url, MAX_PAGE_BYTES)
         completed = datetime.now(UTC)
     except httpx.HTTPError as exc:
         completed = datetime.now(UTC)
+        resources = [
+            _resource_metadata(resource, "unavailable", [])
+            for resource in page["resources"]
+        ]
         return {
             "page_id": page["page_id"],
             "requested_url": requested_url,
@@ -127,20 +193,20 @@ def _read_page(
             "failure_class": type(exc).__name__,
             "client_request_started_at": started.isoformat(),
             "client_response_received_at": completed.isoformat(),
-            "resources": [],
+            "resources": resources,
         }
 
-    body = response.content
-    final_url = str(response.url)
-    host = urlparse(final_url).hostname
-    content_type = response.headers.get("content-type", "")
+    final_url = response.final_url
     page_receipt: dict[str, Any] = {
         "requested_url": requested_url,
         "final_url": final_url,
         "http_status": response.status_code,
-        "content_type": content_type,
-        "observed_bytes": len(body),
-        "sha256": _sha256(body),
+        "content_type": response.headers.get("content-type", ""),
+        "observed_bytes": response.observed_bytes,
+        "sha256": (
+            _sha256(response.body) if response.body_read_complete else None
+        ),
+        "body_read_complete": response.body_read_complete,
         "server_date": response.headers.get("date"),
         "last_modified": response.headers.get("last-modified"),
         "client_request_started_at": started.isoformat(),
@@ -156,56 +222,45 @@ def _read_page(
     }
     if (
         response.status_code != HTTP_OK
-        or len(body) > MAX_PAGE_BYTES
-        or not content_type.lower().startswith("text/html")
-        or host not in ALLOWED_HOSTS
+        or not response.body_read_complete
+        or not page_receipt["content_type"].lower().startswith("text/html")
+        or urlparse(final_url).hostname not in ALLOWED_HOSTS
     ):
         page_metadata["status"] = "invalid_page_response"
         page_metadata["failure_class"] = "status_size_content_type_or_host"
+        page_metadata["resources"] = [
+            _resource_metadata(resource, "invalid_page_response", [])
+            for resource in page["resources"]
+        ]
         return page_metadata
 
-    soup = BeautifulSoup(body, "html.parser")
+    soup = BeautifulSoup(response.body, "html.parser")
     page_text = soup.get_text(" ", strip=True)
     heading = soup.find("h1")
     page_metadata["official_heading"] = (
         heading.get_text(" ", strip=True) if isinstance(heading, Tag) else None
     )
     page_metadata["page_last_updated_text"] = _page_updated_date(page_text)
-    by_url = match_official_rows(body, final_url, expected_urls)
+    by_url = match_official_rows(response.body, final_url, expected_urls)
     page_metadata["status"] = "observed"
     for resource in page["resources"]:
         source_url = cast("str", resource["source_url"])
-        page_metadata["resources"].append({
-            "source_url": source_url,
-            "filename": resource["filename"],
-            "archive_receipts": [
-                {
-                    "receipt_path": receipt.get("receipt_path"),
-                    "archive_path": receipt.get("archive_path"),
-                    "payload_sha256": receipt.get("payload_sha256"),
-                }
-                for receipt in resource["matching_archive_receipts"]
-            ],
-            "matching_official_rows": by_url.get(source_url, []),
-        })
+        page_metadata["resources"].append(
+            _resource_metadata(resource, "observed", by_url.get(source_url, []))
+        )
     return page_metadata
 
 
 def _read_json_metadata(url: str) -> tuple[dict[str, Any], dict[str, Any]]:
     """Read one bounded public JSON metadata object without saving its bytes."""
     started = datetime.now(UTC)
-    response = httpx.get(
-        url,
-        follow_redirects=True,
-        headers={"User-Agent": USER_AGENT},
-        timeout=30,
-    )
+    response = _bounded_get(url, MAX_PAGE_BYTES)
     completed = datetime.now(UTC)
-    body = response.content
+    body = response.body
     if (
         response.status_code != HTTP_OK
-        or len(body) > MAX_PAGE_BYTES
-        or urlparse(str(response.url)).hostname != "huggingface.co"
+        or not response.body_read_complete
+        or urlparse(response.final_url).hostname != "huggingface.co"
     ):
         raise ValueError("public_metadata_response_invalid")
     loaded: object = json.loads(body)
@@ -214,10 +269,10 @@ def _read_json_metadata(url: str) -> tuple[dict[str, Any], dict[str, Any]]:
     document = cast("dict[str, Any]", loaded)
     return document, {
         "requested_url": url,
-        "final_url": str(response.url),
+        "final_url": response.final_url,
         "http_status": response.status_code,
         "content_type": response.headers.get("content-type", ""),
-        "observed_bytes": len(body),
+        "observed_bytes": response.observed_bytes,
         "sha256": _sha256(body),
         "server_date": response.headers.get("date"),
         "client_request_started_at": started.isoformat(),
@@ -400,30 +455,91 @@ def _observe_pages(
 
     def observe(page: dict[str, Any]) -> dict[str, Any]:
         page_id = cast("str", page["page_id"])
-        return _read_page(page, expected_urls_by_page[page_id])
+        return read_page(page, expected_urls_by_page[page_id])
 
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
         return list(executor.map(observe, ordered_pages))
 
 
-def _bind_current_receipts(
+def bind_current_receipts(
     resources: list[dict[str, Any]], archive_readback: dict[str, Any]
-) -> None:
-    """Attach verified current-revision receipt identity to each exact URL."""
+) -> dict[str, int]:
+    """Bind every indexed resource receipt or mark that resource unresolved."""
     verified = {
         record["receipt_path"]: record
         for record in archive_readback["receipt_sidecars"]
         if record["status"] == "exact_current_receipt"
     }
     for resource in resources:
-        for receipt in resource["archive_receipts"]:
+        raw_receipts: object = resource["archive_receipts"]
+        if not isinstance(raw_receipts, list) or not raw_receipts:
+            resource["current_receipt_binding_status"] = (
+                "invalid_receipt_mapping"
+            )
+            continue
+        receipts = cast("list[Any]", raw_receipts)
+        all_bound = True
+        for raw_receipt in receipts:
+            if not isinstance(raw_receipt, dict):
+                all_bound = False
+                continue
+            receipt = cast("dict[str, Any]", raw_receipt)
+            if not isinstance(receipt.get("receipt_path"), str):
+                all_bound = False
+                continue
             current = verified.get(receipt["receipt_path"])
-            if current is not None:
-                receipt.update({
-                    "current_revision": archive_readback["revision"],
-                    "current_receipt_sha256": current["receipt"]["sha256"],
-                    "current_payload_sha256": current["payload_sha256"],
-                })
+            if (
+                current is None
+                or current.get("source_url") != resource["source_url"]
+                or current.get("archive_path") != receipt.get("archive_path")
+                or current.get("payload_sha256")
+                != receipt.get("payload_sha256")
+            ):
+                all_bound = False
+                continue
+            receipt.update({
+                "current_revision": archive_readback.get("revision"),
+                "current_receipt_sha256": current["receipt"]["sha256"],
+                "current_payload_sha256": current["payload_sha256"],
+            })
+        resource["current_receipt_binding_status"] = (
+            "exact_current_receipts_verified"
+            if all_bound
+            else "current_receipts_unresolved"
+        )
+    expected = len(resources)
+    bound = sum(
+        resource["current_receipt_binding_status"]
+        == "exact_current_receipts_verified"
+        for resource in resources
+    )
+    return {
+        "expected": expected,
+        "verified": bound,
+        "unresolved": expected - bound,
+    }
+
+
+def qualification_status(
+    page_failures: int,
+    unresolved_rows: int,
+    current_receipt_failures: int,
+    resource_receipt_failures: int,
+    archive_status: str,
+) -> str:
+    """Pass the current-index claim only when every expected link is bound."""
+    if (
+        page_failures == 0
+        and unresolved_rows == 0
+        and current_receipt_failures == 0
+        and resource_receipt_failures == 0
+        and archive_status == "exact_current_revision_receipts_verified"
+    ):
+        return (
+            "current_index_links_bound_to_official_rows_and_current_receipts_"
+            "history_incomplete"
+        )
+    return "incomplete_official_page_observation"
 
 
 def build_report() -> dict[str, Any]:
@@ -434,27 +550,30 @@ def build_report() -> dict[str, Any]:
     pages_by_id, expected_urls_by_page = _page_inputs(index)
     pages = _observe_pages(pages_by_id, expected_urls_by_page)
     resources = [resource for page in pages for resource in page["resources"]]
-    _bind_current_receipts(resources, archive_readback)
     unresolved = sum(
-        len(resource["matching_official_rows"]) != 1 for resource in resources
+        page["status"] != "observed"
+        or len(resource["matching_official_rows"]) != 1
+        for page in pages
+        for resource in page["resources"]
     )
     page_failures = sum(page["status"] != "observed" for page in pages)
     current_receipt_failures = cast(
         "int", archive_readback["receipt_sidecars_unresolved"]
+    )
+    resource_receipt_bindings = bind_current_receipts(
+        resources, archive_readback
     )
     report: dict[str, Any] = {
         "schema_id": "global-medicines-atlas.australian-mbs-current-release-page-chronology",
         "schema_version": 1,
         "recorded_at": datetime.now(UTC).isoformat(),
         "requirement": "M-109",
-        "status": (
-            "current_index_links_bound_to_official_rows_and_current_receipts_history_incomplete"
-            if page_failures == 0
-            and unresolved == 0
-            and current_receipt_failures == 0
-            and archive_readback["status"]
-            == "exact_current_revision_receipts_verified"
-            else "incomplete_official_page_observation"
+        "status": qualification_status(
+            page_failures,
+            unresolved,
+            current_receipt_failures,
+            resource_receipt_bindings["unresolved"],
+            cast("str", archive_readback["status"]),
         ),
         "inputs": [
             {
@@ -478,6 +597,15 @@ def build_report() -> dict[str, Any]:
                 "receipt_sidecars_verified"
             ],
             "current_receipt_sidecars_unresolved": current_receipt_failures,
+            "resource_receipt_bindings_expected": resource_receipt_bindings[
+                "expected"
+            ],
+            "resource_receipt_bindings_verified": resource_receipt_bindings[
+                "verified"
+            ],
+            "resource_receipt_bindings_unresolved": resource_receipt_bindings[
+                "unresolved"
+            ],
             "source_payloads_requested": False,
             "source_payloads_read": False,
             "html_bodies_retained": False,
