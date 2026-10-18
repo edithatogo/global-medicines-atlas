@@ -6,7 +6,7 @@ import hashlib
 import json
 from operator import itemgetter
 from pathlib import Path
-from typing import Any
+from typing import Any, TypeGuard, cast
 
 from scripts.pbs_m107_receipt_binding import validate_pbs_receipt_binding
 
@@ -76,10 +76,11 @@ def _validate_metadata_response(
     return byte_count
 
 
-def _is_public_tree_file(item: object) -> bool:
+def _is_public_tree_file(item: object) -> TypeGuard[dict[str, Any]]:
     if not isinstance(item, dict):
         return False
-    path, size = item.get("path"), item.get("bytes")
+    candidate = cast("dict[str, Any]", item)
+    path, size = candidate.get("path"), candidate.get("bytes")
     if not isinstance(path, str) or not path or path.startswith("/"):
         return False
     if "\\" in path or ".." in Path(path).parts:
@@ -92,16 +93,18 @@ def _validate_readback_boundaries(
 ) -> None:
     if not isinstance(boundaries, dict):
         raise TypeError("PBS public tree metadata boundaries are malformed")
+    boundary_values = cast("dict[str, Any]", boundaries)
     if (
-        boundaries.get("source_payload_bytes_read") != 0
-        or boundaries.get("metadata_response_bodies_retained") is not False
-        or boundaries.get("rights_concluded") is not False
-        or boundaries.get("missing_official_links_declared_absent") is not False
-        or boundaries.get("m107_accepted") is not False
+        boundary_values.get("source_payload_bytes_read") != 0
+        or boundary_values.get("metadata_response_bodies_retained") is not False
+        or boundary_values.get("rights_concluded") is not False
+        or boundary_values.get("missing_official_links_declared_absent")
+        is not False
+        or boundary_values.get("m107_accepted") is not False
     ):
         raise ValueError("PBS public tree metadata boundary is invalid")
     if (
-        boundaries.get("metadata_response_bytes_read")
+        boundary_values.get("metadata_response_bytes_read")
         != expected_metadata_bytes
     ):
         raise ValueError("PBS public tree metadata byte total is inconsistent")
@@ -133,30 +136,34 @@ def validate_public_tree_readback(
     dataset_info, tree = readback.get("dataset_info"), readback.get("tree")
     if not isinstance(dataset_info, dict) or not isinstance(tree, dict):
         raise TypeError("PBS public tree response metadata is malformed")
+    dataset_info_values = cast("dict[str, Any]", dataset_info)
+    tree_values = cast("dict[str, Any]", tree)
     tree_url = (
         "https://huggingface.co/api/datasets/"
         f"{PUBLIC_DATASET}/tree/{expected_revision}?recursive=true&expand=false"
     )
     metadata_bytes = sum((
         _validate_metadata_response(
-            dataset_info,
+            dataset_info_values,
             f"https://huggingface.co/api/datasets/{PUBLIC_DATASET}",
         ),
-        _validate_metadata_response(tree, tree_url),
+        _validate_metadata_response(tree_values, tree_url),
     ))
 
     files = readback.get("files")
     if not isinstance(files, list):
         raise TypeError("PBS public tree file inventory is not a list")
-    if readback.get("file_count") != len(files):
+    file_values = cast("list[object]", files)
+    if readback.get("file_count") != len(file_values):
         raise ValueError("PBS public tree file count does not match inventory")
-    if not all(_is_public_tree_file(item) for item in files):
+    file_items = [item for item in file_values if _is_public_tree_file(item)]
+    if len(file_items) != len(file_values):
         raise ValueError("PBS public tree file path or size is invalid")
-    paths = [item["path"] for item in files]
+    paths = [item["path"] for item in file_items]
     if len(set(paths)) != len(paths):
         raise ValueError("PBS public tree contains duplicate paths")
 
-    raw_files = [item for item in files if item["path"].startswith("raw/")]
+    raw_files = [item for item in file_items if item["path"].startswith("raw/")]
     if len(raw_files) != 1:
         raise ValueError("PBS public tree raw-path inventory changed")
     raw_file = raw_files[0]
@@ -174,12 +181,15 @@ def validate_public_tree_readback(
     return {
         "dataset": PUBLIC_DATASET,
         "revision": expected_revision,
-        "tree_http_status": tree["http_status"],
-        "tree_response_bytes": tree["response_bytes"],
-        "tree_response_sha256": tree["response_sha256"],
-        "file_count": len(files),
+        "tree_http_status": tree_values["http_status"],
+        "tree_response_bytes": tree_values["response_bytes"],
+        "tree_response_sha256": tree_values["response_sha256"],
+        "file_count": len(file_values),
         "files": sorted(
-            ({"path": item["path"], "bytes": item["bytes"]} for item in files),
+            (
+                {"path": item["path"], "bytes": item["bytes"]}
+                for item in file_items
+            ),
             key=itemgetter("path"),
         ),
         "raw_files": [
