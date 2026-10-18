@@ -7,6 +7,10 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
+import pytest
+from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema.exceptions import ValidationError
+
 ROOT = Path(__file__).parents[1]
 REVIEW = (
     ROOT / "quality/qualifications/"
@@ -23,6 +27,13 @@ PATIENT_SOURCE_METADATA = (
 METADATA_RECHECK = (
     ROOT / "quality/qualifications/"
     "australian-mbs-m106-source-metadata-recheck-20261017.json"
+)
+ANNUAL_WORKBOOK_HEAD = (
+    ROOT / "quality/qualifications/"
+    "australian-mbs-m106-annual-workbook-head-readback-20261019.json"
+)
+ANNUAL_WORKBOOK_HEAD_SCHEMA = (
+    ROOT / "schemas/australian-mbs-m106-annual-workbook-head-readback-v1.json"
 )
 AUSTRALIAN_TRACK_EVIDENCE = (
     ROOT / "conductor/tracks/australian_health_source_consolidation_20260829/"
@@ -230,3 +241,47 @@ def test_annual_patient_readback_preserves_pending_source_and_rights_gates() -> 
     assert boundaries["source_rights_changed"] is False
     assert boundaries["distinct_patient_denominator_qualified"] is False
     assert boundaries["m106_accepted"] is False
+
+
+def test_annual_workbook_transport_readback_keeps_identity_and_rights_gates() -> (
+    None
+):
+    receipt = cast(
+        "dict[str, Any]", json.loads(ANNUAL_WORKBOOK_HEAD.read_text())
+    )
+    schema = cast(
+        "dict[str, Any]",
+        json.loads(ANNUAL_WORKBOOK_HEAD_SCHEMA.read_text()),
+    )
+    Draft202012Validator(schema, format_checker=FormatChecker()).validate(
+        receipt
+    )
+
+    page = cast("dict[str, Any]", receipt["official_page"])
+    head = cast("dict[str, Any]", receipt["attachment_head"])
+    owner = cast("dict[str, Any]", receipt["owner_clarification"])
+    boundaries = cast("dict[str, Any]", receipt["boundaries"])
+    assert page["described_period"] == "2009-10 through 2025-26"
+    assert page["attachment_filename_period"] == "2009-10 through 2024-25"
+    assert page["response_bytes"] == 34921
+    assert len(page["response_sha256"]) == 64
+    assert head["method"] == "HEAD"
+    assert head["http_status"] == 200
+    assert head["content_length"] == 1058479
+    assert head["response_body_bytes"] == 0
+    assert owner["sent_message_id"] == "1a14abd12b459daf"
+    assert owner["substantive_response_received"] is False
+    assert boundaries["workbook_body_requested"] is False
+    assert boundaries["workbook_payload_bytes_read"] == 0
+    assert boundaries["source_rights_changed"] is False
+    assert boundaries["distinct_patient_denominator_qualified"] is False
+    assert boundaries["m106_accepted"] is False
+
+    invalid = dict(receipt)
+    invalid_head = dict(head)
+    invalid_head["response_body_bytes"] = 1
+    invalid["attachment_head"] = invalid_head
+    with pytest.raises(ValidationError):
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(
+            invalid
+        )
