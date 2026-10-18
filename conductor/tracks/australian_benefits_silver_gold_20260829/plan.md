@@ -3618,15 +3618,41 @@
   the separately reserved July derivative. These remain outside this MBS
   increment.
 
-- [~] Recheck the Windows consumer failure introduced by the new hashed
+- [x] Recheck the Windows consumer failure introduced by the new hashed
   admission paths. The clean-clone test now uses `RUNNER_TEMP` with a short
-  prefix so checkout paths stay below Windows path limits; local dual-clone,
-  Ruff, formatting, and BasedPyright checks pass. Exact Windows Actions rerun is
-  pending. The local release-reproduction test cannot complete because the
-  available `uv` is 0.13.1 while the committed build toolchain pins 0.11.29.
+  prefix. PR #1174 merged at `c94ae241`; final-head hosted Windows and all other
+  protected checks passed. The local release-reproduction test still cannot
+  complete because available `uv` is 0.13.1 while the committed toolchain pins
+  0.11.29.
 
 - [x] Correct review finding #4307864545: the reconciler now validates the
   current B2-manifest and landed-admission SHA-256 values against both the
   per-object qualification and its `output_bindings` map. Two regression cases
   reject stale artifact and stale output-binding hashes; focused tests, Ruff,
   formatting, and BasedPyright pass. Broader suite and hosted rerun pending.
+
+### M-112 P7 archive-boundary B1/B2 lineage (2026-10-19)
+
+- [x] Re-stream the already-inventory July 2024 P7 archive object at its pinned
+  public Hugging Face revision; verify HTTP 200, 87,727 bytes, and the exact
+  frozen SHA-256 without saving or inspecting payload values.
+- [x] Bind the historical archive receipt, its acquisition event, an
+  external-reference-only B2 manifest, and a current landed/unreviewed
+  admission record to the frozen P7 path, digest, and byte count. Keep the
+  retrieval explicitly scoped to the archive boundary.
+- [x] Preserve the known limits: original source-origin acquisition and source
+  date semantics remain unverified; no rights conclusion, processing
+  acceptance, v4 admission, canary, new source, or inventory change.
+- [x] Reconcile the per-object overlay and Bronze receipt-cohort projections.
+  Complete raw B1/B2 lineages now total 21 of 1,736; 1,715 remain incomplete.
+  The July 2025 derivative, PBS/M107 work, and 1,707 reimbursement-atlas rows
+  remain with their existing owner lanes.
+- [x] Focused lineage/Bronze/receipt tests passed (75) after deterministic
+  receipt-cohort regeneration. Routine checks, BasedPyright, context,
+  ecosystem, and diff checks pass. Full local Test-Goblin completed with 6,918
+  passed, 3 skipped, and 11 failures. One stale receipt-cohort projection was
+  regenerated and its affected tests passed. The remaining failures are two
+  stable-v1 reproduction tests requiring pinned `uv` 0.11.29 (local 0.13.1),
+  three Gold/browser consumer tests, the PBS and coverage browser E2E tests,
+  two scalar Chromium tests, and one Platinum browser test. Hosted PR checks
+  are still required for this increment.
