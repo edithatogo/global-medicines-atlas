@@ -74,8 +74,9 @@ TABLES = (
 )
 EXPECTED_RAW = 1736
 EXPECTED_B1_MATCHES = 1706
-EXPECTED_EXISTING_JOINS = 26
+EXPECTED_EXISTING_EXACT_PATH_JOINS = 26
 EXPECTED_COMPLETE = 6
+EXPECTED_COMPLETE_LINEAGES_WITHIN_EXISTING_PATH_JOINS = 5
 EXPECTED_UNBOUND_PATHS_BEFORE_VARIANTS = 5
 EXPECTED_PINNED_TREE_FILES = 1733
 EXPECTED_ANONYMOUS_RAW_READBACKS = 92
@@ -87,6 +88,23 @@ def read_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise TypeError(f"expected JSON object: {path}")
     return cast("dict[str, Any]", value)
+
+
+def count_complete_lineages_for_keys(
+    raw_objects: list[dict[str, Any]],
+    keys: set[tuple[str, str, str]],
+) -> int:
+    """Count complete raw B1/B2 lineages among exact digest/path keys."""
+    return sum(
+        (
+            row["dataset"],
+            row["revision"],
+            row["path"],
+        )
+        in keys
+        and row["b1_b2_lineage"]["complete"] is True
+        for row in raw_objects
+    )
 
 
 def digest(path: Path) -> str:
@@ -234,21 +252,31 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
     ]
     if len(raw) != EXPECTED_RAW:
         raise ValueError("frozen M-112 raw denominator changed")
-    existing_rows = [
+    existing_digest_path_rows = [
         *utilisation["verified_objects"],
         *source_archive["verified_objects"],
         *overlay["retained_evidence_join_increment"]["new_joins"],
     ]
-    existing_keys = {
+    existing_digest_path_keys = {
         (
             row["dataset"],
             row.get("revision", row.get("dataset_revision")),
             row["path"],
         )
-        for row in existing_rows
+        for row in existing_digest_path_rows
     }
-    if len(existing_keys) != EXPECTED_EXISTING_JOINS:
+    if len(existing_digest_path_keys) != EXPECTED_EXISTING_EXACT_PATH_JOINS:
         raise ValueError("existing exact raw digest/path joins changed")
+    complete_lineages_within_exact_path_joins = (
+        count_complete_lineages_for_keys(raw, existing_digest_path_keys)
+    )
+    if (
+        complete_lineages_within_exact_path_joins
+        != EXPECTED_COMPLETE_LINEAGES_WITHIN_EXISTING_PATH_JOINS
+    ):
+        raise ValueError(
+            "complete B1/B2 lineages within exact path joins changed"
+        )
     raw_readback_rows = raw_readback["objects"]
     if len(raw_readback_rows) != EXPECTED_ANONYMOUS_RAW_READBACKS or any(
         row.get("anonymous_readback") is not True
@@ -396,7 +424,7 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
             "path": item["path"],
             "sha256": identity.get("sha256"),
             "byte_count": identity.get("byte_count"),
-            "existing_exact_path_join": key in existing_keys,
+            "existing_exact_path_join": key in existing_digest_path_keys,
             "b1_acquisition_id": acquisition_id,
             "b1_source_id": acquisition.get("source_id"),
             "b1_event_id": acquisition.get("event_id"),
@@ -540,7 +568,7 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
     ) != (1706, 1705, 1705):
         raise ValueError("source receipt/path join totals changed")
 
-    joined = existing_keys | {
+    joined = existing_digest_path_keys | {
         (row["dataset"], row["revision"], row["path"]) for row in matches
     }
     projection_keys = {
@@ -730,7 +758,10 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
             "interpretation": "The immutable reimbursement-atlas repository contains B1/B2 and other metadata projections but no separate per-object receipt, admission, or reference sidecar files.",
         },
         "summary": {
-            "existing_b1_b2_receipt_path_joins": len(existing_keys),
+            "existing_exact_raw_digest_path_joins": len(
+                existing_digest_path_keys
+            ),
+            "existing_exact_raw_digest_path_joins_with_complete_lineage": complete_lineages_within_exact_path_joins,
             "cumulative_exact_raw_digest_path_joins": overlay[
                 "retained_evidence_join_increment"
             ]["cumulative_exact_raw_digest_path_joins"],
@@ -744,7 +775,7 @@ def main() -> None:  # ruff: ignore[too-many-branches,too-many-locals,too-many-s
             "metadata_projection_raw_path_matches": len(matches),
             "new_distinct_projection_path_matches": len(
                 {(r["dataset"], r["revision"], r["path"]) for r in matches}
-                - existing_keys
+                - existing_digest_path_keys
             ),
             "raw_paths_bound_by_existing_join_or_projection": len(joined),
             "prior_m112_source_receipt_path_bindings": 1,

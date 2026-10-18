@@ -3589,3 +3589,13 @@
   joinable landed-admission records. This narrows the retained-evidence search
   without proving that no other existing record exists. Continue only from
   existing evidence; do not synthesize admission history.
+
+### M-112 exact path versus complete lineage accounting correction (2026-10-19)
+
+- [x] Correct the projected-join qualification: 26 is the exact raw digest/path
+  match set, not a complete receipt-join count. Five of those 26 have complete
+  lineage; six complete lineages exist across the full inventory. The 1,703
+  projection matches without persisted landed-admission history remain open.
+- [x] Verify the correction with the focused regression test, BasedPyright,
+  Ruff, formatting, and diff checks. No lineage was added; all 1,759 deferrals
+  and the frozen denominator remain unchanged.

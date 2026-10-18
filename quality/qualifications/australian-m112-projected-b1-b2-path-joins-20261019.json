@@ -105,7 +105,8 @@
     "interpretation": "The immutable reimbursement-atlas repository contains B1/B2 and other metadata projections but no separate per-object receipt, admission, or reference sidecar files."
   },
   "summary": {
-    "existing_b1_b2_receipt_path_joins": 26,
+    "existing_exact_raw_digest_path_joins": 26,
+    "existing_exact_raw_digest_path_joins_with_complete_lineage": 5,
     "cumulative_exact_raw_digest_path_joins": 118,
     "raw_paths_outside_cumulative_exact_digest_join_subset": 1618,
     "anonymous_raw_digest_readbacks": 92,
