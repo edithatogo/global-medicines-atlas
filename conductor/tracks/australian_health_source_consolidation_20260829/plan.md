@@ -1299,3 +1299,16 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   pre-correction four-failure result is superseded for current local status.
   All 28 required hosted checks passed on this exact head; later local Goblin
   lanes were not reached after the coverage-profile failure.
+
+## M-107/M-112 exact-main post-merge reconciliation (2026-10-18)
+
+- [x] Rebuild the PBS link crosswalk and M-112 July refresh on exact main
+  `3d19e309c6d93c0c97a2eb500d37f7c1d82607c`, the squash merge of PR #1162.
+  Both reports reproduce byte-for-byte; focused M-107/M-112 tests pass (114).
+- [x] Verify the current M-107 crosswalk digest and July report digest against
+  exact main, and pass `git diff --check`. No source payload was requested or
+  read. PR #1162's 28 required checks passed on its exact head before merge.
+- [~] Preserve 315 unresolved PBS schedule links, the 1,759-object M-112
+  denominator and all prior deferrals. This confirms merged-code integrity;
+  M-107 and M-112 acceptance remain blocked on historical denominator, source
+  rights, admission, lineage, and consumer evidence.
