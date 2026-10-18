@@ -3697,8 +3697,14 @@
   reports, and requires exact table-lineage equality with the manifest-bound
   public qualification. Four targeted tests and the 15-test focused suite pass;
   Ruff, formatting, BasedPyright, Test-Goblin routine, and repository metadata
-  checks pass. Hosted rerun is pending.
+  checks pass. All 39 hosted PR checks passed and PR #1177 merged as
+  `25b6ee301bef156f4ac1f5757735a9ca65e5c948`.
 - [~] Remaining owner-controlled PBS lineage remains unchanged pending an
   explicit decision about creating current-time B1/B2 records from pinned
   public objects. The exact gap counts and producer-history audit are recorded
   under `m112_remaining_lineage_owner_lane_audit`.
+
+- [x] Hosted verification and merge for PR #1177: all 39 reported checks passed
+  on head `720292151d000530df3f568220e6fae56b7869aa`; both review conversations
+  were resolved after their findings were fixed. The squash merge is
+  `25b6ee301bef156f4ac1f5757735a9ca65e5c948`.
