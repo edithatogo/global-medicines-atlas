@@ -3566,3 +3566,36 @@
   crosswalks remain open and unchanged.
 - [x] Verify with the focused join tests, the full 80-test M-112 suite, Ruff,
   and exact frozen-membership and per-object identity assertions.
+
+### M-112 producer receipt projection joins (2026-10-19)
+
+- [x] Join the 1,706 pinned-revision B1/B2 raw projection matches against the
+  existing producer's immutable source-download metadata. Exact digest, byte
+  count, source version, locator, and source ID match for 1,705 objects. The
+  remaining MBS XML object has a path-specific receipt matching its path,
+  digest, and size; its URL differs from the parallel reimbursement-atlas B1
+  projection locator. The object's existing MBS B1/B2 lifecycle evidence
+  remains complete.
+- [x] Preserve evidence strength: historical download rows are producer
+  projections, not native receipt artifacts or admission histories. The
+  receipt matches add no complete lineages; the total remains 6. No rights,
+  source admissions, release decisions, new sources, or denominator changes
+  were made.
+- [~] Locate persisted landed-admission histories for the 1,703 incomplete
+  B1/B2 projection matches. Their acquisition/B2 projection records and source
+  receipt rows do not supply a landed event. A bounded search of the pinned
+  producer's tracked path history (536 commits across fetched refs), its
+  current source tree, and all current Actions artifact pages found no
+  joinable landed-admission records. This narrows the retained-evidence search
+  without proving that no other existing record exists. Continue only from
+  existing evidence; do not synthesize admission history.
+
+### M-112 exact path versus complete lineage accounting correction (2026-10-19)
+
+- [x] Correct the projected-join qualification: 26 is the exact raw digest/path
+  match set, not a complete receipt-join count. Five of those 26 have complete
+  lineage; six complete lineages exist across the full inventory. The 1,703
+  projection matches without persisted landed-admission history remain open.
+- [x] Verify the correction with the focused regression test, BasedPyright,
+  Ruff, formatting, and diff checks. No lineage was added; all 1,759 deferrals
+  and the frozen denominator remain unchanged.
