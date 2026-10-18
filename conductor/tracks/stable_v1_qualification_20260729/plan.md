@@ -740,6 +740,8 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
 - [x] Reconcile the M5 maturity summary with merged PR #1155 and D-006-10:
   M-105 is verified under the narrow chronology waiver; M-106–M-112 remain
   blocked. State explicitly that no pre-archive parity proof is claimed and
-  retain the federation and Stable v1 release gates as blocked.
+  retain the federation and final Stable v1 release as blocked. Also reflect
+  conditional software-only release approval D-006-11 without describing it
+  as final release authority.
 - [x] Leave qualification counts and gate results unchanged; this corrects
   stale prose only. Context/ecosystem validation and `git diff --check` pass.

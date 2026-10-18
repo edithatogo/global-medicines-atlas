@@ -79,7 +79,7 @@ the Bronze and M5 gates. The two unresolved acceptance gates remain:
 | Gate | Accountable party | State and exact acceptance evidence still needed |
 | --- | --- | --- |
 | Australian health federation | Dependent Australian workstreams; the sole maintainer for source-specific rights/admission decisions and federation acceptance; relevant source owners for external evidence | Blocked. The [acceptance matrix](./australian-health-federation-acceptance.md) lists M-105–M-112 individually: M-105 is verified under D-006-10, which waives only the pre-archive timing condition and makes no claim that such proof exists; M-106–M-112 remain blocked on their listed denominator, source, rights, semantic, lineage, product, and admission evidence. Future-source dispositions alone do not satisfy federation acceptance. |
-| Stable v1 release approval | Sole maintainer | Blocked. The evidence must include explicit approval for the final `1.0.0` stable promotion. Current `v1.0.0rc1` authority is prerelease-only; no stable-release approval or signed stable asset is recorded. |
+| Stable v1 release | Sole maintainer | Blocked. Conditional software-only `v1.0.0` promotion approval is recorded in D-006-11. It is usable only after all qualification gates pass and the exact candidate, protected checks, and attestation are verified. Australian federation remains blocked; no stable tag, signed asset, attestation, or release has been produced. |
 
 Production disaster-recovery authority is separately recorded as
 `not_claimed`, outside the Stable v1 acceptance-gate set. The existing local
