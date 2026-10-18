@@ -3599,3 +3599,34 @@
 - [x] Verify the correction with the focused regression test, BasedPyright,
   Ruff, formatting, and diff checks. No lineage was added; all 1,759 deferrals
   and the frozen denominator remain unchanged.
+
+### M-112 historical MBS utilisation B1/B2 lineage (2026-10-19)
+
+- [x] Join the 14 already-frozen MBS utilisation raw paths to their historical
+  source receipts, acquisition events, immutable B2 references, and exact
+  anonymous digest/byte-count readback at the pinned archive revision.
+- [x] Add current `landed`, reviewer-unreviewed records and external-reference
+  B2 manifests for those exact objects. The earlier historical import records
+  remain unchanged. Complete B1/B2 lineages now total 20 across 1,736 raw
+  paths; 19 of the 26 exact raw digest/path matches have complete lineage.
+- [x] Preserve separate gates: all 1,759 objects remain deferred; the new
+  records do not accept data for processing, change rights, add v4 admissions,
+  or run consumer canaries. No new source was added and no source values were
+  inspected.
+- [~] Continue the remaining B1/B2 lineage work. Current overlay evidence
+  leaves 1,716 raw paths incomplete, including PBS/M107 owner-managed work and
+  the separately reserved July derivative. These remain outside this MBS
+  increment.
+
+- [~] Recheck the Windows consumer failure introduced by the new hashed
+  admission paths. The clean-clone test now uses `RUNNER_TEMP` with a short
+  prefix so checkout paths stay below Windows path limits; local dual-clone,
+  Ruff, formatting, and BasedPyright checks pass. Exact Windows Actions rerun is
+  pending. The local release-reproduction test cannot complete because the
+  available `uv` is 0.13.1 while the committed build toolchain pins 0.11.29.
+
+- [x] Correct review finding #4307864545: the reconciler now validates the
+  current B2-manifest and landed-admission SHA-256 values against both the
+  per-object qualification and its `output_bindings` map. Two regression cases
+  reject stale artifact and stale output-binding hashes; focused tests, Ruff,
+  formatting, and BasedPyright pass. Broader suite and hosted rerun pending.

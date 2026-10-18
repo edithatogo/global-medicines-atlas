@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import tempfile
@@ -32,7 +33,9 @@ def test_clean_clones_match_and_consume_artifacts() -> None:
     assert git is not None
 
     with tempfile.TemporaryDirectory(
-        prefix="gma-stable-v1-clean-clone-", ignore_cleanup_errors=True
+        prefix="gma-",
+        dir=os.environ.get("RUNNER_TEMP"),
+        ignore_cleanup_errors=True,
     ) as temporary:
         temporary_root = Path(temporary)
         clones = tuple(
@@ -88,7 +91,9 @@ def test_committed_receipt_reproduces_from_durable_source_commit() -> None:
     )
 
     with tempfile.TemporaryDirectory(
-        prefix="gma-stable-v1-committed-receipt-", ignore_cleanup_errors=True
+        prefix="gma-",
+        dir=os.environ.get("RUNNER_TEMP"),
+        ignore_cleanup_errors=True,
     ) as temporary:
         temporary_root = Path(temporary)
         clone = temporary_root / "repository"

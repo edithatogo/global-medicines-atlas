@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUAL = ROOT / "quality/qualifications"
 OVERLAY = (
     QUAL
-    / "australian-m112-per-object-gate-reconciliation-20261018-retained-joins.json"
+    / "australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json"
 )
 UTILISATION = (
     QUAL / "australian-m112-utilisation-digest-reconciliation-20261004.json"
@@ -75,8 +75,8 @@ TABLES = (
 EXPECTED_RAW = 1736
 EXPECTED_B1_MATCHES = 1706
 EXPECTED_EXISTING_EXACT_PATH_JOINS = 26
-EXPECTED_COMPLETE = 6
-EXPECTED_COMPLETE_LINEAGES_WITHIN_EXISTING_PATH_JOINS = 5
+EXPECTED_COMPLETE = 20
+EXPECTED_COMPLETE_LINEAGES_WITHIN_EXISTING_PATH_JOINS = 19
 EXPECTED_UNBOUND_PATHS_BEFORE_VARIANTS = 5
 EXPECTED_PINNED_TREE_FILES = 1733
 EXPECTED_ANONYMOUS_RAW_READBACKS = 92
