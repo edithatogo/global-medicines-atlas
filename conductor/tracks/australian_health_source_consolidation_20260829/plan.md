@@ -1241,6 +1241,8 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   tests, Ruff, formatting, `ty`, BasedPyright, report digest, and
   `git diff --check`. Record the corrected report digest and review finding in
   the append-only evidence ledger.
-- [~] Exact-head hosted checks and review-thread resolution remain pending;
-  M-109's historical denominator, rights, semantics, and admission gates remain
-  open.
+- [x] PR #1158 merged at `c4ac4b72`; all 39 exact-head hosted checks passed
+  and the unresolved-receipt review thread was resolved. The merge receipt is
+  appended to the M-109 evidence ledger.
+- [~] M-109's approved historical denominator, source rights, source-era
+  semantics, and admission gates remain open.
