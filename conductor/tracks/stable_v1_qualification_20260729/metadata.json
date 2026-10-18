@@ -42,7 +42,7 @@
     {"id": "stable-v1-australian-health-federation", "kind": "dependent-track", "status": "blocked"},
     {"id": "stable-v1-bronze-current-scope", "kind": "dependent-track", "status": "blocked"},
     {"id": "stable-v1-maturity-m5", "kind": "evidence", "status": "blocked"},
-    {"id": "stable-v1-release-approval", "kind": "human-public-release", "status": "blocked"},
+    {"id": "stable-v1-release-approval", "kind": "human-public-release", "status": "passed"},
     {"id": "production-disaster-recovery-authority", "kind": "external-separate", "status": "blocked"}
   ],
   "execution_policy": {

@@ -1,0 +1,30 @@
+{
+  "schema_id": "global-medicines-atlas.stable-v1-promotion-approval",
+  "schema_version": 1,
+  "decision_id": "D-006-11",
+  "approval_status": "approved_conditional",
+  "approved_by": "sole_maintainer",
+  "approved_at": "2026-10-18",
+  "release": {
+    "tag": "v1.0.0",
+    "release_type": "stable",
+    "artifact_scope": "software-only",
+    "commit_binding": "tag-must-resolve-to-exact-hosted-workflow-commit"
+  },
+  "conditions": [
+    "all_stable_v1_qualification_gates_pass",
+    "exact_candidate_artifacts_are_reproduced_and_digest_bound",
+    "protected_hosted_checks_and_attestation_verify"
+  ],
+  "approval_evidence": {
+    "source": "direct_maintainer_instruction_in_current_conversation",
+    "maintainer_statement": "Complete Stable v1 approval: it has my approval"
+  },
+  "release_action_performed": false,
+  "excluded_authorities": [
+    "source_rights_or_scope_change",
+    "dataset_publication",
+    "production_deployment",
+    "production_disaster_recovery"
+  ]
+}

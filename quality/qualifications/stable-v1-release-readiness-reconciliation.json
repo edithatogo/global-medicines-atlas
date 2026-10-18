@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-16T23:17:39Z",
+  "as_of": "2026-10-18T00:02:03Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "5c2dd51d9474b9081e99bb0d0690c0c2b217fff3413a1c8f37afec2cbd867179"
+    "sha256": "40cd42d17ff04ef49a9a7dc41714bf512483a43d1562682bbdfbb41497f986c2"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -23,11 +23,19 @@
       "gate_id": "stable-v1-australian-health-federation",
       "kind": "dependent_repository_tracks",
       "state": "blocked"
-    },
-    {
-      "gate_id": "stable-v1-release-approval",
-      "kind": "human_public_release_gate",
-      "state": "blocked"
     }
-  ]
+  ],
+  "promotion_approval": {
+    "path": "quality/qualifications/stable-v1-promotion-approval-20261018.json",
+    "sha256": "c042b45dbeef177a7f6e2528d9a7fcc620d468c36ed6bab0d8f0b477b01325ad",
+    "status": "approved_conditional",
+    "tag": "v1.0.0",
+    "artifact_scope": "software-only",
+    "conditions": [
+      "all_stable_v1_qualification_gates_pass",
+      "exact_candidate_artifacts_are_reproduced_and_digest_bound",
+      "protected_hosted_checks_and_attestation_verify"
+    ],
+    "release_action_performed": false
+  }
 }

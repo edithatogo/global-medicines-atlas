@@ -172,6 +172,24 @@ federation gate. Stable v1 release approval remains separate.
 
 See the [digest-bound chronology-waiver qualification](../../quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json).
 
+
+## D-006-11 — Conditional Stable v1.0.0 software promotion approval
+
+**Status:** approved conditionally by the sole maintainer (2026-10-18).
+
+The maintainer authorizes the software-only stable `v1.0.0` promotion after all
+Stable v1 qualification gates pass, exact candidate artifacts are reproduced
+and digest-bound, and protected hosted checks and attestation verify. The
+approval is recorded in
+[`stable-v1-promotion-approval-20261018.json`](../../quality/qualifications/stable-v1-promotion-approval-20261018.json).
+The current Australian health federation gate remains blocked, so no stable
+release may be signed, tagged, or published now. The existing `v1.0.0rc1`
+prerelease authority remains unchanged.
+
+This approval does not authorize source-rights or scope changes, dataset
+publication, production deployment, or production disaster recovery. The
+release action has not been performed.
+
 ## Autonomous continuation
 
-While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, redistribute restricted data, sign or promote a public stable release, or claim production qualification without the relevant decision and durable evidence. OSF is deprecated and must not be treated as an open submission gate.
+While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, redistribute restricted data, sign or promote a public stable release before all qualification conditions and exact-candidate verification pass, or claim production qualification without durable evidence. OSF is deprecated and must not be treated as an open submission gate.

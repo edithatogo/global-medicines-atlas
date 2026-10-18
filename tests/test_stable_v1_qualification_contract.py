@@ -25,6 +25,12 @@ REHEARSAL_SCHEMA = ROOT / "schemas/stable-v1-rehearsal-v1.json"
 REHEARSAL_PLAN = ROOT / "quality/qualifications/stable-v1-rehearsal-plan.json"
 SUPPORT_SCHEMA = ROOT / "schemas/stable-v1-support-readiness-v1.json"
 SUPPORT = ROOT / "quality/qualifications/stable-v1-support-readiness.json"
+PROMOTION_APPROVAL_SCHEMA = (
+    ROOT / "schemas/stable-v1-promotion-approval-v1.json"
+)
+PROMOTION_APPROVAL = (
+    ROOT / "quality/qualifications/stable-v1-promotion-approval-20261018.json"
+)
 SOURCE_MATURITY_SCHEMA = ROOT / "schemas/stable-v1-source-maturity-v1.json"
 SOURCE_MATURITY = ROOT / "quality/qualifications/stable-v1-source-maturity.json"
 CONSUMER_SCHEMA = ROOT / "schemas/stable-v1-consumer-compatibility-v1.json"
@@ -223,10 +229,7 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         if gate["state"] != "passed"
     }
     assert set(projection["unresolved_gate_ids"]) == unresolved
-    assert unresolved == {
-        "stable-v1-australian-health-federation",
-        "stable-v1-release-approval",
-    }
+    assert unresolved == {"stable-v1-australian-health-federation"}
 
     gates = {item["gate_id"]: item for item in projection["release_gates"]}
     for gate_id in (
@@ -240,8 +243,11 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         "stable-v1-support-readiness",
     ):
         assert gates[gate_id]["state"] == "passed"
-    assert gates["stable-v1-release-approval"]["state"] == "blocked"
+    assert gates["stable-v1-release-approval"]["state"] == "passed"
     assert "v1.0.0rc1" in gates["stable-v1-release-approval"]["description"]
+    assert str(PROMOTION_APPROVAL.relative_to(ROOT)) in gates[
+        "stable-v1-release-approval"
+    ]["evidence"]
 
     requirements = {
         item["requirement_id"]: item for item in projection["requirements"]
@@ -454,6 +460,8 @@ def test_donor_acceptance_preserves_adverse_observations(state: str) -> None:
 def test_release_readiness_reconciliation_separates_package_from_release() -> (
     None
 ):
+    approval = _load(PROMOTION_APPROVAL)
+    _validator(PROMOTION_APPROVAL_SCHEMA).validate(approval)
     qualification = _load(QUALIFICATION)
     receipt = _load(
         ROOT
@@ -479,11 +487,22 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
     assert {item["gate_id"] for item in receipt["unresolved_gates"]} == set(
         qualification["unresolved_gate_ids"]
     )
-    assert {
-        item["gate_id"]
-        for item in receipt["unresolved_gates"]
-        if item["kind"] == "human_public_release_gate"
-    } == {"stable-v1-release-approval"}
+    assert {item["gate_id"] for item in receipt["unresolved_gates"]} == {
+        "stable-v1-australian-health-federation"
+    }
+    assert receipt["promotion_approval"] == {
+        "path": str(PROMOTION_APPROVAL.relative_to(ROOT)),
+        "sha256": hashlib.sha256(PROMOTION_APPROVAL.read_bytes()).hexdigest(),
+        "status": "approved_conditional",
+        "tag": "v1.0.0",
+        "artifact_scope": "software-only",
+        "conditions": [
+            "all_stable_v1_qualification_gates_pass",
+            "exact_candidate_artifacts_are_reproduced_and_digest_bound",
+            "protected_hosted_checks_and_attestation_verify",
+        ],
+        "release_action_performed": False,
+    }
     assert receipt["separate_non_acceptance_gate"] == {
         "gate_id": "production-disaster-recovery-authority",
         "state": "blocked_external_authority",
