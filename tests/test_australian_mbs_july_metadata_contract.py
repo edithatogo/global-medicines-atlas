@@ -1005,6 +1005,51 @@ def test_july_hosted_readback_refresh_rejects_source_identity_and_json_shape(  #
 
 
 @pytest.mark.unit
+@pytest.mark.parametrize(
+    "mutation", ["rights", "admission", "lineage", "identity_swap"]
+)
+def test_july_metadata_refresh_rejects_unbound_source_report_rows(
+    mutation: str,
+) -> None:
+    source = _load(SOURCE_REPORT_PATH)
+    contract = _load(CONTRACT_PATH)
+    authorization = _load(AUTHORIZATION_PATH)
+    readback = _load(HOSTED_READBACK_PATH)
+    july_paths = {item["archive_path"] for item in contract["objects"]}
+    unrelated_rows = [
+        row
+        for row in source["objects"]
+        if row["path"] not in july_paths
+        and row["dataset"] == contract["dataset"]
+    ]
+    unrelated = unrelated_rows[0]
+    if mutation == "rights":
+        unrelated["rights"]["state"] = "permitted"
+    elif mutation == "admission":
+        unrelated["v4_admission"] = True
+        source["scope"]["v4_admitted"] += 1
+        source["aggregate_gates"]["paths_admitted_to_v4"] += 1
+    elif mutation == "lineage":
+        unrelated["b1_b2_lineage"]["state"] = "unverified replacement lineage"
+    else:
+        unrelated["path"], unrelated_rows[1]["path"] = (
+            unrelated_rows[1]["path"],
+            unrelated["path"],
+        )
+
+    with pytest.raises(
+        ValueError,
+        match="authorized August crosswalk output",
+    ):
+        m112_july_refresh.build_report(
+            source,
+            contract,
+            authorization,
+            readback,
+        )
+
+
+@pytest.mark.unit
 def test_metadata_builder_rejects_duplicate_generated_paths() -> None:
     contract, readback, authorization = validate_july_contract(
         (ROOT / CONTRACT_PATH).read_bytes(),

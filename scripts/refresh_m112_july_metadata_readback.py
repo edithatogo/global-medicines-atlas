@@ -9,6 +9,10 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, cast
 
+from scripts.refresh_m112_august_release_crosswalk import (
+    build_report as build_authorized_source_report,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "quality/qualifications/"
 SOURCE_REPORT = (
@@ -271,6 +275,10 @@ def _validate_readback(  # ruff: ignore[too-many-branches, too-many-statements, 
     if referenced_metadata_paths != set(metadata):
         raise ValueError(
             "hosted metadata additions are not the exact lifecycle cohort"
+        )
+    if report != build_authorized_source_report():
+        raise ValueError(
+            "current M-112 source report differs from the authorized August crosswalk output"
         )
     return result
 

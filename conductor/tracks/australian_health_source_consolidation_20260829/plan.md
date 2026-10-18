@@ -1272,3 +1272,22 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   failed, 3 skipped, 96.90% coverage. Do not record the local full profile as
   passed; exact-head hosted checks remain the authoritative cross-platform
   result.
+
+## M-112 July refresh source-report binding review correction (2026-10-18)
+
+- [x] Address automated review finding that the July refresh accepted any
+  replacement report whose `supersedes` field named the frozen report, then
+  copied all replacement rows forward.
+- [x] Rebuild the authorized August predecessor from the frozen M-112 report
+  and its qualified inputs, and require exact full-report equality before
+  carrying any July rows into a new report. This binds unrelated rows,
+  rights, lineage, admission, and aggregates to authorized evidence rather
+  than trusting a self-reported supersedes link.
+- [x] Add four negative controls that change non-July rights, v4 admission,
+  lineage, or swap two non-July identities while preserving the 1,759-row
+  denominator; the July refresh rejects each.
+- [x] Validate 114 focused M-107/M-112 tests, deterministic July report
+  regeneration, Ruff, format check, `ty`, BasedPyright, context/ecosystem
+  validation, and `git diff --check`. Exact-head hosted checks must rerun on
+  the correction commit; the preceding local full run remains recorded with
+  its four unrelated browser teardown failures.
