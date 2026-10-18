@@ -78,6 +78,10 @@ def _sha(path: Path) -> str:
 
 def _write_bound(path: Path, payload: bytes) -> str:
     target = ROOT / path
+    if target.exists():
+        if target.read_bytes() != payload:
+            raise ValueError(f"immutable evidence conflict: {path}")
+        return hashlib.sha256(payload).hexdigest()
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(payload)
     return hashlib.sha256(payload).hexdigest()

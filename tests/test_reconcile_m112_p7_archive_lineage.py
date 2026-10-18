@@ -6,16 +6,13 @@ import hashlib
 import json
 import shutil
 from pathlib import Path
-from typing import TYPE_CHECKING
 
+import pytest
 from scripts import reconcile_m112_p7_archive_lineage as reconciliation
 
 from global_medicines_atlas.bronze_admission import BronzeAdmissionRecord
 from global_medicines_atlas.bronze_raw_evidence import RawEvidenceManifest
 from global_medicines_atlas.receipts import AcquisitionEvent, SourceReceipt
-
-if TYPE_CHECKING:
-    import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 INPUTS = (
@@ -137,3 +134,20 @@ def test_historical_p7_receipt_remains_exact_and_archive_scoped() -> None:
     storage = json.loads((REPO_ROOT / reconciliation.P7_STORAGE).read_text())
     assert receipt.digest() == storage["recorded_receipt_sha256"]
     assert str(receipt.retrieval.uri) == reconciliation.ARCHIVE_URI
+
+
+def test_bound_evidence_write_rejects_conflicting_existing_bytes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A rerun cannot replace an immutable receipt with different bytes."""
+
+    monkeypatch.setattr(reconciliation, "ROOT", tmp_path)
+    target = Path("quality/bronze/receipts/p7.json")
+    destination = tmp_path / target
+    destination.parent.mkdir(parents=True)
+    destination.write_bytes(b"original evidence")
+
+    with pytest.raises(ValueError, match="immutable evidence conflict"):
+        reconciliation._write_bound(target, b"conflicting evidence")
+
+    assert destination.read_bytes() == b"original evidence"
