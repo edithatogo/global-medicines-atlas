@@ -30,7 +30,7 @@ EXPECTED_PATH_MEMBERSHIP_SHA256 = (
 )
 EXPECTED_RAW_PATHS = 1736
 EXPECTED_PROJECTIONS = 23
-EXPECTED_PRIOR_RAW_JOINS = 22
+EXPECTED_PRIOR_RAW_DIGEST_JOINS = 22
 EXPECTED_NEW_MBS_JULY_JOINS = 4
 EXPECTED_MBS_CANDIDATE_PATHS = 6
 EXPECTED_MBS_RECEIPT_ROLES = 5
@@ -129,10 +129,10 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
     prior_keys = {
         (row["dataset"], row["revision"], row["path"]) for row in prior_objects
     }
-    if len(prior_objects) != EXPECTED_PRIOR_RAW_JOINS or len(prior_keys) != len(
-        prior_objects
-    ):
-        raise ValueError("the previous 22 raw-path join set changed")
+    if len(prior_objects) != EXPECTED_PRIOR_RAW_DIGEST_JOINS or len(
+        prior_keys
+    ) != len(prior_objects):
+        raise ValueError("the previous 22 raw digest/path match set changed")
 
     tree_section = tree_identity["additional_anonymous_raw_byte_hashes"]
     tree_dataset = tree_section["dataset"]
@@ -241,6 +241,12 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
         inventory_row["preserved_deferral_group"] = (
             "au-mbs-july-2026-raw-object-paths"
         )
+        inventory_row["rights"]["state"] = (
+            "Maintainer authorization covers the source/category/domain; "
+            "exact per-object authorization and reuse disposition remain "
+            "unresolved. Complete B1/B2 lineage is recorded separately and "
+            "does not establish rights or v4 eligibility."
+        )
         new_joins.append({
             "dataset": MBS_DATASET,
             "dataset_revision": dataset_revision,
@@ -335,7 +341,7 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
         (join["dataset"], join["dataset_revision"], join["path"])
         for join in new_joins
     }
-    if len(cumulative_keys) != EXPECTED_PRIOR_RAW_JOINS + len(new_joins):
+    if len(cumulative_keys) != EXPECTED_PRIOR_RAW_DIGEST_JOINS + len(new_joins):
         raise ValueError("the cumulative raw-object join keys are not unique")
 
     complete_lineages = sum(row["b1_b2_lineage"]["complete"] for row in rows)
@@ -381,11 +387,15 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             "denominator_object_count": len(rows),
             "denominator_object_id_sha256": denominator_digest,
             "approved_path_membership_sha256": path_membership_digest,
-            "prior_raw_path_joins": len(prior_keys),
-            "new_exact_raw_path_joins": len(new_joins),
-            "cumulative_exact_raw_path_joins": len(cumulative_keys),
-            "raw_paths_outside_join_subset": EXPECTED_RAW_PATHS
+            "prior_raw_digest_path_joins": len(prior_keys),
+            "new_exact_raw_digest_path_matches": len(new_joins),
+            "new_exact_b1_b2_receipt_joins": len(new_joins),
+            "cumulative_exact_raw_digest_path_joins": len(cumulative_keys),
+            "raw_paths_outside_digest_join_subset": EXPECTED_RAW_PATHS
             - len(cumulative_keys),
+            "prior_complete_b1_b2_lineage_paths": EXPECTED_BASE_COMPLETE_LINEAGES,
+            "new_complete_b1_b2_lineage_paths": len(new_joins),
+            "cumulative_complete_b1_b2_lineage_paths": complete_lineages,
             "existing_same_content_alias_path_bindings": 1,
             "cumulative_raw_path_identity_bindings": len(cumulative_keys) + 1,
             "candidate_path_disposition": {
@@ -398,14 +408,16 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             "candidate_path_results": candidate_path_results,
             "unmatched_records": [],
             "incompatible_role_records": [],
-            "raw_path_records_outside_exact_receipt_join_subset": (
+            "raw_path_records_outside_exact_digest_join_subset": (
                 EXPECTED_RAW_PATHS - len(cumulative_keys)
             ),
             "outside_subset_interpretation": (
-                "These 1,710 raw paths are not in the 26-object exact "
-                "source receipt/acquisition path-join set; their individual "
+                "These 1,710 raw paths are not among the 26 exact prior-plus-new "
+                "digest/path matches summarized here. This digest-match subset "
+                "is not a B1/B2 receipt count: two path lineages were complete "
+                "before this increment and four are added here. Per-object "
                 "identity, rights, and lineage states remain in the preserved "
-                "1,759-row inventory."
+                "1,759-member inventory."
             ),
             "existing_alias_binding": {
                 "path": alias_path,
@@ -447,7 +459,8 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             "raw_paths": EXPECTED_RAW_PATHS,
             "projection_paths": EXPECTED_PROJECTIONS,
             "complete_raw_b1_b2_lineage": complete_lineages,
-            "prior_and_new_raw_receipt_path_joins": len(cumulative_keys),
+            "exact_raw_digest_path_joins": len(cumulative_keys),
+            "complete_raw_b1_b2_lineage_paths": complete_lineages,
             "including_existing_same_content_alias": len(cumulative_keys) + 1,
             "exact_source_release_rights": exact_source_rights,
             "v4_admissions": 0,

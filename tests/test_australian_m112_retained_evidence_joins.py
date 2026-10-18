@@ -20,10 +20,14 @@ def test_retained_evidence_adds_four_exact_current_revision_joins() -> None:
     assert report["scope"]["approved_denominator"] == 1759
     assert report["scope"]["approved_raw_paths"] == 1736
     assert report["scope"]["approved_projection_paths"] == 23
-    assert increment["prior_raw_path_joins"] == 22
-    assert increment["new_exact_raw_path_joins"] == 4
-    assert increment["cumulative_exact_raw_path_joins"] == 26
-    assert increment["raw_paths_outside_join_subset"] == 1710
+    assert increment["prior_raw_digest_path_joins"] == 22
+    assert increment["new_exact_raw_digest_path_matches"] == 4
+    assert increment["new_exact_b1_b2_receipt_joins"] == 4
+    assert increment["cumulative_exact_raw_digest_path_joins"] == 26
+    assert increment["raw_paths_outside_digest_join_subset"] == 1710
+    assert increment["prior_complete_b1_b2_lineage_paths"] == 2
+    assert increment["new_complete_b1_b2_lineage_paths"] == 4
+    assert increment["cumulative_complete_b1_b2_lineage_paths"] == 6
     assert increment["existing_same_content_alias_path_bindings"] == 1
     assert increment["cumulative_raw_path_identity_bindings"] == 27
     assert increment["candidate_path_disposition"] == {
@@ -50,6 +54,19 @@ def test_retained_evidence_adds_four_exact_current_revision_joins() -> None:
     assert all(join["same_path_byte_count_and_sha256"] for join in joins)
     assert all(join["all_b1_b2_roles_match"] for join in joins)
     assert all(join["preserved_denominator_member"] for join in joins)
+    july_rows = [
+        row
+        for row in report["objects"]
+        if row["path"].startswith("raw/mbs/")
+        and "Downloads-20260701" in row["path"]
+    ]
+    assert len(july_rows) == 4
+    assert all(
+        "exact per-object authorization and reuse disposition remain unresolved"
+        in row["rights"]["state"]
+        and "B1 binding incomplete" not in row["rights"]["state"]
+        for row in july_rows
+    )
 
 
 def test_join_increment_preserves_inventory_ids_and_separate_gates() -> None:
@@ -96,6 +113,8 @@ def test_join_increment_preserves_inventory_ids_and_separate_gates() -> None:
     assert changed_keys == expected_changed_keys
     assert len(increment["denominator_object_id_sha256"]) == 64
     assert gates["complete_raw_b1_b2_lineage"] == 6
+    assert gates["exact_raw_digest_path_joins"] == 26
+    assert gates["complete_raw_b1_b2_lineage_paths"] == 6
     assert gates["v4_admissions"] == 0
     assert gates["consumer_canaries"] == 0
     assert gates["raw_paths_without_direct_or_alias_sha256"] == 92

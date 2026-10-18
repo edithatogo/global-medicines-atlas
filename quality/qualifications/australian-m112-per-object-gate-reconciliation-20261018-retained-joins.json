@@ -49,10 +49,14 @@
     "denominator_object_count": 1759,
     "denominator_object_id_sha256": "7d2e0ced272ae6c785e8136d5a653618975761116c0f717bf17ade4e83251b4a",
     "approved_path_membership_sha256": "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b",
-    "prior_raw_path_joins": 22,
-    "new_exact_raw_path_joins": 4,
-    "cumulative_exact_raw_path_joins": 26,
-    "raw_paths_outside_join_subset": 1710,
+    "prior_raw_digest_path_joins": 22,
+    "new_exact_raw_digest_path_matches": 4,
+    "new_exact_b1_b2_receipt_joins": 4,
+    "cumulative_exact_raw_digest_path_joins": 26,
+    "raw_paths_outside_digest_join_subset": 1710,
+    "prior_complete_b1_b2_lineage_paths": 2,
+    "new_complete_b1_b2_lineage_paths": 4,
+    "cumulative_complete_b1_b2_lineage_paths": 6,
     "existing_same_content_alias_path_bindings": 1,
     "cumulative_raw_path_identity_bindings": 27,
     "candidate_path_disposition": {
@@ -102,8 +106,8 @@
     ],
     "unmatched_records": [],
     "incompatible_role_records": [],
-    "raw_path_records_outside_exact_receipt_join_subset": 1710,
-    "outside_subset_interpretation": "These 1,710 raw paths are not in the 26-object exact source receipt/acquisition path-join set; their individual identity, rights, and lineage states remain in the preserved 1,759-row inventory.",
+    "raw_path_records_outside_exact_digest_join_subset": 1710,
+    "outside_subset_interpretation": "These 1,710 raw paths are not among the 26 exact prior-plus-new digest/path matches summarized here. This digest-match subset is not a B1/B2 receipt count: two path lineages were complete before this increment and four are added here. Per-object identity, rights, and lineage states remain in the preserved 1,759-member inventory.",
     "existing_alias_binding": {
       "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
       "canonical_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
@@ -217,7 +221,8 @@
     "raw_paths": 1736,
     "projection_paths": 23,
     "complete_raw_b1_b2_lineage": 6,
-    "prior_and_new_raw_receipt_path_joins": 26,
+    "exact_raw_digest_path_joins": 26,
+    "complete_raw_b1_b2_lineage_paths": 6,
     "including_existing_same_content_alias": 27,
     "exact_source_release_rights": 2,
     "v4_admissions": 0,
@@ -469,7 +474,7 @@
         }
       },
       "rights": {
-        "state": "maintainer authorization covers source/category/domain; exact sidecar per-object authorization and B1 binding incomplete",
+        "state": "Maintainer authorization covers the source/category/domain; exact per-object authorization and reuse disposition remain unresolved. Complete B1/B2 lineage is recorded separately and does not establish rights or v4 eligibility.",
         "evidence": {
           "path": "quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json",
           "sha256": "daa08d46490d92c7598722d8065d64b62b8eec41001ee1f2eb17806ef1d1560e"
@@ -528,7 +533,7 @@
         }
       },
       "rights": {
-        "state": "maintainer authorization covers source/category/domain; exact sidecar per-object authorization and B1 binding incomplete",
+        "state": "Maintainer authorization covers the source/category/domain; exact per-object authorization and reuse disposition remain unresolved. Complete B1/B2 lineage is recorded separately and does not establish rights or v4 eligibility.",
         "evidence": {
           "path": "quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json",
           "sha256": "daa08d46490d92c7598722d8065d64b62b8eec41001ee1f2eb17806ef1d1560e"
@@ -678,7 +683,7 @@
         }
       },
       "rights": {
-        "state": "maintainer authorization covers source/category/domain; exact sidecar per-object authorization and B1 binding incomplete",
+        "state": "Maintainer authorization covers the source/category/domain; exact per-object authorization and reuse disposition remain unresolved. Complete B1/B2 lineage is recorded separately and does not establish rights or v4 eligibility.",
         "evidence": {
           "path": "quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json",
           "sha256": "daa08d46490d92c7598722d8065d64b62b8eec41001ee1f2eb17806ef1d1560e"
@@ -800,7 +805,7 @@
         }
       },
       "rights": {
-        "state": "maintainer authorization covers source/category/domain; exact sidecar per-object authorization and B1 binding incomplete",
+        "state": "Maintainer authorization covers the source/category/domain; exact per-object authorization and reuse disposition remain unresolved. Complete B1/B2 lineage is recorded separately and does not establish rights or v4 eligibility.",
         "evidence": {
           "path": "quality/qualifications/australian-m112-additional-deferred-source-candidates-20261004.json",
           "sha256": "daa08d46490d92c7598722d8065d64b62b8eec41001ee1f2eb17806ef1d1560e"
