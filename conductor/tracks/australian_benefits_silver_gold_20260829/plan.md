@@ -3766,6 +3766,18 @@
   validation. The exact final code again exited 0; pytest and all harness
   stages passed, including 364 gremlins tests (1,034 of 1,118 zapped with
   cache reuse), format/lint, package probes, Scalene, and security checks.
+- [x] Address the two automated review findings on PR #1180: require the
+  linked admission state to be exactly `landed`, and refresh the cumulative
+  report purpose, observation timestamp, and per-run byte counters. The
+  report now records zero projection/source-payload bytes and 4,226 bytes of
+  receipt-sidecar metadata for this increment. Focused tests (4), the full
+  M-112 affected suite (107), Ruff, `ty`, and BasedPyright pass.
+- [x] Run the pinned full profile for the review correction. Under
+  `uv 0.11.29`, pytest completed with 6,950 passed and three skipped; one unrelated
+  Hypothesis property case fails because reversing inputs changes the Brier
+  score by one floating-point rounding unit. Both Stable v1 reproducibility
+  tests pass under the pinned runtime. Hosted checks for the corrected PR head
+  remain required.
 - [~] Continue lineage reconciliation for the remaining 18 inventory objects.
   Preserve separate rights, v4 admission, and canary gates; PBS/M107
   crosswalks and the reserved July derivative remain with their owner.

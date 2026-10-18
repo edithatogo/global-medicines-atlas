@@ -2,9 +2,19 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
+import pytest
+from scripts import reconcile_m112_pbs_utilisation_lineage as module
 from scripts.reconcile_m112_pbs_utilisation_lineage import (
     EXPECTED_ADDITIONS,
     build_report,
+)
+
+from global_medicines_atlas.bronze_admission import (
+    BronzeAdmissionRecord,
+    BronzeAdmissionState,
 )
 
 
@@ -28,6 +38,15 @@ def test_cumulative_report_adds_only_the_six_qualified_pbs_objects() -> None:
     assert report["updated_gate_totals"]["preserved_deferrals"] == 1759
     assert report["updated_gate_totals"]["v4_admissions"] == 0
     assert report["updated_gate_totals"]["consumer_canaries"] == 0
+    assert "PBS utilisation" in report["purpose"]
+    assert report["observed_at"] == "2026-10-18T22:37:23Z"
+    assert report["boundaries"]["projection_bytes_streamed_this_run"] == 0
+    assert report["boundaries"]["source_payload_bytes_read_this_run"] is False
+    assert report["boundaries"]["source_payload_bytes_streamed_this_run"] == 0
+    assert (
+        report["boundaries"]["receipt_sidecar_metadata_bytes_read_this_run"]
+        == 4226
+    )
     assert (
         report["pbs_utilisation_lineage_increment"]["new_complete_raw_lineages"]
         == EXPECTED_ADDITIONS
@@ -48,3 +67,22 @@ def test_cumulative_report_adds_only_the_six_qualified_pbs_objects() -> None:
         )
         assert row["v4_admission"] is False
         assert row["consumer_canary"] is False
+
+
+def test_non_landed_admission_cannot_complete_lineage() -> None:
+    lineage = json.loads(
+        (
+            module.ROOT
+            / "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json"
+        ).read_text(encoding="utf-8")
+    )
+    item = lineage["objects"][0]
+    admission = BronzeAdmissionRecord.model_validate_json(
+        (module.ROOT / Path(item["landed_admission_path"])).read_bytes()
+    )
+    non_landed = admission.model_copy(
+        update={"state": BronzeAdmissionState.ACCEPTED}
+    )
+
+    with pytest.raises(ValueError, match="admission is not landed"):
+        module.require_landed_admission(non_landed)

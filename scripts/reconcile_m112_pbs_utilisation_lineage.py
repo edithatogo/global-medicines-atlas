@@ -8,7 +8,10 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
-from global_medicines_atlas.bronze_admission import BronzeAdmissionRecord
+from global_medicines_atlas.bronze_admission import (
+    BronzeAdmissionRecord,
+    BronzeAdmissionState,
+)
 from global_medicines_atlas.bronze_raw_evidence import RawEvidenceManifest
 from global_medicines_atlas.receipts import AcquisitionEvent, RightsState
 
@@ -19,6 +22,9 @@ BASE = (
     / "australian-m112-per-object-gate-reconciliation-20261019-pbs-projected-b1-b2-lineage.json"
 )
 LINEAGE = QUAL / "australian-pbs-utilisation-landed-lineage-20261019.json"
+RECEIPT_READBACK = (
+    QUAL / "australian-pbs-utilisation-receipt-sidecar-readback-20261019.json"
+)
 OUTPUT = (
     QUAL
     / "australian-m112-per-object-gate-reconciliation-20261019-pbs-utilisation-lineage.json"
@@ -34,6 +40,7 @@ EXPECTED_COMPLETE_RAW = 1731
 EXPECTED_COMPLETE_TOTAL = 1741
 EXPECTED_INCOMPLETE_RAW = 5
 EXPECTED_INCOMPLETE_PROJECTIONS = 13
+EXPECTED_SIDECAR_METADATA_BYTES = 4226
 
 
 def _read(path: Path) -> dict[str, Any]:
@@ -45,6 +52,27 @@ def _read(path: Path) -> dict[str, Any]:
 
 def _digest(path: Path) -> str:
     return hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+
+
+def require_landed_admission(admission: BronzeAdmissionRecord) -> None:
+    if admission.state is not BronzeAdmissionState.LANDED:
+        raise ValueError(
+            "PBS utilisation B1/B2 lineage admission is not landed"
+        )
+
+
+def _receipt_sidecar_metadata_bytes() -> int:
+    receipt_readback = _read(RECEIPT_READBACK)
+    if not all((
+        receipt_readback["dataset"] == DATASET,
+        receipt_readback["revision"] == REVISION,
+        receipt_readback["metadata_sidecar_bytes_read"]
+        == EXPECTED_SIDECAR_METADATA_BYTES,
+        receipt_readback["source_payload_bytes_read"] is False,
+        receipt_readback["source_payload_values_read"] is False,
+    )):
+        raise ValueError("PBS utilisation receipt sidecar readback changed")
+    return cast("int", receipt_readback["metadata_sidecar_bytes_read"])
 
 
 def build_report() -> dict[str, Any]:
@@ -68,6 +96,7 @@ def build_report() -> dict[str, Any]:
         lineage["boundaries"]["source_payload_bytes_read"] is False,
         lineage["boundaries"]["rights_or_licensing_conclusion_added"] is False,
         len(lineage["objects"]) == EXPECTED_ADDITIONS,
+        _receipt_sidecar_metadata_bytes() == EXPECTED_SIDECAR_METADATA_BYTES,
     )):
         raise ValueError(
             "PBS utilisation lineage scope or M-112 baseline changed"
@@ -132,6 +161,7 @@ def build_report() -> dict[str, Any]:
         admission = BronzeAdmissionRecord.model_validate_json(
             (ROOT / admission_path).read_bytes()
         )
+        require_landed_admission(admission)
         if not all((
             event.acquisition_id == item["acquisition_id"],
             event.content_id == item["content_sha256"],
@@ -157,6 +187,22 @@ def build_report() -> dict[str, Any]:
         }
 
     result = copy.deepcopy(base)
+    result["purpose"] = (
+        "Preserve the approved 1,759-object inventory while binding the six "
+        "PBS utilisation source objects to their exact receipt sidecars, B1 "
+        "acquisition records, B2 references, and unreviewed landed decisions."
+    )
+    result["observed_at"] = lineage["recorded_at"]
+    result["boundaries"].update({
+        "projection_bytes_streamed_this_run": 0,
+        "source_payload_bytes_persisted_this_run": False,
+        "source_payload_bytes_read_this_run": False,
+        "source_payload_bytes_streamed_this_run": 0,
+        "source_payload_values_inspected_this_run": False,
+        "receipt_sidecar_metadata_bytes_read_this_run": (
+            _receipt_sidecar_metadata_bytes()
+        ),
+    })
     result_objects = {
         (row["dataset"], row["revision"], row["path"]): row
         for row in result["objects"]

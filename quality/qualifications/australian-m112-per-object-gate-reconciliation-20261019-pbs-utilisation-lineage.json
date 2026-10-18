@@ -5,14 +5,15 @@
     "consumer_canary_performed": false,
     "denominator_changed": false,
     "new_source_or_dataset_added": false,
-    "projection_bytes_streamed_this_run": 7201352,
+    "projection_bytes_streamed_this_run": 0,
     "rights_or_licensing_conclusion_added": false,
     "source_owner_pbs_m107_and_july_derivative_modified": false,
     "source_payload_bytes_persisted_this_run": false,
-    "source_payload_bytes_read_this_run": true,
-    "source_payload_bytes_streamed_this_run": 5018706,
+    "source_payload_bytes_read_this_run": false,
+    "source_payload_bytes_streamed_this_run": 0,
     "source_payload_values_inspected_this_run": false,
-    "v4_admission_performed": false
+    "v4_admission_performed": false,
+    "receipt_sidecar_metadata_bytes_read_this_run": 4226
   },
   "current_b1_b2_lineage_expansion": {
     "prior_complete_raw_lineages": 22,
@@ -146795,7 +146796,7 @@
       "v4_admission": false
     }
   ],
-  "observed_at": "2026-10-19T06:59:00+10:00",
+  "observed_at": "2026-10-18T22:37:23Z",
   "p7_archive_lineage_expansion": {
     "complete_lineages_after_expansion": 21,
     "new_complete_lineages": 1,
@@ -146822,7 +146823,7 @@
     "qualification_path": "quality/qualifications/australian-m112-mbs-bronze-projection-lineage-20261019.json",
     "qualification_sha256": "ef32417220d838e2cb625d8d0ab7a34009b99bdf3181314e5a4536442d0f1720"
   },
-  "purpose": "Preserve the approved 1,759-object inventory while binding the six existing July 2025 MBS Silver candidate tables to their exact source receipt, table lineage, output identity, and public metadata readback.",
+  "purpose": "Preserve the approved 1,759-object inventory while binding the six PBS utilisation source objects to their exact receipt sidecars, B1 acquisition records, B2 references, and unreviewed landed decisions.",
   "retained_evidence_join_increment": {
     "approved_path_membership_sha256": "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b",
     "candidate_path_disposition": {
