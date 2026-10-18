@@ -141,6 +141,7 @@ def test_report_reconciles_current_index_and_receipt_only_links() -> None:
     assert scope["source_payloads_requested"] is False
     assert scope["source_payloads_read"] is False
     assert scope["html_bodies_retained"] is False
+    assert report["unresolved_receipt_resources"] == []
 
     archive = cast("dict[str, Any]", report["archive_readback"])
     assert archive["dataset"] == "edithatogo/australian-mbs-source-archive"
@@ -222,6 +223,73 @@ def test_page_inputs_preserves_unmapped_receipt_source_as_unresolved() -> None:
         unresolved[0]["unresolved_reason"] == "no_official_downloads_index_row"
     )
     assert len(unresolved[0]["matching_archive_receipts"]) == 1
+
+
+def test_build_report_serializes_unresolved_receipt_details(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source_url = "https://www.mbsonline.gov.au/MBS-unmatched.XML"
+    receipt_path = "bronze/mbs/releases/unmatched.receipt.json"
+    receipt = {
+        "receipt_path": receipt_path,
+        "archive_path": "raw/mbs/releases/MBS-unmatched.XML",
+        "payload_sha256": "a" * 64,
+    }
+    sidecar_sha256 = "b" * 64
+    monkeypatch.setattr(
+        chronology,
+        "read_current_archive_receipts",
+        lambda _index: {
+            "status": "exact_current_revision_receipts_verified",
+            "revision": "c" * 40,
+            "receipt_sidecars_unresolved": 0,
+            "receipt_sidecars_verified": 1,
+            "receipt_sidecars": [
+                {
+                    **receipt,
+                    "status": "exact_current_receipt",
+                    "source_url": source_url,
+                    "receipt": {"sha256": sidecar_sha256},
+                }
+            ],
+        },
+    )
+    monkeypatch.setattr(
+        chronology,
+        "_page_inputs",
+        lambda _index: (
+            {},
+            {},
+            [
+                {
+                    "source_url": source_url,
+                    "filename": "MBS-unmatched.XML",
+                    "source_scope": (
+                        "archive_receipt_only_not_selected_current_xml_index"
+                    ),
+                    "matching_archive_receipts": [receipt],
+                    "unresolved_reason": "no_official_downloads_index_row",
+                }
+            ],
+        ),
+    )
+
+    report = chronology.build_report()
+
+    assert (
+        report["scope"]["archive_receipt_sources_without_unique_official_row"]
+        == 1
+    )
+    unresolved = report["unresolved_receipt_resources"]
+    assert len(unresolved) == 1
+    assert unresolved[0]["source_url"] == source_url
+    assert (
+        unresolved[0]["unresolved_reason"] == "no_official_downloads_index_row"
+    )
+    assert unresolved[0]["archive_receipts"][0]["receipt_path"] == receipt_path
+    assert unresolved[0]["archive_receipts"][0]["current_receipt_sha256"] == (
+        sidecar_sha256
+    )
 
 
 def test_public_archive_failure_is_recorded_as_incomplete(

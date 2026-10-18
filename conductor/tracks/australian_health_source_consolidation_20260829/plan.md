@@ -1231,3 +1231,16 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] M-109 remains blocked: this metadata readback does not establish the
   approved historical denominator, source rights, source-era field semantics,
   Silver admission, or full acceptance. Exact-head hosted checks are pending.
+
+## M-109 unresolved receipt mapping review correction (2026-10-18)
+
+- [x] Preserve each unmatched or ambiguous receipt-only source URL, receipt
+  identity, and mapping reason in a serialized report collection; add a
+  build-level negative regression proving unresolved provenance is not dropped.
+- [x] Revalidate 14 focused chronology tests and 26 broader M-109 page/register
+  tests, Ruff, formatting, `ty`, BasedPyright, report digest, and
+  `git diff --check`. Record the corrected report digest and review finding in
+  the append-only evidence ledger.
+- [~] Exact-head hosted checks and review-thread resolution remain pending;
+  M-109's historical denominator, rights, semantics, and admission gates remain
+  open.

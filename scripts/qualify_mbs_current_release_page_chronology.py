@@ -708,6 +708,12 @@ def build_report() -> dict[str, Any]:
         },
         "archive_readback": archive_readback,
         "pages": pages,
+        "unresolved_receipt_resources": [
+            resource
+            for resource in resources
+            if resource["page_observation_status"]
+            == "unresolved_official_page_mapping"
+        ],
     }
     report["digest"] = {"algorithm": "sha256-canonical-json"}
     report["digest"]["value"] = _canonical_digest(report)
