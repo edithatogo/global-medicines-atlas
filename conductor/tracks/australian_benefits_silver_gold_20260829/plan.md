@@ -3433,7 +3433,11 @@
   admission. The five August lifecycle records joined to one payload identity
   and also byte-match their preserved repository copies. None of the five
   lifecycle paths is listed in that revision's 21-entry root manifest; their
-  direct reads do not supply a v4 discovery role.
+  direct reads do not supply a v4 discovery role. Review correction: only 27
+  of the 29 readbacks had an expected SHA-256 and qualify as digest matches;
+  the current and older August source-manifest reads are status-only because
+  no expected digest was recorded for either. Their observed digests remain
+  diagnostic metadata, not verified matches.
 - [x] Preserve the two August path identities over one payload digest and the
   older B2 external locator revision `abdf414cdea0127d3edda6f8af402d1a01139623`
   separately from the path readback at `40891976f77ee5e7688edceed25c9ac98a77547e`.
@@ -3455,3 +3459,11 @@
   authorization, discovery, input lineage, v1/v3 conformance, recovery
   checksum, and cache cleanup remain unbound; no M-112 admission or reader
   canary was attempted. Preserve the 1,759 denominator and all six deferrals.
+
+### M-112 metadata digest accounting review correction (2026-10-18)
+
+- [x] Keep a successful anonymous manifest read without an expected digest as
+  a status-only observation. The qualification now records 27 digest matches
+  and two status-only reads across 29 metadata requests, retaining observed
+  hashes without claiming either was verified against an expected identity.
+  All six path candidates and the 1,759-object denominator are unchanged.

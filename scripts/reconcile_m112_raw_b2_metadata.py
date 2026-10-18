@@ -147,7 +147,7 @@ def require_august_lifecycle_locator(readback: dict[str, Any]) -> None:
         )
 
 
-def _fetch_record(  # ruff: ignore[too-many-locals,too-many-branches] -- each metadata claim is summarized in one exact readback row
+def fetch_metadata_record(  # ruff: ignore[too-many-locals,too-many-branches] -- each metadata claim is summarized in one exact readback row
     client: httpx.Client,
     dataset: str,
     revision: str,
@@ -159,11 +159,16 @@ def _fetch_record(  # ruff: ignore[too-many-locals,too-many-branches] -- each me
 ) -> dict[str, Any]:
     status, body = read_public_metadata(dataset, revision, path, client=client)
     sha256 = hashlib.sha256(body).hexdigest()
-    matches = (
-        status == HTTPStatus.OK
+    status_read_passed = status == HTTPStatus.OK
+    has_expected_identity = (
+        expected_bytes is not None or expected_sha256 is not None
+    )
+    identity_match = (
+        status_read_passed
         and (expected_bytes is None or len(body) == expected_bytes)
         and (expected_sha256 is None or sha256 == expected_sha256)
     )
+    digest_match = identity_match if expected_sha256 is not None else None
     result: dict[str, Any] = {
         "dataset": dataset,
         "revision": revision,
@@ -173,7 +178,14 @@ def _fetch_record(  # ruff: ignore[too-many-locals,too-many-branches] -- each me
         "observed_sha256": sha256,
         "expected_bytes": expected_bytes,
         "expected_sha256": expected_sha256,
-        "pinned_digest_match": matches,
+        "status_read_passed": status_read_passed,
+        "expected_identity_match": (
+            identity_match if has_expected_identity else None
+        ),
+        "pinned_digest_match": digest_match,
+        "verification_mode": (
+            "pinned_digest" if expected_sha256 is not None else "status_only"
+        ),
     }
     if status == HTTPStatus.OK and (
         path != "manifest.json" or path.startswith("bronze/")
@@ -188,7 +200,7 @@ def _fetch_record(  # ruff: ignore[too-many-locals,too-many-branches] -- each me
         rows_value: object = document.get("rows", [])
         first_value: object = {}
         if isinstance(rows_value, list) and rows_value:
-            first_value = cast("object", rows_value[0])
+            first_value = cast("list[object]", rows_value)[0]
         if not isinstance(first_value, dict):
             first_value = {}
         first_row = cast("dict[str, Any]", first_value)
@@ -475,7 +487,7 @@ def reconcile() -> dict[str, Any]:  # ruff: ignore[too-many-locals] -- six ident
         headers={"Accept-Encoding": "identity"},
     ) as client:
         rows.append(
-            _fetch_record(
+            fetch_metadata_record(
                 client,
                 JULY_DATASET,
                 JULY,
@@ -484,7 +496,7 @@ def reconcile() -> dict[str, Any]:  # ruff: ignore[too-many-locals] -- six ident
             )
         )
         rows.extend([
-            _fetch_record(
+            fetch_metadata_record(
                 client,
                 JULY_DATASET,
                 JULY,
@@ -495,7 +507,7 @@ def reconcile() -> dict[str, Any]:  # ruff: ignore[too-many-locals] -- six ident
             for item in july_readback["metadata_additions"]
         ])
         rows.extend([
-            _fetch_record(
+            fetch_metadata_record(
                 client,
                 JULY_DATASET,
                 JULY,
@@ -505,13 +517,13 @@ def reconcile() -> dict[str, Any]:  # ruff: ignore[too-many-locals] -- six ident
             )
             for item in sidecars["objects"]
         ])
-        current_manifest = _fetch_record(
+        current_manifest = fetch_metadata_record(
             client,
             JULY_DATASET,
             "40891976f77ee5e7688edceed25c9ac98a77547e",
             "manifest.json",
         )
-        old_locator_manifest = _fetch_record(
+        old_locator_manifest = fetch_metadata_record(
             client,
             JULY_DATASET,
             "abdf414cdea0127d3edda6f8af402d1a01139623",
@@ -519,7 +531,7 @@ def reconcile() -> dict[str, Any]:  # ruff: ignore[too-many-locals] -- six ident
         )
         rows.extend((current_manifest, old_locator_manifest))
         august_revision = AUGUST_LIFECYCLE_REVISION
-        lifecycle_manifest = _fetch_record(
+        lifecycle_manifest = fetch_metadata_record(
             client,
             JULY_DATASET,
             august_revision,
@@ -541,7 +553,7 @@ def reconcile() -> dict[str, Any]:  # ruff: ignore[too-many-locals] -- six ident
         for role in august["files"].values():
             path = role["path"].removeprefix("quality/")
             rows.append(
-                _fetch_record(
+                fetch_metadata_record(
                     client,
                     JULY_DATASET,
                     august_revision,
