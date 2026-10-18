@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib
 import json
 from copy import deepcopy
 from pathlib import Path
@@ -152,8 +153,7 @@ def _renovate_output_observed() -> bool:
 def _stable_promotion_approval_observed() -> bool:
     """Require a schema-valid, explicitly conditional v1.0.0 approval."""
     try:
-        from jsonschema import Draft202012Validator, FormatChecker
-        from jsonschema.exceptions import SchemaError, ValidationError
+        jsonschema: Any = importlib.import_module("jsonschema")
     except ImportError:
         return False
 
@@ -166,14 +166,47 @@ def _stable_promotion_approval_observed() -> bool:
                 encoding="utf-8"
             )
         )
-        Draft202012Validator.check_schema(schema)
-        Draft202012Validator(
+        jsonschema.Draft202012Validator.check_schema(schema)
+        jsonschema.Draft202012Validator(
             schema,
-            format_checker=FormatChecker(),
+            format_checker=jsonschema.FormatChecker(),
         ).validate(approval)  # pyright: ignore[reportUnknownMemberType]
-    except OSError, SchemaError, ValidationError, ValueError:
+    except (
+        OSError,
+        jsonschema.exceptions.SchemaError,
+        jsonschema.exceptions.ValidationError,
+        ValueError,
+    ):
         return False
     return approval["approval_status"] == "approved_conditional"
+
+
+def _apply_stable_promotion_approval_gate(gate: dict[str, Any]) -> None:
+    """Record conditional approval while preserving adverse observations."""
+    gate.update({
+        "description": (
+            "Record explicit conditional approval for software-only v1.0.0 "
+            "promotion; the existing v1.0.0rc1 authority remains prerelease-only. "
+            "Execute only after every qualification gate and exact candidate "
+            "verification pass."
+        ),
+        "state": (
+            gate["state"]
+            if gate["state"] in {"failed", "unverified"}
+            else "passed"
+            if _stable_promotion_approval_observed()
+            else "blocked"
+        ),
+        "evidence": _append_unique(
+            gate["evidence"],
+            [
+                "quality/qualifications/release-authority-v1.0.0rc1.json",
+                "quality/qualifications/stable-v1-release-provenance-receipt.json",
+                STABLE_PROMOTION_APPROVAL,
+                STABLE_PROMOTION_APPROVAL_SCHEMA,
+            ],
+        ),
+    })
 
 
 def _bronze_bounded_scope_qualified() -> bool:
@@ -615,31 +648,7 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
         ),
     })
 
-    release_gate = gates["stable-v1-release-approval"]
-    release_gate.update({
-        "description": (
-            "Record explicit conditional approval for software-only v1.0.0 "
-            "promotion; the existing v1.0.0rc1 authority remains prerelease-only. "
-            "Execute only after every qualification gate and exact candidate "
-            "verification pass."
-        ),
-        "state": (
-            release_gate["state"]
-            if release_gate["state"] in {"failed", "unverified"}
-            else "passed"
-            if _stable_promotion_approval_observed()
-            else "blocked"
-        ),
-        "evidence": _append_unique(
-            release_gate["evidence"],
-            [
-                "quality/qualifications/release-authority-v1.0.0rc1.json",
-                "quality/qualifications/stable-v1-release-provenance-receipt.json",
-                STABLE_PROMOTION_APPROVAL,
-                STABLE_PROMOTION_APPROVAL_SCHEMA,
-            ],
-        ),
-    })
+    _apply_stable_promotion_approval_gate(gates["stable-v1-release-approval"])
     maturity_gate = gates["stable-v1-maturity-m5"]
     dimensions_ready = all(
         dimension["current_level"] == "M5"
