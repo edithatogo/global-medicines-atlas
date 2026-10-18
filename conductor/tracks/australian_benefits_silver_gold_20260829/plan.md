@@ -3525,3 +3525,22 @@
   overlay changes the frozen path set. This is a scope freeze only: no source
   payload bytes were read, and rights, admission, release, and canary gates
   remain separate.
+
+### M-112 exact-six candidate consumer canary readback (2026-10-18)
+
+- [x] Re-run the bounded exact-main candidate workflow at
+  [39105652146](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39105652146)
+  (attempt 2) after the six July 2025 MBS v3 Silver objects passed candidate
+  lineage qualification. It traversed all 5,989 source-record edges through
+  API, CLI, Atlas, and Chromium; each consumer produced the same ordered
+  edge-ID digest. DuckDB and Polars also matched on bounded date and decimal
+  queries. The aggregate-only receipt is
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261018-rerun-39105652146.json`.
+- [x] Keep this result scoped to the six authorized candidate Silver tables and
+  their Gold candidate consumers. The initial browser attempt failed to load
+  the stylesheet; the failed job retry passed all steps. The receipt remains
+  `candidate_only` and `review_state=not_reviewed`; no admission, rights
+  conclusion, publication, source retention, or M-112 acceptance occurred.
+- [ ] Keep M-112 per-object federation-reader canaries blocked until an eligible
+  object receives v4 admission. The frozen 1,759-object overlay therefore still
+  correctly reports zero M-112 consumer canaries and preserves all deferrals.
