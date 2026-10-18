@@ -1057,6 +1057,29 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   M-107 remains blocked; do not infer absent coverage from missing archive-page
   links or the API's documented current window.
 
+## M-107 pinned PBS public-tree inventory reconciliation (2026-10-18)
+
+- [x] Read anonymous dataset metadata and the recursive file tree at exact
+  public revision `48fd7345fb09277bb5b85644dba72804633a2abb`. The bounded
+  metadata responses were 1,394 and 2,388 bytes; their SHA-256 identities and
+  the normalized nine-path inventory are recorded in
+  `quality/qualifications/australian-pbs-m107-public-tree-readback-20261018.json`.
+  No source payload or Bronze XML/Parquet bytes were downloaded or inspected.
+- [x] Bind the sole `raw/` tree path and its size to the existing exact
+  official URL, B1 receipt, and manifest-backed SHA-256; add fail-closed
+  revision, duplicate-path, size, and source-boundary validation to the M-107
+  crosswalk builder. The updated crosswalk still has one exact URL/receipt
+  identity and 315 unresolved official links, explicitly not source absence.
+- [x] Validate 17 focused crosswalk tests, 29 broader M-107 inventory tests,
+  including three adversarial public-tree mutations, Test-Goblin routine,
+  context/ecosystem checks, and `git diff --check`; the test remains assigned
+  to the Test-Goblin unit lane. The first routine attempt found formatting and
+  lint issues in the new validator; those were corrected before the passing
+  routine rerun.
+- [~] Keep M-107 blocked. This inventories only the current pinned public PBS
+  archive and does not establish the historical denominator, rights, source-era
+  qualification, or existence/absence of the other 315 official links.
+
 ## M-112 August 2026 raw-object rights and lifecycle refresh (2026-10-18)
 
 - [x] Refresh the exact 1,759-path M-112 per-object report from its preserved
@@ -1272,6 +1295,23 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   failed, 3 skipped, 96.90% coverage. Do not record the local full profile as
   passed; exact-head hosted checks remain the authoritative cross-platform
   result.
+
+## M-107 public-tree row binding review correction (2026-10-19)
+
+- [x] Address automated review finding #4307293512: normalized file rows were
+  not bound to the digest-only public tree response. Retain the exact 2,388-byte
+  metadata response at the pinned revision, verify its byte count and SHA-256,
+  parse its file entries, and require exact path/size equality with the
+  normalized inventory. No source payload was requested or read.
+- [x] Add regressions rejecting a changed non-raw size, a fabricated inventory
+  row, and a response body/digest mismatch. Preserve the known raw object's
+  independent B1/B2 digest binding and all rights/coverage boundaries.
+- [x] Rebuild the M-107 crosswalk from its pinned inputs; 19 focused and 89
+  broader affected tests pass, as do BasedPyright on the validator, Ruff,
+  formatting, and `git diff --check`.
+- [~] PR #1170 exact-head hosted checks and review-thread resolution remain
+  pending. M-107 remains blocked by unresolved schedule identities, source
+  rights, and historical denominator requirements.
 
 ## M-112 July refresh source-report binding review correction (2026-10-18)
 

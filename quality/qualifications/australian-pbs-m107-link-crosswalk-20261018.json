@@ -8,6 +8,7 @@
     "official_schedule_link_count": 316,
     "distinct_schedule_periods": 197,
     "known_public_object_link_count": 1,
+    "public_archive_raw_file_count": 1,
     "exact_official_url_to_b1_receipt_metadata_count": 1,
     "unresolved_archive_identity_link_count": 315,
     "source_payloads_requested": false,
@@ -35,11 +36,74 @@
     {
       "path": "quality/qualifications/australian-pbs-m107-known-object-manifest-readback-20261018.json",
       "sha256": "2d98096e51f498a8c243f0ca34601da1041973ce24dc9a931b88d683a8eb0a6b"
+    },
+    {
+      "path": "quality/qualifications/australian-pbs-m107-public-tree-readback-20261018.json",
+      "sha256": "46a2114a14d38c7af6b8df054a4877b43310702ad36767cbcc7cfe7e0d8534ef"
     }
   ],
   "interpretation": {
     "known_object_match_boundary": "For the one exact official URL-to-B1-receipt join, the manifest, receipt, and current public object identities agree. A date, XML V3 label, or archive filename match alone does not establish lineage; this join does not establish rights, period completeness, or admission.",
     "unresolved_boundary": "An unresolved link-to-object mapping is not evidence that a source period or object is absent."
+  },
+  "public_archive_inventory": {
+    "dataset": "edithatogo/australian-pbs-source-archive",
+    "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+    "tree_http_status": 200,
+    "tree_response_bytes": 2388,
+    "tree_response_sha256": "6e85e905b139d04c84f77f42de988866ecf0ab780c7d5e2a1388a5348a5da33a",
+    "file_count": 9,
+    "files": [
+      {
+        "path": ".gitattributes",
+        "bytes": 2580
+      },
+      {
+        "path": "README.md",
+        "bytes": 495
+      },
+      {
+        "path": "bronze/2026-04-01/admission.json",
+        "bytes": 1044
+      },
+      {
+        "path": "bronze/2026-04-01/pbs-v3-source.parquet",
+        "bytes": 158134
+      },
+      {
+        "path": "bronze/2026-04-01/sch-2026-04-01-r1.xml",
+        "bytes": 313437585
+      },
+      {
+        "path": "bronze/2026-04-01/source-receipt.json",
+        "bytes": 3143
+      },
+      {
+        "path": "manifest.json",
+        "bytes": 7513
+      },
+      {
+        "path": "metadata/source/au-pbs/cb7f9647d77372faa091664a1337e70574a5dee4afe6a55a535fb204ed16f2b8.json",
+        "bytes": 2555
+      },
+      {
+        "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+        "bytes": 11156706
+      }
+    ],
+    "raw_files": [
+      {
+        "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+        "bytes": 11156706,
+        "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+        "sha256_evidence": "independent_manifest_and_receipt_readback",
+        "official_url": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3",
+        "url_binding_status": "exact_official_url_to_b1_receipt_metadata"
+      }
+    ],
+    "source_payload_bytes_read": 0,
+    "response_body_retained": true,
+    "interpretation": "The pinned public tree contains one raw schedule path; other official links remain unresolved, not absent."
   },
   "links": [
     {
@@ -7993,6 +8057,6 @@
   ],
   "digest": {
     "algorithm": "sha256-canonical-json",
-    "value": "61c5387a44093b126e4d6642c5b2cb8db9627a0fb276a690c5f2cd318ed8d01b"
+    "value": "4038a40d4ec36da781d8d84eb8962a73f69c24283247e8e9847b737ee408467b"
   }
 }
