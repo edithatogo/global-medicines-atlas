@@ -9,6 +9,9 @@ from operator import itemgetter
 from pathlib import Path
 from typing import Any, cast
 
+from global_medicines_atlas.mbs_silver_qualification import (
+    MbsSilverQualification,
+)
 from global_medicines_atlas.receipts import SourceReceipt, require_temporal
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,11 +61,17 @@ EXPECTED_TABLE_COUNT = 6
 EXPECTED_PUBLIC_OBJECT_COUNT = 9
 EXPECTED_TOTAL_LINEAGES = 28
 SHA256_HEX_LENGTH = 64
-OBSERVED_AT = "2026-10-19T05:50:00+10:00"
-OUTPUT = QUAL / "australian-m112-july-mbs-silver-lineage-20261019.json"
+OBSERVED_AT = "2026-10-19T07:12:00+10:00"
+SUPERSEDED_OUTPUT = (
+    QUAL / "australian-m112-july-mbs-silver-lineage-20261019.json"
+)
+SUPERSEDED_OUTPUT_SHA256 = (
+    "28025391fa112bd532eea2544a986840c3d9dcccb10f40f90f5dbea6732eebfb"
+)
+OUTPUT = QUAL / "australian-m112-july-mbs-silver-lineage-reviewed-20261019.json"
 OVERLAY_OUTPUT = QUAL / (
     "australian-m112-per-object-gate-reconciliation-20261019-"
-    "july-mbs-silver-lineage.json"
+    "july-mbs-silver-lineage-reviewed.json"
 )
 BindingResult = tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]]]
 
@@ -96,7 +105,7 @@ def _unique(rows: list[dict[str, Any]], *, path: str) -> dict[str, Any]:
     return matches[0]
 
 
-def _build_bindings() -> BindingResult:  # ruff: ignore[too-many-locals,too-many-statements] -- each evidence role is checked explicitly
+def _build_bindings() -> BindingResult:  # ruff: ignore[too-many-branches,too-many-locals,too-many-statements] -- each evidence role is checked explicitly
     """Cross-check frozen identity, source receipt, transformation, and output."""
     base = _read(BASE)
     frozen = _read(FROZEN_INVENTORY)
@@ -239,7 +248,29 @@ def _build_bindings() -> BindingResult:  # ruff: ignore[too-many-locals,too-many
     output_rows: list[dict[str, Any]] = []
     base_objects = base.get("objects", [])
     tree_rows = tree.get("observations", [])
-    lineages = {row["table"]: row for row in qualified_tables}
+    candidate_qualification = MbsSilverQualification.model_validate(
+        candidate.get("qualification")
+    )
+    public_qualification_model = MbsSilverQualification.model_validate(
+        public_qualification.get("qualification")
+    )
+    candidate_lineages = {
+        row.table: row.model_dump(mode="json")
+        for row in candidate_qualification.tables
+    }
+    public_lineages = {
+        row.table: row.model_dump(mode="json")
+        for row in public_qualification_model.tables
+    }
+    if not all((
+        set(candidate_lineages) == TABLES,
+        set(public_lineages) == TABLES,
+        candidate_lineages == public_lineages,
+    )):
+        raise ValueError(
+            "candidate table lineage differs from manifest-bound qualification"
+        )
+    lineages = candidate_lineages
     public_outputs = {row["path"]: row for row in product_outputs}
     for output in sorted(manifest_objects, key=itemgetter("path")):
         path = output["path"]
@@ -289,6 +320,14 @@ def _build_bindings() -> BindingResult:  # ruff: ignore[too-many-locals,too-many
             public_output.get("byte_count") == byte_count,
             tree_row.get("git_blob_oid_match") is True,
             tree_row.get("byte_count_match") is True,
+            tree_row.get("observed_git_blob_oid")
+            == identity.get("git_blob_oid"),
+            tree_row.get("expected_git_blob_oid")
+            == identity.get("git_blob_oid"),
+            tree_row.get("observed_bytes") == byte_count,
+            tree_row.get("expected_bytes") == byte_count,
+            tree_row.get("observed_lfs_sha256") == sha256,
+            tree_row.get("expected_lfs_sha256") == sha256,
             lineage.get("row_count")
             == candidate["qualification"].get("source_record_count"),
             isinstance(lineage.get("lineage_sha256"), str),
@@ -332,7 +371,10 @@ def _build_bindings() -> BindingResult:  # ruff: ignore[too-many-locals,too-many
                 "manifest_path": MANIFEST.as_posix(),
                 "manifest_sha256": _sha(MANIFEST),
                 "readback_matches_manifest": True,
-                "lfs_oid_and_byte_count_match": True,
+                "observed_git_blob_oid": tree_row["observed_git_blob_oid"],
+                "observed_lfs_sha256": tree_row["observed_lfs_sha256"],
+                "observed_byte_count": tree_row["observed_bytes"],
+                "tree_identity_matches_frozen_identity": True,
             },
         })
 
@@ -340,11 +382,17 @@ def _build_bindings() -> BindingResult:  # ruff: ignore[too-many-locals,too-many
 
 
 def build_report() -> dict[str, Any]:
+    if _sha(SUPERSEDED_OUTPUT) != SUPERSEDED_OUTPUT_SHA256:
+        raise ValueError("superseded qualification digest changed")
     _base, product, outputs = _build_bindings()
     return {
         "schema_id": "global-medicines-atlas.m112-july-mbs-silver-source-lineage",
         "schema_version": 1,
         "observed_at": OBSERVED_AT,
+        "supersedes": {
+            "path": SUPERSEDED_OUTPUT.as_posix(),
+            "sha256": SUPERSEDED_OUTPUT_SHA256,
+        },
         "status": "six_candidate_silver_tables_bound_to_frozen_source_lineage",
         "scope": {
             "dataset": DATASET,

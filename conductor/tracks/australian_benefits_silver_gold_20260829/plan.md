@@ -3688,3 +3688,17 @@
   per-object landed-admission or B2 receipt records for this inventory. The
   source-owner lane remains unchanged; 32 of 1,759 objects have complete lineage.
   See the `m112_remaining_lineage_owner_lane_audit` evidence record.
+
+### M-112 July Silver review correction (2026-10-19)
+
+- [x] Address review findings #4308597850 and #4308597853. The reconciler now
+  compares current-tree expected and observed Git blob, LFS digest, and byte
+  count against each frozen object identity, validates both Silver qualification
+  reports, and requires exact table-lineage equality with the manifest-bound
+  public qualification. Four targeted tests and the 15-test focused suite pass;
+  Ruff, formatting, BasedPyright, Test-Goblin routine, and repository metadata
+  checks pass. Hosted rerun is pending.
+- [~] Remaining owner-controlled PBS lineage remains unchanged pending an
+  explicit decision about creating current-time B1/B2 records from pinned
+  public objects. The exact gap counts and producer-history audit are recorded
+  under `m112_remaining_lineage_owner_lane_audit`.

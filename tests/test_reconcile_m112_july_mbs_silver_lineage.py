@@ -9,6 +9,11 @@ from pathlib import Path
 import pytest
 from scripts import reconcile_m112_july_mbs_silver_lineage as reconciliation
 
+from global_medicines_atlas.mbs_silver_qualification import (
+    MbsSilverQualification,
+    report_digest,
+)
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 INPUTS = (
     reconciliation.BASE,
@@ -20,6 +25,7 @@ INPUTS = (
     reconciliation.PUBLIC_QUALIFICATION,
     reconciliation.CANDIDATE_REPORT,
     reconciliation.PUBLIC_READBACK,
+    reconciliation.SUPERSEDED_OUTPUT,
     Path("scripts/reconcile_m112_july_mbs_silver_lineage.py"),
 )
 
@@ -105,6 +111,60 @@ def test_silver_lineage_rejects_manifest_output_digest_mismatch(
     with pytest.raises(
         ValueError, match="frozen output, transformation, or readback mismatch"
     ):
+        reconciliation.main()
+
+    assert not (root / reconciliation.OUTPUT).exists()
+
+
+def test_silver_lineage_rejects_stale_current_tree_identity_flags(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = _fixture_root(tmp_path)
+    monkeypatch.setattr(reconciliation, "ROOT", root)
+    tree_path = root / reconciliation.TREE_INVENTORY
+    tree = json.loads(tree_path.read_text())
+    observation = next(
+        row
+        for row in tree["observations"]
+        if row.get("dataset") == reconciliation.DATASET
+        and row.get("path", "").endswith("/benefits.parquet")
+    )
+    observation["observed_lfs_sha256"] = "0" * 64
+    # Leave the cached boolean true to prove direct identity fields are checked.
+    tree_path.write_text(json.dumps(tree))
+
+    with pytest.raises(
+        ValueError, match="frozen output, transformation, or readback mismatch"
+    ):
+        reconciliation.main()
+
+    assert not (root / reconciliation.OUTPUT).exists()
+
+
+def test_silver_lineage_rejects_candidate_table_hash_not_in_bound_qualification(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = _fixture_root(tmp_path)
+    monkeypatch.setattr(reconciliation, "ROOT", root)
+    candidate_path = root / reconciliation.CANDIDATE_REPORT
+    candidate = json.loads(candidate_path.read_text())
+    qualification = MbsSilverQualification.model_validate(
+        candidate["qualification"]
+    )
+    table = qualification.tables[0].model_copy(
+        update={"lineage_sha256": "0" * 64}
+    )
+    altered = qualification.model_copy(
+        update={
+            "tables": (table, *qualification.tables[1:]),
+            "qualification_sha256": "0" * 64,
+        }
+    )
+    candidate["qualification"] = altered.model_dump(mode="json")
+    candidate["qualification"]["qualification_sha256"] = report_digest(altered)
+    candidate_path.write_text(json.dumps(candidate))
+
+    with pytest.raises(ValueError, match="candidate table lineage differs"):
         reconciliation.main()
 
     assert not (root / reconciliation.OUTPUT).exists()
