@@ -1,0 +1,70 @@
+{
+  "boundaries": {
+    "field_semantics_accepted": false,
+    "m109_accepted": false,
+    "rights_changed": false,
+    "source_identifiers_emitted": false,
+    "source_payloads_requested_by_this_reconciliation": false,
+    "source_values_retained": false
+  },
+  "canonical_byte_count": 1952,
+  "canonical_sha256": "2fd0c76c14bbe5ab675b91fc5f1c99dfa04c7922719d9ae482b3fbff24d87234",
+  "comparison": {
+    "added_record_count": 1,
+    "changed_field_counts": [
+      {
+        "count": 1,
+        "native_field": "Benefit75"
+      },
+      {
+        "count": 79,
+        "native_field": "DescriptorChange"
+      },
+      {
+        "count": 5431,
+        "native_field": "FeeChange"
+      },
+      {
+        "count": 5437,
+        "native_field": "ItemChange"
+      },
+      {
+        "count": 8,
+        "native_field": "NewItem"
+      },
+      {
+        "count": 2,
+        "native_field": "ScheduleFee"
+      }
+    ],
+    "changed_record_count": 5445,
+    "matched_record_count": 6045,
+    "removed_record_count": 0
+  },
+  "inputs": {
+    "official_release_notes": {
+      "path": "quality/qualifications/australian-mbs-official-release-change-notes-20261018.json",
+      "sha256": "d9047190029a1f0b070819c590678c5509a5d6922a256eb9a4e953611934ba24"
+    },
+    "predecessor_comparison": {
+      "august_archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+      "exact_commit": "f6cccb0beb66d5a1322149f33dc61820eea05166",
+      "july_archive_revision": "da83cad9116e2f9a5b927be7b080e9a5e5ea6998",
+      "path": "quality/qualifications/australian-m109-july-august-predecessor-comparison-20261018.json",
+      "sha256": "73ef383cd36ca2703ddd70344b572f8904b67b8d85a1f6420036fa76e4d4954b"
+    }
+  },
+  "interpretation": "The official August page claims one named new item and no other XML changes from the July release published 28 May. The aggregate comparison reports the counts above but does not retain identities or field values. The discrepancy remains unresolved; no field meaning or release equivalence is inferred.",
+  "official_statement": {
+    "august_new_item_claim_present": true,
+    "august_release_id": "MBS-XML-20260801",
+    "august_unchanged_from_release_date": "2026-05-28",
+    "july_release_date": "2026-05-28",
+    "july_release_id": "MBS-XML-20260701",
+    "named_item_identity_verified": false
+  },
+  "requirement": "M-109",
+  "schema_id": "global-medicines-atlas.australian-m109-release-note-delta-reconciliation",
+  "schema_version": 1,
+  "status": "unresolved_observed_delta"
+}
