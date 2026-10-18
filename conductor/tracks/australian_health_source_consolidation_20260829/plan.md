@@ -1334,6 +1334,12 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   applicable rights preconditions are satisfied. HEAD reachability does not
   resolve the workbook period, patient-count semantics, suppression, or reuse
   terms; M-106 remains blocked.
+- [~] PR #1172 review correction binds the recorded HEAD request and final URL
+  to the exact page attachment, with mismatched-target negative controls. The
+  requested page-body capture is held: the Department's posted website terms
+  restrict reproduction on another website without express written permission,
+  and the targeted copyright inquiry has only a receipt acknowledgement.
+  M-106 remains blocked; no page body or workbook payload is published.
 
 ## M-112 July refresh source-report binding review correction (2026-10-18)
 

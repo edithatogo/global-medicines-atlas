@@ -10,6 +10,9 @@ from typing import Any, cast
 import pytest
 from jsonschema import Draft202012Validator, FormatChecker
 from jsonschema.exceptions import ValidationError
+from scripts.validate_australian_mbs_m106_head_readback import (
+    validate_receipt as validate_m106_head_readback,
+)
 
 ROOT = Path(__file__).parents[1]
 REVIEW = (
@@ -253,9 +256,7 @@ def test_annual_workbook_transport_readback_keeps_identity_and_rights_gates() ->
         "dict[str, Any]",
         json.loads(ANNUAL_WORKBOOK_HEAD_SCHEMA.read_text()),
     )
-    Draft202012Validator(schema, format_checker=FormatChecker()).validate(
-        receipt
-    )
+    validate_m106_head_readback(receipt, schema)
 
     page = cast("dict[str, Any]", receipt["official_page"])
     head = cast("dict[str, Any]", receipt["attachment_head"])
@@ -265,7 +266,11 @@ def test_annual_workbook_transport_readback_keeps_identity_and_rights_gates() ->
     assert page["attachment_filename_period"] == "2009-10 through 2024-25"
     assert page["response_bytes"] == 34921
     assert len(page["response_sha256"]) == 64
+    assert page["response_body_retained"] is False
+    assert page["copyright_terms_url"].startswith("https://www.health.gov.au/")
     assert head["method"] == "HEAD"
+    assert head["requested_url"] == page["attachment_url"]
+    assert head["final_url"] == page["attachment_url"]
     assert head["http_status"] == 200
     assert head["content_length"] == 1058479
     assert head["response_body_bytes"] == 0
@@ -285,3 +290,17 @@ def test_annual_workbook_transport_readback_keeps_identity_and_rights_gates() ->
         Draft202012Validator(schema, format_checker=FormatChecker()).validate(
             invalid
         )
+
+    mismatched_target = dict(receipt)
+    mismatched_head = dict(head)
+    mismatched_head["final_url"] = "https://example.org/unrelated.xlsx"
+    mismatched_target["attachment_head"] = mismatched_head
+    with pytest.raises(ValueError, match="final URL"):
+        validate_m106_head_readback(mismatched_target, schema)
+
+    mismatched_request = dict(receipt)
+    mismatched_head = dict(head)
+    mismatched_head["requested_url"] = "https://example.org/unrelated.xlsx"
+    mismatched_request["attachment_head"] = mismatched_head
+    with pytest.raises(ValueError, match="request URL"):
+        validate_m106_head_readback(mismatched_request, schema)

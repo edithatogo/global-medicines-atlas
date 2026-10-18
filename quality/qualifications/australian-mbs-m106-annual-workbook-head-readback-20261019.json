@@ -10,6 +10,9 @@
     "content_type": "text/html; charset=UTF-8",
     "response_bytes": 34921,
     "response_sha256": "911469fafee395e1014c89f4300b139ae324550e35b0394d11dcd3e0d2114c10",
+    "response_body_retained": false,
+    "response_body_retention_reason": "The Department's published copyright terms restrict reproduction of website content on another website without express written permission; no such permission has been observed. The targeted copyright inquiry received a receipt-only acknowledgement.",
+    "copyright_terms_url": "https://www.health.gov.au/using-our-websites/copyright?language=en",
     "last_modified": "Fri, 16 Oct 2026 16:23:25 GMT",
     "etag": "\"1792167805\"",
     "title": "Medicare annual statistics – State and territory (2009-10 to 2025-26)",
@@ -20,6 +23,7 @@
   },
   "attachment_head": {
     "method": "HEAD",
+    "requested_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
     "final_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
     "http_status": 200,
     "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

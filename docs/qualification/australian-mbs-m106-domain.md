@@ -221,3 +221,12 @@ not verify the workbook's internal period, denominator semantics, suppression,
 or reuse terms. The latest recorded owner contact was receipt-only. Keep the
 workbook body unrequested until the source-owner and applicable rights
 preconditions are satisfied; M-106 remains blocked.
+
+The Department's [website copyright terms](https://www.health.gov.au/using-our-websites/copyright?language=en)
+state that website content may not be reproduced on another website without
+express written permission. The inquiry to its copyright contact has only a
+receipt acknowledgement, so the response body has not been retained in this
+public repository. The metadata receipt records this limit and keeps the page
+digest as an observation only; it is not presented as independently
+reproducible evidence. The workbook acquisition authorization does not itself
+establish permission to reproduce the separate publication-page response.
