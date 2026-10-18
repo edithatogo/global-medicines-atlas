@@ -101,10 +101,11 @@ def _bounded_get(url: str, max_bytes: int) -> BoundedHTTPResponse:
 def _resource_metadata(
     resource: dict[str, Any], page_status: str, rows: list[dict[str, Any]]
 ) -> dict[str, Any]:
-    """Preserve an expected index resource even if its page cannot be read."""
+    """Preserve an expected resource even if its official page cannot be read."""
     return {
         "source_url": resource["source_url"],
         "filename": resource["filename"],
+        "source_scope": resource.get("source_scope", "current_index_xml"),
         "page_observation_status": page_status,
         "archive_receipts": [
             {
@@ -413,37 +414,87 @@ def _read_current_archive_receipts_unchecked(
 
 def _page_inputs(
     index: dict[str, Any],
-) -> tuple[dict[str, dict[str, Any]], dict[str, list[str]]]:
-    """Group indexed XML links by their exact official release page."""
+) -> tuple[
+    dict[str, dict[str, Any]],
+    dict[str, list[str]],
+    list[dict[str, Any]],
+]:
+    """Group current-index links and receipt-only URLs by official page."""
     pages_by_id: dict[str, dict[str, Any]] = {}
     expected_urls_by_page: dict[str, list[str]] = defaultdict(list)
+    resources_by_page: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    selected_urls: set[str] = set()
     for resource in index["monthly_schedule_xml_index_reconciliation"][
         "resources"
     ]:
         page_id = resource["page_id"]
+        selected = {**resource, "source_scope": "current_index_xml"}
+        resources_by_page[page_id].append(selected)
         expected_urls_by_page[page_id].append(resource["source_url"])
+        selected_urls.add(resource["source_url"])
+
+    official_resources_by_url: dict[str, list[dict[str, Any]]] = defaultdict(
+        list
+    )
+    for page in index["downloads_index"]["pages"]:
+        for resource in page["resources"]:
+            source_url = resource.get("url")
+            if isinstance(source_url, str):
+                official_resources_by_url[source_url].append({
+                    **resource,
+                    "page_id": page["page_id"],
+                })
+
+    receipts_by_url: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for receipt in index["current_public_archive"]["receipts"]:
+        receipts_by_url[receipt["source_url"]].append({
+            "receipt_path": receipt["receipt_path"],
+            "archive_path": receipt["archive_path"],
+            "payload_sha256": receipt["payload_sha256"],
+        })
+
+    unresolved_receipt_resources: list[dict[str, Any]] = []
+    for source_url in sorted(set(receipts_by_url) - selected_urls):
+        official_matches = official_resources_by_url.get(source_url, [])
+        if len(official_matches) != 1:
+            unresolved_receipt_resources.append({
+                "source_url": source_url,
+                "filename": source_url.rsplit("/", 1)[-1],
+                "source_scope": "archive_receipt_only_not_selected_current_xml_index",
+                "matching_archive_receipts": receipts_by_url[source_url],
+                "unresolved_reason": (
+                    "no_official_downloads_index_row"
+                    if not official_matches
+                    else "ambiguous_official_downloads_index_rows"
+                ),
+            })
+            continue
+
+        official_resource = official_matches[0]
+        page_id = cast("str", official_resource["page_id"])
+        resources_by_page[page_id].append({
+            "source_url": source_url,
+            "filename": official_resource["filename"],
+            "page_id": page_id,
+            "source_scope": "archive_receipt_only_not_selected_current_xml_index",
+            "matching_archive_receipts": receipts_by_url[source_url],
+        })
+        expected_urls_by_page[page_id].append(source_url)
 
     for page in index["downloads_index"]["pages"]:
         page_id = page["page_id"]
         if page_id not in expected_urls_by_page:
             continue
-        xml_resources = [
-            resource
-            for resource in index["monthly_schedule_xml_index_reconciliation"][
-                "resources"
-            ]
-            if resource["page_id"] == page_id
-        ]
         pages_by_id[page_id] = {
             "page_id": page_id,
             "url": page["url"],
             "label": page["label"],
-            "resources": xml_resources,
+            "resources": resources_by_page[page_id],
         }
 
     if set(pages_by_id) != set(expected_urls_by_page):
         raise ValueError("index page inventory does not bind every XML link")
-    return pages_by_id, expected_urls_by_page
+    return pages_by_id, expected_urls_by_page, unresolved_receipt_resources
 
 
 def _observe_pages(
@@ -527,7 +578,7 @@ def qualification_status(
     resource_receipt_failures: int,
     archive_status: str,
 ) -> str:
-    """Pass the current-index claim only when every expected link is bound."""
+    """Pass only when every current and receipt-only link is reconciled."""
     if (
         page_failures == 0
         and unresolved_rows == 0
@@ -547,15 +598,27 @@ def build_report() -> dict[str, Any]:
     index_bytes = INDEX.read_bytes()
     index = json.loads(index_bytes)
     archive_readback = read_current_archive_receipts(index)
-    pages_by_id, expected_urls_by_page = _page_inputs(index)
+    pages_by_id, expected_urls_by_page, unresolved_receipt_resources = (
+        _page_inputs(index)
+    )
     pages = _observe_pages(pages_by_id, expected_urls_by_page)
     resources = [resource for page in pages for resource in page["resources"]]
+    resources.extend(
+        {
+            **_resource_metadata(
+                resource, "unresolved_official_page_mapping", []
+            ),
+            "unresolved_reason": resource["unresolved_reason"],
+        }
+        for resource in unresolved_receipt_resources
+    )
     unresolved = sum(
         page["status"] != "observed"
         or len(resource["matching_official_rows"]) != 1
         for page in pages
         for resource in page["resources"]
     )
+    unresolved += len(unresolved_receipt_resources)
     page_failures = sum(page["status"] != "observed" for page in pages)
     current_receipt_failures = cast(
         "int", archive_readback["receipt_sidecars_unresolved"]
@@ -586,7 +649,22 @@ def build_report() -> dict[str, Any]:
             "official_pages_observed": sum(
                 page["status"] == "observed" for page in pages
             ),
-            "current_index_xml_links": len(resources),
+            "current_index_xml_links": sum(
+                resource["source_scope"] == "current_index_xml"
+                for resource in resources
+            ),
+            "archive_receipt_only_links": sum(
+                resource["source_scope"]
+                == "archive_receipt_only_not_selected_current_xml_index"
+                for resource in resources
+            ),
+            "official_page_link_rows_observed": sum(
+                len(resource["matching_official_rows"])
+                for resource in resources
+            ),
+            "archive_receipt_sources_without_unique_official_row": len(
+                unresolved_receipt_resources
+            ),
             "exactly_one_official_row_matched": sum(
                 len(resource["matching_official_rows"]) == 1
                 for resource in resources
@@ -620,9 +698,11 @@ def build_report() -> dict[str, Any]:
                 "remain separate."
             ),
             "coverage": (
-                "This reconciles only the 82 XML links on the observed current "
-                "Downloads index. It does not establish the full MBS/PBS "
-                "historical denominator, rights, field semantics, or admission."
+                "This separately reconciles the 82 XML links selected from the "
+                "current Downloads index and archived receipt URLs outside that "
+                "selection. Receipt-only links do not expand the current-index "
+                "denominator or establish the full MBS/PBS historical denominator, "
+                "rights, field semantics, or admission."
             ),
             "absence": "An unresolved link is not evidence of source absence.",
         },

@@ -1212,3 +1212,22 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   documentation/Test-Goblin tests; Ruff, formatting, BasedPyright on the
   reconciliation script, `ty`, and `git diff --check` pass. Hosted exact-head
   checks are pending for the updated PR.
+
+## M-109 archive receipt-only release-page reconciliation (2026-10-18)
+
+- [x] Extend the metadata-only chronology report to reconcile all five B1
+  receipt source URLs outside the selected current XML index links against the
+  exact official Downloads page row. Preserve them as a distinct scope and keep
+  the current-index denominator at 82 links.
+- [x] Re-read the official page metadata and current public receipt sidecars;
+  bind all 87 URLs to exactly one official row and all 87 receipt sidecars to
+  source URL, archive path, payload digest, and current archive revision.
+  Record unmatched/ambiguous receipt URLs as unresolved rather than dropping
+  them. No XML payloads or HTML bodies were retained.
+- [x] Validate 13 focused chronology tests, 25 broader M-109 page/register
+  tests, Test-Goblin routine, Ruff, formatting, `ty`, BasedPyright, and
+  `git diff --check`; evidence is in the appended M-109 receipt-only
+  reconciliation record.
+- [~] M-109 remains blocked: this metadata readback does not establish the
+  approved historical denominator, source rights, source-era field semantics,
+  Silver admission, or full acceptance. Exact-head hosted checks are pending.
