@@ -3324,3 +3324,38 @@
 - [x] Keep the separately recorded maintainer disposition limited to accepting
   this MBS v3 edge set as reviewed candidate edges. M-110 overall acceptance,
   product admission, and M-112 federation acceptance remain open.
+
+## M-109 current-index MBS XML release-page chronology (2026-10-18)
+
+- [x] Reconcile the 82 current Downloads-index MBS XML links to their official
+  page rows across 41 pages and anonymously re-read the 87 matching B1 receipt
+  sidecars from current archive revision
+  `42d73b6facac016f14a335d36d83f1a3b630add8`. Every URL matched one official
+  row; all sidecar digests, source URLs, archive paths, and payload digests
+  matched. The report stores response hashes and explicit date phrases only;
+  HTML bodies and XML payloads were not retained or requested. It does not
+  infer effective dates or complete the historical denominator, source-era
+  semantics, rights, or M-109. See
+  `quality/qualifications/australian-mbs-current-release-page-chronology-20261018.json`.
+- [~] Continue with the complete approved MBS/PBS historical denominator,
+  source-owner field-history clarification, source-era semantics, and
+  source-specific rights/admission evidence.
+
+## M-109 chronology qualification review corrections (2026-10-18)
+
+- [x] Preserve each expected official XML link as unresolved when its page
+  fails or exceeds the bounded response limit; fail the current-index claim if
+  any page link is absent, ambiguous, or unobserved.
+- [x] Require every indexed resource to bind its nonempty receipt list to
+  exact current-revision sidecars. Count missing and unindexed resource
+  receipts explicitly and fail the report status closed.
+- [x] Stream official pages and public JSON metadata with a 2 MB cap and
+  64 KiB chunks, stopping at the first chunk that exceeds the cap.
+- [x] Add regressions for failed-page denominator preservation, oversized
+  stream stopping, and missing/empty resource receipt mappings. The updated
+  metadata-only report still observes 41 pages, 82 exact official XML rows,
+  82 exact current resource receipt bindings, and 87 verified sidecars.
+  Focused tests: 11 passed; broader affected tests: 27 passed; Test-Goblin
+  routine, Ruff, `ty`, BasedPyright, context/ecosystem, and diff checks passed.
+- [~] These report-integrity corrections do not complete the historical
+  denominator, source-era semantics, rights, admission, or M-109.
