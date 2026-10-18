@@ -3738,3 +3738,34 @@
   through eligible v4 admission and consumer canaries only after their separate
   gates pass. Keep PBS/M107 crosswalks and the reserved July derivative in the
   source owner's lane.
+
+### M-112 PBS projected-lineage merge and PBS utilisation lineage (2026-10-19)
+
+- [x] Reconcile PR #1179's hosted result: all 38 reported checks passed on
+  head `81aa031a3d10f722fb7565578204991c8768d0e9`; squash merge
+  `ffbeff0ccd05724adb48994cccf0afafe13cc7cb` is on current `main`.
+- [x] Read back all six PBS utilisation receipt sidecars anonymously at the
+  frozen revision. Their exact receipt digests, source/category fields,
+  payload digests, and byte counts match the retained audit and frozen raw
+  object identities. Only 4,226 bytes of receipt metadata were read; no
+  payload bytes or values were read.
+- [x] Create six local historical B1 acquisition events with
+  `rights_state=unknown`, exact pinned external-reference B2 manifests, and
+  unreviewed `landed` records. The new records do not change rights,
+  processing/public admission, the denominator, or consumer-canary status.
+- [x] Reconcile the cumulative 1,759-object gate report: 1,731 raw and 10
+  projection B1/B2 lineages are complete (1,741 total); five raw and 13
+  projection lineages remain incomplete. All 1,759 objects remain deferred;
+  v4 admissions and consumer canaries remain zero.
+- [x] Verify 3 focused tests and 106 M-112 tests, Ruff, formatting, `ty`,
+  BasedPyright, Test-Goblin routine and repository checks. Test-Goblin full
+  completed with exit code 0 under pinned `uv 0.11.29`; coverage was 97.92%
+  lines and 93.43% branches. The Darwin mutation lane is advisory; protected
+  Linux CI remains authoritative for the mutation baseline.
+- [x] Rerun Test-Goblin full after tightening per-object authorization-scope
+  validation. The exact final code again exited 0; pytest and all harness
+  stages passed, including 364 gremlins tests (1,034 of 1,118 zapped with
+  cache reuse), format/lint, package probes, Scalene, and security checks.
+- [~] Continue lineage reconciliation for the remaining 18 inventory objects.
+  Preserve separate rights, v4 admission, and canary gates; PBS/M107
+  crosswalks and the reserved July derivative remain with their owner.
