@@ -1,0 +1,163 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "derived_rights_or_licensing_conclusion_added": false,
+    "frozen_inventory_changed": false,
+    "new_source_or_dataset_added": false,
+    "processing_admission_performed": false,
+    "public_release_performed": false,
+    "raw_payload_retained_locally": false,
+    "raw_payload_values_inspected": true,
+    "source_rights_changed": false,
+    "v4_admission_performed": false
+  },
+  "input_bindings": {
+    "quality/qualifications/australian-m108-derived-products-20261017.json": "f9da44a9fc61ebaff83e7784f56d2376db33e2d9a7b834142ee60c3a1ad5fd7c",
+    "quality/qualifications/australian-m112-current-tree-object-inventory-20261004.json": "25767e41fb2990dfcda4688a6b30a80eaf60cd6429042aadd8d2c5cce2e730ae",
+    "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json": "eaa1d84325c7672100398acf8116f0312369ca336d42ed21eee110452d3fefa4",
+    "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-silver-lineage.json": "38c92df6b693c991d56d5d7ab6cc56940f55680f7094d034538676cd3d922e55",
+    "scripts/reconcile_m112_mbs_bronze_projection_lineage.py": "e23d24ed9b47786f4da7492c0f217ba53b91d5fce5737ae3df784a203acf2dce",
+    "src/global_medicines_atlas/adapters/au_mbs.py": "73098a1f6b6fcb1c4c26c75e4c8f6a80f397e697046e4dcc2d23ea39b96069f3",
+    "src/global_medicines_atlas/mbs_release.py": "d59e04b58783912b557dff53ee536a3cbf7d39725ebb2e77d11bedfc29417828"
+  },
+  "observed_at": "2026-10-19T06:59:00+10:00",
+  "outputs": [
+    {
+      "acquisition_id": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
+      "admission_decision_id": "a4c8e7850c664db20b80a9f3e6d5cd09c61ebc1447c121c852438eff24a42dba",
+      "admission_reviewer_status": "unreviewed",
+      "admission_state": "accepted",
+      "byte_count": 24367,
+      "manifest_path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/manifest.json",
+      "manifest_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/p7.parquet",
+      "run_id": "6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64",
+      "sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a",
+      "source_byte_count": 8293331,
+      "source_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "source_receipt_id": "mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4",
+      "source_receipt_sha256": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8",
+      "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "transformation": {
+        "adapter": "parse_mbs_source_xml",
+        "implementation_paths": [
+          "src/global_medicines_atlas/adapters/au_mbs.py",
+          "src/global_medicines_atlas/mbs_release.py"
+        ],
+        "implementation_sha256": {
+          "src/global_medicines_atlas/adapters/au_mbs.py": "73098a1f6b6fcb1c4c26c75e4c8f6a80f397e697046e4dcc2d23ea39b96069f3",
+          "src/global_medicines_atlas/mbs_release.py": "d59e04b58783912b557dff53ee536a3cbf7d39725ebb2e77d11bedfc29417828"
+        },
+        "projection": "mbs_source_parquet",
+        "projection_selection": "Group=P7",
+        "reproduced_exact_bytes_in_memory": true
+      }
+    },
+    {
+      "acquisition_id": "f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1",
+      "admission_decision_id": "a4c8e7850c664db20b80a9f3e6d5cd09c61ebc1447c121c852438eff24a42dba",
+      "admission_reviewer_status": "unreviewed",
+      "admission_state": "accepted",
+      "byte_count": 454247,
+      "manifest_path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/manifest.json",
+      "manifest_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source.parquet",
+      "run_id": "6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64",
+      "sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a",
+      "source_byte_count": 8293331,
+      "source_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "source_receipt_id": "mbs-release:a7a43be8b30052c192a00d993d5977e524f79b936e2bcfc2919322b4ffcba6d4",
+      "source_receipt_sha256": "ff916b49a4993b523da2f41952805b4e1e2064e0ce21edc8bd6643c1acda77a8",
+      "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "transformation": {
+        "adapter": "parse_mbs_source_xml",
+        "implementation_paths": [
+          "src/global_medicines_atlas/adapters/au_mbs.py",
+          "src/global_medicines_atlas/mbs_release.py"
+        ],
+        "implementation_sha256": {
+          "src/global_medicines_atlas/adapters/au_mbs.py": "73098a1f6b6fcb1c4c26c75e4c8f6a80f397e697046e4dcc2d23ea39b96069f3",
+          "src/global_medicines_atlas/mbs_release.py": "d59e04b58783912b557dff53ee536a3cbf7d39725ebb2e77d11bedfc29417828"
+        },
+        "projection": "mbs_source_parquet",
+        "projection_selection": "all",
+        "reproduced_exact_bytes_in_memory": true
+      }
+    },
+    {
+      "acquisition_id": "783bd12fab14dc8f93cb34b1d87e9c3f7c95543d261b008f4e0da018a3d11e57",
+      "admission_decision_id": "eb05c5b19a731d9009d6fedbfb45b2d56bb742729728f0a54c306835f10d312c",
+      "admission_reviewer_status": "unreviewed",
+      "admission_state": "accepted",
+      "byte_count": 24367,
+      "manifest_path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/manifest.json",
+      "manifest_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
+      "run_id": "99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc",
+      "sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe",
+      "source_byte_count": 8293331,
+      "source_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "source_receipt_id": "mbs-release:d47c71a685b9b31aa0b0b40979a482635c84888e7334a5610f9fa22bee3709c6",
+      "source_receipt_sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7",
+      "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "transformation": {
+        "adapter": "parse_mbs_source_xml",
+        "implementation_paths": [
+          "src/global_medicines_atlas/adapters/au_mbs.py",
+          "src/global_medicines_atlas/mbs_release.py"
+        ],
+        "implementation_sha256": {
+          "src/global_medicines_atlas/adapters/au_mbs.py": "73098a1f6b6fcb1c4c26c75e4c8f6a80f397e697046e4dcc2d23ea39b96069f3",
+          "src/global_medicines_atlas/mbs_release.py": "d59e04b58783912b557dff53ee536a3cbf7d39725ebb2e77d11bedfc29417828"
+        },
+        "projection": "mbs_source_parquet",
+        "projection_selection": "Group=P7",
+        "reproduced_exact_bytes_in_memory": true
+      }
+    },
+    {
+      "acquisition_id": "783bd12fab14dc8f93cb34b1d87e9c3f7c95543d261b008f4e0da018a3d11e57",
+      "admission_decision_id": "eb05c5b19a731d9009d6fedbfb45b2d56bb742729728f0a54c306835f10d312c",
+      "admission_reviewer_status": "unreviewed",
+      "admission_state": "accepted",
+      "byte_count": 454247,
+      "manifest_path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/manifest.json",
+      "manifest_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+      "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+      "run_id": "99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc",
+      "sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf",
+      "source_byte_count": 8293331,
+      "source_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "source_receipt_id": "mbs-release:d47c71a685b9b31aa0b0b40979a482635c84888e7334a5610f9fa22bee3709c6",
+      "source_receipt_sha256": "4f694fd7364061cd05fee33ea52e6dbeef17d1067b8437f72e726ab168fc2fc7",
+      "source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+      "transformation": {
+        "adapter": "parse_mbs_source_xml",
+        "implementation_paths": [
+          "src/global_medicines_atlas/adapters/au_mbs.py",
+          "src/global_medicines_atlas/mbs_release.py"
+        ],
+        "implementation_sha256": {
+          "src/global_medicines_atlas/adapters/au_mbs.py": "73098a1f6b6fcb1c4c26c75e4c8f6a80f397e697046e4dcc2d23ea39b96069f3",
+          "src/global_medicines_atlas/mbs_release.py": "d59e04b58783912b557dff53ee536a3cbf7d39725ebb2e77d11bedfc29417828"
+        },
+        "projection": "mbs_source_parquet",
+        "projection_selection": "all",
+        "reproduced_exact_bytes_in_memory": true
+      }
+    }
+  ],
+  "schema_id": "global-medicines-atlas.australian-m112-mbs-bronze-projection-lineage",
+  "schema_version": 1,
+  "scope": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "frozen_inventory_revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+    "frozen_object_count": 1759,
+    "output_count": 4,
+    "raw_source_byte_count": 8293331,
+    "raw_source_path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+    "raw_source_sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+    "revision": "40891976f77ee5e7688edceed25c9ac98a77547e"
+  },
+  "status": "four_frozen_mbs_bronze_projection_lineages_reproduced"
+}

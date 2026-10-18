@@ -287,6 +287,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_reconcile_m112_p7_archive_lineage.py",
         "tests/test_reconcile_m112_july_mbs_source_lineage.py",
         "tests/test_reconcile_m112_july_mbs_silver_lineage.py",
+        "tests/test_reconcile_m112_mbs_bronze_projection_lineage.py",
         "tests/test_bronze_admission.py",
         "tests/test_bronze_admission_lifecycle.py",
         "tests/test_bronze_source_profile_admission.py",
