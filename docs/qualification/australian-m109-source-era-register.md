@@ -242,9 +242,16 @@ and [public API rights preflight](../../quality/qualifications/australian-pbs-ap
 
 The metadata-only readback in
 [`australian-mbs-current-release-page-chronology-20261018.json`](../../quality/qualifications/australian-mbs-current-release-page-chronology-20261018.json)
-reconciles the 82 MBS XML links on 41 pages from the saved current Downloads
-index to exactly one official table row each. All 87 receipt sidecars listed
-for those links were anonymously re-read at current archive revision
+reconciles the 82 MBS XML links selected from the saved current Downloads
+index and five additional source URLs present in B1 receipts but outside that
+selection. All 87 URLs resolve to exactly one official table row across 41
+pages. The additional receipt-only rows are `Downloads-210701` (`MBS XML
+210721e`), `Downloads-211101` (`MBS-XML-211101`), `Downloads-220101`
+(`MBS-XML-220101 V3`), `Downloads-220301` (`MBS-XML-220301`), and
+`Downloads-220401` (`MBS-XML-220411`). Their unclassified date phrases and row
+digests are preserved in the value-free report; the dates are not promoted to
+effective-date or source-era claims. All 87 receipt sidecars were anonymously
+re-read at current archive revision
 `42d73b6facac016f14a335d36d83f1a3b630add8`; all match their exact prior
 sidecar digest, source URL, archive path, and payload digest. The pinned root
 manifest has SHA-256
@@ -259,6 +266,7 @@ source URL, receipt identities, link label, row digest, and date phrases. It
 does not retain HTML bodies or request XML payloads. Date phrases remain
 unclassified evidence: page headings, page-update dates, filename tokens, and
 XML-row dates are not silently converted into effective dates or source-era
-semantics. This covers the observed current Downloads index only; it does not
-establish the full historical denominator, rights, field meanings, or M-109
-acceptance.
+semantics. The 82-link current-index denominator is unchanged; the five
+receipt-only sources are a separately reported reconciliation scope. Neither
+scope establishes the full historical denominator, rights, field meanings, or
+M-109 acceptance.

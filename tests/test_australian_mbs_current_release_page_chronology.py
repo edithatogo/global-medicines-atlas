@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
@@ -116,28 +117,31 @@ def test_report_digest_is_valid() -> None:
     assert hashlib.sha256(canonical).hexdigest() == expected_digest
 
 
-def test_report_reconciles_only_observed_current_index_links() -> None:
+def test_report_reconciles_current_index_and_receipt_only_links() -> None:
     report = _report()
     scope = cast("dict[str, Any]", report["scope"])
     assert report["status"] == (
         "current_index_links_bound_to_official_rows_and_current_receipts_history_incomplete"
     )
-    assert scope["official_pages_expected"] == 41
-    assert scope["official_pages_observed"] == 41
+    assert scope["official_pages_observed"] == scope["official_pages_expected"]
     assert scope["current_index_xml_links"] == 82
-    assert scope["exactly_one_official_row_matched"] == 82
+    assert scope["archive_receipt_only_links"] == 5
+    assert scope["official_page_link_rows_observed"] == 87
+    assert scope["archive_receipt_sources_without_unique_official_row"] == 0
+    assert scope["exactly_one_official_row_matched"] == 87
     assert scope["unresolved_or_ambiguous_rows"] == 0
     assert len(scope["archive_revision"]) == 40
     assert scope["current_receipt_sidecars_verified"] == 87
     assert scope["current_receipt_sidecars_unresolved"] == 0
-    assert scope["resource_receipt_bindings_expected"] == 82
-    assert scope["resource_receipt_bindings_verified"] == 82
+    assert scope["resource_receipt_bindings_expected"] == 87
+    assert scope["resource_receipt_bindings_verified"] == 87
     assert scope["resource_receipt_bindings_unresolved"] == 0
     assert scope["expected_historical_denominator_complete"] is False
     assert scope["m109_accepted"] is False
     assert scope["source_payloads_requested"] is False
     assert scope["source_payloads_read"] is False
     assert scope["html_bodies_retained"] is False
+    assert report["unresolved_receipt_resources"] == []
 
     archive = cast("dict[str, Any]", report["archive_readback"])
     assert archive["dataset"] == "edithatogo/australian-mbs-source-archive"
@@ -151,6 +155,140 @@ def test_report_reconciles_only_observed_current_index_links() -> None:
     assert all(
         receipt["status"] == "exact_current_receipt"
         for receipt in archive["receipt_sidecars"]
+    )
+
+
+def test_page_inputs_reconciles_receipt_only_urls_outside_current_index() -> (
+    None
+):
+    pages, expected_urls, unresolved = chronology._page_inputs(_index())
+    resources = [
+        resource for page in pages.values() for resource in page["resources"]
+    ]
+    current_index = [
+        resource
+        for resource in resources
+        if resource["source_scope"] == "current_index_xml"
+    ]
+    receipt_only = [
+        resource
+        for resource in resources
+        if resource["source_scope"]
+        == "archive_receipt_only_not_selected_current_xml_index"
+    ]
+
+    assert len(current_index) == 82
+    assert len(receipt_only) == 5
+    assert len({resource["source_url"] for resource in resources}) == 87
+    assert len(unresolved) == 0
+    assert sum(len(urls) for urls in expected_urls.values()) == 87
+    assert {resource["page_id"] for resource in receipt_only} == {
+        "Downloads-210701",
+        "Downloads-211101",
+        "Downloads-220101",
+        "Downloads-220301",
+        "Downloads-220401",
+    }
+    assert all(
+        len(resource["matching_archive_receipts"]) == 1
+        for resource in receipt_only
+    )
+
+
+def test_page_inputs_preserves_unmapped_receipt_source_as_unresolved() -> None:
+    index = deepcopy(_index())
+    omitted_url = next(
+        receipt["source_url"]
+        for receipt in index["current_public_archive"]["receipts"]
+        if receipt["source_url"]
+        not in {
+            resource["source_url"]
+            for resource in index["monthly_schedule_xml_index_reconciliation"][
+                "resources"
+            ]
+        }
+    )
+    for page in index["downloads_index"]["pages"]:
+        page["resources"] = [
+            resource
+            for resource in page["resources"]
+            if resource["url"] != omitted_url
+        ]
+
+    _pages, _expected_urls, unresolved = chronology._page_inputs(index)
+
+    assert len(unresolved) == 1
+    assert unresolved[0]["source_url"] == omitted_url
+    assert (
+        unresolved[0]["unresolved_reason"] == "no_official_downloads_index_row"
+    )
+    assert len(unresolved[0]["matching_archive_receipts"]) == 1
+
+
+def test_build_report_serializes_unresolved_receipt_details(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source_url = "https://www.mbsonline.gov.au/MBS-unmatched.XML"
+    receipt_path = "bronze/mbs/releases/unmatched.receipt.json"
+    receipt = {
+        "receipt_path": receipt_path,
+        "archive_path": "raw/mbs/releases/MBS-unmatched.XML",
+        "payload_sha256": "a" * 64,
+    }
+    sidecar_sha256 = "b" * 64
+    monkeypatch.setattr(
+        chronology,
+        "read_current_archive_receipts",
+        lambda _index: {
+            "status": "exact_current_revision_receipts_verified",
+            "revision": "c" * 40,
+            "receipt_sidecars_unresolved": 0,
+            "receipt_sidecars_verified": 1,
+            "receipt_sidecars": [
+                {
+                    **receipt,
+                    "status": "exact_current_receipt",
+                    "source_url": source_url,
+                    "receipt": {"sha256": sidecar_sha256},
+                }
+            ],
+        },
+    )
+    monkeypatch.setattr(
+        chronology,
+        "_page_inputs",
+        lambda _index: (
+            {},
+            {},
+            [
+                {
+                    "source_url": source_url,
+                    "filename": "MBS-unmatched.XML",
+                    "source_scope": (
+                        "archive_receipt_only_not_selected_current_xml_index"
+                    ),
+                    "matching_archive_receipts": [receipt],
+                    "unresolved_reason": "no_official_downloads_index_row",
+                }
+            ],
+        ),
+    )
+
+    report = chronology.build_report()
+
+    assert (
+        report["scope"]["archive_receipt_sources_without_unique_official_row"]
+        == 1
+    )
+    unresolved = report["unresolved_receipt_resources"]
+    assert len(unresolved) == 1
+    assert unresolved[0]["source_url"] == source_url
+    assert (
+        unresolved[0]["unresolved_reason"] == "no_official_downloads_index_row"
+    )
+    assert unresolved[0]["archive_receipts"][0]["receipt_path"] == receipt_path
+    assert unresolved[0]["archive_receipts"][0]["current_receipt_sha256"] == (
+        sidecar_sha256
     )
 
 
@@ -297,18 +435,52 @@ def test_source_rows_bind_to_current_receipts_without_source_values() -> None:
         for receipt in index["current_public_archive"]["receipts"]
     }
 
-    assert len(resources) == 82
-    assert len({resource["source_url"] for resource in resources}) == 82
+    assert len(resources) == 87
+    assert len({resource["source_url"] for resource in resources}) == 87
     for resource in resources:
         assert resource["source_url"].startswith(
             "https://www.mbsonline.gov.au/"
         )
-        expected = expected_resources[resource["source_url"]]
-        assert resource["filename"] == expected["filename"]
+        if resource["source_scope"] == "current_index_xml":
+            expected = expected_resources[resource["source_url"]]
+            assert resource["filename"] == expected["filename"]
+            expected_for_source = expected["matching_archive_receipts"]
+        else:
+            assert resource["source_scope"] == (
+                "archive_receipt_only_not_selected_current_xml_index"
+            )
+            expected_for_source = [
+                {
+                    "receipt_path": receipt["receipt_path"],
+                    "archive_path": receipt["archive_path"],
+                    "payload_sha256": receipt["payload_sha256"],
+                }
+                for receipt in index["current_public_archive"]["receipts"]
+                if receipt["source_url"] == resource["source_url"]
+            ]
+            page_id = next(
+                page_result["page_id"]
+                for page_result in pages
+                if any(
+                    observed["source_url"] == resource["source_url"]
+                    for observed in cast(
+                        "list[dict[str, Any]]", page_result["resources"]
+                    )
+                )
+            )
+            page = next(
+                page
+                for page in index["downloads_index"]["pages"]
+                if page["page_id"] == page_id
+            )
+            assert resource["filename"] == next(
+                link["filename"]
+                for link in page["resources"]
+                if link["url"] == resource["source_url"]
+            )
         assert resource["current_receipt_binding_status"] == (
             "exact_current_receipts_verified"
         )
-        expected_for_source = expected["matching_archive_receipts"]
         actual_for_source = resource["archive_receipts"]
         assert len(actual_for_source) == len(expected_for_source) == 1
         for actual, source_receipt in zip(
@@ -334,4 +506,4 @@ def test_source_rows_bind_to_current_receipts_without_source_values() -> None:
 def test_register_documents_the_remaining_m109_boundary() -> None:
     register = REGISTER.read_text(encoding="utf-8")
     assert REPORT.name in register
-    assert "establish the full historical denominator" in register
+    assert "full historical denominator" in register
