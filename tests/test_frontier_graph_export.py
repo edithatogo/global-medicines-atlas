@@ -1,5 +1,6 @@
 """Portable graph export preserves evidence and never interpolates labels."""
 
+import hashlib
 import json
 from urllib.parse import quote
 
@@ -71,6 +72,55 @@ def test_hostile_native_text_is_only_parameter_data():
         json.loads(result.parameters_json)["nodes"][0]["payload_json"]
     )
     assert json.loads(recovered["fields_json"])["native_value"] == hostile
+
+
+@pytest.mark.parametrize("family", ["mbs", "pbs"])
+@pytest.mark.parametrize(
+    "field_value",
+    [
+        {"name": "patient_name", "value": "Synthetic Example"},
+        {"name": "contact", "value": "synthetic@example.invalid"},
+    ],
+)
+def test_content_screen_blocks_sensitive_canaries_before_graph_serialization(
+    family: str, field_value: dict[str, str]
+) -> None:
+    make_graph = graph if family == "mbs" else pbs_graph
+    project = (
+        project_mbs_gold_graph_arrow
+        if family == "mbs"
+        else project_pbs_gold_graph_arrow
+    )
+    nodes, edges = project(make_graph())
+    rows = nodes.to_pylist()
+    rows[0]["fields_json"] = json.dumps([field_value])
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+
+    with pytest.raises(ValueError, match="content screening requires review"):
+        export_gold_tables(nodes, edges)
+
+
+def test_content_screen_blocks_exact_restricted_canary_digest() -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    canary = "SYNTHETIC-RESTRICTED-CONTENT-CANARY"
+    rows = nodes.to_pylist()
+    rows[0]["fields_json"] = json.dumps([{"name": "note", "value": canary}])
+    nodes = pa.Table.from_pylist(rows, schema=nodes.schema)
+    digest = hashlib.sha256(canary.encode()).hexdigest()
+
+    for exporter in (export_gold_tables, export_rdf12, export_rdf_star):
+        with pytest.raises(
+            ValueError, match="content screening requires review"
+        ):
+            exporter(nodes, edges, blocked_value_sha256=frozenset({digest}))
+
+
+def test_content_screen_digest_config_rejects_malformed_digests() -> None:
+    nodes, edges = project_mbs_gold_graph_arrow(graph())
+    with pytest.raises(ValueError, match="lowercase SHA-256"):
+        export_gold_tables(
+            nodes, edges, blocked_value_sha256=frozenset({"bad"})
+        )
 
 
 @pytest.mark.parametrize("family", ["mbs", "pbs"])

@@ -17,6 +17,7 @@ from urllib.parse import quote
 if TYPE_CHECKING:
     import pyarrow as pa
 
+from .frontier_content_screening import ScreenedPayload, screen_graph_payloads
 from .mbs_gold_graph import MBS_GOLD_EDGE_SCHEMA, MBS_GOLD_NODE_SCHEMA
 from .pbs_gold_graph import PBS_GOLD_EDGE_SCHEMA, PBS_GOLD_NODE_SCHEMA
 from .receipts import (
@@ -73,6 +74,7 @@ def export_rdf_star(
     *,
     max_rows: int = 100_000,
     max_bytes: int = 64 * 1024 * 1024,
+    blocked_value_sha256: frozenset[str] = frozenset(),
 ) -> str:
     """Return a deterministic RDF-star/N-Triples preview of Gold tables.
 
@@ -83,7 +85,11 @@ def export_rdf_star(
     terminology vocabulary is required.
     """
     exported = export_gold_tables(
-        nodes, edges, max_rows=max_rows, max_bytes=max_bytes
+        nodes,
+        edges,
+        max_rows=max_rows,
+        max_bytes=max_bytes,
+        blocked_value_sha256=blocked_value_sha256,
     )
     payload = json.loads(exported.reference_json)
     lines: list[str] = []
@@ -114,6 +120,7 @@ def export_rdf12(
     *,
     max_rows: int = 100_000,
     max_bytes: int = 64 * 1024 * 1024,
+    blocked_value_sha256: frozenset[str] = frozenset(),
 ) -> str:
     """Return a deterministic RDF 1.2 N-Triples projection of Gold tables.
 
@@ -122,7 +129,11 @@ def export_rdf12(
     readback possible while preserving the full source row as JSON.
     """
     exported = export_gold_tables(
-        nodes, edges, max_rows=max_rows, max_bytes=max_bytes
+        nodes,
+        edges,
+        max_rows=max_rows,
+        max_bytes=max_bytes,
+        blocked_value_sha256=blocked_value_sha256,
     )
     payload = json.loads(exported.reference_json)
     lines: list[str] = []
@@ -237,24 +248,45 @@ def _policy_metadata(
 
 
 def _check_rights_and_sensitivity(
-    node_rows: list[dict[str, object]], edge_rows: list[dict[str, object]]
+    node_rows: list[dict[str, object]],
+    edge_rows: list[dict[str, object]],
+    *,
+    blocked_value_sha256: frozenset[str],
 ) -> None:
     """Reject records explicitly classified as restricted from local previews.
 
     Unknown and review-required classifications are preserved for local preview
-    only. This is a metadata guard, not content scanning or rights clearance.
+    only. The content screen only checks bounded patterns and exact caller
+    canary digests; it does not grant rights clearance.
     """
     node_policies: set[GraphPolicy] = set()
     edge_policies: set[GraphPolicy] = set()
     for row in node_rows:
         evidence = _metadata_object(str(row["evidence_json"]), "node evidence")
         node_policies.add(_policy_metadata(evidence, "node evidence"))
-        _check_field_rights_metadata(str(row["fields_json"]))
+        _check_field_rights_metadata(
+            str(row["fields_json"]), blocked_value_sha256=blocked_value_sha256
+        )
+        _screen_payload(
+            "node-evidence",
+            str(row["evidence_json"]),
+            blocked_value_sha256=blocked_value_sha256,
+        )
 
     for row in edge_rows:
         controls = _metadata_object(str(row["controls_json"]), "edge controls")
+        _screen_payload(
+            "edge-controls",
+            str(row["controls_json"]),
+            blocked_value_sha256=blocked_value_sha256,
+        )
         edge_policy = _policy_metadata(controls, "edge controls")
         evidence = _metadata_object(str(row["evidence_json"]), "edge evidence")
+        _screen_payload(
+            "edge-evidence",
+            str(row["evidence_json"]),
+            blocked_value_sha256=blocked_value_sha256,
+        )
         evidence_policy = _policy_metadata(evidence, "edge evidence")
         if edge_policy != evidence_policy:
             raise ValueError("graph edge rights/sensitivity metadata differs")
@@ -270,11 +302,14 @@ def _check_rights_and_sensitivity(
         )
 
 
-def _check_field_rights_metadata(value: str) -> None:
+def _check_field_rights_metadata(
+    value: str, *, blocked_value_sha256: frozenset[str]
+) -> None:
     """Reject nested restricted classifications before preview export.
 
-    The scanner recognizes structured policy labels at any depth. It does not
-    infer rights or detect personal content expressed as ordinary text.
+    Structured policy labels remain authoritative screening inputs. A bounded
+    content pass additionally blocks common synthetic direct-identifier
+    canaries; a clean result is not rights clearance or a full text review.
     """
     try:
         fields = json.loads(value, object_pairs_hook=_pairs_without_duplicates)
@@ -286,11 +321,25 @@ def _check_field_rights_metadata(value: str) -> None:
         field_rows = cast("list[object]", fields)
     else:
         raise TypeError("invalid graph fields metadata")
+    _screen_payload(
+        "graph-fields", value, blocked_value_sha256=blocked_value_sha256
+    )
     for field in field_rows:
         if not isinstance(field, dict):
             raise TypeError("invalid graph fields metadata")
         field_metadata = _string_keyed_object(cast("object", field), "field")
         _check_nested_field_policy(field_metadata)
+
+
+def _screen_payload(
+    path: str, value: str, *, blocked_value_sha256: frozenset[str]
+) -> None:
+    screen = screen_graph_payloads(
+        (ScreenedPayload(path=path, payload=value),),
+        blocked_value_sha256=blocked_value_sha256,
+    )
+    if screen.state == "review_required":
+        raise ValueError("graph content screening requires review")
 
 
 def _check_nested_field_policy(
@@ -353,6 +402,7 @@ def export_gold_tables(
     *,
     max_rows: int = 100_000,
     max_bytes: int = 64 * 1024 * 1024,
+    blocked_value_sha256: frozenset[str] = frozenset(),
 ) -> GoldGraphExport:
     """Preserve all fields from matching MBS/PBS portable table schemas.
 
@@ -394,7 +444,11 @@ def export_gold_tables(
         for row in edge_rows
     ):
         raise ValueError("graph edge endpoint missing")
-    _check_rights_and_sensitivity(node_rows, edge_rows)
+    _check_rights_and_sensitivity(
+        node_rows,
+        edge_rows,
+        blocked_value_sha256=blocked_value_sha256,
+    )
     reference = _json({"nodes": node_rows, "edges": edge_rows})
     parameters = _json({
         "nodes": [

@@ -9,6 +9,7 @@ from typing import Literal, cast
 
 from pydantic import Field
 
+from .frontier_score_calibration import ScoreOutcome
 from .matching import MatchingRecord, generate_candidates
 from .matching_models import EvaluationCase, EvaluationClass
 from .models import FrozenModel
@@ -159,6 +160,50 @@ def load_synthetic_matching_cases(
             "synthetic matching corpus count does not match manifest"
         )
     return cases
+
+
+def score_synthetic_candidate_cases(
+    cases: tuple[EvaluationCase, ...], *, limit: int = _DEFAULT_LIMIT
+) -> tuple[ScoreOutcome, ...]:
+    """Return one labelled top-candidate score per non-abstaining case."""
+    if not cases:
+        raise ValueError("benchmark requires at least one synthetic case")
+    ordered = tuple(sorted(cases, key=lambda case: case.case_id))
+    if len({case.case_id for case in ordered}) != len(ordered):
+        raise ValueError("synthetic case identifiers must be unique")
+    outcomes: list[ScoreOutcome] = []
+    for case in ordered:
+        source = MatchingRecord(
+            record_id=case.source.concept_id,
+            jurisdiction=case.source.jurisdiction,
+            name=case.source.preferred_name,
+            identifiers=case.source.identifiers,
+        )
+        targets = tuple(
+            MatchingRecord(
+                record_id=target.concept_id,
+                jurisdiction=target.jurisdiction,
+                name=target.preferred_name,
+                identifiers=target.identifiers,
+            )
+            for target in case.targets
+        )
+        result = generate_candidates(
+            source,
+            targets,
+            lexical_threshold=LEXICAL_THRESHOLD,
+            limit=limit,
+        )
+        if result.candidates:
+            top = result.candidates[0]
+            outcomes.append(
+                ScoreOutcome(
+                    case_id=case.case_id,
+                    score=top.score,
+                    correct=top.target_record_id in case.relevant_target_ids,
+                )
+            )
+    return tuple(outcomes)
 
 
 def benchmark_synthetic_candidates(
