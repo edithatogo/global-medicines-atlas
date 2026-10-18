@@ -1,0 +1,232 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://global-medicines-atlas.github.io/schemas/frontier-screen-calibration-v2.json",
+  "title": "Frontier screening and calibration diagnostic receipt",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "schema_version",
+    "track_id",
+    "screening",
+    "relationship_screening",
+    "candidate_calibration",
+    "calibration_mechanics_control",
+    "matcher_calibration",
+    "boundaries",
+    "limitations"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "global-medicines-atlas.frontier-screen-calibration"
+    },
+    "schema_version": { "const": 2 },
+    "track_id": {
+      "const": "federated_medallion_frontier_experiments_20260829"
+    },
+    "screening": {
+      "type": "object",
+      "required": [
+        "fixture_kind",
+        "payload_count",
+        "clean_payload_count",
+        "review_required_payload_count",
+        "finding_counts",
+        "raw_values_recorded",
+        "blocked_value_digests_recorded",
+        "rights_cleared",
+        "restricted_terminology_cleared",
+        "exporter_integration"
+      ],
+      "properties": {
+        "fixture_kind": { "const": "synthetic_canaries_only" },
+        "payload_count": { "type": "integer", "minimum": 1 },
+        "clean_payload_count": { "type": "integer", "minimum": 0 },
+        "review_required_payload_count": { "type": "integer", "minimum": 0 },
+        "finding_counts": {
+          "type": "object",
+          "properties": {
+            "email_like_value": { "type": "integer", "minimum": 0 },
+            "known_value_digest": { "type": "integer", "minimum": 0 },
+            "sensitive_field_name": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "raw_values_recorded": { "const": false },
+        "blocked_value_digests_recorded": { "const": false },
+        "rights_cleared": { "const": false },
+        "restricted_terminology_cleared": { "const": false },
+        "exporter_integration": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "candidate_calibration": {
+      "type": "object",
+      "required": [
+        "fixture_sha256",
+        "case_count",
+        "scored_top_candidate_count",
+        "positive_scored_count",
+        "negative_scored_count",
+        "minimum_per_class",
+        "independent_holdout_count",
+        "state",
+        "calibration_dataset_sha256",
+        "holdout_dataset_sha256",
+        "calibrated_holdout_count",
+        "confidence_emitted"
+      ],
+      "properties": {
+        "fixture_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "case_count": { "type": "integer", "minimum": 0 },
+        "scored_top_candidate_count": { "type": "integer", "minimum": 0 },
+        "positive_scored_count": { "type": "integer", "minimum": 0 },
+        "negative_scored_count": { "type": "integer", "minimum": 0 },
+        "minimum_per_class": { "const": 100 },
+        "independent_holdout_count": { "const": 0 },
+        "state": { "const": "insufficient_sample" },
+        "calibration_dataset_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "holdout_dataset_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "calibrated_holdout_count": { "const": 0 },
+        "confidence_emitted": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "relationship_screening": {
+      "type": "object",
+      "required": [
+        "state", "edge_count", "eligible_relationship_count",
+        "excluded_relationship_count", "criteria", "graph_sha256",
+        "review_or_release_authorized"
+      ],
+      "properties": {
+        "state": { "const": "eligible_candidate_relationships_screened" },
+        "edge_count": { "type": "integer", "minimum": 1 },
+        "eligible_relationship_count": { "type": "integer", "minimum": 0 },
+        "excluded_relationship_count": { "type": "integer", "minimum": 0 },
+        "criteria": {
+          "type": "object",
+          "required": [
+            "edge_kind", "mapping_method", "assertion_basis", "inferred",
+            "all_edges_same_record_bound", "confidence_calibration"
+          ],
+          "properties": {
+            "edge_kind": { "const": "source_record_has_benefit" },
+            "mapping_method": { "const": "source-explicit" },
+            "assertion_basis": { "const": "same_source_record" },
+            "inferred": { "const": false },
+            "all_edges_same_record_bound": { "const": true },
+            "confidence_calibration": { "const": "not_applicable_source_record" }
+          },
+          "additionalProperties": false
+        },
+        "graph_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "review_or_release_authorized": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "calibration_mechanics_control": {
+      "type": "object",
+      "required": [
+        "fixture_kind",
+        "state",
+        "calibration_case_count",
+        "calibration_positive_count",
+        "calibration_negative_count",
+        "minimum_per_class",
+        "holdout_case_count",
+        "holdout_positive_count",
+        "holdout_negative_count",
+        "case_overlap_count",
+        "calibration_dataset_sha256",
+        "holdout_dataset_sha256",
+        "calibrated_holdout_count",
+        "holdout_brier_score",
+        "holdout_expected_calibration_error",
+        "confidence_authority"
+      ],
+      "properties": {
+        "fixture_kind": {
+          "const": "generated_synthetic_score_curve_not_matcher_output"
+        },
+        "state": { "const": "measured_synthetic_only" },
+        "calibration_case_count": { "const": 400 },
+        "calibration_positive_count": { "type": "integer", "minimum": 100 },
+        "calibration_negative_count": { "type": "integer", "minimum": 100 },
+        "minimum_per_class": { "const": 100 },
+        "holdout_case_count": { "const": 400 },
+        "holdout_positive_count": { "type": "integer", "minimum": 100 },
+        "holdout_negative_count": { "type": "integer", "minimum": 100 },
+        "case_overlap_count": { "const": 0 },
+        "calibration_dataset_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "holdout_dataset_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "calibrated_holdout_count": { "const": 400 },
+        "holdout_brier_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "holdout_expected_calibration_error": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confidence_authority": { "const": "review_priority_only" }
+      },
+      "additionalProperties": false
+    },
+    "matcher_calibration": {
+      "type": "object",
+      "required": [
+        "fixture_kind", "state", "calibration_case_count",
+        "calibration_positive_count", "calibration_negative_count",
+        "holdout_case_count", "holdout_positive_count", "holdout_negative_count",
+        "minimum_per_class", "calibration_case_id_overlap_count",
+        "calibration_dataset_sha256", "holdout_dataset_sha256",
+        "matcher_scored_count", "calibrated_holdout_count",
+        "holdout_brier_score", "holdout_expected_calibration_error",
+        "confidence_emitted", "confidence_authority"
+      ],
+      "properties": {
+        "fixture_kind": { "const": "generated_cases_scored_by_actual_matcher" },
+        "state": { "const": "measured_synthetic_only" },
+        "calibration_case_count": { "const": 400 },
+        "calibration_positive_count": { "type": "integer", "minimum": 100 },
+        "calibration_negative_count": { "type": "integer", "minimum": 100 },
+        "holdout_case_count": { "const": 400 },
+        "holdout_positive_count": { "type": "integer", "minimum": 100 },
+        "holdout_negative_count": { "type": "integer", "minimum": 100 },
+        "minimum_per_class": { "const": 100 },
+        "calibration_case_id_overlap_count": { "const": 0 },
+        "calibration_dataset_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "holdout_dataset_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "matcher_scored_count": { "const": 800 },
+        "calibrated_holdout_count": { "const": 400 },
+        "holdout_brier_score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "holdout_expected_calibration_error": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confidence_emitted": { "const": false },
+        "confidence_authority": { "const": "review_priority_only" }
+      },
+      "additionalProperties": false
+    },
+    "boundaries": {
+      "type": "object",
+      "required": [
+        "new_sources_added_or_acquired",
+        "source_payloads_accessed",
+        "source_coverage_claimed",
+        "rights_or_licensing_conclusion",
+        "clinical_equivalence_claim",
+        "production_dependency_adopted",
+        "production_authority_promoted"
+      ],
+      "properties": {
+        "new_sources_added_or_acquired": { "const": false },
+        "source_payloads_accessed": { "const": false },
+        "source_coverage_claimed": { "const": false },
+        "rights_or_licensing_conclusion": { "const": false },
+        "clinical_equivalence_claim": { "const": false },
+        "production_dependency_adopted": { "const": false },
+        "production_authority_promoted": { "const": false }
+      },
+      "additionalProperties": false
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 5,
+      "items": { "type": "string", "minLength": 1 }
+    }
+  },
+  "additionalProperties": false
+}

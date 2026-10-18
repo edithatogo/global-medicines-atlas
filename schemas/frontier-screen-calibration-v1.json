@@ -8,10 +8,8 @@
     "schema_version",
     "track_id",
     "screening",
-    "relationship_screening",
     "candidate_calibration",
     "calibration_mechanics_control",
-    "matcher_calibration",
     "boundaries",
     "limitations"
   ],
@@ -91,39 +89,6 @@
       },
       "additionalProperties": false
     },
-    "relationship_screening": {
-      "type": "object",
-      "required": [
-        "state", "edge_count", "eligible_relationship_count",
-        "excluded_relationship_count", "criteria", "graph_sha256",
-        "review_or_release_authorized"
-      ],
-      "properties": {
-        "state": { "const": "eligible_candidate_relationships_screened" },
-        "edge_count": { "type": "integer", "minimum": 1 },
-        "eligible_relationship_count": { "type": "integer", "minimum": 0 },
-        "excluded_relationship_count": { "type": "integer", "minimum": 0 },
-        "criteria": {
-          "type": "object",
-          "required": [
-            "edge_kind", "mapping_method", "assertion_basis", "inferred",
-            "all_edges_same_record_bound", "confidence_calibration"
-          ],
-          "properties": {
-            "edge_kind": { "const": "source_record_has_benefit" },
-            "mapping_method": { "const": "source-explicit" },
-            "assertion_basis": { "const": "same_source_record" },
-            "inferred": { "const": false },
-            "all_edges_same_record_bound": { "const": true },
-            "confidence_calibration": { "const": "not_applicable_source_record" }
-          },
-          "additionalProperties": false
-        },
-        "graph_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-        "review_or_release_authorized": { "const": false }
-      },
-      "additionalProperties": false
-    },
     "calibration_mechanics_control": {
       "type": "object",
       "required": [
@@ -162,40 +127,6 @@
         "calibrated_holdout_count": { "const": 400 },
         "holdout_brier_score": { "type": "number", "minimum": 0, "maximum": 1 },
         "holdout_expected_calibration_error": { "type": "number", "minimum": 0, "maximum": 1 },
-        "confidence_authority": { "const": "review_priority_only" }
-      },
-      "additionalProperties": false
-    },
-    "matcher_calibration": {
-      "type": "object",
-      "required": [
-        "fixture_kind", "state", "calibration_case_count",
-        "calibration_positive_count", "calibration_negative_count",
-        "holdout_case_count", "holdout_positive_count", "holdout_negative_count",
-        "minimum_per_class", "calibration_case_id_overlap_count",
-        "calibration_dataset_sha256", "holdout_dataset_sha256",
-        "matcher_scored_count", "calibrated_holdout_count",
-        "holdout_brier_score", "holdout_expected_calibration_error",
-        "confidence_emitted", "confidence_authority"
-      ],
-      "properties": {
-        "fixture_kind": { "const": "generated_cases_scored_by_actual_matcher" },
-        "state": { "const": "measured_synthetic_only" },
-        "calibration_case_count": { "const": 400 },
-        "calibration_positive_count": { "type": "integer", "minimum": 100 },
-        "calibration_negative_count": { "type": "integer", "minimum": 100 },
-        "holdout_case_count": { "const": 400 },
-        "holdout_positive_count": { "type": "integer", "minimum": 100 },
-        "holdout_negative_count": { "type": "integer", "minimum": 100 },
-        "minimum_per_class": { "const": 100 },
-        "calibration_case_id_overlap_count": { "const": 0 },
-        "calibration_dataset_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-        "holdout_dataset_sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-        "matcher_scored_count": { "const": 800 },
-        "calibrated_holdout_count": { "const": 400 },
-        "holdout_brier_score": { "type": "number", "minimum": 0, "maximum": 1 },
-        "holdout_expected_calibration_error": { "type": "number", "minimum": 0, "maximum": 1 },
-        "confidence_emitted": { "const": false },
         "confidence_authority": { "const": "review_priority_only" }
       },
       "additionalProperties": false

@@ -31,9 +31,9 @@ from global_medicines_atlas.matching_models import (
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = (
-    ROOT / "quality/qualifications/frontier-screen-calibration-20261018.json"
+    ROOT / "quality/qualifications/frontier-screen-calibration-v2-20261018.json"
 )
-SCHEMA = ROOT / "schemas/frontier-screen-calibration-v1.json"
+SCHEMA = ROOT / "schemas/frontier-screen-calibration-v2.json"
 MATCHING_FIXTURE = ROOT / "tests/fixtures/matching"
 CALIBRATION_VERSION = "frontier-synthetic-platt-v1"
 
@@ -243,7 +243,7 @@ def build_receipt() -> dict[str, Any]:
     )
     return {
         "schema_id": "global-medicines-atlas.frontier-screen-calibration",
-        "schema_version": 1,
+        "schema_version": 2,
         "track_id": "federated_medallion_frontier_experiments_20260829",
         "screening": {
             "fixture_kind": "synthetic_canaries_only",

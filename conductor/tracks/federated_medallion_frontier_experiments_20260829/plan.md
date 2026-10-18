@@ -422,6 +422,8 @@
   all 5,989 satisfy the same-source-record, non-inferred screen and zero are
   excluded. The screen does not set review state, establish semantic or
   clinical equivalence, clear rights, admit the graph, or authorize release.
+  The expanded qualification is versioned as receipt/schema v2; the existing
+  v1 schema and receipt remain unchanged and valid.
 - [~] Calibrate the actual synthetic candidate retrieval method. A generated
   400-case calibration partition and disjoint 400-case holdout were scored by
   the actual matcher, with 200 positive and 200 negative cases per partition.
