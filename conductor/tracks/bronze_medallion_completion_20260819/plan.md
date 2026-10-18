@@ -1065,7 +1065,12 @@ for credentialed or rights-unresolved sources.
   maturity projection.
 - [ ] Re-evaluate direct Bronze qualification only after the actual durable
   landed event and its exact accepted-event supersession link are evidenced.
-- [ ] Complete source-record projection lineage reconciliation and M-112
+- [x] Reconcile all 1,736 frozen raw paths against exact joins, B1/B2
+  projections, source receipts, historical publication receipts, alias
+  evidence, and PBS variant metadata. Every path now has identity evidence;
+  the five PBS variant matches remain identity metadata only and do not supply
+  acquisition receipts, B2 references, or admission histories.
+- [~] Complete source-record projection lineage reconciliation and M-112
   Australian federation acceptance as separate downstream gates.
 
 ## 2026-10-03 MBS P7 archived receipt reconciliation
