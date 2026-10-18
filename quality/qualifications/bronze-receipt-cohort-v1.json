@@ -31,8 +31,8 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "7f81366b406399a60449a739c8b4854009f2e151e18fee863dda7dc6ff80d96e",
-      "file_count": 148,
+      "sha256": "50ef2e903dda29fd591908df796646e1b738e54607de259c0594297e4e6c7782",
+      "file_count": 149,
       "files": [
         {
           "path": "DATA_LICENSE.md",
@@ -73,6 +73,11 @@
           "path": "quality/bronze/acquisitions/au-mbs/fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd.json",
           "exists": true,
           "sha256": "0473edd93fe9c2781701116febbd68a0c68262b74be5b4de52409d5c52570d30"
+        },
+        {
+          "path": "quality/bronze/admissions/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d/a3cdc3038601351eb6ac8222b01444a4edeebaeb8b2f3ab41bce76b60478b626.json",
+          "exists": true,
+          "sha256": "cfb51a1160b1b8eb70e90baf384280079de1785d32f1a630a3d420a6401ece31"
         },
         {
           "path": "quality/bronze/admissions/au-mbs/f5626f2deb09f4301989480f112ec117ccad9efafc54c04d161100d6c5ca08e1.json",

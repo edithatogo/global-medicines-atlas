@@ -1385,3 +1385,25 @@ for credentialed or rights-unresolved sources.
   224 focused maturity/contract tests, measured-coverage check, and Conductor
   context validation pass. Source rights, admissions, and federation gates are
   unchanged.
+
+## July 2025 MBS source B1/B2 lineage (2026-10-19)
+
+- [x] Bind the existing public-archive SourceReceipt for
+  `raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML` to its exact frozen inventory
+  revision, digest, and byte count. Add the missing acquisition event,
+  external-reference-only B2 manifest, and landed unreviewed admission using
+  the same acquisition identity. No source payload was requested or inspected.
+- [x] Update one object in the M-112 overlay: complete B1/B2 lineages increase
+  from 21 to 22; exact receipt/acquisition path joins increase from 26 to 27.
+  The separate path-digest total stays 118, the frozen denominator stays 1,759,
+  all 1,759 deferrals remain, and the separate per-object rights gate, v4
+  admission, and consumer-canary gates remain open.
+- [x] Regenerate the dependent Bronze receipt cohort; it remains 29 qualified
+  and 130 deferred.
+- [x] Focused M-112, Bronze cohort, and P7 regression tests pass (36); Ruff,
+  `ty`, BasedPyright, and diff checks pass.
+- [~] Run the full Test-Goblin profile: 6,924 passed, 3 skipped, 10 failed,
+  with 96.89% coverage. The failures are existing browser/runtime consumer
+  paths and stable-v1 clean-clone reproductions; the new lineage tests pass.
+  Hosted protected checks on the candidate head remain pending and are
+  authoritative for merge readiness.

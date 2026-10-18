@@ -1,0 +1,67 @@
+{
+  "schema_id": "global-medicines-atlas.m112-july-mbs-source-lineage",
+  "schema_version": 1,
+  "observed_at": "2026-10-19T04:28:01+10:00",
+  "status": "existing_july_mbs_receipt_bound_to_landed_unreviewed_b1_b2_lineage",
+  "inventory": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+    "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+    "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "byte_count": 8194522,
+    "approved_denominator_member": true,
+    "membership_sha256": "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b"
+  },
+  "archive_object": {
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "4d1dae488ac43522f20e8320a8b2a56bf9138341",
+    "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+    "uri": "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+    "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+    "byte_count": 8194522,
+    "matched_unique_public_archive_inventory_row": true,
+    "payload_requested_or_inspected": false,
+    "payload_persisted_locally": false
+  },
+  "lineage": {
+    "source_receipt_path": "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+    "source_receipt_sha256": "c8c3e3baeee4c08dba1a944c19652ec184d90de850968fc4d6a124747d994e03",
+    "acquisition_event_path": "quality/bronze/acquisitions/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json",
+    "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+    "b2_manifest_path": "quality/bronze/raw-evidence/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d/manifest.json",
+    "b2_manifest_sha256": "f691e810787291ed00135d2d5ebf85124510cbd59862d2fffa627d53458dc6a4",
+    "landed_admission_path": "quality/bronze/admissions/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d/a3cdc3038601351eb6ac8222b01444a4edeebaeb8b2f3ab41bce76b60478b626.json",
+    "landed_admission_sha256": "cfb51a1160b1b8eb70e90baf384280079de1785d32f1a630a3d420a6401ece31",
+    "admission_state": "landed",
+    "reviewer_status": "unreviewed",
+    "rights_state_inherited_from_existing_source_receipt": "permitted"
+  },
+  "input_bindings": {
+    "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-p7-archive-lineage.json": "591e592cca466ddffb3188f793a80b8acf9bfe419c685e291271f2c9f76b5977",
+    "quality/qualifications/australian-m112-current-tree-object-identity-reconciliation-20261004.json": "42ecec09d1d4a8e03794124bdbb1f169bb998285859278bc57d04772d4dccd22",
+    "quality/qualifications/australian-mbs-public-huggingface-20260829.json": "0310b97525a01a619ce50230849843b5911ef842379c4e093f630942e9622b2f",
+    "quality/qualifications/australian-m112-2025-mbs-v4-receipt-readback-20261004.json": "9b2c5c0023c9e055cfd043e546d754efb5e2f8b51a0c107dffe7c36f3e56880e",
+    "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+    "quality/bronze/receipts/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+  },
+  "implementation": {
+    "path": "scripts/reconcile_m112_july_mbs_source_lineage.py",
+    "sha256": "bf1727e6ed98947f9fe27d040df6dfeb3e42e35f7eb4012bd919971bc7207253"
+  },
+  "output_bindings": {
+    "quality/bronze/acquisitions/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d.json": "e99c0153a57e0b46cf9dfd2c03520aa9ca9aa97415b5d20920c5e8191aa086f9",
+    "quality/bronze/raw-evidence/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d/manifest.json": "f691e810787291ed00135d2d5ebf85124510cbd59862d2fffa627d53458dc6a4",
+    "quality/bronze/admissions/au-mbs/bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d/a3cdc3038601351eb6ac8222b01444a4edeebaeb8b2f3ab41bce76b60478b626.json": "cfb51a1160b1b8eb70e90baf384280079de1785d32f1a630a3d420a6401ece31"
+  },
+  "scope_limits": {
+    "new_source_or_dataset_added": false,
+    "frozen_inventory_changed": false,
+    "rights_or_licensing_conclusion_added": false,
+    "per_object_rights_gate_closed": false,
+    "source_date_semantics_requalified": false,
+    "processing_admission_performed": false,
+    "v4_admission_performed": false,
+    "consumer_canary_performed": false,
+    "source_payload_bytes_requested_or_inspected": false
+  }
+}
