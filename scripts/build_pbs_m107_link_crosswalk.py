@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from scripts.pbs_m107_receipt_binding import validate_pbs_receipt_binding
+
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = (
     ROOT
@@ -23,7 +25,11 @@ OUTPUT = (
 )
 M112 = (
     ROOT
-    / "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261005.json"
+    / "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018-pbs-receipt-binding.json"
+)
+READBACK = (
+    ROOT / "quality/qualifications/"
+    "australian-pbs-m107-known-object-manifest-readback-20261018.json"
 )
 
 
@@ -38,11 +44,12 @@ def _canonical_digest(value: dict[str, Any]) -> str:
     return hashlib.sha256(canonical).hexdigest()
 
 
-def build_report() -> dict[str, Any]:
+def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals] -- bounded readback joins remain explicit
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     identities = json.loads(IDENTITIES.read_text(encoding="utf-8"))
     rights_doc = json.loads(RIGHTS.read_text(encoding="utf-8"))
     m112 = json.loads(M112.read_text(encoding="utf-8"))
+    readback = json.loads(READBACK.read_text(encoding="utf-8"))
 
     source_identity = next(
         item
@@ -55,6 +62,13 @@ def build_report() -> dict[str, Any]:
         if item.get("path") == source_identity["archive"]["path"]
     )
     rights = {item["source_id"]: item for item in rights_doc["entries"]}
+    receipt_binding = validate_pbs_receipt_binding(
+        index,
+        identities,
+        m112,
+        readback,
+        rights["au-pbs-historical-xml"],
+    )
     rows: list[dict[str, Any]] = []
 
     for page in index["year_pages"]:
@@ -114,6 +128,8 @@ def build_report() -> dict[str, Any]:
                     "m112_disposition": m112_object["disposition"],
                     "m112_rights_state": m112_object["rights"]["state"],
                 }
+                if link["url"] == receipt_binding["official_url"]:
+                    row["source_receipt_binding"] = receipt_binding
             rows.append(row)
 
     report: dict[str, Any] = {
@@ -132,6 +148,11 @@ def build_report() -> dict[str, Any]:
                 == "date_format_label_match_to_known_public_object"
                 for row in rows
             ),
+            "exact_official_url_to_b1_receipt_metadata_count": sum(
+                row.get("source_receipt_binding", {}).get("status")
+                == "exact_official_url_to_b1_receipt_metadata"
+                for row in rows
+            ),
             "unresolved_archive_identity_link_count": sum(
                 row["archive_identity_status"]
                 == "unresolved_link_to_archive_identity"
@@ -144,12 +165,12 @@ def build_report() -> dict[str, Any]:
         },
         "inputs": [
             {"path": path.relative_to(ROOT).as_posix(), "sha256": _sha256(path)}
-            for path in (INDEX, IDENTITIES, RIGHTS, M112)
+            for path in (INDEX, IDENTITIES, RIGHTS, M112, READBACK)
         ],
         "interpretation": {
             "known_object_match_boundary": (
-                "A date, XML V3 label, and source-native archive filename match identifies a known public object; "
-                "it does not establish URL-to-receipt lineage, rights, period completeness, or admission."
+                "For the one exact official URL-to-B1-receipt join, the manifest, receipt, and current public object identities agree. "
+                "A date, XML V3 label, or archive filename match alone does not establish lineage; this join does not establish rights, period completeness, or admission."
             ),
             "unresolved_boundary": (
                 "An unresolved link-to-object mapping is not evidence that a source period or object is absent."

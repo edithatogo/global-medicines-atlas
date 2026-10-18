@@ -9,9 +9,17 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, cast
 
+from scripts.refresh_m112_august_release_crosswalk import (
+    build_report as build_authorized_source_report,
+)
+
 ROOT = Path(__file__).resolve().parents[1]
 BASE = "quality/qualifications/"
 SOURCE_REPORT = (
+    f"{BASE}australian-m112-per-object-gate-reconciliation-"
+    "20261018-pbs-receipt-binding.json"
+)
+FROZEN_REPORT = (
     f"{BASE}australian-m112-per-object-gate-reconciliation-20261018.json"
 )
 CONTRACT = f"{BASE}australian-m112-july-metadata-append-contract-20261018.json"
@@ -19,7 +27,7 @@ READBACK = f"{BASE}australian-mbs-july-metadata-hosted-readback-20261018.json"
 AUTHORIZATION = f"{BASE}australian-mbs-harvest-publication-authorization.json"
 OUTPUT = (
     f"{BASE}australian-m112-per-object-gate-reconciliation-"
-    "20261018-post-july-readback.json"
+    "20261018-pbs-july-readback.json"
 )
 JULY_GROUP = "au-mbs-july-2026-raw-object-paths"
 EXACT_RIGHTS_STATE = "authorized_exact_source_release_permitted"
@@ -27,6 +35,7 @@ EXPECTED_SOURCE_ID = "au-mbs"
 EXPECTED_DENOMINATOR = 1759
 EXPECTED_JULY_OBJECTS = 4
 EXPECTED_METADATA_ADDITIONS = 16
+SHA256_HEX_LENGTH = 64
 
 
 def _read(path: str) -> dict[str, Any]:
@@ -66,14 +75,28 @@ def _validate_readback(  # ruff: ignore[too-many-branches, too-many-statements, 
     readback: dict[str, Any],
 ) -> dict[str, dict[str, Any]]:
     """Reject a stale, widened, or internally inconsistent hosted receipt."""
-    report_digest = hashlib.sha256(
-        (ROOT / SOURCE_REPORT).read_bytes()
-    ).hexdigest()
-    if contract["m112_gate_report"] != {
-        "path": SOURCE_REPORT,
-        "sha256": report_digest,
-    }:
+    frozen_report_value = contract.get("m112_gate_report")
+    frozen_report = (
+        cast("dict[str, Any]", frozen_report_value)
+        if isinstance(frozen_report_value, dict)
+        else {}
+    )
+    frozen_report_sha256 = frozen_report.get("sha256")
+    if (
+        frozen_report.get("path") != FROZEN_REPORT
+        or not isinstance(frozen_report_sha256, str)
+        or len(frozen_report_sha256) != SHA256_HEX_LENGTH
+        or any(char not in "0123456789abcdef" for char in frozen_report_sha256)
+    ):
         raise ValueError("July contract does not bind the frozen M-112 report")
+    if _digest(FROZEN_REPORT) != frozen_report_sha256:
+        raise ValueError(
+            "frozen M-112 report bytes differ from the July contract"
+        )
+    if report.get("supersedes") != FROZEN_REPORT:
+        raise ValueError(
+            "current M-112 report does not supersede the frozen report"
+        )
     if readback["dataset"] != contract["dataset"]:
         raise ValueError("hosted readback names a different dataset")
     if readback["parent_revision"] != contract["expected_parent_revision"]:
@@ -253,6 +276,10 @@ def _validate_readback(  # ruff: ignore[too-many-branches, too-many-statements, 
         raise ValueError(
             "hosted metadata additions are not the exact lifecycle cohort"
         )
+    if report != build_authorized_source_report():
+        raise ValueError(
+            "current M-112 source report differs from the authorized August crosswalk output"
+        )
     return result
 
 
@@ -349,6 +376,10 @@ def _refresh_aggregates(report: dict[str, Any]) -> None:
         "paths_with_exact_source_release_rights": sum(
             row["rights"]["state"] == EXACT_RIGHTS_STATE for row in objects
         ),
+        "paths_with_conflicting_rights_evidence": sum(
+            row["rights"].get("receipt_claim_status") is not None
+            for row in objects
+        ),
     })
 
 
@@ -375,6 +406,8 @@ def build_report(
             _binding(READBACK),
         ],
         "july_metadata_readback": {
+            "frozen_m112_gate_report": contract["m112_gate_report"],
+            "current_m112_gate_report": _binding(SOURCE_REPORT),
             "dataset": readback["dataset"],
             "parent_revision": readback["parent_revision"],
             "revision": readback["revision"],

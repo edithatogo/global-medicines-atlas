@@ -61,7 +61,7 @@ HOSTED_READBACK_PATH = Path(
 )
 SOURCE_REPORT_PATH = Path(
     "quality/qualifications/"
-    "australian-m112-per-object-gate-reconciliation-20261018.json"
+    "australian-m112-per-object-gate-reconciliation-20261018-pbs-receipt-binding.json"
 )
 
 
@@ -554,6 +554,16 @@ def test_july_hosted_metadata_readback_refreshes_four_m112_rows_only() -> None:
     assert refreshed["scope"]["approved_denominator"] == 1759
     assert refreshed["scope"]["preserved_deferrals"] == 1759
     assert (
+        refreshed["july_metadata_readback"]["frozen_m112_gate_report"]
+        == (contract["m112_gate_report"])
+    )
+    assert refreshed["july_metadata_readback"]["current_m112_gate_report"] == {
+        "path": m112_july_refresh.SOURCE_REPORT,
+        "sha256": hashlib.sha256(
+            (ROOT / SOURCE_REPORT_PATH).read_bytes()
+        ).hexdigest(),
+    }
+    assert (
         refreshed["aggregate_gates"]["paths_with_sha256_metadata_or_binding"]
         == 1655
     )
@@ -572,7 +582,11 @@ def test_july_hosted_metadata_readback_refreshes_four_m112_rows_only() -> None:
         == 6
     )
     assert (
-        refreshed["aggregate_gates"]["paths_with_complete_b1_b2_lineage"] == 6
+        refreshed["aggregate_gates"]["paths_with_complete_b1_b2_lineage"] == 7
+    )
+    assert (
+        refreshed["aggregate_gates"]["paths_with_conflicting_rights_evidence"]
+        == 1
     )
     assert refreshed["aggregate_gates"]["paths_admitted_to_v4"] == 0
     assert refreshed["aggregate_gates"]["paths_with_consumer_canary"] == 0
@@ -922,7 +936,7 @@ def test_july_hosted_readback_refresh_rejects_widened_cohorts(
 
 
 @pytest.mark.unit
-def test_july_hosted_readback_refresh_rejects_source_identity_and_json_shape(
+def test_july_hosted_readback_refresh_rejects_source_identity_and_json_shape(  # ruff: ignore[too-many-locals] -- adversarial cases retain independent source objects
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -930,6 +944,7 @@ def test_july_hosted_readback_refresh_rejects_source_identity_and_json_shape(
     contract_bytes = (ROOT / CONTRACT_PATH).read_bytes()
     authorization_bytes = (ROOT / AUTHORIZATION_PATH).read_bytes()
     readback_bytes = (ROOT / HOSTED_READBACK_PATH).read_bytes()
+    frozen_report_bytes = (ROOT / REPORT_PATH).read_bytes()
     contract = _load(CONTRACT_PATH)
     readback = _load(HOSTED_READBACK_PATH)
     first = contract["objects"][0]
@@ -966,6 +981,7 @@ def test_july_hosted_readback_refresh_rejects_source_identity_and_json_shape(
     tmp_report.parent.mkdir(parents=True)
     for relative, content in (
         (m112_july_refresh.SOURCE_REPORT, source_bytes),
+        (m112_july_refresh.FROZEN_REPORT, frozen_report_bytes),
         (m112_july_refresh.CONTRACT, contract_bytes),
         (m112_july_refresh.AUTHORIZATION, authorization_bytes),
         (m112_july_refresh.READBACK, readback_bytes),
@@ -986,6 +1002,51 @@ def test_july_hosted_readback_refresh_rejects_source_identity_and_json_shape(
         ]
         == 1759
     )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "mutation", ["rights", "admission", "lineage", "identity_swap"]
+)
+def test_july_metadata_refresh_rejects_unbound_source_report_rows(
+    mutation: str,
+) -> None:
+    source = _load(SOURCE_REPORT_PATH)
+    contract = _load(CONTRACT_PATH)
+    authorization = _load(AUTHORIZATION_PATH)
+    readback = _load(HOSTED_READBACK_PATH)
+    july_paths = {item["archive_path"] for item in contract["objects"]}
+    unrelated_rows = [
+        row
+        for row in source["objects"]
+        if row["path"] not in july_paths
+        and row["dataset"] == contract["dataset"]
+    ]
+    unrelated = unrelated_rows[0]
+    if mutation == "rights":
+        unrelated["rights"]["state"] = "permitted"
+    elif mutation == "admission":
+        unrelated["v4_admission"] = True
+        source["scope"]["v4_admitted"] += 1
+        source["aggregate_gates"]["paths_admitted_to_v4"] += 1
+    elif mutation == "lineage":
+        unrelated["b1_b2_lineage"]["state"] = "unverified replacement lineage"
+    else:
+        unrelated["path"], unrelated_rows[1]["path"] = (
+            unrelated_rows[1]["path"],
+            unrelated["path"],
+        )
+
+    with pytest.raises(
+        ValueError,
+        match="authorized August crosswalk output",
+    ):
+        m112_july_refresh.build_report(
+            source,
+            contract,
+            authorization,
+            readback,
+        )
 
 
 @pytest.mark.unit

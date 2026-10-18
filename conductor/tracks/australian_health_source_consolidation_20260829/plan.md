@@ -1244,3 +1244,58 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [~] Exact-head hosted checks and review-thread resolution remain pending;
   M-109's historical denominator, rights, semantics, and admission gates remain
   open.
+
+## M-107 PBS known-object receipt join (2026-10-18)
+
+- [x] Bind the 1 April 2026 official PBS XML V3 listing URL to the exact
+  anonymous public manifest, B1 source receipt, and current raw-object digest.
+  Read metadata only; do not request or inspect the ZIP payload.
+- [x] Reconcile the raw PBS B1/B2 identity chain in a new superseding M-112
+  report and its July metadata derivative. Keep the receipt/ledger rights
+  conflict explicit, with no v4 admission, consumer canary, rights decision,
+  or M-112 acceptance.
+- [x] Refresh the M-107 link crosswalk: one exact official URL-to-receipt
+  binding; 315 unresolved links remain from 316 official schedule links.
+  M-107 and federation remain blocked.
+- [x] Bind the parsed receipt fields to the distinct manifest `source_receipt`
+  reference and anonymous receipt-metadata response digest/size. Reject
+  coherently rehashed substitutions to receipt path, digest, acquisition ID,
+  receipt ID, or the manifest reference itself.
+- [x] Validate 110 focused tests, Test-Goblin routine, Ruff, formatting, `ty`,
+  BasedPyright, context/ecosystem validation, deterministic report
+  regeneration, and `git diff --check`.
+- [x] Run the pinned `uv 0.11.29` full profile once. Formatting, lint,
+  repository/context checks, type checking (0 errors; four unrelated
+  `huggingface_hub` source-resolution warnings), package consumers, and the
+  6,876-test pytest phase completed. The local profile ended with four
+  Playwright browser-context teardown timeouts on macOS; 6,876 passed, 4
+  failed, 3 skipped, 96.90% coverage. Do not record the local full profile as
+  passed; exact-head hosted checks remain the authoritative cross-platform
+  result.
+
+## M-112 July refresh source-report binding review correction (2026-10-18)
+
+- [x] Address automated review finding that the July refresh accepted any
+  replacement report whose `supersedes` field named the frozen report, then
+  copied all replacement rows forward.
+- [x] Rebuild the authorized August predecessor from the frozen M-112 report
+  and its qualified inputs, and require exact full-report equality before
+  carrying any July rows into a new report. This binds unrelated rows,
+  rights, lineage, admission, and aggregates to authorized evidence rather
+  than trusting a self-reported supersedes link.
+- [x] Add four negative controls that change non-July rights, v4 admission,
+  lineage, or swap two non-July identities while preserving the 1,759-row
+  denominator; the July refresh rejects each.
+- [x] Validate 114 focused M-107/M-112 tests, deterministic July report
+  regeneration, Ruff, format check, `ty`, BasedPyright, context/ecosystem
+  validation, and `git diff --check`. Exact-head hosted checks must rerun on
+  the correction commit; the preceding local full run remains recorded with
+  its four unrelated browser teardown failures.
+- [x] Run the pinned full profile on the corrected head `2e92dd6c`. It recorded
+  6,883 passed, 1 failed, 3 skipped and 96.90% coverage. The sole local failure
+  was `tests/test_mbs_gold_candidate_consumers.py::test_browser_waits_for_delayed_stylesheet_before_qualifying`, a Playwright
+  `browser.close()` timeout at `atlas_browser_qualification.py:275`; no
+  timeout was changed and the profile is not marked passed. The earlier
+  pre-correction four-failure result is superseded for current local status.
+  All 28 required hosted checks passed on this exact head; later local Goblin
+  lanes were not reached after the coverage-profile failure.

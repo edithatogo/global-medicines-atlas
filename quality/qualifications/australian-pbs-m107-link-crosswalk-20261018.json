@@ -8,6 +8,7 @@
     "official_schedule_link_count": 316,
     "distinct_schedule_periods": 197,
     "known_public_object_link_count": 1,
+    "exact_official_url_to_b1_receipt_metadata_count": 1,
     "unresolved_archive_identity_link_count": 315,
     "source_payloads_requested": false,
     "source_payloads_read": false,
@@ -28,12 +29,16 @@
       "sha256": "d2e8b8eb9f593c3a01be5bad99cb05e07a9a0904d85db86d009759fc88727fef"
     },
     {
-      "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261005.json",
-      "sha256": "bdc06876a4aa5d38fdb4ec23e05fba6d4325468efd74c87f88aa5cac8946be63"
+      "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018-pbs-receipt-binding.json",
+      "sha256": "9c9308755a95465c0fc630d97520cc2990ec40e3acb4c749f823b7ab2bf49d8a"
+    },
+    {
+      "path": "quality/qualifications/australian-pbs-m107-known-object-manifest-readback-20261018.json",
+      "sha256": "2d98096e51f498a8c243f0ca34601da1041973ce24dc9a931b88d683a8eb0a6b"
     }
   ],
   "interpretation": {
-    "known_object_match_boundary": "A date, XML V3 label, and source-native archive filename match identifies a known public object; it does not establish URL-to-receipt lineage, rights, period completeness, or admission.",
+    "known_object_match_boundary": "For the one exact official URL-to-B1-receipt join, the manifest, receipt, and current public object identities agree. A date, XML V3 label, or archive filename match alone does not establish lineage; this join does not establish rights, period completeness, or admission.",
     "unresolved_boundary": "An unresolved link-to-object mapping is not evidence that a source period or object is absent."
   },
   "links": [
@@ -7692,7 +7697,47 @@
         "bytes": 11156706,
         "public_revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
         "m112_disposition": "deferred_not_admitted",
-        "m112_rights_state": "upstream redistribution terms unknown"
+        "m112_rights_state": "unresolved: the public B1 receipt claims permitted reuse, while the source-rights ledger records upstream redistribution terms as unknown"
+      },
+      "source_receipt_binding": {
+        "status": "exact_official_url_to_b1_receipt_metadata",
+        "official_url": "https://www.pbs.gov.au/publication/schedule/2026/04/2026-04-01-XML-V3.zip?variant=3",
+        "source_effective_date": "2026-04-01",
+        "dataset": "edithatogo/australian-pbs-source-archive",
+        "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+        "manifest": {
+          "path": "manifest.json",
+          "sha256": "e6c9abbc62bd44fc47049306a92cc8efc9700031908586262c2b82a907546460",
+          "byte_count": 7513
+        },
+        "archive": {
+          "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+          "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+          "byte_count": 11156706
+        },
+        "b1_receipt": {
+          "path": "bronze/2026-04-01/source-receipt.json",
+          "sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1",
+          "receipt_id": "hosted-pbs-v3:f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20:2026-08-30T03:31:25+00:00",
+          "acquisition_id": "7c964aef63666d334fafd9a461f5a4f8476018a4da5809cf8fefe3a6b8bee727",
+          "retrieved_at": "2026-08-30T03:31:25Z",
+          "payload_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+          "payload_byte_count": 11156706,
+          "rights_state_claimed_by_receipt": "permitted"
+        },
+        "bronze_admission_state": "accepted",
+        "m112_object_remains_deferred": true,
+        "m112_b1_b2_lineage_complete": true,
+        "rights_reconciliation_status": "receipt_permitted_claim_source_ledger_unknown",
+        "m112_v4_admission": false,
+        "m112_consumer_canary": false,
+        "boundaries": {
+          "source_payload_requested": false,
+          "source_payload_read": false,
+          "source_rights_concluded": false,
+          "m107_accepted": false,
+          "m112_v4_admission": false
+        }
       }
     },
     {
@@ -7948,6 +7993,6 @@
   ],
   "digest": {
     "algorithm": "sha256-canonical-json",
-    "value": "796ff78e771da959eeeeaf5a3319a88a70c2cee0d581f448afd8745076ab61cf"
+    "value": "61c5387a44093b126e4d6642c5b2cb8db9627a0fb276a690c5f2cd318ed8d01b"
   }
 }
