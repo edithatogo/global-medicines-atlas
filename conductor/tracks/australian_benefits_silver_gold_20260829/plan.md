@@ -3699,12 +3699,42 @@
   Ruff, formatting, BasedPyright, Test-Goblin routine, and repository metadata
   checks pass. All 39 hosted PR checks passed and PR #1177 merged as
   `25b6ee301bef156f4ac1f5757735a9ca65e5c948`.
-- [~] Remaining owner-controlled PBS lineage remains unchanged pending an
-  explicit decision about creating current-time B1/B2 records from pinned
-  public objects. The exact gap counts and producer-history audit are recorded
-  under `m112_remaining_lineage_owner_lane_audit`.
+- [x] The maintainer directed completion of B1/B2 lineage. A current,
+  unreviewed record set was created from the exact pinned producer projections
+  and frozen object identities; it does not rewrite producer history or change
+  owner-held PBS/M107 crosswalks or the reserved July derivative. See the
+  `m112_pbs_projected_b1_b2_lineage_expansion` evidence record.
 
 - [x] Hosted verification and merge for PR #1177: all 39 reported checks passed
   on head `720292151d000530df3f568220e6fae56b7869aa`; both review conversations
   were resolved after their findings were fixed. The squash merge is
   `25b6ee301bef156f4ac1f5757735a9ca65e5c948`.
+
+
+### M-112 PBS projected B1/B2 lineage expansion (2026-10-19)
+
+- [x] Bind 1,703 exact frozen PBS raw paths to the pinned source receipt, B1
+  acquisition projection, B2 immutable reference, and newly recorded local
+  `landed` decision with `reviewer_status=unreviewed`. The 1,703 paths map to
+  1,702 unique acquisition events, preserving the same-content alias as a
+  separate path identity. The local decision is recorded at
+  `2026-10-18T21:34:05Z`; it is not represented as historical producer
+  admission evidence.
+- [x] Regenerate the qualification and cumulative per-object overlay. The
+  current inventory now has 1,725 complete raw lineages and 10 complete
+  projection lineages (1,735/1,759 total); 11 raw and 13 projection lineages
+  remain incomplete. All objects remain deferred, rights remain unresolved
+  where previously unresolved, v4 admissions remain zero, and consumer
+  canaries remain zero. No source was added, no source-owner work was changed,
+  and no source payload bytes or values were read for this metadata join.
+- [x] Verify the focused tests (4 passed), the complete M-112 affected suite
+  (103 passed), Ruff, formatting, BasedPyright, and diff checks. Test-Goblin
+  full ran 6,945 tests with 2 unrelated stable-v1 reproducibility failures
+  because this host provides `uv 0.13.1` while the pinned build requires
+  `uv 0.11.29`; 3 optional integration tests were skipped. The new lineage
+  tests passed in both focused and full runs. Hosted protected checks remain
+  required on the pull request.
+- [~] Continue lineage qualification for the final 24 objects, then proceed
+  through eligible v4 admission and consumer canaries only after their separate
+  gates pass. Keep PBS/M107 crosswalks and the reserved July derivative in the
+  source owner's lane.
