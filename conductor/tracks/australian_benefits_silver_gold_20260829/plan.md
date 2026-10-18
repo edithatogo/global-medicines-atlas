@@ -3419,3 +3419,51 @@
   receipts and independent trust expectations for the six raw MBS paths. No
   real contract, admission, remote read, or consumer canary is created by this
   adapter increment; M-112 remains blocked for all 1,759 approved paths.
+
+## M-112 six-path metadata reconciliation (2026-10-18)
+
+- [x] Independently read and hash the pinned metadata for the six MBS raw
+  candidate paths without fetching any source payload. The qualification
+  records 29 bounded anonymous metadata readbacks: the July root manifest,
+  all 16 July metadata additions, four July path receipt sidecars, the
+  historical and current August source manifests, and five August lifecycle
+  records, plus the August lifecycle root manifest. All 29 status/digest
+  checks passed. Each July path joined through
+  its sidecar, B1 acquisition, B1 source receipt, B2 reference, and landed
+  admission. The five August lifecycle records joined to one payload identity
+  and also byte-match their preserved repository copies. None of the five
+  lifecycle paths is listed in that revision's 21-entry root manifest; their
+  direct reads do not supply a v4 discovery role. Review correction: only 27
+  of the 29 readbacks had an expected SHA-256 and qualify as digest matches;
+  the current and older August source-manifest reads are status-only because
+  no expected digest was recorded for either. Their observed digests remain
+  diagnostic metadata, not verified matches.
+- [x] Preserve the two August path identities over one payload digest and the
+  older B2 external locator revision `abdf414cdea0127d3edda6f8af402d1a01139623`
+  separately from the path readback at `40891976f77ee5e7688edceed25c9ac98a77547e`.
+  The lifecycle metadata readback at `1e4971c35c0ef45026168a8e2498d1bd57a3c324`
+  is bound to `edithatogo/australian-mbs-source-archive`; an initial request
+  under the global-atlas dataset name returned 401 and is retained only as a
+  superseded locator error.
+- [x] Confirm the July root manifest is 228 files with the recorded SHA-256.
+  Reconcile the older per-object B1 acquisition summary's 2,533-byte claim to
+  the independently fetched 2,534-byte metadata file and its matching digest;
+  keep the one-byte summary discrepancy explicit.
+- [x] Add the bounded metadata-only reader, exact-dataset locator regression,
+  and compact hash-bound qualification at
+  `quality/qualifications/australian-m112-raw-b2-metadata-reconciliation-20261018.json`.
+  Focused adjacent tests pass (99); no source bytes were fetched, no rights or
+  issuer claim was added, and the six path rows remain deferred.
+- [~] The MBS raw B1/B2 receipts are not a v4.1 raw-B2 contract/closure. The
+  independently configured v4 roles for publication, verification, exact
+  authorization, discovery, input lineage, v1/v3 conformance, recovery
+  checksum, and cache cleanup remain unbound; no M-112 admission or reader
+  canary was attempted. Preserve the 1,759 denominator and all six deferrals.
+
+### M-112 metadata digest accounting review correction (2026-10-18)
+
+- [x] Keep a successful anonymous manifest read without an expected digest as
+  a status-only observation. The qualification now records 27 digest matches
+  and two status-only reads across 29 metadata requests, retaining observed
+  hashes without claiming either was verified against an expected identity.
+  All six path candidates and the 1,759-object denominator are unchanged.
