@@ -27,6 +27,31 @@ def test_screening_finds_sensitive_field_names_without_echoing_values() -> None:
     assert "Ada Example" not in receipt.model_dump_json()
 
 
+@pytest.mark.parametrize(
+    ("carrier", "field_name"),
+    [
+        ("native_name", "patient_name"),
+        ("source_field_id", "member_id"),
+        ("path", "$.person.email"),
+        ("schema_path", "schema/subscriber/address"),
+    ],
+)
+def test_screening_recognizes_native_graph_field_name_carriers(
+    carrier: str, field_name: str
+) -> None:
+    payload = json.dumps({carrier: field_name, "native_value": "synthetic"})
+
+    receipt = screen_graph_payloads((
+        ScreenedPayload(path="node:native-field", payload=payload),
+    ))
+
+    assert receipt.state == "review_required"
+    assert [item.category for item in receipt.findings] == [
+        "sensitive_field_name"
+    ]
+    assert field_name not in receipt.model_dump_json()
+
+
 def test_screening_finds_direct_identifier_patterns() -> None:
     payload = json.dumps({
         "field": "contact",

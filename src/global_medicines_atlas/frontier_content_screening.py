@@ -33,6 +33,16 @@ _SENSITIVE_KEY_PARTS = frozenset({
     "address",
     "national_id",
 })
+_FIELD_NAME_CARRIERS = frozenset({
+    "name",
+    "field_name",
+    "source_field",
+    # Native MBS/PBS graph field representations.
+    "native_name",
+    "source_field_id",
+    "path",
+    "schema_path",
+})
 
 
 class ScreenedPayload(FrozenModel):
@@ -106,14 +116,12 @@ def _scan_value(
                         value_sha256=key_digest,
                     )
                 )
-            if (
-                key in {"name", "field_name", "source_field"}
-                and isinstance(item, str)
-                and any(
-                    part in item.casefold().replace("-", "_").split("_")
-                    for part in _SENSITIVE_KEY_PARTS
-                )
-            ):
+            field_tokens = (
+                frozenset(re.findall(r"[a-z0-9]+", item.casefold()))
+                if isinstance(item, str) and key in _FIELD_NAME_CARRIERS
+                else frozenset()
+            )
+            if field_tokens & _SENSITIVE_KEY_PARTS:
                 findings.append(
                     ContentScreenFinding(
                         path=f"{path}.{key_digest[:12]}",
