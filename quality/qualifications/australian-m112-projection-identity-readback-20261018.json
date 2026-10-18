@@ -1,0 +1,35 @@
+{
+  "schema_id": "global-medicines-atlas.australian-m112-projection-identity-readback",
+  "schema_version": 1,
+  "recorded_at": "2026-10-18T13:57:48Z",
+  "purpose": "Bind the twelve remaining M-112 projection paths to SHA-256 digests from anonymous streaming readback at their frozen public dataset revision.",
+  "method": {
+    "transport": "HTTPS resolve endpoint at the exact immutable Hugging Face dataset revision",
+    "requests_authenticated": false,
+    "expected_and_observed_byte_counts_match": true,
+    "bytes_persisted_locally": false,
+    "projection_values_inspected": false,
+    "raw_source_payloads_requested": false
+  },
+  "scope": {
+    "dataset": "edithatogo/reimbursement-atlas",
+    "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+    "projection_count": 12,
+    "bytes_streamed": 7201352,
+    "denominator_changed": false
+  },
+  "objects": [
+    {"path":"data/medallion/acquisition_b1/data.jsonl","byte_count":1820758,"sha256":"0bd2f7661037b620a21943ed6d7f2dd28a93437d43072d6ceabf3411b5840da1","anonymous_readback":true},
+    {"path":"data/medallion/catalogue_b0/data.jsonl","byte_count":27219,"sha256":"c27b998f9425714c42da0a9c8192e6fb5a613031210548cc0eb8b44388aaa8c4","anonymous_readback":true},
+    {"path":"data/medallion/evidence_b2/data.jsonl","byte_count":1767273,"sha256":"d7d33a8b0b6bd5cf507639286348b53e79d76e59347ef9575ff555a1e66f68c5","anonymous_readback":true},
+    {"path":"data/medallion/gold/data.jsonl","byte_count":3267,"sha256":"a4d3a99d9b6db9dff6a9e267e73806460b082d8ee8fbdefb55a3c7d077d85532","anonymous_readback":true},
+    {"path":"data/medallion/lineage/data.jsonl","byte_count":10763,"sha256":"9d73e2f79b44f221486b4ad0e1df576cdbd18763d1aa3fa7adb8e6fe526e639f","anonymous_readback":true},
+    {"path":"data/medallion/pbs_archive_variants/data.jsonl","byte_count":4340,"sha256":"e9059e17bf78c099f0350610487bbc78e5b51c8e9d49726b0b117e01e3c4d0db","anonymous_readback":true},
+    {"path":"data/medallion/pbs_archive_verification/data.jsonl","byte_count":811545,"sha256":"7cea95acfde2f023a8a3b84628b7bcd70a023ab1ebde3d5ac0449eedb36a5f8d","anonymous_readback":true},
+    {"path":"data/medallion/pbs_pdf_provenance/data.jsonl","byte_count":871678,"sha256":"24cb8c98f8a09f943ef3369ec63b9a2f7b3e19bfca7cf2a7ec64e1a78dcf4e07","anonymous_readback":true},
+    {"path":"data/medallion/pbs_structured_provenance/data.jsonl","byte_count":548634,"sha256":"fab87f283f31f51db1f5f1bee76b02c3fbe5622bea1deee4632be0ff4768a28c","anonymous_readback":true},
+    {"path":"data/medallion/platinum/data.jsonl","byte_count":2088,"sha256":"82aa16098cbbdedb8d6583caf367c8a41b34ca00f448e354a3921b12592dc9d6","anonymous_readback":true},
+    {"path":"data/medallion/promotion_decisions/data.jsonl","byte_count":1321055,"sha256":"03036720150f163e471445b594d21eeb51f95e4bd7db1070b74afc27b7d8c5c7","anonymous_readback":true},
+    {"path":"data/medallion/silver/data.jsonl","byte_count":12732,"sha256":"299b3721f72af235dc80a9b96f590a39ef8fe0b683618764ad56af713e1848a1","anonymous_readback":true}
+  ]
+}

@@ -20,6 +20,10 @@ MANIFEST_JOIN_PATH = (
     "quality/qualifications/australian-m112-manifest-join-audit-20260930.json"
 )
 FROZEN_INVENTORY_PATH = "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json"
+PROJECTION_IDENTITY_PATH = "quality/qualifications/australian-m112-projection-identity-readback-20261018.json"
+RAW_IDENTITY_PATH = (
+    "quality/qualifications/australian-m112-raw-identity-readback-20261018.json"
+)
 OUTPUT = (
     QUAL
     / "australian-m112-per-object-gate-reconciliation-20261018-retained-joins.json"
@@ -39,6 +43,10 @@ EXPECTED_PRIOR_RAW_TREE_SHA_GAPS = 102
 EXPECTED_BASE_COMPLETE_LINEAGES = 2
 EXPECTED_CURRENT_COMPLETE_LINEAGES = 6
 EXPECTED_PRIOR_EXACT_SOURCE_RIGHTS = 2
+EXPECTED_PROJECTION_READBACK_COUNT = 12
+EXPECTED_PROJECTION_READBACK_BYTES = 7201352
+EXPECTED_RAW_IDENTITY_READBACK_COUNT = 92
+EXPECTED_RAW_IDENTITY_READBACK_BYTES = 5018706
 MBS_DATASET = "edithatogo/australian-mbs-source-archive"
 MBS_CURRENT_REVISION = "40891976f77ee5e7688edceed25c9ac98a77547e"
 MBS_METADATA_READBACK_REVISION = "42d73b6facac016f14a335d36d83f1a3b630add8"
@@ -90,6 +98,8 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
     utilisation = _read_json(UTILISATION_PATH)
     source_archive = _read_json(SOURCE_ARCHIVE_PATH)
     manifest_join = _read_json(MANIFEST_JOIN_PATH)
+    projection_identity = _read_json(PROJECTION_IDENTITY_PATH)
+    raw_identity = _read_json(RAW_IDENTITY_PATH)
 
     source_objects = cast("list[dict[str, Any]]", baseline["objects"])
     if len(source_objects) != EXPECTED_DENOMINATOR:
@@ -121,6 +131,142 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
         baseline["scope"]["approved_projection_paths"] != EXPECTED_PROJECTIONS
     ):
         raise ValueError("the approved M-112 source strata changed")
+
+    projection_rows = cast(
+        "list[dict[str, Any]]", projection_identity["objects"]
+    )
+    expected_projection_keys = {
+        (row["dataset"], row["revision"], row["path"])
+        for row in source_objects
+        if row["candidate_class"] == "existing_data_projection"
+        and not row["identity"].get("sha256")
+    }
+    observed_projection_keys = {
+        (
+            projection_identity["scope"]["dataset"],
+            projection_identity["scope"]["revision"],
+            row["path"],
+        )
+        for row in projection_rows
+    }
+    projection_bytes = sum(row["byte_count"] for row in projection_rows)
+    expected_projection_method = {
+        "requests_authenticated": False,
+        "bytes_persisted_locally": False,
+        "projection_values_inspected": False,
+        "raw_source_payloads_requested": False,
+        "expected_and_observed_byte_counts_match": True,
+    }
+    projection_report_matches = all((
+        projection_identity["scope"]["projection_count"]
+        == EXPECTED_PROJECTION_READBACK_COUNT,
+        projection_identity["scope"]["bytes_streamed"]
+        == EXPECTED_PROJECTION_READBACK_BYTES,
+        not any(
+            projection_identity["method"].get(key) != value
+            for key, value in expected_projection_method.items()
+        ),
+        len(projection_rows) == EXPECTED_PROJECTION_READBACK_COUNT,
+        projection_bytes == EXPECTED_PROJECTION_READBACK_BYTES,
+        observed_projection_keys == expected_projection_keys,
+    ))
+    if not projection_report_matches:
+        raise ValueError(
+            "the exact twelve-path projection identity readback changed"
+        )
+    for evidence_row in projection_rows:
+        key = (
+            projection_identity["scope"]["dataset"],
+            projection_identity["scope"]["revision"],
+            evidence_row["path"],
+        )
+        inventory_row = rows_by_key[key]
+        if not all((
+            evidence_row["anonymous_readback"] is True,
+            evidence_row["byte_count"]
+            == inventory_row["identity"]["byte_count"],
+            inventory_row["candidate_class"] == "existing_data_projection",
+        )):
+            raise ValueError(
+                "a projection digest does not match frozen object metadata"
+            )
+
+    raw_identity_rows = cast("list[dict[str, Any]]", raw_identity["objects"])
+    expected_raw_identity_keys = {
+        (row["dataset"], row["revision"], row["path"])
+        for row in source_objects
+        if row["candidate_class"] == "raw_source_payload"
+        and row["dataset"] == "edithatogo/reimbursement-atlas"
+        and not row["identity"].get("sha256")
+    }
+    observed_raw_identity_keys = {
+        (row["dataset"], row["revision"], row["path"])
+        for row in raw_identity_rows
+    }
+    raw_identity_bytes = sum(row["byte_count"] for row in raw_identity_rows)
+    expected_raw_method = {
+        "requests_authenticated": False,
+        "bytes_persisted_locally": False,
+        "payload_values_inspected": False,
+        "rights_or_licensing_conclusion": False,
+        "content_addressed_basename_verified_against_streamed_sha256": True,
+    }
+    raw_report_matches = all((
+        raw_identity["scope"]["dataset"] == "edithatogo/reimbursement-atlas",
+        raw_identity["scope"]["revision"]
+        == "8e062578f14e12cf3238700a93946339da9c5d88",
+        raw_identity["scope"]["raw_path_count"]
+        == EXPECTED_RAW_IDENTITY_READBACK_COUNT,
+        raw_identity["scope"]["bytes_streamed"]
+        == EXPECTED_RAW_IDENTITY_READBACK_BYTES,
+        raw_identity.get("evidence_input") == _input_binding(BASELINE_PATH),
+        not any(
+            raw_identity["method"].get(key) != value
+            for key, value in expected_raw_method.items()
+        ),
+        len(raw_identity_rows) == EXPECTED_RAW_IDENTITY_READBACK_COUNT,
+        raw_identity_bytes == EXPECTED_RAW_IDENTITY_READBACK_BYTES,
+        observed_raw_identity_keys == expected_raw_identity_keys,
+    ))
+    if not raw_report_matches:
+        raise ValueError(
+            "the exact frozen 92-path raw identity readback changed"
+        )
+    for evidence_row in raw_identity_rows:
+        key = (
+            evidence_row["dataset"],
+            evidence_row["revision"],
+            evidence_row["path"],
+        )
+        inventory_row = rows_by_key[key]
+        if not all((
+            evidence_row["anonymous_readback"] is True,
+            evidence_row["byte_count_match"] is True,
+            evidence_row["bytes_persisted_locally"] is False,
+            evidence_row["payload_values_inspected"] is False,
+            evidence_row["path_basename_sha256_matches"] is True,
+            evidence_row["path_basename_sha256"] == evidence_row["sha256"],
+            evidence_row["byte_count"]
+            == inventory_row["identity"]["byte_count"],
+            inventory_row["candidate_class"] == "raw_source_payload",
+        )):
+            raise ValueError(
+                "a raw digest does not match its frozen path and size"
+            )
+        identity = inventory_row["identity"]
+        identity["sha256"] = evidence_row["sha256"]
+        identity["sha256_evidence"] = "anonymous_digest_readback"
+        identity["anonymous_digest_readback"] = True
+        identity["digest_evidence"] = {
+            "path": RAW_IDENTITY_PATH,
+            "sha256": hashlib.sha256(
+                (ROOT / RAW_IDENTITY_PATH).read_bytes()
+            ).hexdigest(),
+        }
+        identity["content_addressed_path_binding"] = {
+            "path_basename_sha256": evidence_row["path_basename_sha256"],
+            "matches_streamed_sha256": True,
+        }
 
     prior_objects = [
         *cast("list[dict[str, Any]]", utilisation["verified_objects"]),
@@ -172,6 +318,8 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             SOURCE_ARCHIVE_PATH,
             MANIFEST_JOIN_PATH,
             FROZEN_INVENTORY_PATH,
+            PROJECTION_IDENTITY_PATH,
+            RAW_IDENTITY_PATH,
         )
     }
     new_joins: list[dict[str, Any]] = []
@@ -322,6 +470,18 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
         raise ValueError(
             "the canonical and alias August paths were not distinguished"
         )
+
+    for evidence_row in projection_rows:
+        key = (
+            projection_identity["scope"]["dataset"],
+            projection_identity["scope"]["revision"],
+            evidence_row["path"],
+        )
+        identity = rows_by_key[key]["identity"]
+        identity["sha256"] = evidence_row["sha256"]
+        identity["sha256_evidence"] = "anonymous_projection_digest_readback"
+        identity["anonymous_digest_readback"] = True
+        identity["digest_evidence"] = input_bindings[PROJECTION_IDENTITY_PATH]
     candidate_path_results = [
         {
             "dataset": row["dataset"],
@@ -343,6 +503,18 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
     }
     if len(cumulative_keys) != EXPECTED_PRIOR_RAW_DIGEST_JOINS + len(new_joins):
         raise ValueError("the cumulative raw-object join keys are not unique")
+    raw_identity_keys = observed_raw_identity_keys
+    if raw_identity_keys & cumulative_keys:
+        raise ValueError(
+            "anonymous raw readbacks overlap retained digest joins"
+        )
+    all_exact_raw_digest_keys = cumulative_keys | raw_identity_keys
+    if len(all_exact_raw_digest_keys) != (
+        EXPECTED_PRIOR_RAW_DIGEST_JOINS
+        + len(new_joins)
+        + len(raw_identity_rows)
+    ):
+        raise ValueError("the exact raw digest/path match sets overlap")
 
     complete_lineages = sum(row["b1_b2_lineage"]["complete"] for row in rows)
     exact_source_rights = baseline["aggregate_gates"][
@@ -362,22 +534,27 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
     )
     if prior_missing_sha != EXPECTED_PRIOR_RAW_TREE_SHA_GAPS:
         raise ValueError("the prior 102 raw tree-SHA gap count changed")
-    remaining_raw_without_sha = tree_gaps[
+    historic_remaining_raw_without_sha = tree_gaps[
         "remaining_non_lfs_raw_paths_without_digest_evidence"
     ]
+    remaining_raw_without_sha = historic_remaining_raw_without_sha - len(
+        raw_identity_rows
+    )
     remaining_projection_without_sha = tree_gaps[
         "remaining_projection_paths_without_digest_evidence"
-    ]
-    recovered_tree_gap_count = prior_missing_sha - remaining_raw_without_sha
+    ] - len(projection_rows)
+    recovered_tree_gap_count = (
+        prior_missing_sha - historic_remaining_raw_without_sha
+    )
 
     report = {
         "schema_id": "global-medicines-atlas.m112-retained-evidence-object-joins",
         "schema_version": 1,
         "observed_at": "2026-10-18",
         "purpose": (
-            "Join four retained July MBS B1/B2 receipt chains to their "
-            "same-path, same-size, same-SHA objects at the frozen current "
-            "producer revision without changing the approved denominator."
+            "Bind all remaining raw and projection SHA-256 identities, and "
+            "join four retained July MBS B1/B2 receipt chains, without "
+            "changing the approved denominator."
         ),
         "scope": scope,
         "denominator_object_id_sha256": denominator_digest,
@@ -388,16 +565,28 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             "denominator_object_id_sha256": denominator_digest,
             "approved_path_membership_sha256": path_membership_digest,
             "prior_raw_digest_path_joins": len(prior_keys),
-            "new_exact_raw_digest_path_matches": len(new_joins),
+            "new_exact_raw_digest_path_matches": len(new_joins)
+            + len(raw_identity_rows),
             "new_exact_b1_b2_receipt_joins": len(new_joins),
-            "cumulative_exact_raw_digest_path_joins": len(cumulative_keys),
+            "cumulative_exact_raw_digest_path_joins": len(
+                all_exact_raw_digest_keys
+            ),
             "raw_paths_outside_digest_join_subset": EXPECTED_RAW_PATHS
-            - len(cumulative_keys),
+            - len(all_exact_raw_digest_keys),
             "prior_complete_b1_b2_lineage_paths": EXPECTED_BASE_COMPLETE_LINEAGES,
             "new_complete_b1_b2_lineage_paths": len(new_joins),
             "cumulative_complete_b1_b2_lineage_paths": complete_lineages,
             "existing_same_content_alias_path_bindings": 1,
-            "cumulative_raw_path_identity_bindings": len(cumulative_keys) + 1,
+            "cumulative_raw_path_identity_bindings": len(
+                all_exact_raw_digest_keys
+            )
+            + 1,
+            "projection_paths_bound_by_anonymous_readback": len(
+                projection_rows
+            ),
+            "projection_bytes_streamed_without_local_persistence": projection_bytes,
+            "raw_paths_bound_by_anonymous_readback": len(raw_identity_rows),
+            "raw_payload_bytes_streamed_without_local_persistence": raw_identity_bytes,
             "candidate_path_disposition": {
                 "verified_new_join": 4,
                 "already_joined_canonical": 1,
@@ -409,15 +598,14 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             "unmatched_records": [],
             "incompatible_role_records": [],
             "raw_path_records_outside_exact_digest_join_subset": (
-                EXPECTED_RAW_PATHS - len(cumulative_keys)
+                EXPECTED_RAW_PATHS - len(all_exact_raw_digest_keys)
             ),
             "outside_subset_interpretation": (
-                "These 1,710 raw paths are not among the 26 exact prior-plus-new "
-                "digest/path matches summarized here. This digest-match subset "
-                "is not a B1/B2 receipt count: two path lineages were complete "
-                "before this increment and four are added here. Per-object "
-                "identity, rights, and lineage states remain in the preserved "
-                "1,759-member inventory."
+                "These 1,618 raw paths are outside the 118 exact SHA-256/path "
+                "matches: 22 retained matches, four July MBS receipt joins, "
+                "and 92 anonymous PBS raw readbacks. The 92 readbacks do not "
+                "establish B1/B2 lineage. Six raw path lineages are complete; "
+                "rights, lineage, and admission remain independent gates."
             ),
             "existing_alias_binding": {
                 "path": alias_path,
@@ -439,6 +627,9 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
                 "raw_paths_resolved_by_existing_non_lfs_or_alias_evidence": (
                     recovered_tree_gap_count
                 ),
+                "raw_paths_bound_by_new_anonymous_readback": len(
+                    raw_identity_rows
+                ),
                 "new_july_mbs_hashes_included_in_current_inventory": len(
                     new_joins
                 ),
@@ -449,8 +640,11 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
                     "The older 102 count measures missing current-tree LFS "
                     "SHA values among raw paths. The current evidence adds "
                     "existing hosted non-LFS and same-Git-object bindings; "
-                    "92 raw paths still lack direct or alias SHA evidence. "
-                    "Twelve projection paths remain separately unbound."
+                    "The 92 PBS raw paths have now been anonymously streamed "
+                    "for SHA-256 at their pinned revision; each digest matches "
+                    "the content-addressed filename. The twelve previously "
+                    "unbound projection paths also have anonymous digest "
+                    "readback. No rights or admission conclusion follows."
                 ),
             },
         },
@@ -459,9 +653,11 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
             "raw_paths": EXPECTED_RAW_PATHS,
             "projection_paths": EXPECTED_PROJECTIONS,
             "complete_raw_b1_b2_lineage": complete_lineages,
-            "exact_raw_digest_path_joins": len(cumulative_keys),
+            "exact_raw_digest_path_joins": len(all_exact_raw_digest_keys),
             "complete_raw_b1_b2_lineage_paths": complete_lineages,
-            "including_existing_same_content_alias": len(cumulative_keys) + 1,
+            "including_existing_same_content_alias": (
+                len(all_exact_raw_digest_keys) + 1
+            ),
             "exact_source_release_rights": exact_source_rights,
             "v4_admissions": 0,
             "consumer_canaries": 0,
@@ -475,7 +671,11 @@ def build_report() -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-b
         },
         "boundaries": {
             "denominator_changed": False,
-            "source_payload_bytes_read_this_run": False,
+            "source_payload_bytes_read_this_run": True,
+            "source_payload_bytes_streamed_this_run": raw_identity_bytes,
+            "source_payload_bytes_persisted_this_run": False,
+            "source_payload_values_inspected_this_run": False,
+            "projection_bytes_streamed_this_run": projection_bytes,
             "new_source_or_dataset_added": False,
             "rights_or_licensing_conclusion_added": False,
             "v4_admission_performed": False,
