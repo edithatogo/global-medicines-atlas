@@ -237,3 +237,28 @@ qualified.
 The governing PBS-era and rights observations are recorded in the [PBS source
 transition receipt](../../quality/qualifications/pbs-source-transition-20260929.json)
 and [public API rights preflight](../../quality/qualifications/australian-pbs-api-public-access-preflight-20260929.json).
+
+### Current-index MBS XML release-page chronology
+
+The metadata-only readback in
+[`australian-mbs-current-release-page-chronology-20261018.json`](../../quality/qualifications/australian-mbs-current-release-page-chronology-20261018.json)
+reconciles the 82 MBS XML links on 41 pages from the saved current Downloads
+index to exactly one official table row each. All 87 receipt sidecars listed
+for those links were anonymously re-read at current archive revision
+`42d73b6facac016f14a335d36d83f1a3b630add8`; all match their exact prior
+sidecar digest, source URL, archive path, and payload digest. The pinned root
+manifest has SHA-256
+`f2945d7d4d4c32cb1d4cd2e89244327c2ebe595964401b5730cb43ee9d87944b` and 228
+files. The [July 2020 official release page](https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/Downloads-200701a)
+shows why page identity matters: its official heading is July 2020, while its
+internal page ID is `Downloads-200701a`, and it lists separate updated XML
+files and dates.
+
+The value-free report stores each page's response digest and timing, the exact
+source URL, receipt identities, link label, row digest, and date phrases. It
+does not retain HTML bodies or request XML payloads. Date phrases remain
+unclassified evidence: page headings, page-update dates, filename tokens, and
+XML-row dates are not silently converted into effective dates or source-era
+semantics. This covers the observed current Downloads index only; it does not
+establish the full historical denominator, rights, field meanings, or M-109
+acceptance.
