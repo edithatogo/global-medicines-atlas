@@ -174,3 +174,43 @@ def test_pbs_receipt_binding_requires_anonymous_raw_object_digest_readback() -> 
 
     with pytest.raises(ValueError, match="anonymous raw-object digest"):
         validate_pbs_receipt_binding(index, identities, m112, readback, rights)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("acquisition_id", "0" * 64),
+        ("receipt_id", "substituted-receipt"),
+        ("path", "bronze/other/source-receipt.json"),
+        ("sha256", "0" * 64),
+    ],
+)
+def test_pbs_binding_rejects_rehashed_unbound_receipt_identity(
+    field: str, value: str
+) -> None:
+    index, identities, m112, readback, rights = _binding_inputs()
+    readback["source_receipt"][field] = value
+    _refresh_readback_digest(readback)
+
+    with pytest.raises(ValueError, match="manifest receipt reference"):
+        validate_pbs_receipt_binding(index, identities, m112, readback, rights)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("acquisition_id", "0" * 64),
+        ("path", "bronze/other/source-receipt.json"),
+        ("sha256", "0" * 64),
+        ("retrieved_at", "2026-01-01T00:00:00Z"),
+    ],
+)
+def test_pbs_binding_rejects_rehashed_manifest_receipt_reference(
+    field: str, value: str
+) -> None:
+    index, identities, m112, readback, rights = _binding_inputs()
+    readback["manifest_source_receipt"][field] = value
+    _refresh_readback_digest(readback)
+
+    with pytest.raises(ValueError, match="manifest receipt reference"):
+        validate_pbs_receipt_binding(index, identities, m112, readback, rights)

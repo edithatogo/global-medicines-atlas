@@ -30,11 +30,11 @@
     },
     {
       "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018-pbs-receipt-binding.json",
-      "sha256": "63fbd9b24979950e57fae486f0b1dee30552e224c248230ca0a24de983b2b259"
+      "sha256": "9c9308755a95465c0fc630d97520cc2990ec40e3acb4c749f823b7ab2bf49d8a"
     },
     {
       "path": "quality/qualifications/australian-pbs-m107-known-object-manifest-readback-20261018.json",
-      "sha256": "c3468b236503a9c2401646d5c82a99b8bed10a58167a6fe44fe3a8161e15f409"
+      "sha256": "2d98096e51f498a8c243f0ca34601da1041973ce24dc9a931b88d683a8eb0a6b"
     }
   ],
   "interpretation": {
@@ -7993,6 +7993,6 @@
   ],
   "digest": {
     "algorithm": "sha256-canonical-json",
-    "value": "f5e5c91278038d38842cad9fea84ab0feeadc77dfcf1a1ffbe7f068d6ab53d1a"
+    "value": "61c5387a44093b126e4d6642c5b2cb8db9627a0fb276a690c5f2cd318ed8d01b"
   }
 }

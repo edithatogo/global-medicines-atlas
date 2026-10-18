@@ -12,8 +12,8 @@
     "sha256": "e80079760391d339ccfea4e1ceb59686ec7cfacbf91fac66333b113027b7fc1c",
     "state": "accepted"
   },
-  "canonical_byte_count": 2803,
-  "canonical_sha256": "2737bcfb1401306e11eea1d50a164e4a4afa378b1bb5831ef5b799fb5a93c803",
+  "canonical_byte_count": 3247,
+  "canonical_sha256": "6b832a94afcee4fea08341ecd600c85ff295af26dd5f31d6f9c50dfbae68c75a",
   "dataset": "edithatogo/australian-pbs-source-archive",
   "interpretation": "The observed official listing URL equals the source URL in the anonymous public manifest and the B1 receipt retrieval URI. Receipt payload identity matches the manifest archive metadata. The receipt claims permitted reuse, while the current source-rights ledger still records upstream terms as unknown; this readback does not resolve that conflict or grant M-112 admission.",
   "manifest": {
@@ -63,5 +63,17 @@
     "sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1",
     "source_id": "au-pbs-historical-xml"
   },
-  "status": "anonymous_manifest_and_source_receipt_metadata_readback"
+  "status": "anonymous_manifest_and_source_receipt_metadata_readback",
+  "manifest_source_receipt": {
+    "acquisition_id": "7c964aef63666d334fafd9a461f5a4f8476018a4da5809cf8fefe3a6b8bee727",
+    "path": "bronze/2026-04-01/source-receipt.json",
+    "retrieved_at": "2026-08-30T03:31:25+00:00",
+    "sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1"
+  },
+  "source_receipt_metadata_readback": {
+    "anonymous": true,
+    "byte_count": 3143,
+    "http_status": 200,
+    "sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1"
+  }
 }

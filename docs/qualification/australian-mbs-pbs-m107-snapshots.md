@@ -23,7 +23,12 @@ retrieval URI. At dataset revision
 the ZIP identity is SHA-256
 `f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20`
 and 11,156,706 bytes; receipt identity and public object readback agree.
-Only the manifest and B1 receipt metadata were read, not the ZIP payload.
+The manifest's separate `source_receipt` reference also agrees with the
+anonymous B1 metadata GET (3,143 bytes; SHA-256
+`a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1`). The
+validator rejects rehashed changes to its path, digest, acquisition ID, or
+receipt ID. Only manifest and B1 receipt metadata were read, not the ZIP
+payload.
 
 This closes the B1/B2 identity chain for that one raw object only. The receipt
 claims `permitted`, while the current source-rights ledger still records

@@ -1257,6 +1257,18 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [x] Refresh the M-107 link crosswalk: one exact official URL-to-receipt
   binding; 315 unresolved links remain from 316 official schedule links.
   M-107 and federation remain blocked.
-- [x] Validate 102 focused tests, Test-Goblin routine, Ruff, formatting, `ty`,
+- [x] Bind the parsed receipt fields to the distinct manifest `source_receipt`
+  reference and anonymous receipt-metadata response digest/size. Reject
+  coherently rehashed substitutions to receipt path, digest, acquisition ID,
+  receipt ID, or the manifest reference itself.
+- [x] Validate 110 focused tests, Test-Goblin routine, Ruff, formatting, `ty`,
   BasedPyright, context/ecosystem validation, deterministic report
   regeneration, and `git diff --check`.
+- [x] Run the pinned `uv 0.11.29` full profile once. Formatting, lint,
+  repository/context checks, type checking (0 errors; four unrelated
+  `huggingface_hub` source-resolution warnings), package consumers, and the
+  6,876-test pytest phase completed. The local profile ended with four
+  Playwright browser-context teardown timeouts on macOS; 6,876 passed, 4
+  failed, 3 skipped, 96.90% coverage. Do not record the local full profile as
+  passed; exact-head hosted checks remain the authoritative cross-platform
+  result.

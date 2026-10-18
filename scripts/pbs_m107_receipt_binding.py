@@ -8,6 +8,18 @@ from collections.abc import Callable
 from typing import Any, cast
 
 HTTP_OK = 200
+PBS_RECEIPT_PATH = "bronze/2026-04-01/source-receipt.json"
+PBS_RECEIPT_ACQUISITION_ID = (
+    "7c964aef63666d334fafd9a461f5a4f8476018a4da5809cf8fefe3a6b8bee727"
+)
+PBS_RECEIPT_SHA256 = (
+    "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1"
+)
+PBS_RECEIPT_BYTES = 3143
+PBS_RECEIPT_ID = (
+    "hosted-pbs-v3:f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20:"
+    "2026-08-30T03:31:25+00:00"
+)
 
 
 def _mapping(value: object, label: str) -> dict[str, Any]:
@@ -31,7 +43,7 @@ def _unique_matching(
     return matches[0]
 
 
-def validate_pbs_receipt_binding(  # ruff: ignore[too-many-locals] -- every source identity is independently checked
+def validate_pbs_receipt_binding(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements] -- every source identity is independently checked
     schedule_index_value: object,
     source_identities_value: object,
     m112_value: object,
@@ -88,6 +100,14 @@ def validate_pbs_receipt_binding(  # ruff: ignore[too-many-locals] -- every sour
     official = _mapping(readback.get("official_object"), "official object")
     archive = _mapping(official.get("archive"), "archive identity")
     receipt = _mapping(readback.get("source_receipt"), "source receipt")
+    manifest_receipt_reference = _mapping(
+        readback.get("manifest_source_receipt"),
+        "manifest source receipt reference",
+    )
+    receipt_metadata = _mapping(
+        readback.get("source_receipt_metadata_readback"),
+        "source receipt metadata readback",
+    )
     payload = _mapping(receipt.get("payload"), "receipt payload")
     bronze_admission = _mapping(
         readback.get("bronze_admission"), "Bronze admission metadata"
@@ -106,6 +126,31 @@ def validate_pbs_receipt_binding(  # ruff: ignore[too-many-locals] -- every sour
     ):
         raise ValueError(
             "PBS public manifest or receipt readback is incomplete"
+        )
+    expected_manifest_receipt_reference = {
+        "acquisition_id": PBS_RECEIPT_ACQUISITION_ID,
+        "path": PBS_RECEIPT_PATH,
+        "retrieved_at": "2026-08-30T03:31:25+00:00",
+        "sha256": PBS_RECEIPT_SHA256,
+    }
+    expected_receipt_metadata = {
+        "anonymous": True,
+        "byte_count": PBS_RECEIPT_BYTES,
+        "http_status": HTTP_OK,
+        "sha256": PBS_RECEIPT_SHA256,
+    }
+    if (
+        manifest_receipt_reference != expected_manifest_receipt_reference  # ruff: ignore[too-many-boolean-expressions] -- all independent receipt-reference bindings are mandatory
+        or receipt_metadata != expected_receipt_metadata
+        or receipt.get("path") != manifest_receipt_reference.get("path")
+        or receipt.get("sha256") != manifest_receipt_reference.get("sha256")
+        or receipt.get("acquisition_id")
+        != manifest_receipt_reference.get("acquisition_id")
+        or receipt.get("receipt_id") != PBS_RECEIPT_ID
+        or receipt.get("retrieved_at") != "2026-08-30T03:31:25Z"
+    ):
+        raise ValueError(
+            "PBS receipt does not match the pinned manifest receipt reference"
         )
 
     link = _unique_matching(
@@ -197,9 +242,7 @@ def validate_pbs_receipt_binding(  # ruff: ignore[too-many-locals] -- every sour
         payload.get("byte_count"),
         archive.get("size_bytes"),
         receipt.get("acquisition_id"),
-        _mapping(readback.get("source_receipt"), "manifest receipt ref").get(
-            "acquisition_id"
-        ),
+        manifest_receipt_reference.get("acquisition_id"),
     )
     if len(set(receipt_urls)) != 1:
         raise ValueError("PBS source URL bindings do not match exactly")
@@ -209,8 +252,8 @@ def validate_pbs_receipt_binding(  # ruff: ignore[too-many-locals] -- every sour
         or receipt_identity[2] != receipt_identity[3]
         or receipt_identity[4] != receipt_identity[5]
         or receipt_identity[6] != receipt_identity[7]
-        or not isinstance(receipt.get("sha256"), str)
-        or not isinstance(receipt.get("path"), str)
+        or receipt.get("sha256") != PBS_RECEIPT_SHA256
+        or receipt.get("path") != PBS_RECEIPT_PATH
     ):
         raise ValueError(
             "PBS receipt payload identities do not match the archive"
