@@ -3391,3 +3391,31 @@
 - [~] Push the review correction to PR #1160 and wait for protected checks on
   its new exact head. No M-109 semantics, rights, admission, or acceptance
   status changes.
+
+## M-112 raw B2 candidate adapter (2026-10-18)
+
+- [x] Add a source-scoped v4.1 MBS raw-B2 adapter over the existing receipt
+  closure and independent admission primitives. Require exact Bronze/B2/raw
+  identity, the raw-B2 v2 field-lineage exception, and publication,
+  verification, authorization, discovery, input-lineage, v1/v3 conformance,
+  recovery-checksum, and cache-cleanup receipt roles. Keep results
+  `candidate_only`; expose no reader admission record.
+- [x] Prove synthetic closure and independent identity binding with four
+  coherent substitutions, missing receipt bytes, a missing conformance role,
+  and an unauthorized layer. Independent review also passed twelve additional
+  negative controls against trust fields and receipt roles.
+- [x] Focused federation/MBS/harness tests (196), Ruff format/lint, `ty`,
+  BasedPyright, and diff checks pass.
+- [x] Project context and ecosystem validation pass on the updated track
+  ledger and plan.
+- [x] Run the required full production profile on this exact frozen change
+  under the existing host guard with pinned uv 0.11.29 in parent and child
+  PATH. The run completed with 6,877 passed, 3 skipped, and one failure at
+  96.89% coverage: the pre-existing product-release fixture measured query
+  p95 275.915 ms against its 250 ms budget. The exact test passed when rerun
+  alone under the same guard (1 passed, 1 existing deprecation warning). Record
+  the full-profile result as a host-sensitive timing miss, not a pass. The
+  adapter's focused checks and exact-head hosted checks passed. Next, bind real
+  receipts and independent trust expectations for the six raw MBS paths. No
+  real contract, admission, remote read, or consumer canary is created by this
+  adapter increment; M-112 remains blocked for all 1,759 approved paths.
