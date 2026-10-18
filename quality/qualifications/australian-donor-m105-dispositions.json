@@ -956,10 +956,11 @@
       }
     }
   ],
-  "qualification_state": "partial",
+  "qualification_state": "qualified_with_narrow_chronology_waiver",
   "history_evidence": [
     "quality/qualifications/scraper-archival-20260906.json",
     "quality/qualifications/graph-archival-20260906.json"
   ],
-  "boundary": "All known artifact rows now have final dispositions and no pending behavioral-parity row. M-105 remains partial: this post-archive reconciliation cannot establish the requirement to prove parity before donor archival, and legacy-only rows do not establish live item/participant coverage or future-release authority."
+  "boundary": "The sole maintainer waived only the pre-archive timing condition. No pre-archive complete-parity proof is claimed. All 54 baseline and 10 later changed-path rows have final dispositions and no pending behavioral-parity rows; exact donor identities, licenses, archived histories, byte evidence, and function-specific parity evidence remain independently bound. Live source coverage and future-release authority remain outside M-105 and are not inferred.",
+  "chronology_waiver_evidence": "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
 }

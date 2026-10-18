@@ -670,3 +670,26 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   Refresh the report's evaluated timestamp and exact source commit, verify
   the Stable v1 contract remains idempotent, and rerun the focused and routine
   affected checks before marking this refresh complete.
+
+## 2026-10-18 M-105 narrow chronology waiver reconciliation
+
+- [x] Record the maintainer-approved D-006-10 timing-only waiver and regenerate
+  Stable v1 qualification from the complete M-105 disposition dossier. M-105
+  is verified under the waiver; no pre-archive parity proof is claimed and the
+  M-105 criterion itself is unchanged.
+- [x] Keep M-106–M-112, Australian federation acceptance, and stable-release
+  approval blocked; M-113 remains verified for donor archival. The separate production disaster-recovery authority gate
+  remains outside the release contract. Focused tests (54), broader affected
+  checks (65), Ruff, formatting, JSON/JSONL validation, and diff checks pass;
+  hosted PR checks remain pending.
+
+## 2026-10-18 M-105 waiver validator review correction
+
+- [x] Make the waiver reconciliation fail closed on disposition/state mismatch,
+  failed or unknown row states, missing behavior evidence, incomplete
+  not-waived boundaries, and widened source-rights/publication/release flags.
+  Eight adversarial cases refresh the matrix and dossier digests before checking
+  rejection. Focused M-105/Stable tests (62) and broader affected tests (65),
+  Ruff, formatting, BasedPyright, `ty`, and diff checks pass. Updated PR hosted
+  checks remain pending; the independent Australian and release gates remain
+  blocked.

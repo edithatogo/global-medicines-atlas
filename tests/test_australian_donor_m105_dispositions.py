@@ -1,6 +1,7 @@
 """Keep the M-105 disposition denominator exact without inferring parity."""
 
 import ast
+import hashlib
 import json
 from pathlib import Path
 
@@ -80,7 +81,27 @@ def test_m105_dispositions_cover_exact_pinned_and_later_donors() -> None:
 
 def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
     receipt = json.loads(RECEIPT.read_text())
-    assert receipt["qualification_state"] == "partial"
+    waiver_path = ROOT / (
+        "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
+    )
+    waiver = json.loads(waiver_path.read_text())
+    assert (
+        receipt["qualification_state"]
+        == "qualified_with_narrow_chronology_waiver"
+    )
+    assert receipt["chronology_waiver_evidence"] == str(
+        waiver_path.relative_to(ROOT)
+    )
+    assert waiver["decision_id"] == "D-006-10"
+    assert waiver["decision"] == "approved_narrow_chronology_waiver"
+    assert waiver["waiver_scope"]["pre_archive_parity_proof_claimed"] is False
+    assert (
+        waiver["chronology"]["pre_archive_complete_parity_receipt_found"]
+        is False
+    )
+    assert waiver["reassessment"]["disposition_matrix"]["sha256"] == (
+        hashlib.sha256(RECEIPT.read_bytes()).hexdigest()
+    )
     assert (
         sum(
             item["acceptance_state"] == "pending_behavioral_parity"
@@ -95,7 +116,10 @@ def test_m105_dispositions_do_not_promote_unproven_behavior() -> None:
         )
         == 0
     )
-    assert "post-archive reconciliation cannot establish" in receipt["boundary"]
+    assert (
+        "No pre-archive complete-parity proof is claimed" in receipt["boundary"]
+    )
+    assert "Live source coverage" in receipt["boundary"]
 
 
 def test_monthly_workflow_is_legacy_only_with_separate_scheduled_release() -> (
@@ -395,7 +419,9 @@ def test_scraper_processor_supersession_maps_every_donor_function() -> None:
                         for node in ast.walk(tree)
                         if isinstance(node, ast.FunctionDef)
                     }
-    assert receipt["qualification_state"] == "partial"
+    assert receipt["qualification_state"] == (
+        "qualified_with_narrow_chronology_waiver"
+    )
 
 
 def test_mbs_parser_replacement_binds_exact_pre_archive_qualification() -> None:

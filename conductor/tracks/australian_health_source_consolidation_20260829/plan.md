@@ -1180,3 +1180,35 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   map the documented changes to XML element semantics, plus the approved
   denominator, rights, and admission evidence. Release-page notes do not
   qualify field meaning or complete source-era semantics.
+
+## M-105 narrow chronology waiver application (2026-10-18)
+
+- [x] Apply the maintainer-approved D-006-10 waiver solely to the requirement
+  that complete parity evidence predate either donor archive. The criterion is
+  unchanged and no pre-archive complete-parity proof is claimed. The exact
+  54-row baseline and ten-row changed-path denominator, final row dispositions,
+  donor identities, licenses, archive history, and function-specific evidence
+  remain required and bound by the waiver dossier.
+- [x] Reconcile Stable v1 from the dossier: M-105 is verified under the narrow
+  chronology waiver; M-106–M-112 remain blocked; M-113 remains verified for donor archival.
+  The Australian federation gate remains blocked. The release-readiness receipt remains blocked and no release or
+  source-rights decision is inferred.
+- [x] Validate 54 focused donor/Stable contract tests and 65 broader
+  documentation/Test-Goblin harness tests; Ruff, formatting, JSON/JSONL,
+  and `git diff --check` pass. Exact-head hosted checks are required before
+  merge.
+
+## M-105 waiver validator fail-closed review correction (2026-10-18)
+
+- [x] Restrict the chronology waiver to disposition-specific accepted row
+  states and required row evidence. Require the complete explicit not-waived
+  list, M-105 identity, waiver schema version, and false rights/publication/
+  release/archive boundary flags.
+- [x] Add eight adversarial regressions that coherently refresh the matrix and
+  report digests while injecting failed or mismatched row state, missing
+  behavior evidence, removed scope boundaries, or widened approval flags. Each
+  leaves M-105 blocked.
+- [x] Revalidate 62 focused M-105/Stable contract tests and 65 broader
+  documentation/Test-Goblin tests; Ruff, formatting, BasedPyright on the
+  reconciliation script, `ty`, and `git diff --check` pass. Hosted exact-head
+  checks are pending for the updated PR.
