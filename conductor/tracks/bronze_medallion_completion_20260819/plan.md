@@ -1407,3 +1407,22 @@ for credentialed or rights-unresolved sources.
   paths and stable-v1 clean-clone reproductions; the new lineage tests pass.
   Hosted protected checks on the candidate head remain pending and are
   authoritative for merge readiness.
+
+### Review hardening follow-up (2026-10-19)
+
+- [x] Validate the public archive dataset and immutable revision headers before
+  binding its July 2025 payload row. Validate the matching current-tree record's
+  exact dataset, revision, path, blob ID, and byte count against the frozen
+  object row before completing lineage.
+- [x] Preserve the first qualification and overlay as history; emit a reviewed
+  successor qualification and overlay with the validated current-tree identity
+  included in the report.
+- [x] Focused lineage, receipt-cohort, P7, utilisation-lineage, and M-112
+  reconciliation checks pass (35). Ruff, `ty`, BasedPyright, context, ecosystem,
+  and JSONL checks pass.
+- [~] The full local Test-Goblin run completed: 6,931 passed, 3 skipped, 7
+  failed, and 96.89% coverage. Failures remain in existing stable-v1 clean-clone,
+  browser/E2E, consumer, and performance tests; the changed lineage tests pass.
+  The initial candidate head's hosted checks pass, but its two review findings
+  remain open until this hardening is pushed. Hosted checks must run on the
+  revised head before merge.

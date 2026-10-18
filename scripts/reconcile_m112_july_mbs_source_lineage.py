@@ -37,6 +37,9 @@ CURRENT_TREE = (
     QUAL
     / "australian-m112-current-tree-object-identity-reconciliation-20261004.json"
 )
+TREE_INVENTORY = (
+    QUAL / "australian-m112-current-tree-object-inventory-20261004.json"
+)
 PUBLIC_ARCHIVE = QUAL / "australian-mbs-public-huggingface-20260829.json"
 V4_READBACK = (
     QUAL / "australian-m112-2025-mbs-v4-receipt-readback-20261004.json"
@@ -65,12 +68,12 @@ ARCHIVE_URI = (
     "https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/"
     f"{ARCHIVE_REVISION}/{SOURCE_PATH}"
 )
-OUTPUT = QUAL / "australian-m112-july-mbs-source-lineage-20261019.json"
+OUTPUT = QUAL / "australian-m112-july-mbs-source-lineage-reviewed-20261019.json"
 OVERLAY_OUTPUT = (
     QUAL
-    / "australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage.json"
+    / "australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json"
 )
-OBSERVED_AT = "2026-10-19T04:28:01+10:00"
+OBSERVED_AT = "2026-10-19T05:39:19+10:00"
 ADMISSION_AT = datetime(2026, 10, 18, 18, 28, 1, tzinfo=UTC)
 EXPECTED_DENOMINATOR = 1759
 EXPECTED_PRIOR_COMPLETE = 21
@@ -149,8 +152,54 @@ def _require_frozen_row(base: dict[str, Any]) -> dict[str, Any]:
     return row
 
 
+def _validate_current_tree_binding(row: dict[str, Any]) -> dict[str, Any]:
+    inventory = _read(TREE_INVENTORY)
+    matches = [
+        item
+        for item in inventory["observations"]
+        if item.get("dataset") == DATASET
+        and item.get("revision") == INVENTORY_REVISION
+        and item.get("path") == SOURCE_PATH
+    ]
+    identity = row["identity"]
+    if len(matches) != 1:
+        raise ValueError("current-tree source identity is absent or duplicated")
+    current = matches[0]
+    if not all((
+        current.get("candidate_class") == "raw_source_payload",
+        current.get("git_blob_oid_match") is True,
+        current.get("byte_count_match") is True,
+        current.get("expected_git_blob_oid") == identity["git_blob_oid"],
+        current.get("observed_git_blob_oid") == identity["git_blob_oid"],
+        current.get("expected_bytes") == SOURCE_BYTES,
+        current.get("observed_bytes") == identity["byte_count"] == SOURCE_BYTES,
+        identity["sha256"] == SOURCE_SHA256,
+        identity["sha256_evidence"] == "anonymous_digest_readback",
+        identity["anonymous_digest_readback"] is True,
+    )):
+        raise ValueError(
+            "current-tree source identity conflicts with frozen row"
+        )
+    return {
+        "dataset": DATASET,
+        "revision": INVENTORY_REVISION,
+        "path": SOURCE_PATH,
+        "candidate_class": current["candidate_class"],
+        "git_blob_oid": current["observed_git_blob_oid"],
+        "byte_count": current["observed_bytes"],
+        "sha256": identity["sha256"],
+        "sha256_evidence": identity["sha256_evidence"],
+        "anonymous_digest_readback": identity["anonymous_digest_readback"],
+    }
+
+
 def _validate_public_archive_binding() -> None:
     archive = _read(PUBLIC_ARCHIVE)
+    if (
+        archive.get("dataset") != DATASET
+        or archive.get("immutable_revision") != ARCHIVE_REVISION
+    ):
+        raise ValueError("pinned public archive identity does not match")
     exact_payloads = [
         item
         for item in archive["raw_payloads"]
@@ -282,7 +331,8 @@ def build_report() -> dict[str, Any]:
     """Validate current identity, public archive binding, and existing receipt."""
 
     base = _read(BASE)
-    _require_frozen_row(base)
+    row = _require_frozen_row(base)
+    current_tree_object = _validate_current_tree_binding(row)
     _validate_public_archive_binding()
     receipt, temporal = _load_verified_receipt()
     artifacts = _write_lineage_artifacts(receipt, temporal)
@@ -311,6 +361,7 @@ def build_report() -> dict[str, Any]:
             "payload_requested_or_inspected": False,
             "payload_persisted_locally": False,
         },
+        "current_tree_object": current_tree_object,
         "lineage": {
             "source_receipt_path": SOURCE_RECEIPT.as_posix(),
             "source_receipt_sha256": artifacts.receipt_digest,
@@ -329,6 +380,7 @@ def build_report() -> dict[str, Any]:
             for path in (
                 BASE,
                 CURRENT_TREE,
+                TREE_INVENTORY,
                 PUBLIC_ARCHIVE,
                 V4_READBACK,
                 V4_MANIFEST,
