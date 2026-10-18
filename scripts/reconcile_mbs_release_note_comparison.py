@@ -68,16 +68,35 @@ def _nonnegative_int(value: object, label: str) -> int:
     return value
 
 
+def _input_path(path: str | Path) -> str:
+    """Return the actual input path, relative inside the repository."""
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return resolved.as_posix()
+
+
 def build_reconciliation(  # ruff: ignore[too-many-locals] - validate one bounded evidence pair
     *,
     notes: object,
     comparison: object,
     notes_sha256_bytes: bytes,
     comparison_sha256_bytes: bytes,
+    notes_path: str | Path = NOTES_PATH,
+    comparison_path: str | Path = COMPARISON_PATH,
 ) -> dict[str, Any]:
     """Bind official release statements to value-free aggregate evidence."""
     note_report = _mapping(notes, "official release notes")
     comparison_report = _mapping(comparison, "predecessor comparison")
+    if json.loads(notes_sha256_bytes) != note_report:
+        raise ValueError(
+            "official release notes do not match their digest bytes"
+        )
+    if json.loads(comparison_sha256_bytes) != comparison_report:
+        raise ValueError(
+            "predecessor comparison does not match its digest bytes"
+        )
     if (
         note_report.get("schema_id")
         != "global-medicines-atlas.australian-mbs-official-release-change-notes"
@@ -157,11 +176,11 @@ def build_reconciliation(  # ruff: ignore[too-many-locals] - validate one bounde
         "status": status,
         "inputs": {
             "official_release_notes": {
-                "path": NOTES_PATH.relative_to(ROOT).as_posix(),
+                "path": _input_path(notes_path),
                 "sha256": hashlib.sha256(notes_sha256_bytes).hexdigest(),
             },
             "predecessor_comparison": {
-                "path": COMPARISON_PATH.relative_to(ROOT).as_posix(),
+                "path": _input_path(comparison_path),
                 "sha256": hashlib.sha256(comparison_sha256_bytes).hexdigest(),
                 "exact_commit": comparison_report.get("exact_commit"),
                 "july_archive_revision": july_release.get("archive_revision"),
@@ -230,6 +249,8 @@ def main() -> int:
         comparison=comparison,
         notes_sha256_bytes=notes_bytes,
         comparison_sha256_bytes=comparison_bytes,
+        notes_path=args.notes,
+        comparison_path=args.comparison,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")

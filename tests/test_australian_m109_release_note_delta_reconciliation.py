@@ -2,12 +2,14 @@
 
 import hashlib
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
 import pytest
 from scripts.reconcile_mbs_release_note_comparison import (
     build_reconciliation,
+    main,
 )
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -78,6 +80,7 @@ def test_zero_changed_rows_still_does_not_verify_named_new_item_identity() -> (
     notes, comparison, notes_bytes, comparison_bytes = _inputs()
     comparison["comparison"]["changed_record_count"] = 0
     comparison["comparison"]["changed_field_counts"] = []
+    comparison_bytes = json.dumps(comparison, sort_keys=True).encode()
     report = build_reconciliation(
         notes=notes,
         comparison=comparison,
@@ -112,6 +115,7 @@ def test_report_rejects_an_unbound_official_predecessor_page() -> None:
         if item["release"] == "MBS July 2026 XML"
     )
     july_note["source_url"] = "https://example.invalid/wrong-page"
+    notes_bytes = json.dumps(notes, sort_keys=True).encode()
 
     with pytest.raises(ValueError, match="official note pages"):
         build_reconciliation(
@@ -120,3 +124,49 @@ def test_report_rejects_an_unbound_official_predecessor_page() -> None:
             notes_sha256_bytes=notes_bytes,
             comparison_sha256_bytes=comparison_bytes,
         )
+
+
+def test_builder_rejects_evidence_object_not_bound_to_digest_bytes() -> None:
+    notes, comparison, notes_bytes, comparison_bytes = _inputs()
+    comparison["comparison"]["changed_record_count"] += 1
+
+    with pytest.raises(ValueError, match="comparison does not match"):
+        build_reconciliation(
+            notes=notes,
+            comparison=comparison,
+            notes_sha256_bytes=notes_bytes,
+            comparison_sha256_bytes=comparison_bytes,
+        )
+
+
+def test_cli_records_actual_override_input_paths(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    notes, comparison, _, _ = _inputs()
+    notes_path = tmp_path / "notes.json"
+    comparison_path = tmp_path / "comparison.json"
+    output_path = tmp_path / "report.json"
+    notes_path.write_text(json.dumps(notes), encoding="utf-8")
+    comparison_path.write_text(json.dumps(comparison), encoding="utf-8")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "reconcile_mbs_release_note_comparison.py",
+            "--notes",
+            str(notes_path),
+            "--comparison",
+            str(comparison_path),
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    assert main() == 0
+    report = json.loads(output_path.read_text(encoding="utf-8"))
+    assert report["inputs"]["official_release_notes"]["path"] == str(
+        notes_path.resolve()
+    )
+    assert report["inputs"]["predecessor_comparison"]["path"] == str(
+        comparison_path.resolve()
+    )

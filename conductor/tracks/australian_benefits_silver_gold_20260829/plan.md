@@ -3378,3 +3378,16 @@
 - [~] Await authoritative clarification of the release-note/comparison delta
   and field-flag temporal scope, as well as the complete approved source-era
   denominator, source-specific rights, and admission evidence.
+
+### M-109 reconciliation provenance review fixes (2026-10-18)
+
+- [x] Bind each parsed evidence object to the exact bytes whose SHA-256 is
+  recorded; reject caller-supplied objects that differ from those bytes.
+- [x] Record the actual paths passed to the CLI, including supported input
+  overrides, and add regressions for both provenance boundaries.
+- [x] Re-run the focused reconciliation and Test-Goblin harness tests (64
+  passed), Ruff, formatting, `ty`, BasedPyright on changed files, report
+  regeneration, and `git diff --check`.
+- [~] Push the review correction to PR #1160 and wait for protected checks on
+  its new exact head. No M-109 semantics, rights, admission, or acceptance
+  status changes.
