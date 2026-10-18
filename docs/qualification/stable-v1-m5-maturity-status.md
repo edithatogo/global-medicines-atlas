@@ -70,16 +70,17 @@ The regenerated Bronze maturity report evaluates the source commit recorded
 in its current qualification. Its bounded-scope counts are 42 active sources,
 159 public sources, 117 deferred, and 29 directly receipt-backed.
 
-The contract has 84 verified requirements. Within the Australian denominator,
+The contract has 85 verified and 7 blocked requirements. Within the Australian denominator,
 M-105 is verified under the narrow chronology waiver and M-106–M-112 remain
 blocked. The waiver does not claim pre-archive parity proof or change the
-remaining evidence requirements. Fifteen of 17 release gates pass, including
-the Bronze and M5 gates. The two unresolved acceptance gates remain:
+remaining evidence requirements. Sixteen of 17 release gates pass, including
+the conditional Stable v1 release-approval gate and the Bronze and M5 gates.
+Australian health federation is the remaining unresolved qualification gate:
 
 | Gate | Accountable party | State and exact acceptance evidence still needed |
 | --- | --- | --- |
 | Australian health federation | Dependent Australian workstreams; the sole maintainer for source-specific rights/admission decisions and federation acceptance; relevant source owners for external evidence | Blocked. The [acceptance matrix](./australian-health-federation-acceptance.md) lists M-105–M-112 individually: M-105 is verified under D-006-10, which waives only the pre-archive timing condition and makes no claim that such proof exists; M-106–M-112 remain blocked on their listed denominator, source, rights, semantic, lineage, product, and admission evidence. Future-source dispositions alone do not satisfy federation acceptance. |
-| Stable v1 release | Sole maintainer | Blocked. Conditional software-only `v1.0.0` promotion approval is recorded in D-006-11. It is usable only after all qualification gates pass and the exact candidate, protected checks, and attestation are verified. Australian federation remains blocked; no stable tag, signed asset, attestation, or release has been produced. |
+| Stable v1 release | Sole maintainer | Conditional software-only `v1.0.0` promotion approval is recorded in D-006-11 and the release-approval gate has passed. Promotion remains unexecuted until all qualification gates pass and the exact candidate, protected checks, and attestation are verified. Australian federation remains blocked; no stable tag, signed asset, attestation, or release has been produced. |
 
 Production disaster-recovery authority is separately recorded as
 `not_claimed`, outside the Stable v1 acceptance-gate set. The existing local
