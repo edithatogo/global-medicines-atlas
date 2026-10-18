@@ -48,8 +48,12 @@ tree contains one `raw/` schedule object: the same 1 April 2026 XML V3 ZIP
 already joined to its exact official URL and B1 receipt above. Its 11,156,706
 byte size and SHA-256 are bound by the independent manifest and receipt
 readback; the ZIP, the 313 MB Bronze XML member, and the Parquet object were
-not downloaded or inspected. The normalized tree paths and response digest are
-recorded in
+not downloaded or inspected. The exact 2,388-byte public metadata response is
+retained as base64 alongside its SHA-256. The validator recomputes the response
+digest and byte count, parses its file entries, and requires exact path/size
+equality with the normalized inventory. This makes the listed non-raw paths
+and sizes verifiable against the pinned response. The normalized tree paths
+and response digest are recorded in
 [`australian-pbs-m107-public-tree-readback-20261018.json`](../../quality/qualifications/australian-pbs-m107-public-tree-readback-20261018.json)
 and incorporated into the
 [PBS link crosswalk](../../quality/qualifications/australian-pbs-m107-link-crosswalk-20261018.json).
@@ -58,6 +62,14 @@ This establishes the exact inventory of that pinned public repository only.
 The other 315 official links remain unresolved, not absent; the tree does not
 show whether snapshots exist elsewhere. It does not change source rights,
 historical period requirements, or the blocked M-107 status.
+
+### Review correction, 2026-10-19
+
+The first crosswalk version retained only the response digest, so its normalized
+non-raw rows were not bound to the observed tree body. The exact public
+metadata body is now preserved and verified before the crosswalk accepts its
+inventory. Regression tests reject a changed non-raw size, a fabricated row,
+and a body/digest mismatch. No source payload bytes were requested or read.
 
 The exact-main [P7 workbook qualification](../../quality/qualifications/mbs-p7-workbook-field-lineage-20260929.json)
 now verifies the pinned July 2024 candidate's four-sheet, 13,742-cell

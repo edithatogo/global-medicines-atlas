@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+import binascii
 import hashlib
 import json
 from operator import itemgetter
@@ -96,7 +98,7 @@ def _validate_readback_boundaries(
     boundary_values = cast("dict[str, Any]", boundaries)
     if (
         boundary_values.get("source_payload_bytes_read") != 0
-        or boundary_values.get("metadata_response_bodies_retained") is not False
+        or boundary_values.get("metadata_response_bodies_retained") is not True
         or boundary_values.get("rights_concluded") is not False
         or boundary_values.get("missing_official_links_declared_absent")
         is not False
@@ -110,15 +112,54 @@ def _validate_readback_boundaries(
         raise ValueError("PBS public tree metadata byte total is inconsistent")
 
 
-def validate_public_tree_readback(
-    readback: dict[str, Any],
-    *,
-    expected_revision: str,
-    expected_source_path: str,
-    expected_source_bytes: int,
-    expected_source_sha256: str,
-) -> dict[str, Any]:
-    """Validate a bounded public metadata inventory against known B1/B2 identity."""
+def _verified_tree_response_files(
+    tree: dict[str, Any],
+) -> list[dict[str, Any]]:
+    encoded_body = tree.get("response_body_base64")
+    if not isinstance(encoded_body, str):
+        raise TypeError("PBS public tree response body is missing")
+    try:
+        body = base64.b64decode(encoded_body, validate=True)
+    except (ValueError, binascii.Error) as error:
+        raise ValueError(
+            "PBS public tree response body encoding is invalid"
+        ) from error
+    if (
+        len(body) != tree["response_bytes"]
+        or hashlib.sha256(body).hexdigest() != tree["response_sha256"]
+    ):
+        raise ValueError(
+            "PBS public tree body does not match its response digest"
+        )
+    try:
+        entries = json.loads(body)
+    except json.JSONDecodeError as error:
+        raise ValueError("PBS public tree response body is not JSON") from error
+    if not isinstance(entries, list):
+        raise TypeError("PBS public tree response JSON is not a list")
+
+    entry_values = cast("list[object]", entries)
+    files: list[dict[str, Any]] = []
+    for entry in entry_values:
+        if not isinstance(entry, dict):
+            raise TypeError("PBS public tree response entry is malformed")
+        item = cast("dict[str, Any]", entry)
+        if item.get("type") == "directory":
+            continue
+        if item.get("type") != "file":
+            raise ValueError(
+                "PBS public tree response has an unknown entry type"
+            )
+        file = {"path": item.get("path"), "bytes": item.get("size")}
+        if not _is_public_tree_file(file):
+            raise ValueError("PBS public tree response file entry is malformed")
+        files.append(file)
+    return files
+
+
+def _validate_public_tree_identity(
+    readback: dict[str, Any], expected_revision: str
+) -> None:
     expected_schema = (
         "global-medicines-atlas.australian-pbs-m107-public-tree-readback"
     )
@@ -132,6 +173,18 @@ def validate_public_tree_readback(
         raise ValueError(
             "PBS public tree revision differs from source identity"
         )
+
+
+def validate_public_tree_readback(
+    readback: dict[str, Any],
+    *,
+    expected_revision: str,
+    expected_source_path: str,
+    expected_source_bytes: int,
+    expected_source_sha256: str,
+) -> dict[str, Any]:
+    """Validate a bounded public metadata inventory against known B1/B2 identity."""
+    _validate_public_tree_identity(readback, expected_revision)
 
     dataset_info, tree = readback.get("dataset_info"), readback.get("tree")
     if not isinstance(dataset_info, dict) or not isinstance(tree, dict):
@@ -150,6 +203,8 @@ def validate_public_tree_readback(
         _validate_metadata_response(tree_values, tree_url),
     ))
 
+    response_files = _verified_tree_response_files(tree_values)
+
     files = readback.get("files")
     if not isinstance(files, list):
         raise TypeError("PBS public tree file inventory is not a list")
@@ -162,6 +217,12 @@ def validate_public_tree_readback(
     paths = [item["path"] for item in file_items]
     if len(set(paths)) != len(paths):
         raise ValueError("PBS public tree contains duplicate paths")
+    normalized_files = sorted(
+        ({"path": item["path"], "bytes": item["bytes"]} for item in file_items),
+        key=itemgetter("path"),
+    )
+    if normalized_files != sorted(response_files, key=itemgetter("path")):
+        raise ValueError("PBS public tree inventory differs from response body")
 
     raw_files = [item for item in file_items if item["path"].startswith("raw/")]
     if len(raw_files) != 1:
@@ -201,7 +262,7 @@ def validate_public_tree_readback(
             }
         ],
         "source_payload_bytes_read": 0,
-        "response_body_retained": False,
+        "response_body_retained": True,
         "interpretation": (
             "The pinned public tree contains one raw schedule path; other official "
             "links remain unresolved, not absent."

@@ -39,7 +39,7 @@
     },
     {
       "path": "quality/qualifications/australian-pbs-m107-public-tree-readback-20261018.json",
-      "sha256": "ae836a670f21c83dc9e01bb9cefe4890ff7d41cb45dca27f21f45a4a31dd3fc7"
+      "sha256": "46a2114a14d38c7af6b8df054a4877b43310702ad36767cbcc7cfe7e0d8534ef"
     }
   ],
   "interpretation": {
@@ -102,7 +102,7 @@
       }
     ],
     "source_payload_bytes_read": 0,
-    "response_body_retained": false,
+    "response_body_retained": true,
     "interpretation": "The pinned public tree contains one raw schedule path; other official links remain unresolved, not absent."
   },
   "links": [
@@ -8057,6 +8057,6 @@
   ],
   "digest": {
     "algorithm": "sha256-canonical-json",
-    "value": "b16869b6cb49955ebd426b1d4451f25a9870d2c2c9167a30099e3f0a8b7723ae"
+    "value": "4038a40d4ec36da781d8d84eb8962a73f69c24283247e8e9847b737ee408467b"
   }
 }

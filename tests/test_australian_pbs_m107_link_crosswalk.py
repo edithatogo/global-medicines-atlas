@@ -141,7 +141,7 @@ def test_pbs_m107_crosswalk_binds_the_complete_public_raw_tree_inventory() -> (
         }
     ]
     assert inventory["source_payload_bytes_read"] == 0
-    assert inventory["response_body_retained"] is False
+    assert inventory["response_body_retained"] is True
     assert inventory["interpretation"] == (
         "The pinned public tree contains one raw schedule path; other official "
         "links remain unresolved, not absent."
@@ -170,7 +170,9 @@ def test_public_tree_readback_rejects_changed_raw_path_or_size() -> None:
     )
     raw["bytes"] += 1
 
-    with pytest.raises(ValueError, match="known B1/B2 identity"):
+    with pytest.raises(
+        ValueError, match="inventory differs from response body"
+    ):
         _validate_public_tree(tree, identities, source)
 
 
@@ -180,6 +182,24 @@ def test_public_tree_readback_rejects_duplicate_paths() -> None:
     tree["file_count"] += 1
 
     with pytest.raises(ValueError, match="duplicate paths"):
+        _validate_public_tree(tree, identities, source)
+
+
+def test_public_tree_readback_rejects_fabricated_non_raw_inventory_row() -> (
+    None
+):
+    identities, source, tree = _public_tree_binding_inputs()
+    tree["files"][0]["bytes"] += 1
+
+    with pytest.raises(ValueError, match="differs from response body"):
+        _validate_public_tree(tree, identities, source)
+
+
+def test_public_tree_readback_rejects_response_body_digest_mismatch() -> None:
+    identities, source, tree = _public_tree_binding_inputs()
+    tree["tree"]["response_body_base64"] = "W10="
+
+    with pytest.raises(ValueError, match="does not match its response digest"):
         _validate_public_tree(tree, identities, source)
 
 

@@ -1296,6 +1296,23 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   passed; exact-head hosted checks remain the authoritative cross-platform
   result.
 
+## M-107 public-tree row binding review correction (2026-10-19)
+
+- [x] Address automated review finding #4307293512: normalized file rows were
+  not bound to the digest-only public tree response. Retain the exact 2,388-byte
+  metadata response at the pinned revision, verify its byte count and SHA-256,
+  parse its file entries, and require exact path/size equality with the
+  normalized inventory. No source payload was requested or read.
+- [x] Add regressions rejecting a changed non-raw size, a fabricated inventory
+  row, and a response body/digest mismatch. Preserve the known raw object's
+  independent B1/B2 digest binding and all rights/coverage boundaries.
+- [x] Rebuild the M-107 crosswalk from its pinned inputs; 19 focused and 89
+  broader affected tests pass, as do BasedPyright on the validator, Ruff,
+  formatting, and `git diff --check`.
+- [~] PR #1170 exact-head hosted checks and review-thread resolution remain
+  pending. M-107 remains blocked by unresolved schedule identities, source
+  rights, and historical denominator requirements.
+
 ## M-112 July refresh source-report binding review correction (2026-10-18)
 
 - [x] Address automated review finding that the July refresh accepted any
