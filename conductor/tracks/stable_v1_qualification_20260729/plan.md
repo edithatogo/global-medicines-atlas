@@ -734,3 +734,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   automated review finding P1 on PR #1156. Focused tests (78), Ruff, formatting,
   `ty`, BasedPyright, actionlint, and diff checks pass. Hosted checks are pending
   for the corrected head. Federation remains blocked; no release action occurred.
+
+## 2026-10-18 M5 Australian requirement status reconciliation
+
+- [x] Reconcile the M5 maturity summary with merged PR #1155 and D-006-10:
+  M-105 is verified under the narrow chronology waiver; M-106–M-112 remain
+  blocked. State explicitly that no pre-archive parity proof is claimed and
+  retain the federation and Stable v1 release gates as blocked.
+- [x] Leave qualification counts and gate results unchanged; this corrects
+  stale prose only. Context/ecosystem validation and `git diff --check` pass.
