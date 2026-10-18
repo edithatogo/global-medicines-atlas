@@ -164,15 +164,18 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     pull requests remain unobserved. See
     `docs/qualification/stable-v1-blocker-audit-20260913.md`.
   - Repository-owned candidate packaging and the consumer verification guide
-    are complete. The task deliberately remains in progress because a signed
-    stable release has not been approved or produced, and the authoritative
-    qualification contract still has four dependent/hosted gates plus the
-    distinct stable-promotion human gate. The machine-readable reconciliation
-    is `quality/qualifications/stable-v1-release-readiness-reconciliation.json`.
-  - Isolated remaining human gate: stable-v1 promotion approval. GitHub
-    attestation verification passed for the published `v1.0.0rc1` wheel;
-    receipt: `quality/qualifications/stable-v1-release-provenance-receipt.json`.
-    This does not constitute a public stable v1 release.
+    are complete. The task remains in progress because the Australian health
+    federation gate is blocked and no stable release has been produced. The
+    sole maintainer granted conditional software-only `v1.0.0` promotion
+    approval on 2026-10-18; it applies only after all qualification gates pass
+    and the exact candidate, hosted checks, and attestation verify. The approval
+    and readiness records are
+    `quality/qualifications/stable-v1-promotion-approval-20261018.json` and
+    `quality/qualifications/stable-v1-release-readiness-reconciliation.json`.
+  - GitHub attestation verification passed for the published `v1.0.0rc1`
+    wheel; receipt: `quality/qualifications/stable-v1-release-provenance-receipt.json`.
+    This remains prerelease evidence and does not constitute a public stable v1
+    release or satisfy exact-candidate verification.
   - A deterministic wheel, sdist, normalized SBOM, manifest, checksum and
     consumer-verification candidate reproduces byte-for-byte across independent
     clean LF and CRLF checkouts. The approved `v1.0.0rc1` software-only
@@ -206,9 +209,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     an attested `v1.0.0rc1` software release. OSF is deprecated. The
     public/no-credential Hugging Face archive is the completed publication path
     for that class. Stable-v1 promotion remains a distinct human gate.
-  - The stable approval handoff now specifies a candidate-bound decision only
-    after Australian federation, Bronze current scope, and M5 pass. No stable
-    approval has been requested or inferred from the prerelease authority.
+  - The stable approval handoff records the maintainer's conditional
+    software-only `v1.0.0` authorization. The Australian federation gate remains
+    blocked; signing, tagging, attestation, and publication are not authorized
+    until all qualification conditions and exact-candidate verification pass.
 - [x] Task: Record stable-v1 evidence and post-release monitoring plan ([#43](https://github.com/edithatogo/global-medicines-atlas/issues/43))
   - Six domain-specific SLO, alert and approval-gated rollback policies bind the
     candidate evidence while post-release observations remain `not_observed`.
@@ -225,8 +229,10 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     Exact `v1.0.0rc1` approval is now recorded in a machine-validated,
     software-only prerelease authority contract. GitHub attestation verification
     for the published wheel and fresh-clone reproduction are now recorded;
-    stable-v1 promotion and production DR authority remain isolated remaining
-    gates. OSF is deprecated. Public/no-credential catalogue archival is
+    conditional stable-v1 promotion approval and production DR authority remain
+    separately scoped. The conditional approval is now recorded; qualification
+    and release remain blocked by Australian federation and exact-candidate
+    requirements. OSF is deprecated. Public/no-credential catalogue archival is
     complete; credentialed sources remain out of scope.
 
 ## GitHub hierarchy
@@ -666,7 +672,8 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   `7fe32a8830d9576ebcc4b431031d59e6809ef379` after PR #791. The report's
   substantive qualification is unchanged from the 2026-10-05 run: all eight
   M5 dimensions remain verified, the Bronze gate remains passed, and only the
-  Australian federation and stable-release approval gates remain blocked.
+  Australian federation and stable-release approval gates were blocked at the
+  time of that refresh.
   Refresh the report's evaluated timestamp and exact source commit, verify
   the Stable v1 contract remains idempotent, and rerun the focused and routine
   affected checks before marking this refresh complete.
@@ -693,3 +700,37 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   Ruff, formatting, BasedPyright, `ty`, and diff checks pass. Updated PR hosted
   checks remain pending; the independent Australian and release gates remain
   blocked.
+
+
+## 2026-10-18 conditional Stable v1 promotion approval
+
+- [x] Record the sole maintainer's conditional approval for software-only
+  `v1.0.0` promotion in decision D-006-11 and its schema-validated receipt.
+  The approval gate now passes. Stable v1 qualification remains blocked by
+  Australian health federation; no signing, tag, release, attestation, dataset
+  publication, production deployment, or production DR action was performed.
+  The approval is usable only after every qualification gate passes and the
+  exact candidate, protected checks, and attestation are verified.
+
+## 2026-10-18 protected Stable v1 promotion workflow
+
+- [x] Add an explicit release-type choice that defaults to the existing
+  prerelease authority. The stable path accepts only the separately approved
+  software-only `v1.0.0` scope after validating the qualification schema, all 17
+  required gates, no unresolved blockers, and the digest-bound readiness and
+  approval receipts. The publication workflow remains manual, protected, and
+  draft-only; the Australian federation gate is still blocked, so it has not
+  been dispatched and no release action has occurred.
+- [x] Focused authority/workflow tests (26), Ruff, BasedPyright, and the pinned
+  full Test-Goblin profile pass on macOS arm64 with Python 3.14.6 and uv
+  0.11.29. Hosted checks for the rebased PR remain pending.
+
+
+## 2026-10-18 protected-checkout identity review fix
+
+- [x] Correct the stable publication identity guard for GitHub Actions exact-SHA
+  checkout: require the protected `refs/heads/main` event and compare `HEAD`
+  directly with `GITHUB_SHA`, without assuming a local main ref exists. Address
+  automated review finding P1 on PR #1156. Focused tests (78), Ruff, formatting,
+  `ty`, BasedPyright, actionlint, and diff checks pass. Hosted checks are pending
+  for the corrected head. Federation remains blocked; no release action occurred.

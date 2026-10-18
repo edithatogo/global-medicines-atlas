@@ -1252,11 +1252,13 @@
     },
     {
       "gate_id": "stable-v1-release-approval",
-      "description": "Obtain explicit approval for final stable v1 promotion; the existing v1.0.0rc1 authority is prerelease-only.",
-      "state": "blocked",
+      "description": "Record explicit conditional approval for software-only v1.0.0 promotion; the existing v1.0.0rc1 authority remains prerelease-only. Execute only after every qualification gate and exact candidate verification pass.",
+      "state": "passed",
       "evidence": [
         "quality/qualifications/release-authority-v1.0.0rc1.json",
-        "quality/qualifications/stable-v1-release-provenance-receipt.json"
+        "quality/qualifications/stable-v1-release-provenance-receipt.json",
+        "quality/qualifications/stable-v1-promotion-approval-20261018.json",
+        "schemas/stable-v1-promotion-approval-v1.json"
       ]
     },
     {
@@ -1302,7 +1304,6 @@
   ],
   "qualification_state": "blocked",
   "unresolved_gate_ids": [
-    "stable-v1-australian-health-federation",
-    "stable-v1-release-approval"
+    "stable-v1-australian-health-federation"
   ]
 }

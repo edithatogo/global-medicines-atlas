@@ -134,7 +134,8 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "--require-object software-source-release" in workflow
     assert "scripts/validate_release_authority.py" in workflow
     assert '--tag "$RELEASE_TAG"' in workflow
-    assert "--release-type prerelease" in workflow
+    assert "RELEASE_TYPE: ${{ inputs.release_type }}" in workflow
+    assert '--release-type "$RELEASE_TYPE"' in workflow
     assert "--artifact-scope software-only" in workflow
     identity_gate = workflow.index(
         "Require publishable GitHub software identity and licence"
@@ -170,7 +171,10 @@ def test_qualified_assets_are_exact_attested_and_never_overwritten() -> None:
     assert "--clobber" not in workflow
     assert "gh release upload" not in workflow
     assert "--draft" in workflow
-    assert "--prerelease" in workflow
+    assert "release_flags+=(--prerelease)" in workflow
+    assert "type: choice" in workflow
+    assert "default: prerelease" in workflow
+    assert "options:\n          - prerelease\n          - stable" in workflow
 
 
 def test_release_identity_and_sbom_are_semantically_qualified() -> None:
@@ -237,6 +241,19 @@ def test_release_jobs_have_least_permissions() -> None:
         "actions/upload-artifact@"
         "b7c566a772e6b6bfb58ed0dc250532a479d7789f" in workflow
     )
+
+
+def test_release_publication_is_bound_to_the_protected_main_commit() -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    identity_gate = workflow[
+        workflow.index(
+            "  - name: Require publishable GitHub software identity and licence"
+        ) : workflow.index("      - name: Resolve VCS-derived version")
+    ]
+
+    assert "if: inputs.publish" in identity_gate
+    assert 'test "$GITHUB_REF" = "refs/heads/main"' in identity_gate
+    assert 'test "$(git rev-parse HEAD)" = "$GITHUB_SHA"' in identity_gate
 
 
 def test_failed_qualification_cannot_reach_release_job() -> None:
