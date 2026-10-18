@@ -245,9 +245,10 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         assert gates[gate_id]["state"] == "passed"
     assert gates["stable-v1-release-approval"]["state"] == "passed"
     assert "v1.0.0rc1" in gates["stable-v1-release-approval"]["description"]
-    assert str(PROMOTION_APPROVAL.relative_to(ROOT)) in gates[
-        "stable-v1-release-approval"
-    ]["evidence"]
+    assert (
+        str(PROMOTION_APPROVAL.relative_to(ROOT))
+        in gates["stable-v1-release-approval"]["evidence"]
+    )
 
     requirements = {
         item["requirement_id"]: item for item in projection["requirements"]

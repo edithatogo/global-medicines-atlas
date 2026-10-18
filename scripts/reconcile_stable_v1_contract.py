@@ -143,15 +143,6 @@ def _append_unique(items: list[str], additions: list[str]) -> list[str]:
     return list(dict.fromkeys([*items, *additions]))
 
 
-def _retain_gate_observation(
-    gate: dict[str, Any], updates: dict[str, Any]
-) -> None:
-    """Add known blockers without erasing adverse observations or receipts."""
-    updates["state"] = "blocked" if gate["state"] == "passed" else gate["state"]
-    updates["evidence"] = _append_unique(gate["evidence"], updates["evidence"])
-    gate.update(updates)
-
-
 def _renovate_output_observed() -> bool:
     """Return whether the durable closure receipt records bot output."""
     closure = json.loads((ROOT / QUALITY_CLOSURE).read_text(encoding="utf-8"))
@@ -163,7 +154,10 @@ def _stable_promotion_approval_observed() -> bool:
     try:
         from jsonschema import Draft202012Validator, FormatChecker
         from jsonschema.exceptions import SchemaError, ValidationError
+    except ImportError:
+        return False
 
+    try:
         approval = json.loads(
             (ROOT / STABLE_PROMOTION_APPROVAL).read_text(encoding="utf-8")
         )
@@ -177,7 +171,7 @@ def _stable_promotion_approval_observed() -> bool:
             schema,
             format_checker=FormatChecker(),
         ).validate(approval)  # pyright: ignore[reportUnknownMemberType]
-    except (ImportError, OSError, SchemaError, ValidationError, ValueError):
+    except OSError, SchemaError, ValidationError, ValueError:
         return False
     return approval["approval_status"] == "approved_conditional"
 
