@@ -1,0 +1,706 @@
+{
+  "assessment_kind": "synthetic_matching_behavior_screen",
+  "calibration_status": "not_calibrated_synthetic_fixture_only",
+  "fixture": {
+    "case_count": 6,
+    "path": "tests/fixtures/matching/cases.jsonl",
+    "sha256": "a1295e00c03144b1328c281ad1f44605df10c4a0731cbb2f7fab784f789dfa80",
+    "synthetic": true
+  },
+  "promotion_eligible": false,
+  "schema_version": 1,
+  "threshold_sweep": [
+    {
+      "candidate_limit": 20,
+      "lexical_threshold": 0.65,
+      "limitations": [
+        "The six labelled cases are self-authored synthetic fixtures.",
+        "Fixture endpoints expose names and identifiers only; the assessment does not establish source-era attribute coverage.",
+        "The observed confidence scores are not calibrated or eligible for production promotion.",
+        "No candidate is a reviewed medicine identity or therapeutic-equivalence assertion."
+      ],
+      "metrics_by_mapping_level": {
+        "clinical_drug": {
+          "abstention_rate": 0.0,
+          "brier_score": 0.957898710729,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 1.0,
+          "evaluated_count": 1,
+          "expected_calibration_error": 0.978723,
+          "f_score": 0.0,
+          "false_negative": 0,
+          "false_positive": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 1.0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "ingredient": {
+          "abstention_rate": 0.0,
+          "brier_score": 0.20578216326533336,
+          "candidate_recall_at_k": 1.0,
+          "case_count": 3,
+          "coverage": 1.0,
+          "evaluated_count": 3,
+          "expected_calibration_error": 0.2619046666666667,
+          "f_score": 0.8,
+          "false_negative": 0,
+          "false_positive": 1,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "selective_risk": 0.3333333333333333,
+          "true_negative": 0,
+          "true_positive": 2
+        },
+        "medicinal_product": {
+          "abstention_rate": 1.0,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 0.0,
+          "evaluated_count": 0,
+          "expected_calibration_error": 0.0,
+          "f_score": 0.0,
+          "false_negative": 1,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "pack": {
+          "abstention_rate": 1.0,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 0.0,
+          "evaluated_count": 0,
+          "expected_calibration_error": 0.0,
+          "f_score": 0.0,
+          "false_negative": 1,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 0
+        }
+      },
+      "outcomes": [
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "exact-ingredient",
+          "confidence": 1.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {
+            "au:ing:para": [
+              "identifier",
+              "lexical"
+            ]
+          },
+          "ranked_target_ids": [
+            "au:ing:para"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "brand-generic",
+          "confidence": 0.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        },
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "strength-negative",
+          "confidence": 0.978723,
+          "evaluation_class": "negative",
+          "methods_by_target": {
+            "us:cd:100": [
+              "lexical"
+            ]
+          },
+          "ranked_target_ids": [
+            "us:cd:100"
+          ]
+        },
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "similar-name-negative",
+          "confidence": 0.785714,
+          "evaluation_class": "negative",
+          "methods_by_target": {
+            "us:ing:chlorprop": [
+              "lexical"
+            ]
+          },
+          "ranked_target_ids": [
+            "us:ing:chlorprop"
+          ]
+        },
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "multilingual-positive",
+          "confidence": 1.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {
+            "jp:ing:acet": [
+              "identifier"
+            ]
+          },
+          "ranked_target_ids": [
+            "jp:ing:acet"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "pack-ambiguous",
+          "confidence": 0.0,
+          "evaluation_class": "ambiguous",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        }
+      ],
+      "overall_metrics": {
+        "abstention_rate": 0.33333333333333337,
+        "brier_score": 0.39381130013125,
+        "candidate_recall_at_k": 0.5,
+        "case_count": 6,
+        "coverage": 0.6666666666666666,
+        "evaluated_count": 4,
+        "expected_calibration_error": 0.44110925,
+        "f_score": 0.5,
+        "false_negative": 2,
+        "false_positive": 2,
+        "precision": 0.5,
+        "recall": 0.5,
+        "selective_risk": 0.5,
+        "true_negative": 0,
+        "true_positive": 2
+      },
+      "production_promotion_eligible": false
+    },
+    {
+      "candidate_limit": 20,
+      "lexical_threshold": 0.8,
+      "limitations": [
+        "The six labelled cases are self-authored synthetic fixtures.",
+        "Fixture endpoints expose names and identifiers only; the assessment does not establish source-era attribute coverage.",
+        "The observed confidence scores are not calibrated or eligible for production promotion.",
+        "No candidate is a reviewed medicine identity or therapeutic-equivalence assertion."
+      ],
+      "metrics_by_mapping_level": {
+        "clinical_drug": {
+          "abstention_rate": 0.0,
+          "brier_score": 0.957898710729,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 1.0,
+          "evaluated_count": 1,
+          "expected_calibration_error": 0.978723,
+          "f_score": 0.0,
+          "false_negative": 0,
+          "false_positive": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 1.0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "ingredient": {
+          "abstention_rate": 0.33333333333333337,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 1.0,
+          "case_count": 3,
+          "coverage": 0.6666666666666666,
+          "evaluated_count": 2,
+          "expected_calibration_error": 0.0,
+          "f_score": 1.0,
+          "false_negative": 0,
+          "false_positive": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 2
+        },
+        "medicinal_product": {
+          "abstention_rate": 1.0,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 0.0,
+          "evaluated_count": 0,
+          "expected_calibration_error": 0.0,
+          "f_score": 0.0,
+          "false_negative": 1,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "pack": {
+          "abstention_rate": 1.0,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 0.0,
+          "evaluated_count": 0,
+          "expected_calibration_error": 0.0,
+          "f_score": 0.0,
+          "false_negative": 1,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 0
+        }
+      },
+      "outcomes": [
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "exact-ingredient",
+          "confidence": 1.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {
+            "au:ing:para": [
+              "identifier",
+              "lexical"
+            ]
+          },
+          "ranked_target_ids": [
+            "au:ing:para"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "brand-generic",
+          "confidence": 0.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        },
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "strength-negative",
+          "confidence": 0.978723,
+          "evaluation_class": "negative",
+          "methods_by_target": {
+            "us:cd:100": [
+              "lexical"
+            ]
+          },
+          "ranked_target_ids": [
+            "us:cd:100"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "similar-name-negative",
+          "confidence": 0.0,
+          "evaluation_class": "negative",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        },
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "multilingual-positive",
+          "confidence": 1.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {
+            "jp:ing:acet": [
+              "identifier"
+            ]
+          },
+          "ranked_target_ids": [
+            "jp:ing:acet"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "pack-ambiguous",
+          "confidence": 0.0,
+          "evaluation_class": "ambiguous",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        }
+      ],
+      "overall_metrics": {
+        "abstention_rate": 0.5,
+        "brier_score": 0.319299570243,
+        "candidate_recall_at_k": 0.5,
+        "case_count": 6,
+        "coverage": 0.5,
+        "evaluated_count": 3,
+        "expected_calibration_error": 0.326241,
+        "f_score": 0.5714285714285715,
+        "false_negative": 2,
+        "false_positive": 1,
+        "precision": 0.6666666666666666,
+        "recall": 0.5,
+        "selective_risk": 0.3333333333333333,
+        "true_negative": 0,
+        "true_positive": 2
+      },
+      "production_promotion_eligible": false
+    },
+    {
+      "candidate_limit": 20,
+      "lexical_threshold": 0.95,
+      "limitations": [
+        "The six labelled cases are self-authored synthetic fixtures.",
+        "Fixture endpoints expose names and identifiers only; the assessment does not establish source-era attribute coverage.",
+        "The observed confidence scores are not calibrated or eligible for production promotion.",
+        "No candidate is a reviewed medicine identity or therapeutic-equivalence assertion."
+      ],
+      "metrics_by_mapping_level": {
+        "clinical_drug": {
+          "abstention_rate": 0.0,
+          "brier_score": 0.957898710729,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 1.0,
+          "evaluated_count": 1,
+          "expected_calibration_error": 0.978723,
+          "f_score": 0.0,
+          "false_negative": 0,
+          "false_positive": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 1.0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "ingredient": {
+          "abstention_rate": 0.33333333333333337,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 1.0,
+          "case_count": 3,
+          "coverage": 0.6666666666666666,
+          "evaluated_count": 2,
+          "expected_calibration_error": 0.0,
+          "f_score": 1.0,
+          "false_negative": 0,
+          "false_positive": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 2
+        },
+        "medicinal_product": {
+          "abstention_rate": 1.0,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 0.0,
+          "evaluated_count": 0,
+          "expected_calibration_error": 0.0,
+          "f_score": 0.0,
+          "false_negative": 1,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "pack": {
+          "abstention_rate": 1.0,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 0.0,
+          "evaluated_count": 0,
+          "expected_calibration_error": 0.0,
+          "f_score": 0.0,
+          "false_negative": 1,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 0
+        }
+      },
+      "outcomes": [
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "exact-ingredient",
+          "confidence": 1.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {
+            "au:ing:para": [
+              "identifier",
+              "lexical"
+            ]
+          },
+          "ranked_target_ids": [
+            "au:ing:para"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "brand-generic",
+          "confidence": 0.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        },
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "strength-negative",
+          "confidence": 0.978723,
+          "evaluation_class": "negative",
+          "methods_by_target": {
+            "us:cd:100": [
+              "lexical"
+            ]
+          },
+          "ranked_target_ids": [
+            "us:cd:100"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "similar-name-negative",
+          "confidence": 0.0,
+          "evaluation_class": "negative",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        },
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "multilingual-positive",
+          "confidence": 1.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {
+            "jp:ing:acet": [
+              "identifier"
+            ]
+          },
+          "ranked_target_ids": [
+            "jp:ing:acet"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "pack-ambiguous",
+          "confidence": 0.0,
+          "evaluation_class": "ambiguous",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        }
+      ],
+      "overall_metrics": {
+        "abstention_rate": 0.5,
+        "brier_score": 0.319299570243,
+        "candidate_recall_at_k": 0.5,
+        "case_count": 6,
+        "coverage": 0.5,
+        "evaluated_count": 3,
+        "expected_calibration_error": 0.326241,
+        "f_score": 0.5714285714285715,
+        "false_negative": 2,
+        "false_positive": 1,
+        "precision": 0.6666666666666666,
+        "recall": 0.5,
+        "selective_risk": 0.3333333333333333,
+        "true_negative": 0,
+        "true_positive": 2
+      },
+      "production_promotion_eligible": false
+    },
+    {
+      "candidate_limit": 20,
+      "lexical_threshold": 0.99,
+      "limitations": [
+        "The six labelled cases are self-authored synthetic fixtures.",
+        "Fixture endpoints expose names and identifiers only; the assessment does not establish source-era attribute coverage.",
+        "The observed confidence scores are not calibrated or eligible for production promotion.",
+        "No candidate is a reviewed medicine identity or therapeutic-equivalence assertion."
+      ],
+      "metrics_by_mapping_level": {
+        "clinical_drug": {
+          "abstention_rate": 1.0,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 0.0,
+          "evaluated_count": 0,
+          "expected_calibration_error": 0.0,
+          "f_score": 0.0,
+          "false_negative": 0,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "ingredient": {
+          "abstention_rate": 0.33333333333333337,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 1.0,
+          "case_count": 3,
+          "coverage": 0.6666666666666666,
+          "evaluated_count": 2,
+          "expected_calibration_error": 0.0,
+          "f_score": 1.0,
+          "false_negative": 0,
+          "false_positive": 0,
+          "precision": 1.0,
+          "recall": 1.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 2
+        },
+        "medicinal_product": {
+          "abstention_rate": 1.0,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 0.0,
+          "evaluated_count": 0,
+          "expected_calibration_error": 0.0,
+          "f_score": 0.0,
+          "false_negative": 1,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 0
+        },
+        "pack": {
+          "abstention_rate": 1.0,
+          "brier_score": 0.0,
+          "candidate_recall_at_k": 0.0,
+          "case_count": 1,
+          "coverage": 0.0,
+          "evaluated_count": 0,
+          "expected_calibration_error": 0.0,
+          "f_score": 0.0,
+          "false_negative": 1,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "selective_risk": 0.0,
+          "true_negative": 0,
+          "true_positive": 0
+        }
+      },
+      "outcomes": [
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "exact-ingredient",
+          "confidence": 1.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {
+            "au:ing:para": [
+              "identifier",
+              "lexical"
+            ]
+          },
+          "ranked_target_ids": [
+            "au:ing:para"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "brand-generic",
+          "confidence": 0.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "strength-negative",
+          "confidence": 0.0,
+          "evaluation_class": "negative",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "similar-name-negative",
+          "confidence": 0.0,
+          "evaluation_class": "negative",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        },
+        {
+          "abstained": false,
+          "abstention_reason": null,
+          "case_id": "multilingual-positive",
+          "confidence": 1.0,
+          "evaluation_class": "positive",
+          "methods_by_target": {
+            "jp:ing:acet": [
+              "identifier"
+            ]
+          },
+          "ranked_target_ids": [
+            "jp:ing:acet"
+          ]
+        },
+        {
+          "abstained": true,
+          "abstention_reason": "insufficient_evidence",
+          "case_id": "pack-ambiguous",
+          "confidence": 0.0,
+          "evaluation_class": "ambiguous",
+          "methods_by_target": {},
+          "ranked_target_ids": []
+        }
+      ],
+      "overall_metrics": {
+        "abstention_rate": 0.6666666666666667,
+        "brier_score": 0.0,
+        "candidate_recall_at_k": 0.5,
+        "case_count": 6,
+        "coverage": 0.3333333333333333,
+        "evaluated_count": 2,
+        "expected_calibration_error": 0.0,
+        "f_score": 0.6666666666666666,
+        "false_negative": 2,
+        "false_positive": 0,
+        "precision": 1.0,
+        "recall": 0.5,
+        "selective_risk": 0.0,
+        "true_negative": 0,
+        "true_positive": 2
+      },
+      "production_promotion_eligible": false
+    }
+  ]
+}

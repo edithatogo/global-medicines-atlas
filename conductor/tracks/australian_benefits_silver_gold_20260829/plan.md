@@ -3820,11 +3820,12 @@
   `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-silver-rights-attested.json`.
   Public release is authorized by the attestation; no release was performed,
   and the separate v4 admission and canary gates remain closed.
-- [ ] Resolve the CMS HCPCS Level II reference-only rights state. It remains
-  `unknown` and `unreviewed`; determine the exact file's CMS versus ADA D-code
-  composition and applicable use rights before recording release authority.
+- [x] Resolve the CMS HCPCS Level II reference-only rights state for the exact
+  July 2026 file through the bounded CMS public-use rights decision. The
+  approved record excludes ADA CDT material and leaves processing, v4
+  admission, canary, derived-table rights, and external publication closed.
   The CMS Part D authorization does not apply, and this record is outside the
-  frozen M-112 denominator.
+  frozen M-112 denominator. See the later exact-file disposition below.
 
 ## M-112 rights and release evidence preflight (2026-10-19)
 
@@ -3849,11 +3850,11 @@
   `rights_state=unknown` and `reviewer_status=unreviewed`. The CMS Part D
   authorization does not apply to this HCPCS object, which is outside the M-112
   frozen denominator.
-- [ ] Resolve the exact six MBS Silver-table rights and release disposition
-  after maintainer review of the source-receipt/official-terms conflict. Keep
-  the candidate objects and current release controls unchanged until a
-  source-specific written permission or other applicable rights basis is
-  recorded.
+- [x] Resolve the exact six MBS Silver-table rights and release disposition
+  through the maintainer's bounded attestation of applicable written
+  permission. The instrument was not located at the maintainer's direction;
+  this records the attestation, not independent review. No release was
+  performed. See the later MBS Silver attestation and current reconciliation.
 
 ## CMS HCPCS exact-file rights disposition (2026-10-19)
 
@@ -3870,6 +3871,30 @@
   rights conclusion, or external publication was authorized. The M-112
   denominator and all 1,759 deferrals remain unchanged. See
   `quality/qualifications/cms-hcpcs-rights-review-20261019.json`.
+
+## M-112 effective rights reconciliation (2026-10-19)
+
+- [x] Supersede the historical rights preflight with a current effective-state
+  reconciliation. It binds the frozen 1,759-object inventory, the six-object
+  cumulative lineage overlay, the exact six-object July MBS Silver attestation,
+  the four August Bronze projections, and the approved exact-file CMS HCPCS
+  decision. The six-object rights attestation is applied as a scoped override
+  over the cumulative overlay. It preserves historical acquisition rights and
+  admission records. See
+  `quality/qualifications/australian-m112-current-rights-reconciliation-20261019.json`.
+- [x] Verify 22 frozen objects have positive scoped rights evidence and 1,737
+  remain unresolved. Rights evidence leaves the 1,759 deferrals, zero v4
+  admissions, zero canaries, and zero external publications unchanged. CMS
+  stays external-reference-only; no processing or derived rights are inferred.
+- [ ] Resolve the four exact August 2026 MBS Bronze projection rights and
+  derived-output authority independently. Their B1/B2 and transformation
+  lineage is complete in the cumulative overlay, but the source authorization
+  does not conclude rights for these projections. Do not extend the July
+  Silver attestation to them.
+- [ ] Continue the remaining source-specific rights lane for the unresolved
+  PBS and reimbursement-atlas objects. Identity or lineage alone does not
+  establish reuse authority.
+- Reconciliation implementation commit: `27007a797753c4ae9d8a53a81dede6c76a5a1369`.
 
 ## M-112 raw B2 v1 conformance candidate (2026-10-19)
 
@@ -3894,6 +3919,52 @@
   closes the local v1 schema-conformance candidate for these paths; it does
   not by itself satisfy the v4 receipt role, v3 replay, publication, clean-room
   verification, discovery, recovery/cache, consumer canaries, or admission.
+
+## M-110 exact-main candidate consumer canary refresh (2026-10-19)
+
+- [x] After validating the exact MBS Gold graph qualification, dispatch the
+  bounded hosted consumer traversal against current `main` commit
+  `cdc870b9c2fb42a13d5ed79e8f09f7f53ba10a3f`. Run
+  [39262766723](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39262766723)
+  passed all 5,989 candidate edges through API, CLI, Atlas, and Chromium; the
+  four ordered edge-ID digests match. DuckDB and Polars also matched for the
+  bounded date and decimal queries. The aggregate receipt is
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261019-39262766723.json`
+  (SHA-256
+  `b5197a7b9cb9c2b67efa73f740e1bc1717f5ef03b454f5dd50a008d0e77e9b26`).
+- [x] Preserve scope: this is the authorized MBS Gold candidate canary only.
+  It creates no M-112 v4 admission and does not change the M-112 per-object
+  consumer-canary count, which remains zero while exact v4 contract roles are
+  incomplete. The earlier candidate graph review and M-109/M-110/M-112 gates
+  remain separate.
+
+## M-110 relationship screening and match-behavior diagnostic (2026-10-19)
+
+- [x] Screen current relationship classes against source and lineage evidence.
+  The exact July 2025 MBS v3 `source_record_has_benefit` relation qualifies
+  only as source-explicit within-record evidence (5,989 edges); confidence is
+  not applicable, valid time is unselected, and the edge review state in the
+  immutable graph qualification is `not_reviewed`. PBS
+  `source_contains_entity` qualifies only as a structural contract on
+  synthetic Silver. Cross-source/cross-record semantic relations do not
+  qualify. See
+  `quality/qualifications/australian-gold-relationship-screening-20261019.json`.
+- [x] Assess current candidate-generator behavior against the six labeled
+  synthetic cases, using the generator itself rather than supplied
+  predictions. At lexical threshold 0.65 the result is precision 0.50, recall
+  0.50, recall@5 0.50, coverage 0.67, selective risk 0.50, two false
+  positives and two false negatives. A 0.99 cutoff yields zero false positives
+  only at 0.33 coverage and 0.50 recall. These six self-authored cases cannot
+  establish calibration or select a production threshold. Report:
+  `quality/qualifications/matching-behavior-synthetic-20261019.json`.
+- [ ] Complete PBS real admitted Silver screening, representative
+  human-adjudicated held-out labels, per-method/source calibration, and exact
+  candidate review before any scored relationship promotion. Synthetic graph
+  parity and this diagnostic do not close M-110.
+- [x] Focused matcher/graph/review selection: 98 passed. Broader affected MBS,
+  PBS, matcher, and M-110 selection: 106 passed. Test-Goblin routine,
+  deterministic report regeneration, Ruff, Ruff format, `ty`, BasedPyright,
+  and `git diff --check` passed. No threshold was promoted.
 
 ## M-112 durable v1 candidate receipt readback (2026-10-19)
 
