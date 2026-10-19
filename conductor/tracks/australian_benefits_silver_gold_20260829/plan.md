@@ -3981,3 +3981,33 @@
   consumer evidence becomes available. Do not promote based on this receipt
   alone. Full details are recorded in `evidence.jsonl` and
   `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json`.
+
+## M-112 hosted publication and clean-room receipt reconciliation (2026-10-20)
+
+- [x] Reconcile the 14 exact MBS utilisation raw-B2 candidates against the
+  existing hosted 28-object manifest at pinned revision
+  `dee9a5b0580dfe394474dc26b372559462e157e7`. All 14 match by dataset,
+  revision, path, byte count, and SHA-256 in
+  `quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json`.
+- [x] Verify the historical GitHub Actions harvest run `36333396964` completed
+  successfully at workflow commit `979f806fcf92267f9595eb78a88707e4ec2e503c`.
+  Its durable issue receipts report all 28 manifest objects anonymously
+  digest-verified; the restore calls used `hf_hub_download(token=False)`, and
+  the follow-up receipt records temporary hosted-runner materialization cleanup.
+  Current metadata readback confirms the exact pinned Hub revision remains
+  public and ungated.
+- [x] Refresh the role assessment with the exact per-object publication and
+  token-free clean-room restore receipts as `candidate_receipt_available_unbound`
+  for these 14 objects. The two August objects remain without this receipt
+  binding. This does not create a v4 contract, change rights, admit objects, or
+  qualify any consumer canary. Keep the denominator at 1,759, admissions at
+  zero, and M-112 canaries at zero.
+- [x] Validate the deterministic refresh: focused selection 14 passed; broader
+  federation and admission selection 195 passed; Test-Goblin routine, Ruff,
+  `ty`, context/ecosystem validation, and `git diff --check` passed. Qualification
+  is `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`
+  (SHA-256
+  `3d3893c921fcb9a650948377d609779a0987b68b406a29373a5a2061d57fdb93`).
+- [ ] Complete authority and source semantics, v4 discovery, v3 replay,
+  recovery/cache, and exact contract binding before considering admission.
+  M-112 consumer-reader canaries remain gated on an admitted object.
