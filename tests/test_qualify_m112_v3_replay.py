@@ -12,20 +12,9 @@ import scripts.qualify_m112_v3_replay as qualification
 CSV_TARGET = "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
 
 
-def test_v3_replay_can_qualify_another_exact_rights_and_lineage_bound_object() -> (
-    None
-):
-    plan = qualification.qualify(target_path=CSV_TARGET)
-
-    assert len(plan["snapshots"]) == 1
-    snapshot = plan["snapshots"][0]
-    assert snapshot["partition_value"].endswith(CSV_TARGET)
-    assert snapshot["payload_sha256"] == (
-        "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
-    )
-    assert snapshot["source_id"] == "au-data-gov-mbs-group"
-    assert snapshot["rights_state"] == qualification.RIGHTS_STATE
-    assert plan["replay_plan"]["steps"][0]["expected_byte_count"] == 12_291_303
+def test_v3_replay_rejects_another_object_after_its_v4_admission() -> None:
+    with pytest.raises(ValueError, match="already has a v4 contract"):
+        qualification.qualify(target_path=CSV_TARGET)
 
 
 def test_v3_replay_rejects_paths_outside_approved_raw_mbs_scope() -> None:

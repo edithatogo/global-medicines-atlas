@@ -1,8 +1,8 @@
 """Build and independently admit one exact M-112 raw B2 v4.1 contract.
 
-The target is the July 2016 MBS Group workbook. Its source-native workbook
-layout remains explicitly unqualified; this contract admits only the exact
-immutable raw B2 bytes and records no interpretation or processing promotion.
+Targets are restricted to qualified July 2016 MBS Group raw objects. Their
+source-native layouts remain explicitly unqualified; each contract admits only
+the exact immutable raw B2 bytes and records no interpretation or promotion.
 """
 
 from __future__ import annotations
@@ -53,6 +53,10 @@ CSV_OUTPUT = Path(
     "quality/qualifications/"
     "australian-m112-v4-group2016-csv-raw-b2-contract.json"
 )
+CSV_ADMISSION_REPORT = Path(
+    "quality/qualifications/"
+    "australian-m112-v4-group2016-csv-admission-qualification-20261020.json"
+)
 SCHEMA_PATH = Path("contracts/medallion/v4.1/federation.schema.json")
 EVIDENCE_COMMIT = "90dea68ec6ff3d4d07b43860631742728cf40ff5"
 TARGET_DATASET = "edithatogo/australian-mbs-utilisation-archive"
@@ -102,6 +106,12 @@ TARGET_IDENTITIES: dict[str, dict[str, Any]] = {
         "source_id": SOURCE_ID,
         "acquisition_id": "5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967",
     },
+}
+TARGET_EVIDENCE_COMMITS = {
+    TARGET_PATH: EVIDENCE_COMMIT,
+    "raw/mbs/utilisation/group/mbs-group-2016-july.csv": (
+        "5b4d66268deccfb28ef33805d474c06aaa940a98"
+    ),
 }
 
 
@@ -290,12 +300,15 @@ def build_contract(  # ruff: ignore[too-many-locals,too-many-statements] -- asse
     root: Path = ROOT,
     *,
     target_path: str = TARGET_PATH,
-    evidence_commit: str = EVIDENCE_COMMIT,
+    evidence_commit: str | None = None,
 ) -> dict[str, Any]:
     """Construct one exact July 2016 raw B2 contract from qualified evidence."""
     report = _read_json(root, ROLE_REPORT)
     candidate = _validate_inputs(root, report, target_path=target_path)
     identity = _target_identity(target_path)
+    evidence_commit = evidence_commit or TARGET_EVIDENCE_COMMITS[target_path]
+    if re.fullmatch(r"[0-9a-f]{40}", evidence_commit) is None:
+        raise ValueError("evidence commit must be an exact lowercase Git SHA")
     authority = candidate.get("authority_candidate")
     source_candidate = candidate.get("source_candidate_receipt")
     publication = candidate.get("publication_candidate_receipt")
@@ -873,7 +886,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--target-path", choices=sorted(TARGET_IDENTITIES), default=TARGET_PATH
     )
-    parser.add_argument("--evidence-commit", default=EVIDENCE_COMMIT)
+    parser.add_argument("--evidence-commit")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--verify", action="store_true")
@@ -939,7 +952,7 @@ def main(argv: list[str] | None = None) -> int:
             "receipt_closure": closure,
             "consumer_canary": canary,
             "source_values_or_payload_bytes_retained": False,
-            "native_workbook_layout_qualified": False,
+            "native_source_layout_qualified": False,
         }
         if args.verification_report is not None:
             report_path = root / args.verification_report
@@ -965,7 +978,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print(
             "M-112 July 2016 raw B2 contract passed schema and semantic checks; "
-            "source-native workbook layout remains unqualified"
+            "source-native layout remains unqualified"
         )
     return 0
 
