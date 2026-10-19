@@ -1,8 +1,9 @@
 """Build and independently admit one exact M-112 raw B2 v4.1 contract.
 
-Targets are restricted to qualified July 2016 MBS Group raw objects. Their
-source-native layouts remain explicitly unqualified; each contract admits only
-the exact immutable raw B2 bytes and records no interpretation or promotion.
+Targets are restricted to exact MBS utilisation raw B2 identities with
+qualified v4.1 candidate roles. Source-native layouts remain explicitly
+unqualified; each contract admits only the exact immutable raw B2 bytes and
+records no interpretation or promotion.
 """
 
 from __future__ import annotations
@@ -57,6 +58,10 @@ CSV_ADMISSION_REPORT = Path(
     "quality/qualifications/"
     "australian-m112-v4-group2016-csv-admission-qualification-20261020.json"
 )
+HISTORICAL_1993_2015_OUTPUT = Path(
+    "quality/qualifications/"
+    "australian-m112-v4-historical-1993-2015-raw-b2-contract.json"
+)
 SCHEMA_PATH = Path("contracts/medallion/v4.1/federation.schema.json")
 EVIDENCE_COMMIT = "90dea68ec6ff3d4d07b43860631742728cf40ff5"
 TARGET_DATASET = "edithatogo/australian-mbs-utilisation-archive"
@@ -71,16 +76,6 @@ SOURCE_ID = "au-data-gov-mbs-group"
 ACQUISITION_ID = (
     "7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b"
 )
-RIGHTS_COMMENT = 5857784415
-RESTORE_COMMENT = 5857784489
-PUBLICATION_SHA256 = (
-    "6bce093347564588b320f81344c4903c038f4659d5aeb96bca4b2802073c9c1d"
-)
-RESTORE_SHA256 = (
-    "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15"
-)
-V3_RUN_ID = 39289077989
-V3_RUN_STARTED = "2026-10-19T16:51:27Z"
 V3_RUN_TIMEOUT_MINUTES = 15
 EXPECTED_RIGHTS_STATE = (
     "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified"
@@ -106,11 +101,29 @@ TARGET_IDENTITIES: dict[str, dict[str, Any]] = {
         "source_id": SOURCE_ID,
         "acquisition_id": "5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967",
     },
+    "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip": {
+        "dataset": TARGET_DATASET,
+        "revision": TARGET_REVISION,
+        "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "bytes": 205_885_063,
+        "source_id": SOURCE_ID,
+        "acquisition_id": "0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638",
+    },
 }
-TARGET_EVIDENCE_COMMITS = {
+TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
     TARGET_PATH: EVIDENCE_COMMIT,
     "raw/mbs/utilisation/group/mbs-group-2016-july.csv": (
         "5b4d66268deccfb28ef33805d474c06aaa940a98"
+    ),
+    "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip": (
+        None
+    ),
+}
+TARGET_OUTPUTS = {
+    TARGET_PATH: OUTPUT,
+    "raw/mbs/utilisation/group/mbs-group-2016-july.csv": CSV_OUTPUT,
+    "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip": (
+        HISTORICAL_1993_2015_OUTPUT
     ),
 }
 
@@ -133,21 +146,13 @@ def _raw_url(path: Path, *, commit: str = EVIDENCE_COMMIT) -> str:
     )
 
 
-def _file_receipt(root: Path, path_value: str) -> dict[str, str]:
+def _file_receipt(
+    root: Path, path_value: str, *, commit: str = EVIDENCE_COMMIT
+) -> dict[str, str]:
     path = Path(path_value)
     return {
-        "url": _raw_url(path),
+        "url": _raw_url(path, commit=commit),
         "sha256": _sha256((root / path).read_bytes()),
-    }
-
-
-def _comment_receipt(comment_id: int, digest: str) -> dict[str, str]:
-    return {
-        "url": (
-            "https://github.com/edithatogo/global-medicines-atlas/issues/340"
-            f"#issuecomment-{comment_id}"
-        ),
-        "sha256": digest,
     }
 
 
@@ -158,6 +163,23 @@ def _target_identity(target_path: str) -> dict[str, Any]:
             "M-112 target is not in the exact qualified object set"
         )
     return identity
+
+
+def _evidence_commit_for_target(
+    target_path: str, evidence_commit: str | None
+) -> str:
+    selected = (
+        evidence_commit
+        if evidence_commit is not None
+        else TARGET_EVIDENCE_COMMITS[target_path]
+    )
+    if selected is None:
+        raise ValueError(
+            "target evidence has no durable merged commit binding yet"
+        )
+    if re.fullmatch(r"[0-9a-f]{40}", selected) is None:
+        raise ValueError("evidence commit must be an exact lowercase Git SHA")
+    return selected
 
 
 def _find_target(
@@ -302,13 +324,11 @@ def build_contract(  # ruff: ignore[too-many-locals,too-many-statements] -- asse
     target_path: str = TARGET_PATH,
     evidence_commit: str | None = None,
 ) -> dict[str, Any]:
-    """Construct one exact July 2016 raw B2 contract from qualified evidence."""
+    """Construct one exact raw B2 contract from qualified candidate evidence."""
     report = _read_json(root, ROLE_REPORT)
     candidate = _validate_inputs(root, report, target_path=target_path)
     identity = _target_identity(target_path)
-    evidence_commit = evidence_commit or TARGET_EVIDENCE_COMMITS[target_path]
-    if re.fullmatch(r"[0-9a-f]{40}", evidence_commit) is None:
-        raise ValueError("evidence commit must be an exact lowercase Git SHA")
+    evidence_commit = _evidence_commit_for_target(target_path, evidence_commit)
     authority = candidate.get("authority_candidate")
     source_candidate = candidate.get("source_candidate_receipt")
     publication = candidate.get("publication_candidate_receipt")
@@ -371,26 +391,32 @@ def build_contract(  # ruff: ignore[too-many-locals,too-many-statements] -- asse
     )
     event_path = cast("str", candidate["_verified_event_path"])
     b2_path = cast("str", candidate["_verified_b2_path"])
-    source_receipt_url = _file_receipt(root, source_receipt_path)
-    event_url = _file_receipt(root, event_path)
-    b2_url = _file_receipt(root, b2_path)
+    source_receipt_url = _file_receipt(
+        root, source_receipt_path, commit=evidence_commit
+    )
+    event_url = _file_receipt(root, event_path, commit=evidence_commit)
+    b2_url = _file_receipt(root, b2_path, commit=evidence_commit)
     rights_path = cast("str", rights.get("path"))
     rights_sha256 = cast("str", rights.get("sha256"))
     if _sha256((root / rights_path).read_bytes()) != rights_sha256:
         raise ValueError("exact-scope rights decision digest changed")
     rights_receipt = {
-        "url": _raw_url(Path(rights_path)),
+        "url": _raw_url(Path(rights_path), commit=evidence_commit),
         "sha256": rights_sha256,
     }
 
-    publication_receipt = _comment_receipt(RIGHTS_COMMENT, PUBLICATION_SHA256)
-    restore_receipt = _comment_receipt(RESTORE_COMMENT, RESTORE_SHA256)
+    publication_receipt = cast("dict[str, str]", publication.get("receipt"))
+    restore_receipt = cast("dict[str, str]", verification.get("receipt"))
     v1_receipt = {
         "url": cast("str", v1.get("url")),
         "sha256": cast("str", v1.get("sha256")),
     }
-    v3_path = Path(cast("str", v3["receipt"]["path"]))
-    v3_sha256 = cast("str", v3["receipt"]["sha256"])
+    v3_receipt_value = v3.get("receipt")
+    if not isinstance(v3_receipt_value, dict):
+        raise TypeError("hosted v3 replay receipt reference is malformed")
+    v3_receipt_value = cast("dict[str, Any]", v3_receipt_value)
+    v3_path = Path(cast("str", v3_receipt_value["path"]))
+    v3_sha256 = cast("str", v3_receipt_value["sha256"])
     if _sha256((root / v3_path).read_bytes()) != v3_sha256:
         raise ValueError("M-112 replay receipt digest changed")
     v3_receipt = {
@@ -576,6 +602,7 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
     *,
     root: Path = ROOT,
     target_path: str = TARGET_PATH,
+    evidence_commit: str | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Verify every external receipt then independently admit the exact pin."""
     schema = (root / SCHEMA_PATH).read_bytes()
@@ -623,21 +650,30 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
     report = _read_json(root, ROLE_REPORT)
     candidate = _validate_inputs(root, report, target_path=target_path)
     identity = _target_identity(target_path)
+    evidence_commit = _evidence_commit_for_target(target_path, evidence_commit)
     rights_file = cast("dict[str, Any]", candidate["rights_decision"])
     rights_path = Path(cast("str", rights_file["path"]))
-    rights_url = _raw_url(rights_path)
+    rights_url = _raw_url(rights_path, commit=evidence_commit)
     rights_receipt = ReceiptRole(
         role="/rights/authorization",
         url=rights_url,
         sha256=cast("str", rights_file["sha256"]),
     )
     source_receipt_url = _file_receipt(
-        root, cast("str", candidate["_verified_source_receipt_path"])
+        root,
+        cast("str", candidate["_verified_source_receipt_path"]),
+        commit=evidence_commit,
     )
     event_url = _file_receipt(
-        root, cast("str", candidate["_verified_event_path"])
+        root,
+        cast("str", candidate["_verified_event_path"]),
+        commit=evidence_commit,
     )
-    b2_url = _file_receipt(root, cast("str", candidate["_verified_b2_path"]))
+    b2_url = _file_receipt(
+        root,
+        cast("str", candidate["_verified_b2_path"]),
+        commit=evidence_commit,
+    )
     v1 = cast("dict[str, Any]", candidate["v1_conformance_candidate_receipt"])
     v3 = cast("dict[str, Any]", candidate["v3_replay_candidate_receipt"])
     contract_document = json.loads(raw_contract)
@@ -897,9 +933,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--verification-report", type=Path)
     args = parser.parse_args(argv)
     root = args.root.resolve()
-    output_value = args.output or (
-        CSV_OUTPUT if args.target_path != TARGET_PATH else OUTPUT
-    )
+    output_value = args.output or TARGET_OUTPUTS[args.target_path]
     output = root / output_value
     expected = validate_contract(
         build_contract(
@@ -917,7 +951,10 @@ def main(argv: list[str] | None = None) -> int:
         output.write_bytes(expected)
     if args.verify:
         admission, closure = verify_and_admit(
-            expected, root=root, target_path=args.target_path
+            expected,
+            root=root,
+            target_path=args.target_path,
+            evidence_commit=args.evidence_commit,
         )
         canary = None
         if args.consumer_canary:

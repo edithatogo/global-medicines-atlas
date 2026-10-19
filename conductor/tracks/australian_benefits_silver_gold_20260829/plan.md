@@ -4206,11 +4206,12 @@
   `bronze/2026-04-01/pbs-v3-source.parquet` unresolved; source permission does
   not imply derivative rights. No rights conclusion, v4 admission, or release
   is made for the projection.
-- [x] Reconcile the two successful exact-main July 2016 MBS canary receipts.
-  Both runs refer to the same rights-cleared workbook and contract, so current
-  counts are one admitted object, one canaried object, and 1,758 deferred
-  objects. Source values and workbook layout remain unqualified. Rights remain
-  32 resolved and 1,727 unresolved across the frozen 1,759-object inventory.
+- [x] Reconcile the successful exact-main July 2016 MBS workbook and CSV
+  canary receipts. They bind two distinct rights-cleared raw B2 objects and
+  contracts, so current counts are two admitted objects, two canaried objects,
+  and 1,757 deferred objects. Source values and native layouts remain
+  unqualified. Rights remain 32 resolved and 1,727 unresolved across the frozen
+  1,759-object inventory.
 - [x] Refresh the effective-rights report and preflight with exact hashes and
   both canary run receipts; preserve all other deferrals, keep inventory
   membership unchanged, and add no sources or datasets.
@@ -4294,3 +4295,51 @@
   are recorded with the corresponding PR evidence.
 - [ ] Resolve rights for the remaining derived and source-specific objects;
   do not infer derived rights from this raw-source permission.
+
+## M-112 historical 1993–2015 raw B2 v4 role qualification (2026-10-20)
+
+- [x] Select `raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip`
+  from the frozen 1,759-path denominator. Exact-scope rights, B1/B2 lineage,
+  anonymous digest readback, official source period, publication/restore,
+  discovery, and v1 conformance evidence were already available; only the v3
+  replay/cache role was missing. Native source layout remains unqualified.
+- [x] Run the bounded hosted replay on exact `main`
+  `3df35dbd1475557122faa3025b915e37cf202a55`:
+  [39324097024](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39324097024).
+  Anonymous byte count and SHA-256 matched the frozen identity; the workflow
+  rebuilt only the append-only registration and removed temporary source bytes.
+- [x] Read back the aggregate-only receipt
+  `quality/qualifications/australian-m112-v3-replay-execution-20261020-39324097024.json`
+  (SHA-256 `d0b13510173001f20d4809d6389acd123465d55cb85091d8356c98104eb28731`)
+  and deterministic plan
+  `quality/qualifications/australian-m112-v3-replay-plan-20261020-39324097024.json`
+  (SHA-256 `1b1e68b33666b3d334e604534c50ab5ab912ae0c023d53764b0cd123a48fc7bf`).
+  The role qualifier now validates all three replay receipts. The current
+  admitted-object count remains two; replay alone does not admit the new object.
+- [x] Focused role/replay/contract tests passed (35), and the affected M-112
+  suite passed (172). The new contract path is
+  restricted to the exact public identity, rights decision, and bound role
+  evidence for this archive. Test-Goblin full completed with 7,017 passed,
+  3 skipped, and 2 failed at the existing Stable v1 clean-clone toolchain
+  checks because local uv is 0.13.1 while those checks require pinned uv
+  0.11.29; coverage was 96.89%. Context/registry, ecosystem validation,
+  Test-Goblin routine, Ruff, formatting, ty, BasedPyright (0 errors), and
+  diff checks passed.
+- [~] Build the per-object v4.1 raw-B2 contract against the merged role receipt,
+  verify the full external receipt closure, then record admission only if the
+  exact object and every required role validate. Keep native archive semantics
+  unqualified and all other denominator paths deferred.
+
+## M-110 screened-relationship consumer canary refresh (2026-10-20)
+
+- [x] After screening identified `source_record_has_benefit` as the only
+  evidence-qualified candidate class, rerun the bounded exact-main consumer
+  check on `e02e0b0dccf0893954125a2780c2a2b3436b6574`. Hosted run
+  [39326767284](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39326767284)
+  passed 5,989 candidate edges through API, CLI, Atlas, and Chromium with
+  matching ordered edge-ID digests. Bounded DuckDB/Polars date and decimal
+  queries also matched. Aggregate receipt:
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261020-39326767284.json` (SHA-256 `0f8aa73bfa745610a70ce6ba4190fdcb1fef0ae7be5aa1c87a5b17640cbdca00`).
+- [x] This is one four-surface M-110 screened-candidate canary. It does not
+  accept M-110 overall, calibrate match scoring, promote cross-source
+  relationships, or count as an M-112 admitted-object canary.

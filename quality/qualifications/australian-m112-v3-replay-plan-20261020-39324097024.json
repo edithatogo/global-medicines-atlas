@@ -1,0 +1,72 @@
+{
+  "contracts": [
+    {
+      "contract_id": "au-data-gov-mbs-group:historical-backfill-replay:v1",
+      "correction_rule": "new_snapshot_never_overwrite",
+      "deterministic_output_rule": "canonical_json_sha256",
+      "idempotency_rule": "partition_and_snapshot_sha256",
+      "late_arrival_rule": "append_then_replay_partition",
+      "missing_payload_rule": "metadata_only_fail_closed",
+      "partition_identity": [
+        "source_id",
+        "archive_period",
+        "logical_asset_id"
+      ],
+      "replay_order": [
+        "partition_id",
+        "correction_sequence",
+        "snapshot_id"
+      ],
+      "snapshot_identity": [
+        "partition_id",
+        "payload_sha256",
+        "metadata_sha256"
+      ],
+      "source_id": "au-data-gov-mbs-group",
+      "supersession_rule": "explicit_acyclic_predecessor"
+    }
+  ],
+  "replay_plan": {
+    "deterministic": true,
+    "eligible_snapshot_count": 1,
+    "plan_sha256": "ce9bb3bd705f070809953670575f1ef1bd198b744a8ca954606650272272eaba",
+    "schema_version": "historical-replay-plan-v1",
+    "steps": [
+      {
+        "action": "verify_and_rebuild_raw_b2_snapshot_registration",
+        "candidate_only": true,
+        "expected_byte_count": 205885063,
+        "expected_payload_sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "hosted_replay_status": "pending",
+        "m112_consumer_canary_performed": false,
+        "partition_id": "79a3579eb6ca9d01445f22a8b27455de165bf9c70badb58f9da1441863945665",
+        "registration_semantics": "append_only_idempotent",
+        "snapshot_id": "dab50896f0c8fcca1db79c186144d468b171f0bd6e00144be52d89182f21f05d",
+        "source_payload_values": "not_read",
+        "v4_admission_performed": false
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "archive_period": "filename-derived:mbs-demographics-historical-1993-2015.zip",
+      "correction_sequence": 0,
+      "idempotency_key": "a0936cb6f853786bbcb5cb032f0c75066fd4b21f6c8f21ed49003341cef16a59",
+      "late_arriving": false,
+      "logical_asset_id": "b55f28dc144cc9cac516a04666e19fac6a63bc87ecfbbc2f87e99bfa6be8784c",
+      "metadata_sha256": "d9b3a3521f994820a785f55a1798fe64f0440e3fbfafb1c9f39295b192d42882",
+      "observation_status": "acquired",
+      "partition_id": "79a3579eb6ca9d01445f22a8b27455de165bf9c70badb58f9da1441863945665",
+      "partition_value": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "payload_sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+      "replay_eligible": true,
+      "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
+      "snapshot_id": "dab50896f0c8fcca1db79c186144d468b171f0bd6e00144be52d89182f21f05d",
+      "source_id": "au-data-gov-mbs-group",
+      "source_url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/5ef51b77-7b55-4df4-8740-4a19fcc861e1/download/mbs-demographics-historical-1993-2015.zip",
+      "source_version_id": "data.gov.au-package-show-sha256-f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+      "supersedes_snapshot_id": null
+    }
+  ],
+  "vocabulary_version": "3.0.0"
+}
