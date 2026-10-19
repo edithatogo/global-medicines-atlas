@@ -15,11 +15,13 @@ from scripts.qualify_m112_v4_publication_roles import (
     CONTRACT_SCHEMA_SHA256,
     DIGEST_REPORT,
     DISCOVERY_REPORT,
+    OUTPUT,
     OVERLAY_REPORT,
     PRODUCER_WORKFLOW,
     ROLE_REPORT,
     SOURCE_SEMANTICS_PATH,
     SOURCE_SEMANTICS_REPORT,
+    V3_REPLAY_MANIFEST,
     V3_REPLAY_PATH,
     V3_REPLAY_PLAN,
     V3_REPLAY_REPORT,
@@ -67,8 +69,8 @@ def test_refresh_preserves_the_denominator_and_zero_admissions_and_canaries() ->
 
     assert report["cohort"]["approved_denominator"] == 1759
     assert report["cohort"]["approved_denominator_changed"] is False
-    assert report["cohort"]["v4_admissions"] == 0
-    assert report["cohort"]["consumer_canaries"] == 0
+    assert report["cohort"]["v4_admissions"] == 1
+    assert report["cohort"]["consumer_canaries"] == 1
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
     assert report["source_qualification"]["path"] == OVERLAY_REPORT
@@ -80,46 +82,62 @@ def test_refresh_preserves_the_denominator_and_zero_admissions_and_canaries() ->
     )
 
 
-def test_exact_hosted_v3_replay_binds_one_unbound_candidate_role() -> None:
+def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
     report = qualify()
     matches = [
         item
         for item in report["objects"]
-        if item["path"] == V3_REPLAY_PATH
+        if item["path"]
+        in {
+            V3_REPLAY_PATH,
+            "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+        }
         and "v3_replay_candidate_receipt" in item
     ]
 
-    assert len(matches) == 1
-    candidate = matches[0]
-    receipt = candidate["v3_replay_candidate_receipt"]
-    assert receipt["candidate_only"] is True
-    assert receipt["contract_role_state"] == (
-        "candidate_receipt_available_unbound"
-    )
-    assert (
-        receipt["workflow_commit"] == "dd7a01bcd3da60190f821395ceb1260a3d9ddad9"
-    )
-    assert receipt["workflow_run"].endswith("/39289077989")
-    assert receipt["anonymous_digest_verified"] is True
-    assert receipt["temporary_source_bytes_removed"] is True
-    assert candidate["contract_role_states"]["lineage.v3_replay"] == (
-        "candidate_receipt_available_unbound"
-    )
-    assert report["v3_replay_candidate_evidence"]["objects"] == 1
-    assert report["cohort"]["v4_admissions"] == 0
-    assert report["cohort"]["consumer_canaries"] == 0
+    assert len(matches) == 2
+    by_path = {item["path"]: item for item in matches}
+    assert V3_REPLAY_PATH in by_path
+    assert "raw/mbs/utilisation/group/mbs-group-2016-july.csv" in by_path
+    for candidate in matches:
+        receipt = candidate["v3_replay_candidate_receipt"]
+        assert receipt["candidate_only"] is True
+        assert receipt["contract_role_state"] == (
+            "candidate_receipt_available_unbound"
+        )
+        assert receipt["anonymous_digest_verified"] is True
+        assert receipt["temporary_source_bytes_removed"] is True
+        assert candidate["contract_role_states"]["lineage.v3_replay"] == (
+            "candidate_receipt_available_unbound"
+        )
+    assert by_path[V3_REPLAY_PATH]["v3_replay_candidate_receipt"][
+        "workflow_run"
+    ].endswith("/39289077989")
+    assert by_path["raw/mbs/utilisation/group/mbs-group-2016-july.csv"][
+        "v3_replay_candidate_receipt"
+    ]["workflow_run"].endswith("/39305977097")
+    assert report["v3_replay_candidate_evidence"]["objects"] == 2
+    assert report["cohort"]["v4_admissions"] == 1
+    assert report["cohort"]["consumer_canaries"] == 1
 
 
 def test_v3_replay_receipt_must_match_the_pinned_object(
     tmp_path: Path,
 ) -> None:
     _copy_qualification_inputs(tmp_path)
-    receipt_path = tmp_path / V3_REPLAY_REPORT
+    manifest_path = tmp_path / V3_REPLAY_MANIFEST
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    csv_entry = next(
+        item
+        for item in manifest["entries"]
+        if item["path"].endswith("2016-july.csv")
+    )
+    receipt_path = tmp_path / csv_entry["receipt"]["path"]
     receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
     receipt["scope"]["sha256"] = "0" * 64
     receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
 
-    with pytest.raises(ValueError, match="hosted v3 replay receipt differs"):
+    with pytest.raises(ValueError, match="v3 replay artifact digest differs"):
         qualify(tmp_path)
 
 
@@ -157,7 +175,7 @@ def test_current_discovery_receipts_bind_all_candidates_without_rights_promotion
     assert report["discovery_candidate_evidence"]["state"] == (
         "candidate_receipt_available_unbound_for_16_of_16"
     )
-    assert report["cohort"]["v4_admissions"] == 0
+    assert report["cohort"]["v4_admissions"] == 1
     for candidate in report["objects"]:
         discovery = candidate["discovery_candidate_receipt"]
         assert discovery["contract_role_state"] == (
@@ -272,8 +290,8 @@ def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
         for item in source_candidates
     )
     assert report["source_semantics_candidate_evidence"]["objects"] == 13
-    assert report["cohort"]["v4_admissions"] == 0
-    assert report["cohort"]["consumer_canaries"] == 0
+    assert report["cohort"]["v4_admissions"] == 1
+    assert report["cohort"]["consumer_canaries"] == 1
 
 
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
@@ -357,10 +375,12 @@ ROOT = Path(__file__).resolve().parents[1]
 def _copy_qualification_inputs(destination: Path) -> None:
     paths = (
         ROLE_REPORT,
+        OUTPUT,
         OVERLAY_REPORT,
         DIGEST_REPORT,
         DISCOVERY_REPORT,
         SOURCE_SEMANTICS_REPORT,
+        V3_REPLAY_MANIFEST,
         V3_REPLAY_REPORT,
         V3_REPLAY_PLAN,
         CONTRACT_SCHEMA_PATH,
@@ -370,6 +390,15 @@ def _copy_qualification_inputs(destination: Path) -> None:
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(source, target)
+    manifest = json.loads(
+        (destination / V3_REPLAY_MANIFEST).read_text(encoding="utf-8")
+    )
+    for entry in manifest["entries"]:
+        for role in ("receipt", "plan"):
+            relative = entry[role]["path"]
+            target = destination / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(ROOT / relative, target)
     role_report = json.loads(
         (destination / ROLE_REPORT).read_text(encoding="utf-8")
     )

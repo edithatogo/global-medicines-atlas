@@ -49,6 +49,10 @@ ROLE_REPORT = Path(
 OUTPUT = Path(
     "quality/qualifications/australian-m112-v4-july2016-raw-b2-contract.json"
 )
+CSV_OUTPUT = Path(
+    "quality/qualifications/"
+    "australian-m112-v4-group2016-csv-raw-b2-contract.json"
+)
 SCHEMA_PATH = Path("contracts/medallion/v4.1/federation.schema.json")
 EVIDENCE_COMMIT = "90dea68ec6ff3d4d07b43860631742728cf40ff5"
 TARGET_DATASET = "edithatogo/australian-mbs-utilisation-archive"
@@ -81,6 +85,24 @@ ISSUE_COMMENT_PATTERN = re.compile(
     r"^https://github\.com/edithatogo/global-medicines-atlas/issues/340"
     r"#issuecomment-(\d+)$"
 )
+TARGET_IDENTITIES: dict[str, dict[str, Any]] = {
+    TARGET_PATH: {
+        "dataset": TARGET_DATASET,
+        "revision": TARGET_REVISION,
+        "sha256": TARGET_SHA256,
+        "bytes": TARGET_BYTES,
+        "source_id": SOURCE_ID,
+        "acquisition_id": ACQUISITION_ID,
+    },
+    "raw/mbs/utilisation/group/mbs-group-2016-july.csv": {
+        "dataset": TARGET_DATASET,
+        "revision": TARGET_REVISION,
+        "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "bytes": 12_291_303,
+        "source_id": SOURCE_ID,
+        "acquisition_id": "5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967",
+    },
+}
 
 
 def _sha256(value: bytes) -> str:
@@ -119,7 +141,18 @@ def _comment_receipt(comment_id: int, digest: str) -> dict[str, str]:
     }
 
 
-def _find_target(report: dict[str, Any]) -> dict[str, Any]:
+def _target_identity(target_path: str) -> dict[str, Any]:
+    identity = TARGET_IDENTITIES.get(target_path)
+    if identity is None:
+        raise ValueError(
+            "M-112 target is not in the exact qualified object set"
+        )
+    return identity
+
+
+def _find_target(
+    report: dict[str, Any], *, target_path: str = TARGET_PATH
+) -> dict[str, Any]:
     objects = report.get("objects")
     if not isinstance(objects, list):
         raise TypeError("M-112 role report has no object list")
@@ -131,7 +164,7 @@ def _find_target(report: dict[str, Any]) -> dict[str, Any]:
         if (
             candidate.get("dataset") == TARGET_DATASET
             and candidate.get("revision") == TARGET_REVISION
-            and candidate.get("path") == TARGET_PATH
+            and candidate.get("path") == target_path
         ):
             found.append(candidate)
     if len(found) != 1:
@@ -140,14 +173,18 @@ def _find_target(report: dict[str, Any]) -> dict[str, Any]:
 
 
 def _validate_inputs(  # ruff: ignore[too-many-locals]
-    root: Path, report: dict[str, Any]
+    root: Path,
+    report: dict[str, Any],
+    *,
+    target_path: str = TARGET_PATH,
 ) -> dict[str, Any]:
     if (
         report.get("cohort", {}).get("approved_denominator")
         != APPROVED_DENOMINATOR
     ):
         raise ValueError("approved M-112 denominator changed")
-    candidate = _find_target(report)
+    expected = _target_identity(target_path)
+    candidate = _find_target(report, target_path=target_path)
     identity = (
         candidate.get("dataset"),
         candidate.get("revision"),
@@ -158,13 +195,13 @@ def _validate_inputs(  # ruff: ignore[too-many-locals]
         candidate.get("acquisition_id"),
     )
     if identity != (
-        TARGET_DATASET,
-        TARGET_REVISION,
-        TARGET_PATH,
-        TARGET_SHA256,
-        TARGET_BYTES,
-        SOURCE_ID,
-        ACQUISITION_ID,
+        expected["dataset"],
+        expected["revision"],
+        target_path,
+        expected["sha256"],
+        expected["bytes"],
+        expected["source_id"],
+        expected["acquisition_id"],
     ):
         raise ValueError("target identity differs from the approved pin")
     if (
@@ -210,13 +247,13 @@ def _validate_inputs(  # ruff: ignore[too-many-locals]
     )
     receipt_matches = (
         retrieval.get("status") == "succeeded"
-        and payload.get("sha256") == TARGET_SHA256
-        and payload.get("byte_count") == TARGET_BYTES
+        and payload.get("sha256") == expected["sha256"]
+        and payload.get("byte_count") == expected["bytes"]
     )
     event_retrieval = event.get("retrieval")
     event_matches = (
-        event.get("acquisition_id") == ACQUISITION_ID
-        and event.get("payload_sha256") == TARGET_SHA256
+        event.get("acquisition_id") == expected["acquisition_id"]
+        and event.get("payload_sha256") == expected["sha256"]
         and isinstance(event_retrieval, dict)
         and cast("dict[str, Any]", event_retrieval).get("status") == "succeeded"
     )
@@ -230,9 +267,9 @@ def _validate_inputs(  # ruff: ignore[too-many-locals]
         raise TypeError("B2 manifest row is not an object")
     row = cast("dict[str, Any]", row_value)
     if (
-        row.get("source_id") != SOURCE_ID
-        or row.get("acquisition_id") != ACQUISITION_ID
-        or row.get("content_id") != TARGET_SHA256
+        row.get("source_id") != expected["source_id"]
+        or row.get("acquisition_id") != expected["acquisition_id"]
+        or row.get("content_id") != expected["sha256"]
         or row.get("stratum") != "B2"
         or row.get("state") != "external_reference_only"
     ):
@@ -249,10 +286,16 @@ def _validate_inputs(  # ruff: ignore[too-many-locals]
     return candidate
 
 
-def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-many-locals, too-many-statements]
-    """Construct the exact July 2016 raw B2 contract from qualified evidence."""
+def build_contract(
+    root: Path = ROOT,
+    *,
+    target_path: str = TARGET_PATH,
+    evidence_commit: str = EVIDENCE_COMMIT,
+) -> dict[str, Any]:  # ruff: ignore[too-many-locals, too-many-statements]
+    """Construct one exact July 2016 raw B2 contract from qualified evidence."""
     report = _read_json(root, ROLE_REPORT)
-    candidate = _validate_inputs(root, report)
+    candidate = _validate_inputs(root, report, target_path=target_path)
+    identity = _target_identity(target_path)
     authority = candidate.get("authority_candidate")
     source_candidate = candidate.get("source_candidate_receipt")
     publication = candidate.get("publication_candidate_receipt")
@@ -261,6 +304,7 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
     discovery = candidate.get("discovery_candidate_receipt")
     v1 = candidate.get("v1_conformance_candidate_receipt")
     v3 = candidate.get("v3_replay_candidate_receipt")
+    cache = candidate.get("cache_candidate_receipt")
     rights = candidate.get("rights_decision")
     if not all(
         isinstance(value, dict)
@@ -273,6 +317,7 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
             discovery,
             v1,
             v3,
+            cache,
             rights,
         )
     ):
@@ -285,6 +330,7 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
     discovery = cast("dict[str, Any]", discovery)
     v1 = cast("dict[str, Any]", v1)
     v3 = cast("dict[str, Any]", v3)
+    cache = cast("dict[str, Any]", cache)
     rights = cast("dict[str, Any]", rights)
 
     if (
@@ -294,6 +340,9 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
         != "candidate_receipt_available_unbound"
         or source_candidate.get("native_schema_layout_qualified") is not False
         or v3.get("temporary_source_bytes_removed") is not True
+        or cache.get("contract_role_state")
+        != "candidate_receipt_available_unbound"
+        or cache.get("state") != "removed"
     ):
         raise ValueError("required candidate roles or boundaries changed")
     if authority.get("schema_sha256") != _sha256(
@@ -328,7 +377,10 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
     v3_sha256 = cast("str", v3["receipt"]["sha256"])
     if _sha256((root / v3_path).read_bytes()) != v3_sha256:
         raise ValueError("M-112 replay receipt digest changed")
-    v3_receipt = {"url": _raw_url(v3_path), "sha256": v3_sha256}
+    v3_receipt = {
+        "url": _raw_url(v3_path, commit=evidence_commit),
+        "sha256": v3_sha256,
+    }
 
     estate = cast("dict[str, Any]", discovery.get("estate_entry"))
     estate_url = cast("str", estate.get("url"))
@@ -342,8 +394,16 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
         "sha256": cast("str", estate.get("sha256")),
     }
     manifest = cast("dict[str, Any]", recovery["checksum_inventory"])
-    run_started = datetime.fromisoformat(V3_RUN_STARTED)
-    cache_expires = run_started + timedelta(minutes=V3_RUN_TIMEOUT_MINUTES)
+    cache_created_at = cast("str", cache.get("created_at"))
+    cache_expires_at = cast("str", cache.get("expires_at"))
+    run_started = datetime.fromisoformat(
+        cache_created_at.replace("Z", "+00:00")
+    )
+    cache_expires = datetime.fromisoformat(
+        cache_expires_at.replace("Z", "+00:00")
+    )
+    if cache_expires != run_started + timedelta(minutes=V3_RUN_TIMEOUT_MINUTES):
+        raise ValueError("temporary cache expiry differs from hosted timeout")
     cache_cleanup_receipt = v3_receipt
 
     temporal = cast(
@@ -364,8 +424,8 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
             "schema_sha256": cast("str", authority.get("schema_sha256")),
         },
         "source": {
-            "source_id": SOURCE_ID,
-            "acquisition_id": ACQUISITION_ID,
+            "source_id": identity["source_id"],
+            "acquisition_id": identity["acquisition_id"],
             "layer": "bronze",
             "bronze_stratum": "B2",
             "representation": "raw",
@@ -375,11 +435,11 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
             "retrieved_at": cast("str", candidate["_verified_retrieved_at"]),
         },
         "location": {
-            "dataset": TARGET_DATASET,
-            "revision": TARGET_REVISION,
-            "path": TARGET_PATH,
-            "bytes": TARGET_BYTES,
-            "sha256": TARGET_SHA256,
+            "dataset": identity["dataset"],
+            "revision": identity["revision"],
+            "path": target_path,
+            "bytes": identity["bytes"],
+            "sha256": identity["sha256"],
             "private": False,
             "gated": False,
             "xet_hash": None,
@@ -393,11 +453,11 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
             "receipt": publication_receipt,
         },
         "verification": {
-            "dataset": TARGET_DATASET,
-            "revision": TARGET_REVISION,
-            "path": TARGET_PATH,
-            "sha256": TARGET_SHA256,
-            "bytes": TARGET_BYTES,
+            "dataset": identity["dataset"],
+            "revision": identity["revision"],
+            "path": target_path,
+            "sha256": identity["sha256"],
+            "bytes": identity["bytes"],
             "anonymous": True,
             "clean_room": True,
             "status": "passed",
@@ -406,9 +466,9 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
         },
         "rights": {
             "authorization": rights_receipt,
-            "subject_sha256": TARGET_SHA256,
-            "dataset": TARGET_DATASET,
-            "path": TARGET_PATH,
+            "subject_sha256": identity["sha256"],
+            "dataset": identity["dataset"],
+            "path": target_path,
             "basis": "exact_scope_CC_BY_3_0_AU_authorization",
             "sensitivity": "non_sensitive",
             "publication": "approved_exact_scope",
@@ -448,8 +508,8 @@ def build_contract(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-man
         "cache": {
             "origin": "github_actions",
             "state": "removed",
-            "max_bytes": TARGET_BYTES,
-            "created_at": V3_RUN_STARTED,
+            "max_bytes": identity["bytes"],
+            "created_at": cache_created_at,
             "expires_at": cache_expires
             .astimezone(UTC)
             .isoformat()
@@ -500,7 +560,10 @@ def _download_receipt(url: str, client: httpx.Client) -> bytes:
 
 
 def verify_and_admit(  # ruff: ignore[too-many-locals]
-    raw_contract: bytes, *, root: Path = ROOT
+    raw_contract: bytes,
+    *,
+    root: Path = ROOT,
+    target_path: str = TARGET_PATH,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Verify every external receipt then independently admit the exact pin."""
     schema = (root / SCHEMA_PATH).read_bytes()
@@ -546,7 +609,8 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
         schema=schema,
     )
     report = _read_json(root, ROLE_REPORT)
-    candidate = _validate_inputs(root, report)
+    candidate = _validate_inputs(root, report, target_path=target_path)
+    identity = _target_identity(target_path)
     rights_file = cast("dict[str, Any]", candidate["rights_decision"])
     rights_path = Path(cast("str", rights_file["path"]))
     rights_url = _raw_url(rights_path)
@@ -564,6 +628,8 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
     b2_url = _file_receipt(root, cast("str", candidate["_verified_b2_path"]))
     v1 = cast("dict[str, Any]", candidate["v1_conformance_candidate_receipt"])
     v3 = cast("dict[str, Any]", candidate["v3_replay_candidate_receipt"])
+    contract_document = json.loads(raw_contract)
+    contract_v3 = contract_document["lineage"]["v3_replay"]
     lineage_roles = (
         ReceiptRole(
             role="/lineage/inputs/0",
@@ -587,7 +653,7 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
         ),
         ReceiptRole(
             role="/lineage/v3_replay",
-            url=_raw_url(Path(cast("str", v3["receipt"]["path"]))),
+            url=cast("str", contract_v3["url"]),
             sha256=cast("str", v3["receipt"]["sha256"]),
         ),
     )
@@ -606,21 +672,25 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
                 "schema_sha256"
             ],
         ),
-        dataset=TARGET_DATASET,
-        revision=TARGET_REVISION,
-        path=TARGET_PATH,
-        byte_count=TARGET_BYTES,
-        sha256=TARGET_SHA256,
-        source_id=SOURCE_ID,
-        acquisition_id=ACQUISITION_ID,
+        dataset=identity["dataset"],
+        revision=identity["revision"],
+        path=target_path,
+        byte_count=identity["bytes"],
+        sha256=identity["sha256"],
+        source_id=identity["source_id"],
+        acquisition_id=identity["acquisition_id"],
         layer="bronze",
         bronze_stratum="B2",
         representation="raw",
         schema_era=cast(
             "str", candidate["source_candidate_receipt"]["schema_era"]
         ),
-        comparison_cohort="legacy",
-        effective_date="2016-07-31",
+        comparison_cohort=cast(
+            "str", candidate["source_candidate_receipt"]["comparison_cohort"]
+        ),
+        effective_date=cast(
+            "str", candidate["source_candidate_receipt"]["effective_date"]
+        ),
         retrieved_at=cast("str", candidate["_verified_retrieved_at"]),
         evidence_kind="live",
         authorization=rights_receipt,
@@ -658,6 +728,12 @@ def run_reader_canary(
     if _sha256(raw_contract) != admission_value.get("contract_sha256"):
         raise ValueError("consumer canary contract differs from admission")
     contract_document = json.loads(raw_contract)
+    location = contract_document["location"]
+    target_dataset = location["dataset"]
+    target_revision = location["revision"]
+    target_path = location["path"]
+    target_bytes = location["bytes"]
+    target_sha256 = location["sha256"]
     cache_expires_at = datetime.fromisoformat(
         contract_document["cache"]["expires_at"]
     )
@@ -669,14 +745,14 @@ def run_reader_canary(
     )
     if (
         consumer_binding.contract_sha256 != admission.contract_sha256
-        or consumer_binding.object_sha256 != TARGET_SHA256
-        or consumer_binding.byte_count != TARGET_BYTES
-        or consumer_binding.path != TARGET_PATH
+        or consumer_binding.object_sha256 != target_sha256
+        or consumer_binding.byte_count != target_bytes
+        or consumer_binding.path != target_path
     ):
         raise ValueError("consumer binding differs from admitted identity")
     policy = AcquisitionPolicy(
         allowed_hosts=READER_HOSTS,
-        max_bytes=TARGET_BYTES,
+        max_bytes=target_bytes,
         timeout_seconds=30,
         max_attempts=1,
         max_redirects=3,
@@ -688,8 +764,8 @@ def run_reader_canary(
     with FederatedReader(
         schema=schema,
         admission_records=(admission,),
-        max_object_bytes=TARGET_BYTES,
-        cache_bytes=TARGET_BYTES,
+        max_object_bytes=target_bytes,
+        cache_bytes=target_bytes,
         max_entries=1,
         max_open_reads=1,
         timeout_seconds=30,
@@ -698,8 +774,8 @@ def run_reader_canary(
         with reader.open(raw_contract) as result:
             origin = result.origin
             if (
-                result.sha256 != TARGET_SHA256
-                or result.byte_count != TARGET_BYTES
+                result.sha256 != target_sha256
+                or result.byte_count != target_bytes
                 or result.contract_sha256 != admission.contract_sha256
             ):
                 raise ValueError("reader identity differs from admission")
@@ -714,8 +790,8 @@ def run_reader_canary(
     observed_sha256 = digest.hexdigest()
     if (
         origin != "remote"
-        or observed_sha256 != TARGET_SHA256
-        or byte_count != TARGET_BYTES
+        or observed_sha256 != target_sha256
+        or byte_count != target_bytes
         or cache_after_read
         != expected_cache_bytes(cache_expires_at, cache_observed_at)
         or cached_after_read != (cache_after_read > 0)
@@ -737,9 +813,9 @@ def run_reader_canary(
         },
         "contract_sha256": admission.contract_sha256,
         "object": {
-            "dataset": TARGET_DATASET,
-            "revision": TARGET_REVISION,
-            "path": TARGET_PATH,
+            "dataset": target_dataset,
+            "revision": target_revision,
+            "path": target_path,
             "bytes": byte_count,
             "sha256": observed_sha256,
         },
@@ -782,14 +858,23 @@ def _valid_workflow_identity(commit: str, run_id: str, attempt: str) -> bool:
     )
 
 
-def expected_cache_bytes(expires_at: datetime, observed_at: datetime) -> int:
-    return TARGET_BYTES if expires_at > observed_at else 0
+def expected_cache_bytes(
+    expires_at: datetime,
+    observed_at: datetime,
+    *,
+    byte_count: int = TARGET_BYTES,
+) -> int:
+    return byte_count if expires_at > observed_at else 0
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=ROOT)
-    parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument(
+        "--target-path", choices=sorted(TARGET_IDENTITIES), default=TARGET_PATH
+    )
+    parser.add_argument("--evidence-commit", default=EVIDENCE_COMMIT)
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--verify", action="store_true")
     parser.add_argument("--consumer-canary", action="store_true")
@@ -799,8 +884,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--verification-report", type=Path)
     args = parser.parse_args(argv)
     root = args.root.resolve()
-    output = root / args.output
-    expected = validate_contract(build_contract(root), root=root)
+    output_value = args.output or (
+        CSV_OUTPUT if args.target_path != TARGET_PATH else OUTPUT
+    )
+    output = root / output_value
+    expected = validate_contract(
+        build_contract(
+            root,
+            target_path=args.target_path,
+            evidence_commit=args.evidence_commit,
+        ),
+        root=root,
+    )
     if args.check:
         if not output.is_file() or output.read_bytes() != expected:
             raise SystemExit(f"M-112 raw B2 contract is stale: {output}")
@@ -808,7 +903,9 @@ def main(argv: list[str] | None = None) -> int:
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_bytes(expected)
     if args.verify:
-        admission, closure = verify_and_admit(expected, root=root)
+        admission, closure = verify_and_admit(
+            expected, root=root, target_path=args.target_path
+        )
         canary = None
         if args.consumer_canary:
             if not all((
@@ -836,7 +933,7 @@ def main(argv: list[str] | None = None) -> int:
             "approved_denominator": 1759,
             "admissions": 1,
             "consumer_canaries": 1 if canary is not None else 0,
-            "contract_path": args.output.as_posix(),
+            "contract_path": output_value.as_posix(),
             "contract_sha256": _sha256(expected),
             "admission": admission,
             "receipt_closure": closure,
