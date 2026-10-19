@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -11,6 +12,7 @@ from scripts.qualify_m112_v4_july2016_admission import (
     TARGET_PATH,
     TARGET_SHA256,
     build_contract,
+    expected_cache_bytes,
     validate_contract,
 )
 
@@ -65,3 +67,18 @@ def test_contract_is_schema_and_semantically_valid() -> None:
 
     assert raw.endswith(b"\n")
     assert b"source-native workbook layout remains unqualified" not in raw
+
+
+@pytest.mark.parametrize(
+    ("expiry_delta", "expected"),
+    [(timedelta(seconds=-1), 0), (timedelta(seconds=1), TARGET_BYTES)],
+)
+def test_reader_cache_expectation_follows_the_admitted_expiry(
+    expiry_delta: timedelta, expected: int
+) -> None:
+    observed_at = datetime(2026, 10, 20, tzinfo=UTC)
+
+    assert (
+        expected_cache_bytes(observed_at + expiry_delta, observed_at)
+        == expected
+    )

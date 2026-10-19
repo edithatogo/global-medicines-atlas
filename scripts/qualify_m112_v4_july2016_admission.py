@@ -657,6 +657,10 @@ def run_reader_canary(
     schema = (root / SCHEMA_PATH).read_bytes()
     if _sha256(raw_contract) != admission_value.get("contract_sha256"):
         raise ValueError("consumer canary contract differs from admission")
+    contract_document = json.loads(raw_contract)
+    cache_expires_at = datetime.fromisoformat(
+        contract_document["cache"]["expires_at"]
+    )
     admission = AdmissionRecord.model_validate(admission_value)
     consumer_binding = bind_consumer_contract(
         raw_contract,
@@ -703,6 +707,8 @@ def run_reader_canary(
                 digest.update(chunk)
                 byte_count += len(chunk)
         cache_after_read = reader.cached_bytes
+        cached_after_read = reader.has_cached(admission.contract_sha256)
+        cache_observed_at = datetime.now(UTC)
     if reader.cached_bytes != 0:
         raise ValueError("reader cache was not cleaned after close")
     observed_sha256 = digest.hexdigest()
@@ -710,7 +716,9 @@ def run_reader_canary(
         origin != "remote"
         or observed_sha256 != TARGET_SHA256
         or byte_count != TARGET_BYTES
-        or cache_after_read != TARGET_BYTES
+        or cache_after_read
+        != expected_cache_bytes(cache_expires_at, cache_observed_at)
+        or cached_after_read != (cache_after_read > 0)
     ):
         raise ValueError("consumer stream or bounded cache result differs")
     if not _valid_workflow_identity(
@@ -741,6 +749,7 @@ def run_reader_canary(
             "consumer_stream_digest_match": True,
             "reader_cache_bytes_after_read": cache_after_read,
             "reader_cache_bytes_after_close": 0,
+            "expired_cache_not_retained": cache_after_read == 0,
             "source_values_or_rows_interpreted": False,
         },
         "hosted_workflow": {
@@ -771,6 +780,10 @@ def _valid_workflow_identity(commit: str, run_id: str, attempt: str) -> bool:
         and attempt.isdecimal()
         and int(attempt) >= 1
     )
+
+
+def expected_cache_bytes(expires_at: datetime, observed_at: datetime) -> int:
+    return TARGET_BYTES if expires_at > observed_at else 0
 
 
 def main(argv: list[str] | None = None) -> int:
