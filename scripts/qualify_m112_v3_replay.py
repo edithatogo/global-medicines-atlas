@@ -57,7 +57,7 @@ def _verify_reference(root: Path, reference: Any) -> None:
         raise ValueError(f"M-112 evidence reference digest mismatch: {path}")
 
 
-def _candidate(report: dict[str, Any]) -> dict[str, Any]:
+def _candidate(report: dict[str, Any], target_path: str) -> dict[str, Any]:
     objects = report.get("objects")
     if not isinstance(objects, list):
         raise TypeError("M-112 role report lacks its object inventory")
@@ -69,12 +69,31 @@ def _candidate(report: dict[str, Any]) -> dict[str, Any]:
         if (
             item.get("dataset") == TARGET_DATASET
             and item.get("revision") == TARGET_REVISION
-            and item.get("path") == TARGET_PATH
+            and item.get("path") == target_path
         ):
             candidates.append(item)
     if len(candidates) != 1:
         raise ValueError("exact M-112 v3 replay target is not unique")
     return candidates[0]
+
+
+def _already_admitted(root: Path, candidate: dict[str, Any]) -> bool:
+    """Reject a replay for a path already present in an exact v4 contract."""
+    contracts = root.glob(
+        "quality/qualifications/australian-m112-v4-*-raw-b2-contract.json"
+    )
+    for path in contracts:
+        document = _read_json(root, path.relative_to(root).as_posix())
+        location = document.get("location")
+        if not isinstance(location, dict):
+            continue
+        identity = cast("dict[str, Any]", location)
+        if all(
+            identity.get(key) == candidate.get(key)
+            for key in ("dataset", "revision", "path")
+        ):
+            return True
+    return False
 
 
 def _eligible_evidence(
@@ -160,6 +179,9 @@ def _validate_b2(
     candidate: dict[str, Any],
     source_id: str,
     manifest_path: str,
+    dataset: str,
+    revision: str,
+    target_path: str,
 ) -> None:
     rows_value = manifest.get("rows")
     if not isinstance(rows_value, list):
@@ -171,8 +193,8 @@ def _validate_b2(
         )
     manifest_row = cast("dict[str, Any]", rows[0])
     expected_locator = (
-        f"https://huggingface.co/datasets/{TARGET_DATASET}/resolve/"
-        f"{TARGET_REVISION}/{TARGET_PATH}"
+        f"https://huggingface.co/datasets/{dataset}/resolve/"
+        f"{revision}/{target_path}"
     )
     if not all((
         manifest_row.get("source_id") == source_id,
@@ -199,16 +221,23 @@ def _partition_metadata(
     source_receipt_path: str,
     acquisition_event_path: str,
     b2_manifest_path: str,
+    target_path: str,
 ) -> dict[str, Any]:
+    dataset = cast("str", candidate.get("dataset"))
+    revision = cast("str", candidate.get("revision"))
     object_identity = {
-        "dataset": TARGET_DATASET,
-        "revision": TARGET_REVISION,
-        "path": TARGET_PATH,
+        "dataset": dataset,
+        "revision": revision,
+        "path": target_path,
     }
     logical_asset_id = _sha256(_canonical(object_identity))
     # This filename-derived label does not claim payload temporal semantics.
-    archive_period = "filename-derived:mbs-group-2016hr-july.xlsx"
-    partition_value = f"{TARGET_DATASET}@{TARGET_REVISION}:{TARGET_PATH}"
+    archive_period = (
+        "filename-derived:mbs-group-2016hr-july.xlsx"
+        if target_path == TARGET_PATH
+        else f"filename-derived:{Path(target_path).name}"
+    )
+    partition_value = f"{dataset}@{revision}:{target_path}"
     partition_id = _sha256(
         _canonical([source_id, archive_period, logical_asset_id])
     )
@@ -257,7 +286,9 @@ def _snapshot_hashes(
     }
 
 
-def _snapshot(root: Path, candidate: dict[str, Any]) -> dict[str, Any]:
+def _snapshot(
+    root: Path, candidate: dict[str, Any], target_path: str
+) -> dict[str, Any]:
     evidence, rights = _eligible_evidence(candidate)
     receipt_path, event_path, manifest_path = _source_paths(evidence)
 
@@ -267,7 +298,19 @@ def _snapshot(root: Path, candidate: dict[str, Any]) -> dict[str, Any]:
     _verify_reference(root, rights)
     source_id = cast("str", receipt.get("source", {}).get("source_id"))
     _validate_b1(receipt, event, candidate)
-    _validate_b2(root, manifest, evidence, candidate, source_id, manifest_path)
+    dataset = cast("str", candidate.get("dataset"))
+    revision = cast("str", candidate.get("revision"))
+    _validate_b2(
+        root,
+        manifest,
+        evidence,
+        candidate,
+        source_id,
+        manifest_path,
+        dataset,
+        revision,
+        target_path,
+    )
     partition = _partition_metadata(
         root,
         candidate,
@@ -277,6 +320,7 @@ def _snapshot(root: Path, candidate: dict[str, Any]) -> dict[str, Any]:
         receipt_path,
         event_path,
         manifest_path,
+        target_path,
     )
     snapshot_hashes = _snapshot_hashes(candidate, partition)
     return {
@@ -294,15 +338,30 @@ def _snapshot(root: Path, candidate: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def qualify(root: Path = ROOT) -> dict[str, Any]:
+def qualify(
+    root: Path = ROOT,
+    *,
+    target_path: str = TARGET_PATH,
+    allow_existing: bool = False,
+) -> dict[str, Any]:
     """Build and validate the one-object metadata replay contract."""
     report = _read_json(root, ROLE_REPORT)
     if report.get("contract", {}).get("version") != "4.1":
         raise ValueError("M-112 role report is not for v4.1")
-    if report.get("cohort", {}).get("v4_admissions") != 0:
-        raise ValueError("M-112 admissions changed; refresh the replay scope")
-    candidate = _candidate(report)
-    snapshot = _snapshot(root, candidate)
+    if (
+        not target_path.startswith("raw/mbs/utilisation/")
+        or ".." in Path(target_path).parts
+        or "\\" in target_path
+    ):
+        raise ValueError("M-112 replay target must be an approved raw B2 path")
+    candidate = _candidate(report, target_path)
+    if candidate.get("rights_state") != RIGHTS_STATE:
+        raise ValueError("M-112 replay target lacks exact-scope rights")
+    if candidate.get("v4_admission_eligible") is True:
+        raise ValueError("M-112 replay target is already admitted")
+    if not allow_existing and _already_admitted(root, candidate):
+        raise ValueError("M-112 replay target already has a v4 contract")
+    snapshot = _snapshot(root, candidate, target_path)
     contract = {
         "contract_id": "au-data-gov-mbs-group:historical-backfill-replay:v1",
         "source_id": snapshot["source_id"],
@@ -372,9 +431,15 @@ def _canonical_document(document: dict[str, Any]) -> bytes:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / OUTPUT)
+    parser.add_argument("--target-path", default=TARGET_PATH)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    expected = _canonical_document(qualify())
+    expected = _canonical_document(
+        qualify(
+            target_path=args.target_path,
+            allow_existing=args.check and args.target_path == TARGET_PATH,
+        )
+    )
     if args.check:
         if not args.output.is_file() or args.output.read_bytes() != expected:
             raise SystemExit(f"v3 replay plan is stale: {args.output}")
