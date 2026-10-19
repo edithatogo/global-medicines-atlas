@@ -63,7 +63,7 @@ V3_REPLAY_TIMEOUT_MINUTES = 15
 APPROVED_DENOMINATOR = 1_759
 MIN_V4_RECEIPT_ROLES = 10
 OBSERVED_AT = "2026-10-19T16:13:05Z"
-ROLE_REPORT_RECORDED_AT = "2026-10-19T20:14:36Z"
+ROLE_REPORT_RECORDED_AT = "2026-10-19T21:01:38Z"
 CONTRACT_REPOSITORY = "edithatogo/global-medicines-atlas"
 CONTRACT_COMMIT = "a5753b1c79ccedd9bb54112bf803882ffc9deb96"
 CONTRACT_SCHEMA_PATH = "contracts/medallion/v4.1/federation.schema.json"
@@ -918,8 +918,7 @@ def _bind_v3_replay_candidate(  # ruff: ignore[too-many-branches,too-many-locals
     if not all((
         manifest.get("schema_id")
         == "global-medicines-atlas.m112-v3-replay-readback-manifest",
-        manifest.get("status")
-        == "two_exact_successful_hosted_v3_replay_readbacks",
+        manifest.get("status") == "successful_exact_hosted_v3_replay_readbacks",
         manifest_scope.get("approved_denominator") == APPROVED_DENOMINATOR,
         manifest_scope.get("v4_admissions_added") == 0,
         manifest_scope.get("consumer_canaries_added") == 0,
