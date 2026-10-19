@@ -3882,10 +3882,15 @@
   over the cumulative overlay. It preserves historical acquisition rights and
   admission records. See
   `quality/qualifications/australian-m112-current-rights-reconciliation-20261019.json`.
-- [x] Verify 22 frozen objects have positive scoped rights evidence and 1,737
-  remain unresolved. Rights evidence leaves the 1,759 deferrals, zero v4
-  admissions, zero canaries, and zero external publications unchanged. CMS
-  stays external-reference-only; no processing or derived rights are inferred.
+- [x] Supersede the prior 22/1,737 rights snapshot after joining the existing
+  PBS utilisation publication authorization to all six frozen raw PBS objects.
+  Exact path, digest, byte count, source, category, and source-domain checks
+  pass; the grant excludes unlicensed vocabulary redistribution, whose presence
+  remains unreviewed and blocks full-object release. The current snapshot has
+  28 objects with positive scoped rights evidence and 1,731 unresolved. Rights
+  evidence leaves all 1,759 objects deferred, zero v4 admissions, zero canaries,
+  and zero external publications unchanged. CMS remains external-reference-only;
+  no processing or derived rights are inferred.
 - [ ] Resolve the four exact August 2026 MBS Bronze projection rights and
   derived-output authority independently. Their B1/B2 and transformation
   lineage is complete in the cumulative overlay, but the source authorization
