@@ -161,9 +161,11 @@ def _validate_b1(
     source = receipt.get("source")
     if not isinstance(source, dict):
         raise TypeError("source receipt source identity is missing")
+    source = cast("dict[str, Any]", source)
+    source_id = source.get("source_id")
     if (
-        source.get("source_id") != candidate.get("source_id")
-        or source.get("source_id") not in SUPPORTED_SOURCE_IDS
+        source_id != candidate.get("source_id")
+        or source_id not in SUPPORTED_SOURCE_IDS
     ):
         raise ValueError(
             "source receipt differs from the approved M-112 source"

@@ -145,11 +145,15 @@ def execute(
     if _sha256(_canonical(plan_content)) != replay_plan.get("plan_sha256"):
         raise ValueError("replay plan digest is invalid")
     contracts_value = plan.get("contracts")
-    if not isinstance(contracts_value, list) or len(contracts_value) != 1:
+    if not isinstance(contracts_value, list):
+        raise TypeError("replay plan contracts must be an array")
+    contracts = cast("list[Any]", contracts_value)
+    if len(contracts) != 1:
         raise ValueError("replay plan must contain exactly one v3 contract")
-    contract = contracts_value[0]
-    if not isinstance(contract, dict):
+    contract_value = contracts[0]
+    if not isinstance(contract_value, dict):
         raise TypeError("replay contract must be an object")
+    contract = cast("dict[str, Any]", contract_value)
     source_id = snapshot.get("source_id")
     replay_identity_is_valid = all((
         source_id in SUPPORTED_SOURCE_IDS,
