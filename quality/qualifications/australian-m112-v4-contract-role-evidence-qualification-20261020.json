@@ -46,7 +46,7 @@
     "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
     "version": "4.1"
   },
-  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, v3 replay, recovery/cache, and consumers remain incomplete. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. Recovery evidence covers only the 14 utilisation paths; cache evidence remains missing. Preserve zero v4 admissions and zero M-112 consumer canaries.",
+  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, v3 replay, recovery/cache, and consumers remain incomplete. Source temporal semantics are qualified for one 2016 group statistics object only; its raw schema layout and the other 15 source roles remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. Recovery evidence covers only the 14 utilisation paths; cache evidence remains missing. Preserve zero v4 admissions and zero M-112 consumer canaries.",
   "discovery_candidate_evidence": {
     "objects": 16,
     "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
@@ -2578,7 +2578,7 @@
         "publication": "candidate_receipt_available_unbound",
         "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
@@ -2686,6 +2686,34 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+      "source_candidate_receipt": {
+        "acquisition_id": "7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2016-07-31",
+        "layer": "bronze",
+        "representation": "raw",
+        "retrieved_at": "2026-09-27T16:43:13Z",
+        "schema_era": "data.gov.au-resource-revision-2016-08-29; MBS Group Statistics Report 2016 YTD",
+        "schema_layout_qualified": false,
+        "source_id": "au-data-gov-mbs-group",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "047b74f17a6fce5ce9a16eaf85b04093ec521a1dc3a89a6d6b01e4e209cc2538"
+          },
+          "http_status": 200,
+          "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2016-07-31",
+          "reporting_period": "year_to_date_through_2016-07-31",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-group",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -2746,9 +2774,9 @@
       "state": "candidate_identity_available_unbound_for_16_of_16"
     },
     {
-      "evidence": "source/acquisition identity and raw B2 stratum are supported by per-object B1/B2 evidence; source-era semantics and a consistent contract-level effective/retrieval representation remain to be qualified",
+      "evidence": "Official data.gov.au resource metadata qualifies the reporting period, processing-month basis, and retrieval identity for one 2016 MBS group-statistics B2 object. The raw workbook schema layout remains unqualified; the other 15 source roles remain partial. This exact source-role receipt is still unbound.",
       "role": "source",
-      "state": "partial"
+      "state": "candidate_receipt_available_unbound_for_1_of_16"
     },
     {
       "evidence": "All 16 exact dataset/revision/path/byte-count/SHA-256 identities bind to the existing anonymous digest evidence and current public, ungated repository metadata. The evidence remains unbound until referenced by each complete v4 contract.",
@@ -2830,6 +2858,13 @@
   "source_qualification": {
     "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json",
     "sha256": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c"
+  },
+  "source_semantics_candidate_evidence": {
+    "objects": 1,
+    "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+    "schema_layout_qualified": false,
+    "sha256": "047b74f17a6fce5ce9a16eaf85b04093ec521a1dc3a89a6d6b01e4e209cc2538",
+    "state": "candidate_receipt_available_unbound_for_1_of_16"
   },
   "supersedes": {
     "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json",

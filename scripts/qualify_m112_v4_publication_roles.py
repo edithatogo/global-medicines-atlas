@@ -10,6 +10,7 @@ import argparse
 import copy
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any, cast
 
@@ -17,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ROLE_REPORT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json"
 DIGEST_REPORT = "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json"
 DISCOVERY_REPORT = "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json"
+SOURCE_SEMANTICS_REPORT = "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json"
 OUTPUT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json"
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
 PINNED_REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
@@ -41,6 +43,15 @@ CONTRACT_SCHEMA_SHA256 = (
     "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
 )
 PRODUCER_WORKFLOW = ".github/workflows/australian-mbs-utilisation-harvest.yml"
+SHA256_HEX_LENGTH = 64
+SOURCE_SEMANTICS_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
+SOURCE_SEMANTICS_IDENTITY = {
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "path": SOURCE_SEMANTICS_PATH,
+    "bytes": 6857437,
+    "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+}
 
 
 def _sha256(data: bytes) -> str:
@@ -414,6 +425,83 @@ def _bind_recovery_candidate(
     }
 
 
+def _bind_source_semantics_candidate(
+    candidate: dict[str, Any], semantics: dict[str, Any], root: Path
+) -> None:
+    if candidate.get("path") != SOURCE_SEMANTICS_PATH:
+        return
+    identity = semantics.get("object_identity")
+    if not isinstance(identity, dict) or any(
+        identity.get(key) != value
+        for key, value in SOURCE_SEMANTICS_IDENTITY.items()
+    ):
+        raise ValueError("source semantics readback identity differs")
+    if (
+        semantics.get("status")
+        != "source_temporal_semantics_qualified_schema_layout_unqualified"
+        or semantics.get("boundaries", {}).get("raw_workbook_inspected")
+        is not False
+    ):
+        raise ValueError("source semantics evidence exceeded its stated scope")
+    temporal = semantics.get("temporal_semantics")
+    acquisition = semantics.get("acquisition")
+    if not isinstance(temporal, dict) or not isinstance(acquisition, dict):
+        raise TypeError("source temporal or acquisition evidence is missing")
+    if (
+        temporal.get("effective_date") != "2016-07-31"
+        or temporal.get("cohort") != "legacy"
+        or temporal.get("service_month_basis")
+        != "claim_processing_date_not_service_provision_date"
+        or acquisition.get("source_id") != candidate.get("source_id")
+        or acquisition.get("acquisition_id") != candidate.get("acquisition_id")
+    ):
+        raise ValueError("source temporal semantics do not bind this candidate")
+    response = semantics.get("metadata_readback")
+    if not isinstance(response, dict) or not isinstance(
+        response.get("response_sha256"), str
+    ):
+        raise TypeError("source metadata readback digest is missing")
+    if not re.fullmatch(
+        rf"[0-9a-f]{{{SHA256_HEX_LENGTH}}}",
+        cast("str", response["response_sha256"]),
+    ):
+        raise ValueError("source metadata readback digest is malformed")
+    states_value = candidate.get("contract_role_states")
+    if not isinstance(states_value, dict):
+        raise TypeError("candidate has no v4 contract role states")
+    cast("dict[str, Any]", states_value)["source"] = (
+        "candidate_receipt_available_unbound"
+    )
+    candidate["source_candidate_receipt"] = {
+        "source_id": candidate["source_id"],
+        "acquisition_id": candidate["acquisition_id"],
+        "layer": "bronze",
+        "bronze_stratum": "B2",
+        "representation": "raw",
+        "schema_era": (
+            "data.gov.au-resource-revision-2016-08-29;"
+            " MBS Group Statistics Report 2016 YTD"
+        ),
+        "comparison_cohort": "legacy",
+        "effective_date": temporal["effective_date"],
+        "retrieved_at": acquisition["retrieved_at"],
+        "temporal_semantics": temporal,
+        "source_metadata_readback": {
+            "url": response["url"],
+            "http_status": response["http_status"],
+            "response_sha256": response["response_sha256"],
+            "evidence_report": {
+                "path": SOURCE_SEMANTICS_REPORT,
+                "sha256": _sha256(
+                    (root / SOURCE_SEMANTICS_REPORT).read_bytes()
+                ),
+            },
+        },
+        "schema_layout_qualified": False,
+        "contract_role_state": "candidate_receipt_available_unbound",
+    }
+
+
 def _update_summary(
     report: dict[str, Any], root: Path, matched_count: int
 ) -> None:
@@ -471,6 +559,15 @@ def _update_summary(
                 "remain unverified or null. Two August source-archive objects "
                 "have no such receipt."
             )
+        if role.get("role") == "source":
+            role["state"] = "candidate_receipt_available_unbound_for_1_of_16"
+            role["evidence"] = (
+                "Official data.gov.au resource metadata qualifies the reporting "
+                "period, processing-month basis, and retrieval identity for one "
+                "2016 MBS group-statistics B2 object. The raw workbook schema "
+                "layout remains unqualified; the other 15 source roles remain "
+                "partial. This exact source-role receipt is still unbound."
+            )
     report["authority_identity"] = {
         "producer_repository": CONTRACT_REPOSITORY,
         "contract_repository": CONTRACT_REPOSITORY,
@@ -492,7 +589,9 @@ def _update_summary(
         "unbound candidate evidence for 14 of 16 paths. Authority is not yet "
         "referenced by complete v4 contracts. Two August paths, source "
         "semantics, discovery, v3 replay, recovery/cache, and consumers remain "
-        "incomplete. Location and discovery evidence now cover all 16 paths but "
+        "incomplete. Source temporal semantics are qualified for one 2016 group "
+        "statistics object only; its raw schema layout and the other 15 source "
+        "roles remain unresolved. Location and discovery evidence now cover all 16 paths but "
         "remain unbound until referenced by complete per-object v4 contracts. "
         "Recovery evidence covers only the 14 utilisation paths; cache evidence "
         "remains missing. Preserve "
@@ -510,6 +609,7 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
     report = copy.deepcopy(_read_json(root, ROLE_REPORT))
     digest_report = _read_json(root, DIGEST_REPORT)
     discovery_report = _read_json(root, DISCOVERY_REPORT)
+    source_semantics = _read_json(root, SOURCE_SEMANTICS_REPORT)
     candidates = report.get("objects")
     verified_objects = digest_report.get("verified_objects")
     archives = digest_report.get("archives")
@@ -552,6 +652,7 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         _bind_authority_candidate(candidate, root)
         _bind_discovery_candidate(candidate, discovery_report, root)
         _bind_location_candidate(candidate, discovery_report, root)
+        _bind_source_semantics_candidate(candidate, source_semantics, root)
         if candidate.get("dataset") == DATASET:
             bound = _bind_candidate(candidate, verified_values, archive, root)
             _bind_recovery_candidate(bound, archive)
@@ -566,6 +667,13 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         "sha256": _sha256((root / DISCOVERY_REPORT).read_bytes()),
         "objects": EXPECTED_CANDIDATES,
         "state": "candidate_receipt_available_unbound_for_16_of_16",
+    }
+    report["source_semantics_candidate_evidence"] = {
+        "path": SOURCE_SEMANTICS_REPORT,
+        "sha256": _sha256((root / SOURCE_SEMANTICS_REPORT).read_bytes()),
+        "objects": 1,
+        "state": "candidate_receipt_available_unbound_for_1_of_16",
+        "schema_layout_qualified": False,
     }
     report["location_candidate_evidence"] = {
         "objects": EXPECTED_CANDIDATES,

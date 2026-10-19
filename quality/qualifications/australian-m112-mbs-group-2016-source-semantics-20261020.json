@@ -1,0 +1,52 @@
+{
+  "acquisition": {
+    "acquisition_id": "7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b",
+    "raw_representation": "bronze/B2/raw",
+    "retrieved_at": "2026-09-27T16:43:13Z",
+    "source_id": "au-data-gov-mbs-group"
+  },
+  "boundaries": {
+    "m112_consumer_canary_performed": false,
+    "raw_workbook_downloaded": false,
+    "raw_workbook_inspected": false,
+    "rights_or_admission_changed": false,
+    "schema_layout_qualified": false
+  },
+  "dataset": {
+    "id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+    "metadata_modified": "2023-08-09T23:44:56.546505",
+    "title": "Medicare Benefits Schedule (MBS) - Group Statistics Report"
+  },
+  "metadata_readback": {
+    "access": "public dataset metadata only",
+    "http_status": 200,
+    "response_bytes": 16665,
+    "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+    "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc"
+  },
+  "object_identity": {
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+    "bytes": 6857437,
+    "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+  },
+  "recorded_at": "2026-10-19T16:29:29Z",
+  "resource": {
+    "created": "2015-08-11T02:18:17.468175",
+    "format": "excel (.xlsx)",
+    "id": "07b46b92-9cc3-4dda-8a0b-ab86f77f5419",
+    "last_modified": "2016-08-29T00:00:00",
+    "name": "MBS Group Statistics Report - 2016 (YTD) excel",
+    "url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/07b46b92-9cc3-4dda-8a0b-ab86f77f5419/download/mbs-group-2016hr-july.xlsx"
+  },
+  "schema_id": "global-medicines-atlas.m112-source-temporal-semantics-readback",
+  "schema_version": 1,
+  "status": "source_temporal_semantics_qualified_schema_layout_unqualified",
+  "temporal_semantics": {
+    "cohort": "legacy",
+    "effective_date": "2016-07-31",
+    "reporting_period": "year_to_date_through_2016-07-31",
+    "service_month_basis": "claim_processing_date_not_service_provision_date"
+  }
+}

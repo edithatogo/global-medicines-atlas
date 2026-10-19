@@ -1456,3 +1456,21 @@
   remains 1,759, with zero v4 admissions and zero qualifying M-112 consumer
   canaries. Cache lifecycle evidence remains missing; source semantics,
   complete v4 contracts and consumer qualification remain open.
+
+## 2026-10-19 M-112 source-temporal evidence for one MBS group object
+
+- [x] Read the public data.gov.au package metadata for the exact 2016 YTD MBS
+  Group Statistics resource. It establishes the report period through
+  2016-07-31, resource last-modified date 2016-08-29, and that month is based
+  on claim-processing date rather than service-provision date. The anonymous
+  acquisition receipt supplies the exact retrieval timestamp.
+- [x] Bind that bounded temporal evidence as a candidate source role to the
+  exact 2016 group-statistics B2 identity. The source schema layout remains
+  unqualified because the workbook was neither downloaded nor inspected.
+  Record the metadata response digest and explicit boundaries in
+  `quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json`.
+- [x] Focused role tests (9), broader M-112 v1/federation selection (75),
+  qualification regeneration/check, Ruff, and routine Test-Goblin passed.
+- [~] The source role remains unbound pending complete v4 contracts; 15 other
+  source candidates still lack source-specific temporal qualification. Preserve
+  the 1,759 denominator, zero admissions, and zero consumer canaries.
