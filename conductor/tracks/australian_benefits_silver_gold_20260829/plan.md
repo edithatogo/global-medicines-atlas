@@ -3870,3 +3870,27 @@
   rights conclusion, or external publication was authorized. The M-112
   denominator and all 1,759 deferrals remain unchanged. See
   `quality/qualifications/cms-hcpcs-rights-review-20261019.json`.
+
+## M-112 raw B2 v1 conformance candidate (2026-10-19)
+
+- [x] Build a deterministic v1 conformance manifest for the exact 16-object
+  MBS raw-B2 cohort already selected by the v4.1 role assessment. Bind each
+  artifact to its source acquisition identity, exact path/revision/digest,
+  exact-scope rights evidence, B1/B2 lineage evidence, and anonymous digest
+  readback. The manifest keeps all artifacts `candidate` and all Silver
+  promotions `blocked` on remaining v4 roles.
+- [x] Validate all bound local evidence digests and the immutable v1 schema
+  (`4c1ee81b026c64cf8f962d602cd64441a4a023c132346349c8b27dab0981f10e`); the
+  focused selection passed (14 tests), the broader federation/M-112 selection
+  passed (422 tests), and the follow-up harness/new qualification selection
+  passed (72 tests). Test-Goblin routine, Ruff, formatting, BasedPyright, `ty`,
+  context, ecosystem, and diff checks passed. No source payload bytes or
+  values were read. The manifest is
+  `quality/qualifications/australian-m112-v1-conformance-20261019.json`
+  (SHA-256
+  `826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842`).
+- [~] Bind this manifest as the exact `/lineage/v1_conformance` receipt in
+  live v4.1 contracts only after its durable commit URL is established. This
+  closes the local v1 schema-conformance candidate for these paths; it does
+  not by itself satisfy the v4 receipt role, v3 replay, publication, clean-room
+  verification, discovery, recovery/cache, consumer canaries, or admission.
