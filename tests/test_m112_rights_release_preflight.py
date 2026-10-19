@@ -102,7 +102,7 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert gates["all_remaining_deferrals_preserved"] is True
     assert gates["deferred_objects"] == 1756
     assert gates["v4_admissions"] == 3
-    assert gates["consumer_canaries"] == 2
+    assert gates["consumer_canaries"] == 3
     assert gates["external_publications_performed"] is False
 
 

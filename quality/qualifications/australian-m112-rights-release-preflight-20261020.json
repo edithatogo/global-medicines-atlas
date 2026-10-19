@@ -163,7 +163,7 @@
     "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
     "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
     "quality/qualifications/australian-m108-derived-products-20261017.json": "f9da44a9fc61ebaff83e7784f56d2376db33e2d9a7b834142ee60c3a1ad5fd7c",
-    "quality/qualifications/australian-m112-current-rights-reconciliation-20261019.json": "68d8793ef5ea690d235552cb2b5cc2fd975eec347377ce7c9d42ad7eb564b210",
+    "quality/qualifications/australian-m112-current-rights-reconciliation-20261019.json": "1f6c0f5ae36f69e50df0c95dc47853d9ec2d9625a98ff1ebe83ef3e1a4e1b96e",
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
     "quality/qualifications/australian-m112-rights-release-preflight-20261019.json": "08102adea4195b710bb343be7b1e2be2ac7064e3aa49814d082d4a4dfccbdd07",
     "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0",
@@ -179,10 +179,11 @@
     "quality/qualifications/australian-m112-pbs-pdf-archive-lineage-20261019.json": "b0196e9639fe86d5cf21dae2240bc7c3d6ad0983f8435aa0d55d32538f4c3486",
     "quality/qualifications/australian-m112-pbs-projected-b1-b2-lineage-20261019.json": "aa4a0df6df4ec723e7b65f55379f47ae7912e4777a6b9d3bb3454c1accf3a16f",
     "quality/qualifications/reimbursement-atlas-pbs-raw-permission-20260831.json": "0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098",
-    "scripts/reconcile_m112_current_rights_state.py": "98a1004fdf823f00e601a27915086e6c00520be1447c807c6cc5db8752e6800e",
-    "tests/test_reconcile_m112_current_rights_state.py": "a3484e5a1168def313b7ca9aa94d83a9a811891d1e45c92d17e8037f924e6a67",
-    "tests/test_m112_rights_release_preflight.py": "95627a287d619a20888b863cbd626d1d448264621caacf6f9c74dd2bd457ccba",
-    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "6fcf7d4ad19b979973f3335599410da26eeaf0a004fd766b2b94a222d3f89ce4"
+    "scripts/reconcile_m112_current_rights_state.py": "1a7e74adf86fc519b837f4b55ff30475333ef1304835692adcea91cc8ab3bfab",
+    "tests/test_reconcile_m112_current_rights_state.py": "db52ea1186a9a7e78910252513b98c0476f3ecade682a00f3a61eb3c4fe9a6e8",
+    "tests/test_m112_rights_release_preflight.py": "ef5c99274a8043465697530e3f90e163403c5905d1633782902ff0b89fec7871",
+    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "49c05406ccaecce4d52c8bd09b0d799e3138bb010a57f242bbac22b5be6bee4b",
+    "quality/qualifications/australian-m112-v4-historical-1993-2015-consumer-canary-20261020-39330593204.json": "b10a7f795014e0b6ebc975330062bb9e20dd13d66996a09b1a5a69c4b438803f"
   },
   "july_2025_mbs_silver": {
     "attestation_path": "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json",
@@ -243,7 +244,7 @@
   },
   "m112_admission_canary_readback": {
     "admitted_object_count": 3,
-    "canaried_object_count": 2,
+    "canaried_object_count": 3,
     "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
     "current_role_qualification": {
       "admitted_objects": [
@@ -273,7 +274,7 @@
         }
       ],
       "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json",
-      "sha256": "6fcf7d4ad19b979973f3335599410da26eeaf0a004fd766b2b94a222d3f89ce4"
+      "sha256": "49c05406ccaecce4d52c8bd09b0d799e3138bb010a57f242bbac22b5be6bee4b"
     },
     "deferred_object_count": 1756,
     "native_workbook_layout_qualified": false,
@@ -305,6 +306,13 @@
         "run_id": 39306554319,
         "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39306554319",
         "workflow_commit": "7dbf14db2403485cabbe699858579cf7c7567012"
+      },
+      {
+        "receipt_path": "quality/qualifications/australian-m112-v4-historical-1993-2015-consumer-canary-20261020-39330593204.json",
+        "receipt_sha256": "b10a7f795014e0b6ebc975330062bb9e20dd13d66996a09b1a5a69c4b438803f",
+        "run_id": 39330593204,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39330593204",
+        "workflow_commit": "3149a5533ecb1b721d9deda66311d4abc94ee3d1"
       }
     ],
     "unique_object_counts_are_deduplicated_across_runs": true
@@ -353,7 +361,7 @@
   "recorded_at": "2026-10-20T00:00:00Z",
   "release_and_admission_boundaries": {
     "all_remaining_deferrals_preserved": true,
-    "consumer_canaries": 2,
+    "consumer_canaries": 3,
     "deferred_objects": 1756,
     "external_publication_performed": false,
     "m112_denominator_changed": false,

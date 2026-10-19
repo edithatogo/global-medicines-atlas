@@ -68,7 +68,7 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
     assert report["cohort"]["approved_denominator"] == 1759
     assert report["cohort"]["approved_denominator_changed"] is False
     assert report["cohort"]["v4_admissions"] == 3
-    assert report["cohort"]["consumer_canaries"] == 2
+    assert report["cohort"]["consumer_canaries"] == 3
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
     assert report["source_qualification"]["path"] == OVERLAY_REPORT
@@ -156,7 +156,7 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
     )
     assert report["v3_replay_candidate_evidence"]["objects"] == 3
     assert report["cohort"]["v4_admissions"] == 3
-    assert report["cohort"]["consumer_canaries"] == 2
+    assert report["cohort"]["consumer_canaries"] == 3
 
 
 def test_v3_replay_receipt_must_match_the_pinned_object(
@@ -329,7 +329,7 @@ def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
     )
     assert report["source_semantics_candidate_evidence"]["objects"] == 13
     assert report["cohort"]["v4_admissions"] == 3
-    assert report["cohort"]["consumer_canaries"] == 2
+    assert report["cohort"]["consumer_canaries"] == 3
 
 
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:

@@ -56,7 +56,9 @@ PBS_RAW_PERMISSION_SHA256 = (
 PBS_RAW_PERMISSION_REVISION = "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
 PBS_RAW_PERMISSION_OBJECT_COUNT = 1708
 M112_CURRENT_ADMISSION_COUNT = 3
-M112_CURRENT_CANARY_COUNT = 2
+M112_CURRENT_CANARY_COUNT = 3
+M112_HISTORICAL_CANARY_RUN_ID = 39330593204
+M112_HISTORICAL_CANARY_BYTES = 205885063
 PBS_DECISION_0009 = Path(
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md"
 )
@@ -68,6 +70,10 @@ MBS_JULY2016_CANARY_RECEIPTS = (
 )
 M112_ROLE_QUALIFICATION = QUAL / (
     "australian-m112-v4-contract-role-evidence-qualification-20261020.json"
+)
+M112_HISTORICAL_CANARY = QUAL / (
+    "australian-m112-v4-historical-1993-2015-consumer-canary-"
+    "20261020-39330593204.json"
 )
 M108_ASSESSMENT = QUAL / "australian-m108-derived-products-20261017.json"
 OUTPUT = QUAL / "australian-m112-current-rights-reconciliation-20261019.json"
@@ -570,6 +576,42 @@ def _reconcile_m112_canary_readback(
     input_hashes[str(M112_ROLE_QUALIFICATION)] = _sha256(
         root / M112_ROLE_QUALIFICATION
     )
+    historical_canary = _read(root, M112_HISTORICAL_CANARY)
+    admission = historical_canary["admission"]
+    canary = historical_canary["consumer_canary"]
+    workflow = canary["hosted_workflow"]
+    canary_checks: list[bool] = [
+        historical_canary["approved_denominator"] != FROZEN_OBJECT_COUNT,
+        historical_canary["admissions"] != 1,
+        historical_canary["consumer_canaries"] != 1,
+        canary["status"] != "passed",
+        canary["boundaries"]["admission_used"] is not True,
+        canary["boundaries"]["admission_performed"] is not False,
+        canary["boundaries"]["public_dataset_mutated"] is not False,
+        canary["boundaries"]["source_payload_bytes_retained"] is not False,
+        canary["boundaries"]["source_values_or_rows_included"] is not False,
+        workflow["repository"] != "edithatogo/global-medicines-atlas",
+        workflow["run_id"] != M112_HISTORICAL_CANARY_RUN_ID,
+        workflow["commit"] != "3149a5533ecb1b721d9deda66311d4abc94ee3d1",
+        admission["dataset"] != "edithatogo/australian-mbs-utilisation-archive",
+        admission["path"]
+        != "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        admission["sha256"]
+        != "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        admission["byte_count"] != M112_HISTORICAL_CANARY_BYTES,
+    ]
+    if any(canary_checks):
+        raise ValueError("historical M-112 canary receipt did not reconcile")
+    input_hashes[str(M112_HISTORICAL_CANARY)] = _sha256(
+        root / M112_HISTORICAL_CANARY
+    )
+    runs.append({
+        "receipt_path": str(M112_HISTORICAL_CANARY),
+        "receipt_sha256": input_hashes[str(M112_HISTORICAL_CANARY)],
+        "run_id": workflow["run_id"],
+        "run_url": workflow["run_url"],
+        "workflow_commit": workflow["commit"],
+    })
 
     return {
         "record": {
