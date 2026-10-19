@@ -19,6 +19,9 @@ from scripts.qualify_m112_v4_publication_roles import (
     ROLE_REPORT,
     SOURCE_SEMANTICS_PATH,
     SOURCE_SEMANTICS_REPORT,
+    V3_REPLAY_PATH,
+    V3_REPLAY_PLAN,
+    V3_REPLAY_REPORT,
     qualify,
 )
 
@@ -67,6 +70,49 @@ def test_refresh_preserves_the_denominator_and_zero_admissions_and_canaries() ->
     assert report["cohort"]["consumer_canaries"] == 0
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
+
+
+def test_exact_hosted_v3_replay_binds_one_unbound_candidate_role() -> None:
+    report = qualify()
+    matches = [
+        item
+        for item in report["objects"]
+        if item["path"] == V3_REPLAY_PATH
+        and "v3_replay_candidate_receipt" in item
+    ]
+
+    assert len(matches) == 1
+    candidate = matches[0]
+    receipt = candidate["v3_replay_candidate_receipt"]
+    assert receipt["candidate_only"] is True
+    assert receipt["contract_role_state"] == (
+        "candidate_receipt_available_unbound"
+    )
+    assert (
+        receipt["workflow_commit"] == "dd7a01bcd3da60190f821395ceb1260a3d9ddad9"
+    )
+    assert receipt["workflow_run"].endswith("/39289077989")
+    assert receipt["anonymous_digest_verified"] is True
+    assert receipt["temporary_source_bytes_removed"] is True
+    assert candidate["contract_role_states"]["lineage.v3_replay"] == (
+        "candidate_receipt_available_unbound"
+    )
+    assert report["v3_replay_candidate_evidence"]["objects"] == 1
+    assert report["cohort"]["v4_admissions"] == 0
+    assert report["cohort"]["consumer_canaries"] == 0
+
+
+def test_v3_replay_receipt_must_match_the_pinned_object(
+    tmp_path: Path,
+) -> None:
+    _copy_qualification_inputs(tmp_path)
+    receipt_path = tmp_path / V3_REPLAY_REPORT
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    receipt["scope"]["sha256"] = "0" * 64
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="hosted v3 replay receipt differs"):
+        qualify(tmp_path)
 
 
 def test_exact_contract_authority_identity_binds_all_candidates_unbound() -> (
@@ -237,6 +283,8 @@ def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
     shutil.copy(
         ROOT / SOURCE_SEMANTICS_REPORT, tmp_path / SOURCE_SEMANTICS_REPORT
     )
+    shutil.copy(ROOT / V3_REPLAY_REPORT, tmp_path / V3_REPLAY_REPORT)
+    shutil.copy(ROOT / V3_REPLAY_PLAN, tmp_path / V3_REPLAY_PLAN)
     shutil.copy(ROOT / CONTRACT_SCHEMA_PATH, tmp_path / CONTRACT_SCHEMA_PATH)
     role_report = json.loads(
         (tmp_path / ROLE_REPORT).read_text(encoding="utf-8")
@@ -283,6 +331,8 @@ def test_schema_digest_mismatch_fails_closed(tmp_path: Path) -> None:
     shutil.copy(
         ROOT / SOURCE_SEMANTICS_REPORT, tmp_path / SOURCE_SEMANTICS_REPORT
     )
+    shutil.copy(ROOT / V3_REPLAY_REPORT, tmp_path / V3_REPLAY_REPORT)
+    shutil.copy(ROOT / V3_REPLAY_PLAN, tmp_path / V3_REPLAY_PLAN)
     (tmp_path / CONTRACT_SCHEMA_PATH).write_text("{}", encoding="utf-8")
 
     with pytest.raises(ValueError, match="schema digest differs"):
@@ -290,3 +340,30 @@ def test_schema_digest_mismatch_fails_closed(tmp_path: Path) -> None:
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _copy_qualification_inputs(destination: Path) -> None:
+    paths = (
+        ROLE_REPORT,
+        DIGEST_REPORT,
+        DISCOVERY_REPORT,
+        SOURCE_SEMANTICS_REPORT,
+        V3_REPLAY_REPORT,
+        V3_REPLAY_PLAN,
+        CONTRACT_SCHEMA_PATH,
+    )
+    for relative in paths:
+        source = ROOT / relative
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(source, target)
+    role_report = json.loads(
+        (destination / ROLE_REPORT).read_text(encoding="utf-8")
+    )
+    for candidate in role_report["objects"]:
+        reference = candidate["digest_evidence"]
+        relative = reference["path"]
+        source = ROOT / relative
+        target = destination / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(source, target)

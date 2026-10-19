@@ -1531,8 +1531,16 @@
   full local profile passed 6,981 tests with 96.90% coverage, three optional
   skips, and two existing stable-release reproducibility failures caused by
   uv 0.13.1. Both failed tests passed unchanged (2) with the repository's
-  isolated uv 0.11.29. Hosted protected checks and the exact-main replay run
-  remain pending.
-- [~] Keep M-112 v4 admission and consumer-canary counts at zero. The replay
-  plan and executor do not close authority, discovery, recovery/cache, source
-  semantics, v4 contract binding, or any actual consumer canary requirement.
+  isolated uv 0.11.29. Exact-main replay run 39289077989 then completed
+  successfully at `dd7a01bcd3da60190f821395ceb1260a3d9ddad9`; its anonymous
+  digest/byte-count receipt is now preserved and bound as a candidate-only
+  role for 1 of 16 objects. Temporary source bytes were removed.
+- [x] Focused v3 replay role tests (11), broader M-112 federation selection
+  (131), role-report `--check`, Ruff, targeted BasedPyright, and Test-Goblin
+  routine passed after binding the receipt.
+- [~] Keep M-112 v4 admission and consumer-canary counts at zero. Current
+  qualification still has incomplete/unbound mandatory contract roles and no
+  admitted object. The existing API/CLI/Atlas/Chromium traversal is explicitly
+  candidate-only; it cannot be counted as an admitted-product canary. Run the
+  bounded actual-consumer canaries only after an exact object passes v4
+  admission and is pinned in the consumer contract.

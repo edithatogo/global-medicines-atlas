@@ -19,6 +19,12 @@ ROLE_REPORT = "quality/qualifications/australian-m112-v4-contract-role-evidence-
 DIGEST_REPORT = "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json"
 DISCOVERY_REPORT = "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json"
 SOURCE_SEMANTICS_REPORT = "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json"
+V3_REPLAY_REPORT = (
+    "quality/qualifications/australian-m112-v3-replay-execution-20261020.json"
+)
+V3_REPLAY_PLAN = (
+    "quality/qualifications/australian-m112-v3-replay-plan-20261020.json"
+)
 SOURCE_SEMANTICS_UNRESOLVED_PATH = (
     "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip"
 )
@@ -40,7 +46,7 @@ EXPECTED_CANDIDATES = 16
 EXPECTED_SOURCE_SEMANTICS_OBJECTS = 13
 EXPECTED_MANIFEST_FILES = 28
 OBSERVED_AT = "2026-10-19T16:13:05Z"
-ROLE_REPORT_RECORDED_AT = "2026-10-19T16:34:01Z"
+ROLE_REPORT_RECORDED_AT = "2026-10-19T16:54:24Z"
 CONTRACT_REPOSITORY = "edithatogo/global-medicines-atlas"
 CONTRACT_COMMIT = "a5753b1c79ccedd9bb54112bf803882ffc9deb96"
 CONTRACT_SCHEMA_PATH = "contracts/medallion/v4.1/federation.schema.json"
@@ -50,10 +56,19 @@ CONTRACT_SCHEMA_SHA256 = (
 PRODUCER_WORKFLOW = ".github/workflows/australian-mbs-utilisation-harvest.yml"
 SHA256_HEX_LENGTH = 64
 SOURCE_SEMANTICS_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
+V3_REPLAY_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
+V3_REPLAY_COMMIT = "dd7a01bcd3da60190f821395ceb1260a3d9ddad9"
+V3_REPLAY_RUN_ID = "39289077989"
 
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _canonical_compact(value: Any) -> bytes:
+    return json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")
 
 
 def _read_json(root: Path, relative: str) -> dict[str, Any]:
@@ -562,7 +577,10 @@ def _validate_source_semantics_fields(
 
 
 def _update_summary(
-    report: dict[str, Any], root: Path, matched_count: int
+    report: dict[str, Any],
+    root: Path,
+    matched_count: int,
+    v3_replay_count: int,
 ) -> None:
     report["cohort"]["publication_candidate_receipts"] = matched_count
     report["cohort"]["verification_candidate_receipts"] = matched_count
@@ -618,6 +636,15 @@ def _update_summary(
                 "remain unverified or null. Two August source-archive objects "
                 "have no such receipt."
             )
+        if role.get("role") == "lineage.v3_replay":
+            role["state"] = "candidate_receipt_available_unbound_for_1_of_16"
+            role["evidence"] = (
+                "One exact M-112 raw B2 identity has a successful, anonymous, "
+                "token-free hosted v3 replay receipt with byte-count/SHA-256 "
+                "verification and temporary-byte cleanup. It remains "
+                "candidate-only and unbound; the other 15 replay roles are "
+                "missing."
+            )
         if role.get("role") == "source":
             role["state"] = "candidate_receipts_available_unbound_for_13_of_16"
             role["evidence"] = (
@@ -648,12 +675,13 @@ def _update_summary(
         "objects; publication and token-free anonymous restore receipts remain "
         "unbound candidate evidence for 14 of 16 paths. Authority is not yet "
         "referenced by complete v4 contracts. Two August paths, source "
-        "semantics, discovery, v3 replay, recovery/cache, and consumers remain "
+        "semantics, discovery, recovery/cache, and consumers remain "
         "incomplete. Official source temporal semantics are qualified for 13 "
         "utilisation objects; their native schema layouts and three source-role "
         "candidates remain unresolved. Location and discovery evidence now cover all 16 paths but "
         "remain unbound until referenced by complete per-object v4 contracts. "
-        "Recovery evidence covers only the 14 utilisation paths; cache evidence "
+        f"V3 replay evidence is candidate-only for {v3_replay_count} of 16 "
+        "objects. Recovery evidence covers only the 14 utilisation paths; cache evidence "
         "remains missing. Preserve "
         "zero v4 admissions and zero M-112 consumer canaries."
     )
@@ -703,6 +731,141 @@ def _raw_source_inspection_is_false(semantics: dict[str, Any]) -> bool:
         )
         is False
     )
+
+
+def _read_v3_replay_section(
+    receipt: dict[str, Any], name: str
+) -> dict[str, Any]:
+    value = receipt.get(name)
+    if not isinstance(value, dict):
+        raise TypeError("hosted v3 replay receipt sections are malformed")
+    return cast("dict[str, Any]", value)
+
+
+def _validate_v3_replay_receipt(
+    root: Path,
+) -> tuple[dict[str, Any], dict[str, Any], str, str]:
+    """Verify the durable artifact and return its exact candidate identity."""
+    receipt = _read_json(root, V3_REPLAY_REPORT)
+    plan = _read_json(root, V3_REPLAY_PLAN)
+    scope = _read_v3_replay_section(receipt, "scope")
+    workflow = _read_v3_replay_section(receipt, "hosted_workflow")
+    replay = _read_v3_replay_section(receipt, "replay")
+    verification = _read_v3_replay_section(receipt, "verification")
+    boundaries = _read_v3_replay_section(receipt, "boundaries")
+    snapshots_value = plan.get("snapshots")
+    if not isinstance(snapshots_value, list):
+        raise TypeError("v3 replay plan snapshots are malformed")
+    snapshots = cast("list[Any]", snapshots_value)
+    if len(snapshots) != 1:
+        raise ValueError("v3 replay plan no longer identifies one snapshot")
+    snapshot_value = snapshots[0]
+    if not isinstance(snapshot_value, dict):
+        raise TypeError("v3 replay snapshot is malformed")
+    snapshot = cast("dict[str, Any]", snapshot_value)
+    expected_scope = {
+        "dataset": DATASET,
+        "revision": PINNED_REVISION,
+        "path": V3_REPLAY_PATH,
+        "sha256": snapshot.get("payload_sha256"),
+        "byte_count": 6_857_437,
+    }
+    expected_url = (
+        "https://github.com/edithatogo/global-medicines-atlas/actions/runs/"
+        f"{V3_REPLAY_RUN_ID}"
+    )
+    registration_value = replay.get("registration")
+    if not isinstance(registration_value, dict):
+        raise TypeError("v3 replay registration is missing")
+    registration = cast("dict[str, Any]", registration_value)
+    if not all((
+        receipt.get("schema_id")
+        == "global-medicines-atlas.m112-v3-replay-execution-receipt",
+        receipt.get("status") == "passed",
+        receipt.get("candidate_only") is True,
+        scope == expected_scope,
+        workflow.get("repository") == CONTRACT_REPOSITORY,
+        workflow.get("commit") == V3_REPLAY_COMMIT,
+        workflow.get("run_id") == int(V3_REPLAY_RUN_ID),
+        workflow.get("run_attempt") == 1,
+        workflow.get("run_url") == expected_url,
+        replay.get("vocabulary_version") == "3.0.0",
+        replay.get("snapshot_id") == snapshot.get("snapshot_id"),
+        replay.get("partition_id") == snapshot.get("partition_id"),
+        replay.get("plan_sha256") == _sha256(_canonical_compact(plan)),
+        replay.get("registration_sha256")
+        == _sha256(_canonical_compact(registration)),
+        registration.get("payload_sha256") == expected_scope["sha256"],
+        registration.get("byte_count") == expected_scope["byte_count"],
+        registration.get("payload_values_read") is False,
+    )) or not all((
+        verification.get("anonymous") is True,
+        verification.get("token_free") is True,
+        verification.get("payload_values_read") is False,
+        verification.get("temporary_source_bytes_removed") is True,
+        boundaries.get("v4_admission_performed") is False,
+        boundaries.get("m112_consumer_canary_performed") is False,
+        boundaries.get("public_dataset_mutation") is False,
+        boundaries.get("source_values_or_rows_included") is False,
+    )):
+        raise ValueError(
+            "hosted v3 replay receipt differs from its pinned plan"
+        )
+    return (
+        replay,
+        expected_scope,
+        expected_url,
+        _sha256((root / V3_REPLAY_REPORT).read_bytes()),
+    )
+
+
+def _bind_v3_replay_candidate(
+    candidates: list[dict[str, Any]], root: Path
+) -> int:
+    """Bind one exact hosted replay artifact as unbound v3 role evidence."""
+    replay, expected_scope, expected_url, receipt_sha256 = (
+        _validate_v3_replay_receipt(root)
+    )
+
+    matched = [
+        candidate
+        for candidate in candidates
+        if (
+            candidate.get("dataset") == DATASET
+            and candidate.get("revision") == PINNED_REVISION
+            and candidate.get("path") == V3_REPLAY_PATH
+            and candidate.get("sha256") == expected_scope["sha256"]
+            and candidate.get("bytes") == expected_scope["byte_count"]
+        )
+    ]
+    if len(matched) != 1:
+        raise ValueError(
+            "v3 replay receipt does not bind one frozen M-112 object"
+        )
+    candidate = matched[0]
+    states_value = candidate.get("contract_role_states")
+    if not isinstance(states_value, dict):
+        raise TypeError("v3 replay candidate lacks contract role states")
+    states = cast("dict[str, Any]", states_value)
+    if states.get("lineage.v3_replay") != "missing":
+        raise ValueError("v3 replay role state changed before receipt binding")
+    states["lineage.v3_replay"] = "candidate_receipt_available_unbound"
+    candidate["v3_replay_candidate_receipt"] = {
+        "candidate_only": True,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "receipt": {
+            "path": V3_REPLAY_REPORT,
+            "sha256": receipt_sha256,
+        },
+        "snapshot_id": replay["snapshot_id"],
+        "partition_id": replay["partition_id"],
+        "registration_sha256": replay["registration_sha256"],
+        "workflow_commit": V3_REPLAY_COMMIT,
+        "workflow_run": expected_url,
+        "anonymous_digest_verified": True,
+        "temporary_source_bytes_removed": True,
+    }
+    return 1
 
 
 def _bind_candidates(
@@ -791,6 +954,7 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         raise ValueError(
             f"expected {EXPECTED_PATHS} MBS utilisation candidates, got {len(matched)}"
         )
+    v3_replay_count = _bind_v3_replay_candidate(matched, root)
     report["discovery_candidate_evidence"] = {
         "path": DISCOVERY_REPORT,
         "sha256": _sha256((root / DISCOVERY_REPORT).read_bytes()),
@@ -812,7 +976,13 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         "objects": len(matched),
         "state": "candidate_receipts_available_unbound_for_14_of_16",
     }
-    _update_summary(report, root, len(matched))
+    report["v3_replay_candidate_evidence"] = {
+        "path": V3_REPLAY_REPORT,
+        "sha256": _sha256((root / V3_REPLAY_REPORT).read_bytes()),
+        "objects": v3_replay_count,
+        "state": "candidate_receipt_available_unbound_for_1_of_16",
+    }
+    _update_summary(report, root, len(matched), v3_replay_count)
     return report
 
 
@@ -837,7 +1007,7 @@ def main() -> int:
                 f"M-112 v4 role receipt report is stale: {args.output}"
             )
         print(
-            "M-112 v4 receipt reconciliation passed: 14 exact publication/restore candidate bindings"
+            "M-112 v4 receipt reconciliation passed: 14 publication/restore and 1 v3 replay candidate bindings"
         )
         return 0
     args.output.parent.mkdir(parents=True, exist_ok=True)
