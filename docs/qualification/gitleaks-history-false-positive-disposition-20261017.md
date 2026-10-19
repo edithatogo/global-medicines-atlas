@@ -48,6 +48,12 @@ the two exact access-response digest field/value pairs and the one exact replay
 idempotency digest field/value pair; it does not allowlist those fields with
 changed values or allow any of the values under `api_key`.
 
+PR #1211 adds another exact-head replay readback pair. Its redacted history
+report identified the same deterministic `idempotency_key` in the run's plan
+and execution receipt. The value is a SHA-256-shaped replay identity, not a
+credential. The allowlist adds only that exact field/value match; changed
+values and other field names remain findings.
+
 ## Evidence
 
 - PR #1094 check run `39007251575`, job `117322128729`;
@@ -64,3 +70,5 @@ changed values or allow any of the values under `api_key`.
   `quality/qualifications/australian-m112-v3-replay-plan-20261020.json`;
 - Gitleaks 8.30.1 local discrimination check: exact field/value passed;
   changed value and wrong field each remained findings.
+- PR #1211 redacted Gitleaks report: two findings for the exact replay
+  idempotency field/value in the plan and execution receipt.
