@@ -46,7 +46,7 @@ jobs:
           uv run --locked --python 3.14.6 python scripts/export_australian_mbs_gold_candidate_edges.py \
             --output "$QUALIFICATION_DIR/candidate-edges.parquet" \
             --scalar-output "$QUALIFICATION_DIR/candidate-scalar.parquet"
-      - name: Traverse every candidate edge through all consumers
+      - name: Canary the exact reviewed candidate edges through all consumers
         run: |
           set -euo pipefail
           QUALIFICATION_DIR="$RUNNER_TEMP/gma-mbs-gold-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
