@@ -643,7 +643,8 @@
 - [x] Verify 5 focused tests, the routine Test-Goblin profile, Ruff, `ty`, and
   BasedPyright. Full inventory report and the appended source receipt bindings
   pass local readback checks.
-- [~] Complete exact-head hosted checks, merge the scoped PR, and verify the
-  merged qualification on `main`. This lineage checkpoint does not complete
+- [x] Complete exact-head hosted checks, merge PR #1182, and verify the merged
+  qualification on `main` at `7f40710996fa36495377b0fdf8c5ca3c82fb99af`.
+  This lineage checkpoint does not complete
   rights/release evidence, v4 admission, graph screening/calibration, recovery,
   or consumer canaries; M-112 remains unaccepted until those gates pass.
