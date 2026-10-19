@@ -73,3 +73,25 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert gates["v4_admissions"] == 0
     assert gates["consumer_canaries"] == 0
     assert gates["external_publications_performed"] is False
+
+
+def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> (
+    None
+):
+    report = _json(PREFLIGHT)
+    exception = report["august_2026_mbs_out_of_denominator_scope_exception"]
+    scope = _json(ROOT / exception["path"])
+    assert exception["object_count"] == 4
+    assert exception["dataset_revision"] == scope["revision"]
+    assert exception["outside_frozen_inventory"] is True
+    assert exception["frozen_inventory_membership_changed"] is False
+    assert scope["scope"]["rights_authorized_by_this_record"] is False
+    assert scope["scope"]["rights_state"] == "unresolved"
+    assert scope["scope"]["frozen_m112_object_count"] == 1759
+    assert all(
+        not item["in_frozen_m112_inventory"] for item in scope["objects"]
+    )
+    assert all(
+        item["rights_state"].startswith("unresolved_")
+        for item in scope["objects"]
+    )
