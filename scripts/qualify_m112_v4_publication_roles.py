@@ -60,6 +60,8 @@ EXPECTED_CANDIDATES = 16
 EXPECTED_SOURCE_SEMANTICS_OBJECTS = 13
 EXPECTED_MANIFEST_FILES = 28
 V3_REPLAY_TIMEOUT_MINUTES = 15
+APPROVED_DENOMINATOR = 1_759
+MIN_V4_RECEIPT_ROLES = 10
 OBSERVED_AT = "2026-10-19T16:13:05Z"
 ROLE_REPORT_RECORDED_AT = "2026-10-19T19:24:01Z"
 CONTRACT_REPOSITORY = "edithatogo/global-medicines-atlas"
@@ -777,7 +779,7 @@ def _read_v3_replay_section(
     return cast("dict[str, Any]", value)
 
 
-def _validate_v3_replay_receipt(
+def _validate_v3_replay_receipt(  # ruff: ignore[too-many-locals] -- validate the exact replay artifact closure
     root: Path, entry: dict[str, Any]
 ) -> tuple[dict[str, Any], dict[str, Any], str, str, str, str]:
     """Verify a manifest entry's exact hosted artifact and deterministic plan."""
@@ -894,7 +896,7 @@ def _validate_v3_replay_receipt(
     )
 
 
-def _bind_v3_replay_candidate(
+def _bind_v3_replay_candidate(  # ruff: ignore[too-many-branches,too-many-locals] -- bind each exact hosted replay receipt
     candidates: list[dict[str, Any]], root: Path
 ) -> int:
     """Bind each independently verified hosted replay to its frozen object."""
@@ -903,20 +905,23 @@ def _bind_v3_replay_candidate(
     manifest_scope = manifest.get("scope")
     manifest_boundaries = manifest.get("boundaries")
     if (
-        manifest.get("schema_id")
-        != "global-medicines-atlas.m112-v3-replay-readback-manifest"
-        or manifest.get("status")
-        != "two_exact_successful_hosted_v3_replay_readbacks"
-        or not isinstance(entries_value, list)
+        not isinstance(entries_value, list)
         or not isinstance(manifest_scope, dict)
-        or manifest_scope.get("approved_denominator") != 1759
-        or manifest_scope.get("v4_admissions_added") != 0
-        or manifest_scope.get("consumer_canaries_added") != 0
         or not isinstance(manifest_boundaries, dict)
-        or manifest_boundaries.get("public_dataset_mutated") is not False
-        or manifest_boundaries.get("source_values_or_rows_read") is not False
-        or manifest_boundaries.get("temporary_source_bytes_removed") is not True
     ):
+        raise TypeError("v3 replay readback manifest sections are malformed")
+    if not all((
+        manifest.get("schema_id")
+        == "global-medicines-atlas.m112-v3-replay-readback-manifest",
+        manifest.get("status")
+        == "two_exact_successful_hosted_v3_replay_readbacks",
+        manifest_scope.get("approved_denominator") == APPROVED_DENOMINATOR,
+        manifest_scope.get("v4_admissions_added") == 0,
+        manifest_scope.get("consumer_canaries_added") == 0,
+        manifest_boundaries.get("public_dataset_mutated") is False,
+        manifest_boundaries.get("source_values_or_rows_read") is False,
+        manifest_boundaries.get("temporary_source_bytes_removed") is True,
+    )):
         raise ValueError("v3 replay readback manifest is not qualified")
     entries = cast("list[Any]", entries_value)
     if len(entries) != manifest.get("scope", {}).get("replay_objects"):
@@ -1005,7 +1010,7 @@ def _bind_v3_replay_candidate(
             "temporary_source_bytes_removed": True,
         }
         started_at = datetime.fromisoformat(
-            cast("str", entry.get("started_at")).replace("Z", "+00:00")
+            cast("str", entry.get("started_at"))
         )
         expires_at = started_at + timedelta(minutes=V3_REPLAY_TIMEOUT_MINUTES)
         states["cache"] = "candidate_receipt_available_unbound"
@@ -1031,7 +1036,7 @@ def _bind_v3_replay_candidate(
     return len(seen)
 
 
-def _current_admission_evidence(
+def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-statements,too-many-locals] -- verify and count exact per-object admission receipts
     root: Path,
 ) -> tuple[int, int, list[dict[str, Any]]]:
     """Count only exact contract identities with durable admission reports."""
@@ -1047,7 +1052,7 @@ def _current_admission_evidence(
         digest = _sha256(raw)
         location = contract.get("location")
         if not isinstance(location, dict):
-            raise ValueError("M-112 v4 contract has no exact location")
+            raise TypeError("M-112 v4 contract location must be an object")
         if contract.get("evidence_kind") != "live":
             continue
         contracts[digest] = (
@@ -1093,29 +1098,28 @@ def _current_admission_evidence(
         contract_relative, contract = contracts[actual_digest]
         location = cast("dict[str, Any]", contract["location"])
         closure = report.get("receipt_closure")
-        receipt_roles = (
-            closure.get("roles") if isinstance(closure, dict) else None
-        )
-        receipt_payloads = (
-            closure.get("receipts") if isinstance(closure, dict) else None
-        )
-        if (
-            report.get("approved_denominator") != 1759
-            or report.get("admissions") != 1
-            or report.get("consumer_canaries") not in {0, 1}
-            or not isinstance(closure, dict)
-            or closure.get("contract_sha256") != actual_digest
-            or not isinstance(receipt_roles, list)
-            or len(receipt_roles) < 10
-            or not isinstance(receipt_payloads, list)
-            or not receipt_payloads
-            or admission.get("contract_sha256") != actual_digest
-            or admission.get("dataset") != location.get("dataset")
-            or admission.get("revision") != location.get("revision")
-            or admission.get("path") != location.get("path")
-            or admission.get("sha256") != location.get("sha256")
-            or admission.get("byte_count") != location.get("bytes")
+        if not isinstance(closure, dict):
+            raise TypeError("admission receipt closure must be an object")
+        receipt_roles = closure.get("roles")
+        receipt_payloads = closure.get("receipts")
+        if not isinstance(receipt_roles, list) or not isinstance(
+            receipt_payloads, list
         ):
+            raise TypeError("admission receipt closure arrays are malformed")
+        if not all((
+            report.get("approved_denominator") == APPROVED_DENOMINATOR,
+            report.get("admissions") == 1,
+            report.get("consumer_canaries") in {0, 1},
+            closure.get("contract_sha256") == actual_digest,
+            len(receipt_roles) >= MIN_V4_RECEIPT_ROLES,
+            bool(receipt_payloads),
+            admission.get("contract_sha256") == actual_digest,
+            admission.get("dataset") == location.get("dataset"),
+            admission.get("revision") == location.get("revision"),
+            admission.get("path") == location.get("path"),
+            admission.get("sha256") == location.get("sha256"),
+            admission.get("byte_count") == location.get("bytes"),
+        )):
             raise ValueError(
                 "independent admission identity differs from contract"
             )
@@ -1134,40 +1138,33 @@ def _current_admission_evidence(
             raise TypeError("consumer canary record is malformed")
         canary_identity = canary.get("object")
         boundaries = canary.get("boundaries")
-        if not isinstance(canary_identity, dict) or not isinstance(
-            boundaries, dict
+        verification = canary.get("verification")
+        if (
+            not isinstance(canary_identity, dict)
+            or not isinstance(boundaries, dict)
+            or not isinstance(verification, dict)
         ):
             raise TypeError(
-                "consumer canary identity or boundaries are malformed"
+                "consumer canary identity, boundaries, or verification are malformed"
             )
-        if (
-            canary.get("status") != "passed"
-            or canary.get("contract_sha256") != actual_digest
-            or canary_identity.get("dataset") != location.get("dataset")
-            or canary_identity.get("revision") != location.get("revision")
-            or canary_identity.get("path") != location.get("path")
-            or canary_identity.get("sha256") != location.get("sha256")
-            or canary_identity.get("bytes") != location.get("bytes")
-            or boundaries.get("admission_used") is not True
-            or boundaries.get("source_values_or_rows_included") is not False
-            or boundaries.get("public_dataset_mutated") is not False
-            or boundaries.get("source_payload_bytes_retained") is not False
-            or canary.get("verification", {}).get(
-                "source_values_or_rows_interpreted"
-            )
-            is not False
-            or canary.get("verification", {}).get("origin") != "remote"
-            or canary.get("verification", {}).get("remote_digest_match")
-            is not True
-            or canary.get("verification", {}).get(
-                "consumer_stream_digest_match"
-            )
-            is not True
-            or canary.get("verification", {}).get(
-                "reader_cache_bytes_after_close"
-            )
-            != 0
-        ):
+        if not all((
+            canary.get("status") == "passed",
+            canary.get("contract_sha256") == actual_digest,
+            canary_identity.get("dataset") == location.get("dataset"),
+            canary_identity.get("revision") == location.get("revision"),
+            canary_identity.get("path") == location.get("path"),
+            canary_identity.get("sha256") == location.get("sha256"),
+            canary_identity.get("bytes") == location.get("bytes"),
+            boundaries.get("admission_used") is True,
+            boundaries.get("source_values_or_rows_included") is False,
+            boundaries.get("public_dataset_mutated") is False,
+            boundaries.get("source_payload_bytes_retained") is False,
+            verification.get("source_values_or_rows_interpreted") is False,
+            verification.get("origin") == "remote",
+            verification.get("remote_digest_match") is True,
+            verification.get("consumer_stream_digest_match") is True,
+            verification.get("reader_cache_bytes_after_close") == 0,
+        )):
             raise ValueError(
                 "consumer canary does not verify the admitted identity"
             )
@@ -1208,7 +1205,7 @@ def _bind_candidates(
     return matched, source_count
 
 
-def qualify(root: Path = ROOT) -> dict[str, Any]:
+def qualify(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-many-locals] -- reconcile bounded evidence sets
     """Return a deterministic role report enriched with bound candidate receipts."""
     report = copy.deepcopy(_read_json(root, ROLE_REPORT))
     report["source_qualification"] = {
@@ -1226,7 +1223,10 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
     candidate_values = cast("list[Any]", candidates)
     if len(candidate_values) != EXPECTED_CANDIDATES:
         raise ValueError("the frozen 16-object exact-rights MBS cohort changed")
-    if report.get("cohort", {}).get("approved_denominator") != 1759:
+    if (
+        report.get("cohort", {}).get("approved_denominator")
+        != APPROVED_DENOMINATOR
+    ):
         raise ValueError("M-112 approved denominator changed")
     _validate_source_semantics_scope(source_semantics)
     if not isinstance(verified_objects, list) or not isinstance(archives, list):

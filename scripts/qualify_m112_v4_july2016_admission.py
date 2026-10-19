@@ -286,12 +286,12 @@ def _validate_inputs(  # ruff: ignore[too-many-locals]
     return candidate
 
 
-def build_contract(
+def build_contract(  # ruff: ignore[too-many-locals,too-many-statements] -- assemble one bounded exact-object contract
     root: Path = ROOT,
     *,
     target_path: str = TARGET_PATH,
     evidence_commit: str = EVIDENCE_COMMIT,
-) -> dict[str, Any]:  # ruff: ignore[too-many-locals, too-many-statements]
+) -> dict[str, Any]:
     """Construct one exact July 2016 raw B2 contract from qualified evidence."""
     report = _read_json(root, ROLE_REPORT)
     candidate = _validate_inputs(root, report, target_path=target_path)
@@ -340,11 +340,14 @@ def build_contract(
         != "candidate_receipt_available_unbound"
         or source_candidate.get("native_schema_layout_qualified") is not False
         or v3.get("temporary_source_bytes_removed") is not True
-        or cache.get("contract_role_state")
+    ):
+        raise ValueError("required candidate roles or boundaries changed")
+    if (
+        cache.get("contract_role_state")
         != "candidate_receipt_available_unbound"
         or cache.get("state") != "removed"
     ):
-        raise ValueError("required candidate roles or boundaries changed")
+        raise ValueError("temporary cache candidate is not cleaned up")
     if authority.get("schema_sha256") != _sha256(
         (root / SCHEMA_PATH).read_bytes()
     ):
@@ -396,12 +399,8 @@ def build_contract(
     manifest = cast("dict[str, Any]", recovery["checksum_inventory"])
     cache_created_at = cast("str", cache.get("created_at"))
     cache_expires_at = cast("str", cache.get("expires_at"))
-    run_started = datetime.fromisoformat(
-        cache_created_at.replace("Z", "+00:00")
-    )
-    cache_expires = datetime.fromisoformat(
-        cache_expires_at.replace("Z", "+00:00")
-    )
+    run_started = datetime.fromisoformat(cache_created_at)
+    cache_expires = datetime.fromisoformat(cache_expires_at)
     if cache_expires != run_started + timedelta(minutes=V3_RUN_TIMEOUT_MINUTES):
         raise ValueError("temporary cache expiry differs from hosted timeout")
     cache_cleanup_receipt = v3_receipt
@@ -714,7 +713,7 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
     return admission_json, closure_json
 
 
-def run_reader_canary(
+def run_reader_canary(  # ruff: ignore[too-many-locals] -- verify the full bounded reader lifecycle
     raw_contract: bytes,
     admission_value: dict[str, Any],
     *,
