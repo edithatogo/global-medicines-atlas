@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 from scripts.qualify_m112_v4_july2016_admission import (
     CSV_ADMISSION_REPORT,
+    HISTORICAL_1993_2015_OUTPUT,
     TARGET_BYTES,
     TARGET_IDENTITIES,
     TARGET_PATH,
@@ -22,6 +23,9 @@ from global_medicines_atlas.federation_consumer import bind_consumer_contract
 
 ROOT = Path(__file__).resolve().parents[1]
 CSV_PATH = "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
+HISTORICAL_PATH = (
+    "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip"
+)
 CANARY_RECEIPT = ROOT / (
     "quality/qualifications/"
     "australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json"
@@ -95,6 +99,47 @@ def test_csv_contract_pins_its_exact_raw_b2_identity() -> None:
         "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/"
         "5b4d66268deccfb28ef33805d474c06aaa940a98/"
     )
+
+
+def test_historical_demographics_contract_uses_all_exact_candidate_roles() -> (
+    None
+):
+    assert HISTORICAL_1993_2015_OUTPUT.name == (
+        "australian-m112-v4-historical-1993-2015-raw-b2-contract.json"
+    )
+    identity = TARGET_IDENTITIES[HISTORICAL_PATH]
+    contract = build_contract(
+        target_path=HISTORICAL_PATH,
+        evidence_commit="3df35dbd1475557122faa3025b915e37cf202a55",
+    )
+    parsed = json.loads(validate_contract(contract))
+
+    assert parsed["source"]["source_id"] == identity["source_id"]
+    assert parsed["source"]["acquisition_id"] == identity["acquisition_id"]
+    assert parsed["source"]["effective_date"] == "2015-12-31"
+    assert parsed["source"]["schema_era"].startswith(
+        "unqualified-native-schema;"
+    )
+    assert parsed["location"]["dataset"] == identity["dataset"]
+    assert parsed["location"]["revision"] == identity["revision"]
+    assert parsed["location"]["path"] == HISTORICAL_PATH
+    assert parsed["location"]["bytes"] == identity["bytes"]
+    assert parsed["location"]["sha256"] == identity["sha256"]
+    assert parsed["lineage"]["v3_replay"]["url"].startswith(
+        "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/"
+        "3df35dbd1475557122faa3025b915e37cf202a55/"
+    )
+    assert parsed["consumers"] == []
+    assert parsed["cache"]["state"] == "removed"
+
+
+def test_unmerged_historical_role_evidence_cannot_make_a_contract_by_default() -> (
+    None
+):
+    with pytest.raises(
+        ValueError, match="no durable merged commit binding yet"
+    ):
+        build_contract(target_path=HISTORICAL_PATH)
 
 
 def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
