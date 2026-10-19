@@ -4195,8 +4195,6 @@
   acceptance, semantic calibration, M-112 admission, or increase the M-112
   admitted-object canary count. No public dataset was mutated and no source
   bytes were retained.
-
-
 ## M-112 PBS publication and current admission/canary readback (2026-10-20)
 
 - [x] Reconcile the exact April 2026 PBS source ZIP to Decision 0009, its
@@ -4228,6 +4226,26 @@
   rights/preflight and July 2016 admission/role suites together: 28 passed.
   Routine profile, Ruff, format, ty, BasedPyright, and diff checks passed on the
   integrated tree.
+
+## M-110 reviewed-candidate consumer canary (2026-10-20)
+
+- [x] Bind the exact maintainer disposition at
+  `quality/qualifications/australian-mbs-gold-same-record-review-20261018.json`
+  to the 5,989 source-explicit July 2025 MBS `source_record_has_benefit`
+  edges and their reviewed edge-ID digest. The disposition is
+  `accepted_candidate_only`; it does not establish overall M-110 acceptance,
+  payability, clinical equivalence, or production admission.
+- [x] Require the hosted consumer qualifier to verify that review receipt and
+  exact edge digest, then compare the complete ordered traversal through API,
+  CLI, Atlas, and Chromium. Preserve the underlying graph's immutable
+  `review_state=not_reviewed` and report review separately.
+- [ ] After the workflow update merges, run the bounded traversal on exact
+  `main`, read back the metadata-only receipt, and count surface canaries only
+  when all four consumers match the reviewed edge set. Until then this M-110
+  reviewed-candidate canary count remains zero; earlier candidate traversals
+  are not relabeled. Keep M-110 overall acceptance and M-112 federation gates
+  separate.
+
 
 ## M-112 July 2025 MBS Silver current public metadata readback (2026-10-20)
 
