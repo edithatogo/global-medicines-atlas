@@ -100,7 +100,13 @@ jobs:
           enable-cache: true
       - run: uv sync --python 3.15.0 --group dev --group security --locked
       - name: Audit locked Python environment
-        run: uv run --group security pip-audit
+        env:
+          UV_PYTHON_INSTALL_DIR: ${{ runner.temp }}/audit-python
+        run: |
+          uv export --locked --no-emit-project --group dev --group security \
+            --format requirements.txt > "$RUNNER_TEMP/locked-requirements.txt"
+          uv tool run --python 3.14 --from pip-audit==2.10.1 pip-audit \
+            --require-hashes -r "$RUNNER_TEMP/locked-requirements.txt"
       - name: Generate CycloneDX SBOM
         run: mkdir -p build && uv run --group security cyclonedx-py environment --output-file build/sbom.cdx.json
       - name: Upload SBOM
