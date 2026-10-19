@@ -33,8 +33,8 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert historical["path"].endswith("preflight-20261019.json")
     assert report["frozen_inventory"]["object_count"] == 1759
     assert report["frozen_inventory"]["membership_changed"] is False
-    assert report["effective_m112_rights"]["resolved_object_count"] == 28
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 1731
+    assert report["effective_m112_rights"]["resolved_object_count"] == 32
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 1727
 
 
 def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
@@ -48,8 +48,17 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     )
     august = report["august_2026_mbs_bronze_projections"]
     assert len(august["objects"]) == 4
-    assert august["derived_output_authority"] == "absent"
+    assert august["rights_state"] == (
+        "maintainer_attested_exact_public_release_permission_for_bronze_projection"
+    )
+    assert august["public_release_rights_attested"] is True
+    assert august["public_release_performed_by_this_action"] is False
+    assert august["m108_assessment_derived_output_authority"] == "absent"
     assert all(obj["lineage_complete"] for obj in august["objects"])
+    assert all(
+        obj["rights_state"] == august["rights_state"]
+        for obj in august["objects"]
+    )
     cms = report["cms_hcpcs_reference"]
     assert cms["rights_state"] == "permitted"
     assert cms["reviewer_status"] == "approved"

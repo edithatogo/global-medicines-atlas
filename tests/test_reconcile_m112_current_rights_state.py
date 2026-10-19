@@ -8,7 +8,10 @@ from shutil import copytree
 from typing import Any, cast
 
 import pytest
-from scripts.reconcile_m112_current_rights_state import build_report
+from scripts.reconcile_m112_current_rights_state import (
+    build_report,
+    reconcile_august_mbs_attestation,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -21,8 +24,8 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert report["frozen_inventory"]["object_count"] == 1759
     assert report["frozen_inventory"]["membership_changed"] is False
     assert report["frozen_inventory"]["all_b1_b2_lineages_complete"] is True
-    assert report["effective_m112_rights"]["resolved_object_count"] == 28
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 1731
+    assert report["effective_m112_rights"]["resolved_object_count"] == 32
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 1727
     assert report["exact_july_2025_mbs_silver"]["object_count"] == 6
     assert (
         report["exact_july_2025_mbs_silver"]["public_release_authorized"]
@@ -37,10 +40,13 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
         obj["lineage_complete"]
         for obj in report["august_2026_mbs_bronze_projections"]["objects"]
     )
-    assert (
-        report["august_2026_mbs_bronze_projections"]["derived_output_authority"]
-        == "absent"
+    august = report["august_2026_mbs_bronze_projections"]
+    assert august["rights_state"] == (
+        "maintainer_attested_exact_public_release_permission_for_bronze_projection"
     )
+    assert august["public_release_rights_attested"] is True
+    assert august["m108_assessment_derived_output_authority"] == "absent"
+    assert len(august["objects"]) == 4
 
     pbs = report["pbs_utilisation_raw_objects"]
     assert pbs["object_count"] == 6
@@ -82,11 +88,34 @@ def test_rights_counts_cover_every_frozen_object() -> None:
     assert sum(item["object_count"] for item in counts) == 1759
     assert all(item["object_count"] > 0 for item in counts)
     assert {item["state"] for item in counts} >= {
+        "maintainer_attested_exact_public_release_permission_for_bronze_projection",
         "maintainer_attested_exact_public_release_permission_for_silver_object",
         "maintainer_attested_dataset_publication_permission_with_vocabulary_exclusion",
-        "underlying source authorization exists; no projection rights conclusion added",
+        "authorized_exact_source_release_permitted",
         "unresolved: source-specific rights and per-record provenance not qualified",
     }
+
+
+def test_august_mbs_rights_attestation_fails_closed_on_digest_mismatch() -> (
+    None
+):
+    overlay = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json"
+        ).read_text()
+    )
+    attestation = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json"
+        ).read_text()
+    )
+    attestation["authorized_objects"][0]["sha256"] = "0" * 64
+    with pytest.raises(
+        ValueError, match="August MBS attestation identity mismatch"
+    ):
+        reconcile_august_mbs_attestation(overlay["objects"], attestation)
 
 
 def test_pbs_scope_mismatch_fails_closed(tmp_path: Path) -> None:
