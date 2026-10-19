@@ -22,6 +22,9 @@ CMS_REVIEW = QUAL / "cms-hcpcs-rights-review-20261019.json"
 MBS_RIGHTS_ATTESTATION = QUAL / (
     "australian-mbs-v4-public-release-rights-attestation-20261019.json"
 )
+AUGUST_MBS_RIGHTS_ATTESTATION = QUAL / (
+    "australian-mbs-august-bronze-rights-attestation-20261020.json"
+)
 PBS_UTILISATION_AUTHORIZATION = (
     QUAL / "australian-pbs-utilisation-publication-authorization.json"
 )
@@ -42,10 +45,14 @@ CMS_SHA256 = "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a"
 FROZEN_OBJECT_COUNT = 1759
 MBS_SILVER_OBJECT_COUNT = 6
 AUGUST_PROJECTION_COUNT = 4
+MBS_AUGUST_RIGHTS_STATE = (
+    "maintainer_attested_exact_public_release_permission_for_bronze_projection"
+)
 RIGHTS_RESOLVED_STATES = {
     "authorized_exact_source_release_permitted",
     "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
     "maintainer_attested_exact_public_release_permission_for_silver_object",
+    MBS_AUGUST_RIGHTS_STATE,
     PBS_UTILISATION_RIGHTS_STATE,
 }
 
@@ -208,6 +215,47 @@ def _reconcile_mbs_silver_attestation(
     }
 
 
+def reconcile_august_mbs_attestation(
+    objects: list[dict[str, Any]], attestation: dict[str, Any]
+) -> list[dict[str, Any]]:
+    frozen = {
+        obj["path"]: obj
+        for obj in objects
+        if obj["path"].startswith(AUGUST_BRONZE_PREFIX)
+        and obj["candidate_class"] == "existing_data_projection"
+    }
+    authorized = {
+        item["path"]: (item["sha256"], item["byte_count"])
+        for item in attestation["authorized_objects"]
+    }
+    if (
+        attestation.get("public_release_rights_attested") is not True
+        or attestation.get("permission_instrument_existence_and_applicability")
+        != "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction"
+        or len(frozen) != AUGUST_PROJECTION_COUNT
+        or len(authorized) != AUGUST_PROJECTION_COUNT
+        or set(authorized) != set(frozen)
+    ):
+        raise ValueError(
+            "the exact four-object August MBS attestation is incomplete"
+        )
+    result: list[dict[str, Any]] = []
+    for path, obj in frozen.items():
+        identity = (obj["identity"]["sha256"], obj["identity"]["byte_count"])
+        if authorized[path] != identity:
+            raise ValueError(
+                f"August MBS attestation identity mismatch: {path}"
+            )
+        result.append({
+            "path": path,
+            "sha256": identity[0],
+            "byte_count": identity[1],
+            "rights_state": MBS_AUGUST_RIGHTS_STATE,
+            "lineage_complete": obj["b1_b2_lineage"]["complete"],
+        })
+    return sorted(result, key=itemgetter("path"))
+
+
 def _reconcile_pbs_utilisation_authorization(
     root: Path,
     objects: list[dict[str, Any]],
@@ -301,6 +349,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     mbs_summary = _reconcile_mbs_silver_attestation(
         objects, _read(root, MBS_RIGHTS_ATTESTATION)
     )
+    august_mbs_objects = reconcile_august_mbs_attestation(
+        objects, _read(root, AUGUST_MBS_RIGHTS_ATTESTATION)
+    )
 
     rights_overrides = {
         item[
@@ -319,6 +370,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     rights_overrides.update({
         item["path"]: PBS_UTILISATION_RIGHTS_STATE
         for item in pbs_utilisation_objects
+    })
+    rights_overrides.update({
+        item["path"]: MBS_AUGUST_RIGHTS_STATE for item in august_mbs_objects
     })
     rights_summary = _reconcile_object_rights(objects, rights_overrides)
     unresolved_count = FROZEN_OBJECT_COUNT - rights_summary["resolved_count"]
@@ -342,6 +396,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         str(FROZEN_OVERLAY): _sha256(root / FROZEN_OVERLAY),
         **cms_evidence_inputs,
         str(MBS_RIGHTS_ATTESTATION): _sha256(root / MBS_RIGHTS_ATTESTATION),
+        str(AUGUST_MBS_RIGHTS_ATTESTATION): _sha256(
+            root / AUGUST_MBS_RIGHTS_ATTESTATION
+        ),
         **pbs_rights_evidence_inputs,
         str(M108_ASSESSMENT): _sha256(root / M108_ASSESSMENT),
     }
@@ -411,8 +468,17 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         },
         "august_2026_mbs_bronze_projections": {
             "object_count": len(august_bronze),
-            "rights_state": "underlying source authorization exists; no projection rights conclusion added",
-            "derived_output_authority": m108[
+            "rights_state": MBS_AUGUST_RIGHTS_STATE,
+            "attestation_path": str(AUGUST_MBS_RIGHTS_ATTESTATION),
+            "attestation_sha256": evidence_inputs[
+                str(AUGUST_MBS_RIGHTS_ATTESTATION)
+            ],
+            "public_release_rights_attested": True,
+            "permission_instrument_existence_and_applicability": (
+                "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction"
+            ),
+            "public_release_performed_by_this_action": False,
+            "m108_assessment_derived_output_authority": m108[
                 "august_2026_six_table_operation_assessment"
             ]["authorization"]["derived_output_authority"],
             "objects": [
@@ -420,7 +486,7 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
                     "path": obj["path"],
                     "sha256": obj["identity"]["sha256"],
                     "byte_count": obj["identity"]["byte_count"],
-                    "rights_state": obj["rights"]["state"],
+                    "rights_state": MBS_AUGUST_RIGHTS_STATE,
                     "lineage_complete": obj["b1_b2_lineage"]["complete"],
                 }
                 for obj in sorted(august_bronze, key=itemgetter("path"))
