@@ -73,10 +73,69 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert cms["derived_table_rights_concluded"] is False
     assert cms["external_publication_authorized"] is False
 
-    assert report["boundaries"]["all_1759_deferrals_preserved"] is True
-    assert report["boundaries"]["v4_admissions"] == 0
-    assert report["boundaries"]["consumer_canaries"] == 0
+    assert report["boundaries"]["all_remaining_deferrals_preserved"] is True
+    assert report["boundaries"]["deferred_objects"] == 1758
+    assert report["boundaries"]["v4_admissions"] == 1
+    assert report["boundaries"]["consumer_canaries"] == 1
     assert report["boundaries"]["source_payload_bytes_read"] is False
+
+
+def test_pbs_archive_publication_is_exact_and_does_not_clear_derivative() -> (
+    None
+):
+    report = build_report(ROOT, observed_at="2026-10-19T13:00:00Z")
+    pbs_archive = report["pbs_source_archive_exact_publication"]
+
+    assert pbs_archive["dataset"] == "edithatogo/australian-pbs-source-archive"
+    assert pbs_archive["path"] == "raw/2026-04-01/2026-04-01-XML-V3.zip"
+    assert pbs_archive["sha256"] == (
+        "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
+    )
+    assert pbs_archive["byte_count"] == 11156706
+    assert pbs_archive["exact_object_publication_authorized"] is True
+    assert pbs_archive["hosted_anonymous_digest_verification"] == "passed"
+    assert pbs_archive["current_digest_matches_hosted_verification"] is True
+    assert pbs_archive["upstream_redistribution_terms"] == "unknown"
+    assert pbs_archive["historical_acquisition_rights_state"] == "unknown"
+    assert pbs_archive["rights_conclusion_made"] is False
+    assert pbs_archive["release_performed_by_this_reconciliation"] is False
+    assert pbs_archive["v4_admission"] is False
+    assert pbs_archive["source_projection"]["path"] == (
+        "bronze/2026-04-01/pbs-v3-source.parquet"
+    )
+    assert pbs_archive["source_projection"]["rights_state"] == (
+        "upstream redistribution terms unknown"
+    )
+    assert (
+        pbs_archive["source_projection"][
+            "derived_rights_inferred_from_source_permission"
+        ]
+        is False
+    )
+
+
+def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
+    None
+):
+    report = build_report(ROOT, observed_at="2026-10-19T13:00:00Z")
+    readback = report["m112_admission_canary_readback"]
+
+    assert readback["admitted_object_count"] == 1
+    assert readback["canaried_object_count"] == 1
+    assert readback["deferred_object_count"] == 1758
+    assert readback["object"]["rights_state"] == (
+        "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified"
+    )
+    assert len(readback["successful_workflow_runs"]) == 2
+    assert readback["unique_object_counts_are_deduplicated_across_runs"] is True
+    assert readback["source_values_or_rows_interpreted"] is False
+    assert readback["native_workbook_layout_qualified"] is False
+    assert readback["public_dataset_mutated_by_reconciliation"] is False
+    assert readback["overlay_object_flags_pre_readback"] == {
+        "disposition": "deferred_not_admitted",
+        "v4_admission": False,
+        "consumer_canary": False,
+    }
 
 
 def test_rights_counts_cover_every_frozen_object() -> None:
