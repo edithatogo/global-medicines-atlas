@@ -6,6 +6,7 @@ import hashlib
 import json
 from typing import Any
 
+import pytest
 from scripts import (
     reconcile_m112_reimbursement_medallion_projection_lineage as module,
 )
@@ -23,6 +24,30 @@ from global_medicines_atlas.receipts import AcquisitionEvent, RightsState
 
 def _read(path: str) -> dict[str, Any]:
     return json.loads((module.ROOT / path).read_text(encoding="utf-8"))
+
+
+def test_each_b2_row_matches_one_exact_b1_acquisition_identity() -> None:
+    b1_rows = [
+        {
+            "acquisition_id": "acq-a",
+            "source_id": "source-a",
+            "payload_sha256": "digest-a",
+        },
+        {
+            "acquisition_id": "acq-b",
+            "source_id": "source-b",
+            "payload_sha256": "digest-b",
+        },
+    ]
+    module.validate_b2_rows(b1_rows, [b1_rows[0]])
+
+    cross_bound_b2 = {
+        "acquisition_id": "acq-a",
+        "source_id": "source-a",
+        "payload_sha256": "digest-b",
+    }
+    with pytest.raises(ValueError, match="exact B1 identity tuple"):
+        module.validate_b2_rows(b1_rows, [cross_bound_b2])
 
 
 def test_frozen_inventory_has_complete_b1_b2_lineage_without_gate_changes() -> (

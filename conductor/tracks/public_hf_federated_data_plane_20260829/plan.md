@@ -640,7 +640,7 @@
 - [x] Preserve the 1,759-object deferral, zero v4 admissions, zero consumer
   canaries, and existing rights conclusions. Exact raw digest/path joins rise
   to 118, with one same-content alias counted separately (119 path identities).
-- [x] Verify 4 focused tests, the routine Test-Goblin profile, Ruff, `ty`, and
+- [x] Verify 5 focused tests, the routine Test-Goblin profile, Ruff, `ty`, and
   BasedPyright. Full inventory report and the appended source receipt bindings
   pass local readback checks.
 - [~] Complete exact-head hosted checks, merge the scoped PR, and verify the

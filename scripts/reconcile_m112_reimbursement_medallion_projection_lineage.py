@@ -464,6 +464,41 @@ def _assert_identity(
         raise ValueError(f"exact digest or byte count mismatch: {context}")
 
 
+def validate_b2_rows(
+    b1_rows: list[dict[str, Any]], b2_rows: list[dict[str, Any]]
+) -> None:
+    """Require every B2 record to match one B1 event's exact identity tuple."""
+    b1_by_acquisition: dict[str, set[tuple[str, str]]] = {}
+    for row in b1_rows:
+        acquisition_id = row.get("acquisition_id")
+        source_id = row.get("source_id")
+        digest = row.get("payload_sha256")
+        if not isinstance(acquisition_id, str) or not isinstance(
+            source_id, str
+        ):
+            raise TypeError("B1 acquisition identity is missing")
+        if isinstance(digest, str):
+            b1_by_acquisition.setdefault(acquisition_id, set()).add((
+                source_id,
+                digest,
+            ))
+
+    for row in b2_rows:
+        acquisition_id = row.get("acquisition_id")
+        source_id = row.get("source_id")
+        digest = row.get("payload_sha256")
+        if (
+            not isinstance(acquisition_id, str)
+            or not isinstance(source_id, str)
+            or not isinstance(digest, str)
+            or (source_id, digest)
+            not in b1_by_acquisition.get(acquisition_id, set())
+        ):
+            raise ValueError(
+                "B2 row does not match one exact B1 identity tuple"
+            )
+
+
 def _verify_record_joins(  # ruff: ignore[too-many-branches,too-many-locals,too-many-statements] -- verifies independent B0/B1/B2 and derivative joins
     projection_rows: dict[str, list[dict[str, Any]]],
     inventory: list[dict[str, Any]],
@@ -496,6 +531,7 @@ def _verify_record_joins(  # ruff: ignore[too-many-branches,too-many-locals,too-
         )
     if len(evidence_digests) != len(evidence):
         raise ValueError("producer B2 contains duplicate payload digests")
+    validate_b2_rows(acquisitions, evidence)
     if any(
         row.get("acquisition_id") not in acquisition_ids for row in evidence
     ):
