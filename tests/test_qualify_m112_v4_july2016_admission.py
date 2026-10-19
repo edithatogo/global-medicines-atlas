@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 from scripts.qualify_m112_v4_july2016_admission import (
     TARGET_BYTES,
+    TARGET_IDENTITIES,
     TARGET_PATH,
     TARGET_SHA256,
     build_contract,
@@ -19,6 +20,7 @@ from scripts.qualify_m112_v4_july2016_admission import (
 from global_medicines_atlas.federation_consumer import bind_consumer_contract
 
 ROOT = Path(__file__).resolve().parents[1]
+CSV_PATH = "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
 CANARY_RECEIPT = ROOT / (
     "quality/qualifications/"
     "australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json"
@@ -71,6 +73,24 @@ def test_contract_is_schema_and_semantically_valid() -> None:
 
     assert raw.endswith(b"\n")
     assert b"source-native workbook layout remains unqualified" not in raw
+
+
+def test_csv_contract_pins_its_exact_raw_b2_identity() -> None:
+    identity = TARGET_IDENTITIES[CSV_PATH]
+    contract = build_contract(
+        target_path=CSV_PATH,
+        evidence_commit="46e52ddbc6a1c25d55abd98caf7f1d91fb3aa320",
+    )
+    parsed = json.loads(validate_contract(contract))
+
+    assert parsed["source"]["bronze_stratum"] == "B2"
+    assert parsed["source"]["representation"] == "raw"
+    assert parsed["location"]["dataset"] == identity["dataset"]
+    assert parsed["location"]["revision"] == identity["revision"]
+    assert parsed["location"]["path"] == CSV_PATH
+    assert parsed["location"]["bytes"] == identity["bytes"]
+    assert parsed["location"]["sha256"] == identity["sha256"]
+    assert parsed["consumers"] == []
 
 
 @pytest.mark.parametrize(
