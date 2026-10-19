@@ -4147,3 +4147,31 @@
   and temporary-byte cleanup before binding the new v3 role into a v4 contract.
   The M-112 count is one admitted object and one consumer canary out of 1,759;
   this candidate is not admitted by replay evidence alone.
+
+## M-110 and M-112 bounded consumer canary refresh (2026-10-20)
+
+- [x] Requalify the admitted July 2016 MBS raw B2 object through the pinned
+  `FederatedReader` on exact `main` commit
+  `7dbf14db2403485cabbe699858579cf7c7567012`. Hosted canary run
+  [39306554319](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39306554319)
+  passed; remote and streamed digests matched, no source values were
+  interpreted or retained, and reader cache usage was zero after read and
+  close. Receipt:
+  `quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json`
+  (SHA-256
+  `62aa052690bf3092aaf658d747654bc14316807e005e72f063ec11b158df4f18`).
+  The M-112 total remains one admitted object and one admitted-object canary;
+  the other 1,758 denominator entries are not implied complete.
+- [x] After checking the exact MBS Gold candidate qualification, run hosted
+  workflow [39306778440](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39306778440)
+  on the same exact `main` commit. API, CLI, Atlas, and Chromium traversed all
+  5,989 candidate edges with identical ordered edge-ID digests. The aggregate
+  receipt is
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261020-39306778440.json`
+  (SHA-256
+  `4b9b4141a877d86aad7cb92fdc4e4d82ae012503e750418e5fb7ce2dccdf98af`).
+- [x] Keep the evidence scopes distinct: the MBS Gold traversal remains
+  candidate-only with `review_state=not_reviewed`; it does not establish M-110
+  acceptance, semantic calibration, M-112 admission, or increase the M-112
+  admitted-object canary count. No public dataset was mutated and no source
+  bytes were retained.
