@@ -3894,3 +3894,19 @@
   closes the local v1 schema-conformance candidate for these paths; it does
   not by itself satisfy the v4 receipt role, v3 replay, publication, clean-room
   verification, discovery, recovery/cache, consumer canaries, or admission.
+
+## M-112 durable v1 candidate receipt readback (2026-10-19)
+
+- [x] Read back the merged v1 candidate manifest anonymously from the exact
+  main commit `290cc219217821404cf25bcfc58761821389d614`; its digest is
+  `826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842`.
+  It covers 16 raw-B2 path identities and keeps all 16 promotions blocked.
+- [x] Refresh the role assessment with the stable receipt identity and
+  `candidate_receipt_available_unbound` state for those objects. This records
+  durable candidate evidence only; no live v4 contracts were created or bound,
+  and admission and consumer-canary counts remain zero.
+- [ ] Bind the receipt into exact v4.1 contracts only as their other required
+  publication, verification, rights, discovery, recovery/cache, lineage, and
+  consumer evidence becomes available. Do not promote based on this receipt
+  alone. Full details are recorded in `evidence.jsonl` and
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json`.
