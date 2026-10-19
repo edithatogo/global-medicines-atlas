@@ -533,7 +533,7 @@ def test_tool_versions_match_governed_workflow_literals() -> None:
     """Workflow setup literals remain aligned with one governed manifest."""
     versions = HARNESS.validate_tool_versions()
 
-    assert versions["python"] == "3.14.6"
+    assert versions["python"] == "3.15.0"
     assert versions["uv"] == "0.11.29"
     assert versions["pixi"] == "0.73.0"
     assert versions["gitleaks"] == "8.30.1"

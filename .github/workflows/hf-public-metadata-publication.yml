@@ -42,8 +42,8 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - name: Synchronize Python 3.14 environment
-        run: uv sync --python 3.14.6 --locked --group dev
+      - name: Synchronize Python 3.15 environment
+        run: uv sync --python 3.15.0 --locked --group dev
       - name: Request short-lived GitHub Actions identity
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         with:
@@ -56,7 +56,7 @@ jobs:
           GMA_MAINTAINER_PUBLICATION_APPROVED: yes-i-approve-publication
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: >
-          uv run --locked --python 3.14.6
+          uv run --locked --python 3.15.0
           --with huggingface-hub==1.19.0
           --with 'PyJWT[crypto]==2.15.1'
           python scripts/publish_hf_public_metadata.py

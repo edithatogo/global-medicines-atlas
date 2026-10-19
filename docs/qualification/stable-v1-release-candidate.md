@@ -29,11 +29,11 @@ receipt.
 
 ## Build the local candidate
 
-Use CPython 3.14.6 from a clean checkout of the intended source commit:
+Use CPython 3.15.0 from a clean checkout of the intended source commit:
 
 ```powershell
 uv sync --locked --all-groups
-uv run --python 3.14.6 python -m scripts.build_stable_v1_release_candidate build --root . --stage build/stable-v1/release-candidate --receipt quality/qualifications/stable-v1-release-candidate.json
+uv run --python 3.15.0 python -m scripts.build_stable_v1_release_candidate build --root . --stage build/stable-v1/release-candidate --receipt quality/qualifications/stable-v1-release-candidate.json
 ```
 
 The command builds twice with the source commit timestamp as
@@ -48,7 +48,7 @@ Independently exercise both LF-oriented and Windows `core.autocrlf=true`
 checkout policies in clean detached worktrees:
 
 ```powershell
-uv run --python 3.14.6 python -m scripts.build_stable_v1_release_candidate reproduce --root . --output build/stable-v1/clean-detached-reproducibility.json
+uv run --python 3.15.0 python -m scripts.build_stable_v1_release_candidate reproduce --root . --output build/stable-v1/clean-detached-reproducibility.json
 ```
 
 The test is also executed by the Linux, macOS, and Windows consumer CI matrix.
@@ -63,7 +63,7 @@ Check out the `source_commit` recorded in the receipt, rebuild the candidate,
 then run:
 
 ```powershell
-uv run --python 3.14.6 python -m scripts.build_stable_v1_release_candidate verify --root . --stage build/stable-v1/release-candidate --receipt quality/qualifications/stable-v1-release-candidate.json
+uv run --python 3.15.0 python -m scripts.build_stable_v1_release_candidate verify --root . --stage build/stable-v1/release-candidate --receipt quality/qualifications/stable-v1-release-candidate.json
 ```
 
 The verifier rejects missing, additional, altered, symlinked, structurally
@@ -75,7 +75,7 @@ and every repository or Git-object provenance reference.
 
 Run the sorted `verification_commands` recorded in the receipt. The wheel and
 sdist consumer commands each create a separate environment under
-`build/stable-v1`, using `uv venv --python 3.14.6`. The verifier discovers the
+`build/stable-v1`, using `uv venv --python 3.15.0`. The verifier discovers the
 standard `bin/python` or `Scripts/python.exe` layout instead of embedding an
 operating-system-specific path. Each exact artifact must independently pass
 installation, import, package/runtime version agreement, OpenAPI construction,

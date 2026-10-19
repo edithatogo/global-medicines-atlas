@@ -20,7 +20,7 @@ concurrency:
 
 jobs:
   canary:
-    name: CPython 3.14t / advisory smoke
+    name: CPython 3.15t / advisory smoke
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     continue-on-error: true
@@ -37,7 +37,7 @@ jobs:
           PYTHON_GIL: "0"
           PYTHONPATH: src
         run: >-
-          uv run --python 3.14t --no-project
+          uv run --python 3.15t --no-project
           --with pytest==9.1.0 --with pytest-timeout==2.4.0
           --with pydantic==2.12.5
           pytest -q

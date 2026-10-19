@@ -2,7 +2,7 @@
 
 ## Architecture Baseline
 
-This is a Mojo-first, Python-compatible, provenance-first data system. Performance-critical kernels should be implemented in Mojo where the toolchain is suitable, while Python 3.14 remains the complete reference implementation and operational fallback.
+This is a Mojo-first, Python-compatible, provenance-first data system. Performance-critical kernels should be implemented in Mojo where the toolchain is suitable, while Python 3.15 remains the complete reference implementation and operational fallback.
 
 No required capability may exist only in Mojo until its Python parity contract, fixtures, and fallback behavior are verified.
 
@@ -32,7 +32,7 @@ Every dependency decision must classify the component as maintainer-owned reuse,
 
 ### Python
 
-- Require CPython 3.14 for the primary Python package and CI.
+- Require CPython 3.15 for the primary Python package and CI.
 - Use Python for source adapters, orchestration, schemas, validation, CLI/API surfaces, reporting, and the complete reference/fallback implementation.
 - Define public Python interfaces with strict typing.
 - Test every Mojo-accelerated behavior against shared Python golden fixtures and parity expectations.
@@ -125,7 +125,7 @@ LanceDB is a derived semantic and vector index.
 
 Apache Iceberg is an optional table-control plane over source-faithful Parquet.
 
-- Keep Iceberg behind the `iceberg` extra (`pyiceberg`); Python 3.14 core must
+- Keep Iceberg behind the `iceberg` extra (`pyiceberg`); Python 3.15 core must
   not import it.
 - Register bronze through an Iceberg REST catalogue only as rebuildable
   metadata. Do not migrate payload bytes or receipts into Iceberg metadata.
@@ -145,7 +145,7 @@ Apache Iceberg is an optional table-control plane over source-faithful Parquet.
 - Preserve required behavior through contracts and golden tests.
 - Replace legacy libraries only after the frontier path reproduces required behavior and data outputs.
 - Remove compatibility code only after downstream consumers and restoration paths are verified.
-- Require a recorded exception for dependencies that are unmaintained, incompatible with Python 3.14, or redundant with the selected stack.
+- Require a recorded exception for dependencies that are unmaintained, incompatible with Python 3.15, or redundant with the selected stack.
 
 ## Core Libraries
 
@@ -209,7 +209,7 @@ Every candidate must pass an architecture decision record covering:
 - Alternatives considered.
 - Benchmark and profiling evidence.
 - Operational and supply-chain cost.
-- Python 3.14 and Mojo compatibility.
+- Python 3.15 and Mojo compatibility.
 - Data portability and regeneration.
 - Fallback and migration behavior.
 - Harness and CI implications.
@@ -295,7 +295,7 @@ profile.
 GitHub Actions should include:
 
 - Pull-request and protected-main validation.
-- CPython 3.14 locked-environment validation.
+- CPython 3.15 locked-environment validation.
 - Mojo stable validation on Linux.
 - Mojo nightly compatibility canary with clearly classified blocking semantics.
 - Platform-appropriate smoke testing.

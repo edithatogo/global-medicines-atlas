@@ -26,10 +26,10 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - run: uv sync --python 3.14.6 --locked
+      - run: uv sync --python 3.15.0 --locked
       - name: Run disposable Git conflict and restore experiment
         run: >-
-          uv run --python 3.14.6 python
+          uv run --python 3.15.0 python
           scripts/run_free_tier_git_mechanics.py
           --output build/quality-receipts/free-tier-git-mechanics.json
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
@@ -57,16 +57,16 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - run: uv sync --python 3.14.6 --locked
+      - run: uv sync --python 3.15.0 --locked
       - name: Run isolated common workload
         env:
           EXPERIMENT_DEPENDENCY: ${{ matrix.dependency }}
           EXPERIMENT_ENGINE: ${{ matrix.engine }}
         run: |
           if [ -n "$EXPERIMENT_DEPENDENCY" ]; then
-            uv run --python 3.14.6 --with "$EXPERIMENT_DEPENDENCY" python scripts/run_table_format_experiment.py --engine "$EXPERIMENT_ENGINE" --output "build/quality-receipts/${EXPERIMENT_ENGINE}.json"
+            uv run --python 3.15.0 --with "$EXPERIMENT_DEPENDENCY" python scripts/run_table_format_experiment.py --engine "$EXPERIMENT_ENGINE" --output "build/quality-receipts/${EXPERIMENT_ENGINE}.json"
           else
-            uv run --python 3.14.6 python scripts/run_table_format_experiment.py --engine "$EXPERIMENT_ENGINE" --output "build/quality-receipts/${EXPERIMENT_ENGINE}.json"
+            uv run --python 3.15.0 python scripts/run_table_format_experiment.py --engine "$EXPERIMENT_ENGINE" --output "build/quality-receipts/${EXPERIMENT_ENGINE}.json"
           fi
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
@@ -111,11 +111,11 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - name: Synchronize locked Python 3.14 core environment
-        run: uv sync --python 3.14.6 --locked
+      - name: Synchronize locked Python 3.15 core environment
+        run: uv sync --python 3.15.0 --locked
       - name: Exercise DuckLake with the governed fixture
         run: >-
-          uv run --python 3.14.6 python scripts/run_ducklake_experiment.py
+          uv run --python 3.15.0 python scripts/run_ducklake_experiment.py
           --fixture tests/fixtures/datahouse/bronze_records.json
           --output build/quality-receipts/ducklake-comparison.json
       - name: Upload DuckLake comparison receipt
@@ -150,8 +150,8 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - name: Synchronize locked Python 3.14 core environment
-        run: uv sync --python 3.14.6 --locked
+      - name: Synchronize locked Python 3.15 core environment
+        run: uv sync --python 3.15.0 --locked
       - name: Start disposable synthetic Oxigraph service
         run: >-
           docker run --detach --rm --name gma-oxigraph-synthetic
@@ -165,7 +165,7 @@ jobs:
           OXIGRAPH_HTTP_URL: http://127.0.0.1:7878
           OXIGRAPH_QUALIFICATION_RECEIPT: build/quality-receipts/oxigraph-graph-parity.json
         run: >-
-          uv run --python 3.14.6 pytest
+          uv run --python 3.15.0 pytest
           tests/test_frontier_neo4j_integration.py
           tests/test_frontier_sparql_integration.py -q
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
@@ -213,10 +213,10 @@ jobs:
           version: "0.11.29"
           enable-cache: true
       - name: Synchronize locked optional Iceberg environment
-        run: uv sync --python 3.14.6 --locked --extra iceberg
+        run: uv sync --python 3.15.0 --locked --extra iceberg
       - name: Exercise actual Iceberg REST catalogue and v3 capability surface
         run: >-
-          uv run --python 3.14.6 --extra iceberg python
+          uv run --python 3.15.0 --extra iceberg python
           scripts/run_iceberg_rest_interop.py
           --uri http://127.0.0.1:8181
           --fixture tests/fixtures/datahouse/bronze_records.json
@@ -255,10 +255,10 @@ jobs:
           version: "0.11.29"
           enable-cache: true
       - name: Synchronize locked optional Iceberg environment
-        run: uv sync --python 3.14.6 --locked --extra iceberg
+        run: uv sync --python 3.15.0 --locked --extra iceberg
       - name: Verify and register the exact existing public MBS Parquet object
         run: >-
-          uv run --python 3.14.6 --extra iceberg python
+          uv run --python 3.15.0 --extra iceberg python
           scripts/run_public_parquet_iceberg.py
           --uri http://127.0.0.1:8181
           --temporary-directory "$RUNNER_TEMP/gma-public-parquet"
@@ -277,7 +277,7 @@ jobs:
           rmdir "$RUNNER_TEMP/gma-public-parquet"
       - name: Verify exact public MBS six-table B2-to-Silver row-value parity
         run: >-
-          uv run --python 3.14.6 python
+          uv run --python 3.15.0 python
           scripts/run_public_mbs_silver_parity.py
           --output build/quality-receipts/public-mbs-source-silver-tables-parity.json
       - name: Upload value-free MBS six-table parity receipt
@@ -307,23 +307,23 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - name: Synchronize Python 3.14 Test-Goblin environment
-        run: uv sync --python 3.14.6 --group test-goblin --locked
+      - name: Synchronize Python 3.15 Test-Goblin environment
+        run: uv sync --python 3.15.0 --group test-goblin --locked
       - name: Install Chromium for browser-backed E2E
         if: matrix.lane == 'e2e'
         run: >-
-          uv run --python 3.14.6 --group test-goblin playwright install
+          uv run --python 3.15.0 --group test-goblin playwright install
           --with-deps chromium
       - name: Run ${{ matrix.lane }} tests
         env:
           COVERAGE_CORE: sysmon
           TEST_GOBLIN_COVERAGE: "1"
           TEST_GOBLIN_LANE: ${{ matrix.lane }}
-        run: uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py "$TEST_GOBLIN_LANE"
+        run: uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py "$TEST_GOBLIN_LANE"
       - name: Verify and prepare Codecov CLI
         run: |
-          uv sync --project .ci/codecov --python 3.14.6 --locked
-          uv run --project .ci/codecov --python 3.14.6 --locked python scripts/prepare_codecov_cli.py --wheel-directory "$RUNNER_TEMP/codecov-cli"
+          uv sync --project .ci/codecov --python 3.15.0 --locked
+          uv run --project .ci/codecov --python 3.15.0 --locked python scripts/prepare_codecov_cli.py --wheel-directory "$RUNNER_TEMP/codecov-cli"
       - name: Verify Codecov upload TLS certificate
         run: python scripts/check_codecov_tls.py
       - name: Upload ${{ matrix.lane }} coverage
@@ -369,15 +369,15 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - name: Synchronize Python 3.14 development environment
+      - name: Synchronize Python 3.15 development environment
         if: >-
           (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
           steps.scope.outputs.heavy == 'true'
-        run: uv sync --python 3.14.6 --group dev --locked
+        run: uv sync --python 3.15.0 --group dev --locked
       - name: Install Chromium for full coverage profile
         if: matrix.profile == 'coverage'
         run: >-
-          uv run --python 3.14.6 --group dev playwright install
+          uv run --python 3.15.0 --group dev playwright install
           --with-deps chromium
       - name: Restore content-validated gremlins cache
         if: >-
@@ -386,9 +386,9 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .gremlins_cache
-          key: gremlins-${{ runner.os }}-py314-${{ hashFiles('uv.lock', 'pyproject.toml', 'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*') }}
+          key: gremlins-${{ runner.os }}-py315-${{ hashFiles('uv.lock', 'pyproject.toml', 'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*') }}
           restore-keys: |
-            gremlins-${{ runner.os }}-py314-
+            gremlins-${{ runner.os }}-py315-
       - name: Run Test-Goblin ${{ matrix.profile }} profile
         if: >-
           (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
@@ -401,12 +401,12 @@ jobs:
           if [[ "${TEST_GOBLIN_PROFILE}" == "mutation" ]]; then
             mkdir -p mutants/scripts
           fi
-          uv run --python 3.14.6 --group dev python scripts/test_goblin.py "$TEST_GOBLIN_PROFILE"
+          uv run --python 3.15.0 --group dev python scripts/test_goblin.py "$TEST_GOBLIN_PROFILE"
       - name: Verify and prepare Codecov CLI
         if: matrix.profile == 'coverage'
         run: |
-          uv sync --project .ci/codecov --python 3.14.6 --locked
-          uv run --project .ci/codecov --python 3.14.6 --locked python scripts/prepare_codecov_cli.py --wheel-directory "$RUNNER_TEMP/codecov-cli"
+          uv sync --project .ci/codecov --python 3.15.0 --locked
+          uv run --project .ci/codecov --python 3.15.0 --locked python scripts/prepare_codecov_cli.py --wheel-directory "$RUNNER_TEMP/codecov-cli"
       - name: Verify Codecov upload TLS certificate
         if: matrix.profile == 'coverage'
         run: python scripts/check_codecov_tls.py
@@ -500,11 +500,11 @@ jobs:
       - name: Reproduce candidate from detached LF and CRLF-policy worktrees
         if: steps.scope.outputs.heavy == 'true'
         run: >-
-          uv run --python 3.14.6 pytest -q -n 2 --dist worksteal
+          uv run --python 3.15.0 pytest -q -n 2 --dist worksteal
           tests/test_stable_v1_release_candidate_reproducibility.py
       - name: Synchronize environment for synthetic end-to-end consumer qualification
         if: steps.scope.outputs.heavy == 'true'
-        run: uv sync --python 3.14.6 --group dev --locked
+        run: uv sync --python 3.15.0 --group dev --locked
       - name: Qualify exact synthetic Bronze-to-Platinum export on this platform
         if: steps.scope.outputs.heavy == 'true'
         env:
@@ -512,7 +512,7 @@ jobs:
           GMA_SKIP_SYNTHETIC_EXPORT_BROWSER: "1"
         shell: bash
         run: >-
-          uv run --python 3.14.6 --group dev pytest -q
+          uv run --python 3.15.0 --group dev pytest -q
           tests/test_medallion_e2e.py::test_synthetic_evidence_flows_from_bronze_to_platinum_query
       - name: Upload consumer qualification receipt
         if: steps.scope.outputs.heavy == 'true'
@@ -554,11 +554,11 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - name: Synchronize locked Python 3.14 environment
-        run: uv sync --python 3.14.6 --locked
+      - name: Synchronize locked Python 3.15 environment
+        run: uv sync --python 3.15.0 --locked
       - name: Qualify representative synthetic workload
         run: >
-          uv run --python 3.14.6 python scripts/run_performance_workload.py
+          uv run --python 3.15.0 python scripts/run_performance_workload.py
           --require-process-memory
       - name: Upload representative performance receipt
         if: always()
@@ -581,11 +581,11 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - name: Synchronize locked Python 3.14 environment
-        run: uv sync --python 3.14.6 --locked
+      - name: Synchronize locked Python 3.15 environment
+        run: uv sync --python 3.15.0 --locked
       - name: Rehearse governed local recovery
         run: >
-          uv run --python 3.14.6 python
+          uv run --python 3.15.0 python
           scripts/rehearse_governed_recovery.py
       - name: Upload governed recovery receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
@@ -607,11 +607,11 @@ jobs:
         with:
           version: "0.11.29"
           enable-cache: true
-      - name: Synchronize locked Python 3.14 environment
-        run: uv sync --python 3.14.6 --locked
+      - name: Synchronize locked Python 3.15 environment
+        run: uv sync --python 3.15.0 --locked
       - name: Run bounded operational exercises
         run: >
-          uv run --python 3.14.6 python
+          uv run --python 3.15.0 python
           scripts/run_operational_exercises.py
       - name: Upload operational exercise receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6

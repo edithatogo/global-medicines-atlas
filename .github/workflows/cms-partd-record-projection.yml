@@ -91,7 +91,7 @@ jobs:
             sudo apt-get update
             sudo apt-get install --yes p7zip-full
           fi
-          uv run --frozen --python 3.14.6 python scripts/project_cms_partd_records.py \
+          uv run --frozen --python 3.15.0 python scripts/project_cms_partd_records.py \
             --payload work/payload --family "$SOURCE_FAMILY" \
             --identity "$SOURCE_IDENTITY" --output work/parquet \
             --manifest work/source-records.json
@@ -104,7 +104,7 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${HF_TOKEN:-}"
-          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          uv run --python 3.15.0 --with huggingface-hub==1.14.0 python - <<'PY'
           import os
           import time
           from huggingface_hub import HfApi
@@ -178,11 +178,11 @@ jobs:
             "https://huggingface.co/datasets/${HF_DATASET}/resolve/${RAW_REVISION}/manifest.json" \
             --output raw-manifest.json
           qualified_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          uv run --frozen --python 3.14.6 python scripts/qualify_cms_partd_records.py \
+          uv run --frozen --python 3.15.0 python scripts/qualify_cms_partd_records.py \
             --raw-manifest raw-manifest.json --shards-dir receipts \
             --qualified-at "$qualified_at" --raw-revision "$RAW_REVISION" \
             --output source-record-qualification.json
-          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          uv run --python 3.15.0 --with huggingface-hub==1.14.0 python - <<'PY'
           import json
           import os
           from hashlib import sha256

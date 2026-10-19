@@ -26,7 +26,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           set -euo pipefail
-          uv run --python 3.14.6 --with huggingface-hub==1.14.0 \
+          uv run --python 3.15.0 --with huggingface-hub==1.14.0 \
             python scripts/acquire_sweden_socialstyrelsen_private.py \
             | tee socialstyrelsen-private-acquisition-receipt.json
       - name: Retain value-free acquisition receipt

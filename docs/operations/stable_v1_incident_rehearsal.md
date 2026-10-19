@@ -18,10 +18,10 @@ rejects missing gates or reordered actions, and records all external effects as
 are not approvals, authority identities, or evidence that an external gate was
 passed. An exact adjacent retry is idempotent and creates no additional event.
 
-Run the bounded exercise with Python 3.14:
+Run the bounded exercise with Python 3.15:
 
 ```console
-uv run --python 3.14 python scripts/stable_v1_incident_rehearsal.py build/stable_v1_incident_rehearsal.json
+uv run --python 3.15 python scripts/stable_v1_incident_rehearsal.py build/stable_v1_incident_rehearsal.json
 ```
 
 Validate the output against

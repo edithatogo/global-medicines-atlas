@@ -40,7 +40,7 @@ jobs:
           curl --fail --show-error --silent --location --retry 5 \
             'https://catalog.data.gov/dataset/medicare-part-d-spending-by-drug' \
             --output inventory/spending.html
-          uv run --frozen --python 3.14.6 python - <<'PY'
+          uv run --frozen --python 3.15.0 python - <<'PY'
           import json
           import os
           from hashlib import sha256
@@ -207,7 +207,7 @@ jobs:
           curl --fail --show-error --silent --location --retry 20 --retry-all-errors \
             --connect-timeout 30 --max-time 18000 \
             "$SOURCE_URL" --output "payload/$SOURCE_IDENTITY"
-          uv run --frozen --python 3.14.6 python - <<'PY'
+          uv run --frozen --python 3.15.0 python - <<'PY'
           import json
           import os
           from datetime import UTC, datetime
@@ -362,7 +362,7 @@ jobs:
           set -euo pipefail
           expected=$(jq -r '.sha256' receipt/receipt.json)
           qualified_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          uv run --frozen --python 3.14.6 python scripts/qualify_cms_partd_shard.py \
+          uv run --frozen --python 3.15.0 python scripts/qualify_cms_partd_shard.py \
             --payload "payload/$SOURCE_IDENTITY" \
             --url "$SOURCE_URL" \
             --family "$SOURCE_FAMILY" \
@@ -382,7 +382,7 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${HF_TOKEN:-}"
-          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          uv run --python 3.15.0 --with huggingface-hub==1.14.0 python - <<'PY'
           import os
           import time
           import json
