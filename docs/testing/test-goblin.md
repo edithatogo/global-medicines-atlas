@@ -67,10 +67,10 @@ in its isolated subprocess mode; the cache only avoids repeating unchanged
 mutants across eligible hosted runs. Worker and batch experiments remain
 rejected because they caused contention and increased wall time.
 
-An advisory weekly/manual CPython 3.15 free-threaded canary runs deterministic
+An advisory weekly/manual CPython 3.14 free-threaded canary runs deterministic
 normalization tests with `PYTHON_GIL=0`. It uses an isolated minimal core
 environment because the optional LanceDB semantic backend does not yet publish
-CPython 3.15t distributions. The canary is explicitly non-blocking and does
+CPython 3.14t distributions. The canary is explicitly non-blocking and does
 not replace the supported Python 3.15 lane.
 
 ## Local Commands

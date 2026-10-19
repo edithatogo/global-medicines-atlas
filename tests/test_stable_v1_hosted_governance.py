@@ -305,9 +305,9 @@ def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
     workflow = (
         ROOT / ".github/workflows/python-free-threaded-canary.yml"
     ).read_text(encoding="utf-8")
-    assert "CPython 3.15t / advisory smoke" in workflow
+    assert "CPython 3.14t / advisory smoke" in workflow
     assert "continue-on-error: true" in workflow
-    assert "uv run --python 3.15t" in workflow
+    assert "uv run --python 3.14t" in workflow
     assert "--no-project" in workflow
     assert 'PYTHON_GIL: "0"' in workflow
     assert (
