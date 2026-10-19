@@ -72,3 +72,5 @@ values and other field names remain findings.
   changed value and wrong field each remained findings.
 - PR #1211 redacted Gitleaks report: two findings for the exact replay
   idempotency field/value in the plan and execution receipt.
+
+PR #1218 adds two findings for the same deterministic replay-plan `idempotency_key` in the plan and execution receipt. The value is a SHA-256-derived identity verified against the planner formula, not a credential. The exact field/value pair is allowlisted; changed values and other field names remain detectable.
