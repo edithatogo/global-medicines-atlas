@@ -4054,3 +4054,25 @@
   No public dataset mutation or source-payload retention occurred. This is
   M-110 candidate evidence only; M-112 admissions and M-112 consumer canaries
   remain zero.
+
+## M-112 admitted-object consumer canary preparation (2026-10-20)
+
+- [x] Build the exact v4.1 contract for the July 2016 MBS Group raw B2
+  object and verify all external receipt roles plus independent admission.
+  The contract pins public revision
+  `dee9a5b0580dfe394474dc26b372559462e157e7`, path
+  `raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx`, 6,857,437 bytes,
+  and SHA-256
+  `9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285`.
+  Its contract SHA-256 is
+  `b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e`.
+  Receipt closure verified 12 role bindings and 10 unique receipt payloads;
+  one exact object is technically admitted. The source-native workbook layout
+  remains unqualified and no values or rows are interpreted.
+- [x] Prepare a default-branch-only, 15-minute hosted workflow to revalidate
+  that exact admission, exercise `bind_consumer_contract` and
+  `FederatedReader` on the live public object, verify stream digest/size and
+  reader cache cleanup, and retain an aggregate-only canary receipt.
+- [ ] Run the canary after this workflow and qualification are merged. Until
+  its exact-main receipt is read back and checked, the M-112 consumer-canary
+  count remains zero.
