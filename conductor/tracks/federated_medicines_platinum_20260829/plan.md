@@ -1538,9 +1538,15 @@
 - [x] Focused v3 replay role tests (11), broader M-112 federation selection
   (131), role-report `--check`, Ruff, targeted BasedPyright, and Test-Goblin
   routine passed after binding the receipt.
-- [~] Keep M-112 v4 admission and consumer-canary counts at zero. Current
-  qualification still has incomplete/unbound mandatory contract roles and no
-  admitted object. The existing API/CLI/Atlas/Chromium traversal is explicitly
-  candidate-only; it cannot be counted as an admitted-product canary. Run the
-  bounded actual-consumer canaries only after an exact object passes v4
-  admission and is pinned in the consumer contract.
+- [~] Reconcile M-112 admission and admitted-product consumer-canary counts.
+  One raw MBS B2 object is admitted under its exact v4 contract, and one
+  bounded canary passed through the pinned `FederatedReader` consumer on exact
+  `main` commit `7dbf14db2403485cabbe699858579cf7c7567012`. Remote and streamed
+  digests matched; no source values were interpreted or retained, and reader
+  cache usage returned to zero. The refreshed receipt is
+  `quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json`.
+  This is one consumer canary for one admitted object; it does not qualify
+  other consumers or the remaining 1,758 denominator entries. The API/CLI/
+  Atlas/Chromium traversal remains candidate-only and does not add to the
+  admitted-product canary count. Continue per-object admission and run the
+  corresponding bounded consumer check only after each object qualifies.
