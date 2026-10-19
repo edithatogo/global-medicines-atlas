@@ -3778,6 +3778,25 @@
   score by one floating-point rounding unit. Both Stable v1 reproducibility
   tests pass under the pinned runtime. Hosted checks for the corrected PR head
   remain required.
-- [~] Continue lineage reconciliation for the remaining 18 inventory objects.
+## M-112 PBS archive PDF B1/B2 lineage (2026-10-19)
+
+- [x] Stream all five already-inventoried PBS archive PDF variants from their
+  exact Internet Archive replay URLs. Each streamed SHA-256 and byte count
+  matches both the frozen inventory and its producer archive-variant receipt.
+  No payload bytes were persisted or values inspected.
+- [x] Add retrieval-timed local B1 acquisition events, reference-only B2
+  manifests, and unreviewed `landed` admissions for those five frozen paths.
+  Rights remain unknown; the producer receipt still records
+  `blocked_pending_explicit_permission`; no processing, v4 admission, or
+  consumer canary follows from this lineage.
+- [x] Regenerate the cumulative overlay without changing the 1,759-object
+  denominator. Raw lineage is now complete for 1,736 paths; all 1,759 remain
+  deferred, and the 13 unresolved objects are projections.
+- [x] Focused tests (3), the full M-112 affected suite (110), Ruff, `ty`, and
+  BasedPyright pass. The full profile completed with 6,950 passed and three
+  skipped; four unrelated failures remain in an order-sensitive matching
+  property, a browser scalar-filter canary, and two Stable v1 reproducibility
+  checks.
+- [~] Continue lineage reconciliation for the remaining 13 projections.
   Preserve separate rights, v4 admission, and canary gates; PBS/M107
   crosswalks and the reserved July derivative remain with their owner.
