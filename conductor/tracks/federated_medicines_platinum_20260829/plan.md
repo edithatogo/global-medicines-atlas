@@ -1491,3 +1491,24 @@
 - [~] The 13 temporal role candidates remain unbound pending complete v4
   contracts, schema qualification and the other mandatory evidence. Preserve
   the approved 1,759 denominator, zero admissions, and zero consumer canaries.
+
+## 2026-10-20 M-112 qualifier strict typing repair
+
+- [x] Fixed the strict typing errors in the v4 candidate-role qualifier after
+  the exact-head hosted strict lane identified unknown JSON-object types. The
+  qualifier now explicitly validates and narrows nested registry, collection,
+  temporal metadata, and unresolved-period records before reading them.
+- [x] The exact role qualification still passes its `--check`; focused role
+  tests passed (9), the affected federation contract/admission/conformance
+  selection passed (129), full basedpyright passed (0 errors; 4 existing
+  optional-import warnings), Ruff passed, and Test-Goblin routine passed.
+- [x] PR #1199's separate exact-digest Gitleaks correction merged at
+  `dd7a01bcd3da60190f821395ceb1260a3d9ddad9` after all 39 exact-head checks
+  passed. Its full-history scan found no leaks; the same targeted correction
+  is included in PR #1200, where it addresses 33 false-positive public digest
+  matches.
+- [~] The M-112 qualification remains unchanged: 0 v4 admissions and 0
+  consumer canaries. This repair only makes the current candidate evidence
+  verifier pass strict typing; it does not bind incomplete role receipts or
+  create an admission. PR #1200 hosted checks are rerunning on its updated
+  head.

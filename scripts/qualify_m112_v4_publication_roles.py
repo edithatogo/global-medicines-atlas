@@ -274,7 +274,8 @@ def _bind_discovery_candidate(
         cast("dict[str, Any]", value)
         for value in datasets
         if isinstance(value, dict)
-        and value.get("dataset") == candidate.get("dataset")
+        and cast("dict[str, Any]", value).get("dataset")
+        == candidate.get("dataset")
     ]
     if (
         len(access) != 1
@@ -284,12 +285,17 @@ def _bind_discovery_candidate(
         raise ValueError(
             "discovery dataset is not confirmed public and ungated"
         )
-    entries_value = discovery.get("estate_registry", {}).get("entries", [])
+    estate_value = discovery.get("estate_registry")
+    if not isinstance(estate_value, dict):
+        raise TypeError("discovery estate registry is malformed")
+    estate_registry = cast("dict[str, Any]", estate_value)
+    entries_value = estate_registry.get("entries", [])
     entries = [
         cast("dict[str, Any]", value)
         for value in cast("list[Any]", entries_value)
         if isinstance(value, dict)
-        and value.get("repo_id") == candidate.get("dataset")
+        and cast("dict[str, Any]", value).get("repo_id")
+        == candidate.get("dataset")
     ]
     if len(entries) != 1 or entries[0].get("access") != "public":
         raise ValueError(
@@ -299,10 +305,13 @@ def _bind_discovery_candidate(
         raise ValueError(
             "estate rights state changed; do not infer a new decision"
         )
-    collection = discovery.get("collection")
-    if not isinstance(collection, dict) or candidate.get(
-        "dataset"
-    ) not in collection.get("matching_dataset_members", []):
+    collection_value = discovery.get("collection")
+    if not isinstance(collection_value, dict):
+        raise TypeError("discovery collection evidence is malformed")
+    collection = cast("dict[str, Any]", collection_value)
+    if candidate.get("dataset") not in collection.get(
+        "matching_dataset_members", []
+    ):
         raise ValueError(
             "candidate dataset is absent from the exact collection"
         )
@@ -316,8 +325,8 @@ def _bind_discovery_candidate(
         "collection": collection.get("url"),
         "collection_response_sha256": collection.get("response_sha256"),
         "estate_entry": {
-            "url": discovery["estate_registry"].get("catalog_url"),
-            "sha256": discovery["estate_registry"].get("catalog_sha256"),
+            "url": estate_registry.get("catalog_url"),
+            "sha256": estate_registry.get("catalog_sha256"),
             "dataset": candidate["dataset"],
             "status": entries[0].get("status"),
             "rights_status": entries[0].get("rights_status"),
@@ -349,7 +358,8 @@ def _bind_location_candidate(
         cast("dict[str, Any]", item)
         for item in access_rows
         if isinstance(item, dict)
-        and item.get("dataset") == candidate.get("dataset")
+        and cast("dict[str, Any]", item).get("dataset")
+        == candidate.get("dataset")
     ]
     if (
         len(matching_access) != 1
@@ -428,9 +438,10 @@ def _bind_source_semantics_candidate(
 ) -> None:
     if candidate.get("dataset") != DATASET:
         return
-    object_rows = semantics.get("objects")
-    if not isinstance(object_rows, list):
+    object_rows_value = semantics.get("objects")
+    if not isinstance(object_rows_value, list):
         raise TypeError("source semantics evidence has no object list")
+    object_rows = cast("list[Any]", object_rows_value)
     candidate_identity = {
         key: candidate.get(key)
         for key in ("dataset", "revision", "path", "bytes", "sha256")
@@ -440,7 +451,8 @@ def _bind_source_semantics_candidate(
         for row in object_rows
         if isinstance(row, dict)
         and all(
-            row.get(key) == value for key, value in candidate_identity.items()
+            cast("dict[str, Any]", row).get(key) == value
+            for key, value in candidate_identity.items()
         )
     ]
     if not matches:
@@ -466,8 +478,13 @@ def _bind_source_semantics_candidate(
         raise TypeError("source temporal or resource metadata is missing")
     if not isinstance(metadata, dict):
         raise TypeError("source metadata readback is missing")
-    _validate_source_semantics_fields(candidate, source_row, temporal, resource)
-    response_digest = metadata.get("response_sha256")
+    _validate_source_semantics_fields(
+        candidate,
+        source_row,
+        cast("dict[str, Any]", temporal),
+        cast("dict[str, Any]", resource),
+    )
+    response_digest = cast("dict[str, Any]", metadata).get("response_sha256")
     if not isinstance(response_digest, str):
         raise TypeError("source metadata readback digest is missing")
     if not re.fullmatch(
@@ -496,7 +513,7 @@ def _bind_source_semantics_candidate(
             "url": metadata["url"],
             "http_status": metadata["http_status"],
             "response_sha256": response_digest,
-            "resource_id": resource.get("id"),
+            "resource_id": cast("dict[str, Any]", resource).get("id"),
             "evidence_report": {
                 "path": SOURCE_SEMANTICS_REPORT,
                 "sha256": _sha256(
@@ -648,28 +665,44 @@ def _update_summary(
 
 
 def _validate_source_semantics_scope(semantics: dict[str, Any]) -> None:
-    object_rows = semantics.get("objects")
+    object_rows_value = semantics.get("objects")
     unresolved = semantics.get("unresolved")
     if (
         semantics.get("status")
         != "source_temporal_semantics_candidates_available_unbound_schema_layout_unqualified"
-        or not isinstance(object_rows, list)
-        or len(object_rows) != EXPECTED_SOURCE_SEMANTICS_OBJECTS
+        or not isinstance(object_rows_value, list)
         or not isinstance(unresolved, list)
-        or len(unresolved) != 1
     ):
         raise ValueError("source temporal evidence coverage changed")
-    unresolved_row = unresolved[0]
+    object_rows = cast("list[Any]", object_rows_value)
+    unresolved_rows = cast("list[Any]", unresolved)
+    if (
+        len(object_rows) != EXPECTED_SOURCE_SEMANTICS_OBJECTS
+        or len(unresolved_rows) != 1
+    ):
+        raise ValueError("source temporal evidence coverage changed")
+    unresolved_row = unresolved_rows[0]
     if not isinstance(unresolved_row, dict):
         raise TypeError("unresolved source ambiguity record is malformed")
+    unresolved_record = cast("dict[str, Any]", unresolved_row)
     if (
-        unresolved_row.get("path") != SOURCE_SEMANTICS_UNRESOLVED_PATH
-        or unresolved_row.get("state")
+        unresolved_record.get("path") != SOURCE_SEMANTICS_UNRESOLVED_PATH
+        or unresolved_record.get("state")
         != "source_metadata_period_conflicts_with_resource_name"
-        or semantics.get("boundaries", {}).get("raw_source_objects_inspected")
-        is not False
+        or not _raw_source_inspection_is_false(semantics)
     ):
         raise ValueError("source ambiguity or raw-source boundary changed")
+
+
+def _raw_source_inspection_is_false(semantics: dict[str, Any]) -> bool:
+    boundaries = semantics.get("boundaries")
+    return (
+        isinstance(boundaries, dict)
+        and cast("dict[str, Any]", boundaries).get(
+            "raw_source_objects_inspected"
+        )
+        is False
+    )
 
 
 def _bind_candidates(
