@@ -63,7 +63,7 @@
     "source_version": "us_cms_hcpcs_level_ii_2026_07"
   },
   "effective_m112_rights": {
-    "resolved_object_count": 22,
+    "resolved_object_count": 28,
     "rights_evidence_does_not_imply_admission": true,
     "state_counts": [
       {
@@ -118,7 +118,7 @@
         "candidate_class": "raw_source_payload",
         "dataset": "edithatogo/australian-pbs-utilisation-archive",
         "object_count": 6,
-        "state": "source-specific rights review absent; per-object sidecar has no rights_state"
+        "state": "maintainer_attested_dataset_publication_permission_with_vocabulary_exclusion"
       },
       {
         "candidate_class": "existing_data_projection",
@@ -133,7 +133,7 @@
         "state": "unresolved: source-specific rights and per-record provenance not qualified"
       }
     ],
-    "unresolved_object_count": 1737
+    "unresolved_object_count": 1731
   },
   "evidence_inputs": {
     "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
@@ -142,6 +142,8 @@
     "quality/qualifications/australian-m108-derived-products-20261017.json": "f9da44a9fc61ebaff83e7784f56d2376db33e2d9a7b834142ee60c3a1ad5fd7c",
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c",
     "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+    "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+    "quality/qualifications/australian-pbs-utilisation-publication-authorization.json": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
     "quality/qualifications/cms-hcpcs-rights-review-20261019.json": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608"
   },
   "exact_july_2025_mbs_silver": {
@@ -194,8 +196,98 @@
     "raw_paths": 1736,
     "sha256": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c"
   },
-  "observed_at": "2026-10-19T13:07:50Z",
-  "purpose": "Reconcile effective rights evidence after the exact MBS Silver attestation and CMS HCPCS rights decision without changing object membership or release state.",
+  "observed_at": "2026-10-19T14:50:00Z",
+  "pbs_utilisation_raw_objects": {
+    "authorization_path": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
+    "authorization_sha256": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
+    "full_object_release_requires_exclusion_review": true,
+    "lineage_path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+    "lineage_sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+    "maintainer_asserted_redistribution_permission": true,
+    "object_count": 6,
+    "objects": [
+      {
+        "byte_count": 372149,
+        "category": "annual_expenditure_and_prescriptions_report",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+        "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+        "source_id": "au-pbs-expenditure",
+        "source_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2023-2024/Expenditure-prescriptions-report-tables-2023-24.XLSX"
+      },
+      {
+        "byte_count": 468764,
+        "category": "annual_expenditure_and_prescriptions_report",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+        "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+        "source_id": "au-pbs-expenditure",
+        "source_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2024-2025/Expenditure-prescriptions-report-tables-2024-25.XLSX"
+      },
+      {
+        "byte_count": 35384567,
+        "category": "date_of_supply_monthly_prescriptions",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+        "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+        "source_id": "au-pbs-dos-utilisation",
+        "source_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2024-to-jun-2025-phrmcy-type.csv"
+      },
+      {
+        "byte_count": 36381946,
+        "category": "date_of_supply_monthly_prescriptions",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+        "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+        "source_id": "au-pbs-dos-utilisation",
+        "source_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2025-to-jun-2026-phrmcy-type.csv"
+      },
+      {
+        "byte_count": 1063694,
+        "category": "item_drug_mapping",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+        "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+        "source_id": "au-pbs-dos-utilisation",
+        "source_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/pbs-item-drug-map.csv"
+      },
+      {
+        "byte_count": 117376499,
+        "category": "date_of_supply_multiyear_summary",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+        "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+        "source_id": "au-pbs-dos-utilisation",
+        "source_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2021-to-jun-2026.xlsx"
+      }
+    ],
+    "public_release_authorized_within_scope": true,
+    "publication_exclusions": [
+      "medicine-level clinical equivalence claims",
+      "unlicensed vocabulary redistribution"
+    ],
+    "rights_state": "maintainer_attested_dataset_publication_permission_with_vocabulary_exclusion",
+    "scope": {
+      "allowed_domains": [
+        "www.pbs.gov.au",
+        "pbs.gov.au"
+      ],
+      "allowed_sources": [
+        "au-pbs-dos-utilisation",
+        "au-pbs-expenditure"
+      ],
+      "categories": [
+        "date_of_supply_monthly_prescriptions",
+        "item_drug_mapping",
+        "annual_expenditure_and_prescriptions_report",
+        "date_of_supply_multiyear_summary",
+        "date_of_processing_historical"
+      ],
+      "dataset": "edithatogo/australian-pbs-utilisation-archive"
+    },
+    "unlicensed_vocabulary_presence_reviewed": false
+  },
+  "purpose": "Reconcile effective rights evidence after the exact MBS Silver attestation, PBS utilisation publication authorization, and CMS HCPCS rights decision without changing object membership or release state.",
   "schema_id": "global-medicines-atlas.australian-m112-current-rights-reconciliation",
   "schema_version": 1
 }
