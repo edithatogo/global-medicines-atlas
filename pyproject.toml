@@ -43,6 +43,9 @@ semantic = [
 iceberg = [
   "pyiceberg>=0.10",
 ]
+demo = [
+  "uvicorn>=0.54,<0.55",
+]
 
 [project.scripts]
 global-medicines-atlas = "global_medicines_atlas.cli:app"
