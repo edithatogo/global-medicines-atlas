@@ -3901,6 +3901,29 @@
   establish reuse authority.
 - Reconciliation implementation commit: `27007a797753c4ae9d8a53a81dede6c76a5a1369`.
 
+## M-112 rights-release preflight refresh (2026-10-20)
+
+- [x] Supersede the pre-decision October 19 rights-release preflight with a
+  digest-bound snapshot of current effective rights evidence. Preserve the
+  historical preflight unchanged. The exact six July 2025 MBS Silver objects
+  carry the maintainer-attested bounded release permission; no release was
+  performed. The exact July 2026 CMS HCPCS reference is permitted/reviewed,
+  while its acquisition-time `unknown` state remains historical and no
+  payload-processing, derived-rights, admission, canary, or publication
+  authority is inferred. See
+  `quality/qualifications/australian-m112-rights-release-preflight-20261020.json`.
+- [x] Reassert the frozen denominator (1,759), current rights counts (28 with
+  scoped positive rights evidence, 1,731 unresolved), zero v4 admissions, zero
+  canaries, and zero external publications. PBS utilization's scoped grant
+  still excludes unlicensed vocabulary; full-object release remains blocked
+  pending exclusion review.
+- [ ] Resolve derived-output rights for the four exact August 2026 MBS Bronze
+  Parquet projections. Their complete lineage does not establish rights, and
+  the source authorization records no derived-output authority. Keep this
+  separate from the July Silver attestation.
+- [ ] Continue the remaining source-specific rights work for the unresolved
+  MBS, PBS, and reimbursement-atlas objects. No source coverage was added.
+
 ## M-112 raw B2 v1 conformance candidate (2026-10-19)
 
 - [x] Build a deterministic v1 conformance manifest for the exact 16-object
