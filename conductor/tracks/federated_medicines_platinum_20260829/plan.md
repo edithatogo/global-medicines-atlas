@@ -1512,3 +1512,27 @@
   verifier pass strict typing; it does not bind incomplete role receipts or
   create an admission. PR #1200 hosted checks are rerunning on its updated
   head.
+
+## 2026-10-20 one-object M-112 v3 replay preparation
+
+- [x] Add a strict one-object v3 replay-plan builder for the pinned July 2016
+  MBS Group raw B2 reference. The qualification binds the existing exact-scope
+  rights decision, source receipt, B1 event, B2 manifest, candidate publication
+  and anonymous restore identities; the period label is filename-derived and
+  makes no claim about workbook contents. The plan validates against the v3
+  schema and remains explicitly candidate-only.
+- [x] Add a hosted, exact-main, read-only replay workflow. It downloads the
+  pinned public object anonymously, verifies only SHA-256 and byte count,
+  rebuilds deterministic registration metadata, emits an aggregate-only Actions
+  artifact, and removes temporary source bytes. It has no publication or v4
+  admission permissions. The local executor tests use synthetic bytes only.
+- [x] Focused v3 replay and contract-conformance checks passed (13); routine
+  Test-Goblin checks passed; BasedPyright reported zero executor errors. The
+  full local profile passed 6,981 tests with 96.90% coverage, three optional
+  skips, and two existing stable-release reproducibility failures caused by
+  uv 0.13.1. Both failed tests passed unchanged (2) with the repository's
+  isolated uv 0.11.29. Hosted protected checks and the exact-main replay run
+  remain pending.
+- [~] Keep M-112 v4 admission and consumer-canary counts at zero. The replay
+  plan and executor do not close authority, discovery, recovery/cache, source
+  semantics, v4 contract binding, or any actual consumer canary requirement.
