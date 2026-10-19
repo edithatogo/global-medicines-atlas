@@ -354,18 +354,20 @@ jobs:
         with:
           version: "0.13.1"
           enable-cache: true
-      - name: Synchronize Python 3.15 dependencies except DuckDB
+      - name: Synchronize the Python 3.15 compatibility subset
         run: >-
           uv sync --python 3.15.0 --locked --no-default-groups --group test-goblin
-          --no-install-package duckdb
-      - name: Run platform-independent compatibility and governance tests
+          --no-install-package duckdb --no-install-package pyarrow
+          --no-install-package pydantic --no-install-package pydantic-core
+          --no-install-package numpy --no-install-package polars
+          --no-install-package polars-runtime-32 --no-install-package lancedb
+          --no-install-package jsonschema --no-install-package rpds-py
+          --no-install-package mutmut --no-install-package libcst
+      - name: Run the qualified Python 3.15 compatibility subset
         run: >-
           uv run --no-sync --python 3.15.0 pytest -q
           tests/test_stable_v1_documentation.py
           tests/test_mbs_release_workflow.py
-          tests/test_stable_v1_hosted_governance.py
-          tests/test_consumer_qualification.py
-          -k 'not current_openapi_is_compatible_with_committed_baseline'
 
   quality:
     name: Python 3.14 / ${{ matrix.profile }}

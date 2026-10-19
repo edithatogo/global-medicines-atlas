@@ -198,10 +198,19 @@ profiles a bounded representative pytest workload and stores its Scalene JSON
 and measured receipt beneath ignored `build/` paths.
 
 The `package` profile builds both wheel and source distribution, installs each
-into a disposable core-only Python 3.15 environment, verifies metadata and
-dynamic version identity, exercises import/CLI/API/OpenAPI behavior, reinstalls
-the artifact, and writes `build/quality-receipts/consumer.json`. CI repeats the
+into a disposable core-only Python 3.14.6 protected-baseline environment,
+verifies metadata and dynamic version identity, exercises
+import/CLI/API/OpenAPI behavior, reinstalls the artifact, and writes
+`build/quality-receipts/consumer.json`. CI repeats the
 same rehearsal on Windows, Linux, and macOS with platform-specific receipts.
+
+Python 3.15 is the configured development target and has a bounded Linux
+compatibility canary for documentation and MBS release-workflow tests. The
+canary excludes dependencies that do not yet install or qualify on Python
+3.15 (DuckDB, PyArrow, Pydantic and its core extension, NumPy, Polars, LanceDB,
+jsonschema and rpds-py, mutmut, and LibCST). The protected full test and
+release-consumer lanes remain on Python 3.14.6 until the complete dependency
+and platform matrix is qualified.
 
 Run the mutation profile on Linux CI or in WSL:
 
