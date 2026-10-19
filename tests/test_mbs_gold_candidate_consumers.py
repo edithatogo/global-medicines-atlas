@@ -43,6 +43,8 @@ from global_medicines_atlas.mbs_gold_scalar_projection import (
 )
 from global_medicines_atlas.receipts import SourceReceipt
 
+ROOT = Path(__file__).resolve().parents[1]
+
 
 def _candidate_artifact(tmp_path):
     candidate = build_mbs_gold_graph_from_admitted_silver(
@@ -219,6 +221,63 @@ def test_candidate_scalar_query_canary_preserves_decimal_and_date_engine_parity(
         script.qualify_candidate_scalar_queries(scalar_path, qualification)
 
 
+def test_reviewed_candidate_canary_binds_the_exact_maintainer_review(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.syspath_prepend(str(ROOT / "scripts"))
+    script = import_module(
+        "scripts.qualify_australian_mbs_gold_candidate_consumers"
+    )
+    qualification = json.loads(
+        (ROOT / script.QUALIFICATION_PATH).read_text(encoding="utf-8")
+    )
+    review = json.loads(
+        (ROOT / script.EDGE_REVIEW_DISPOSITION_PATH).read_text(encoding="utf-8")
+    )
+
+    binding = script.reviewed_candidate_relationship_binding(
+        qualification,
+        review,
+        review_file_sha256=script.EXPECTED_EDGE_REVIEW_FILE_SHA256,
+    )
+
+    assert binding["state"] == "reviewed_candidate_only"
+    assert binding["edge_count"] == 5989
+    assert binding["edge_id_sha256"] == script.EXPECTED_REVIEWED_EDGE_ID_SHA256
+    assert binding["m110_overall_accepted"] is False
+    assert binding["m112_federation_accepted"] is False
+
+    altered_review = {**review, "decision": "accept all semantic matches"}
+    with pytest.raises(ValueError, match="review disposition"):
+        script.reviewed_candidate_relationship_binding(
+            qualification,
+            altered_review,
+            review_file_sha256=script.EXPECTED_EDGE_REVIEW_FILE_SHA256,
+        )
+
+
+def test_reviewed_candidate_canary_rejects_consumer_surface_drift() -> None:
+    script = import_module(
+        "scripts.qualify_australian_mbs_gold_candidate_consumers"
+    )
+    receipt = {
+        "surface_edge_id_sha256": dict.fromkeys(
+            ("API", "Atlas", "Browser", "CLI"), "a" * 64
+        )
+    }
+    binding = {"edge_count": 5989, "edge_id_sha256": "a" * 64}
+
+    canary = script.qualify_reviewed_candidate_canaries(receipt, binding)
+    assert canary["status"] == "passed"
+    assert canary["surface_canary_count"] == 4
+    assert canary["review_state"] == "reviewed_candidate"
+    assert canary["m110_overall_accepted"] is False
+
+    receipt["surface_edge_id_sha256"]["Browser"] = "b" * 64
+    with pytest.raises(ValueError, match="reviewed edge set"):
+        script.qualify_reviewed_candidate_canaries(receipt, binding)
+
+
 def test_candidate_v4_lineage_binds_exact_six_source_faithful_tables(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -357,6 +416,17 @@ def test_qualification_script_emits_browser_bound_aggregate_receipt(
             "query_cases": {},
         },
     )
+    monkeypatch.setattr(
+        script,
+        "reviewed_candidate_relationship_binding",
+        lambda *_args, **_kwargs: {
+            "edge_count": len(candidate_ids),
+            "edge_id_sha256": hashlib.sha256(
+                ("\n".join(candidate_ids) + "\n").encode()
+            ).hexdigest(),
+            "state": "reviewed_candidate_only",
+        },
+    )
 
     assert (
         script.main([
@@ -379,6 +449,11 @@ def test_qualification_script_emits_browser_bound_aggregate_receipt(
     )
     receipt = json.loads(output.read_text(encoding="utf-8"))
     assert receipt["surfaces"] == ["API", "Atlas", "Browser", "CLI"]
+    assert receipt["reviewed_candidate_consumer_canary"]["status"] == "passed"
+    assert (
+        receipt["reviewed_candidate_consumer_canary"]["surface_canary_count"]
+        == 4
+    )
     assert receipt["hosted_workflow"] == {
         "repository": "edithatogo/global-medicines-atlas",
         "workflow": script.WORKFLOW_PATH,
