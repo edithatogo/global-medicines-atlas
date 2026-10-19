@@ -4123,3 +4123,27 @@
 - [ ] Verify the regenerated qualification and overlay bind the current rights
   review, decision, and superseding landed admission to the exact CMS file;
   run focused and broader affected validation and record the hosted PR result.
+
+## M-112 second raw-object v3 replay preparation (2026-10-20)
+
+- [x] Generalize the metadata-only replay planner and hosted executor to one
+  exact raw MBS B2 path at a time. The target must uniquely match the frozen
+  role report and pass exact-rights, anonymous-digest, B1/B2, publication, and
+  restore checks. Reject paths outside the MBS raw-B2 prefix and any identity
+  already present in a v4 contract. Preserve the existing July workbook replay
+  plan identity.
+- [x] Validate the exact candidate
+  `raw/mbs/utilisation/group/mbs-group-2016-july.csv` at public revision
+  `dee9a5b0580dfe394474dc26b372559462e157e7` (12,291,303 bytes,
+  SHA-256 `62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b`).
+  Official metadata supports its July 2016 YTD temporal description; native
+  schema layout remains unqualified. The replay does not interpret rows or
+  source values.
+- [x] Focused replay tests (13), broader admission/consumer/replay tests (131),
+  Test-Goblin routine, Ruff, `ty`, BasedPyright, actionlint, and the existing
+  workbook replay plan check passed.
+- [~] Merge and run the bounded default-branch replay for this CSV. Read back
+  its exact run receipt and verify the digest, byte count, token-free fetch,
+  and temporary-byte cleanup before binding the new v3 role into a v4 contract.
+  The M-112 count is one admitted object and one consumer canary out of 1,759;
+  this candidate is not admitted by replay evidence alone.

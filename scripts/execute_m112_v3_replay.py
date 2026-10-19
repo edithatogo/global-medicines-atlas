@@ -56,6 +56,27 @@ def _read_json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", value)
 
 
+def _target_identity(snapshot: dict[str, Any]) -> tuple[str, str, str]:
+    """Parse and constrain the exact public M-112 MBS raw-B2 locator."""
+    prefix = f"{DATASET}@{REVISION}:"
+    partition_value = snapshot.get("partition_value")
+    if not isinstance(partition_value, str) or not partition_value.startswith(
+        prefix
+    ):
+        raise ValueError(
+            "replay plan differs from the approved M-112 dataset pin"
+        )
+    target_path = partition_value[len(prefix) :]
+    if (
+        not target_path.startswith("raw/mbs/utilisation/")
+        or ".." in Path(target_path).parts
+        or "\\" in target_path
+        or not target_path
+    ):
+        raise ValueError("replay plan target must be an approved raw B2 path")
+    return DATASET, REVISION, target_path
+
+
 def execute(
     plan: dict[str, Any],
     *,
@@ -102,6 +123,7 @@ def execute(
         raise TypeError("replay step must be an object")
     snapshot = cast("dict[str, Any]", snapshots[0])
     step = cast("dict[str, Any]", steps[0])
+    dataset, revision, target_path = _target_identity(snapshot)
     validator = cast("Any", Draft202012Validator(_read_json(ROOT / V3_SCHEMA)))
     validator.validate({
         key: value for key, value in plan.items() if key != "scope"
@@ -129,8 +151,7 @@ def execute(
     expected_digest = snapshot.get("payload_sha256")
     expected_bytes = step.get("expected_byte_count")
     if (
-        snapshot.get("partition_value") != f"{DATASET}@{REVISION}:{TARGET_PATH}"
-        or step.get("expected_payload_sha256") != expected_digest
+        step.get("expected_payload_sha256") != expected_digest
         or not isinstance(expected_digest, str)
         or not isinstance(expected_bytes, int)
         or expected_bytes < 1
@@ -167,10 +188,10 @@ def execute(
     work_dir.mkdir(parents=True, exist_ok=True)
     try:
         retrieved = download(
-            repo_id=DATASET,
+            repo_id=dataset,
             repo_type="dataset",
-            filename=TARGET_PATH,
-            revision=REVISION,
+            filename=target_path,
+            revision=revision,
             token=False,
             local_dir=str(work_dir),
             force_download=True,
@@ -224,9 +245,9 @@ def execute(
         "status": "passed",
         "candidate_only": True,
         "scope": {
-            "dataset": DATASET,
-            "revision": REVISION,
-            "path": TARGET_PATH,
+            "dataset": dataset,
+            "revision": revision,
+            "path": target_path,
             "sha256": observed_digest,
             "byte_count": observed_bytes,
         },
