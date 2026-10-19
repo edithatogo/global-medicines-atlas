@@ -68,7 +68,7 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
     assert report["cohort"]["approved_denominator"] == 1759
     assert report["cohort"]["approved_denominator_changed"] is False
     assert report["cohort"]["v4_admissions"] == 2
-    assert report["cohort"]["consumer_canaries"] == 1
+    assert report["cohort"]["consumer_canaries"] == 2
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
     assert report["source_qualification"]["path"] == OVERLAY_REPORT
@@ -85,6 +85,25 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
         "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
         "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
     }
+    canary = json.loads(
+        (
+            Path(__file__).resolve().parents[1] / "quality/qualifications/"
+            "australian-m112-v4-group2016-csv-consumer-canary-20261020-39317542644.json"
+        ).read_bytes()
+    )["consumer_canary"]
+    assert canary["status"] == "passed"
+    assert canary["hosted_workflow"]["run_id"] == 39317542644
+    assert (
+        canary["consumer"]["commit"]
+        == "8932efd261ff6e4956dfc013702a5db19281ca63"
+    )
+    assert (
+        canary["object"]["path"]
+        == "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
+    )
+    assert canary["verification"]["remote_digest_match"] is True
+    assert canary["verification"]["consumer_stream_digest_match"] is True
+    assert canary["verification"]["reader_cache_bytes_after_close"] == 0
 
 
 def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
@@ -123,7 +142,7 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
     ]["workflow_run"].endswith("/39305977097")
     assert report["v3_replay_candidate_evidence"]["objects"] == 2
     assert report["cohort"]["v4_admissions"] == 2
-    assert report["cohort"]["consumer_canaries"] == 1
+    assert report["cohort"]["consumer_canaries"] == 2
 
 
 def test_v3_replay_receipt_must_match_the_pinned_object(
@@ -296,7 +315,7 @@ def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
     )
     assert report["source_semantics_candidate_evidence"]["objects"] == 13
     assert report["cohort"]["v4_admissions"] == 2
-    assert report["cohort"]["consumer_canaries"] == 1
+    assert report["cohort"]["consumer_canaries"] == 2
 
 
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
@@ -395,6 +414,16 @@ def _copy_qualification_inputs(destination: Path) -> None:
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(source, target)
+    qualification_dir = ROOT / "quality/qualifications"
+    for pattern in (
+        "australian-m112-v4-*-consumer-canary-*.json",
+        "australian-m112-v4-*-admission-qualification-*.json",
+    ):
+        for source in qualification_dir.glob(pattern):
+            relative = source.relative_to(ROOT)
+            target = destination / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(source, target)
     manifest = json.loads(
         (destination / V3_REPLAY_MANIFEST).read_text(encoding="utf-8")
     )

@@ -34,7 +34,7 @@
     "approved_denominator": 1759,
     "approved_denominator_changed": false,
     "b1_b2_lineage_complete": 16,
-    "consumer_canaries": 1,
+    "consumer_canaries": 2,
     "dataset_path_aliases": 1,
     "objects": 16,
     "publication_candidate_receipts": 14,
@@ -68,7 +68,7 @@
       "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
     }
   ],
-  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, recovery/cache, and consumers remain incomplete. Official source temporal semantics are qualified for 13 utilisation objects; their native schema layouts and three source-role candidates remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. V3 replay evidence is candidate-only for 2 of 16 objects. Recovery evidence covers only the 14 utilisation paths; hosted cache-cleanup candidates bind 2 of 16 paths. Consumer cache behavior remains a post-admission check. Current independently evidenced state is 2 v4 admissions and 1 admitted-object consumer canaries; this candidate-role refresh performed no admission or canary.",
+  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, recovery/cache, and consumers remain incomplete. Official source temporal semantics are qualified for 13 utilisation objects; their native schema layouts and three source-role candidates remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. V3 replay evidence is candidate-only for 2 of 16 objects. Recovery evidence covers only the 14 utilisation paths; hosted cache-cleanup candidates bind 2 of 16 paths. Consumer cache behavior remains a post-admission check. Current independently evidenced state is 2 v4 admissions and 2 admitted-object consumer canaries; this candidate-role refresh performed no admission or canary.",
   "discovery_candidate_evidence": {
     "objects": 16,
     "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
@@ -3223,7 +3223,7 @@
     "url": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-utilisation-archive/revision/dee9a5b0580dfe394474dc26b372559462e157e7"
   },
   "purpose": "Qualify mandatory v4.1 contract roles for every current M-112 path identity with exact approved rights, complete B1/B2 lineage, and anonymous digest evidence. This is an evidence-gap assessment; it does not create contracts or admissions.",
-  "recorded_at": "2026-10-19T19:46:55Z",
+  "recorded_at": "2026-10-19T20:14:36Z",
   "recovery_candidate_evidence": {
     "objects": 14,
     "state": "candidate_receipts_available_unbound_for_14_of_16"
