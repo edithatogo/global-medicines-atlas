@@ -4016,3 +4016,18 @@
 - [ ] Complete authority and source semantics, v4 discovery, v3 replay,
   recovery/cache, and exact contract binding before considering admission.
   M-112 consumer-reader canaries remain gated on an admitted object.
+
+## M-110 exact-main candidate consumer canary refresh (2026-10-19, post-merge)
+
+- [x] Revalidate the exact MBS Gold qualification on merged `main` and run
+  hosted workflow [39271490764](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39271490764)
+  at commit `47e0afbd5a3ea59e16531237ec08403b0d317d04`. All 5,989 candidate
+  edges passed through API, CLI, Atlas, and Chromium with identical ordered
+  edge-ID digests; bounded DuckDB/Polars date and decimal queries agreed.
+  The aggregate-only receipt is
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261019-39271490764.json`
+  (SHA-256
+  `c9fda86d8ac0da31821233469350e6c7f88dd2f53481de1950fb51510cfd294d`).
+  No public dataset mutation or source-payload retention occurred. This is
+  M-110 candidate evidence only; M-112 admissions and M-112 consumer canaries
+  remain zero.
