@@ -4338,6 +4338,25 @@
   accept this exact admitted path; focused admission/role tests passed (23),
   broader affected suite passed (176), and routine Test-Goblin, Ruff,
   formatting, role check, and diff checks passed.
-- [~] After this contract and workflow change merge, run the exact-main
+- [x] After this contract and workflow change merged, run the exact-main
   hosted canary for this object, read back its aggregate receipt, then
   refresh role qualification to count the third canary.
+
+## M-112 historical 1993–2015 admitted-object consumer canary (2026-10-20)
+
+- [x] Run the bounded hosted `FederatedReader` canary on exact `main`
+  commit `3149a5533ecb1b721d9deda66311d4abc94ee3d1`; workflow run
+  [39330593204](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39330593204)
+  passed for the exact 1993–2015 archive. Remote digest and streamed
+  digest matched; reader cache was zero after read and close; no source
+  values were interpreted or retained. Aggregate receipt:
+  `quality/qualifications/australian-m112-v4-historical-1993-2015-consumer-canary-20261020-39330593204.json`
+  (SHA-256 `b10a7f795014e0b6ebc975330062bb9e20dd13d66996a09b1a5a69c4b438803f`).
+- [x] Reconcile current M-112 qualification: 3 admitted objects and 3
+  per-object consumer canaries of 1,759 approved paths; the remaining
+  1,756 paths remain deferred. Native source archive layout remains
+  unqualified. The separate M-110 candidate consumer canary is not counted
+  as an M-112 admission canary.
+- [x] Focused admission/role tests passed (24); broader M-110/M-112 suite
+  passed (177); role reconciliation, Test-Goblin routine, Ruff, formatting,
+  and diff checks passed.

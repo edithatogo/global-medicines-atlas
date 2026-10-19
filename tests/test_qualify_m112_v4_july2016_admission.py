@@ -30,6 +30,10 @@ CANARY_RECEIPT = ROOT / (
     "quality/qualifications/"
     "australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json"
 )
+HISTORICAL_CANARY_RECEIPT = ROOT / (
+    "quality/qualifications/"
+    "australian-m112-v4-historical-1993-2015-consumer-canary-20261020-39330593204.json"
+)
 
 
 def test_contract_pins_one_raw_b2_object_and_leaves_canary_pending() -> None:
@@ -212,3 +216,35 @@ def test_hosted_canary_offers_the_exact_historical_admitted_object() -> None:
     ).read_text(encoding="utf-8")
 
     assert f"          - {HISTORICAL_PATH}" in workflow
+
+
+def test_historical_hosted_canary_receipt_qualifies_exact_admitted_object() -> (
+    None
+):
+    report = json.loads(HISTORICAL_CANARY_RECEIPT.read_text(encoding="utf-8"))
+    canary = report["consumer_canary"]
+
+    assert report["status"] == "admitted_with_consumer_canary"
+    assert report["admissions"] == 1
+    assert report["consumer_canaries"] == 1
+    assert report["contract_sha256"] == (
+        "992eb2ce2d93891f51423284df2d718bc7d44af6511cc09c11c33a578588210b"
+    )
+    assert canary["status"] == "passed"
+    assert canary["object"] == {
+        "bytes": 205885063,
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "path": HISTORICAL_PATH,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+    }
+    assert canary["hosted_workflow"]["run_id"] == 39330593204
+    assert canary["hosted_workflow"]["commit"] == (
+        "3149a5533ecb1b721d9deda66311d4abc94ee3d1"
+    )
+    assert canary["verification"]["origin"] == "remote"
+    assert canary["verification"]["remote_digest_match"] is True
+    assert canary["verification"]["consumer_stream_digest_match"] is True
+    assert canary["verification"]["reader_cache_bytes_after_read"] == 0
+    assert canary["verification"]["reader_cache_bytes_after_close"] == 0
+    assert canary["verification"]["source_values_or_rows_interpreted"] is False
