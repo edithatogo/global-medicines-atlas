@@ -4113,6 +4113,17 @@
   implied complete. Native workbook layout remains unqualified and no rows or
   values were interpreted.
 
+## M-112 CMS reference-only effective rights readback (2026-10-20)
+
+- [x] Reconcile the exact approved CMS HCPCS rights decision into the current
+  reference-only readback fields, while retaining acquisition-time `unknown`
+  and the superseded landed admission's `unreviewed` status as history. Keep
+  source bytes external-reference-only and keep processing, derived rights,
+  canaries, and publication unauthorized.
+- [ ] Verify the regenerated qualification and overlay bind the current rights
+  review, decision, and superseding landed admission to the exact CMS file;
+  run focused and broader affected validation and record the hosted PR result.
+
 ## M-112 second raw-object v3 replay preparation (2026-10-20)
 
 - [x] Generalize the metadata-only replay planner and hosted executor to one

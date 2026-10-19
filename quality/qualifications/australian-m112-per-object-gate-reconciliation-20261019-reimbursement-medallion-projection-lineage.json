@@ -16,9 +16,24 @@
     "v4_admission_performed": false
   },
   "cms_input_lineage_increment": {
+    "admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json",
+    "admission_reviewer_status": "approved",
+    "admission_state": "landed",
     "consumer_canary": false,
-    "landed_but_unreviewed": true,
-    "rights_state": "unknown",
+    "derived_table_rights_concluded": false,
+    "external_publication_authorized": false,
+    "historical_acquisition_rights_state": "unknown",
+    "historical_admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json",
+    "historical_admission_reviewer_status": "unreviewed",
+    "landed_but_unreviewed": false,
+    "qualification_sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97",
+    "rights_decision_path": "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json",
+    "rights_decision_sha256": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
+    "rights_review_path": "quality/qualifications/cms-hcpcs-rights-review-20261019.json",
+    "rights_review_sha256": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
+    "rights_reviewed_at": "2026-10-19T12:11:14Z",
+    "rights_reviewer_status": "approved",
+    "rights_state": "permitted",
     "source_byte_count": 2499217,
     "source_id": "us_cms_hcpcs_level_ii",
     "source_owner_repository_modified": false,
@@ -75310,7 +75325,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: pinned LFS digest and manifest bind this rebuildable projection to its exact source archive receipt, admission, and frozen raw B1/B2 lineage"
       },
@@ -75665,7 +75680,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -75709,7 +75724,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -75753,7 +75768,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -75797,7 +75812,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -75841,7 +75856,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -75885,7 +75900,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -75929,7 +75944,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -75973,7 +75988,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -76017,7 +76032,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -76061,7 +76076,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -76105,7 +76120,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -76149,7 +76164,7 @@
         "complete": true,
         "evidence": {
           "path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-          "sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+          "sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
         },
         "state": "complete: exact producer source path and pinned projection are bound; all applicable B1/B2 references resolve"
       },
@@ -146890,7 +146905,7 @@
     "new_complete_projections": 13,
     "previous_complete_projections": 10,
     "qualification_path": "quality/qualifications/australian-m112-reimbursement-medallion-projection-lineage-20261019.json",
-    "qualification_sha256": "cdd7eded266daf6f2a661f7eacd084f87c3473de3365a6044a72ce966d832a3e"
+    "qualification_sha256": "a9146e11c71f3d031135dc395d84589497a4aa50e9e10f15acbca08498fc7f97"
   },
   "purpose": "Preserve the frozen 1,759-object inventory while binding five exact PBS archive PDF variants to new retrieval-timed B1 events, reference-only B2 records, and unreviewed landed decisions.",
   "retained_evidence_join_increment": {
