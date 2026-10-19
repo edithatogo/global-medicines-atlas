@@ -1,0 +1,83 @@
+{
+  "decision_boundary": {
+    "approval_does_not_authorize": [
+      "payload retention",
+      "processing/admission",
+      "derived-table rights",
+      "M-112 v4 admission",
+      "consumer canaries",
+      "external publication"
+    ],
+    "approval_requested": "Record the exact July 2026 CMS HCPCS file as permitted/reviewed based on CMS public-use/public-domain statements, limited to the identified official CMS file and excluding any ADA-licensed material.",
+    "if_not_approved": "Keep the exact record rights unknown and unreviewed; request source-owner clarification before processing or release."
+  },
+  "evidence_preflight_path": "quality/qualifications/australian-m112-rights-release-preflight-20261019.json",
+  "evidence_preflight_sha256": "08102adea4195b710bb343be7b1e2be2ac7064e3aa49814d082d4a4dfccbdd07",
+  "official_evidence": [
+    {
+      "finding": "CMS labels the quarterly Alpha-Numeric HCPCS archive as an official public-use file and lists the exact July 2026 file.",
+      "observed_at": "2026-10-19T05:35:57Z",
+      "sha256": "09b45b705cbe3425a7f61222df4036f8afc692ca809cfff4ee03cb377e984396",
+      "url": "https://www.cms.gov/medicare/coding-billing/healthcare-common-procedure-system/quarterly-update"
+    },
+    {
+      "finding": "CMS identifies HCPCS Level II as CMS-maintained except D codes, which it attributes to ADA.",
+      "observed_at": "2026-10-19T05:35:57Z",
+      "sha256": "5c06487fef44ae89a4bb9971c5b98bbb61dec17557117b10e6a879204530ec80",
+      "url": "https://www.cms.gov/medicare-coverage-database/search.aspx"
+    },
+    {
+      "finding": "CMS distinguishes national HCPCS Level II from dental D codes and states CDT is published, copyrighted, and licensed by ADA.",
+      "observed_at": "2026-10-19T05:35:58Z",
+      "sha256": "57289fd4b5a45ae2384d3810a33f763605fd3004ad55b8fa29ea1d22e3d1e1b9",
+      "url": "https://www.cms.gov/Medicare/Coding/MedHCPCSGenInfo/Downloads/2018-11-30-HCPCS-Level2-Coding-Procedure.pdf"
+    },
+    {
+      "byte_count": 496246,
+      "finding": "CMS guide dated 2015 states national HCPCS Level II codes are public domain and says CMS has no agreement with ADA to include and publish CDT/D codes in the Level II code set. This is recorded as CMS rights documentation, not as an independently inspected inventory of the July 2026 archive.",
+      "observed_at": "2026-10-19T12:11:50Z",
+      "sha256": "25796c743dae0d181d8e9d7c123558446dc3a5781a92cc6b5941d349f967395d",
+      "url": "https://www.cms.gov/medicare/coverage/councilontechinnov/downloads/innovators-guide-master-7-23-15.pdf"
+    }
+  ],
+  "recorded_at": "2026-10-19T12:11:14Z",
+  "rights_review": {
+    "decision_by": "maintainer",
+    "decision_id": "ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe",
+    "decision_path": "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json",
+    "decision_sha256": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
+    "external_publication_authorized": false,
+    "external_publication_performed": false,
+    "m112_v4_admission_or_canary_authorized": false,
+    "payload_opened_or_code_composition_inspected": false,
+    "reviewer_status_before": "unreviewed",
+    "reviewer_status_current": "approved",
+    "rights_state_before": "unknown",
+    "rights_state_current": "permitted",
+    "source_payload_release_authorized": false,
+    "superseding_admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json",
+    "superseding_admission_sha256": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b"
+  },
+  "schema_id": "global-medicines-atlas.cms-hcpcs-rights-review",
+  "schema_version": 1,
+  "scope": {
+    "exact_external_file": {
+      "acquisition_path": "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json",
+      "acquisition_sha256": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
+      "admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json",
+      "admission_sha256": "d08dd8d20fdca069eff922ae8f3cca04bd5acb7bc494196ffa9c613c99548784",
+      "b2_manifest_path": "quality/bronze/raw-evidence/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/manifest.json",
+      "b2_manifest_sha256": "4080df52b58d0dfaae89484c8285c588619192ef8c46be7f1a723bc51192a394",
+      "byte_count": 2499217,
+      "sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+      "url": "https://www.cms.gov/files/zip/july-2026-alpha-numeric-hcpcs-file.zip"
+    },
+    "local_payload_retained": false,
+    "m112_frozen_denominator_member": false,
+    "new_source_or_dataset_added": false,
+    "payload_opened_or_code_composition_inspected": false,
+    "source_id": "us_cms_hcpcs_level_ii",
+    "source_version": "us_cms_hcpcs_level_ii_2026_07"
+  },
+  "status": "maintainer_approved_exact_file_rights_permitted"
+}
