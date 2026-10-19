@@ -10,6 +10,9 @@ import pytest
 import scripts.qualify_m112_v3_replay as qualification
 
 CSV_TARGET = "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
+DEMOGRAPHICS_TARGET = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv"
+)
 
 
 def test_v3_replay_rejects_another_object_after_its_v4_admission() -> None:
@@ -70,6 +73,19 @@ def test_v3_replay_plan_is_schema_valid_and_deterministic() -> None:
     assert step["source_payload_values"] == "not_read"
     assert step["v4_admission_performed"] is False
     assert step["m112_consumer_canary_performed"] is False
+
+
+def test_v3_replay_supports_exact_qualified_demographics_source() -> None:
+    plan = qualification.qualify(
+        target_path=DEMOGRAPHICS_TARGET, allow_existing=True
+    )
+
+    assert plan["snapshots"][0]["source_id"] == "au-data-gov-mbs-demographics"
+    assert plan["contracts"][0]["source_id"] == "au-data-gov-mbs-demographics"
+    assert plan["contracts"][0]["contract_id"] == (
+        "au-data-gov-mbs-demographics:historical-backfill-replay:v1"
+    )
+    assert plan["snapshots"][0]["replay_eligible"] is True
 
 
 @pytest.mark.parametrize(

@@ -127,6 +127,53 @@ def test_executor_replays_another_pinned_raw_mbs_object(
     assert not work_dir.exists()
 
 
+def test_executor_replays_pinned_demographics_source(
+    tmp_path: Path,
+) -> None:
+    target_path = (
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv"
+    )
+    payload = b"demographics replay synthetic bytes"
+    plan = _small_plan(payload, target_path=target_path)
+    work_dir = tmp_path / "work"
+    output_path = tmp_path / "receipt.json"
+
+    receipt = executor.execute(
+        plan,
+        work_dir=work_dir,
+        output_path=output_path,
+        workflow_commit="a" * 40,
+        workflow_run_id="126",
+        workflow_run_attempt="1",
+        download=_fake_download(payload),
+    )
+
+    assert receipt["scope"]["path"] == target_path
+    assert receipt["replay"]["registration"]["source_id"] == (
+        "au-data-gov-mbs-demographics"
+    )
+    assert receipt["verification"]["temporary_source_bytes_removed"] is True
+    assert not work_dir.exists()
+
+
+def test_executor_rejects_source_id_drift_between_contract_and_snapshot(
+    tmp_path: Path,
+) -> None:
+    plan = _small_plan(b"synthetic bytes")
+    plan["contracts"][0]["source_id"] = "au-data-gov-mbs-demographics"
+
+    with pytest.raises(ValueError, match="not eligible for hosted replay"):
+        executor.execute(
+            plan,
+            work_dir=tmp_path / "work",
+            output_path=tmp_path / "receipt.json",
+            workflow_commit="a" * 40,
+            workflow_run_id="127",
+            workflow_run_attempt="1",
+            download=_fake_download(b"synthetic bytes"),
+        )
+
+
 def test_executor_rejects_non_mbs_or_unapproved_path_from_plan(
     tmp_path: Path,
 ) -> None:

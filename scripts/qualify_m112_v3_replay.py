@@ -25,6 +25,10 @@ TARGET_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
 TARGET_DATASET = "edithatogo/australian-mbs-utilisation-archive"
 TARGET_REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
 RIGHTS_STATE = "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified"
+SUPPORTED_SOURCE_IDS = frozenset({
+    "au-data-gov-mbs-group",
+    "au-data-gov-mbs-demographics",
+})
 
 
 def _canonical(value: Any) -> bytes:
@@ -154,6 +158,16 @@ def _source_paths(evidence: dict[str, Any]) -> tuple[str, str, str]:
 def _validate_b1(
     receipt: dict[str, Any], event: dict[str, Any], candidate: dict[str, Any]
 ) -> None:
+    source = receipt.get("source")
+    if not isinstance(source, dict):
+        raise TypeError("source receipt source identity is missing")
+    if (
+        source.get("source_id") != candidate.get("source_id")
+        or source.get("source_id") not in SUPPORTED_SOURCE_IDS
+    ):
+        raise ValueError(
+            "source receipt differs from the approved M-112 source"
+        )
     if receipt.get("retrieval", {}).get("status") != "succeeded":
         raise ValueError("source receipt does not prove successful acquisition")
     payload = receipt.get("payload")
@@ -363,7 +377,9 @@ def qualify(
         raise ValueError("M-112 replay target already has a v4 contract")
     snapshot = _snapshot(root, candidate, target_path)
     contract = {
-        "contract_id": "au-data-gov-mbs-group:historical-backfill-replay:v1",
+        "contract_id": (
+            f"{snapshot['source_id']}:historical-backfill-replay:v1"
+        ),
         "source_id": snapshot["source_id"],
         "partition_identity": [
             "source_id",
