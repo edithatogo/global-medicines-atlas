@@ -16,7 +16,6 @@ import typer
 from pydantic import ValidationError
 
 from .comparison_validity import abstaining_status_comparison_validity
-from .demo import DEMO_NOTICE, create_demo_app, create_demo_database
 from .gold_edge_review import (
     GoldEdgeReviewCase,
     build_gold_edge_review_queue,
@@ -1190,18 +1189,21 @@ def demo_server(
     """Run the local, explicitly synthetic API and Atlas demo."""
     try:
         uvicorn = importlib.import_module("uvicorn")
+        demo = importlib.import_module(".demo", package=__package__)
     except ImportError:
         _fail(
             ErrorCode.SERVICE_UNAVAILABLE,
             "Install the demo extra with: uv sync --extra demo",
         )
-    typer.echo(DEMO_NOTICE, err=True)
+    typer.echo(demo.DEMO_NOTICE, err=True)
     typer.echo(f"Synthetic demo: http://127.0.0.1:{port}/", err=True)
     try:
         with tempfile.TemporaryDirectory(prefix="gma-demo-") as directory:
-            database = create_demo_database(Path(directory) / "demo.duckdb")
+            database = demo.create_demo_database(
+                Path(directory) / "demo.duckdb"
+            )
             uvicorn.run(
-                create_demo_app(database),
+                demo.create_demo_app(database),
                 host="127.0.0.1",
                 port=port,
                 log_level="warning",

@@ -44,6 +44,7 @@ iceberg = [
   "pyiceberg>=0.10",
 ]
 demo = [
+  "jsonschema[format-nongpl]>=4.25",
   "uvicorn>=0.54,<0.55",
 ]
 

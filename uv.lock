@@ -414,6 +414,7 @@ dependencies = [
 
 [package.optional-dependencies]
 demo = [
+    { name = "jsonschema", extra = ["format-nongpl"] },
     { name = "uvicorn" },
 ]
 federation = [
@@ -521,6 +522,7 @@ requires-dist = [
     { name = "fastapi", specifier = ">=0.116" },
     { name = "httpx", specifier = ">=0.28" },
     { name = "jinja2", specifier = ">=3.1" },
+    { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'demo'", specifier = ">=4.25" },
     { name = "jsonschema", extras = ["format-nongpl"], marker = "extra == 'federation'", specifier = ">=4.25" },
     { name = "lancedb", marker = "extra == 'semantic'", specifier = ">=0.27" },
     { name = "orjson", specifier = ">=3.11" },
