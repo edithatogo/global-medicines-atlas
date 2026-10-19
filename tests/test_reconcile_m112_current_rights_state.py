@@ -24,8 +24,8 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert report["frozen_inventory"]["object_count"] == 1759
     assert report["frozen_inventory"]["membership_changed"] is False
     assert report["frozen_inventory"]["all_b1_b2_lineages_complete"] is True
-    assert report["effective_m112_rights"]["resolved_object_count"] == 32
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 1727
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1740
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 19
     assert report["exact_july_2025_mbs_silver"]["object_count"] == 6
     assert (
         report["exact_july_2025_mbs_silver"]["public_release_authorized"]
@@ -96,6 +96,86 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert report["boundaries"]["source_payload_bytes_read"] is False
 
 
+def test_pbs_raw_owner_permission_binds_exact_lineaged_objects_only() -> None:
+    report = build_report(ROOT, observed_at="2026-10-20T00:00:00Z")
+    permission = report["pbs_raw_redistribution_permission"]
+
+    assert permission["source_owner_permission"]["permission_status"] == (
+        "active"
+    )
+    assert permission["source_owner_permission"]["source_id"] == "au_pbs"
+    assert permission["source_owner_permission"]["decision"] == (
+        "allow_raw_redistribution"
+    )
+    assert permission["source_owner_permission"]["publication_state"] == (
+        "not_asserted"
+    )
+    assert permission["rights_state"] == (
+        "owner_attested_pbs_raw_redistribution_permission"
+    )
+    assert permission["object_count"] == 1708
+    assert permission["dataset_counts"] == {
+        "edithatogo/australian-pbs-source-archive": 1,
+        "edithatogo/reimbursement-atlas": 1707,
+    }
+    assert permission["format_counts"] == {
+        "csv": 3,
+        "pdf": 1052,
+        "zip": 653,
+    }
+    assert permission["b1_b2_lineage_complete"] is True
+    assert permission["all_objects_remain_deferred"] is True
+    assert permission["v4_admissions"] == 0
+    assert permission["consumer_canaries"] == 0
+    assert permission["external_publication_performed"] is False
+    assert permission["project_publication_authorized_by_this_record"] is False
+    assert all(
+        obj["source_locator"].startswith(
+            "https://www.pbs.gov.au/publication/schedule/"
+        )
+        for obj in permission["objects"]
+    )
+    assert all(obj["lineage_complete"] for obj in permission["objects"])
+    assert all(obj["v4_admission"] is False for obj in permission["objects"])
+    assert all(obj["consumer_canary"] is False for obj in permission["objects"])
+
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1740
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 19
+    pbs_archive = report["pbs_source_archive_exact_publication"]
+    assert pbs_archive["historical_acquisition_rights_state"] == "unknown"
+    assert pbs_archive["rights_state"] == permission["rights_state"]
+    assert pbs_archive["source_projection"]["rights_state"] == (
+        "upstream redistribution terms unknown"
+    )
+    cms = report["cms_hcpcs_external_reference"]
+    assert cms["rights_state"] == "permitted"
+    assert cms["derived_table_rights_concluded"] is False
+
+
+def test_pbs_raw_owner_permission_fails_closed_when_revoked(
+    tmp_path: Path,
+) -> None:
+    copied_root = tmp_path / "repo"
+    copytree(
+        ROOT,
+        copied_root,
+        ignore=lambda _directory, names: {
+            name for name in names if name in {".git", ".venv"}
+        },
+    )
+    permission_path = (
+        copied_root
+        / "quality/qualifications/reimbursement-atlas-pbs-raw-permission-20260831.json"
+    )
+    permission = json.loads(permission_path.read_text())
+    permission["permission_status"] = "revoked"
+    permission["revoked_at"] = "2026-10-20"
+    permission_path.write_text(json.dumps(permission))
+
+    with pytest.raises(ValueError, match="PBS raw redistribution permission"):
+        build_report(copied_root, observed_at="2026-10-20T00:00:00Z")
+
+
 def test_pbs_archive_publication_is_exact_and_does_not_clear_derivative() -> (
     None
 ):
@@ -111,9 +191,11 @@ def test_pbs_archive_publication_is_exact_and_does_not_clear_derivative() -> (
     assert pbs_archive["exact_object_publication_authorized"] is True
     assert pbs_archive["hosted_anonymous_digest_verification"] == "passed"
     assert pbs_archive["current_digest_matches_hosted_verification"] is True
-    assert pbs_archive["upstream_redistribution_terms"] == "unknown"
+    assert pbs_archive["upstream_redistribution_terms"].startswith(
+        "owner-attested"
+    )
     assert pbs_archive["historical_acquisition_rights_state"] == "unknown"
-    assert pbs_archive["rights_conclusion_made"] is False
+    assert pbs_archive["rights_conclusion_made"] is True
     assert pbs_archive["release_performed_by_this_reconciliation"] is False
     assert pbs_archive["v4_admission"] is False
     assert pbs_archive["source_projection"]["path"] == (

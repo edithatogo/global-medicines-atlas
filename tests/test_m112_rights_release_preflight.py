@@ -33,12 +33,21 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert historical["path"].endswith("preflight-20261019.json")
     assert report["frozen_inventory"]["object_count"] == 1759
     assert report["frozen_inventory"]["membership_changed"] is False
-    assert report["effective_m112_rights"]["resolved_object_count"] == 32
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 1727
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1740
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 19
     pbs_archive = report["pbs_source_archive_exact_publication"]
     assert pbs_archive["exact_object_publication_authorized"] is True
-    assert pbs_archive["upstream_redistribution_terms"] == "unknown"
-    assert pbs_archive["rights_conclusion_made"] is False
+    assert pbs_archive["rights_state"] == (
+        "owner_attested_pbs_raw_redistribution_permission"
+    )
+    assert pbs_archive["rights_conclusion_made"] is True
+    assert report["pbs_raw_redistribution_permission"]["object_count"] == 1708
+    assert (
+        report["pbs_raw_redistribution_permission"][
+            "project_publication_authorized_by_this_record"
+        ]
+        is False
+    )
     assert (
         pbs_archive["source_projection"][
             "derived_rights_inferred_from_source_permission"
