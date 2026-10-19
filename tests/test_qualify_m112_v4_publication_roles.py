@@ -62,14 +62,12 @@ def test_exact_mbs_candidates_receive_unbound_publication_and_restore_evidence()
         assert verification["temporary_source_bytes_removed"] is True
 
 
-def test_refresh_preserves_the_denominator_and_zero_admissions_and_canaries() -> (
-    None
-):
+def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
     report = qualify()
 
     assert report["cohort"]["approved_denominator"] == 1759
     assert report["cohort"]["approved_denominator_changed"] is False
-    assert report["cohort"]["v4_admissions"] == 1
+    assert report["cohort"]["v4_admissions"] == 2
     assert report["cohort"]["consumer_canaries"] == 1
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
@@ -80,6 +78,13 @@ def test_refresh_preserves_the_denominator_and_zero_admissions_and_canaries() ->
             (Path(__file__).resolve().parents[1] / OVERLAY_REPORT).read_bytes()
         ).hexdigest()
     )
+    admitted_paths = {
+        item["path"] for item in report["current_admission_evidence"]
+    }
+    assert admitted_paths == {
+        "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+        "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+    }
 
 
 def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
@@ -117,7 +122,7 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
         "v3_replay_candidate_receipt"
     ]["workflow_run"].endswith("/39305977097")
     assert report["v3_replay_candidate_evidence"]["objects"] == 2
-    assert report["cohort"]["v4_admissions"] == 1
+    assert report["cohort"]["v4_admissions"] == 2
     assert report["cohort"]["consumer_canaries"] == 1
 
 
@@ -175,7 +180,7 @@ def test_current_discovery_receipts_bind_all_candidates_without_rights_promotion
     assert report["discovery_candidate_evidence"]["state"] == (
         "candidate_receipt_available_unbound_for_16_of_16"
     )
-    assert report["cohort"]["v4_admissions"] == 1
+    assert report["cohort"]["v4_admissions"] == 2
     for candidate in report["objects"]:
         discovery = candidate["discovery_candidate_receipt"]
         assert discovery["contract_role_state"] == (
@@ -290,7 +295,7 @@ def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
         for item in source_candidates
     )
     assert report["source_semantics_candidate_evidence"]["objects"] == 13
-    assert report["cohort"]["v4_admissions"] == 1
+    assert report["cohort"]["v4_admissions"] == 2
     assert report["cohort"]["consumer_canaries"] == 1
 
 
