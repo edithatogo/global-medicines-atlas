@@ -4253,3 +4253,22 @@
   M-110 overall, establish clinical/payability/equivalence, or count as an
   M-112 admitted-object canary. Earlier candidate traversals remain historical
   and are not relabeled.
+
+## M-112 July 2025 MBS Silver current public metadata readback (2026-10-20)
+
+- [x] Read the anonymous current Hugging Face tree for
+  `edithatogo/australian-mbs-source-archive`. At revision
+  `42d73b6facac016f14a335d36d83f1a3b630add8`, all six exact July 2025 v3
+  Silver Parquet paths have the same LFS SHA-256 digests and byte counts as
+  the maintainer rights attestation. Record the metadata readback in
+  `quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json`.
+- [x] Reconcile that readback into the M-112 rights report and preflight. The
+  readback confirms current public metadata identity; the hosted receipt remains
+  the evidence of anonymous payload-byte verification at the publication
+  revision. No payload bytes or source values were read in this step.
+- [x] Preserve all boundaries: no new external publication, no new rights
+  conclusion, no v4 admission or promotion, no object-membership change. The six
+  objects remain a public candidate, not an accepted M-112 product. Frozen M-112
+  rights counts remain 32 resolved and 1,727 unresolved.
+- [x] Focused rights/preflight tests passed (9); Ruff, Ruff format, ty,
+  BasedPyright, routine Test-Goblin, and diff checks passed.

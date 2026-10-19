@@ -53,6 +53,17 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert len(july["objects"]) == 6
     assert july["public_release_authorized"] is True
     assert july["public_release_performed"] is False
+    current_public = july["current_public_tree_readback"]
+    assert current_public["dataset"] == (
+        "edithatogo/australian-mbs-source-archive"
+    )
+    assert current_public["revision"] == (
+        "42d73b6facac016f14a335d36d83f1a3b630add8"
+    )
+    assert current_public["anonymous_metadata_identity_verified"] is True
+    assert current_public["exact_object_count"] == 6
+    assert current_public["public_release_observed"] is True
+    assert current_public["current_revision_payload_bytes_reverified"] is False
     assert july["permission_instrument_existence_and_applicability"] == (
         "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction"
     )
