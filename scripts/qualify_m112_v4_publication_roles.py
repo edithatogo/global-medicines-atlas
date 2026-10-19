@@ -51,26 +51,24 @@ def _receipt_ref(url: str, digest: str) -> dict[str, str]:
 
 
 def _find_archive(archives: list[Any]) -> dict[str, Any]:
-    archive = next(
-        (
-            item
-            for item in archives
-            if isinstance(item, dict)
-            and item.get("dataset") == DATASET
+    for item_value in archives:
+        if not isinstance(item_value, dict):
+            continue
+        item = cast("dict[str, Any]", item_value)
+        if (
+            item.get("dataset") == DATASET
             and item.get("revision") == PINNED_REVISION
-        ),
-        None,
-    )
-    if not isinstance(archive, dict):
-        raise TypeError("exact MBS utilisation archive receipt is missing")
-    return cast("dict[str, Any]", archive)
+        ):
+            return item
+    raise TypeError("exact MBS utilisation archive receipt is missing")
 
 
 def _verify_archive_receipt(archive: dict[str, Any]) -> dict[str, Any]:
     historical = archive.get("historical_verification_receipt")
     if not isinstance(historical, dict):
         raise TypeError("hosted anonymous restore receipt is missing")
-    expected = {
+    historical = cast("dict[str, Any]", historical)
+    expected: dict[str, Any] = {
         "workflow_run": WORKFLOW_RUN,
         "workflow_commit": WORKFLOW_COMMIT,
         "workflow_conclusion": "success",
@@ -88,126 +86,105 @@ def _verify_archive_receipt(archive: dict[str, Any]) -> dict[str, Any]:
         raise ValueError(
             "hosted manifest no longer covers the expected raw cohort"
         )
-    return cast("dict[str, Any]", historical)
+    return historical
 
 
-def qualify(root: Path = ROOT) -> dict[str, Any]:
-    """Return a deterministic role report enriched with bound candidate receipts."""
-    report = copy.deepcopy(_read_json(root, ROLE_REPORT))
-    digest_report = _read_json(root, DIGEST_REPORT)
-    candidates = report.get("objects")
-    verified_objects = digest_report.get("verified_objects")
-    archives = digest_report.get("archives")
-    if (
-        not isinstance(candidates, list)
-        or len(candidates) != EXPECTED_CANDIDATES
-    ):
-        raise ValueError("the frozen 16-object exact-rights MBS cohort changed")
-    if report.get("cohort", {}).get("v4_admissions") != 0:
+def _manifest_match(item_value: Any, identity: tuple[Any, ...]) -> bool:
+    if not isinstance(item_value, dict):
+        return False
+    item = cast("dict[str, Any]", item_value)
+    return (
+        item.get("dataset") == identity[0]
+        and item.get("revision") == identity[1]
+        and item.get("path") == identity[2]
+        and item.get("sha256") == identity[3]
+        and item.get("byte_count") == identity[4]
+        and item.get("matched_hosted_verified_manifest") is True
+    )
+
+
+def _bind_candidate(
+    candidate: dict[str, Any],
+    verified_objects: list[Any],
+    archive: dict[str, Any],
+    root: Path,
+) -> dict[str, Any]:
+    identity = (
+        candidate.get("dataset"),
+        candidate.get("revision"),
+        candidate.get("path"),
+        candidate.get("sha256"),
+        candidate.get("bytes"),
+    )
+    matches: list[dict[str, Any]] = [
+        cast("dict[str, Any]", item)
+        for item in verified_objects
+        if _manifest_match(item, identity)
+    ]
+    if len(matches) != 1:
         raise ValueError(
-            "M-112 admission state changed; requalify before refresh"
+            f"candidate has no unique hosted manifest match: {identity[2]}"
         )
-    if report.get("cohort", {}).get("consumer_canaries") != 0:
-        raise ValueError("M-112 canary state changed; requalify before refresh")
-    if not isinstance(verified_objects, list) or not isinstance(archives, list):
-        raise TypeError("digest reconciliation is incomplete")
+    digest_match = matches[0]
+    states_value = candidate.get("contract_role_states")
+    if not isinstance(states_value, dict):
+        raise TypeError("candidate has no v4 contract role states")
+    states = cast("dict[str, Any]", states_value)
+    states["publication"] = "candidate_receipt_available_unbound"
+    states["verification"] = "candidate_receipt_available_unbound"
+    candidate["publication_candidate_receipt"] = {
+        "dataset": DATASET,
+        "revision": PINNED_REVISION,
+        "path": candidate["path"],
+        "bytes": candidate["bytes"],
+        "sha256": candidate["sha256"],
+        "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "workflow_commit": WORKFLOW_COMMIT,
+        "workflow_run": f"https://github.com/edithatogo/global-medicines-atlas/actions/runs/{WORKFLOW_RUN}",
+        "receipt": _receipt_ref(
+            PUBLICATION_RECEIPT_URL, PUBLICATION_RECEIPT_SHA256
+        ),
+        "manifest": {
+            "path": "manifest.json",
+            "sha256": archive["manifest_sha256"],
+            "file_count": archive["manifest_object_count"],
+            "exact_object_match": True,
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+    }
+    candidate["verification_candidate_receipt"] = {
+        "dataset": DATASET,
+        "revision": PINNED_REVISION,
+        "path": candidate["path"],
+        "bytes": candidate["bytes"],
+        "sha256": candidate["sha256"],
+        "anonymous": True,
+        "token_free": True,
+        "clean_room": True,
+        "status": "passed",
+        "verified_at": "2026-09-27T16:44:12Z",
+        "receipt": _receipt_ref(
+            VERIFICATION_RECEIPT_URL, VERIFICATION_RECEIPT_SHA256
+        ),
+        "workflow_commit": WORKFLOW_COMMIT,
+        "workflow_run": f"https://github.com/edithatogo/global-medicines-atlas/actions/runs/{WORKFLOW_RUN}",
+        "verifier": "hf_hub_download(token=False) against exact just-published revision; all 28 manifest objects digest-verified",
+        "temporary_source_bytes_removed": True,
+        "exact_object_manifest_match": {
+            "path": DIGEST_REPORT,
+            "sha256": _sha256((root / DIGEST_REPORT).read_bytes()),
+            "manifest_match": digest_match["matched_hosted_verified_manifest"],
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+    }
+    return candidate
 
-    archive = _find_archive(cast("list[Any]", archives))
-    _verify_archive_receipt(archive)
-    if archive.get("public") is not True or archive.get("gated") is not False:
-        raise ValueError("pinned MBS archive is not public and ungated")
 
-    matched: list[dict[str, Any]] = []
-    for candidate_value in candidates:
-        if not isinstance(candidate_value, dict):
-            raise TypeError("malformed M-112 candidate")
-        candidate = cast("dict[str, Any]", candidate_value)
-        if candidate.get("dataset") != DATASET:
-            continue
-        identity = (
-            candidate.get("dataset"),
-            candidate.get("revision"),
-            candidate.get("path"),
-            candidate.get("sha256"),
-            candidate.get("bytes"),
-        )
-        matches = [
-            item
-            for item in verified_objects
-            if isinstance(item, dict)
-            and item.get("dataset") == identity[0]
-            and item.get("revision") == identity[1]
-            and item.get("path") == identity[2]
-            and item.get("sha256") == identity[3]
-            and item.get("byte_count") == identity[4]
-            and item.get("matched_hosted_verified_manifest") is True
-        ]
-        if len(matches) != 1:
-            raise ValueError(
-                f"candidate has no unique hosted manifest match: {identity[2]}"
-            )
-        digest_match = matches[0]
-        candidate["contract_role_states"]["publication"] = (
-            "candidate_receipt_available_unbound"
-        )
-        candidate["contract_role_states"]["verification"] = (
-            "candidate_receipt_available_unbound"
-        )
-        candidate["publication_candidate_receipt"] = {
-            "dataset": DATASET,
-            "revision": PINNED_REVISION,
-            "path": candidate["path"],
-            "bytes": candidate["bytes"],
-            "sha256": candidate["sha256"],
-            "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
-            "workflow_commit": WORKFLOW_COMMIT,
-            "workflow_run": f"https://github.com/edithatogo/global-medicines-atlas/actions/runs/{WORKFLOW_RUN}",
-            "receipt": _receipt_ref(
-                PUBLICATION_RECEIPT_URL, PUBLICATION_RECEIPT_SHA256
-            ),
-            "manifest": {
-                "path": "manifest.json",
-                "sha256": archive["manifest_sha256"],
-                "file_count": archive["manifest_object_count"],
-                "exact_object_match": True,
-            },
-            "contract_role_state": "candidate_receipt_available_unbound",
-        }
-        candidate["verification_candidate_receipt"] = {
-            "dataset": DATASET,
-            "revision": PINNED_REVISION,
-            "path": candidate["path"],
-            "bytes": candidate["bytes"],
-            "sha256": candidate["sha256"],
-            "anonymous": True,
-            "token_free": True,
-            "clean_room": True,
-            "status": "passed",
-            "verified_at": "2026-09-27T16:44:12Z",
-            "receipt": _receipt_ref(
-                VERIFICATION_RECEIPT_URL, VERIFICATION_RECEIPT_SHA256
-            ),
-            "workflow_commit": WORKFLOW_COMMIT,
-            "workflow_run": f"https://github.com/edithatogo/global-medicines-atlas/actions/runs/{WORKFLOW_RUN}",
-            "verifier": "hf_hub_download(token=False) against exact just-published revision; all 28 manifest objects digest-verified",
-            "temporary_source_bytes_removed": True,
-            "exact_object_manifest_match": {
-                "path": DIGEST_REPORT,
-                "sha256": _sha256((root / DIGEST_REPORT).read_bytes()),
-                "manifest_match": digest_match[
-                    "matched_hosted_verified_manifest"
-                ],
-            },
-            "contract_role_state": "candidate_receipt_available_unbound",
-        }
-        matched.append(candidate)
-
-    if len(matched) != EXPECTED_PATHS:
-        raise ValueError(
-            f"expected {EXPECTED_PATHS} MBS utilisation candidates, got {len(matched)}"
-        )
-    report["cohort"]["publication_candidate_receipts"] = len(matched)
-    report["cohort"]["verification_candidate_receipts"] = len(matched)
+def _update_summary(
+    report: dict[str, Any], root: Path, matched_count: int
+) -> None:
+    report["cohort"]["publication_candidate_receipts"] = matched_count
+    report["cohort"]["verification_candidate_receipts"] = matched_count
     report["observed_hub_revision_metadata"] = {
         "url": f"https://huggingface.co/api/datasets/{DATASET}/revision/{PINNED_REVISION}",
         "dataset": DATASET,
@@ -216,11 +193,11 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         "gated": False,
         "observed_at": OBSERVED_AT,
     }
-    for role in report.get("roles", []):
-        if isinstance(role, dict) and role.get("role") in {
-            "publication",
-            "verification",
-        }:
+    for role_value in cast("list[Any]", report.get("roles", [])):
+        if not isinstance(role_value, dict):
+            continue
+        role = cast("dict[str, Any]", role_value)
+        if role.get("role") in {"publication", "verification"}:
             role["state"] = "candidate_receipts_available_unbound_for_14_of_16"
             role["evidence"] = (
                 "14 MBS utilisation paths exactly match the 28-object published manifest and token-free anonymous restore receipt; the two August paths lack this receipt. Candidate evidence is not bound to live v4.1 contracts."
@@ -233,6 +210,50 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         "path": ROLE_REPORT,
         "sha256": _sha256((root / ROLE_REPORT).read_bytes()),
     }
+
+
+def qualify(root: Path = ROOT) -> dict[str, Any]:
+    """Return a deterministic role report enriched with bound candidate receipts."""
+    report = copy.deepcopy(_read_json(root, ROLE_REPORT))
+    digest_report = _read_json(root, DIGEST_REPORT)
+    candidates = report.get("objects")
+    verified_objects = digest_report.get("verified_objects")
+    archives = digest_report.get("archives")
+    if not isinstance(candidates, list):
+        raise TypeError("M-112 role report has no object list")
+    candidate_values = cast("list[Any]", candidates)
+    if len(candidate_values) != EXPECTED_CANDIDATES:
+        raise ValueError("the frozen 16-object exact-rights MBS cohort changed")
+    if report.get("cohort", {}).get("v4_admissions") != 0:
+        raise ValueError(
+            "M-112 admission state changed; requalify before refresh"
+        )
+    if report.get("cohort", {}).get("consumer_canaries") != 0:
+        raise ValueError("M-112 canary state changed; requalify before refresh")
+    if not isinstance(verified_objects, list) or not isinstance(archives, list):
+        raise TypeError("digest reconciliation is incomplete")
+
+    verified_values = cast("list[Any]", verified_objects)
+    archive = _find_archive(cast("list[Any]", archives))
+    _verify_archive_receipt(archive)
+    if archive.get("public") is not True or archive.get("gated") is not False:
+        raise ValueError("pinned MBS archive is not public and ungated")
+
+    matched: list[dict[str, Any]] = []
+    for candidate_value in candidate_values:
+        if not isinstance(candidate_value, dict):
+            raise TypeError("malformed M-112 candidate")
+        candidate = cast("dict[str, Any]", candidate_value)
+        if candidate.get("dataset") == DATASET:
+            matched.append(
+                _bind_candidate(candidate, verified_values, archive, root)
+            )
+
+    if len(matched) != EXPECTED_PATHS:
+        raise ValueError(
+            f"expected {EXPECTED_PATHS} MBS utilisation candidates, got {len(matched)}"
+        )
+    _update_summary(report, root, len(matched))
     return report
 
 
