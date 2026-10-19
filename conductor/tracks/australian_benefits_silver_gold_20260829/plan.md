@@ -4120,9 +4120,10 @@
   and the superseded landed admission's `unreviewed` status as history. Keep
   source bytes external-reference-only and keep processing, derived rights,
   canaries, and publication unauthorized.
-- [ ] Verify the regenerated qualification and overlay bind the current rights
-  review, decision, and superseding landed admission to the exact CMS file;
-  run focused and broader affected validation and record the hosted PR result.
+- [x] Verify the regenerated qualification and overlay bind the current rights
+  review, decision, and superseding landed admission to the exact CMS file.
+  Focused checks (40 tests after merging the concurrent replay update), routine
+  profile, and all 39 hosted checks passed on PR #1208 before merge.
 
 ## M-112 second raw-object v3 replay preparation (2026-10-20)
 
