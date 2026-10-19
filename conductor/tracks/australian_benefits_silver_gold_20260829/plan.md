@@ -3820,11 +3820,12 @@
   `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-silver-rights-attested.json`.
   Public release is authorized by the attestation; no release was performed,
   and the separate v4 admission and canary gates remain closed.
-- [ ] Resolve the CMS HCPCS Level II reference-only rights state. It remains
-  `unknown` and `unreviewed`; determine the exact file's CMS versus ADA D-code
-  composition and applicable use rights before recording release authority.
+- [x] Resolve the CMS HCPCS Level II reference-only rights state for the exact
+  July 2026 file through the bounded CMS public-use rights decision. The
+  approved record excludes ADA CDT material and leaves processing, v4
+  admission, canary, derived-table rights, and external publication closed.
   The CMS Part D authorization does not apply, and this record is outside the
-  frozen M-112 denominator.
+  frozen M-112 denominator. See the later exact-file disposition below.
 
 ## M-112 rights and release evidence preflight (2026-10-19)
 
@@ -3849,11 +3850,11 @@
   `rights_state=unknown` and `reviewer_status=unreviewed`. The CMS Part D
   authorization does not apply to this HCPCS object, which is outside the M-112
   frozen denominator.
-- [ ] Resolve the exact six MBS Silver-table rights and release disposition
-  after maintainer review of the source-receipt/official-terms conflict. Keep
-  the candidate objects and current release controls unchanged until a
-  source-specific written permission or other applicable rights basis is
-  recorded.
+- [x] Resolve the exact six MBS Silver-table rights and release disposition
+  through the maintainer's bounded attestation of applicable written
+  permission. The instrument was not located at the maintainer's direction;
+  this records the attestation, not independent review. No release was
+  performed. See the later MBS Silver attestation and current reconciliation.
 
 ## CMS HCPCS exact-file rights disposition (2026-10-19)
 
@@ -3870,3 +3871,23 @@
   rights conclusion, or external publication was authorized. The M-112
   denominator and all 1,759 deferrals remain unchanged. See
   `quality/qualifications/cms-hcpcs-rights-review-20261019.json`.
+
+## M-112 effective rights reconciliation (2026-10-19)
+
+- [x] Supersede the historical rights preflight with a current effective-state
+  reconciliation. It binds the frozen 1,759-object inventory, the six-object
+  July MBS Silver maintainer attestation, the four August Bronze projections,
+  and the approved exact-file CMS HCPCS decision. It preserves historical
+  acquisition rights and admission records. See
+  `quality/qualifications/australian-m112-current-rights-reconciliation-20261019.json`.
+- [x] Verify 22 frozen objects have positive scoped rights evidence and 1,737
+  remain unresolved. Rights evidence leaves the 1,759 deferrals, zero v4
+  admissions, zero canaries, and zero external publications unchanged. CMS
+  stays external-reference-only; no processing or derived rights are inferred.
+- [ ] Resolve the four exact August 2026 MBS Bronze projection rights and
+  lineage independently. The source authorization does not conclude rights
+  for these projections; transformation/source membership lineage is
+  incomplete. Do not extend the July Silver attestation to them.
+- [ ] Continue the remaining source-specific rights lane for the unresolved
+  PBS and reimbursement-atlas objects. Identity or lineage alone does not
+  establish reuse authority.
