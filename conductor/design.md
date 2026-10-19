@@ -28,7 +28,7 @@ flowchart LR
 
     subgraph Engines["Execution and storage"]
         MOJO["Mojo kernels"]
-        PY["Python 3.14 reference fallback"]
+        PY["Python 3.15 reference fallback"]
         POLARS["Polars and Arrow"]
         PARQUET["Parquet"]
         DUCK["DuckDB"]
@@ -699,9 +699,10 @@ rehearsals read the policy-matching independent replica into an empty target,
 hash the bytes, and compare measured
 elapsed time with the declared RTO. A durable policy is invalid without an
 explicit RPO, RTO, inventory cadence, and rehearsal cadence.
-Python 3.14 is the complete fallback path. DuckDB and LanceDB may read bronze
+Python 3.15 is the configured runtime target, with full-platform fallback
+qualification still in progress. DuckDB and LanceDB may read bronze
 Parquet; they do not store bronze evidentiary truth. Iceberg REST registration
-is optional and must not be imported by Python 3.14 core. Iceberg-ready
+is optional and must not be imported by Python 3.15 core. Iceberg-ready
 metadata records namespace `bronze`, explicit temporal/bucket transforms when
 scale evidence activates them, append-only schema evolution, and snapshot
 aliases bound to `acquisition_id`. Iceberg metadata is rebuildable catalogue

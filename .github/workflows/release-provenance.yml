@@ -24,6 +24,9 @@ on:
 permissions:
   contents: read
 
+env:
+  UV_PYTHON: "3.14.6"
+
 concurrency:
   group: release-provenance-${{ github.sha }}
   cancel-in-progress: false

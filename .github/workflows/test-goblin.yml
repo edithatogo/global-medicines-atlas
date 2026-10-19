@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  UV_PYTHON: "3.14.6"
+
 concurrency:
   group: test-goblin-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -336,6 +339,33 @@ jobs:
           disable_search: true
           fail_ci_if_error: true
           use_oidc: true
+
+  python-315-compatibility-canary:
+    name: Python 3.15 / compatibility canary
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      UV_PYTHON: "3.15.0"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.13.1"
+          enable-cache: true
+      - name: Synchronize Python 3.15 dependencies except DuckDB
+        run: >-
+          uv sync --python 3.15.0 --locked --no-default-groups --group test-goblin
+          --no-install-package duckdb
+      - name: Run platform-independent compatibility and governance tests
+        run: >-
+          uv run --no-sync --python 3.15.0 pytest -q
+          tests/test_stable_v1_documentation.py
+          tests/test_mbs_release_workflow.py
+          tests/test_stable_v1_hosted_governance.py
+          tests/test_consumer_qualification.py
+          -k 'not current_openapi_is_compatible_with_committed_baseline'
 
   quality:
     name: Python 3.14 / ${{ matrix.profile }}

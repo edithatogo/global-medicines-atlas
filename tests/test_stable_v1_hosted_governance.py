@@ -192,6 +192,7 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
     assert set(test_jobs) == {
         "tests",
         "quality",
+        "python-315-compatibility-canary",
         "consumer-compatibility",
         "mojo",
         "representative-performance",

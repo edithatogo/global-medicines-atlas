@@ -3,7 +3,7 @@
 [![Test-Goblin](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/test-goblin.yml/badge.svg?branch=main)](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/test-goblin.yml)
 [![Security and Context](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/security-context.yml/badge.svg?branch=main)](https://github.com/edithatogo/global-medicines-atlas/actions/workflows/security-context.yml)
 [![Codecov](https://codecov.io/gh/edithatogo/global-medicines-atlas/branch/main/graph/badge.svg)](https://app.codecov.io/gh/edithatogo/global-medicines-atlas)
-[![Python 3.14](https://img.shields.io/badge/Python-3.14-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![Python 3.15](https://img.shields.io/badge/Python-3.15-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-D22128.svg)](LICENSE)
 
 Global Medicines Atlas is an evidence-first system for comparing medicine
@@ -22,7 +22,7 @@ without source-specific evidence.
 
 | Capability | Current evidence |
 |---|---|
-| Python 3.14 package, CLI, API and server-rendered Atlas | Software-qualified |
+| Python 3.15 package, CLI, API and server-rendered Atlas | Compatibility canary passes; DuckDB and full-platform qualification remain open |
 | NZULM/NZMT, Drugs@FDA, PBS, EMA and initial global adapters | Representative fixtures |
 | Property, metamorphic, contract, deterministic simulation and mutation testing | Blocking CI |
 | Live regulatory and funding coverage | External qualification required |
@@ -48,7 +48,8 @@ track in the
 This is a single-accountable-maintainer repository with automated evidence
 rather than invented reviewer roles. Start with [`AGENTS.md`](AGENTS.md) and
 the machine-readable [context manifest](.context/project.toml). Pull requests
-run the complete Python 3.14 harness, locked Mojo canary, context-drift checks,
+run the complete protected Python 3.14 harness plus a scoped Python 3.15
+compatibility canary, locked Mojo canary, context-drift checks,
 CodeQL, Zizmor, dependency audit, and SBOM generation. Licensing, credentials,
 public release, external publication, compatibility archival, and
 consequential interpretation remain explicit human gates.
@@ -71,10 +72,12 @@ features and maturity levels to Conductor tracks and the native GitHub
 
 ### Five-minute local start
 
-The authoritative runtime is CPython 3.14. From a source checkout:
+The configured default target is CPython 3.15; CPython 3.14 remains in the
+protected full-suite lane until the complete 3.15 dependency stack qualifies.
+From a source checkout:
 
 ```console
-uv sync --python 3.14.6 --locked --no-dev
+uv sync --python 3.15.0 --locked --no-dev
 uv run global-medicines-atlas --help
 uv run global-medicines-atlas comparison --help
 uv run pytest -q tests/test_smoke.py

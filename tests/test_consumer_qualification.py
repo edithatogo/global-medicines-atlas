@@ -53,7 +53,7 @@ def test_installed_metadata_is_complete_and_dynamic_version_matches() -> None:
     assert identity.name == "global-medicines-atlas"
     assert identity.version
     assert identity.summary
-    assert set(identity.requires_python.split(",")) == {">=3.14", "<3.15"}
+    assert set(identity.requires_python.split(",")) == {">=3.14", "<3.16"}
 
 
 def test_installed_metadata_rejects_missing_required_field(
