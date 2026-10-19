@@ -13,6 +13,7 @@ from scripts.qualify_m112_v4_publication_roles import (
     CONTRACT_SCHEMA_PATH,
     CONTRACT_SCHEMA_SHA256,
     DIGEST_REPORT,
+    DISCOVERY_REPORT,
     PRODUCER_WORKFLOW,
     ROLE_REPORT,
     qualify,
@@ -90,13 +91,42 @@ def test_exact_contract_authority_identity_binds_all_candidates_unbound() -> (
         )
 
 
+def test_current_discovery_receipts_bind_all_candidates_without_rights_promotion() -> (
+    None
+):
+    report = qualify()
+
+    assert report["discovery_candidate_evidence"]["objects"] == 16
+    assert report["discovery_candidate_evidence"]["state"] == (
+        "candidate_receipt_available_unbound_for_16_of_16"
+    )
+    assert report["cohort"]["v4_admissions"] == 0
+    for candidate in report["objects"]:
+        discovery = candidate["discovery_candidate_receipt"]
+        assert discovery["contract_role_state"] == (
+            "candidate_receipt_available_unbound"
+        )
+        assert discovery["collection"].startswith(
+            "https://huggingface.co/collections/"
+        )
+        assert discovery["estate_entry"]["status"] == "not_assessed"
+        assert discovery["estate_entry"]["rights_status"] == (
+            "source_specific_review_required"
+        )
+        assert candidate["contract_role_states"]["discovery"] == (
+            "candidate_receipt_available_unbound"
+        )
+
+
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
     (tmp_path / ROLE_REPORT).parent.mkdir(parents=True, exist_ok=True)
     (tmp_path / DIGEST_REPORT).parent.mkdir(parents=True, exist_ok=True)
+    (tmp_path / DISCOVERY_REPORT).parent.mkdir(parents=True, exist_ok=True)
     (tmp_path / CONTRACT_SCHEMA_PATH).parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(ROOT / ROLE_REPORT, tmp_path / ROLE_REPORT)
     digest_path = tmp_path / DIGEST_REPORT
     shutil.copy(ROOT / DIGEST_REPORT, digest_path)
+    shutil.copy(ROOT / DISCOVERY_REPORT, tmp_path / DISCOVERY_REPORT)
     shutil.copy(ROOT / CONTRACT_SCHEMA_PATH, tmp_path / CONTRACT_SCHEMA_PATH)
     digest_report = json.loads(digest_path.read_text(encoding="utf-8"))
     mbs = next(
@@ -114,9 +144,11 @@ def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
 def test_schema_digest_mismatch_fails_closed(tmp_path: Path) -> None:
     (tmp_path / ROLE_REPORT).parent.mkdir(parents=True, exist_ok=True)
     (tmp_path / DIGEST_REPORT).parent.mkdir(parents=True, exist_ok=True)
+    (tmp_path / DISCOVERY_REPORT).parent.mkdir(parents=True, exist_ok=True)
     (tmp_path / CONTRACT_SCHEMA_PATH).parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(ROOT / ROLE_REPORT, tmp_path / ROLE_REPORT)
     shutil.copy(ROOT / DIGEST_REPORT, tmp_path / DIGEST_REPORT)
+    shutil.copy(ROOT / DISCOVERY_REPORT, tmp_path / DISCOVERY_REPORT)
     (tmp_path / CONTRACT_SCHEMA_PATH).write_text("{}", encoding="utf-8")
 
     with pytest.raises(ValueError, match="schema digest differs"):

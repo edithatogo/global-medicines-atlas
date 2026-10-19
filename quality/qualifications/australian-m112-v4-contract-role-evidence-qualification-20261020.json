@@ -46,7 +46,13 @@
     "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
     "version": "4.1"
   },
-  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, v3 replay, recovery/cache, and consumers remain incomplete. Preserve zero v4 admissions and zero M-112 consumer canaries.",
+  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, v3 replay, recovery/cache, and consumers remain incomplete. Discovery evidence now covers all 16 paths but remains unbound until referenced by complete per-object v4 contracts. Preserve zero v4 admissions and zero M-112 consumer canaries.",
+  "discovery_candidate_evidence": {
+    "objects": 16,
+    "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+    "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556",
+    "state": "candidate_receipt_available_unbound_for_16_of_16"
+  },
   "objects": [
     {
       "acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
@@ -67,7 +73,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -84,6 +90,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-source-archive-digest-reconciliation-20261004.json",
         "sha256": "19cbf039367c3fa0ef276209d83e9172bb90b1ca72262d4794aa37bb8eeaa074"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "71266cd78d98a3ba258a697890985b105917d6848b73935d2bb5b8c81e7605d7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "path": "quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json",
@@ -135,7 +158,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -152,6 +175,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-august-alias-anonymous-readback-20261018.json",
         "sha256": "a82443f4293baa9f34c946ddab9fce10d62bb5a7f191d33bab9ea11d2638ddf7"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "71266cd78d98a3ba258a697890985b105917d6848b73935d2bb5b8c81e7605d7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "alias_anonymous_readback": {
@@ -217,7 +257,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -234,6 +274,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3.json",
@@ -337,7 +394,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -354,6 +411,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd.json",
@@ -457,7 +531,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -474,6 +548,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb.json",
@@ -577,7 +668,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -594,6 +685,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc.json",
@@ -697,7 +805,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -714,6 +822,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf.json",
@@ -817,7 +942,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -834,6 +959,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22.json",
@@ -937,7 +1079,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -954,6 +1096,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521.json",
@@ -1057,7 +1216,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -1074,6 +1233,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c.json",
@@ -1177,7 +1353,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -1194,6 +1370,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef.json",
@@ -1297,7 +1490,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -1314,6 +1507,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690.json",
@@ -1417,7 +1627,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -1434,6 +1644,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-group/0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638.json",
@@ -1537,7 +1764,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -1554,6 +1781,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-group/b12cc1fd8ebca1dadf2c197dcd3ca086b63fcbd9b58ac2d2e9090b94217e5090.json",
@@ -1657,7 +1901,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -1674,6 +1918,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-group/5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967.json",
@@ -1777,7 +2038,7 @@
         "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
@@ -1794,6 +2055,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-group/7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b.json",
@@ -1882,13 +2160,13 @@
   "observed_hub_revision_metadata": {
     "dataset": "edithatogo/australian-mbs-utilisation-archive",
     "gated": false,
-    "observed_at": "2026-10-19T14:17:25Z",
+    "observed_at": "2026-10-19T16:07:04Z",
     "private": false,
     "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
     "url": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-utilisation-archive/revision/dee9a5b0580dfe394474dc26b372559462e157e7"
   },
   "purpose": "Qualify mandatory v4.1 contract roles for every current M-112 path identity with exact approved rights, complete B1/B2 lineage, and anonymous digest evidence. This is an evidence-gap assessment; it does not create contracts or admissions.",
-  "recorded_at": "2026-10-19T14:17:25Z",
+  "recorded_at": "2026-10-19T16:07:04Z",
   "roles": [
     {
       "evidence": "The successful MBS utilisation producer workflow belongs to edithatogo/global-medicines-atlas. All 16 candidate objects now bind the exact v4.1 schema digest and an exact-main commit containing those schema bytes. The identity remains unbound until referenced by each complete v4 contract.",
@@ -1921,9 +2199,9 @@
       "state": "qualified_exact_scope"
     },
     {
-      "evidence": "v4 collection and estate-entry receipt roles are not qualified for the candidate set",
+      "evidence": "All 16 exact candidate paths bind to their public dataset entry, a current collection membership, and the pinned dataset-estate catalog. The estate entries remain not_assessed and source_specific_review_required; discovery evidence is not a rights or admission conclusion.",
       "role": "discovery",
-      "state": "missing"
+      "state": "candidate_receipt_available_unbound_for_16_of_16"
     },
     {
       "evidence": "all 16 path identities have complete B1/B2 evidence and anonymous digest readback; the two August aliases share one payload/acquisition identity; some landed decisions remain reviewer_status=unreviewed",

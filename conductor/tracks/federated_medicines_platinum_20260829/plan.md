@@ -1425,3 +1425,23 @@
 - [~] Authority contract binding remains open together with source semantics,
   discovery, v3 replay, recovery/cache and consumer evidence. This candidate
   identity is not itself a v4 admission.
+
+## 2026-10-20 M-112 discovery-role evidence for the frozen MBS cohort
+
+- [x] Reconcile all 16 exact M-112 object identities to the current public
+  Health Economics and Outcomes Research collection and the pinned dataset
+  estate catalog. The collection includes the MBS source and utilisation
+  archives; the estate catalog at revision
+  `4802d56a340646043fc91bed218c1e8a958f42c2` contains both dataset entries.
+  Current Hugging Face dataset API metadata confirms both repositories are
+  public and ungated. Bind those dataset-level discovery receipts to every
+  exact object in
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
+- [x] Preserve the registry's `not_assessed` and
+  `source_specific_review_required` values. Discovery does not establish
+  source rights, object publication, source semantics, complete v4 contracts,
+  or admission. Six focused tests and the broader M-112 v1/federation contract
+  selection (72 tests) passed; routine Test-Goblin passed.
+- [~] Keep the discovery receipts candidate-only and unbound until referenced
+  from complete per-object v4 contracts. The approved denominator remains
+  1,759, with zero v4 admissions and zero qualifying M-112 consumer canaries.

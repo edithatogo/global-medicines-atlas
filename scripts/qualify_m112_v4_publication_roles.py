@@ -16,6 +16,7 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 ROLE_REPORT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json"
 DIGEST_REPORT = "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json"
+DISCOVERY_REPORT = "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json"
 OUTPUT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json"
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
 PINNED_REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
@@ -32,7 +33,7 @@ VERIFICATION_RECEIPT_SHA256 = (
 EXPECTED_PATHS = 14
 EXPECTED_CANDIDATES = 16
 EXPECTED_MANIFEST_FILES = 28
-OBSERVED_AT = "2026-10-19T14:17:25Z"
+OBSERVED_AT = "2026-10-19T16:07:04Z"
 CONTRACT_REPOSITORY = "edithatogo/global-medicines-atlas"
 CONTRACT_COMMIT = "a5753b1c79ccedd9bb54112bf803882ffc9deb96"
 CONTRACT_SCHEMA_PATH = "contracts/medallion/v4.1/federation.schema.json"
@@ -226,6 +227,86 @@ def _bind_candidate(
     return candidate
 
 
+def _bind_discovery_candidate(
+    candidate: dict[str, Any], discovery: dict[str, Any], root: Path
+) -> None:
+    identity = {
+        key: candidate.get(key)
+        for key in ("dataset", "revision", "path", "bytes", "sha256")
+    }
+    matches = [
+        row
+        for row_value in cast("list[Any]", discovery.get("objects", []))
+        if isinstance(row_value, dict)
+        for row in [cast("dict[str, Any]", row_value)]
+        if all(row.get(key) == value for key, value in identity.items())
+    ]
+    if len(matches) != 1:
+        raise ValueError(
+            f"discovery evidence does not uniquely bind candidate: {candidate.get('path')}"
+        )
+    datasets = cast("list[Any]", discovery.get("dataset_access", []))
+    access = [
+        cast("dict[str, Any]", value)
+        for value in datasets
+        if isinstance(value, dict)
+        and value.get("dataset") == candidate.get("dataset")
+    ]
+    if (
+        len(access) != 1
+        or access[0].get("private") is not False
+        or access[0].get("gated") is not False
+    ):
+        raise ValueError(
+            "discovery dataset is not confirmed public and ungated"
+        )
+    entries_value = discovery.get("estate_registry", {}).get("entries", [])
+    entries = [
+        cast("dict[str, Any]", value)
+        for value in cast("list[Any]", entries_value)
+        if isinstance(value, dict)
+        and value.get("repo_id") == candidate.get("dataset")
+    ]
+    if len(entries) != 1 or entries[0].get("access") != "public":
+        raise ValueError(
+            "public estate entry is missing for discovery candidate"
+        )
+    if entries[0].get("rights_status") != "source_specific_review_required":
+        raise ValueError(
+            "estate rights state changed; do not infer a new decision"
+        )
+    collection = discovery.get("collection")
+    if not isinstance(collection, dict) or candidate.get(
+        "dataset"
+    ) not in collection.get("matching_dataset_members", []):
+        raise ValueError(
+            "candidate dataset is absent from the exact collection"
+        )
+    states_value = candidate.get("contract_role_states")
+    if not isinstance(states_value, dict):
+        raise TypeError("candidate has no v4 contract role states")
+    cast("dict[str, Any]", states_value)["discovery"] = (
+        "candidate_receipt_available_unbound"
+    )
+    candidate["discovery_candidate_receipt"] = {
+        "collection": collection.get("url"),
+        "collection_response_sha256": collection.get("response_sha256"),
+        "estate_entry": {
+            "url": discovery["estate_registry"].get("catalog_url"),
+            "sha256": discovery["estate_registry"].get("catalog_sha256"),
+            "dataset": candidate["dataset"],
+            "status": entries[0].get("status"),
+            "rights_status": entries[0].get("rights_status"),
+        },
+        "dataset_access_response_sha256": access[0].get("response_sha256"),
+        "evidence_report": {
+            "path": DISCOVERY_REPORT,
+            "sha256": _sha256((root / DISCOVERY_REPORT).read_bytes()),
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+    }
+
+
 def _update_summary(
     report: dict[str, Any], root: Path, matched_count: int
 ) -> None:
@@ -257,6 +338,15 @@ def _update_summary(
             role["evidence"] = (
                 "14 MBS utilisation paths exactly match the 28-object published manifest and token-free anonymous restore receipt; the two August paths lack this receipt. Candidate evidence is not bound to live v4.1 contracts."
             )
+        if role.get("role") == "discovery":
+            role["state"] = "candidate_receipt_available_unbound_for_16_of_16"
+            role["evidence"] = (
+                "All 16 exact candidate paths bind to their public dataset entry, "
+                "a current collection membership, and the pinned dataset-estate "
+                "catalog. The estate entries remain not_assessed and "
+                "source_specific_review_required; discovery evidence is not a "
+                "rights or admission conclusion."
+            )
     report["authority_identity"] = {
         "producer_repository": CONTRACT_REPOSITORY,
         "contract_repository": CONTRACT_REPOSITORY,
@@ -278,7 +368,9 @@ def _update_summary(
         "unbound candidate evidence for 14 of 16 paths. Authority is not yet "
         "referenced by complete v4 contracts. Two August paths, source "
         "semantics, discovery, v3 replay, recovery/cache, and consumers remain "
-        "incomplete. Preserve zero v4 admissions and zero M-112 consumer canaries."
+        "incomplete. Discovery evidence now covers all 16 paths but remains "
+        "unbound until referenced by complete per-object v4 contracts. Preserve "
+        "zero v4 admissions and zero M-112 consumer canaries."
     )
     report["recorded_at"] = OBSERVED_AT
     report["supersedes"] = {
@@ -291,6 +383,7 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
     """Return a deterministic role report enriched with bound candidate receipts."""
     report = copy.deepcopy(_read_json(root, ROLE_REPORT))
     digest_report = _read_json(root, DIGEST_REPORT)
+    discovery_report = _read_json(root, DISCOVERY_REPORT)
     candidates = report.get("objects")
     verified_objects = digest_report.get("verified_objects")
     archives = digest_report.get("archives")
@@ -307,6 +400,17 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         raise ValueError("M-112 canary state changed; requalify before refresh")
     if not isinstance(verified_objects, list) or not isinstance(archives, list):
         raise TypeError("digest reconciliation is incomplete")
+    if (
+        discovery_report.get("scope", {}).get("candidate_objects")
+        != EXPECTED_CANDIDATES
+        or discovery_report.get("scope", {}).get("discovery_objects")
+        != EXPECTED_CANDIDATES
+        or discovery_report.get("role_state")
+        != "candidate_evidence_available_unbound_for_16_of_16"
+    ):
+        raise ValueError(
+            "M-112 discovery evidence does not cover the frozen cohort"
+        )
 
     verified_values = cast("list[Any]", verified_objects)
     archive = _find_archive(cast("list[Any]", archives))
@@ -320,6 +424,7 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
             raise TypeError("malformed M-112 candidate")
         candidate = cast("dict[str, Any]", candidate_value)
         _bind_authority_candidate(candidate, root)
+        _bind_discovery_candidate(candidate, discovery_report, root)
         if candidate.get("dataset") == DATASET:
             matched.append(
                 _bind_candidate(candidate, verified_values, archive, root)
@@ -329,6 +434,12 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         raise ValueError(
             f"expected {EXPECTED_PATHS} MBS utilisation candidates, got {len(matched)}"
         )
+    report["discovery_candidate_evidence"] = {
+        "path": DISCOVERY_REPORT,
+        "sha256": _sha256((root / DISCOVERY_REPORT).read_bytes()),
+        "objects": EXPECTED_CANDIDATES,
+        "state": "candidate_receipt_available_unbound_for_16_of_16",
+    }
     _update_summary(report, root, len(matched))
     return report
 
