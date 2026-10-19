@@ -1408,6 +1408,111 @@
   source coverage claim, candidate admission, rights decision, publication, or
   M-110/M-112 acceptance is implied by the CLI export or its synthetic tests.
 
+## 2026-10-20 M-112 contract-authority identity reconciliation
+
+- [x] Bind candidate-only v4 authority identity for the frozen 16-object MBS
+  utilisation cohort. The successful producer workflow run is in
+  `edithatogo/global-medicines-atlas`; exact main commit
+  `a5753b1c79ccedd9bb54112bf803882ffc9deb96` contains the pinned v4.1 schema
+  bytes with SHA-256
+  `03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6`. Keep
+  the identity explicitly unbound until referenced from complete per-object
+  v4 contracts.
+- [x] The role qualification test passed (5), including altered-schema
+  rejection; Ruff passed; generated report regeneration and `--check` passed.
+  Preserve the approved 1,759-object denominator, 0 v4 admissions, and 0 M-112
+  consumer canaries.
+- [~] Authority contract binding remains open together with source semantics,
+  discovery, v3 replay, recovery/cache and consumer evidence. This candidate
+  identity is not itself a v4 admission.
+
+## 2026-10-20 M-112 discovery-role evidence for the frozen MBS cohort
+
+- [x] Reconcile all 16 exact M-112 object identities to the current public
+  Health Economics and Outcomes Research collection and the pinned dataset
+  estate catalog. The collection includes the MBS source and utilisation
+  archives; the estate catalog at revision
+  `4802d56a340646043fc91bed218c1e8a958f42c2` contains both dataset entries.
+  Current Hugging Face dataset API metadata confirms both repositories are
+  public and ungated. Bind those dataset-level discovery receipts to every
+  exact object in
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
+- [x] Bind each exact dataset/revision/path/byte-count/SHA-256 location to its
+  existing anonymous digest evidence and current public, ungated dataset
+  metadata. Keep location, discovery, and recovery receipts candidate-only
+  and unbound pending complete per-object v4 contracts.
+- [x] Bind the existing hosted 28-object manifest restore and cleanup receipt
+  as a primary, non-independent recovery role for the 14 MBS utilisation
+  objects. Region and RPO/RTO remain unverified or null; this does not claim
+  independent or production disaster recovery. The two August source-archive
+  objects lack this receipt.
+- [x] Preserve the registry's `not_assessed` and
+  `source_specific_review_required` values. Discovery does not establish
+  source rights, object publication, source semantics, complete v4 contracts,
+  or admission. Eight focused role tests and the broader M-112 v1/federation
+  contract selection passed; routine Test-Goblin passed.
+- [~] Keep location and discovery receipts candidate-only and unbound until
+  referenced from complete per-object v4 contracts. The approved denominator
+  remains 1,759, with zero v4 admissions and zero qualifying M-112 consumer
+  canaries. Cache lifecycle evidence remains missing; source semantics,
+  complete v4 contracts and consumer qualification remain open.
+
+## 2026-10-19 M-112 source-temporal evidence for one MBS group object
+
+- [x] Read the public data.gov.au package metadata for the exact 2016 YTD MBS
+  Group Statistics resource. It establishes the report period through
+  2016-07-31, resource last-modified date 2016-08-29, and that month is based
+  on claim-processing date rather than service-provision date. The anonymous
+  acquisition receipt supplies the exact retrieval timestamp.
+- [x] Bind that bounded temporal evidence as a candidate source role to the
+  exact 2016 group-statistics B2 identity. The source schema layout remains
+  unqualified because the workbook was neither downloaded nor inspected.
+  Record the metadata response digest and explicit boundaries in
+  `quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json`.
+- [x] Focused role tests (9), broader M-112 v1/federation selection (75),
+  qualification regeneration/check, Ruff, and routine Test-Goblin passed.
+- [~] The source role remains unbound pending complete v4 contracts; 15 other
+  source candidates still lack source-specific temporal qualification. Preserve
+  the 1,759 denominator, zero admissions, and zero consumer canaries.
+
+## 2026-10-19 M-112 source-temporal evidence expanded to 13 objects
+
+- [x] Read the official data.gov.au package metadata for the MBS demographics
+  and group-statistics datasets. Exact resource IDs and URLs matched 13 frozen
+  utilisation B2 identities. The metadata establishes quarterly/YTD/historical
+  periods and the shared claim-processing-month basis. Raw archive bytes were
+  not downloaded or inspected.
+- [x] Bind the 13 exact temporal metadata receipts to the M-112 role report.
+  Preserve each native source schema as unqualified. Two August MBS source XML
+  objects remain partial; one historical group archive remains unresolved
+  because its source resource period conflicts with the archive path label.
+- [x] Focused role tests (9), broader M-112 v1/federation selection (75),
+  qualification regeneration/check, Ruff, and routine Test-Goblin passed.
+- [~] The 13 temporal role candidates remain unbound pending complete v4
+  contracts, schema qualification and the other mandatory evidence. Preserve
+  the approved 1,759 denominator, zero admissions, and zero consumer canaries.
+
+## 2026-10-20 M-112 qualifier strict typing repair
+
+- [x] Fixed the strict typing errors in the v4 candidate-role qualifier after
+  the exact-head hosted strict lane identified unknown JSON-object types. The
+  qualifier now explicitly validates and narrows nested registry, collection,
+  temporal metadata, and unresolved-period records before reading them.
+- [x] The exact role qualification still passes its `--check`; focused role
+  tests passed (9), the affected federation contract/admission/conformance
+  selection passed (129), full basedpyright passed (0 errors; 4 existing
+  optional-import warnings), Ruff passed, and Test-Goblin routine passed.
+- [x] PR #1199's separate exact-digest Gitleaks correction merged at
+  `dd7a01bcd3da60190f821395ceb1260a3d9ddad9` after all 39 exact-head checks
+  passed. Its full-history scan found no leaks; the same targeted correction
+  is included in PR #1200, where it addresses 33 false-positive public digest
+  matches.
+- [~] The M-112 qualification remains unchanged: 0 v4 admissions and 0
+  consumer canaries. This repair only makes the current candidate evidence
+  verifier pass strict typing; it does not bind incomplete role receipts or
+  create an admission. PR #1200 hosted checks are rerunning on its updated
+  head.
+
 ## 2026-10-20 one-object M-112 v3 replay preparation
 
 - [x] Add a strict one-object v3 replay-plan builder for the pinned July 2016
@@ -1426,8 +1531,16 @@
   full local profile passed 6,981 tests with 96.90% coverage, three optional
   skips, and two existing stable-release reproducibility failures caused by
   uv 0.13.1. Both failed tests passed unchanged (2) with the repository's
-  isolated uv 0.11.29. Hosted protected checks and the exact-main replay run
-  remain pending.
-- [~] Keep M-112 v4 admission and consumer-canary counts at zero. The replay
-  plan and executor do not close authority, discovery, recovery/cache, source
-  semantics, v4 contract binding, or any actual consumer canary requirement.
+  isolated uv 0.11.29. Exact-main replay run 39289077989 then completed
+  successfully at `dd7a01bcd3da60190f821395ceb1260a3d9ddad9`; its anonymous
+  digest/byte-count receipt is now preserved and bound as a candidate-only
+  role for 1 of 16 objects. Temporary source bytes were removed.
+- [x] Focused v3 replay role tests (11), broader M-112 federation selection
+  (131), role-report `--check`, Ruff, targeted BasedPyright, and Test-Goblin
+  routine passed after binding the receipt.
+- [~] Keep M-112 v4 admission and consumer-canary counts at zero. Current
+  qualification still has incomplete/unbound mandatory contract roles and no
+  admitted object. The existing API/CLI/Atlas/Chromium traversal is explicitly
+  candidate-only; it cannot be counted as an admitted-product canary. Run the
+  bounded actual-consumer canaries only after an exact object passes v4
+  admission and is pinned in the consumer contract.
