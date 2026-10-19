@@ -153,6 +153,7 @@
     "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json": "af870552004e50ab5174fc535c9e5bbefe59f6edc4d03c830ce40129adf22b6a",
     "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json": "62aa052690bf3092aaf658d747654bc14316807e005e72f063ec11b158df4f18",
     "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24",
+    "quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6",
     "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
     "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
     "quality/qualifications/australian-pbs-utilisation-publication-authorization.json": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
@@ -161,6 +162,16 @@
   "exact_july_2025_mbs_silver": {
     "attestation_path": "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json",
     "attestation_sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+    "current_public_tree_readback": {
+      "anonymous_metadata_identity_verified": true,
+      "current_revision_payload_bytes_reverified": false,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "exact_object_count": 6,
+      "observed_at": "2026-10-19T20:41:51Z",
+      "path": "quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json",
+      "public_release_observed": true,
+      "revision": "42d73b6facac016f14a335d36d83f1a3b630add8"
+    },
     "object_count": 6,
     "paths": [
       {
@@ -246,7 +257,7 @@
     ],
     "unique_object_counts_are_deduplicated_across_runs": true
   },
-  "observed_at": "2026-10-19T19:54:54Z",
+  "observed_at": "2026-10-19T20:41:51Z",
   "pbs_source_archive_exact_publication": {
     "authorization_id": "decision-0009",
     "byte_count": 11156706,

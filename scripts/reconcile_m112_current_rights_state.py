@@ -22,6 +22,9 @@ CMS_REVIEW = QUAL / "cms-hcpcs-rights-review-20261019.json"
 MBS_RIGHTS_ATTESTATION = QUAL / (
     "australian-mbs-v4-public-release-rights-attestation-20261019.json"
 )
+MBS_SILVER_PUBLIC_TREE_READBACK = QUAL / (
+    "australian-mbs-v4-current-public-tree-readback-20261020.json"
+)
 AUGUST_MBS_RIGHTS_ATTESTATION = QUAL / (
     "australian-mbs-august-bronze-rights-attestation-20261020.json"
 )
@@ -412,7 +415,9 @@ def _reconcile_object_rights(
 
 
 def _reconcile_mbs_silver_attestation(
-    objects: list[dict[str, Any]], attestation: dict[str, Any]
+    objects: list[dict[str, Any]],
+    attestation: dict[str, Any],
+    public_tree_readback: dict[str, Any],
 ) -> dict[str, Any]:
     silver_objects = [
         obj for obj in objects if obj["path"].startswith(MBS_SILVER_PREFIX)
@@ -452,11 +457,51 @@ def _reconcile_mbs_silver_attestation(
             "sha256": identity[0],
             "byte_count": identity[1],
         })
+    expected_dataset = attestation["dataset_identity"]["dataset"]
+    observed_objects = {
+        item["path"]: (item["sha256"], item["byte_count"])
+        for item in public_tree_readback["objects"]
+    }
+    expected_objects = {
+        item["path"]: (item["sha256"], item["byte_count"]) for item in paths
+    }
+    invalid_readback = [
+        public_tree_readback["dataset"] != expected_dataset,
+        public_tree_readback["access"]["anonymous"] is not True,
+        public_tree_readback["access"]["private"] is not False,
+        public_tree_readback["access"]["gated"] is not False,
+        public_tree_readback["scope"]["objects_present_and_digest_size_matched"]
+        != MBS_SILVER_OBJECT_COUNT,
+        observed_objects != expected_objects,
+        public_tree_readback["boundaries"][
+            "current_revision_payload_bytes_downloaded_or_reverified"
+        ]
+        is not False,
+        public_tree_readback["boundaries"]["rights_conclusion_added"]
+        is not False,
+        public_tree_readback["boundaries"]["external_publication_performed"]
+        is not False,
+        public_tree_readback["boundaries"]["dataset_mutated"] is not False,
+    ]
+    if any(invalid_readback):
+        raise ValueError(
+            "the current MBS Silver public tree readback did not reconcile"
+        )
     return {
         "object_count": len(silver_objects),
         "paths": sorted(paths, key=itemgetter("path")),
         "public_release_authorized": attestation["public_release_authorized"],
         "public_release_performed": attestation["public_release_performed"],
+        "current_public_tree_readback": {
+            "path": str(MBS_SILVER_PUBLIC_TREE_READBACK),
+            "dataset": public_tree_readback["dataset"],
+            "revision": public_tree_readback["current_revision"],
+            "observed_at": public_tree_readback["observed_at"],
+            "anonymous_metadata_identity_verified": True,
+            "exact_object_count": MBS_SILVER_OBJECT_COUNT,
+            "current_revision_payload_bytes_reverified": False,
+            "public_release_observed": True,
+        },
     }
 
 
@@ -592,7 +637,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     m108 = _read(root, M108_ASSESSMENT)
     objects = overlay["objects"]
     mbs_summary = _reconcile_mbs_silver_attestation(
-        objects, _read(root, MBS_RIGHTS_ATTESTATION)
+        objects,
+        _read(root, MBS_RIGHTS_ATTESTATION),
+        _read(root, MBS_SILVER_PUBLIC_TREE_READBACK),
     )
     august_mbs_objects = reconcile_august_mbs_attestation(
         objects, _read(root, AUGUST_MBS_RIGHTS_ATTESTATION)
@@ -641,6 +688,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         str(FROZEN_OVERLAY): _sha256(root / FROZEN_OVERLAY),
         **cms_evidence_inputs,
         str(MBS_RIGHTS_ATTESTATION): _sha256(root / MBS_RIGHTS_ATTESTATION),
+        str(MBS_SILVER_PUBLIC_TREE_READBACK): _sha256(
+            root / MBS_SILVER_PUBLIC_TREE_READBACK
+        ),
         str(AUGUST_MBS_RIGHTS_ATTESTATION): _sha256(
             root / AUGUST_MBS_RIGHTS_ATTESTATION
         ),
@@ -683,6 +733,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
                 "public_release_authorized"
             ],
             "public_release_performed": mbs_summary["public_release_performed"],
+            "current_public_tree_readback": mbs_summary[
+                "current_public_tree_readback"
+            ],
             "paths": mbs_summary["paths"],
         },
         "pbs_utilisation_raw_objects": {

@@ -35,6 +35,22 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
         report["exact_july_2025_mbs_silver"]["public_release_performed"]
         is False
     )
+    current_public_readback = report["exact_july_2025_mbs_silver"][
+        "current_public_tree_readback"
+    ]
+    assert current_public_readback["dataset"] == (
+        "edithatogo/australian-mbs-source-archive"
+    )
+    assert current_public_readback["revision"] == (
+        "42d73b6facac016f14a335d36d83f1a3b630add8"
+    )
+    assert current_public_readback["anonymous_metadata_identity_verified"]
+    assert current_public_readback["exact_object_count"] == 6
+    assert (
+        current_public_readback["current_revision_payload_bytes_reverified"]
+        is False
+    )
+    assert current_public_readback["public_release_observed"] is True
     assert report["august_2026_mbs_bronze_projections"]["object_count"] == 4
     assert all(
         obj["lineage_complete"]
