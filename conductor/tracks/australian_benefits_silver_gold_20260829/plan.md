@@ -3919,3 +3919,31 @@
   closes the local v1 schema-conformance candidate for these paths; it does
   not by itself satisfy the v4 receipt role, v3 replay, publication, clean-room
   verification, discovery, recovery/cache, consumer canaries, or admission.
+
+## M-110 relationship screening and match-behavior diagnostic (2026-10-19)
+
+- [x] Screen current relationship classes against source and lineage evidence.
+  The exact July 2025 MBS v3 `source_record_has_benefit` relation qualifies
+  only as source-explicit within-record evidence (5,989 edges); confidence is
+  not applicable, valid time is unselected, and the edge review state in the
+  immutable graph qualification is `not_reviewed`. PBS
+  `source_contains_entity` qualifies only as a structural contract on
+  synthetic Silver. Cross-source/cross-record semantic relations do not
+  qualify. See
+  `quality/qualifications/australian-gold-relationship-screening-20261019.json`.
+- [x] Assess current candidate-generator behavior against the six labeled
+  synthetic cases, using the generator itself rather than supplied
+  predictions. At lexical threshold 0.65 the result is precision 0.50, recall
+  0.50, recall@5 0.50, coverage 0.67, selective risk 0.50, two false
+  positives and two false negatives. A 0.99 cutoff yields zero false positives
+  only at 0.33 coverage and 0.50 recall. These six self-authored cases cannot
+  establish calibration or select a production threshold. Report:
+  `quality/qualifications/matching-behavior-synthetic-20261019.json`.
+- [ ] Complete PBS real admitted Silver screening, representative
+  human-adjudicated held-out labels, per-method/source calibration, and exact
+  candidate review before any scored relationship promotion. Synthetic graph
+  parity and this diagnostic do not close M-110.
+- [x] Focused matcher/graph/review selection: 98 passed. Broader affected MBS,
+  PBS, matcher, and M-110 selection: 106 passed. Test-Goblin routine,
+  deterministic report regeneration, Ruff, Ruff format, `ty`, BasedPyright,
+  and `git diff --check` passed. No threshold was promoted.
