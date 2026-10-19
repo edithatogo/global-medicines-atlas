@@ -54,6 +54,21 @@ def _read_json(root: Path, relative: str) -> dict[str, Any]:
     return cast("dict[str, Any]", value)
 
 
+def _verify_local_evidence_reference(
+    root: Path, reference: dict[str, Any]
+) -> None:
+    path = reference.get("path")
+    expected = reference.get("sha256")
+    if not isinstance(path, str) or not isinstance(expected, str):
+        raise TypeError("location digest reference needs path and SHA-256")
+    evidence_path = root / path
+    if (
+        not evidence_path.is_file()
+        or _sha256(evidence_path.read_bytes()) != expected
+    ):
+        raise ValueError(f"location digest evidence does not verify: {path}")
+
+
 def _receipt_ref(url: str, digest: str) -> dict[str, str]:
     return {"url": url, "sha256": digest}
 
@@ -307,6 +322,57 @@ def _bind_discovery_candidate(
     }
 
 
+def _bind_location_candidate(
+    candidate: dict[str, Any], discovery: dict[str, Any], root: Path
+) -> None:
+    if candidate.get("anonymous_digest_readback") is not True:
+        raise ValueError(
+            "location candidate lacks exact anonymous digest readback"
+        )
+    digest_ref = candidate.get("digest_evidence")
+    if not isinstance(digest_ref, dict):
+        raise TypeError(
+            "location candidate lacks its digest evidence reference"
+        )
+    _verify_local_evidence_reference(root, cast("dict[str, Any]", digest_ref))
+    access_rows = cast("list[Any]", discovery.get("dataset_access", []))
+    matching_access = [
+        cast("dict[str, Any]", item)
+        for item in access_rows
+        if isinstance(item, dict)
+        and item.get("dataset") == candidate.get("dataset")
+    ]
+    if (
+        len(matching_access) != 1
+        or matching_access[0].get("private") is not False
+        or matching_access[0].get("gated") is not False
+    ):
+        raise ValueError(
+            "location repository is not confirmed public and ungated"
+        )
+    states_value = candidate.get("contract_role_states")
+    if not isinstance(states_value, dict):
+        raise TypeError("candidate has no v4 contract role states")
+    cast("dict[str, Any]", states_value)["location"] = (
+        "candidate_receipt_available_unbound"
+    )
+    candidate["location_candidate_receipt"] = {
+        "dataset": candidate["dataset"],
+        "revision": candidate["revision"],
+        "path": candidate["path"],
+        "bytes": candidate["bytes"],
+        "sha256": candidate["sha256"],
+        "private": False,
+        "gated": False,
+        "dataset_access_response_sha256": matching_access[0].get(
+            "response_sha256"
+        ),
+        "anonymous_digest_readback": True,
+        "digest_evidence": digest_ref,
+        "contract_role_state": "candidate_receipt_available_unbound",
+    }
+
+
 def _update_summary(
     report: dict[str, Any], root: Path, matched_count: int
 ) -> None:
@@ -347,6 +413,14 @@ def _update_summary(
                 "source_specific_review_required; discovery evidence is not a "
                 "rights or admission conclusion."
             )
+        if role.get("role") == "location":
+            role["state"] = "candidate_receipt_available_unbound_for_16_of_16"
+            role["evidence"] = (
+                "All 16 exact dataset/revision/path/byte-count/SHA-256 identities "
+                "bind to the existing anonymous digest evidence and current public, "
+                "ungated repository metadata. The evidence remains unbound until "
+                "referenced by each complete v4 contract."
+            )
     report["authority_identity"] = {
         "producer_repository": CONTRACT_REPOSITORY,
         "contract_repository": CONTRACT_REPOSITORY,
@@ -368,8 +442,8 @@ def _update_summary(
         "unbound candidate evidence for 14 of 16 paths. Authority is not yet "
         "referenced by complete v4 contracts. Two August paths, source "
         "semantics, discovery, v3 replay, recovery/cache, and consumers remain "
-        "incomplete. Discovery evidence now covers all 16 paths but remains "
-        "unbound until referenced by complete per-object v4 contracts. Preserve "
+        "incomplete. Location and discovery evidence now cover all 16 paths but "
+        "remain unbound until referenced by complete per-object v4 contracts. Preserve "
         "zero v4 admissions and zero M-112 consumer canaries."
     )
     report["recorded_at"] = OBSERVED_AT
@@ -425,6 +499,7 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         candidate = cast("dict[str, Any]", candidate_value)
         _bind_authority_candidate(candidate, root)
         _bind_discovery_candidate(candidate, discovery_report, root)
+        _bind_location_candidate(candidate, discovery_report, root)
         if candidate.get("dataset") == DATASET:
             matched.append(
                 _bind_candidate(candidate, verified_values, archive, root)
@@ -437,6 +512,10 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
     report["discovery_candidate_evidence"] = {
         "path": DISCOVERY_REPORT,
         "sha256": _sha256((root / DISCOVERY_REPORT).read_bytes()),
+        "objects": EXPECTED_CANDIDATES,
+        "state": "candidate_receipt_available_unbound_for_16_of_16",
+    }
+    report["location_candidate_evidence"] = {
         "objects": EXPECTED_CANDIDATES,
         "state": "candidate_receipt_available_unbound_for_16_of_16",
     }

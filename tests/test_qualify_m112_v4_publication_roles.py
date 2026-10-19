@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 from pathlib import Path
@@ -118,6 +119,33 @@ def test_current_discovery_receipts_bind_all_candidates_without_rights_promotion
         )
 
 
+def test_location_receipts_bind_exact_identity_and_anonymous_digest_evidence() -> (
+    None
+):
+    report = qualify()
+
+    assert report["location_candidate_evidence"]["objects"] == 16
+    assert report["location_candidate_evidence"]["state"] == (
+        "candidate_receipt_available_unbound_for_16_of_16"
+    )
+    for candidate in report["objects"]:
+        location = candidate["location_candidate_receipt"]
+        assert location["dataset"] == candidate["dataset"]
+        assert location["revision"] == candidate["revision"]
+        assert location["path"] == candidate["path"]
+        assert location["bytes"] == candidate["bytes"]
+        assert location["sha256"] == candidate["sha256"]
+        assert location["private"] is False
+        assert location["gated"] is False
+        assert location["anonymous_digest_readback"] is True
+        assert location["contract_role_state"] == (
+            "candidate_receipt_available_unbound"
+        )
+        assert candidate["contract_role_states"]["location"] == (
+            "candidate_receipt_available_unbound"
+        )
+
+
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
     (tmp_path / ROLE_REPORT).parent.mkdir(parents=True, exist_ok=True)
     (tmp_path / DIGEST_REPORT).parent.mkdir(parents=True, exist_ok=True)
@@ -128,6 +156,14 @@ def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
     shutil.copy(ROOT / DIGEST_REPORT, digest_path)
     shutil.copy(ROOT / DISCOVERY_REPORT, tmp_path / DISCOVERY_REPORT)
     shutil.copy(ROOT / CONTRACT_SCHEMA_PATH, tmp_path / CONTRACT_SCHEMA_PATH)
+    role_report = json.loads(
+        (tmp_path / ROLE_REPORT).read_text(encoding="utf-8")
+    )
+    for candidate in role_report["objects"]:
+        reference = candidate["digest_evidence"]
+        evidence_path = tmp_path / reference["path"]
+        evidence_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(ROOT / reference["path"], evidence_path)
     digest_report = json.loads(digest_path.read_text(encoding="utf-8"))
     mbs = next(
         item
@@ -136,6 +172,16 @@ def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
     )
     mbs["sha256"] = "0" * 64
     digest_path.write_text(json.dumps(digest_report), encoding="utf-8")
+    digest_sha256 = hashlib.sha256(digest_path.read_bytes()).hexdigest()
+    for candidate in role_report["objects"]:
+        if (
+            candidate["dataset"]
+            == "edithatogo/australian-mbs-utilisation-archive"
+        ):
+            candidate["digest_evidence"]["sha256"] = digest_sha256
+    (tmp_path / ROLE_REPORT).write_text(
+        json.dumps(role_report), encoding="utf-8"
+    )
 
     with pytest.raises(ValueError, match="unique hosted manifest match"):
         qualify(tmp_path)

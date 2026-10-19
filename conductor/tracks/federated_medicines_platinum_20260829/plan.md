@@ -1437,11 +1437,16 @@
   public and ungated. Bind those dataset-level discovery receipts to every
   exact object in
   `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
+- [x] Bind each exact dataset/revision/path/byte-count/SHA-256 location to its
+  existing anonymous digest evidence and current public, ungated dataset
+  metadata. Keep all location and discovery receipts candidate-only and
+  unbound pending complete per-object v4 contracts.
 - [x] Preserve the registry's `not_assessed` and
   `source_specific_review_required` values. Discovery does not establish
   source rights, object publication, source semantics, complete v4 contracts,
-  or admission. Six focused tests and the broader M-112 v1/federation contract
-  selection (72 tests) passed; routine Test-Goblin passed.
-- [~] Keep the discovery receipts candidate-only and unbound until referenced
-  from complete per-object v4 contracts. The approved denominator remains
-  1,759, with zero v4 admissions and zero qualifying M-112 consumer canaries.
+  or admission. Seven focused role tests and the broader M-112 v1/federation
+  contract selection passed; routine Test-Goblin passed.
+- [~] Keep location and discovery receipts candidate-only and unbound until
+  referenced from complete per-object v4 contracts. The approved denominator
+  remains 1,759, with zero v4 admissions and zero qualifying M-112 consumer
+  canaries.
