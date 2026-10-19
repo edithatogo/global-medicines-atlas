@@ -41,14 +41,14 @@
   },
   "boundaries": {
     "all_remaining_deferrals_preserved": true,
-    "consumer_canaries": 1,
-    "deferred_objects": 1758,
+    "consumer_canaries": 2,
+    "deferred_objects": 1757,
     "external_publication_performed": false,
     "m112_denominator_changed": false,
     "new_sources_or_datasets_added": false,
     "source_payload_bytes_read": false,
     "source_payload_values_inspected": false,
-    "v4_admissions": 1
+    "v4_admissions": 2
   },
   "cms_hcpcs_external_reference": {
     "acquisition_time_rights_state_preserved": "unknown",
@@ -152,6 +152,7 @@
     "quality/qualifications/australian-m112-pbs-projected-b1-b2-lineage-20261019.json": "aa4a0df6df4ec723e7b65f55379f47ae7912e4777a6b9d3bb3454c1accf3a16f",
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
     "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0",
+    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "066906d7ed35e20b06f10e4e38994fb43a8d33e801ad4b223e54ff6fab852877",
     "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json": "af870552004e50ab5174fc535c9e5bbefe59f6edc4d03c830ce40129adf22b6a",
     "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json": "62aa052690bf3092aaf658d747654bc14316807e005e72f063ec11b158df4f18",
     "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24",
@@ -223,10 +224,32 @@
     "sha256": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d"
   },
   "m112_admission_canary_readback": {
-    "admitted_object_count": 1,
-    "canaried_object_count": 1,
+    "admitted_object_count": 2,
+    "canaried_object_count": 2,
     "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
-    "deferred_object_count": 1758,
+    "current_role_qualification": {
+      "admitted_objects": [
+        {
+          "contract_path": "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json",
+          "contract_sha256": "d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7",
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+          "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+          "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+        },
+        {
+          "contract_path": "quality/qualifications/australian-m112-v4-july2016-raw-b2-contract.json",
+          "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+          "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+          "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+        }
+      ],
+      "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json",
+      "sha256": "066906d7ed35e20b06f10e4e38994fb43a8d33e801ad4b223e54ff6fab852877"
+    },
+    "deferred_object_count": 1757,
     "native_workbook_layout_qualified": false,
     "object": {
       "byte_count": 6857437,

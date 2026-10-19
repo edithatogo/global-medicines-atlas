@@ -4290,7 +4290,7 @@
   projections, and all other unresolved objects retain their own rights gates.
 - [x] Refresh current rights and release-preflight reports. Frozen membership
   remains 1,759; effective rights are 1,740 resolved and 19 unresolved. All
-  1,758 prior deferrals and the one prior admission/canary remain unchanged.
+  1,757 deferrals and two existing admissions/canaries remain unchanged.
 - [x] Focused rights and preflight tests passed (11). Broader required checks
   are recorded with the corresponding PR evidence.
 - [ ] Resolve rights for the remaining derived and source-specific objects;

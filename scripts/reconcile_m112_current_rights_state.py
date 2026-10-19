@@ -55,6 +55,7 @@ PBS_RAW_PERMISSION_SHA256 = (
 )
 PBS_RAW_PERMISSION_REVISION = "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
 PBS_RAW_PERMISSION_OBJECT_COUNT = 1708
+M112_CURRENT_ADMITTED_CANARIED_COUNT = 2
 PBS_DECISION_0009 = Path(
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md"
 )
@@ -63,6 +64,9 @@ MBS_JULY2016_CANARY_RECEIPTS = (
     / "australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json",
     QUAL
     / "australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json",
+)
+M112_ROLE_QUALIFICATION = QUAL / (
+    "australian-m112-v4-contract-role-evidence-qualification-20261020.json"
 )
 M108_ASSESSMENT = QUAL / "australian-m108-derived-products-20261017.json"
 OUTPUT = QUAL / "australian-m112-current-rights-reconciliation-20261019.json"
@@ -549,11 +553,34 @@ def _reconcile_m112_canary_readback(
             "workflow_commit": workflow["commit"],
         })
 
+    role_qualification = _read(root, M112_ROLE_QUALIFICATION)
+    cohort = role_qualification["cohort"]
+    current_admissions = role_qualification["current_admission_evidence"]
+    if (
+        cohort["v4_admissions"] != M112_CURRENT_ADMITTED_CANARIED_COUNT
+        or cohort["consumer_canaries"] != M112_CURRENT_ADMITTED_CANARIED_COUNT
+        or len(current_admissions) != M112_CURRENT_ADMITTED_CANARIED_COUNT
+        or len({item["path"] for item in current_admissions})
+        != M112_CURRENT_ADMITTED_CANARIED_COUNT
+    ):
+        raise ValueError(
+            "current M-112 role qualification counts did not reconcile"
+        )
+    input_hashes[str(M112_ROLE_QUALIFICATION)] = _sha256(
+        root / M112_ROLE_QUALIFICATION
+    )
+
     return {
         "record": {
-            "admitted_object_count": 1,
-            "canaried_object_count": 1,
-            "deferred_object_count": FROZEN_OBJECT_COUNT - 1,
+            "admitted_object_count": cohort["v4_admissions"],
+            "canaried_object_count": cohort["consumer_canaries"],
+            "deferred_object_count": FROZEN_OBJECT_COUNT
+            - cohort["v4_admissions"],
+            "current_role_qualification": {
+                "path": str(M112_ROLE_QUALIFICATION),
+                "sha256": _sha256(root / M112_ROLE_QUALIFICATION),
+                "admitted_objects": current_admissions,
+            },
             "object": {
                 "dataset": MBS_JULY2016_CANARY_DATASET,
                 "path": MBS_JULY2016_CANARY_PATH,
