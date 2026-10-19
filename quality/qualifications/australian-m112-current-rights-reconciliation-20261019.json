@@ -5,28 +5,28 @@
     "objects": [
       {
         "byte_count": 24367,
-        "lineage_complete": false,
+        "lineage_complete": true,
         "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/p7.parquet",
         "rights_state": "underlying source authorization exists; no projection rights conclusion added",
         "sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a"
       },
       {
         "byte_count": 454247,
-        "lineage_complete": false,
+        "lineage_complete": true,
         "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source.parquet",
         "rights_state": "underlying source authorization exists; no projection rights conclusion added",
         "sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a"
       },
       {
         "byte_count": 24367,
-        "lineage_complete": false,
+        "lineage_complete": true,
         "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
         "rights_state": "underlying source authorization exists; no projection rights conclusion added",
         "sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe"
       },
       {
         "byte_count": 454247,
-        "lineage_complete": false,
+        "lineage_complete": true,
         "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
         "rights_state": "underlying source authorization exists; no projection rights conclusion added",
         "sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf"
@@ -140,7 +140,7 @@
     "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
     "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
     "quality/qualifications/australian-m108-derived-products-20261017.json": "f9da44a9fc61ebaff83e7784f56d2376db33e2d9a7b834142ee60c3a1ad5fd7c",
-    "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-silver-rights-attested.json": "52529f73fab655998f3796be9d00eda1b571941e9ef918eda57fb91a84d5616f",
+    "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c",
     "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
     "quality/qualifications/cms-hcpcs-rights-review-20261019.json": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608"
   },
@@ -185,15 +185,16 @@
     "rights_state": "maintainer_attested_exact_public_release_permission_for_silver_object"
   },
   "frozen_inventory": {
+    "all_b1_b2_lineages_complete": true,
     "membership_changed": false,
     "membership_sha256": "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b",
     "object_count": 1759,
-    "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-silver-rights-attested.json",
+    "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json",
     "projection_paths": 23,
     "raw_paths": 1736,
-    "sha256": "52529f73fab655998f3796be9d00eda1b571941e9ef918eda57fb91a84d5616f"
+    "sha256": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c"
   },
-  "observed_at": "2026-10-19T12:56:00Z",
+  "observed_at": "2026-10-19T13:07:50Z",
   "purpose": "Reconcile effective rights evidence after the exact MBS Silver attestation and CMS HCPCS rights decision without changing object membership or release state.",
   "schema_id": "global-medicines-atlas.australian-m112-current-rights-reconciliation",
   "schema_version": 1

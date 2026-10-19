@@ -3876,18 +3876,21 @@
 
 - [x] Supersede the historical rights preflight with a current effective-state
   reconciliation. It binds the frozen 1,759-object inventory, the six-object
-  July MBS Silver maintainer attestation, the four August Bronze projections,
-  and the approved exact-file CMS HCPCS decision. It preserves historical
-  acquisition rights and admission records. See
+  cumulative lineage overlay, the exact six-object July MBS Silver attestation,
+  the four August Bronze projections, and the approved exact-file CMS HCPCS
+  decision. The six-object rights attestation is applied as a scoped override
+  over the cumulative overlay. It preserves historical acquisition rights and
+  admission records. See
   `quality/qualifications/australian-m112-current-rights-reconciliation-20261019.json`.
 - [x] Verify 22 frozen objects have positive scoped rights evidence and 1,737
   remain unresolved. Rights evidence leaves the 1,759 deferrals, zero v4
   admissions, zero canaries, and zero external publications unchanged. CMS
   stays external-reference-only; no processing or derived rights are inferred.
 - [ ] Resolve the four exact August 2026 MBS Bronze projection rights and
-  lineage independently. The source authorization does not conclude rights
-  for these projections; transformation/source membership lineage is
-  incomplete. Do not extend the July Silver attestation to them.
+  derived-output authority independently. Their B1/B2 and transformation
+  lineage is complete in the cumulative overlay, but the source authorization
+  does not conclude rights for these projections. Do not extend the July
+  Silver attestation to them.
 - [ ] Continue the remaining source-specific rights lane for the unresolved
   PBS and reimbursement-atlas objects. Identity or lineage alone does not
   establish reuse authority.

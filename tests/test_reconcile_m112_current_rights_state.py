@@ -17,6 +17,7 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
 
     assert report["frozen_inventory"]["object_count"] == 1759
     assert report["frozen_inventory"]["membership_changed"] is False
+    assert report["frozen_inventory"]["all_b1_b2_lineages_complete"] is True
     assert report["effective_m112_rights"]["resolved_object_count"] == 22
     assert report["effective_m112_rights"]["unresolved_object_count"] == 1737
     assert report["exact_july_2025_mbs_silver"]["object_count"] == 6
@@ -29,6 +30,10 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
         is False
     )
     assert report["august_2026_mbs_bronze_projections"]["object_count"] == 4
+    assert all(
+        obj["lineage_complete"]
+        for obj in report["august_2026_mbs_bronze_projections"]["objects"]
+    )
     assert (
         report["august_2026_mbs_bronze_projections"]["derived_output_authority"]
         == "absent"

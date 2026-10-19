@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 QUAL = Path("quality/qualifications")
 FROZEN_OVERLAY = QUAL / (
     "australian-m112-per-object-gate-reconciliation-20261019-"
-    "july-mbs-silver-rights-attested.json"
+    "reimbursement-medallion-projection-lineage.json"
 )
 CMS_REVIEW = QUAL / "cms-hcpcs-rights-review-20261019.json"
 MBS_RIGHTS_ATTESTATION = QUAL / (
@@ -108,7 +108,9 @@ def _reconcile_cms(
     )
 
 
-def _reconcile_object_rights(objects: list[dict[str, Any]]) -> dict[str, Any]:
+def _reconcile_object_rights(
+    objects: list[dict[str, Any]], rights_overrides: dict[str, str]
+) -> dict[str, Any]:
     paths = [obj["path"] for obj in objects]
     if len(objects) != FROZEN_OBJECT_COUNT or len(set(paths)) != len(paths):
         raise ValueError(
@@ -118,7 +120,7 @@ def _reconcile_object_rights(objects: list[dict[str, Any]]) -> dict[str, Any]:
         (
             obj["dataset"],
             obj["candidate_class"],
-            obj["rights"]["state"],
+            rights_overrides.get(obj["path"], obj["rights"]["state"]),
         )
         for obj in objects
     )
@@ -135,8 +137,12 @@ def _reconcile_object_rights(objects: list[dict[str, Any]]) -> dict[str, Any]:
             )
         ],
         "resolved_count": sum(
-            obj["rights"]["state"] in RIGHTS_RESOLVED_STATES
-            and obj["rights"]["decision_evidence"] is not None
+            rights_overrides.get(obj["path"], obj["rights"]["state"])
+            in RIGHTS_RESOLVED_STATES
+            and (
+                obj["rights"]["decision_evidence"] is not None
+                or obj["path"] in rights_overrides
+            )
             for obj in objects
         ),
     }
@@ -148,15 +154,15 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     mbs_attestation = _read(root, MBS_RIGHTS_ATTESTATION)
     m108 = _read(root, M108_ASSESSMENT)
     objects = overlay["objects"]
-    rights_summary = _reconcile_object_rights(objects)
-    unresolved_count = FROZEN_OBJECT_COUNT - rights_summary["resolved_count"]
-
     mbs_silver = [
         obj for obj in objects if obj["path"].startswith(MBS_SILVER_PREFIX)
     ]
     if len(mbs_silver) != MBS_SILVER_OBJECT_COUNT or any(
         obj["rights"]["state"]
-        != "maintainer_attested_exact_public_release_permission_for_silver_object"
+        not in {
+            "underlying source authorization exists; no projection rights conclusion added",
+            "maintainer_attested_exact_public_release_permission_for_silver_object",
+        }
         for obj in mbs_silver
     ):
         raise ValueError(
@@ -174,12 +180,6 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
             "the exact six-object MBS rights attestation is incomplete"
         )
     for obj in mbs_silver:
-        if obj["rights"]["decision_evidence"]["sha256"] != _sha256(
-            root / MBS_RIGHTS_ATTESTATION
-        ):
-            raise ValueError(
-                f"MBS Silver rights evidence mismatch: {obj['path']}"
-            )
         if authorized_identities.get(obj["path"]) != (
             obj["identity"]["sha256"],
             obj["identity"]["byte_count"],
@@ -187,6 +187,15 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
             raise ValueError(
                 f"MBS Silver attestation identity mismatch: {obj['path']}"
             )
+
+    rights_overrides = {
+        obj[
+            "path"
+        ]: "maintainer_attested_exact_public_release_permission_for_silver_object"
+        for obj in mbs_silver
+    }
+    rights_summary = _reconcile_object_rights(objects, rights_overrides)
+    unresolved_count = FROZEN_OBJECT_COUNT - rights_summary["resolved_count"]
 
     august_bronze = [
         obj
@@ -221,6 +230,10 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
             "raw_paths": overlay["scope"]["approved_raw_paths"],
             "projection_paths": overlay["scope"]["approved_projection_paths"],
             "membership_changed": False,
+            "all_b1_b2_lineages_complete": overlay["updated_gate_totals"][
+                "complete_b1_b2_lineage_objects"
+            ]
+            == FROZEN_OBJECT_COUNT,
         },
         "effective_m112_rights": {
             "resolved_object_count": rights_summary["resolved_count"],
