@@ -1,4 +1,4 @@
-name: Australian M-112 July 2016 v4 consumer canary
+name: Australian M-112 admitted-object v4 consumer canary
 
 on:
   workflow_dispatch:
@@ -14,6 +14,7 @@ on:
         options:
           - raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx
           - raw/mbs/utilisation/group/mbs-group-2016-july.csv
+          - raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip
 
 permissions:
   contents: read

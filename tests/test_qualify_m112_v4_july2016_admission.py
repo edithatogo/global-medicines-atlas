@@ -133,13 +133,15 @@ def test_historical_demographics_contract_uses_all_exact_candidate_roles() -> (
     assert parsed["cache"]["state"] == "removed"
 
 
-def test_unmerged_historical_role_evidence_cannot_make_a_contract_by_default() -> (
-    None
-):
-    with pytest.raises(
-        ValueError, match="no durable merged commit binding yet"
-    ):
-        build_contract(target_path=HISTORICAL_PATH)
+def test_merged_historical_role_evidence_binds_the_default_contract() -> None:
+    parsed = json.loads(
+        validate_contract(build_contract(target_path=HISTORICAL_PATH))
+    )
+
+    assert parsed["lineage"]["v3_replay"]["url"].startswith(
+        "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/"
+        "060114c0a9d1d6f8122f0829f24257861ae30e75/"
+    )
 
 
 def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
@@ -201,3 +203,12 @@ def test_hosted_canary_receipt_qualifies_only_the_pinned_admitted_object() -> (
     assert canary["hosted_workflow"]["commit"] == (
         "500344931252ce65768b55fb2f3e07191470344c"
     )
+
+
+def test_hosted_canary_offers_the_exact_historical_admitted_object() -> None:
+    workflow = (
+        ROOT
+        / ".github/workflows/australian-m112-v4-july2016-consumer-canary.yml"
+    ).read_text(encoding="utf-8")
+
+    assert f"          - {HISTORICAL_PATH}" in workflow
