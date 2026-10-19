@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "assessment": "australian_gold_relationship_screening",
+  "qualification_state": "scoped_candidate_classes_screened",
+  "production_promotion_eligible": false,
+  "relationships": [
+    {
+      "kind": "source_record_has_benefit",
+      "decision": "qualifies_as_source_explicit_within_record_evidence",
+      "scope": {
+        "source": "MBS XML v3, 2025-07-01",
+        "records": 5989,
+        "nodes": 11978,
+        "edges": 5989,
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38"
+      },
+      "screen": {
+        "same_source_record_required": true,
+        "b1_b2_lineage_required": true,
+        "rights_state": "permitted_for_scoped_input",
+        "confidence": null,
+        "confidence_calibration": "not_applicable_source_record",
+        "review_state": "not_reviewed",
+        "valid_time_status": "unselected",
+        "comparison_validity": "same_source_record_only"
+      },
+      "does_not_establish": [
+        "cross-record identity",
+        "MBS-PBS relationship",
+        "medicine identity",
+        "therapeutic equivalence",
+        "M-109 acceptance",
+        "M-110 relationship review or acceptance"
+      ],
+      "evidence": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39045806438"
+    },
+    {
+      "kind": "source_contains_entity",
+      "decision": "qualifies_as_source_structure_contract_only",
+      "scope": {
+        "source": "PBS XML v3 source-tree containment",
+        "data_state": "synthetic Silver candidate"
+      },
+      "screen": {
+        "same_source_document_required": true,
+        "exact_parent_child_lineage_required": true,
+        "confidence": null,
+        "confidence_calibration": "not_applicable_source_structure",
+        "review_state": "not_reviewed"
+      },
+      "does_not_establish": [
+        "real PBS source-era acceptance",
+        "funding assertion",
+        "medicine identity",
+        "terminology equivalence"
+      ]
+    },
+    {
+      "kind": "cross_source_or_cross_record_semantic_match",
+      "decision": "does_not_qualify_for_gold_acceptance",
+      "required_before_reconsideration": [
+        "independent source evidence and exact B1/B2 lineage for both endpoints",
+        "qualified native field semantics and source-era applicability",
+        "source-specific rights and temporal validity for both endpoints",
+        "negative controls and contradiction/supersession screening",
+        "held-out adjudicated labels and calibration evidence for scored methods",
+        "append-only human review decision bound to the exact edge digest"
+      ],
+      "prohibited_as_sufficient_evidence": [
+        "co-occurrence",
+        "lexical similarity alone",
+        "shared generic terminology token",
+        "synthetic graph parity",
+        "unreviewed model score"
+      ]
+    }
+  ],
+  "matching_behavior": {
+    "assessment": "quality/qualifications/matching-behavior-synthetic-20261019.json",
+    "state": "diagnostic_only_not_calibrated",
+    "promotion_eligible": false
+  },
+  "unresolved": [
+    "PBS real admitted Silver relationship denominator",
+    "real cross-source relationship screening",
+    "human adjudication of exact candidate edges",
+    "representative held-out match labels and calibration"
+  ]
+}

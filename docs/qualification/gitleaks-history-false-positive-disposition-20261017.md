@@ -36,6 +36,18 @@ changed values and the same values under `api_key` remain findings. The
 complete-history scanner remains enabled. The source records and Git history
 are unchanged.
 
+The exact-head history check for M-112 v3 replay PR #1199 also reported 33
+`generic-api-key` matches. A redacted Gitleaks report showed that every matched
+value is a 64-character lowercase hexadecimal SHA-256 digest: two public
+dataset-access metadata response digests repeated across the per-object role
+report under `dataset_access_response_sha256`, and one deterministic replay-plan
+digest under `idempotency_key`. The values were
+matched to those evidence fields without printing the redacted scanner values.
+They are content/response identities, not credentials. The allowlist adds only
+the two exact access-response digest field/value pairs and the one exact replay
+idempotency digest field/value pair; it does not allowlist those fields with
+changed values or allow any of the values under `api_key`.
+
 ## Evidence
 
 - PR #1094 check run `39007251575`, job `117322128729`;
@@ -44,5 +56,11 @@ are unchanged.
 - redacted artifacts `gitleaks-history-report` (two findings per report);
 - public revision readback:
   `quality/qualifications/australian-m109-source-era-identities-20261017.json`;
+- PR #1199 redacted Gitleaks report: 33 findings in three exact evidence
+  identities, all confirmed SHA-256-shaped;
+- public dataset-access identities:
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`;
+- replay idempotency identity:
+  `quality/qualifications/australian-m112-v3-replay-plan-20261020.json`;
 - Gitleaks 8.30.1 local discrimination check: exact field/value passed;
   changed value and wrong field each remained findings.

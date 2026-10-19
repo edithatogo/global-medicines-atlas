@@ -1,0 +1,920 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-source-archive@40891976f77ee5e7688edceed25c9ac98a77547e:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd"
+        ],
+        "input_sha256": [
+          "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-source-archive:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "reason_codes": [
+          "exact_source_release_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-source-archive@40891976f77ee5e7688edceed25c9ac98a77547e:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml sha256:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "status": "approved"
+      },
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-source-archive@40891976f77ee5e7688edceed25c9ac98a77547e:raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd"
+        ],
+        "input_sha256": [
+          "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-source-archive:raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "reason_codes": [
+          "exact_source_release_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-source-archive@40891976f77ee5e7688edceed25c9ac98a77547e:raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML sha256:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "status": "approved"
+      },
+      "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3"
+        ],
+        "input_sha256": [
+          "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv:e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv sha256:e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "status": "approved"
+      },
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd"
+        ],
+        "input_sha256": [
+          "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv:495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv sha256:495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "status": "approved"
+      },
+      "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb"
+        ],
+        "input_sha256": [
+          "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv:bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv sha256:bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+        "status": "approved"
+      },
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc"
+        ],
+        "input_sha256": [
+          "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx:d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx sha256:d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "status": "approved"
+      },
+      "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf"
+        ],
+        "input_sha256": [
+          "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx:7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx sha256:7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+        "status": "approved"
+      },
+      "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22"
+        ],
+        "input_sha256": [
+          "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx:7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx sha256:7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "status": "approved"
+      },
+      "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521"
+        ],
+        "input_sha256": [
+          "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip:7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip sha256:7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+        "status": "approved"
+      },
+      "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c"
+        ],
+        "input_sha256": [
+          "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip:0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip sha256:0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+        "status": "approved"
+      },
+      "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef"
+        ],
+        "input_sha256": [
+          "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip:9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip sha256:9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+        "status": "approved"
+      },
+      "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690"
+        ],
+        "input_sha256": [
+          "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip:7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip sha256:7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+        "status": "approved"
+      },
+      "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638"
+        ],
+        "input_sha256": [
+          "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip:e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip sha256:e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "status": "approved"
+      },
+      "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:b12cc1fd8ebca1dadf2c197dcd3ca086b63fcbd9b58ac2d2e9090b94217e5090"
+        ],
+        "input_sha256": [
+          "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip:5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip sha256:5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+        "status": "approved"
+      },
+      "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967"
+        ],
+        "input_sha256": [
+          "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/group/mbs-group-2016-july.csv:62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-group-2016-july.csv sha256:62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "status": "approved"
+      },
+      "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+    },
+    {
+      "artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "layer": "bronze_b2",
+      "lineage": {
+        "input_artifact_ids": [
+          "b1-acquisition:7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b"
+        ],
+        "input_sha256": [
+          "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+        ]
+      },
+      "promotion_status": "candidate",
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx:9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx sha256:9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+        "status": "approved"
+      },
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+    }
+  ],
+  "promotion_decisions": [
+    {
+      "decision_id": "m112-v4-blocked:0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d:raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip:0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip sha256:0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv:495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv sha256:495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96:raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip:5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip sha256:5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b:raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/group/mbs-group-2016-july.csv:62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-group-2016-july.csv sha256:62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b:raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip:7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip sha256:7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx:7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx sha256:7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx:7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx sha256:7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355:raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip:7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip sha256:7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285:raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx:9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx sha256:9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00:raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip:9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip sha256:9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv:bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv sha256:bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-source-archive:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "reason_codes": [
+          "exact_source_release_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-source-archive@40891976f77ee5e7688edceed25c9ac98a77547e:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml sha256:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-source-archive@40891976f77ee5e7688edceed25c9ac98a77547e:raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565:raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-source-archive:raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "reason_codes": [
+          "exact_source_release_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-source-archive@40891976f77ee5e7688edceed25c9ac98a77547e:raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML sha256:c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-source-archive@40891976f77ee5e7688edceed25c9ac98a77547e:raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx:d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx sha256:d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33:raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip:e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip sha256:e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "to_layer": "silver"
+    },
+    {
+      "decision_id": "m112-v4-blocked:e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "fail_closed": true,
+      "from_layer": "bronze_b2",
+      "input_sha256": [
+        "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+      ],
+      "passed_gate_ids": [
+        "exact_scope_rights",
+        "b1_b2_lineage",
+        "anonymous_digest_readback"
+      ],
+      "reason_codes": [
+        "v4_contract_roles_incomplete"
+      ],
+      "required_gate_ids": [
+        "v4_publication",
+        "v4_clean_room_verification",
+        "v1_v3_lineage",
+        "v4_discovery",
+        "v4_recovery_cache",
+        "consumer_canary"
+      ],
+      "rights_decision": {
+        "decision_id": "m112-rights:edithatogo/australian-mbs-utilisation-archive:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv:e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "reason_codes": [
+          "exact_scope_CC_BY_3_0_AU_authorization"
+        ],
+        "scope": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv sha256:e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "status": "approved"
+      },
+      "status": "blocked",
+      "subject_artifact_id": "m112:edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "to_layer": "silver"
+    }
+  ],
+  "repository": "edithatogo/global-medicines-atlas",
+  "vocabulary_version": "1.0.0"
+}

@@ -668,12 +668,16 @@ def test_supply_chain_manages_tool_literals_and_scans_history() -> None:
     )
     assert "fetch-depth: 0" in security
     assert "./gitleaks git --redact" in security
+    assert "GITLEAKS_BASE_SHA HEAD --diff-filter=tuxdb" in security
+    assert 'log_opts="--full-history HEAD --diff-filter=tuxdb"' in security
+    assert '--log-opts="$log_opts"' in security
+    assert "--all" not in security
     assert "GITLEAKS_SHA256:" in security
     assert "GITLEAKS_ASSET:" in security
 
 
 def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
-    """Only exact public revision and graph digest evidence are allowed."""
+    """Only exact public evidence identities are allowlisted."""
     config = tomllib.loads(
         (ROOT / ".gitleaks.toml").read_text(encoding="utf-8")
     )
@@ -683,7 +687,7 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
-    assert len(allowlist["regexes"]) == 2
+    assert len(allowlist["regexes"]) == 5
     assert not (ROOT / ".gitleaksignore").exists()
 
     revision = json.loads(
@@ -725,6 +729,39 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
         "does not exclude a rule, directory, filename, source record, or class of values."
         in normalized_disposition
     )
+
+
+def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
+    """New M-112 findings stay scoped to their exact public digest fields."""
+    config = tomllib.loads((ROOT / ".gitleaks.toml").read_text())
+    regexes = config["allowlists"][0]["regexes"][2:]
+    expected = [
+        (regexes[:2], "dataset_access_response_sha256", 2),
+        (regexes[2:], "idempotency_key", 1),
+    ]
+    for values, field, expected_count in expected:
+        patterns = [re.compile(value) for value in values]
+        assert len(patterns) == expected_count
+        digests = []
+        for pattern in patterns:
+            assert pattern.pattern.startswith(rf'^{field}"\s*:\s*"')
+            assert pattern.pattern.endswith(r'"\s*$')
+            match = re.search(r'"([0-9a-f]{64})"', pattern.pattern)
+            assert match is not None
+            digest = match.group(1)
+            digests.append(digest)
+            assert pattern.fullmatch(f'{field}": "{digest}"')
+            changed_digest = digest[:-1] + ("0" if digest[-1] != "0" else "1")
+            assert not pattern.fullmatch(f'{field}": "{changed_digest}"')
+            assert not pattern.fullmatch(f'api_key": "{digest}"')
+        assert len(set(digests)) == expected_count
+
+    disposition = (
+        ROOT
+        / "docs/qualification/gitleaks-history-false-positive-disposition-20261017.md"
+    ).read_text(encoding="utf-8")
+    assert "dataset_access_response_sha256" in disposition
+    assert "idempotency_key" in disposition
 
 
 def test_gitleaks_rejects_publisher_checksum_mismatch(monkeypatch) -> None:

@@ -1,0 +1,293 @@
+{
+  "august_2026_mbs_bronze_projections": {
+    "derived_output_authority": "absent",
+    "object_count": 4,
+    "objects": [
+      {
+        "byte_count": 24367,
+        "lineage_complete": true,
+        "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/p7.parquet",
+        "rights_state": "underlying source authorization exists; no projection rights conclusion added",
+        "sha256": "2da8606d3e408294bcfdc914906de4814d33c1a72acf5a2ba40f91473267516a"
+      },
+      {
+        "byte_count": 454247,
+        "lineage_complete": true,
+        "path": "bronze/mbs/releases/2026-08-01/6bc9bcb2e60728ac6d8b38ef76e9af15de32f026bb9ce83109df426a7f077c64/source.parquet",
+        "rights_state": "underlying source authorization exists; no projection rights conclusion added",
+        "sha256": "80f8e0d3cc67f6f3a22f23cc3bfb0db5da4d44d79741da3ce1c31ee92836627a"
+      },
+      {
+        "byte_count": 24367,
+        "lineage_complete": true,
+        "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/p7.parquet",
+        "rights_state": "underlying source authorization exists; no projection rights conclusion added",
+        "sha256": "6362f7f3a5d9870545cc074450b81a82475d68fdb062f38083713f56bd88d2fe"
+      },
+      {
+        "byte_count": 454247,
+        "lineage_complete": true,
+        "path": "bronze/mbs/releases/2026-08-01/99fada49ebf8e71e8e14417e9275f36840d46577a39746fea02bd89de30a30fc/source.parquet",
+        "rights_state": "underlying source authorization exists; no projection rights conclusion added",
+        "sha256": "5219094d2ec7f4386380b356cc17f071c97751db43ed367746a6d07ca4ff3eaf"
+      }
+    ],
+    "rights_state": "underlying source authorization exists; no projection rights conclusion added"
+  },
+  "boundaries": {
+    "all_1759_deferrals_preserved": true,
+    "consumer_canaries": 0,
+    "external_publication_performed": false,
+    "m112_denominator_changed": false,
+    "new_sources_or_datasets_added": false,
+    "source_payload_bytes_read": false,
+    "source_payload_values_inspected": false,
+    "v4_admissions": 0
+  },
+  "cms_hcpcs_external_reference": {
+    "acquisition_time_rights_state_preserved": "unknown",
+    "b2_state": "external_reference_only",
+    "byte_count": 2499217,
+    "consumer_canaries_authorized": false,
+    "derived_table_rights_concluded": false,
+    "external_publication_authorized": false,
+    "inside_m112_frozen_inventory": false,
+    "latest_admission_state": "landed",
+    "processing_or_v4_admission_authorized": false,
+    "reviewer_status": "approved",
+    "rights_decision_path": "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json",
+    "rights_decision_sha256": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
+    "rights_state": "permitted",
+    "sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+    "source_id": "us_cms_hcpcs_level_ii",
+    "source_version": "us_cms_hcpcs_level_ii_2026_07"
+  },
+  "effective_m112_rights": {
+    "resolved_object_count": 28,
+    "rights_evidence_does_not_imply_admission": true,
+    "state_counts": [
+      {
+        "candidate_class": "existing_data_projection",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "object_count": 6,
+        "state": "maintainer_attested_exact_public_release_permission_for_silver_object"
+      },
+      {
+        "candidate_class": "existing_data_projection",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "object_count": 4,
+        "state": "underlying source authorization exists; no projection rights conclusion added"
+      },
+      {
+        "candidate_class": "raw_source_payload",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "object_count": 4,
+        "state": "Maintainer authorization covers the source/category/domain; exact per-object authorization and reuse disposition remain unresolved. Complete B1/B2 lineage is recorded separately and does not establish rights or v4 eligibility."
+      },
+      {
+        "candidate_class": "raw_source_payload",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "object_count": 2,
+        "state": "authorized_exact_source_release_permitted"
+      },
+      {
+        "candidate_class": "raw_source_payload",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "object_count": 2,
+        "state": "maintainer authorization covers source/category/domain; exact sidecar per-object authorization and B1 binding incomplete"
+      },
+      {
+        "candidate_class": "raw_source_payload",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "object_count": 14,
+        "state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified"
+      },
+      {
+        "candidate_class": "existing_data_projection",
+        "dataset": "edithatogo/australian-pbs-source-archive",
+        "object_count": 1,
+        "state": "upstream redistribution terms unknown"
+      },
+      {
+        "candidate_class": "raw_source_payload",
+        "dataset": "edithatogo/australian-pbs-source-archive",
+        "object_count": 1,
+        "state": "upstream redistribution terms unknown"
+      },
+      {
+        "candidate_class": "raw_source_payload",
+        "dataset": "edithatogo/australian-pbs-utilisation-archive",
+        "object_count": 6,
+        "state": "maintainer_attested_dataset_publication_permission_with_vocabulary_exclusion"
+      },
+      {
+        "candidate_class": "existing_data_projection",
+        "dataset": "edithatogo/reimbursement-atlas",
+        "object_count": 12,
+        "state": "unresolved: source-specific rights and per-record provenance not qualified"
+      },
+      {
+        "candidate_class": "raw_source_payload",
+        "dataset": "edithatogo/reimbursement-atlas",
+        "object_count": 1707,
+        "state": "unresolved: source-specific rights and per-record provenance not qualified"
+      }
+    ],
+    "unresolved_object_count": 1731
+  },
+  "evidence_inputs": {
+    "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
+    "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
+    "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
+    "quality/qualifications/australian-m108-derived-products-20261017.json": "f9da44a9fc61ebaff83e7784f56d2376db33e2d9a7b834142ee60c3a1ad5fd7c",
+    "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c",
+    "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+    "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+    "quality/qualifications/australian-pbs-utilisation-publication-authorization.json": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
+    "quality/qualifications/cms-hcpcs-rights-review-20261019.json": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608"
+  },
+  "exact_july_2025_mbs_silver": {
+    "attestation_path": "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json",
+    "attestation_sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+    "object_count": 6,
+    "paths": [
+      {
+        "byte_count": 114493,
+        "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+        "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f"
+      },
+      {
+        "byte_count": 60259,
+        "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+        "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb"
+      },
+      {
+        "byte_count": 620348,
+        "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+        "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733"
+      },
+      {
+        "byte_count": 93072,
+        "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+        "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420"
+      },
+      {
+        "byte_count": 51851,
+        "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+        "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756"
+      },
+      {
+        "byte_count": 100062,
+        "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535"
+      }
+    ],
+    "public_release_authorized": true,
+    "public_release_performed": false,
+    "rights_state": "maintainer_attested_exact_public_release_permission_for_silver_object"
+  },
+  "frozen_inventory": {
+    "all_b1_b2_lineages_complete": true,
+    "membership_changed": false,
+    "membership_sha256": "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b",
+    "object_count": 1759,
+    "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json",
+    "projection_paths": 23,
+    "raw_paths": 1736,
+    "sha256": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c"
+  },
+  "observed_at": "2026-10-19T14:50:00Z",
+  "pbs_utilisation_raw_objects": {
+    "authorization_path": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
+    "authorization_sha256": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
+    "full_object_release_requires_exclusion_review": true,
+    "lineage_path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+    "lineage_sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+    "maintainer_asserted_redistribution_permission": true,
+    "object_count": 6,
+    "objects": [
+      {
+        "byte_count": 372149,
+        "category": "annual_expenditure_and_prescriptions_report",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+        "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+        "source_id": "au-pbs-expenditure",
+        "source_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2023-2024/Expenditure-prescriptions-report-tables-2023-24.XLSX"
+      },
+      {
+        "byte_count": 468764,
+        "category": "annual_expenditure_and_prescriptions_report",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+        "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+        "source_id": "au-pbs-expenditure",
+        "source_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2024-2025/Expenditure-prescriptions-report-tables-2024-25.XLSX"
+      },
+      {
+        "byte_count": 35384567,
+        "category": "date_of_supply_monthly_prescriptions",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+        "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+        "source_id": "au-pbs-dos-utilisation",
+        "source_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2024-to-jun-2025-phrmcy-type.csv"
+      },
+      {
+        "byte_count": 36381946,
+        "category": "date_of_supply_monthly_prescriptions",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+        "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+        "source_id": "au-pbs-dos-utilisation",
+        "source_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2025-to-jun-2026-phrmcy-type.csv"
+      },
+      {
+        "byte_count": 1063694,
+        "category": "item_drug_mapping",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+        "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+        "source_id": "au-pbs-dos-utilisation",
+        "source_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/pbs-item-drug-map.csv"
+      },
+      {
+        "byte_count": 117376499,
+        "category": "date_of_supply_multiyear_summary",
+        "historical_acquisition_rights_state": "unknown",
+        "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+        "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+        "source_id": "au-pbs-dos-utilisation",
+        "source_url": "https://www.pbs.gov.au/statistics/dos-and-dop/files/dos-jul-2021-to-jun-2026.xlsx"
+      }
+    ],
+    "public_release_authorized_within_scope": true,
+    "publication_exclusions": [
+      "medicine-level clinical equivalence claims",
+      "unlicensed vocabulary redistribution"
+    ],
+    "rights_state": "maintainer_attested_dataset_publication_permission_with_vocabulary_exclusion",
+    "scope": {
+      "allowed_domains": [
+        "www.pbs.gov.au",
+        "pbs.gov.au"
+      ],
+      "allowed_sources": [
+        "au-pbs-dos-utilisation",
+        "au-pbs-expenditure"
+      ],
+      "categories": [
+        "date_of_supply_monthly_prescriptions",
+        "item_drug_mapping",
+        "annual_expenditure_and_prescriptions_report",
+        "date_of_supply_multiyear_summary",
+        "date_of_processing_historical"
+      ],
+      "dataset": "edithatogo/australian-pbs-utilisation-archive"
+    },
+    "unlicensed_vocabulary_presence_reviewed": false
+  },
+  "purpose": "Reconcile effective rights evidence after the exact MBS Silver attestation, PBS utilisation publication authorization, and CMS HCPCS rights decision without changing object membership or release state.",
+  "schema_id": "global-medicines-atlas.australian-m112-current-rights-reconciliation",
+  "schema_version": 1
+}
