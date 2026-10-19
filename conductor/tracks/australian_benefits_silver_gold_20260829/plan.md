@@ -3807,6 +3807,25 @@
   Qualification: `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json` (SHA-256 `39e06d16e71693417042f16c7cba0e82aa949a8e0d0e53ab0a38e3e68af8f2b1`). This is a gap assessment only: no contract was emitted, no admission or canary was performed, and the 1,759 denominator and zero-admission count are unchanged.
 - [~] Obtain exact v4 publication and clean-room verification receipts, v1/v3 lineage, discovery, recovery/cache evidence, and consumer canaries before admitting any object.
 
+## M-112 July 2025 MBS Silver rights attestation (2026-10-19)
+
+- [x] Record the maintainer's attestation that an exact written permission or
+  other applicable rights instrument covers public release of the six exact
+  July 2025 MBS v3 Silver outputs. Per maintainer instruction, the instrument
+  was not located or independently inspected. Bind the attestation to all six
+  object paths and SHA-256 digests in
+  `quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json`.
+  The current 1,759-object reconciliation records the six exact projection
+  rights states in
+  `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-silver-rights-attested.json`.
+  Public release is authorized by the attestation; no release was performed,
+  and the separate v4 admission and canary gates remain closed.
+- [ ] Resolve the CMS HCPCS Level II reference-only rights state. It remains
+  `unknown` and `unreviewed`; determine the exact file's CMS versus ADA D-code
+  composition and applicable use rights before recording release authority.
+  The CMS Part D authorization does not apply, and this record is outside the
+  frozen M-112 denominator.
+
 ## M-112 rights and release evidence preflight (2026-10-19)
 
 - [x] Reconcile the current per-object rights states against the frozen 1,759
