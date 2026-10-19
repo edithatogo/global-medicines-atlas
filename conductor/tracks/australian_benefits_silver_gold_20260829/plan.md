@@ -3854,3 +3854,19 @@
   the candidate objects and current release controls unchanged until a
   source-specific written permission or other applicable rights basis is
   recorded.
+
+## CMS HCPCS exact-file rights disposition (2026-10-19)
+
+- [x] Bind the exact July 2026 CMS HCPCS external-reference object to its
+  existing B1 acquisition, B2 manifest, and landed admission. Preserve the
+  official CMS public-use, source-maintenance, and rights references without
+  acquiring or inspecting the source payload.
+- [x] Sole maintainer accepted the CMS public-use/public-domain basis for
+  this exact July 2026 file; the rights decision records
+  `rights_state=permitted` and `reviewer_status=approved`. The CMS rights
+  decision is bounded to the official file and excludes separately licensed
+  ADA CDT material. The payload was not opened or inspected. B2 remains
+  `external_reference_only`; no processing, v4 admission, canary, derived-table
+  rights conclusion, or external publication was authorized. The M-112
+  denominator and all 1,759 deferrals remain unchanged. See
+  `quality/qualifications/cms-hcpcs-rights-review-20261019.json`.
