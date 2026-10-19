@@ -63,7 +63,7 @@ V3_REPLAY_TIMEOUT_MINUTES = 15
 APPROVED_DENOMINATOR = 1_759
 MIN_V4_RECEIPT_ROLES = 10
 OBSERVED_AT = "2026-10-19T16:13:05Z"
-ROLE_REPORT_RECORDED_AT = "2026-10-19T19:24:01Z"
+ROLE_REPORT_RECORDED_AT = "2026-10-19T19:46:55Z"
 CONTRACT_REPOSITORY = "edithatogo/global-medicines-atlas"
 CONTRACT_COMMIT = "a5753b1c79ccedd9bb54112bf803882ffc9deb96"
 CONTRACT_SCHEMA_PATH = "contracts/medallion/v4.1/federation.schema.json"
@@ -1071,7 +1071,16 @@ def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-stat
     admitted: dict[str, dict[str, Any]] = {}
     canaried: dict[str, dict[str, Any]] = {}
     report_paths = sorted(
-        qualification_dir.glob("australian-m112-v4-*-consumer-canary-*.json")
+        set(
+            qualification_dir.glob(
+                "australian-m112-v4-*-consumer-canary-*.json"
+            )
+        )
+        | set(
+            qualification_dir.glob(
+                "australian-m112-v4-*-admission-qualification-*.json"
+            )
+        )
     )
     for report_path in report_paths:
         report = json.loads(report_path.read_bytes())

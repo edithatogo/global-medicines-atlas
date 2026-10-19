@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 from scripts.qualify_m112_v4_july2016_admission import (
+    CSV_ADMISSION_REPORT,
     TARGET_BYTES,
     TARGET_IDENTITIES,
     TARGET_PATH,
@@ -79,7 +80,6 @@ def test_csv_contract_pins_its_exact_raw_b2_identity() -> None:
     identity = TARGET_IDENTITIES[CSV_PATH]
     contract = build_contract(
         target_path=CSV_PATH,
-        evidence_commit="46e52ddbc6a1c25d55abd98caf7f1d91fb3aa320",
     )
     parsed = json.loads(validate_contract(contract))
 
@@ -91,6 +91,22 @@ def test_csv_contract_pins_its_exact_raw_b2_identity() -> None:
     assert parsed["location"]["bytes"] == identity["bytes"]
     assert parsed["location"]["sha256"] == identity["sha256"]
     assert parsed["consumers"] == []
+    assert parsed["lineage"]["v3_replay"]["url"].startswith(
+        "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/"
+        "5b4d66268deccfb28ef33805d474c06aaa940a98/"
+    )
+
+
+def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
+    report = json.loads((ROOT / CSV_ADMISSION_REPORT).read_text())
+
+    assert report["status"] == "admitted_pending_consumer_canary"
+    assert report["admissions"] == 1
+    assert report["consumer_canaries"] == 0
+    assert report["admission"]["path"] == CSV_PATH
+    assert report["contract_sha256"] == (
+        "d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7"
+    )
 
 
 @pytest.mark.parametrize(
