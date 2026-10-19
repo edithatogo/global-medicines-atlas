@@ -31,7 +31,7 @@
     },
     "qualification_dependencies": {
       "algorithm": "sha256 of the ordered path/existence/content-digest manifest; covers full-scope evaluator evidence, direct current-scope receipt candidates, specialized authorization metadata, and adapter/fixture scan inputs",
-      "sha256": "50ef2e903dda29fd591908df796646e1b738e54607de259c0594297e4e6c7782",
+      "sha256": "f6bf1bfc2ae3748067ce6ebbacbf56698e00695079f1dc6501c1cdb770bf1ca6",
       "file_count": 149,
       "files": [
         {
@@ -42,12 +42,12 @@
         {
           "path": "conductor/design.md",
           "exists": true,
-          "sha256": "2722e569e8ed3a1244e67851c7af8c4c96413b257fc0f3016ffe1ec913788716"
+          "sha256": "55add4d338816346616d325b8663a0a49dc1688ce1280fc1afd620dbc11d6a89"
         },
         {
           "path": "conductor/requirements.md",
           "exists": true,
-          "sha256": "65f4e3cc18d2432dd2477c8390732e094bc67e0fda4c4973913aad0fda4c5b2f"
+          "sha256": "f50d0811447c44d149ff8db2375c8bc9b3cc6a637c769b50164f7b55ca7c6c18"
         },
         {
           "path": "conductor/tracks/bronze_medallion_completion_20260819/spec.md",

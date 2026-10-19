@@ -57,7 +57,7 @@ def test_user_guide_separates_installation_profiles_and_surfaces() -> None:
     guide = (ROOT / "docs/user-guide.md").read_text(encoding="utf-8")
     prose = _prose("docs/user-guide.md")
     required_commands = (
-        "uv sync --python 3.14.6 --locked --no-dev",
+        "uv sync --python 3.15.0 --locked --no-dev",
         "--extra semantic",
         "uv run global-medicines-atlas --help",
         "uv run global-medicines-atlas comparison --help",

@@ -11,6 +11,9 @@ on:
 permissions:
   contents: read
 
+env:
+  UV_PYTHON: "3.14.6"
+
 concurrency:
   group: security-context-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

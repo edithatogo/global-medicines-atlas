@@ -662,8 +662,9 @@ def _validate_setup_versions(
         for document_value in documents.values()
         for value in recursive_values(document_value, key="version")
     ]
+    allowed_uv = {versions["uv"], versions["uv_315_canary"]}
     if not setup_versions or any(
-        value != versions["uv"] for value in setup_versions
+        value not in allowed_uv for value in setup_versions
     ):
         raise ValueError(
             f"setup-uv versions differ from governed uv {versions['uv']}: "
@@ -682,8 +683,9 @@ def _validate_setup_versions(
     python_occurrences = re.findall(
         r"--python\s+(\d+\.\d+\.\d+)", workflow_text
     )
+    allowed_python = {versions["python"], versions["protected_python"]}
     if not python_occurrences or any(
-        value != versions["python"] for value in python_occurrences
+        value not in allowed_python for value in python_occurrences
     ):
         raise ValueError(
             "workflow Python versions differ from governed Python "
@@ -1002,7 +1004,7 @@ def worker_args() -> tuple[str, ...]:
 def build_pytest_command(
     tests: Sequence[str], *extra: str, parallel: bool = True
 ) -> list[str]:
-    """Build a pytest command using the active Python 3.14 environment."""
+    """Build a pytest command using the active Python interpreter."""
     return [
         sys.executable,
         "-m",

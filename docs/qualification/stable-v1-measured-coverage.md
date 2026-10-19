@@ -35,14 +35,14 @@ instead of silently relabelling the adapter output as national funding.
 Generate the receipt from the repository root:
 
 ```shell
-uv run --python 3.14.6 --group dev python scripts/qualify_stable_v1_measured_coverage.py
+uv run --python 3.15.0 --group dev python scripts/qualify_stable_v1_measured_coverage.py
 ```
 
 Verify that the committed receipt exactly matches the catalog, schema,
 qualification implementation, capability registry, adapters and fixtures:
 
 ```shell
-uv run --python 3.14.6 --group dev python scripts/qualify_stable_v1_measured_coverage.py --check
+uv run --python 3.15.0 --group dev python scripts/qualify_stable_v1_measured_coverage.py --check
 ```
 
 The output is

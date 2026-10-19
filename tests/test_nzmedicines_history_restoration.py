@@ -167,8 +167,8 @@ def test_rejects_nonempty_destination(
     bundle, digest, commit, source = bundle_fixture
     destination = tmp_path / "occupied"
     destination.mkdir()
-    sentinel = destination / "keep.txt"
-    sentinel.write_text("keep", encoding="utf-8")
+    marker_file = destination / "keep.txt"
+    marker_file.write_text("keep", encoding="utf-8")
 
     with pytest.raises(RestorationError, match="must be empty"):
         verify_and_restore(
@@ -180,7 +180,7 @@ def test_rejects_nonempty_destination(
             vendor_snapshot=source,
         )
 
-    assert sentinel.read_text() == "keep"
+    assert marker_file.read_text() == "keep"
 
 
 def test_rejects_unsafe_root_destination(
