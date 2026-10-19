@@ -3920,6 +3920,24 @@
   not by itself satisfy the v4 receipt role, v3 replay, publication, clean-room
   verification, discovery, recovery/cache, consumer canaries, or admission.
 
+## M-110 exact-main candidate consumer canary refresh (2026-10-19)
+
+- [x] After validating the exact MBS Gold graph qualification, dispatch the
+  bounded hosted consumer traversal against current `main` commit
+  `cdc870b9c2fb42a13d5ed79e8f09f7f53ba10a3f`. Run
+  [39262766723](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39262766723)
+  passed all 5,989 candidate edges through API, CLI, Atlas, and Chromium; the
+  four ordered edge-ID digests match. DuckDB and Polars also matched for the
+  bounded date and decimal queries. The aggregate receipt is
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261019-39262766723.json`
+  (SHA-256
+  `b5197a7b9cb9c2b67efa73f740e1bc1717f5ef03b454f5dd50a008d0e77e9b26`).
+- [x] Preserve scope: this is the authorized MBS Gold candidate canary only.
+  It creates no M-112 v4 admission and does not change the M-112 per-object
+  consumer-canary count, which remains zero while exact v4 contract roles are
+  incomplete. The earlier candidate graph review and M-109/M-110/M-112 gates
+  remain separate.
+
 ## M-110 relationship screening and match-behavior diagnostic (2026-10-19)
 
 - [x] Screen current relationship classes against source and lineage evidence.
