@@ -33,6 +33,13 @@ EXPECTED_PATHS = 14
 EXPECTED_CANDIDATES = 16
 EXPECTED_MANIFEST_FILES = 28
 OBSERVED_AT = "2026-10-19T14:17:25Z"
+CONTRACT_REPOSITORY = "edithatogo/global-medicines-atlas"
+CONTRACT_COMMIT = "a5753b1c79ccedd9bb54112bf803882ffc9deb96"
+CONTRACT_SCHEMA_PATH = "contracts/medallion/v4.1/federation.schema.json"
+CONTRACT_SCHEMA_SHA256 = (
+    "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+)
+PRODUCER_WORKFLOW = ".github/workflows/australian-mbs-utilisation-harvest.yml"
 
 
 def _sha256(data: bytes) -> str:
@@ -103,6 +110,32 @@ def _manifest_match(item_value: Any, identity: tuple[Any, ...]) -> bool:
     )
 
 
+def _bind_authority_candidate(candidate: dict[str, Any], root: Path) -> None:
+    if (
+        _sha256((root / CONTRACT_SCHEMA_PATH).read_bytes())
+        != CONTRACT_SCHEMA_SHA256
+    ):
+        raise ValueError("pinned v4.1 schema digest differs from current bytes")
+    states_value = candidate.get("contract_role_states")
+    if not isinstance(states_value, dict):
+        raise TypeError("candidate has no v4 contract role states")
+    states = cast("dict[str, Any]", states_value)
+    states["authority"] = "candidate_identity_available_unbound"
+    candidate["authority_candidate"] = {
+        "producer_repository": CONTRACT_REPOSITORY,
+        "contract_repository": CONTRACT_REPOSITORY,
+        "contract_commit": CONTRACT_COMMIT,
+        "schema_path": CONTRACT_SCHEMA_PATH,
+        "schema_sha256": CONTRACT_SCHEMA_SHA256,
+        "producer_workflow": PRODUCER_WORKFLOW,
+        "producer_workflow_commit": WORKFLOW_COMMIT,
+        "producer_workflow_run": (
+            f"https://github.com/{CONTRACT_REPOSITORY}/actions/runs/{WORKFLOW_RUN}"
+        ),
+        "contract_role_state": "candidate_identity_available_unbound",
+    }
+
+
 def _bind_candidate(
     candidate: dict[str, Any],
     verified_objects: list[Any],
@@ -132,6 +165,19 @@ def _bind_candidate(
     states = cast("dict[str, Any]", states_value)
     states["publication"] = "candidate_receipt_available_unbound"
     states["verification"] = "candidate_receipt_available_unbound"
+    candidate["authority_candidate"] = {
+        "producer_repository": CONTRACT_REPOSITORY,
+        "contract_repository": CONTRACT_REPOSITORY,
+        "contract_commit": CONTRACT_COMMIT,
+        "schema_path": CONTRACT_SCHEMA_PATH,
+        "schema_sha256": CONTRACT_SCHEMA_SHA256,
+        "producer_workflow": PRODUCER_WORKFLOW,
+        "producer_workflow_commit": WORKFLOW_COMMIT,
+        "producer_workflow_run": (
+            f"https://github.com/{CONTRACT_REPOSITORY}/actions/runs/{WORKFLOW_RUN}"
+        ),
+        "contract_role_state": "candidate_identity_available_unbound",
+    }
     candidate["publication_candidate_receipt"] = {
         "dataset": DATASET,
         "revision": PINNED_REVISION,
@@ -197,13 +243,42 @@ def _update_summary(
         if not isinstance(role_value, dict):
             continue
         role = cast("dict[str, Any]", role_value)
+        if role.get("role") == "authority":
+            role["state"] = "candidate_identity_available_unbound_for_16_of_16"
+            role["evidence"] = (
+                "The successful MBS utilisation producer workflow belongs to "
+                "edithatogo/global-medicines-atlas. All 16 candidate objects "
+                "now bind the exact v4.1 schema digest and an exact-main commit "
+                "containing those schema bytes. The identity remains unbound "
+                "until referenced by each complete v4 contract."
+            )
         if role.get("role") in {"publication", "verification"}:
             role["state"] = "candidate_receipts_available_unbound_for_14_of_16"
             role["evidence"] = (
                 "14 MBS utilisation paths exactly match the 28-object published manifest and token-free anonymous restore receipt; the two August paths lack this receipt. Candidate evidence is not bound to live v4.1 contracts."
             )
+    report["authority_identity"] = {
+        "producer_repository": CONTRACT_REPOSITORY,
+        "contract_repository": CONTRACT_REPOSITORY,
+        "contract_commit": CONTRACT_COMMIT,
+        "schema_path": CONTRACT_SCHEMA_PATH,
+        "schema_sha256": CONTRACT_SCHEMA_SHA256,
+        "producer_workflow": PRODUCER_WORKFLOW,
+        "producer_workflow_commit": WORKFLOW_COMMIT,
+        "producer_workflow_run": (
+            f"https://github.com/{CONTRACT_REPOSITORY}/actions/runs/{WORKFLOW_RUN}"
+        ),
+        "candidate_objects": EXPECTED_CANDIDATES,
+        "state": "candidate_identity_available_unbound_for_16_of_16",
+    }
     report["decision"] = (
-        "Existing exact publication and token-free anonymous clean-room restore receipts now bind as unbound candidate evidence for 14 MBS utilisation paths. Two August paths and the authority, discovery, v3 replay, recovery/cache, source semantics, and consumer roles remain incomplete. Preserve zero v4 admissions and zero M-112 consumer canaries."
+        "The exact v4.1 schema identity and successful producer workflow are "
+        "now bound as candidate authority evidence for all 16 MBS utilisation "
+        "objects; publication and token-free anonymous restore receipts remain "
+        "unbound candidate evidence for 14 of 16 paths. Authority is not yet "
+        "referenced by complete v4 contracts. Two August paths, source "
+        "semantics, discovery, v3 replay, recovery/cache, and consumers remain "
+        "incomplete. Preserve zero v4 admissions and zero M-112 consumer canaries."
     )
     report["recorded_at"] = OBSERVED_AT
     report["supersedes"] = {
@@ -244,6 +319,7 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         if not isinstance(candidate_value, dict):
             raise TypeError("malformed M-112 candidate")
         candidate = cast("dict[str, Any]", candidate_value)
+        _bind_authority_candidate(candidate, root)
         if candidate.get("dataset") == DATASET:
             matched.append(
                 _bind_candidate(candidate, verified_values, archive, root)

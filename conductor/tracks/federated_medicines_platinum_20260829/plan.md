@@ -1407,3 +1407,21 @@
 - [x] Keep the product and acceptance boundaries explicit: no new source,
   source coverage claim, candidate admission, rights decision, publication, or
   M-110/M-112 acceptance is implied by the CLI export or its synthetic tests.
+
+## 2026-10-20 M-112 contract-authority identity reconciliation
+
+- [x] Bind candidate-only v4 authority identity for the frozen 16-object MBS
+  utilisation cohort. The successful producer workflow run is in
+  `edithatogo/global-medicines-atlas`; exact main commit
+  `a5753b1c79ccedd9bb54112bf803882ffc9deb96` contains the pinned v4.1 schema
+  bytes with SHA-256
+  `03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6`. Keep
+  the identity explicitly unbound until referenced from complete per-object
+  v4 contracts.
+- [x] The role qualification test passed (5), including altered-schema
+  rejection; Ruff passed; generated report regeneration and `--check` passed.
+  Preserve the approved 1,759-object denominator, 0 v4 admissions, and 0 M-112
+  consumer canaries.
+- [~] Authority contract binding remains open together with source semantics,
+  discovery, v3 replay, recovery/cache and consumer evidence. This candidate
+  identity is not itself a v4 admission.
