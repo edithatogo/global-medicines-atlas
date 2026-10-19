@@ -3800,3 +3800,9 @@
 - [~] Continue lineage reconciliation for the remaining 13 projections.
   Preserve separate rights, v4 admission, and canary gates; PBS/M107
   crosswalks and the reserved July derivative remain with their owner.
+
+## M-112 v4.1 contract-role qualification (2026-10-19)
+
+- [x] Qualify the mandatory v4.1 contract roles against the exact 14-object MBS-utilisation cohort with approved exact-scope rights, complete B1/B2 lineage, and anonymous digest evidence. The role matrix binds each object identity and evidence references; it records v2 as not applicable only for raw B2 under v4.1.
+  Qualification: `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json` (SHA-256 `e7b128971a54da1c5cc80172ec5a470ffa742b90630ec22e2f8d754f05884f04`). This is a gap assessment only: no contract was emitted, no admission or canary was performed, and the 1,759 denominator and zero-admission count are unchanged.
+- [~] Obtain exact v4 publication and clean-room verification receipts, v1/v3 lineage, discovery, recovery/cache evidence, and consumer canaries before admitting any object.
