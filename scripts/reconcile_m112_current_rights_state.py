@@ -55,7 +55,8 @@ PBS_RAW_PERMISSION_SHA256 = (
 )
 PBS_RAW_PERMISSION_REVISION = "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
 PBS_RAW_PERMISSION_OBJECT_COUNT = 1708
-M112_CURRENT_ADMITTED_CANARIED_COUNT = 2
+M112_CURRENT_ADMISSION_COUNT = 3
+M112_CURRENT_CANARY_COUNT = 2
 PBS_DECISION_0009 = Path(
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md"
 )
@@ -557,11 +558,11 @@ def _reconcile_m112_canary_readback(
     cohort = role_qualification["cohort"]
     current_admissions = role_qualification["current_admission_evidence"]
     if (
-        cohort["v4_admissions"] != M112_CURRENT_ADMITTED_CANARIED_COUNT
-        or cohort["consumer_canaries"] != M112_CURRENT_ADMITTED_CANARIED_COUNT
-        or len(current_admissions) != M112_CURRENT_ADMITTED_CANARIED_COUNT
+        cohort["v4_admissions"] != M112_CURRENT_ADMISSION_COUNT
+        or cohort["consumer_canaries"] != M112_CURRENT_CANARY_COUNT
+        or len(current_admissions) != M112_CURRENT_ADMISSION_COUNT
         or len({item["path"] for item in current_admissions})
-        != M112_CURRENT_ADMITTED_CANARIED_COUNT
+        != M112_CURRENT_ADMISSION_COUNT
     ):
         raise ValueError(
             "current M-112 role qualification counts did not reconcile"

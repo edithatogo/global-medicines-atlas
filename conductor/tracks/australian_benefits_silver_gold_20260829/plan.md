@@ -4290,9 +4290,10 @@
   projections, and all other unresolved objects retain their own rights gates.
 - [x] Refresh current rights and release-preflight reports. Frozen membership
   remains 1,759; effective rights are 1,740 resolved and 19 unresolved. All
-  1,757 deferrals and two existing admissions/canaries remain unchanged.
-- [x] Focused rights and preflight tests passed (11). Broader required checks
-  are recorded with the corresponding PR evidence.
+  1,756 deferrals, three existing admissions, and two admitted-object
+  canaries remain unchanged.
+- [x] Focused rights and preflight tests passed (11); broader M-112/M-110
+  rights, role, and graph tests passed (53). Broader required checks are recorded with the corresponding PR evidence.
 - [ ] Resolve rights for the remaining derived and source-specific objects;
   do not infer derived rights from this raw-source permission.
 
@@ -4325,7 +4326,7 @@
   0.11.29; coverage was 96.89%. Context/registry, ecosystem validation,
   Test-Goblin routine, Ruff, formatting, ty, BasedPyright (0 errors), and
   diff checks passed.
-- [~] Build the per-object v4.1 raw-B2 contract against the merged role receipt,
+- [x] Build the per-object v4.1 raw-B2 contract against the merged role receipt,
   verify the full external receipt closure, then record admission only if the
   exact object and every required role validate. Keep native archive semantics
   unqualified and all other denominator paths deferred.
@@ -4343,3 +4344,23 @@
 - [x] This is one four-surface M-110 screened-candidate canary. It does not
   accept M-110 overall, calibrate match scoring, promote cross-source
   relationships, or count as an M-112 admitted-object canary.
+
+## M-112 historical 1993–2015 raw B2 v4 admission and canary preparation (2026-10-20)
+
+- [x] Bind candidate roles to merged exact-main evidence commit
+  `060114c0a9d1d6f8122f0829f24257861ae30e75`; create the exact raw-B2
+  v4.1 contract with SHA-256
+  `992eb2ce2d93891f51423284df2d718bc7d44af6511cc09c11c33a578588210b`.
+- [x] Independently verify the contract’s 12 receipt roles against 10
+  unique public receipts. The exact 1993–2015 object is admitted; native
+  archive layout remains unqualified. Recorded admission qualification:
+  `quality/qualifications/australian-m112-v4-historical-1993-2015-admission-qualification-20261020.json`.
+- [x] Refresh current role reconciliation: three v4 admissions, two
+  admitted-object canaries, approved denominator unchanged at 1,759.
+- [x] Extend the hosted bounded `FederatedReader` canary workflow to
+  accept this exact admitted path; focused admission/role tests passed (23),
+  broader affected suite passed (176), and routine Test-Goblin, Ruff,
+  formatting, role check, and diff checks passed.
+- [~] After this contract and workflow change merge, run the exact-main
+  hosted canary for this object, read back its aggregate receipt, then
+  refresh role qualification to count the third canary.

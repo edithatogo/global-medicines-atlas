@@ -116,7 +116,7 @@ TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
         "5b4d66268deccfb28ef33805d474c06aaa940a98"
     ),
     "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip": (
-        None
+        "060114c0a9d1d6f8122f0829f24257861ae30e75"
     ),
 }
 TARGET_OUTPUTS = {
