@@ -4094,3 +4094,21 @@
 - [ ] Merge the correction and rerun on exact `main`; update the canary count
   only after the aggregate receipt is present and its exact object, commit,
   digest, byte count, and cleanup fields validate.
+
+## M-112 July 2016 admitted-object consumer canary passed (2026-10-20)
+
+- [x] Run hosted canary
+  [39300224557](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39300224557)
+  on exact merged `main` commit
+  `500344931252ce65768b55fb2f3e07191470344c`. The production contract binder
+  and `FederatedReader` accepted the admitted contract and exercised the exact
+  public July 2016 raw B2 object. Both remote and consumer-stream SHA-256 and
+  byte count matched the pinned identity. The admitted cache expiry had passed,
+  so the reader retained zero bytes; close also left zero cache bytes.
+- [x] Read back and retain the metadata-only workflow receipt at
+  `quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json`
+  (SHA-256 `af870552004e50ab5174fc535c9e5bbefe59f6edc4d03c830ce40129adf22b6a`).
+  The exact object now has one v4 admission and one consumer canary. The overall
+  approved denominator remains 1,759; the remaining 1,758 paths are not
+  implied complete. Native workbook layout remains unqualified and no rows or
+  values were interpreted.
