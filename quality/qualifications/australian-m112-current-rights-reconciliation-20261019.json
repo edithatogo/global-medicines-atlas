@@ -40,14 +40,15 @@
     "rights_state": "maintainer_attested_exact_public_release_permission_for_bronze_projection"
   },
   "boundaries": {
-    "all_1759_deferrals_preserved": true,
-    "consumer_canaries": 0,
+    "all_remaining_deferrals_preserved": true,
+    "consumer_canaries": 1,
+    "deferred_objects": 1758,
     "external_publication_performed": false,
     "m112_denominator_changed": false,
     "new_sources_or_datasets_added": false,
     "source_payload_bytes_read": false,
     "source_payload_values_inspected": false,
-    "v4_admissions": 0
+    "v4_admissions": 1
   },
   "cms_hcpcs_external_reference": {
     "acquisition_time_rights_state_preserved": "unknown",
@@ -141,11 +142,16 @@
     "unresolved_object_count": 1727
   },
   "evidence_inputs": {
+    "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
     "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
+    "quality/bronze/imported-acquisitions/au-pbs/712fd306658de6db5ae0aaa2be39d554e5a18c306987cc614152efbed53f30f4.json": "dbfab903b4d24feb62fa77c141422a4cb33a85eb08583d3a7d40f0200f6190e3",
     "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
     "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
     "quality/qualifications/australian-m108-derived-products-20261017.json": "f9da44a9fc61ebaff83e7784f56d2376db33e2d9a7b834142ee60c3a1ad5fd7c",
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
+    "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0",
+    "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json": "af870552004e50ab5174fc535c9e5bbefe59f6edc4d03c830ce40129adf22b6a",
+    "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json": "62aa052690bf3092aaf658d747654bc14316807e005e72f063ec11b158df4f18",
     "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24",
     "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
     "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
@@ -202,7 +208,73 @@
     "raw_paths": 1736,
     "sha256": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d"
   },
-  "observed_at": "2026-10-19T18:47:52Z",
+  "m112_admission_canary_readback": {
+    "admitted_object_count": 1,
+    "canaried_object_count": 1,
+    "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
+    "deferred_object_count": 1758,
+    "native_workbook_layout_qualified": false,
+    "object": {
+      "byte_count": 6857437,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+    },
+    "overlay_object_flags_pre_readback": {
+      "consumer_canary": false,
+      "disposition": "deferred_not_admitted",
+      "v4_admission": false
+    },
+    "public_dataset_mutated_by_reconciliation": false,
+    "source_values_or_rows_interpreted": false,
+    "successful_workflow_runs": [
+      {
+        "receipt_path": "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json",
+        "receipt_sha256": "af870552004e50ab5174fc535c9e5bbefe59f6edc4d03c830ce40129adf22b6a",
+        "run_id": 39300224557,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39300224557",
+        "workflow_commit": "500344931252ce65768b55fb2f3e07191470344c"
+      },
+      {
+        "receipt_path": "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json",
+        "receipt_sha256": "62aa052690bf3092aaf658d747654bc14316807e005e72f063ec11b158df4f18",
+        "run_id": 39306554319,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39306554319",
+        "workflow_commit": "7dbf14db2403485cabbe699858579cf7c7567012"
+      }
+    ],
+    "unique_object_counts_are_deduplicated_across_runs": true
+  },
+  "observed_at": "2026-10-19T19:54:54Z",
+  "pbs_source_archive_exact_publication": {
+    "authorization_id": "decision-0009",
+    "byte_count": 11156706,
+    "current_digest_matches_hosted_verification": true,
+    "dataset": "edithatogo/australian-pbs-source-archive",
+    "exact_object_publication_authorized": true,
+    "historical_acquisition_rights_state": "unknown",
+    "hosted_anonymous_digest_verification": "passed",
+    "hosted_verification_receipt": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466488482",
+    "hosted_verification_revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+    "path": "raw/2026-04-01/2026-04-01-XML-V3.zip",
+    "publication_intent": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5466484158",
+    "publication_intent_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/33290449753",
+    "release_performed_by_this_reconciliation": false,
+    "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+    "rights_conclusion_made": false,
+    "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+    "source_projection": {
+      "byte_count": 158134,
+      "derived_rights_inferred_from_source_permission": false,
+      "path": "bronze/2026-04-01/pbs-v3-source.parquet",
+      "rights_state": "upstream redistribution terms unknown",
+      "sha256": "9e9facc336b47c5a9d514388a95c9797ba3e03474806fba00b6f03c0e601e97d",
+      "v4_admission": false
+    },
+    "upstream_redistribution_terms": "unknown",
+    "v4_admission": false
+  },
   "pbs_utilisation_raw_objects": {
     "authorization_path": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
     "authorization_sha256": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",

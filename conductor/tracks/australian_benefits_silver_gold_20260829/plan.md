@@ -4195,3 +4195,36 @@
   acceptance, semantic calibration, M-112 admission, or increase the M-112
   admitted-object canary count. No public dataset was mutated and no source
   bytes were retained.
+
+
+## M-112 PBS publication and current admission/canary readback (2026-10-20)
+
+- [x] Reconcile the exact April 2026 PBS source ZIP to Decision 0009, its
+  publication-intent record, the hosted anonymous digest receipt, and the
+  current pinned path/digest/size. Record exact-object publication authority
+  separately from the still-unknown upstream licence and preserve the
+  acquisition-time `unknown` state.
+- [x] Keep the exact PBS Bronze Parquet projection
+  `bronze/2026-04-01/pbs-v3-source.parquet` unresolved; source permission does
+  not imply derivative rights. No rights conclusion, v4 admission, or release
+  is made for the projection.
+- [x] Reconcile the two successful exact-main July 2016 MBS canary receipts.
+  Both runs refer to the same rights-cleared workbook and contract, so current
+  counts are one admitted object, one canaried object, and 1,758 deferred
+  objects. Source values and workbook layout remain unqualified. Rights remain
+  32 resolved and 1,727 unresolved across the frozen 1,759-object inventory.
+- [x] Refresh the effective-rights report and preflight with exact hashes and
+  both canary run receipts; preserve all other deferrals, keep inventory
+  membership unchanged, and add no sources or datasets.
+- [x] Focused rights/preflight tests passed (9); Ruff, format, ty, BasedPyright,
+  and diff checks passed. Full profile: 7,010 passed, 3 skipped, 3 failed. Two
+  failures require pinned uv 0.11.29; both passed in the pinned-toolchain rerun
+  after verifying the official release archive digest. One unrelated Chromium
+  end-to-end timeout passed when isolated. Coverage was 96.90%.
+- [ ] Resolve the exact PBS Bronze projection's own rights and continue the
+  remaining source-specific rights review.
+
+- [x] After integrating main commit `5b4d6626` (PR #1211), rerun the
+  rights/preflight and July 2016 admission/role suites together: 28 passed.
+  Routine profile, Ruff, format, ty, BasedPyright, and diff checks passed on the
+  integrated tree.

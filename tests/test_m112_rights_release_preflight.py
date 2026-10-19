@@ -35,6 +35,16 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert report["frozen_inventory"]["membership_changed"] is False
     assert report["effective_m112_rights"]["resolved_object_count"] == 32
     assert report["effective_m112_rights"]["unresolved_object_count"] == 1727
+    pbs_archive = report["pbs_source_archive_exact_publication"]
+    assert pbs_archive["exact_object_publication_authorized"] is True
+    assert pbs_archive["upstream_redistribution_terms"] == "unknown"
+    assert pbs_archive["rights_conclusion_made"] is False
+    assert (
+        pbs_archive["source_projection"][
+            "derived_rights_inferred_from_source_permission"
+        ]
+        is False
+    )
 
 
 def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
@@ -69,9 +79,10 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
         "full_object_release_requires_exclusion_review"
     ]
     gates = report["release_and_admission_boundaries"]
-    assert gates["all_1759_deferrals_preserved"] is True
-    assert gates["v4_admissions"] == 0
-    assert gates["consumer_canaries"] == 0
+    assert gates["all_remaining_deferrals_preserved"] is True
+    assert gates["deferred_objects"] == 1758
+    assert gates["v4_admissions"] == 1
+    assert gates["consumer_canaries"] == 1
     assert gates["external_publications_performed"] is False
 
 
