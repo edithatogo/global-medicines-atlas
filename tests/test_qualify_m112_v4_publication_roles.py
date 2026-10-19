@@ -179,11 +179,14 @@ def test_recovery_receipts_bind_only_the_restored_utilisation_cohort() -> None:
             assert candidate["contract_role_states"]["recovery"] == "missing"
 
 
-def test_source_temporal_semantics_bind_only_the_exact_2016_object() -> None:
+def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
     report = qualify()
+    source_candidates = [
+        item for item in report["objects"] if "source_candidate_receipt" in item
+    ]
     candidate = next(
         item
-        for item in report["objects"]
+        for item in source_candidates
         if item["path"] == SOURCE_SEMANTICS_PATH
     )
     source = candidate["source_candidate_receipt"]
@@ -193,7 +196,7 @@ def test_source_temporal_semantics_bind_only_the_exact_2016_object() -> None:
     assert source["comparison_cohort"] == "legacy"
     assert source["bronze_stratum"] == "B2"
     assert source["representation"] == "raw"
-    assert source["schema_layout_qualified"] is False
+    assert source["native_schema_layout_qualified"] is False
     assert source["temporal_semantics"]["service_month_basis"] == (
         "claim_processing_date_not_service_provision_date"
     )
@@ -203,10 +206,18 @@ def test_source_temporal_semantics_bind_only_the_exact_2016_object() -> None:
     assert candidate["contract_role_states"]["source"] == (
         "candidate_receipt_available_unbound"
     )
-    assert (
-        sum("source_candidate_receipt" in item for item in report["objects"])
-        == 1
+    assert len(source_candidates) == 13
+    assert len({item["path"] for item in source_candidates}) == 13
+    assert all(
+        item["contract_role_states"]["source"]
+        == "candidate_receipt_available_unbound"
+        for item in source_candidates
     )
+    assert not any(
+        item["path"].endswith("mbs-demographics-historical-2013-2015.zip")
+        for item in source_candidates
+    )
+    assert report["source_semantics_candidate_evidence"]["objects"] == 13
     assert report["cohort"]["v4_admissions"] == 0
     assert report["cohort"]["consumer_canaries"] == 0
 

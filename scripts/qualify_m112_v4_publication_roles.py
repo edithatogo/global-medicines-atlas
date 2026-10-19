@@ -19,6 +19,9 @@ ROLE_REPORT = "quality/qualifications/australian-m112-v4-contract-role-evidence-
 DIGEST_REPORT = "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json"
 DISCOVERY_REPORT = "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json"
 SOURCE_SEMANTICS_REPORT = "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json"
+SOURCE_SEMANTICS_UNRESOLVED_PATH = (
+    "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip"
+)
 OUTPUT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json"
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
 PINNED_REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
@@ -34,8 +37,10 @@ VERIFICATION_RECEIPT_SHA256 = (
 )
 EXPECTED_PATHS = 14
 EXPECTED_CANDIDATES = 16
+EXPECTED_SOURCE_SEMANTICS_OBJECTS = 13
 EXPECTED_MANIFEST_FILES = 28
 OBSERVED_AT = "2026-10-19T16:13:05Z"
+ROLE_REPORT_RECORDED_AT = "2026-10-19T16:34:01Z"
 CONTRACT_REPOSITORY = "edithatogo/global-medicines-atlas"
 CONTRACT_COMMIT = "a5753b1c79ccedd9bb54112bf803882ffc9deb96"
 CONTRACT_SCHEMA_PATH = "contracts/medallion/v4.1/federation.schema.json"
@@ -45,13 +50,6 @@ CONTRACT_SCHEMA_SHA256 = (
 PRODUCER_WORKFLOW = ".github/workflows/australian-mbs-utilisation-harvest.yml"
 SHA256_HEX_LENGTH = 64
 SOURCE_SEMANTICS_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
-SOURCE_SEMANTICS_IDENTITY = {
-    "dataset": "edithatogo/australian-mbs-utilisation-archive",
-    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
-    "path": SOURCE_SEMANTICS_PATH,
-    "bytes": 6857437,
-    "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
-}
 
 
 def _sha256(data: bytes) -> str:
@@ -428,42 +426,53 @@ def _bind_recovery_candidate(
 def _bind_source_semantics_candidate(
     candidate: dict[str, Any], semantics: dict[str, Any], root: Path
 ) -> None:
-    if candidate.get("path") != SOURCE_SEMANTICS_PATH:
+    if candidate.get("dataset") != DATASET:
         return
-    identity = semantics.get("object_identity")
-    if not isinstance(identity, dict) or any(
-        identity.get(key) != value
-        for key, value in SOURCE_SEMANTICS_IDENTITY.items()
-    ):
-        raise ValueError("source semantics readback identity differs")
+    object_rows = semantics.get("objects")
+    if not isinstance(object_rows, list):
+        raise TypeError("source semantics evidence has no object list")
+    candidate_identity = {
+        key: candidate.get(key)
+        for key in ("dataset", "revision", "path", "bytes", "sha256")
+    }
+    matches = [
+        cast("dict[str, Any]", row)
+        for row in object_rows
+        if isinstance(row, dict)
+        and all(
+            row.get(key) == value for key, value in candidate_identity.items()
+        )
+    ]
+    if not matches:
+        return
+    if len(matches) != 1:
+        raise ValueError("source semantics identity is not unique")
+    source_row = matches[0]
     if (
         semantics.get("status")
-        != "source_temporal_semantics_qualified_schema_layout_unqualified"
-        or semantics.get("boundaries", {}).get("raw_workbook_inspected")
+        != "source_temporal_semantics_candidates_available_unbound_schema_layout_unqualified"
+        or semantics.get("boundaries", {}).get("raw_source_objects_inspected")
         is not False
     ):
         raise ValueError("source semantics evidence exceeded its stated scope")
-    temporal = semantics.get("temporal_semantics")
-    acquisition = semantics.get("acquisition")
-    if not isinstance(temporal, dict) or not isinstance(acquisition, dict):
-        raise TypeError("source temporal or acquisition evidence is missing")
-    if (
-        temporal.get("effective_date") != "2016-07-31"
-        or temporal.get("cohort") != "legacy"
-        or temporal.get("service_month_basis")
-        != "claim_processing_date_not_service_provision_date"
-        or acquisition.get("source_id") != candidate.get("source_id")
-        or acquisition.get("acquisition_id") != candidate.get("acquisition_id")
-    ):
-        raise ValueError("source temporal semantics do not bind this candidate")
-    response = semantics.get("metadata_readback")
-    if not isinstance(response, dict) or not isinstance(
-        response.get("response_sha256"), str
-    ):
+    if len(object_rows) != EXPECTED_SOURCE_SEMANTICS_OBJECTS:
+        raise ValueError(
+            "source semantics evidence does not cover the qualified cohort"
+        )
+    temporal = source_row.get("temporal_semantics")
+    resource = source_row.get("resource")
+    metadata = source_row.get("metadata_readback")
+    if not isinstance(temporal, dict) or not isinstance(resource, dict):
+        raise TypeError("source temporal or resource metadata is missing")
+    if not isinstance(metadata, dict):
+        raise TypeError("source metadata readback is missing")
+    _validate_source_semantics_fields(candidate, source_row, temporal, resource)
+    response_digest = metadata.get("response_sha256")
+    if not isinstance(response_digest, str):
         raise TypeError("source metadata readback digest is missing")
     if not re.fullmatch(
         rf"[0-9a-f]{{{SHA256_HEX_LENGTH}}}",
-        cast("str", response["response_sha256"]),
+        response_digest,
     ):
         raise ValueError("source metadata readback digest is malformed")
     states_value = candidate.get("contract_role_states")
@@ -478,18 +487,16 @@ def _bind_source_semantics_candidate(
         "layer": "bronze",
         "bronze_stratum": "B2",
         "representation": "raw",
-        "schema_era": (
-            "data.gov.au-resource-revision-2016-08-29;"
-            " MBS Group Statistics Report 2016 YTD"
-        ),
-        "comparison_cohort": "legacy",
+        "schema_era": source_row["schema_era"],
+        "comparison_cohort": temporal["cohort"],
         "effective_date": temporal["effective_date"],
-        "retrieved_at": acquisition["retrieved_at"],
+        "retrieved_at": source_row["retrieved_at"],
         "temporal_semantics": temporal,
         "source_metadata_readback": {
-            "url": response["url"],
-            "http_status": response["http_status"],
-            "response_sha256": response["response_sha256"],
+            "url": metadata["url"],
+            "http_status": metadata["http_status"],
+            "response_sha256": response_digest,
+            "resource_id": resource.get("id"),
             "evidence_report": {
                 "path": SOURCE_SEMANTICS_REPORT,
                 "sha256": _sha256(
@@ -497,9 +504,44 @@ def _bind_source_semantics_candidate(
                 ),
             },
         },
-        "schema_layout_qualified": False,
+        "native_schema_layout_qualified": False,
         "contract_role_state": "candidate_receipt_available_unbound",
     }
+
+
+def _validate_source_semantics_fields(
+    candidate: dict[str, Any],
+    source_row: dict[str, Any],
+    temporal: dict[str, Any],
+    resource: dict[str, Any],
+) -> None:
+    if (
+        temporal.get("effective_date") != temporal.get("period_end")
+        or not isinstance(temporal.get("period_end"), str)
+        or temporal.get("cohort") != "legacy"
+        or temporal.get("service_month_basis")
+        != "claim_processing_date_not_service_provision_date"
+    ):
+        raise ValueError("source temporal semantics do not bind this candidate")
+    if (
+        source_row.get("source_id") != candidate.get("source_id")
+        or source_row.get("acquisition_id") != candidate.get("acquisition_id")
+        or source_row.get("retrieved_at") is None
+    ):
+        raise ValueError("source acquisition identity differs")
+    if (
+        resource.get("url") is None
+        or resource.get("id") is None
+        or not str(resource.get("url")).startswith(
+            "https://data.gov.au/data/dataset/"
+        )
+    ):
+        raise ValueError("source resource metadata is not exact and public")
+    schema_era = source_row.get("schema_era")
+    if not isinstance(schema_era, str) or not schema_era.startswith(
+        "unqualified-native-schema;"
+    ):
+        raise ValueError("native schema uncertainty was not preserved")
 
 
 def _update_summary(
@@ -560,13 +602,14 @@ def _update_summary(
                 "have no such receipt."
             )
         if role.get("role") == "source":
-            role["state"] = "candidate_receipt_available_unbound_for_1_of_16"
+            role["state"] = "candidate_receipts_available_unbound_for_13_of_16"
             role["evidence"] = (
-                "Official data.gov.au resource metadata qualifies the reporting "
-                "period, processing-month basis, and retrieval identity for one "
-                "2016 MBS group-statistics B2 object. The raw workbook schema "
-                "layout remains unqualified; the other 15 source roles remain "
-                "partial. This exact source-role receipt is still unbound."
+                "Official data.gov.au resource metadata qualifies reporting "
+                "period, processing-month basis, and retrieval identity for 13 "
+                "exact MBS utilisation B2 objects. Native workbook/archive schema "
+                "layouts remain unqualified. Two August MBS XML objects and one "
+                "historical archive with a source-period mismatch remain partial; "
+                "the candidate source-role receipts are unbound."
             )
     report["authority_identity"] = {
         "producer_repository": CONTRACT_REPOSITORY,
@@ -589,19 +632,76 @@ def _update_summary(
         "unbound candidate evidence for 14 of 16 paths. Authority is not yet "
         "referenced by complete v4 contracts. Two August paths, source "
         "semantics, discovery, v3 replay, recovery/cache, and consumers remain "
-        "incomplete. Source temporal semantics are qualified for one 2016 group "
-        "statistics object only; its raw schema layout and the other 15 source "
-        "roles remain unresolved. Location and discovery evidence now cover all 16 paths but "
+        "incomplete. Official source temporal semantics are qualified for 13 "
+        "utilisation objects; their native schema layouts and three source-role "
+        "candidates remain unresolved. Location and discovery evidence now cover all 16 paths but "
         "remain unbound until referenced by complete per-object v4 contracts. "
         "Recovery evidence covers only the 14 utilisation paths; cache evidence "
         "remains missing. Preserve "
         "zero v4 admissions and zero M-112 consumer canaries."
     )
-    report["recorded_at"] = OBSERVED_AT
+    report["recorded_at"] = ROLE_REPORT_RECORDED_AT
     report["supersedes"] = {
         "path": ROLE_REPORT,
         "sha256": _sha256((root / ROLE_REPORT).read_bytes()),
     }
+
+
+def _validate_source_semantics_scope(semantics: dict[str, Any]) -> None:
+    object_rows = semantics.get("objects")
+    unresolved = semantics.get("unresolved")
+    if (
+        semantics.get("status")
+        != "source_temporal_semantics_candidates_available_unbound_schema_layout_unqualified"
+        or not isinstance(object_rows, list)
+        or len(object_rows) != EXPECTED_SOURCE_SEMANTICS_OBJECTS
+        or not isinstance(unresolved, list)
+        or len(unresolved) != 1
+    ):
+        raise ValueError("source temporal evidence coverage changed")
+    unresolved_row = unresolved[0]
+    if not isinstance(unresolved_row, dict):
+        raise TypeError("unresolved source ambiguity record is malformed")
+    if (
+        unresolved_row.get("path") != SOURCE_SEMANTICS_UNRESOLVED_PATH
+        or unresolved_row.get("state")
+        != "source_metadata_period_conflicts_with_resource_name"
+        or semantics.get("boundaries", {}).get("raw_source_objects_inspected")
+        is not False
+    ):
+        raise ValueError("source ambiguity or raw-source boundary changed")
+
+
+def _bind_candidates(
+    candidates: list[Any],
+    discovery: dict[str, Any],
+    source_semantics: dict[str, Any],
+    verified_objects: list[Any],
+    archive: dict[str, Any],
+    root: Path,
+) -> tuple[list[dict[str, Any]], int]:
+    matched: list[dict[str, Any]] = []
+    for candidate_value in candidates:
+        if not isinstance(candidate_value, dict):
+            raise TypeError("malformed M-112 candidate")
+        candidate = cast("dict[str, Any]", candidate_value)
+        _bind_authority_candidate(candidate, root)
+        _bind_discovery_candidate(candidate, discovery, root)
+        _bind_location_candidate(candidate, discovery, root)
+        _bind_source_semantics_candidate(candidate, source_semantics, root)
+        if candidate.get("dataset") == DATASET:
+            bound = _bind_candidate(candidate, verified_objects, archive, root)
+            _bind_recovery_candidate(bound, archive)
+            matched.append(bound)
+    source_count = sum(
+        "source_candidate_receipt" in cast("dict[str, Any]", item)
+        for item in candidates
+    )
+    if source_count != EXPECTED_SOURCE_SEMANTICS_OBJECTS:
+        raise ValueError(
+            "source semantics did not bind the exact 13-object cohort"
+        )
+    return matched, source_count
 
 
 def qualify(root: Path = ROOT) -> dict[str, Any]:
@@ -624,6 +724,7 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         )
     if report.get("cohort", {}).get("consumer_canaries") != 0:
         raise ValueError("M-112 canary state changed; requalify before refresh")
+    _validate_source_semantics_scope(source_semantics)
     if not isinstance(verified_objects, list) or not isinstance(archives, list):
         raise TypeError("digest reconciliation is incomplete")
     if (
@@ -644,19 +745,14 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
     if archive.get("public") is not True or archive.get("gated") is not False:
         raise ValueError("pinned MBS archive is not public and ungated")
 
-    matched: list[dict[str, Any]] = []
-    for candidate_value in candidate_values:
-        if not isinstance(candidate_value, dict):
-            raise TypeError("malformed M-112 candidate")
-        candidate = cast("dict[str, Any]", candidate_value)
-        _bind_authority_candidate(candidate, root)
-        _bind_discovery_candidate(candidate, discovery_report, root)
-        _bind_location_candidate(candidate, discovery_report, root)
-        _bind_source_semantics_candidate(candidate, source_semantics, root)
-        if candidate.get("dataset") == DATASET:
-            bound = _bind_candidate(candidate, verified_values, archive, root)
-            _bind_recovery_candidate(bound, archive)
-            matched.append(bound)
+    matched, source_bound_count = _bind_candidates(
+        candidate_values,
+        discovery_report,
+        source_semantics,
+        verified_values,
+        archive,
+        root,
+    )
 
     if len(matched) != EXPECTED_PATHS:
         raise ValueError(
@@ -671,9 +767,9 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
     report["source_semantics_candidate_evidence"] = {
         "path": SOURCE_SEMANTICS_REPORT,
         "sha256": _sha256((root / SOURCE_SEMANTICS_REPORT).read_bytes()),
-        "objects": 1,
-        "state": "candidate_receipt_available_unbound_for_1_of_16",
-        "schema_layout_qualified": False,
+        "objects": source_bound_count,
+        "state": "candidate_receipts_available_unbound_for_13_of_16",
+        "native_schema_layout_qualified": False,
     }
     report["location_candidate_evidence"] = {
         "objects": EXPECTED_CANDIDATES,

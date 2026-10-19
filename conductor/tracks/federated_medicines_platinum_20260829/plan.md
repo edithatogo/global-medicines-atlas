@@ -1474,3 +1474,20 @@
 - [~] The source role remains unbound pending complete v4 contracts; 15 other
   source candidates still lack source-specific temporal qualification. Preserve
   the 1,759 denominator, zero admissions, and zero consumer canaries.
+
+## 2026-10-19 M-112 source-temporal evidence expanded to 13 objects
+
+- [x] Read the official data.gov.au package metadata for the MBS demographics
+  and group-statistics datasets. Exact resource IDs and URLs matched 13 frozen
+  utilisation B2 identities. The metadata establishes quarterly/YTD/historical
+  periods and the shared claim-processing-month basis. Raw archive bytes were
+  not downloaded or inspected.
+- [x] Bind the 13 exact temporal metadata receipts to the M-112 role report.
+  Preserve each native source schema as unqualified. Two August MBS source XML
+  objects remain partial; one historical group archive remains unresolved
+  because its source resource period conflicts with the archive path label.
+- [x] Focused role tests (9), broader M-112 v1/federation selection (75),
+  qualification regeneration/check, Ruff, and routine Test-Goblin passed.
+- [~] The 13 temporal role candidates remain unbound pending complete v4
+  contracts, schema qualification and the other mandatory evidence. Preserve
+  the approved 1,759 denominator, zero admissions, and zero consumer canaries.
