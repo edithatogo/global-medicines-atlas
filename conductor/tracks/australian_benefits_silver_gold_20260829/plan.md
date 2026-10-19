@@ -3806,3 +3806,32 @@
 - [x] Qualify the mandatory v4.1 contract roles against the all 16 rights/lineage/readback-qualified MBS raw path identities (14 utilisation paths and two August release aliases) with approved exact-scope rights, complete B1/B2 lineage, and anonymous digest evidence. The role matrix binds each object identity and evidence references; the two August paths are distinct path identities for one source payload. It records v2 as not applicable only for raw B2 under v4.1.
   Qualification: `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json` (SHA-256 `39e06d16e71693417042f16c7cba0e82aa949a8e0d0e53ab0a38e3e68af8f2b1`). This is a gap assessment only: no contract was emitted, no admission or canary was performed, and the 1,759 denominator and zero-admission count are unchanged.
 - [~] Obtain exact v4 publication and clean-room verification receipts, v1/v3 lineage, discovery, recovery/cache evidence, and consumer canaries before admitting any object.
+
+## M-112 rights and release evidence preflight (2026-10-19)
+
+- [x] Reconcile the current per-object rights states against the frozen 1,759
+  object inventory. Sixteen objects have existing positive rights metadata
+  (two exact MBS source-release paths and 14 exact-scope MBS utilisation files);
+  the six July 2025 Silver projections remain without a projection-rights
+  conclusion. The full state counts and pinned inputs are in
+  `quality/qualifications/australian-m112-rights-release-preflight-20261019.json`.
+- [x] Compare the six-table candidate authorization and the July 2025 raw
+  receipt with the official July release page and current MBS Online copyright
+  page. The source receipt says `permitted`; the linked approval record covers
+  the exact August 2026 XML, while the six-table decision allows candidate
+  qualification and canaries but excludes public release and any new rights
+  conclusion. No source-specific written permission for the July 2025 source or
+  derivative release was found in the reviewed records. No legal conclusion
+  or public-release authorization is recorded by this preflight.
+- [x] Reconcile the separate CMS HCPCS reference-only Bronze records with the
+  official CMS public-use and HCPCS rights documentation. CMS describes
+  Level II HCPCS as public domain, while D codes are maintained by ADA; the
+  exact referenced file's code composition was not inspected. Keep its
+  `rights_state=unknown` and `reviewer_status=unreviewed`. The CMS Part D
+  authorization does not apply to this HCPCS object, which is outside the M-112
+  frozen denominator.
+- [ ] Resolve the exact six MBS Silver-table rights and release disposition
+  after maintainer review of the source-receipt/official-terms conflict. Keep
+  the candidate objects and current release controls unchanged until a
+  source-specific written permission or other applicable rights basis is
+  recorded.
