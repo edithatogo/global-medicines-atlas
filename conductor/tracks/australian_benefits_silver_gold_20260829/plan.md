@@ -4076,3 +4076,21 @@
 - [ ] Run the canary after this workflow and qualification are merged. Until
   its exact-main receipt is read back and checked, the M-112 consumer-canary
   count remains zero.
+
+## M-112 consumer canary cache-expiry correction (2026-10-20)
+
+- [x] Record hosted canary run
+  [39298714672](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39298714672)
+  against merged main `fee2f3078b6c482ffce007d70f26bed5ad8fee62`. It reached the
+  admitted-object consumer check but failed its final combined assertion. The
+  contract cache expiry was 15 minutes after the v3 replay, before this run;
+  the production reader therefore correctly retained no expired cache entry.
+  This failed attempt is not a passing canary and the count remains zero.
+- [x] Correct the canary to derive expected cache occupancy from the exact
+  admitted expiry timestamp at the observation point. It now accepts a retained
+  exact-object cache only while its admission is live, requires zero retained
+  bytes after expiry, and always checks that closing the reader clears cache.
+  Focused cache-boundary tests cover both live and expired receipts.
+- [ ] Merge the correction and rerun on exact `main`; update the canary count
+  only after the aggregate receipt is present and its exact object, commit,
+  digest, byte count, and cleanup fields validate.
