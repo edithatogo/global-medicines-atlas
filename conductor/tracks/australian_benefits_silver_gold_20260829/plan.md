@@ -4239,9 +4239,17 @@
   exact edge digest, then compare the complete ordered traversal through API,
   CLI, Atlas, and Chromium. Preserve the underlying graph's immutable
   `review_state=not_reviewed` and report review separately.
-- [ ] After the workflow update merges, run the bounded traversal on exact
-  `main`, read back the metadata-only receipt, and count surface canaries only
-  when all four consumers match the reviewed edge set. Until then this M-110
-  reviewed-candidate canary count remains zero; earlier candidate traversals
-  are not relabeled. Keep M-110 overall acceptance and M-112 federation gates
-  separate.
+- [x] Run the bounded traversal on exact `main` commit
+  `386b6bd292e6a657dc01d17c8355d9fa13d35bfa` (hosted run
+  [39322203034](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39322203034))
+  and read back the metadata-only receipt at
+  `quality/qualifications/australian-mbs-gold-reviewed-candidate-consumers-20261020-39322203034.json`
+  (SHA-256 `8b5d1a6b1537981cac50af6843a0dc52a7a3d1d1203f9850740b0c5552cf96a1`).
+  API, CLI, Atlas, and Chromium each returned the same ordered 5,989-edge
+  reviewed-candidate set (edge-ID SHA-256
+  `7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d`).
+  This records four surface canary checks for one candidate relationship set;
+  it does not change the graph's immutable `review_state=not_reviewed`, accept
+  M-110 overall, establish clinical/payability/equivalence, or count as an
+  M-112 admitted-object canary. Earlier candidate traversals remain historical
+  and are not relabeled.
