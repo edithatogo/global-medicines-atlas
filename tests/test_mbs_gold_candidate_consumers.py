@@ -103,6 +103,44 @@ def test_candidate_consumer_receipt_traverses_each_surface_without_edge_ids(
     )
 
 
+def test_merged_main_candidate_canary_receipt_preserves_scope_and_parity() -> (
+    None
+):
+    receipt_path = (
+        Path(__file__).resolve().parents[1] / "quality/qualifications/"
+        "australian-mbs-gold-candidate-consumers-20261019-39271490764.json"
+    )
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+
+    assert receipt["candidate_only"] is True
+    assert receipt["hosted_workflow"]["run_id"] == 39271490764
+    assert receipt["hosted_workflow"]["commit"] == (
+        "47e0afbd5a3ea59e16531237ec08403b0d317d04"
+    )
+    assert receipt["edge_count"] == 5989
+    assert receipt["surfaces"] == ["API", "Atlas", "Browser", "CLI"]
+    assert len(set(receipt["surface_edge_id_sha256"].values())) == 1
+    assert (
+        receipt["candidate_scalar_query_canary"]["query_cases"]["date"][
+            "parity"
+        ]
+        is True
+    )
+    assert (
+        receipt["candidate_scalar_query_canary"]["query_cases"]["decimal"][
+            "parity"
+        ]
+        is True
+    )
+    assert receipt["source_payload_bytes_retained"] is False
+    assert (
+        receipt["candidate_v4_source_lineage"]["boundaries"][
+            "m112_federation_acceptance"
+        ]
+        is False
+    )
+
+
 def test_candidate_scalar_query_canary_preserves_decimal_and_date_engine_parity(
     tmp_path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
