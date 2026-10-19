@@ -624,3 +624,26 @@
   its isolated performance-threshold finding; it was not repeated.
 - [~] Reconcile hosted exact-head checks on PR #1144 before merging. This
   identity join does not resolve projection lineage or admit either path.
+
+## M-112 frozen inventory B1/B2 lineage completion (2026-10-19)
+
+- [x] Reconcile all 1,759 frozen object identities against exact B1/B2 and
+  projection evidence without changing the denominator or adding sources:
+  1,736 raw paths and 23 projection paths now have complete recorded lineage.
+  The 12 reimbursement-atlas producer projections were checked against pinned
+  dataset and producer revisions; the remaining PBS Parquet projection was
+  bound to its existing admitted raw archive and receipt.
+- [x] Record the existing July 2026 CMS HCPCS source-version readback as
+  reference-only B1/B2 evidence. Its 2,499,217-byte digest matches the pinned
+  source version; payload bytes were not retained and payload values were not
+  inspected. Rights remain unknown and reviewer state remains unreviewed.
+- [x] Preserve the 1,759-object deferral, zero v4 admissions, zero consumer
+  canaries, and existing rights conclusions. Exact raw digest/path joins rise
+  to 118, with one same-content alias counted separately (119 path identities).
+- [x] Verify 4 focused tests, the routine Test-Goblin profile, Ruff, `ty`, and
+  BasedPyright. Full inventory report and the appended source receipt bindings
+  pass local readback checks.
+- [~] Complete exact-head hosted checks, merge the scoped PR, and verify the
+  merged qualification on `main`. This lineage checkpoint does not complete
+  rights/release evidence, v4 admission, graph screening/calibration, recovery,
+  or consumer canaries; M-112 remains unaccepted until those gates pass.
