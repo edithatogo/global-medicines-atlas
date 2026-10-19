@@ -15,6 +15,7 @@ from scripts.qualify_m112_v4_publication_roles import (
     CONTRACT_SCHEMA_SHA256,
     DIGEST_REPORT,
     DISCOVERY_REPORT,
+    OVERLAY_REPORT,
     PRODUCER_WORKFLOW,
     ROLE_REPORT,
     SOURCE_SEMANTICS_PATH,
@@ -70,6 +71,13 @@ def test_refresh_preserves_the_denominator_and_zero_admissions_and_canaries() ->
     assert report["cohort"]["consumer_canaries"] == 0
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
+    assert report["source_qualification"]["path"] == OVERLAY_REPORT
+    assert (
+        report["source_qualification"]["sha256"]
+        == hashlib.sha256(
+            (Path(__file__).resolve().parents[1] / OVERLAY_REPORT).read_bytes()
+        ).hexdigest()
+    )
 
 
 def test_exact_hosted_v3_replay_binds_one_unbound_candidate_role() -> None:
@@ -277,6 +285,8 @@ def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
     )
     (tmp_path / CONTRACT_SCHEMA_PATH).parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(ROOT / ROLE_REPORT, tmp_path / ROLE_REPORT)
+    (tmp_path / OVERLAY_REPORT).parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(ROOT / OVERLAY_REPORT, tmp_path / OVERLAY_REPORT)
     digest_path = tmp_path / DIGEST_REPORT
     shutil.copy(ROOT / DIGEST_REPORT, digest_path)
     shutil.copy(ROOT / DISCOVERY_REPORT, tmp_path / DISCOVERY_REPORT)
@@ -326,6 +336,8 @@ def test_schema_digest_mismatch_fails_closed(tmp_path: Path) -> None:
     )
     (tmp_path / CONTRACT_SCHEMA_PATH).parent.mkdir(parents=True, exist_ok=True)
     shutil.copy(ROOT / ROLE_REPORT, tmp_path / ROLE_REPORT)
+    (tmp_path / OVERLAY_REPORT).parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy(ROOT / OVERLAY_REPORT, tmp_path / OVERLAY_REPORT)
     shutil.copy(ROOT / DIGEST_REPORT, tmp_path / DIGEST_REPORT)
     shutil.copy(ROOT / DISCOVERY_REPORT, tmp_path / DISCOVERY_REPORT)
     shutil.copy(
@@ -345,6 +357,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def _copy_qualification_inputs(destination: Path) -> None:
     paths = (
         ROLE_REPORT,
+        OVERLAY_REPORT,
         DIGEST_REPORT,
         DISCOVERY_REPORT,
         SOURCE_SEMANTICS_REPORT,

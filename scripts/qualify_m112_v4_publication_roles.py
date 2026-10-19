@@ -19,6 +19,11 @@ ROLE_REPORT = "quality/qualifications/australian-m112-v4-contract-role-evidence-
 DIGEST_REPORT = "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json"
 DISCOVERY_REPORT = "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json"
 SOURCE_SEMANTICS_REPORT = "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json"
+OVERLAY_REPORT = (
+    "quality/qualifications/"
+    "australian-m112-per-object-gate-reconciliation-20261019-"
+    "reimbursement-medallion-projection-lineage.json"
+)
 V3_REPLAY_REPORT = (
     "quality/qualifications/australian-m112-v3-replay-execution-20261020.json"
 )
@@ -903,6 +908,10 @@ def _bind_candidates(
 def qualify(root: Path = ROOT) -> dict[str, Any]:
     """Return a deterministic role report enriched with bound candidate receipts."""
     report = copy.deepcopy(_read_json(root, ROLE_REPORT))
+    report["source_qualification"] = {
+        "path": OVERLAY_REPORT,
+        "sha256": _sha256((root / OVERLAY_REPORT).read_bytes()),
+    }
     digest_report = _read_json(root, DIGEST_REPORT)
     discovery_report = _read_json(root, DISCOVERY_REPORT)
     source_semantics = _read_json(root, SOURCE_SEMANTICS_REPORT)
