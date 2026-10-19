@@ -1,0 +1,29 @@
+{
+  "schema_id": "global-medicines-atlas.bronze-admission",
+  "schema_version": 2,
+  "decision_id": "d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6",
+  "acquisition_id": "db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a",
+  "content_id": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
+  "state": "landed",
+  "reason_codes": [
+    "public_use_rights_reviewed",
+    "external_reference_only",
+    "not_admitted_to_processing"
+  ],
+  "validation_results": [
+    {
+      "check_id": "cms-public-use-rights-basis",
+      "passed": true,
+      "message": "Sole maintainer accepted the exact-file CMS public-use/public-domain rights basis recorded in quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json (SHA-256 205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d)."
+    },
+    {
+      "check_id": "processing-and-release-boundaries",
+      "passed": true,
+      "message": "Source bytes remain external-reference-only; processing, v4 admission, canaries, and external publication remain unauthorized."
+    }
+  ],
+  "reviewer_status": "approved",
+  "actor": "global-medicines-atlas:sole-maintainer-rights-review",
+  "decided_at": "2026-10-19T12:11:14Z",
+  "supersedes_decision_id": "0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2"
+}
