@@ -46,7 +46,7 @@
     "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
     "version": "4.1"
   },
-  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, v3 replay, recovery/cache, and consumers remain incomplete. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. Preserve zero v4 admissions and zero M-112 consumer canaries.",
+  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, v3 replay, recovery/cache, and consumers remain incomplete. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. Recovery evidence covers only the 14 utilisation paths; cache evidence remains missing. Preserve zero v4 admissions and zero M-112 consumer canaries.",
   "discovery_candidate_evidence": {
     "objects": 16,
     "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
@@ -301,7 +301,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -377,6 +377,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -454,7 +476,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -530,6 +552,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -607,7 +651,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -683,6 +727,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -760,7 +826,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -836,6 +902,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -913,7 +1001,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -989,6 +1077,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -1066,7 +1176,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -1142,6 +1252,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -1219,7 +1351,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -1295,6 +1427,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -1372,7 +1526,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -1448,6 +1602,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -1525,7 +1701,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -1601,6 +1777,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -1678,7 +1876,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -1754,6 +1952,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -1831,7 +2051,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -1907,6 +2127,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -1984,7 +2226,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -2060,6 +2302,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -2137,7 +2401,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -2213,6 +2477,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -2290,7 +2576,7 @@
         "lineage.v3_replay": "missing",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -2367,6 +2653,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -2420,13 +2728,17 @@
   "observed_hub_revision_metadata": {
     "dataset": "edithatogo/australian-mbs-utilisation-archive",
     "gated": false,
-    "observed_at": "2026-10-19T16:07:04Z",
+    "observed_at": "2026-10-19T16:13:05Z",
     "private": false,
     "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
     "url": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-utilisation-archive/revision/dee9a5b0580dfe394474dc26b372559462e157e7"
   },
   "purpose": "Qualify mandatory v4.1 contract roles for every current M-112 path identity with exact approved rights, complete B1/B2 lineage, and anonymous digest evidence. This is an evidence-gap assessment; it does not create contracts or admissions.",
-  "recorded_at": "2026-10-19T16:07:04Z",
+  "recorded_at": "2026-10-19T16:13:05Z",
+  "recovery_candidate_evidence": {
+    "objects": 14,
+    "state": "candidate_receipts_available_unbound_for_14_of_16"
+  },
   "roles": [
     {
       "evidence": "The successful MBS utilisation producer workflow belongs to edithatogo/global-medicines-atlas. All 16 candidate objects now bind the exact v4.1 schema digest and an exact-main commit containing those schema bytes. The identity remains unbound until referenced by each complete v4 contract.",
@@ -2498,9 +2810,9 @@
       "state": "not_applicable_bronze_raw"
     },
     {
-      "evidence": "no exact checksum inventory receipt for the v4 publication",
+      "evidence": "The 14 utilisation objects bind to the exact published manifest and successful token-free 28-object restore receipt. This is a primary, non-independent recovery role only; region and RPO/RTO remain unverified or null. Two August source-archive objects have no such receipt.",
       "role": "recovery",
-      "state": "missing"
+      "state": "candidate_receipts_available_unbound_for_14_of_16"
     },
     {
       "evidence": "no bounded cache lifecycle and cleanup evidence is attached to the contracts",

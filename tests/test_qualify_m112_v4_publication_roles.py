@@ -146,6 +146,37 @@ def test_location_receipts_bind_exact_identity_and_anonymous_digest_evidence() -
         )
 
 
+def test_recovery_receipts_bind_only_the_restored_utilisation_cohort() -> None:
+    report = qualify()
+
+    assert report["recovery_candidate_evidence"]["objects"] == 14
+    assert report["recovery_candidate_evidence"]["state"] == (
+        "candidate_receipts_available_unbound_for_14_of_16"
+    )
+    for candidate in report["objects"]:
+        recovery = candidate.get("recovery_candidate_receipt")
+        if (
+            candidate["dataset"]
+            == "edithatogo/australian-mbs-utilisation-archive"
+        ):
+            assert isinstance(recovery, dict)
+            assert recovery["role"] == "primary"
+            assert recovery["independent"] is False
+            assert recovery["rpo_seconds"] is None
+            assert recovery["rto_seconds"] is None
+            assert recovery["verified_manifest_object_count"] == 28
+            assert recovery["temporary_source_bytes_removed"] is True
+            assert recovery["contract_role_state"] == (
+                "candidate_receipt_available_unbound"
+            )
+            assert candidate["contract_role_states"]["recovery"] == (
+                "candidate_receipt_available_unbound"
+            )
+        else:
+            assert recovery is None
+            assert candidate["contract_role_states"]["recovery"] == "missing"
+
+
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
     (tmp_path / ROLE_REPORT).parent.mkdir(parents=True, exist_ok=True)
     (tmp_path / DIGEST_REPORT).parent.mkdir(parents=True, exist_ok=True)

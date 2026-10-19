@@ -33,7 +33,7 @@ VERIFICATION_RECEIPT_SHA256 = (
 EXPECTED_PATHS = 14
 EXPECTED_CANDIDATES = 16
 EXPECTED_MANIFEST_FILES = 28
-OBSERVED_AT = "2026-10-19T16:07:04Z"
+OBSERVED_AT = "2026-10-19T16:13:05Z"
 CONTRACT_REPOSITORY = "edithatogo/global-medicines-atlas"
 CONTRACT_COMMIT = "a5753b1c79ccedd9bb54112bf803882ffc9deb96"
 CONTRACT_SCHEMA_PATH = "contracts/medallion/v4.1/federation.schema.json"
@@ -373,6 +373,47 @@ def _bind_location_candidate(
     }
 
 
+def _bind_recovery_candidate(
+    candidate: dict[str, Any], archive: dict[str, Any]
+) -> None:
+    if candidate.get("dataset") != DATASET:
+        return
+    historical = _verify_archive_receipt(archive)
+    states_value = candidate.get("contract_role_states")
+    if not isinstance(states_value, dict):
+        raise TypeError("candidate has no v4 contract role states")
+    cast("dict[str, Any]", states_value)["recovery"] = (
+        "candidate_receipt_available_unbound"
+    )
+    candidate["recovery_candidate_receipt"] = {
+        "role": "primary",
+        "independent": False,
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "region": "unverified",
+        "primary_region": "unverified",
+        "rpo_seconds": None,
+        "rto_seconds": None,
+        "checksum_inventory": {
+            "url": (
+                "https://huggingface.co/datasets/"
+                f"{DATASET}/resolve/{PINNED_REVISION}/manifest.json"
+            ),
+            "sha256": archive["manifest_sha256"],
+        },
+        "restore_receipt": {
+            "url": VERIFICATION_RECEIPT_URL,
+            "sha256": historical["issue_comment_body_sha256"],
+        },
+        "authorization_receipt": None,
+        "verified_manifest_object_count": historical["verified_file_count"],
+        "temporary_source_bytes_removed": historical[
+            "temporary_source_bytes_removed"
+        ],
+        "contract_role_state": "candidate_receipt_available_unbound",
+    }
+
+
 def _update_summary(
     report: dict[str, Any], root: Path, matched_count: int
 ) -> None:
@@ -421,6 +462,15 @@ def _update_summary(
                 "ungated repository metadata. The evidence remains unbound until "
                 "referenced by each complete v4 contract."
             )
+        if role.get("role") == "recovery":
+            role["state"] = "candidate_receipts_available_unbound_for_14_of_16"
+            role["evidence"] = (
+                "The 14 utilisation objects bind to the exact published manifest "
+                "and successful token-free 28-object restore receipt. This is a "
+                "primary, non-independent recovery role only; region and RPO/RTO "
+                "remain unverified or null. Two August source-archive objects "
+                "have no such receipt."
+            )
     report["authority_identity"] = {
         "producer_repository": CONTRACT_REPOSITORY,
         "contract_repository": CONTRACT_REPOSITORY,
@@ -443,7 +493,9 @@ def _update_summary(
         "referenced by complete v4 contracts. Two August paths, source "
         "semantics, discovery, v3 replay, recovery/cache, and consumers remain "
         "incomplete. Location and discovery evidence now cover all 16 paths but "
-        "remain unbound until referenced by complete per-object v4 contracts. Preserve "
+        "remain unbound until referenced by complete per-object v4 contracts. "
+        "Recovery evidence covers only the 14 utilisation paths; cache evidence "
+        "remains missing. Preserve "
         "zero v4 admissions and zero M-112 consumer canaries."
     )
     report["recorded_at"] = OBSERVED_AT
@@ -501,9 +553,9 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
         _bind_discovery_candidate(candidate, discovery_report, root)
         _bind_location_candidate(candidate, discovery_report, root)
         if candidate.get("dataset") == DATASET:
-            matched.append(
-                _bind_candidate(candidate, verified_values, archive, root)
-            )
+            bound = _bind_candidate(candidate, verified_values, archive, root)
+            _bind_recovery_candidate(bound, archive)
+            matched.append(bound)
 
     if len(matched) != EXPECTED_PATHS:
         raise ValueError(
@@ -518,6 +570,10 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:
     report["location_candidate_evidence"] = {
         "objects": EXPECTED_CANDIDATES,
         "state": "candidate_receipt_available_unbound_for_16_of_16",
+    }
+    report["recovery_candidate_evidence"] = {
+        "objects": len(matched),
+        "state": "candidate_receipts_available_unbound_for_14_of_16",
     }
     _update_summary(report, root, len(matched))
     return report

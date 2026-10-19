@@ -1439,14 +1439,20 @@
   `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
 - [x] Bind each exact dataset/revision/path/byte-count/SHA-256 location to its
   existing anonymous digest evidence and current public, ungated dataset
-  metadata. Keep all location and discovery receipts candidate-only and
-  unbound pending complete per-object v4 contracts.
+  metadata. Keep location, discovery, and recovery receipts candidate-only
+  and unbound pending complete per-object v4 contracts.
+- [x] Bind the existing hosted 28-object manifest restore and cleanup receipt
+  as a primary, non-independent recovery role for the 14 MBS utilisation
+  objects. Region and RPO/RTO remain unverified or null; this does not claim
+  independent or production disaster recovery. The two August source-archive
+  objects lack this receipt.
 - [x] Preserve the registry's `not_assessed` and
   `source_specific_review_required` values. Discovery does not establish
   source rights, object publication, source semantics, complete v4 contracts,
-  or admission. Seven focused role tests and the broader M-112 v1/federation
+  or admission. Eight focused role tests and the broader M-112 v1/federation
   contract selection passed; routine Test-Goblin passed.
 - [~] Keep location and discovery receipts candidate-only and unbound until
   referenced from complete per-object v4 contracts. The approved denominator
   remains 1,759, with zero v4 admissions and zero qualifying M-112 consumer
-  canaries.
+  canaries. Cache lifecycle evidence remains missing; source semantics,
+  complete v4 contracts and consumer qualification remain open.
