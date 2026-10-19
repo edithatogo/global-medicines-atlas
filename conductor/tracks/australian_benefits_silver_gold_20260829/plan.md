@@ -4149,6 +4149,25 @@
   The M-112 count is one admitted object and one consumer canary out of 1,759;
   this candidate is not admitted by replay evidence alone.
 
+## M-112 July 2016 CSV admitted-object consumer canary (2026-10-20)
+
+- [x] Merge PR [#1212](https://github.com/edithatogo/global-medicines-atlas/pull/1212)
+  with all required hosted checks passing. The workflow now selects one exact
+  qualified object while remaining constrained to an exact merged-main commit.
+- [x] Run hosted canary
+  [39317542644](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39317542644)
+  on merge commit `8932efd261ff6e4956dfc013702a5db19281ca63`. The production
+  binder and `FederatedReader` read the exact admitted July 2016 CSV; remote and
+  streamed digest and byte count match. Cache bytes were zero after read and
+  close. No source values or rows were interpreted or retained.
+- [x] Read back the metadata-only receipt at
+  `quality/qualifications/australian-m112-v4-group2016-csv-consumer-canary-20261020-39317542644.json`
+  (SHA-256
+  `c129eb177924a1a2096c2bfd0ea9fac3585fedd9c53cb2a6c8fcbcf4ddcb7b1c`).
+  M-112 now has two admitted objects and two `FederatedReader` canaries out of
+  1,759 approved paths. This does not qualify API, CLI, Atlas, browser product
+  consumers, source-native CSV semantics, or the remaining denominator.
+
 ## M-110 and M-112 bounded consumer canary refresh (2026-10-20)
 
 - [x] Requalify the admitted July 2016 MBS raw B2 object through the pinned

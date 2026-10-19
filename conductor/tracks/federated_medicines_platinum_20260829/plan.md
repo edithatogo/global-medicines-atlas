@@ -1538,17 +1538,13 @@
 - [x] Focused v3 replay role tests (11), broader M-112 federation selection
   (131), role-report `--check`, Ruff, targeted BasedPyright, and Test-Goblin
   routine passed after binding the receipt.
-- [~] Reconcile M-112 admission and admitted-product consumer-canary counts.
+- [x] Reconcile M-112 admission and admitted-product consumer-canary counts.
   Two raw MBS B2 objects are admitted under their exact v4 contracts: the July
-  workbook and July CSV. One bounded canary passed through the pinned
-  `FederatedReader` consumer on exact
-  `main` commit `7dbf14db2403485cabbe699858579cf7c7567012`. Remote and streamed
-  digests matched; no source values were interpreted or retained, and reader
-  cache usage returned to zero. The refreshed receipt is
-  `quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json`.
-  The CSV admission is recorded at
-  `quality/qualifications/australian-m112-v4-group2016-csv-admission-qualification-20261020.json`;
-  its bounded reader canary is pending on exact `main`. The API/CLI/Atlas/
-  Chromium traversal remains candidate-only and does not add to the admitted-
-  product canary count. Continue per-object admission and run the corresponding
-  bounded consumer check only after each object qualifies.
+  workbook and July CSV. Each has a bounded canary through the pinned
+  `FederatedReader`; both exact-main receipts verify remote and streamed digest
+  and byte count, with no source values interpreted or retained and cache
+  usage at zero after read and close. The latest CSV receipt is
+  `quality/qualifications/australian-m112-v4-group2016-csv-consumer-canary-20261020-39317542644.json`.
+  The API/CLI/Atlas/Chromium traversal remains candidate-only, and the 1,757
+  other denominator objects remain unqualified. Continue per-object admission
+  and run its bounded consumer check only after that object qualifies.
