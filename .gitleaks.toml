@@ -10,4 +10,7 @@ regexTarget = "match"
 regexes = [
   '''^huggingface_api_revision"\s*:\s*"da83cad9116e2f9a5b927be7b080e9a5e5ea6998"\s*$''',
   '''^API":"7a2ba8a0b31dca32101172bde49f6dc17d3ef6d873afb4760651f2a22c3a502d"$''',
+  '''^dataset_access_response_sha256"\s*:\s*"71266cd78d98a3ba258a697890985b105917d6848b73935d2bb5b8c81e7605d7"\s*$''',
+  '''^dataset_access_response_sha256"\s*:\s*"a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7"\s*$''',
+  '''^idempotency_key"\s*:\s*"9bbe0080117a6627811fea29389ea8ae59f6b195dd4d30dbea7aa97d563ebcb9"\s*$''',
 ]
