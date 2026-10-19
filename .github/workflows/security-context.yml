@@ -36,8 +36,19 @@ jobs:
             "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/${GITLEAKS_ASSET}"
           echo "${GITLEAKS_SHA256}  ${GITLEAKS_ASSET}" | sha256sum --check
           tar --extract --gzip --file "$GITLEAKS_ASSET" gitleaks
-      - name: Scan repository and complete Git history
-        run: mkdir -p build && ./gitleaks git --redact --no-banner --report-format json --report-path build/gitleaks.json .
+      - name: Scan target and pull request complete Git history
+        env:
+          GITLEAKS_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            log_opts="--full-history $GITLEAKS_BASE_SHA HEAD --diff-filter=tuxdb"
+          else
+            log_opts="--full-history HEAD --diff-filter=tuxdb"
+          fi
+          mkdir -p build
+          ./gitleaks git --redact --no-banner --report-format json \
+            --report-path build/gitleaks.json --log-opts="$log_opts" .
       - name: Upload leak-detection receipt
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6

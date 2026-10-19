@@ -668,6 +668,10 @@ def test_supply_chain_manages_tool_literals_and_scans_history() -> None:
     )
     assert "fetch-depth: 0" in security
     assert "./gitleaks git --redact" in security
+    assert "GITLEAKS_BASE_SHA HEAD --diff-filter=tuxdb" in security
+    assert 'log_opts="--full-history HEAD --diff-filter=tuxdb"' in security
+    assert '--log-opts="$log_opts"' in security
+    assert "--all" not in security
     assert "GITLEAKS_SHA256:" in security
     assert "GITLEAKS_ASSET:" in security
 
