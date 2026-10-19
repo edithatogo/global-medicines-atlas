@@ -39,6 +39,18 @@
     "public_release_rights_attested": true,
     "rights_state": "maintainer_attested_exact_public_release_permission_for_bronze_projection"
   },
+  "august_2026_mbs_out_of_denominator_scope_exception": {
+    "dataset_mutated": false,
+    "dataset_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+    "frozen_inventory_membership_changed": false,
+    "identity_bound_by_exact_revision_manifests": true,
+    "object_count": 4,
+    "outside_frozen_inventory": true,
+    "path": "quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json",
+    "rights_state": "unresolved_no_object_specific_derived_output_rights_attestation",
+    "sha256": "49fc1923fbc858833dd03e4778c7df56a38f7e0051623eb7c6f704649f661b13",
+    "source_payloads_read": false
+  },
   "cms_hcpcs_reference": {
     "acquisition_time_rights_state_preserved": "unknown",
     "b2_state": "external_reference_only",
@@ -150,6 +162,7 @@
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c",
     "quality/qualifications/australian-m112-rights-release-preflight-20261019.json": "08102adea4195b710bb343be7b1e2be2ac7064e3aa49814d082d4a4dfccbdd07",
     "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24",
+    "quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json": "49fc1923fbc858833dd03e4778c7df56a38f7e0051623eb7c6f704649f661b13",
     "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
     "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
     "quality/qualifications/australian-pbs-utilisation-publication-authorization.json": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
@@ -241,9 +254,10 @@
       "work": "Resolve remaining exact-object MBS/PBS source rights and binding gaps in frozen inventory"
     },
     {
+      "evidence": "quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json",
       "object_count": 4,
-      "state": "excluded from the bounded attestation and frozen inventory; tracked as a separate scope exception",
-      "work": "Resolve identity and rights scope for four additional August 2026 MBS Bronze projection outputs outside the frozen M-112 denominator"
+      "state": "identity bound to exact public revision and manifest hashes; rights unresolved",
+      "work": "Resolve object-bound rights for four additional August 2026 MBS Bronze projection outputs outside the frozen M-112 denominator"
     }
   ],
   "schema_id": "global-medicines-atlas.australian-m112-rights-release-preflight",
