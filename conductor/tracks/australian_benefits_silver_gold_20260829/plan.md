@@ -4204,3 +4204,8 @@
   end-to-end timeout passed when isolated. Coverage was 96.90%.
 - [ ] Resolve the exact PBS Bronze projection's own rights and continue the
   remaining source-specific rights review.
+
+- [x] After integrating main commit `5b4d6626` (PR #1211), rerun the
+  rights/preflight and July 2016 admission/role suites together: 28 passed.
+  Routine profile, Ruff, format, ty, BasedPyright, and diff checks passed on the
+  integrated tree.
