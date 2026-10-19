@@ -32,6 +32,34 @@ def test_v1_conformance_binds_all_exact_eligible_raw_b2_objects() -> None:
     )
 
 
+def test_durable_candidate_receipt_does_not_claim_v4_role_acceptance() -> None:
+    report = qualification._read_json(  # pyright: ignore[reportPrivateUsage]
+        qualification.ROOT, qualification.ROLE_REPORT
+    )
+    receipt = report["v1_conformance_candidate_receipt"]
+
+    assert receipt["git_commit"] == "290cc219217821404cf25bcfc58761821389d614"
+    assert receipt["url"].endswith(
+        "/290cc219217821404cf25bcfc58761821389d614/"
+        "quality/qualifications/australian-m112-v1-conformance-20261019.json"
+    )
+    assert (
+        receipt["sha256"]
+        == "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842"
+    )
+    assert receipt["anonymous_readback_verified"] is True
+    assert (
+        receipt["contract_role_state"] == "candidate_receipt_available_unbound"
+    )
+    assert report["cohort"]["v4_admissions"] == 0
+    assert report["cohort"]["consumer_canaries"] == 0
+    assert all(
+        item["contract_role_states"]["lineage.v1_conformance"]
+        == "candidate_receipt_available_unbound"
+        for item in report["objects"]
+    )
+
+
 @pytest.mark.parametrize(
     ("field", "value", "message"),
     [
