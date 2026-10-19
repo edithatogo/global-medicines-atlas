@@ -13,7 +13,7 @@ import json
 import re
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, Literal, cast
 from urllib.parse import urlsplit
 
 import httpx
@@ -685,7 +685,8 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
             "str", candidate["source_candidate_receipt"]["schema_era"]
         ),
         comparison_cohort=cast(
-            "str", candidate["source_candidate_receipt"]["comparison_cohort"]
+            "Literal['legacy', 'current', 'synthetic']",
+            candidate["source_candidate_receipt"]["comparison_cohort"],
         ),
         effective_date=cast(
             "str", candidate["source_candidate_receipt"]["effective_date"]

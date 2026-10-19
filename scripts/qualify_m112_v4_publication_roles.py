@@ -787,6 +787,8 @@ def _validate_v3_replay_receipt(  # ruff: ignore[too-many-locals] -- validate th
     plan_ref = entry.get("plan")
     if not isinstance(receipt_ref, dict) or not isinstance(plan_ref, dict):
         raise TypeError("v3 replay manifest artifact references are malformed")
+    receipt_ref = cast("dict[str, Any]", receipt_ref)
+    plan_ref = cast("dict[str, Any]", plan_ref)
     receipt_path = receipt_ref.get("path")
     plan_path = plan_ref.get("path")
     if not isinstance(receipt_path, str) or not isinstance(plan_path, str):
@@ -896,7 +898,7 @@ def _validate_v3_replay_receipt(  # ruff: ignore[too-many-locals] -- validate th
     )
 
 
-def _bind_v3_replay_candidate(  # ruff: ignore[too-many-branches,too-many-locals] -- bind each exact hosted replay receipt
+def _bind_v3_replay_candidate(  # ruff: ignore[too-many-branches,too-many-locals,too-many-statements] -- bind each exact hosted replay receipt
     candidates: list[dict[str, Any]], root: Path
 ) -> int:
     """Bind each independently verified hosted replay to its frozen object."""
@@ -910,6 +912,9 @@ def _bind_v3_replay_candidate(  # ruff: ignore[too-many-branches,too-many-locals
         or not isinstance(manifest_boundaries, dict)
     ):
         raise TypeError("v3 replay readback manifest sections are malformed")
+    entries_value = cast("list[Any]", entries_value)
+    manifest_scope = cast("dict[str, Any]", manifest_scope)
+    manifest_boundaries = cast("dict[str, Any]", manifest_boundaries)
     if not all((
         manifest.get("schema_id")
         == "global-medicines-atlas.m112-v3-replay-readback-manifest",
@@ -923,7 +928,7 @@ def _bind_v3_replay_candidate(  # ruff: ignore[too-many-branches,too-many-locals
         manifest_boundaries.get("temporary_source_bytes_removed") is True,
     )):
         raise ValueError("v3 replay readback manifest is not qualified")
-    entries = cast("list[Any]", entries_value)
+    entries = entries_value
     if len(entries) != manifest.get("scope", {}).get("replay_objects"):
         raise ValueError("v3 replay manifest object count is inconsistent")
     # Verify every referenced byte digest first. This prevents later plan
@@ -932,12 +937,14 @@ def _bind_v3_replay_candidate(  # ruff: ignore[too-many-branches,too-many-locals
     for entry_value in entries:
         if not isinstance(entry_value, dict):
             raise TypeError("v3 replay manifest entry is malformed")
+        entry_value = cast("dict[str, Any]", entry_value)
         for role in ("receipt", "plan"):
             reference = entry_value.get(role)
             if not isinstance(reference, dict):
                 raise TypeError(
                     "v3 replay manifest artifact reference is malformed"
                 )
+            reference = cast("dict[str, Any]", reference)
             relative = reference.get("path")
             expected_sha256 = reference.get("sha256")
             if (
@@ -1049,6 +1056,7 @@ def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-stat
         contract = json.loads(raw)
         if not isinstance(contract, dict):
             raise TypeError("M-112 v4 contract must be a JSON object")
+        contract = cast("dict[str, Any]", contract)
         digest = _sha256(raw)
         location = contract.get("location")
         if not isinstance(location, dict):
@@ -1069,6 +1077,7 @@ def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-stat
         report = json.loads(report_path.read_bytes())
         if not isinstance(report, dict):
             raise TypeError("M-112 v4 consumer qualification must be an object")
+        report = cast("dict[str, Any]", report)
         contract_path_value = report.get("contract_path")
         expected_digest = report.get("contract_sha256")
         admission = report.get("admission")
@@ -1085,6 +1094,7 @@ def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-stat
             or not isinstance(admission, dict)
         ):
             continue
+        admission = cast("dict[str, Any]", admission)
         contract_path = root / contract_path_value
         if not contract_path.is_file():
             raise ValueError(
@@ -1100,12 +1110,15 @@ def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-stat
         closure = report.get("receipt_closure")
         if not isinstance(closure, dict):
             raise TypeError("admission receipt closure must be an object")
+        closure = cast("dict[str, Any]", closure)
         receipt_roles = closure.get("roles")
         receipt_payloads = closure.get("receipts")
         if not isinstance(receipt_roles, list) or not isinstance(
             receipt_payloads, list
         ):
             raise TypeError("admission receipt closure arrays are malformed")
+        receipt_roles = cast("list[Any]", receipt_roles)
+        receipt_payloads = cast("list[Any]", receipt_payloads)
         if not all((
             report.get("approved_denominator") == APPROVED_DENOMINATOR,
             report.get("admissions") == 1,
@@ -1136,6 +1149,7 @@ def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-stat
             continue
         if not isinstance(canary, dict):
             raise TypeError("consumer canary record is malformed")
+        canary = cast("dict[str, Any]", canary)
         canary_identity = canary.get("object")
         boundaries = canary.get("boundaries")
         verification = canary.get("verification")
@@ -1147,6 +1161,9 @@ def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-stat
             raise TypeError(
                 "consumer canary identity, boundaries, or verification are malformed"
             )
+        canary_identity = cast("dict[str, Any]", canary_identity)
+        boundaries = cast("dict[str, Any]", boundaries)
+        verification = cast("dict[str, Any]", verification)
         if not all((
             canary.get("status") == "passed",
             canary.get("contract_sha256") == actual_digest,
