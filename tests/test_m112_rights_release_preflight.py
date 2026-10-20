@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-4.json"
+    "australian-m112-rights-release-preflight-20261020-12.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-3.json"
+    "australian-m112-rights-release-preflight-20261020-11.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -40,10 +40,19 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     None
 ):
     report = _json(PREFLIGHT)
-    assert report["status"] == "current_m112_admission_readback_refreshed"
+    for path, expected_digest in report["inputs"].items():
+        assert (
+            hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
+            == expected_digest
+        )
+    assert report["status"] == (
+        "frozen_m112_exact_object_rights_attested_vocabulary_and_lineage_gaps_open"
+    )
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1759
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 0
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261020-3.json"
+        "australian-m112-rights-release-preflight-20261020-11.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -53,22 +62,31 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
-        == 4
+        == 6
     )
     assert (
         previous_report["release_and_admission_boundaries"]["consumer_canaries"]
-        == 4
+        == 5
     )
     reconciliation = report["current_rights_reconciliation"]
     assert reconciliation["approved_denominator"] == 1759
     assert reconciliation["membership_changed"] is False
-    assert reconciliation["v4_admissions"] == 4
-    assert reconciliation["consumer_canaries"] == 4
-    assert reconciliation["deferred_objects"] == 1755
+    assert reconciliation["v4_admissions"] == 6
+    assert reconciliation["consumer_canaries"] == 5
+    assert reconciliation["deferred_objects"] == 1753
     assert (
         hashlib.sha256((ROOT / reconciliation["path"]).read_bytes()).hexdigest()
         == reconciliation["sha256"]
     )
+    raw = report["mbs_raw_object_rights_attestation"]
+    assert raw["object_count"] == 6
+    assert raw["public_release_rights_attested"] is True
+    assert raw["permission_instrument_existence_and_applicability"] == (
+        "maintainer_attested_not_independently_reviewed"
+    )
+    assert raw["b1_b2_lineage_or_admission_inferred"] is False
+    assert raw["v4_admission"] is False
+    assert raw["consumer_canary"] is False
     q3 = report["q3_admission"]
     assert q3["workflow_run_id"] == 39356792827
     assert q3["consumer_canary_passed"] is True
@@ -76,10 +94,29 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
         hashlib.sha256((ROOT / q3["receipt_path"]).read_bytes()).hexdigest()
         == q3["receipt_sha256"]
     )
+    projection = report["pbs_source_archive_exact_publication"][
+        "source_projection"
+    ]
+    assert projection["public_release_rights_attested"] is True
+    assert projection["permission_instrument_independently_reviewed"] is False
+    assert projection["release_performed_by_this_reconciliation"] is False
+    limited_screen = report["pbs_utilisation_raw_objects"][
+        "limited_vocabulary_screen"
+    ]
+    assert (
+        limited_screen["results"]["full_vocabulary_exclusion_review_complete"]
+        is False
+    )
+    assert (
+        report["pbs_utilisation_raw_objects"][
+            "full_object_release_requires_exclusion_review"
+        ]
+        is True
+    )
 
 
 def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
-    report = _json(PREVIOUS_PREFLIGHT)
+    report = _json(PREFLIGHT)
     july = report["july_2025_mbs_silver"]
     assert len(july["objects"]) == 6
     assert july["public_release_authorized"] is True
@@ -120,11 +157,21 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert report["pbs_utilisation_raw_objects"][
         "full_object_release_requires_exclusion_review"
     ]
+    limited_screen = report["pbs_utilisation_raw_objects"][
+        "limited_vocabulary_screen"
+    ]
+    assert (
+        limited_screen["results"]["full_vocabulary_exclusion_review_complete"]
+        is False
+    )
+    assert (
+        limited_screen["full_object_release_requires_exclusion_review"] is True
+    )
     gates = report["release_and_admission_boundaries"]
     assert gates["all_remaining_deferrals_preserved"] is True
-    assert gates["deferred_objects"] == 1755
-    assert gates["v4_admissions"] == 4
-    assert gates["consumer_canaries"] == 4
+    assert gates["deferred_objects"] == 1753
+    assert gates["v4_admissions"] == 6
+    assert gates["consumer_canaries"] == 5
     assert gates["external_publications_performed"] is False
 
 
