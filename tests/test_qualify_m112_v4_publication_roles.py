@@ -68,7 +68,7 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
     assert report["cohort"]["approved_denominator"] == 1759
     assert report["cohort"]["approved_denominator_changed"] is False
     assert report["cohort"]["v4_admissions"] == 6
-    assert report["cohort"]["consumer_canaries"] == 5
+    assert report["cohort"]["consumer_canaries"] == 6
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
     assert report["source_qualification"]["path"] == OVERLAY_REPORT
@@ -89,7 +89,7 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
         "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
         "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
     }
-    assert report["cohort"]["consumer_canaries"] == 5
+    assert report["cohort"]["consumer_canaries"] == 6
     canary = json.loads(
         (
             Path(__file__).resolve().parents[1] / "quality/qualifications/"
@@ -126,9 +126,7 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
     assert canary["verification"]["reader_cache_bytes_after_close"] == 0
 
 
-def test_q2_may_exact_contract_is_admitted_pending_its_consumer_canary() -> (
-    None
-):
+def test_q2_may_exact_contract_is_admitted_with_its_consumer_canary() -> None:
     root = Path(__file__).resolve().parents[1]
     report_path = root / "quality/qualifications/"
     report_path /= (
@@ -138,9 +136,9 @@ def test_q2_may_exact_contract_is_admitted_pending_its_consumer_canary() -> (
     report = json.loads(report_path.read_bytes())
     contract_path = root / report["contract_path"]
 
-    assert report["status"] == "admitted_pending_consumer_canary"
+    assert report["status"] == "admitted_with_consumer_canary"
     assert report["admissions"] == 1
-    assert report["consumer_canaries"] == 0
+    assert report["consumer_canaries"] == 1
     assert report["admission"]["path"] == (
         "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv"
     )
@@ -150,7 +148,12 @@ def test_q2_may_exact_contract_is_admitted_pending_its_consumer_canary() -> (
     )
     assert len(report["receipt_closure"]["roles"]) == 12
     assert len(report["receipt_closure"]["receipts"]) == 10
-    assert report["consumer_canary"] is None
+    canary = report["consumer_canary"]
+    assert canary["status"] == "passed"
+    assert canary["hosted_workflow"]["run_id"] == 39419974066
+    assert canary["verification"]["remote_digest_match"] is True
+    assert canary["verification"]["consumer_stream_digest_match"] is True
+    assert canary["verification"]["reader_cache_bytes_after_close"] == 0
 
 
 def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
@@ -241,7 +244,7 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
     )
     assert report["v3_replay_candidate_evidence"]["objects"] == 6
     assert report["cohort"]["v4_admissions"] == 6
-    assert report["cohort"]["consumer_canaries"] == 5
+    assert report["cohort"]["consumer_canaries"] == 6
 
 
 def test_v3_replay_receipt_must_match_the_pinned_object(
@@ -414,7 +417,7 @@ def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
     )
     assert report["source_semantics_candidate_evidence"]["objects"] == 13
     assert report["cohort"]["v4_admissions"] == 6
-    assert report["cohort"]["consumer_canaries"] == 5
+    assert report["cohort"]["consumer_canaries"] == 6
 
 
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
