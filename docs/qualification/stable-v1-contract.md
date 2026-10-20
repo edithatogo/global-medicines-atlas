@@ -35,7 +35,7 @@ is not final-v1 approval.
 
 ## Initial support boundary
 
-Python 3.14 is the authoritative engine. Mojo remains experimental. Windows,
+Python 3.15 is the authoritative engine. Mojo remains experimental. Windows,
 Linux, and macOS are candidate support targets until clean-wheel and sdist
 consumer rehearsals verify them. LanceDB is derived acceleration; stable core
 installation must remain usable through deterministic fallback without it.

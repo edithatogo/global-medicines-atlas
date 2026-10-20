@@ -224,7 +224,7 @@ def qualify(
     for artifact in artifacts:
         with tempfile.TemporaryDirectory(prefix="gma-consumer-") as temporary:
             environment = Path(temporary) / "venv"
-            _run(["uv", "venv", "--python", "3.14", str(environment)])
+            _run(["uv", "venv", "--python", "3.15", str(environment)])
             _run([
                 "uv",
                 "pip",

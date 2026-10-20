@@ -71,27 +71,27 @@ An advisory weekly/manual CPython 3.14 free-threaded canary runs deterministic
 normalization tests with `PYTHON_GIL=0`. It uses an isolated minimal core
 environment because the optional LanceDB semantic backend does not yet publish
 CPython 3.14t distributions. The canary is explicitly non-blocking and does
-not replace the supported Python 3.14 lane.
+not replace the supported Python 3.15 lane.
 
 ## Local Commands
 
 ```powershell
-uv sync --python 3.14.6 --group test-goblin --locked
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py fast
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py changed
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py failed
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py picked
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contracts
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py metamorphic
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contract
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py simulation
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py coverage
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py routine
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py strict
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py package
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile-tests
+uv sync --python 3.15.0 --group test-goblin --locked
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py quick
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py fast
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py changed
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py failed
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py picked
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py contracts
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py metamorphic
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py contract
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py simulation
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py coverage
+uv run --python 3.15.0 --group dev python scripts/test_goblin.py routine
+uv run --python 3.15.0 --group dev python scripts/test_goblin.py strict
+uv run --python 3.15.0 --group dev python scripts/test_goblin.py package
+uv run --python 3.15.0 --group dev python scripts/test_goblin.py profile
+uv run --python 3.15.0 --group dev python scripts/test_goblin.py profile-tests
 ```
 
 Local pytest profiles remain serial by default. Set a positive
@@ -112,8 +112,17 @@ host coordination facility, not a repository dependency, and does not replace
 hosted CI.
 
 ```bash
-TEST_GOBLIN_WORKERS=4 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
+TEST_GOBLIN_WORKERS=4 uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py quick
 ```
+
+The protected GitHub check-context names retain their existing `Python 3.14`
+prefix so branch protection remains attached to the same required checks.
+Every workflow command selects Python 3.15.0; the context label is not
+runtime evidence.
+
+The required GitHub check contexts keep their existing `Python 3.14` prefix
+to preserve branch protection. Workflow commands run Python 3.15.0; the
+context label is not evidence of the interpreter version.
 
 The `fast` profile excludes modules carrying the governed `slow` marker. Use
 the smallest relevant test file or node ID while editing. If a test fails, the
@@ -128,7 +137,7 @@ run:
 
 ```bash
 TEST_GOBLIN_PICKED_MODE=branch TEST_GOBLIN_PICKED_PARENT=origin/main \
-  uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py picked
+  uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py picked
 ```
 
 The `changed` profile uses pytest-testmon's dependency map and stays serial so
@@ -138,7 +147,7 @@ silently bootstrapping. Build the map only when the full run is intentional:
 
 ```bash
 TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP=1 \
-  uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py changed
+  uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py changed
 ```
 
 Delete `.testmondata*` when the environment or test inventory changes
@@ -174,15 +183,16 @@ selection. This repository already has random ordering, timeouts, bounded
 benchmarks, and Scalene profiling.
 
 Hosted coverage explicitly selects Coverage.py's `sys.monitoring` core on
-Python 3.14. The bounded smoke lane verified that current dynamic test contexts,
-branch coverage, xdist collection, and XML output remain compatible. Aggregate
+Python 3.15. The prior Python 3.14 smoke lane verified dynamic test contexts,
+branch coverage, xdist collection, and XML output. The Python 3.15 lane must
+produce a new hosted smoke receipt before those results qualify 3.15. Aggregate
 coverage remains serial: a measured two-worker experiment ran slower and caused
 resource contention in the product-performance gate.
 
 The stable release consumer reproduction runs its two independent clean-clone
-contracts with two pytest-xdist workers. Required check names, exact Python
-3.14.6 toolchain enforcement, LF/CRLF policy, receipt comparison, and wheel and
-sdist consumption remain unchanged.
+contracts with two pytest-xdist workers. The workflow now enforces Python 3.15.0,
+LF/CRLF policy, receipt comparison, and wheel and sdist consumption. Hosted
+3.15 consumer receipts are pending on the upgrade pull request.
 
 Gremlin subprocess isolation remains serial at the harness boundary. Two
 measured frontier experiments were rejected: ten-mutant batches exceeded the
@@ -195,7 +205,7 @@ profiles a bounded representative pytest workload and stores its Scalene JSON
 and measured receipt beneath ignored `build/` paths.
 
 The `package` profile builds both wheel and source distribution, installs each
-into a disposable core-only Python 3.14 environment, verifies metadata and
+into a disposable core-only Python 3.15 environment, verifies metadata and
 dynamic version identity, exercises import/CLI/API/OpenAPI behavior, reinstalls
 the artifact, and writes `build/quality-receipts/consumer.json`. CI repeats the
 same rehearsal on Windows, Linux, and macOS with platform-specific receipts.
@@ -203,7 +213,7 @@ same rehearsal on Windows, Linux, and macOS with platform-specific receipts.
 Run the mutation profile on Linux CI or in WSL:
 
 ```bash
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py mutation
+uv run --python 3.15.0 --group test-goblin python scripts/test_goblin.py mutation
 ```
 
 Mutmut 3 requires operating-system `fork` support and therefore cannot execute
@@ -244,7 +254,7 @@ on native Windows. The harness reports that boundary explicitly.
 
 ### Coverage and Codecov
 
-- Python 3.14.6 is selected by `.python-version` and enforced by the project
+- Python 3.15.0 is selected by `.python-version` and enforced by the project
   metadata and CI commands.
 - Property, metamorphic, contract, deterministic-simulation and randomized-order
   tests are blocking on pull requests. The three specialized profiles are also
@@ -303,7 +313,7 @@ the strict formal gate and additionally includes `scripts/`, where subprocess,
 CLI and optional-tool boundaries require the more mature checker. This
 asymmetry is intentional and executable in `pyproject.toml`; new production
 packages must enter both scopes, while script inclusion in `ty` will be
-promoted only after its Python 3.14 subprocess and dynamic-import behavior is
+promoted only after its Python 3.15 subprocess and dynamic-import behavior is
 compatible.
 
 The initial governed NZ FHIR adapter suite is the first operational slice.

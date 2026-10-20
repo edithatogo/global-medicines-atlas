@@ -39,7 +39,7 @@ jobs:
         env:
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
-          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
+          uv run --locked --python 3.15.0 python scripts/prepare_historical_pbs_reference_node.py \
             --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 --global-index \
             --output node --receipt reference-index-receipt.json
       - name: Retain only the derived index and bounded receipt
@@ -77,7 +77,7 @@ jobs:
       - name: Assemble exact index and partition coverage
         timeout-minutes: 55
         run: |
-          uv run --locked --python 3.14.6 python scripts/assemble_historical_pbs_reference_manifest.py \
+          uv run --locked --python 3.15.0 python scripts/assemble_historical_pbs_reference_manifest.py \
             --input nodes --output prepared/references --reference-shards 16
           cp prepared/references/preparation-receipt.json pbs-preparation.json
       - name: Retain transient verified reference inputs
@@ -123,7 +123,7 @@ jobs:
           if [[ "$DATE_PROFILE" != "none" ]]; then
             args+=(--date-profile "$DATE_PROFILE")
           fi
-          uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
+          uv run --locked --python 3.15.0 python scripts/qualify_historical_pbs_public.py \
             "${args[@]}" --output "pbs-$PROJECTION-receipt-$GITHUB_RUN_ATTEMPT.json"
       - name: Retain immutable phase receipt
         if: always()
@@ -183,7 +183,7 @@ jobs:
           if [[ "$DATE_PROFILE" != "none" ]]; then
             args+=(--date-profile "$DATE_PROFILE")
           fi
-          uv run --locked --python 3.14.6 python scripts/qualify_prepared_pbs_shard.py \
+          uv run --locked --python 3.15.0 python scripts/qualify_prepared_pbs_shard.py \
             "${args[@]}" --output "pbs-references-$SHARD-receipt-$GITHUB_RUN_ATTEMPT.json"
       - name: Retain immutable reference receipt
         if: always()
@@ -218,7 +218,7 @@ jobs:
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.14.6 python scripts/aggregate_historical_pbs_qualification.py \
+          uv run --locked --python 3.15.0 python scripts/aggregate_historical_pbs_qualification.py \
             --receipts receipts --exact-commit "$REQUESTED_COMMIT" \
             --reference-shards 16 \
             --output pbs-qualification-receipt.json
@@ -263,7 +263,7 @@ jobs:
           GROUP: ${{ matrix.group }}
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
-          uv run --locked --python 3.14.6 python scripts/prepare_historical_pbs_reference_node.py \
+          uv run --locked --python 3.15.0 python scripts/prepare_historical_pbs_reference_node.py \
             --exact-commit "$REQUESTED_COMMIT" --reference-shards 16 \
             --group-index "$GROUP" --group-count 8 \
             --output node --receipt "reference-group-$GROUP-receipt.json"

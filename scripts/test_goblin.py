@@ -1006,7 +1006,7 @@ def worker_args() -> tuple[str, ...]:
 def build_pytest_command(
     tests: Sequence[str], *extra: str, parallel: bool = True
 ) -> list[str]:
-    """Build a pytest command using the active Python 3.14 environment."""
+    """Build a pytest command using the active Python 3.15 environment."""
     return [
         sys.executable,
         "-m",

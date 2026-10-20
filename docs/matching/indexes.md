@@ -26,7 +26,7 @@ the index.
 Generate an index from JSONL rows and a JSON lineage document:
 
 ```console
-uv run --python 3.14.6 python scripts/generate_matching_indexes.py \
+uv run --python 3.15.0 python scripts/generate_matching_indexes.py \
   rows.jsonl lineage.json build/matching-index
 ```
 

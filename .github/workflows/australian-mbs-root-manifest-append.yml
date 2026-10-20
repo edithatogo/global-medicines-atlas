@@ -35,7 +35,7 @@ jobs:
 
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.11.29"
+          version: "0.13.1"
 
       - name: Bind main head, append contract and publication authority
         env:
@@ -46,7 +46,7 @@ jobs:
           test "$GITHUB_REF" = refs/heads/main
           test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
           test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
-          uv run --locked --python 3.14.6 python - <<'PY'
+          uv run --locked --python 3.15.0 python - <<'PY'
           import json
           from pathlib import Path
           from jsonschema import Draft202012Validator
@@ -63,7 +63,7 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.14.6 --with huggingface-hub==1.14.0 python scripts/append_australian_mbs_root_manifest.py \
+          uv run --locked --python 3.15.0 --with huggingface-hub==1.14.0 python scripts/append_australian_mbs_root_manifest.py \
             --exact-commit "$GITHUB_SHA" \
             --receipt-output build/m112-root-manifest-receipt.json
           cat build/m112-root-manifest-receipt.json

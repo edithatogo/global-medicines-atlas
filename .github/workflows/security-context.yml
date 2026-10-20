@@ -68,9 +68,9 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.11.29"
+          version: "0.13.1"
           enable-cache: true
-      - run: uv sync --python 3.14.6 --group dev --locked
+      - run: uv sync --python 3.15.0 --group dev --locked
       - name: Validate governed context
         run: uv run python scripts/validate_context.py
       - name: Install and run actionlint
@@ -107,11 +107,17 @@ jobs:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          version: "0.11.29"
+          version: "0.13.1"
           enable-cache: true
-      - run: uv sync --python 3.14.6 --group dev --group security --locked
+      - run: uv sync --python 3.15.0 --group dev --group security --locked
       - name: Audit locked Python environment
-        run: uv run --group security pip-audit
+        env:
+          UV_PYTHON_INSTALL_DIR: ${{ runner.temp }}/audit-python
+        run: |
+          uv export --locked --no-emit-project --group dev --group security \
+            --format requirements.txt > "$RUNNER_TEMP/locked-requirements.txt"
+          uv tool run --python 3.14 --from pip-audit==2.10.1 pip-audit \
+            --require-hashes -r "$RUNNER_TEMP/locked-requirements.txt"
       - name: Generate CycloneDX SBOM
         run: mkdir -p build && uv run --group security cyclonedx-py environment --output-file build/sbom.cdx.json
       - name: Upload SBOM

@@ -100,7 +100,7 @@ jobs:
       - name: Admit and project immutable Bronze products
         run: |
           set -euo pipefail
-          uv run --frozen --python 3.14.6 python scripts/qualify_pbs_v3_archive.py \
+          uv run --frozen --python 3.15.0 python scripts/qualify_pbs_v3_archive.py \
             --archive work/source.zip --output work/stage \
             --source-url "$SOURCE_URL" --dataset "$HF_DATASET" \
             --retrieved-at "$(cat work/retrieved-at.txt)" \
@@ -115,7 +115,7 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${HF_TOKEN:-}"
-          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          uv run --python 3.15.0 --with huggingface-hub==1.14.0 python - <<'PY'
           import os
           from pathlib import Path
           from huggingface_hub import HfApi
@@ -153,7 +153,7 @@ jobs:
           REVISION: ${{ steps.publish.outputs.revision }}
         run: |
           set -euo pipefail
-          uv run --python 3.14.6 --with huggingface-hub==1.14.0 python - <<'PY'
+          uv run --python 3.15.0 --with huggingface-hub==1.14.0 python - <<'PY'
           import hashlib
           import json
           import os
