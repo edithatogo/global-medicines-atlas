@@ -199,7 +199,7 @@
     "quality/qualifications/cms-hcpcs-rights-review-20261019.json": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
     "quality/qualifications/reimbursement-atlas-pbs-raw-permission-20260831.json": "0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098",
     "scripts/reconcile_m112_current_rights_state.py": "3c34413578608e765ff7d55f049fabc3072c42a782797d824aa078f57110912f",
-    "tests/test_m112_rights_release_preflight.py": "21b69344077938d1e6dd35bd534958a6de2d0c2f97d77cb0bf742aa0c0f63855",
+    "tests/test_m112_rights_release_preflight.py": "944378285b3a43ad1dc6e98b107b6ccb1e4c4b5ee5e1f33d92c7555cea99f354",
     "tests/test_reconcile_m112_current_rights_state.py": "ffa5c6987f3b9d3e6984c646ea0e6b5930d1cf9a1daf9bdf4d98e5c0998e98d4"
   },
   "july_2025_mbs_silver": {

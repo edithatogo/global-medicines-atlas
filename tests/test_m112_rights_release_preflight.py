@@ -142,8 +142,9 @@ def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> 
     attestation_ref = exception["attestation_path"]
     attestation_path = ROOT / attestation_ref
     attestation = _json(attestation_path)
-    assert hashlib.sha256(attestation_path.read_bytes()).hexdigest() == (
-        exception["attestation_sha256"]
+    assert (
+        hashlib.sha256(attestation_path.read_bytes()).hexdigest()
+        == (exception["attestation_sha256"])
     )
     assert attestation["maintainer_response"] == "Attest exact four"
     assert attestation["permission_instrument_existence_and_applicability"] == (
@@ -151,7 +152,10 @@ def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> 
     )
     assert attestation["public_release_rights_attested"] is True
     assert attestation["boundaries"]["new_publication_performed"] is False
-    assert attestation["boundaries"]["v4_admission_or_promotion_authorized"] is False
+    assert (
+        attestation["boundaries"]["v4_admission_or_promotion_authorized"]
+        is False
+    )
     assert attestation["boundaries"]["consumer_canaries_authorized"] is False
     assert len(attestation["authorized_objects"]) == 4
     by_identity = {
@@ -164,7 +168,8 @@ def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> 
     }
     assert all(
         item["rights_state"] == scope["scope"]["rights_state"]
-        and item["permission_evidence"] == {
+        and item["permission_evidence"]
+        == {
             "path": attestation_ref,
             "sha256": exception["attestation_sha256"],
         }
