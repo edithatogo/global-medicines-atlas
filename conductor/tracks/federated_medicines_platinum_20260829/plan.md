@@ -1548,3 +1548,26 @@
   The API/CLI/Atlas/Chromium traversal remains candidate-only, and the 1,757
   other denominator objects remain unqualified. Continue per-object admission
   and run its bounded consumer check only after that object qualifies.
+
+## 2026-10-20 M-112 exact-main consumer canary refresh
+
+- [x] Re-run the bounded hosted M-112 consumer on exact `main` commit
+  `b6dcb12d29fd6c9b4e751c9ec82b6fcdc6e0d976` for the already-admitted July
+  2016 Group workbook. The `FederatedReader` receipt passed remote and streamed
+  digest checks, retained zero cache bytes after read and close, interpreted no
+  source values, and retained no source payload. Preserve the metadata-only
+  receipt at
+  `quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39351963357.json`.
+- [x] Attempt the same exact-main canary for the admitted July CSV and historical
+  ZIP. The CSV stopped before consumer execution because its raw-B2 contract is
+  stale against current role evidence (`39351959932`). The ZIP stopped during
+  receipt closure because GitHub API returned `403 rate limit exceeded`
+  (`39351966724`). Neither run is counted as a canary; retain both blockers
+  without retrying unchanged inputs.
+- [~] The repository's earlier track rows saying zero canaries are stale: the
+  current role qualification records 3 admissions and 3 qualifying canaries.
+  This new receipt is a fresh current-main execution for an already-canaryed
+  workbook, so it does not add a distinct admitted object. Refresh the CSV
+  contract after its role evidence is current, and retry the historical ZIP only
+  after GitHub API rate limiting has cleared. API/CLI/Atlas/browser-product
+  consumer qualification remains a separate open gate.
