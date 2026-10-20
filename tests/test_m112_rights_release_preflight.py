@@ -10,7 +10,7 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-2.json"
+    "australian-m112-rights-release-preflight-20261020-3.json"
 )
 
 
@@ -36,7 +36,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert report["effective_m112_rights"]["resolved_object_count"] == 1752
     assert report["effective_m112_rights"]["unresolved_object_count"] == 7
     assert report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261020.json"
+        "australian-m112-rights-release-preflight-20261020-2.json"
     )
     assert report["previous_preflight"]["preserved_unchanged"] is True
     previous_preflight = ROOT / report["previous_preflight"]["path"]
@@ -102,6 +102,9 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert cms["rights_state"] == "permitted"
     assert cms["reviewer_status"] == "approved"
     assert cms["acquisition_time_rights_state_preserved"] == "unknown"
+    assert cms["superseded_admission_reviewer_status"] == "unreviewed"
+    assert cms["latest_admission_state"] == "landed"
+    assert cms["latest_admission_reviewer_status"] == "approved"
     assert cms["external_publication_authorized"] is False
     assert cms["derived_table_rights_concluded"] is False
     assert report["pbs_utilisation_raw_objects"][

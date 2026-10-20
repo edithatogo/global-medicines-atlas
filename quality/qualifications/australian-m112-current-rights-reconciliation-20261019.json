@@ -58,6 +58,9 @@
     "derived_table_rights_concluded": false,
     "external_publication_authorized": false,
     "inside_m112_frozen_inventory": false,
+    "latest_admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json",
+    "latest_admission_reviewer_status": "approved",
+    "latest_admission_sha256": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
     "latest_admission_state": "landed",
     "processing_or_v4_admission_authorized": false,
     "reviewer_status": "approved",
@@ -66,10 +69,13 @@
     "rights_state": "permitted",
     "sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
     "source_id": "us_cms_hcpcs_level_ii",
-    "source_version": "us_cms_hcpcs_level_ii_2026_07"
+    "source_version": "us_cms_hcpcs_level_ii_2026_07",
+    "superseded_admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json",
+    "superseded_admission_reviewer_status": "unreviewed",
+    "superseded_admission_sha256": "d08dd8d20fdca069eff922ae8f3cca04bd5acb7bc494196ffa9c613c99548784"
   },
   "effective_m112_rights": {
-    "resolved_object_count": 1740,
+    "resolved_object_count": 1752,
     "rights_evidence_does_not_imply_admission": true,
     "state_counts": [
       {
@@ -130,7 +136,7 @@
         "candidate_class": "existing_data_projection",
         "dataset": "edithatogo/reimbursement-atlas",
         "object_count": 12,
-        "state": "unresolved: source-specific rights and per-record provenance not qualified"
+        "state": "maintainer_attested_exact_public_release_permission_for_derived_projection"
       },
       {
         "candidate_class": "raw_source_payload",
@@ -139,10 +145,11 @@
         "state": "owner_attested_pbs_raw_redistribution_permission"
       }
     ],
-    "unresolved_object_count": 19
+    "unresolved_object_count": 7
   },
   "evidence_inputs": {
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
+    "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json": "d08dd8d20fdca069eff922ae8f3cca04bd5acb7bc494196ffa9c613c99548784",
     "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
     "quality/bronze/imported-acquisitions/au-pbs/712fd306658de6db5ae0aaa2be39d554e5a18c306987cc614152efbed53f30f4.json": "dbfab903b4d24feb62fa77c141422a4cb33a85eb08583d3a7d40f0200f6190e3",
     "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
@@ -161,6 +168,7 @@
     "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
     "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
     "quality/qualifications/australian-pbs-utilisation-publication-authorization.json": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
+    "quality/qualifications/australian-reimbursement-atlas-medallion-rights-attestation-20261020.json": "f781278ad4af0102f66078439897f7ac326cd59e25a43d48a1c4a97ffe682fbe",
     "quality/qualifications/cms-hcpcs-rights-review-20261019.json": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
     "quality/qualifications/reimbursement-atlas-pbs-raw-permission-20260831.json": "0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098"
   },
@@ -299,7 +307,7 @@
     ],
     "unique_object_counts_are_deduplicated_across_runs": true
   },
-  "observed_at": "2026-10-20T00:57:33Z",
+  "observed_at": "2026-10-20T03:48:25Z",
   "pbs_raw_redistribution_permission": {
     "all_objects_remain_deferred": true,
     "b1_b2_lineage_complete": true,
@@ -19246,7 +19254,152 @@
     },
     "unlicensed_vocabulary_presence_reviewed": false
   },
-  "purpose": "Reconcile effective rights evidence after the exact MBS Silver attestation, PBS utilisation publication authorization, and CMS HCPCS rights decision without changing object membership or release state.",
+  "purpose": "Reconcile effective rights evidence after exact MBS, Reimbursement Atlas, PBS utilisation, and CMS rights decisions without changing object membership, admission, or release state.",
+  "reimbursement_atlas_medallion_projections": {
+    "attestation_path": "quality/qualifications/australian-reimbursement-atlas-medallion-rights-attestation-20261020.json",
+    "attestation_sha256": "f781278ad4af0102f66078439897f7ac326cd59e25a43d48a1c4a97ffe682fbe",
+    "consumer_canaries": 0,
+    "object_count": 12,
+    "objects": [
+      {
+        "byte_count": 1820758,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/acquisition_b1/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "0bd2f7661037b620a21943ed6d7f2dd28a93437d43072d6ceabf3411b5840da1",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 27219,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/catalogue_b0/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "c27b998f9425714c42da0a9c8192e6fb5a613031210548cc0eb8b44388aaa8c4",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 1767273,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/evidence_b2/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "d7d33a8b0b6bd5cf507639286348b53e79d76e59347ef9575ff555a1e66f68c5",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 3267,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/gold/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "a4d3a99d9b6db9dff6a9e267e73806460b082d8ee8fbdefb55a3c7d077d85532",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 10763,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/lineage/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "9d73e2f79b44f221486b4ad0e1df576cdbd18763d1aa3fa7adb8e6fe526e639f",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 4340,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/pbs_archive_variants/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "e9059e17bf78c099f0350610487bbc78e5b51c8e9d49726b0b117e01e3c4d0db",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 811545,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/pbs_archive_verification/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "7cea95acfde2f023a8a3b84628b7bcd70a023ab1ebde3d5ac0449eedb36a5f8d",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 871678,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/pbs_pdf_provenance/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "24cb8c98f8a09f943ef3369ec63b9a2f7b3e19bfca7cf2a7ec64e1a78dcf4e07",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 548634,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/pbs_structured_provenance/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "fab87f283f31f51db1f5f1bee76b02c3fbe5622bea1deee4632be0ff4768a28c",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 2088,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/platinum/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "82aa16098cbbdedb8d6583caf367c8a41b34ca00f448e354a3921b12592dc9d6",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 1321055,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/promotion_decisions/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "03036720150f163e471445b594d21eeb51f95e4bd7db1070b74afc27b7d8c5c7",
+        "v4_admission": false
+      },
+      {
+        "byte_count": 12732,
+        "consumer_canary": false,
+        "dataset": "edithatogo/reimbursement-atlas",
+        "lineage_complete": true,
+        "path": "data/medallion/silver/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+        "sha256": "299b3721f72af235dc80a9b96f590a39ef8fe0b683618764ad56af713e1848a1",
+        "v4_admission": false
+      }
+    ],
+    "permission_instrument_existence_and_applicability": "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction",
+    "public_redistribution_rights_attested": true,
+    "public_release_performed": false,
+    "rights_state": "maintainer_attested_exact_public_release_permission_for_derived_projection",
+    "v4_admissions": 0
+  },
   "schema_id": "global-medicines-atlas.australian-m112-current-rights-reconciliation",
   "schema_version": 1
 }
