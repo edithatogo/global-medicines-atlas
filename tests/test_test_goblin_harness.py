@@ -756,6 +756,16 @@ def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
             assert not pattern.fullmatch(f'api_key": "{digest}"')
         assert len(set(digests)) == expected_count
 
+    q3_hr_plan = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/"
+            "australian-m112-v3-replay-plan-20261020-39431880718.json"
+        ).read_text(encoding="utf-8")
+    )
+    q3_hr_idempotency_key = q3_hr_plan["snapshots"][0]["idempotency_key"]
+    assert q3_hr_idempotency_key in digests
+
     disposition = (
         ROOT
         / "docs/qualification/gitleaks-history-false-positive-disposition-20261017.md"

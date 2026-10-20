@@ -742,8 +742,10 @@
   removed temporary source bytes. The replay is candidate evidence only;
   admission and canary counts remain six pending a complete v4 contract.
 - [x] Resolve the exact-history scanner finding for that replay. The redacted
-  report showed the planner-derived `idempotency_key` in its plan and receipt;
-  the allowlist and regression test cover only that exact field/value.
+  report showed the planner-derived `idempotency_key` in its plan and receipt.
+  A first allowlist entry had a two-character mismatch; the corrected value is
+  now read directly from the replay plan in the regression test, and only that
+  exact field/value is covered.
 - [x] Add Q2 May's exact frozen identity to the bounded v4 contract builder
   and hosted consumer-canary input. The two missing-target regressions failed
   first; the affected admission, role, and rights reconciliation tests then
