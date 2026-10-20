@@ -10,7 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-2.json"
+    "australian-m112-rights-release-preflight-20261020-4.json"
+)
+PREVIOUS_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261020-3.json"
 )
 
 
@@ -22,51 +26,40 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     None
 ):
     report = _json(PREFLIGHT)
-    for path, expected_digest in report["inputs"].items():
-        assert (
-            hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
-            == expected_digest
-        )
-    historical = report["historical_preflight"]
-    assert historical["superseded"] is True
-    assert historical["preserved_unchanged"] is True
-    assert historical["path"].endswith("preflight-20261019.json")
-    assert report["frozen_inventory"]["object_count"] == 1759
-    assert report["frozen_inventory"]["membership_changed"] is False
-    assert report["effective_m112_rights"]["resolved_object_count"] == 1752
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 7
-    assert report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261020.json"
+    assert report["status"] == "current_m112_admission_readback_refreshed"
+    previous = report["previous_preflight"]
+    assert previous["path"].endswith(
+        "australian-m112-rights-release-preflight-20261020-3.json"
     )
-    assert report["previous_preflight"]["preserved_unchanged"] is True
-    previous_preflight = ROOT / report["previous_preflight"]["path"]
+    assert previous["preserved_unchanged"] is True
     assert (
-        hashlib.sha256(previous_preflight.read_bytes()).hexdigest()
-        == report["previous_preflight"]["sha256"]
+        hashlib.sha256(PREVIOUS_PREFLIGHT.read_bytes()).hexdigest()
+        == previous["sha256"]
     )
-    pbs_archive = report["pbs_source_archive_exact_publication"]
-    assert pbs_archive["exact_object_publication_authorized"] is True
-    assert pbs_archive["rights_state"] == (
-        "owner_attested_pbs_raw_redistribution_permission"
-    )
-    assert pbs_archive["rights_conclusion_made"] is True
-    assert report["pbs_raw_redistribution_permission"]["object_count"] == 1708
+    previous_report = _json(PREVIOUS_PREFLIGHT)
+    assert previous_report["release_and_admission_boundaries"]["v4_admissions"] == 4
+    assert previous_report["release_and_admission_boundaries"]["consumer_canaries"] == 4
+    reconciliation = report["current_rights_reconciliation"]
+    assert reconciliation["approved_denominator"] == 1759
+    assert reconciliation["membership_changed"] is False
+    assert reconciliation["v4_admissions"] == 4
+    assert reconciliation["consumer_canaries"] == 4
+    assert reconciliation["deferred_objects"] == 1755
     assert (
-        report["pbs_raw_redistribution_permission"][
-            "project_publication_authorized_by_this_record"
-        ]
-        is False
+        hashlib.sha256((ROOT / reconciliation["path"]).read_bytes()).hexdigest()
+        == reconciliation["sha256"]
     )
+    q3 = report["q3_admission"]
+    assert q3["workflow_run_id"] == 39356792827
+    assert q3["consumer_canary_passed"] is True
     assert (
-        pbs_archive["source_projection"][
-            "derived_rights_inferred_from_source_permission"
-        ]
-        is False
+        hashlib.sha256((ROOT / q3["receipt_path"]).read_bytes()).hexdigest()
+        == q3["receipt_sha256"]
     )
 
 
 def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
-    report = _json(PREFLIGHT)
+    report = _json(PREVIOUS_PREFLIGHT)
     july = report["july_2025_mbs_silver"]
     assert len(july["objects"]) == 6
     assert july["public_release_authorized"] is True
@@ -109,16 +102,16 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     ]
     gates = report["release_and_admission_boundaries"]
     assert gates["all_remaining_deferrals_preserved"] is True
-    assert gates["deferred_objects"] == 1756
-    assert gates["v4_admissions"] == 3
-    assert gates["consumer_canaries"] == 3
+    assert gates["deferred_objects"] == 1755
+    assert gates["v4_admissions"] == 4
+    assert gates["consumer_canaries"] == 4
     assert gates["external_publications_performed"] is False
 
 
 def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> (
     None
 ):
-    report = _json(PREFLIGHT)
+    report = _json(PREVIOUS_PREFLIGHT)
     exception = report["august_2026_mbs_out_of_denominator_scope_exception"]
     scope = _json(ROOT / exception["path"])
     assert exception["object_count"] == 4
@@ -138,7 +131,7 @@ def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> 
 
 
 def test_reimbursement_projection_rights_are_bounded_and_do_not_admit() -> None:
-    report = _json(PREFLIGHT)
+    report = _json(PREVIOUS_PREFLIGHT)
     projections = report["reimbursement_atlas_medallion_projections"]
     assert projections["object_count"] == 12
     assert projections["public_redistribution_rights_attested"] is True

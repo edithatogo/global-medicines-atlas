@@ -91,9 +91,9 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert cms["external_publication_authorized"] is False
 
     assert report["boundaries"]["all_remaining_deferrals_preserved"] is True
-    assert report["boundaries"]["deferred_objects"] == 1756
-    assert report["boundaries"]["v4_admissions"] == 3
-    assert report["boundaries"]["consumer_canaries"] == 3
+    assert report["boundaries"]["deferred_objects"] == 1755
+    assert report["boundaries"]["v4_admissions"] == 4
+    assert report["boundaries"]["consumer_canaries"] == 4
     assert report["boundaries"]["source_payload_bytes_read"] is False
 
 
@@ -233,14 +233,18 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
     report = build_report(ROOT, observed_at="2026-10-19T13:00:00Z")
     readback = report["m112_admission_canary_readback"]
 
-    assert readback["admitted_object_count"] == 3
-    assert readback["canaried_object_count"] == 3
-    assert readback["deferred_object_count"] == 1756
-    assert len(readback["current_role_qualification"]["admitted_objects"]) == 3
+    assert readback["admitted_object_count"] == 4
+    assert readback["canaried_object_count"] == 4
+    assert any(
+        run["run_id"] == 39356792827
+        for run in readback["successful_workflow_runs"]
+    )
+    assert readback["deferred_object_count"] == 1755
+    assert len(readback["current_role_qualification"]["admitted_objects"]) == 4
     assert readback["object"]["rights_state"] == (
         "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified"
     )
-    assert len(readback["successful_workflow_runs"]) == 3
+    assert len(readback["successful_workflow_runs"]) == 4
     assert readback["unique_object_counts_are_deduplicated_across_runs"] is True
     assert readback["source_values_or_rows_interpreted"] is False
     assert readback["native_workbook_layout_qualified"] is False

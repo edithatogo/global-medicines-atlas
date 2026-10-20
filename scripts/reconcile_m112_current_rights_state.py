@@ -58,8 +58,8 @@ PBS_RAW_PERMISSION_SHA256 = (
 )
 PBS_RAW_PERMISSION_REVISION = "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
 PBS_RAW_PERMISSION_OBJECT_COUNT = 1708
-M112_CURRENT_ADMISSION_COUNT = 3
-M112_CURRENT_CANARY_COUNT = 3
+M112_CURRENT_ADMISSION_COUNT = 4
+M112_CURRENT_CANARY_COUNT = 4
 M112_HISTORICAL_CANARY_RUN_ID = 39330593204
 M112_HISTORICAL_CANARY_BYTES = 205885063
 PBS_DECISION_0009 = Path(
@@ -77,6 +77,10 @@ M112_ROLE_QUALIFICATION = QUAL / (
 M112_HISTORICAL_CANARY = QUAL / (
     "australian-m112-v4-historical-1993-2015-consumer-canary-"
     "20261020-39330593204.json"
+)
+M112_Q3_ADMISSION_CANARY = QUAL / (
+    "australian-m112-v4-demographics-q3-july-admission-qualification-"
+    "20261020-39356792827.json"
 )
 M108_ASSESSMENT = QUAL / "australian-m108-derived-products-20261017.json"
 OUTPUT = QUAL / "australian-m112-current-rights-reconciliation-20261019.json"
@@ -619,6 +623,56 @@ def _reconcile_m112_canary_readback(
         "run_id": workflow["run_id"],
         "run_url": workflow["run_url"],
         "workflow_commit": workflow["commit"],
+    })
+
+    q3 = _read(root, M112_Q3_ADMISSION_CANARY)
+    q3_admission = q3["admission"]
+    q3_canary = q3["consumer_canary"]
+    q3_object = q3_canary["object"]
+    q3_workflow = q3_canary["hosted_workflow"]
+    q3_checks = [
+        q3["approved_denominator"] != FROZEN_OBJECT_COUNT,
+        q3["admissions"] != 1,
+        q3["consumer_canaries"] != 1,
+        q3_canary["status"] != "passed",
+        q3_admission["dataset"]
+        != "edithatogo/australian-mbs-utilisation-archive",
+        q3_admission["path"]
+        != "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+        q3_admission["sha256"]
+        != "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+        q3_admission["byte_count"] != 7680041,
+        q3_admission["contract_sha256"]
+        != "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b",
+        q3_object["dataset"] != q3_admission["dataset"],
+        q3_object["path"] != q3_admission["path"],
+        q3_object["sha256"] != q3_admission["sha256"],
+        q3_object["bytes"] != q3_admission["byte_count"],
+        q3_canary["contract_sha256"] != q3_admission["contract_sha256"],
+        q3_workflow["repository"] != "edithatogo/global-medicines-atlas",
+        q3_workflow["run_id"] != 39356792827,
+        q3_canary["verification"]["remote_digest_match"] is not True,
+        q3_canary["verification"]["consumer_stream_digest_match"] is not True,
+        q3_canary["verification"]["reader_cache_bytes_after_close"] != 0,
+        q3_canary["boundaries"]["admission_used"] is not True,
+        q3_canary["boundaries"]["admission_performed"] is not False,
+        q3_canary["boundaries"]["public_dataset_mutated"] is not False,
+        q3_canary["boundaries"]["source_payload_bytes_retained"] is not False,
+        q3_canary["boundaries"]["source_values_or_rows_included"] is not False,
+        q3["native_source_layout_qualified"] is not False,
+        q3["source_values_or_payload_bytes_retained"] is not False,
+    ]
+    if any(q3_checks):
+        raise ValueError("Q3 M-112 admission/canary receipt did not reconcile")
+    input_hashes[str(M112_Q3_ADMISSION_CANARY)] = _sha256(
+        root / M112_Q3_ADMISSION_CANARY
+    )
+    runs.append({
+        "receipt_path": str(M112_Q3_ADMISSION_CANARY),
+        "receipt_sha256": input_hashes[str(M112_Q3_ADMISSION_CANARY)],
+        "run_id": q3_workflow["run_id"],
+        "run_url": q3_workflow["run_url"],
+        "workflow_commit": q3_workflow["commit"],
     })
 
     return {

@@ -1,0 +1,60 @@
+{
+  "current_rights_reconciliation": {
+    "approved_denominator": 1759,
+    "consumer_canaries": 4,
+    "deferred_objects": 1755,
+    "membership_changed": false,
+    "path": "quality/qualifications/australian-m112-current-rights-reconciliation-20261020-3.json",
+    "public_dataset_mutated": false,
+    "resolved_rights_objects": 1752,
+    "sha256": "ea9968ecaecff00054cfcbb547b10864e9a0bc68efd51e6236e5fb67f3184390",
+    "source_payload_bytes_read": false,
+    "source_rights_changed": false,
+    "unresolved_rights_objects": 7,
+    "v4_admissions": 4
+  },
+  "input_sha256": {
+    "quality/qualifications/australian-m112-current-rights-reconciliation-20261020-3.json": "ea9968ecaecff00054cfcbb547b10864e9a0bc68efd51e6236e5fb67f3184390",
+    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "ffd50a20a277a8a61e90708181c2db70c653d809d3f2c37b81e70ea3d637806a",
+    "quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json": "543195f53559812cbcb408c16083f9fe5feb775a69b37d43ee8cebcea809bc8c",
+    "quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json": "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b"
+  },
+  "previous_preflight": {
+    "path": "quality/qualifications/australian-m112-rights-release-preflight-20261020-3.json",
+    "preserved_unchanged": true,
+    "sha256": "e1a7c896325d7a655e74853d65b7271970b64a6ae3ef8c6163601c28d4d781b9"
+  },
+  "purpose": "Refresh M-112 admission and canary counts after the exact-main Q3 admission while preserving the prior full rights preflight as an immutable snapshot.",
+  "q3_admission": {
+    "admission_performed": true,
+    "consumer_canary_passed": true,
+    "contract_path": "quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json",
+    "contract_sha256": "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b",
+    "object": {
+      "byte_count": 7680041,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+    },
+    "receipt_path": "quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json",
+    "receipt_roles_verified": 12,
+    "receipt_sha256": "543195f53559812cbcb408c16083f9fe5feb775a69b37d43ee8cebcea809bc8c",
+    "role_qualification_path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json",
+    "role_qualification_sha256": "ffd50a20a277a8a61e90708181c2db70c653d809d3f2c37b81e70ea3d637806a",
+    "workflow_run_id": 39356792827,
+    "workflow_run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39356792827"
+  },
+  "recorded_at": "2026-10-20T03:52:50Z",
+  "schema_id": "global-medicines-atlas.australian-m112-rights-release-preflight-delta",
+  "schema_version": 1,
+  "scope_invariants": {
+    "approved_denominator_changed": false,
+    "deferred_objects_remain_deferred": true,
+    "external_publication_performed": false,
+    "rights_or_licensing_conclusion_changed": false,
+    "source_payload_bytes_read": false,
+    "source_values_included": false
+  },
+  "status": "current_m112_admission_readback_refreshed"
+}

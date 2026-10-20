@@ -1587,12 +1587,10 @@
   federation-admission suite passed (24), and the current M112 role report
   `--check` passed with 14 publication/restore and 4 v3 replay candidate
   bindings.
-- [~] Contract roles are qualified and the contract is prepared, but hosted
-  independent receipt closure, v4 admission, and the consumer canary have not
-  run. Merge the contract binding first; then run the exact-main hosted workflow
-  for this Q3 object. Do not count a new admission until its hosted receipt
-  passes. The current role report records 3 existing admissions; historical
-  track rows that say zero are stale.
+- [x] The exact-main hosted workflow subsequently closed all 12 receipt roles,
+  admitted the Q3 raw B2 object, and passed its `FederatedReader` canary; see
+  the 2026-10-20 admission evidence below. That later receipt supersedes this
+  section's earlier pending state.
 
 ## 2026-10-20 M-112 Q3 demographics exact-main v4 admission
 
@@ -1615,3 +1613,10 @@
   still lack v4 admission. Continue with the next object only after its own
   contract roles and exact identities qualify; do not promote raw admission to
   Silver schema or semantic acceptance.
+- [x] Refresh the current rights reconciliation from the four-object role
+  report, validating the Q3 hosted receipt and updating the rights preflight's
+  admission/canary totals to 4 while preserving the 1,759 denominator and 1,755
+  deferrals. Focused rights/preflight tests passed (14); the v4 role report
+  check passed.
+- [~] The refreshed rights reconciliation is included in PR #1232; merge still
+  requires all exact-head hosted checks to pass.
