@@ -8,6 +8,7 @@ import shutil
 from pathlib import Path
 
 import pytest
+import scripts.qualify_m112_v4_publication_roles as role_qualification
 from scripts.qualify_m112_v4_publication_roles import (
     CONTRACT_COMMIT,
     CONTRACT_REPOSITORY,
@@ -273,6 +274,44 @@ def test_v3_replay_receipt_must_match_the_pinned_object(
 
     with pytest.raises(ValueError, match="v3 replay artifact digest differs"):
         qualify(tmp_path)
+
+
+def test_consumer_canary_must_bind_the_federated_reader_identity(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _copy_qualification_inputs(tmp_path)
+    monkeypatch.setattr(
+        role_qualification,
+        "_bind_v3_replay_candidate",
+        lambda _matched, _root: 0,
+    )
+    report_path = tmp_path / "quality/qualifications/"
+    report_path /= (
+        "australian-m112-v4-demographics-q2-may-"
+        "admission-qualification-20261020.json"
+    )
+    qualification_dir = tmp_path / "quality/qualifications"
+    admission_reports = list(
+        qualification_dir.glob(
+            "australian-m112-v4-*-admission-qualification-*.json"
+        )
+    ) + list(
+        qualification_dir.glob("australian-m112-v4-*-consumer-canary-*.json")
+    )
+    for admission_path in admission_reports:
+        admission_report = json.loads(admission_path.read_text())
+        contract_path = admission_report["contract_path"]
+        target = tmp_path / contract_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(ROOT / contract_path, target)
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    report["consumer_canary"]["consumer"]["module"] = (
+        "global_medicines_atlas.other_reader.Reader"
+    )
+    report_path.write_text(json.dumps(report), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="consumer canary does not verify"):
+        role_qualification._current_admission_evidence(tmp_path)
 
 
 def test_exact_contract_authority_identity_binds_all_candidates_unbound() -> (
