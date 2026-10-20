@@ -1,0 +1,183 @@
+{
+  "boundaries": {
+    "consumer_canaries_performed": false,
+    "frozen_inventory_membership_changed": false,
+    "new_sources_or_datasets_added": false,
+    "projection_values_inspected": false,
+    "publications_performed": false,
+    "raw_pbs_permission_reused_for_derived_outputs": false,
+    "raw_source_payload_bytes_read": false,
+    "raw_source_values_inspected": false,
+    "v4_admissions_performed": false
+  },
+  "conclusion": {
+    "consumer_canaries_authorized": false,
+    "next_required_evidence": "An applicable source-specific rights basis or explicit maintainer decision for a precisely defined, permitted derived-field scope; raw PBS permission alone is insufficient.",
+    "processing_or_v4_admission_authorized": false,
+    "public_release_authorized": false,
+    "reason": "No current checksum-bound decision matches any of the 12 exact path/digest pairs, no current standing-scope path matches them, and the upstream derived-output policy requires source-specific approved evidence.",
+    "rights_conclusion_added": false,
+    "state": "unresolved_no_exact_upstream_rights_scope_for_these_objects"
+  },
+  "inputs": {
+    "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
+    "upstream_repository": "edithatogo/reimbursement-atlas",
+    "upstream_revision": "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
+  },
+  "object_scope": {
+    "dataset": "edithatogo/reimbursement-atlas",
+    "object_count": 12,
+    "objects": [
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 1820758,
+        "consumer_canary": false,
+        "path": "data/medallion/acquisition_b1/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "0bd2f7661037b620a21943ed6d7f2dd28a93437d43072d6ceabf3411b5840da1",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 27219,
+        "consumer_canary": false,
+        "path": "data/medallion/catalogue_b0/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "c27b998f9425714c42da0a9c8192e6fb5a613031210548cc0eb8b44388aaa8c4",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 1767273,
+        "consumer_canary": false,
+        "path": "data/medallion/evidence_b2/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "d7d33a8b0b6bd5cf507639286348b53e79d76e59347ef9575ff555a1e66f68c5",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 3267,
+        "consumer_canary": false,
+        "path": "data/medallion/gold/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "a4d3a99d9b6db9dff6a9e267e73806460b082d8ee8fbdefb55a3c7d077d85532",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 10763,
+        "consumer_canary": false,
+        "path": "data/medallion/lineage/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "9d73e2f79b44f221486b4ad0e1df576cdbd18763d1aa3fa7adb8e6fe526e639f",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 4340,
+        "consumer_canary": false,
+        "path": "data/medallion/pbs_archive_variants/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "e9059e17bf78c099f0350610487bbc78e5b51c8e9d49726b0b117e01e3c4d0db",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 811545,
+        "consumer_canary": false,
+        "path": "data/medallion/pbs_archive_verification/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "7cea95acfde2f023a8a3b84628b7bcd70a023ab1ebde3d5ac0449eedb36a5f8d",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 871678,
+        "consumer_canary": false,
+        "path": "data/medallion/pbs_pdf_provenance/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "24cb8c98f8a09f943ef3369ec63b9a2f7b3e19bfca7cf2a7ec64e1a78dcf4e07",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 548634,
+        "consumer_canary": false,
+        "path": "data/medallion/pbs_structured_provenance/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "fab87f283f31f51db1f5f1bee76b02c3fbe5622bea1deee4632be0ff4768a28c",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 2088,
+        "consumer_canary": false,
+        "path": "data/medallion/platinum/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "82aa16098cbbdedb8d6583caf367c8a41b34ca00f448e354a3921b12592dc9d6",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 1321055,
+        "consumer_canary": false,
+        "path": "data/medallion/promotion_decisions/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "03036720150f163e471445b594d21eeb51f95e4bd7db1070b74afc27b7d8c5c7",
+        "v4_admission": false
+      },
+      {
+        "b1_b2_lineage_complete": true,
+        "byte_count": 12732,
+        "consumer_canary": false,
+        "path": "data/medallion/silver/data.jsonl",
+        "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+        "rights_state": "unresolved: source-specific rights and per-record provenance not qualified",
+        "sha256": "299b3721f72af235dc80a9b96f590a39ef8fe0b683618764ad56af713e1848a1",
+        "v4_admission": false
+      }
+    ],
+    "revision": "8e062578f14e12cf3238700a93946339da9c5d88"
+  },
+  "observed_at": "2026-10-20T00:34:55Z",
+  "purpose": "Freeze the current upstream rights-ledger comparison for the 12 exact Reimbursement Atlas medallion projections in the M-112 inventory. This records missing applicable evidence; it does not decide rights.",
+  "schema_id": "global-medicines-atlas.m112-reimbursement-atlas-medallion-rights-ledger-readback",
+  "schema_version": 1,
+  "track_id": "australian_benefits_silver_gold_20260829",
+  "upstream_rights_readback": {
+    "decisions": {
+      "exact_digest_matches_for_scope": 0,
+      "exact_path_and_digest_matches_for_scope": 0,
+      "exact_path_matches_for_scope": 0,
+      "path": "data/licence_review/decisions.jsonl",
+      "row_count": 184,
+      "sha256": "9c877c72e87953c50f7ad64dc6b3746368f0255f8530c37f9e09c8fd29d39cc5"
+    },
+    "derived_output_policy": {
+      "applicability": "requires source-specific manifest row, attribution, approved scope, licence review, and restrictions; otherwise derived outputs remain local or metadata-only",
+      "path": "docs/LICENSING.md",
+      "sha256": "75de3481e4ecc015f5c69bcfac473b2aacf0afe1f95906a2418c975d52e5c140"
+    },
+    "repository": "edithatogo/reimbursement-atlas",
+    "revision": "a93516ed416118bc51c1db2b71ab540fa4d0fe52",
+    "standing_scope": {
+      "approval_reference": "Owner instruction: stop routine approval requests; scoped approval of cd41e79a and run 33289906841.",
+      "approved_metadata_path_count": 19,
+      "exact_path_matches_for_scope": 0,
+      "path": "data/licence_review/standing_scope.json",
+      "sha256": "b9697f540e9494bfb82aedc3d94f27b3649dd44e92f1dbbc6299d76392d0386c"
+    }
+  }
+}
