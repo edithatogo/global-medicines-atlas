@@ -17,6 +17,7 @@ on:
           - raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip
           - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv
           - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv
+          - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv
 
 permissions:
   contents: read

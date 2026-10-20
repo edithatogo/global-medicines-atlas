@@ -1,0 +1,72 @@
+{
+  "contracts": [
+    {
+      "contract_id": "au-data-gov-mbs-demographics:historical-backfill-replay:v1",
+      "correction_rule": "new_snapshot_never_overwrite",
+      "deterministic_output_rule": "canonical_json_sha256",
+      "idempotency_rule": "partition_and_snapshot_sha256",
+      "late_arrival_rule": "append_then_replay_partition",
+      "missing_payload_rule": "metadata_only_fail_closed",
+      "partition_identity": [
+        "source_id",
+        "archive_period",
+        "logical_asset_id"
+      ],
+      "replay_order": [
+        "partition_id",
+        "correction_sequence",
+        "snapshot_id"
+      ],
+      "snapshot_identity": [
+        "partition_id",
+        "payload_sha256",
+        "metadata_sha256"
+      ],
+      "source_id": "au-data-gov-mbs-demographics",
+      "supersession_rule": "explicit_acyclic_predecessor"
+    }
+  ],
+  "replay_plan": {
+    "deterministic": true,
+    "eligible_snapshot_count": 1,
+    "plan_sha256": "b29ea02f7f3c42aa263624a4a5b12ae72264969df208aa032e77e9c9a5dc8848",
+    "schema_version": "historical-replay-plan-v1",
+    "steps": [
+      {
+        "action": "verify_and_rebuild_raw_b2_snapshot_registration",
+        "candidate_only": true,
+        "expected_byte_count": 23436706,
+        "expected_payload_sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+        "hosted_replay_status": "pending",
+        "m112_consumer_canary_performed": false,
+        "partition_id": "1ee54f02826fa1b0802cd5b0cb6e60f744e051bc091d92bf754471a85004e1ad",
+        "registration_semantics": "append_only_idempotent",
+        "snapshot_id": "3dc53f56ee56736fc8850ef0978d3df4fb22455541c1a6beb82397340d245b5d",
+        "source_payload_values": "not_read",
+        "v4_admission_performed": false
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "archive_period": "filename-derived:mbs-demographics-2016-qtr-2-may.csv",
+      "correction_sequence": 0,
+      "idempotency_key": "0659773e5d7208c4f55249c5aeb2cdb5598f60f543e959014def7bdbc52f5300",
+      "late_arriving": false,
+      "logical_asset_id": "d450a00a6fda63e0a5d206ad9a2c92bfb8b2fea32115eda525ed8dced5c2d27e",
+      "metadata_sha256": "855af2fe18dc0b48a545ff6c03d0e49590aa46e4989d1ddf84337b0811b3269c",
+      "observation_status": "acquired",
+      "partition_id": "1ee54f02826fa1b0802cd5b0cb6e60f744e051bc091d92bf754471a85004e1ad",
+      "partition_value": "edithatogo/australian-mbs-utilisation-archive@dee9a5b0580dfe394474dc26b372559462e157e7:raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "payload_sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+      "replay_eligible": true,
+      "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
+      "snapshot_id": "3dc53f56ee56736fc8850ef0978d3df4fb22455541c1a6beb82397340d245b5d",
+      "source_id": "au-data-gov-mbs-demographics",
+      "source_url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/c3e6f879-be6c-41b9-9cf1-c74feb928b83/download/mbs-demographics-2016-qtr-2-may.csv",
+      "source_version_id": "data.gov.au-package-show-sha256-f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+      "supersedes_snapshot_id": null
+    }
+  ],
+  "vocabulary_version": "3.0.0"
+}
