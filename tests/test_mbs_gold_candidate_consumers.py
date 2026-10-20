@@ -256,7 +256,10 @@ def test_reviewed_candidate_canary_binds_the_exact_maintainer_review(
         )
 
 
-def test_reviewed_candidate_canary_rejects_consumer_surface_drift() -> None:
+def test_reviewed_candidate_canary_rejects_consumer_surface_drift(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.syspath_prepend(str(ROOT / "scripts"))
     script = import_module(
         "scripts.qualify_australian_mbs_gold_candidate_consumers"
     )
