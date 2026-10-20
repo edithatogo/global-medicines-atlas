@@ -707,9 +707,29 @@
   and verify admission using the pinned trusted profile. Contract digest
   `cd7ccdce266d1d42fa658abe4b097c207627d80943b01c198f7d844c16241152`
   closes 12 roles with 10 verified receipts; source-native schema stays
-  explicitly unqualified. The admission record is pending its consumer canary.
-- [~] Run the bounded hosted consumer canary on the merged exact-main contract
-  and retain the exact consumer readback before counting the canary.
+  explicitly unqualified. The admission is now backed by an exact hosted
+  consumer canary; the native source layout remains unqualified.
+- [x] Run the bounded hosted consumer canary against exact `main` commit
+  `516d56e8fd5274b37d65a2192257a41e7cb8cb94`. Workflow run
+  [39419974066](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39419974066)
+  passed: the FederatedReader streamed and remotely verified the exact digest,
+  retained no source rows or bytes, and held zero cache bytes after close.
+- [x] Refresh the Q2 admission receipt, role qualification, and current-rights
+  reconciliation from the hosted canary readback. Current M-112 totals are six
+  unique v4 admissions and six canaries out of the unchanged 1,759-path
+  denominator; 1,753 remain unadmitted.
+- [x] Bind the Q2 admission/canary receipt digest, exact hosted run and main
+  commit, contract/object identity, consumer digest results, and no-retention
+  boundaries into the current-rights reconciliation. A fail-closed regression
+  now rejects a missing or malformed Q2 consumer-canary record.
+- [x] Refresh the rights reconciliation on the latest main after PR #1236.
+  The Q2 receipt remains explicitly bound; six admissions and six canaries are
+  reconciled, with 1,753 paths deferred. The broader rights report records
+  authorized payload screening separately from the Q2 canary, which interpreted
+  no source rows and retained no payload or reader cache.
+- [x] Refresh the dependent M-112 rights release preflight as snapshot #13,
+  binding the current 6/6 admission/canary totals and exact Q2 receipt while
+  preserving snapshot #12 and its 6/5 state as historical evidence.
 - [x] Add Q2 May's exact frozen identity to the bounded v4 contract builder
   and hosted consumer-canary input. The two missing-target regressions failed
   first; the affected admission, role, and rights reconciliation tests then

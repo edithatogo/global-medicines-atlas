@@ -95,7 +95,7 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert report["boundaries"]["all_remaining_deferrals_preserved"] is True
     assert report["boundaries"]["deferred_objects"] == 1753
     assert report["boundaries"]["v4_admissions"] == 6
-    assert report["boundaries"]["consumer_canaries"] == 5
+    assert report["boundaries"]["consumer_canaries"] == 6
     assert report["boundaries"]["source_payload_bytes_read"] is True
 
 
@@ -329,7 +329,7 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
     readback = report["m112_admission_canary_readback"]
 
     assert readback["admitted_object_count"] == 6
-    assert readback["canaried_object_count"] == 5
+    assert readback["canaried_object_count"] == 6
     assert any(
         run["run_id"] == 39356792827
         for run in readback["successful_workflow_runs"]
@@ -339,7 +339,19 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
     assert readback["object"]["rights_state"] == (
         "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified"
     )
-    assert len(readback["successful_workflow_runs"]) == 4
+    assert any(
+        run["run_id"] == 39419974066
+        for run in readback["successful_workflow_runs"]
+    )
+    assert len(readback["successful_workflow_runs"]) == 5
+    q2_path = (
+        "quality/qualifications/"
+        "australian-m112-v4-demographics-q2-may-"
+        "admission-qualification-20261020.json"
+    )
+    assert report["evidence_inputs"][q2_path] == rights_reconciliation._sha256(
+        ROOT / q2_path
+    )
     assert readback["unique_object_counts_are_deduplicated_across_runs"] is True
     assert readback["source_values_or_rows_interpreted"] is False
     assert readback["native_workbook_layout_qualified"] is False
@@ -349,6 +361,24 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
         "v4_admission": False,
         "consumer_canary": False,
     }
+
+
+def test_q2_canary_count_fails_closed_without_its_exact_receipt(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original_read = rights_reconciliation._read
+
+    def read_without_q2_canary(root: Path, path: Path) -> dict[str, Any]:
+        receipt = original_read(root, path)
+        if path == rights_reconciliation.M112_Q2_ADMISSION_CANARY:
+            receipt["consumer_canary"] = None
+        return receipt
+
+    monkeypatch.setattr(rights_reconciliation, "_read", read_without_q2_canary)
+    with pytest.raises(
+        TypeError, match="Q2 M-112 consumer-canary receipt is malformed"
+    ):
+        build_report(ROOT, observed_at="2026-10-20T12:00:00Z")
 
 
 def test_rights_counts_cover_every_frozen_object() -> None:

@@ -62,7 +62,7 @@ PBS_RAW_PERMISSION_SHA256 = (
 PBS_RAW_PERMISSION_REVISION = "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
 PBS_RAW_PERMISSION_OBJECT_COUNT = 1708
 M112_CURRENT_ADMISSION_COUNT = 6
-M112_CURRENT_CANARY_COUNT = 5
+M112_CURRENT_CANARY_COUNT = 6
 M112_Q3_CANARY_RUN_ID = 39356792827
 M112_Q3_CANARY_BYTES = 7_680_041
 M112_HISTORICAL_CANARY_RUN_ID = 39330593204
@@ -87,6 +87,22 @@ M112_Q3_ADMISSION_CANARY = QUAL / (
     "australian-m112-v4-demographics-q3-july-admission-qualification-"
     "20261020-39356792827.json"
 )
+M112_Q2_ADMISSION_CANARY = QUAL / (
+    "australian-m112-v4-demographics-q2-may-"
+    "admission-qualification-20261020.json"
+)
+M112_Q2_CANARY_RUN_ID = 39419974066
+M112_Q2_CANARY_COMMIT = "516d56e8fd5274b37d65a2192257a41e7cb8cb94"
+M112_Q2_CANARY_CONTRACT_SHA256 = (
+    "cd7ccdce266d1d42fa658abe4b097c207627d80943b01c198f7d844c16241152"
+)
+M112_Q2_CANARY_PATH = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv"
+)
+M112_Q2_CANARY_SHA256 = (
+    "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+)
+M112_Q2_CANARY_BYTES = 23_436_706
 M108_ASSESSMENT = QUAL / "australian-m108-derived-products-20261017.json"
 OUTPUT = QUAL / "australian-m112-current-rights-reconciliation-20261019.json"
 
@@ -628,6 +644,73 @@ def _verify_q3_m112_canary_receipt(root: Path) -> dict[str, Any]:
     }
 
 
+def _verify_q2_m112_canary_receipt(root: Path) -> dict[str, Any]:
+    """Verify the exact Q2 admission and hosted consumer-canary receipt."""
+    receipt = _read(root, M112_Q2_ADMISSION_CANARY)
+    if not isinstance(receipt.get("consumer_canary"), dict):
+        raise TypeError("Q2 M-112 consumer-canary receipt is malformed")
+    admission = receipt["admission"]
+    canary = receipt["consumer_canary"]
+    object_identity = canary["object"]
+    workflow = canary["hosted_workflow"]
+    verification = canary["verification"]
+    boundaries = canary["boundaries"]
+    checks = [
+        receipt["schema_id"]
+        != "global-medicines-atlas.m112-v4-admission-qualification",
+        receipt["status"] != "admitted_with_consumer_canary",
+        receipt["approved_denominator"] != FROZEN_OBJECT_COUNT,
+        receipt["admissions"] != 1,
+        receipt["consumer_canaries"] != 1,
+        receipt["contract_path"]
+        != "quality/qualifications/australian-m112-v4-demographics-q2-may-raw-b2-contract.json",
+        receipt["contract_sha256"] != M112_Q2_CANARY_CONTRACT_SHA256,
+        receipt["native_source_layout_qualified"] is not False,
+        receipt["source_values_or_payload_bytes_retained"] is not False,
+        admission["dataset"] != "edithatogo/australian-mbs-utilisation-archive",
+        admission["revision"] != "dee9a5b0580dfe394474dc26b372559462e157e7",
+        admission["path"] != M112_Q2_CANARY_PATH,
+        admission["sha256"] != M112_Q2_CANARY_SHA256,
+        admission["byte_count"] != M112_Q2_CANARY_BYTES,
+        admission["contract_sha256"] != M112_Q2_CANARY_CONTRACT_SHA256,
+        canary["status"] != "passed",
+        canary["contract_sha256"] != M112_Q2_CANARY_CONTRACT_SHA256,
+        object_identity["dataset"] != admission["dataset"],
+        object_identity["revision"] != admission["revision"],
+        object_identity["path"] != M112_Q2_CANARY_PATH,
+        object_identity["sha256"] != M112_Q2_CANARY_SHA256,
+        object_identity["bytes"] != M112_Q2_CANARY_BYTES,
+        workflow["repository"] != "edithatogo/global-medicines-atlas",
+        workflow["commit"] != M112_Q2_CANARY_COMMIT,
+        workflow["run_id"] != M112_Q2_CANARY_RUN_ID,
+        workflow["run_url"]
+        != "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39419974066",
+        canary["consumer"]["module"]
+        != "global_medicines_atlas.federation_reader.FederatedReader",
+        verification["origin"] != "remote",
+        verification["remote_digest_match"] is not True,
+        verification["consumer_stream_digest_match"] is not True,
+        verification["source_values_or_rows_interpreted"] is not False,
+        verification["reader_cache_bytes_after_read"] != 0,
+        verification["reader_cache_bytes_after_close"] != 0,
+        boundaries["admission_used"] is not True,
+        boundaries["admission_performed"] is not False,
+        boundaries["public_dataset_mutated"] is not False,
+        boundaries["source_payload_bytes_retained"] is not False,
+        boundaries["source_values_or_rows_included"] is not False,
+    ]
+    if any(checks):
+        raise ValueError("Q2 M-112 admission/canary receipt did not reconcile")
+    path = str(M112_Q2_ADMISSION_CANARY)
+    return {
+        "receipt_path": path,
+        "receipt_sha256": _sha256(root / M112_Q2_ADMISSION_CANARY),
+        "run_id": workflow["run_id"],
+        "run_url": workflow["run_url"],
+        "workflow_commit": workflow["commit"],
+    }
+
+
 def _reconcile_m112_canary_readback(
     root: Path, objects: list[dict[str, Any]]
 ) -> dict[str, Any]:
@@ -767,6 +850,10 @@ def _reconcile_m112_canary_readback(
     q3_run = _verify_q3_m112_canary_receipt(root)
     input_hashes[str(M112_Q3_ADMISSION_CANARY)] = q3_run["receipt_sha256"]
     runs.append(q3_run)
+
+    q2_run = _verify_q2_m112_canary_receipt(root)
+    input_hashes[str(M112_Q2_ADMISSION_CANARY)] = q2_run["receipt_sha256"]
+    runs.append(q2_run)
 
     return {
         "record": {
