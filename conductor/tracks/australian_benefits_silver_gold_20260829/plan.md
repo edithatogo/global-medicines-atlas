@@ -4398,3 +4398,17 @@
 - [ ] Resolve a permitted, source-specific rights basis for the exact derived
   fields in scope. Until then, keep all 12 objects unresolved and do not infer
   rights from raw PBS permission or lineage.
+
+## M-112 PBS Bronze projection rights terms readback (2026-10-20)
+
+- [x] Compare the exact `bronze/2026-04-01/pbs-v3-source.parquet` identity
+  with current official PBS API documentation and the raw-source permission.
+  Official docs describe public access and download/local storage; they do not
+  record an express redistribution grant for this derived output. The exact
+  API `_meta` copyright notice has not been read back. The raw permission is
+  limited to raw objects. Rights remain unresolved; no release, processing, or
+  admission authority is inferred. Readback:
+  `quality/qualifications/australian-m112-pbs-bronze-projection-rights-source-terms-readback-20261020.json`
+  (SHA-256 `6d9f380ab3ce60a66c166de118afac613ab1a76927b487aa153aedef5aea31b6`).
+- [ ] Obtain an object-bound applicable rights basis for this projection; do
+  not infer its rights from the raw archive permission or lineage.
