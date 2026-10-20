@@ -9,9 +9,12 @@ from pathlib import Path
 import pytest
 from scripts.qualify_m112_v4_july2016_admission import (
     CSV_ADMISSION_REPORT,
+    DEMOGRAPHICS_Q3_OUTPUT,
+    DEMOGRAPHICS_Q3_PATH,
     HISTORICAL_1993_2015_OUTPUT,
     TARGET_BYTES,
     TARGET_IDENTITIES,
+    TARGET_EVIDENCE_COMMITS,
     TARGET_PATH,
     TARGET_SHA256,
     build_contract,
@@ -25,6 +28,9 @@ ROOT = Path(__file__).resolve().parents[1]
 CSV_PATH = "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
 HISTORICAL_PATH = (
     "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip"
+)
+DEMOGRAPHICS_Q3_SHA256 = (
+    "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
 )
 CANARY_RECEIPT = ROOT / (
     "quality/qualifications/"
@@ -148,6 +154,25 @@ def test_merged_historical_role_evidence_binds_the_default_contract() -> None:
     )
 
 
+def test_q3_demographics_identity_is_explicitly_allowlisted() -> None:
+    identity = TARGET_IDENTITIES[DEMOGRAPHICS_Q3_PATH]
+
+    assert DEMOGRAPHICS_Q3_OUTPUT.name == (
+        "australian-m112-v4-demographics-q3-july-raw-b2-contract.json"
+    )
+    assert identity == {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": DEMOGRAPHICS_Q3_SHA256,
+        "bytes": 7_680_041,
+        "source_id": "au-data-gov-mbs-demographics",
+        "acquisition_id": (
+            "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb"
+        ),
+    }
+    assert TARGET_EVIDENCE_COMMITS[DEMOGRAPHICS_Q3_PATH] is None
+
+
 def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
     report = json.loads((ROOT / CSV_ADMISSION_REPORT).read_text())
 
@@ -216,6 +241,7 @@ def test_hosted_canary_offers_the_exact_historical_admitted_object() -> None:
     ).read_text(encoding="utf-8")
 
     assert f"          - {HISTORICAL_PATH}" in workflow
+    assert f"          - {DEMOGRAPHICS_Q3_PATH}" in workflow
 
 
 def test_historical_hosted_canary_receipt_qualifies_exact_admitted_object() -> (
