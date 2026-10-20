@@ -249,7 +249,9 @@ def test_q3_hr_demographics_contract_binds_its_exact_replay_candidate() -> None:
     assert parsed["cache"]["max_bytes"] == 7_316_301
     assert parsed["cache"]["state"] == "removed"
     assert parsed["consumers"] == []
-    assert TARGET_EVIDENCE_COMMITS[DEMOGRAPHICS_Q3_HR_PATH] is None
+    assert TARGET_EVIDENCE_COMMITS[DEMOGRAPHICS_Q3_HR_PATH] == (
+        "6dc3f707382f65659b511c98e55412ecbdb0d6b2"
+    )
 
 
 def test_q2_may_demographics_contract_binds_new_replay_evidence() -> None:
