@@ -74,3 +74,9 @@ values and other field names remain findings.
   idempotency field/value in the plan and execution receipt.
 
 PR #1218 adds two findings for the same deterministic replay-plan `idempotency_key` in the plan and execution receipt. The value is a SHA-256-derived identity verified against the planner formula, not a credential. The exact field/value pair is allowlisted; changed values and other field names remain detectable.
+
+PR #1225 adds two findings for the Q3 2016 demographics replay's deterministic
+`idempotency_key` in its plan and execution receipt. The value is derived by
+the replay planner from the partition and snapshot identities; it is not used
+for authentication or authorization. The allowlist includes only this exact
+field/value pair. Changed values and other field names remain detectable.

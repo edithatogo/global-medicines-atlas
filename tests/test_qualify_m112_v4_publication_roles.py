@@ -117,11 +117,12 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
             V3_REPLAY_PATH,
             "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
             "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+            "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
         }
         and "v3_replay_candidate_receipt" in item
     ]
 
-    assert len(matches) == 3
+    assert len(matches) == 4
     by_path = {item["path"]: item for item in matches}
     assert V3_REPLAY_PATH in by_path
     assert "raw/mbs/utilisation/group/mbs-group-2016-july.csv" in by_path
@@ -154,7 +155,21 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
         historical["v3_replay_candidate_receipt"]["registration_sha256"]
         == "c4048a7dd36474416c9f41a829c6350452de5d91798ae1528fb9e03d3806adf1"
     )
-    assert report["v3_replay_candidate_evidence"]["objects"] == 3
+    demographics_path = (
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv"
+    )
+    demographics = by_path[demographics_path]
+    assert demographics["source_id"] == "au-data-gov-mbs-demographics"
+    assert demographics["acquisition_id"] == (
+        "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb"
+    )
+    assert demographics["sha256"] == (
+        "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+    )
+    assert demographics["v3_replay_candidate_receipt"]["workflow_run"].endswith(
+        "/39344611967"
+    )
+    assert report["v3_replay_candidate_evidence"]["objects"] == 4
     assert report["cohort"]["v4_admissions"] == 3
     assert report["cohort"]["consumer_canaries"] == 3
 

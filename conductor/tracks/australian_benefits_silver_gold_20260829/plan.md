@@ -4412,3 +4412,20 @@
   (SHA-256 `6d9f380ab3ce60a66c166de118afac613ab1a76927b487aa153aedef5aea31b6`).
 - [ ] Obtain an object-bound applicable rights basis for this projection; do
   not infer its rights from the raw archive permission or lineage.
+
+## M-112 Q3 2016 demographics raw B2 replay role qualification (2026-10-20)
+
+- [x] Run exact-main bounded v3 replay for the Q3 2016 demographics CSV on
+  `1ebee786331c2e63d0a4d9501894ad657006ea9d`: hosted run
+  [39344611967](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39344611967) passed anonymous digest verification, rebuilt only its append-only
+  B2 registration, and removed temporary source bytes. Exact object digest is
+  `bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c`
+  (7,680,041 bytes).
+- [x] Retain and reconcile the deterministic plan, aggregate receipt, and
+  readback manifest. The current M-112 role report binds 4 of 16 candidate v3
+  replay/cache roles, with 14 publication/restore roles, 3 existing v4
+  admissions, and 3 existing admitted-object canaries. This replay creates no
+  v4 admission or canary.
+- [ ] Build and independently verify the exact Q3 raw-B2 v4.1 contract after
+  the role-evidence merge; then run its admitted-object canary on exact `main`.
+  Native source layout remains unqualified and outside this raw-B2 admission.
