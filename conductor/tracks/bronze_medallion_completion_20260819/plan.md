@@ -1465,6 +1465,10 @@ for credentialed or rights-unresolved sources.
   skipped, and 96.79% coverage. Twenty-nine browser failures report a missing
   Playwright Chromium executable; the other failures are one Hypothesis timing
   flake and two Stable v1 reproducibility tests. No changed rights test failed.
-- [~] Hosted protected checks, review, and merge remain pending on updated PR
-  #1242. The full local Test-Goblin profile above ran before rebasing onto the
-  Q2 canary and Q3 replay updates; protected CI must validate the final head.
+- [x] PR [#1242](https://github.com/edithatogo/global-medicines-atlas/pull/1242)
+  merged as `8920b5bb`. All 39 protected status checks passed on final head
+  `50c34ea3`, including the full Python 3.14 coverage profile and Linux, macOS,
+  and Windows consumer lanes. The superseded-exclusion review finding was
+  resolved before merge. The full local Test-Goblin result above remains a
+  separate pre-rebase run with the documented environment/reproducibility
+  failures; hosted CI is the final-head release-gate evidence.
