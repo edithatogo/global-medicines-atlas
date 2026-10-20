@@ -6,6 +6,7 @@ import importlib
 import json
 import os
 import secrets
+import tempfile
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
@@ -1179,6 +1180,36 @@ def dataset_list(
             "The dataset identity operator configuration is invalid",
         )
     typer.echo(page.model_dump_json())
+
+
+@app.command("demo")
+def demo_server(
+    port: Annotated[int, typer.Option(min=1024, max=65535)] = 8765,
+) -> None:
+    """Run the local, explicitly synthetic API and Atlas demo."""
+    try:
+        uvicorn = importlib.import_module("uvicorn")
+        demo = importlib.import_module(".demo", package=__package__)
+    except ImportError:
+        _fail(
+            ErrorCode.SERVICE_UNAVAILABLE,
+            "Install the demo extra with: uv sync --extra demo",
+        )
+    typer.echo(demo.DEMO_NOTICE, err=True)
+    typer.echo(f"Synthetic demo: http://127.0.0.1:{port}/", err=True)
+    try:
+        with tempfile.TemporaryDirectory(prefix="gma-demo-") as directory:
+            database = demo.create_demo_database(
+                Path(directory) / "demo.duckdb"
+            )
+            uvicorn.run(
+                demo.create_demo_app(database),
+                host="127.0.0.1",
+                port=port,
+                log_level="warning",
+            )
+    except OSError as error:
+        _fail(ErrorCode.SERVICE_UNAVAILABLE, str(error))
 
 
 def main() -> None:

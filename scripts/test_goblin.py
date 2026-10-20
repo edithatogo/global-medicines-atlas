@@ -462,6 +462,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_deterministic_simulation.py",
     ),
     "e2e": (
+        "tests/test_demo.py",
         "tests/test_canonical_nz_adapter.py",
         "tests/test_country_comparison_e2e.py",
         "tests/test_matching_e2e.py",
