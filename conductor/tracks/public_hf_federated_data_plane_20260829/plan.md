@@ -727,6 +727,9 @@
   reconciled, with 1,753 paths deferred. The broader rights report records
   authorized payload screening separately from the Q2 canary, which interpreted
   no source rows and retained no payload or reader cache.
+- [x] Refresh the dependent M-112 rights release preflight as snapshot #13,
+  binding the current 6/6 admission/canary totals and exact Q2 receipt while
+  preserving snapshot #12 and its 6/5 state as historical evidence.
 - [x] Add Q2 May's exact frozen identity to the bounded v4 contract builder
   and hosted consumer-canary input. The two missing-target regressions failed
   first; the affected admission, role, and rights reconciliation tests then

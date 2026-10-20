@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-12.json"
+    "australian-m112-rights-release-preflight-20261020-13.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-11.json"
+    "australian-m112-rights-release-preflight-20261020-12.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -52,7 +52,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert report["effective_m112_rights"]["unresolved_object_count"] == 0
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261020-11.json"
+        "australian-m112-rights-release-preflight-20261020-12.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -72,11 +72,27 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert reconciliation["approved_denominator"] == 1759
     assert reconciliation["membership_changed"] is False
     assert reconciliation["v4_admissions"] == 6
-    assert reconciliation["consumer_canaries"] == 5
+    assert reconciliation["consumer_canaries"] == 6
     assert reconciliation["deferred_objects"] == 1753
     assert (
         hashlib.sha256((ROOT / reconciliation["path"]).read_bytes()).hexdigest()
         == reconciliation["sha256"]
+    )
+    q2 = report["q2_admission"]
+    assert q2["workflow_run_id"] == 39419974066
+    assert q2["consumer_canary_passed"] is True
+    assert q2["source_values_or_rows_interpreted"] is False
+    assert q2["source_payload_bytes_retained"] is False
+    assert q2["reader_cache_bytes_after_close"] == 0
+    assert (
+        hashlib.sha256((ROOT / q2["receipt_path"]).read_bytes()).hexdigest()
+        == q2["receipt_sha256"]
+    )
+    assert any(
+        run["run_id"] == 39419974066
+        for run in report["m112_admission_canary_readback"][
+            "successful_workflow_runs"
+        ]
     )
     raw = report["mbs_raw_object_rights_attestation"]
     assert raw["object_count"] == 6
@@ -171,7 +187,7 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert gates["all_remaining_deferrals_preserved"] is True
     assert gates["deferred_objects"] == 1753
     assert gates["v4_admissions"] == 6
-    assert gates["consumer_canaries"] == 5
+    assert gates["consumer_canaries"] == 6
     assert gates["external_publications_performed"] is False
 
 
