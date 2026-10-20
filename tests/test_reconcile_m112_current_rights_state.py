@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
-from shutil import copytree
+from shutil import copy2, copytree
 from typing import Any, cast
 
 import pytest
@@ -15,6 +16,34 @@ from scripts.reconcile_m112_current_rights_state import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+_MUTATED_FIXTURE_PATHS = {
+    "quality/qualifications/reimbursement-atlas-pbs-raw-permission-20260831.json",
+    "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
+    (
+        "quality/bronze/admissions/us-cms-hcpcs/"
+        "db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/"
+        "d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json"
+    ),
+}
+
+
+def _ignore_copy_inputs(_directory: str, names: list[str]) -> set[str]:
+    """Avoid copying immutable preflight snapshots unused by this fixture."""
+    return {
+        name
+        for name in names
+        if name in {".git", ".venv"}
+        or name.startswith("australian-m112-rights-release-preflight-")
+    }
+
+
+def _copy_fixture_file(source: str, destination: str) -> str:
+    """Hardlink immutable fixture inputs and copy only files under mutation."""
+    relative = Path(source).relative_to(ROOT).as_posix()
+    if relative in _MUTATED_FIXTURE_PATHS:
+        return str(copy2(source, destination))
+    os.link(source, destination)
+    return destination
 
 
 def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_state() -> (
@@ -84,6 +113,7 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert cms["reviewer_status"] == "approved"
     assert cms["acquisition_time_rights_state_preserved"] == "unknown"
     assert cms["latest_admission_state"] == "landed"
+    assert cms["latest_admission_reviewer_status"] == "approved"
     assert cms["b2_state"] == "external_reference_only"
     assert cms["processing_or_v4_admission_authorized"] is False
     assert cms["consumer_canaries_authorized"] is False
@@ -174,9 +204,8 @@ def test_pbs_raw_owner_permission_fails_closed_when_revoked(
     copytree(
         ROOT,
         copied_root,
-        ignore=lambda _directory, names: {
-            name for name in names if name in {".git", ".venv"}
-        },
+        copy_function=_copy_fixture_file,
+        ignore=_ignore_copy_inputs,
     )
     permission_path = (
         copied_root
@@ -188,6 +217,29 @@ def test_pbs_raw_owner_permission_fails_closed_when_revoked(
     permission_path.write_text(json.dumps(permission))
 
     with pytest.raises(ValueError, match="PBS raw redistribution permission"):
+        build_report(copied_root, observed_at="2026-10-20T00:00:00Z")
+
+
+def test_cms_effective_rights_readback_fails_closed_if_latest_admission_unreviewed(
+    tmp_path: Path,
+) -> None:
+    copied_root = tmp_path / "repo"
+    copytree(
+        ROOT,
+        copied_root,
+        copy_function=_copy_fixture_file,
+        ignore=_ignore_copy_inputs,
+    )
+    admission_path = (
+        copied_root / "quality/bronze/admissions/us-cms-hcpcs/"
+        "db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/"
+        "d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json"
+    )
+    admission = json.loads(admission_path.read_text())
+    admission["reviewer_status"] = "unreviewed"
+    admission_path.write_text(json.dumps(admission))
+
+    with pytest.raises(ValueError, match="CMS HCPCS admission rights review"):
         build_report(copied_root, observed_at="2026-10-20T00:00:00Z")
 
 
@@ -326,9 +378,8 @@ def test_pbs_scope_mismatch_fails_closed(tmp_path: Path) -> None:
     copytree(
         ROOT,
         copied_root,
-        ignore=lambda _directory, names: {
-            name for name in names if name in {".git", ".venv"}
-        },
+        copy_function=_copy_fixture_file,
+        ignore=_ignore_copy_inputs,
     )
     authorization_path = (
         copied_root

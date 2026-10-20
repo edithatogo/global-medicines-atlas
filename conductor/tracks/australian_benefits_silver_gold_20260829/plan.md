@@ -4124,6 +4124,16 @@
   review, decision, and superseding landed admission to the exact CMS file.
   Focused checks (40 tests after merging the concurrent replay update), routine
   profile, and all 39 hosted checks passed on PR #1208 before merge.
+- [x] Make the effective admission state explicit in the current readback and
+  fail closed unless the latest admission is approved, is for the exact CMS
+  acquisition/content, and supersedes the original landed admission. The new
+  report labels the superseded `unreviewed` admission and acquisition-time
+  `unknown` separately from the effective `permitted` / `approved` state. The
+  append-only current snapshot is
+  `quality/qualifications/australian-m112-rights-release-preflight-20261020-3.json`;
+  it preserves the prior `-2` snapshot unchanged. This clarifies the existing
+  exact-file decision only; external publication, processing, derived-table
+  rights, v4 admission, and canaries remain unauthorized.
 
 ## M-112 second raw-object v3 replay preparation (2026-10-20)
 

@@ -16,6 +16,13 @@ PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
     "australian-m112-rights-release-preflight-20261020-3.json"
 )
+PRESERVED_MAIN_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261020-5.json"
+)
+PRESERVED_MAIN_PREFLIGHT_SHA256 = (
+    "6022ff3ca2b1a5fe8a095bc5ebba48e3ac86297e3b7ddeff63e92ea5af21dc82"
+)
 
 
 def _json(path: Path) -> dict[str, Any]:
@@ -151,3 +158,25 @@ def test_reimbursement_projection_rights_are_bounded_and_do_not_admit() -> None:
     assert all(item["lineage_complete"] for item in projections["objects"])
     assert all(not item["v4_admission"] for item in projections["objects"])
     assert all(not item["consumer_canary"] for item in projections["objects"])
+
+
+def test_main_cms_rights_readback_is_preserved_separately_from_m112_counts() -> (
+    None
+):
+    report = _json(PRESERVED_MAIN_PREFLIGHT)
+
+    assert (
+        hashlib.sha256(PRESERVED_MAIN_PREFLIGHT.read_bytes()).hexdigest()
+        == PRESERVED_MAIN_PREFLIGHT_SHA256
+    )
+    assert report["cms_hcpcs_reference"]["latest_admission_state"] == "landed"
+    assert (
+        report["cms_hcpcs_reference"]["latest_admission_reviewer_status"]
+        == "approved"
+    )
+    assert (
+        report["cms_hcpcs_reference"]["acquisition_time_rights_state_preserved"]
+        == "unknown"
+    )
+    assert report["release_and_admission_boundaries"]["v4_admissions"] == 3
+    assert report["release_and_admission_boundaries"]["consumer_canaries"] == 3

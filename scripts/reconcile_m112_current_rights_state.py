@@ -165,13 +165,29 @@ def _reconcile_cms(
         )
 
     acquisition_path = Path(scope["acquisition_path"])
+    original_admission_path = Path(scope["admission_path"])
     admission_path = Path(review["rights_review"]["superseding_admission_path"])
     acquisition = _read(root, acquisition_path)
+    original_admission = _read(root, original_admission_path)
     admission = _read(root, admission_path)
+    invalid_admission = [
+        admission.get("acquisition_id") != acquisition.get("acquisition_id"),
+        admission.get("content_id") != CMS_SHA256,
+        admission.get("state") != "landed",
+        admission.get("reviewer_status") != "approved",
+        "public_use_rights_reviewed" not in admission.get("reason_codes", []),
+        "not_admitted_to_processing" not in admission.get("reason_codes", []),
+        admission.get("supersedes_decision_id")
+        != original_admission.get("decision_id"),
+    ]
+    if any(invalid_admission):
+        raise ValueError("CMS HCPCS admission rights review did not reconcile")
+
     hashes = {
         str(CMS_REVIEW): _sha256(root / CMS_REVIEW),
         str(decision_path): _sha256(root / decision_path),
         str(acquisition_path): _sha256(root / acquisition_path),
+        str(original_admission_path): _sha256(root / original_admission_path),
         str(admission_path): _sha256(root / admission_path),
     }
     effective = decision["effective_state"]
@@ -189,7 +205,15 @@ def _reconcile_cms(
             "acquisition_time_rights_state_preserved": acquisition[
                 "rights_state"
             ],
+            "superseded_admission_path": str(original_admission_path),
+            "superseded_admission_sha256": hashes[str(original_admission_path)],
+            "superseded_admission_reviewer_status": original_admission[
+                "reviewer_status"
+            ],
+            "latest_admission_path": str(admission_path),
+            "latest_admission_sha256": hashes[str(admission_path)],
             "latest_admission_state": admission["state"],
+            "latest_admission_reviewer_status": admission["reviewer_status"],
             "b2_state": decision["scope"]["b2_state"],
             "processing_or_v4_admission_authorized": effective[
                 "processing_or_v4_admission_authorized"
