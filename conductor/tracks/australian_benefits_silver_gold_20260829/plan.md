@@ -4461,3 +4461,18 @@
 - [ ] Build and independently verify the exact Q3 raw-B2 v4.1 contract after
   the role-evidence merge; then run its admitted-object canary on exact `main`.
   Native source layout remains unqualified and outside this raw-B2 admission.
+
+## MBS August projections outside the frozen M-112 inventory (2026-10-20)
+
+- [x] Record the maintainer's attestation for the exact four already-public
+  August 2026 MBS Bronze Parquet outputs identified by product IDs
+  `d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b` and
+  `f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63`. The
+  permission instrument was not located or independently reviewed, as directed.
+  The attestation binds each exact path, digest, byte count, dataset, and public
+  revision. It does not add the outputs to frozen M-112 inventory, perform new
+  publication, inspect source/Parquet bytes, authorize v4 admission, or authorize
+  consumer canaries. The scoped readback is
+  `quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json`;
+  attestation is
+  `quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json`.

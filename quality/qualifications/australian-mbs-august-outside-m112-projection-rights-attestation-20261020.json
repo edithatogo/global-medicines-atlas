@@ -1,0 +1,53 @@
+{
+  "authorized_objects": [
+    {
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/p7.parquet",
+      "revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7"
+    },
+    {
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source.parquet",
+      "revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96"
+    },
+    {
+      "byte_count": 24367,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
+      "revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69"
+    },
+    {
+      "byte_count": 454247,
+      "dataset": "edithatogo/australian-mbs-source-archive",
+      "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
+      "revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+      "sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c"
+    }
+  ],
+  "boundaries": {
+    "consumer_canaries_authorized": false,
+    "dataset_mutated": false,
+    "frozen_m112_inventory_membership_changed": false,
+    "new_publication_performed": false,
+    "new_sources_or_datasets_added": false,
+    "parquet_values_inspected": false,
+    "public_release_performed_by_this_action": false,
+    "scope_exception_inventory_membership_changed": false,
+    "source_payload_bytes_inspected": false,
+    "v4_admission_or_promotion_authorized": false
+  },
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "maintainer_response": "Attest exact four",
+  "permission_instrument_existence_and_applicability": "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction",
+  "public_release_rights_attested": true,
+  "recorded_at": "2026-10-20",
+  "revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+  "schema_id": "global-medicines-atlas.australian-mbs-august-outside-m112-projection-rights-attestation",
+  "schema_version": 1,
+  "scope": "Exact four already-public August 2026 MBS Bronze Parquet outputs outside the frozen M-112 inventory, each bound by dataset, revision, path, SHA-256, and byte count."
+}
