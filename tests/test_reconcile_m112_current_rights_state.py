@@ -84,6 +84,7 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert cms["reviewer_status"] == "approved"
     assert cms["acquisition_time_rights_state_preserved"] == "unknown"
     assert cms["latest_admission_state"] == "landed"
+    assert cms["latest_admission_reviewer_status"] == "approved"
     assert cms["b2_state"] == "external_reference_only"
     assert cms["processing_or_v4_admission_authorized"] is False
     assert cms["consumer_canaries_authorized"] is False
@@ -188,6 +189,30 @@ def test_pbs_raw_owner_permission_fails_closed_when_revoked(
     permission_path.write_text(json.dumps(permission))
 
     with pytest.raises(ValueError, match="PBS raw redistribution permission"):
+        build_report(copied_root, observed_at="2026-10-20T00:00:00Z")
+
+
+def test_cms_effective_rights_readback_fails_closed_if_latest_admission_unreviewed(
+    tmp_path: Path,
+) -> None:
+    copied_root = tmp_path / "repo"
+    copytree(
+        ROOT,
+        copied_root,
+        ignore=lambda _directory, names: {
+            name for name in names if name in {".git", ".venv"}
+        },
+    )
+    admission_path = (
+        copied_root / "quality/bronze/admissions/us-cms-hcpcs/"
+        "db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/"
+        "d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json"
+    )
+    admission = json.loads(admission_path.read_text())
+    admission["reviewer_status"] = "unreviewed"
+    admission_path.write_text(json.dumps(admission))
+
+    with pytest.raises(ValueError, match="CMS HCPCS admission rights review"):
         build_report(copied_root, observed_at="2026-10-20T00:00:00Z")
 
 
