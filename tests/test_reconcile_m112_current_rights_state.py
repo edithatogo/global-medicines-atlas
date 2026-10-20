@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from copy import deepcopy
 from pathlib import Path
 from typing import Any, cast
 
@@ -438,3 +439,55 @@ def test_pbs_scope_mismatch_fails_closed(
         ValueError, match="PBS utilisation rights scope mismatch"
     ):
         build_report(ROOT, observed_at="2026-10-19T13:00:00Z")
+
+
+def test_pbs_projection_attestation_must_match_frozen_revision(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    read: Any = rights_reconciliation.__dict__["_read"]
+
+    def read_with_changed_projection_revision(
+        root: Path, relative: Path
+    ) -> dict[str, Any]:
+        value = read(root, relative)
+        if relative == rights_reconciliation.FROZEN_OVERLAY:
+            value = deepcopy(value)
+            projection = next(
+                item
+                for item in value["objects"]
+                if item["path"]
+                == rights_reconciliation.PBS_SOURCE_PROJECTION_PATH
+            )
+            projection["revision"] = "0" * 40
+        return value
+
+    monkeypatch.setattr(
+        rights_reconciliation, "_read", read_with_changed_projection_revision
+    )
+    with pytest.raises(
+        ValueError,
+        match="exact PBS source publication evidence did not reconcile",
+    ):
+        build_report(ROOT, observed_at="2026-10-20T00:00:00Z")
+
+
+def test_pbs_limited_screen_must_bind_every_pinned_lineage_object(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    screen_path = tmp_path / "screen.json"
+    screen = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-pbs-utilisation-limited-vocabulary-screen-20261020.json"
+        ).read_text()
+    )
+    screen["objects"] = []
+    screen_path.write_text(json.dumps(screen))
+    monkeypatch.setattr(
+        rights_reconciliation, "PBS_UTILISATION_LIMITED_SCREEN", screen_path
+    )
+
+    with pytest.raises(
+        ValueError, match="PBS limited vocabulary screen did not reconcile"
+    ):
+        build_report(ROOT, observed_at="2026-10-20T00:00:00Z")

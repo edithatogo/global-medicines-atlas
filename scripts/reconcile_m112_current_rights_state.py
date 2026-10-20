@@ -310,6 +310,7 @@ def _reconcile_pbs_source_archive_publication(
         != "maintainer_attested_not_independently_reviewed_or_located",
         projection_attestation["scope"]["dataset"]
         != PBS_SOURCE_ARCHIVE_DATASET,
+        projection["revision"] != projection_attestation["scope"]["revision"],
         projection_attestation["scope"]["revision"] != audit["revision"],
         projection_attestation["scope"]["path"] != PBS_SOURCE_PROJECTION_PATH,
         projection_attestation["scope"]["sha256"]
@@ -1179,7 +1180,18 @@ def _pbs_lineage_item_is_authorized(
 
 def _reconcile_pbs_limited_vocabulary_screen(root: Path) -> dict[str, Any]:
     screen = _read(root, PBS_UTILISATION_LIMITED_SCREEN)
+    lineage = _read(root, PBS_UTILISATION_LINEAGE)
     results = screen.get("results", {})
+    lineage_objects = cast("list[dict[str, Any]]", lineage["objects"])
+    expected_objects = {
+        item["path"]: (item["content_sha256"], item["byte_count"])
+        for item in lineage_objects
+    }
+    screened_objects = cast("list[dict[str, Any]]", screen.get("objects", []))
+    observed_objects = {
+        item["path"]: (item["sha256"], item["byte_count"])
+        for item in screened_objects
+    }
     checks = (
         screen.get("schema_id")
         == "global-medicines-atlas.australian-pbs-utilisation-limited-vocabulary-screen",
@@ -1187,6 +1199,15 @@ def _reconcile_pbs_limited_vocabulary_screen(root: Path) -> dict[str, Any]:
         screen.get("revision") == "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
         screen.get("scope", {}).get("object_count")
         == PBS_UTILISATION_OBJECT_COUNT,
+        len(expected_objects) == PBS_UTILISATION_OBJECT_COUNT,
+        len(screened_objects) == PBS_UTILISATION_OBJECT_COUNT,
+        len(observed_objects) == len(screened_objects),
+        observed_objects == expected_objects,
+        all(
+            item["dataset"] == screen.get("dataset")
+            and item["revision"] == screen.get("revision")
+            for item in lineage_objects
+        ),
         results.get("all_object_digests_and_byte_counts_match_pinned_lineage")
         is True,
         results.get("full_vocabulary_exclusion_review_complete") is False,
