@@ -133,6 +133,9 @@ MBS_RAW_RIGHTS_OBJECT_COUNT = 6
 PBS_UTILISATION_LIMITED_SCREEN = QUAL / (
     "australian-pbs-utilisation-limited-vocabulary-screen-20261020.json"
 )
+PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION = QUAL / (
+    "australian-pbs-utilisation-six-object-rights-attestation-20261020.json"
+)
 MBS_JULY2016_CANARY_DATASET = "edithatogo/australian-mbs-utilisation-archive"
 MBS_JULY2016_CANARY_PATH = (
     "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
@@ -144,7 +147,7 @@ MBS_JULY2016_CANARY_BYTES = 6857437
 MBS_JULY2016_CONTRACT_SHA256 = (
     "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e"
 )
-PBS_UTILISATION_RIGHTS_STATE = "maintainer_attested_dataset_publication_permission_with_vocabulary_exclusion"
+PBS_UTILISATION_RIGHTS_STATE = "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object"
 PBS_RAW_RIGHTS_STATE = "owner_attested_pbs_raw_redistribution_permission"
 PBS_UTILISATION_OBJECT_COUNT = 6
 CMS_SOURCE_ID = "us_cms_hcpcs_level_ii"
@@ -1305,6 +1308,59 @@ def _reconcile_pbs_limited_vocabulary_screen(root: Path) -> dict[str, Any]:
     return screen
 
 
+def _reconcile_pbs_utilisation_exact_rights_attestation(
+    root: Path, expected_objects: list[dict[str, Any]]
+) -> dict[str, Any]:
+    attestation = _read(root, PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION)
+    screen = _reconcile_pbs_limited_vocabulary_screen(root)
+    expected = {
+        item["path"]: (item["sha256"], item["byte_count"])
+        for item in expected_objects
+    }
+    authorized = cast(
+        "list[dict[str, Any]]", attestation.get("authorized_objects", [])
+    )
+    observed = {
+        item["path"]: (item["sha256"], item["byte_count"])
+        for item in authorized
+    }
+    screen_identities = {
+        item["path"]: (item["sha256"], item["byte_count"])
+        for item in screen["objects"]
+    }
+    decision = attestation.get("decision", {})
+    checks = (
+        attestation.get("schema_id")
+        == "global-medicines-atlas.australian-pbs-utilisation-six-object-rights-attestation",
+        attestation.get("schema_version") == 1,
+        attestation.get("dataset_identity", {}).get("dataset")
+        == PBS_UTILISATION_DATASET,
+        decision.get("public_release_rights_attested") is True,
+        decision.get("scope")
+        == "The exact six dataset paths, SHA-256 digests, and byte counts listed below; permission includes all file contents, including any vocabulary previously excluded.",
+        decision.get("permission_instrument_existence_and_applicability")
+        == "maintainer_attested_not_independently_reviewed",
+        decision.get("public_release_performed") is False,
+        decision.get("v4_admission") is False,
+        decision.get("consumer_canary") is False,
+        decision.get(
+            "rights_inferred_from_lineage_or_source_category_authorization"
+        )
+        is False,
+        len(authorized) == PBS_UTILISATION_OBJECT_COUNT,
+        len(observed) == PBS_UTILISATION_OBJECT_COUNT,
+        observed == expected,
+        observed == screen_identities,
+        attestation.get("boundaries", {}).get("source_payload_files_written")
+        is False,
+    )
+    if not all(checks):
+        raise ValueError(
+            "PBS utilisation exact rights attestation did not reconcile"
+        )
+    return attestation
+
+
 def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     overlay = _read(root, FROZEN_OVERLAY)
     pbs_authorization = _read(root, PBS_UTILISATION_AUTHORIZATION)
@@ -1340,6 +1396,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         )
     )
     _reconcile_pbs_limited_vocabulary_screen(root)
+    _reconcile_pbs_utilisation_exact_rights_attestation(
+        root, pbs_utilisation_objects
+    )
     rights_overrides.update({
         item["path"]: PBS_UTILISATION_RIGHTS_STATE
         for item in pbs_utilisation_objects
@@ -1406,6 +1465,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         str(PBS_UTILISATION_LIMITED_SCREEN): _sha256(
             root / PBS_UTILISATION_LIMITED_SCREEN
         ),
+        str(PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION): _sha256(
+            root / PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION
+        ),
         str(M108_ASSESSMENT): _sha256(root / M108_ASSESSMENT),
     }
 
@@ -1465,6 +1527,19 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
             "lineage_path": str(PBS_UTILISATION_LINEAGE),
             "lineage_sha256": evidence_inputs[str(PBS_UTILISATION_LINEAGE)],
             "rights_state": PBS_UTILISATION_RIGHTS_STATE,
+            "exact_rights_attestation_path": str(
+                PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION
+            ),
+            "exact_rights_attestation_sha256": evidence_inputs[
+                str(PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION)
+            ],
+            "permission_instrument_existence_and_applicability": (
+                "maintainer_attested_not_independently_reviewed"
+            ),
+            "rights_scope_includes_all_file_contents": True,
+            "public_release_performed_by_this_reconciliation": False,
+            "v4_admission": False,
+            "consumer_canary": False,
             "public_release_authorized_within_scope": pbs_authorization[
                 "external_publication_authorized"
             ],
@@ -1477,18 +1552,41 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
                 "allowed_domains": pbs_authorization["allowed_domains"],
                 "categories": pbs_authorization["categories"],
             },
-            "publication_exclusions": pbs_authorization[
+            "authorization_document_exclusions": pbs_authorization[
                 "publication_does_not_authorize"
             ],
+            "superseded_authorization_exclusions": [
+                "unlicensed vocabulary redistribution"
+            ],
+            "exclusion_supersession_basis": {
+                "attestation_path": str(
+                    PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION
+                ),
+                "attestation_sha256": evidence_inputs[
+                    str(PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION)
+                ],
+                "exact_object_scope": True,
+                "permission_scope_includes_all_file_contents": True,
+                "instrument_independently_reviewed": False,
+            },
+            "publication_exclusions": [
+                exclusion
+                for exclusion in pbs_authorization[
+                    "publication_does_not_authorize"
+                ]
+                if exclusion != "unlicensed vocabulary redistribution"
+            ],
             "unlicensed_vocabulary_presence_reviewed": False,
-            "full_object_release_requires_exclusion_review": True,
+            "rights_exclusion_fully_resolved_by_exact_attestation": True,
+            "full_object_release_requires_exclusion_review": False,
             "limited_vocabulary_screen": {
                 "path": str(PBS_UTILISATION_LIMITED_SCREEN),
                 "sha256": evidence_inputs[str(PBS_UTILISATION_LIMITED_SCREEN)],
                 "results": _reconcile_pbs_limited_vocabulary_screen(root)[
                     "results"
                 ],
-                "full_object_release_requires_exclusion_review": True,
+                "rights_exclusion_fully_resolved_by_exact_attestation": True,
+                "full_object_release_requires_exclusion_review": False,
             },
             "objects": pbs_utilisation_objects,
         },

@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-15.json"
+    "australian-m112-rights-release-preflight-20261021-2.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-14.json"
+    "australian-m112-rights-release-preflight-20261020-15.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -46,13 +46,17 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
             == expected_digest
         )
     assert report["status"] == (
-        "frozen_m112_exact_object_rights_attested_vocabulary_and_lineage_gaps_open"
+        "frozen_m112_exact_object_rights_attested_lineage_and_admission_gaps_open"
     )
     assert report["effective_m112_rights"]["resolved_object_count"] == 1759
     assert report["effective_m112_rights"]["unresolved_object_count"] == 0
+    assert not any(
+        "full PBS utilisation vocabulary exclusion review" in item["work"]
+        for item in report["remaining_rights_work"]
+    )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261020-14.json"
+        "australian-m112-rights-release-preflight-20261020-15.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -116,19 +120,6 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert projection["public_release_rights_attested"] is True
     assert projection["permission_instrument_independently_reviewed"] is False
     assert projection["release_performed_by_this_reconciliation"] is False
-    limited_screen = report["pbs_utilisation_raw_objects"][
-        "limited_vocabulary_screen"
-    ]
-    assert (
-        limited_screen["results"]["full_vocabulary_exclusion_review_complete"]
-        is False
-    )
-    assert (
-        report["pbs_utilisation_raw_objects"][
-            "full_object_release_requires_exclusion_review"
-        ]
-        is True
-    )
 
 
 def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
@@ -170,19 +161,6 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert cms["acquisition_time_rights_state_preserved"] == "unknown"
     assert cms["external_publication_authorized"] is False
     assert cms["derived_table_rights_concluded"] is False
-    assert report["pbs_utilisation_raw_objects"][
-        "full_object_release_requires_exclusion_review"
-    ]
-    limited_screen = report["pbs_utilisation_raw_objects"][
-        "limited_vocabulary_screen"
-    ]
-    assert (
-        limited_screen["results"]["full_vocabulary_exclusion_review_complete"]
-        is False
-    )
-    assert (
-        limited_screen["full_object_release_requires_exclusion_review"] is True
-    )
     gates = report["release_and_admission_boundaries"]
     assert gates["all_remaining_deferrals_preserved"] is True
     assert gates["deferred_objects"] == 1753
@@ -280,3 +258,35 @@ def test_latest_main_rights_snapshot_is_preserved_without_replacing_q3_delta() -
     ] == ("approved")
     assert report["release_and_admission_boundaries"]["v4_admissions"] == 3
     assert report["release_and_admission_boundaries"]["consumer_canaries"] == 3
+
+
+def test_pbs_rights_attestation_is_exact_and_keeps_other_gates_open() -> None:
+    report = _json(PREFLIGHT)
+    pbs = report["pbs_utilisation_raw_objects"]
+    assert pbs["full_object_release_requires_exclusion_review"] is False
+    assert pbs["rights_exclusion_fully_resolved_by_exact_attestation"] is True
+    assert pbs["permission_instrument_existence_and_applicability"] == (
+        "maintainer_attested_not_independently_reviewed"
+    )
+    assert pbs["exact_rights_attestation_path"].endswith(
+        "australian-pbs-utilisation-six-object-rights-attestation-20261020.json"
+    )
+    assert pbs["public_release_performed_by_this_reconciliation"] is False
+    assert pbs["v4_admission"] is False
+    assert pbs["consumer_canary"] is False
+    assert len(pbs["objects"]) == 6
+    assert all(
+        obj["rights_state"] == pbs["rights_state"] for obj in pbs["objects"]
+    )
+    limited_screen = pbs["limited_vocabulary_screen"]
+    assert (
+        limited_screen["results"]["full_vocabulary_exclusion_review_complete"]
+        is False
+    )
+    assert (
+        limited_screen["full_object_release_requires_exclusion_review"] is False
+    )
+    assert (
+        limited_screen["rights_exclusion_fully_resolved_by_exact_attestation"]
+        is True
+    )
