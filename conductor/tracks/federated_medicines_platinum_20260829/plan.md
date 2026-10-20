@@ -1572,6 +1572,22 @@
   after GitHub API rate limiting has cleared. API/CLI/Atlas/browser-product
   consumer qualification remains a separate open gate.
 
+## 2026-10-20 M-112 Q1 demographics replay-role qualification
+
+- [x] Execute the one-object v3 replay for Q1 March demographics on exact
+  `main` commit `cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a`. Hosted run
+  `39368825712` passed anonymous digest and byte-count verification for the
+  pinned 23,934,884-byte B2 object, rebuilt only the append-only registration,
+  and removed temporary source bytes.
+- [x] Bind the metadata-only run receipt and deterministic replay plan into the
+  v3 readback manifest and refresh the contract-role qualification. The
+  candidate now has v3 replay and temporary-cache cleanup candidate roles;
+  the readback manifest covers 5 of 16 objects.
+- [ ] Build and independently verify a Q1 v4.1 contract from the complete
+  candidate role evidence, then run its exact-main admission and `FederatedReader`
+  canary. Q1 remains unadmitted; totals remain 4 admissions and 4 canaries
+  until the hosted gate passes.
+
 ## 2026-10-20 M-112 Q3 demographics v4 raw-B2 contract qualification
 
 - [x] Bind the Q3 demographics replay evidence to its exact merged source commit,
