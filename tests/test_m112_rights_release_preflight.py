@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-10.json"
+    "australian-m112-rights-release-preflight-20261020-11.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-9.json"
+    "australian-m112-rights-release-preflight-20261020-10.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -52,7 +52,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert report["effective_m112_rights"]["unresolved_object_count"] == 0
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261020-9.json"
+        "australian-m112-rights-release-preflight-20261020-10.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -71,9 +71,9 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     reconciliation = report["current_rights_reconciliation"]
     assert reconciliation["approved_denominator"] == 1759
     assert reconciliation["membership_changed"] is False
-    assert reconciliation["v4_admissions"] == 5
+    assert reconciliation["v4_admissions"] == 6
     assert reconciliation["consumer_canaries"] == 5
-    assert reconciliation["deferred_objects"] == 1754
+    assert reconciliation["deferred_objects"] == 1753
     assert (
         hashlib.sha256((ROOT / reconciliation["path"]).read_bytes()).hexdigest()
         == reconciliation["sha256"]
@@ -169,8 +169,8 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     )
     gates = report["release_and_admission_boundaries"]
     assert gates["all_remaining_deferrals_preserved"] is True
-    assert gates["deferred_objects"] == 1754
-    assert gates["v4_admissions"] == 5
+    assert gates["deferred_objects"] == 1753
+    assert gates["v4_admissions"] == 6
     assert gates["consumer_canaries"] == 5
     assert gates["external_publications_performed"] is False
 
