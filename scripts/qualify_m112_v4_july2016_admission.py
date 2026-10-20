@@ -133,7 +133,7 @@ TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
     "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip": (
         "060114c0a9d1d6f8122f0829f24257861ae30e75"
     ),
-    DEMOGRAPHICS_Q3_PATH: None,
+    DEMOGRAPHICS_Q3_PATH: "510cb08901923e713ee0fae3f3db15f29dbacab3",
 }
 TARGET_OUTPUTS = {
     TARGET_PATH: OUTPUT,
