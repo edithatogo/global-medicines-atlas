@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-8.json"
+    "australian-m112-rights-release-preflight-20261020-10.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-7.json"
+    "australian-m112-rights-release-preflight-20261020-9.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -46,13 +46,13 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
             == expected_digest
         )
     assert report["status"] == (
-        "scoped_rights_attestation_recorded_other_source_specific_gaps_open"
+        "frozen_m112_exact_object_rights_attested_vocabulary_and_lineage_gaps_open"
     )
-    assert report["effective_m112_rights"]["resolved_object_count"] == 1753
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 6
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1759
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 0
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261020-7.json"
+        "australian-m112-rights-release-preflight-20261020-9.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -62,11 +62,11 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
-        == 4
+        == 5
     )
     assert (
         previous_report["release_and_admission_boundaries"]["consumer_canaries"]
-        == 4
+        == 5
     )
     reconciliation = report["current_rights_reconciliation"]
     assert reconciliation["approved_denominator"] == 1759
@@ -78,6 +78,15 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
         hashlib.sha256((ROOT / reconciliation["path"]).read_bytes()).hexdigest()
         == reconciliation["sha256"]
     )
+    raw = report["mbs_raw_object_rights_attestation"]
+    assert raw["object_count"] == 6
+    assert raw["public_release_rights_attested"] is True
+    assert raw["permission_instrument_existence_and_applicability"] == (
+        "maintainer_attested_not_independently_reviewed"
+    )
+    assert raw["b1_b2_lineage_or_admission_inferred"] is False
+    assert raw["v4_admission"] is False
+    assert raw["consumer_canary"] is False
     q3 = report["q3_admission"]
     assert q3["workflow_run_id"] == 39356792827
     assert q3["consumer_canary_passed"] is True

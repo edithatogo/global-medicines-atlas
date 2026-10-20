@@ -28,6 +28,9 @@ MBS_SILVER_PUBLIC_TREE_READBACK = QUAL / (
 AUGUST_MBS_RIGHTS_ATTESTATION = QUAL / (
     "australian-mbs-august-bronze-rights-attestation-20261020.json"
 )
+MBS_RAW_RIGHTS_ATTESTATION = QUAL / (
+    "australian-mbs-six-raw-object-rights-attestation-20261020.json"
+)
 REIMBURSEMENT_MEDALLION_RIGHTS_ATTESTATION = QUAL / (
     "australian-reimbursement-atlas-medallion-rights-attestation-20261020.json"
 )
@@ -107,6 +110,10 @@ PBS_SOURCE_PROJECTION_RIGHTS_ATTESTATION = QUAL / (
 PBS_SOURCE_PROJECTION_RIGHTS_STATE = (
     "maintainer_attested_exact_public_release_permission_for_bronze_projection"
 )
+MBS_RAW_RIGHTS_STATE = (
+    "maintainer_attested_exact_public_release_permission_for_mbs_raw_object"
+)
+MBS_RAW_RIGHTS_OBJECT_COUNT = 6
 PBS_UTILISATION_LIMITED_SCREEN = QUAL / (
     "australian-pbs-utilisation-limited-vocabulary-screen-20261020.json"
 )
@@ -140,6 +147,7 @@ REIMBURSEMENT_MEDALLION_RIGHTS_STATE = (
 RIGHTS_RESOLVED_STATES = {
     "authorized_exact_source_release_permitted",
     "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
+    MBS_RAW_RIGHTS_STATE,
     "maintainer_attested_exact_public_release_permission_for_silver_object",
     MBS_AUGUST_RIGHTS_STATE,
     REIMBURSEMENT_MEDALLION_RIGHTS_STATE,
@@ -930,6 +938,57 @@ def _reconcile_mbs_silver_attestation(
     }
 
 
+def _reconcile_mbs_raw_attestation(
+    objects: list[dict[str, Any]], attestation: dict[str, Any]
+) -> dict[str, Any]:
+    decision = attestation.get("decision", {})
+    attested = {
+        item["path"]: (item["sha256"], item["byte_count"])
+        for item in attestation.get("authorized_objects", [])
+    }
+    frozen = {
+        obj["path"]: (obj["identity"]["sha256"], obj["identity"]["byte_count"])
+        for obj in objects
+        if obj["path"] in attested
+    }
+    if (
+        attestation.get("dataset_identity", {}).get("dataset")
+        != "edithatogo/australian-mbs-source-archive"
+        or decision.get("public_release_rights_attested") is not True
+        or decision.get("public_release_performed") is not False
+        or len(attested) != MBS_RAW_RIGHTS_OBJECT_COUNT
+        or frozen != attested
+    ):
+        raise ValueError(
+            "exact six-object MBS raw rights attestation did not reconcile"
+        )
+    return {
+        "object_count": len(attested),
+        "rights_state": MBS_RAW_RIGHTS_STATE,
+        "permission_instrument_existence_and_applicability": (
+            "maintainer_attested_not_independently_reviewed"
+        ),
+        "public_release_rights_attested": True,
+        "public_release_performed": False,
+        "v4_admission": False,
+        "consumer_canary": False,
+        "objects": [
+            {
+                "path": path,
+                "sha256": identity[0],
+                "byte_count": identity[1],
+                "rights_state": MBS_RAW_RIGHTS_STATE,
+                "pre_attestation_rights_review_state": next(
+                    obj["rights"]["state"]
+                    for obj in objects
+                    if obj["path"] == path
+                ),
+            }
+            for path, identity in sorted(attested.items())
+        ],
+    }
+
+
 def reconcile_august_mbs_attestation(
     objects: list[dict[str, Any]], attestation: dict[str, Any]
 ) -> list[dict[str, Any]]:
@@ -1141,12 +1200,14 @@ def _reconcile_pbs_limited_vocabulary_screen(root: Path) -> dict[str, Any]:
 def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     overlay = _read(root, FROZEN_OVERLAY)
     pbs_authorization = _read(root, PBS_UTILISATION_AUTHORIZATION)
-    m108 = _read(root, M108_ASSESSMENT)
     objects = overlay["objects"]
     mbs_summary = _reconcile_mbs_silver_attestation(
         objects,
         _read(root, MBS_RIGHTS_ATTESTATION),
         _read(root, MBS_SILVER_PUBLIC_TREE_READBACK),
+    )
+    mbs_raw_summary = _reconcile_mbs_raw_attestation(
+        objects, _read(root, MBS_RAW_RIGHTS_ATTESTATION)
     )
     august_mbs_objects = reconcile_august_mbs_attestation(
         objects, _read(root, AUGUST_MBS_RIGHTS_ATTESTATION)
@@ -1158,6 +1219,10 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         ]: "maintainer_attested_exact_public_release_permission_for_silver_object"
         for item in mbs_summary["paths"]
     }
+    rights_overrides.update({
+        item["path"]: MBS_RAW_RIGHTS_STATE
+        for item in mbs_raw_summary["objects"]
+    })
     pbs_utilisation_objects, pbs_rights_evidence_inputs = (
         _reconcile_pbs_utilisation_authorization(
             root,
@@ -1217,6 +1282,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         str(MBS_SILVER_PUBLIC_TREE_READBACK): _sha256(
             root / MBS_SILVER_PUBLIC_TREE_READBACK
         ),
+        str(MBS_RAW_RIGHTS_ATTESTATION): _sha256(
+            root / MBS_RAW_RIGHTS_ATTESTATION
+        ),
         str(AUGUST_MBS_RIGHTS_ATTESTATION): _sha256(
             root / AUGUST_MBS_RIGHTS_ATTESTATION
         ),
@@ -1271,6 +1339,14 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
                 "current_public_tree_readback"
             ],
             "paths": mbs_summary["paths"],
+        },
+        "mbs_raw_object_rights_attestation": {
+            **mbs_raw_summary,
+            "attestation_path": str(MBS_RAW_RIGHTS_ATTESTATION),
+            "attestation_sha256": evidence_inputs[
+                str(MBS_RAW_RIGHTS_ATTESTATION)
+            ],
+            "b1_b2_lineage_or_admission_inferred": False,
         },
         "pbs_utilisation_raw_objects": {
             "object_count": len(pbs_utilisation_objects),
@@ -1331,9 +1407,11 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
                 "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction"
             ),
             "public_release_performed_by_this_action": False,
-            "m108_assessment_derived_output_authority": m108[
-                "august_2026_six_table_operation_assessment"
-            ]["authorization"]["derived_output_authority"],
+            "m108_assessment_derived_output_authority": _read(
+                root, M108_ASSESSMENT
+            )["august_2026_six_table_operation_assessment"]["authorization"][
+                "derived_output_authority"
+            ],
             "objects": august_mbs_objects,
         },
         "reimbursement_atlas_medallion_projections": {

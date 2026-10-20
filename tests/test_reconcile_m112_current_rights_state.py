@@ -25,8 +25,8 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert report["frozen_inventory"]["object_count"] == 1759
     assert report["frozen_inventory"]["membership_changed"] is False
     assert report["frozen_inventory"]["all_b1_b2_lineages_complete"] is True
-    assert report["effective_m112_rights"]["resolved_object_count"] == 1753
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 6
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1759
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 0
     assert report["exact_july_2025_mbs_silver"]["object_count"] == 6
     assert (
         report["exact_july_2025_mbs_silver"]["public_release_authorized"]
@@ -98,6 +98,31 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert report["boundaries"]["source_payload_bytes_read"] is True
 
 
+def test_exact_six_mbs_raw_rights_attestation_preserves_lineage_and_release_gates() -> (
+    None
+):
+    report = build_report(ROOT, observed_at="2026-10-20T00:00:00Z")
+    raw = report["mbs_raw_object_rights_attestation"]
+    assert raw["object_count"] == 6
+    assert raw["public_release_rights_attested"] is True
+    assert raw["permission_instrument_existence_and_applicability"] == (
+        "maintainer_attested_not_independently_reviewed"
+    )
+    assert raw["b1_b2_lineage_or_admission_inferred"] is False
+    assert raw["public_release_performed"] is False
+    assert raw["v4_admission"] is False
+    assert raw["consumer_canary"] is False
+    assert (
+        sum(
+            "sidecar" in obj["pre_attestation_rights_review_state"]
+            for obj in raw["objects"]
+        )
+        == 2
+    )
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1759
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 0
+
+
 def test_limited_screen_does_not_close_vocabulary_or_release_gate() -> None:
     report = build_report(ROOT, observed_at="2026-10-20T00:00:00Z")
     pbs = report["pbs_utilisation_raw_objects"]
@@ -156,8 +181,8 @@ def test_pbs_raw_owner_permission_binds_exact_lineaged_objects_only() -> None:
     assert all(obj["v4_admission"] is False for obj in permission["objects"])
     assert all(obj["consumer_canary"] is False for obj in permission["objects"])
 
-    assert report["effective_m112_rights"]["resolved_object_count"] == 1753
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 6
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1759
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 0
     pbs_archive = report["pbs_source_archive_exact_publication"]
     assert pbs_archive["historical_acquisition_rights_state"] == "unknown"
     assert pbs_archive["rights_state"] == permission["rights_state"]
