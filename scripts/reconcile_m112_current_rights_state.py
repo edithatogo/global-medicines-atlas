@@ -101,6 +101,15 @@ PBS_SOURCE_PROJECTION_SHA256 = (
     "9e9facc336b47c5a9d514388a95c9797ba3e03474806fba00b6f03c0e601e97d"
 )
 PBS_SOURCE_PROJECTION_BYTES = 158134
+PBS_SOURCE_PROJECTION_RIGHTS_ATTESTATION = QUAL / (
+    "australian-pbs-bronze-projection-rights-attestation-20261020.json"
+)
+PBS_SOURCE_PROJECTION_RIGHTS_STATE = (
+    "maintainer_attested_exact_public_release_permission_for_bronze_projection"
+)
+PBS_UTILISATION_LIMITED_SCREEN = QUAL / (
+    "australian-pbs-utilisation-limited-vocabulary-screen-20261020.json"
+)
 MBS_JULY2016_CANARY_DATASET = "edithatogo/australian-mbs-utilisation-archive"
 MBS_JULY2016_CANARY_PATH = (
     "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
@@ -134,6 +143,7 @@ RIGHTS_RESOLVED_STATES = {
     "maintainer_attested_exact_public_release_permission_for_silver_object",
     MBS_AUGUST_RIGHTS_STATE,
     REIMBURSEMENT_MEDALLION_RIGHTS_STATE,
+    PBS_SOURCE_PROJECTION_RIGHTS_STATE,
     PBS_UTILISATION_RIGHTS_STATE,
     PBS_RAW_RIGHTS_STATE,
 }
@@ -247,6 +257,9 @@ def _reconcile_pbs_source_archive_publication(
     }
     raw = frozen.get(PBS_SOURCE_ARCHIVE_PATH)
     projection = frozen.get(PBS_SOURCE_PROJECTION_PATH)
+    projection_attestation = _read(
+        root, PBS_SOURCE_PROJECTION_RIGHTS_ATTESTATION
+    )
     raw_evidence = audit["raw_object"]
     publication = audit["maintainer_publication_authority"]
     checks = [audit["dataset"] != PBS_SOURCE_ARCHIVE_DATASET]
@@ -280,6 +293,27 @@ def _reconcile_pbs_source_archive_publication(
         projection["identity"]["byte_count"] != PBS_SOURCE_PROJECTION_BYTES,
         projection["v4_admission"] is not False,
         projection["disposition"] != "deferred_not_admitted",
+        projection_attestation["schema_id"]
+        != "global-medicines-atlas.australian-pbs-bronze-projection-rights-attestation",
+        projection_attestation["public_release_rights_attested"] is not True,
+        projection_attestation[
+            "permission_instrument_existence_and_applicability"
+        ]
+        != "maintainer_attested_not_independently_reviewed_or_located",
+        projection_attestation["scope"]["dataset"]
+        != PBS_SOURCE_ARCHIVE_DATASET,
+        projection_attestation["scope"]["revision"] != audit["revision"],
+        projection_attestation["scope"]["path"] != PBS_SOURCE_PROJECTION_PATH,
+        projection_attestation["scope"]["sha256"]
+        != PBS_SOURCE_PROJECTION_SHA256,
+        projection_attestation["scope"]["byte_count"]
+        != PBS_SOURCE_PROJECTION_BYTES,
+        projection_attestation["boundaries"]["new_publication_performed"]
+        is not False,
+        projection_attestation["boundaries"]["v4_admission_performed"]
+        is not False,
+        projection_attestation["boundaries"]["consumer_canary_performed"]
+        is not False,
     ])
     if any(checks):
         raise ValueError(
@@ -292,6 +326,9 @@ def _reconcile_pbs_source_archive_publication(
             root / PBS_SOURCE_ARCHIVE_ACQUISITION
         ),
         str(PBS_DECISION_0009): decision_sha256,
+        str(PBS_SOURCE_PROJECTION_RIGHTS_ATTESTATION): _sha256(
+            root / PBS_SOURCE_PROJECTION_RIGHTS_ATTESTATION
+        ),
     }
     return {
         "record": {
@@ -323,12 +360,25 @@ def _reconcile_pbs_source_archive_publication(
                 "path": PBS_SOURCE_PROJECTION_PATH,
                 "sha256": PBS_SOURCE_PROJECTION_SHA256,
                 "byte_count": PBS_SOURCE_PROJECTION_BYTES,
-                "rights_state": projection["rights"]["state"],
+                "rights_state": PBS_SOURCE_PROJECTION_RIGHTS_STATE,
+                "rights_attestation_path": str(
+                    PBS_SOURCE_PROJECTION_RIGHTS_ATTESTATION
+                ),
+                "rights_attestation_sha256": hashes[
+                    str(PBS_SOURCE_PROJECTION_RIGHTS_ATTESTATION)
+                ],
+                "public_release_rights_attested": True,
+                "permission_instrument_independently_reviewed": False,
                 "v4_admission": projection["v4_admission"],
+                "consumer_canary": False,
+                "release_performed_by_this_reconciliation": False,
                 "derived_rights_inferred_from_source_permission": False,
             },
             "rights_conclusion_made": True,
-            "rights_scope": "exact raw PBS source archive object only",
+            "rights_scope": (
+                "exact raw PBS source archive and separately attested exact "
+                "Bronze projection; raw permission does not extend to projection"
+            ),
             "derived_projection_rights_inferred": False,
         },
         "evidence_inputs": hashes,
@@ -1068,6 +1118,26 @@ def _pbs_lineage_item_is_authorized(
     ))
 
 
+def _reconcile_pbs_limited_vocabulary_screen(root: Path) -> dict[str, Any]:
+    screen = _read(root, PBS_UTILISATION_LIMITED_SCREEN)
+    results = screen.get("results", {})
+    checks = (
+        screen.get("schema_id")
+        == "global-medicines-atlas.australian-pbs-utilisation-limited-vocabulary-screen",
+        screen.get("dataset") == PBS_UTILISATION_DATASET,
+        screen.get("revision") == "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        screen.get("scope", {}).get("object_count")
+        == PBS_UTILISATION_OBJECT_COUNT,
+        results.get("all_object_digests_and_byte_counts_match_pinned_lineage")
+        is True,
+        results.get("full_vocabulary_exclusion_review_complete") is False,
+        results.get("rights_exclusion_fully_resolved") is False,
+    )
+    if not all(checks):
+        raise ValueError("PBS limited vocabulary screen did not reconcile")
+    return screen
+
+
 def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     overlay = _read(root, FROZEN_OVERLAY)
     pbs_authorization = _read(root, PBS_UTILISATION_AUTHORIZATION)
@@ -1096,6 +1166,7 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
             _read(root, PBS_UTILISATION_LINEAGE),
         )
     )
+    _reconcile_pbs_limited_vocabulary_screen(root)
     rights_overrides.update({
         item["path"]: PBS_UTILISATION_RIGHTS_STATE
         for item in pbs_utilisation_objects
@@ -1119,6 +1190,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     rights_overrides.update({
         item["path"]: PBS_RAW_RIGHTS_STATE for item in pbs_raw_rights["objects"]
     })
+    rights_overrides[PBS_SOURCE_PROJECTION_PATH] = (
+        PBS_SOURCE_PROJECTION_RIGHTS_STATE
+    )
     rights_summary = _reconcile_object_rights(objects, rights_overrides)
 
     if len(august_mbs_objects) != AUGUST_PROJECTION_COUNT:
@@ -1153,6 +1227,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         **pbs_raw_rights["evidence_inputs"],
         **supplemental_readbacks["pbs_source_archive"]["evidence_inputs"],
         **supplemental_readbacks["m112_gate"]["evidence_inputs"],
+        str(PBS_UTILISATION_LIMITED_SCREEN): _sha256(
+            root / PBS_UTILISATION_LIMITED_SCREEN
+        ),
         str(M108_ASSESSMENT): _sha256(root / M108_ASSESSMENT),
     }
 
@@ -1221,6 +1298,14 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
             ],
             "unlicensed_vocabulary_presence_reviewed": False,
             "full_object_release_requires_exclusion_review": True,
+            "limited_vocabulary_screen": {
+                "path": str(PBS_UTILISATION_LIMITED_SCREEN),
+                "sha256": evidence_inputs[str(PBS_UTILISATION_LIMITED_SCREEN)],
+                "results": _reconcile_pbs_limited_vocabulary_screen(root)[
+                    "results"
+                ],
+                "full_object_release_requires_exclusion_review": True,
+            },
             "objects": pbs_utilisation_objects,
         },
         "pbs_raw_redistribution_permission": {
@@ -1283,8 +1368,10 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
                 "canaried_object_count"
             ],
             "new_sources_or_datasets_added": False,
-            "source_payload_bytes_read": False,
-            "source_payload_values_inspected": False,
+            "source_payload_bytes_read": True,
+            "source_payload_values_inspected": True,
+            "source_payload_values_emitted": False,
+            "source_payload_files_written": False,
             "external_publication_performed": mbs_summary[
                 "public_release_performed"
             ],
