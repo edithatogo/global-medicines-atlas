@@ -92,15 +92,37 @@
       "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
       "started_at": "2026-10-19T23:56:20Z",
       "status": "success"
+    },
+    {
+      "attempt": 1,
+      "bytes": 23934884,
+      "commit": "cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a",
+      "completed_at": "2026-10-20T04:18:14Z",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "plan": {
+        "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39368825712.json",
+        "sha256": "4f7e6dd24acfc5f2864fb7bbc8e961f4fc285b560c5eef5f7eec11173727c4fb"
+      },
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39368825712.json",
+        "sha256": "8c5e4bb4f3d00641951dc680da5e0138990605fd9ff4fd5aa03d62a14be50717"
+      },
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "run_id": 39368825712,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39368825712",
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+      "started_at": "2026-10-20T04:17:51Z",
+      "status": "success"
     }
   ],
-  "recorded_at": "2026-10-19T23:56:37Z",
+  "recorded_at": "2026-10-20T04:18:14Z",
   "schema_id": "global-medicines-atlas.m112-v3-replay-readback-manifest",
   "schema_version": 1,
   "scope": {
     "approved_denominator": 1759,
     "consumer_canaries_added": 0,
-    "replay_objects": 4,
+    "replay_objects": 5,
     "v4_admissions_added": 0
   },
   "status": "successful_exact_hosted_v3_replay_readbacks"

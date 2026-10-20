@@ -37,7 +37,6 @@ from global_medicines_atlas.federation_receipt_closure import (
     MAX_RECEIPT_BYTES,
     MAX_TOTAL_BYTES,
     ReceiptPayload,
-    ReceiptRole,
     contract_receipt_roles,
     verify_receipt_closure,
 )
@@ -68,6 +67,13 @@ DEMOGRAPHICS_Q3_PATH = (
 DEMOGRAPHICS_Q3_OUTPUT = Path(
     "quality/qualifications/"
     "australian-m112-v4-demographics-q3-july-raw-b2-contract.json"
+)
+DEMOGRAPHICS_Q1_PATH = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv"
+)
+DEMOGRAPHICS_Q1_OUTPUT = Path(
+    "quality/qualifications/"
+    "australian-m112-v4-demographics-q1-march-raw-b2-contract.json"
 )
 SCHEMA_PATH = Path("contracts/medallion/v4.1/federation.schema.json")
 EVIDENCE_COMMIT = "90dea68ec6ff3d4d07b43860631742728cf40ff5"
@@ -124,6 +130,14 @@ TARGET_IDENTITIES: dict[str, dict[str, Any]] = {
         "source_id": "au-data-gov-mbs-demographics",
         "acquisition_id": "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb",
     },
+    DEMOGRAPHICS_Q1_PATH: {
+        "dataset": TARGET_DATASET,
+        "revision": TARGET_REVISION,
+        "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "bytes": 23_934_884,
+        "source_id": "au-data-gov-mbs-demographics",
+        "acquisition_id": "8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3",
+    },
 }
 TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
     TARGET_PATH: EVIDENCE_COMMIT,
@@ -134,6 +148,7 @@ TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
         "060114c0a9d1d6f8122f0829f24257861ae30e75"
     ),
     DEMOGRAPHICS_Q3_PATH: "510cb08901923e713ee0fae3f3db15f29dbacab3",
+    DEMOGRAPHICS_Q1_PATH: "71b8ca00dee8275578cb8d50a0e4db12cc6160f3",
 }
 TARGET_OUTPUTS = {
     TARGET_PATH: OUTPUT,
@@ -142,6 +157,7 @@ TARGET_OUTPUTS = {
         HISTORICAL_1993_2015_OUTPUT
     ),
     DEMOGRAPHICS_Q3_PATH: DEMOGRAPHICS_Q3_OUTPUT,
+    DEMOGRAPHICS_Q1_PATH: DEMOGRAPHICS_Q1_OUTPUT,
 }
 
 
@@ -593,6 +609,51 @@ def validate_contract(document: dict[str, Any], *, root: Path = ROOT) -> bytes:
     )
 
 
+def validate_pinned_contract(
+    raw_contract: bytes, *, root: Path, target_path: str
+) -> bytes:
+    """Validate an existing immutable contract without rebuilding its roles."""
+    document_value: Any = json.loads(raw_contract)
+    if not isinstance(document_value, dict):
+        raise TypeError("M-112 raw B2 contract must be a JSON object")
+    document = cast("dict[str, Any]", document_value)
+    canonical = validate_contract(document, root=root)
+    if canonical != raw_contract:
+        raise ValueError("M-112 raw B2 contract is not canonically serialized")
+    identity = _target_identity(target_path)
+    location_value = document.get("location")
+    source_value = document.get("source")
+    if not isinstance(location_value, dict) or not isinstance(
+        source_value, dict
+    ):
+        raise TypeError("M-112 raw B2 contract identity is incomplete")
+    location = cast("dict[str, Any]", location_value)
+    source = cast("dict[str, Any]", source_value)
+    expected_location = {
+        "dataset": identity["dataset"],
+        "revision": identity["revision"],
+        "path": target_path,
+        "bytes": identity["bytes"],
+        "sha256": identity["sha256"],
+    }
+    expected_source = {
+        "source_id": identity["source_id"],
+        "acquisition_id": identity["acquisition_id"],
+        "layer": "bronze",
+        "bronze_stratum": "B2",
+        "representation": "raw",
+    }
+    if any(
+        location.get(key) != value for key, value in expected_location.items()
+    ):
+        raise ValueError(
+            "immutable contract differs from exact target identity"
+        )
+    if any(source.get(key) != value for key, value in expected_source.items()):
+        raise ValueError("immutable contract differs from exact B1/B2 identity")
+    return raw_contract
+
+
 def _download_receipt(url: str, client: httpx.Client) -> bytes:
     comment = ISSUE_COMMENT_PATTERN.fullmatch(url)
     if comment:
@@ -619,7 +680,6 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
     *,
     root: Path = ROOT,
     target_path: str = TARGET_PATH,
-    evidence_commit: str | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     """Verify every external receipt then independently admit the exact pin."""
     schema = (root / SCHEMA_PATH).read_bytes()
@@ -667,60 +727,44 @@ def verify_and_admit(  # ruff: ignore[too-many-locals]
     report = _read_json(root, ROLE_REPORT)
     candidate = _validate_inputs(root, report, target_path=target_path)
     identity = _target_identity(target_path)
-    evidence_commit = _evidence_commit_for_target(target_path, evidence_commit)
     rights_file = cast("dict[str, Any]", candidate["rights_decision"])
-    rights_path = Path(cast("str", rights_file["path"]))
-    rights_url = _raw_url(rights_path, commit=evidence_commit)
-    rights_receipt = ReceiptRole(
-        role="/rights/authorization",
-        url=rights_url,
-        sha256=cast("str", rights_file["sha256"]),
-    )
-    source_receipt_url = _file_receipt(
-        root,
-        cast("str", candidate["_verified_source_receipt_path"]),
-        commit=evidence_commit,
-    )
-    event_url = _file_receipt(
-        root,
-        cast("str", candidate["_verified_event_path"]),
-        commit=evidence_commit,
-    )
-    b2_url = _file_receipt(
-        root,
-        cast("str", candidate["_verified_b2_path"]),
-        commit=evidence_commit,
-    )
     v1 = cast("dict[str, Any]", candidate["v1_conformance_candidate_receipt"])
     v3 = cast("dict[str, Any]", candidate["v3_replay_candidate_receipt"])
-    contract_document = json.loads(raw_contract)
-    contract_v3 = contract_document["lineage"]["v3_replay"]
-    lineage_roles = (
-        ReceiptRole(
-            role="/lineage/inputs/0",
-            url=source_receipt_url["url"],
-            sha256=source_receipt_url["sha256"],
+    contract_roles = {
+        role.role: role
+        for role in contract_receipt_roles(raw_contract, schema=schema)
+    }
+    expected_role_digests = {
+        "/rights/authorization": cast("str", rights_file["sha256"]),
+        "/lineage/inputs/0": _sha256(
+            (
+                root / cast("str", candidate["_verified_source_receipt_path"])
+            ).read_bytes()
         ),
-        ReceiptRole(
-            role="/lineage/inputs/1",
-            url=event_url["url"],
-            sha256=event_url["sha256"],
+        "/lineage/inputs/1": _sha256(
+            (root / cast("str", candidate["_verified_event_path"])).read_bytes()
         ),
-        ReceiptRole(
-            role="/lineage/inputs/2",
-            url=b2_url["url"],
-            sha256=b2_url["sha256"],
+        "/lineage/inputs/2": _sha256(
+            (root / cast("str", candidate["_verified_b2_path"])).read_bytes()
         ),
-        ReceiptRole(
-            role="/lineage/v1_conformance",
-            url=cast("str", v1["url"]),
-            sha256=cast("str", v1["sha256"]),
+        "/lineage/v1_conformance": cast("str", v1["sha256"]),
+        "/lineage/v3_replay": cast(
+            "str", cast("dict[str, Any]", v3["receipt"])["sha256"]
         ),
-        ReceiptRole(
-            role="/lineage/v3_replay",
-            url=cast("str", contract_v3["url"]),
-            sha256=cast("str", v3["receipt"]["sha256"]),
-        ),
+    }
+    if any(
+        role_name not in contract_roles
+        or contract_roles[role_name].sha256 != digest
+        for role_name, digest in expected_role_digests.items()
+    ):
+        raise ValueError(
+            "immutable contract receipt roles differ from qualified evidence"
+        )
+    rights_receipt = contract_roles["/rights/authorization"]
+    lineage_roles = tuple(
+        contract_roles[role_name]
+        for role_name in expected_role_digests
+        if role_name.startswith("/lineage/")
     )
     trusted = TrustedAdmissionProfile(
         producer_repository="edithatogo/global-medicines-atlas",
@@ -952,26 +996,29 @@ def main(argv: list[str] | None = None) -> int:
     root = args.root.resolve()
     output_value = args.output or TARGET_OUTPUTS[args.target_path]
     output = root / output_value
-    expected = validate_contract(
-        build_contract(
-            root,
-            target_path=args.target_path,
-            evidence_commit=args.evidence_commit,
-        ),
-        root=root,
-    )
     if args.check:
+        if not output.is_file():
+            raise SystemExit(f"M-112 raw B2 contract is missing: {output}")
+        expected = validate_pinned_contract(
+            output.read_bytes(), root=root, target_path=args.target_path
+        )
+    else:
+        expected = validate_contract(
+            build_contract(
+                root,
+                target_path=args.target_path,
+                evidence_commit=args.evidence_commit,
+            ),
+            root=root,
+        )
         if not output.is_file() or output.read_bytes() != expected:
-            raise SystemExit(f"M-112 raw B2 contract is stale: {output}")
-    elif not output.is_file() or output.read_bytes() != expected:
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_bytes(expected)
+            output.parent.mkdir(parents=True, exist_ok=True)
+            output.write_bytes(expected)
     if args.verify:
         admission, closure = verify_and_admit(
             expected,
             root=root,
             target_path=args.target_path,
-            evidence_commit=args.evidence_commit,
         )
         canary = None
         if args.consumer_canary:

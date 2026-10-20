@@ -9,6 +9,8 @@ from pathlib import Path
 import pytest
 from scripts.qualify_m112_v4_july2016_admission import (
     CSV_ADMISSION_REPORT,
+    DEMOGRAPHICS_Q1_OUTPUT,
+    DEMOGRAPHICS_Q1_PATH,
     DEMOGRAPHICS_Q3_OUTPUT,
     DEMOGRAPHICS_Q3_PATH,
     HISTORICAL_1993_2015_OUTPUT,
@@ -19,6 +21,7 @@ from scripts.qualify_m112_v4_july2016_admission import (
     TARGET_SHA256,
     build_contract,
     expected_cache_bytes,
+    main,
     validate_contract,
 )
 
@@ -175,6 +178,32 @@ def test_q3_demographics_identity_is_explicitly_allowlisted() -> None:
     )
 
 
+def test_q1_demographics_contract_uses_qualified_candidate_roles() -> None:
+    identity = TARGET_IDENTITIES[DEMOGRAPHICS_Q1_PATH]
+    contract = build_contract(
+        target_path=DEMOGRAPHICS_Q1_PATH,
+    )
+    parsed = json.loads(validate_contract(contract))
+
+    assert DEMOGRAPHICS_Q1_OUTPUT.name == (
+        "australian-m112-v4-demographics-q1-march-raw-b2-contract.json"
+    )
+    assert parsed["source"]["source_id"] == identity["source_id"]
+    assert parsed["source"]["acquisition_id"] == identity["acquisition_id"]
+    assert parsed["location"]["path"] == DEMOGRAPHICS_Q1_PATH
+    assert parsed["location"]["sha256"] == identity["sha256"]
+    assert parsed["location"]["bytes"] == identity["bytes"]
+    assert TARGET_EVIDENCE_COMMITS[DEMOGRAPHICS_Q1_PATH] == (
+        "71b8ca00dee8275578cb8d50a0e4db12cc6160f3"
+    )
+    assert parsed["lineage"]["v3_replay"]["url"].startswith(
+        "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/"
+        "71b8ca00dee8275578cb8d50a0e4db12cc6160f3/"
+    )
+    assert parsed["cache"]["state"] == "removed"
+    assert parsed["consumers"] == []
+
+
 def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
     report = json.loads((ROOT / CSV_ADMISSION_REPORT).read_text())
 
@@ -184,6 +213,32 @@ def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
     assert report["admission"]["path"] == CSV_PATH
     assert report["contract_sha256"] == (
         "d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7"
+    )
+
+
+def test_check_validates_immutable_admitted_contract_without_rebuilding(
+    tmp_path: Path,
+) -> None:
+    schema_path = tmp_path / "contracts/medallion/v4.1/federation.schema.json"
+    contract_path = (
+        tmp_path
+        / "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json"
+    )
+    schema_path.parent.mkdir(parents=True)
+    contract_path.parent.mkdir(parents=True)
+    schema_path.write_bytes(
+        (ROOT / "contracts/medallion/v4.1/federation.schema.json").read_bytes()
+    )
+    contract_path.write_bytes(
+        (
+            ROOT
+            / "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json"
+        ).read_bytes()
+    )
+
+    assert (
+        main(["--root", str(tmp_path), "--target-path", CSV_PATH, "--check"])
+        == 0
     )
 
 

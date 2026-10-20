@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
-from shutil import copytree
+from shutil import copy2, copytree
 from typing import Any, cast
 
 import pytest
@@ -15,6 +16,34 @@ from scripts.reconcile_m112_current_rights_state import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+_MUTATED_FIXTURE_PATHS = {
+    "quality/qualifications/reimbursement-atlas-pbs-raw-permission-20260831.json",
+    "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
+    (
+        "quality/bronze/admissions/us-cms-hcpcs/"
+        "db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/"
+        "d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json"
+    ),
+}
+
+
+def _ignore_copy_inputs(_directory: str, names: list[str]) -> set[str]:
+    """Avoid copying immutable preflight snapshots unused by this fixture."""
+    return {
+        name
+        for name in names
+        if name in {".git", ".venv"}
+        or name.startswith("australian-m112-rights-release-preflight-")
+    }
+
+
+def _copy_fixture_file(source: str, destination: str) -> str:
+    """Hardlink immutable fixture inputs and copy only files under mutation."""
+    relative = Path(source).relative_to(ROOT).as_posix()
+    if relative in _MUTATED_FIXTURE_PATHS:
+        return str(copy2(source, destination))
+    os.link(source, destination)
+    return destination
 
 
 def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_state() -> (
@@ -92,9 +121,9 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert cms["external_publication_authorized"] is False
 
     assert report["boundaries"]["all_remaining_deferrals_preserved"] is True
-    assert report["boundaries"]["deferred_objects"] == 1756
-    assert report["boundaries"]["v4_admissions"] == 3
-    assert report["boundaries"]["consumer_canaries"] == 3
+    assert report["boundaries"]["deferred_objects"] == 1755
+    assert report["boundaries"]["v4_admissions"] == 4
+    assert report["boundaries"]["consumer_canaries"] == 4
     assert report["boundaries"]["source_payload_bytes_read"] is False
 
 
@@ -175,9 +204,8 @@ def test_pbs_raw_owner_permission_fails_closed_when_revoked(
     copytree(
         ROOT,
         copied_root,
-        ignore=lambda _directory, names: {
-            name for name in names if name in {".git", ".venv"}
-        },
+        copy_function=_copy_fixture_file,
+        ignore=_ignore_copy_inputs,
     )
     permission_path = (
         copied_root
@@ -199,9 +227,8 @@ def test_cms_effective_rights_readback_fails_closed_if_latest_admission_unreview
     copytree(
         ROOT,
         copied_root,
-        ignore=lambda _directory, names: {
-            name for name in names if name in {".git", ".venv"}
-        },
+        copy_function=_copy_fixture_file,
+        ignore=_ignore_copy_inputs,
     )
     admission_path = (
         copied_root / "quality/bronze/admissions/us-cms-hcpcs/"
@@ -258,14 +285,18 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
     report = build_report(ROOT, observed_at="2026-10-19T13:00:00Z")
     readback = report["m112_admission_canary_readback"]
 
-    assert readback["admitted_object_count"] == 3
-    assert readback["canaried_object_count"] == 3
-    assert readback["deferred_object_count"] == 1756
-    assert len(readback["current_role_qualification"]["admitted_objects"]) == 3
+    assert readback["admitted_object_count"] == 4
+    assert readback["canaried_object_count"] == 4
+    assert any(
+        run["run_id"] == 39356792827
+        for run in readback["successful_workflow_runs"]
+    )
+    assert readback["deferred_object_count"] == 1755
+    assert len(readback["current_role_qualification"]["admitted_objects"]) == 4
     assert readback["object"]["rights_state"] == (
         "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified"
     )
-    assert len(readback["successful_workflow_runs"]) == 3
+    assert len(readback["successful_workflow_runs"]) == 4
     assert readback["unique_object_counts_are_deduplicated_across_runs"] is True
     assert readback["source_values_or_rows_interpreted"] is False
     assert readback["native_workbook_layout_qualified"] is False
@@ -347,9 +378,8 @@ def test_pbs_scope_mismatch_fails_closed(tmp_path: Path) -> None:
     copytree(
         ROOT,
         copied_root,
-        ignore=lambda _directory, names: {
-            name for name in names if name in {".git", ".venv"}
-        },
+        copy_function=_copy_fixture_file,
+        ignore=_ignore_copy_inputs,
     )
     authorization_path = (
         copied_root

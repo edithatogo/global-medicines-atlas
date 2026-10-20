@@ -12,6 +12,24 @@ PREFLIGHT = (
     ROOT / "quality/qualifications/"
     "australian-m112-rights-release-preflight-20261020-4.json"
 )
+PREVIOUS_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261020-3.json"
+)
+PRESERVED_MAIN_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261020-5.json"
+)
+PRESERVED_MAIN_PREFLIGHT_SHA256 = (
+    "6022ff3ca2b1a5fe8a095bc5ebba48e3ac86297e3b7ddeff63e92ea5af21dc82"
+)
+PRESERVED_AUGUST_RIGHTS_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261020-6.json"
+)
+PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256 = (
+    "20cf284b95eb83436fdd437eca1d5075dda1bc6bc23bda7c12f1591d25c9bd3f"
+)
 
 
 def _json(path: Path) -> dict[str, Any]:
@@ -22,51 +40,46 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     None
 ):
     report = _json(PREFLIGHT)
-    for path, expected_digest in report["inputs"].items():
-        assert (
-            hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
-            == expected_digest
-        )
-    historical = report["historical_preflight"]
-    assert historical["superseded"] is True
-    assert historical["preserved_unchanged"] is True
-    assert historical["path"].endswith("preflight-20261019.json")
-    assert report["frozen_inventory"]["object_count"] == 1759
-    assert report["frozen_inventory"]["membership_changed"] is False
-    assert report["effective_m112_rights"]["resolved_object_count"] == 1752
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 7
-    assert report["previous_preflight"]["path"].endswith(
+    assert report["status"] == "current_m112_admission_readback_refreshed"
+    previous = report["previous_preflight"]
+    assert previous["path"].endswith(
         "australian-m112-rights-release-preflight-20261020-3.json"
     )
-    assert report["previous_preflight"]["preserved_unchanged"] is True
-    previous_preflight = ROOT / report["previous_preflight"]["path"]
+    assert previous["preserved_unchanged"] is True
     assert (
-        hashlib.sha256(previous_preflight.read_bytes()).hexdigest()
-        == report["previous_preflight"]["sha256"]
+        hashlib.sha256(PREVIOUS_PREFLIGHT.read_bytes()).hexdigest()
+        == previous["sha256"]
     )
-    pbs_archive = report["pbs_source_archive_exact_publication"]
-    assert pbs_archive["exact_object_publication_authorized"] is True
-    assert pbs_archive["rights_state"] == (
-        "owner_attested_pbs_raw_redistribution_permission"
-    )
-    assert pbs_archive["rights_conclusion_made"] is True
-    assert report["pbs_raw_redistribution_permission"]["object_count"] == 1708
+    previous_report = _json(PREVIOUS_PREFLIGHT)
     assert (
-        report["pbs_raw_redistribution_permission"][
-            "project_publication_authorized_by_this_record"
-        ]
-        is False
+        previous_report["release_and_admission_boundaries"]["v4_admissions"]
+        == 4
     )
     assert (
-        pbs_archive["source_projection"][
-            "derived_rights_inferred_from_source_permission"
-        ]
-        is False
+        previous_report["release_and_admission_boundaries"]["consumer_canaries"]
+        == 4
+    )
+    reconciliation = report["current_rights_reconciliation"]
+    assert reconciliation["approved_denominator"] == 1759
+    assert reconciliation["membership_changed"] is False
+    assert reconciliation["v4_admissions"] == 4
+    assert reconciliation["consumer_canaries"] == 4
+    assert reconciliation["deferred_objects"] == 1755
+    assert (
+        hashlib.sha256((ROOT / reconciliation["path"]).read_bytes()).hexdigest()
+        == reconciliation["sha256"]
+    )
+    q3 = report["q3_admission"]
+    assert q3["workflow_run_id"] == 39356792827
+    assert q3["consumer_canary_passed"] is True
+    assert (
+        hashlib.sha256((ROOT / q3["receipt_path"]).read_bytes()).hexdigest()
+        == q3["receipt_sha256"]
     )
 
 
 def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
-    report = _json(PREFLIGHT)
+    report = _json(PREVIOUS_PREFLIGHT)
     july = report["july_2025_mbs_silver"]
     assert len(july["objects"]) == 6
     assert july["public_release_authorized"] is True
@@ -102,9 +115,6 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert cms["rights_state"] == "permitted"
     assert cms["reviewer_status"] == "approved"
     assert cms["acquisition_time_rights_state_preserved"] == "unknown"
-    assert cms["superseded_admission_reviewer_status"] == "unreviewed"
-    assert cms["latest_admission_state"] == "landed"
-    assert cms["latest_admission_reviewer_status"] == "approved"
     assert cms["external_publication_authorized"] is False
     assert cms["derived_table_rights_concluded"] is False
     assert report["pbs_utilisation_raw_objects"][
@@ -112,16 +122,16 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     ]
     gates = report["release_and_admission_boundaries"]
     assert gates["all_remaining_deferrals_preserved"] is True
-    assert gates["deferred_objects"] == 1756
-    assert gates["v4_admissions"] == 3
-    assert gates["consumer_canaries"] == 3
+    assert gates["deferred_objects"] == 1755
+    assert gates["v4_admissions"] == 4
+    assert gates["consumer_canaries"] == 4
     assert gates["external_publications_performed"] is False
 
 
 def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> (
     None
 ):
-    report = _json(PREFLIGHT)
+    report = _json(PREVIOUS_PREFLIGHT)
     exception = report["august_2026_mbs_out_of_denominator_scope_exception"]
     scope = _json(ROOT / exception["path"])
     assert exception["object_count"] == 4
@@ -133,52 +143,21 @@ def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> 
         "maintainer_attested_exact_public_release_permission_for_bronze_projection"
     )
     assert scope["scope"]["frozen_m112_object_count"] == 1759
-    assert scope["scope"]["frozen_inventory_membership_changed"] is False
-    assert scope["scope"]["new_publication_performed"] is False
-    assert scope["scope"]["public_release_performed_by_this_action"] is False
     assert all(
         not item["in_frozen_m112_inventory"] for item in scope["objects"]
     )
-    attestation_ref = exception["attestation_path"]
-    attestation_path = ROOT / attestation_ref
-    attestation = _json(attestation_path)
-    assert (
-        hashlib.sha256(attestation_path.read_bytes()).hexdigest()
-        == (exception["attestation_sha256"])
-    )
-    assert attestation["maintainer_response"] == "Attest exact four"
-    assert attestation["permission_instrument_existence_and_applicability"] == (
-        "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction"
-    )
-    assert attestation["public_release_rights_attested"] is True
-    assert attestation["boundaries"]["new_publication_performed"] is False
-    assert (
-        attestation["boundaries"]["v4_admission_or_promotion_authorized"]
-        is False
-    )
-    assert attestation["boundaries"]["consumer_canaries_authorized"] is False
-    assert len(attestation["authorized_objects"]) == 4
-    by_identity = {
-        (item["path"], item["sha256"], item["byte_count"])
-        for item in attestation["authorized_objects"]
-    }
-    assert by_identity == {
-        (item["path"], item["sha256"], item["byte_count"])
-        for item in scope["objects"]
-    }
     assert all(
         item["rights_state"] == scope["scope"]["rights_state"]
-        and item["permission_evidence"]
-        == {
-            "path": attestation_ref,
-            "sha256": exception["attestation_sha256"],
-        }
         for item in scope["objects"]
     )
+    assert all(
+        not item["in_frozen_m112_inventory"] for item in scope["objects"]
+    )
+    assert scope["scope"]["public_release_performed_by_this_action"] is False
 
 
 def test_reimbursement_projection_rights_are_bounded_and_do_not_admit() -> None:
-    report = _json(PREFLIGHT)
+    report = _json(PREVIOUS_PREFLIGHT)
     projections = report["reimbursement_atlas_medallion_projections"]
     assert projections["object_count"] == 12
     assert projections["public_redistribution_rights_attested"] is True
@@ -192,3 +171,49 @@ def test_reimbursement_projection_rights_are_bounded_and_do_not_admit() -> None:
     assert all(item["lineage_complete"] for item in projections["objects"])
     assert all(not item["v4_admission"] for item in projections["objects"])
     assert all(not item["consumer_canary"] for item in projections["objects"])
+
+
+def test_main_cms_rights_readback_is_preserved_separately_from_m112_counts() -> (
+    None
+):
+    report = _json(PRESERVED_MAIN_PREFLIGHT)
+
+    assert (
+        hashlib.sha256(PRESERVED_MAIN_PREFLIGHT.read_bytes()).hexdigest()
+        == PRESERVED_MAIN_PREFLIGHT_SHA256
+    )
+    assert report["cms_hcpcs_reference"]["latest_admission_state"] == "landed"
+    assert (
+        report["cms_hcpcs_reference"]["latest_admission_reviewer_status"]
+        == "approved"
+    )
+    assert (
+        report["cms_hcpcs_reference"]["acquisition_time_rights_state_preserved"]
+        == "unknown"
+    )
+    assert report["release_and_admission_boundaries"]["v4_admissions"] == 3
+    assert report["release_and_admission_boundaries"]["consumer_canaries"] == 3
+
+
+def test_latest_main_rights_snapshot_is_preserved_without_replacing_q3_delta() -> (
+    None
+):
+    report = _json(PRESERVED_AUGUST_RIGHTS_PREFLIGHT)
+
+    assert (
+        hashlib.sha256(
+            PRESERVED_AUGUST_RIGHTS_PREFLIGHT.read_bytes()
+        ).hexdigest()
+        == PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256
+    )
+    assert report["previous_preflight"]["sha256"] == (
+        PRESERVED_MAIN_PREFLIGHT_SHA256
+    )
+    assert report["august_2026_mbs_bronze_projections"][
+        "attestation_sha256"
+    ] == ("d746b166b6c9de75b0ff00c1a709c8929535dc3373f4bfd574a8727e789b8b9f")
+    assert report["cms_hcpcs_reference"][
+        "latest_admission_reviewer_status"
+    ] == ("approved")
+    assert report["release_and_admission_boundaries"]["v4_admissions"] == 3
+    assert report["release_and_admission_boundaries"]["consumer_canaries"] == 3

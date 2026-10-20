@@ -59,10 +59,6 @@
     "derived_table_rights_concluded": false,
     "external_publication_authorized": false,
     "inside_m112_frozen_inventory": false,
-    "latest_admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json",
-    "latest_admission_reviewer_status": "approved",
-    "latest_admission_sha256": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
-    "latest_admission_state": "landed",
     "processing_or_v4_admission_authorized": false,
     "review_path": "quality/qualifications/cms-hcpcs-rights-review-20261019.json",
     "reviewer_status": "approved",
@@ -70,10 +66,7 @@
     "sha256": "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a",
     "source_id": "us_cms_hcpcs_level_ii",
     "source_url": "https://www.cms.gov/files/zip/july-2026-alpha-numeric-hcpcs-file.zip",
-    "source_version": "us_cms_hcpcs_level_ii_2026_07",
-    "superseded_admission_path": "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/0ccd108d550a27271b170900660e42a90e6237f3a9beeb67249087008bee74c2.json",
-    "superseded_admission_reviewer_status": "unreviewed",
-    "superseded_admission_sha256": "d08dd8d20fdca069eff922ae8f3cca04bd5acb7bc494196ffa9c613c99548784"
+    "source_version": "us_cms_hcpcs_level_ii_2026_07"
   },
   "effective_m112_rights": {
     "resolved_object_count": 1752,
@@ -170,14 +163,17 @@
     "quality/bronze/imported-acquisitions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a.json": "5d655e0f516bf1f5e3d1825c0dbeed5ec0e03c7c391c007f33f8ef010b5b1de1",
     "quality/bronze/rights-decisions/us-cms-hcpcs/5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a/ba77e8933ba160adada3e48d6c6d60fb6d1c795d1e3bd07b74a7a16ac7da3dbe.json": "205e44d378e5f847d164e662aa856ba1316fc7a6a95db168a4c3bffd04cd831d",
     "quality/qualifications/australian-m108-derived-products-20261017.json": "f9da44a9fc61ebaff83e7784f56d2376db33e2d9a7b834142ee60c3a1ad5fd7c",
-    "quality/qualifications/australian-m112-current-rights-reconciliation-20261019.json": "3ff5e1133827684b8b3806866dfe2c549e5bfa862f901852349f655c4a1bcf41",
+    "quality/qualifications/australian-m112-current-rights-reconciliation-20261019.json": "b05816e9e6c73d6638fc3b875e8c8100745ce12424ae4de06c2e32ca72b87bf7",
     "quality/qualifications/australian-m112-current-rights-reconciliation-20261020-2.json": "e3e26b09d2073db9d4d1916cc49195d018f17d492cdb90d7276fe3eae445acd8",
+    "quality/qualifications/australian-m112-current-rights-reconciliation-20261020-3.json": "ea9968ecaecff00054cfcbb547b10864e9a0bc68efd51e6236e5fb67f3184390",
     "quality/qualifications/australian-m112-pbs-pdf-archive-lineage-20261019.json": "b0196e9639fe86d5cf21dae2240bc7c3d6ad0983f8435aa0d55d32538f4c3486",
     "quality/qualifications/australian-m112-pbs-projected-b1-b2-lineage-20261019.json": "aa4a0df6df4ec723e7b65f55379f47ae7912e4777a6b9d3bb3454c1accf3a16f",
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
     "quality/qualifications/australian-m112-rights-release-preflight-20261019.json": "08102adea4195b710bb343be7b1e2be2ac7064e3aa49814d082d4a4dfccbdd07",
     "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0",
-    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "3d79f1a34f098c4de60f7a0d140af6007dd78eb14a178712242e7a6e53fd6421",
+    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "ffd50a20a277a8a61e90708181c2db70c653d809d3f2c37b81e70ea3d637806a",
+    "quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json": "543195f53559812cbcb408c16083f9fe5feb775a69b37d43ee8cebcea809bc8c",
+    "quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json": "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b",
     "quality/qualifications/australian-m112-v4-historical-1993-2015-consumer-canary-20261020-39330593204.json": "b10a7f795014e0b6ebc975330062bb9e20dd13d66996a09b1a5a69c4b438803f",
     "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json": "af870552004e50ab5174fc535c9e5bbefe59f6edc4d03c830ce40129adf22b6a",
     "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json": "62aa052690bf3092aaf658d747654bc14316807e005e72f063ec11b158df4f18",
@@ -190,9 +186,9 @@
     "quality/qualifications/australian-reimbursement-atlas-medallion-rights-attestation-20261020.json": "f781278ad4af0102f66078439897f7ac326cd59e25a43d48a1c4a97ffe682fbe",
     "quality/qualifications/cms-hcpcs-rights-review-20261019.json": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
     "quality/qualifications/reimbursement-atlas-pbs-raw-permission-20260831.json": "0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098",
-    "scripts/reconcile_m112_current_rights_state.py": "3c34413578608e765ff7d55f049fabc3072c42a782797d824aa078f57110912f",
-    "tests/test_m112_rights_release_preflight.py": "1bcfbfac2065ba128429916b4230e5b7caacb56ae74bafb35b0d83bb847ddf30",
-    "tests/test_reconcile_m112_current_rights_state.py": "ffa5c6987f3b9d3e6984c646ea0e6b5930d1cf9a1daf9bdf4d98e5c0998e98d4"
+    "scripts/reconcile_m112_current_rights_state.py": "7f5a31e8351450f9b898807d8c7464a18e0fe92035330d6bd0a8989a34cfc74c",
+    "tests/test_m112_rights_release_preflight.py": "059330409dca3326794d7183bda1e11fe050ff43ab117ad08753490924697676",
+    "tests/test_reconcile_m112_current_rights_state.py": "301b9faee9e2bbbbc9165d4a5125022f6105a219f6e2ca64cc0903f16c509feb"
   },
   "july_2025_mbs_silver": {
     "attestation_path": "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json",
@@ -252,11 +248,19 @@
     "v4_admission_or_promotion_performed": false
   },
   "m112_admission_canary_readback": {
-    "admitted_object_count": 3,
-    "canaried_object_count": 3,
+    "admitted_object_count": 4,
+    "canaried_object_count": 4,
     "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
     "current_role_qualification": {
       "admitted_objects": [
+        {
+          "contract_path": "quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json",
+          "contract_sha256": "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b",
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+          "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+          "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+        },
         {
           "contract_path": "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json",
           "contract_sha256": "d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7",
@@ -283,9 +287,9 @@
         }
       ],
       "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json",
-      "sha256": "49c05406ccaecce4d52c8bd09b0d799e3138bb010a57f242bbac22b5be6bee4b"
+      "sha256": "ffd50a20a277a8a61e90708181c2db70c653d809d3f2c37b81e70ea3d637806a"
     },
-    "deferred_object_count": 1756,
+    "deferred_object_count": 1755,
     "native_workbook_layout_qualified": false,
     "object": {
       "byte_count": 6857437,
@@ -322,6 +326,13 @@
         "run_id": 39330593204,
         "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39330593204",
         "workflow_commit": "3149a5533ecb1b721d9deda66311d4abc94ee3d1"
+      },
+      {
+        "receipt_path": "quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json",
+        "receipt_sha256": "543195f53559812cbcb408c16083f9fe5feb775a69b37d43ee8cebcea809bc8c",
+        "run_id": 39356792827,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39356792827",
+        "workflow_commit": "cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a"
       }
     ],
     "unique_object_counts_are_deduplicated_across_runs": true
@@ -19196,8 +19207,8 @@
     "preserved_unchanged": true,
     "sha256": "19ec80e4042f8728fc5d839b0d17e11b93602c0a9742be4604d0db7c174923b7"
   },
-  "purpose": "Reconcile the exact current CMS HCPCS rights decision and latest approved reference-only admission while preserving acquisition-time and superseded admission history; retain all independent M-112 object rights and release gates.",
-  "recorded_at": "2026-10-20T03:48:25Z",
+  "purpose": "Reconcile the maintainer-attested rights basis for the exact 12 Reimbursement Atlas medallion projections while preserving all independent admission, canary, release-execution, and source-term gates.",
+  "recorded_at": "2026-10-20T03:00:00Z",
   "reimbursement_atlas_medallion_projections": {
     "attestation_path": "quality/qualifications/australian-reimbursement-atlas-medallion-rights-attestation-20261020.json",
     "attestation_sha256": "f781278ad4af0102f66078439897f7ac326cd59e25a43d48a1c4a97ffe682fbe",
@@ -19345,9 +19356,9 @@
   },
   "release_and_admission_boundaries": {
     "all_remaining_deferrals_preserved": true,
-    "consumer_canaries": 3,
+    "consumer_canaries": 4,
     "dataset_or_registry_mutated": false,
-    "deferred_objects": 1756,
+    "deferred_objects": 1755,
     "external_publication_performed": false,
     "external_publications_performed": false,
     "frozen_inventory_membership_changed": false,
@@ -19355,7 +19366,7 @@
     "new_sources_or_datasets_added": false,
     "source_payload_bytes_read": false,
     "source_payload_values_inspected": false,
-    "v4_admissions": 3
+    "v4_admissions": 4
   },
   "remaining_rights_work": [
     {

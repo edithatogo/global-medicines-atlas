@@ -16,4 +16,5 @@ regexes = [
   '''^idempotency_key"\s*:\s*"8b9db0c0bfe487111a83dac3fe460dc82acd6f82bf16a5d8c55cbb93d6c85b88"\s*$''',
   '''^idempotency_key"\s*:\s*"a0936cb6f853786bbcb5cb032f0c75066fd4b21f6c8f21ed49003341cef16a59"\s*$''',
   '''^idempotency_key"\s*:\s*"368f119e1a60fe2594f233bd3d675bb1f3e96bee98c224e3da7636e5ca4996d8"\s*$''',
+  '''^idempotency_key"\s*:\s*"b3e281513d551a3c97f97e2dd703da864276398d81864993e6f81ad0ab357201"\s*$''',
 ]

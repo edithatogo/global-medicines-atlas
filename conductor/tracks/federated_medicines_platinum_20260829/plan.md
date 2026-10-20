@@ -1572,6 +1572,25 @@
   after GitHub API rate limiting has cleared. API/CLI/Atlas/browser-product
   consumer qualification remains a separate open gate.
 
+## 2026-10-20 M-112 Q1 demographics replay-role qualification
+
+- [x] Execute the one-object v3 replay for Q1 March demographics on exact
+  `main` commit `cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a`. Hosted run
+  `39368825712` passed anonymous digest and byte-count verification for the
+  pinned 23,934,884-byte B2 object, rebuilt only the append-only registration,
+  and removed temporary source bytes.
+- [x] Bind the metadata-only run receipt and deterministic replay plan into the
+  v3 readback manifest and refresh the contract-role qualification. The
+  candidate now has v3 replay and temporary-cache cleanup candidate roles;
+  the readback manifest covers 5 of 16 objects.
+- [x] Build and locally validate the Q1 v4.1 contract from the complete
+  candidate role evidence. The contract pins evidence commit
+  `71b8ca00dee8275578cb8d50a0e4db12cc6160f3` and SHA-256
+  `3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce`.
+- [ ] Run its exact-main admission and `FederatedReader` canary after the
+  contract is merged. Q1 remains unadmitted; totals remain 4 admissions and 4
+  canaries until the hosted gate passes.
+
 ## 2026-10-20 M-112 Q3 demographics v4 raw-B2 contract qualification
 
 - [x] Bind the Q3 demographics replay evidence to its exact merged source commit,
@@ -1587,9 +1606,36 @@
   federation-admission suite passed (24), and the current M112 role report
   `--check` passed with 14 publication/restore and 4 v3 replay candidate
   bindings.
-- [~] Contract roles are qualified and the contract is prepared, but hosted
-  independent receipt closure, v4 admission, and the consumer canary have not
-  run. Merge the contract binding first; then run the exact-main hosted workflow
-  for this Q3 object. Do not count a new admission until its hosted receipt
-  passes. The current role report records 3 existing admissions; historical
-  track rows that say zero are stale.
+- [x] The exact-main hosted workflow subsequently closed all 12 receipt roles,
+  admitted the Q3 raw B2 object, and passed its `FederatedReader` canary; see
+  the 2026-10-20 admission evidence below. That later receipt supersedes this
+  section's earlier pending state.
+
+## 2026-10-20 M-112 Q3 demographics exact-main v4 admission
+
+- [x] Run the exact-main hosted v4 verification for the Q3 demographics raw B2
+  object on `cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a`. Independent closure
+  verified the contract's 12 receipt roles and admitted the exact 7,680,041-byte
+  object at SHA-256
+  `bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c`.
+- [x] The same hosted run passed the actual `FederatedReader` canary: remote and
+  streamed digests matched, the expired cache was not retained, cache bytes
+  were zero after read and close, and no source values or payload bytes were
+  included or retained. Preserve the metadata-only admission/canary report at
+  `quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json`.
+- [x] Regenerate and check the M-112 role qualification from durable admission
+  reports. Current independently evidenced state is 4 v4 admissions and 4
+  object canaries out of the unchanged 1,759 approved denominator; the new
+  role-report SHA-256 is
+  `ffd50a20a277a8a61e90708181c2db70c653d809d3f2c37b81e70ea3d637806a`.
+- [~] The Q3 source-native layout remains unqualified, and 1,755 approved paths
+  still lack v4 admission. Continue with the next object only after its own
+  contract roles and exact identities qualify; do not promote raw admission to
+  Silver schema or semantic acceptance.
+- [x] Refresh the current rights reconciliation from the four-object role
+  report, validating the Q3 hosted receipt and updating the rights preflight's
+  admission/canary totals to 4 while preserving the 1,759 denominator and 1,755
+  deferrals. Focused rights/preflight tests passed (14); the v4 role report
+  check passed.
+- [~] The refreshed rights reconciliation is included in PR #1232; merge still
+  requires all exact-head hosted checks to pass.

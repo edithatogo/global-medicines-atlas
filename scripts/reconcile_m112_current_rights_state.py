@@ -58,8 +58,10 @@ PBS_RAW_PERMISSION_SHA256 = (
 )
 PBS_RAW_PERMISSION_REVISION = "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
 PBS_RAW_PERMISSION_OBJECT_COUNT = 1708
-M112_CURRENT_ADMISSION_COUNT = 3
-M112_CURRENT_CANARY_COUNT = 3
+M112_CURRENT_ADMISSION_COUNT = 4
+M112_CURRENT_CANARY_COUNT = 4
+M112_Q3_CANARY_RUN_ID = 39356792827
+M112_Q3_CANARY_BYTES = 7_680_041
 M112_HISTORICAL_CANARY_RUN_ID = 39330593204
 M112_HISTORICAL_CANARY_BYTES = 205885063
 PBS_DECISION_0009 = Path(
@@ -77,6 +79,10 @@ M112_ROLE_QUALIFICATION = QUAL / (
 M112_HISTORICAL_CANARY = QUAL / (
     "australian-m112-v4-historical-1993-2015-consumer-canary-"
     "20261020-39330593204.json"
+)
+M112_Q3_ADMISSION_CANARY = QUAL / (
+    "australian-m112-v4-demographics-q3-july-admission-qualification-"
+    "20261020-39356792827.json"
 )
 M108_ASSESSMENT = QUAL / "australian-m108-derived-products-20261017.json"
 OUTPUT = QUAL / "australian-m112-current-rights-reconciliation-20261019.json"
@@ -513,6 +519,56 @@ def _reconcile_pbs_raw_permission(
     }
 
 
+def _verify_q3_m112_canary_receipt(root: Path) -> dict[str, Any]:
+    """Verify the exact Q3 admission receipt and return its indexed run record."""
+    receipt = _read(root, M112_Q3_ADMISSION_CANARY)
+    admission = receipt["admission"]
+    canary = receipt["consumer_canary"]
+    object_identity = canary["object"]
+    workflow = canary["hosted_workflow"]
+    checks = [
+        receipt["approved_denominator"] != FROZEN_OBJECT_COUNT,
+        receipt["admissions"] != 1,
+        receipt["consumer_canaries"] != 1,
+        canary["status"] != "passed",
+        admission["dataset"] != "edithatogo/australian-mbs-utilisation-archive",
+        admission["path"]
+        != "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+        admission["sha256"]
+        != "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+        admission["byte_count"] != M112_Q3_CANARY_BYTES,
+        admission["contract_sha256"]
+        != "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b",
+        object_identity["dataset"] != admission["dataset"],
+        object_identity["path"] != admission["path"],
+        object_identity["sha256"] != admission["sha256"],
+        object_identity["bytes"] != admission["byte_count"],
+        canary["contract_sha256"] != admission["contract_sha256"],
+        workflow["repository"] != "edithatogo/global-medicines-atlas",
+        workflow["run_id"] != M112_Q3_CANARY_RUN_ID,
+        canary["verification"]["remote_digest_match"] is not True,
+        canary["verification"]["consumer_stream_digest_match"] is not True,
+        canary["verification"]["reader_cache_bytes_after_close"] != 0,
+        canary["boundaries"]["admission_used"] is not True,
+        canary["boundaries"]["admission_performed"] is not False,
+        canary["boundaries"]["public_dataset_mutated"] is not False,
+        canary["boundaries"]["source_payload_bytes_retained"] is not False,
+        canary["boundaries"]["source_values_or_rows_included"] is not False,
+        receipt["native_source_layout_qualified"] is not False,
+        receipt["source_values_or_payload_bytes_retained"] is not False,
+    ]
+    if any(checks):
+        raise ValueError("Q3 M-112 admission/canary receipt did not reconcile")
+    path = str(M112_Q3_ADMISSION_CANARY)
+    return {
+        "receipt_path": path,
+        "receipt_sha256": _sha256(root / M112_Q3_ADMISSION_CANARY),
+        "run_id": workflow["run_id"],
+        "run_url": workflow["run_url"],
+        "workflow_commit": workflow["commit"],
+    }
+
+
 def _reconcile_m112_canary_readback(
     root: Path, objects: list[dict[str, Any]]
 ) -> dict[str, Any]:
@@ -593,13 +649,17 @@ def _reconcile_m112_canary_readback(
         })
 
     role_qualification = _read(root, M112_ROLE_QUALIFICATION)
-    cohort = role_qualification["cohort"]
-    current_admissions = role_qualification["current_admission_evidence"]
     if (
-        cohort["v4_admissions"] != M112_CURRENT_ADMISSION_COUNT
-        or cohort["consumer_canaries"] != M112_CURRENT_CANARY_COUNT
-        or len(current_admissions) != M112_CURRENT_ADMISSION_COUNT
-        or len({item["path"] for item in current_admissions})
+        role_qualification["cohort"]["v4_admissions"]
+        != M112_CURRENT_ADMISSION_COUNT
+        or role_qualification["cohort"]["consumer_canaries"]
+        != M112_CURRENT_CANARY_COUNT
+        or len(role_qualification["current_admission_evidence"])
+        != M112_CURRENT_ADMISSION_COUNT
+        or len({
+            item["path"]
+            for item in role_qualification["current_admission_evidence"]
+        })
         != M112_CURRENT_ADMISSION_COUNT
     ):
         raise ValueError(
@@ -645,16 +705,26 @@ def _reconcile_m112_canary_readback(
         "workflow_commit": workflow["commit"],
     })
 
+    q3_run = _verify_q3_m112_canary_receipt(root)
+    input_hashes[str(M112_Q3_ADMISSION_CANARY)] = q3_run["receipt_sha256"]
+    runs.append(q3_run)
+
     return {
         "record": {
-            "admitted_object_count": cohort["v4_admissions"],
-            "canaried_object_count": cohort["consumer_canaries"],
+            "admitted_object_count": role_qualification["cohort"][
+                "v4_admissions"
+            ],
+            "canaried_object_count": role_qualification["cohort"][
+                "consumer_canaries"
+            ],
             "deferred_object_count": FROZEN_OBJECT_COUNT
-            - cohort["v4_admissions"],
+            - role_qualification["cohort"]["v4_admissions"],
             "current_role_qualification": {
                 "path": str(M112_ROLE_QUALIFICATION),
                 "sha256": _sha256(root / M112_ROLE_QUALIFICATION),
-                "admitted_objects": current_admissions,
+                "admitted_objects": role_qualification[
+                    "current_admission_evidence"
+                ],
             },
             "object": {
                 "dataset": MBS_JULY2016_CANARY_DATASET,
