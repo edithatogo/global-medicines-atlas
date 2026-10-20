@@ -23,6 +23,13 @@ PRESERVED_MAIN_PREFLIGHT = (
 PRESERVED_MAIN_PREFLIGHT_SHA256 = (
     "6022ff3ca2b1a5fe8a095bc5ebba48e3ac86297e3b7ddeff63e92ea5af21dc82"
 )
+PRESERVED_AUGUST_RIGHTS_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261020-6.json"
+)
+PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256 = (
+    "20cf284b95eb83436fdd437eca1d5075dda1bc6bc23bda7c12f1591d25c9bd3f"
+)
 
 
 def _json(path: Path) -> dict[str, Any]:
@@ -131,16 +138,22 @@ def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> 
     assert exception["dataset_revision"] == scope["revision"]
     assert exception["outside_frozen_inventory"] is True
     assert exception["frozen_inventory_membership_changed"] is False
-    assert scope["scope"]["rights_authorized_by_this_record"] is False
-    assert scope["scope"]["rights_state"] == "unresolved"
+    assert scope["scope"]["rights_authorized_by_this_record"] is True
+    assert scope["scope"]["rights_state"] == (
+        "maintainer_attested_exact_public_release_permission_for_bronze_projection"
+    )
     assert scope["scope"]["frozen_m112_object_count"] == 1759
     assert all(
         not item["in_frozen_m112_inventory"] for item in scope["objects"]
     )
     assert all(
-        item["rights_state"].startswith("unresolved_")
+        item["rights_state"] == scope["scope"]["rights_state"]
         for item in scope["objects"]
     )
+    assert all(
+        not item["in_frozen_m112_inventory"] for item in scope["objects"]
+    )
+    assert scope["scope"]["public_release_performed_by_this_action"] is False
 
 
 def test_reimbursement_projection_rights_are_bounded_and_do_not_admit() -> None:
@@ -178,5 +191,29 @@ def test_main_cms_rights_readback_is_preserved_separately_from_m112_counts() -> 
         report["cms_hcpcs_reference"]["acquisition_time_rights_state_preserved"]
         == "unknown"
     )
+    assert report["release_and_admission_boundaries"]["v4_admissions"] == 3
+    assert report["release_and_admission_boundaries"]["consumer_canaries"] == 3
+
+
+def test_latest_main_rights_snapshot_is_preserved_without_replacing_q3_delta() -> (
+    None
+):
+    report = _json(PRESERVED_AUGUST_RIGHTS_PREFLIGHT)
+
+    assert (
+        hashlib.sha256(
+            PRESERVED_AUGUST_RIGHTS_PREFLIGHT.read_bytes()
+        ).hexdigest()
+        == PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256
+    )
+    assert report["previous_preflight"]["sha256"] == (
+        PRESERVED_MAIN_PREFLIGHT_SHA256
+    )
+    assert report["august_2026_mbs_bronze_projections"][
+        "attestation_sha256"
+    ] == ("d746b166b6c9de75b0ff00c1a709c8929535dc3373f4bfd574a8727e789b8b9f")
+    assert report["cms_hcpcs_reference"][
+        "latest_admission_reviewer_status"
+    ] == ("approved")
     assert report["release_and_admission_boundaries"]["v4_admissions"] == 3
     assert report["release_and_admission_boundaries"]["consumer_canaries"] == 3
