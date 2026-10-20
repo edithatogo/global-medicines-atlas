@@ -687,7 +687,7 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
-    assert len(allowlist["regexes"]) == 7
+    assert len(allowlist["regexes"]) == 8
     assert not (ROOT / ".gitleaksignore").exists()
 
     revision = json.loads(
