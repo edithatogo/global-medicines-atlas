@@ -27,6 +27,10 @@ DATASET = "edithatogo/australian-mbs-utilisation-archive"
 REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
 TARGET_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
 COMMIT_LENGTH = 40
+SUPPORTED_SOURCE_IDS = frozenset({
+    "au-data-gov-mbs-group",
+    "au-data-gov-mbs-demographics",
+})
 
 
 def _canonical(value: Any) -> bytes:
@@ -140,13 +144,28 @@ def execute(
     }
     if _sha256(_canonical(plan_content)) != replay_plan.get("plan_sha256"):
         raise ValueError("replay plan digest is invalid")
-    if (
-        snapshot.get("source_id") != "au-data-gov-mbs-group"
-        or snapshot.get("payload_sha256") is None
-        or snapshot.get("replay_eligible") is not True
-        or step.get("candidate_only") is not True
-        or step.get("hosted_replay_status") != "pending"
-    ):
+    contracts_value = plan.get("contracts")
+    if not isinstance(contracts_value, list):
+        raise TypeError("replay plan contracts must be an array")
+    contracts = cast("list[Any]", contracts_value)
+    if len(contracts) != 1:
+        raise ValueError("replay plan must contain exactly one v3 contract")
+    contract_value = contracts[0]
+    if not isinstance(contract_value, dict):
+        raise TypeError("replay contract must be an object")
+    contract = cast("dict[str, Any]", contract_value)
+    source_id = snapshot.get("source_id")
+    replay_identity_is_valid = all((
+        source_id in SUPPORTED_SOURCE_IDS,
+        contract.get("source_id") == source_id,
+        contract.get("contract_id")
+        == f"{source_id}:historical-backfill-replay:v1",
+        snapshot.get("payload_sha256") is not None,
+        snapshot.get("replay_eligible") is True,
+        step.get("candidate_only") is True,
+        step.get("hosted_replay_status") == "pending",
+    ))
+    if not replay_identity_is_valid:
         raise ValueError("replay plan target is not eligible for hosted replay")
     expected_digest = snapshot.get("payload_sha256")
     expected_bytes = step.get("expected_byte_count")
