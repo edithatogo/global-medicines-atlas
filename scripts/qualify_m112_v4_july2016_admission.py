@@ -63,8 +63,7 @@ HISTORICAL_1993_2015_OUTPUT = Path(
     "australian-m112-v4-historical-1993-2015-raw-b2-contract.json"
 )
 DEMOGRAPHICS_Q3_PATH = (
-    "raw/mbs/utilisation/demographics/"
-    "mbs-demographics-2016-qtr-3-july.csv"
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv"
 )
 DEMOGRAPHICS_Q3_OUTPUT = Path(
     "quality/qualifications/"
