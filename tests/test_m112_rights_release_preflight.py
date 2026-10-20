@@ -46,10 +46,14 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
             == expected_digest
         )
     assert report["status"] == (
-        "frozen_m112_exact_object_rights_attested_pbs_vocabulary_and_lineage_gaps_open"
+        "frozen_m112_exact_object_rights_attested_lineage_and_admission_gaps_open"
     )
     assert report["effective_m112_rights"]["resolved_object_count"] == 1759
     assert report["effective_m112_rights"]["unresolved_object_count"] == 0
+    assert not any(
+        "full PBS utilisation vocabulary exclusion review" in item["work"]
+        for item in report["remaining_rights_work"]
+    )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
         "australian-m112-rights-release-preflight-20261020-15.json"

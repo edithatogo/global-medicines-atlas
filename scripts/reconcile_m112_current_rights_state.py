@@ -1552,8 +1552,29 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
                 "allowed_domains": pbs_authorization["allowed_domains"],
                 "categories": pbs_authorization["categories"],
             },
-            "publication_exclusions": pbs_authorization[
+            "authorization_document_exclusions": pbs_authorization[
                 "publication_does_not_authorize"
+            ],
+            "superseded_authorization_exclusions": [
+                "unlicensed vocabulary redistribution"
+            ],
+            "exclusion_supersession_basis": {
+                "attestation_path": str(
+                    PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION
+                ),
+                "attestation_sha256": evidence_inputs[
+                    str(PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION)
+                ],
+                "exact_object_scope": True,
+                "permission_scope_includes_all_file_contents": True,
+                "instrument_independently_reviewed": False,
+            },
+            "publication_exclusions": [
+                exclusion
+                for exclusion in pbs_authorization[
+                    "publication_does_not_authorize"
+                ]
+                if exclusion != "unlicensed vocabulary redistribution"
             ],
             "unlicensed_vocabulary_presence_reviewed": False,
             "rights_exclusion_fully_resolved_by_exact_attestation": True,

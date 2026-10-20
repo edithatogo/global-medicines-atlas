@@ -89,7 +89,7 @@
     "path": "quality/qualifications/australian-m112-current-rights-reconciliation-20261021-2.json",
     "public_dataset_mutated": false,
     "resolved_rights_objects": 1759,
-    "sha256": "4b6ee5de563ba097faf51c71be5952dce18fe0b540df0bf74d0facbbd13ec69d",
+    "sha256": "6905351d9dae194699f33d91054048664b27daf1bcced7dcfc16aa5d15977f86",
     "source_payload_bytes_read": true,
     "source_rights_changed": true,
     "unresolved_rights_objects": 0,
@@ -191,7 +191,7 @@
     "quality/qualifications/australian-m112-current-rights-reconciliation-20261020-10.json": "65610fa2c2476af379446822076e83fe6cb1d400e2f90e10d9b63025ebdc0c99",
     "quality/qualifications/australian-m112-current-rights-reconciliation-20261020-11.json": "cc5da5d04133d8bc6f9b32b1240ac6a4e2b546c6dcd51acd34133341a95b4c35",
     "quality/qualifications/australian-m112-current-rights-reconciliation-20261020-2.json": "e3e26b09d2073db9d4d1916cc49195d018f17d492cdb90d7276fe3eae445acd8",
-    "quality/qualifications/australian-m112-current-rights-reconciliation-20261021-2.json": "4b6ee5de563ba097faf51c71be5952dce18fe0b540df0bf74d0facbbd13ec69d",
+    "quality/qualifications/australian-m112-current-rights-reconciliation-20261021-2.json": "6905351d9dae194699f33d91054048664b27daf1bcced7dcfc16aa5d15977f86",
     "quality/qualifications/australian-m112-pbs-pdf-archive-lineage-20261019.json": "b0196e9639fe86d5cf21dae2240bc7c3d6ad0983f8435aa0d55d32538f4c3486",
     "quality/qualifications/australian-m112-pbs-projected-b1-b2-lineage-20261019.json": "aa4a0df6df4ec723e7b65f55379f47ae7912e4777a6b9d3bb3454c1accf3a16f",
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
@@ -219,9 +219,9 @@
     "quality/qualifications/australian-reimbursement-atlas-medallion-rights-attestation-20261020.json": "f781278ad4af0102f66078439897f7ac326cd59e25a43d48a1c4a97ffe682fbe",
     "quality/qualifications/cms-hcpcs-rights-review-20261019.json": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
     "quality/qualifications/reimbursement-atlas-pbs-raw-permission-20260831.json": "0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098",
-    "scripts/reconcile_m112_current_rights_state.py": "9a90400d83ad06d03cd8311facceccc947afead46264b4dbaeb599cad14057b6",
-    "tests/test_m112_rights_release_preflight.py": "5cfbdcbb79db7c6ac6f6d16afc9dac452713a1c2d528b11b8c8b0b3db38f8797",
-    "tests/test_reconcile_m112_current_rights_state.py": "5416046528a50bb7d41ff45769bfdfde599b6bb77da956806e7a4f8c71b9d316"
+    "scripts/reconcile_m112_current_rights_state.py": "2f4579dc3ba9c7744c2b2750abcaf919e971ec03e450bb47b31168df1afd4f6d",
+    "tests/test_m112_rights_release_preflight.py": "1c3db71abbffa660f8d890ac7545b53e914a9132a92606b1c701ff6160b2f348",
+    "tests/test_reconcile_m112_current_rights_state.py": "cf95ac76c34bb80de2b23c3c5265e5ef8e1c9a4d66f3eb617c496760cee4392c"
   },
   "july_2025_mbs_silver": {
     "attestation_path": "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json",
@@ -19312,11 +19312,22 @@
     "v4_admission": false
   },
   "pbs_utilisation_raw_objects": {
+    "authorization_document_exclusions": [
+      "medicine-level clinical equivalence claims",
+      "unlicensed vocabulary redistribution"
+    ],
     "authorization_path": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
     "authorization_sha256": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
     "consumer_canary": false,
     "exact_rights_attestation_path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
     "exact_rights_attestation_sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+    "exclusion_supersession_basis": {
+      "attestation_path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+      "attestation_sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+      "exact_object_scope": true,
+      "instrument_independently_reviewed": false,
+      "permission_scope_includes_all_file_contents": true
+    },
     "full_object_release_requires_exclusion_review": false,
     "limited_vocabulary_screen": {
       "full_object_release_requires_exclusion_review": false,
@@ -19327,7 +19338,7 @@
         "explicit_vocabulary_marker_header_occurrences": 0,
         "explicit_vocabulary_marker_occurrences": 0,
         "full_vocabulary_exclusion_review_complete": false,
-        "remaining_limit": "This marker screen cannot classify unlabeled numeric identifiers, source-native medicine names, or other unenumerated vocabulary content; the authorization exclusion is broader than the tested markers.",
+        "remaining_limit": "This marker screen cannot classify unlabeled numeric identifiers, source-native medicine names, or other unenumerated vocabulary content. The screen remains incomplete; the exact six-object rights attestation supersedes the historical vocabulary exclusion for rights scope.",
         "rights_exclusion_fully_resolved": false
       },
       "rights_exclusion_fully_resolved_by_exact_attestation": true,
@@ -19403,8 +19414,7 @@
     "public_release_authorized_within_scope": true,
     "public_release_performed_by_this_reconciliation": false,
     "publication_exclusions": [
-      "medicine-level clinical equivalence claims",
-      "unlicensed vocabulary redistribution"
+      "medicine-level clinical equivalence claims"
     ],
     "rights_exclusion_fully_resolved_by_exact_attestation": true,
     "rights_scope_includes_all_file_contents": true,
@@ -19427,6 +19437,9 @@
       ],
       "dataset": "edithatogo/australian-pbs-utilisation-archive"
     },
+    "superseded_authorization_exclusions": [
+      "unlicensed vocabulary redistribution"
+    ],
     "unlicensed_vocabulary_presence_reviewed": false,
     "v4_admission": false
   },
@@ -19642,12 +19655,6 @@
   },
   "remaining_rights_work": [
     {
-      "evidence": "quality/qualifications/australian-pbs-utilisation-limited-vocabulary-screen-20261020.json",
-      "object_count": 6,
-      "state": "open; bounded marker screen cannot rule out unlabelled or unenumerated vocabulary",
-      "work": "Complete the full PBS utilisation vocabulary exclusion review before full-object release"
-    },
-    {
       "evidence": "quality/qualifications/australian-mbs-six-raw-object-rights-attestation-20261020.json",
       "object_count": 2,
       "state": "rights attested for the exact objects; two sidecar B1 bindings remain incomplete",
@@ -19660,7 +19667,15 @@
       "work": "Keep this out-of-denominator scope exception separate; any subsequent publication, M-112 admission, or canary requires its own authorization and qualification"
     }
   ],
+  "resolved_rights_work": [
+    {
+      "evidence": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+      "object_count": 6,
+      "state": "exact six-object permission attested by maintainer; instrument not independently reviewed",
+      "work": "Historical unlicensed-vocabulary publication exclusion superseded for these exact six objects; no publication action performed."
+    }
+  ],
   "schema_id": "global-medicines-atlas.australian-m112-rights-release-preflight",
   "schema_version": 2,
-  "status": "frozen_m112_exact_object_rights_attested_pbs_vocabulary_and_lineage_gaps_open"
+  "status": "frozen_m112_exact_object_rights_attested_lineage_and_admission_gaps_open"
 }

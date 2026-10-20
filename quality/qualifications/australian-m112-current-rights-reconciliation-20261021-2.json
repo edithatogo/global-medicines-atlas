@@ -19267,11 +19267,22 @@
     "v4_admission": false
   },
   "pbs_utilisation_raw_objects": {
+    "authorization_document_exclusions": [
+      "medicine-level clinical equivalence claims",
+      "unlicensed vocabulary redistribution"
+    ],
     "authorization_path": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
     "authorization_sha256": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
     "consumer_canary": false,
     "exact_rights_attestation_path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
     "exact_rights_attestation_sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+    "exclusion_supersession_basis": {
+      "attestation_path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+      "attestation_sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+      "exact_object_scope": true,
+      "instrument_independently_reviewed": false,
+      "permission_scope_includes_all_file_contents": true
+    },
     "full_object_release_requires_exclusion_review": false,
     "limited_vocabulary_screen": {
       "full_object_release_requires_exclusion_review": false,
@@ -19352,8 +19363,7 @@
     "public_release_authorized_within_scope": true,
     "public_release_performed_by_this_reconciliation": false,
     "publication_exclusions": [
-      "medicine-level clinical equivalence claims",
-      "unlicensed vocabulary redistribution"
+      "medicine-level clinical equivalence claims"
     ],
     "rights_exclusion_fully_resolved_by_exact_attestation": true,
     "rights_scope_includes_all_file_contents": true,
@@ -19376,6 +19386,9 @@
       ],
       "dataset": "edithatogo/australian-pbs-utilisation-archive"
     },
+    "superseded_authorization_exclusions": [
+      "unlicensed vocabulary redistribution"
+    ],
     "unlicensed_vocabulary_presence_reviewed": false,
     "v4_admission": false
   },

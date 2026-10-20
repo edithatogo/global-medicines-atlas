@@ -150,8 +150,20 @@ def test_exact_pbs_utilisation_rights_attestation_is_bounded() -> None:
     assert pbs["public_release_performed_by_this_reconciliation"] is False
     assert pbs["v4_admission"] is False
     assert pbs["consumer_canary"] is False
+    assert pbs["publication_exclusions"] == [
+        "medicine-level clinical equivalence claims"
+    ]
+    assert pbs["authorization_document_exclusions"] == [
+        "medicine-level clinical equivalence claims",
+        "unlicensed vocabulary redistribution",
+    ]
+    assert pbs["superseded_authorization_exclusions"] == [
+        "unlicensed vocabulary redistribution"
+    ]
+    assert pbs["exclusion_supersession_basis"]["exact_object_scope"] is True
     assert (
-        "unlicensed vocabulary redistribution" in pbs["publication_exclusions"]
+        pbs["exclusion_supersession_basis"]["instrument_independently_reviewed"]
+        is False
     )
     assert all(
         obj["sha256"] and obj["byte_count"] > 0 for obj in pbs["objects"]
