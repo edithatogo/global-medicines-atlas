@@ -1571,3 +1571,25 @@
   contract after its role evidence is current, and retry the historical ZIP only
   after GitHub API rate limiting has cleared. API/CLI/Atlas/browser-product
   consumer qualification remains a separate open gate.
+
+## 2026-10-20 M-112 Q3 demographics v4 raw-B2 contract qualification
+
+- [x] Bind the Q3 demographics replay evidence to its exact merged source commit,
+  `510cb08901923e713ee0fae3f3db15f29dbacab3`, and pin that commit in the v4
+  admission contract builder. Preserve the approved exact-scope rights decision,
+  source receipt, B1 acquisition, immutable B2 manifest, and successful hosted
+  v3 digest/byte-count replay roles.
+- [x] Generate the Q3 raw-B2 v4.1 contract at
+  `quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json`.
+  The contract has 12 receipt roles, passes schema and semantic validation, and
+  passes the deterministic `--check`; no source payload bytes were read locally.
+- [x] Focused v4 admission/publication-role tests passed (25), the broader
+  federation-admission suite passed (24), and the current M112 role report
+  `--check` passed with 14 publication/restore and 4 v3 replay candidate
+  bindings.
+- [~] Contract roles are qualified and the contract is prepared, but hosted
+  independent receipt closure, v4 admission, and the consumer canary have not
+  run. Merge the contract binding first; then run the exact-main hosted workflow
+  for this Q3 object. Do not count a new admission until its hosted receipt
+  passes. The current role report records 3 existing admissions; historical
+  track rows that say zero are stale.

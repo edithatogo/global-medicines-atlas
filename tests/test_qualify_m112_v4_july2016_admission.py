@@ -170,7 +170,9 @@ def test_q3_demographics_identity_is_explicitly_allowlisted() -> None:
             "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb"
         ),
     }
-    assert TARGET_EVIDENCE_COMMITS[DEMOGRAPHICS_Q3_PATH] is None
+    assert TARGET_EVIDENCE_COMMITS[DEMOGRAPHICS_Q3_PATH] == (
+        "510cb08901923e713ee0fae3f3db15f29dbacab3"
+    )
 
 
 def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
