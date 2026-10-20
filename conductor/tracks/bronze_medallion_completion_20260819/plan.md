@@ -1447,3 +1447,23 @@ for credentialed or rights-unresolved sources.
   failed, and 96.89% coverage. Failures were in existing browser/E2E, consumer,
   and stable-v1 clean-clone tests; the new lineage tests passed in the focused
   run. Protected hosted checks remain required before merge.
+
+## Exact PBS utilisation six-object rights attestation (2026-10-20)
+
+- [x] Record the maintainer's attestation against the six frozen PBS utilisation
+  paths, digests, and byte counts. The scope expressly includes all file
+  contents, including any vocabulary previously excluded; the permission
+  instrument remains not independently reviewed.
+- [x] Reconcile the effective rights report and preflight to the exact attested
+  identities. Preserve the limited marker screen's incomplete-review result;
+  do not call the full vocabulary content review complete. No release, v4
+  admission, or consumer canary is performed by this rights reconciliation.
+- [x] Focused rights tests (25) and the broader affected M-112 suite (54) pass;
+  Ruff, `ty`, BasedPyright, governance checks, and `git diff --check` pass.
+  The full Test-Goblin profile completed with 7,012 passed, 32 failed, 3
+  skipped, and 96.79% coverage. Twenty-nine browser failures report a missing
+  Playwright Chromium executable; the other failures are one Hypothesis timing
+  flake and two Stable v1 reproducibility tests. No changed rights test failed.
+- [~] Hosted protected checks, review, and merge remain pending on the scoped
+  pull request. The full local Test-Goblin profile above ran before rebasing onto
+  the Q2 canary and Q3 replay updates; protected CI must validate the final rebased head.

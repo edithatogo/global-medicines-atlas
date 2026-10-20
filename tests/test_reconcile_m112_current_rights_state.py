@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from copy import deepcopy
 from pathlib import Path
@@ -66,19 +67,6 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert august["m108_assessment_derived_output_authority"] == "absent"
     assert len(august["objects"]) == 4
 
-    pbs = report["pbs_utilisation_raw_objects"]
-    assert pbs["object_count"] == 6
-    assert pbs["public_release_authorized_within_scope"] is True
-    assert pbs["maintainer_asserted_redistribution_permission"] is True
-    assert pbs["unlicensed_vocabulary_presence_reviewed"] is False
-    assert pbs["full_object_release_requires_exclusion_review"] is True
-    assert (
-        "unlicensed vocabulary redistribution" in pbs["publication_exclusions"]
-    )
-    assert all(
-        obj["sha256"] and obj["byte_count"] > 0 for obj in pbs["objects"]
-    )
-
     cms = report["cms_hcpcs_external_reference"]
     assert cms["inside_m112_frozen_inventory"] is False
     assert cms["rights_state"] == "permitted"
@@ -124,7 +112,9 @@ def test_exact_six_mbs_raw_rights_attestation_preserves_lineage_and_release_gate
     assert report["effective_m112_rights"]["unresolved_object_count"] == 0
 
 
-def test_limited_screen_does_not_close_vocabulary_or_release_gate() -> None:
+def test_exact_attestation_resolves_rights_without_overstating_limited_screen() -> (
+    None
+):
     report = build_report(ROOT, observed_at="2026-10-20T00:00:00Z")
     pbs = report["pbs_utilisation_raw_objects"]
     screen = pbs["limited_vocabulary_screen"]
@@ -132,11 +122,65 @@ def test_limited_screen_does_not_close_vocabulary_or_release_gate() -> None:
         screen["results"]["full_vocabulary_exclusion_review_complete"] is False
     )
     assert pbs["unlicensed_vocabulary_presence_reviewed"] is False
-    assert pbs["full_object_release_requires_exclusion_review"] is True
+    assert pbs["full_object_release_requires_exclusion_review"] is False
+    assert screen["full_object_release_requires_exclusion_review"] is False
+    assert (
+        screen["rights_exclusion_fully_resolved_by_exact_attestation"] is True
+    )
     assert report["boundaries"]["source_payload_bytes_read"] is True
     assert report["boundaries"]["source_payload_values_inspected"] is True
     assert report["boundaries"]["source_payload_values_emitted"] is False
     assert report["boundaries"]["source_payload_files_written"] is False
+
+
+def test_exact_pbs_utilisation_rights_attestation_is_bounded() -> None:
+    report = build_report(ROOT, observed_at="2026-10-20T00:00:00Z")
+    pbs = report["pbs_utilisation_raw_objects"]
+
+    assert pbs["object_count"] == 6
+    assert pbs["public_release_authorized_within_scope"] is True
+    assert pbs["maintainer_asserted_redistribution_permission"] is True
+    assert pbs["unlicensed_vocabulary_presence_reviewed"] is False
+    assert pbs["full_object_release_requires_exclusion_review"] is False
+    assert pbs["rights_exclusion_fully_resolved_by_exact_attestation"] is True
+    assert pbs["permission_instrument_existence_and_applicability"] == (
+        "maintainer_attested_not_independently_reviewed"
+    )
+    assert pbs["rights_scope_includes_all_file_contents"] is True
+    assert pbs["public_release_performed_by_this_reconciliation"] is False
+    assert pbs["v4_admission"] is False
+    assert pbs["consumer_canary"] is False
+    assert (
+        "unlicensed vocabulary redistribution" in pbs["publication_exclusions"]
+    )
+    assert all(
+        obj["sha256"] and obj["byte_count"] > 0 for obj in pbs["objects"]
+    )
+
+
+def test_pbs_utilisation_attestation_is_bound_to_all_six_exact_identities(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "attestation.json"
+    attestation = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json"
+        ).read_text()
+    )
+    attestation["authorized_objects"][0]["sha256"] = "0" * 64
+    path.write_text(json.dumps(attestation))
+    monkeypatch.setattr(
+        rights_reconciliation,
+        "PBS_UTILISATION_EXACT_RIGHTS_ATTESTATION",
+        path,
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="PBS utilisation exact rights attestation did not reconcile",
+    ):
+        build_report(ROOT, observed_at="2026-10-20T00:00:00Z")
 
 
 def test_pbs_raw_owner_permission_binds_exact_lineaged_objects_only() -> None:
@@ -349,8 +393,9 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
         "australian-m112-v4-demographics-q2-may-"
         "admission-qualification-20261020.json"
     )
-    assert report["evidence_inputs"][q2_path] == rights_reconciliation._sha256(
-        ROOT / q2_path
+    assert (
+        report["evidence_inputs"][q2_path]
+        == hashlib.sha256((ROOT / q2_path).read_bytes()).hexdigest()
     )
     assert readback["unique_object_counts_are_deduplicated_across_runs"] is True
     assert readback["source_values_or_rows_interpreted"] is False
@@ -366,10 +411,8 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
 def test_q2_canary_count_fails_closed_without_its_exact_receipt(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    original_read = rights_reconciliation._read
-
     def read_without_q2_canary(root: Path, path: Path) -> dict[str, Any]:
-        receipt = original_read(root, path)
+        receipt = cast("dict[str, Any]", json.loads((root / path).read_text()))
         if path == rights_reconciliation.M112_Q2_ADMISSION_CANARY:
             receipt["consumer_canary"] = None
         return receipt
@@ -393,7 +436,7 @@ def test_rights_counts_cover_every_frozen_object() -> None:
         "maintainer_attested_exact_public_release_permission_for_bronze_projection",
         "maintainer_attested_exact_public_release_permission_for_derived_projection",
         "maintainer_attested_exact_public_release_permission_for_silver_object",
-        "maintainer_attested_dataset_publication_permission_with_vocabulary_exclusion",
+        "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
         "authorized_exact_source_release_permitted",
         "owner_attested_pbs_raw_redistribution_permission",
     }
