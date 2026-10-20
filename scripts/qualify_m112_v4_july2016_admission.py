@@ -69,6 +69,13 @@ DEMOGRAPHICS_Q3_OUTPUT = Path(
     "quality/qualifications/"
     "australian-m112-v4-demographics-q3-july-raw-b2-contract.json"
 )
+DEMOGRAPHICS_Q1_PATH = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv"
+)
+DEMOGRAPHICS_Q1_OUTPUT = Path(
+    "quality/qualifications/"
+    "australian-m112-v4-demographics-q1-march-raw-b2-contract.json"
+)
 SCHEMA_PATH = Path("contracts/medallion/v4.1/federation.schema.json")
 EVIDENCE_COMMIT = "90dea68ec6ff3d4d07b43860631742728cf40ff5"
 TARGET_DATASET = "edithatogo/australian-mbs-utilisation-archive"
@@ -124,6 +131,14 @@ TARGET_IDENTITIES: dict[str, dict[str, Any]] = {
         "source_id": "au-data-gov-mbs-demographics",
         "acquisition_id": "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb",
     },
+    DEMOGRAPHICS_Q1_PATH: {
+        "dataset": TARGET_DATASET,
+        "revision": TARGET_REVISION,
+        "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+        "bytes": 23_934_884,
+        "source_id": "au-data-gov-mbs-demographics",
+        "acquisition_id": "8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3",
+    },
 }
 TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
     TARGET_PATH: EVIDENCE_COMMIT,
@@ -134,6 +149,7 @@ TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
         "060114c0a9d1d6f8122f0829f24257861ae30e75"
     ),
     DEMOGRAPHICS_Q3_PATH: "510cb08901923e713ee0fae3f3db15f29dbacab3",
+    DEMOGRAPHICS_Q1_PATH: "71b8ca00dee8275578cb8d50a0e4db12cc6160f3",
 }
 TARGET_OUTPUTS = {
     TARGET_PATH: OUTPUT,
@@ -142,6 +158,7 @@ TARGET_OUTPUTS = {
         HISTORICAL_1993_2015_OUTPUT
     ),
     DEMOGRAPHICS_Q3_PATH: DEMOGRAPHICS_Q3_OUTPUT,
+    DEMOGRAPHICS_Q1_PATH: DEMOGRAPHICS_Q1_OUTPUT,
 }
 
 

@@ -1583,10 +1583,13 @@
   v3 readback manifest and refresh the contract-role qualification. The
   candidate now has v3 replay and temporary-cache cleanup candidate roles;
   the readback manifest covers 5 of 16 objects.
-- [ ] Build and independently verify a Q1 v4.1 contract from the complete
-  candidate role evidence, then run its exact-main admission and `FederatedReader`
-  canary. Q1 remains unadmitted; totals remain 4 admissions and 4 canaries
-  until the hosted gate passes.
+- [x] Build and locally validate the Q1 v4.1 contract from the complete
+  candidate role evidence. The contract pins evidence commit
+  `71b8ca00dee8275578cb8d50a0e4db12cc6160f3` and SHA-256
+  `3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce`.
+- [ ] Run its exact-main admission and `FederatedReader` canary after the
+  contract is merged. Q1 remains unadmitted; totals remain 4 admissions and 4
+  canaries until the hosted gate passes.
 
 ## 2026-10-20 M-112 Q3 demographics v4 raw-B2 contract qualification
 
