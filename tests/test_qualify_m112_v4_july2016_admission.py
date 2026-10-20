@@ -12,6 +12,8 @@ from scripts.qualify_m112_v4_july2016_admission import (
     DEMOGRAPHICS_Q1_OUTPUT,
     DEMOGRAPHICS_Q1_PATH,
     DEMOGRAPHICS_Q2_OUTPUT,
+    DEMOGRAPHICS_Q3_HR_OUTPUT,
+    DEMOGRAPHICS_Q3_HR_PATH,
     DEMOGRAPHICS_Q3_OUTPUT,
     DEMOGRAPHICS_Q3_PATH,
     HISTORICAL_1993_2015_OUTPUT,
@@ -35,6 +37,9 @@ HISTORICAL_PATH = (
 )
 DEMOGRAPHICS_Q2_PATH = (
     "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv"
+)
+DEMOGRAPHICS_Q3_HR_SHA256 = (
+    "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
 )
 DEMOGRAPHICS_Q3_SHA256 = (
     "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
@@ -208,6 +213,47 @@ def test_q1_demographics_contract_uses_qualified_candidate_roles() -> None:
     assert parsed["consumers"] == []
 
 
+def test_q3_hr_demographics_contract_binds_its_exact_replay_candidate() -> None:
+    identity = TARGET_IDENTITIES[DEMOGRAPHICS_Q3_HR_PATH]
+    contract = build_contract(
+        target_path=DEMOGRAPHICS_Q3_HR_PATH,
+        evidence_commit="a" * 40,
+    )
+    parsed = json.loads(validate_contract(contract))
+
+    assert DEMOGRAPHICS_Q3_HR_OUTPUT.name == (
+        "australian-m112-v4-demographics-q3-julyhr-raw-b2-contract.json"
+    )
+    assert identity == {
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": DEMOGRAPHICS_Q3_HR_SHA256,
+        "bytes": 7_316_301,
+        "source_id": "au-data-gov-mbs-demographics",
+        "acquisition_id": (
+            "4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22"
+        ),
+    }
+    assert parsed["source"]["effective_date"] == "2016-07-31"
+    assert parsed["source"]["comparison_cohort"] == "legacy"
+    assert parsed["source"]["schema_era"].startswith(
+        "unqualified-native-schema;"
+    )
+    assert parsed["location"]["path"] == DEMOGRAPHICS_Q3_HR_PATH
+    assert parsed["location"]["bytes"] == 7_316_301
+    assert parsed["location"]["sha256"] == DEMOGRAPHICS_Q3_HR_SHA256
+    assert parsed["lineage"]["v3_replay"]["url"].startswith(
+        "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/"
+        f"{'a' * 40}/"
+    )
+    assert parsed["cache"]["max_bytes"] == 7_316_301
+    assert parsed["cache"]["state"] == "removed"
+    assert parsed["consumers"] == []
+    assert TARGET_EVIDENCE_COMMITS[DEMOGRAPHICS_Q3_HR_PATH] == (
+        "6dc3f707382f65659b511c98e55412ecbdb0d6b2"
+    )
+
+
 def test_q2_may_demographics_contract_binds_new_replay_evidence() -> None:
     identity = TARGET_IDENTITIES[DEMOGRAPHICS_Q2_PATH]
     contract = build_contract(
@@ -241,6 +287,15 @@ def test_consumer_canary_workflow_allows_exact_q2_may_object() -> None:
     ).read_text()
 
     assert f"          - {DEMOGRAPHICS_Q2_PATH}" in workflow
+
+
+def test_consumer_canary_workflow_allows_exact_q3_hr_object() -> None:
+    workflow = (
+        ROOT
+        / ".github/workflows/australian-m112-v4-july2016-consumer-canary.yml"
+    ).read_text()
+
+    assert f"          - {DEMOGRAPHICS_Q3_HR_PATH}" in workflow
 
 
 def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:

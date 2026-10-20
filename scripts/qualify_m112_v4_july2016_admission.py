@@ -68,6 +68,13 @@ DEMOGRAPHICS_Q3_OUTPUT = Path(
     "quality/qualifications/"
     "australian-m112-v4-demographics-q3-july-raw-b2-contract.json"
 )
+DEMOGRAPHICS_Q3_HR_PATH = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx"
+)
+DEMOGRAPHICS_Q3_HR_OUTPUT = Path(
+    "quality/qualifications/"
+    "australian-m112-v4-demographics-q3-julyhr-raw-b2-contract.json"
+)
 DEMOGRAPHICS_Q1_PATH = (
     "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv"
 )
@@ -137,6 +144,14 @@ TARGET_IDENTITIES: dict[str, dict[str, Any]] = {
         "source_id": "au-data-gov-mbs-demographics",
         "acquisition_id": "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb",
     },
+    DEMOGRAPHICS_Q3_HR_PATH: {
+        "dataset": TARGET_DATASET,
+        "revision": TARGET_REVISION,
+        "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+        "bytes": 7_316_301,
+        "source_id": "au-data-gov-mbs-demographics",
+        "acquisition_id": "4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22",
+    },
     DEMOGRAPHICS_Q1_PATH: {
         "dataset": TARGET_DATASET,
         "revision": TARGET_REVISION,
@@ -163,6 +178,7 @@ TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
         "060114c0a9d1d6f8122f0829f24257861ae30e75"
     ),
     DEMOGRAPHICS_Q3_PATH: "510cb08901923e713ee0fae3f3db15f29dbacab3",
+    DEMOGRAPHICS_Q3_HR_PATH: "6dc3f707382f65659b511c98e55412ecbdb0d6b2",
     DEMOGRAPHICS_Q1_PATH: "71b8ca00dee8275578cb8d50a0e4db12cc6160f3",
     DEMOGRAPHICS_Q2_PATH: None,
 }
@@ -173,6 +189,7 @@ TARGET_OUTPUTS = {
         HISTORICAL_1993_2015_OUTPUT
     ),
     DEMOGRAPHICS_Q3_PATH: DEMOGRAPHICS_Q3_OUTPUT,
+    DEMOGRAPHICS_Q3_HR_PATH: DEMOGRAPHICS_Q3_HR_OUTPUT,
     DEMOGRAPHICS_Q1_PATH: DEMOGRAPHICS_Q1_OUTPUT,
     DEMOGRAPHICS_Q2_PATH: DEMOGRAPHICS_Q2_OUTPUT,
 }
