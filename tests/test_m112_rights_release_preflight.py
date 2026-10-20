@@ -37,8 +37,14 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
         == previous["sha256"]
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
-    assert previous_report["release_and_admission_boundaries"]["v4_admissions"] == 4
-    assert previous_report["release_and_admission_boundaries"]["consumer_canaries"] == 4
+    assert (
+        previous_report["release_and_admission_boundaries"]["v4_admissions"]
+        == 4
+    )
+    assert (
+        previous_report["release_and_admission_boundaries"]["consumer_canaries"]
+        == 4
+    )
     reconciliation = report["current_rights_reconciliation"]
     assert reconciliation["approved_denominator"] == 1759
     assert reconciliation["membership_changed"] is False
