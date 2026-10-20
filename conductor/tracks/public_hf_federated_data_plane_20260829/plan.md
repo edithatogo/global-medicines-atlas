@@ -736,6 +736,16 @@
   binds the refreshed qualification and preserves snapshot #13. The bounded
   checks used the FederatedReader and verified both digests plus zero cache
   bytes after close.
+- [x] Verify a metadata-only v3 replay for the exact Q3 July HR workbook.
+  Hosted run [39431880718](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39431880718)
+  matched the 7,316,301-byte pinned identity, read no source values, and
+  removed temporary source bytes. The replay is candidate evidence only;
+  admission and canary counts remain six pending a complete v4 contract.
+- [x] Resolve the exact-history scanner finding for that replay. The redacted
+  report showed the planner-derived `idempotency_key` in its plan and receipt.
+  A first allowlist entry had a two-character mismatch; the corrected value is
+  now read directly from the replay plan in the regression test, and only that
+  exact field/value is covered.
 - [x] Add Q2 May's exact frozen identity to the bounded v4 contract builder
   and hosted consumer-canary input. The two missing-target regressions failed
   first; the affected admission, role, and rights reconciliation tests then
