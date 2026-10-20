@@ -688,6 +688,19 @@ def _update_summary(
                 "historical archive with a source-period mismatch remain partial; "
                 "the candidate source-role receipts are unbound."
             )
+        if role.get("role") == "consumers":
+            role["state"] = (
+                f"qualified_consumer_canaries_for_{consumer_canary_count}_of_"
+                f"{admission_count}_current_admissions"
+            )
+            role["evidence"] = (
+                f"{consumer_canary_count} exact admitted M-112 objects have "
+                "successful bounded readbacks through the FederatedReader, "
+                "with remote and consumer-stream digest matches and zero "
+                "reader-cache bytes after close. This is cumulative receipt "
+                "evidence; this candidate-role refresh performed no canary. "
+                "Objects outside the admitted cohort remain untested."
+            )
     report["authority_identity"] = {
         "producer_repository": CONTRACT_REPOSITORY,
         "contract_repository": CONTRACT_REPOSITORY,

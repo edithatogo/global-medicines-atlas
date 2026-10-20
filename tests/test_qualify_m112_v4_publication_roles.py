@@ -69,6 +69,14 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
     assert report["cohort"]["approved_denominator_changed"] is False
     assert report["cohort"]["v4_admissions"] == 6
     assert report["cohort"]["consumer_canaries"] == 6
+    consumers = next(
+        role for role in report["roles"] if role["role"] == "consumers"
+    )
+    assert (
+        consumers["state"]
+        == "qualified_consumer_canaries_for_6_of_6_current_admissions"
+    )
+    assert "remote and consumer-stream digest matches" in consumers["evidence"]
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
     assert report["source_qualification"]["path"] == OVERLAY_REPORT

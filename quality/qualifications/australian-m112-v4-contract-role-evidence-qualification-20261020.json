@@ -3469,9 +3469,9 @@
       "state": "candidate_cleanup_receipts_available_unbound_for_6_of_16"
     },
     {
-      "evidence": "M-112 consumer-canary count is zero; no consumer canary receipt qualifies",
+      "evidence": "6 exact admitted M-112 objects have successful bounded readbacks through the FederatedReader, with remote and consumer-stream digest matches and zero reader-cache bytes after close. This is cumulative receipt evidence; this candidate-role refresh performed no canary. Objects outside the admitted cohort remain untested.",
       "role": "consumers",
-      "state": "missing"
+      "state": "qualified_consumer_canaries_for_6_of_6_current_admissions"
     }
   ],
   "schema_id": "global-medicines-atlas.australian-m112-v4-contract-role-evidence-qualification",
