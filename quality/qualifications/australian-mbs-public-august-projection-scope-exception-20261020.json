@@ -1,16 +1,24 @@
 {
+  "attestation": {
+    "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+    "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+  },
   "dataset": "edithatogo/australian-mbs-source-archive",
   "dataset_gated": false,
   "dataset_public": true,
-  "next_evidence": "A separate maintainer attestation or other applicable object-bound rights instrument for these four exact Parquet outputs, or a source-owner basis that explicitly covers the derived outputs.",
+  "maintainer_response": "Attest exact four",
+  "next_evidence": "Any later M-112 admission or consumer canary requires separate qualification and authorization; this attestation records rights only and performs no new publication.",
   "objects": [
     {
       "byte_count": 24367,
       "in_frozen_m112_inventory": false,
       "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/p7.parquet",
-      "permission_evidence": null,
+      "permission_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+        "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+      },
       "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
-      "rights_state": "unresolved_no_object_specific_derived_output_rights_attestation",
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_bronze_projection",
       "role": "p7_parquet",
       "sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7"
     },
@@ -18,9 +26,12 @@
       "byte_count": 454247,
       "in_frozen_m112_inventory": false,
       "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source.parquet",
-      "permission_evidence": null,
+      "permission_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+        "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+      },
       "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
-      "rights_state": "unresolved_no_object_specific_derived_output_rights_attestation",
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_bronze_projection",
       "role": "source_parquet",
       "sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96"
     },
@@ -28,9 +39,12 @@
       "byte_count": 24367,
       "in_frozen_m112_inventory": false,
       "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
-      "permission_evidence": null,
+      "permission_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+        "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+      },
       "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
-      "rights_state": "unresolved_no_object_specific_derived_output_rights_attestation",
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_bronze_projection",
       "role": "p7_parquet",
       "sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69"
     },
@@ -38,14 +52,18 @@
       "byte_count": 454247,
       "in_frozen_m112_inventory": false,
       "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
-      "permission_evidence": null,
+      "permission_evidence": {
+        "path": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+        "sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5"
+      },
       "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
-      "rights_state": "unresolved_no_object_specific_derived_output_rights_attestation",
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_bronze_projection",
       "role": "source_parquet",
       "sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c"
     }
   ],
   "observed_at": "2026-10-19T18:21:38Z",
+  "permission_instrument_existence_and_applicability": "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction",
   "products": [
     {
       "accepted": true,
@@ -85,11 +103,14 @@
     "dataset_mutated": false,
     "frozen_inventory_membership_changed": false,
     "frozen_m112_object_count": 1759,
+    "new_publication_performed": false,
     "new_sources_or_datasets_added": false,
     "outside_frozen_inventory_object_count": 4,
+    "public_release_performed_by_this_action": false,
+    "public_release_rights_attested": true,
     "publication_performed_by_this_action": false,
-    "rights_authorized_by_this_record": false,
-    "rights_state": "unresolved",
+    "rights_authorized_by_this_record": true,
+    "rights_state": "maintainer_attested_exact_public_release_permission_for_bronze_projection",
     "source_rights_inferred_for_parquet": false
   }
 }
