@@ -4360,3 +4360,27 @@
 - [x] Focused admission/role tests passed (24); broader M-110/M-112 suite
   passed (177); role reconciliation, Test-Goblin routine, Ruff, formatting,
   and diff checks passed.
+
+## M-112 exact raw PBS rights reconciliation (2026-10-20)
+
+- [x] Bind the active owner-attested raw PBS redistribution permission at
+  `edithatogo/reimbursement-atlas` revision
+  `a93516ed416118bc51c1db2b71ab540fa4d0fe52` to exactly 1,708 frozen,
+  lineaged raw objects: 1,707 reimbursement-atlas objects and one already
+  landed PBS XML-V3 archive object. The permission snapshot digest is
+  `0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098`.
+- [x] Preserve the permission's limits: it is an owner attestation, not an
+  independently verified publisher licence; historical acquisition rights
+  remain unchanged; no public release, project-wide publication, v4 admission,
+  canary, payload-byte read, or source-value inspection is authorized by this
+  reconciliation. The PBS Bronze projection, 12 reimbursement-atlas derived
+  projections, and all other unresolved objects retain their own rights gates.
+- [x] Refresh current rights and release-preflight reports. Frozen membership
+  remains 1,759; effective rights are 1,740 resolved and 19 unresolved. All
+  1,756 deferrals, three existing admissions, and three admitted-object
+  canaries remain unchanged.
+- [x] Focused rights and preflight tests passed (11); broader M-112/M-110
+  rights, role, and graph tests passed (54). Updated post-canary verification
+  is recorded below with the corresponding PR evidence.
+- [ ] Resolve rights for the remaining derived and source-specific objects;
+  do not infer derived rights from this raw-source permission.
