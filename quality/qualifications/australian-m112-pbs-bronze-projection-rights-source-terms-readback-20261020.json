@@ -1,0 +1,72 @@
+{
+  "boundaries": {
+    "consumer_canaries_performed": false,
+    "frozen_inventory_membership_changed": false,
+    "new_sources_or_datasets_added": false,
+    "projection_values_inspected": false,
+    "publications_performed": false,
+    "raw_source_payload_bytes_read": false,
+    "raw_source_values_inspected": false,
+    "rights_changed": false,
+    "v4_admissions_performed": false
+  },
+  "conclusion": {
+    "consumer_canaries_authorized": false,
+    "next_required_evidence": "An applicable object-bound redistribution instrument for the exact projection, or an exact maintainer attestation that identifies the applicable rights basis and scope. Do not infer from raw permission or lineage.",
+    "processing_or_v4_admission_authorized": false,
+    "reason": "Public access and permission to download/store local copies do not by themselves establish redistribution rights for this exact derived Parquet output. The separate raw PBS owner permission is limited to raw objects. Official API response copyright metadata is known to exist, but the exact relevant notice has not been read back.",
+    "redistribution_authorized": false,
+    "rights_conclusion_added": false,
+    "state": "unresolved_no_object_bound_derived_output_rights_basis"
+  },
+  "inputs": {
+    "quality/qualifications/australian-m112-rights-release-preflight-20261020.json": "5bd50ffb24414aa6c196824498fa348864c4f9d63f7c6981622f6b5d7fdfcfc0"
+  },
+  "object": {
+    "b1_b2_lineage_complete": true,
+    "byte_count": 158134,
+    "consumer_canary": false,
+    "dataset": "edithatogo/australian-pbs-source-archive",
+    "path": "bronze/2026-04-01/pbs-v3-source.parquet",
+    "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
+    "rights_state": "upstream redistribution terms unknown",
+    "sha256": "9e9facc336b47c5a9d514388a95c9797ba3e03474806fba00b6f03c0e601e97d",
+    "v4_admission": false
+  },
+  "observed_at": "2026-10-20T00:48:45Z",
+  "official_pbs_documentation_readback": [
+    {
+      "observed_statement": "PBS API documentation describes the API as a schedule-data distribution and storage/retrieval service; it says users may download and store local copies. The inspected page states no express redistribution licence for derived Parquet outputs.",
+      "sha256": "621eb262e2f0e9dd6432f0a3702a9b532f9e8bb597d0ff67feaecd28b123d938",
+      "url": "https://data.pbs.gov.au/document/91327.html"
+    },
+    {
+      "observed_statement": "Public API documentation says the API is freely accessible without login and covers current and prior 12 months of schedule data; it describes downloading data. It states no express redistribution licence for derived Parquet outputs.",
+      "sha256": "b268a61ff4e83635e1ca9620b7ace55b719b69cbd4f0295db5f13ce9be12e76c",
+      "url": "https://data.pbs.gov.au/api/api-public.html"
+    },
+    {
+      "observed_statement": "FAQ describes the data API as enabling downloads and local copies for user systems; it states no express redistribution licence for derived Parquet outputs.",
+      "sha256": "d78188c259e329b7a1ec495025465009ccdb607a07c5810a4519122019238b4e",
+      "url": "https://data.pbs.gov.au/api/api-faq.html"
+    },
+    {
+      "observed_statement": "Official release notes say copyright details were added to each API response _meta. The exact _meta notice for the April 2026 object is not recorded here.",
+      "sha256": "b0d6335f84f832f911b5dc1754ae9e2cd8c8b6d52ee74c45b0e5b9c8f7ab22e9",
+      "url": "https://data.pbs.gov.au/download/ps/data_source/website/website/meetings/2025/03/Webinar-5-March-2025.pdf"
+    }
+  ],
+  "purpose": "Read back current official PBS API access documentation and compare it with the distinct source-owner permission for the raw archive. This records the rights evidence boundary for the exact PBS Bronze projection; it does not conclude derived-output rights.",
+  "raw_permission_boundary": {
+    "derived_projection_rights_inferred": false,
+    "permission_path": "data/licence_review/pbs_raw_permission.json",
+    "permission_revision": "a93516ed416118bc51c1db2b71ab540fa4d0fe52",
+    "permission_sha256": "0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098",
+    "rights_state": "owner_attested_pbs_raw_redistribution_permission",
+    "scope": "Raw PBS schedule PDFs and machine-readable schedule packages, including historical editions and source-identified archived variants.",
+    "scope_is_limited_to_raw_objects": true
+  },
+  "schema_id": "global-medicines-atlas.m112-pbs-bronze-projection-rights-source-terms-readback",
+  "schema_version": 1,
+  "track_id": "australian_benefits_silver_gold_20260829"
+}
