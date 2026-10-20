@@ -81,9 +81,9 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert cms["external_publication_authorized"] is False
 
     assert report["boundaries"]["all_remaining_deferrals_preserved"] is True
-    assert report["boundaries"]["deferred_objects"] == 1753
-    assert report["boundaries"]["v4_admissions"] == 6
-    assert report["boundaries"]["consumer_canaries"] == 6
+    assert report["boundaries"]["deferred_objects"] == 1752
+    assert report["boundaries"]["v4_admissions"] == 7
+    assert report["boundaries"]["consumer_canaries"] == 7
     assert report["boundaries"]["source_payload_bytes_read"] is True
 
 
@@ -384,14 +384,14 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
     report = build_report(ROOT, observed_at="2026-10-19T13:00:00Z")
     readback = report["m112_admission_canary_readback"]
 
-    assert readback["admitted_object_count"] == 6
-    assert readback["canaried_object_count"] == 6
+    assert readback["admitted_object_count"] == 7
+    assert readback["canaried_object_count"] == 7
     assert any(
         run["run_id"] == 39356792827
         for run in readback["successful_workflow_runs"]
     )
-    assert readback["deferred_object_count"] == 1753
-    assert len(readback["current_role_qualification"]["admitted_objects"]) == 6
+    assert readback["deferred_object_count"] == 1752
+    assert len(readback["current_role_qualification"]["admitted_objects"]) == 7
     assert readback["object"]["rights_state"] == (
         "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified"
     )
@@ -399,7 +399,11 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
         run["run_id"] == 39419974066
         for run in readback["successful_workflow_runs"]
     )
-    assert len(readback["successful_workflow_runs"]) == 5
+    assert len(readback["successful_workflow_runs"]) == 6
+    assert any(
+        run["run_id"] == 39444235017
+        for run in readback["successful_workflow_runs"]
+    )
     q2_path = (
         "quality/qualifications/"
         "australian-m112-v4-demographics-q2-may-"

@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261021-3.json"
+    "australian-m112-rights-release-preflight-20261021-4.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261021-2.json"
+    "australian-m112-rights-release-preflight-20261021-3.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -56,7 +56,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261021-2.json"
+        "australian-m112-rights-release-preflight-20261021-3.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -75,9 +75,9 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     reconciliation = report["current_rights_reconciliation"]
     assert reconciliation["approved_denominator"] == 1759
     assert reconciliation["membership_changed"] is False
-    assert reconciliation["v4_admissions"] == 6
-    assert reconciliation["consumer_canaries"] == 6
-    assert reconciliation["deferred_objects"] == 1753
+    assert reconciliation["v4_admissions"] == 7
+    assert reconciliation["consumer_canaries"] == 7
+    assert reconciliation["deferred_objects"] == 1752
     assert (
         hashlib.sha256((ROOT / reconciliation["path"]).read_bytes()).hexdigest()
         == reconciliation["sha256"]
@@ -163,9 +163,9 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert cms["derived_table_rights_concluded"] is False
     gates = report["release_and_admission_boundaries"]
     assert gates["all_remaining_deferrals_preserved"] is True
-    assert gates["deferred_objects"] == 1753
-    assert gates["v4_admissions"] == 6
-    assert gates["consumer_canaries"] == 6
+    assert gates["deferred_objects"] == 1752
+    assert gates["v4_admissions"] == 7
+    assert gates["consumer_canaries"] == 7
     assert gates["external_publications_performed"] is False
 
 

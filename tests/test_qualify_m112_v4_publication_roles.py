@@ -68,14 +68,14 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
 
     assert report["cohort"]["approved_denominator"] == 1759
     assert report["cohort"]["approved_denominator_changed"] is False
-    assert report["cohort"]["v4_admissions"] == 6
-    assert report["cohort"]["consumer_canaries"] == 6
+    assert report["cohort"]["v4_admissions"] == 7
+    assert report["cohort"]["consumer_canaries"] == 7
     consumers = next(
         role for role in report["roles"] if role["role"] == "consumers"
     )
     assert (
         consumers["state"]
-        == "qualified_consumer_canaries_for_6_of_6_current_admissions"
+        == "qualified_consumer_canaries_for_7_of_7_current_admissions"
     )
     assert "remote and consumer-stream digest matches" in consumers["evidence"]
     assert report["boundaries"]["v4_admission_performed"] is False
@@ -97,8 +97,9 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
         "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
         "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
         "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
     }
-    assert report["cohort"]["consumer_canaries"] == 6
+    assert report["cohort"]["consumer_canaries"] == 7
     canary = json.loads(
         (
             Path(__file__).resolve().parents[1] / "quality/qualifications/"
@@ -261,8 +262,8 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
         "/39431880718"
     )
     assert report["v3_replay_candidate_evidence"]["objects"] == 7
-    assert report["cohort"]["v4_admissions"] == 6
-    assert report["cohort"]["consumer_canaries"] == 6
+    assert report["cohort"]["v4_admissions"] == 7
+    assert report["cohort"]["consumer_canaries"] == 7
 
 
 def test_v3_replay_receipt_must_match_the_pinned_object(
@@ -357,7 +358,7 @@ def test_current_discovery_receipts_bind_all_candidates_without_rights_promotion
     assert report["discovery_candidate_evidence"]["state"] == (
         "candidate_receipt_available_unbound_for_16_of_16"
     )
-    assert report["cohort"]["v4_admissions"] == 6
+    assert report["cohort"]["v4_admissions"] == 7
     for candidate in report["objects"]:
         discovery = candidate["discovery_candidate_receipt"]
         assert discovery["contract_role_state"] == (
@@ -472,8 +473,8 @@ def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
         for item in source_candidates
     )
     assert report["source_semantics_candidate_evidence"]["objects"] == 13
-    assert report["cohort"]["v4_admissions"] == 6
-    assert report["cohort"]["consumer_canaries"] == 6
+    assert report["cohort"]["v4_admissions"] == 7
+    assert report["cohort"]["consumer_canaries"] == 7
 
 
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
