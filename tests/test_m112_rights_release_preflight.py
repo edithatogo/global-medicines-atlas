@@ -10,7 +10,7 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020.json"
+    "australian-m112-rights-release-preflight-20261020-2.json"
 )
 
 
@@ -33,8 +33,17 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert historical["path"].endswith("preflight-20261019.json")
     assert report["frozen_inventory"]["object_count"] == 1759
     assert report["frozen_inventory"]["membership_changed"] is False
-    assert report["effective_m112_rights"]["resolved_object_count"] == 1740
-    assert report["effective_m112_rights"]["unresolved_object_count"] == 19
+    assert report["effective_m112_rights"]["resolved_object_count"] == 1752
+    assert report["effective_m112_rights"]["unresolved_object_count"] == 7
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261020.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous_preflight = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous_preflight.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+    )
     pbs_archive = report["pbs_source_archive_exact_publication"]
     assert pbs_archive["exact_object_publication_authorized"] is True
     assert pbs_archive["rights_state"] == (
@@ -126,3 +135,20 @@ def test_out_of_denominator_mbs_outputs_remain_a_separate_rights_exception() -> 
         item["rights_state"].startswith("unresolved_")
         for item in scope["objects"]
     )
+
+
+def test_reimbursement_projection_rights_are_bounded_and_do_not_admit() -> None:
+    report = _json(PREFLIGHT)
+    projections = report["reimbursement_atlas_medallion_projections"]
+    assert projections["object_count"] == 12
+    assert projections["public_redistribution_rights_attested"] is True
+    assert projections["public_release_performed"] is False
+    assert projections["v4_admissions"] == 0
+    assert projections["consumer_canaries"] == 0
+    assert all(
+        item["rights_state"] == projections["rights_state"]
+        for item in projections["objects"]
+    )
+    assert all(item["lineage_complete"] for item in projections["objects"])
+    assert all(not item["v4_admission"] for item in projections["objects"])
+    assert all(not item["consumer_canary"] for item in projections["objects"])
