@@ -685,3 +685,9 @@
 - [x] Verify the refreshed role qualification in check mode, then run the
   affected admission/role tests (27 passed), Ruff checks, formatting, and
   `git diff --check`.
+- [x] Correct the dependent current-rights reconciliation for the fifth exact
+  v4 admission/canary and the 1,754 remaining paths. The affected suite passed
+  37 tests; two copied-checkout tests hit the 30-second filesystem timeout
+  during the suite and each passed in isolated reruns (one with a 90-second
+  timeout). Ruff, format, qualification check, and `git diff --check` passed;
+  exact-head hosted checks are pending on PR #1235.
