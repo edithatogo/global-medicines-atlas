@@ -691,3 +691,23 @@
   during the suite and each passed in isolated reruns (one with a 90-second
   timeout). Ruff, format, qualification check, and `git diff --check` passed;
   exact-head hosted checks are pending on PR #1235.
+
+## M-112 Q2 May replay and v4 admission (2026-10-20)
+
+- [x] Run the exact-object hosted v3 replay for the Q2 May demographics CSV.
+  Run [39414292406](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39414292406)
+  on `295160bab1e694f9a01a70e0befc5f7e5bf660de` verified the pinned digest,
+  read no source rows, and removed temporary payload bytes. Its plan and
+  execution receipt are recorded under `quality/qualifications/`.
+- [x] Reconcile the replay receipt against the frozen identity and regenerate
+  the v4 role qualification. The candidate role set now has six v3 replay/cache
+  receipts; the admitted count remains five and the approved 1,759-path
+  denominator is unchanged.
+- [~] Bind the complete exact Q2 May role closure into a live v4.1 contract,
+  independently verify admission, then run the bounded hosted consumer canary
+  and preserve its exact readback receipt before counting the object admitted.
+- [x] Add Q2 May's exact frozen identity to the bounded v4 contract builder
+  and hosted consumer-canary input. The two missing-target regressions failed
+  first; the affected admission, role, and rights reconciliation tests then
+  passed (40 passed), with Ruff, formatting, actionlint, ty, role-qualification
+  check, and `git diff --check` passing.

@@ -26,8 +26,8 @@
     "v4_admission_performed": false
   },
   "cache_candidate_evidence": {
-    "objects": 5,
-    "state": "candidate_cleanup_receipts_available_unbound_for_5_of_16"
+    "objects": 6,
+    "state": "candidate_cleanup_receipts_available_unbound_for_6_of_16"
   },
   "cohort": {
     "anonymous_digest_readback": 16,
@@ -92,7 +92,7 @@
       "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
     }
   ],
-  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, recovery/cache, and consumers remain incomplete. Official source temporal semantics are qualified for 13 utilisation objects; their native schema layouts and three source-role candidates remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. V3 replay evidence is candidate-only for 5 of 16 objects. Recovery evidence covers only the 14 utilisation paths; hosted cache-cleanup candidates bind 5 of 16 paths. Consumer cache behavior remains a post-admission check. Current independently evidenced state is 5 v4 admissions and 5 admitted-object consumer canaries; this candidate-role refresh performed no admission or canary.",
+  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, recovery/cache, and consumers remain incomplete. Official source temporal semantics are qualified for 13 utilisation objects; their native schema layouts and three source-role candidates remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. V3 replay evidence is candidate-only for 6 of 16 objects. Recovery evidence covers only the 14 utilisation paths; hosted cache-cleanup candidates bind 6 of 16 paths. Consumer cache behavior remains a post-admission check. Current independently evidenced state is 5 v4 admissions and 5 admitted-object consumer canaries; this candidate-role refresh performed no admission or canary.",
   "discovery_candidate_evidence": {
     "objects": 16,
     "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
@@ -573,16 +573,29 @@
         "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
       },
       "bytes": 23436706,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39414292406.json",
+          "sha256": "f1fd2a196e1fb5cf4f8f303b0d9ba5638da68cdbee423a6f2cb6b062cbcfb62d"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-20T11:21:03Z",
+        "expires_at": "2026-10-20T11:36:03Z",
+        "max_bytes": 23436706,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
         "authority": "candidate_identity_available_unbound",
-        "cache": "missing",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
         "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
         "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
         "recovery": "candidate_receipt_available_unbound",
@@ -735,6 +748,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "1ee54f02826fa1b0802cd5b0cb6e60f744e051bc091d92bf754471a85004e1ad",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39414292406.json",
+          "sha256": "a1839832483009bff331475edf89e536f304769b3c48fe9a123f8e68e774a7ba"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39414292406.json",
+          "sha256": "f1fd2a196e1fb5cf4f8f303b0d9ba5638da68cdbee423a6f2cb6b062cbcfb62d"
+        },
+        "registration_sha256": "70685ca50cce93050face2bfc6bc55b4f9eb6a0aa5423937e84551633f0820a0",
+        "snapshot_id": "3dc53f56ee56736fc8850ef0978d3df4fb22455541c1a6beb82397340d245b5d",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "295160bab1e694f9a01a70e0befc5f7e5bf660de",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39414292406"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -3409,9 +3441,9 @@
       "state": "not_applicable_raw_b2_v4_1"
     },
     {
-      "evidence": "5 exact M-112 raw B2 identities have successful, anonymous, token-free hosted v3 replay receipts with byte-count/SHA-256 verification and temporary-byte cleanup. They remain candidate-only and unbound; replay roles for the remaining 11 candidates are missing.",
+      "evidence": "6 exact M-112 raw B2 identities have successful, anonymous, token-free hosted v3 replay receipts with byte-count/SHA-256 verification and temporary-byte cleanup. They remain candidate-only and unbound; replay roles for the remaining 10 candidates are missing.",
       "role": "lineage.v3_replay",
-      "state": "candidate_receipts_available_unbound_for_5_of_16"
+      "state": "candidate_receipts_available_unbound_for_6_of_16"
     },
     {
       "evidence": "raw B2 is not a promoted derived layer; receipt may be null",
@@ -3424,9 +3456,9 @@
       "state": "candidate_receipts_available_unbound_for_14_of_16"
     },
     {
-      "evidence": "The exact hosted v3 replay receipts bind a bounded temporary runner cache, expiry, token-free cleanup, and removal for 5 object(s). This is temporary acquisition cache evidence, not a durable reader cache or consumer claim.",
+      "evidence": "The exact hosted v3 replay receipts bind a bounded temporary runner cache, expiry, token-free cleanup, and removal for 6 object(s). This is temporary acquisition cache evidence, not a durable reader cache or consumer claim.",
       "role": "cache",
-      "state": "candidate_cleanup_receipts_available_unbound_for_5_of_16"
+      "state": "candidate_cleanup_receipts_available_unbound_for_6_of_16"
     },
     {
       "evidence": "M-112 consumer-canary count is zero; no consumer canary receipt qualifies",
@@ -3461,9 +3493,9 @@
     "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
   },
   "v3_replay_candidate_evidence": {
-    "objects": 5,
+    "objects": 6,
     "path": "quality/qualifications/australian-m112-v3-replay-readbacks-20261020.json",
-    "sha256": "3b1c0736d447130a4751488f45e70ff25b78e5f5768c2de8edd731d531125758",
-    "state": "candidate_receipts_available_unbound_for_5_of_16"
+    "sha256": "aa45d7cf6592e1cc2b047c952793b08ac6190e2d6fa6ae76563f5cf3cd6ff57c",
+    "state": "candidate_receipts_available_unbound_for_6_of_16"
   }
 }

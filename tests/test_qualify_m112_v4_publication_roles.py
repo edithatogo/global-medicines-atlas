@@ -133,6 +133,7 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
         in {
             V3_REPLAY_PATH,
             "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+            "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
             "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
             "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
             "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
@@ -140,13 +141,17 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
         and "v3_replay_candidate_receipt" in item
     ]
 
-    assert len(matches) == 5
+    assert len(matches) == 6
     by_path = {item["path"]: item for item in matches}
     assert V3_REPLAY_PATH in by_path
     q1_path = (
         "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv"
     )
     assert q1_path in by_path
+    q2_path = (
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv"
+    )
+    assert q2_path in by_path
     assert "raw/mbs/utilisation/group/mbs-group-2016-july.csv" in by_path
     historical_path = (
         "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip"
@@ -198,7 +203,14 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
     assert q1["v3_replay_candidate_receipt"]["workflow_run"].endswith(
         "/39368825712"
     )
-    assert report["v3_replay_candidate_evidence"]["objects"] == 5
+    q2 = by_path[q2_path]
+    assert q2["sha256"] == (
+        "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+    )
+    assert q2["v3_replay_candidate_receipt"]["workflow_run"].endswith(
+        "/39414292406"
+    )
+    assert report["v3_replay_candidate_evidence"]["objects"] == 6
     assert report["cohort"]["v4_admissions"] == 5
     assert report["cohort"]["consumer_canaries"] == 5
 

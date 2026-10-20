@@ -11,6 +11,7 @@ from scripts.qualify_m112_v4_july2016_admission import (
     CSV_ADMISSION_REPORT,
     DEMOGRAPHICS_Q1_OUTPUT,
     DEMOGRAPHICS_Q1_PATH,
+    DEMOGRAPHICS_Q2_OUTPUT,
     DEMOGRAPHICS_Q3_OUTPUT,
     DEMOGRAPHICS_Q3_PATH,
     HISTORICAL_1993_2015_OUTPUT,
@@ -31,6 +32,9 @@ ROOT = Path(__file__).resolve().parents[1]
 CSV_PATH = "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
 HISTORICAL_PATH = (
     "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip"
+)
+DEMOGRAPHICS_Q2_PATH = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv"
 )
 DEMOGRAPHICS_Q3_SHA256 = (
     "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
@@ -202,6 +206,41 @@ def test_q1_demographics_contract_uses_qualified_candidate_roles() -> None:
     )
     assert parsed["cache"]["state"] == "removed"
     assert parsed["consumers"] == []
+
+
+def test_q2_may_demographics_contract_binds_new_replay_evidence() -> None:
+    identity = TARGET_IDENTITIES[DEMOGRAPHICS_Q2_PATH]
+    contract = build_contract(
+        target_path=DEMOGRAPHICS_Q2_PATH,
+        evidence_commit="a" * 40,
+    )
+    parsed = json.loads(validate_contract(contract))
+
+    assert identity["sha256"] == (
+        "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+    )
+    assert parsed["source"]["effective_date"] == "2016-05-31"
+    assert parsed["location"]["path"] == DEMOGRAPHICS_Q2_PATH
+    assert parsed["location"]["bytes"] == 23_436_706
+    assert parsed["lineage"]["v3_replay"]["url"].startswith(
+        f"https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/"
+        f"{'a' * 40}/"
+    )
+    assert parsed["cache"]["state"] == "removed"
+    assert parsed["consumers"] == []
+    assert DEMOGRAPHICS_Q2_OUTPUT.name == (
+        "australian-m112-v4-demographics-q2-may-raw-b2-contract.json"
+    )
+    assert TARGET_EVIDENCE_COMMITS[DEMOGRAPHICS_Q2_PATH] is None
+
+
+def test_consumer_canary_workflow_allows_exact_q2_may_object() -> None:
+    workflow = (
+        ROOT
+        / ".github/workflows/australian-m112-v4-july2016-consumer-canary.yml"
+    ).read_text()
+
+    assert f"          - {DEMOGRAPHICS_Q2_PATH}" in workflow
 
 
 def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
