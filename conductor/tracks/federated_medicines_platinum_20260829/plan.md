@@ -1593,3 +1593,25 @@
   for this Q3 object. Do not count a new admission until its hosted receipt
   passes. The current role report records 3 existing admissions; historical
   track rows that say zero are stale.
+
+## 2026-10-20 M-112 Q3 demographics exact-main v4 admission
+
+- [x] Run the exact-main hosted v4 verification for the Q3 demographics raw B2
+  object on `cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a`. Independent closure
+  verified the contract's 12 receipt roles and admitted the exact 7,680,041-byte
+  object at SHA-256
+  `bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c`.
+- [x] The same hosted run passed the actual `FederatedReader` canary: remote and
+  streamed digests matched, the expired cache was not retained, cache bytes
+  were zero after read and close, and no source values or payload bytes were
+  included or retained. Preserve the metadata-only admission/canary report at
+  `quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json`.
+- [x] Regenerate and check the M-112 role qualification from durable admission
+  reports. Current independently evidenced state is 4 v4 admissions and 4
+  object canaries out of the unchanged 1,759 approved denominator; the new
+  role-report SHA-256 is
+  `ffd50a20a277a8a61e90708181c2db70c653d809d3f2c37b81e70ea3d637806a`.
+- [~] The Q3 source-native layout remains unqualified, and 1,755 approved paths
+  still lack v4 admission. Continue with the next object only after its own
+  contract roles and exact identities qualify; do not promote raw admission to
+  Silver schema or semantic acceptance.

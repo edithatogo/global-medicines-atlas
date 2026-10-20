@@ -67,8 +67,8 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
 
     assert report["cohort"]["approved_denominator"] == 1759
     assert report["cohort"]["approved_denominator_changed"] is False
-    assert report["cohort"]["v4_admissions"] == 3
-    assert report["cohort"]["consumer_canaries"] == 3
+    assert report["cohort"]["v4_admissions"] == 4
+    assert report["cohort"]["consumer_canaries"] == 4
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
     assert report["source_qualification"]["path"] == OVERLAY_REPORT
@@ -85,6 +85,7 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
         "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
         "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
         "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
     }
     canary = json.loads(
         (
@@ -170,8 +171,8 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
         "/39344611967"
     )
     assert report["v3_replay_candidate_evidence"]["objects"] == 4
-    assert report["cohort"]["v4_admissions"] == 3
-    assert report["cohort"]["consumer_canaries"] == 3
+    assert report["cohort"]["v4_admissions"] == 4
+    assert report["cohort"]["consumer_canaries"] == 4
 
 
 def test_v3_replay_receipt_must_match_the_pinned_object(
@@ -228,7 +229,7 @@ def test_current_discovery_receipts_bind_all_candidates_without_rights_promotion
     assert report["discovery_candidate_evidence"]["state"] == (
         "candidate_receipt_available_unbound_for_16_of_16"
     )
-    assert report["cohort"]["v4_admissions"] == 3
+    assert report["cohort"]["v4_admissions"] == 4
     for candidate in report["objects"]:
         discovery = candidate["discovery_candidate_receipt"]
         assert discovery["contract_role_state"] == (
@@ -343,8 +344,8 @@ def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
         for item in source_candidates
     )
     assert report["source_semantics_candidate_evidence"]["objects"] == 13
-    assert report["cohort"]["v4_admissions"] == 3
-    assert report["cohort"]["consumer_canaries"] == 3
+    assert report["cohort"]["v4_admissions"] == 4
+    assert report["cohort"]["consumer_canaries"] == 4
 
 
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
