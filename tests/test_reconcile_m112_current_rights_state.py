@@ -424,6 +424,27 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
     }
 
 
+def test_q3_hr_admission_canary_rejects_a_self_consistent_wrong_revision(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = ROOT / rights_reconciliation.M112_Q3_HR_ADMISSION_CANARY
+    receipt = json.loads(source.read_text(encoding="utf-8"))
+    wrong_revision = "f" * 40
+    receipt["admission"]["revision"] = wrong_revision
+    receipt["consumer_canary"]["object"]["revision"] = wrong_revision
+    (tmp_path / "receipt.json").write_text(
+        json.dumps(receipt), encoding="utf-8"
+    )
+    monkeypatch.setattr(
+        rights_reconciliation,
+        "M112_Q3_HR_ADMISSION_CANARY",
+        Path("receipt.json"),
+    )
+
+    with pytest.raises(ValueError, match="Q3 HR M-112 admission/canary"):
+        rights_reconciliation._verify_q3_hr_m112_canary_receipt(tmp_path)
+
+
 def test_q2_canary_count_fails_closed_without_its_exact_receipt(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

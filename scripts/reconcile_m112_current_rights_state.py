@@ -112,6 +112,7 @@ M112_Q3_HR_CONTRACT_SHA256 = (
 )
 M112_Q3_HR_CANARY_RUN_ID = 39444235017
 M112_Q3_HR_CANARY_COMMIT = "0f95edc35778b848072602c4aed5c59d6c9564a6"
+M112_Q3_HR_CANARY_REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
 M112_Q3_HR_CANARY_PATH = (
     "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx"
 )
@@ -750,6 +751,7 @@ def _verify_q3_hr_m112_canary_receipt(root: Path) -> dict[str, Any]:
         != "quality/qualifications/australian-m112-v4-demographics-q3-julyhr-raw-b2-contract.json",
         receipt["contract_sha256"] != M112_Q3_HR_CONTRACT_SHA256,
         admission["dataset"] != "edithatogo/australian-mbs-utilisation-archive",
+        admission["revision"] != M112_Q3_HR_CANARY_REVISION,
         admission["path"] != M112_Q3_HR_CANARY_PATH,
         admission["sha256"] != M112_Q3_HR_CANARY_SHA256,
         admission["byte_count"] != M112_Q3_HR_CANARY_BYTES,
@@ -757,7 +759,7 @@ def _verify_q3_hr_m112_canary_receipt(root: Path) -> dict[str, Any]:
         canary["status"] != "passed",
         canary["contract_sha256"] != M112_Q3_HR_CONTRACT_SHA256,
         obj["dataset"] != admission["dataset"],
-        obj["revision"] != admission["revision"],
+        obj["revision"] != M112_Q3_HR_CANARY_REVISION,
         obj["path"] != M112_Q3_HR_CANARY_PATH,
         obj["sha256"] != M112_Q3_HR_CANARY_SHA256,
         obj["bytes"] != M112_Q3_HR_CANARY_BYTES,

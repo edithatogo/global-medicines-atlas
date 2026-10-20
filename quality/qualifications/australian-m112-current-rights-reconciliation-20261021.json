@@ -419,7 +419,7 @@
     "rights_state": "maintainer_attested_exact_public_release_permission_for_mbs_raw_object",
     "v4_admission": false
   },
-  "observed_at": "2026-10-21T00:00:00Z",
+  "observed_at": "2026-10-20T14:59:44Z",
   "pbs_raw_redistribution_permission": {
     "all_objects_remain_deferred": true,
     "b1_b2_lineage_complete": true,
