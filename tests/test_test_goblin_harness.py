@@ -758,8 +758,7 @@ def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
 
     q3_hr_plan = json.loads(
         (
-            ROOT
-            / "quality/qualifications/"
+            ROOT / "quality/qualifications/"
             "australian-m112-v3-replay-plan-20261020-39431880718.json"
         ).read_text(encoding="utf-8")
     )
