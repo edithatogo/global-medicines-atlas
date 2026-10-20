@@ -41,14 +41,16 @@
   },
   "boundaries": {
     "all_remaining_deferrals_preserved": true,
-    "consumer_canaries": 6,
-    "deferred_objects": 1753,
+    "consumer_canaries": 5,
+    "deferred_objects": 1754,
     "external_publication_performed": false,
     "m112_denominator_changed": false,
     "new_sources_or_datasets_added": false,
-    "source_payload_bytes_read": false,
-    "source_payload_values_inspected": false,
-    "v4_admissions": 6
+    "source_payload_bytes_read": true,
+    "source_payload_files_written": false,
+    "source_payload_values_emitted": false,
+    "source_payload_values_inspected": true,
+    "v4_admissions": 5
   },
   "cms_hcpcs_external_reference": {
     "acquisition_time_rights_state_preserved": "unknown",
@@ -75,7 +77,7 @@
     "superseded_admission_sha256": "d08dd8d20fdca069eff922ae8f3cca04bd5acb7bc494196ffa9c613c99548784"
   },
   "effective_m112_rights": {
-    "resolved_object_count": 1752,
+    "resolved_object_count": 1753,
     "rights_evidence_does_not_imply_admission": true,
     "state_counts": [
       {
@@ -118,7 +120,7 @@
         "candidate_class": "existing_data_projection",
         "dataset": "edithatogo/australian-pbs-source-archive",
         "object_count": 1,
-        "state": "upstream redistribution terms unknown"
+        "state": "maintainer_attested_exact_public_release_permission_for_bronze_projection"
       },
       {
         "candidate_class": "raw_source_payload",
@@ -145,7 +147,7 @@
         "state": "owner_attested_pbs_raw_redistribution_permission"
       }
     ],
-    "unresolved_object_count": 7
+    "unresolved_object_count": 6
   },
   "evidence_inputs": {
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
@@ -159,8 +161,7 @@
     "quality/qualifications/australian-m112-pbs-projected-b1-b2-lineage-20261019.json": "aa4a0df6df4ec723e7b65f55379f47ae7912e4777a6b9d3bb3454c1accf3a16f",
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
     "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0",
-    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "623585d61870f5e1a0ed7a3abb826adf94404e618da791b82f763741dd2267d9",
-    "quality/qualifications/australian-m112-v4-demographics-q2-may-admission-qualification-20261020.json": "ea8f2c9164b8f12cf06577b6c985ac52be69fc2c79035b610dbdec96c06f6b5d",
+    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "6912ea5919968121667c7f65426f3656f8f044267478d002fbcddef1c5e93c98",
     "quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json": "543195f53559812cbcb408c16083f9fe5feb775a69b37d43ee8cebcea809bc8c",
     "quality/qualifications/australian-m112-v4-historical-1993-2015-consumer-canary-20261020-39330593204.json": "b10a7f795014e0b6ebc975330062bb9e20dd13d66996a09b1a5a69c4b438803f",
     "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json": "af870552004e50ab5174fc535c9e5bbefe59f6edc4d03c830ce40129adf22b6a",
@@ -168,7 +169,9 @@
     "quality/qualifications/australian-mbs-august-bronze-rights-attestation-20261020.json": "8c1fe64099098ebe6e34ffe0409415d799e1a4c7c57382218fbfcfd52e0dbb24",
     "quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6",
     "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+    "quality/qualifications/australian-pbs-bronze-projection-rights-attestation-20261020.json": "c1a66decf1b601c6a1da90971cca52258310d8b44bc3dac92006f6be8a6d0cbe",
     "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+    "quality/qualifications/australian-pbs-utilisation-limited-vocabulary-screen-20261020.json": "528d73c1965163d5817ed10dbaaa3363e80f4b0dfb947db7874f0ca6840cc60c",
     "quality/qualifications/australian-pbs-utilisation-publication-authorization.json": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
     "quality/qualifications/australian-reimbursement-atlas-medallion-rights-attestation-20261020.json": "f781278ad4af0102f66078439897f7ac326cd59e25a43d48a1c4a97ffe682fbe",
     "quality/qualifications/cms-hcpcs-rights-review-20261019.json": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
@@ -235,8 +238,8 @@
     "sha256": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d"
   },
   "m112_admission_canary_readback": {
-    "admitted_object_count": 6,
-    "canaried_object_count": 6,
+    "admitted_object_count": 5,
+    "canaried_object_count": 5,
     "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
     "current_role_qualification": {
       "admitted_objects": [
@@ -247,14 +250,6 @@
           "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
           "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
           "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
-        },
-        {
-          "contract_path": "quality/qualifications/australian-m112-v4-demographics-q2-may-raw-b2-contract.json",
-          "contract_sha256": "cd7ccdce266d1d42fa658abe4b097c207627d80943b01c198f7d844c16241152",
-          "dataset": "edithatogo/australian-mbs-utilisation-archive",
-          "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
-          "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
-          "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
         },
         {
           "contract_path": "quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json",
@@ -290,9 +285,9 @@
         }
       ],
       "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json",
-      "sha256": "623585d61870f5e1a0ed7a3abb826adf94404e618da791b82f763741dd2267d9"
+      "sha256": "6912ea5919968121667c7f65426f3656f8f044267478d002fbcddef1c5e93c98"
     },
-    "deferred_object_count": 1753,
+    "deferred_object_count": 1754,
     "native_workbook_layout_qualified": false,
     "object": {
       "byte_count": 6857437,
@@ -336,18 +331,11 @@
         "run_id": 39356792827,
         "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39356792827",
         "workflow_commit": "cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a"
-      },
-      {
-        "receipt_path": "quality/qualifications/australian-m112-v4-demographics-q2-may-admission-qualification-20261020.json",
-        "receipt_sha256": "ea8f2c9164b8f12cf06577b6c985ac52be69fc2c79035b610dbdec96c06f6b5d",
-        "run_id": 39419974066,
-        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39419974066",
-        "workflow_commit": "516d56e8fd5274b37d65a2192257a41e7cb8cb94"
       }
     ],
     "unique_object_counts_are_deduplicated_across_runs": true
   },
-  "observed_at": "2026-10-20T12:42:15Z",
+  "observed_at": "2026-10-20T12:00:00Z",
   "pbs_raw_redistribution_permission": {
     "all_objects_remain_deferred": true,
     "b1_b2_lineage_complete": true,
@@ -19190,14 +19178,20 @@
     "release_performed_by_this_reconciliation": false,
     "revision": "48fd7345fb09277bb5b85644dba72804633a2abb",
     "rights_conclusion_made": true,
-    "rights_scope": "exact raw PBS source archive object only",
+    "rights_scope": "exact raw PBS source archive and separately attested exact Bronze projection; raw permission does not extend to projection",
     "rights_state": "owner_attested_pbs_raw_redistribution_permission",
     "sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
     "source_projection": {
       "byte_count": 158134,
+      "consumer_canary": false,
       "derived_rights_inferred_from_source_permission": false,
       "path": "bronze/2026-04-01/pbs-v3-source.parquet",
-      "rights_state": "upstream redistribution terms unknown",
+      "permission_instrument_independently_reviewed": false,
+      "public_release_rights_attested": true,
+      "release_performed_by_this_reconciliation": false,
+      "rights_attestation_path": "quality/qualifications/australian-pbs-bronze-projection-rights-attestation-20261020.json",
+      "rights_attestation_sha256": "c1a66decf1b601c6a1da90971cca52258310d8b44bc3dac92006f6be8a6d0cbe",
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_bronze_projection",
       "sha256": "9e9facc336b47c5a9d514388a95c9797ba3e03474806fba00b6f03c0e601e97d",
       "v4_admission": false
     },
@@ -19208,6 +19202,20 @@
     "authorization_path": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json",
     "authorization_sha256": "7d5ac89175fd7635e622da8ca8da1a54b1933ae15766f5f407317107f45ddc19",
     "full_object_release_requires_exclusion_review": true,
+    "limited_vocabulary_screen": {
+      "full_object_release_requires_exclusion_review": true,
+      "path": "quality/qualifications/australian-pbs-utilisation-limited-vocabulary-screen-20261020.json",
+      "results": {
+        "all_object_digests_and_byte_counts_match_pinned_lineage": true,
+        "exact_umls_cui_text_occurrences": 0,
+        "explicit_vocabulary_marker_header_occurrences": 0,
+        "explicit_vocabulary_marker_occurrences": 0,
+        "full_vocabulary_exclusion_review_complete": false,
+        "remaining_limit": "This marker screen cannot classify unlabeled numeric identifiers, source-native medicine names, or other unenumerated vocabulary content; the authorization exclusion is broader than the tested markers.",
+        "rights_exclusion_fully_resolved": false
+      },
+      "sha256": "528d73c1965163d5817ed10dbaaa3363e80f4b0dfb947db7874f0ca6840cc60c"
+    },
     "lineage_path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
     "lineage_sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
     "maintainer_asserted_redistribution_permission": true,

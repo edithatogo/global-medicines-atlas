@@ -722,6 +722,11 @@
   commit, contract/object identity, consumer digest results, and no-retention
   boundaries into the current-rights reconciliation. A fail-closed regression
   now rejects a missing or malformed Q2 consumer-canary record.
+- [x] Refresh the rights reconciliation on the latest main after PR #1236.
+  The Q2 receipt remains explicitly bound; six admissions and six canaries are
+  reconciled, with 1,753 paths deferred. The broader rights report records
+  authorized payload screening separately from the Q2 canary, which interpreted
+  no source rows and retained no payload or reader cache.
 - [x] Add Q2 May's exact frozen identity to the bounded v4 contract builder
   and hosted consumer-canary input. The two missing-target regressions failed
   first; the affected admission, role, and rights reconciliation tests then
