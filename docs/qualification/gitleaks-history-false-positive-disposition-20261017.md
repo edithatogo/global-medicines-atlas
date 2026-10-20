@@ -87,3 +87,10 @@ the value recomputes from the replay planner's partition and snapshot identity
 formula. It is not used for authentication or authorization. The allowlist
 includes only this exact field/value pair; changed values and other field names
 remain detectable.
+
+PR #1241's complete-history scan found the Q3 July HR replay's deterministic
+`idempotency_key` in its plan and execution receipt. The redacted report
+identified two matches. The value recomputes from the replay planner's exact
+partition and snapshot identities and is not used for authentication or
+authorization. The allowlist adds only this exact field/value pair; changed
+values and other field names remain detectable.
