@@ -688,6 +688,19 @@ def _update_summary(
                 "historical archive with a source-period mismatch remain partial; "
                 "the candidate source-role receipts are unbound."
             )
+        if role.get("role") == "consumers":
+            role["state"] = (
+                f"qualified_consumer_canaries_for_{consumer_canary_count}_of_"
+                f"{admission_count}_current_admissions"
+            )
+            role["evidence"] = (
+                f"{consumer_canary_count} exact admitted M-112 objects have "
+                "successful bounded readbacks through the FederatedReader, "
+                "with remote and consumer-stream digest matches and zero "
+                "reader-cache bytes after close. This is cumulative receipt "
+                "evidence; this candidate-role refresh performed no canary. "
+                "Objects outside the admitted cohort remain untested."
+            )
     report["authority_identity"] = {
         "producer_repository": CONTRACT_REPOSITORY,
         "contract_repository": CONTRACT_REPOSITORY,
@@ -1172,7 +1185,28 @@ def _current_admission_evidence(  # ruff: ignore[too-many-branches,too-many-stat
         canary_identity = cast("dict[str, Any]", canary_identity)
         boundaries = cast("dict[str, Any]", boundaries)
         verification = cast("dict[str, Any]", verification)
+        consumer = canary.get("consumer")
+        workflow = canary.get("hosted_workflow")
+        if not isinstance(consumer, dict) or not isinstance(workflow, dict):
+            raise TypeError("consumer canary provenance is malformed")
+        consumer = cast("dict[str, Any]", consumer)
+        workflow = cast("dict[str, Any]", workflow)
+        workflow_run_id = workflow.get("run_id")
         if not all((
+            consumer.get("repository") == CONTRACT_REPOSITORY,
+            consumer.get("module")
+            == "global_medicines_atlas.federation_reader.FederatedReader",
+            consumer.get("binding_module")
+            == "global_medicines_atlas.federation_consumer.bind_consumer_contract",
+            isinstance(consumer.get("commit"), str),
+            workflow.get("repository") == CONTRACT_REPOSITORY,
+            workflow.get("commit") == consumer.get("commit"),
+            isinstance(workflow_run_id, int) and workflow_run_id > 0,
+            workflow.get("run_url")
+            == (
+                f"https://github.com/{CONTRACT_REPOSITORY}/actions/runs/"
+                f"{workflow_run_id}"
+            ),
             canary.get("status") == "passed",
             canary.get("contract_sha256") == actual_digest,
             canary_identity.get("dataset") == location.get("dataset"),

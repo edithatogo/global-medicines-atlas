@@ -730,6 +730,12 @@
 - [x] Refresh the dependent M-112 rights release preflight as snapshot #13,
   binding the current 6/6 admission/canary totals and exact Q2 receipt while
   preserving snapshot #12 and its 6/5 state as historical evidence.
+- [x] Reconcile the consumer role against the six exact admitted-object
+  canary receipts. The role qualification now reports six canaries for six
+  current admissions instead of a stale zero; release preflight snapshot #14
+  binds the refreshed qualification and preserves snapshot #13. The bounded
+  checks used the FederatedReader and verified both digests plus zero cache
+  bytes after close.
 - [x] Add Q2 May's exact frozen identity to the bounded v4 contract builder
   and hosted consumer-canary input. The two missing-target regressions failed
   first; the affected admission, role, and rights reconciliation tests then

@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-13.json"
+    "australian-m112-rights-release-preflight-20261020-14.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261020-12.json"
+    "australian-m112-rights-release-preflight-20261020-13.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -52,7 +52,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert report["effective_m112_rights"]["unresolved_object_count"] == 0
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261020-12.json"
+        "australian-m112-rights-release-preflight-20261020-13.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -66,7 +66,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     assert (
         previous_report["release_and_admission_boundaries"]["consumer_canaries"]
-        == 5
+        == 6
     )
     reconciliation = report["current_rights_reconciliation"]
     assert reconciliation["approved_denominator"] == 1759
