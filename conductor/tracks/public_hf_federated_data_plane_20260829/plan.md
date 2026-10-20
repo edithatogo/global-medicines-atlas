@@ -665,7 +665,23 @@
   local full-history Gitleaks scan (0 findings across 7 PR commits), Ruff,
   formatting, exact contract validation, and local receipt closure (12 roles,
   10 unique verified receipts; original contract digest unchanged).
-- [ ] Merge the scoped correction after exact-head hosted checks, then rerun
-  the same bounded canary on the exact current `main` head. The July group CSV
-  remains admitted with zero consumer canaries until the hosted reader receipt
-  passes and is recorded.
+- [x] Merge the scoped correction as PR #1232 at `4255ae0d187413d24a9055f33bd13f08b73e396e`
+  after all 39 exact-head checks passed, then rerun the group CSV canary on that
+  exact `main` head. Run [39375423835](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39375423835)
+  passed through the production `FederatedReader`; its remote and streamed
+  digests matched, the cache was empty after close, and the original contract
+  digest remained `d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7`.
+- [x] Qualify the separate Q1 March demographics contract on the same exact
+  main head. Its 12 roles and 10 unique receipts passed local closure; hosted
+  run [39375704078](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39375704078)
+  admitted and canaried contract digest
+  `3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce` with a
+  remote digest and consumer-stream match and zero retained cache bytes.
+- [x] Record the two exact metadata-only workflow receipts and refresh the
+  role qualification: 5 unique v4 admissions and 5 unique consumer canaries
+  across the approved 1,759 paths. The denominator is unchanged; 1,754 paths
+  remain unadmitted. The wider M-112 gate remains open for source-specific
+  schema, semantic, publication, recovery and consumer requirements.
+- [x] Verify the refreshed role qualification in check mode, then run the
+  affected admission/role tests (27 passed), Ruff checks, formatting, and
+  `git diff --check`.
