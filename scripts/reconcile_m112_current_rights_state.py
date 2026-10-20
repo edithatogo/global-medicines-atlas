@@ -28,6 +28,9 @@ MBS_SILVER_PUBLIC_TREE_READBACK = QUAL / (
 AUGUST_MBS_RIGHTS_ATTESTATION = QUAL / (
     "australian-mbs-august-bronze-rights-attestation-20261020.json"
 )
+REIMBURSEMENT_MEDALLION_RIGHTS_ATTESTATION = QUAL / (
+    "australian-reimbursement-atlas-medallion-rights-attestation-20261020.json"
+)
 PBS_UTILISATION_AUTHORIZATION = (
     QUAL / "australian-pbs-utilisation-publication-authorization.json"
 )
@@ -112,14 +115,19 @@ CMS_SHA256 = "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a"
 FROZEN_OBJECT_COUNT = 1759
 MBS_SILVER_OBJECT_COUNT = 6
 AUGUST_PROJECTION_COUNT = 4
+REIMBURSEMENT_MEDALLION_OBJECT_COUNT = 12
 MBS_AUGUST_RIGHTS_STATE = (
     "maintainer_attested_exact_public_release_permission_for_bronze_projection"
+)
+REIMBURSEMENT_MEDALLION_RIGHTS_STATE = (
+    "maintainer_attested_exact_public_release_permission_for_derived_projection"
 )
 RIGHTS_RESOLVED_STATES = {
     "authorized_exact_source_release_permitted",
     "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
     "maintainer_attested_exact_public_release_permission_for_silver_object",
     MBS_AUGUST_RIGHTS_STATE,
+    REIMBURSEMENT_MEDALLION_RIGHTS_STATE,
     PBS_UTILISATION_RIGHTS_STATE,
     PBS_RAW_RIGHTS_STATE,
 }
@@ -819,6 +827,68 @@ def reconcile_august_mbs_attestation(
     return sorted(result, key=itemgetter("path"))
 
 
+def reconcile_reimbursement_medallion_attestation(
+    objects: list[dict[str, Any]], attestation: dict[str, Any]
+) -> list[dict[str, Any]]:
+    """Bind the maintainer's scoped redistribution attestation to exact objects."""
+    frozen = {
+        (obj["dataset"], obj["path"]): obj
+        for obj in objects
+        if obj["dataset"] == "edithatogo/reimbursement-atlas"
+        and obj["candidate_class"] == "existing_data_projection"
+    }
+    authorized = {
+        (item["dataset"], item["path"]): item
+        for item in attestation["authorized_objects"]
+    }
+    boundaries = attestation.get("boundaries", {})
+    invalid_scope = [
+        len(frozen) != REIMBURSEMENT_MEDALLION_OBJECT_COUNT,
+        len(authorized) != REIMBURSEMENT_MEDALLION_OBJECT_COUNT,
+        set(authorized) != set(frozen),
+        attestation.get("dataset") != "edithatogo/reimbursement-atlas",
+        {obj["revision"] for obj in frozen.values()}
+        != {attestation.get("revision")},
+        attestation.get("public_redistribution_rights_attested") is not True,
+        attestation.get("permission_instrument_existence_and_applicability")
+        != "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction",
+    ]
+    invalid_boundaries = [
+        boundaries.get("frozen_inventory_membership_changed") is not False,
+        boundaries.get("public_release_performed") is not False,
+        boundaries.get("v4_admission_or_promotion_authorized") is not False,
+        boundaries.get("consumer_canaries_authorized") is not False,
+    ]
+    if any(invalid_scope) or any(invalid_boundaries):
+        raise ValueError(
+            "Reimbursement Atlas rights attestation scope mismatch"
+        )
+    result: list[dict[str, Any]] = []
+    for key, item in authorized.items():
+        obj = frozen[key]
+        identity = obj["identity"]
+        if (
+            item.get("sha256") != identity.get("sha256")
+            or item.get("byte_count") != identity.get("byte_count")
+            or obj.get("b1_b2_lineage", {}).get("complete") is not True
+        ):
+            raise ValueError(
+                f"Reimbursement Atlas rights attestation identity mismatch: {key[1]}"
+            )
+        result.append({
+            "dataset": key[0],
+            "revision": obj["revision"],
+            "path": key[1],
+            "sha256": item["sha256"],
+            "byte_count": item["byte_count"],
+            "rights_state": REIMBURSEMENT_MEDALLION_RIGHTS_STATE,
+            "lineage_complete": True,
+            "v4_admission": False,
+            "consumer_canary": False,
+        })
+    return sorted(result, key=itemgetter("dataset", "path"))
+
+
 def _reconcile_pbs_utilisation_authorization(
     root: Path,
     objects: list[dict[str, Any]],
@@ -939,6 +1009,12 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     rights_overrides.update({
         item["path"]: MBS_AUGUST_RIGHTS_STATE for item in august_mbs_objects
     })
+    rights_overrides.update({
+        item["path"]: REIMBURSEMENT_MEDALLION_RIGHTS_STATE
+        for item in reconcile_reimbursement_medallion_attestation(
+            objects, _read(root, REIMBURSEMENT_MEDALLION_RIGHTS_ATTESTATION)
+        )
+    })
     pbs_raw_rights = _reconcile_pbs_raw_permission(
         root,
         objects,
@@ -976,6 +1052,9 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         str(AUGUST_MBS_RIGHTS_ATTESTATION): _sha256(
             root / AUGUST_MBS_RIGHTS_ATTESTATION
         ),
+        str(REIMBURSEMENT_MEDALLION_RIGHTS_ATTESTATION): _sha256(
+            root / REIMBURSEMENT_MEDALLION_RIGHTS_ATTESTATION
+        ),
         **pbs_rights_evidence_inputs,
         **pbs_raw_rights["evidence_inputs"],
         **supplemental_readbacks["pbs_source_archive"]["evidence_inputs"],
@@ -987,7 +1066,7 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         "schema_id": "global-medicines-atlas.australian-m112-current-rights-reconciliation",
         "schema_version": 1,
         "observed_at": observed_at,
-        "purpose": "Reconcile effective rights evidence after the exact MBS Silver attestation, PBS utilisation publication authorization, and CMS HCPCS rights decision without changing object membership or release state.",
+        "purpose": "Reconcile effective rights evidence after exact MBS, Reimbursement Atlas, PBS utilisation, and CMS rights decisions without changing object membership, admission, or release state.",
         "frozen_inventory": {
             "path": str(FROZEN_OVERLAY),
             "sha256": evidence_inputs[str(FROZEN_OVERLAY)],
@@ -1077,6 +1156,24 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
                 "august_2026_six_table_operation_assessment"
             ]["authorization"]["derived_output_authority"],
             "objects": august_mbs_objects,
+        },
+        "reimbursement_atlas_medallion_projections": {
+            "object_count": REIMBURSEMENT_MEDALLION_OBJECT_COUNT,
+            "attestation_path": str(REIMBURSEMENT_MEDALLION_RIGHTS_ATTESTATION),
+            "attestation_sha256": evidence_inputs[
+                str(REIMBURSEMENT_MEDALLION_RIGHTS_ATTESTATION)
+            ],
+            "rights_state": REIMBURSEMENT_MEDALLION_RIGHTS_STATE,
+            "public_redistribution_rights_attested": True,
+            "permission_instrument_existence_and_applicability": (
+                "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction"
+            ),
+            "public_release_performed": False,
+            "v4_admissions": 0,
+            "consumer_canaries": 0,
+            "objects": reconcile_reimbursement_medallion_attestation(
+                objects, _read(root, REIMBURSEMENT_MEDALLION_RIGHTS_ATTESTATION)
+            ),
         },
         "cms_hcpcs_external_reference": cms_reference,
         "boundaries": {

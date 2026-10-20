@@ -4395,9 +4395,31 @@
   requires source-specific approved evidence for derived-output publication.
   Readback: `quality/qualifications/australian-m112-reimbursement-atlas-medallion-rights-ledger-readback-20261020.json`
   (SHA-256 `20f1d99b97ff5e91a75d1c36413176061db451def6fbd19bb644ebf58c4827db`).
-- [ ] Resolve a permitted, source-specific rights basis for the exact derived
-  fields in scope. Until then, keep all 12 objects unresolved and do not infer
-  rights from raw PBS permission or lineage.
+- [x] Record the maintainer-attested public redistribution rights basis for
+  these exact 12 path/digest/byte-count identities, at maintainer direction
+  without locating the instrument. The qualification explicitly preserves
+  admission, consumer-canary, and release-execution gates:
+  `quality/qualifications/australian-reimbursement-atlas-medallion-rights-attestation-20261020.json`.
+  Reconciliation binds complete B1/B2 lineage and unchanged frozen membership;
+  no projection values or source payload bytes were inspected.
+- [ ] Resolve rights for the exact PBS Bronze source projection. Its raw-source
+  redistribution permission and lineage do not grant derived-output rights.
+
+## M-112 Reimbursement Atlas projection rights attestation (2026-10-20)
+
+- [x] Apply the maintainer's statement that exact written permission or another
+  applicable rights instrument exists to the 12 exact Reimbursement Atlas
+  medallion projection identities. Per instruction, the instrument was not
+  located or independently reviewed. The attestation is limited to these
+  frozen paths, digests, and byte counts; public release execution, v4
+  admission, and consumer canaries remain false. The reconciled rights count is
+  1,752 resolved and 7 unresolved, with all 1,759 frozen identities and the
+  three existing admissions/canaries unchanged. Current report:
+  `quality/qualifications/australian-m112-current-rights-reconciliation-20261020-2.json`.
+  Current preflight:
+  `quality/qualifications/australian-m112-rights-release-preflight-20261020-2.json`.
+- [ ] Resolve source-specific rights for the PBS Bronze projection, separately
+  from its raw archive permission.
 
 ## M-112 PBS Bronze projection rights terms readback (2026-10-20)
 
