@@ -4384,3 +4384,17 @@
   is recorded below with the corresponding PR evidence.
 - [ ] Resolve rights for the remaining derived and source-specific objects;
   do not infer derived rights from this raw-source permission.
+
+## M-112 Reimbursement Atlas medallion rights-ledger readback (2026-10-20)
+
+- [x] Freeze the current upstream rights-ledger comparison for the 12 exact
+  Reimbursement Atlas medallion projection identities. At upstream revision
+  `a93516ed416118bc51c1db2b71ab540fa4d0fe52`, none of the 184 current
+  checksum-bound decisions match an exact path/digest pair, and none of the
+  19 standing-scope paths covers these outputs. The current licensing policy
+  requires source-specific approved evidence for derived-output publication.
+  Readback: `quality/qualifications/australian-m112-reimbursement-atlas-medallion-rights-ledger-readback-20261020.json`
+  (SHA-256 `20f1d99b97ff5e91a75d1c36413176061db451def6fbd19bb644ebf58c4827db`).
+- [ ] Resolve a permitted, source-specific rights basis for the exact derived
+  fields in scope. Until then, keep all 12 objects unresolved and do not infer
+  rights from raw PBS permission or lineage.
