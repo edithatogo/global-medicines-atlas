@@ -67,8 +67,8 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
 
     assert report["cohort"]["approved_denominator"] == 1759
     assert report["cohort"]["approved_denominator_changed"] is False
-    assert report["cohort"]["v4_admissions"] == 4
-    assert report["cohort"]["consumer_canaries"] == 4
+    assert report["cohort"]["v4_admissions"] == 5
+    assert report["cohort"]["consumer_canaries"] == 5
     assert report["boundaries"]["v4_admission_performed"] is False
     assert report["boundaries"]["consumer_canary_performed"] is False
     assert report["source_qualification"]["path"] == OVERLAY_REPORT
@@ -86,6 +86,7 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
         "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
         "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
         "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+        "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
     }
     canary = json.loads(
         (
@@ -98,6 +99,21 @@ def test_refresh_counts_only_exact_current_admissions_and_canaries() -> None:
     assert (
         canary["consumer"]["commit"]
         == "8932efd261ff6e4956dfc013702a5db19281ca63"
+    )
+    q1_canary = json.loads(
+        (
+            Path(__file__).resolve().parents[1] / "quality/qualifications/"
+            "australian-m112-v4-demographics-q1-march-consumer-canary-"
+            "20261020-39375704078.json"
+        ).read_bytes()
+    )
+    assert q1_canary["status"] == "admitted_with_consumer_canary"
+    assert q1_canary["consumer_canaries"] == 1
+    assert q1_canary["contract_sha256"] == (
+        "3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce"
+    )
+    assert q1_canary["consumer_canary"]["hosted_workflow"]["run_id"] == (
+        39375704078
     )
     assert (
         canary["object"]["path"]
@@ -183,8 +199,8 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
         "/39368825712"
     )
     assert report["v3_replay_candidate_evidence"]["objects"] == 5
-    assert report["cohort"]["v4_admissions"] == 4
-    assert report["cohort"]["consumer_canaries"] == 4
+    assert report["cohort"]["v4_admissions"] == 5
+    assert report["cohort"]["consumer_canaries"] == 5
 
 
 def test_v3_replay_receipt_must_match_the_pinned_object(
@@ -241,7 +257,7 @@ def test_current_discovery_receipts_bind_all_candidates_without_rights_promotion
     assert report["discovery_candidate_evidence"]["state"] == (
         "candidate_receipt_available_unbound_for_16_of_16"
     )
-    assert report["cohort"]["v4_admissions"] == 4
+    assert report["cohort"]["v4_admissions"] == 5
     for candidate in report["objects"]:
         discovery = candidate["discovery_candidate_receipt"]
         assert discovery["contract_role_state"] == (
@@ -356,8 +372,8 @@ def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
         for item in source_candidates
     )
     assert report["source_semantics_candidate_evidence"]["objects"] == 13
-    assert report["cohort"]["v4_admissions"] == 4
-    assert report["cohort"]["consumer_canaries"] == 4
+    assert report["cohort"]["v4_admissions"] == 5
+    assert report["cohort"]["consumer_canaries"] == 5
 
 
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
