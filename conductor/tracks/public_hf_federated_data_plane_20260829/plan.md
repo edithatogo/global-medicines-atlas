@@ -703,9 +703,13 @@
   the v4 role qualification. The candidate role set now has six v3 replay/cache
   receipts; the admitted count remains five and the approved 1,759-path
   denominator is unchanged.
-- [~] Bind the complete exact Q2 May role closure into a live v4.1 contract,
-  independently verify admission, then run the bounded hosted consumer canary
-  and preserve its exact readback receipt before counting the object admitted.
+- [x] Bind the complete exact Q2 May role closure into a live v4.1 contract
+  and verify admission using the pinned trusted profile. Contract digest
+  `cd7ccdce266d1d42fa658abe4b097c207627d80943b01c198f7d844c16241152`
+  closes 12 roles with 10 verified receipts; source-native schema stays
+  explicitly unqualified. The admission record is pending its consumer canary.
+- [~] Run the bounded hosted consumer canary on the merged exact-main contract
+  and retain the exact consumer readback before counting the canary.
 - [x] Add Q2 May's exact frozen identity to the bounded v4 contract builder
   and hosted consumer-canary input. The two missing-target regressions failed
   first; the affected admission, role, and rights reconciliation tests then
