@@ -21,6 +21,7 @@ from scripts.qualify_m112_v4_july2016_admission import (
     TARGET_SHA256,
     build_contract,
     expected_cache_bytes,
+    main,
     validate_contract,
 )
 
@@ -212,6 +213,32 @@ def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
     assert report["admission"]["path"] == CSV_PATH
     assert report["contract_sha256"] == (
         "d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7"
+    )
+
+
+def test_check_validates_immutable_admitted_contract_without_rebuilding(
+    tmp_path: Path,
+) -> None:
+    schema_path = tmp_path / "contracts/medallion/v4.1/federation.schema.json"
+    contract_path = (
+        tmp_path
+        / "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json"
+    )
+    schema_path.parent.mkdir(parents=True)
+    contract_path.parent.mkdir(parents=True)
+    schema_path.write_bytes(
+        (ROOT / "contracts/medallion/v4.1/federation.schema.json").read_bytes()
+    )
+    contract_path.write_bytes(
+        (
+            ROOT
+            / "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json"
+        ).read_bytes()
+    )
+
+    assert (
+        main(["--root", str(tmp_path), "--target-path", CSV_PATH, "--check"])
+        == 0
     )
 
 

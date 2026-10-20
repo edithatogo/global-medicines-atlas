@@ -647,3 +647,25 @@
   merged qualification on `main`. This lineage checkpoint does not complete
   rights/release evidence, v4 admission, graph screening/calibration, recovery,
   or consumer canaries; M-112 remains unaccepted until those gates pass.
+
+## M-112 July group CSV consumer canary (2026-10-20)
+
+- [x] Attempt the bounded exact-main consumer workflow for the already-admitted
+  `raw/mbs/utilisation/group/mbs-group-2016-july.csv` contract on main commit
+  `537ec7aee25f2677a30d5f72bfb473445ba6fd43` (run
+  [39371086605](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39371086605)).
+  The workflow stopped before the reader because `--check` rebuilt mutable
+  candidate-role URLs and rejected the exact immutable contract digest.
+- [x] Correct the check path to validate the persisted canonical contract,
+  bind its exact target identity, and compare receipt-role digests against the
+  qualified local evidence. Keep the already-admitted contract bytes and digest
+  unchanged. Validate the precise Q1 replay idempotency false positive without
+  weakening full-history secret scanning.
+- [x] Run affected M-112 tests (44 passed), Gitleaks allowlist tests (4 passed),
+  local full-history Gitleaks scan (0 findings across 7 PR commits), Ruff,
+  formatting, exact contract validation, and local receipt closure (12 roles,
+  10 unique verified receipts; original contract digest unchanged).
+- [ ] Merge the scoped correction after exact-head hosted checks, then rerun
+  the same bounded canary on the exact current `main` head. The July group CSV
+  remains admitted with zero consumer canaries until the hosted reader receipt
+  passes and is recorded.

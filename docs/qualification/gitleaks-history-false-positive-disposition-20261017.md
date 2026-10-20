@@ -80,3 +80,10 @@ PR #1225 adds two findings for the Q3 2016 demographics replay's deterministic
 the replay planner from the partition and snapshot identities; it is not used
 for authentication or authorization. The allowlist includes only this exact
 field/value pair. Changed values and other field names remain detectable.
+
+PR #1232 adds two findings for the Q1 2016 demographics replay's deterministic
+`idempotency_key` in its plan and execution receipt. Both records match, and
+the value recomputes from the replay planner's partition and snapshot identity
+formula. It is not used for authentication or authorization. The allowlist
+includes only this exact field/value pair; changed values and other field names
+remain detectable.
