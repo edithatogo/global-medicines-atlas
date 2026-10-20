@@ -41,6 +41,24 @@ PBS_SOURCE_ARCHIVE_ACQUISITION = Path(
     "quality/bronze/imported-acquisitions/au-pbs/"
     "712fd306658de6db5ae0aaa2be39d554e5a18c306987cc614152efbed53f30f4.json"
 )
+PBS_RAW_PERMISSION = (
+    QUAL / "reimbursement-atlas-pbs-raw-permission-20260831.json"
+)
+PBS_PROJECTED_LINEAGE = (
+    QUAL / "australian-m112-pbs-projected-b1-b2-lineage-20261019.json"
+)
+PBS_ARCHIVE_LINEAGE = (
+    QUAL / "australian-m112-pbs-pdf-archive-lineage-20261019.json"
+)
+PBS_RAW_PERMISSION_SHA256 = (
+    "0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098"
+)
+PBS_RAW_PERMISSION_REVISION = "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
+PBS_RAW_PERMISSION_OBJECT_COUNT = 1708
+M112_CURRENT_ADMISSION_COUNT = 3
+M112_CURRENT_CANARY_COUNT = 3
+M112_HISTORICAL_CANARY_RUN_ID = 39330593204
+M112_HISTORICAL_CANARY_BYTES = 205885063
 PBS_DECISION_0009 = Path(
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md"
 )
@@ -49,6 +67,13 @@ MBS_JULY2016_CANARY_RECEIPTS = (
     / "australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json",
     QUAL
     / "australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json",
+)
+M112_ROLE_QUALIFICATION = QUAL / (
+    "australian-m112-v4-contract-role-evidence-qualification-20261020.json"
+)
+M112_HISTORICAL_CANARY = QUAL / (
+    "australian-m112-v4-historical-1993-2015-consumer-canary-"
+    "20261020-39330593204.json"
 )
 M108_ASSESSMENT = QUAL / "australian-m108-derived-products-20261017.json"
 OUTPUT = QUAL / "australian-m112-current-rights-reconciliation-20261019.json"
@@ -79,6 +104,7 @@ MBS_JULY2016_CONTRACT_SHA256 = (
     "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e"
 )
 PBS_UTILISATION_RIGHTS_STATE = "maintainer_attested_dataset_publication_permission_with_vocabulary_exclusion"
+PBS_RAW_RIGHTS_STATE = "owner_attested_pbs_raw_redistribution_permission"
 PBS_UTILISATION_OBJECT_COUNT = 6
 CMS_SOURCE_ID = "us_cms_hcpcs_level_ii"
 CMS_SOURCE_VERSION = "us_cms_hcpcs_level_ii_2026_07"
@@ -95,6 +121,7 @@ RIGHTS_RESOLVED_STATES = {
     "maintainer_attested_exact_public_release_permission_for_silver_object",
     MBS_AUGUST_RIGHTS_STATE,
     PBS_UTILISATION_RIGHTS_STATE,
+    PBS_RAW_RIGHTS_STATE,
 }
 
 
@@ -236,6 +263,7 @@ def _reconcile_pbs_source_archive_publication(
             "sha256": PBS_SOURCE_ARCHIVE_SHA256,
             "byte_count": PBS_SOURCE_ARCHIVE_BYTES,
             "exact_object_publication_authorized": True,
+            "rights_state": PBS_RAW_RIGHTS_STATE,
             "authorization_id": "decision-0009",
             "publication_intent": publication["publication_intent_comment"],
             "publication_intent_workflow_run": publication[
@@ -249,7 +277,7 @@ def _reconcile_pbs_source_archive_publication(
                 "hosted_verification_revision"
             ],
             "current_digest_matches_hosted_verification": True,
-            "upstream_redistribution_terms": "unknown",
+            "upstream_redistribution_terms": "owner-attested raw redistribution permission; publisher document not verified",
             "historical_acquisition_rights_state": acquisition["rights_state"],
             "v4_admission": False,
             "release_performed_by_this_reconciliation": False,
@@ -261,8 +289,194 @@ def _reconcile_pbs_source_archive_publication(
                 "v4_admission": projection["v4_admission"],
                 "derived_rights_inferred_from_source_permission": False,
             },
-            "rights_conclusion_made": False,
+            "rights_conclusion_made": True,
+            "rights_scope": "exact raw PBS source archive object only",
+            "derived_projection_rights_inferred": False,
         },
+        "evidence_inputs": hashes,
+    }
+
+
+def _reconcile_pbs_raw_permission(
+    root: Path,
+    objects: list[dict[str, Any]],
+    permission: dict[str, Any],
+    projected: dict[str, Any],
+    archived: dict[str, Any],
+) -> dict[str, Any]:
+    """Apply the owner-attested permission to exact, lineaged PBS raw objects."""
+    permission_hash = _sha256(root / PBS_RAW_PERMISSION)
+    invalid_permission = [
+        permission_hash != PBS_RAW_PERMISSION_SHA256
+        or permission.get("permission_status") != "active"
+        or permission.get("revoked_at") is not None
+        or permission.get("source_id") != "au_pbs"
+        or permission.get("decision") != "allow_raw_redistribution"
+        or permission.get("permission_basis") != "owner_attestation"
+        or permission.get("per_file_owner_approval_required") is not False
+        or permission.get("publisher_permission_document_verified") is not False
+        or permission.get("licence_identifier") is not None
+        or permission.get("publication_state") != "not_asserted"
+        or "Raw PBS schedule PDFs and machine-readable schedule packages"
+        not in permission.get("scope", "")
+    ]
+    if any(invalid_permission):
+        raise ValueError("PBS raw redistribution permission did not reconcile")
+
+    frozen = {
+        (obj["dataset"], obj["path"]): obj
+        for obj in objects
+        if obj["candidate_class"] == "raw_source_payload"
+        and obj["dataset"]
+        in {"edithatogo/reimbursement-atlas", PBS_SOURCE_ARCHIVE_DATASET}
+    }
+    items: list[dict[str, Any]] = []
+    for item in projected["objects"]:
+        source_id = item.get("producer_b1", {}).get("source_id")
+        source_url = cast(
+            "str", item.get("producer_b1", {}).get("source_locator", "")
+        )
+        local = item.get("local_records", {})
+        projected_checks: list[bool] = [
+            item.get("dataset")
+            not in {
+                "edithatogo/reimbursement-atlas",
+                PBS_SOURCE_ARCHIVE_DATASET,
+            },
+            item.get("lineage_complete") is not True,
+            item.get("v4_admission") is not False,
+            item.get("consumer_canary") is not False,
+            source_id != "au_pbs",
+            urlsplit(source_url).hostname != "www.pbs.gov.au",
+            not urlsplit(source_url).path.startswith("/publication/schedule/"),
+            item.get("content_sha256")
+            != item
+            .get("producer_b2", {})
+            .get("evidence_id", "")
+            .removeprefix("evidence:sha256:"),
+            item.get("content_sha256")
+            != item
+            .get("producer_b2", {})
+            .get("immutable_locator", "")
+            .removeprefix("sha256:"),
+            not all(
+                local.get(key)
+                for key in (
+                    "acquisition_event_path",
+                    "b2_manifest_path",
+                    "landed_admission_path",
+                )
+            ),
+        ]
+        obj = frozen.get((item.get("dataset"), item.get("path")))
+        if (
+            obj is None
+            or obj["identity"]["sha256"] != item.get("content_sha256")
+            or obj["identity"]["byte_count"] != item.get("byte_count")
+        ):
+            projected_checks.append(True)
+        if any(projected_checks):
+            raise ValueError(
+                f"PBS raw redistribution permission lineage mismatch: {item.get('path')}"
+            )
+        items.append({
+            "dataset": item["dataset"],
+            "path": item["path"],
+            "sha256": item["content_sha256"],
+            "byte_count": item["byte_count"],
+            "source_locator": source_url,
+            "lineage_complete": True,
+            "v4_admission": False,
+            "consumer_canary": False,
+            "format": Path(item["path"]).suffix.removeprefix(".").lower(),
+        })
+
+    for item in archived["objects"]:
+        receipt = item["producer_archive_variant_receipt"]
+        source_url = cast("str", receipt["official_source_url"])
+        obj = frozen.get((item["dataset"], item["path"]))
+        archived_checks: list[bool] = [
+            item.get("lineage_complete", True) is not True,
+            item.get("v4_admission") is not False,
+            item.get("consumer_canary") is not False,
+            receipt.get("raw_redistribution_status")
+            != "blocked_pending_explicit_permission",
+            urlsplit(source_url).hostname != "www.pbs.gov.au",
+            not urlsplit(source_url).path.startswith("/publication/schedule/"),
+            not urlsplit(source_url).path.endswith(".pdf"),
+            obj is None
+            or obj["identity"]["sha256"] != item["content_sha256"]
+            or obj["identity"]["byte_count"] != item["byte_count"],
+        ]
+        if any(archived_checks):
+            raise ValueError(
+                f"PBS archived raw permission lineage mismatch: {item.get('path')}"
+            )
+        items.append({
+            "dataset": item["dataset"],
+            "path": item["path"],
+            "sha256": item["content_sha256"],
+            "byte_count": item["byte_count"],
+            "source_locator": source_url,
+            "lineage_complete": True,
+            "v4_admission": False,
+            "consumer_canary": False,
+            "format": "pdf",
+        })
+
+    expected = {(dataset, path) for dataset, path in frozen}
+    observed = {(item["dataset"], item["path"]) for item in items}
+    if (
+        len(items) != PBS_RAW_PERMISSION_OBJECT_COUNT
+        or observed != expected
+        or len(observed) != len(items)
+    ):
+        raise ValueError(
+            "PBS raw redistribution permission did not bind exact frozen membership"
+        )
+    hashes = {
+        str(path): _sha256(root / path)
+        for path in (
+            PBS_RAW_PERMISSION,
+            PBS_PROJECTED_LINEAGE,
+            PBS_ARCHIVE_LINEAGE,
+        )
+    }
+    return {
+        "source_owner_permission": {
+            key: permission.get(key)
+            for key in (
+                "permission_status",
+                "source_id",
+                "decision",
+                "permission_basis",
+                "scope",
+                "per_file_owner_approval_required",
+                "publisher_permission_document_verified",
+                "licence_identifier",
+                "publication_state",
+            )
+        },
+        "permission_repository": "edithatogo/reimbursement-atlas",
+        "permission_revision": PBS_RAW_PERMISSION_REVISION,
+        "permission_path": "data/licence_review/pbs_raw_permission.json",
+        "permission_sha256": PBS_RAW_PERMISSION_SHA256,
+        "permission_snapshot_sha256": permission_hash,
+        "rights_state": PBS_RAW_RIGHTS_STATE,
+        "object_count": len(items),
+        "dataset_counts": dict(
+            sorted(Counter(item["dataset"] for item in items).items())
+        ),
+        "format_counts": dict(
+            sorted(Counter(item["format"] for item in items).items())
+        ),
+        "b1_b2_lineage_complete": True,
+        "all_objects_remain_deferred": True,
+        "v4_admissions": 0,
+        "consumer_canaries": 0,
+        "external_publication_performed": False,
+        "project_publication_authorized_by_this_record": False,
+        "objects": sorted(items, key=itemgetter("dataset", "path")),
         "evidence_inputs": hashes,
     }
 
@@ -346,11 +560,70 @@ def _reconcile_m112_canary_readback(
             "workflow_commit": workflow["commit"],
         })
 
+    role_qualification = _read(root, M112_ROLE_QUALIFICATION)
+    cohort = role_qualification["cohort"]
+    current_admissions = role_qualification["current_admission_evidence"]
+    if (
+        cohort["v4_admissions"] != M112_CURRENT_ADMISSION_COUNT
+        or cohort["consumer_canaries"] != M112_CURRENT_CANARY_COUNT
+        or len(current_admissions) != M112_CURRENT_ADMISSION_COUNT
+        or len({item["path"] for item in current_admissions})
+        != M112_CURRENT_ADMISSION_COUNT
+    ):
+        raise ValueError(
+            "current M-112 role qualification counts did not reconcile"
+        )
+    input_hashes[str(M112_ROLE_QUALIFICATION)] = _sha256(
+        root / M112_ROLE_QUALIFICATION
+    )
+    historical_canary = _read(root, M112_HISTORICAL_CANARY)
+    admission = historical_canary["admission"]
+    canary = historical_canary["consumer_canary"]
+    workflow = canary["hosted_workflow"]
+    canary_checks: list[bool] = [
+        historical_canary["approved_denominator"] != FROZEN_OBJECT_COUNT,
+        historical_canary["admissions"] != 1,
+        historical_canary["consumer_canaries"] != 1,
+        canary["status"] != "passed",
+        canary["boundaries"]["admission_used"] is not True,
+        canary["boundaries"]["admission_performed"] is not False,
+        canary["boundaries"]["public_dataset_mutated"] is not False,
+        canary["boundaries"]["source_payload_bytes_retained"] is not False,
+        canary["boundaries"]["source_values_or_rows_included"] is not False,
+        workflow["repository"] != "edithatogo/global-medicines-atlas",
+        workflow["run_id"] != M112_HISTORICAL_CANARY_RUN_ID,
+        workflow["commit"] != "3149a5533ecb1b721d9deda66311d4abc94ee3d1",
+        admission["dataset"] != "edithatogo/australian-mbs-utilisation-archive",
+        admission["path"]
+        != "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        admission["sha256"]
+        != "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+        admission["byte_count"] != M112_HISTORICAL_CANARY_BYTES,
+    ]
+    if any(canary_checks):
+        raise ValueError("historical M-112 canary receipt did not reconcile")
+    input_hashes[str(M112_HISTORICAL_CANARY)] = _sha256(
+        root / M112_HISTORICAL_CANARY
+    )
+    runs.append({
+        "receipt_path": str(M112_HISTORICAL_CANARY),
+        "receipt_sha256": input_hashes[str(M112_HISTORICAL_CANARY)],
+        "run_id": workflow["run_id"],
+        "run_url": workflow["run_url"],
+        "workflow_commit": workflow["commit"],
+    })
+
     return {
         "record": {
-            "admitted_object_count": 1,
-            "canaried_object_count": 1,
-            "deferred_object_count": FROZEN_OBJECT_COUNT - 1,
+            "admitted_object_count": cohort["v4_admissions"],
+            "canaried_object_count": cohort["consumer_canaries"],
+            "deferred_object_count": FROZEN_OBJECT_COUNT
+            - cohort["v4_admissions"],
+            "current_role_qualification": {
+                "path": str(M112_ROLE_QUALIFICATION),
+                "sha256": _sha256(root / M112_ROLE_QUALIFICATION),
+                "admitted_objects": current_admissions,
+            },
             "object": {
                 "dataset": MBS_JULY2016_CANARY_DATASET,
                 "path": MBS_JULY2016_CANARY_PATH,
@@ -666,8 +939,17 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
     rights_overrides.update({
         item["path"]: MBS_AUGUST_RIGHTS_STATE for item in august_mbs_objects
     })
+    pbs_raw_rights = _reconcile_pbs_raw_permission(
+        root,
+        objects,
+        _read(root, PBS_RAW_PERMISSION),
+        _read(root, PBS_PROJECTED_LINEAGE),
+        _read(root, PBS_ARCHIVE_LINEAGE),
+    )
+    rights_overrides.update({
+        item["path"]: PBS_RAW_RIGHTS_STATE for item in pbs_raw_rights["objects"]
+    })
     rights_summary = _reconcile_object_rights(objects, rights_overrides)
-    unresolved_count = FROZEN_OBJECT_COUNT - rights_summary["resolved_count"]
 
     if len(august_mbs_objects) != AUGUST_PROJECTION_COUNT:
         raise ValueError(
@@ -695,6 +977,7 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
             root / AUGUST_MBS_RIGHTS_ATTESTATION
         ),
         **pbs_rights_evidence_inputs,
+        **pbs_raw_rights["evidence_inputs"],
         **supplemental_readbacks["pbs_source_archive"]["evidence_inputs"],
         **supplemental_readbacks["m112_gate"]["evidence_inputs"],
         str(M108_ASSESSMENT): _sha256(root / M108_ASSESSMENT),
@@ -720,7 +1003,8 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
         },
         "effective_m112_rights": {
             "resolved_object_count": rights_summary["resolved_count"],
-            "unresolved_object_count": unresolved_count,
+            "unresolved_object_count": FROZEN_OBJECT_COUNT
+            - rights_summary["resolved_count"],
             "state_counts": rights_summary["counts"],
             "rights_evidence_does_not_imply_admission": True,
         },
@@ -765,6 +1049,11 @@ def build_report(root: Path, *, observed_at: str) -> dict[str, Any]:
             "unlicensed_vocabulary_presence_reviewed": False,
             "full_object_release_requires_exclusion_review": True,
             "objects": pbs_utilisation_objects,
+        },
+        "pbs_raw_redistribution_permission": {
+            key: value
+            for key, value in pbs_raw_rights.items()
+            if key != "evidence_inputs"
         },
         "pbs_source_archive_exact_publication": supplemental_readbacks[
             "pbs_source_archive"
