@@ -718,6 +718,10 @@
   reconciliation from the hosted canary readback. Current M-112 totals are six
   unique v4 admissions and six canaries out of the unchanged 1,759-path
   denominator; 1,753 remain unadmitted.
+- [x] Bind the Q2 admission/canary receipt digest, exact hosted run and main
+  commit, contract/object identity, consumer digest results, and no-retention
+  boundaries into the current-rights reconciliation. A fail-closed regression
+  now rejects a missing or malformed Q2 consumer-canary record.
 - [x] Add Q2 May's exact frozen identity to the bounded v4 contract builder
   and hosted consumer-canary input. The two missing-target regressions failed
   first; the affected admission, role, and rights reconciliation tests then

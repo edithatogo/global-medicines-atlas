@@ -160,6 +160,7 @@
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
     "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0",
     "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "623585d61870f5e1a0ed7a3abb826adf94404e618da791b82f763741dd2267d9",
+    "quality/qualifications/australian-m112-v4-demographics-q2-may-admission-qualification-20261020.json": "ea8f2c9164b8f12cf06577b6c985ac52be69fc2c79035b610dbdec96c06f6b5d",
     "quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json": "543195f53559812cbcb408c16083f9fe5feb775a69b37d43ee8cebcea809bc8c",
     "quality/qualifications/australian-m112-v4-historical-1993-2015-consumer-canary-20261020-39330593204.json": "b10a7f795014e0b6ebc975330062bb9e20dd13d66996a09b1a5a69c4b438803f",
     "quality/qualifications/australian-m112-v4-july2016-consumer-canary-20261020-39300224557.json": "af870552004e50ab5174fc535c9e5bbefe59f6edc4d03c830ce40129adf22b6a",
@@ -335,11 +336,18 @@
         "run_id": 39356792827,
         "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39356792827",
         "workflow_commit": "cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a"
+      },
+      {
+        "receipt_path": "quality/qualifications/australian-m112-v4-demographics-q2-may-admission-qualification-20261020.json",
+        "receipt_sha256": "ea8f2c9164b8f12cf06577b6c985ac52be69fc2c79035b610dbdec96c06f6b5d",
+        "run_id": 39419974066,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39419974066",
+        "workflow_commit": "516d56e8fd5274b37d65a2192257a41e7cb8cb94"
       }
     ],
     "unique_object_counts_are_deduplicated_across_runs": true
   },
-  "observed_at": "2026-10-20T12:24:19Z",
+  "observed_at": "2026-10-20T12:42:15Z",
   "pbs_raw_redistribution_permission": {
     "all_objects_remain_deferred": true,
     "b1_b2_lineage_complete": true,
