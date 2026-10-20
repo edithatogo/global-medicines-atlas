@@ -123,7 +123,7 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert report["boundaries"]["all_remaining_deferrals_preserved"] is True
     assert report["boundaries"]["deferred_objects"] == 1753
     assert report["boundaries"]["v4_admissions"] == 6
-    assert report["boundaries"]["consumer_canaries"] == 5
+    assert report["boundaries"]["consumer_canaries"] == 6
     assert report["boundaries"]["source_payload_bytes_read"] is False
 
 
@@ -286,7 +286,7 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
     readback = report["m112_admission_canary_readback"]
 
     assert readback["admitted_object_count"] == 6
-    assert readback["canaried_object_count"] == 5
+    assert readback["canaried_object_count"] == 6
     assert any(
         run["run_id"] == 39356792827
         for run in readback["successful_workflow_runs"]
