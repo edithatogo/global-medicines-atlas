@@ -5301,3 +5301,19 @@ profile applies to this changed workflow behavior after the code is frozen.
 PR #1258 merged as `ebd4e300` after all 40 reported checks passed. Exact-main
 Q1 run `39627539043` is active and quarterly CSV run `39627746801` is queued;
 source qualification remains pending their actual final artifacts.
+
+### Q1 exact-source qualification readback and group hosted route (2026-10-22)
+
+- [x] Retain the aggregate artifact from successful exact-main Q1 run
+  `39627539043`: both source objects have complete primary-field parity,
+  deterministic rebuild, independent Parquet restore and DuckDB checks.
+  Workbook 545,074 rows, 58 literal Unknown ages and 76,287 lossless-decimal
+  exceptions remain visible; CSV 545,070 rows. No benefit equivalence,
+  patient-rate support, new rights conclusion or output admission follows.
+- [~] Add the existing July group CSV qualifier to the registered workflow:
+  exact B1/B2/frozen identity, 164,543-row denominator, repeat build,
+  independent restore and bounded DuckDB checks; aggregate artifact only.
+- [ ] Complete group increment review, full validation, protected CI and
+  exact-main hosted execution. Quarterly run `39627746801` remains queued.
+- [ ] Continue remaining MBS families and eras, PBS domain harmonisation,
+  exact output rights/admission and consumer delivery within frozen scope.

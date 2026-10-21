@@ -182,6 +182,14 @@
     "source_path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
     "source_records_in_prior_receipt": 164543
   },
+  "group_native_candidate_qualification": {
+    "candidate_only": true,
+    "expected_data_records": 164543,
+    "implemented": true,
+    "new_sources": 0,
+    "output_admissions": 0,
+    "real_source_execution_completed": false
+  },
   "historical_preflight": {
     "path": "quality/qualifications/australian-m112-rights-release-preflight-20261019.json",
     "preserved_unchanged": true,
@@ -192,10 +200,10 @@
   "inputs": {
     ".github/workflows/mbs-demographic-csv-candidates.yml": "f3164247ef641690400e4c23a3f6e84367e8e4a04c374d8500007348518e5d25",
     ".github/workflows/mbs-q1-native-silver-candidate.yml": "2dc5eae8e45af9e04af767955ad10bf5396cbc89624ad965062f91ca1a674378",
-    ".github/workflows/mbs-q1-source-meaning-diagnostics.yml": "c4061b3bb5651e24de3686f8f6f9a330aba803d65152461c20ab49147b0c159f",
+    ".github/workflows/mbs-q1-source-meaning-diagnostics.yml": "1bd1b10eb9472e0a9b7933b6fe40f54a545c6a04f086bb49ae6137cd3a237cc0",
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
     "conductor/tracks.md": "35bec621ed7c7bd888b7c9a17b9397a369b2ea99dc86bafb7f48d8e3deb2db67",
-    "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md": "cf6fb3807bc1aa524b154c41d48e50dbd62227c2117088a64bf68d66a891cfa8",
+    "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md": "aa83ef9c5347043a0557219b3b8a31efe32cbc7fc848154d541dda3ee869a0c3",
     "conductor/tracks/australian_benefits_silver_gold_20260829/spec.md": "dac6f99dc5388e0fe35e9e6e217482171a5319ee5fcf9a9be16850e840243ba4",
     "conductor/tracks/bronze_medallion_completion_20260819/plan.md": "fed9ea6291e19701f812f65c6823a16f03fee10fe759fdd119b76e34fac856d8",
     "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
@@ -241,6 +249,7 @@
     "quality/qualifications/cms-hcpcs-rights-review-20261019.json": "577e69b0c4d0fa9b9b4c8618161320168e571412b7fbf5060c3467e3fde7a608",
     "quality/qualifications/frontier-frozen-matcher-calibration-20261021.json": "1c7912641b5f8cd2ebb514ac5a00b44d9c4a1cb03ee21d318bc143d3ff58be37",
     "quality/qualifications/mbs-p7-storage-revalidation-20261022-39618581414.json": "ad4413f9b8ee3130ce1f99edc5646768ac3d625c6aa52705ad405a281ac719fe",
+    "quality/qualifications/mbs-q1-native-silver-qualification-20261022-39627539043.json": "e0d22895cfd4a8e159c22273aee7856426f0063129607bd1e879272880b68110",
     "quality/qualifications/mbs-q1-source-meaning-diagnostics-20261021-39590928303.json": "057e164ec03445f480ec8156469682f855062c3771a2b654f8f59ff06b3ff69e",
     "quality/qualifications/reimbursement-atlas-pbs-raw-permission-20260831.json": "0817123492cfe20858f86b3ec14c92539081a647b17dd6933d2d2ff8c266d098",
     "quality/qualifications/silver-source-meaning-resolution-20261021-hosted.json": "87927eb928fec56facc1fa90b2a73fcf4f162ecb892c017ce2b4aa12db59ae6c",
@@ -253,11 +262,12 @@
     "schemas/silver-field-semantics-v1.json": "a37d670d30c987fc4145cd574f619733c2c95e4856ff865628e290a0f5f6fe35",
     "scripts/qualify_frozen_matcher_calibration.py": "ccbb440829b6b0b4082807b01d500a6d768fc8bb47c39f96720bb29b08c64155",
     "scripts/qualify_mbs_demographic_csv_cohort.py": "d610eedabab6a2bdf79442f03aeafc50dd815ad2e6beb6eaebcfc833ca44d86f",
+    "scripts/qualify_mbs_group_native_silver.py": "05b0dd73b928cbc27c14510e49a240348839bf080e3e46f876e1805e1be494e5",
     "scripts/qualify_mbs_q1_native_silver.py": "8cb01d883d787045e69e85a281c1cf01bae35ca7b30a917f377c8270ce3a47a3",
     "scripts/qualify_mbs_q1_source_meanings.py": "91767da81e233748170a77f9834e348147e668ba428d973f11dc9389a4be879b",
     "scripts/qualify_mbs_q1hr_context_measure_diagnostics.py": "9bc7213747ae192e6964fd3fd151576e287fa2640c118674d45eb3fee70179bd",
     "scripts/reconcile_m112_current_rights_state.py": "1741136ccb869dc6a10351a29ef91bc17fa988c5bdf5ca9894004ccc4b8a93ef",
-    "scripts/test_goblin.py": "ad86bee59c248f1f143f939a907158fe95a6c4c4ec3936dec6908fc9830f3818",
+    "scripts/test_goblin.py": "90152e79678377a81e67c789945d47112cd14dfe6b8155b3bbef2dbf157035c6",
     "src/global_medicines_atlas/adapters/au_mbs_workbook.py": "67715c5ee50fbbe91b6d0331572f671cae1f80768321f572d5fcef1b22ea12a6",
     "src/global_medicines_atlas/mbs_demographic_csv_cohort.py": "68ffdc1fe09393a30169c08c592a87f28d82addfee492c2a6f0e716fd9641566",
     "src/global_medicines_atlas/mbs_demographic_extraction.py": "1078a46c6033dc578cf1eb7ece725083dead052fd1ce85c9e6b47b829bf07b36",
@@ -278,13 +288,14 @@
     "tests/test_mbs_group_package.py": "125a89c64130eb9bffbe58b038caf27bc7b348ed75ce70ef726006906502b93e",
     "tests/test_mbs_group_silver.py": "a6cb71e5403b1c081cc8c57be22d43cd51cb3b913eb3afce6c6958da11eb7b30",
     "tests/test_mbs_patient_rates.py": "6231183855a983890085b4b2bf9196335111305e20d7c1662489027c827e8c8f",
-    "tests/test_mbs_q1_native_silver.py": "4c596934ff1cbe04bcb2b98d785338446825f86ec8b11a0d9063a00bb629931a",
+    "tests/test_mbs_q1_native_silver.py": "2c91655fad957c74b31acfef52383e6d61c3823a47c0055db1eac836f4bccd32",
     "tests/test_mbs_q1_source_meanings.py": "5645126294c95c8485476689218c26a72647d81bf7f55ee6940522ea6d79b303",
     "tests/test_mbs_q1hr_context_measure_diagnostics.py": "7d0013a86cbe68fe5701704ebb8b8245ba7a1e92a6f6910d056b7d54d3b64a65",
     "tests/test_mbs_utilisation_numeric_policy.py": "5d2750f5544d66c94b29120b2860756101d07a72f9bac641e5e61cbff267f81a",
     "tests/test_mbs_workbook_values.py": "1d925be77899467b37635f4f864d20ae4271d3be7da2ef46ac1251b53bed2ee5",
     "tests/test_qualify_m112_v4_publication_roles.py": "a3cc317265c21a9fd62b42d1c3a70429f0db8b6a24fe38ca295d16fc1d063dab",
     "tests/test_qualify_mbs_demographic_csv_cohort.py": "5512c4b5f57acfe5acd60382fa8f09219db0086d55ee71901122ff9d5629fbaa",
+    "tests/test_qualify_mbs_group_native_silver.py": "8b2540b65d9b21251e0ff1765d3499fc1393dfa62d973c1a98730f0319de3c63",
     "tests/test_reconcile_m112_current_rights_state.py": "5a012c669291b518240ba772d0dc7430b8f262797d82a7156d97f758a4a37905",
     "tests/test_silver_field_semantics.py": "2354032c21a7d275222458d754df72ae21ee17e09708c5f93015e5f0e9c8cab1"
   },
@@ -19571,13 +19582,23 @@
     "workflow_completed_at": "2026-10-21T09:14:48Z",
     "workflow_run_id": 39575404598
   },
+  "q1_native_silver_exact_main_readback": {
+    "benefit_equivalence_established": false,
+    "candidate_only": true,
+    "output_admissions": 0,
+    "path": "quality/qualifications/mbs-q1-native-silver-qualification-20261022-39627539043.json",
+    "run_id": 39627539043,
+    "sha256": "e0d22895cfd4a8e159c22273aee7856426f0063129607bd1e879272880b68110",
+    "workflow_commit": "ebd4e300f4aafc809fedfe4b1214fdbe44b381ca"
+  },
   "q1_native_silver_hosted_qualifier": {
+    "executed_workflow": ".github/workflows/mbs-q1-source-meaning-diagnostics.yml",
     "implemented": true,
     "new_admissions": 0,
     "new_federated_canaries": 0,
     "new_sources": 0,
     "publication": false,
-    "real_source_execution_completed": false,
+    "real_source_execution_completed": true,
     "workflow": ".github/workflows/mbs-q1-native-silver-candidate.yml"
   },
   "q1_source_extraction_package": {
@@ -19586,8 +19607,8 @@
     "new_admissions": 0,
     "new_canaries": 0,
     "new_sources": 0,
-    "real_source_qualified": false,
-    "scope": "candidate local derivative implementation; all source meanings retained unresolved"
+    "real_source_qualified": true,
+    "scope": "exact Q1 candidate native preservation and restore qualified; domain meanings remain unresolved; output admission separate"
   },
   "q2_admission": {
     "admission_performed": true,
@@ -19642,16 +19663,24 @@
   },
   "recorded_at": "2026-10-21T13:21:00.041436+00:00",
   "registered_native_qualification_route": {
+    "completed_modes": [
+      "native-silver"
+    ],
     "modes": [
       "meaning-diagnostics",
       "native-silver",
-      "quarterly-csv"
+      "quarterly-csv",
+      "group-csv"
     ],
-    "native_source_execution_completed": false,
+    "native_source_execution_completed": true,
     "new_admissions": 0,
     "new_sources": 0,
     "path": ".github/workflows/mbs-q1-source-meaning-diagnostics.yml",
     "publication": false,
+    "unfinished_modes": [
+      "quarterly-csv",
+      "group-csv"
+    ],
     "workflow_id": 391616583
   },
   "reimbursement_atlas_medallion_projections": {
