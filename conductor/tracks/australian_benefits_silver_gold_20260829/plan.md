@@ -4870,7 +4870,7 @@ not itself perform the pending Q1 HR admission or canary.
   mismatch. The workbook contains 545,074 data rows while the CSV contains
   545,070. No values were emitted or retained and no Silver projection was
   created. The script SHA-256 is
-  `e6d4c237f9108e5a50faf0869601cfa58f994ded1a0d94c927ff204421af983a`;
+  `817284f6fb0561e4f5b55c945b25a8c3a1001224afd0ce05d153b1bdf19af588`;
   receipt `quality/qualifications/australian-mbs-demographics-q1hr-benefit-scale-comparison-20261021.json`
   SHA-256 is `465c655dd0bcad42ff31d94826ef857b32de4f491f851ed47c7347687e16c8b5`.
 - [ ] Resolve the meaning/calculation of `Benefits ($)`, the age-category
@@ -4880,6 +4880,24 @@ not itself perform the pending Q1 HR admission or canary.
 - [ ] Build and qualify a loss-aware Silver projection only after those source
   semantics are established. Exact-main admission and its consumer canary also
   remain gated on durable accessible receipt evidence.
+
+## M-112 Q1 HR age-context candidate comparison (2026-10-21)
+
+- [x] Compare the age labels using only the six shared context fields from the
+  same two exact objects, after digest and byte-count verification. The
+  aggregate-only report finds 11 one-to-one candidate category pairs supported
+  by 360,235 unique row contexts; 75,767 repeated/ambiguous contexts are
+  excluded. The two files contain 13 and 11 unique age labels. Category labels
+  are represented only by digests; no source values or rows were emitted or
+  retained. Script SHA-256:
+  `23d898106895497337f0e02a1d7bcb3ec6d106cfa6706b235597e842626015c0`;
+  report SHA-256:
+  `08a3c606a27013ed65b909793205fe4e98647b79f0e8154fef33991876321ac3`.
+- [ ] Obtain source-supported category definitions and review whether the
+  candidate pairs are semantically equivalent. Shared context and one-to-one
+  counts do not establish age-band meaning, row equivalence, or authorization
+  to transform Silver data. Resolve the separate four-row discrepancy and
+  `Benefits ($)` calculation before projection qualification.
 
 ## M-110 restricted-content screen reconciliation (2026-10-21)
 

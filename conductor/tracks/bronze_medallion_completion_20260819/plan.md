@@ -1481,7 +1481,7 @@ from an earlier per-object gate overlay; separate reviewed path-lineage reports
 close the July 2025 MBS XML and legacy P7 workbook B1/B2 bindings.
 Broader Bronze-source landing and coverage work is tracked separately and
 remains outside the frozen M-112 denominator. Current evidence:
-`quality/qualifications/australian-m112-rights-release-preflight-20261021-7.json`,
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-8.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
 `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json` (the role report bound by this preflight),
 and `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json`.

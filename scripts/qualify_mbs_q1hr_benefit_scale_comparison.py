@@ -43,6 +43,16 @@ MAX_WORKSHEET_XML_BYTES = 450_000_000
 FIRST_DATA_ROW = 4
 EXPECTED_WORKBOOK_ROWS = 545_074
 EXPECTED_CSV_ROWS = 545_070
+CSV_ROW_FIELDS = (
+    "Year",
+    "Month of Processing",
+    "Item Number",
+    "State",
+    "Age Range",
+    "Gender",
+    "Services",
+    "Benefit",
+)
 OBJECTS = (
     {
         "path": "raw/mbs/utilisation/demographics/"
@@ -175,6 +185,50 @@ def _workbook_benefits(payload: bytes) -> list[str | None]:
         return rows
 
 
+def workbook_rows(payload: bytes) -> list[tuple[str | None, ...]]:
+    """Read the eight declared data columns without emitting their values."""
+    with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+        shared = _shared_strings(archive)
+        payload = _xml_member(
+            archive, "xl/worksheets/sheet1.xml", MAX_WORKSHEET_XML_BYTES
+        )
+        policy = ParserPolicy(
+            max_bytes=MAX_WORKSHEET_XML_BYTES,
+            max_xml_depth=16,
+            max_xml_elements=12_000_000,
+            max_xml_text_bytes=150_000_000,
+        )
+        rows: list[tuple[str | None, ...]] = []
+        for event, row, parent in iter_xml_events(payload, policy=policy):
+            if event != "end" or not row.tag.endswith("}row"):
+                continue
+            row_number = int(row.attrib.get("r", "0"))
+            if row_number >= FIRST_DATA_ROW:
+                values: list[str | None] = [None] * len(CSV_ROW_FIELDS)
+                for cell in row:
+                    if not cell.tag.endswith("}c"):
+                        continue
+                    match = re.fullmatch(
+                        r"([A-H])\d+", cell.attrib.get("r", "")
+                    )
+                    if match is None:
+                        continue
+                    column_index = ord(match.group(1)) - ord("A")
+                    value = cell.find("{*}v")
+                    if value is None or value.text is None:
+                        continue
+                    values[column_index] = (
+                        shared[int(value.text)]
+                        if cell.attrib.get("t") == "s"
+                        else value.text
+                    )
+                rows.append(tuple(values))
+            if parent is not None:
+                parent.remove(row)
+            row.clear()
+        return rows
+
+
 def _csv_benefits(payload: bytes) -> list[str | None]:
     with io.TextIOWrapper(
         io.BytesIO(payload), encoding="utf-8-sig", newline=""
@@ -185,6 +239,21 @@ def _csv_benefits(payload: bytes) -> list[str | None]:
                 "Pinned CSV no longer has its declared Benefit field"
             )
         return [row.get("Benefit") for row in reader]
+
+
+def csv_rows(payload: bytes) -> list[tuple[str | None, ...]]:
+    """Read the exact schema columns from the pinned CSV in memory."""
+    with io.TextIOWrapper(
+        io.BytesIO(payload), encoding="utf-8-sig", newline=""
+    ) as stream:
+        reader = csv.DictReader(stream)
+        if reader.fieldnames is None or any(
+            field not in reader.fieldnames for field in CSV_ROW_FIELDS
+        ):
+            raise ValueError("Pinned CSV no longer has the declared row fields")
+        return [
+            tuple(row.get(field) for field in CSV_ROW_FIELDS) for row in reader
+        ]
 
 
 def _decimal(value: str | None) -> Decimal | None:
