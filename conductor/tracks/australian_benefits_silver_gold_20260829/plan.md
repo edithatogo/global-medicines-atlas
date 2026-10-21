@@ -5138,3 +5138,33 @@ not itself perform the pending Q1 HR admission or canary.
   write/check consistency and read-only check behavior are covered.
 - [~] Require fresh protected CI before resolving review threads and merging.
   No standalone review comment is sent.
+
+
+## Source meaning resolution (2026-10-21)
+
+- [x] Diagnose the exact retained Q1 workbook/CSV benefit discrepancy with
+  full-key rounding and truncation controls; keep aggregate evidence only.
+- [~] Identify the exact Q1 native nonnumeric data label as `Unknown`.
+  Preserve it verbatim without numeric bounds. Its source definition, cause,
+  relationship to suppression and CSV semantic equivalence remain unresolved.
+  This local observation requires hosted requalification before promotion.
+- [ ] Resolve P7 date and numeric conventions using the exact retained
+  workbook and its source-era evidence; preserve formula/error states.
+- [ ] Establish patient-count population, period and deduplication semantics
+  wherever those measures are included. Do not substitute service counts or
+  rounded population percentages for distinct patients.
+- [ ] Run affected checks, review, protected CI and reconcile the evidence.
+
+This increment uses the frozen existing sources and sends no outreach.
+
+
+### Hosted source-meaning reproducibility
+
+- [x] Implement aggregate-only Q1 unknown-age and rounding diagnostics with
+  exact object identities and main Actions commit guards; synthetic focused
+  checks pass. This creates no Silver promotion or benefit interpretation.
+- [x] Diagnose PR #1249 unit failure as stale preflight input digests after
+  the plan changed. Preserve preflight -15 and bind this increment in -16;
+  rights, admission and canary conclusions remain unchanged.
+- [~] Verify complete protected CI, merge the reviewed increment and execute
+  the read-only main workflow; retain the exact hosted aggregate receipt.

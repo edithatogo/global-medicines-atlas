@@ -65,7 +65,8 @@ FIELDS = (
 type Row = tuple[str | None, ...]
 
 
-def _number(value: str | None) -> Decimal | None:
+def finite_number(value: str | None) -> Decimal | None:
+    """Parse a finite native decimal without inventing missing values."""
     try:
         parsed = Decimal(value or "")
     except InvalidOperation:
@@ -73,7 +74,8 @@ def _number(value: str | None) -> Decimal | None:
     return parsed if parsed.is_finite() else None
 
 
-def _key(row: Row) -> tuple[str, ...]:
+def row_key(row: Row) -> tuple[str, ...]:
+    """Return the complete normalized comparison key, excluding benefit."""
     if len(row) != len(FIELDS):
         raise ValueError("Expected exactly eight source columns")
     age = context_mapping.normalize_context_value(row[4], 4)
@@ -106,9 +108,9 @@ def diagnose(workbook: list[Row], csv_values: list[Row]) -> dict[str, object]:
     left: dict[tuple[str, ...], list[Row]] = defaultdict(list)
     right: dict[tuple[str, ...], list[Row]] = defaultdict(list)
     for row in workbook:
-        left[_key(row)].append(row)
+        left[row_key(row)].append(row)
     for row in csv_values:
-        right[_key(row)].append(row)
+        right[row_key(row)].append(row)
     shared = left.keys() & right.keys()
     unique = {key for key in shared if len(left[key]) == len(right[key]) == 1}
     scales: Counter[str] = Counter(dict.fromkeys(SCALE_FACTORS, 0))
@@ -122,7 +124,7 @@ def diagnose(workbook: list[Row], csv_values: list[Row]) -> dict[str, object]:
         "unquantizable_pairs": 0,
     })
     for key in unique:
-        a, b = _number(left[key][0][7]), _number(right[key][0][7])
+        a, b = finite_number(left[key][0][7]), finite_number(right[key][0][7])
         if a is None or b is None:
             continue
         numeric_pairs += 1
@@ -140,7 +142,9 @@ def diagnose(workbook: list[Row], csv_values: list[Row]) -> dict[str, object]:
                 "missing"
                 if value is None or not value.strip()
                 else (
-                    "finite_numeric" if _number(value) is not None else "text"
+                    "finite_numeric"
+                    if finite_number(value) is not None
+                    else "text"
                 )
             )
             counts[kind] += 1
