@@ -106,3 +106,11 @@ def test_zero_and_suppressed_counts_do_not_become_rates():
 def test_denominator_definition_rejects_reversed_period():
     with pytest.raises(ValidationError, match="precedes"):
         definition(period_end=date(2024, 1, 1))
+
+
+def test_patient_counts_cannot_be_used_as_service_rate_numerator():
+    patients = _observation()
+    result = patient_rate(patients, patients, definition())
+    assert result.state == "unavailable"
+    assert result.value is None
+    assert "service" in result.reason.lower()

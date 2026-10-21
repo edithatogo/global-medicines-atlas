@@ -66,7 +66,7 @@ def patient_rate(
     denominator: MbsMeasureObservation | None,
     definition: PatientDenominatorDefinition | None,
 ) -> PatientRateAvailability:
-    """Keep services visible while withholding unsupported patient rates.
+    """Keep services visible while withholding unsupported service-per-patient rates.
 
     This conservative operation supports measures in the same immutable source
     record and exact population scope. Cross-source or cross-record cohorts
@@ -79,6 +79,10 @@ def patient_rate(
             "unavailable", numerator.count_value, None, None, reason
         )
 
+    if numerator.measure_kind != "service_count":
+        return unavailable(
+            "A service-per-patient rate requires a service numerator"
+        )
     if denominator is None or definition is None:
         return unavailable("Patient denominator or definition is unavailable")
     denominator = MbsMeasureObservation.model_validate(denominator.model_dump())
