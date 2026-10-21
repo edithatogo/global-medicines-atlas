@@ -1613,7 +1613,11 @@ def test_package_mode_keeps_existing_hosted_deadlines_and_read_only_artifacts():
         == "pbs-native-value-package-receipt.json"
     )
     for name, old in workflow["jobs"].items():
-        if name not in {"native-values", "native-value-package"}:
+        if name not in {
+            "native-values",
+            "native-value-package",
+            "native-schema-inventory",
+        }:
             assert (
                 "inputs.qualification_scope != 'native-value-package'"
                 in old["if"]

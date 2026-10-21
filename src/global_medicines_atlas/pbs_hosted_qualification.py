@@ -50,6 +50,7 @@ from .pbs_reference_shards import (
     prepare_reference_partition_group,
     prepare_reference_shards,
 )
+from .pbs_schema_inventory import MAX_INVENTORY_BYTES, profile_schema_paths
 from .pbs_value_package import qualify_value_package_pair
 from .receipts import SourceReceipt
 
@@ -283,6 +284,7 @@ class _RetryBudget:
                 "values",
                 "package-write",
                 "package-restore",
+                "schema-inventory",
             }
             or any(
                 type(value) is not int or not 0 <= value < 2**63
@@ -1225,5 +1227,82 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         "transport_retry": _retry_record(error.retry_event)
         if isinstance(error, QualificationError)
         else None,
+        "publication_performed": False,
+    }
+
+
+def run_hosted_schema_inventory(
+    exact_commit: str,
+    output: Path,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Profile only the existing pinned member; emit paths/counts and a digest.
+
+    The full inventory has its own fixed byte bound, separate from the smaller
+    aggregate receipt. No source values, semantics, admission or publication
+    are included. Existing output is preserved rather than overwritten.
+    """
+    retry = _RetryBudget(progress=progress)
+    try:
+        return _run_schema_inventory(
+            exact_commit, output, transport=transport, retry=retry
+        )
+    except QualificationError as error:
+        error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
+        raise
+
+
+def _run_schema_inventory(
+    exact_commit: str,
+    output: Path,
+    *,
+    transport: httpx.BaseTransport | None,
+    retry: _RetryBudget,
+) -> dict[str, Any]:
+    with _at("context", progress=retry.checkpoint):
+        if output.exists():
+            raise ValueError("schema inventory output already exists")
+    inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
+    with _at("projection-qualification", progress=retry.checkpoint):
+        inventory = profile_schema_paths(
+            inputs.archive,
+            inputs.xml,
+            inputs.parent,
+            inputs.binding,
+            progress=lambda phase, batches, rows: retry.checkpoint(
+                "projection-qualification", phase, batches, rows
+            ),
+        )
+        payload = (
+            json.dumps(inventory, sort_keys=True, separators=(",", ":")) + "\n"
+        ).encode()
+        if len(payload) > MAX_INVENTORY_BYTES:
+            raise ValueError("schema inventory byte limit exceeded")
+        output.parent.mkdir(parents=True, exist_ok=True)
+        temporary = output.with_suffix(output.suffix + ".tmp")
+        temporary.write_bytes(payload)
+        temporary.replace(output)
+    return {
+        "schema_version": 1,
+        "status": "passed",
+        "operation": "pbs-native-schema-inventory",
+        "qualification": "native_schema_inventory_only",
+        "domain_semantics_qualified": False,
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "source_receipt_file_sha256": RECEIPT.sha256,
+        "member_binding_sha256": inputs.binding.digest(),
+        "inventory_sha256": hashlib.sha256(payload).hexdigest(),
+        "inventory_bytes": len(payload),
+        "native_fields": inventory["native_fields"],
+        "unique_schema_paths": inventory["unique_schema_paths"],
+        "native_values_emitted": False,
+        "rights_conclusion_changed": False,
+        "new_sources": 0,
+        "new_admissions": 0,
         "publication_performed": False,
     }
