@@ -575,3 +575,21 @@
   licensing clearance. The user attestation remains the rights assertion; the
   instrument was not independently reviewed. No admission, canary, or public
   release followed.
+
+
+## 2026-10-21 actual-matcher label availability audit
+
+- [x] Reconcile current retained real-source inputs with the matcher's scope.
+  The Bronze receipt inventory contains 18 source receipts across
+  only these Australian source IDs: `au-data-gov-mbs-demographics|AUS, au-data-gov-mbs-group|AUS, au-mbs-p7-legacy-workbook|AUS, au-mbs|AUS`.
+  `src/global_medicines_atlas/matching.py` skips candidates when source and
+  target jurisdictions match, while all cross-jurisdiction medicine examples
+  in the repository are `synthetic_fixture_only`. The maintainer-reviewed
+  5,989-edge MBS set is exact same-record service/benefit provenance, not
+  cross-jurisdiction medicine identity ground truth. Audit:
+  `quality/qualifications/frontier-real-matcher-label-availability-20261021.json`
+  (SHA-256 `6683d10d46b4878747f227ccd6db3033c3338422199889b036f3ef55ca0da868`).
+- [ ] Actual matcher calibration needs representative reviewed cross-jurisdiction
+  medicine labels. The current source scope cannot supply them; no threshold or
+  confidence is calibrated. Keep the calibration requirement open while
+  respecting the no-new-sources constraint.
