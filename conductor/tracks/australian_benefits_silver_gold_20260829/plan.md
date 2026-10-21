@@ -5550,3 +5550,25 @@ source qualification remains pending their actual final artifacts.
   source-bearing exception text is withheld. 154 local affected tests pass.
 - [ ] Require merged exact-main native inventory before choosing source-specific
   column, field, encoding, date or numeric interpretations for these families.
+
+
+### Remaining frozen historical MBS archive members (2026-10-22)
+
+- [x] Bind all six frozen historical ZIP archives to their exact acquisition,
+  original external-reference B2, source digest and observed byte count.
+  Preserve four prior structural passes and two resource holds separately.
+- [ ] Inventory every member with streaming integrity and bounded native
+  container identification on protected runners. Avoid inferring XLS/OOXML,
+  CSV columns or eras from a filename alone.
+- [ ] Qualify every eligible member's source-faithful tables, identifiers,
+  null/error/precision/date behavior and reproducible outputs; retain explicit
+  resource or format holds until actual evidence resolves them.
+
+- [x] Implement bounded file-backed archive staging, complete streaming member
+  integrity checks, prior native-inventory parity and magic-prefix hints.
+  Default archive limits remain unchanged; only two exact frozen large source
+  identities use their exact compressed-byte sizes. Native filenames and body
+  values are withheld. 104 affected local tests and strict typing pass.
+- [~] Prepare protected archive-members mode with all six exact frozen inputs,
+  two concurrent read-only jobs and failure receipts. Actual member formats
+  remain unqualified until exact-main execution and source-specific parsing.

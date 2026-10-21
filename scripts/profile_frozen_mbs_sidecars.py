@@ -193,5 +193,11 @@ def main(argv: list[str] | None = None) -> int:
     return 0 if report["status"] == "passed" else 1
 
 
+# Reuse the same protected-runner context, safe failures and bounded reads.
+require_main_actions = _context
+classify_inventory_failure = _failure_category
+read_bounded_metadata = _read
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

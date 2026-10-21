@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from pathlib import Path
 
 import pytest
 
@@ -104,3 +105,32 @@ def test_native_inventory_is_deterministic_and_values_affect_digest():
             "native_fields_sha256"
         ]
     )
+
+
+def test_actual_retained_inventory_keeps_headers_and_column_meanings_unqualified():
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "quality/qualifications/mbs-bsd-rvg-native-layout-20261022-39675543570.json"
+    )
+    report = json.loads(path.read_bytes())
+    assert report["status"] == "passed"
+    assert (
+        report["workflow_commit"] == "939aa2437076cd20bd11c46d57da09c5c9602cbf"
+    )
+    csv = next(
+        row for row in report["objects"] if row["source_path"].endswith(".csv")
+    )
+    xml = next(
+        row for row in report["objects"] if row["source_path"].endswith(".xml")
+    )
+    text = next(
+        row for row in report["objects"] if row["source_path"].endswith(".TXT")
+    )
+    assert csv["layout"]["records"] == 4655
+    assert csv["layout"]["native_fields"] == 9310
+    assert csv["layout"]["first_record_retained"] is True
+    assert csv["layout"]["header_semantics"] == "unqualified"
+    assert sum(xml["layout"]["schema_path_counts"].values()) == 27926
+    assert text["layout"]["native_records"] == 482
+    assert text["layout"]["column_semantics"] == "unqualified"
+    assert report["typed_output_qualified"] is False
