@@ -5497,3 +5497,20 @@ source qualification remains pending their actual final artifacts.
 - [~] Observe complete-package run 39654897926, dispatched on exact merged
   main eaee359d after PR1264 passed all 40 protected checks. No completed
   real-source package claim is made until the terminal receipt is verified.
+
+
+### PBS actual schema inventory and restore recovery (2026-10-22)
+
+- [x] Qualify exact April 2026 native schema inventory in run 39667604237:
+  18,208,758 fields, 5,163 paths, 1,971,791 metadata bytes. Both original
+  path-count and aggregate-byte limits were exceeded; no truncation or native
+  values were emitted. Domain meanings remain unqualified.
+- [~] Remove redundant restore scans and native Arrow materialization while
+  retaining the existing native digest, exact typed row comparison, complete
+  metadata, lineage, file bounds and manifest format. Synthetic differential
+  controls pass; actual full-source package timing remains unqualified.
+- [ ] Extend explicit source-bound domain profiles from observed paths for
+  products, prescribing rules/restrictions, nested amount/pricing structures,
+  drug references, vocabulary metadata and historical records. Keep source
+  structural roles distinct from qualified payment or clinical meaning.
+- [ ] Qualify complete PBS outputs and applicable admission/consumer delivery.

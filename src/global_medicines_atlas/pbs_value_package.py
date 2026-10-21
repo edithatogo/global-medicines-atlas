@@ -24,12 +24,12 @@ from .mbs_demographic_package import (
     canonical_package_json,
     file_fingerprint,
 )
-from .pbs_historical_silver import iter_pbs_historical_silver_batches
 from .pbs_member_identity import (
     PbsXmlMemberBinding,
     validate_pbs_xml_member_binding,
 )
 from .pbs_native_values import iter_pbs_historical_value_batches
+from .pbs_xml_slots import iter_pbs_xml_slots
 from .receipts import SourceReceipt
 
 PARQUET = "values.parquet"
@@ -55,36 +55,53 @@ def _source_native_digest(
     parent: SourceReceipt,
     binding: PbsXmlMemberBinding,
 ) -> tuple[int, str]:
+    binding = validate_pbs_xml_member_binding(binding, archive, member, parent)
+    bound = {
+        "source_id": binding.source.source_id,
+        "source_sha256": binding.member_payload.sha256,
+        "schema_era": binding.source.catalog_version,
+        "receipt_sha256": binding.parent_receipt_sha256,
+        "member_binding_sha256": binding.digest(),
+        "archive_sha256": binding.archive_payload.sha256,
+        "member_path": binding.member_path,
+    }
     digest = sha256()
     count = 0
-    for row in _rows(
-        iter_pbs_historical_silver_batches(archive, member, parent, binding)
-    ):
-        count += 1
+    for ordinal, slot in enumerate(iter_pbs_xml_slots(member)):
+        row = {
+            **bound,
+            "source_field_id": f"{binding.member_payload.sha256}:{slot.path}",
+            "source_ordinal": ordinal,
+            "record_id": slot.record_id,
+            "path": slot.path,
+            "schema_path": slot.schema_path,
+            "value": slot.value,
+            "state": "null" if slot.value is None else "value",
+        }
         digest.update(canonical_package_json(row))
+        count += 1
     return count, digest.hexdigest()
 
 
-def _coverage(parquet: pq.ParquetFile) -> dict[str, Any]:
+def _coverage_rows(rows: Iterator[dict[str, Any]]) -> dict[str, Any]:
     """Read every restored row, preserving nulls and all native field states."""
     entities = fields = 0
     conversions: Counter[str] = Counter()
     targets: Counter[str] = Counter()
     digest = sha256()
-    for batch in parquet.iter_batches(batch_size=BATCH_ROWS):  # pyright: ignore[reportUnknownMemberType] -- optional Arrow selectors unused
-        for row in batch.to_pylist():
-            entities += 1
-            conversions[row["candidate_conversion_status"]] += 1
-            targets[row["mapping_target"]] += 1
-            for field in row["native_fields"]:
-                fields += 1
-                digest.update(
-                    canonical_package_json({
-                        key: value
-                        for key, value in field.items()
-                        if key not in _DOMAIN_FIELDS
-                    })
-                )
+    for row in rows:
+        entities += 1
+        conversions[row["candidate_conversion_status"]] += 1
+        targets[row["mapping_target"]] += 1
+        for field in row["native_fields"]:
+            fields += 1
+            digest.update(
+                canonical_package_json({
+                    key: value
+                    for key, value in field.items()
+                    if key not in _DOMAIN_FIELDS
+                })
+            )
     return {
         "entities": entities,
         "native_fields": fields,
@@ -92,6 +109,12 @@ def _coverage(parquet: pq.ParquetFile) -> dict[str, Any]:
         "conversion_statuses": dict(sorted(conversions.items())),
         "mapping_targets": dict(sorted(targets.items())),
     }
+
+
+def _coverage(parquet: pq.ParquetFile) -> dict[str, Any]:
+    return _coverage_rows(
+        _rows(parquet.iter_batches(batch_size=BATCH_ROWS))  # pyright: ignore[reportUnknownMemberType] -- optional Arrow selectors unused
+    )
 
 
 def _manifest(
@@ -139,15 +162,9 @@ def verify_value_package(
     if report.get("parquet") != file_fingerprint(output / PARQUET):
         raise ValueError("PBS package digest or size differs")
     parquet = pq.ParquetFile(output / PARQUET)
-    coverage = _coverage(parquet)
     native_count, native_digest = _source_native_digest(
         archive, member, parent, binding
     )
-    if (
-        coverage["native_fields"] != native_count
-        or coverage["native_fields_sha256"] != native_digest
-    ):
-        raise ValueError("PBS restored native field coverage or parity differs")
     # Fixed producer and reader row counts need not share physical row groups.
     expected_batches = iter(
         iter_pbs_historical_value_batches(archive, member, parent, binding)
@@ -158,9 +175,19 @@ def verify_value_package(
     ):
         raise ValueError("PBS restored Arrow schema differs")
     expected = iter(_rows(chain((first,), expected_batches)))
-    for row in _rows(parquet.iter_batches(batch_size=BATCH_ROWS)):  # pyright: ignore[reportUnknownMemberType] -- optional Arrow selectors unused
-        if row != next(expected, None):
-            raise ValueError("PBS restored value or lineage differs")
+
+    def checked_rows() -> Iterator[dict[str, Any]]:
+        for row in _rows(parquet.iter_batches(batch_size=BATCH_ROWS)):  # pyright: ignore[reportUnknownMemberType] -- optional Arrow selectors unused
+            if row != next(expected, None):
+                raise ValueError("PBS restored value or lineage differs")
+            yield row
+
+    coverage = _coverage_rows(checked_rows())
+    if (
+        coverage["native_fields"] != native_count
+        or coverage["native_fields_sha256"] != native_digest
+    ):
+        raise ValueError("PBS restored native field coverage or parity differs")
     if next(expected, None) is not None or report != _manifest(
         output, parent, binding, coverage
     ):
@@ -256,18 +283,24 @@ def qualify_value_package_pair(
                 )
                 for directory in directories
             ]
-            for batch in chain((first,), batches):
-                for writer in writers:
-                    writer.write_batch(batch)
-                count += 1
-                rows += batch.num_rows
-                if any(
-                    (directory / PARQUET).stat().st_size > max_file_bytes
-                    for directory in directories
-                ):
-                    raise ValueError("PBS package byte limit exceeded")
-                if progress is not None:
-                    progress("package-write", count, rows)
+
+            def written_rows() -> Iterator[dict[str, Any]]:
+                nonlocal count, rows
+                for batch in chain((first,), batches):
+                    for writer in writers:
+                        writer.write_batch(batch)
+                    count += 1
+                    rows += batch.num_rows
+                    if any(
+                        (directory / PARQUET).stat().st_size > max_file_bytes
+                        for directory in directories
+                    ):
+                        raise ValueError("PBS package byte limit exceeded")
+                    if progress is not None:
+                        progress("package-write", count, rows)
+                    yield from batch.to_pylist()
+
+            coverage = _coverage_rows(written_rows())
         fingerprints = [
             file_fingerprint(directory / PARQUET) for directory in directories
         ]
@@ -275,7 +308,6 @@ def qualify_value_package_pair(
             raise ValueError("PBS package byte limit exceeded")
         if fingerprints[0] != fingerprints[1]:
             raise ValueError("PBS independent serialization builds differ")
-        coverage = _coverage(pq.ParquetFile(directories[0] / PARQUET))
         for directory in directories:
             (directory / MANIFEST).write_bytes(
                 canonical_package_json(
