@@ -5236,3 +5236,15 @@ meanings or grant new rights, publication, clinical claims or outreach.
   transactional finalization, ZIP/sheet inventories and independent restore
   checks. Local synthetic tests pass; source parity, exact transform binding,
   hosted qualification and delivery remain pending.
+
+
+### Protected Q1 native Silver qualification (2026-10-22)
+
+- [~] Implement exact-main read-only qualification for the existing Q1 workbook
+  and CSV: repeat deterministic package builds, independent source-field parity,
+  Parquet restore and DuckDB count/uncertainty checks. Retain only aggregate
+  output/manifest fingerprints; remove temporary derivatives on completion.
+- [ ] Merge the reviewed qualifier and execute it on its exact main commit;
+  retain the actual aggregate receipt before claiming real-source qualification.
+- [ ] Continue all remaining frozen MBS/PBS families and exact-output
+  rights/admission and federated consumer delivery after Q1 qualification.
