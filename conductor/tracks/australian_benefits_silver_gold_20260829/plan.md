@@ -4848,6 +4848,13 @@ not itself perform the pending Q1 HR admission or canary.
   path. It passes. The check does not close remote receipt roles or qualify
   admission. The contract builder still has no durable merged evidence commit
   binding for this object, and exact-main admission/canary remain open.
+- [x] Rebuild the local Q1 HR contract with all 12 schema-defined receipt roles
+  bound to candidate evidence commit `c857e3c42cd6ffa7fa9d21d599613c1169ce1f9e`.
+  Seven Git-hosted role payloads match their exact local Git commit digests.
+  Five externally hosted receipts remain un-fetched, so remote closure and
+  eligibility are not established. The exact-object contract still passes
+  local schema/semantic validation. Contract SHA-256:
+  `5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5`.
 
 ## M-110 restricted-content screen reconciliation (2026-10-21)
 
