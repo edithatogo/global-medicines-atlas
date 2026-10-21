@@ -4599,3 +4599,20 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
   alone, and the existing approved scope contains no complete vocabulary
   dictionary or source-owner field contract. Rights and full-content exclusion
   therefore remain unresolved; this scan authorizes no admission or release.
+
+
+## M-110 PBS field-level pattern localization (2026-10-21)
+
+- [x] Attribute the previously observed pattern totals to file and column
+  positions in a second in-memory pass over the same six pinned PBS objects.
+  Forty-one field positions contained at least one pattern; the summary
+  workbook's column position 2 contains ATC-shaped strings across five sheets,
+  the item-drug map contains ATC-shaped strings at column position 3, the two
+  DOS CSVs contain numeric candidates in seven columns each, and the expenditure
+  workbooks contain explicit terminology-marker text. The aggregate report
+  stores column positions and opaque label hashes, not labels or values:
+  `quality/qualifications/australian-pbs-utilisation-field-pattern-screen-20261021.json`.
+- [ ] Human/source-contract review must map these positions to exact fields and
+  determine vocabulary membership and rights disposition. Opaque label hashes
+  cannot substitute for field meaning; no rights, admission, or release gate is
+  cleared by this localization.
