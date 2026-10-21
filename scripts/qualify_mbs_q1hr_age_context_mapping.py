@@ -139,7 +139,9 @@ def _age_pair_semantics(
     equal_labels = 0
     different_labels = 0
     for source_label, target_label in pairs:
-        if _unquote_balanced(source_label) == _unquote_balanced(target_label):
+        source_text = _unquote_balanced(source_label)
+        target_text = _unquote_balanced(target_label)
+        if source_text is not None and source_text == target_text:
             equal_labels += 1
         else:
             different_labels += 1

@@ -99,3 +99,11 @@ def test_candidate_report_keeps_row_labels_out_of_results() -> None:
     assert result["workbook_age_label_syntax_counts"] == {"closed_range": 1}
     assert result["csv_age_label_syntax_counts"] == {"closed_range": 1}
     assert result["source_values_or_category_labels_emitted"] is False
+
+
+def test_two_malformed_quoted_labels_do_not_count_as_equal() -> None:
+    result = mapping._age_pair_semantics(Counter({('"0-4', '"5-9'): 1}))
+    assert (
+        result["candidate_category_pairs_with_equal_normalized_label_text"] == 0
+    )
+    assert result["candidate_category_pairs_with_unparsed_labels"] == 1

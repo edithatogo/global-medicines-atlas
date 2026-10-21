@@ -5055,3 +5055,21 @@ not itself perform the pending Q1 HR admission or canary.
   and targeted strict typing pass.
 - [~] Run focused and broader affected tests, the pinned-toolchain full profile,
   and protected hosted checks against the frozen candidate branch before merge.
+
+## PR 1247 check repairs (2026-10-21)
+
+- [x] Remove one blank evidence-ledger line without changing any JSON record;
+  correct malformed quoted age-label equality with a negative regression case.
+- [x] Upgrade vulnerable certifi and transitive uv; preserve historical build
+  reproducibility with the content-bound patched custom CA bundle. Qualify
+  the temporary edgetest uv ceiling override against all three real environments.
+- [x] Supply dependency-canary collection dependencies and reject failed or
+  missing edgetest status reports even when its process returns zero.
+- [x] Preserve preflight -12 unchanged; successor
+  `quality/qualifications/australian-m112-rights-release-preflight-20261021-13.json`
+  binds the repaired inputs. Counts remain 7 admissions, 7 canaries, 1,752 deferred.
+- [~] Require the repaired-head checks and exact main-only Q1 HR canary. The
+  first local full attempt was interrupted for confirmed CI failures; no full
+  pass is claimed for that attempt. Local receipt verification resolved all
+  required remote roles and returned admitted_pending_consumer_canary; this
+  is not a hosted admission or hosted canary.
