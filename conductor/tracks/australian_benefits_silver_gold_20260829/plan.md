@@ -4790,3 +4790,23 @@ not itself perform the pending Q1 HR admission or canary.
   candidate evidence commit becomes available on the public repository. Until
   then this contract remains local candidate evidence; source-native workbook
   layout remains unqualified.
+
+## M-112 July BSD sidecar lineage current readback (2026-10-21)
+
+- [x] Reconcile the two exact July BSD sidecars against the retained lineage
+  overlay and its pinned metadata readbacks. Both exact paths now bind their
+  source receipt, acquisition, external-reference B2 manifest, and landed
+  unreviewed admission at the proper content digest and byte count. The source
+  receipt and B2 metadata revision is `42d73b6facac016f14a335d36d83f1a3b630add8`;
+  the current dataset content revision is `40891976f77ee5e7688edceed25c9ac98a77547e`.
+  The metadata-only receipt is
+  `quality/qualifications/australian-m112-july-bsd-sidecar-lineage-current-readback-20261021.json`
+  (SHA-256 `f2cad69df7473d56a888bbb7616855e09d5116d3036de71c890798ba987639a2`).
+- [x] Preserve the earlier rights-preflight snapshot and clarify that its
+  statement about two incomplete sidecar bindings is superseded for lineage
+  only. Exact rights attestation, processing admission, consumer canary, and
+  release remain separate gates; the current 1,759 denominator is unchanged.
+- [~] Continue the bounded v4 cohort from the Q1 HR candidate contract. Local
+  contract qualification and replay receipt exist, but the exact-main Q1 HR
+  admission and canary have not run. The latest hosted canary remains the
+  seven-object readback; the candidate evidence commit is not on public main.
