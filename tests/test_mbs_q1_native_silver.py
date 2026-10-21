@@ -233,10 +233,11 @@ def test_registered_workflow_selects_one_guarded_qualification_lane():
         "native-silver",
         "quarterly-csv",
         "group-csv",
+        "quarterly-workbooks",
     ]
     assert (
         document["jobs"]["qualify"]["if"]
-        == "inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv'"
+        == "inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv' && inputs.qualification_scope != 'quarterly-workbooks'"
     )
     native = document["jobs"]["native-silver"]
     assert native["if"] == "inputs.qualification_scope == 'native-silver'"

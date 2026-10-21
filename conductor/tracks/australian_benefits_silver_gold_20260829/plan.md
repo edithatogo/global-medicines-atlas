@@ -5402,3 +5402,23 @@ source qualification remains pending their actual final artifacts.
   and rerun the repaired source tree. No full pass is claimed for the old run.
 - [ ] Require repaired-head protected CI and complete exact-main PBS values
   qualification before recording any real-corpus value-projection result.
+
+### Frozen quarterly demographic workbooks (2026-10-22)
+
+- [~] Extend the native candidate route to all three exact demographic
+  workbooks. Bind the Q1/Q2 latest streaming success and Q3 structural success
+  to the original B1 acquisition and B2 reference, frozen path/revision/digest
+  and B1 observed byte count. External-only B2 null byte counts are not zero.
+- [x] Verify metadata identity and negative controls: 12 checks pass with
+  100% branch coverage. Preserve the June Q2 workbook independently of the
+  May Q2 CSV; source periods and benefit meaning are not equated.
+- [~] Add protected per-workbook qualification using the existing deterministic
+  package and independent native reader. Count actual primary source rows,
+  reject empty denominators, preserve ancillary cells and use bounded DuckDB
+  counts only after restoration/parity. Aggregate artifacts only.
+- [x] Verify 28 cohort/qualifier checks with 97.01% combined branch coverage,
+  affected production typing with zero errors/warnings, and workflow lint.
+- [ ] Complete broader validation, review/CI and exact-main workbook runs.
+  No real Q2/Q3 typed-workbook result is claimed before those runs finish.
+- [ ] Continue group workbook, historical archives, remaining MBS source
+  families and eras, PBS semantics, exact eligible output roles and delivery.
