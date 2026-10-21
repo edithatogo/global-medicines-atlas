@@ -2,6 +2,7 @@
 
 import json
 from decimal import Decimal
+from hashlib import sha256
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -15,6 +16,9 @@ from test_pbs_native_values import price_payload
 
 from global_medicines_atlas import pbs_value_package as module
 from global_medicines_atlas.mbs_demographic_package import file_fingerprint
+from global_medicines_atlas.pbs_historical_silver import (
+    iter_pbs_historical_silver_batches,
+)
 from global_medicines_atlas.pbs_member_identity import (
     build_pbs_xml_member_binding,
 )
@@ -210,3 +214,66 @@ def test_pair_requires_equal_complete_file_digests_and_final_byte_bound(
     with pytest.raises(ValueError, match=r"byte limit|builds differ"):
         module.qualify_value_package_pair(*inputs(), tmp_path / "pair")
     assert list(tmp_path.iterdir()) == []
+
+
+def test_native_digest_matches_original_stream_without_arrow_materialization(
+    monkeypatch,
+):
+    archive, member, parent, binding = inputs()
+    rows = [
+        row
+        for batch in iter_pbs_historical_silver_batches(
+            archive, member, parent, binding
+        )
+        for row in batch.to_pylist()
+    ]
+    expected = sha256()
+    for row in rows:
+        expected.update(module.canonical_package_json(row))
+
+    def reject_arrow(*_, **__):
+        raise AssertionError("native oracle must not materialize Arrow batches")
+
+    monkeypatch.setattr(
+        module,
+        "iter_pbs_historical_silver_batches",
+        reject_arrow,
+        raising=False,
+    )
+    assert module._source_native_digest(archive, member, parent, binding) == (
+        len(rows),
+        expected.hexdigest(),
+    )
+
+
+def test_restore_accounts_coverage_during_exact_row_comparison(
+    tmp_path, monkeypatch
+):
+    archive, member, parent, binding = inputs()
+    output = tmp_path / "out"
+    expected = build_value_package(archive, member, parent, binding, output)
+
+    def reject_second_read(*_, **__):
+        raise AssertionError(
+            "restore must not scan Parquet separately for coverage"
+        )
+
+    monkeypatch.setattr(module, "_coverage", reject_second_read)
+    assert (
+        verify_value_package(output, archive, member, parent, binding)
+        == expected
+    )
+
+
+def test_pair_accounts_written_rows_without_separate_parquet_scan(
+    tmp_path, monkeypatch
+):
+    def reject_scan(*_, **__):
+        raise AssertionError(
+            "paired qualification must account batches as written"
+        )
+
+    monkeypatch.setattr(module, "_coverage", reject_scan)
+    report = module.qualify_value_package_pair(*inputs(), tmp_path / "pair")
+    assert report["complete_source_reparse_and_restore"] is True
+    assert report["parquet_bytes_identical"] is True
