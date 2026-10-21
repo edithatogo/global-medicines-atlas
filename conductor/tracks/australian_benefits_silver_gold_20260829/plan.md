@@ -5572,3 +5572,17 @@ source qualification remains pending their actual final artifacts.
 - [~] Prepare protected archive-members mode with all six exact frozen inputs,
   two concurrent read-only jobs and failure receipts. Actual member formats
   remain unqualified until exact-main execution and source-specific parsing.
+
+
+### Typed native BSD/RVG record candidates (2026-10-22)
+
+- [x] Implement bounded Arrow record candidates over the observed layouts.
+  Preserve all CSV records including header candidates and empty records;
+  every XML text, tail and attribute slot with occurrence/parent links; and
+  exact literal RVG tab segments and line endings. Complete exhaustion checks
+  the independent native digest and record/field denominator.
+- [ ] Build deterministic complete Parquet packages, restore every native
+  field and exact metadata, then qualify the actual three-object source cohort.
+- [ ] Qualify source-specific headers/column roles, meanings and applicable
+  eligible delivery. Numeric/date interpretations and patient rates remain
+  unresolved/unavailable; no cross-source equivalence is inferred.
