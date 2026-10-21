@@ -486,3 +486,11 @@ def iter_demographic_records(
         yield from _csv(payload, source)
     else:
         yield from _workbook(payload, source)
+
+
+# Shared bounded OOXML primitives; callers retain their own source-family contracts.
+decode_native_workbook_cell = _cell
+read_bounded_workbook_member = _member
+workbook_cell_position = _position
+read_workbook_shared_strings = _shared
+workbook_sheet_targets = _targets

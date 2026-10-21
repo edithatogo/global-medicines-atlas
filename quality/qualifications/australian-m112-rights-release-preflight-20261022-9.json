@@ -199,6 +199,14 @@
     "real_source_execution_completed": true,
     "run_id": 39634190836
   },
+  "group_workbook_layout_candidate": {
+    "implemented": true,
+    "new_admissions": 0,
+    "new_sources": 0,
+    "publications": 0,
+    "real_source_execution_completed": false,
+    "semantic_roles_assigned": false
+  },
   "historical_preflight": {
     "path": "quality/qualifications/australian-m112-rights-release-preflight-20261019.json",
     "preserved_unchanged": true,
@@ -230,12 +238,12 @@
     ".github/workflows/hf-legacy-composite-visibility.yml": "5a66d9525f198d35aa307adbc6584d5e734de720b3777ab181b83c6f709dfdec",
     ".github/workflows/mbs-demographic-csv-candidates.yml": "f3164247ef641690400e4c23a3f6e84367e8e4a04c374d8500007348518e5d25",
     ".github/workflows/mbs-q1-native-silver-candidate.yml": "2dc5eae8e45af9e04af767955ad10bf5396cbc89624ad965062f91ca1a674378",
-    ".github/workflows/mbs-q1-source-meaning-diagnostics.yml": "3921bec58d7c6c22b8194e76d096ab7b05e0cef418526e71b35d616463ed29ea",
+    ".github/workflows/mbs-q1-source-meaning-diagnostics.yml": "72382bf62d8a8446d18c6ab337bf5cc94391f482b0dc6db5a4cc4c0831449319",
     ".github/workflows/pbs-historical-qualification.yml": "95dd52919fdce26014ad7a5a88830669abaaa0d41f6a5bbc1f70c6a674bf7cf1",
     ".github/workflows/pbs-public-metadata-diagnostic.yml": "cafcf903585fcba4795e9fa2603f2ebc193607f58a144a56e9be236cf2d44307",
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
     "conductor/tracks.md": "35bec621ed7c7bd888b7c9a17b9397a369b2ea99dc86bafb7f48d8e3deb2db67",
-    "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md": "20dd6cbb5ebcdd1c7dd115856a43358cf792a8aecfe6f479ff63f8ea52579a34",
+    "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md": "1f90d459e6e33423799022d7d1ae887d484328726eb54e8fef95b4fdda7640bc",
     "conductor/tracks/australian_benefits_silver_gold_20260829/spec.md": "dac6f99dc5388e0fe35e9e6e217482171a5319ee5fcf9a9be16850e840243ba4",
     "conductor/tracks/bronze_medallion_completion_20260819/plan.md": "fed9ea6291e19701f812f65c6823a16f03fee10fe759fdd119b76e34fac856d8",
     "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
@@ -254,6 +262,7 @@
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
     "quality/qualifications/australian-m112-rights-release-preflight-20261019.json": "08102adea4195b710bb343be7b1e2be2ac7064e3aa49814d082d4a4dfccbdd07",
     "quality/qualifications/australian-m112-rights-release-preflight-20261022-7.json": "b8acc104dc880eda8e67cc694fe360479d0a2f128605b610b0711fa074596735",
+    "quality/qualifications/australian-m112-rights-release-preflight-20261022-8.json": "2b2308fc7442ef1c0bbbfd02047b3dcf8653fb6875790748ceb50ab0667daaeb",
     "quality/qualifications/australian-m112-root-manifest-historical-input-bindings-20261022.json": "5ac573904b86778f985bc43378d717213054212cac6c0d2ebfb0085d956985f7",
     "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0",
     "quality/qualifications/australian-m112-v3-replay-execution-20261020-39431880718.json": "51c8b91655463154f7c168c68b5cf81b682467b6b4971750bce0586e94c6c641",
@@ -310,19 +319,21 @@
     "scripts/qualify_mbs_demographic_csv_cohort.py": "d610eedabab6a2bdf79442f03aeafc50dd815ad2e6beb6eaebcfc833ca44d86f",
     "scripts/qualify_mbs_demographic_workbook_cohort.py": "157cc691732dd058b91216e864fef12d83d76db148c66a6302e618d05d18a153",
     "scripts/qualify_mbs_group_native_silver.py": "05b0dd73b928cbc27c14510e49a240348839bf080e3e46f876e1805e1be494e5",
+    "scripts/qualify_mbs_group_workbook_layout.py": "7f463122934c48badfd6565650dea0ce9be8766e44f3e7afc4186319f2836421",
     "scripts/qualify_mbs_q1_native_silver.py": "8cb01d883d787045e69e85a281c1cf01bae35ca7b30a917f377c8270ce3a47a3",
     "scripts/qualify_mbs_q1_source_meanings.py": "91767da81e233748170a77f9834e348147e668ba428d973f11dc9389a4be879b",
     "scripts/qualify_mbs_q1hr_context_measure_diagnostics.py": "9bc7213747ae192e6964fd3fd151576e287fa2640c118674d45eb3fee70179bd",
     "scripts/reconcile_m112_current_rights_state.py": "1741136ccb869dc6a10351a29ef91bc17fa988c5bdf5ca9894004ccc4b8a93ef",
-    "scripts/test_goblin.py": "39b707aec40c0b67bb8fc7eed7b8f05ba857089686d83072477f9463ba45af86",
+    "scripts/test_goblin.py": "2128db998ef9ff635ed7c844b3c4e8f4cb7a931a20a5d372c37ec899ebecf30f",
     "src/global_medicines_atlas/adapters/au_mbs_workbook.py": "67715c5ee50fbbe91b6d0331572f671cae1f80768321f572d5fcef1b22ea12a6",
     "src/global_medicines_atlas/mbs_demographic_csv_cohort.py": "68ffdc1fe09393a30169c08c592a87f28d82addfee492c2a6f0e716fd9641566",
-    "src/global_medicines_atlas/mbs_demographic_extraction.py": "1078a46c6033dc578cf1eb7ece725083dead052fd1ce85c9e6b47b829bf07b36",
+    "src/global_medicines_atlas/mbs_demographic_extraction.py": "daaa7e8bfa13bd96dc9cb56e73a35a003c2eb3147dc9ef551c7e2afa4b29d2c3",
     "src/global_medicines_atlas/mbs_demographic_package.py": "628e6be5d7ceca2913c1cce737948ac0bbc6f6cab07ef96febcea59975d6de06",
     "src/global_medicines_atlas/mbs_demographic_silver.py": "d08557022d18009ecf3f025ee1a72a8fbdec5a278ad73040b92d213e221f2055",
     "src/global_medicines_atlas/mbs_demographic_workbook_cohort.py": "3311b2d0e8206a30f4eb51cddaa4037b266a9f7da429ee85cd40dde9b13109ff",
     "src/global_medicines_atlas/mbs_group_package.py": "eeea0adf506207ca7c968e7ba656f6385c81907e8f873a5017bc1d0daec370c2",
     "src/global_medicines_atlas/mbs_group_silver.py": "6d353666334055e8c2604fc6b51a8c880a976fef4022d6f645eb791f9b37754b",
+    "src/global_medicines_atlas/mbs_group_workbook_layout.py": "a2de572f74607a7c1c655d19e9cdc0f85116cdc066d08ab04efacabbb62cf8c7",
     "src/global_medicines_atlas/mbs_patient_rates.py": "058944b8522ac13674e7fab004e1c69398fe732c42a9b0a42f8b506234418dd1",
     "src/global_medicines_atlas/mbs_utilisation_numeric_policy.py": "aed6d1aceeb7bbcdbcfda2cad2ee34a0a039316f7961e54e252445e54aa47045",
     "src/global_medicines_atlas/mbs_workbook_value_package.py": "7a21b853c5e68e71d0e1e1d9f2390aab920132b9e50a9ec108ca8c8ce0176dde",
@@ -337,7 +348,7 @@
     "tests/test_australian_pbs_hf_publication.py": "e5d9573ff32d96462bc135d9ef8a9f9d97917402c0c24a562ab7b789eebea436",
     "tests/test_frozen_matcher_calibration.py": "f1fe73272c2e3e980627abec0f263ee3484f7225951b413fb0aeaaf5621a0427",
     "tests/test_hf_estate_visibility_workflow.py": "65572c193cfdffdd1b241bb806ede9abb60dbe60710532c581ea4a87a0441958",
-    "tests/test_m112_rights_release_preflight.py": "1e83d1f70ecf0c94b754e432f37973e4bdce3b2b502917750b23b426a616f9f9",
+    "tests/test_m112_rights_release_preflight.py": "e67e1e499da47dcc70c1ff378f96b0c3bc6ceeb40ce55b2d995f8055d254080d",
     "tests/test_mbs_demographic_csv_cohort.py": "33a076e00b8075a04a90aa5187a0b539c45fd70553892b7e55bb9df18a5369de",
     "tests/test_mbs_demographic_extraction.py": "88e603802594be0e4b8f2176b34d163f31f8b877b03a0631955120f2221516c1",
     "tests/test_mbs_demographic_package.py": "c8c36abde2553505ff7446778573dee24233057b70b626f0f24b33897e83345c",
@@ -345,8 +356,9 @@
     "tests/test_mbs_demographic_workbook_cohort.py": "dc6c26fb05e429fc60efd107e97397300cf64b53dca2fa958eae8fdac11ab73d",
     "tests/test_mbs_group_package.py": "125a89c64130eb9bffbe58b038caf27bc7b348ed75ce70ef726006906502b93e",
     "tests/test_mbs_group_silver.py": "a6cb71e5403b1c081cc8c57be22d43cd51cb3b913eb3afce6c6958da11eb7b30",
+    "tests/test_mbs_group_workbook_layout.py": "991877f662ee2f5c1a79fe1b2d9b721f4e3ffd0dba32c29bd05848a1eadd573b",
     "tests/test_mbs_patient_rates.py": "6231183855a983890085b4b2bf9196335111305e20d7c1662489027c827e8c8f",
-    "tests/test_mbs_q1_native_silver.py": "b893cf1bc4cac75db57fcecfecfd8c59c18eaf8a4ed68b67ceca29fcd141f768",
+    "tests/test_mbs_q1_native_silver.py": "8505ff063796e2608b58f17295c3919ba473e63d38eb65698a42277920b558a2",
     "tests/test_mbs_q1_source_meanings.py": "5645126294c95c8485476689218c26a72647d81bf7f55ee6940522ea6d79b303",
     "tests/test_mbs_q1hr_context_measure_diagnostics.py": "7d0013a86cbe68fe5701704ebb8b8245ba7a1e92a6f6910d056b7d54d3b64a65",
     "tests/test_mbs_release_workflow.py": "7598dae264857729b69f23ee2d9c5561a88ba4d4dc1c008c7a8190ff61ef87da",
@@ -364,6 +376,7 @@
     "tests/test_qualify_mbs_demographic_csv_cohort.py": "5512c4b5f57acfe5acd60382fa8f09219db0086d55ee71901122ff9d5629fbaa",
     "tests/test_qualify_mbs_demographic_workbook_cohort.py": "0db9b67ff12564db7cf3f9c0316cb11024bf3b2b99323fafcfffe83999b63713",
     "tests/test_qualify_mbs_group_native_silver.py": "2ae57208aee030b4358b342ae6d2fecd3c1bd6aacc51f38d0536b4c8dc21f7e0",
+    "tests/test_qualify_mbs_group_workbook_layout.py": "12aee9f8d121721c697f12663796b6a3062d3382b5a101354e0890c4947d07e3",
     "tests/test_reconcile_m112_current_rights_state.py": "5a012c669291b518240ba772d0dc7430b8f262797d82a7156d97f758a4a37905",
     "tests/test_silver_field_semantics.py": "2354032c21a7d275222458d754df72ae21ee17e09708c5f93015e5f0e9c8cab1"
   },
@@ -19670,9 +19683,9 @@
     "v4_admission": false
   },
   "previous_preflight": {
-    "path": "quality/qualifications/australian-m112-rights-release-preflight-20261022-7.json",
+    "path": "quality/qualifications/australian-m112-rights-release-preflight-20261022-8.json",
     "preserved_unchanged": true,
-    "sha256": "b8acc104dc880eda8e67cc694fe360479d0a2f128605b610b0711fa074596735"
+    "sha256": "2b2308fc7442ef1c0bbbfd02047b3dcf8653fb6875790748ceb50ab0667daaeb"
   },
   "purpose": "Bind historical PBS native-value package implementation and repeated exact Q1 workbook readback; no complete PBS domain semantic, real package, rights, admission or publication qualification inferred.",
   "q1_benefit_identity_review": {
@@ -19799,7 +19812,7 @@
     "real_source_execution_completed": false,
     "row_denominator": "independent exact-source reader; no CSV or period substitution"
   },
-  "recorded_at": "2026-10-21T18:12:20.409408+00:00",
+  "recorded_at": "2026-10-21T18:16:51.154117+00:00",
   "registered_native_qualification_route": {
     "completed_modes": [
       "native-silver",
@@ -19811,7 +19824,8 @@
       "native-silver",
       "quarterly-csv",
       "group-csv",
-      "quarterly-workbooks"
+      "quarterly-workbooks",
+      "group-workbook-layout"
     ],
     "native_source_execution_completed": true,
     "new_admissions": 0,
@@ -19819,7 +19833,8 @@
     "path": ".github/workflows/mbs-q1-source-meaning-diagnostics.yml",
     "publication": false,
     "unfinished_modes": [
-      "quarterly-workbooks"
+      "quarterly-workbooks",
+      "group-workbook-layout"
     ],
     "workflow_id": 391616583
   },
