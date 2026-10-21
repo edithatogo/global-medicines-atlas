@@ -4705,6 +4705,19 @@ not itself perform the pending Q1 HR admission or canary.
   mutation followed; current M-112 counts remain 7 admissions, 7 canaries,
   and 1,752 deferred of 1,759.
 
+- [x] Profile the exact workbook's formula-expression and cached-output
+  relationship without retaining or emitting source values. The read-only
+  workbook view exposes 171,477 text-literal formulas in `Age_Range`; each of
+  the 171,477 cached outputs is a string matching its decoded literal, with no
+  formula references or operators. The raw XML profile separately records
+  171,346 explicit formula texts and 131 shared-formula cells without local
+  text; the library reconstructs those expressions in its workbook view. This
+  resolves calculation behavior only. It does not establish the labels' field
+  meaning, temporal scope, the four extra workbook rows, or equivalence with
+  the CSV, whose `Age Range` values have zero exact frequency overlap. Receipt:
+  `quality/qualifications/australian-mbs-demographics-q1hr-formula-literal-analysis-20261021.json`
+  (SHA-256 `f324ae679840bd57fb7e7d566f9a18fdf7a90a4614289cce865b2086be97fa3e`).
+
 
 ## M-110 PBS field-header mapping follow-up (2026-10-21)
 
