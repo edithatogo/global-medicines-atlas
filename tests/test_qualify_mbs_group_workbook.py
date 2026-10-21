@@ -1,8 +1,10 @@
 """Group workbook qualification uses actual workbook rows and native consumers."""
 
 import io
+import json
 import zipfile
 from contextlib import nullcontext
+from pathlib import Path
 
 import pytest
 from scripts import qualify_mbs_group_workbook as module
@@ -129,3 +131,25 @@ def test_hosted_driver_uses_exact_bound_source_and_removes_derivatives(
     assert not observed[0].exists()
     assert report["boundaries"]["new_admissions"] == 0
     assert report["boundaries"]["publications"] == 0
+
+
+def test_retained_actual_group_workbook_qualification_preserves_exceptions():
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "quality/qualifications/mbs-group-workbook-native-qualification-20261022-39669037532.json"
+    )
+    report = json.loads(path.read_bytes())
+    result = report["result"]
+    assert (
+        report["workflow_commit"] == "4e6d4cd6159c9d11518f2aa0d30fc24af6ec8dfb"
+    )
+    assert result["coverage"]["native_primary_rows"] == 164555
+    assert result["coverage"]["native_workbook_cells"] == 1316692
+    assert (
+        result["coverage"]["benefit_conversion_statuses"]["unrepresentable"]
+        == 23987
+    )
+    assert result["complete_source_restore"] is True
+    assert result["unqualified_pooling_blocked"] is True
+    assert report["boundaries"]["new_admissions"] == 0
+    assert report["boundaries"]["benefit_equivalence_established"] is False
