@@ -1,5 +1,6 @@
 """Frozen workbook qualification must retain independent B1/B2 identities."""
 
+import json
 from pathlib import Path
 
 import pytest
@@ -118,3 +119,29 @@ def test_inconsistent_latest_evidence_fails_closed(monkeypatch, change):
     monkeypatch.setattr(module, "_bound", altered)
     with pytest.raises(ValueError, match=r"workbook|demographic"):
         load_workbook_candidates(ROOT)
+
+
+def test_retained_q2_workbook_qualification_keeps_native_denominator_and_uncertainty():
+    report = json.loads(
+        (
+            ROOT
+            / "quality/qualifications/mbs-demographic-workbook-q2-native-qualification-20261022-39648296077.json"
+        ).read_bytes()
+    )
+    source = load_workbook_candidates(ROOT)[1].source
+    assert report["selected_quarter"] == 2
+    assert report["source_path"] == source.source_path
+    assert report["source_path"].endswith("qtr2-junehr.xlsx")
+    result = report["result"]
+    assert result["source_sha256"] == source.source_sha256
+    assert result["coverage"]["native_rows"] == 567339
+    assert result["coverage"]["native_fields"] == 567339 * 8
+    assert result["coverage"]["literal_unknown_age_rows"] == 55
+    assert result["coverage"]["benefit_unrepresentable"] == 78882
+    assert result["patient_rate_state"] == "unavailable"
+    assert result["rebuild_equal"]
+    assert result["independent_parquet_restore"]
+    assert result["duckdb_consumer_counts_equal"]
+    assert result["unqualified_pooling_blocked"]
+    assert report["boundaries"]["new_admissions"] == 0
+    assert report["boundaries"]["benefit_equivalence_established"] is False

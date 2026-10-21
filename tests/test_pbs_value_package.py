@@ -151,3 +151,62 @@ def test_failed_exhaustion_removes_staging_and_never_finalizes(
     with pytest.raises(ValueError, match="after first batch"):
         build_value_package(*inputs(), tmp_path / "out")
     assert list(tmp_path.iterdir()) == []
+
+
+def test_paired_serialization_and_source_reparse_are_bounded_and_explicit(
+    tmp_path,
+):
+    result = module.qualify_value_package_pair(*inputs(), tmp_path / "pair")
+    assert result["serialization_builds"] == 2
+    assert result["parquet_bytes_identical"] is True
+    assert result["complete_source_reparse_and_restore"] is True
+    assert result["new_admissions"] == result["publications"] == 0
+    assert result["package"]["boundaries"] == module.BOUNDARIES
+    assert (tmp_path / "pair" / "first" / module.PARQUET).read_bytes() == (
+        tmp_path / "pair" / "second" / module.PARQUET
+    ).read_bytes()
+
+
+def test_pair_byte_limit_fails_without_final_or_staging_outputs(tmp_path):
+    with pytest.raises(ValueError, match="byte limit"):
+        module.qualify_value_package_pair(
+            *inputs(), tmp_path / "pair", max_file_bytes=1
+        )
+    assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.parametrize("limit", [0, True, 4 * 1024**3 + 1])
+def test_pair_rejects_invalid_resource_limits_before_writing(tmp_path, limit):
+    with pytest.raises(ValueError, match="byte limit"):
+        module.qualify_value_package_pair(
+            *inputs(), tmp_path / "pair", max_file_bytes=limit
+        )
+    assert list(tmp_path.iterdir()) == []
+
+
+def test_pair_rejects_existing_directory_without_overwrite(tmp_path):
+    output = tmp_path / "pair"
+    output.mkdir()
+    with pytest.raises(FileExistsError, match="already exists"):
+        module.qualify_value_package_pair(*inputs(), output)
+    assert output.is_dir()
+
+
+@pytest.mark.parametrize("change", ["digest", "footer_limit"])
+def test_pair_requires_equal_complete_file_digests_and_final_byte_bound(
+    tmp_path, monkeypatch, change
+):
+    original = module.file_fingerprint
+
+    def altered(path):
+        result = original(path)
+        if change == "footer_limit":
+            result["bytes"] = 4 * 1024**3 + 1
+        elif path.parent.name == "second":
+            result["sha256"] = "0" * 64
+        return result
+
+    monkeypatch.setattr(module, "file_fingerprint", altered)
+    with pytest.raises(ValueError, match=r"byte limit|builds differ"):
+        module.qualify_value_package_pair(*inputs(), tmp_path / "pair")
+    assert list(tmp_path.iterdir()) == []

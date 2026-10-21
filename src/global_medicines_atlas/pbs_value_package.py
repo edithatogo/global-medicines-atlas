@@ -8,7 +8,8 @@ from __future__ import annotations
 
 import json
 from collections import Counter
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
+from contextlib import ExitStack
 from hashlib import sha256
 from itertools import chain
 from pathlib import Path
@@ -203,3 +204,102 @@ def build_value_package(
         verify_value_package(staged, archive, member, parent, binding)
         staged.rename(output)
     return report
+
+
+def _validate_file_limit(max_file_bytes: int) -> None:
+    if type(max_file_bytes) is not int or not 0 < max_file_bytes <= 4 * 1024**3:
+        raise ValueError("PBS package byte limit is invalid")
+
+
+def qualify_value_package_pair(
+    archive: bytes,
+    member: bytes,
+    parent: SourceReceipt,
+    binding: PbsXmlMemberBinding,
+    output: Path,
+    *,
+    max_file_bytes: int = 4 * 1024**3,
+    progress: Callable[[str, int, int], None] | None = None,
+) -> dict[str, Any]:
+    """Check two serialization builds plus one complete source reparse/restore.
+
+    Both writers consume the same bounded first-pass batches. A fresh producer
+    subsequently checks every restored row, and the separate native stream
+    checks every original field. Identical file digests bind that restore to
+    both outputs. This is not two independent end-to-end pipeline builds.
+    Callers remove these temporary derivatives after retaining the aggregate.
+    """
+    output = Path(output)
+    if output.exists():
+        raise FileExistsError("PBS candidate pair already exists")
+    _validate_file_limit(max_file_bytes)
+    binding = validate_pbs_xml_member_binding(binding, archive, member, parent)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(
+        prefix=".pbs-value-pair-", dir=output.parent
+    ) as temporary:
+        staged = Path(temporary) / "pair"
+        directories = [staged / name for name in ("first", "second")]
+        for directory in directories:
+            directory.mkdir(parents=True)
+        batches = iter(
+            iter_pbs_historical_value_batches(archive, member, parent, binding)
+        )
+        first = next(batches, None)
+        if first is None:
+            raise ValueError("PBS value package has no source entities")
+        count = rows = 0
+        with ExitStack() as stack:
+            writers = [
+                stack.enter_context(
+                    candidate_parquet_writer(directory / PARQUET, first.schema)
+                )
+                for directory in directories
+            ]
+            for batch in chain((first,), batches):
+                for writer in writers:
+                    writer.write_batch(batch)
+                count += 1
+                rows += batch.num_rows
+                if any(
+                    (directory / PARQUET).stat().st_size > max_file_bytes
+                    for directory in directories
+                ):
+                    raise ValueError("PBS package byte limit exceeded")
+                if progress is not None:
+                    progress("package-write", count, rows)
+        fingerprints = [
+            file_fingerprint(directory / PARQUET) for directory in directories
+        ]
+        if any(item["bytes"] > max_file_bytes for item in fingerprints):
+            raise ValueError("PBS package byte limit exceeded")
+        if fingerprints[0] != fingerprints[1]:
+            raise ValueError("PBS independent serialization builds differ")
+        coverage = _coverage(pq.ParquetFile(directories[0] / PARQUET))
+        for directory in directories:
+            (directory / MANIFEST).write_bytes(
+                canonical_package_json(
+                    _manifest(directory, parent, binding, coverage)
+                )
+            )
+        if progress is not None:
+            progress("package-restore", count, rows)
+        report = verify_value_package(
+            directories[0], archive, member, parent, binding
+        )
+        if (directories[0] / MANIFEST).read_bytes() != (
+            directories[1] / MANIFEST
+        ).read_bytes():
+            raise ValueError("PBS serialization manifests differ")
+        staged.rename(output)
+    return {
+        "schema_version": 1,
+        "serialization_builds": 2,
+        "independent_pipeline_builds": False,
+        "parquet_bytes_identical": True,
+        "complete_source_reparse_and_restore": True,
+        "restored_file_digest": fingerprints[0],
+        "package": report,
+        "new_admissions": 0,
+        "publications": 0,
+    }

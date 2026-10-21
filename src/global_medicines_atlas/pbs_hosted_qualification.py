@@ -50,6 +50,7 @@ from .pbs_reference_shards import (
     prepare_reference_partition_group,
     prepare_reference_shards,
 )
+from .pbs_value_package import qualify_value_package_pair
 from .receipts import SourceReceipt
 
 DATASET = "edithatogo/australian-pbs-source-archive"
@@ -280,6 +281,8 @@ class _RetryBudget:
                 "references",
                 "dates",
                 "values",
+                "package-write",
+                "package-restore",
             }
             or any(
                 type(value) is not int or not 0 <= value < 2**63
@@ -1101,18 +1104,38 @@ def _run(
 ) -> dict[str, Any]:
     inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
     with _at("projection-qualification", progress=retry.checkpoint):
-        qualification = qualify_pbs_historical_projections(
-            inputs.archive,
-            inputs.xml,
-            inputs.parent,
-            inputs.binding,
-            projection=projection,
-            reference_shard=reference_shard,
-            date_profile=date_profile,
-            progress=lambda phase, batches, rows: retry.checkpoint(
-                "projection-qualification", phase, batches, rows
-            ),
-        )
+        if projection == "value-package":
+            if reference_shard is not None or date_profile is not None:
+                raise ValueError(
+                    "value package does not interpret dates or reference shards"
+                )
+            with tempfile.TemporaryDirectory(
+                prefix="pbs-value-package-"
+            ) as temporary:
+                qualification = qualify_value_package_pair(
+                    inputs.archive,
+                    inputs.xml,
+                    inputs.parent,
+                    inputs.binding,
+                    Path(temporary) / "pair",
+                    progress=lambda phase, batches, rows: retry.checkpoint(
+                        "projection-qualification", phase, batches, rows
+                    ),
+                )
+            qualification["temporary_derivatives_removed"] = True
+        else:
+            qualification = qualify_pbs_historical_projections(
+                inputs.archive,
+                inputs.xml,
+                inputs.parent,
+                inputs.binding,
+                projection=projection,
+                reference_shard=reference_shard,
+                date_profile=date_profile,
+                progress=lambda phase, batches, rows: retry.checkpoint(
+                    "projection-qualification", phase, batches, rows
+                ),
+            )
     report = {
         "schema_version": 1,
         "status": "passed",

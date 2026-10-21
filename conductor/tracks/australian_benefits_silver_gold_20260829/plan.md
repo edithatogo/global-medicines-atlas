@@ -5458,3 +5458,13 @@ source qualification remains pending their actual final artifacts.
   to the producer. Rehashed corruption, semantic promotion and partial builds
   fail closed. Real-source complete-package qualification and applicable output
   rights/admission/delivery remain pending; domain meanings remain unresolved.
+
+- [~] Qualify the complete PBS value package through the existing protected
+  exact-main route, retaining the 55-minute step/65-minute job limits. The
+  candidate mode writes two independent Parquet serialization files from one
+  bounded producer pass, requires identical file digests, then verifies a fresh
+  producer reparse and every original field against the restored package.
+  This is explicitly not two independent end-to-end pipeline builds. Each
+  temporary file is capped at 4 GiB; only aggregate evidence is uploaded and
+  temporary derivatives are removed. The hosted wrapper and progress boundary
+  pass synthetic checks; real-source execution and runtime fit remain pending.
