@@ -5285,3 +5285,19 @@ The interrupted local full profiles for commits `269a6e33` and `044a07c5`
 no longer had live process handles after the intentional turn interruption.
 Their logs lack terminal summaries; no full pass is claimed. A fresh full
 profile applies to this changed workflow behavior after the code is frozen.
+
+
+### Source-native MBS group CSV candidate (2026-10-22)
+
+- [~] Preserve the separate July 2016 group CSV family: native group, subgroup,
+  item, state and period strings, service counts, benefit tokens and complete
+  header/record coverage. No age dimension or cross-era hierarchy equivalence.
+- [~] Build deterministic candidate Parquet with independent Arrow CSV/native-
+  field parity, typed-value/provenance checks and atomic finalization.
+- [ ] Bind the exact retained group object (164,543 source records) to a hosted
+  qualifier, execute on exact main and retain actual digests/restore evidence;
+  complete applicable rights/admission and delivery independently.
+
+PR #1258 merged as `ebd4e300` after all 40 reported checks passed. Exact-main
+Q1 run `39627539043` is active and quarterly CSV run `39627746801` is queued;
+source qualification remains pending their actual final artifacts.
