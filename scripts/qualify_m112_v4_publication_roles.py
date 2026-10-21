@@ -25,6 +25,10 @@ ROLE_REPORT = "quality/qualifications/australian-m112-v4-contract-role-evidence-
 DIGEST_REPORT = "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json"
 DISCOVERY_REPORT = "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json"
 SOURCE_SEMANTICS_REPORT = "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json"
+PHYSICAL_LAYOUT_REPORT = (
+    "quality/qualifications/"
+    "australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json"
+)
 OVERLAY_REPORT = (
     "quality/qualifications/"
     "australian-m112-per-object-gate-reconciliation-20261019-"
@@ -73,6 +77,9 @@ CONTRACT_SCHEMA_SHA256 = (
 PRODUCER_WORKFLOW = ".github/workflows/australian-mbs-utilisation-harvest.yml"
 SHA256_HEX_LENGTH = 64
 SOURCE_SEMANTICS_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
+PHYSICAL_LAYOUT_PATH = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx"
+)
 V3_REPLAY_PATH = "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx"
 V3_REPLAY_COMMIT = "dd7a01bcd3da60190f821395ceb1260a3d9ddad9"
 V3_REPLAY_RUN_ID = "39289077989"
@@ -556,6 +563,87 @@ def _bind_source_semantics_candidate(
         "native_schema_layout_qualified": False,
         "contract_role_state": "candidate_receipt_available_unbound",
     }
+
+
+def _bind_physical_layout_evidence(
+    candidates: list[Any], layout: dict[str, Any], root: Path
+) -> int:
+    """Bind the Q1 HR physical layout without promoting semantic roles."""
+    expected_source = {
+        "dataset": DATASET,
+        "revision": PINNED_REVISION,
+        "path": PHYSICAL_LAYOUT_PATH,
+        "byte_count": 21_966_140,
+        "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+    }
+    source_value = layout.get("source")
+    boundaries_value = layout.get("boundaries")
+    qualification_value = layout.get("layout_qualification")
+    if not isinstance(source_value, dict):
+        raise TypeError("Q1 HR physical-layout evidence source is malformed")
+    source = cast("dict[str, Any]", source_value)
+    if any(source.get(key) != value for key, value in expected_source.items()):
+        raise ValueError("Q1 HR physical-layout evidence identity changed")
+    expected_boundaries = {
+        "native_workbook_layout_qualified": True,
+        "source_field_semantics_qualified": False,
+        "formula_semantics_qualified": False,
+        "v4_admission_performed": False,
+        "consumer_canary_performed": False,
+    }
+    if not isinstance(boundaries_value, dict):
+        raise TypeError("Q1 HR physical-layout boundaries are malformed")
+    boundaries = cast("dict[str, Any]", boundaries_value)
+    if any(
+        boundaries.get(key) is not value
+        for key, value in expected_boundaries.items()
+    ):
+        raise ValueError("Q1 HR physical-layout evidence exceeded its scope")
+    if not isinstance(qualification_value, dict):
+        raise TypeError("Q1 HR physical-layout qualification is malformed")
+    qualification = cast("dict[str, Any]", qualification_value)
+    if (
+        layout.get("status")
+        != "physical_layout_qualified_source_field_semantics_open"
+        or qualification.get("state")
+        != "qualified_for_exact_pinned_physical_structure"
+    ):
+        raise ValueError("Q1 HR physical-layout evidence exceeded its scope")
+
+    expected_candidate: dict[str, Any] = {
+        "dataset": DATASET,
+        "revision": PINNED_REVISION,
+        "path": PHYSICAL_LAYOUT_PATH,
+        "bytes": 21_966_140,
+        "sha256": expected_source["sha256"],
+    }
+    matches: list[dict[str, Any]] = []
+    for candidate_value in candidates:
+        if not isinstance(candidate_value, dict):
+            continue
+        candidate = cast("dict[str, Any]", candidate_value)
+        if all(
+            candidate.get(key) == value
+            for key, value in expected_candidate.items()
+        ):
+            matches.append(candidate)
+    if len(matches) != 1:
+        raise ValueError("Q1 HR physical-layout identity is not unique")
+    candidate = matches[0]
+    candidate["physical_layout_evidence"] = {
+        "report": {
+            "path": PHYSICAL_LAYOUT_REPORT,
+            "sha256": _sha256((root / PHYSICAL_LAYOUT_REPORT).read_bytes()),
+        },
+        "state": qualification["state"],
+        "scope": qualification["scope"],
+        "native_workbook_layout_qualified": True,
+        "source_field_semantics_qualified": False,
+        "formula_semantics_qualified": False,
+        "admission_performed": False,
+        "consumer_canary_performed": False,
+    }
+    return len(matches)
 
 
 def _validate_source_semantics_fields(
@@ -1274,6 +1362,7 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-many-local
     digest_report = _read_json(root, DIGEST_REPORT)
     discovery_report = _read_json(root, DISCOVERY_REPORT)
     source_semantics = _read_json(root, SOURCE_SEMANTICS_REPORT)
+    physical_layout = _read_json(root, PHYSICAL_LAYOUT_REPORT)
     candidates = report.get("objects")
     verified_objects = digest_report.get("verified_objects")
     archives = digest_report.get("archives")
@@ -1290,6 +1379,9 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-many-local
     _validate_source_semantics_scope(source_semantics)
     if not isinstance(verified_objects, list) or not isinstance(archives, list):
         raise TypeError("digest reconciliation is incomplete")
+    physical_layout_count = _bind_physical_layout_evidence(
+        candidate_values, physical_layout, root
+    )
     if (
         discovery_report.get("scope", {}).get("candidate_objects")
         != EXPECTED_CANDIDATES
@@ -1340,6 +1432,14 @@ def qualify(root: Path = ROOT) -> dict[str, Any]:  # ruff: ignore[too-many-local
         "objects": source_bound_count,
         "state": "candidate_receipts_available_unbound_for_13_of_16",
         "native_schema_layout_qualified": False,
+    }
+    report["physical_layout_candidate_evidence"] = {
+        "path": PHYSICAL_LAYOUT_REPORT,
+        "sha256": _sha256((root / PHYSICAL_LAYOUT_REPORT).read_bytes()),
+        "objects": physical_layout_count,
+        "state": "qualified_for_exact_pinned_physical_structure",
+        "source_field_semantics_qualified": False,
+        "formula_semantics_qualified": False,
     }
     report["location_candidate_evidence"] = {
         "objects": EXPECTED_CANDIDATES,

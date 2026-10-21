@@ -80,7 +80,10 @@ SCALE_FACTORS = {
 }
 
 
-def _fetch_exact(client: httpx.Client, item: dict[str, Any]) -> bytes:
+def fetch_exact_source_bytes(
+    client: httpx.Client, item: dict[str, Any]
+) -> bytes:
+    """Fetch one pinned object in memory after byte and digest validation."""
     path = cast("str", item["path"])
     url = (
         f"https://huggingface.co/datasets/{DATASET}/resolve/{REVISION}/"
@@ -281,8 +284,8 @@ def qualify() -> dict[str, object]:
         max_redirects=policy.max_redirects,
         transport=BoundIPAddressTransport(policy=policy),
     ) as client:
-        workbook_payload = _fetch_exact(client, OBJECTS[0])
-        csv_payload = _fetch_exact(client, OBJECTS[1])
+        workbook_payload = fetch_exact_source_bytes(client, OBJECTS[0])
+        csv_payload = fetch_exact_source_bytes(client, OBJECTS[1])
 
     workbook = _workbook_benefits(workbook_payload)
     csv_values = _csv_benefits(csv_payload)

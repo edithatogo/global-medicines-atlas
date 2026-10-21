@@ -1146,6 +1146,19 @@
         "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
       },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "physical_layout_evidence": {
+        "admission_performed": false,
+        "consumer_canary_performed": false,
+        "formula_semantics_qualified": false,
+        "native_workbook_layout_qualified": true,
+        "report": {
+          "path": "quality/qualifications/australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json",
+          "sha256": "b9c8672e0ef8597ea9b3ad3ab5eb2df29829dfb427cee57d2fda7bcbdc5dec7c"
+        },
+        "scope": "Exact object identity, sheet order/names, dimensions, row and cell counts, formula presence, and observed native header row. This does not qualify formulas, period interpretation, field mapping, or transform behavior.",
+        "source_field_semantics_qualified": false,
+        "state": "qualified_for_exact_pinned_physical_structure"
+      },
       "publication_candidate_receipt": {
         "bytes": 21966140,
         "contract_role_state": "candidate_receipt_available_unbound",
@@ -3453,6 +3466,14 @@
     "private": false,
     "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
     "url": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-utilisation-archive/revision/dee9a5b0580dfe394474dc26b372559462e157e7"
+  },
+  "physical_layout_candidate_evidence": {
+    "formula_semantics_qualified": false,
+    "objects": 1,
+    "path": "quality/qualifications/australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json",
+    "sha256": "b9c8672e0ef8597ea9b3ad3ab5eb2df29829dfb427cee57d2fda7bcbdc5dec7c",
+    "source_field_semantics_qualified": false,
+    "state": "qualified_for_exact_pinned_physical_structure"
   },
   "purpose": "Qualify mandatory v4.1 contract roles for every current M-112 path identity with exact approved rights, complete B1/B2 lineage, and anonymous digest evidence. This is an evidence-gap assessment; it does not create contracts or admissions.",
   "recorded_at": "2026-10-19T21:01:38Z",

@@ -4517,8 +4517,9 @@
 The latest preflight binds the current rights reconciliation and role report:
 all 1,759 frozen objects have resolved rights, seven exact objects are admitted
 and canaried, and 1,752 remain deferred. The July HR workbook reader canary does
-not qualify its native workbook layout or relationship semantics. No source or
-dataset was added and no external publication was performed. Current receipts:
+not itself qualify native layout or relationship semantics; separate physical
+layout evidence now qualifies the exact pinned workbook structure only. No
+source or dataset was added and no external publication was performed. Current receipts:
 `quality/qualifications/australian-m112-rights-release-preflight-20261021-7.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
 and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
@@ -4540,8 +4541,9 @@ not itself perform the pending Q1 HR admission or canary.
 - [x] Qualify the next bounded cohort from the frozen inventory. The v4 role
   report binds seven exact objects, eligibility, admissions, and passed
   `FederatedReader` consumer canaries; seven remain admitted and canaried while
-  1,752 objects remain deferred. Native workbook layout and relationship
-  semantics remain unqualified.
+  1,752 objects remain deferred. The exact Q1 HR workbook's physical layout is
+  qualified by the separate 2026-10-21 layout report; native field/formula
+  semantics and relationship semantics remain unqualified.
 - [x] Reconcile the current evidence without changing inventory membership,
   adding sources, mutating the public dataset, or publishing. The reviewed
   lineage overlay reports 22 complete raw B1/B2 lineages, 118 exact raw
@@ -4594,7 +4596,8 @@ not itself perform the pending Q1 HR admission or canary.
 - [x] Add exact Q1 HR identity support to the v4 raw-B2 contract builder and
   consumer-canary target set. The contract construction test verifies its
   pinned identity and pending-consumer state. This creates no admission or
-  canary; the workbook's native layout remains unqualified.
+  canary. The workbook's physical layout is qualified separately; native field
+  semantics and formulas remain unqualified.
 - [~] Complete exact-head v4 admission and consumer canary for this candidate
   after the support changes and candidate contract are available on `main`.
   The row remains open until hosted admission and canary readback are recorded.
@@ -4647,7 +4650,9 @@ not itself perform the pending Q1 HR admission or canary.
   (SHA-256 `c926b6d5d3dfb96e23905dd29583651dcc292364f97a34b1e6dea939cebd9f39`);
   it binds the pinned 21,966,140-byte object and its exact digest, source,
   acquisition and lineage roles. Schema and semantic checks pass. Native
-  workbook layout remains unqualified.
+  physical workbook layout is qualified by the exact-object layout report;
+  source field semantics, formula meaning, and period interpretation remain
+  unqualified.
 - [~] Complete anonymous receipt closure and exact-main admission/canary. The
   local closure attempt found that the Q1 replay receipt URL at pinned main
   `de76083a0da67414c803c7a74de00162fe5dfbad` returns HTTP 404. The contract is
@@ -4892,12 +4897,20 @@ not itself perform the pending Q1 HR admission or canary.
   unmatched row occurrences. This localizes the count delta but does not explain
   those records. The files contain 13 and 11 unique age labels; labels are
   represented only by digests. No values or rows were emitted or retained.
-  A fail-closed whole-year parser found that none of the 11 candidate label
-  pairs matched its supported explicit interval syntax, leaving age-band
-  semantics unresolved. Script SHA-256:
-  `fe52186bd0e5613bb3fe0deabeefbda0bcdd76acb4a0aa16a475ff8d69b15795`;
+  The initial fail-closed parser recognized none of the 11 candidate pairs.
+  Value-free probes established that the nine CSV ranges have balanced outer
+  double quotes; removing only that wrapper raised the equal-bound count to 9.
+  A further masked probe identified an explicit `>=` lower-bound form and one
+  nonnumeric pair. The parser now handles the lower-bound form. The latest
+  report counts 10 pairs with equal explicit numeric bounds and one remaining
+  nonnumeric pair; after quote normalization, all 11 pairs have equal literal
+  labels. This is candidate syntax/literal evidence only. It does not establish
+  source-defined age meaning, equivalence of the nonnumeric category, explain
+  the four unmatched workbook rows, or authorize a Silver transform. Focused
+  tests (18), Ruff, formatting, and report regeneration passed. Current script
+  SHA-256: `385acef2c9883610a0ccb8b1fc0fe3e485dc1897c7ec7f89f2e24395251c94f9`;
   report SHA-256:
-  `4ce63c6ce14605554b71fe687271210fbe63d62c81666984b0f32dc39f6860e4`.
+  `0aecb12f9c1ff28e9529df9509c9898abd5b782e78f5ae73833c05fba4a560a6`.
 - [ ] Obtain source-supported category definitions and review whether the
   candidate pairs are semantically equivalent. Shared context and one-to-one
   counts do not establish age-band meaning, row equivalence, or authorization
@@ -4955,6 +4968,31 @@ not itself perform the pending Q1 HR admission or canary.
   independently unreviewed.
 
 - [ ] Calibrate the actual cross-jurisdiction matcher. The current retained
-  source scope contains no real cross-jurisdiction medicine-pair labels; the
-  accepted same-record MBS edges do not label medicine identity. Keep this gate
-  open while working the independent local lanes; do not add sources.
+  source scope contains no real cross-jurisdiction medicine-pair labels. A
+  current-head inventory recount at `a038b2667330f668bbe1557297deaf6f1140f338`
+  found 18 B1 receipts, all for Australian MBS/PBS sources. The accepted
+  same-record MBS edges do not label medicine identity. Calibration remains
+  unmeasurable from this frozen source set; do not select a threshold or add
+  sources. Updated scope report:
+  `quality/qualifications/frontier-real-matcher-label-availability-20261021.json`
+  (SHA-256 `8eb8d7ae6bc2b83ae11aec3fd9210b8cd52ee772b9c460aeb3c96d137c7e7973`).
+
+## M-112 Q1 HR physical-layout role binding (2026-10-21)
+
+- [x] Bind the exact Q1 2016 HR workbook layout qualification to its matching
+  frozen candidate object in the v4 role report. The report records the
+  qualified physical structure while leaving source-field semantics, formula
+  semantics, the source contract role, admission, and consumer canary
+  unqualified. The cohort remains seven admitted and canaried, with 1,752
+  objects deferred. The role report is
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`;
+  its physical-layout input is
+  `quality/qualifications/australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json`.
+- [x] Verify exact object identity and fail-closed behavior if the evidence
+  scope claims source semantics or admission. Fifteen focused tests, `ty`,
+  BasedPyright, Ruff, formatting, role-report `--check`, and `git diff --check`
+  passed.
+- [ ] Close the remaining contract roles and obtain an accessible merged
+  evidence revision before exact remote receipt closure, v4 admission, or the
+  Q1 HR consumer canary. This local role binding does not change any cohort
+  count or public data.

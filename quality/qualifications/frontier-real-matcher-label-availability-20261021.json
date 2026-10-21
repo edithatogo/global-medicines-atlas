@@ -1,5 +1,5 @@
 {
-  "as_of_commit": "3a8897cd9ebbe5041d7a4e1954f7aa759a99de6e",
+  "as_of_commit": "a038b2667330f668bbe1557297deaf6f1140f338",
   "boundaries": {
     "confidence_emitted": false,
     "matcher_behavior_changed": false,
@@ -13,8 +13,8 @@
     "source_id_jurisdiction_counts": {
       "au-data-gov-mbs-demographics|AUS": 10,
       "au-data-gov-mbs-group|AUS": 4,
-      "au-mbs-p7-legacy-workbook|AUS": 1,
-      "au-mbs|AUS": 3
+      "au-mbs|AUS": 3,
+      "au-mbs-p7-legacy-workbook|AUS": 1
     }
   },
   "fixture_boundary": {

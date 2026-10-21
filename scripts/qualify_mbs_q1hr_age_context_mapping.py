@@ -25,8 +25,8 @@ if __package__:
         EXPECTED_WORKBOOK_ROWS,
         OBJECTS,
         REVISION,
-        _fetch_exact,
         csv_rows,
+        fetch_exact_source_bytes,
         workbook_rows,
     )
 else:
@@ -36,8 +36,8 @@ else:
         EXPECTED_WORKBOOK_ROWS,
         OBJECTS,
         REVISION,
-        _fetch_exact,  # ruff: ignore[import-private-name] -- pinned in-memory fetch helper
         csv_rows,
+        fetch_exact_source_bytes,
         workbook_rows,
     )
 
@@ -55,9 +55,15 @@ OUTPUT = Path(
 CONTEXT_COLUMNS = (0, 1, 2, 3, 5, 6)
 AGE_COLUMN = 4
 NUMERIC_CONTEXT_COLUMNS = frozenset({0, 1, 6})
-AGE_RANGE = re.compile(r"^(\d+)\s*(?:-|to)\s*(\d+)(?:\s*years?)?$")
+OUTER_QUOTE = '"'
+AGE_RANGE = re.compile(
+    r"^(\d+)\s*(?:years?\s*)?"
+    r"(?:-|to)\s*(?:(under|less than|<)\s*)?(\d+)"
+    r"(?:\s*years?)?$"
+)
+AGE_SINGLE = re.compile(r"^(\d+)(?:\s*years?)?$")
 AGE_LOWER_BOUND = re.compile(
-    r"^(\d+)\s*(?:years?\s*)?(?:and over|or over|\+|plus)$"
+    r"^(?:>=\s*)?(\d+)\s*(?:years?\s*)?(?:and over|or over|\+|plus)?$"
 )
 AGE_UPPER_BOUND = re.compile(r"^(?:under|less than|<)\s*(\d+)(?:\s*years?)?$")
 
@@ -82,14 +88,37 @@ def _row_context(row: tuple[str | None, ...]) -> tuple[str, ...]:
     return tuple(_normalize(row[column], column) for column in CONTEXT_COLUMNS)
 
 
+def _unquote_balanced(value: str) -> str | None:
+    """Remove only a balanced outer ASCII quote pair."""
+    has_open_quote = value.startswith(OUTER_QUOTE)
+    has_close_quote = value.endswith(OUTER_QUOTE)
+    if has_open_quote and has_close_quote:
+        return value[1:-1].strip()
+    if has_open_quote or has_close_quote:
+        return None
+    return value
+
+
 def _age_band(value: str) -> tuple[int, int | None] | None:
     """Parse explicit whole-year intervals without exposing source labels."""
+    value = _unquote_balanced(value) or ""
+    value = re.sub(
+        r"^(?:aged|age(?:\s+(?:range|group|band))?)\s*:?\s*", "", value
+    )
     age_range = AGE_RANGE.fullmatch(value)
     if age_range is not None:
-        lower, upper = (int(part) for part in age_range.groups())
+        lower_text, upper_operator, upper_text = age_range.groups()
+        lower = int(lower_text)
+        upper = int(upper_text)
+        if upper_operator is not None:
+            upper -= 1
         if lower <= upper:
             return lower, upper
         return None
+    single_age = AGE_SINGLE.fullmatch(value)
+    if single_age is not None:
+        age = int(single_age.group(1))
+        return age, age
     lower_bound = AGE_LOWER_BOUND.fullmatch(value)
     if lower_bound is not None:
         return int(lower_bound.group(1)), None
@@ -107,7 +136,13 @@ def _age_pair_semantics(
     parsed_pairs = 0
     equal_bounds = 0
     different_bounds = 0
+    equal_labels = 0
+    different_labels = 0
     for source_label, target_label in pairs:
+        if _unquote_balanced(source_label) == _unquote_balanced(target_label):
+            equal_labels += 1
+        else:
+            different_labels += 1
         source_band = _age_band(source_label)
         target_band = _age_band(target_label)
         if source_band is None or target_band is None:
@@ -124,7 +159,32 @@ def _age_pair_semantics(
         "candidate_category_pairs_with_unparsed_labels": (
             len(pairs) - parsed_pairs
         ),
+        "candidate_category_pairs_with_equal_normalized_label_text": equal_labels,
+        "candidate_category_pairs_with_different_normalized_label_text": (
+            different_labels
+        ),
     }
+
+
+def _age_label_syntax_counts(labels: set[str]) -> dict[str, int]:
+    """Count parser outcomes without returning any source label text."""
+    counts: Counter[str] = Counter()
+    for label in labels:
+        band = _age_band(label)
+        if band is None:
+            category = (
+                "numeric_unparsed"
+                if any(c.isdigit() for c in label)
+                else "non_numeric"
+            )
+        elif band[1] is None:
+            category = "open_ended_lower"
+        elif band[0] == band[1]:
+            category = "single_age_or_single_year"
+        else:
+            category = "closed_range"
+        counts[category] += 1
+    return dict(sorted(counts.items()))
 
 
 def _context_coverage(
@@ -206,6 +266,10 @@ def _candidate_relationships(
     return {
         "workbook_unique_age_categories": len(workbook_categories),
         "csv_unique_age_categories": len(csv_categories),
+        "workbook_age_label_syntax_counts": _age_label_syntax_counts(
+            workbook_categories
+        ),
+        "csv_age_label_syntax_counts": _age_label_syntax_counts(csv_categories),
         "category_digest_count": len(category_digests),
         "category_digests_sha256": hashlib.sha256(
             "\n".join(category_digests).encode("ascii")
@@ -248,8 +312,8 @@ def qualify() -> dict[str, object]:
         max_redirects=policy.max_redirects,
         transport=BoundIPAddressTransport(policy=policy),
     ) as client:
-        workbook_payload = _fetch_exact(client, OBJECTS[0])
-        csv_payload = _fetch_exact(client, OBJECTS[1])
+        workbook_payload = fetch_exact_source_bytes(client, OBJECTS[0])
+        csv_payload = fetch_exact_source_bytes(client, OBJECTS[1])
     workbook = workbook_rows(workbook_payload)
     csv_values = csv_rows(csv_payload)
     if (
