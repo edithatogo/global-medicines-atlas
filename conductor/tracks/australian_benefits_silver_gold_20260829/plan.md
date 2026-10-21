@@ -5422,3 +5422,17 @@ source qualification remains pending their actual final artifacts.
   No real Q2/Q3 typed-workbook result is claimed before those runs finish.
 - [ ] Continue group workbook, historical archives, remaining MBS source
   families and eras, PBS semantics, exact eligible output roles and delivery.
+
+### PBS values progress boundary correction (2026-10-22)
+
+- [x] Retain failed exact-main run `39641247728` at `c84c4898`: the bounded
+  receipt records the 18,208,758-field denominator checkpoint and validation
+  failure before the first values batch. No projection result is qualified.
+- [x] Reproduce the same failure through the synthetic hosted wrapper with
+  progress enabled. Add only fixed `values` to the aggregate phase allowlist;
+  keep arbitrary phase labels and source text rejected. All 208 affected
+  PBS/workbook checks and production typing pass.
+- [~] Retire the superseded main-source full profile (exit 130) for this
+  runtime-proven correction and workbook extension. No full pass is claimed.
+- [ ] Complete repaired-head CI and rerun native-values qualification on exact
+  merged main; retain the successful artifact only after actual verification.
