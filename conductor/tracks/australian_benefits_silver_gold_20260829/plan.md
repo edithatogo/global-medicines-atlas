@@ -5248,3 +5248,16 @@ meanings or grant new rights, publication, clinical claims or outreach.
   retain the actual aggregate receipt before claiming real-source qualification.
 - [ ] Continue all remaining frozen MBS/PBS families and exact-output
   rights/admission and federated consumer delivery after Q1 qualification.
+
+
+### Existing quarterly demographic CSV cohort (2026-10-22)
+
+- [~] Extend native candidate qualification to the three exact frozen Q1 March,
+  Q2 May and Q3 July CSVs using retained structural/header receipts and exact
+  B1/B2 identities. Preserve separate measure populations and unresolved age
+  semantics; no cross-quarter benefit equivalence is inferred.
+- [ ] Merge and execute protected exact-main per-object qualification, retain
+  actual output digests and restore receipts, then bind applicable output
+  admission/rights and authorized delivery.
+- [ ] Continue workbook, historical ZIP, other MBS families and broader PBS
+  domain/era qualification; the three-CSV cohort does not close those lanes.
