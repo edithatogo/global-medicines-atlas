@@ -1473,19 +1473,15 @@ for credentialed or rights-unresolved sources.
 
 ## M-112 current qualification readback (2026-10-21)
 
-The latest rights-release preflight records all 1,759 frozen objects with
-resolved rights, seven v4 admissions, seven admitted-object canaries, and 1,752
-deferred objects. Earlier zero-count statements above describe their original
-dated checkpoints and are superseded. The preflight's sidecar reminder derives
-from an earlier per-object gate overlay; separate reviewed path-lineage reports
-close the July 2025 MBS XML and legacy P7 workbook B1/B2 bindings.
-Broader Bronze-source landing and coverage work is tracked separately and
-remains outside the frozen M-112 denominator. Current evidence:
-`quality/qualifications/australian-m112-rights-release-preflight-20261021-11.json`,
-`quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
-`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json` (the role report bound by this preflight),
-and `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json`.
-The later candidate-role refresh
-`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`
-also reads back seven admissions, seven canaries, and 1,752 deferrals; it does
-not change the bound preflight or claim a new admission or canary.
+Preflight 20261021-15 and the current rights and role reports reconcile all
+1,759 frozen objects with resolved rights, eight exact v4 admissions, eight
+admitted-object canaries and 1,751 deferred objects. Q1 HR run 39575404598 at
+merged main b6e8a8e4f6d633dfea0056104b62972a669c1b3e passed on 2026-10-21
+at 09:14:48 UTC. Its immutable metadata receipt is retained in
+`quality/qualifications/australian-m112-v4-demographics-q1-marchhr-admission-qualification-20261021-39575404598.json`.
+The frozen denominator and source inventory are unchanged. Earlier dated
+counts are historical. Source-supported field semantics and real matcher
+calibration remain separate from this raw-B2 admission; public datasets were
+not changed. The July XML, P7 and BSD sidecar B1/B2 joins remain recorded in
+their existing exact-object reports. Broader Bronze coverage work is outside
+the frozen M-112 denominator.

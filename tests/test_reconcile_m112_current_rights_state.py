@@ -81,9 +81,9 @@ def test_current_m112_rights_reconcile_exact_object_groups_and_cms_effective_sta
     assert cms["external_publication_authorized"] is False
 
     assert report["boundaries"]["all_remaining_deferrals_preserved"] is True
-    assert report["boundaries"]["deferred_objects"] == 1752
-    assert report["boundaries"]["v4_admissions"] == 7
-    assert report["boundaries"]["consumer_canaries"] == 7
+    assert report["boundaries"]["deferred_objects"] == 1751
+    assert report["boundaries"]["v4_admissions"] == 8
+    assert report["boundaries"]["consumer_canaries"] == 8
     assert report["boundaries"]["source_payload_bytes_read"] is True
 
 
@@ -384,14 +384,14 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
     report = build_report(ROOT, observed_at="2026-10-19T13:00:00Z")
     readback = report["m112_admission_canary_readback"]
 
-    assert readback["admitted_object_count"] == 7
-    assert readback["canaried_object_count"] == 7
+    assert readback["admitted_object_count"] == 8
+    assert readback["canaried_object_count"] == 8
     assert any(
         run["run_id"] == 39356792827
         for run in readback["successful_workflow_runs"]
     )
-    assert readback["deferred_object_count"] == 1752
-    assert len(readback["current_role_qualification"]["admitted_objects"]) == 7
+    assert readback["deferred_object_count"] == 1751
+    assert len(readback["current_role_qualification"]["admitted_objects"]) == 8
     assert readback["object"]["rights_state"] == (
         "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified"
     )
@@ -399,7 +399,7 @@ def test_m112_admission_and_canary_receipts_supersede_stale_overlay_flags() -> (
         run["run_id"] == 39419974066
         for run in readback["successful_workflow_runs"]
     )
-    assert len(readback["successful_workflow_runs"]) == 6
+    assert len(readback["successful_workflow_runs"]) == 7
     assert any(
         run["run_id"] == 39444235017
         for run in readback["successful_workflow_runs"]
@@ -601,3 +601,32 @@ def test_pbs_limited_screen_must_bind_every_pinned_lineage_object(
         ValueError, match="PBS limited vocabulary screen did not reconcile"
     ):
         build_report(ROOT, observed_at="2026-10-20T00:00:00Z")
+
+
+def test_q1_hr_hosted_run_is_bound_in_current_reconciliation() -> None:
+    report = build_report(ROOT, observed_at="2026-10-21T09:14:48Z")
+    runs = report["m112_admission_canary_readback"]["successful_workflow_runs"]
+    assert any(
+        row["run_id"] == 39575404598
+        and row["workflow_commit"] == "b6e8a8e4f6d633dfea0056104b62972a669c1b3e"
+        for row in runs
+    )
+
+
+@pytest.mark.parametrize("field", ["revision", "path", "sha256"])
+def test_q1_hr_canary_rejects_self_consistent_wrong_identity(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, field: str
+) -> None:
+    source = ROOT / rights_reconciliation.M112_Q1_HR_ADMISSION_CANARY
+    receipt = json.loads(source.read_bytes())
+    wrong = "f" * 40 if field == "revision" else "unrelated"
+    receipt["admission"][field] = wrong
+    receipt["consumer_canary"]["object"][field] = wrong
+    (tmp_path / "receipt.json").write_text(json.dumps(receipt))
+    monkeypatch.setattr(
+        rights_reconciliation,
+        "M112_Q1_HR_ADMISSION_CANARY",
+        Path("receipt.json"),
+    )
+    with pytest.raises(ValueError, match="Q1 HR M-112 admission/canary"):
+        rights_reconciliation._verify_q1_hr_m112_canary_receipt(tmp_path)

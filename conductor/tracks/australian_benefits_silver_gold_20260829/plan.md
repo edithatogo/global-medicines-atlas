@@ -5013,18 +5013,12 @@ not itself perform the pending Q1 HR admission or canary.
   scope claims source semantics or admission. Fifteen focused tests, `ty`,
   BasedPyright, Ruff, formatting, role-report `--check`, and `git diff --check`
   passed.
-- [~] Close the remaining contract roles and obtain an accessible merged
-  evidence revision before exact remote receipt closure, v4 admission, or the
-  Q1 HR consumer canary. The exact contract passes local schema and semantic
-  checks, and the role report passes its current check, but it still classifies
-  this object as `candidate_receipt_available_unbound`. Its pinned replay and
-  lineage URLs reference local commit `c857e3c42cd6ffa7fa9d21d599613c1169ce1f9e`;
-  GitHub currently returns 422 for that commit. The required hosted reader
-  workflow is main-only. Repository autonomy prohibits pushing while the
-  account-level no-outbound restriction is active, so no hosted admission or
-  canary is claimed. Current counts remain 7 admissions, 7 canaries, and 1,752
-  deferred objects. Local contract checks and the focused admission/role tests
-  pass; see the 2026-10-21 evidence entry for exact hashes and command results.
+- [x] Close the exact raw-B2 contract roles and hosted receipt closure after
+  PR #1247 made the pinned evidence revision accessible. Run 39575404598 at
+  main b6e8a8e4f6d633dfea0056104b62972a669c1b3e passed on 2026-10-21 at
+  09:14:48 UTC. The Q1 HR receipt is retained in the current reconciliation;
+  its byte and streamed digests match and cache bytes after close are zero.
+  Unresolved field semantics continue to gate harmonization independently.
 
 
 ## Authorized repository workflow and current preflight (2026-10-21)
@@ -5040,7 +5034,7 @@ not itself perform the pending Q1 HR admission or canary.
   The first focused run found two stale input digests in the previous snapshot;
   its result was 64 passed and one failed. This refresh changes no rights,
   inventory membership, admission, or canary count: 7/7 and 1,752 deferred.
-- [~] Publish the prepared candidate evidence through a technical PR, require
+- [x] Publish the prepared candidate evidence through a technical PR, require
   protected checks before merge, and run the Q1 HR exact-main verification
   and reader canary. Its raw-B2 contract preserves uninterpreted immutable
   bytes; unresolved age-category and benefit semantics continue to gate
@@ -5068,8 +5062,79 @@ not itself perform the pending Q1 HR admission or canary.
 - [x] Preserve preflight -12 unchanged; successor
   `quality/qualifications/australian-m112-rights-release-preflight-20261021-13.json`
   binds the repaired inputs. Counts remain 7 admissions, 7 canaries, 1,752 deferred.
-- [~] Require the repaired-head checks and exact main-only Q1 HR canary. The
+- [x] Require the repaired-head checks and exact main-only Q1 HR canary. PR
+  #1247 merged with 40 passing checks and the Q1 HR run passed. The
   first local full attempt was interrupted for confirmed CI failures; no full
   pass is claimed for that attempt. Local receipt verification resolved all
   required remote roles and returned admitted_pending_consumer_canary; this
   is not a hosted admission or hosted canary.
+
+## Eighth admission, Silver semantics and matcher continuation (2026-10-21)
+
+- [x] Retain the exact Q1 HR hosted receipt from run 39575404598, merged main
+  b6e8a8e4f6d633dfea0056104b62972a669c1b3e, completed 09:14:48 UTC. The
+  role and rights reports now reconcile eight admissions and eight canaries
+  over 1,759 frozen objects, with 1,751 deferred. Preflight -14 binds the
+  current inputs and preserves -13 unchanged. No new admission was performed
+  by this reconciliation; the retained hosted receipt is the evidence.
+- [x] Join both exact Q1 objects using full source context plus normalized
+  literal age labels. All 545,070 CSV rows have unique workbook counterparts;
+  there are no repeated shared full keys and no unmatched CSV rows. The four
+  workbook-only rows all have nonnumeric years; two have text in all fields
+  and two have only a text year field. This is structural classification,
+  not authority to delete or interpret those rows.
+- [x] Test the benefit mismatch after correcting row alignment and excluding
+  ambiguous keys. All 545,070 pairs are numeric; only 54,693 agree exactly or
+  after rounding to two decimal places. A total of 490,365 differ by more than
+  0.01. No tested fixed multiplier explains the result. The mismatch is not
+  resolved by row order or numeric precision. Aggregate-only receipt:
+  `quality/qualifications/australian-mbs-demographics-q1hr-context-measure-diagnostics-20261021.json`.
+- [ ] Resolve the source-defined HR benefit measure and nonnumeric age category
+  before harmonization. Preserve native labels and the HR benefit field as a
+  distinct unresolved measure; do not substitute CSV values or infer payable
+  benefit. No Silver projection or semantic-equivalence claim is created.
+- [x] Recheck the unchanged 18-receipt, Australian-only retained label scope;
+  rerun the actual matcher on the existing 400/400 generated controls. Record
+  post-retrieval operating points, scope, input digests and missing real
+  labels in
+  `quality/qualifications/frontier-frozen-matcher-calibration-20261021.json`.
+  The 0.65 control cutoff admits 200/200 generated negatives; 0.9 excludes
+  them but misses 100/200 generated positives. These are synthetic controls,
+  not real-source operating estimates. No source threshold is selected.
+- [ ] Actual cross-jurisdiction medicine calibration remains blocked by zero
+  eligible reviewed real pair labels in the frozen scope. The 5,989 reviewed
+  same-record MBS edges do not supply those labels. No sources, outreach,
+  confidence authority or public releases are added.
+- [x] Review scope and negative controls: pin Q1 identity and exact hosted run,
+  reject self-consistent identity drift, exclude repeated keys and non-finite
+  measures, expose large differences, scope operating points to post-retrieval
+  scored cases, and require re-review when retained calibration inputs drift.
+- [x] Focused diagnostic and legacy checks passed (30), current preflight checks
+  passed (8), the broader bounded contract/matcher selection passed (183),
+  routine checks passed and strict typing returned zero errors or warnings.
+  A separate wider selection reached local asynchronous timeouts and was
+  interrupted with exit 2 after 196 passed and one timeout failure; it is
+  not counted as a pass. No repeated local
+  full profile is claimed: source-report reconciliation and offline diagnostics
+  leave production matching and release/publication behavior unchanged.
+- [~] Require complete protected CI on the final PR head before merging.
+  Production matching behavior and
+  release/publication gates are unchanged; this increment reconciles metadata
+  and adds offline diagnostics.
+
+## PR 1248 review corrections (2026-10-21)
+
+- [x] Bind the exact 18-receipt path/digest tree to the independently checked
+  original availability-audit revision a038b2667330f668bbe1557297deaf6f1140f338.
+  A receipt replacement with unchanged source/jurisdiction counts now fails
+  closed and requires renewed label review.
+- [x] Make both diagnostic CLIs directly executable using the established
+  package/direct-import pattern. Add an actual read-only --check entry point
+  for matcher readiness and regression tests for direct execution.
+- [x] Preserve published preflight -14 byte-for-byte and bind corrections in
+  successor -15. Admission/canary totals remain 8/8 with 1,751 deferred.
+- [x] Twenty initial focused review checks and 73 broader affected checks pass;
+  strict typing has zero errors/warnings and routine checks pass. Direct CLI
+  write/check consistency and read-only check behavior are covered.
+- [~] Require fresh protected CI before resolving review threads and merging.
+  No standalone review comment is sent.

@@ -41,8 +41,8 @@
   },
   "boundaries": {
     "all_remaining_deferrals_preserved": true,
-    "consumer_canaries": 7,
-    "deferred_objects": 1752,
+    "consumer_canaries": 8,
+    "deferred_objects": 1751,
     "external_publication_performed": false,
     "m112_denominator_changed": false,
     "new_sources_or_datasets_added": false,
@@ -50,7 +50,7 @@
     "source_payload_files_written": false,
     "source_payload_values_emitted": false,
     "source_payload_values_inspected": true,
-    "v4_admissions": 7
+    "v4_admissions": 8
   },
   "cms_hcpcs_external_reference": {
     "acquisition_time_rights_state_preserved": "unknown",
@@ -155,7 +155,8 @@
     "quality/qualifications/australian-m112-pbs-projected-b1-b2-lineage-20261019.json": "aa4a0df6df4ec723e7b65f55379f47ae7912e4777a6b9d3bb3454c1accf3a16f",
     "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d",
     "quality/qualifications/australian-m112-source-archive-receipt-join-audit-20260930.json": "f0bbf7987d60e78534c2ee926d6d6c7eb94aca8900328d894024849f714ec6c0",
-    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json": "d57fbdb0d1803e52593c4ffe19b0286cf60ea0ab1a036ad19f4e81ff630d790d",
+    "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json": "9ae96773ed19b1ec0795340aef1d341dbeeb0f8961ca7f231af633618ca21781",
+    "quality/qualifications/australian-m112-v4-demographics-q1-marchhr-admission-qualification-20261021-39575404598.json": "f42a2031e75ada06965c2ada47cee9204489d52a82d4cb5ae1f877c2a45e1e14",
     "quality/qualifications/australian-m112-v4-demographics-q2-may-admission-qualification-20261020.json": "ea8f2c9164b8f12cf06577b6c985ac52be69fc2c79035b610dbdec96c06f6b5d",
     "quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json": "543195f53559812cbcb408c16083f9fe5feb775a69b37d43ee8cebcea809bc8c",
     "quality/qualifications/australian-m112-v4-historical-1993-2015-consumer-canary-20261020-39330593204.json": "b10a7f795014e0b6ebc975330062bb9e20dd13d66996a09b1a5a69c4b438803f",
@@ -236,8 +237,8 @@
     "sha256": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d"
   },
   "m112_admission_canary_readback": {
-    "admitted_object_count": 7,
-    "canaried_object_count": 7,
+    "admitted_object_count": 8,
+    "canaried_object_count": 8,
     "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
     "current_role_qualification": {
       "admitted_objects": [
@@ -248,6 +249,14 @@
           "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
           "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
           "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+        },
+        {
+          "contract_path": "quality/qualifications/australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json",
+          "contract_sha256": "5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5",
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+          "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+          "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
         },
         {
           "contract_path": "quality/qualifications/australian-m112-v4-demographics-q2-may-raw-b2-contract.json",
@@ -298,10 +307,10 @@
           "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
         }
       ],
-      "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json",
-      "sha256": "d57fbdb0d1803e52593c4ffe19b0286cf60ea0ab1a036ad19f4e81ff630d790d"
+      "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json",
+      "sha256": "9ae96773ed19b1ec0795340aef1d341dbeeb0f8961ca7f231af633618ca21781"
     },
-    "deferred_object_count": 1752,
+    "deferred_object_count": 1751,
     "native_workbook_layout_qualified": false,
     "object": {
       "byte_count": 6857437,
@@ -359,6 +368,13 @@
         "run_id": 39444235017,
         "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39444235017",
         "workflow_commit": "0f95edc35778b848072602c4aed5c59d6c9564a6"
+      },
+      {
+        "receipt_path": "quality/qualifications/australian-m112-v4-demographics-q1-marchhr-admission-qualification-20261021-39575404598.json",
+        "receipt_sha256": "f42a2031e75ada06965c2ada47cee9204489d52a82d4cb5ae1f877c2a45e1e14",
+        "run_id": 39575404598,
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39575404598",
+        "workflow_commit": "b6e8a8e4f6d633dfea0056104b62972a669c1b3e"
       }
     ],
     "unique_object_counts_are_deduplicated_across_runs": true
@@ -419,7 +435,7 @@
     "rights_state": "maintainer_attested_exact_public_release_permission_for_mbs_raw_object",
     "v4_admission": false
   },
-  "observed_at": "2026-10-20T14:59:44Z",
+  "observed_at": "2026-10-21T09:14:48Z",
   "pbs_raw_redistribution_permission": {
     "all_objects_remain_deferred": true,
     "b1_b2_lineage_complete": true,

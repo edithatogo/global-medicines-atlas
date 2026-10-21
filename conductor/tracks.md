@@ -11,18 +11,19 @@ and rationale contract in that policy.
 ## Current M-112 readback (2026-10-21)
 
 The latest bound preflight records 1,759/1,759 frozen objects with resolved
-rights, 7 exact v4 admissions, 7 admitted-object consumer canaries, and 1,752
-deferred objects. The frozen denominator is unchanged; Q1 HR physical workbook
-layout is qualified, while source-field and transformation semantics remain
-unqualified. No public dataset mutation or external publication was performed.
-Use [preflight snapshot 20261021-13](../quality/qualifications/australian-m112-rights-release-preflight-20261021-13.json),
+rights, 8 exact v4 admissions, 8 admitted-object consumer canaries, and 1,751
+deferred objects. The eighth object is the Q1 HR workbook: exact-main hosted
+run [39575404598](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39575404598)
+passed with remote and streamed digest matches and zero retained cache bytes.
+The frozen denominator is unchanged. Physical workbook layout is qualified;
+source-field and transformation semantics remain partial. No new source,
+public dataset mutation or external publication was performed.
+Use [preflight snapshot 20261021-15](../quality/qualifications/australian-m112-rights-release-preflight-20261021-15.json),
 [current rights reconciliation](../quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json),
-and the [latest candidate-role qualification](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json)
-for the current count readback. The bound preflight retains its
-[20261020 role-report input](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json);
-the 20261021 role report is a later candidate-role refresh, does not alter the
-preflight admission/canary counts, and does not itself perform admission or a
-canary. The reviewed MBS path-lineage overlay also
+and the [current role qualification](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json)
+for current counts. These reports reconcile retained hosted receipts; they
+perform no new admission or canary. Earlier preflights remain unchanged.
+The reviewed MBS path-lineage overlay also
 closes the July 2025 XML and P7 workbook B1/B2 joins. The exact July BSD
 sidecar readback separately verifies both sidecar B1/B2 bindings. Older count
 statements in dated plan sections remain
