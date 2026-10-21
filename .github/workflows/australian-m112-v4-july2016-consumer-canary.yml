@@ -18,6 +18,7 @@ on:
           - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv
           - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv
           - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv
+          - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx
           - raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx
 
 permissions:

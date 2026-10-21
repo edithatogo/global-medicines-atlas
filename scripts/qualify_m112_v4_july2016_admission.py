@@ -44,7 +44,7 @@ from global_medicines_atlas.federation_receipt_closure import (
 ROOT = Path(__file__).resolve().parents[1]
 ROLE_REPORT = Path(
     "quality/qualifications/"
-    "australian-m112-v4-contract-role-evidence-qualification-20261020.json"
+    "australian-m112-v4-contract-role-evidence-qualification-20261021.json"
 )
 OUTPUT = Path(
     "quality/qualifications/australian-m112-v4-july2016-raw-b2-contract.json"
@@ -88,6 +88,13 @@ DEMOGRAPHICS_Q1_OUTPUT = Path(
 DEMOGRAPHICS_Q2_OUTPUT = Path(
     "quality/qualifications/"
     "australian-m112-v4-demographics-q2-may-raw-b2-contract.json"
+)
+DEMOGRAPHICS_Q1_HR_PATH = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx"
+)
+DEMOGRAPHICS_Q1_HR_OUTPUT = Path(
+    "quality/qualifications/"
+    "australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json"
 )
 SCHEMA_PATH = Path("contracts/medallion/v4.1/federation.schema.json")
 EVIDENCE_COMMIT = "90dea68ec6ff3d4d07b43860631742728cf40ff5"
@@ -168,6 +175,14 @@ TARGET_IDENTITIES: dict[str, dict[str, Any]] = {
         "source_id": "au-data-gov-mbs-demographics",
         "acquisition_id": "c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd",
     },
+    DEMOGRAPHICS_Q1_HR_PATH: {
+        "dataset": TARGET_DATASET,
+        "revision": TARGET_REVISION,
+        "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+        "bytes": 21_966_140,
+        "source_id": "au-data-gov-mbs-demographics",
+        "acquisition_id": "4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc",
+    },
 }
 TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
     TARGET_PATH: EVIDENCE_COMMIT,
@@ -181,6 +196,7 @@ TARGET_EVIDENCE_COMMITS: dict[str, str | None] = {
     DEMOGRAPHICS_Q3_HR_PATH: "6dc3f707382f65659b511c98e55412ecbdb0d6b2",
     DEMOGRAPHICS_Q1_PATH: "71b8ca00dee8275578cb8d50a0e4db12cc6160f3",
     DEMOGRAPHICS_Q2_PATH: None,
+    DEMOGRAPHICS_Q1_HR_PATH: None,
 }
 TARGET_OUTPUTS = {
     TARGET_PATH: OUTPUT,
@@ -192,6 +208,7 @@ TARGET_OUTPUTS = {
     DEMOGRAPHICS_Q3_HR_PATH: DEMOGRAPHICS_Q3_HR_OUTPUT,
     DEMOGRAPHICS_Q1_PATH: DEMOGRAPHICS_Q1_OUTPUT,
     DEMOGRAPHICS_Q2_PATH: DEMOGRAPHICS_Q2_OUTPUT,
+    DEMOGRAPHICS_Q1_HR_PATH: DEMOGRAPHICS_Q1_HR_OUTPUT,
 }
 
 

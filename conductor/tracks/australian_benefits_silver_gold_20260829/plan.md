@@ -4550,3 +4550,33 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
   case-disjoint held-out labels from the existing source scope. The available
   400/400 generated matcher cases are synthetic-only and produce poor holdout
   calibration; no confidence or production threshold is selected.
+
+## M-112 next bounded cohort preparation (2026-10-21)
+
+- [x] Confirm the two exact July 2026 MBS Basic Service Description sidecars
+  already have reviewed B1/B2 bindings. The reviewed lineage overlay binds the
+  CSV (`07563bb…3eb5b6`, 135,983 bytes) and XML (`b71f1f…be9f4a3`, 615,386
+  bytes) to their source receipts, acquisitions, external-reference B2
+  manifests, and landed unreviewed admissions. This does not admit either
+  object or qualify its source semantics.
+- [x] Replay the next eligible exact object, the Q1 2016 HR workbook, through
+  hosted run [39533443472](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39533443472)
+  on exact `main` `de76083a0da67414c803c7a74de00162fe5dfbad`. Anonymous digest
+  and byte-count verification passed for SHA-256
+  `d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d`
+  (21,966,140 bytes); the workflow read no source values and removed its
+  temporary bytes. The candidate-only receipt is
+  `quality/qualifications/australian-m112-v3-replay-execution-20261021-39533443472.json`.
+- [x] Bind that replay and cleanup evidence in successor manifest
+  `quality/qualifications/australian-m112-v3-replay-readbacks-20261021.json`
+  and role qualification
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`.
+  V3 replay candidates rise from seven to eight of 16; admission remains
+  seven, canaries seven, and 1,752 objects remain deferred.
+- [x] Add exact Q1 HR identity support to the v4 raw-B2 contract builder and
+  consumer-canary target set. The contract construction test verifies its
+  pinned identity and pending-consumer state. This creates no admission or
+  canary; the workbook's native layout remains unqualified.
+- [~] Complete exact-head v4 admission and consumer canary for this candidate
+  after the support changes and candidate contract are available on `main`.
+  The row remains open until hosted admission and canary readback are recorded.

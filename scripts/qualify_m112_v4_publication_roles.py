@@ -37,12 +37,12 @@ V3_REPLAY_PLAN = (
     "quality/qualifications/australian-m112-v3-replay-plan-20261020.json"
 )
 V3_REPLAY_MANIFEST = (
-    "quality/qualifications/australian-m112-v3-replay-readbacks-20261020.json"
+    "quality/qualifications/australian-m112-v3-replay-readbacks-20261021.json"
 )
 SOURCE_SEMANTICS_UNRESOLVED_PATH = (
     "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip"
 )
-OUTPUT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json"
+OUTPUT = "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json"
 DATASET = "edithatogo/australian-mbs-utilisation-archive"
 PINNED_REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
 WORKFLOW_COMMIT = "979f806fcf92267f9595eb78a88707e4ec2e503c"

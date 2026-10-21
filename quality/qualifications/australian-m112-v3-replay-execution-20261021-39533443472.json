@@ -1,0 +1,55 @@
+{
+  "boundaries": {
+    "m112_consumer_canary_performed": false,
+    "public_dataset_mutation": false,
+    "source_values_or_rows_included": false,
+    "v4_admission_performed": false
+  },
+  "candidate_only": true,
+  "hosted_workflow": {
+    "commit": "de76083a0da67414c803c7a74de00162fe5dfbad",
+    "repository": "edithatogo/global-medicines-atlas",
+    "run_attempt": 1,
+    "run_id": 39533443472,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39533443472"
+  },
+  "replay": {
+    "partition_id": "60554b242486e78e3020a22c7e3c9dff06bb493fa626b8cdea2c96063453d41a",
+    "plan_sha256": "75141e7a46df139b065b8f7ca3bc36004a8830acb2095d5e9015d57e893ed5cb",
+    "registration": {
+      "archive_period": "filename-derived:mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "byte_count": 21966140,
+      "idempotency_key": "ac94f0aa6957a89ef8e6dbcdf0191a6f0a43242225b3f537194144f8cfcaaabb",
+      "logical_asset_id": "9187d8300b64ce69c3bdcc3cb545eb9ecb6e4e663e65f05abb2c1f60d643aa5d",
+      "metadata_sha256": "308b63ecc548aaedb52cbadf0e149449c1279ebeeb97af8169ec84859e771f14",
+      "operation": "append_only_idempotent_raw_b2_registration",
+      "partition_id": "60554b242486e78e3020a22c7e3c9dff06bb493fa626b8cdea2c96063453d41a",
+      "payload_sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+      "payload_values_read": false,
+      "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
+      "schema_version": "m112-raw-b2-replay-registration-v1",
+      "snapshot_id": "81306299d19987b7d5a3154810fa2ca14d8438ea68a0377720c7b9e261ad9e53",
+      "source_id": "au-data-gov-mbs-demographics",
+      "source_version_id": "data.gov.au-package-show-sha256-f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a"
+    },
+    "registration_sha256": "51abc9e2a1c4aef02ad0f2dd22885632ffdbe16eba84e3b880117e1db9df1574",
+    "snapshot_id": "81306299d19987b7d5a3154810fa2ca14d8438ea68a0377720c7b9e261ad9e53",
+    "vocabulary_version": "3.0.0"
+  },
+  "schema_id": "global-medicines-atlas.m112-v3-replay-execution-receipt",
+  "schema_version": 1,
+  "scope": {
+    "byte_count": 21966140,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+  },
+  "status": "passed",
+  "verification": {
+    "anonymous": true,
+    "payload_values_read": false,
+    "temporary_source_bytes_removed": true,
+    "token_free": true
+  }
+}

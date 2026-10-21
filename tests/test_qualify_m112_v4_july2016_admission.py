@@ -9,6 +9,8 @@ from pathlib import Path
 import pytest
 from scripts.qualify_m112_v4_july2016_admission import (
     CSV_ADMISSION_REPORT,
+    DEMOGRAPHICS_Q1_HR_OUTPUT,
+    DEMOGRAPHICS_Q1_HR_PATH,
     DEMOGRAPHICS_Q1_OUTPUT,
     DEMOGRAPHICS_Q1_PATH,
     DEMOGRAPHICS_Q2_OUTPUT,
@@ -296,6 +298,24 @@ def test_consumer_canary_workflow_allows_exact_q3_hr_object() -> None:
     ).read_text()
 
     assert f"          - {DEMOGRAPHICS_Q3_HR_PATH}" in workflow
+
+
+def test_q1_hr_candidate_contract_binds_exact_replayed_object() -> None:
+    identity = TARGET_IDENTITIES[DEMOGRAPHICS_Q1_HR_PATH]
+    contract = build_contract(
+        target_path=DEMOGRAPHICS_Q1_HR_PATH,
+        evidence_commit="a" * 40,
+    )
+    parsed = json.loads(validate_contract(contract))
+
+    assert DEMOGRAPHICS_Q1_HR_OUTPUT.name == (
+        "australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json"
+    )
+    assert parsed["location"]["path"] == DEMOGRAPHICS_Q1_HR_PATH
+    assert parsed["location"]["bytes"] == identity["bytes"]
+    assert parsed["location"]["sha256"] == identity["sha256"]
+    assert parsed["source"]["bronze_stratum"] == "B2"
+    assert parsed["consumers"] == []
 
 
 def test_csv_admission_receipt_binds_the_exact_candidate_contract() -> None:
