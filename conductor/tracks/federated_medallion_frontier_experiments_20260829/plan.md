@@ -538,3 +538,17 @@
 - [ ] Calibrate the actual matcher on representative, reviewed source labels.
   Existing 400/400 generated partitions remain poor synthetic-only evidence;
   no real-source threshold or confidence is selected.
+
+
+## 2026-10-21 PBS expenditure workbook marker context
+
+- [x] Join the previously counted explicit-terminology marker locations in the
+  two exact PBS expenditure workbooks to their official sheet titles. The
+  value-free mapping resolves marker locations across 7 of 41 sheets in the
+  2023–24 workbook and 8 of 47 sheets in the 2024–25 workbook, including named
+  tables and figure inputs. Receipt:
+  `quality/qualifications/australian-pbs-expenditure-terminology-marker-sheet-map-20261021.json`
+  (SHA-256 `baba4bee9a172e4bc4a57fb068ddedb175a7c9df8b75be2aa661a8cbc7bbf01d`).
+- [ ] Interpret marker-bearing cell content and classify the identified fields
+  against a bounded terminology contract. Sheet context alone is not header or
+  content review; no rights or restricted-terminology clearance follows.
