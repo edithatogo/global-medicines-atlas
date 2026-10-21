@@ -592,7 +592,9 @@
   and the reproducible 1,759-path crosswalk. Anonymous digest readbacks rise
   from 28 to 29; the denominator remains 1,759, both August paths remain
   deferred, complete raw B1/B2 lineage remains one path, and v4 admissions and
-  consumer canaries remain zero. The alias's B1/B2 lifecycle gap is unchanged.
+  consumer canaries were zero at this 2026-10-18 checkpoint. The current
+  2026-10-21 readback below records seven admissions and seven canaries. The
+  alias's B1/B2 lifecycle gap is unchanged.
 - [x] Verify the focused crosswalk tests (6 passed), broader M-112/rights
   tests (78 passed), routine profile, Ruff, `ty`, and BasedPyright. The full
   Test-Goblin run's pytest stage passed (6,682 passed, 3 skipped; 96.89%
@@ -617,7 +619,8 @@
   separate projection lineage remains unqualified.
 - [x] Refresh the path ledger: both August raw paths now bind to one qualified
   raw B1/B2 payload identity. The approved denominator remains 1,759; all
-  1,759 paths remain deferred; v4 admissions and consumer canaries remain zero.
+  1,759 paths remain deferred; v4 admissions and consumer canaries were zero
+  at this 2026-10-18 checkpoint. See the current 2026-10-21 readback below.
 - [x] Verify focused tests (7 passed), broader M-112/rights tests (79 passed),
   routine Test-Goblin, Ruff, `ty`, BasedPyright, context/ecosystem checks, and
   `git diff --check`. The previously recorded full profile remains failed for
@@ -638,8 +641,10 @@
   source version; payload bytes were not retained and payload values were not
   inspected. Rights remain unknown and reviewer state remains unreviewed.
 - [x] Preserve the 1,759-object deferral, zero v4 admissions, zero consumer
-  canaries, and existing rights conclusions. Exact raw digest/path joins rise
-  to 118, with one same-content alias counted separately (119 path identities).
+  canaries, and existing rights conclusions at this 2026-10-19 checkpoint.
+  The current 2026-10-21 readback below records seven admissions and seven
+  canaries. Exact raw digest/path joins rise to 118, with one same-content alias
+  counted separately (119 path identities).
 - [x] Verify 5 focused tests, the routine Test-Goblin profile, Ruff, `ty`, and
   BasedPyright. Full inventory report and the appended source receipt bindings
   pass local readback checks.

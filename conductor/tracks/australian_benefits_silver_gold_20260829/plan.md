@@ -3675,7 +3675,8 @@
   projection members. The frozen 1,759-object denominator is unchanged; 22 raw
   and 10 projection B1/B2 lineages are complete (32 total), 1,714 raw and 13
   projection lineages remain incomplete, all objects remain deferred, and v4
-  admissions and M-112 federation-reader canaries remain zero.
+  admissions and M-112 federation-reader canaries were zero at this 2026-10-19
+  checkpoint. See the current 2026-10-21 readback below.
 - [~] Continue B1/B2 lineage work for remaining objects. The 1,707
   reimbursement-atlas raw rows and 12 medallion projections lack persisted
   landed-admission/source-receipt joins; PBS/M107 owner-managed objects remain
@@ -3726,9 +3727,11 @@
   current inventory now has 1,725 complete raw lineages and 10 complete
   projection lineages (1,735/1,759 total); 11 raw and 13 projection lineages
   remain incomplete. All objects remain deferred, rights remain unresolved
-  where previously unresolved, v4 admissions remain zero, and consumer
-  canaries remain zero. No source was added, no source-owner work was changed,
-  and no source payload bytes or values were read for this metadata join.
+  where previously unresolved, and v4 admissions and consumer canaries were
+  zero at this 2026-10-19 checkpoint. The current 2026-10-21 readback below
+  records seven admissions and seven canaries. No source was added, no source-
+  owner work was changed, and no source payload bytes or values were read for
+  this metadata join.
 - [x] Verify the focused tests (4 passed), the complete M-112 affected suite
   (103 passed), Ruff, formatting, BasedPyright, and diff checks. Test-Goblin
   full ran 6,945 tests with 2 unrelated stable-v1 reproducibility failures
@@ -3758,7 +3761,9 @@
 - [x] Reconcile the cumulative 1,759-object gate report: 1,731 raw and 10
   projection B1/B2 lineages are complete (1,741 total); five raw and 13
   projection lineages remain incomplete. All 1,759 objects remain deferred;
-  v4 admissions and consumer canaries remain zero.
+  v4 admissions and consumer canaries were zero at this 2026-10-19 checkpoint.
+  The later 2026-10-21 readback below records seven admissions and seven
+  canaries.
 - [x] Verify 3 focused tests and 106 M-112 tests, Ruff, formatting, `ty`,
   BasedPyright, Test-Goblin routine and repository checks. Test-Goblin full
   completed with exit code 0 under pinned `uv 0.11.29`; coverage was 97.92%
@@ -3891,7 +3896,9 @@
   remains unreviewed and blocks full-object release. The current snapshot has
   28 objects with positive scoped rights evidence and 1,731 unresolved. Rights
   evidence leaves all 1,759 objects deferred, zero v4 admissions, zero canaries,
-  and zero external publications unchanged. CMS remains external-reference-only;
+  and zero external publications unchanged at this 2026-10-19 checkpoint. The
+  later 2026-10-21 readback below records seven admissions and seven canaries;
+  the no-publication state remains current. CMS remains external-reference-only;
   no processing or derived rights are inferred.
 - [ ] Resolve the four exact August 2026 MBS Bronze projection rights and
   derived-output authority independently. Their B1/B2 and transformation
@@ -3916,7 +3923,9 @@
   `quality/qualifications/australian-m112-rights-release-preflight-20261020.json`.
 - [x] Reassert the frozen denominator (1,759), current rights counts (28 with
   scoped positive rights evidence, 1,731 unresolved), zero v4 admissions, zero
-  canaries, and zero external publications. PBS utilization's scoped grant
+  canaries, and zero external publications at this 2026-10-20 checkpoint. The
+  later 2026-10-21 readback below records seven admissions and seven canaries;
+  no external publication occurred. PBS utilization's scoped grant
   still excludes unlicensed vocabulary; full-object release remains blocked
   pending exclusion review.
 - [ ] Resolve derived-output rights for the four exact August 2026 MBS Bronze
@@ -4030,8 +4039,9 @@
   token-free clean-room restore receipts as `candidate_receipt_available_unbound`
   for these 14 objects. The two August objects remain without this receipt
   binding. This does not create a v4 contract, change rights, admit objects, or
-  qualify any consumer canary. Keep the denominator at 1,759, admissions at
-  zero, and M-112 canaries at zero.
+  qualify any consumer canary. The 1,759 denominator, zero admissions, and
+  zero canaries are the 2026-10-20 checkpoint state, superseded by the
+  2026-10-21 current readback below.
 - [x] Validate the deterministic refresh: focused selection 14 passed; broader
   federation and admission selection 195 passed; Test-Goblin routine, Ruff,
   `ty`, context/ecosystem validation, and `git diff --check` passed. Qualification

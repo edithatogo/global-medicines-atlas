@@ -1421,7 +1421,8 @@
 - [x] The role qualification test passed (5), including altered-schema
   rejection; Ruff passed; generated report regeneration and `--check` passed.
   Preserve the approved 1,759-object denominator, 0 v4 admissions, and 0 M-112
-  consumer canaries.
+  consumer canaries at this 2026-10-20 checkpoint. This dated count is
+  superseded by the 2026-10-21 current qualification readback below.
 - [~] Authority contract binding remains open together with source semantics,
   discovery, v3 replay, recovery/cache and consumer evidence. This candidate
   identity is not itself a v4 admission.
@@ -1454,8 +1455,10 @@
 - [~] Keep location and discovery receipts candidate-only and unbound until
   referenced from complete per-object v4 contracts. The approved denominator
   remains 1,759, with zero v4 admissions and zero qualifying M-112 consumer
-  canaries. Cache lifecycle evidence remains missing; source semantics,
-  complete v4 contracts and consumer qualification remain open.
+  canaries at this 2026-10-20 checkpoint. This dated count is superseded by
+  the 2026-10-21 current qualification readback below. Cache lifecycle
+  evidence remains missing; source semantics, complete v4 contracts and
+  consumer qualification remain open.
 
 ## 2026-10-19 M-112 source-temporal evidence for one MBS group object
 
@@ -1472,8 +1475,9 @@
 - [x] Focused role tests (9), broader M-112 v1/federation selection (75),
   qualification regeneration/check, Ruff, and routine Test-Goblin passed.
 - [~] The source role remains unbound pending complete v4 contracts; 15 other
-  source candidates still lack source-specific temporal qualification. Preserve
-  the 1,759 denominator, zero admissions, and zero consumer canaries.
+  source candidates still lack source-specific temporal qualification. The
+  1,759 denominator, zero admissions, and zero consumer canaries were the
+  2026-10-19 checkpoint state; see the current 2026-10-21 readback below.
 
 ## 2026-10-19 M-112 source-temporal evidence expanded to 13 objects
 
