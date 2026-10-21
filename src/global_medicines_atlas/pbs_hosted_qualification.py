@@ -279,6 +279,7 @@ class _RetryBudget:
                 "entities",
                 "references",
                 "dates",
+                "values",
             }
             or any(
                 type(value) is not int or not 0 <= value < 2**63

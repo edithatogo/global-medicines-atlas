@@ -176,6 +176,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_mbs_q1_source_meanings.py",
         "tests/test_mbs_q1_native_silver.py",
         "tests/test_mbs_demographic_csv_cohort.py",
+        "tests/test_mbs_demographic_workbook_cohort.py",
+        "tests/test_qualify_mbs_demographic_workbook_cohort.py",
         "tests/test_qualify_mbs_demographic_csv_cohort.py",
         "tests/test_pbs_utilisation_atc_internal_consistency.py",
         "tests/test_screen_pbs_expenditure_marker_context.py",
