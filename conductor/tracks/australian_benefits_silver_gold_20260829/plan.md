@@ -4562,10 +4562,18 @@ not itself perform the pending Q1 HR admission or canary.
   found no patterns across 1,040,085 bytes. The aggregate-only receipt is
   `quality/qualifications/australian-mbs-v4-bounded-content-screen-20261021.json`
   (SHA-256 `83ae8b29ad197495c6cb929165bf2560eaaf22f13ffbb8c7410f8a26ce2d6e5e`).
-- [ ] Complete the restricted-content screen for the eligible MBS/PBS scope
-  with a source-appropriate restricted-value review. This bounded scanner had
-  no restricted-value digest denylist, so it does not clear restricted
-  terminology or rights, and it does not screen PBS content.
+- [x] Complete the bounded content screen and classify detected indicators
+  across the six exact July 2025 MBS v4 candidate tables and six exact PBS
+  utilisation objects. The current disposition reports 35,934 screened MBS
+  rows, 1,314,870 ATC-shaped PBS values, 136 terminology-marker occurrences,
+  zero UMLS-CUI matches, and zero email-like values; all observed indicators
+  have field/context classification. Receipt:
+  `quality/qualifications/australian-restricted-content-screen-disposition-20261021.json`
+  (SHA-256 `81fc11f9d4b1a07de3ff7ebbc3d5bf444b6eaabeed0acfc9fed794db53c3d184`).
+- [ ] Retain the residual boundary: the configured detectors are not
+  exhaustive, ATC membership is unverified, and the rights instruments were
+  not independently reviewed. This closes the bounded screen only; it does not
+  clear broader restricted content or authorize release.
 - [ ] Calibrate the actual matcher on representative, human-adjudicated,
   case-disjoint held-out labels from the existing source scope. The available
   400/400 generated matcher cases are synthetic-only and produce poor holdout
@@ -4647,12 +4655,13 @@ not itself perform the pending Q1 HR admission or canary.
 - [x] Build and validate the exact v4.1 raw-B2 contract for the replayed Q1
   2016 HR object. The canonical contract is
   `quality/qualifications/australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json`
-  (SHA-256 `c926b6d5d3dfb96e23905dd29583651dcc292364f97a34b1e6dea939cebd9f39`);
+  (SHA-256 `5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5`);
   it binds the pinned 21,966,140-byte object and its exact digest, source,
   acquisition and lineage roles. Schema and semantic checks pass. Native
-  physical workbook layout is qualified by the exact-object layout report;
-  source field semantics, formula meaning, and period interpretation remain
-  unqualified.
+  physical workbook layout is qualified by the exact-object layout report.
+  Workbook metadata qualifies the processing-month basis, and the formula/cache
+  comparison qualifies text-literal storage behavior. Age category meaning,
+  `Benefits ($)` meaning, and a typed transform remain unqualified.
 - [~] Complete anonymous receipt closure and exact-main admission/canary. The
   local closure attempt found that the Q1 replay receipt URL at pinned main
   `de76083a0da67414c803c7a74de00162fe5dfbad` returns HTTP 404. The contract is
@@ -4678,9 +4687,19 @@ not itself perform the pending Q1 HR admission or canary.
   a physical layout difference; it does not map those fields or assert semantic
   equivalence. The workbook contains 171,477 formula cells; formulas were not
   evaluated.
-- [ ] Qualify Q1 HR field meanings, formula semantics, temporal interpretation,
-  and a loss-aware typed projection. The physical layout check does not admit
-  or canary the raw object; M-112 exact-main admission and canary remain open.
+- [x] Qualify the source-reported month interpretation and stored formula
+  behavior. The metadata sheet defines `Month` by service processing date
+  rather than service date; the formula/cache comparison finds every observed
+  `Age_Range` output is a text literal equal to its cached string. The reports
+  are `australian-mbs-demographics-q1hr-metadata-semantics-20261021.json`
+  (SHA-256 `927269591afa38f5393615510a0ae5dc8ce8a6b99040759de92f7bdeeb465bd5`)
+  and `australian-mbs-demographics-q1hr-formula-literal-analysis-20261021.json`
+  (SHA-256 `f324ae679840bd57fb7e7d566f9a18fdf7a90a4614289cce865b2086be97fa3e`).
+- [ ] Resolve `Age_Range` category meaning, `Benefits ($)` calculation,
+  unmatched rows, and any source-era mapping before a loss-aware typed
+  projection. These reports do not establish CSV equivalence or a valid
+  transformation. Exact-main admission and the reader canary remain separately
+  open.
 
 
 ## M-112 Q1 HR formula and existing-CSV comparison (2026-10-21)
@@ -4756,9 +4775,11 @@ not itself perform the pending Q1 HR admission or canary.
   (SHA-256 `1e6c2e254af3704ab422cfc4a495648441dae9a533907bca4097cfab15cb33a4`) and
   `quality/qualifications/australian-pbs-utilisation-summary-workbook-header-resolution-20261021.json`
   (SHA-256 `f717d2bda385a1dc7080b3493de9430998172146c03b5f8252f21e6f61ae71dd`).
-- [ ] Resolve marker-bearing fields in the two expenditure workbooks and
-  complete restricted-content classification; no admission or publication
-  follows from header mapping.
+- [x] Classify the observed marker content in the two expenditure workbooks:
+  all 136 detected occurrences are contextual or label text, and the separate
+  ATC-shaped scan found zero cells in those files. See the exact pinned
+  aggregate receipt below. This does not establish ATC vocabulary membership,
+  exhaustive detection, independent rights review, admission, or publication.
 
 
 ## M-110 PBS six-object privacy-pattern scan (2026-10-21)
@@ -4772,14 +4793,15 @@ not itself perform the pending Q1 HR admission or canary.
   `quality/qualifications/australian-pbs-dos-sensitive-header-context-20261021.json` (SHA-256 `a5046bae17eb24a63e286f0c083ca0a2269c997bc2918b7fe3bf97324ee40654`).
 - [ ] Review the workbook narrative-token hits and restricted terminology. This
   bounded detector is not exhaustive and makes no privacy, rights, or vocabulary
-  clearance claim.
+  clearance claim. The current aggregate screen still does not classify whether
+  these narrative tokens represent individual-level content.
 
 
 ## M-112 current role-report reference reconciliation (2026-10-21)
 
 - [x] Verify the latest candidate-role qualification at
   `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`
-  (SHA-256 `67fb4cd0ccf3073fd472c3b5677b4b6452b55047fff0791a3720eb14914369dd`).
+  (SHA-256 `4c73d269e8d69ebea185cf7c62909641147e035fd7c784a46b94bd415fd03f6c`).
   Its readback remains seven v4 admissions, seven consumer canaries, and 1,752
   deferred objects of 1,759.
 - [x] Reconcile the registry and current-readback sections in the Bronze,
@@ -4929,13 +4951,12 @@ not itself perform the pending Q1 HR admission or canary.
   candidate rows. No source values were emitted. Consolidated receipt:
   `quality/qualifications/australian-restricted-content-screen-reconciliation-20261021.json`
   (SHA-256 `af14e16f255e4686f09ab25180c62139476edbd0aaf3dd5367a2f39c5e166e5b`).
-- [ ] Complete vocabulary-membership validation and restricted-value
-  disposition. The exact six-object PBS and six-table MBS rights attestations
-  cover their stated scopes, but neither permission instrument was independently
-  reviewed. ATC-shaped values are not verified against an external vocabulary,
-  and the bounded MBS scanner is not exhaustive. No admission, publication, or
-  release follows from this reconciliation; the row 3 matcher-calibration gate
-  also remains open.
+- [ ] Verify ATC membership against an authoritative reference already in the
+  approved inventory. No such dictionary is present in the retained source
+  scope. The exact six-object PBS and six-table MBS rights attestations cover
+  their stated scopes, but the instruments were not independently reviewed;
+  the configured scans are not exhaustive. No new vocabulary source is added,
+  and no admission, publication, or release follows from this reconciliation.
 
 - [x] Classify every content indicator reported by the bounded screens against
   the exact field-header evidence and bind both six-object rights attestations

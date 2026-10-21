@@ -505,9 +505,16 @@
   patterns. Receipt:
   `quality/qualifications/australian-mbs-v4-bounded-content-screen-20261021.json`
   (SHA-256 `83ae8b29ad197495c6cb929165bf2560eaaf22f13ffbb8c7410f8a26ce2d6e5e`).
-- [ ] Keep restricted-terminology and broader source-content screening open:
-  no restricted-value denylist was supplied, the scanner is explicitly
-  non-exhaustive, and PBS source content is not covered by this MBS-only check.
+- [x] Complete and reconcile the bounded content screen for the six MBS v4
+  candidate tables and six PBS utilisation objects. The exact-scope disposition
+  classifies every observed pattern, including ATC-shaped values, numeric
+  fields, terminology markers, sensitive-looking headers, UMLS-CUI patterns,
+  and email-like patterns. It records the maintainer's exact-scope rights
+  attestations without independently reviewing their instruments.
+- [ ] Keep broader screening and vocabulary membership open: configured
+  detectors are not exhaustive, the retained inventory has no authoritative
+  ATC dictionary, and workbook narrative-token semantics are unresolved. No
+  additional source is introduced to close these gaps.
 - [ ] Keep actual matcher calibration open. Existing case-disjoint 400-case
   partitions were generated from invented names and calibration remains poor
   on holdout (Brier 0.2108; ten-bin ECE 0.2068). Representative
