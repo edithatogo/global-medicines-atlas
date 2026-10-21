@@ -5168,3 +5168,17 @@ This increment uses the frozen existing sources and sends no outreach.
   rights, admission and canary conclusions remain unchanged.
 - [~] Verify complete protected CI, merge the reviewed increment and execute
   the read-only main workflow; retain the exact hosted aggregate receipt.
+
+
+### Exact hosted source-meaning readback (2026-10-21)
+
+- [x] Merge PR #1249 as `6522e7959b2065214e77cd623dbb05c379217b57`
+  after all 39 reported checks and 29 required checks passed.
+- [x] Execute main workflow run `39590928303`; download the actual aggregate
+  artifact and retain its exact bytes. It observes 58 native `Unknown` age
+  labels and reproduces all 545,070 full-key numeric comparisons and all
+  fourteen rounding/truncation counts. No Silver promotion follows.
+- [ ] Resolve the five source-definition requirements in
+  `quality/qualifications/silver-source-meaning-resolution-20261021-hosted.json`.
+  Hosted diagnostics do not resolve the benefit calculation, unknown-age
+  definition, P7 date/value conventions or included patient denominators.
