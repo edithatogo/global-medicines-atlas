@@ -1468,3 +1468,15 @@ for credentialed or rights-unresolved sources.
 - [~] Hosted protected checks, review, and merge remain pending on updated PR
   #1242. The full local Test-Goblin profile above ran before rebasing onto the
   Q2 canary and Q3 replay updates; protected CI must validate the final head.
+
+## M-112 current qualification readback (2026-10-21)
+
+The latest rights-release preflight records all 1,759 frozen objects with
+resolved rights, seven v4 admissions, seven admitted-object canaries, and 1,752
+deferred objects. Earlier zero-count statements above describe their original
+dated checkpoints and are superseded. Two MBS sidecar B1 bindings remain
+incomplete; broader Bronze-source landing and coverage work is tracked
+separately and remains outside the frozen M-112 denominator. Current evidence:
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
+`quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
+and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.

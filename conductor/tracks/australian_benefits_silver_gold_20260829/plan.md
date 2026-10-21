@@ -3544,9 +3544,11 @@
   the stylesheet; the failed job retry passed all steps. The receipt remains
   `candidate_only` and `review_state=not_reviewed`; no admission, rights
   conclusion, publication, source retention, or M-112 acceptance occurred.
-- [ ] Keep M-112 per-object federation-reader canaries blocked until an eligible
-  object receives v4 admission. The frozen 1,759-object overlay therefore still
-  correctly reports zero M-112 consumer canaries and preserves all deferrals.
+- [x] At this 2026-10-18 checkpoint, keep per-object federation-reader canaries
+  blocked until an eligible object receives v4 admission. The then-current
+  overlay reported zero M-112 consumer canaries. This dated status is superseded
+  by the 2026-10-21 current readback below; the 1,752 remaining objects remain
+  deferred pending their own qualification.
 
 ### M-112 complete frozen-object identity readback (2026-10-18)
 
@@ -4073,9 +4075,9 @@
   that exact admission, exercise `bind_consumer_contract` and
   `FederatedReader` on the live public object, verify stream digest/size and
   reader cache cleanup, and retain an aggregate-only canary receipt.
-- [ ] Run the canary after this workflow and qualification are merged. Until
-  its exact-main receipt is read back and checked, the M-112 consumer-canary
-  count remains zero.
+- [x] Run and verify the exact-main canary after the workflow and qualification
+  merged. The exact July 2016 Group workbook canary passed in run `39300224557`;
+  its receipt and the later current 7/7 reconciliation are recorded below.
 
 ## M-112 consumer canary cache-expiry correction (2026-10-20)
 
@@ -4091,9 +4093,10 @@
   exact-object cache only while its admission is live, requires zero retained
   bytes after expiry, and always checks that closing the reader clears cache.
   Focused cache-boundary tests cover both live and expired receipts.
-- [ ] Merge the correction and rerun on exact `main`; update the canary count
-  only after the aggregate receipt is present and its exact object, commit,
-  digest, byte count, and cleanup fields validate.
+- [x] Merge the correction and rerun on exact `main`. Run `39300224557` passed
+  the exact-object reader and cleanup checks; the aggregate receipt is recorded
+  below. The current M-112 readback now counts seven unique admitted objects
+  and seven canaries.
 
 ## M-112 July 2016 admitted-object consumer canary passed (2026-10-20)
 
@@ -4458,8 +4461,10 @@
   replay/cache roles, with 14 publication/restore roles, 3 existing v4
   admissions, and 3 existing admitted-object canaries. This replay creates no
   v4 admission or canary.
-- [ ] Build and independently verify the exact Q3 raw-B2 v4.1 contract after
-  the role-evidence merge; then run its admitted-object canary on exact `main`.
+- [x] Build and independently verify the exact Q3 raw-B2 v4.1 contract after
+  the role-evidence merge, then run its admitted-object canary on exact `main`.
+  The exact-main qualification is recorded at
+  `quality/qualifications/australian-m112-v4-demographics-q3-july-admission-qualification-20261020-39356792827.json`.
   Native source layout remains unqualified and outside this raw-B2 admission.
 
 ## MBS August projections outside the frozen M-112 inventory (2026-10-20)
@@ -4494,3 +4499,14 @@
 - [x] Refresh the current rights-release preflight as `quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`, preserving revision 20261021-4 byte-for-byte as its predecessor. The exact-main workflow completed at `2026-10-20T14:59:44Z`; the current reconciliation uses that actual receipt time, not local midnight labeled UTC.
 - [x] Pin the Q3 HR receipt to dataset revision `dee9a5b0580dfe394474dc26b372559462e157e7` in current-rights reconciliation and reject receipts that change admission and canary revisions together.
 - [x] Validate the updated qualification with 58 focused contract/admission, role, current-rights, and preflight tests; Ruff, formatting, and `git diff --check` pass. Do not count this raw-B2 reader canary as native schema qualification or relationship calibration.
+
+## M-112 current qualification readback (2026-10-21)
+
+The latest preflight binds the current rights reconciliation and role report:
+all 1,759 frozen objects have resolved rights, seven exact objects are admitted
+and canaried, and 1,752 remain deferred. The July HR workbook reader canary does
+not qualify its native workbook layout or relationship semantics. No source or
+dataset was added and no external publication was performed. Current receipts:
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
+`quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
+and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.

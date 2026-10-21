@@ -1489,8 +1489,9 @@
 - [x] Focused role tests (9), broader M-112 v1/federation selection (75),
   qualification regeneration/check, Ruff, and routine Test-Goblin passed.
 - [~] The 13 temporal role candidates remain unbound pending complete v4
-  contracts, schema qualification and the other mandatory evidence. Preserve
-  the approved 1,759 denominator, zero admissions, and zero consumer canaries.
+  contracts, schema qualification and the other mandatory evidence. The current
+  M-112 readback records seven admissions and seven canaries from the approved
+  1,759-object denominator; those admissions do not close these remaining roles.
 
 ## 2026-10-20 M-112 qualifier strict typing repair
 
@@ -1507,11 +1508,11 @@
   passed. Its full-history scan found no leaks; the same targeted correction
   is included in PR #1200, where it addresses 33 false-positive public digest
   matches.
-- [~] The M-112 qualification remains unchanged: 0 v4 admissions and 0
-  consumer canaries. This repair only makes the current candidate evidence
-  verifier pass strict typing; it does not bind incomplete role receipts or
-  create an admission. PR #1200 hosted checks are rerunning on its updated
-  head.
+- [x] At this verifier-repair checkpoint, M-112 remained at 0 admissions and 0
+  consumer canaries. The repair only made current candidate evidence pass
+  strict typing; it did not bind incomplete role receipts or create an
+  admission. That dated 0/0 state is superseded by the current 7/7 readback
+  below.
 
 ## 2026-10-20 one-object M-112 v3 replay preparation
 
@@ -1564,13 +1565,10 @@
   receipt closure because GitHub API returned `403 rate limit exceeded`
   (`39351966724`). Neither run is counted as a canary; retain both blockers
   without retrying unchanged inputs.
-- [~] The repository's earlier track rows saying zero canaries are stale: the
-  current role qualification records 3 admissions and 3 qualifying canaries.
-  This new receipt is a fresh current-main execution for an already-canaryed
-  workbook, so it does not add a distinct admitted object. Refresh the CSV
-  contract after its role evidence is current, and retry the historical ZIP only
-  after GitHub API rate limiting has cleared. API/CLI/Atlas/browser-product
-  consumer qualification remains a separate open gate.
+- [x] At this 2026-10-20 checkpoint, the role report recorded 3 admissions and
+  3 qualifying canaries. Later sections record the CSV and historical ZIP
+  canaries and the current 7/7 total. API/CLI/Atlas/browser-product consumer
+  qualification remains a separate open gate.
 
 ## 2026-10-20 M-112 Q1 demographics replay-role qualification
 
@@ -1587,9 +1585,11 @@
   candidate role evidence. The contract pins evidence commit
   `71b8ca00dee8275578cb8d50a0e4db12cc6160f3` and SHA-256
   `3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce`.
-- [ ] Run its exact-main admission and `FederatedReader` canary after the
-  contract is merged. Q1 remains unadmitted; totals remain 4 admissions and 4
-  canaries until the hosted gate passes.
+- [x] Run its exact-main admission and `FederatedReader` canary after the
+  contract is merged. Q1's successful canary receipt is
+  `quality/qualifications/australian-m112-v4-demographics-q1-march-consumer-canary-20261020-39375704078.json`;
+  the latest current readback records seven admissions and seven canaries.
+
 
 ## 2026-10-20 M-112 Q3 demographics v4 raw-B2 contract qualification
 
@@ -1637,5 +1637,18 @@
   admission/canary totals to 4 while preserving the 1,759 denominator and 1,755
   deferrals. Focused rights/preflight tests passed (14); the v4 role report
   check passed.
-- [~] The refreshed rights reconciliation is included in PR #1232; merge still
-  requires all exact-head hosted checks to pass.
+- [x] The refreshed rights reconciliation merged in PR #1232 at exact `main`
+  commit `4255ae0d187413d24a9055f33bd13f08b73e396e` after all 39 exact-head
+  checks passed. Subsequent M-112 readbacks are summarized below.
+
+## M-112 current qualification readback (2026-10-21)
+
+The latest bound preflight and role report record seven exact v4 admissions and
+seven admitted-object `FederatedReader` canaries from the unchanged 1,759-object
+denominator; 1,752 remain deferred. This reader evidence does not qualify
+API/CLI/Atlas/export product surfaces, source-native layouts, or relationship
+semantics. No public dataset mutation or external publication was performed.
+Current evidence:
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
+`quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
+and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
