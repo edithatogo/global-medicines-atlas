@@ -1,0 +1,67 @@
+{
+  "boundaries": {
+    "benefit_equivalence_established": false,
+    "candidate_only": true,
+    "new_admissions": 0,
+    "new_federated_canaries": 0,
+    "new_sources": 0,
+    "publications": 0,
+    "rights_conclusion_changed": false
+  },
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "frozen_candidate_count": 3,
+  "prior_structural_receipt_path": "quality/qualifications/australian-mbs-workbook-streaming-receipt-20261017.json",
+  "prior_structural_receipt_sha256": "eb3d63082a2e2af9df18f8073b335cac84f406533342f3abf989327b6fe65dd0",
+  "result": {
+    "acquisition_sha256": "6d901d8d55290846399a86ad74ab68d507b90e8d7739e90b3cf8856e8762dbe8",
+    "ancillary_cells": 42,
+    "b2_manifest_sha256": "a9f10be210226b645d3d73278a361ef5da898ae360cd8b8b27774c78b4f630e3",
+    "candidate_only": true,
+    "coverage": {
+      "benefit_converted": 468783,
+      "benefit_invalid": 2,
+      "benefit_null": 2,
+      "benefit_unrepresentable": 76287,
+      "literal_unknown_age_rows": 58,
+      "native_field_slots": 4360592,
+      "native_fields": 4360592,
+      "native_rows": 545074,
+      "services_converted": 545070,
+      "services_invalid": 2,
+      "services_null": 2
+    },
+    "duckdb_consumer_counts_equal": true,
+    "independent_parquet_restore": true,
+    "native_workbook_cells": 4360634,
+    "package_files": {
+      "ancillary.parquet": {
+        "bytes": 13297,
+        "sha256": "c5d47305f7f2a62a1ba4397c7aa92784cd33ca720c239b1758dedb1db643428d"
+      },
+      "inventory.json": {
+        "bytes": 2593,
+        "sha256": "e14cad5bb5ba125e2953a5e7951ac9661d3fc6c7b59662cfc122fd5db995d4ed"
+      },
+      "primary.parquet": {
+        "bytes": 50183345,
+        "sha256": "603c68be75220913592288db512dc3fab11b91fc3956692004ccb4b1925750a6"
+      }
+    },
+    "package_manifest_sha256": "8b814ed481469721ef352359870288144e212f4423b96ef8184116966ef249b9",
+    "patient_rate_state": "unavailable",
+    "rebuild_equal": true,
+    "source_measure_id": "60993adb8d94a5fc4af4564d951a57fd0bee803a67dee7bf99a7a5b9e07d4a0a:Benefits ($)",
+    "source_native_primary_fields_equal": 4360592,
+    "source_object_id": "60993adb8d94a5fc4af4564d951a57fd0bee803a67dee7bf99a7a5b9e07d4a0a",
+    "source_sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+    "unqualified_pooling_blocked": true
+  },
+  "row_denominator_method": "independent exact-source workbook reader; not CSV or filename",
+  "schema_id": "global-medicines-atlas.mbs-demographic-workbook-candidate-qualification",
+  "schema_version": 1,
+  "selected_quarter": 1,
+  "source_path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+  "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+  "temporary_derivatives_removed": true,
+  "workflow_commit": "0d8b4099ef1a89d43498c01f0a61adfcbf28b57c"
+}

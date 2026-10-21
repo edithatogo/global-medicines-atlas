@@ -53,6 +53,7 @@ def main(argv: list[str] | None = None) -> int:
             "references",
             "dates",
             "values",
+            "value-package",
         ),
     )
     parser.add_argument("--reference-shard-index", type=int)

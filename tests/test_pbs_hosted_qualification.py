@@ -12,6 +12,7 @@ from urllib.parse import quote
 
 import httpx
 import pytest
+import yaml
 from scripts import assemble_historical_pbs_reference_manifest as assemble_nodes
 from scripts import prepare_historical_pbs_qualification as prepare_cli
 from scripts import qualify_historical_pbs_public as cli
@@ -1570,3 +1571,50 @@ def test_retained_values_failure_is_not_a_qualification_result():
     assert report["progress"]["batches"] == 0
     assert "qualification" not in report
     assert report["publication_performed"] is False
+
+
+def test_hosted_value_package_reuses_exact_inputs_and_removes_derivatives(
+    synthetic,
+):
+    _, calls, transport = synthetic
+    checkpoints = []
+    report = hosted.run_hosted_qualification(
+        SHA,
+        projection="value-package",
+        transport=transport,
+        progress=checkpoints.append,
+    )
+    package = report["qualification"]
+    assert package["parquet_bytes_identical"] is True
+    assert package["complete_source_reparse_and_restore"] is True
+    assert package["temporary_derivatives_removed"] is True
+    assert package["package"]["boundaries"]["admitted"] is False
+    assert report["publication_performed"] is False
+    assert len(calls) == 5
+    phases = {entry["progress"]["phase"] for entry in checkpoints}
+    assert {"package-write", "package-restore"} <= phases
+
+
+def test_package_mode_keeps_existing_hosted_deadlines_and_read_only_artifacts():
+
+    workflow = yaml.load(
+        WORKFLOW.read_text(encoding="utf-8"), Loader=yaml.BaseLoader
+    )
+    job = workflow["jobs"]["native-value-package"]
+    assert job["if"] == "inputs.qualification_scope == 'native-value-package'"
+    assert job["timeout-minutes"] == "65"
+    assert job["permissions"] == {"contents": "read"}
+    step = next(step for step in job["steps"] if "run" in step)
+    assert step["timeout-minutes"] == "55"
+    assert "--projection value-package" in step["run"]
+    assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in step["run"]
+    assert (
+        job["steps"][-1]["with"]["path"]
+        == "pbs-native-value-package-receipt.json"
+    )
+    for name, old in workflow["jobs"].items():
+        if name not in {"native-values", "native-value-package"}:
+            assert (
+                "inputs.qualification_scope != 'native-value-package'"
+                in old["if"]
+            )

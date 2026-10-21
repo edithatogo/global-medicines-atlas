@@ -255,7 +255,7 @@ def test_registered_values_mode_is_read_only_and_sends_no_comments():
     assert jobs["native-values"]["permissions"] == {"contents": "read"}
     for name, job in jobs.items():
         assert job["permissions"] == {"contents": "read"}
-        if name != "native-values":
+        if name not in {"native-values", "native-value-package"}:
             assert "inputs.qualification_scope != 'native-values'" in job["if"]
         for step in job["steps"]:
             assert "gh issue comment" not in step.get("run", "")
