@@ -337,6 +337,13 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
     cli.main()
     report = json.loads(capsys.readouterr().out)
     assert report["domain_value_profile"]["date_profile"] is None
+    typed = report["typed_candidate_package"]
+    assert typed["rebuild_equal"] is True
+    assert typed["typed_parquet_restore_verified"] is True
+    assert typed["native_cell_parity_verified"] is True
+    assert typed["temporary_derivatives_removed"] is True
+    assert typed["date_profile"] is None
+    assert typed["output_admitted"] is False
     storage = report["storage_qualification"]
     assert storage["parquet_roundtrip_verified"] is True
     assert storage["publication_performed"] is False

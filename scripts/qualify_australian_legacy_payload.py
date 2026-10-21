@@ -11,6 +11,7 @@ import sys
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
 import httpx
@@ -28,6 +29,10 @@ from global_medicines_atlas.mbs_workbook_qualification import (
     PUBLIC_WORKBOOK_URI,
     acquire_hosted_workbook,
     qualify_workbook_cells,
+)
+from global_medicines_atlas.mbs_workbook_value_package import (
+    build_workbook_value_package,
+    verify_workbook_value_package,
 )
 from global_medicines_atlas.mbs_workbook_values import profile_workbook_values
 from global_medicines_atlas.receipts import (
@@ -215,6 +220,26 @@ def main() -> None:
         summary["domain_value_profile"] = profile_workbook_values(
             payload, receipt
         )
+        with TemporaryDirectory(prefix="mbs-p7-typed-") as temporary:
+            directory = Path(temporary)
+            first = build_workbook_value_package(
+                payload, receipt, directory / "first"
+            )
+            second = build_workbook_value_package(
+                payload, receipt, directory / "second"
+            )
+            if first != second:
+                raise ValueError("P7 typed deterministic rebuild differs")
+            verify_workbook_value_package(directory / "first", payload, receipt)
+            manifest_sha256 = hashlib.sha256(
+                (directory / "first/qualification.json").read_bytes()
+            ).hexdigest()
+        summary["typed_candidate_package"] = {
+            **first,
+            "manifest_sha256": manifest_sha256,
+            "rebuild_equal": True,
+            "temporary_derivatives_removed": True,
+        }
         summary["workflow_commit"] = os.environ["GITHUB_SHA"]
         summary["workflow_run"] = (
             "https://github.com/edithatogo/global-medicines-atlas/actions/runs/"

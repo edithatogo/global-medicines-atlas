@@ -5317,3 +5317,21 @@ source qualification remains pending their actual final artifacts.
   exact-main hosted execution. Quarterly run `39627746801` remains queued.
 - [ ] Continue remaining MBS families and eras, PBS domain harmonisation,
   exact output rights/admission and consumer delivery within frozen scope.
+
+### P7 typed candidate package and exact restore (2026-10-22)
+
+- [~] Extend the existing P7 typed producer into a deterministic transactional
+  `cells.parquet` package. Preserve every native cell and its header mapping,
+  numeric text, formula/cache/error, source and receipt identity; date profile
+  remains unselected and all interpretation states remain native_unresolved.
+- [~] Extend the registered hosted workbook qualifier to build twice, compare
+  exact package fingerprints and independently restore every native cell and
+  typed field. Retain aggregate-only evidence and delete temporary packages.
+- [x] Verify synthetic corruption, rehashed Parquet/schema changes, manifest
+  drift, file-set/symlink/byte bounds, no overwrite and transactional failure.
+  Seventy affected tests pass; package branch coverage is 93.68%; affected
+  production typing has zero errors or warnings.
+- [ ] Complete full validation, review and protected CI, merge, then execute
+  the existing exact-main P7 workflow and retain its aggregate artifact.
+- [ ] Continue all remaining frozen MBS/PBS families, exact output admission
+  and actual consumer delivery; typed storage does not establish semantics.
