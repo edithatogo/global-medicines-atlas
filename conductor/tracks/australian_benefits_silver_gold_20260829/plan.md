@@ -4637,3 +4637,24 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
   which contains that receipt, but this commit is not publicly available while
   the no-push/no-PR rule is active. Admission and canary remain 7 each; the
   1,752 deferrals and 1,759 denominator are unchanged.
+
+
+## M-112 Q1 HR physical workbook layout qualification (2026-10-21)
+
+- [x] Bind the native physical layout of the exact Q1 2016 HR workbook to its
+  replayed source digest and byte count. The in-memory read verified the exact
+  21,966,140-byte object, two sheets, primary sheet `MBS Demographics 2016
+  Qtr1` with declared range `A1:H545077`, and a separate `Metadata` sheet. Its
+  primary header row is row 3 with eight fields. No source records or values
+  were emitted or retained. The aggregate inventory is
+  `quality/qualifications/australian-mbs-demographics-q1hr-workbook-layout-candidate-20261021.json`.
+- [x] Compare header shape with the already-reviewed Q1 demographics CSV schema
+  in the existing inventory. The workbook has four distinct header labels
+  (`Month`, `Item_Number`, `Age_Range`, `Benefits ($)`) versus the CSV schema
+  (`Month of Processing`, `Item Number`, `Age Range`, `Benefit`). This qualifies
+  a physical layout difference; it does not map those fields or assert semantic
+  equivalence. The workbook contains 171,477 formula cells; formulas were not
+  evaluated.
+- [ ] Qualify Q1 HR field meanings, formula semantics, temporal interpretation,
+  and a loss-aware typed projection. The physical layout check does not admit
+  or canary the raw object; M-112 exact-main admission and canary remain open.
