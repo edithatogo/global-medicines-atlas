@@ -5514,3 +5514,15 @@ source qualification remains pending their actual final artifacts.
   drug references, vocabulary metadata and historical records. Keep source
   structural roles distinct from qualified payment or clinical meaning.
 - [ ] Qualify complete PBS outputs and applicable admission/consumer delivery.
+
+
+### Remaining frozen July MBS BSD/RVG family (2026-10-22)
+
+- [x] Bind exact frozen BSD CSV, BSD XML and RVG text identities to the retained
+  original acquisition, source receipt, B2 reference, landed unreviewed
+  admission and path receipt. Metadata contracts reject digest, lineage and
+  role mismatches. No source payload was read locally.
+- [ ] Inventory native formats in protected exact-main Actions before selecting
+  field/column/date/value mappings. Keep source families and meanings distinct.
+- [ ] Qualify complete source-faithful typed outputs, all native fields and
+  conversion exceptions, then applicable eligible admission and consumer proof.
