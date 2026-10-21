@@ -4855,6 +4855,11 @@ not itself perform the pending Q1 HR admission or canary.
   eligibility are not established. The exact-object contract still passes
   local schema/semantic validation. Contract SHA-256:
   `5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5`.
+- [ ] Attempt exact receipt closure with the read-only `--check --verify`
+  path. Closure stops at HTTP 404 for the v3 replay receipt pinned to the local
+  candidate commit. No source bytes were read and no admission or canary was
+  produced. Public `main` remains `de76083a0da67414c803c7a74de00162fe5dfbad`;
+  a durable accessible evidence commit is still required before retrying.
 
 ## M-110 restricted-content screen reconciliation (2026-10-21)
 
