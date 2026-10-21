@@ -50,7 +50,7 @@ from .pbs_reference_shards import (
     prepare_reference_partition_group,
     prepare_reference_shards,
 )
-from .pbs_schema_inventory import MAX_INVENTORY_BYTES, profile_schema_paths
+from .pbs_schema_inventory import profile_schema_paths
 from .pbs_value_package import qualify_value_package_pair
 from .receipts import SourceReceipt
 
@@ -1279,7 +1279,7 @@ def _run_schema_inventory(
         payload = (
             json.dumps(inventory, sort_keys=True, separators=(",", ":")) + "\n"
         ).encode()
-        if len(payload) > MAX_INVENTORY_BYTES:
+        if len(payload) > inventory["limits"]["inventory_bytes"]:
             raise ValueError("schema inventory byte limit exceeded")
         output.parent.mkdir(parents=True, exist_ok=True)
         temporary = output.with_suffix(output.suffix + ".tmp")
@@ -1300,6 +1300,8 @@ def _run_schema_inventory(
         "inventory_bytes": len(payload),
         "native_fields": inventory["native_fields"],
         "unique_schema_paths": inventory["unique_schema_paths"],
+        "inventory_profile": inventory["limits"]["profile"],
+        "original_v1_limits_exceeded": inventory["original_v1_limits_exceeded"],
         "native_values_emitted": False,
         "rights_conclusion_changed": False,
         "new_sources": 0,
