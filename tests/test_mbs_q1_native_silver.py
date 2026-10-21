@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 from scripts import qualify_mbs_q1_native_silver as module
 from test_mbs_demographic_extraction import rewrite_package, workbook
 from test_mbs_demographic_silver import source
@@ -216,3 +217,51 @@ def test_retained_context_digest_mismatch_fails_closed(monkeypatch):
     monkeypatch.setattr(module.source_reader, "OBJECTS", (item,))
     with pytest.raises(ValueError, match="context digest differs"):
         module.source_context(0)
+
+
+def test_registered_workflow_selects_one_guarded_qualification_lane():
+    workflow = (
+        Path(__file__).resolve().parents[1]
+        / ".github/workflows/mbs-q1-source-meaning-diagnostics.yml"
+    )
+    document = yaml.load(workflow.read_text(), Loader=yaml.BaseLoader)
+    mode = document["on"]["workflow_dispatch"]["inputs"]["qualification_scope"]
+    assert mode["default"] == "meaning-diagnostics"
+    assert mode["options"] == [
+        "meaning-diagnostics",
+        "native-silver",
+        "quarterly-csv",
+    ]
+    assert (
+        document["jobs"]["qualify"]["if"]
+        == "inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv'"
+    )
+    native = document["jobs"]["native-silver"]
+    assert native["if"] == "inputs.qualification_scope == 'native-silver'"
+    assert native["permissions"] == {"contents": "read"}
+    run = next(step["run"] for step in native["steps"] if "run" in step)
+    assert "test \"${GITHUB_REF}\" = 'refs/heads/main'" in run
+    assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in run
+    assert "scripts/qualify_mbs_q1_native_silver.py" in run
+    artifact = native["steps"][-1]["with"]
+    assert artifact["path"] == "q1-native-silver-candidate.json"
+
+
+def test_registered_workflow_quarterly_lane_retains_exact_matrix_and_receipts():
+    workflow = (
+        Path(__file__).resolve().parents[1]
+        / ".github/workflows/mbs-q1-source-meaning-diagnostics.yml"
+    )
+    document = yaml.load(workflow.read_text(), Loader=yaml.BaseLoader)
+    quarterly = document["jobs"]["quarterly-csv"]
+    assert quarterly["if"] == "inputs.qualification_scope == 'quarterly-csv'"
+    assert quarterly["strategy"]["matrix"]["quarter"] == ["1", "2", "3"]
+    assert quarterly["permissions"] == {"contents": "read"}
+    run = next(step["run"] for step in quarterly["steps"] if "run" in step)
+    assert "scripts/qualify_mbs_demographic_csv_cohort.py" in run
+    assert "test \"${GITHUB_REF}\" = 'refs/heads/main'" in run
+    assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in run
+    assert (
+        quarterly["steps"][-1]["with"]["path"]
+        == "demographic-csv-candidate.json"
+    )

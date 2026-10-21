@@ -5191,13 +5191,13 @@ MBS/PBS qualification and delivery within the existing frozen inventory. This
 supersedes whole-layer blocking on missing meanings; it does not establish those
 meanings or grant new rights, publication, clinical claims or outreach.
 
-- [~] Implement interpreted/native-unresolved/unavailable field states and
+- [x] Implement interpreted/native-unresolved/unavailable field states and
   consumer guards; source/field identity must prevent unqualified pooling.
-- [ ] Preserve Q1 workbook/CSV measures independently and retain Unknown ages
+- [~] Preserve Q1 workbook/CSV measures independently and retain Unknown ages
   in native rows, totals and coverage with unresolved suppression semantics.
-- [ ] Carry P7 raw dates and numeric/formula/error evidence through typed
+- [~] Carry P7 raw dates and numeric/formula/error evidence through typed
   outputs; block temporal claims without source-bound qualified dates.
-- [ ] Mark unsupported patient denominators/rates unavailable while retaining
+- [x] Mark unsupported patient denominators/rates unavailable while retaining
   supported service counts independently.
 - [ ] Finish MBS families and source eras in the frozen inventory.
 - [ ] Finish PBS domain harmonisation with field-level unresolved outcomes.
@@ -5261,3 +5261,27 @@ meanings or grant new rights, publication, clinical claims or outreach.
   admission/rights and authorized delivery.
 - [ ] Continue workbook, historical ZIP, other MBS families and broader PBS
   domain/era qualification; the three-CSV cohort does not close those lanes.
+
+
+### Registered exact-main qualification entry points (2026-10-22)
+
+- [x] Merge native extraction/package PR #1253 as `9edd2a56` after 40
+  checks, then qualifier PR #1256 as `db057e20` after 39 reported checks
+  and complete required-check coverage. PR #1254 was superseded following
+  a stale head and failed reopen; its corrected files are on main.
+- [x] Retain the exact P7 current-main aggregate in PR #1257, merged as
+  `de299e3e`: 13,742 cells, four formulas, two errors, 36 representability
+  exceptions and 1,280 unqualified date cells. This is storage/profile proof;
+  typed-value package restore and date meaning remain unqualified.
+- [~] Expose the reviewed Q1-pair and quarterly-CSV native qualifiers through
+  registered workflow 391616583, retaining the legacy diagnostics default,
+  mutually exclusive modes, exact-main guards and aggregate-only artifacts.
+  The separate new Q1 workflow is present on main but returned HTTP 404 from
+  dispatch and is absent from the Actions registry; no source run is claimed.
+- [ ] Complete protected CI, merge, dispatch native modes on exact main and
+  retain actual source-to-output parity/restore receipts before qualification.
+
+The interrupted local full profiles for commits `269a6e33` and `044a07c5`
+no longer had live process handles after the intentional turn interruption.
+Their logs lack terminal summaries; no full pass is claimed. A fresh full
+profile applies to this changed workflow behavior after the code is frozen.
