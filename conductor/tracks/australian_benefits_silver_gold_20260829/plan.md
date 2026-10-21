@@ -4762,3 +4762,19 @@ not itself perform the pending Q1 HR admission or canary.
 - [ ] Calibrate the actual matcher on representative reviewed cross-jurisdiction
   labels. The retained scope still lacks non-synthetic medicine labels for that
   calibration; synthetic graph parity remains insufficient.
+
+
+## M-112 Q1 HR candidate receipt recovery (2026-10-21)
+
+- [x] Recover the exact replay receipt from unexpired GitHub Actions artifact
+  `australian-m112-v3-replay-39533443472-1`; verify its SHA-256
+  `c81490ada740101e0aaae38846409aa216d2bf2d69b8a74f94a35812c71858e0` matches
+  the locally committed receipt. The run is successful and explicitly records
+  no admission, consumer canary, source-value read, or public dataset mutation.
+- [x] Regenerate the Q1 HR candidate v4.1 contract with its receipt and B1/B2
+  inputs pinned to candidate evidence commit
+  `0dbc1d7def66b49c6df5372ca694d78bc7b5008f`; schema and semantic checks pass.
+- [ ] Re-run exact remote receipt closure and the consumer canary after the
+  candidate evidence commit becomes available on the public repository. Until
+  then this contract remains local candidate evidence; source-native workbook
+  layout remains unqualified.
