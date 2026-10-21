@@ -236,10 +236,11 @@ def test_registered_workflow_selects_one_guarded_qualification_lane():
         "quarterly-workbooks",
         "group-workbook-layout",
         "group-workbook-silver",
+        "sidecar-layout",
     ]
     assert (
         document["jobs"]["qualify"]["if"]
-        == "inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv' && inputs.qualification_scope != 'quarterly-workbooks' && inputs.qualification_scope != 'group-workbook-layout' && inputs.qualification_scope != 'group-workbook-silver'"
+        == "inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv' && inputs.qualification_scope != 'quarterly-workbooks' && inputs.qualification_scope != 'group-workbook-layout' && inputs.qualification_scope != 'group-workbook-silver' && inputs.qualification_scope != 'sidecar-layout'"
     )
     native = document["jobs"]["native-silver"]
     assert native["if"] == "inputs.qualification_scope == 'native-silver'"

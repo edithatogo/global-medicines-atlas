@@ -5542,3 +5542,11 @@ source qualification remains pending their actual final artifacts.
   field/column/date/value mappings. Keep source families and meanings distinct.
 - [ ] Qualify complete source-faithful typed outputs, all native fields and
   conversion exceptions, then applicable eligible admission and consumer proof.
+
+- [x] Implement protected sidecar-layout runner with exact-main checks,
+  anonymous digest/byte validation of all five original metadata roles before
+  each source payload, and before/after public-revision readback. Only bounded
+  shape/count/hash metadata is emitted; existing receipts are preserved and
+  source-bearing exception text is withheld. 154 local affected tests pass.
+- [ ] Require merged exact-main native inventory before choosing source-specific
+  column, field, encoding, date or numeric interpretations for these families.
