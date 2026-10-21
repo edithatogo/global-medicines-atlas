@@ -4729,6 +4729,14 @@ not itself perform the pending Q1 HR admission or canary.
   existing CSV. No source bytes or row values were retained. Receipt:
   `quality/qualifications/australian-mbs-demographics-q1hr-metadata-semantics-20261021.json`
   (SHA-256 `927269591afa38f5393615510a0ae5dc8ce8a6b99040759de92f7bdeeb465bd5`).
+- [x] Test whether Unicode, case, whitespace, dash, and numeric canonicalization
+  explain the workbook/CSV age-label and record-key differences. Both exact
+  pinned objects were reverified in memory; normalized age-label sets still
+  had zero overlap and no full record keys joined. This rejects a simple
+  formatting-only crosswalk while retaining the semantic mapping as unresolved.
+  No source labels or values were emitted or retained. Receipt:
+  `quality/qualifications/australian-mbs-demographics-q1hr-label-normalization-20261021.json`
+  (SHA-256 `6224cd9c6b479b6d4c5a1ecec43c2e10290b7aab0c363209cd8e8db0d892aaad`).
 
 
 ## M-110 PBS field-header mapping follow-up (2026-10-21)
