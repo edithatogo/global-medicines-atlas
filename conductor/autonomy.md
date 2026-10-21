@@ -3,15 +3,23 @@
 ## Purpose
 
 Conductor tracks run continuously through safe, in-scope work. The agent does
-not pause for routine confirmation, phase boundaries, commits, pull requests,
-green-check merges, documentation synchronization, or selection of the next
-unblocked task. It engages the accountable maintainer only when a real
+not pause for routine confirmation, phase boundaries, commits, permitted pull
+requests, green-check merges, documentation synchronization, or selection of
+the next unblocked task. It engages the accountable maintainer only when a real
 decision, authority grant, credential boundary, or consequential human gate
 cannot be resolved from repository evidence.
 
 This policy adapts the Plan Mode, structured-interaction, extension-policy, and
 self-correction ideas introduced in upstream Conductor 0.4.x to Codex. It does
 not claim that upstream Conductor provides unattended background execution.
+
+## Outbound communication prohibition
+
+The absolute outbound-communication exclusion in the repository `AGENTS.md`
+is controlling. Agents must not send or request email or messages. While the
+exclusion is in effect, do not push changes or create/update pull requests.
+Continue with local implementation, validation, and commits; do not ask the
+maintainer to send or authorize a message.
 
 ## Default execution loop
 
@@ -24,10 +32,11 @@ For each active track, the agent must:
 4. record evidence before marking it `[x]`;
 5. complete phase verification without requesting ceremonial confirmation;
 6. run `conductor-review`, apply findings, and repeat verification;
-7. open a scoped pull request, repair failures, wait for required checks, and
-   merge when all required checks pass;
-8. reconcile Conductor and GitHub state, archive a completed track, and move to
-   the next unblocked track.
+7. while the `AGENTS.md` outbound-communication exclusion is in effect, stop
+   at the local branch and commit; resume push, pull-request, and merge steps
+   only if the maintainer changes that standing instruction;
+8. reconcile Conductor and GitHub state when available, archive a completed
+   track, and move to the next unblocked track.
 
 Status updates are informational and must not be phrased as approval requests.
 The absence of a user response is not a blocker for safe work already in scope.

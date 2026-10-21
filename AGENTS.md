@@ -1,11 +1,24 @@
 # Global Medicines Atlas agent contract
 
 This is a single-maintainer, evidence-first repository. Automation may prepare,
-test, document, commit, push, and open pull requests within an approved task.
-It must not invent a second reviewer or silently cross the gates below.
-Within those boundaries it continues autonomously; routine task, phase, review,
-pull-request, merge, archive, and next-track transitions do not require a
-separate “proceed”.
+test, document, and commit local changes within an approved task. It must not
+invent a second reviewer or silently cross the gates below. Within those
+boundaries it continues autonomously; routine task, phase, review, and archive
+transitions do not require a separate “proceed”.
+
+## Absolute outbound-communication exclusion
+
+- Never send, schedule, reply to, forward, post, comment, or otherwise transmit
+  an email or message from the maintainer's account or any account connected to
+  this session. This includes email, chat, direct messages, issue or pull-request
+  comments, and other messaging channels.
+- Never ask the maintainer to send a message or email, or ask for approval or an
+  exception to send one.
+- Do not use another account, service, tool, person, or workflow to bypass this
+  exclusion. While it is in effect, do not push changes or open or update pull
+  requests. Keep repository work local.
+- This exclusion overrides any generic workflow instruction to contact someone,
+  request send approval, push a branch, or open or update a pull request.
 
 ## Read first
 
@@ -66,8 +79,10 @@ in `conductor/autonomy.md` before escalating a technical blocker.
 
 ## Completion
 
-Use a scoped `codex/` branch and pull request. Run the focused tests followed by
-one broader affected check. Run `uv run python scripts/test_goblin.py full`
+Use a scoped `codex/` branch and local commit while the outbound-communication
+exclusion above is in effect; do not push or open a pull request. Run the
+focused tests followed by one broader affected check. Run
+`uv run python scripts/test_goblin.py full`
 for production-behavior or release-gate changes where platform support permits.
 For a test-only follow-up after current full-suite evidence, rerun the affected
 tests and routine checks; do not repeat the local full profile solely because
