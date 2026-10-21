@@ -21,6 +21,7 @@ from global_medicines_atlas.adapters.au_mbs_workbook import parse_mbs_workbook
 from global_medicines_atlas.mbs_workbook_values import (
     iter_workbook_value_batches,
     profile_workbook_values,
+    workbook_date_for_comparison,
 )
 
 
@@ -358,3 +359,20 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
         ]
         == 1
     )
+
+
+def test_p7_parsed_dates_remain_unresolved_for_temporal_consumers() -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>01.07.2024</t></is></c>'
+    )
+    row = rows_for(payload, date_format="mbs-dmy")["C2"]
+    assert row["interpretation_state"] == "native_unresolved"
+    assert row["display_value"] == "01.07.2024"
+    assert row["domain_date"] == date(2024, 7, 1)
+    with pytest.raises(ValueError, match="interpreted"):
+        workbook_date_for_comparison(row)
+
+
+def test_workbook_temporal_consumer_rejects_nondate_columns() -> None:
+    with pytest.raises(ValueError, match="not a source date"):
+        workbook_date_for_comparison(rows_for(fixture())["A2"])
