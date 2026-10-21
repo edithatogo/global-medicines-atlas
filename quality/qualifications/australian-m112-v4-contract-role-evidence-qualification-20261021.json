@@ -34,14 +34,14 @@
     "approved_denominator": 1759,
     "approved_denominator_changed": false,
     "b1_b2_lineage_complete": 16,
-    "consumer_canaries": 7,
+    "consumer_canaries": 8,
     "dataset_path_aliases": 1,
     "objects": 16,
     "publication_candidate_receipts": 14,
     "rights_qualified": 16,
     "selection_rule": "Exact rights state in the two listed states plus complete B1/B2 lineage plus anonymous digest readback; this does not imply admission.",
     "unique_payload_identities": 15,
-    "v4_admissions": 7,
+    "v4_admissions": 8,
     "verification_candidate_receipts": 14
   },
   "contract": {
@@ -58,6 +58,14 @@
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json",
+      "contract_sha256": "5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
     },
     {
       "contract_path": "quality/qualifications/australian-m112-v4-demographics-q2-may-raw-b2-contract.json",
@@ -108,7 +116,7 @@
       "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
     }
   ],
-  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, recovery/cache, and consumers remain incomplete. Official source temporal semantics are qualified for 13 utilisation objects; their native schema layouts and three source-role candidates remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. V3 replay evidence is candidate-only for 8 of 16 objects. Recovery evidence covers only the 14 utilisation paths; hosted cache-cleanup candidates bind 8 of 16 paths. Consumer cache behavior remains a post-admission check. Current independently evidenced state is 7 v4 admissions and 7 admitted-object consumer canaries; this candidate-role refresh performed no admission or canary.",
+  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, recovery/cache, and consumers remain incomplete. Official source temporal semantics are qualified for 13 utilisation objects; their native schema layouts and three source-role candidates remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. V3 replay evidence is candidate-only for 8 of 16 objects. Recovery evidence covers only the 14 utilisation paths; hosted cache-cleanup candidates bind 8 of 16 paths. Consumer cache behavior remains a post-admission check. Current independently evidenced state is 8 v4 admissions and 8 admitted-object consumer canaries; this candidate-role refresh performed no admission or canary.",
   "discovery_candidate_evidence": {
     "objects": 16,
     "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
@@ -3476,7 +3484,7 @@
     "state": "qualified_for_exact_pinned_physical_structure"
   },
   "purpose": "Qualify mandatory v4.1 contract roles for every current M-112 path identity with exact approved rights, complete B1/B2 lineage, and anonymous digest evidence. This is an evidence-gap assessment; it does not create contracts or admissions.",
-  "recorded_at": "2026-10-19T21:01:38Z",
+  "recorded_at": "2026-10-21T09:34:41Z",
   "recovery_candidate_evidence": {
     "objects": 14,
     "state": "candidate_receipts_available_unbound_for_14_of_16"
@@ -3562,9 +3570,9 @@
       "state": "candidate_cleanup_receipts_available_unbound_for_8_of_16"
     },
     {
-      "evidence": "7 exact admitted M-112 objects have successful bounded readbacks through the FederatedReader, with remote and consumer-stream digest matches and zero reader-cache bytes after close. This is cumulative receipt evidence; this candidate-role refresh performed no canary. Objects outside the admitted cohort remain untested.",
+      "evidence": "8 exact admitted M-112 objects have successful bounded readbacks through the FederatedReader, with remote and consumer-stream digest matches and zero reader-cache bytes after close. This is cumulative receipt evidence; this candidate-role refresh performed no canary. Objects outside the admitted cohort remain untested.",
       "role": "consumers",
-      "state": "qualified_consumer_canaries_for_7_of_7_current_admissions"
+      "state": "qualified_consumer_canaries_for_8_of_8_current_admissions"
     }
   ],
   "schema_id": "global-medicines-atlas.australian-m112-v4-contract-role-evidence-qualification",

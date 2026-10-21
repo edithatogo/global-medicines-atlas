@@ -1,0 +1,95 @@
+{
+  "boundaries": {
+    "category_or_benefit_semantics_qualified": false,
+    "new_sources_added": false,
+    "public_release_performed": false,
+    "silver_projection_created": false,
+    "source_bytes_persisted": false,
+    "source_values_emitted_or_retained": false
+  },
+  "method": "Join full source context and normalized literal age label; exclude repeated keys; compare finite Decimal values exactly",
+  "results": {
+    "ambiguous_shared_full_keys_excluded": 0,
+    "csv_only_full_keys": 0,
+    "csv_only_rows": 0,
+    "csv_rows": 545070,
+    "exact_numeric_matches_by_fixed_scale": {
+      "0.001": 616,
+      "0.01": 616,
+      "0.1": 616,
+      "1": 54693,
+      "1/100000": 616,
+      "10": 616,
+      "100": 616,
+      "1000": 616,
+      "100000": 616
+    },
+    "numeric_precision_diagnostics": {
+      "absolute_difference_gt_0.01": 490365,
+      "absolute_difference_le_0.000000001": 54693,
+      "absolute_difference_le_0.005": 54693,
+      "absolute_difference_le_0.01": 54705,
+      "rounded_2_decimal_places": 54693,
+      "unquantizable_pairs": 0
+    },
+    "shared_full_keys": 545070,
+    "shared_keys_with_multiplicity_mismatch": 0,
+    "unambiguous_full_key_pairs": 545070,
+    "unambiguous_numeric_benefit_pairs": 545070,
+    "workbook_only_full_keys": 3,
+    "workbook_only_row_field_shapes": {
+      "Age_Range": {
+        "missing": 2,
+        "text": 2
+      },
+      "Benefits": {
+        "missing": 2,
+        "text": 2
+      },
+      "Gender": {
+        "missing": 2,
+        "text": 2
+      },
+      "Item_Number": {
+        "missing": 2,
+        "text": 2
+      },
+      "Month": {
+        "missing": 2,
+        "text": 2
+      },
+      "Services": {
+        "missing": 2,
+        "text": 2
+      },
+      "State": {
+        "missing": 2,
+        "text": 2
+      },
+      "Year": {
+        "text": 4
+      }
+    },
+    "workbook_only_rows": 4,
+    "workbook_only_rows_with_all_context_fields_missing": 0,
+    "workbook_rows": 545074
+  },
+  "schema_id": "global-medicines-atlas.mbs-q1hr-context-measure-diagnostics",
+  "schema_version": 1,
+  "source": {
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "objects": [
+      {
+        "bytes": 21966140,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+      },
+      {
+        "bytes": 23934884,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+        "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+      }
+    ],
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7"
+  }
+}

@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261021-13.json"
+    "australian-m112-rights-release-preflight-20261021-14.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261021-12.json"
+    "australian-m112-rights-release-preflight-20261021-13.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -56,7 +56,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261021-12.json"
+        "australian-m112-rights-release-preflight-20261021-13.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -75,9 +75,9 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     reconciliation = report["current_rights_reconciliation"]
     assert reconciliation["approved_denominator"] == 1759
     assert reconciliation["membership_changed"] is False
-    assert reconciliation["v4_admissions"] == 7
-    assert reconciliation["consumer_canaries"] == 7
-    assert reconciliation["deferred_objects"] == 1752
+    assert reconciliation["v4_admissions"] == 8
+    assert reconciliation["consumer_canaries"] == 8
+    assert reconciliation["deferred_objects"] == 1751
     assert (
         hashlib.sha256((ROOT / reconciliation["path"]).read_bytes()).hexdigest()
         == reconciliation["sha256"]
@@ -163,9 +163,9 @@ def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:
     assert cms["derived_table_rights_concluded"] is False
     gates = report["release_and_admission_boundaries"]
     assert gates["all_remaining_deferrals_preserved"] is True
-    assert gates["deferred_objects"] == 1752
-    assert gates["v4_admissions"] == 7
-    assert gates["consumer_canaries"] == 7
+    assert gates["deferred_objects"] == 1751
+    assert gates["v4_admissions"] == 8
+    assert gates["consumer_canaries"] == 8
     assert gates["external_publications_performed"] is False
 
 
@@ -290,3 +290,15 @@ def test_pbs_rights_attestation_is_exact_and_keeps_other_gates_open() -> None:
         limited_screen["rights_exclusion_fully_resolved_by_exact_attestation"]
         is True
     )
+
+
+def test_q1_hr_exact_hosted_identity_is_in_current_preflight() -> None:
+    report = _json(PREFLIGHT)
+    q1 = report["q1_hr_admission"]
+    assert q1["workflow_run_id"] == 39575404598
+    assert q1["workflow_commit"] == "b6e8a8e4f6d633dfea0056104b62972a669c1b3e"
+    assert q1["admissions"] == q1["consumer_canaries"] == 1
+    assert q1["source_values_or_rows_interpreted"] is False
+    assert q1["reader_cache_bytes_after_close"] == 0
+    receipt_path = ROOT / q1["path"]
+    assert hashlib.sha256(receipt_path.read_bytes()).hexdigest() == q1["sha256"]

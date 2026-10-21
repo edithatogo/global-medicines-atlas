@@ -68,7 +68,8 @@ AGE_LOWER_BOUND = re.compile(
 AGE_UPPER_BOUND = re.compile(r"^(?:under|less than|<)\s*(\d+)(?:\s*years?)?$")
 
 
-def _normalize(value: str | None, column: int) -> str:
+def normalize_context_value(value: str | None, column: int) -> str:
+    """Canonicalize a context field without assigning source semantics."""
     if value is None:
         return ""
     normalized = unicodedata.normalize("NFKC", value).strip().casefold()
@@ -84,11 +85,15 @@ def _normalize(value: str | None, column: int) -> str:
     )
 
 
-def _row_context(row: tuple[str | None, ...]) -> tuple[str, ...]:
-    return tuple(_normalize(row[column], column) for column in CONTEXT_COLUMNS)
+def row_context(row: tuple[str | None, ...]) -> tuple[str, ...]:
+    """Return the six-field candidate comparison context."""
+    return tuple(
+        normalize_context_value(row[column], column)
+        for column in CONTEXT_COLUMNS
+    )
 
 
-def _unquote_balanced(value: str) -> str | None:
+def unquote_balanced(value: str) -> str | None:
     """Remove only a balanced outer ASCII quote pair."""
     has_open_quote = value.startswith(OUTER_QUOTE)
     has_close_quote = value.endswith(OUTER_QUOTE)
@@ -101,7 +106,7 @@ def _unquote_balanced(value: str) -> str | None:
 
 def _age_band(value: str) -> tuple[int, int | None] | None:
     """Parse explicit whole-year intervals without exposing source labels."""
-    value = _unquote_balanced(value) or ""
+    value = unquote_balanced(value) or ""
     value = re.sub(
         r"^(?:aged|age(?:\s+(?:range|group|band))?)\s*:?\s*", "", value
     )
@@ -139,8 +144,8 @@ def _age_pair_semantics(
     equal_labels = 0
     different_labels = 0
     for source_label, target_label in pairs:
-        source_text = _unquote_balanced(source_label)
-        target_text = _unquote_balanced(target_label)
+        source_text = unquote_balanced(source_label)
+        target_text = unquote_balanced(target_label)
         if source_text is not None and source_text == target_text:
             equal_labels += 1
         else:
@@ -225,13 +230,13 @@ def _candidate_relationships(
     workbook_categories: set[str] = set()
     csv_categories: set[str] = set()
     for row in workbook:
-        age = _normalize(row[AGE_COLUMN], AGE_COLUMN)
+        age = normalize_context_value(row[AGE_COLUMN], AGE_COLUMN)
         workbook_categories.add(age)
-        workbook_by_context[_row_context(row)].append(age)
+        workbook_by_context[row_context(row)].append(age)
     for row in csv_values:
-        age = _normalize(row[AGE_COLUMN], AGE_COLUMN)
+        age = normalize_context_value(row[AGE_COLUMN], AGE_COLUMN)
         csv_categories.add(age)
-        csv_by_context[_row_context(row)].append(age)
+        csv_by_context[row_context(row)].append(age)
 
     coverage = _context_coverage(
         workbook_by_context, csv_by_context, len(workbook), len(csv_values)

@@ -600,3 +600,18 @@
   medicine labels. The current source scope cannot supply them; no threshold or
   confidence is calibrated. Keep the calibration requirement open while
   respecting the no-new-sources constraint.
+
+## Frozen-source matcher continuation (2026-10-21)
+
+- [x] Recheck the 18 retained Australian-only receipts and bind the label audit,
+  source receipt digests, current matcher and synthetic calibration code.
+  Execute the actual matcher on the existing 400/400 generated cases and
+  record predeclared post-retrieval operating points. Receipt:
+  `quality/qualifications/frontier-frozen-matcher-calibration-20261021.json`.
+  The scored-case curve is explicitly conditional on the existing retrieval
+  floor; no end-to-end retrieval-recall claim or real threshold follows.
+- [ ] Real-source calibration remains blocked: zero eligible reviewed
+  cross-jurisdiction medicine-pair labels exist in the retained scope. The
+  current B1 inventory and 5,989 reviewed same-record MBS edges cannot supply
+  such labels. No new sources or outreach are introduced, and no synthetic
+  labels are promoted to source evidence.

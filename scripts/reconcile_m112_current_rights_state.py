@@ -61,8 +61,8 @@ PBS_RAW_PERMISSION_SHA256 = (
 )
 PBS_RAW_PERMISSION_REVISION = "a93516ed416118bc51c1db2b71ab540fa4d0fe52"
 PBS_RAW_PERMISSION_OBJECT_COUNT = 1708
-M112_CURRENT_ADMISSION_COUNT = 7
-M112_CURRENT_CANARY_COUNT = 7
+M112_CURRENT_ADMISSION_COUNT = 8
+M112_CURRENT_CANARY_COUNT = 8
 M112_Q3_CANARY_RUN_ID = 39356792827
 M112_Q3_CANARY_BYTES = 7_680_041
 M112_HISTORICAL_CANARY_RUN_ID = 39330593204
@@ -77,7 +77,7 @@ MBS_JULY2016_CANARY_RECEIPTS = (
     / "australian-m112-v4-july2016-consumer-canary-20261020-39306554319.json",
 )
 M112_ROLE_QUALIFICATION = QUAL / (
-    "australian-m112-v4-contract-role-evidence-qualification-20261020.json"
+    "australian-m112-v4-contract-role-evidence-qualification-20261021.json"
 )
 M112_HISTORICAL_CANARY = QUAL / (
     "australian-m112-v4-historical-1993-2015-consumer-canary-"
@@ -120,6 +120,23 @@ M112_Q3_HR_CANARY_SHA256 = (
     "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
 )
 M112_Q3_HR_CANARY_BYTES = 7_316_301
+M112_Q1_HR_ADMISSION_CANARY = QUAL / (
+    "australian-m112-v4-demographics-q1-marchhr-"
+    "admission-qualification-20261021-39575404598.json"
+)
+M112_Q1_HR_CONTRACT_SHA256 = (
+    "5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5"
+)
+M112_Q1_HR_CANARY_RUN_ID = 39575404598
+M112_Q1_HR_CANARY_COMMIT = "b6e8a8e4f6d633dfea0056104b62972a669c1b3e"
+M112_Q1_HR_CANARY_REVISION = "dee9a5b0580dfe394474dc26b372559462e157e7"
+M112_Q1_HR_CANARY_PATH = (
+    "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx"
+)
+M112_Q1_HR_CANARY_SHA256 = (
+    "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+)
+M112_Q1_HR_CANARY_BYTES = 21_966_140
 M108_ASSESSMENT = QUAL / "australian-m108-derived-products-20261017.json"
 OUTPUT = QUAL / "australian-m112-current-rights-reconciliation-20261021.json"
 
@@ -798,6 +815,73 @@ def _verify_q3_hr_m112_canary_receipt(root: Path) -> dict[str, Any]:
     }
 
 
+def _verify_q1_hr_m112_canary_receipt(root: Path) -> dict[str, Any]:
+    """Verify the exact Q1 HR v4 admission and hosted reader canary."""
+    receipt = _read(root, M112_Q1_HR_ADMISSION_CANARY)
+    admission = receipt["admission"]
+    canary = receipt["consumer_canary"]
+    obj = canary["object"]
+    workflow = canary["hosted_workflow"]
+    verification = canary["verification"]
+    boundaries = canary["boundaries"]
+    checks = [
+        receipt["schema_id"]
+        != "global-medicines-atlas.m112-v4-admission-qualification",
+        receipt["status"] != "admitted_with_consumer_canary",
+        receipt["approved_denominator"] != FROZEN_OBJECT_COUNT,
+        receipt["admissions"] != 1,
+        receipt["consumer_canaries"] != 1,
+        receipt["contract_path"]
+        != "quality/qualifications/australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json",
+        receipt["contract_sha256"] != M112_Q1_HR_CONTRACT_SHA256,
+        admission["dataset"] != "edithatogo/australian-mbs-utilisation-archive",
+        admission["revision"] != M112_Q1_HR_CANARY_REVISION,
+        admission["path"] != M112_Q1_HR_CANARY_PATH,
+        admission["sha256"] != M112_Q1_HR_CANARY_SHA256,
+        admission["byte_count"] != M112_Q1_HR_CANARY_BYTES,
+        admission["contract_sha256"] != M112_Q1_HR_CONTRACT_SHA256,
+        canary["status"] != "passed",
+        canary["contract_sha256"] != M112_Q1_HR_CONTRACT_SHA256,
+        obj["dataset"] != admission["dataset"],
+        obj["revision"] != M112_Q1_HR_CANARY_REVISION,
+        obj["path"] != M112_Q1_HR_CANARY_PATH,
+        obj["sha256"] != M112_Q1_HR_CANARY_SHA256,
+        obj["bytes"] != M112_Q1_HR_CANARY_BYTES,
+        workflow["repository"] != "edithatogo/global-medicines-atlas",
+        workflow["commit"] != M112_Q1_HR_CANARY_COMMIT,
+        workflow["run_id"] != M112_Q1_HR_CANARY_RUN_ID,
+        workflow["run_url"]
+        != "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39575404598",
+        canary["consumer"]["module"]
+        != "global_medicines_atlas.federation_reader.FederatedReader",
+        verification["origin"] != "remote",
+        verification["remote_digest_match"] is not True,
+        verification["consumer_stream_digest_match"] is not True,
+        verification["source_values_or_rows_interpreted"] is not False,
+        verification["reader_cache_bytes_after_read"] != 0,
+        verification["reader_cache_bytes_after_close"] != 0,
+        boundaries["admission_used"] is not True,
+        boundaries["admission_performed"] is not False,
+        boundaries["public_dataset_mutated"] is not False,
+        boundaries["source_payload_bytes_retained"] is not False,
+        boundaries["source_values_or_rows_included"] is not False,
+        receipt["native_source_layout_qualified"] is not False,
+        receipt["source_values_or_payload_bytes_retained"] is not False,
+    ]
+    if any(checks):
+        raise ValueError(
+            "Q1 HR M-112 admission/canary receipt did not reconcile"
+        )
+    path = str(M112_Q1_HR_ADMISSION_CANARY)
+    return {
+        "receipt_path": path,
+        "receipt_sha256": _sha256(root / M112_Q1_HR_ADMISSION_CANARY),
+        "run_id": workflow["run_id"],
+        "run_url": workflow["run_url"],
+        "workflow_commit": workflow["commit"],
+    }
+
+
 def _reconcile_m112_canary_readback(  # ruff: ignore[too-many-locals] -- verify exact per-object admission and cache/consumer receipts
     root: Path, objects: list[dict[str, Any]]
 ) -> dict[str, Any]:
@@ -945,6 +1029,10 @@ def _reconcile_m112_canary_readback(  # ruff: ignore[too-many-locals] -- verify 
     q3_hr_run = _verify_q3_hr_m112_canary_receipt(root)
     input_hashes[str(M112_Q3_HR_ADMISSION_CANARY)] = q3_hr_run["receipt_sha256"]
     runs.append(q3_hr_run)
+
+    q1_hr_run = _verify_q1_hr_m112_canary_receipt(root)
+    input_hashes[str(M112_Q1_HR_ADMISSION_CANARY)] = q1_hr_run["receipt_sha256"]
+    runs.append(q1_hr_run)
 
     return {
         "record": {
