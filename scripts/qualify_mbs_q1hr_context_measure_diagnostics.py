@@ -13,18 +13,33 @@ from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 import httpx
-from scripts import qualify_mbs_q1hr_age_context_mapping as context_mapping
-from scripts.qualify_mbs_q1hr_benefit_scale_comparison import (
-    DATASET,
-    EXPECTED_CSV_ROWS,
-    EXPECTED_WORKBOOK_ROWS,
-    OBJECTS,
-    REVISION,
-    SCALE_FACTORS,
-    csv_rows,
-    fetch_exact_source_bytes,
-    workbook_rows,
-)
+
+if __package__:
+    from scripts import qualify_mbs_q1hr_age_context_mapping as context_mapping
+    from scripts.qualify_mbs_q1hr_benefit_scale_comparison import (
+        DATASET,
+        EXPECTED_CSV_ROWS,
+        EXPECTED_WORKBOOK_ROWS,
+        OBJECTS,
+        REVISION,
+        SCALE_FACTORS,
+        csv_rows,
+        fetch_exact_source_bytes,
+        workbook_rows,
+    )
+else:
+    import qualify_mbs_q1hr_age_context_mapping as context_mapping
+    from qualify_mbs_q1hr_benefit_scale_comparison import (
+        DATASET,
+        EXPECTED_CSV_ROWS,
+        EXPECTED_WORKBOOK_ROWS,
+        OBJECTS,
+        REVISION,
+        SCALE_FACTORS,
+        csv_rows,
+        fetch_exact_source_bytes,
+        workbook_rows,
+    )
 
 from global_medicines_atlas.acquisition import (
     AcquisitionPolicy,

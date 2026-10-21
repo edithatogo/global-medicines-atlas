@@ -28,7 +28,7 @@
     "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json": "24f1bfcffde9a3bd453a637837efb53df042bd5d980e9362f9d3a8274e2a40f0",
     "quality/qualifications/frontier-real-matcher-label-availability-20261021.json": "8eb8d7ae6bc2b83ae11aec3fd9210b8cd52ee772b9c460aeb3c96d137c7e7973",
     "scripts/qualify_frontier_screening_calibration.py": "8d320e3c1b4e98703a54c9993ec8fc2fcf65cbf784546585347b75497cb3c93a",
-    "scripts/qualify_frozen_matcher_calibration.py": "28af984e19574eafd8122f73c46c9d971626d5feefa54f143798f87b4db23c9b",
+    "scripts/qualify_frozen_matcher_calibration.py": "ccbb440829b6b0b4082807b01d500a6d768fc8bb47c39f96720bb29b08c64155",
     "src/global_medicines_atlas/bronze_fixture_landing.py": "1b0811f5140e7f4e39aa2290a7e0b1f10b04342ad963376ecc254e17d857dc1f",
     "src/global_medicines_atlas/frontier_candidate_benchmark.py": "4c202fd62ff7f39cbe4b8076241da74a87c0d7ebd304b96edcd94c88d834f86c",
     "src/global_medicines_atlas/frontier_score_calibration.py": "fd150b86fa0d61cdb01b89b63ffa263cc16a0ffd3f64affb387b04f544299b8b",
@@ -46,6 +46,7 @@
     "au-mbs-p7-legacy-workbook|AUS": 1,
     "au-mbs|AUS": 3
   },
+  "reviewed_receipt_tree_sha256": "884f5d4f615c7dba453483da1f03758ed68a10cd637c0a1f3545af5c128b040e",
   "schema_id": "global-medicines-atlas.frozen-matcher-calibration",
   "schema_version": 1,
   "synthetic_actual_matcher_control": {

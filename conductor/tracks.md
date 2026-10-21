@@ -18,7 +18,7 @@ passed with remote and streamed digest matches and zero retained cache bytes.
 The frozen denominator is unchanged. Physical workbook layout is qualified;
 source-field and transformation semantics remain partial. No new source,
 public dataset mutation or external publication was performed.
-Use [preflight snapshot 20261021-14](../quality/qualifications/australian-m112-rights-release-preflight-20261021-14.json),
+Use [preflight snapshot 20261021-15](../quality/qualifications/australian-m112-rights-release-preflight-20261021-15.json),
 [current rights reconciliation](../quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json),
 and the [current role qualification](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json)
 for current counts. These reports reconcile retained hosted receipts; they

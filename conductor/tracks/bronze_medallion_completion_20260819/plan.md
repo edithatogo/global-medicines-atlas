@@ -1473,7 +1473,7 @@ for credentialed or rights-unresolved sources.
 
 ## M-112 current qualification readback (2026-10-21)
 
-Preflight 20261021-14 and the current rights and role reports reconcile all
+Preflight 20261021-15 and the current rights and role reports reconcile all
 1,759 frozen objects with resolved rights, eight exact v4 admissions, eight
 admitted-object canaries and 1,751 deferred objects. Q1 HR run 39575404598 at
 merged main b6e8a8e4f6d633dfea0056104b62972a669c1b3e passed on 2026-10-21

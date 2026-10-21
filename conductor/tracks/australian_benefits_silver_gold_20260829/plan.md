@@ -5121,3 +5121,20 @@ not itself perform the pending Q1 HR admission or canary.
   Production matching behavior and
   release/publication gates are unchanged; this increment reconciles metadata
   and adds offline diagnostics.
+
+## PR 1248 review corrections (2026-10-21)
+
+- [x] Bind the exact 18-receipt path/digest tree to the independently checked
+  original availability-audit revision a038b2667330f668bbe1557297deaf6f1140f338.
+  A receipt replacement with unchanged source/jurisdiction counts now fails
+  closed and requires renewed label review.
+- [x] Make both diagnostic CLIs directly executable using the established
+  package/direct-import pattern. Add an actual read-only --check entry point
+  for matcher readiness and regression tests for direct execution.
+- [x] Preserve published preflight -14 byte-for-byte and bind corrections in
+  successor -15. Admission/canary totals remain 8/8 with 1,751 deferred.
+- [x] Twenty initial focused review checks and 73 broader affected checks pass;
+  strict typing has zero errors/warnings and routine checks pass. Direct CLI
+  write/check consistency and read-only check behavior are covered.
+- [~] Require fresh protected CI before resolving review threads and merging.
+  No standalone review comment is sent.

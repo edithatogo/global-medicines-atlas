@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from scripts import qualify_frontier_screening_calibration as controls
+if __package__:
+    from scripts import qualify_frontier_screening_calibration as controls
+else:
+    import qualify_frontier_screening_calibration as controls
 
 from global_medicines_atlas.frontier_candidate_benchmark import (
     LEXICAL_THRESHOLD,
@@ -23,6 +27,10 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = (
     ROOT
     / "quality/qualifications/frontier-frozen-matcher-calibration-20261021.json"
+)
+# All 18 identities match the availability audit's original a038b266 revision.
+REVIEWED_RECEIPT_TREE_SHA256 = (
+    "884f5d4f615c7dba453483da1f03758ed68a10cd637c0a1f3545af5c128b040e"
 )
 AVAILABILITY = "quality/qualifications/frontier-real-matcher-label-availability-20261021.json"
 
@@ -61,6 +69,13 @@ def build_report(root: Path = ROOT) -> dict[str, Any]:
         bindings[path.relative_to(root).as_posix()] = hashlib.sha256(
             payload
         ).hexdigest()
+    receipt_tree_sha256 = hashlib.sha256(
+        json.dumps(bindings, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+    if receipt_tree_sha256 != REVIEWED_RECEIPT_TREE_SHA256:
+        raise ValueError(
+            "Retained source receipt identities changed; repeat label review"
+        )
     if (
         dict(counts)
         != audit["current_bronze_receipts"]["source_id_jurisdiction_counts"]
@@ -120,6 +135,7 @@ def build_report(root: Path = ROOT) -> dict[str, Any]:
             "selected_threshold": None,
         },
         "retained_receipt_scope": dict(sorted(counts.items())),
+        "reviewed_receipt_tree_sha256": receipt_tree_sha256,
         "synthetic_actual_matcher_control": control.model_dump(mode="json"),
         "synthetic_operating_point_scope": {
             "population": "scored top candidates after the existing retrieval floor",
@@ -142,8 +158,22 @@ def build_report(root: Path = ROOT) -> dict[str, Any]:
     }
 
 
-if __name__ == "__main__":
-    OUTPUT.write_text(
+def main() -> None:
+    """Write or check the exact offline readiness report."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=OUTPUT)
+    parser.add_argument("--check", action="store_true")
+    args = parser.parse_args()
+    payload = (
         json.dumps(build_report(), indent=2, sort_keys=True) + "\n"
-    )
-    print(OUTPUT.name)
+    ).encode()
+    if args.check:
+        if args.output.read_bytes() != payload:
+            raise SystemExit("Frozen matcher calibration report is stale")
+    else:
+        args.output.write_bytes(payload)
+    print(args.output.name)
+
+
+if __name__ == "__main__":
+    main()

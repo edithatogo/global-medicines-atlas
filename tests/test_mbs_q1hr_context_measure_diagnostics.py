@@ -1,8 +1,12 @@
 """Context-key joins must not confuse row order, repeats or missing values."""
 
 import json
+import subprocess  # ruff: ignore[suspicious-subprocess-import] - fixed Python executable
+import sys
+from pathlib import Path
 
 import pytest
+from scripts import qualify_mbs_q1hr_context_measure_diagnostics as diagnostic
 from scripts.qualify_mbs_q1hr_context_measure_diagnostics import diagnose
 
 
@@ -61,3 +65,42 @@ def test_precision_diagnostics_do_not_hide_large_measure_disagreements() -> (
     assert precision["rounded_2_decimal_places"] == 1
     assert precision["absolute_difference_le_0.000000001"] == 1
     assert precision["absolute_difference_gt_0.01"] == 1
+
+
+def test_direct_diagnostic_entrypoint_can_load_its_help() -> None:
+    root = Path(__file__).resolve().parents[1]
+    result = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
+        [
+            sys.executable,
+            str(
+                root / "scripts/qualify_mbs_q1hr_context_measure_diagnostics.py"
+            ),
+            "--help",
+        ],
+        cwd=root,
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    assert "--check" in result.stdout
+
+
+def test_diagnostic_write_and_check_share_the_same_exact_payload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output = tmp_path / "diagnostic.json"
+    monkeypatch.setattr(
+        diagnostic, "qualify", lambda: {"synthetic_control": True}
+    )
+    monkeypatch.setattr(sys, "argv", ["diagnostic", "--output", str(output)])
+    diagnostic.main()
+    before = output.read_bytes()
+    monkeypatch.setattr(
+        sys, "argv", ["diagnostic", "--check", "--output", str(output)]
+    )
+    diagnostic.main()
+    assert output.read_bytes() == before
+    output.write_text("{}")
+    with pytest.raises(SystemExit, match="diagnostics are stale"):
+        diagnostic.main()
