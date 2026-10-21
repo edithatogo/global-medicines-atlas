@@ -4718,6 +4718,18 @@ not itself perform the pending Q1 HR admission or canary.
   `quality/qualifications/australian-mbs-demographics-q1hr-formula-literal-analysis-20261021.json`
   (SHA-256 `f324ae679840bd57fb7e7d566f9a18fdf7a90a4614289cce865b2086be97fa3e`).
 
+- [x] Read the metadata sheet of the same exact Q1 HR workbook in memory and
+  qualify the source's reporting-period context. It defines `Month` by service
+  processing date rather than service date, describes the eligible registered-
+  provider Medicare-benefit population and exclusions, states that service
+  totals net later-day adjustments, and defines the month-end enrolled-person
+  denominator for per-capita measures. It also describes MBS group statistics
+  by age range and gender. This source-era evidence does not resolve the
+  `Benefits ($)` calculation, exact age-range categories, or equivalence to the
+  existing CSV. No source bytes or row values were retained. Receipt:
+  `quality/qualifications/australian-mbs-demographics-q1hr-metadata-semantics-20261021.json`
+  (SHA-256 `927269591afa38f5393615510a0ae5dc8ce8a6b99040759de92f7bdeeb465bd5`).
+
 
 ## M-110 PBS field-header mapping follow-up (2026-10-21)
 
