@@ -122,6 +122,8 @@ def _xml_member(archive: zipfile.ZipFile, name: str, limit: int) -> bytes:
 
 def _shared_strings(archive: zipfile.ZipFile) -> list[str]:
     values: list[str] = []
+    if "xl/sharedStrings.xml" not in archive.namelist():
+        return values
     payload = _xml_member(
         archive, "xl/sharedStrings.xml", MAX_SHARED_STRINGS_XML_BYTES
     )
@@ -133,13 +135,7 @@ def _shared_strings(archive: zipfile.ZipFile) -> list[str]:
     )
     for event, element, parent in iter_xml_events(payload, policy=policy):
         if event == "end" and element.tag.endswith("}si"):
-            values.append(
-                "".join(
-                    text.text or ""
-                    for text in element.iter()
-                    if text.tag.endswith("}t")
-                )
-            )
+            values.append(_display_text(element))
             if parent is not None:
                 parent.remove(element)
             element.clear()
@@ -188,6 +184,25 @@ def _workbook_benefits(payload: bytes) -> list[str | None]:
         return rows
 
 
+def _display_text(element: Any) -> str:
+    """Read displayed rich text while excluding pronunciation guides."""
+    pieces: list[str] = []
+    pending = [element]
+    while pending:
+        node = pending.pop()
+        if node.tag.endswith("}rPh"):
+            continue
+        if node.tag.endswith("}t"):
+            pieces.append(node.text or "")
+        pending.extend(reversed(list(node)))
+    return "".join(pieces)
+
+
+def _inline_cell_text(cell: Any) -> str | None:
+    inline = cell.find("{*}is")
+    return None if inline is None else _display_text(inline)
+
+
 def workbook_rows(payload: bytes) -> list[tuple[str | None, ...]]:
     """Read the eight declared data columns without emitting their values."""
     with zipfile.ZipFile(io.BytesIO(payload)) as archive:
@@ -217,6 +232,9 @@ def workbook_rows(payload: bytes) -> list[tuple[str | None, ...]]:
                     if match is None:
                         continue
                     column_index = ord(match.group(1)) - ord("A")
+                    if cell.attrib.get("t") == "inlineStr":
+                        values[column_index] = _inline_cell_text(cell)
+                        continue
                     value = cell.find("{*}v")
                     if value is None or value.text is None:
                         continue
