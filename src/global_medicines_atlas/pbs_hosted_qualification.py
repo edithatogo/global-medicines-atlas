@@ -41,6 +41,8 @@ from .pbs_member_identity import (
     PbsXmlMemberBinding,
     build_pbs_xml_member_binding,
 )
+from .pbs_observed_domain import load_observed_profile
+from .pbs_observed_qualification import qualify_observed_values
 from .pbs_reference_shards import (
     load_reference_entity_material,
     load_reference_entity_partition,
@@ -1306,5 +1308,49 @@ def _run_schema_inventory(
         "rights_conclusion_changed": False,
         "new_sources": 0,
         "new_admissions": 0,
+        "publication_performed": False,
+    }
+
+
+def run_hosted_observed_values(
+    exact_commit: str,
+    root: Path,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Qualify observed roles using the unchanged exact-main source boundary."""
+    retry = _RetryBudget(progress=progress)
+    try:
+        inputs = _verified_inputs(
+            exact_commit, transport=transport, retry=retry
+        )
+        with _at("projection-qualification", progress=retry.checkpoint):
+            profile = load_observed_profile(root)
+            qualification = qualify_observed_values(
+                inputs.archive,
+                inputs.xml,
+                inputs.parent,
+                inputs.binding,
+                profile,
+                progress=lambda phase, batches, rows: retry.checkpoint(
+                    "projection-qualification", phase, batches, rows
+                ),
+            )
+    except QualificationError as error:
+        error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
+        raise
+
+    return {
+        "schema_version": 1,
+        "status": "passed",
+        "operation": "pbs-observed-structural-values",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "source_receipt_file_sha256": RECEIPT.sha256,
+        "qualification": qualification,
+        "rights_conclusion_changed": False,
         "publication_performed": False,
     }

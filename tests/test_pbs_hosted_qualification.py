@@ -1617,6 +1617,7 @@ def test_package_mode_keeps_existing_hosted_deadlines_and_read_only_artifacts():
             "native-values",
             "native-value-package",
             "native-schema-inventory",
+            "observed-domain-values",
         }:
             assert (
                 "inputs.qualification_scope != 'native-value-package'"
