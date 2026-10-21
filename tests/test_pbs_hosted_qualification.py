@@ -570,9 +570,9 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     workflow = Path(
         ".github/workflows/pbs-historical-qualification.yml"
     ).read_text(encoding="utf-8")
-    assert "gh issue comment 341" in workflow
+    assert "gh issue comment" not in workflow
     assert "if: always()" in workflow
-    assert workflow.count("gh issue comment 341") == 1
+    assert "issues: write" not in workflow
     assert "retention-days: 1" in workflow
     assert "persist-credentials: false" in workflow
     assert "HF_TOKEN" not in workflow

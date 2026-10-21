@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from collections.abc import Callable, Generator, Iterator
+from decimal import Decimal
 from io import BytesIO
 from itertools import pairwise
 from tempfile import TemporaryFile
@@ -28,6 +29,7 @@ from .pbs_member_identity import (
     PbsXmlMemberBinding,
     validate_pbs_xml_member_binding,
 )
+from .pbs_native_values import iter_pbs_historical_value_batches
 from .pbs_references import (
     _reference_batches,  # pyright: ignore[reportPrivateUsage]
 )
@@ -44,6 +46,11 @@ _NATIVE_KEYS = (
 )
 QUALIFICATION_ROWS_PER_BATCH = 4096
 MAX_REFERENCE_SHARDS = 64
+_VALUE_DIAGNOSTIC_COLUMNS = {
+    "value_status_counts": "candidate_conversion_status",
+    "interpretation_state_counts": "interpretation_state",
+    "reference_meaning_counts": "reference_meaning_state",
+}
 _DATE_DIAGNOSTIC_COLUMNS = {
     "date_role_counts": "date_role",
     "date_status_counts": "date_conversion_status",
@@ -185,6 +192,8 @@ def _projection(
     )
     if phase == "dates":
         counts.update({key: {} for key in _DATE_DIAGNOSTIC_COLUMNS})
+    if phase == "values":
+        counts.update({key: {} for key in _VALUE_DIAGNOSTIC_COLUMNS})
     digest = hashlib.sha256()
     for batch_number, batch in enumerate(batches, 1):
         metadata = batch.schema.metadata or {}
@@ -200,6 +209,8 @@ def _projection(
         if not table.equals(restored, check_metadata=True):
             raise ValueError("historical Parquet roundtrip changed projection")
         if nested:
+            if phase == "values":
+                _qualify_value_batch(batch)
             _account_nested_batch(batch, expected, counts, digest)
             _checkpoint(progress, phase, batch_number, counts["rows"])
             continue
@@ -256,6 +267,39 @@ def _projection(
     return report
 
 
+def _qualify_value_batch(batch: pa.RecordBatch) -> None:
+    """Reject semantic promotion or lossy candidates independently of conversion."""
+    names = (
+        "interpretation_state",
+        "semantic_evidence_sha256",
+        "candidate_decimal",
+        "candidate_conversion_status",
+        "native_text",
+    )
+    columns = [
+        cast(
+            "list[Any]",
+            batch.column(batch.schema.get_field_index(name)).to_pylist(),
+        )
+        for name in names
+    ]
+    for state, evidence, number, status, native in zip(*columns, strict=True):
+        if state != "native_unresolved" or evidence is not None:
+            raise ValueError("PBS native value meaning was promoted")
+        if status == "lossless_candidate":
+            if (
+                number is None
+                or native is None
+                or not number.is_finite()
+                or number != Decimal(native)
+            ):
+                raise ValueError(
+                    "PBS numeric candidate differs from native value"
+                )
+        elif number is not None:
+            raise ValueError("PBS unsupported numeric value was converted")
+
+
 def _account_nested_batch(
     batch: pa.RecordBatch,
     expected: dict[str, str],
@@ -277,6 +321,7 @@ def _account_nested_batch(
             "diagnostic",
             "date_conversion_status",
             "date_role",
+            *_VALUE_DIAGNOSTIC_COLUMNS.values(),
         )
         if name in batch.schema.names
     }
@@ -364,10 +409,11 @@ def _account_nested_batch(
 def _count_labels(
     counts: dict[str, Any], columns: dict[str, list[Any]]
 ) -> None:
-    """Count fixed date labels without retaining source values."""
-    if "date_role" not in columns:
-        return
-    for name, column in _DATE_DIAGNOSTIC_COLUMNS.items():
+    """Count fixed diagnostic labels without retaining source values."""
+    diagnostics = {**_DATE_DIAGNOSTIC_COLUMNS, **_VALUE_DIAGNOSTIC_COLUMNS}
+    for name, column in diagnostics.items():
+        if name not in counts:
+            continue
         bucket = counts[name]
         for label in columns.get(column, []):
             if isinstance(label, str):
@@ -386,7 +432,10 @@ def qualify_pbs_historical_projections(
     reference_shard: tuple[int, int] | None = None,
     date_profile: str | None = None,
 ) -> dict[str, Any]:
-    """Account for every XML slot in five candidate projections and Parquet.
+    """Account for every XML slot in candidate projections and Parquet.
+
+    The default retains the five established projections. The explicit values
+    phase adds unresolved native value candidates and fixed conversion counters.
 
     Revalidate the exact historical parent/archive/member binding before work.
     An independent bounded XML-slot walk supplies ordered value/path/state
@@ -405,7 +454,10 @@ def qualify_pbs_historical_projections(
     never source text. Its partial checkpoints are not qualification reports.
     """
     projection_names = ("native", "domain", "entities", "references", "dates")
-    if projection is not None and projection not in projection_names:
+    if projection is not None and projection not in {
+        *projection_names,
+        "values",
+    }:
         raise ValueError("unknown PBS projection shard")
     if date_profile not in {None, CANDIDATE_PROFILE, PINNED_V3_PROFILE}:
         raise ValueError("unsupported PBS candidate date profile")
@@ -432,6 +484,7 @@ def qualify_pbs_historical_projections(
     routes = (
         ("native", iter_pbs_historical_silver_batches, False),
         ("domain", iter_pbs_historical_domain_batches, False),
+        ("values", iter_pbs_historical_value_batches, True),
     )
     projections: dict[str, Any] = {}
     for name, route, nested in routes:

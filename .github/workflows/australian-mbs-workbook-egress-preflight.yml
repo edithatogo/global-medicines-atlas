@@ -22,7 +22,6 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: read
-      issues: write # Durable bounded diagnostic receipt only.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
@@ -71,4 +70,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          gh issue comment 340 --body-file build/mbs-workbook-egress-preflight.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
+      - name: Retain verification artifact 15 without outbound messages
+        if: always() && hashFiles('build/mbs-workbook-egress-preflight.json') != ''
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-15-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/mbs-workbook-egress-preflight.json
+          if-no-files-found: error
+          retention-days: 30

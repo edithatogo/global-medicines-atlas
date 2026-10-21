@@ -1,6 +1,8 @@
 """Group qualification reads only its frozen object and emits bounded receipts."""
 
+import json
 import sys
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -115,3 +117,31 @@ def test_cli_withholds_source_bearing_errors(tmp_path: Path, monkeypatch):
     with pytest.raises(SystemExit, match="source details withheld"):
         module.main()
     assert not output.exists()
+
+
+def test_retained_group_qualification_covers_exact_native_object():
+    path = (
+        module.ROOT
+        / "quality/qualifications/mbs-group-native-qualification-20261022-39634190836.json"
+    )
+    assert (
+        sha256(path.read_bytes()).hexdigest()
+        == "05c5b13287ba5dfe3a390573a82365acde4e73d4379f707c5763421aef3ae192"
+    )
+    report = json.loads(path.read_text())
+    source, _ = module.load_group_source(module.ROOT)
+    result = report["result"]
+    assert (
+        report["workflow_commit"] == "889608f23bf371c44f2d815f4715f6ec30bbfa28"
+    )
+    assert result["source_object_id"] == source.object_id
+    assert result["source_sha256"] == source.source_sha256
+    assert result["coverage"]["data_records"] == 164543
+    assert result["coverage"]["header_records"] == 1
+    assert result["coverage"]["native_field_slots"] == 1316352
+    assert result["rebuild_equal"] is True
+    assert result["independent_native_parity_verified"] is True
+    assert result["duckdb_counts_verified"] is True
+    assert result["unqualified_pooling_blocked"] is True
+    assert report["boundaries"]["new_admissions"] == 0
+    assert report["boundaries"]["age_dimension_inferred"] is False

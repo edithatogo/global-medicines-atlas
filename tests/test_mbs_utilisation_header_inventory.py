@@ -239,7 +239,7 @@ def test_workflow_is_main_only_bounded_and_uses_existing_serialized_gate() -> (
     assert "workflow_dispatch:" in workflow
     assert "environment: australian-hf-publication" in workflow
     assert "group: australian-mbs-utilisation-harvest" in workflow
-    assert "issues: write" in workflow
+    assert "issues: write" not in workflow
     assert "inventory_mbs_utilisation_csv_headers.py" in workflow
     runner = (
         root / "scripts/inventory_mbs_utilisation_csv_headers.py"

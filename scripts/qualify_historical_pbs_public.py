@@ -46,7 +46,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument(
         "--projection",
-        choices=("native", "domain", "entities", "references", "dates"),
+        choices=(
+            "native",
+            "domain",
+            "entities",
+            "references",
+            "dates",
+            "values",
+        ),
     )
     parser.add_argument("--reference-shard-index", type=int)
     parser.add_argument("--reference-shard-count", type=int)
