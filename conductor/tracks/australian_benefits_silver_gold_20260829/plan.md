@@ -5285,3 +5285,35 @@ The interrupted local full profiles for commits `269a6e33` and `044a07c5`
 no longer had live process handles after the intentional turn interruption.
 Their logs lack terminal summaries; no full pass is claimed. A fresh full
 profile applies to this changed workflow behavior after the code is frozen.
+
+
+### Source-native MBS group CSV candidate (2026-10-22)
+
+- [~] Preserve the separate July 2016 group CSV family: native group, subgroup,
+  item, state and period strings, service counts, benefit tokens and complete
+  header/record coverage. No age dimension or cross-era hierarchy equivalence.
+- [~] Build deterministic candidate Parquet with independent Arrow CSV/native-
+  field parity, typed-value/provenance checks and atomic finalization.
+- [ ] Bind the exact retained group object (164,543 source records) to a hosted
+  qualifier, execute on exact main and retain actual digests/restore evidence;
+  complete applicable rights/admission and delivery independently.
+
+PR #1258 merged as `ebd4e300` after all 40 reported checks passed. Exact-main
+Q1 run `39627539043` is active and quarterly CSV run `39627746801` is queued;
+source qualification remains pending their actual final artifacts.
+
+### Q1 exact-source qualification readback and group hosted route (2026-10-22)
+
+- [x] Retain the aggregate artifact from successful exact-main Q1 run
+  `39627539043`: both source objects have complete primary-field parity,
+  deterministic rebuild, independent Parquet restore and DuckDB checks.
+  Workbook 545,074 rows, 58 literal Unknown ages and 76,287 lossless-decimal
+  exceptions remain visible; CSV 545,070 rows. No benefit equivalence,
+  patient-rate support, new rights conclusion or output admission follows.
+- [~] Add the existing July group CSV qualifier to the registered workflow:
+  exact B1/B2/frozen identity, 164,543-row denominator, repeat build,
+  independent restore and bounded DuckDB checks; aggregate artifact only.
+- [ ] Complete group increment review, full validation, protected CI and
+  exact-main hosted execution. Quarterly run `39627746801` remains queued.
+- [ ] Continue remaining MBS families and eras, PBS domain harmonisation,
+  exact output rights/admission and consumer delivery within frozen scope.

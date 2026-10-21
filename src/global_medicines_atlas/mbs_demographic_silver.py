@@ -12,7 +12,7 @@ from collections import Counter
 from collections.abc import Iterable, Iterator
 from decimal import Decimal
 from hashlib import sha256
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 from urllib.parse import unquote, urlsplit
 
 import pyarrow as pa
@@ -108,6 +108,8 @@ class DemographicRow(FrozenModel):
 class DemographicSource(FrozenModel):
     """One exact B1/B2 source reference and its reviewed native header shape."""
 
+    SOURCE_FAMILY: ClassVar[str] = "au-data-gov-mbs-demographics"
+
     acquisition: AcquisitionEvent
     raw_manifest: RawEvidenceManifest
     dataset: str = Field(
@@ -123,7 +125,7 @@ class DemographicSource(FrozenModel):
         manifest = RawEvidenceManifest.model_validate(
             self.raw_manifest.model_dump()
         )
-        if event.source_id != "au-data-gov-mbs-demographics":
+        if event.source_id != self.SOURCE_FAMILY:
             raise ValueError("demographic source family differs")
         if manifest.row_count != 1:
             raise ValueError(

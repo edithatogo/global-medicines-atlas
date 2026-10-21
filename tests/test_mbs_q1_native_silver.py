@@ -2,6 +2,7 @@
 
 import json
 import sys
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -231,10 +232,11 @@ def test_registered_workflow_selects_one_guarded_qualification_lane():
         "meaning-diagnostics",
         "native-silver",
         "quarterly-csv",
+        "group-csv",
     ]
     assert (
         document["jobs"]["qualify"]["if"]
-        == "inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv'"
+        == "inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv'"
     )
     native = document["jobs"]["native-silver"]
     assert native["if"] == "inputs.qualification_scope == 'native-silver'"
@@ -265,3 +267,40 @@ def test_registered_workflow_quarterly_lane_retains_exact_matrix_and_receipts():
         quarterly["steps"][-1]["with"]["path"]
         == "demographic-csv-candidate.json"
     )
+
+
+def test_retained_q1_hosted_receipt_preserves_exact_scope():
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "quality/qualifications/mbs-q1-native-silver-qualification-20261022-39627539043.json"
+    )
+    assert (
+        sha256(path.read_bytes()).hexdigest()
+        == "e0d22895cfd4a8e159c22273aee7856426f0063129607bd1e879272880b68110"
+    )
+    report = json.loads(path.read_text())
+    assert (
+        report["workflow_commit"] == "ebd4e300f4aafc809fedfe4b1214fdbe44b381ca"
+    )
+    workbook, csv = report["objects"]
+    for index, obj in enumerate((workbook, csv)):
+        context = module.source_context(index)
+        assert obj["source_object_id"] == context.object_id
+        assert obj["source_sha256"] == context.source_sha256
+        assert obj["rebuild_equal"]
+        assert obj["independent_parquet_restore"]
+        assert obj["duckdb_consumer_counts_equal"]
+        assert obj["unqualified_pooling_blocked"]
+        assert obj["patient_rate_state"] == "unavailable"
+        assert (
+            obj["source_native_primary_fields_equal"]
+            == obj["coverage"]["native_fields"]
+        )
+    assert workbook["coverage"]["native_rows"] == 545074
+    assert workbook["coverage"]["literal_unknown_age_rows"] == 58
+    assert workbook["coverage"]["benefit_unrepresentable"] == 76287
+    assert csv["coverage"]["native_rows"] == 545070
+    assert workbook["source_measure_id"] != csv["source_measure_id"]
+    assert not report["boundaries"]["benefit_equivalence_established"]
+    assert report["boundaries"]["new_admissions"] == 0
+    assert report["boundaries"]["new_sources"] == 0

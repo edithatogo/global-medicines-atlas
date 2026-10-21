@@ -37,7 +37,8 @@ BATCH_ROWS = 1024
 PACKAGE_FILES = ("primary.parquet", "ancillary.parquet", "inventory.json")
 
 
-def _json(value: Any) -> bytes:
+def canonical_package_json(value: Any) -> bytes:
+    """Serialize candidate metadata deterministically, rejecting non-finite values."""
     return (
         json.dumps(
             value, sort_keys=True, separators=(",", ":"), allow_nan=False
@@ -92,13 +93,16 @@ def _ancillary(
         "native_name": cell.cell.name,
         "state": cell.cell.state,
         "native_value": cell.cell.value,
-        "native_properties_json": _json(cell.cell.native_properties)
+        "native_properties_json": canonical_package_json(
+            cell.cell.native_properties
+        )
         .decode()
         .rstrip("\n"),
     }
 
 
-def _writer(path: Path, schema: pa.Schema) -> pq.ParquetWriter:
+def candidate_parquet_writer(path: Path, schema: pa.Schema) -> pq.ParquetWriter:
+    """Create the governed deterministic candidate Parquet writer."""
     return pq.ParquetWriter(
         path,
         schema,
@@ -111,7 +115,8 @@ def _writer(path: Path, schema: pa.Schema) -> pq.ParquetWriter:
     )
 
 
-def _fingerprint(path: Path) -> dict[str, Any]:
+def file_fingerprint(path: Path) -> dict[str, Any]:
+    """Stream the exact file digest and byte count without retaining its content."""
     digest = sha256()
     size = 0
     with path.open("rb") as stream:
@@ -128,10 +133,14 @@ def _build(
     ancillary_count = 0
     with ExitStack() as stack:
         primary_writer = stack.enter_context(
-            _writer(output / "primary.parquet", demographic_silver_schema())
+            candidate_parquet_writer(
+                output / "primary.parquet", demographic_silver_schema()
+            )
         )
         ancillary_writer = stack.enter_context(
-            _writer(output / "ancillary.parquet", ancillary_schema())
+            candidate_parquet_writer(
+                output / "ancillary.parquet", ancillary_schema()
+            )
         )
 
         def rows() -> Iterator[DemographicRow]:
@@ -143,7 +152,7 @@ def _build(
                     yield record
                 elif isinstance(record, AncillaryCell):
                     projected = _ancillary(record, source)
-                    record_bytes = len(_json(projected))
+                    record_bytes = len(canonical_package_json(projected))
                     if record_bytes > MAX_BATCH_BYTES:
                         raise ValueError(
                             "ancillary cell exceeds output byte bound"
@@ -180,7 +189,7 @@ def _build(
                 yield batch
 
         coverage = summarize_demographic_batches(batches())
-    (output / "inventory.json").write_bytes(_json(inventory))
+    (output / "inventory.json").write_bytes(canonical_package_json(inventory))
     workbook_cells = sum(
         sheet["native_cell_count"] for sheet in inventory["sheets"]
     )
@@ -199,7 +208,9 @@ def _build(
         "coverage": coverage,
         "ancillary_cells": ancillary_count,
         "native_workbook_cells": workbook_cells,
-        "files": {name: _fingerprint(output / name) for name in PACKAGE_FILES},
+        "files": {
+            name: file_fingerprint(output / name) for name in PACKAGE_FILES
+        },
         "limits": {
             "semantic_qualification": False,
             "rights_qualification": False,
@@ -224,7 +235,9 @@ def build_demographic_package(
         staged = Path(temporary) / "package"
         staged.mkdir()
         report = _build(payload, source, staged)
-        (staged / "qualification.json").write_bytes(_json(report))
+        (staged / "qualification.json").write_bytes(
+            canonical_package_json(report)
+        )
         verify_demographic_package(staged)
         staged.rename(output)
     return report
@@ -248,7 +261,7 @@ def verify_demographic_package(output: Path) -> dict[str, Any]:
     if set(report["files"]) != set(PACKAGE_FILES):
         raise ValueError("candidate manifest inventory differs")
     for name in PACKAGE_FILES:
-        if _fingerprint(output / name) != report["files"][name]:
+        if file_fingerprint(output / name) != report["files"][name]:
             raise ValueError("candidate output digest or size differs")
     source = DemographicSource.model_validate(report["source"])
     if (
