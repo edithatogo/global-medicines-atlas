@@ -4619,3 +4619,21 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
   cannot substitute for field meaning. The existing exact six-object rights
   attestation covers all contents, including vocabulary, with the instrument
   not independently reviewed; no admission or publication follows.
+
+
+## M-112 Q1 HR local role binding (2026-10-21)
+
+- [x] Build and validate the exact v4.1 raw-B2 contract for the replayed Q1
+  2016 HR object. The canonical contract is
+  `quality/qualifications/australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json`
+  (SHA-256 `c926b6d5d3dfb96e23905dd29583651dcc292364f97a34b1e6dea939cebd9f39`);
+  it binds the pinned 21,966,140-byte object and its exact digest, source,
+  acquisition and lineage roles. Schema and semantic checks pass. Native
+  workbook layout remains unqualified.
+- [~] Complete anonymous receipt closure and exact-main admission/canary. The
+  local closure attempt found that the Q1 replay receipt URL at pinned main
+  `de76083a0da67414c803c7a74de00162fe5dfbad` returns HTTP 404. The contract is
+  now bound to local evidence commit `de77e8e2b7f88994c1b99919c475d085fc9b39a7`,
+  which contains that receipt, but this commit is not publicly available while
+  the no-push/no-PR rule is active. Admission and canary remain 7 each; the
+  1,752 deferrals and 1,759 denominator are unchanged.
