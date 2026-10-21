@@ -5335,3 +5335,22 @@ source qualification remains pending their actual final artifacts.
   the existing exact-main P7 workflow and retain its aggregate artifact.
 - [ ] Continue all remaining frozen MBS/PBS families, exact output admission
   and actual consumer delivery; typed storage does not establish semantics.
+
+### Quarterly CSV source qualification and PBS native values (2026-10-22)
+
+- [x] Retain all three aggregate artifacts from successful exact-main run
+  `39627746801`. Complete native-field parity, deterministic rebuild, Parquet
+  restore and DuckDB checks cover 545,070 / 567,335 / 186,082 data rows.
+  Q2 retains 4,728 service-count conversion exceptions; no rows are dropped.
+  Source benefit meanings remain separate, patient rates unavailable, and
+  no output admission or rights conclusion follows from these checks.
+- [~] Add PBS native value candidates to both ordinary and historical entity
+  streams. Preserve all native fields, product/restriction/reference occurrence
+  identities and parent/archive/member lineage. Decimal candidates are lossless
+  only; currency stays literal; unsupported values and domain meanings remain
+  explicitly unresolved. No vocabulary membership or era equivalence inferred.
+- [x] Verify 94 affected checks and 100% branch coverage of PBS value handling.
+- [ ] Integrate PBS values into real-corpus output qualification and restore,
+  complete remaining source family/era mappings and applicable output roles.
+- [ ] Complete validation, review, protected CI and exact-main source execution;
+  keep remaining MBS/PBS inventory coverage and consumer delivery open.

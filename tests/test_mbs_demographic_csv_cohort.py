@@ -1,5 +1,7 @@
 """Existing quarterly CSV candidates retain exact provenance and denominators."""
 
+import json
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -114,3 +116,45 @@ def test_membership_denominator_and_b1_binding_fail_closed(monkeypatch, change):
         ValueError, match=r"membership|denominator|B1/B2 digest"
     ):
         load_csv_candidates(ROOT)
+
+
+@pytest.mark.parametrize(
+    ("quarter", "digest"),
+    [
+        (1, "69e6882678ec67157b69738531a3847ef6a3b16c42a75d3a0fdcd32ee98f16f5"),
+        (2, "1805a45bd998bb07b863b839e15b73552007c064f38b92b07043413f8fb34708"),
+        (3, "e0dc024bae88b40c7a62d881c64038b3d77f981ad4a35af28c9906c54c009c8d"),
+    ],
+)
+def test_retained_quarterly_qualification_binds_complete_candidate(
+    quarter, digest
+):
+    path = (
+        ROOT
+        / f"quality/qualifications/mbs-demographic-q{quarter}-native-qualification-20261022-39627746801.json"
+    )
+    assert sha256(path.read_bytes()).hexdigest() == digest
+    report = json.loads(path.read_text())
+    candidate = load_csv_candidates(ROOT)[quarter - 1]
+    result = report["result"]
+    assert (
+        report["workflow_commit"] == "ebd4e300f4aafc809fedfe4b1214fdbe44b381ca"
+    )
+    assert report["selected_quarter"] == quarter
+    assert report["source_path"] == candidate.source.source_path
+    assert result["source_object_id"] == candidate.source.object_id
+    assert result["source_sha256"] == candidate.source.source_sha256
+    assert result["coverage"]["native_rows"] == candidate.expected_rows
+    assert (
+        result["source_native_primary_fields_equal"]
+        == candidate.expected_rows * 8
+    )
+    assert result["independent_parquet_restore"] is True
+    assert result["rebuild_equal"] is True
+    assert result["duckdb_consumer_counts_equal"] is True
+    assert result["unqualified_pooling_blocked"] is True
+    assert result["patient_rate_state"] == "unavailable"
+    assert report["boundaries"]["new_admissions"] == 0
+    assert report["boundaries"]["new_sources"] == 0
+    if quarter == 2:
+        assert result["coverage"]["services_invalid"] == 4728
