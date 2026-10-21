@@ -194,6 +194,7 @@ class DemographicSource(FrozenModel):
         """Like-named benefit columns remain separate unresolved measures."""
         return SilverFieldSemantics(
             source_sha256=self.source_sha256,
+            source_object_id=self.object_id,
             native_name=self.headers[7],
             state="native_unresolved",
             reason="Source-reported benefit calculation is unresolved",

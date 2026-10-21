@@ -65,6 +65,19 @@
       "default": null,
       "title": "Semantic Definition"
     },
+    "source_object_id": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Object Id"
+    },
     "source_sha256": {
       "pattern": "^[0-9a-f]{64}$",
       "title": "Source Sha256",

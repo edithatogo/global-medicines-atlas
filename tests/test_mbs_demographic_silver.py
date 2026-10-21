@@ -483,6 +483,11 @@ def test_identical_content_at_distinct_paths_keeps_object_coverage_separate():
     assert context.source_sha256 == alias.source_sha256
     assert context.object_id != alias.object_id
     assert context.source_measure_id != alias.source_measure_id
+    assert (
+        context.benefit_semantics.measure_identity
+        != alias.benefit_semantics.measure_identity
+    )
+    assert context.benefit_semantics.source_object_id == context.object_id
     first = list(iter_demographic_silver_batches([row(context, 2)], context))
     second = list(iter_demographic_silver_batches([row(alias, 2)], alias))
     assert (

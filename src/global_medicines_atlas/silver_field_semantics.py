@@ -41,6 +41,7 @@ class SilverFieldSemantics(FrozenModel):
     )
 
     source_sha256: Digest
+    source_object_id: Digest | None = None
     native_name: str = Field(min_length=1)
     value_kind: Literal["measure", "date", "category", "count"] = "measure"
     state: InterpretationState
@@ -60,9 +61,13 @@ class SilverFieldSemantics(FrozenModel):
         return self
 
     @property
-    def measure_identity(self) -> tuple[str, str]:
-        """Keep like-named fields from different immutable objects distinct."""
-        return self.source_sha256, self.native_name
+    def measure_identity(self) -> tuple[str, str | None, str]:
+        """Identify content, optional exact object binding, and native field.
+
+        Object-aware producers must supply source_object_id so byte-identical
+        aliases remain distinct. None denotes a content-only field identity.
+        """
+        return self.source_sha256, self.source_object_id, self.native_name
 
     def require_interpreted(self) -> None:
         """Reject derived uses of unresolved or unavailable field meanings."""
