@@ -5468,3 +5468,32 @@ source qualification remains pending their actual final artifacts.
   temporary file is capped at 4 GiB; only aggregate evidence is uploaded and
   temporary derivatives are removed. The hosted wrapper and progress boundary
   pass synthetic checks; real-source execution and runtime fit remain pending.
+
+### Complete quarterly workbook readback and next source-family coverage
+
+- [x] Retain exact successful run 39648296077 for all three frozen demographic
+  workbooks. Q3 preserves 186082 native rows, 11 literal Unknown-age rows and
+  26193 lossless-decimal exceptions; source parity, two builds, independent
+  Parquet restore and DuckDB counts passed. No benefit pooling, patient rate,
+  new admission or publication follows.
+- [x] Retain group workbook native layout run 39651063652: the primary sheet
+  has 164558 physical rows/1316464 cells and Metadata has 228 cells. The actual
+  Group/Sub_Group header is independent of demographic and CSV profiles.
+- [~] Implement the group workbook native-row producer with separate group
+  dimensions, complete cell properties, formulas/cache/errors and lossless
+  numeric candidates. Primary-only output explicitly requires separate
+  ancillary retention. Complete-source package/restore and hosted typed-output
+  qualification remain pending.
+- [x] Retain successful PBS native-value run 39648302023 over 18208758 fields
+  and 7730684 entities. All entities remain native_unresolved; 7713891 are
+  unmapped and none reaches the existing price role. This does not establish
+  source absence of prices or domain completion.
+- [~] Qualify the new bounded PBS native schema-path inventory route before
+  extending domain mappings from the actual source structure. It emits paths,
+  counts and presence states only, with a separate 1 MiB inventory bound and
+  unchanged summary bound of 48000 bytes; no native values or new source are emitted.
+  Read-only schema work has an independent concurrency key; legacy qualifier
+  serialization and timeout limits remain intact.
+- [~] Observe complete-package run 39654897926, dispatched on exact merged
+  main eaee359d after PR1264 passed all 40 protected checks. No completed
+  real-source package claim is made until the terminal receipt is verified.

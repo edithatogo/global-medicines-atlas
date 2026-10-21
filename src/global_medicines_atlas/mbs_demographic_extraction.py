@@ -494,3 +494,23 @@ read_bounded_workbook_member = _member
 workbook_cell_position = _position
 read_workbook_shared_strings = _shared
 workbook_sheet_targets = _targets
+
+
+def iter_native_workbook_records(
+    payload: bytes, source: DemographicSource
+) -> Iterator[Record]:
+    """Extract an explicitly validated source-family workbook header profile.
+
+    The concrete source model owns its B1/B2 family and exact native header.
+    This shared physical extractor assigns no demographic or group meanings.
+    """
+    source = type(source).model_validate(source.model_dump())
+    if source.source_format != "workbook":
+        raise ValueError("native workbook extractor requires workbook format")
+    if (
+        not isinstance(payload, bytes)  # pyright: ignore[reportUnnecessaryIsInstance] -- public runtime boundary
+        or not 0 < len(payload) <= MAX_SOURCE_BYTES
+        or sha256(payload).hexdigest() != source.source_sha256
+    ):  # pyright: ignore[reportUnnecessaryIsInstance] -- public runtime boundary
+        raise ValueError("native workbook payload identity or bound differs")
+    yield from _workbook(payload, source)

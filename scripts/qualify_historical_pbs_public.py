@@ -39,6 +39,10 @@ def _write(output: Path, report: dict[str, Any]) -> dict[str, Any]:
     return report
 
 
+# Reused by bounded metadata-only qualification CLIs.
+write_qualification_receipt = _write
+
+
 def main(argv: list[str] | None = None) -> int:
     """Emit aggregate checkpoints and a final receipt without source text."""
     parser = argparse.ArgumentParser()

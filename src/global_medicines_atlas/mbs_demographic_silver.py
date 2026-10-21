@@ -460,3 +460,7 @@ def summarize_demographic_batches(
         }
         for key, value in sorted(counts.items())
     }
+
+
+# Shared lossless conversion; callers retain their own dimension/header contracts.
+convert_native_utilisation_number = _numeric
