@@ -5205,3 +5205,34 @@ meanings or grant new rights, publication, clinical claims or outreach.
   states, lossless decimals and deterministic Parquet rebuilds.
 - [ ] Bind output digests to applicable rights/admission evidence; execute
   authorized restore and consumer canaries and complete protected CI.
+
+
+### Q1 source-native Silver projection implementation (2026-10-21)
+
+- [~] Preserve primary-table rows and all eight native field slots, source
+  properties, per-object benefit identities, precision exceptions and native
+  age groups. Bind the producer to existing B1 acquisition and B2 manifest
+  identities; keep unsupported patient rates unavailable.
+- [ ] Complete receipt-bound source-byte extraction and ancillary workbook
+  metadata coverage. The primary-table producer alone does not qualify the
+  complete workbook or prove source-to-output extraction parity.
+- [ ] Qualify exact real-source outputs, independent Parquet restore and
+  consumers; retain source meanings as unresolved where evidence is absent.
+- [ ] Continue all remaining MBS/PBS families, source eras, exact output roles,
+  rights/admission binding and delivery work in the approved goal.
+
+
+### Q1 complete-source extraction follow-up (2026-10-21)
+
+- [~] Implement receipt-bound CSV/workbook extraction with primary rows, ancillary
+  cells, worksheet inventories and fully read ZIP-member fingerprints. Synthetic
+  extraction checks pass; real-source parity and deterministic output writing
+  remain pending.
+- [~] Correct review finding on PR #1252: carry exact object identity into the
+  generic benefit semantics so byte-identical path aliases remain distinct.
+  Focused regression passes; successor protected CI and merge remain pending.
+
+- [~] Build deterministic candidate primary/ancillary Parquet packages with
+  transactional finalization, ZIP/sheet inventories and independent restore
+  checks. Local synthetic tests pass; source parity, exact transform binding,
+  hosted qualification and delivery remain pending.
