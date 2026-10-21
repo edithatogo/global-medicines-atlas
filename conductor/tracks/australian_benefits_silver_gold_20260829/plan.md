@@ -4580,3 +4580,22 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
 - [~] Complete exact-head v4 admission and consumer canary for this candidate
   after the support changes and candidate contract are available on `main`.
   The row remains open until hosted admission and canary readback are recorded.
+
+
+## M-110 PBS utilisation identifier-shape screen (2026-10-21)
+
+- [x] Re-screen all six exact, already-authorized PBS utilisation objects at
+  immutable revision `9f1d53cd50eea251b326da42a96f3ac72ebce97a` in memory.
+  Original byte counts and SHA-256 digests matched the pinned lineage for all
+  191,047,619 bytes. The aggregate-only qualification is
+  `quality/qualifications/australian-pbs-utilisation-identifier-shape-screen-20261021.json`
+  (SHA-256 `fa8b25d1bd312d097b9f72cf97e418af61e4aa33f7b4c55a40a7dcad20cafc71`).
+  The scan found 1,314,870 ATC-shaped strings, 928,410 six-to-eighteen-digit
+  numeric candidates, and 136 explicit terminology markers; the exact UMLS CUI
+  text pattern occurred zero times. No source values or files were retained.
+- [ ] Complete the vocabulary-membership review and determine excluded versus
+  cleared fields. The pattern counts are candidate indicators: numeric or
+  ATC-shaped strings cannot be assigned to a licensed vocabulary from shape
+  alone, and the existing approved scope contains no complete vocabulary
+  dictionary or source-owner field contract. Rights and full-content exclusion
+  therefore remain unresolved; this scan authorizes no admission or release.
