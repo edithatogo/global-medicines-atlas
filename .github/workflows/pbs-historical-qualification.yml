@@ -2,6 +2,14 @@ name: Qualify pinned historical PBS projections
 on:
   workflow_dispatch:
     inputs:
+      qualification_scope:
+        description: Existing structural qualification or native value candidates
+        required: true
+        type: choice
+        options:
+          - structural
+          - native-values
+        default: structural
       exact_commit:
         description: Exact merged main commit containing the reviewed qualifier
         required: true
@@ -24,7 +32,7 @@ jobs:
     name: Prepare streaming PBS global reference index
     # Independent of projection qualification so a slow or failed phase does
     # not extend/suppress reference preparation; aggregation remains fail closed.
-    if: always() && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -55,7 +63,7 @@ jobs:
   prepare:
     name: Assemble verified transient PBS shard inputs
     needs: [prepare-reference-index, prepare-reference-pairs]
-    if: always() && needs.prepare-reference-index.result == 'success' && needs.prepare-reference-pairs.result == 'success' && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && always() && needs.prepare-reference-index.result == 'success' && needs.prepare-reference-pairs.result == 'success' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -96,6 +104,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
   qualify:
+    if: inputs.qualification_scope != 'native-values'
     name: Verify PBS phase / ${{ matrix.projection }}
     strategy:
       fail-fast: false
@@ -135,7 +144,7 @@ jobs:
           retention-days: 30
   qualify-references:
     name: Verify PBS references / ${{ matrix.shard }}
-    if: always() && needs.prepare.result == 'success'
+    if: inputs.qualification_scope != 'native-values' && always() && needs.prepare.result == 'success'
     needs: prepare
     strategy:
       fail-fast: false
@@ -195,13 +204,12 @@ jobs:
           retention-days: 30
   aggregate:
     name: Verify complete PBS shard aggregate
-    if: always() && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && always() && github.ref == 'refs/heads/main'
     needs: [prepare, qualify, qualify-references]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
       contents: read
-      issues: write # One durable bounded aggregate receipt only.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
@@ -222,14 +230,6 @@ jobs:
             --receipts receipts --exact-commit "$REQUESTED_COMMIT" \
             --reference-shards 16 \
             --output pbs-qualification-receipt.json
-      - name: Persist the sole aggregate receipt in the track issue
-        if: always()
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          gh issue comment 341 --repo "$GITHUB_REPOSITORY" \
-            --body-file pbs-qualification-receipt.json
       - name: Retain aggregate receipt without source material
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -242,7 +242,7 @@ jobs:
     name: Prepare PBS reference pair / ${{ matrix.group }}
     # Eight two-shard units reduce both wall time and the retry failure domain.
     # Each child retains its own artifact and fail-fast remains disabled.
-    if: always() && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && always() && github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
       max-parallel: 8
@@ -277,3 +277,35 @@ jobs:
             reference-group-${{ matrix.group }}-receipt.json
           if-no-files-found: error
           retention-days: 1
+
+  native-values:
+    if: inputs.qualification_scope == 'native-values'
+    name: Verify pinned PBS native value candidates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Qualify complete pinned archive member values and native parity
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.14.6 python scripts/qualify_historical_pbs_public.py \
+            --exact-commit "$REQUESTED_COMMIT" --projection values \
+            --output pbs-native-values-receipt.json
+      - name: Retain aggregate qualification receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-native-values-receipt-${{ github.run_id }}
+          path: pbs-native-values-receipt.json
+          if-no-files-found: error
+          retention-days: 30

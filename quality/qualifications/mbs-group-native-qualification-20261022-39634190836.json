@@ -1,0 +1,47 @@
+{
+  "boundaries": {
+    "age_dimension_inferred": false,
+    "candidate_only": true,
+    "hierarchy_equivalence_established": false,
+    "new_admissions": 0,
+    "new_federated_canaries": 0,
+    "new_sources": 0,
+    "publications": 0,
+    "rights_conclusion_changed": false
+  },
+  "dataset": "edithatogo/australian-mbs-utilisation-archive",
+  "result": {
+    "acquisition_sha256": "2118a83d0e0a6b92ec296bd0d9c745bbf81607d9706092b9d6d828dacf8b9638",
+    "b2_manifest_sha256": "b0a3fe8b6613776efccaa9c65a6a4749cc3fdf6cd6981236d91ea1309b396c88",
+    "candidate_only": true,
+    "coverage": {
+      "benefit_conversion_statuses": {
+        "converted": 164543
+      },
+      "data_records": 164543,
+      "header_records": 1,
+      "native_field_slots": 1316352,
+      "services_conversion_statuses": {
+        "converted": 164543
+      }
+    },
+    "duckdb_counts_verified": true,
+    "independent_native_parity_verified": true,
+    "manifest_sha256": "9c3ba238801cdc2d7f39802d818ed9169e9b072c1c1f9598d88181916d51b64d",
+    "parquet": {
+      "bytes": 4943115,
+      "sha256": "5b1ec8f8889f3210aa5b50dfc8e8d2ef6209befced3fbc00e7e62b133295d1ad"
+    },
+    "rebuild_equal": true,
+    "source_measure_id": "38a94f61cfd997bad401194db7295c1da9fc2a5358173ea389d85ec3b9dc0d9c:Benefit",
+    "source_object_id": "38a94f61cfd997bad401194db7295c1da9fc2a5358173ea389d85ec3b9dc0d9c",
+    "source_sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+    "unqualified_pooling_blocked": true
+  },
+  "schema_id": "global-medicines-atlas.mbs-group-native-candidate-qualification",
+  "schema_version": 1,
+  "source_path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+  "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+  "temporary_derivatives_removed": true,
+  "workflow_commit": "889608f23bf371c44f2d815f4715f6ec30bbfa28"
+}

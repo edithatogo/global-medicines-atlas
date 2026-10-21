@@ -22,7 +22,6 @@ jobs:
     timeout-minutes: 45
     permissions:
       contents: read
-      issues: write # Durable intent and anonymous verification receipt on issue 340.
     outputs:
       dataset_created: ${{ steps.publish.outputs.dataset_created }}
     steps:
@@ -282,9 +281,15 @@ jobs:
                   json.dumps(receipt, indent=2, sort_keys=True) + '\n', encoding='utf-8'
               )
           PY
-          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
-            --body-file australian-legacy-publication-receipt.json
+          : # Outbound comments prohibited; retain workflow artifacts instead.
 
+      - name: Retain verification artifact 16 without outbound messages
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: retained-verification-16-${{ github.run_id }}-${{ github.run_attempt }}
+          path: australian-legacy-publication-receipt.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Upload bounded publication receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
@@ -302,7 +307,6 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
-      issues: write # Required to record failed-transaction privacy containment.
     steps:
       - name: Restore exact newly-created dataset to private
         env:
@@ -324,5 +328,4 @@ jobs:
           if not api.dataset_info(os.environ['HF_DATASET']).private:
               raise RuntimeError('failed transaction was not restored to private')
           PY
-          gh issue comment 340 --repo "${GITHUB_REPOSITORY}" \
-            --body "Australian legacy publication run ${GITHUB_RUN_ID} failed; the exact newly-created dataset was restored to private."
+          : # Outbound comments prohibited; retain workflow artifacts instead.

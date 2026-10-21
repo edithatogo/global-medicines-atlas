@@ -5354,3 +5354,38 @@ source qualification remains pending their actual final artifacts.
   complete remaining source family/era mappings and applicable output roles.
 - [ ] Complete validation, review, protected CI and exact-main source execution;
   keep remaining MBS/PBS inventory coverage and consumer delivery open.
+
+### Group source proof, PBS values qualification and outbound closure (2026-10-22)
+
+- [x] Retain successful group run `39634190836` at main `889608f2`:
+  164,543 data records plus header, 1,316,352 native slots, deterministic
+  rebuild, independent native parity and DuckDB checks. No age inference,
+  benefit equivalence, output admission or rights conclusion follows.
+- [~] Add an explicit PBS values projection to the existing exact-main hosted
+  route. Keep the five default structural projections unchanged. Verify full
+  native digest/denominators, Parquet equality and controlled conversion-state
+  counters; reject rounded candidates or semantic promotion independently.
+- [x] Remove legacy workflow comment commands and unused issue-write scopes.
+  Retain verification receipts in artifacts before source cleanup where comment
+  receipts previously supplied that checkpoint. Confirm 15 comment-capable
+  workflows disabled pending comment-free-main reconciliation; preserve all
+  unrelated validation routes. The account-level outbound ban remains absolute.
+- [x] Merge P7 PR #1260 as `d7bdaeb8` after all 40 hosted checks passed.
+  Dispatch exact-main workbook run `39636095527`; result remains pending.
+- [ ] Complete PBS increment validation/review/CI and exact-main values run.
+  Reconcile the continuing local full profile without claiming its browser
+  timeouts as passes; preserve all remaining inventory and delivery work.
+
+### P7 typed source qualification readback (2026-10-22)
+
+- [x] Retain exact-main run `39636095527` at `d7bdaeb8`: deterministic
+  typed package rebuild, native-cell parity and typed Parquet restoration pass
+  over 13,742 cells / four sheets. Preserve all four formula cells, two source
+  error cells, 36 unrepresentable decimal conversions and 1,280 unsupported
+  date formats. All 13,742 interpretation states remain native_unresolved;
+  date profile is unselected. Output admission/rights/publication remain false.
+- [x] Verify 324 affected PBS/workflow checks; 49 workflow-wide outbound
+  regression cases pass. Audit all active-state run pages for the 15 disabled
+  comment-capable workflows: none running or queued was observed.
+- [ ] Finish remaining MBS workbook/archive/family coverage, PBS domain/era
+  qualification, reproducible exact output roles and eligible consumer delivery.

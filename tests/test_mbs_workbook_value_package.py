@@ -1,6 +1,7 @@
 """P7 typed candidates retain native evidence and restore without interpretation."""
 
 import json
+from hashlib import sha256
 from pathlib import Path
 
 import pyarrow as pa
@@ -121,3 +122,38 @@ def test_late_restore_failure_is_transactional(tmp_path, monkeypatch):
             payload, _receipt(payload), tmp_path / "candidate"
         )
     assert list(tmp_path.iterdir()) == []
+
+
+def test_retained_p7_typed_source_qualification_preserves_unresolved_evidence():
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "quality/qualifications/mbs-p7-typed-qualification-20261022-39636095527.json"
+    )
+    assert (
+        sha256(path.read_bytes()).hexdigest()
+        == "26b8952a41dacc2a88df23f6bd2b4c0df7cd9ba91fe29d580e0a5e46016d9929"
+    )
+    report = json.loads(path.read_text())
+    typed = report["typed_candidate_package"]
+    assert (
+        report["workflow_commit"] == "d7bdaeb8c276eb50617a6d205aa4b97a02fe22c3"
+    )
+    assert (
+        typed["source_sha256"]
+        == "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+    )
+    assert typed["coverage"]["native_cells"] == 13742
+    assert typed["coverage"]["unresolved_cells"] == 13742
+    assert typed["coverage"]["formula_cells"] == 4
+    assert typed["coverage"]["error_cells"] == 2
+    assert typed["coverage"]["domain_statuses"]["unrepresentable"] == 36
+    assert typed["coverage"]["domain_statuses"]["unsupported_format"] == 1280
+    assert sum(typed["coverage"]["domain_statuses"].values()) == 13742
+    assert typed["native_cell_parity_verified"] is True
+    assert typed["typed_parquet_restore_verified"] is True
+    assert typed["rebuild_equal"] is True
+    assert typed["date_profile"] is None
+    assert typed["semantic_promotion"] is False
+    assert typed["output_admitted"] is False
+    assert typed["rights_qualified"] is False
+    assert typed["published"] is False

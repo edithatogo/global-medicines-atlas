@@ -26,7 +26,6 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
-      issues: write # Durable append intent, digest proof, and readback receipts.
     env:
       HF_HOME: ${{ github.workspace }}/build/australian-mbs-july-lifecycle-cache
       HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
@@ -66,4 +65,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue comment 340 --body "July MBS lifecycle metadata append did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. Any anonymous digest receipt or Hub commit acknowledgement already recorded remains authoritative; inspect exact state before retrying. No admission acceptance is claimed."
+          : # Outbound comments prohibited; retain workflow artifacts instead.

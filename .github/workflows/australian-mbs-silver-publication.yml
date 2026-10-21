@@ -22,7 +22,6 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
-      issues: write # Durable intent and anonymous-verification receipts are posted to issue 340.
     env:
       HF_HOME: ${{ github.workspace }}/build/mbs-silver-hf-home
       HF_XET_CACHE: ${{ github.workspace }}/build/mbs-silver-hf-home/xet
@@ -52,4 +51,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh issue comment 340 --body "MBS Silver v4 publication workflow did not complete: https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID at $GITHUB_SHA. Any published revision is retained. Consult the exact anonymous verification receipt; no candidate promotion is claimed."
+          : # Outbound comments prohibited; retain workflow artifacts instead.
