@@ -1,0 +1,65 @@
+{
+  "boundaries": {
+    "benefit_equivalence_established": false,
+    "candidate_only": true,
+    "new_admissions": 0,
+    "new_federated_canaries": 0,
+    "new_sources": 0,
+    "publications": 0,
+    "rights_conclusion_changed": false
+  },
+  "result": {
+    "acquisition_sha256": "a3cbcbe8b4368caf23cc13ab6f32ee90cfe9debe9321d7a45424906597712e05",
+    "b2_manifest_sha256": "c9e14ff789ea09fd05d4a34450f22d20cec11f98568543ed78912a68a580898b",
+    "candidate_only": true,
+    "complete_source_restore": true,
+    "coverage": {
+      "ancillary_cells": 252,
+      "benefit_conversion_statuses": {
+        "converted": 140556,
+        "invalid": 6,
+        "null": 6,
+        "unrepresentable": 23987
+      },
+      "native_field_slots": 1316440,
+      "native_primary_cells": 1316440,
+      "native_primary_rows": 164555,
+      "native_workbook_cells": 1316692,
+      "services_conversion_statuses": {
+        "converted": 164543,
+        "invalid": 6,
+        "null": 6
+      }
+    },
+    "duckdb_consumer_counts_equal": true,
+    "independent_primary_native_fields_equal": 1316440,
+    "manifest_sha256": "6577b737c1ed6b3e9505d92e290d15c8acd0835e59832ee13ed36d365c61c829",
+    "output_id": "68d2ac950b33ddc977c76e0b6cb2f4afe9eae7728e1f12e47be6b22f9dcaf643",
+    "package_files": {
+      "ancillary.parquet": {
+        "bytes": 12822,
+        "sha256": "90b6dea8456c813653c8a3098c9527e996b9353c18a95b90146e6f5c5c8cda55"
+      },
+      "inventory.json": {
+        "bytes": 2458,
+        "sha256": "a095200ef2606354387a068ffdcf62149ac44c76ccba8bb194364d5ef0c7d8e6"
+      },
+      "primary.parquet": {
+        "bytes": 17313120,
+        "sha256": "6aed7e217002f83f3137e28277157bb827be8ae3ec877d35ba73a99157358669"
+      }
+    },
+    "rebuild_equal": true,
+    "source_date_alignment": "unqualified",
+    "source_measure_id": "b965b467492fb62b85a3a891eeff5a46400cec1d92af31e24318454b85916ea1:Benefits ($)",
+    "source_object_id": "b965b467492fb62b85a3a891eeff5a46400cec1d92af31e24318454b85916ea1",
+    "source_sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+    "unqualified_pooling_blocked": true
+  },
+  "schema_id": "global-medicines-atlas.mbs-group-workbook-candidate-qualification",
+  "schema_version": 1,
+  "source_path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+  "source_revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+  "temporary_derivatives_removed": true,
+  "workflow_commit": "4e6d4cd6159c9d11518f2aa0d30fc24af6ec8dfb"
+}

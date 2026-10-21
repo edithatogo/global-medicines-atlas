@@ -5516,6 +5516,22 @@ source qualification remains pending their actual final artifacts.
 - [ ] Qualify complete PBS outputs and applicable admission/consumer delivery.
 
 
+### Exact observed PBS domain profile and group workbook qualification
+
+- [x] Qualify complete group workbook native package in run 39669037532:
+  164555 primary rows, 252 ancillary cells, 1316692 total native cells,
+  two equal builds, independent field parity, complete restore and DuckDB
+  count checks. Retain 23987 benefit decimal exceptions and unresolved meaning.
+- [x] Implement separate opt-in PBS structural roles from the exact qualified
+  April inventory. Preserve every native field and parent occurrence; typed
+  amount candidates retain precision exceptions and absent currency evidence.
+- [~] Prepare protected read-only observed-domain-values qualification using
+  original B1/B2, independent native digest, exact storage equality and inventory
+  role denominators. Local synthetic checks do not qualify the real corpus.
+- [ ] Require exact-main hosted observed-profile qualification, then complete
+  substantive reference/domain semantics and eligible package delivery.
+
+
 ### Remaining frozen July MBS BSD/RVG family (2026-10-22)
 
 - [x] Bind exact frozen BSD CSV, BSD XML and RVG text identities to the retained

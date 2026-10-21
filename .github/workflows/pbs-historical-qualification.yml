@@ -9,6 +9,7 @@ on:
         options:
           - structural
           - native-values
+          - observed-domain-values
           - native-value-package
           - native-schema-inventory
         default: structural
@@ -34,7 +35,7 @@ jobs:
     name: Prepare streaming PBS global reference index
     # Independent of projection qualification so a slow or failed phase does
     # not extend/suppress reference preparation; aggregation remains fail closed.
-    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && always() && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && always() && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -65,7 +66,7 @@ jobs:
   prepare:
     name: Assemble verified transient PBS shard inputs
     needs: [prepare-reference-index, prepare-reference-pairs]
-    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && always() && needs.prepare-reference-index.result == 'success' && needs.prepare-reference-pairs.result == 'success' && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && always() && needs.prepare-reference-index.result == 'success' && needs.prepare-reference-pairs.result == 'success' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
     permissions:
@@ -106,7 +107,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
   qualify:
-    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values'
     name: Verify PBS phase / ${{ matrix.projection }}
     strategy:
       fail-fast: false
@@ -146,7 +147,7 @@ jobs:
           retention-days: 30
   qualify-references:
     name: Verify PBS references / ${{ matrix.shard }}
-    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && always() && needs.prepare.result == 'success'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && always() && needs.prepare.result == 'success'
     needs: prepare
     strategy:
       fail-fast: false
@@ -206,7 +207,7 @@ jobs:
           retention-days: 30
   aggregate:
     name: Verify complete PBS shard aggregate
-    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && always() && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && always() && github.ref == 'refs/heads/main'
     needs: [prepare, qualify, qualify-references]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -244,7 +245,7 @@ jobs:
     name: Prepare PBS reference pair / ${{ matrix.group }}
     # Eight two-shard units reduce both wall time and the retry failure domain.
     # Each child retains its own artifact and fail-fast remains disabled.
-    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && always() && github.ref == 'refs/heads/main'
+    if: inputs.qualification_scope != 'native-values' && inputs.qualification_scope != 'native-value-package' && inputs.qualification_scope != 'native-schema-inventory' && inputs.qualification_scope != 'observed-domain-values' && always() && github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
       max-parallel: 8
@@ -375,5 +376,37 @@ jobs:
           path: |
             pbs-native-schema-inventory-receipt.json
             pbs-native-schema-path-inventory.json
+          if-no-files-found: error
+          retention-days: 30
+
+  observed-domain-values:
+    if: inputs.qualification_scope == 'observed-domain-values'
+    name: Verify pinned PBS observed structural value candidates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Qualify complete pinned archive member values and native parity
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.14.6 python scripts/qualify_observed_pbs_values.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --output pbs-observed-domain-values-receipt.json
+      - name: Retain aggregate qualification receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-observed-domain-values-receipt-${{ github.run_id }}
+          path: pbs-observed-domain-values-receipt.json
           if-no-files-found: error
           retention-days: 30
