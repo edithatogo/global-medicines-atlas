@@ -12,9 +12,10 @@ and rationale contract in that policy.
 
 The latest bound preflight records 1,759/1,759 frozen objects with resolved
 rights, 7 exact v4 admissions, 7 admitted-object consumer canaries, and 1,752
-deferred objects. The frozen denominator is unchanged; native workbook layout
-is not qualified, and no public dataset mutation or external publication was
-performed. Use [preflight snapshot 20261021-8](../quality/qualifications/australian-m112-rights-release-preflight-20261021-11.json),
+deferred objects. The frozen denominator is unchanged; Q1 HR physical workbook
+layout is qualified, while source-field and transformation semantics remain
+unqualified. No public dataset mutation or external publication was performed.
+Use [preflight snapshot 20261021-12](../quality/qualifications/australian-m112-rights-release-preflight-20261021-12.json),
 [current rights reconciliation](../quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json),
 and the [latest candidate-role qualification](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json)
 for the current count readback. The bound preflight retains its
@@ -22,8 +23,9 @@ for the current count readback. The bound preflight retains its
 the 20261021 role report is a later candidate-role refresh, does not alter the
 preflight admission/canary counts, and does not itself perform admission or a
 canary. The reviewed MBS path-lineage overlay also
-closes the July 2025 XML and P7 workbook B1/B2 joins and reports 22 complete
-raw lineages. Older count statements in dated plan sections remain
+closes the July 2025 XML and P7 workbook B1/B2 joins. The exact July BSD
+sidecar readback separately verifies both sidecar B1/B2 bindings. Older count
+statements in dated plan sections remain
 historical snapshots and must not be read as today's totals.
 
 - [x] **Track: Migrate nzmedicines into the canonical atlas repository**

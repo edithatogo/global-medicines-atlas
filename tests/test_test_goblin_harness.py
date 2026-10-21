@@ -687,7 +687,7 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
-    assert len(allowlist["regexes"]) == 11
+    assert len(allowlist["regexes"]) == 12
     assert not (ROOT / ".gitleaksignore").exists()
 
     revision = json.loads(
@@ -737,7 +737,7 @@ def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
     regexes = config["allowlists"][0]["regexes"][2:]
     expected = [
         (regexes[:2], "dataset_access_response_sha256", 2),
-        (regexes[2:], "idempotency_key", 7),
+        (regexes[2:], "idempotency_key", 8),
     ]
     for values, field, expected_count in expected:
         patterns = [re.compile(value) for value in values]
@@ -764,6 +764,23 @@ def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
     )
     q3_hr_idempotency_key = q3_hr_plan["snapshots"][0]["idempotency_key"]
     assert q3_hr_idempotency_key in digests
+    q1_hr_plan = json.loads(
+        (
+            ROOT / "quality/qualifications/"
+            "australian-m112-v3-replay-plan-20261021-39533443472.json"
+        ).read_text()
+    )
+    q1_snapshot = q1_hr_plan["snapshots"][0]
+    expected_q1_key = hashlib.sha256(
+        json.dumps(
+            [q1_snapshot["partition_id"], q1_snapshot["snapshot_id"]],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+    assert q1_snapshot["idempotency_key"] == expected_q1_key
+    assert expected_q1_key in digests
 
     disposition = (
         ROOT
