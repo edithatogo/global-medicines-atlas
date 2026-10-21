@@ -4532,3 +4532,21 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
   evidence.
 - [x] Record the bounded completion in this track's append-only evidence
   ledger under `m112_mbs_lineage_and_next_bounded_cohort`.
+
+## M-110 bounded MBS candidate content screen (2026-10-21)
+
+- [x] Re-read the six exact, already-authorized July 2025 MBS v4 candidate
+  Parquet objects at immutable revision `42d73b6facac016f14a335d36d83f1a3b630add8`,
+  verify each byte count and SHA-256, and screen all 35,934 rows in memory.
+  The bounded sensitive-field-name, email-like-value, and exact-digest screen
+  found no patterns across 1,040,085 bytes. The aggregate-only receipt is
+  `quality/qualifications/australian-mbs-v4-bounded-content-screen-20261021.json`
+  (SHA-256 `83ae8b29ad197495c6cb929165bf2560eaaf22f13ffbb8c7410f8a26ce2d6e5e`).
+- [ ] Complete the restricted-content screen for the eligible MBS/PBS scope
+  with a source-appropriate restricted-value review. This bounded scanner had
+  no restricted-value digest denylist, so it does not clear restricted
+  terminology or rights, and it does not screen PBS content.
+- [ ] Calibrate the actual matcher on representative, human-adjudicated,
+  case-disjoint held-out labels from the existing source scope. The available
+  400/400 generated matcher cases are synthetic-only and produce poor holdout
+  calibration; no confidence or production threshold is selected.

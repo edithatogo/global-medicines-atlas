@@ -494,3 +494,22 @@
   receipt-cohort input digest was regenerated and its focused tests pass (13);
   cohort counts did not change. No source, model, production behavior, rights
   conclusion, or authority state changed.
+
+## 2026-10-21 exact MBS Silver candidate content-pattern screen
+
+- [x] Apply the existing value-redacting scanner to all six exact July 2025
+  MBS v4 candidate Parquet objects at pinned public revision
+  `42d73b6facac016f14a335d36d83f1a3b630add8`. Verify each object against its
+  manifest size and digest, then screen all 35,934 rows in memory. The bounded
+  sensitive-field, email-like-value, and exact-digest detectors found no
+  patterns. Receipt:
+  `quality/qualifications/australian-mbs-v4-bounded-content-screen-20261021.json`
+  (SHA-256 `83ae8b29ad197495c6cb929165bf2560eaaf22f13ffbb8c7410f8a26ce2d6e5e`).
+- [ ] Keep restricted-terminology and broader source-content screening open:
+  no restricted-value denylist was supplied, the scanner is explicitly
+  non-exhaustive, and PBS source content is not covered by this MBS-only check.
+- [ ] Keep actual matcher calibration open. Existing case-disjoint 400-case
+  partitions were generated from invented names and calibration remains poor
+  on holdout (Brier 0.2108; ten-bin ECE 0.2068). Representative
+  human-adjudicated held-out source labels remain absent; no confidence or
+  production threshold is emitted.
