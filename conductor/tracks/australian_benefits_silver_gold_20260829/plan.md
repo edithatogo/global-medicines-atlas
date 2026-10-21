@@ -4810,3 +4810,23 @@ not itself perform the pending Q1 HR admission or canary.
   contract qualification and replay receipt exist, but the exact-main Q1 HR
   admission and canary have not run. The latest hosted canary remains the
   seven-object readback; the candidate evidence commit is not on public main.
+
+## M-110 restricted-content screen reconciliation (2026-10-21)
+
+- [x] Reconcile the value-free screens over all six exact PBS utilisation
+  objects and all six July 2025 MBS v4 candidate tables. The PBS findings
+  localize ATC-shaped values to the existing `ATC5_Code` and `ATC5_CODE`
+  fields, numeric shapes to existing period/count/contribution/cost fields,
+  and 136 expenditure-workbook markers to contextual or label text. The exact
+  UMLS CUI text pattern has zero matches. The MBS bounded screen reports no
+  configured field-name, email-like, or exact-digest patterns over 35,934
+  candidate rows. No source values were emitted. Consolidated receipt:
+  `quality/qualifications/australian-restricted-content-screen-reconciliation-20261021.json`
+  (SHA-256 `af14e16f255e4686f09ab25180c62139476edbd0aaf3dd5367a2f39c5e166e5b`).
+- [ ] Complete vocabulary-membership validation and restricted-value
+  disposition. The exact six-object PBS and six-table MBS rights attestations
+  cover their stated scopes, but neither permission instrument was independently
+  reviewed. ATC-shaped values are not verified against an external vocabulary,
+  and the bounded MBS scanner is not exhaustive. No admission, publication, or
+  release follows from this reconciliation; the row 3 matcher-calibration gate
+  also remains open.
