@@ -513,3 +513,28 @@
   on holdout (Brier 0.2108; ten-bin ECE 0.2068). Representative
   human-adjudicated held-out source labels remain absent; no confidence or
   production threshold is emitted.
+
+
+## 2026-10-21 PBS utilisation field-header resolution
+
+- [x] Resolve field labels for three exact, already-screened PBS CSV objects at
+  revision `9f1d53cd50eea251b326da42a96f3ac72ebce97a`. Numeric-shaped values in
+  both DOS files occur in `MONTH_OF_SUPPLY`, `PRESCRIPTIONS`, contribution,
+  cost, and markup fields; the ATC-shaped values in the item-drug map occur in
+  `ATC5_Code`. No CSV record values were emitted. Receipt:
+  `quality/qualifications/australian-pbs-utilisation-pattern-field-header-map-20261021.json`
+  (SHA-256 `1e6c2e254af3704ab422cfc4a495648441dae9a533907bca4097cfab15cb33a4`).
+- [x] Resolve the prior exact header digest `20f9f06f…e524ad` in the existing
+  July 2021–June 2026 summary workbook. It identifies `ATC5_CODE` in five
+  annual sheets carrying 1,304,100 ATC-shaped strings; no data values were
+  emitted. Receipt:
+  `quality/qualifications/australian-pbs-utilisation-summary-workbook-header-resolution-20261021.json`
+  (SHA-256 `f717d2bda385a1dc7080b3493de9430998172146c03b5f8252f21e6f61ae71dd`).
+- [ ] Map marker-bearing fields in the two expenditure workbooks and finish
+  restricted-content classification. These header mappings identify candidate
+  fields only; they do not establish vocabulary membership or clear rights. The
+  exact six-object user attestation covers all file contents, including
+  vocabulary, while its instrument remains independently unreviewed.
+- [ ] Calibrate the actual matcher on representative, reviewed source labels.
+  Existing 400/400 generated partitions remain poor synthetic-only evidence;
+  no real-source threshold or confidence is selected.

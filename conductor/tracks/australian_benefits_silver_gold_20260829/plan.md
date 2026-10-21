@@ -4686,3 +4686,20 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
   explain differences. No admission, canary, Silver projection, or public
   mutation followed; current M-112 counts remain 7 admissions, 7 canaries,
   and 1,752 deferred of 1,759.
+
+
+## M-110 PBS field-header mapping follow-up (2026-10-21)
+
+- [x] Map the existing field-pattern counts to exact headers in the three
+  already-screened CSVs. The DOS numeric candidates occur in month, count,
+  contribution, cost, and markup fields; ATC-shaped values occur in
+  `ATC5_Code`. Resolve `ATC5_CODE` in the five annual summary sheets that hold
+  1,304,100 ATC-shaped strings. These are exact field labels, not vocabulary
+  rights or relationship qualification. The value-free receipts are
+  `quality/qualifications/australian-pbs-utilisation-pattern-field-header-map-20261021.json`
+  (SHA-256 `1e6c2e254af3704ab422cfc4a495648441dae9a533907bca4097cfab15cb33a4`) and
+  `quality/qualifications/australian-pbs-utilisation-summary-workbook-header-resolution-20261021.json`
+  (SHA-256 `f717d2bda385a1dc7080b3493de9430998172146c03b5f8252f21e6f61ae71dd`).
+- [ ] Resolve marker-bearing fields in the two expenditure workbooks and
+  complete restricted-content classification; no admission or publication
+  follows from header mapping.
