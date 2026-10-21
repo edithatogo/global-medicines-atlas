@@ -4883,21 +4883,26 @@ not itself perform the pending Q1 HR admission or canary.
 
 ## M-112 Q1 HR age-context candidate comparison (2026-10-21)
 
-- [x] Compare the age labels using only the six shared context fields from the
+- [x] Compare the age labels using only six shared context fields from the
   same two exact objects, after digest and byte-count verification. The
   aggregate-only report finds 11 one-to-one candidate category pairs supported
   by 360,235 unique row contexts; 75,767 repeated/ambiguous contexts are
-  excluded. The two files contain 13 and 11 unique age labels. Category labels
-  are represented only by digests; no source values or rows were emitted or
-  retained. Script SHA-256:
-  `23d898106895497337f0e02a1d7bcb3ec6d106cfa6706b235597e842626015c0`;
+  excluded. All 436,002 CSV context keys match the workbook with identical
+  multiplicities; the workbook has three additional context keys and four
+  unmatched row occurrences. This localizes the count delta but does not explain
+  those records. The files contain 13 and 11 unique age labels; labels are
+  represented only by digests. No values or rows were emitted or retained.
+  A fail-closed whole-year parser found that none of the 11 candidate label
+  pairs matched its supported explicit interval syntax, leaving age-band
+  semantics unresolved. Script SHA-256:
+  `fe52186bd0e5613bb3fe0deabeefbda0bcdd76acb4a0aa16a475ff8d69b15795`;
   report SHA-256:
-  `08a3c606a27013ed65b909793205fe4e98647b79f0e8154fef33991876321ac3`.
+  `4ce63c6ce14605554b71fe687271210fbe63d62c81666984b0f32dc39f6860e4`.
 - [ ] Obtain source-supported category definitions and review whether the
   candidate pairs are semantically equivalent. Shared context and one-to-one
   counts do not establish age-band meaning, row equivalence, or authorization
-  to transform Silver data. Resolve the separate four-row discrepancy and
-  `Benefits ($)` calculation before projection qualification.
+  to transform Silver data. Explain the four workbook-only row occurrences and
+  resolve the `Benefits ($)` calculation before projection qualification.
 
 ## M-110 restricted-content screen reconciliation (2026-10-21)
 

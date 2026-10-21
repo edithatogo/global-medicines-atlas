@@ -10,22 +10,36 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import unicodedata
 from collections import Counter, defaultdict
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 
 import httpx
-from qualify_mbs_q1hr_benefit_scale_comparison import (
-    DATASET,
-    EXPECTED_CSV_ROWS,
-    EXPECTED_WORKBOOK_ROWS,
-    OBJECTS,
-    REVISION,
-    _fetch_exact,  # ruff: ignore[import-private-name] -- pinned in-memory fetch helper
-    csv_rows,
-    workbook_rows,
-)
+
+if __package__:
+    from .qualify_mbs_q1hr_benefit_scale_comparison import (
+        DATASET,
+        EXPECTED_CSV_ROWS,
+        EXPECTED_WORKBOOK_ROWS,
+        OBJECTS,
+        REVISION,
+        _fetch_exact,
+        csv_rows,
+        workbook_rows,
+    )
+else:
+    from qualify_mbs_q1hr_benefit_scale_comparison import (
+        DATASET,
+        EXPECTED_CSV_ROWS,
+        EXPECTED_WORKBOOK_ROWS,
+        OBJECTS,
+        REVISION,
+        _fetch_exact,  # ruff: ignore[import-private-name] -- pinned in-memory fetch helper
+        csv_rows,
+        workbook_rows,
+    )
 
 from global_medicines_atlas.acquisition import (
     AcquisitionPolicy,
@@ -41,6 +55,11 @@ OUTPUT = Path(
 CONTEXT_COLUMNS = (0, 1, 2, 3, 5, 6)
 AGE_COLUMN = 4
 NUMERIC_CONTEXT_COLUMNS = frozenset({0, 1, 6})
+AGE_RANGE = re.compile(r"^(\d+)\s*(?:-|to)\s*(\d+)(?:\s*years?)?$")
+AGE_LOWER_BOUND = re.compile(
+    r"^(\d+)\s*(?:years?\s*)?(?:and over|or over|\+|plus)$"
+)
+AGE_UPPER_BOUND = re.compile(r"^(?:under|less than|<)\s*(\d+)(?:\s*years?)?$")
 
 
 def _normalize(value: str | None, column: int) -> str:
@@ -63,6 +82,78 @@ def _row_context(row: tuple[str | None, ...]) -> tuple[str, ...]:
     return tuple(_normalize(row[column], column) for column in CONTEXT_COLUMNS)
 
 
+def _age_band(value: str) -> tuple[int, int | None] | None:
+    """Parse explicit whole-year intervals without exposing source labels."""
+    age_range = AGE_RANGE.fullmatch(value)
+    if age_range is not None:
+        lower, upper = (int(part) for part in age_range.groups())
+        if lower <= upper:
+            return lower, upper
+        return None
+    lower_bound = AGE_LOWER_BOUND.fullmatch(value)
+    if lower_bound is not None:
+        return int(lower_bound.group(1)), None
+    upper_bound = AGE_UPPER_BOUND.fullmatch(value)
+    if upper_bound is not None:
+        upper_exclusive = int(upper_bound.group(1))
+        if upper_exclusive > 0:
+            return 0, upper_exclusive - 1
+    return None
+
+
+def _age_pair_semantics(
+    pairs: Counter[tuple[str, str]],
+) -> dict[str, int]:
+    parsed_pairs = 0
+    equal_bounds = 0
+    different_bounds = 0
+    for source_label, target_label in pairs:
+        source_band = _age_band(source_label)
+        target_band = _age_band(target_label)
+        if source_band is None or target_band is None:
+            continue
+        parsed_pairs += 1
+        if source_band == target_band:
+            equal_bounds += 1
+        else:
+            different_bounds += 1
+    return {
+        "candidate_category_pairs_with_explicit_year_bounds": parsed_pairs,
+        "candidate_category_pairs_with_equal_year_bounds": equal_bounds,
+        "candidate_category_pairs_with_different_year_bounds": different_bounds,
+        "candidate_category_pairs_with_unparsed_labels": (
+            len(pairs) - parsed_pairs
+        ),
+    }
+
+
+def _context_coverage(
+    workbook: dict[tuple[str, ...], list[str]],
+    csv_values: dict[tuple[str, ...], list[str]],
+    workbook_row_count: int,
+    csv_row_count: int,
+) -> dict[str, int]:
+    shared_keys = workbook.keys() & csv_values.keys()
+    matched_occurrences = sum(
+        min(len(workbook[key]), len(csv_values[key])) for key in shared_keys
+    )
+    return {
+        "shared_context_keys": len(shared_keys),
+        "shared_context_occurrences": matched_occurrences,
+        "workbook_only_context_keys": len(workbook.keys() - csv_values.keys()),
+        "csv_only_context_keys": len(csv_values.keys() - workbook.keys()),
+        "shared_context_keys_with_multiplicity_mismatch": sum(
+            len(workbook[key]) != len(csv_values[key]) for key in shared_keys
+        ),
+        "workbook_context_occurrences_without_csv_match": (
+            workbook_row_count - matched_occurrences
+        ),
+        "csv_context_occurrences_without_workbook_match": (
+            csv_row_count - matched_occurrences
+        ),
+    }
+
+
 def _candidate_relationships(
     workbook: list[tuple[str | None, ...]],
     csv_values: list[tuple[str | None, ...]],
@@ -80,11 +171,10 @@ def _candidate_relationships(
         csv_categories.add(age)
         csv_by_context[_row_context(row)].append(age)
 
-    shared_keys = workbook_by_context.keys() & csv_by_context.keys()
-    exact_context_occurrences = sum(
-        min(len(workbook_by_context[key]), len(csv_by_context[key]))
-        for key in shared_keys
+    coverage = _context_coverage(
+        workbook_by_context, csv_by_context, len(workbook), len(csv_values)
     )
+    shared_keys = workbook_by_context.keys() & csv_by_context.keys()
     unique_pairs: Counter[tuple[str, str]] = Counter()
     unambiguous_context_count = 0
     ambiguous_context_count = 0
@@ -122,13 +212,13 @@ def _candidate_relationships(
         ).hexdigest(),
         "workbook_unique_context_keys": len(workbook_by_context),
         "csv_unique_context_keys": len(csv_by_context),
-        "shared_context_keys": len(shared_keys),
-        "shared_context_occurrences": exact_context_occurrences,
+        **coverage,
         "unambiguous_single_row_contexts": unambiguous_context_count,
         "ambiguous_or_repeated_contexts": ambiguous_context_count,
         "unique_age_category_pairs_from_unambiguous_contexts": len(
             unique_pairs
         ),
+        **_age_pair_semantics(unique_pairs),
         "one_to_one_category_pairs": one_to_one_pairs,
         "source_categories_with_multiple_targets": sum(
             len(targets) > 1 for targets in outgoing.values()
