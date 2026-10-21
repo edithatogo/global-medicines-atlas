@@ -4843,6 +4843,11 @@ not itself perform the pending Q1 HR admission or canary.
   contract qualification and replay receipt exist, but the exact-main Q1 HR
   admission and canary have not run. The latest hosted canary remains the
   seven-object readback; the candidate evidence commit is not on public main.
+- [x] Revalidate the existing exact-object Q1 HR raw-B2 contract against the
+  current v4.1 schema and federation semantics with the read-only `--check`
+  path. It passes. The check does not close remote receipt roles or qualify
+  admission. The contract builder still has no durable merged evidence commit
+  binding for this object, and exact-main admission/canary remain open.
 
 ## M-110 restricted-content screen reconciliation (2026-10-21)
 
