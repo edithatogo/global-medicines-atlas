@@ -4597,8 +4597,10 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
   cleared fields. The pattern counts are candidate indicators: numeric or
   ATC-shaped strings cannot be assigned to a licensed vocabulary from shape
   alone, and the existing approved scope contains no complete vocabulary
-  dictionary or source-owner field contract. Rights and full-content exclusion
-  therefore remain unresolved; this scan authorizes no admission or release.
+  dictionary or source-owner field contract. The maintainer's exact six-object
+  rights attestation includes all vocabulary, but the instrument was not
+  independently reviewed. Full-content classification remains open; this scan
+  itself authorizes no admission or release.
 
 
 ## M-110 PBS field-level pattern localization (2026-10-21)
@@ -4614,5 +4616,6 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
   `quality/qualifications/australian-pbs-utilisation-field-pattern-screen-20261021.json`.
 - [ ] Human/source-contract review must map these positions to exact fields and
   determine vocabulary membership and rights disposition. Opaque label hashes
-  cannot substitute for field meaning; no rights, admission, or release gate is
-  cleared by this localization.
+  cannot substitute for field meaning. The existing exact six-object rights
+  attestation covers all contents, including vocabulary, with the instrument
+  not independently reviewed; no admission or publication follows.

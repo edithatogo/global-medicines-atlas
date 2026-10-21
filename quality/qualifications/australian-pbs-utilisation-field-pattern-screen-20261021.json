@@ -588,6 +588,12 @@
     }
   ],
   "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "rights_scope_assessment": {
+    "attestation": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+    "exact_six_objects_including_all_vocabulary": true,
+    "permission_instrument_independently_reviewed": false,
+    "public_release_performed": false
+  },
   "schema_id": "global-medicines-atlas.australian-pbs-utilisation-field-pattern-screen",
   "schema_version": 1
 }

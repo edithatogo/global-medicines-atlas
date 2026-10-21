@@ -4,6 +4,7 @@
     "external_publication_performed": false,
     "public_dataset_mutated": false,
     "restricted_terminology_cleared": false,
+    "rights_attestation_used_as_permission_basis": true,
     "rights_cleared_by_screen": false,
     "source_payload_files_written": false,
     "source_payload_values_emitted": false,
@@ -121,16 +122,23 @@
   "results": {
     "all_object_digests_and_byte_counts_match_pinned_lineage": true,
     "full_vocabulary_exclusion_review_complete": false,
-    "interpretation": "Pattern counts are candidate indicators only. No approved-scope vocabulary dictionary or complete source-owner field contract is available; numeric strings cannot be assigned to a terminology from shape alone.",
+    "interpretation": "Pattern counts are candidate indicators only. The exact six-object maintainer attestation covers all file contents, including otherwise unlicensed vocabulary, but its permission instrument was not independently reviewed. This screen does not itself provide that rights basis or establish vocabulary membership.",
+    "permission_instrument_independently_reviewed": false,
     "restricted_vocabulary_membership_resolved": false,
-    "rights_exclusion_resolved": false
+    "rights_basis_recorded_by_attestation": true
   },
   "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "rights_scope_assessment": {
+    "instrument_independently_reviewed": false,
+    "public_release_performed": false,
+    "state": "maintainer_attested_for_exact_six_objects_including_all_vocabulary"
+  },
   "schema_id": "global-medicines-atlas.australian-pbs-utilisation-identifier-shape-screen",
   "schema_version": 1,
   "scope": {
     "object_count": 6,
     "prior_screen": "quality/qualifications/australian-pbs-utilisation-limited-vocabulary-screen-20261020.json",
+    "rights_attestation": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
     "source_authorization": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json"
   },
   "screened_at": "2026-10-21"
