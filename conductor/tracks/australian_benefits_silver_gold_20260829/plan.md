@@ -5530,3 +5530,16 @@ source qualification remains pending their actual final artifacts.
   role denominators. Local synthetic checks do not qualify the real corpus.
 - [ ] Require exact-main hosted observed-profile qualification, then complete
   substantive reference/domain semantics and eligible package delivery.
+
+
+### Remaining frozen historical MBS archive members (2026-10-22)
+
+- [x] Bind all six frozen historical ZIP archives to their exact acquisition,
+  original external-reference B2, source digest and observed byte count.
+  Preserve four prior structural passes and two resource holds separately.
+- [ ] Inventory every member with streaming integrity and bounded native
+  container identification on protected runners. Avoid inferring XLS/OOXML,
+  CSV columns or eras from a filename alone.
+- [ ] Qualify every eligible member's source-faithful tables, identifiers,
+  null/error/precision/date behavior and reproducible outputs; retain explicit
+  resource or format holds until actual evidence resolves them.
