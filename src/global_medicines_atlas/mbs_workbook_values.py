@@ -19,12 +19,16 @@ from .mbs_typed_values import (
 )
 from .mbs_workbook_domain import iter_workbook_domain_batches
 from .receipts import SourceReceipt
+from .silver_field_semantics import SilverFieldSemantics, qualified_date
 
 _FIELDS = {field.native_name: field for field in mbs_field_contracts()}
 _NUMERIC_TYPES = frozenset({"aud_decimal", "decimal", "percentage"})
 _TEXT_STORAGE = frozenset({"s", "str", "inlineStr", "d"})
 _DECIMAL = pa.decimal128(38, 9)
 _ADDITIONS = (
+    pa.field("interpretation_state", pa.string(), nullable=False),
+    pa.field("interpretation_reason", pa.string(), nullable=False),
+    pa.field("semantic_evidence_sha256", pa.string()),
     pa.field("domain_value_type", pa.string()),
     pa.field("domain_value_state", pa.string(), nullable=False),
     pa.field("domain_status", pa.string(), nullable=False),
@@ -45,6 +49,9 @@ def _values(row: dict[str, Any], date_format: str | None) -> dict[str, Any]:
         else "missing_value"
     )
     result: dict[str, Any] = {
+        "interpretation_state": "native_unresolved",
+        "interpretation_reason": "Legacy workbook field meaning is not qualified",
+        "semantic_evidence_sha256": None,
         "domain_value_type": None,
         "domain_value_state": state,
         "domain_status": "unmapped",
@@ -135,7 +142,8 @@ def iter_workbook_value_batches(
         metadata = dict(batch.schema.metadata or {})
         metadata.update({
             b"schema_name": b"global-medicines-atlas.mbs-workbook-values.cells",
-            b"schema_version": b"1.0",
+            b"schema_version": b"1.1",
+            b"semantic_usage": b"native_observations_only_until_qualified",
             b"conversion_version": CONVERSION_VERSION.encode(),
             b"date_profile": (date_format or "unselected").encode(),
             b"date_interpretation": b"explicit_text_profile_only_no_serial_dates",
@@ -278,3 +286,19 @@ def _date_order_compatibility(value: str) -> str:
     if valid_orders == {"mdy"}:
         return "mdy_only"
     return "neither"
+
+
+def workbook_date_for_comparison(row: dict[str, Any]) -> date:
+    """Gate actual P7 temporal consumers independently of lexical parsing."""
+    if row["domain_value_type"] != "source_date":
+        raise ValueError("workbook field is not a source date")
+    semantics = SilverFieldSemantics(
+        source_sha256=row["source_sha256"],
+        native_name=row["mapping_field"],
+        value_kind="date",
+        state=row["interpretation_state"],
+        reason=row["interpretation_reason"],
+        evidence_sha256=row["semantic_evidence_sha256"],
+        semantic_definition=row.get("semantic_definition"),
+    )
+    return qualified_date(semantics, row["domain_date"])

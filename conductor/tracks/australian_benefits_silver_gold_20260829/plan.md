@@ -5182,3 +5182,26 @@ This increment uses the frozen existing sources and sends no outreach.
   `quality/qualifications/silver-source-meaning-resolution-20261021-hosted.json`.
   Hosted diagnostics do not resolve the benefit calculation, unknown-age
   definition, P7 date/value conventions or included patient denominators.
+
+
+## Approved bounded Silver completion (2026-10-21)
+
+The maintainer authorizes field-level uncertainty treatments and completion of
+MBS/PBS qualification and delivery within the existing frozen inventory. This
+supersedes whole-layer blocking on missing meanings; it does not establish those
+meanings or grant new rights, publication, clinical claims or outreach.
+
+- [~] Implement interpreted/native-unresolved/unavailable field states and
+  consumer guards; source/field identity must prevent unqualified pooling.
+- [ ] Preserve Q1 workbook/CSV measures independently and retain Unknown ages
+  in native rows, totals and coverage with unresolved suppression semantics.
+- [ ] Carry P7 raw dates and numeric/formula/error evidence through typed
+  outputs; block temporal claims without source-bound qualified dates.
+- [ ] Mark unsupported patient denominators/rates unavailable while retaining
+  supported service counts independently.
+- [ ] Finish MBS families and source eras in the frozen inventory.
+- [ ] Finish PBS domain harmonisation with field-level unresolved outcomes.
+- [ ] Qualify exact eligible outputs: coverage, identity, lineage, missing/error
+  states, lossless decimals and deterministic Parquet rebuilds.
+- [ ] Bind output digests to applicable rights/admission evidence; execute
+  authorized restore and consumer canaries and complete protected CI.
