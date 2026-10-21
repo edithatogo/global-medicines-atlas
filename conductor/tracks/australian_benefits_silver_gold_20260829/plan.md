@@ -4936,6 +4936,24 @@ not itself perform the pending Q1 HR admission or canary.
   independent vocabulary membership. Receipt:
   `quality/qualifications/australian-restricted-content-screen-disposition-20261021.json`
   (SHA-256 `81fc11f9d4b1a07de3ff7ebbc3d5bf444b6eaabeed0acfc9fed794db53c3d184`).
+## M-110 PBS ATC-shaped field internal consistency (2026-10-21)
+
+- [x] Compare the two already screened and rights-attested PBS fields at the
+  pinned revision without emitting or retaining field values. All 980 distinct
+  ATC-shaped values in the five summary sheets are present in `ATC5_Code` of
+  the item-drug map; the map has 384 additional distinct ATC-shaped values.
+  The aggregate report records only counts and digests:
+  `quality/qualifications/australian-pbs-utilisation-atc-internal-consistency-20261021.json`
+  (SHA-256 `cd041b481f14c18e38e19d89d4178c4f430f89371c2340ddb71996becfa13688`).
+  Script SHA-256:
+  `2001f783a4350091768adb6a60a96586b34fbabf1fbbb551c3a18a17cd96d731`.
+- [ ] Explain the 384 item-map-only values and verify vocabulary membership
+  against an authoritative ATC reference already in the approved inventory.
+  The repository contains no such dictionary. Cross-file agreement is only
+  internal consistency, not vocabulary membership, licensing, or matcher
+  calibration. The PBS permission instrument remains maintainer-attested and
+  independently unreviewed.
+
 - [ ] Calibrate the actual cross-jurisdiction matcher. The current retained
   source scope contains no real cross-jurisdiction medicine-pair labels; the
   accepted same-record MBS edges do not label medicine identity. Keep this gate

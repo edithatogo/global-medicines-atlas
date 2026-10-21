@@ -766,7 +766,7 @@ is historical and superseded by preflight snapshot 20261021-7. This is not full
 federation acceptance: source-native layout, complete per-object roles, recovery,
 and product consumer qualification remain separate gates. No public dataset
 mutation or external publication was performed. Current evidence:
-`quality/qualifications/australian-m112-rights-release-preflight-20261021-10.json`,
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-11.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
 `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json` (the role report bound by this preflight),
 the later candidate-role refresh
