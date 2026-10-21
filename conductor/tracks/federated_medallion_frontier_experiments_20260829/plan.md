@@ -552,3 +552,26 @@
 - [ ] Interpret marker-bearing cell content and classify the identified fields
   against a bounded terminology contract. Sheet context alone is not header or
   content review; no rights or restricted-terminology clearance follows.
+
+
+## 2026-10-21 exact PBS six-object privacy-pattern screen
+
+- [x] Scan the exact six already-authorized PBS utilisation files at revision
+  `9f1d53cd50eea251b326da42a96f3ac72ebce97a` after checking every pinned byte
+  count and SHA-256. Across 191,047,619 bytes, the bounded scanner found zero
+  email-shaped cell values. The two DOS CSVs each had three sensitive-looking
+  headers; a separate exact-header read resolves them to `PATIENT_CAT`,
+  `PATIENT_CONTRIB`, and `PATIENT_NET_CONTRIB`, aggregate category/contribution
+  measures. Workbook strings contain bounded patient/person token occurrences
+  in narrative cells, not classified individual records. The value-free scan
+  and context receipt are
+  `quality/qualifications/australian-pbs-utilisation-private-pattern-screen-20261021.json`
+  (SHA-256 `43c1c2a80adb86bb215dbd2340645fee1ce20d4c17a2a0545c9134c2d4c86f33`) and
+  `quality/qualifications/australian-pbs-dos-sensitive-header-context-20261021.json`
+  (SHA-256 `a5046bae17eb24a63e286f0c083ca0a2269c997bc2918b7fe3bf97324ee40654`).
+- [ ] Complete source-specific restricted-content classification for workbook
+  narrative and terminology fields. This detector is bounded, had no exact
+  restricted-value digest denylist, and is not an exhaustive privacy or
+  licensing clearance. The user attestation remains the rights assertion; the
+  instrument was not independently reviewed. No admission, canary, or public
+  release followed.

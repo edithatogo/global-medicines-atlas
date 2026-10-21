@@ -4703,3 +4703,17 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
 - [ ] Resolve marker-bearing fields in the two expenditure workbooks and
   complete restricted-content classification; no admission or publication
   follows from header mapping.
+
+
+## M-110 PBS six-object privacy-pattern scan (2026-10-21)
+
+- [x] Run a bounded privacy-pattern scan over all six exact PBS utilisation
+  objects at the pinned revision (191,047,619 bytes); each digest and size
+  matched. No email-shaped values were found. Six sensitive-looking DOS CSV
+  header hits resolve to `PATIENT_CAT`, `PATIENT_CONTRIB`, and
+  `PATIENT_NET_CONTRIB`, aggregate category and contribution measures. The
+  value-free receipts are `quality/qualifications/australian-pbs-utilisation-private-pattern-screen-20261021.json` (SHA-256 `43c1c2a80adb86bb215dbd2340645fee1ce20d4c17a2a0545c9134c2d4c86f33`) and
+  `quality/qualifications/australian-pbs-dos-sensitive-header-context-20261021.json` (SHA-256 `a5046bae17eb24a63e286f0c083ca0a2269c997bc2918b7fe3bf97324ee40654`).
+- [ ] Review the workbook narrative-token hits and restricted terminology. This
+  bounded detector is not exhaustive and makes no privacy, rights, or vocabulary
+  clearance claim.

@@ -1,0 +1,55 @@
+{
+  "boundaries": {
+    "admission_performed": false,
+    "new_sources_added": false,
+    "public_release_performed": false,
+    "rights_conclusion_changed": false,
+    "source_bytes_persisted_locally": false,
+    "source_values_emitted": false
+  },
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "interpretation": "The flagged headers identify aggregate patient-category and contribution measures, not individual patient identifiers. These are population-level expenditure/utilisation fields in the source schema. The pattern flag is resolved as an aggregate measure; this does not establish an exhaustive privacy clearance. No data rows or cell values were emitted.",
+  "objects": [
+    {
+      "byte_count": 35384567,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "sensitive_token_headers": [
+        {
+          "column_index": 3,
+          "field_label": "PATIENT_CAT"
+        },
+        {
+          "column_index": 7,
+          "field_label": "PATIENT_CONTRIB"
+        },
+        {
+          "column_index": 11,
+          "field_label": "PATIENT_NET_CONTRIB"
+        }
+      ],
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+    },
+    {
+      "byte_count": 36381946,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "sensitive_token_headers": [
+        {
+          "column_index": 3,
+          "field_label": "PATIENT_CAT"
+        },
+        {
+          "column_index": 7,
+          "field_label": "PATIENT_CONTRIB"
+        },
+        {
+          "column_index": 11,
+          "field_label": "PATIENT_NET_CONTRIB"
+        }
+      ],
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+    }
+  ],
+  "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "schema_id": "global-medicines-atlas.pbs-dos-sensitive-header-context",
+  "schema_version": 1
+}
