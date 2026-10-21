@@ -39,9 +39,11 @@
         ],
         "payload_acquired_or_retained": false,
         "publication_url": "https://www.health.gov.au/resources/publications/explanatory-notes-for-medicare-statistics?language=en",
+        "qualification_status": "unqualified_web_observations_only_no_exact_byte_identity",
         "reference_already_registered_in": "quality/qualifications/australian-mbs-m106-source-review-20261005.json",
         "reference_url": "https://www.health.gov.au/sites/default/files/2026-05/explanatory-notes-for-medicare-statistics_0.pdf",
-        "source_inventory_changed": false
+        "source_inventory_changed": false,
+        "usable_for_semantic_promotion": false
       },
       "qualified": [],
       "service_counts_substitutable": false,
@@ -59,22 +61,22 @@
         "csv_semantic_equivalence_claimed": false,
         "digest_and_byte_count_reverified": true,
         "hosted_requalification_required_for_promotion": true,
-        "meaning": "Age is reported as unknown in this exact source.",
+        "meaning": "Source emits the literal nominal label Unknown; its definition and cause are unresolved.",
         "native_category": "Unknown",
         "nonnumeric_data_categories": 1,
         "numeric_age_bounds": null,
         "numeric_source_categories": 10,
         "observation_origin": "local in-memory exact-object inspection; not hosted qualification",
-        "qualification_scope": "Native nominal category only; preserve verbatim and distinct from absent, empty, zero, suppressed, or any numeric interval.",
+        "qualification_scope": "Native label identification only; preserve verbatim without assigning numeric bounds or inferring equivalence or difference from suppression.",
         "source_identity": "Q1 HR workbook pinned in the input metadata-semantics receipt",
-        "source_rows_retained": false
+        "source_rows_retained": false,
+        "suppression_relationship_established": false
       },
-      "next_evidence": "Source-defined calculation and category definition remain required; tested decimal rounding and truncation are ruled out.",
+      "next_evidence": "Source-defined benefit calculation and definition of the native Unknown age marker remain required.",
       "qualified": [
         "claim_processing_month",
         "patient_address_at_claim",
-        "net_adjusted_service_counts",
-        "source_native_unknown_age_category"
+        "net_adjusted_service_counts"
       ],
       "rounding_truncation_diagnostic": {
         "conclusion": "Tested rounding and truncation do not explain the mismatch.",
@@ -101,7 +103,9 @@
         "workbook_lower": 260946
       },
       "unresolved": [
-        "benefit_measure_calculation"
+        "benefit_measure_calculation",
+        "source_definition_of_unknown_age",
+        "relationship_of_unknown_to_suppression"
       ]
     }
   },
