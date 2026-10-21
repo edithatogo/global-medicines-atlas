@@ -1,0 +1,52 @@
+{
+  "inputs": {
+    "australian-mbs-demographics-q1hr-context-measure-diagnostics-20261021.json": "1eb5248f2338e75784e7e119db0f4f5639162371659ae3571bdbadf25296c154",
+    "australian-mbs-demographics-q1hr-metadata-semantics-20261021.json": "927269591afa38f5393615510a0ae5dc8ce8a6b99040759de92f7bdeeb465bd5",
+    "australian-mbs-m106-source-metadata-recheck-20261017.json": "9bb9af0caa3b23e83fee4faf44063bd82d1b1a373adc1f2c21c34770fe74d7ce",
+    "mbs-p7-workbook-field-lineage-20261011.json": "335a737fec71abc6f502d65417a6a2b40b9ff20933e710abe02fc92453274f74"
+  },
+  "lanes": {
+    "p7": {
+      "calendar_ambiguous": 1276,
+      "calendar_dmy_only": 4,
+      "qualified": [
+        "native_storage",
+        "header_lineage",
+        "formula_error_preservation"
+      ],
+      "unresolved": [
+        "workbook_date_convention",
+        "unrepresentable_numeric_value_conventions"
+      ],
+      "xml_date_rule_transfer_permitted": false
+    },
+    "patient_denominators": {
+      "qualified": [],
+      "service_counts_substitutable": false,
+      "unresolved": [
+        "population",
+        "period",
+        "cross_item_deduplication",
+        "coverage",
+        "suppression"
+      ]
+    },
+    "q1_demographics": {
+      "next_evidence": "Full-key rounding/truncation diagnostic in progress; source-defined meaning still required.",
+      "qualified": [
+        "claim_processing_month",
+        "patient_address_at_claim",
+        "net_adjusted_service_counts"
+      ],
+      "unresolved": [
+        "benefit_measure_calculation",
+        "nonnumeric_age_category"
+      ]
+    }
+  },
+  "new_sources_added": false,
+  "outreach_sent": false,
+  "schema_id": "global-medicines-atlas.silver-source-meaning-resolution",
+  "schema_version": 1,
+  "semantic_resolution_complete": false
+}

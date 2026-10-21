@@ -5138,3 +5138,19 @@ not itself perform the pending Q1 HR admission or canary.
   write/check consistency and read-only check behavior are covered.
 - [~] Require fresh protected CI before resolving review threads and merging.
   No standalone review comment is sent.
+
+
+## Source meaning resolution (2026-10-21)
+
+- [~] Diagnose the exact retained Q1 workbook/CSV benefit discrepancy with
+  full-key rounding and truncation controls; keep aggregate evidence only.
+- [ ] Resolve the source-defined nonnumeric age category without replacing
+  native labels or treating row co-occurrence as semantic authority.
+- [ ] Resolve P7 date and numeric conventions using the exact retained
+  workbook and its source-era evidence; preserve formula/error states.
+- [ ] Establish patient-count population, period and deduplication semantics
+  wherever those measures are included. Do not substitute service counts or
+  rounded population percentages for distinct patients.
+- [ ] Run affected checks, review, protected CI and reconcile the evidence.
+
+This increment uses the frozen existing sources and sends no outreach.
