@@ -163,6 +163,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_silver_field_semantics.py",
         "tests/test_mbs_patient_rates.py",
         "tests/test_mbs_demographic_silver.py",
+        "tests/test_mbs_demographic_extraction.py",
+        "tests/test_mbs_demographic_package.py",
         "tests/test_mbs_q1hr_age_context_mapping.py",
         "tests/test_mbs_q1hr_context_measure_diagnostics.py",
         "tests/test_mbs_q1_source_meanings.py",
