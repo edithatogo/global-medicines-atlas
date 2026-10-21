@@ -5436,3 +5436,14 @@ source qualification remains pending their actual final artifacts.
   runtime-proven correction and workbook extension. No full pass is claimed.
 - [ ] Complete repaired-head CI and rerun native-values qualification on exact
   merged main; retain the successful artifact only after actual verification.
+
+### Historical PBS candidate value package and restore
+
+- [~] Produce a complete deterministic PBS native-value Parquet package with
+  content-bound manifest/output identity and atomic completion. Implementation
+  passes 13 focused checks (96.8% branch-inclusive coverage), 112 broader
+  affected checks, routine and strict typing. Restore compares all native slots
+  to the separate unharmonised stream and all typed values/lineage/Arrow metadata
+  to the producer. Rehashed corruption, semantic promotion and partial builds
+  fail closed. Real-source complete-package qualification and applicable output
+  rights/admission/delivery remain pending; domain meanings remain unresolved.
