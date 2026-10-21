@@ -4880,3 +4880,20 @@ not itself perform the pending Q1 HR admission or canary.
   and the bounded MBS scanner is not exhaustive. No admission, publication, or
   release follows from this reconciliation; the row 3 matcher-calibration gate
   also remains open.
+
+- [x] Classify every content indicator reported by the bounded screens against
+  the exact field-header evidence and bind both six-object rights attestations
+  by path, digest and byte count. The 1,314,870 ATC-shaped occurrences map to
+  `ATC5_CODE`/`ATC5_Code`; 928,410 numeric candidates map to existing period,
+  prescription, contribution, cost and markup fields; 136 marker occurrences
+  are contextual/label text; exact UMLS CUI and email-like patterns are zero.
+  The 35,934 MBS candidate rows have no configured-screen findings. The exact
+  attestations cover those contents; the instruments remain unreviewed. This
+  closes disposition of observed indicators only, not exhaustive detection or
+  independent vocabulary membership. Receipt:
+  `quality/qualifications/australian-restricted-content-screen-disposition-20261021.json`
+  (SHA-256 `81fc11f9d4b1a07de3ff7ebbc3d5bf444b6eaabeed0acfc9fed794db53c3d184`).
+- [ ] Calibrate the actual cross-jurisdiction matcher. The current retained
+  source scope contains no real cross-jurisdiction medicine-pair labels; the
+  accepted same-record MBS edges do not label medicine identity. Keep this gate
+  open while working the independent local lanes; do not add sources.

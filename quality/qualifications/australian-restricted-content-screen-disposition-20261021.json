@@ -1,0 +1,82 @@
+{
+  "boundaries": {
+    "gold_promotion_performed": false,
+    "inventory_changed": false,
+    "new_sources_added": false,
+    "public_release_performed": false,
+    "rights_scope_changed": false,
+    "source_bytes_persisted_locally": false,
+    "source_values_or_rows_emitted": false,
+    "v4_admission_or_canary_performed": false
+  },
+  "coverage_limits": {
+    "atc_membership_established": false,
+    "classification_complete_for_all_patterns_reported_by_bound_inputs": true,
+    "clinical_or_funding_relationships_established": false,
+    "matcher_calibration_performed": false,
+    "real_cross_jurisdiction_labels_available": false,
+    "screen_exhaustive_for_unenumerated_identifiers_or_sensitive_content": false
+  },
+  "inputs": {
+    "quality/qualifications/australian-mbs-v4-bounded-content-screen-20261021.json": "83ae8b29ad197495c6cb929165bf2560eaaf22f13ffbb8c7410f8a26ce2d6e5e",
+    "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+    "quality/qualifications/australian-pbs-dos-sensitive-header-context-20261021.json": "a5046bae17eb24a63e286f0c083ca0a2269c997bc2918b7fe3bf97324ee40654",
+    "quality/qualifications/australian-pbs-utilisation-field-pattern-screen-20261021.json": "a865255e2139db9bc3ec5bd46ca35db840dc6782fcd7df998cc7a8a32e66ffb9",
+    "quality/qualifications/australian-pbs-utilisation-identifier-shape-screen-20261021.json": "d7bfad7e5fe036d3eddf1565fbae7953bdb10fe3fec6ae128881074ef7a7e82c",
+    "quality/qualifications/australian-pbs-utilisation-limited-vocabulary-screen-20261020.json": "528d73c1965163d5817ed10dbaaa3363e80f4b0dfb947db7874f0ca6840cc60c",
+    "quality/qualifications/australian-pbs-utilisation-pattern-field-header-map-20261021.json": "1e6c2e254af3704ab422cfc4a495648441dae9a533907bca4097cfab15cb33a4",
+    "quality/qualifications/australian-pbs-utilisation-private-pattern-screen-20261021.json": "43c1c2a80adb86bb215dbd2340645fee1ce20d4c17a2a0545c9134c2d4c86f33",
+    "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+    "quality/qualifications/australian-pbs-utilisation-summary-workbook-header-resolution-20261021.json": "f717d2bda385a1dc7080b3493de9430998172146c03b5f8252f21e6f61ae71dd",
+    "quality/qualifications/australian-restricted-content-screen-reconciliation-20261021.json": "af14e16f255e4686f09ab25180c62139476edbd0aaf3dd5367a2f39c5e166e5b"
+  },
+  "mbs_disposition": {
+    "configured_pattern_findings": 0,
+    "rights": "maintainer exact-six attestation for the July 2025 MBS v3 Silver objects",
+    "rights_instrument_independently_reviewed": false,
+    "rows_screened": 35934,
+    "screen_state": "No configured sensitive-field-name, email-like or exact-digest patterns detected.",
+    "tables": 6
+  },
+  "observed_at": "2026-10-21T04:33:07Z",
+  "pbs_disposition": {
+    "atc_field_labels": [
+      "ATC5_CODE",
+      "ATC5_Code"
+    ],
+    "atc_membership_independently_validated": false,
+    "email_like_values_detected": 0,
+    "marker_disposition": "Contextual or label text in the two expenditure workbooks; the two files had zero ATC-shaped value cells.",
+    "numeric_candidates_classified_as_source_measure_fields_by_header": true,
+    "numeric_field_labels": [
+      "GOVT_CONTRIB",
+      "MONTH_OF_SUPPLY",
+      "PATIENT_CONTRIB",
+      "PATIENT_NET_CONTRIB",
+      "PRESCRIPTIONS",
+      "RETAIL_MARKUP",
+      "TOTAL_COST"
+    ],
+    "pattern_occurrences": {
+      "atc_code_shape": 1314870,
+      "explicit_terminology_marker": 136,
+      "numeric_identifier_candidate": 928410,
+      "umls_cui": 0
+    },
+    "rights": "maintainer exact-six attestation covers all file contents and vocabulary",
+    "rights_instrument_independently_reviewed": false,
+    "sensitive_looking_headers": "PATIENT_CAT, PATIENT_CONTRIB and PATIENT_NET_CONTRIB; existing header-context review classifies these as aggregate category/contribution measures."
+  },
+  "schema_id": "global-medicines-atlas.restricted-content-screen-disposition",
+  "schema_version": 1,
+  "scope": {
+    "all_object_identities_match_exact_user_attestations": true,
+    "mbs_candidate_tables": 6,
+    "mbs_revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+    "new_payload_bytes_read": false,
+    "new_sources_added": false,
+    "pbs_objects": 6,
+    "pbs_revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a"
+  },
+  "status": "bounded_detected_content_classified_exact_scope_rights_attested_matcher_calibration_open"
+}
