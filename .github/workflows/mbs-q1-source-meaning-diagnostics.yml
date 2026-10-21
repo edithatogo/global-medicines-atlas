@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   qualify:
+    name: Verify exact Q1 age marker and decimal diagnostics
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
