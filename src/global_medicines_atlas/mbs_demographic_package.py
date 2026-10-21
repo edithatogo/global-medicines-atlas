@@ -307,3 +307,7 @@ def verify_demographic_package(output: Path) -> dict[str, Any]:
     ):
         raise ValueError("candidate restored coverage differs")
     return report
+
+
+# Native ancillary cell encoding is independent of the primary dimension family.
+native_ancillary_record = _ancillary

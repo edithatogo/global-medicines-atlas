@@ -15,6 +15,7 @@ on:
           - group-csv
           - quarterly-workbooks
           - group-workbook-layout
+          - group-workbook-silver
       exact_commit:
         description: Exact merged main commit to qualify
         required: true
@@ -28,7 +29,7 @@ concurrency:
 
 jobs:
   qualify:
-    if: inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv' && inputs.qualification_scope != 'quarterly-workbooks' && inputs.qualification_scope != 'group-workbook-layout'
+    if: inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv' && inputs.qualification_scope != 'quarterly-workbooks' && inputs.qualification_scope != 'group-workbook-layout' && inputs.qualification_scope != 'group-workbook-silver'
     name: Verify exact Q1 age marker and decimal diagnostics
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -210,5 +211,34 @@ jobs:
         with:
           name: group-workbook-layout
           path: group-workbook-layout.json
+          if-no-files-found: error
+          retention-days: 30
+
+  group-workbook-silver:
+    if: inputs.qualification_scope == 'group-workbook-silver'
+    name: Qualify complete frozen MBS group workbook package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit aggregates
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.14.6 python scripts/qualify_mbs_group_workbook.py \
+            --exact-commit "$REQUESTED_COMMIT" --output group-workbook-silver.json
+      - name: Retain aggregate receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: group-workbook-silver
+          path: group-workbook-silver.json
           if-no-files-found: error
           retention-days: 30
