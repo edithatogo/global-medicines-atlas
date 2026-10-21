@@ -762,11 +762,11 @@
 The latest bound preflight records 1,759/1,759 frozen objects with resolved
 rights, seven exact v4 admissions and seven admitted-object canaries, and 1,752
 deferred objects. The previous six-admission/six-canary checkpoint in this plan
-is historical and superseded by preflight snapshot 20261021-5. This is not full
+is historical and superseded by preflight snapshot 20261021-7. This is not full
 federation acceptance: source-native layout, complete per-object roles, recovery,
 and product consumer qualification remain separate gates. No public dataset
 mutation or external publication was performed. Current evidence:
-`quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-7.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
 `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json` (the role report bound by this preflight),
 the later candidate-role refresh

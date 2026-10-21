@@ -14,7 +14,7 @@ The latest bound preflight records 1,759/1,759 frozen objects with resolved
 rights, 7 exact v4 admissions, 7 admitted-object consumer canaries, and 1,752
 deferred objects. The frozen denominator is unchanged; native workbook layout
 is not qualified, and no public dataset mutation or external publication was
-performed. Use [preflight snapshot 20261021-5](../quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json),
+performed. Use [preflight snapshot 20261021-7](../quality/qualifications/australian-m112-rights-release-preflight-20261021-7.json),
 [current rights reconciliation](../quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json),
 and the [latest candidate-role qualification](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json)
 for the current count readback. The bound preflight retains its

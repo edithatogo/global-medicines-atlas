@@ -4519,7 +4519,7 @@ all 1,759 frozen objects have resolved rights, seven exact objects are admitted
 and canaried, and 1,752 remain deferred. The July HR workbook reader canary does
 not qualify its native workbook layout or relationship semantics. No source or
 dataset was added and no external publication was performed. Current receipts:
-`quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-7.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
 and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
 The latest local candidate-role refresh is
@@ -4780,7 +4780,7 @@ not itself perform the pending Q1 HR admission or canary.
 - [x] Reconcile the registry and current-readback sections in the Bronze,
   federation, Platinum, and Australian benefits plans to identify the newer
   candidate-role report while preserving the report actually bound by preflight
-  snapshot 20261021-5. Dated earlier zero-count entries remain historical.
+  snapshot 20261021-7. Dated earlier zero-count entries remain historical.
 - [x] Preserve the pending Q1 HR admission/canary and all other gates; this
   documentation update does not change inventory, rights, admission, canaries,
   publication, or release state.
@@ -4860,6 +4860,26 @@ not itself perform the pending Q1 HR admission or canary.
   candidate commit. No source bytes were read and no admission or canary was
   produced. Public `main` remains `de76083a0da67414c803c7a74de00162fe5dfbad`;
   a durable accessible evidence commit is still required before retrying.
+
+## M-112 Q1 HR benefit-column diagnostic (2026-10-21)
+
+- [x] Compare the pinned workbook `Benefits ($)` cells with the existing CSV
+  `Benefit` cells in memory after rechecking both exact object digests and byte
+  counts. The value-free report records 545,066 numeric pairs; 19,904 are exact
+  numeric matches, and none of the tested fixed scales explains the aggregate
+  mismatch. The workbook contains 545,074 data rows while the CSV contains
+  545,070. No values were emitted or retained and no Silver projection was
+  created. The script SHA-256 is
+  `e6d4c237f9108e5a50faf0869601cfa58f994ded1a0d94c927ff204421af983a`;
+  receipt `quality/qualifications/australian-mbs-demographics-q1hr-benefit-scale-comparison-20261021.json`
+  SHA-256 is `465c655dd0bcad42ff31d94826ef857b32de4f491f851ed47c7347687e16c8b5`.
+- [ ] Resolve the meaning/calculation of `Benefits ($)`, the age-category
+  mapping, and the four-row count difference from source-supported evidence.
+  This diagnostic rules out only the tested fixed-scale relationships; it does
+  not establish row equivalence, semantic non-equivalence, or a valid transform.
+- [ ] Build and qualify a loss-aware Silver projection only after those source
+  semantics are established. Exact-main admission and its consumer canary also
+  remain gated on durable accessible receipt evidence.
 
 ## M-110 restricted-content screen reconciliation (2026-10-21)
 

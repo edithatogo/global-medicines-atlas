@@ -1653,7 +1653,7 @@ denominator; 1,752 remain deferred. This reader evidence does not qualify
 API/CLI/Atlas/export product surfaces, source-native layouts, or relationship
 semantics. No public dataset mutation or external publication was performed.
 Current evidence:
-`quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-7.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
 `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json` (the role report bound by this preflight),
 and the later candidate-role refresh
