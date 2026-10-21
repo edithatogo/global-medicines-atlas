@@ -763,7 +763,11 @@ and product consumer qualification remain separate gates. No public dataset
 mutation or external publication was performed. Current evidence:
 `quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
-`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`,
-and the reviewed MBS lineage overlay. That overlay closes the July 2025 XML and
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json` (the role report bound by this preflight),
+the later candidate-role refresh
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`,
+and the reviewed MBS lineage overlay. The later role refresh preserves the same
+7/7 counts and 1,752 deferrals without changing the preflight admission or
+canary evidence. That overlay closes the July 2025 XML and
 legacy P7 B1/B2 joins and reports 22 complete raw lineages; it does not change
 the 1,759 denominator or imply broader federation acceptance.

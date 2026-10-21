@@ -1481,5 +1481,9 @@ Broader Bronze-source landing and coverage work is tracked separately and
 remains outside the frozen M-112 denominator. Current evidence:
 `quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
-`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`,
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json` (the role report bound by this preflight),
 and `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json`.
+The later candidate-role refresh
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`
+also reads back seven admissions, seven canaries, and 1,752 deferrals; it does
+not change the bound preflight or claim a new admission or canary.

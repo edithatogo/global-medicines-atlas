@@ -4510,6 +4510,12 @@ dataset was added and no external publication was performed. Current receipts:
 `quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
 and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
+The latest local candidate-role refresh is
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`
+(SHA-256 `67fb4cd0ccf3073fd472c3b5677b4b6452b55047fff0791a3720eb14914369dd`);
+it retains seven admissions, seven canaries, and 1,752 deferrals. The bound
+preflight still references the 20261020 role-report input. This refresh does
+not itself perform the pending Q1 HR admission or canary.
 
 ## M-112 lineage and next bounded v4 cohort (2026-10-21)
 
@@ -4717,3 +4723,19 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
 - [ ] Review the workbook narrative-token hits and restricted terminology. This
   bounded detector is not exhaustive and makes no privacy, rights, or vocabulary
   clearance claim.
+
+
+## M-112 current role-report reference reconciliation (2026-10-21)
+
+- [x] Verify the latest candidate-role qualification at
+  `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`
+  (SHA-256 `67fb4cd0ccf3073fd472c3b5677b4b6452b55047fff0791a3720eb14914369dd`).
+  Its readback remains seven v4 admissions, seven consumer canaries, and 1,752
+  deferred objects of 1,759.
+- [x] Reconcile the registry and current-readback sections in the Bronze,
+  federation, Platinum, and Australian benefits plans to identify the newer
+  candidate-role report while preserving the report actually bound by preflight
+  snapshot 20261021-5. Dated earlier zero-count entries remain historical.
+- [x] Preserve the pending Q1 HR admission/canary and all other gates; this
+  documentation update does not change inventory, rights, admission, canaries,
+  publication, or release state.
