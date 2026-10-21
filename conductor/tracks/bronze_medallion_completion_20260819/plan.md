@@ -1439,8 +1439,10 @@ for credentialed or rights-unresolved sources.
   of 1,759. Exact raw digest/path joins remain 118 and exact receipt/acquisition
   joins remain 27.
 - [x] Preserve all 1,759 deferrals. The derived-table rights gate remains open;
-  v4 admissions and consumer canaries remain zero. No source or dataset was
-  added and no release was performed.
+  v4 admissions and consumer canaries were zero at this 2026-10-20 checkpoint.
+  The current 2026-10-21 readback in the federated data-plane plan records
+  seven admissions and seven canaries for other raw B2 objects. No source or
+  dataset was added and no release was performed.
 - [x] Focused Silver/raw lineage tests pass (8); Ruff, `ty`, BasedPyright,
   context, ecosystem, and Test-Goblin test-inventory checks pass.
 - [~] The full Test-Goblin profile completed with 6,929 passed, 3 skipped, 11

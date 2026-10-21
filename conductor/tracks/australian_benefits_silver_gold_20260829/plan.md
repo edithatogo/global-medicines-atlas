@@ -3490,7 +3490,9 @@
   result.
 - [x] Keep all 1,759 objects deferred; B1/B2-complete raw lineage is 6, exact
   source/release rights remain 2, v4 admissions remain 0, and consumer canaries
-  remain 0. No source payload bytes or new sources were used, and no rights
+  remain 0 at this 2026-10-18 checkpoint. The current 2026-10-21 readback below
+  records seven admissions and seven canaries. No source payload bytes or new
+  sources were used, and no rights
   conclusion was added. The source-owner-reserved PBS/M107 crosswalks and July
   derivative were not changed.
 - [x] Save the reproducible overlay at
