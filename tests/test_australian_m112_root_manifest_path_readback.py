@@ -8,7 +8,7 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 ADDENDUM = (
     ROOT
-    / "quality/qualifications/australian-m112-root-manifest-path-readback-20261017.json"
+    / "quality/qualifications/australian-m112-root-manifest-path-readback-20261021.json"
 )
 BASE = (
     ROOT
