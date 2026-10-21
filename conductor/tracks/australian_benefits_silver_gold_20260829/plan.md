@@ -5436,3 +5436,14 @@ source qualification remains pending their actual final artifacts.
   runtime-proven correction and workbook extension. No full pass is claimed.
 - [ ] Complete repaired-head CI and rerun native-values qualification on exact
   merged main; retain the successful artifact only after actual verification.
+
+### Frozen group workbook native layout discovery
+
+- [~] Bind the frozen July group workbook to original B1/B2 and structural
+  evidence, then inspect its own native layout on exact-main Actions before
+  assigning semantic column roles. Implementation passes 20 focused checks
+  (95.51% combined branch coverage), 168 broader affected checks, routine and
+  strict typing. All ZIP members and native worksheet cells contribute to
+  inventories; only bounded first-three-row header candidates are exposed.
+  This does not qualify a group workbook Silver output. Hosted layout readback,
+  reviewed field mapping, deterministic Parquet and restore remain pending.
