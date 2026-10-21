@@ -5142,7 +5142,7 @@ not itself perform the pending Q1 HR admission or canary.
 
 ## Source meaning resolution (2026-10-21)
 
-- [~] Diagnose the exact retained Q1 workbook/CSV benefit discrepancy with
+- [x] Diagnose the exact retained Q1 workbook/CSV benefit discrepancy with
   full-key rounding and truncation controls; keep aggregate evidence only.
 - [ ] Resolve the source-defined nonnumeric age category without replacing
   native labels or treating row co-occurrence as semantic authority.

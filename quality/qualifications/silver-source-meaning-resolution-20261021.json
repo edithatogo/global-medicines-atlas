@@ -32,12 +32,36 @@
       ]
     },
     "q1_demographics": {
-      "next_evidence": "Full-key rounding/truncation diagnostic in progress; source-defined meaning still required.",
+      "next_evidence": "Source-defined calculation and category definition remain required; tested decimal rounding and truncation are ruled out.",
       "qualified": [
         "claim_processing_month",
         "patient_address_at_claim",
         "net_adjusted_service_counts"
       ],
+      "rounding_truncation_diagnostic": {
+        "conclusion": "Tested rounding and truncation do not explain the mismatch.",
+        "decimal_places_tested": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "equal": 54693,
+        "matches_for_every_tested_mode_and_precision": 54693,
+        "rounding_modes": [
+          "ROUND_DOWN",
+          "ROUND_HALF_UP"
+        ],
+        "shared_full_key_pairs": 545070,
+        "source_bytes_persisted": false,
+        "source_identity_validation": "Both pinned byte counts and SHA-256 verified by existing fetch_exact_source_bytes before parsing.",
+        "source_values_emitted": false,
+        "workbook_higher": 229431,
+        "workbook_lower": 260946
+      },
       "unresolved": [
         "benefit_measure_calculation",
         "nonnumeric_age_category"
