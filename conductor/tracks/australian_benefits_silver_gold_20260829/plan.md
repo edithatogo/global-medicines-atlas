@@ -5025,3 +5025,33 @@ not itself perform the pending Q1 HR admission or canary.
   canary is claimed. Current counts remain 7 admissions, 7 canaries, and 1,752
   deferred objects. Local contract checks and the focused admission/role tests
   pass; see the 2026-10-21 evidence entry for exact hashes and command results.
+
+
+## Authorized repository workflow and current preflight (2026-10-21)
+
+- [x] Apply the maintainer's instruction to preserve the absolute email and
+  messaging exclusion while permitting authorized technical commits, pushes,
+  PR metadata, CI/workflow execution, and green-check merges. Standalone
+  comments, outreach, invitations, and requests to send remain prohibited.
+  Earlier local-only/no-push notes above record the superseded policy.
+- [x] Preserve preflight 20261021-11 unchanged and bind the current plan and
+  tests in successor
+  `quality/qualifications/australian-m112-rights-release-preflight-20261021-12.json`.
+  The first focused run found two stale input digests in the previous snapshot;
+  its result was 64 passed and one failed. This refresh changes no rights,
+  inventory membership, admission, or canary count: 7/7 and 1,752 deferred.
+- [~] Publish the prepared candidate evidence through a technical PR, require
+  protected checks before merge, and run the Q1 HR exact-main verification
+  and reader canary. Its raw-B2 contract preserves uninterpreted immutable
+  bytes; unresolved age-category and benefit semantics continue to gate
+  Silver transformation independently.
+
+- [x] Repair review findings before publishing: assign the three new test
+  modules to the governed unit inventory; use the shared DTD/entity-rejecting
+  XML parser for the PBS expenditure screen; bound source download bytes, ZIP
+  expansion, XML members, and shared-string indexes. Negative tests cover
+  identity drift, XML DTDs, and expansion bounds. The two exact pinned PBS
+  reports still reproduce unchanged with the bounded parser. Routine checks
+  and targeted strict typing pass.
+- [~] Run focused and broader affected tests, the pinned-toolchain full profile,
+  and protected hosted checks against the frozen candidate branch before merge.
