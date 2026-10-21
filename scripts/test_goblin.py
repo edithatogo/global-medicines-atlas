@@ -107,6 +107,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_mbs_raw_b2_federation_profile.py",
         "tests/test_pbs_silver.py",
         "tests/test_pbs_domain.py",
+        "tests/test_pbs_observed_domain.py",
         "tests/test_pbs_native_values.py",
         "tests/test_pbs_schema_inventory.py",
         "tests/test_pbs_schema_hosted.py",
