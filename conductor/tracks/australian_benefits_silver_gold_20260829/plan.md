@@ -5530,3 +5530,23 @@ source qualification remains pending their actual final artifacts.
   role denominators. Local synthetic checks do not qualify the real corpus.
 - [ ] Require exact-main hosted observed-profile qualification, then complete
   substantive reference/domain semantics and eligible package delivery.
+
+
+### Remaining frozen July MBS BSD/RVG family (2026-10-22)
+
+- [x] Bind exact frozen BSD CSV, BSD XML and RVG text identities to the retained
+  original acquisition, source receipt, B2 reference, landed unreviewed
+  admission and path receipt. Metadata contracts reject digest, lineage and
+  role mismatches. No source payload was read locally.
+- [ ] Inventory native formats in protected exact-main Actions before selecting
+  field/column/date/value mappings. Keep source families and meanings distinct.
+- [ ] Qualify complete source-faithful typed outputs, all native fields and
+  conversion exceptions, then applicable eligible admission and consumer proof.
+
+- [x] Implement protected sidecar-layout runner with exact-main checks,
+  anonymous digest/byte validation of all five original metadata roles before
+  each source payload, and before/after public-revision readback. Only bounded
+  shape/count/hash metadata is emitted; existing receipts are preserved and
+  source-bearing exception text is withheld. 154 local affected tests pass.
+- [ ] Require merged exact-main native inventory before choosing source-specific
+  column, field, encoding, date or numeric interpretations for these families.
