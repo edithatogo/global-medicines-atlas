@@ -4992,7 +4992,15 @@ not itself perform the pending Q1 HR admission or canary.
   scope claims source semantics or admission. Fifteen focused tests, `ty`,
   BasedPyright, Ruff, formatting, role-report `--check`, and `git diff --check`
   passed.
-- [ ] Close the remaining contract roles and obtain an accessible merged
+- [~] Close the remaining contract roles and obtain an accessible merged
   evidence revision before exact remote receipt closure, v4 admission, or the
-  Q1 HR consumer canary. This local role binding does not change any cohort
-  count or public data.
+  Q1 HR consumer canary. The exact contract passes local schema and semantic
+  checks, and the role report passes its current check, but it still classifies
+  this object as `candidate_receipt_available_unbound`. Its pinned replay and
+  lineage URLs reference local commit `c857e3c42cd6ffa7fa9d21d599613c1169ce1f9e`;
+  GitHub currently returns 422 for that commit. The required hosted reader
+  workflow is main-only. Repository autonomy prohibits pushing while the
+  account-level no-outbound restriction is active, so no hosted admission or
+  canary is claimed. Current counts remain 7 admissions, 7 canaries, and 1,752
+  deferred objects. Local contract checks and the focused admission/role tests
+  pass; see the 2026-10-21 evidence entry for exact hashes and command results.
