@@ -8,6 +8,10 @@ on:
         required: true
         type: string
 
+# Historical uv builds use the patched, content-bound custom CA store.
+env:
+  SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
+
 permissions: {}
 
 concurrency:

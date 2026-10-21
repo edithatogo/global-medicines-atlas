@@ -94,3 +94,10 @@ identified two matches. The value recomputes from the replay planner's exact
 partition and snapshot identities and is not used for authentication or
 authorization. The allowlist adds only this exact field/value pair; changed
 values and other field names remain detectable.
+
+
+The Q1 HR replay plan and execution receipt from run `39533443472` carry the
+same deterministic `idempotency_key`. The key recomputes as SHA-256 of the
+canonical JSON array of its partition ID and snapshot ID; it is not an access
+credential. The additional allowlist pattern matches only this exact value in
+this exact field. Mutated values and credential field names remain rejected.

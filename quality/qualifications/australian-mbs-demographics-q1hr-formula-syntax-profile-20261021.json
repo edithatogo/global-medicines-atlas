@@ -1,0 +1,51 @@
+{
+  "boundaries": {
+    "admission_performed": false,
+    "consumer_canary_performed": false,
+    "formula_results_evaluated": false,
+    "formula_text_emitted": false,
+    "new_sources_added": false,
+    "public_dataset_mutated": false,
+    "silver_promotion_performed": false,
+    "source_bytes_persisted_locally": false,
+    "source_values_or_rows_emitted": false
+  },
+  "formula_structure": {
+    "cells_by_column": {
+      "E": 171477
+    },
+    "cells_with_cached_result_element": 171477,
+    "cells_with_formula_text": 171346,
+    "formula_type_counts": {
+      "normal": 171326,
+      "shared": 151
+    },
+    "function_counts": {},
+    "normalized_shape_count": 1,
+    "normalized_shape_hash_counts": {
+      "e1bad657cc0ddd36f292": 171346
+    },
+    "operator_counts": {
+      "-": 157862,
+      "=": 13467,
+      ">": 13467
+    },
+    "shared_or_blank_formula_cells_without_text": 131
+  },
+  "interpretation": "Formula syntax and structural hashes are descriptive only. Formula results were not evaluated, formula text and source values were not emitted, and formula intent or date semantics are not inferred. This profile is not a typed projection or native workbook semantics qualification.",
+  "schema_id": "global-medicines-atlas.mbs-demographics-q1hr-formula-syntax-profile",
+  "schema_version": 1,
+  "scope": {
+    "formula_cells": 171477,
+    "formula_text_emitted": false,
+    "sheet": "MBS Demographics 2016 Qtr1",
+    "source_values_emitted": false
+  },
+  "source": {
+    "byte_count": 21966140,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+  }
+}

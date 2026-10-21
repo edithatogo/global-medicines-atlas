@@ -1,0 +1,41 @@
+{
+  "as_of_commit": "a038b2667330f668bbe1557297deaf6f1140f338",
+  "boundaries": {
+    "confidence_emitted": false,
+    "matcher_behavior_changed": false,
+    "new_sources_added": false,
+    "production_authority_promoted": false,
+    "source_data_changed": false
+  },
+  "conclusion": "No retained non-synthetic cross-jurisdiction medicine-pair labels are present in the current B1 receipt scope. Same-jurisdiction MBS/PBS evidence and synthetic global fixtures cannot calibrate the cross-jurisdiction medicine matcher. Do not emit confidence or select a threshold.",
+  "current_bronze_receipts": {
+    "receipt_count": 18,
+    "source_id_jurisdiction_counts": {
+      "au-data-gov-mbs-demographics|AUS": 10,
+      "au-data-gov-mbs-group|AUS": 4,
+      "au-mbs|AUS": 3,
+      "au-mbs-p7-legacy-workbook|AUS": 1
+    }
+  },
+  "fixture_boundary": {
+    "cross_jurisdiction_examples_are_real_source_labels": false,
+    "evidence_class": "synthetic_fixture_only",
+    "path": "src/global_medicines_atlas/bronze_fixture_landing.py",
+    "sha256": "1b0811f5140e7f4e39aa2290a7e0b1f10b04342ad963376ecc254e17d857dc1f"
+  },
+  "matcher": {
+    "behavior": "source and target with the same jurisdiction are skipped",
+    "path": "src/global_medicines_atlas/matching.py",
+    "same_jurisdiction_exclusion_line": 80,
+    "sha256": "968dfc9512e93b0d6e0bccd9e2ca357f0e97e0737b5715e03a55f21aa4e47712"
+  },
+  "reviewed_mbs_edge_set": {
+    "cross_jurisdiction_medicine_identity_labels": false,
+    "edge_scope": "source-record same-record MBS service/benefit relations",
+    "path": "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json",
+    "review_disposition": "Accept the exact same-record edge set as reviewed",
+    "sha256": "24f1bfcffde9a3bd453a637837efb53df042bd5d980e9362f9d3a8274e2a40f0"
+  },
+  "schema_id": "global-medicines-atlas.frontier-real-matcher-label-availability",
+  "schema_version": 1
+}

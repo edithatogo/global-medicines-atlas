@@ -5,7 +5,7 @@
   "fixture_path": "tests/fixtures/datahouse/bronze_records.json",
   "fixture_sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da",
   "dependency_lock_path": "uv.lock",
-  "dependency_lock_sha256": "78d3ae8a0bf963f424c6a975922fb3a26e2cc4c5a5d77d5290e5c96cee7051b2",
+  "dependency_lock_sha256": "abf033420a58c0bceb5cb80e8d43d9cc62e080aff15802212429ce1c99620cb9",
   "python_reference": "3.14",
   "bronze_completion_blocking": false,
   "payload_receipts_remain_authoritative": true,

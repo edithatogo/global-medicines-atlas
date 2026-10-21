@@ -11,6 +11,10 @@ on:
   schedule:
     - cron: "17 3 * * 1"
 
+# Historical uv builds use the patched, content-bound custom CA store.
+env:
+  SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem
+
 permissions:
   contents: read
 

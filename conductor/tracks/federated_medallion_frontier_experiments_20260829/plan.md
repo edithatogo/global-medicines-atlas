@@ -494,3 +494,109 @@
   receipt-cohort input digest was regenerated and its focused tests pass (13);
   cohort counts did not change. No source, model, production behavior, rights
   conclusion, or authority state changed.
+
+## 2026-10-21 exact MBS Silver candidate content-pattern screen
+
+- [x] Apply the existing value-redacting scanner to all six exact July 2025
+  MBS v4 candidate Parquet objects at pinned public revision
+  `42d73b6facac016f14a335d36d83f1a3b630add8`. Verify each object against its
+  manifest size and digest, then screen all 35,934 rows in memory. The bounded
+  sensitive-field, email-like-value, and exact-digest detectors found no
+  patterns. Receipt:
+  `quality/qualifications/australian-mbs-v4-bounded-content-screen-20261021.json`
+  (SHA-256 `83ae8b29ad197495c6cb929165bf2560eaaf22f13ffbb8c7410f8a26ce2d6e5e`).
+- [x] Complete and reconcile the bounded content screen for the six MBS v4
+  candidate tables and six PBS utilisation objects. The exact-scope disposition
+  classifies every observed pattern, including ATC-shaped values, numeric
+  fields, terminology markers, sensitive-looking headers, UMLS-CUI patterns,
+  and email-like patterns. It records the maintainer's exact-scope rights
+  attestations without independently reviewing their instruments.
+- [ ] Keep broader screening and vocabulary membership open: configured
+  detectors are not exhaustive, the retained inventory has no authoritative
+  ATC dictionary, and workbook narrative-token semantics are unresolved. No
+  additional source is introduced to close these gaps.
+- [ ] Keep actual matcher calibration open. Existing case-disjoint 400-case
+  partitions were generated from invented names and calibration remains poor
+  on holdout (Brier 0.2108; ten-bin ECE 0.2068). Representative
+  human-adjudicated held-out source labels remain absent; no confidence or
+  production threshold is emitted.
+
+
+## 2026-10-21 PBS utilisation field-header resolution
+
+- [x] Resolve field labels for three exact, already-screened PBS CSV objects at
+  revision `9f1d53cd50eea251b326da42a96f3ac72ebce97a`. Numeric-shaped values in
+  both DOS files occur in `MONTH_OF_SUPPLY`, `PRESCRIPTIONS`, contribution,
+  cost, and markup fields; the ATC-shaped values in the item-drug map occur in
+  `ATC5_Code`. No CSV record values were emitted. Receipt:
+  `quality/qualifications/australian-pbs-utilisation-pattern-field-header-map-20261021.json`
+  (SHA-256 `1e6c2e254af3704ab422cfc4a495648441dae9a533907bca4097cfab15cb33a4`).
+- [x] Resolve the prior exact header digest `20f9f06f…e524ad` in the existing
+  July 2021–June 2026 summary workbook. It identifies `ATC5_CODE` in five
+  annual sheets carrying 1,304,100 ATC-shaped strings; no data values were
+  emitted. Receipt:
+  `quality/qualifications/australian-pbs-utilisation-summary-workbook-header-resolution-20261021.json`
+  (SHA-256 `f717d2bda385a1dc7080b3493de9430998172146c03b5f8252f21e6f61ae71dd`).
+- [ ] Map marker-bearing fields in the two expenditure workbooks and finish
+  restricted-content classification. These header mappings identify candidate
+  fields only; they do not establish vocabulary membership or clear rights. The
+  exact six-object user attestation covers all file contents, including
+  vocabulary, while its instrument remains independently unreviewed.
+- [ ] Calibrate the actual matcher on representative, reviewed source labels.
+  Existing 400/400 generated partitions remain poor synthetic-only evidence;
+  no real-source threshold or confidence is selected.
+
+
+## 2026-10-21 PBS expenditure workbook marker context
+
+- [x] Join the previously counted explicit-terminology marker locations in the
+  two exact PBS expenditure workbooks to their official sheet titles. The
+  value-free mapping resolves marker locations across 7 of 41 sheets in the
+  2023–24 workbook and 8 of 47 sheets in the 2024–25 workbook, including named
+  tables and figure inputs. Receipt:
+  `quality/qualifications/australian-pbs-expenditure-terminology-marker-sheet-map-20261021.json`
+  (SHA-256 `baba4bee9a172e4bc4a57fb068ddedb175a7c9df8b75be2aa661a8cbc7bbf01d`).
+- [ ] Interpret marker-bearing cell content and classify the identified fields
+  against a bounded terminology contract. Sheet context alone is not header or
+  content review; no rights or restricted-terminology clearance follows.
+
+
+## 2026-10-21 exact PBS six-object privacy-pattern screen
+
+- [x] Scan the exact six already-authorized PBS utilisation files at revision
+  `9f1d53cd50eea251b326da42a96f3ac72ebce97a` after checking every pinned byte
+  count and SHA-256. Across 191,047,619 bytes, the bounded scanner found zero
+  email-shaped cell values. The two DOS CSVs each had three sensitive-looking
+  headers; a separate exact-header read resolves them to `PATIENT_CAT`,
+  `PATIENT_CONTRIB`, and `PATIENT_NET_CONTRIB`, aggregate category/contribution
+  measures. Workbook strings contain bounded patient/person token occurrences
+  in narrative cells, not classified individual records. The value-free scan
+  and context receipt are
+  `quality/qualifications/australian-pbs-utilisation-private-pattern-screen-20261021.json`
+  (SHA-256 `43c1c2a80adb86bb215dbd2340645fee1ce20d4c17a2a0545c9134c2d4c86f33`) and
+  `quality/qualifications/australian-pbs-dos-sensitive-header-context-20261021.json`
+  (SHA-256 `a5046bae17eb24a63e286f0c083ca0a2269c997bc2918b7fe3bf97324ee40654`).
+- [ ] Complete source-specific restricted-content classification for workbook
+  narrative and terminology fields. This detector is bounded, had no exact
+  restricted-value digest denylist, and is not an exhaustive privacy or
+  licensing clearance. The user attestation remains the rights assertion; the
+  instrument was not independently reviewed. No admission, canary, or public
+  release followed.
+
+
+## 2026-10-21 actual-matcher label availability audit
+
+- [x] Reconcile current retained real-source inputs with the matcher's scope.
+  The Bronze receipt inventory contains 18 source receipts across
+  only these Australian source IDs: `au-data-gov-mbs-demographics|AUS, au-data-gov-mbs-group|AUS, au-mbs-p7-legacy-workbook|AUS, au-mbs|AUS`.
+  `src/global_medicines_atlas/matching.py` skips candidates when source and
+  target jurisdictions match, while all cross-jurisdiction medicine examples
+  in the repository are `synthetic_fixture_only`. The maintainer-reviewed
+  5,989-edge MBS set is exact same-record service/benefit provenance, not
+  cross-jurisdiction medicine identity ground truth. Audit:
+  `quality/qualifications/frontier-real-matcher-label-availability-20261021.json`
+  (SHA-256 `6683d10d46b4878747f227ccd6db3033c3338422199889b036f3ef55ca0da868`).
+- [ ] Actual matcher calibration needs representative reviewed cross-jurisdiction
+  medicine labels. The current source scope cannot supply them; no threshold or
+  confidence is calibrated. Keep the calibration requirement open while
+  respecting the no-new-sources constraint.

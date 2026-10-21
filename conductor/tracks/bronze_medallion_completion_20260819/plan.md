@@ -1439,8 +1439,10 @@ for credentialed or rights-unresolved sources.
   of 1,759. Exact raw digest/path joins remain 118 and exact receipt/acquisition
   joins remain 27.
 - [x] Preserve all 1,759 deferrals. The derived-table rights gate remains open;
-  v4 admissions and consumer canaries remain zero. No source or dataset was
-  added and no release was performed.
+  v4 admissions and consumer canaries were zero at this 2026-10-20 checkpoint.
+  The current 2026-10-21 readback in the federated data-plane plan records
+  seven admissions and seven canaries for other raw B2 objects. No source or
+  dataset was added and no release was performed.
 - [x] Focused Silver/raw lineage tests pass (8); Ruff, `ty`, BasedPyright,
   context, ecosystem, and Test-Goblin test-inventory checks pass.
 - [~] The full Test-Goblin profile completed with 6,929 passed, 3 skipped, 11
@@ -1468,3 +1470,22 @@ for credentialed or rights-unresolved sources.
 - [~] Hosted protected checks, review, and merge remain pending on updated PR
   #1242. The full local Test-Goblin profile above ran before rebasing onto the
   Q2 canary and Q3 replay updates; protected CI must validate the final head.
+
+## M-112 current qualification readback (2026-10-21)
+
+The latest rights-release preflight records all 1,759 frozen objects with
+resolved rights, seven v4 admissions, seven admitted-object canaries, and 1,752
+deferred objects. Earlier zero-count statements above describe their original
+dated checkpoints and are superseded. The preflight's sidecar reminder derives
+from an earlier per-object gate overlay; separate reviewed path-lineage reports
+close the July 2025 MBS XML and legacy P7 workbook B1/B2 bindings.
+Broader Bronze-source landing and coverage work is tracked separately and
+remains outside the frozen M-112 denominator. Current evidence:
+`quality/qualifications/australian-m112-rights-release-preflight-20261021-11.json`,
+`quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json` (the role report bound by this preflight),
+and `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json`.
+The later candidate-role refresh
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`
+also reads back seven admissions, seven canaries, and 1,752 deferrals; it does
+not change the bound preflight or claim a new admission or canary.

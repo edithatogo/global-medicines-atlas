@@ -1097,8 +1097,10 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
 - [x] Record the refreshed result in
   `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261018.json`:
   two exact-source-rights rows, one complete raw B1/B2 row, zero v4 admissions,
-  and zero consumer canaries. This does not create or expand rights, read or
-  upload source bytes, admit objects, or accept M-112.
+  and zero consumer canaries at this 2026-10-18 checkpoint. The 2026-10-21
+  readback in the federated data-plane plan records seven admissions and seven
+  canaries. This does not create or expand rights, read or upload source bytes,
+  admit objects, or accept M-112.
 - [x] Validate the refresh with the focused M-112 tests (9 passed), the broader
   M-112/rights suite (81 passed), Ruff, `ty`, BasedPyright, context validation,
   and `git diff --check`. The full Test-Goblin run recorded 6,665 passed, 3
@@ -1154,7 +1156,9 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   from the preserved prior report. Reconcile four additional exact source
   rights decisions and raw B1/B2 lineages while preserving all 1,759
   deferrals, the approved denominator, zero v4 admissions, and zero consumer
-  canaries. Producer projection lineage remains separate and unqualified.
+  canaries at this 2026-10-18 checkpoint. The 2026-10-21 readback in the
+  federated data-plane plan records seven admissions and seven canaries.
+  Producer projection lineage remains separate and unqualified.
 - [x] Address review findings by requiring successful B1 retrieval status and
   binding each B2 external reference to the exact dataset, parent revision, and
   raw object path. Add adversarial cases for failed retrieval and incorrect

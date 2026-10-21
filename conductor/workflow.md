@@ -21,8 +21,11 @@
 
 ## Autonomous Execution
 
-- Continue through tasks, phases, review fixes, pull requests, green-check
-  merges, reconciliation, and archival while work is safe and in scope.
+- Continue through tasks, phases, review fixes, permitted pull requests,
+  green-check merges, reconciliation, and archival while work is safe and in
+  scope. Authorized pushes, technical pull requests, CI/workflow execution, and
+  merges are permitted under the `AGENTS.md` email and messaging exclusion.
+  Outreach and standalone comments remain prohibited.
 - Select the next unblocked track automatically when the current track is
   complete.
 - Inform the maintainer of progress without converting updates into approval
@@ -112,7 +115,10 @@ or requires judgment that cannot be represented by automated evidence.
 ## Single-Developer Controls
 
 - Do not invent independent approvals.
-- Use pull requests and protected checks for change isolation and durable evidence.
+- Use technical pull requests and protected checks for change isolation and
+  durable evidence. Preserve the `AGENTS.md` email and messaging exclusion;
+  technical repository metadata does not authorize outreach or standalone
+  comments.
 - Keep credential, licensing, publication, and high-consequence interpretation gates explicit.
 - Record unavailable external evidence as blocked or out of scope, never complete.
 

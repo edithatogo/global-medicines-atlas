@@ -8,6 +8,26 @@ and rationale contract in that policy.
 
 ---
 
+## Current M-112 readback (2026-10-21)
+
+The latest bound preflight records 1,759/1,759 frozen objects with resolved
+rights, 7 exact v4 admissions, 7 admitted-object consumer canaries, and 1,752
+deferred objects. The frozen denominator is unchanged; Q1 HR physical workbook
+layout is qualified, while source-field and transformation semantics remain
+unqualified. No public dataset mutation or external publication was performed.
+Use [preflight snapshot 20261021-13](../quality/qualifications/australian-m112-rights-release-preflight-20261021-13.json),
+[current rights reconciliation](../quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json),
+and the [latest candidate-role qualification](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json)
+for the current count readback. The bound preflight retains its
+[20261020 role-report input](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json);
+the 20261021 role report is a later candidate-role refresh, does not alter the
+preflight admission/canary counts, and does not itself perform admission or a
+canary. The reviewed MBS path-lineage overlay also
+closes the July 2025 XML and P7 workbook B1/B2 joins. The exact July BSD
+sidecar readback separately verifies both sidecar B1/B2 bindings. Older count
+statements in dated plan sections remain
+historical snapshots and must not be read as today's totals.
+
 - [x] **Track: Migrate nzmedicines into the canonical atlas repository**
   *Archived: [archive/nzmedicines_migration_20260727/index.md](./archive/nzmedicines_migration_20260727/index.md).*
 

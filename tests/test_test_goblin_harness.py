@@ -7,6 +7,7 @@ import importlib.util
 import json
 import re
 import sqlite3
+import ssl
 import sys
 import tomllib
 from pathlib import Path
@@ -687,7 +688,7 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
-    assert len(allowlist["regexes"]) == 11
+    assert len(allowlist["regexes"]) == 12
     assert not (ROOT / ".gitleaksignore").exists()
 
     revision = json.loads(
@@ -737,7 +738,7 @@ def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
     regexes = config["allowlists"][0]["regexes"][2:]
     expected = [
         (regexes[:2], "dataset_access_response_sha256", 2),
-        (regexes[2:], "idempotency_key", 7),
+        (regexes[2:], "idempotency_key", 8),
     ]
     for values, field, expected_count in expected:
         patterns = [re.compile(value) for value in values]
@@ -764,6 +765,23 @@ def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
     )
     q3_hr_idempotency_key = q3_hr_plan["snapshots"][0]["idempotency_key"]
     assert q3_hr_idempotency_key in digests
+    q1_hr_plan = json.loads(
+        (
+            ROOT / "quality/qualifications/"
+            "australian-m112-v3-replay-plan-20261021-39533443472.json"
+        ).read_text()
+    )
+    q1_snapshot = q1_hr_plan["snapshots"][0]
+    expected_q1_key = hashlib.sha256(
+        json.dumps(
+            [q1_snapshot["partition_id"], q1_snapshot["snapshot_id"]],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+    assert q1_snapshot["idempotency_key"] == expected_q1_key
+    assert expected_q1_key in digests
 
     disposition = (
         ROOT
@@ -1123,3 +1141,69 @@ def test_mutmut_observations_reject_missing_or_non_numeric_results(
     malformed.write_text(json.dumps({"killed": True}))
     with pytest.raises(ValueError, match="unexpected Mutmut"):
         HARNESS.load_mutmut_observations(malformed)
+
+
+def test_historical_uv_uses_patched_content_bound_ca_store() -> None:
+    bundle = ROOT / ".ci/trust/cacert.pem"
+    provenance = json.loads((ROOT / ".ci/trust/provenance.json").read_text())
+    assert provenance["package"] == "certifi"
+    assert provenance["version"] == "2026.10.19"
+    assert (
+        hashlib.sha256(bundle.read_bytes()).hexdigest()
+        == provenance["bundle_sha256"]
+    )
+    roots = ssl.create_default_context(cafile=str(bundle)).get_ca_certs()
+    assert roots
+    assert all(
+        value != "emSign ECC Root CA - G3"
+        for cert in roots
+        for component in cert["subject"]
+        for key, value in component
+        if key == "commonName"
+    )
+
+
+def test_pinned_legacy_uv_workflows_use_the_patched_ca_store() -> None:
+    for workflow in (ROOT / ".github/workflows").glob("*.yml"):
+        content = workflow.read_text()
+        if 'version: "0.11.29"' in content:
+            assert (
+                "SSL_CERT_FILE: ${{ github.workspace }}/.ci/trust/cacert.pem"
+                in content
+            ), workflow
+
+
+@pytest.mark.parametrize("status", ["False", "True"])
+def test_dependency_canary_checks_report_status(
+    monkeypatch, status: str
+) -> None:
+    calls = []
+
+    def completed(command, **_kwargs):
+        environment = command[-1]
+        calls.append(environment)
+        return SimpleNamespace(
+            returncode=0,
+            stdout=f"{environment} True {status} pydantic 2.0\n",
+        )
+
+    monkeypatch.setattr(HARNESS.subprocess, "run", completed)
+    if status == "False":
+        with pytest.raises(SystemExit, match="Dependency canary failed"):
+            HARNESS.dependencies()
+        assert calls == ["contracts"]
+    else:
+        HARNESS.dependencies()
+        assert calls == ["contracts", "columnar", "product"]
+
+
+def test_dependency_canary_rejects_missing_report(monkeypatch) -> None:
+    monkeypatch.setattr(
+        HARNESS.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            returncode=0, stdout="no report\n"
+        ),
+    )
+    with pytest.raises(SystemExit, match="Dependency canary failed or missing"):
+        HARNESS.dependencies()

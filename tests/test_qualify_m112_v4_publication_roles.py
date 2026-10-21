@@ -18,6 +18,8 @@ from scripts.qualify_m112_v4_publication_roles import (
     DISCOVERY_REPORT,
     OUTPUT,
     OVERLAY_REPORT,
+    PHYSICAL_LAYOUT_PATH,
+    PHYSICAL_LAYOUT_REPORT,
     PRODUCER_WORKFLOW,
     ROLE_REPORT,
     SOURCE_SEMANTICS_PATH,
@@ -180,11 +182,12 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
             "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
             "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
             "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+            "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
         }
         and "v3_replay_candidate_receipt" in item
     ]
 
-    assert len(matches) == 7
+    assert len(matches) == 8
     by_path = {item["path"]: item for item in matches}
     assert V3_REPLAY_PATH in by_path
     q1_path = (
@@ -261,7 +264,19 @@ def test_exact_hosted_v3_replays_bind_each_unbound_candidate_role() -> None:
     assert q3_hr["v3_replay_candidate_receipt"]["workflow_run"].endswith(
         "/39431880718"
     )
-    assert report["v3_replay_candidate_evidence"]["objects"] == 7
+    q1_hr = next(
+        item
+        for item in matches
+        if item["path"]
+        == "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx"
+    )
+    assert q1_hr["sha256"] == (
+        "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+    )
+    assert q1_hr["v3_replay_candidate_receipt"]["workflow_run"].endswith(
+        "/39533443472"
+    )
+    assert report["v3_replay_candidate_evidence"]["objects"] == 8
     assert report["cohort"]["v4_admissions"] == 7
     assert report["cohort"]["consumer_canaries"] == 7
 
@@ -477,6 +492,44 @@ def test_source_temporal_semantics_bind_only_exact_metadata_matches() -> None:
     assert report["cohort"]["consumer_canaries"] == 7
 
 
+def test_physical_layout_binds_exact_q1hr_object_without_semantic_promotion() -> (
+    None
+):
+    report = qualify()
+    candidate = next(
+        item
+        for item in report["objects"]
+        if item["path"] == PHYSICAL_LAYOUT_PATH
+    )
+    evidence = candidate["physical_layout_evidence"]
+
+    assert evidence["native_workbook_layout_qualified"] is True
+    assert evidence["source_field_semantics_qualified"] is False
+    assert evidence["formula_semantics_qualified"] is False
+    assert evidence["admission_performed"] is False
+    assert evidence["consumer_canary_performed"] is False
+    assert evidence["report"]["path"] == PHYSICAL_LAYOUT_REPORT
+    assert candidate["contract_role_states"]["source"] == (
+        "candidate_receipt_available_unbound"
+    )
+    assert report["physical_layout_candidate_evidence"]["objects"] == 1
+    assert report["cohort"]["v4_admissions"] == 7
+    assert report["cohort"]["consumer_canaries"] == 7
+
+
+def test_physical_layout_binding_rejects_scope_expansion(
+    tmp_path: Path,
+) -> None:
+    _copy_qualification_inputs(tmp_path)
+    report_path = tmp_path / PHYSICAL_LAYOUT_REPORT
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+    report["boundaries"]["source_field_semantics_qualified"] = True
+    report_path.write_text(json.dumps(report), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="exceeded its scope"):
+        qualify(tmp_path)
+
+
 def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
     (tmp_path / ROLE_REPORT).parent.mkdir(parents=True, exist_ok=True)
     (tmp_path / DIGEST_REPORT).parent.mkdir(parents=True, exist_ok=True)
@@ -493,6 +546,9 @@ def test_missing_exact_manifest_match_fails_closed(tmp_path: Path) -> None:
     shutil.copy(ROOT / DISCOVERY_REPORT, tmp_path / DISCOVERY_REPORT)
     shutil.copy(
         ROOT / SOURCE_SEMANTICS_REPORT, tmp_path / SOURCE_SEMANTICS_REPORT
+    )
+    shutil.copy(
+        ROOT / PHYSICAL_LAYOUT_REPORT, tmp_path / PHYSICAL_LAYOUT_REPORT
     )
     shutil.copy(ROOT / V3_REPLAY_REPORT, tmp_path / V3_REPLAY_REPORT)
     shutil.copy(ROOT / V3_REPLAY_PLAN, tmp_path / V3_REPLAY_PLAN)
@@ -544,6 +600,9 @@ def test_schema_digest_mismatch_fails_closed(tmp_path: Path) -> None:
     shutil.copy(
         ROOT / SOURCE_SEMANTICS_REPORT, tmp_path / SOURCE_SEMANTICS_REPORT
     )
+    shutil.copy(
+        ROOT / PHYSICAL_LAYOUT_REPORT, tmp_path / PHYSICAL_LAYOUT_REPORT
+    )
     shutil.copy(ROOT / V3_REPLAY_REPORT, tmp_path / V3_REPLAY_REPORT)
     shutil.copy(ROOT / V3_REPLAY_PLAN, tmp_path / V3_REPLAY_PLAN)
     (tmp_path / CONTRACT_SCHEMA_PATH).write_text("{}", encoding="utf-8")
@@ -563,6 +622,7 @@ def _copy_qualification_inputs(destination: Path) -> None:
         DIGEST_REPORT,
         DISCOVERY_REPORT,
         SOURCE_SEMANTICS_REPORT,
+        PHYSICAL_LAYOUT_REPORT,
         V3_REPLAY_MANIFEST,
         V3_REPLAY_REPORT,
         V3_REPLAY_PLAN,

@@ -1,0 +1,145 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "external_publication_performed": false,
+    "public_dataset_mutated": false,
+    "restricted_terminology_cleared": false,
+    "rights_attestation_used_as_permission_basis": true,
+    "rights_cleared_by_screen": false,
+    "source_payload_files_written": false,
+    "source_payload_values_emitted": false,
+    "v4_admission_performed": false
+  },
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "method": {
+    "csv_text_mapping": "ISO-8859-1 reversible byte mapping used only for ASCII pattern detection; publisher charset not inferred",
+    "numeric_identifier_candidates_are_membership_proof": false,
+    "patterns": [
+      "UMLS CUI text form C plus seven digits",
+      "ATC-like seven-character code shape",
+      "explicit AMT/SNOMED/RxNorm/ATC/RxCUI marker text",
+      "six-to-eighteen digit numeric candidates"
+    ],
+    "source_bytes_persisted_locally": false,
+    "source_values_emitted": false
+  },
+  "objects": [
+    {
+      "byte_count": 372149,
+      "header_field_count": 0,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "row_or_cell_row_count": 2221,
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "sheet_count": 41,
+      "value_pattern_counts": {
+        "atc_code_shape": 0,
+        "explicit_terminology_marker": 75,
+        "numeric_identifier_candidate": 0,
+        "umls_cui": 0,
+        "vocabulary_marker_cells": 170
+      },
+      "vocabulary_marker_header_occurrences": 0
+    },
+    {
+      "byte_count": 468764,
+      "header_field_count": 0,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "row_or_cell_row_count": 2374,
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "sheet_count": 47,
+      "value_pattern_counts": {
+        "atc_code_shape": 0,
+        "explicit_terminology_marker": 61,
+        "numeric_identifier_candidate": 0,
+        "umls_cui": 0,
+        "vocabulary_marker_cells": 183
+      },
+      "vocabulary_marker_header_occurrences": 0
+    },
+    {
+      "byte_count": 35384567,
+      "header_field_count": 12,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "row_or_cell_row_count": 389050,
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "sheet_count": 0,
+      "value_pattern_counts": {
+        "atc_code_shape": 0,
+        "explicit_terminology_marker": 0,
+        "numeric_identifier_candidate": 456664,
+        "umls_cui": 0
+      },
+      "vocabulary_marker_header_occurrences": 2
+    },
+    {
+      "byte_count": 36381946,
+      "header_field_count": 12,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "row_or_cell_row_count": 399660,
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "sheet_count": 0,
+      "value_pattern_counts": {
+        "atc_code_shape": 0,
+        "explicit_terminology_marker": 0,
+        "numeric_identifier_candidate": 471746,
+        "umls_cui": 0
+      },
+      "vocabulary_marker_header_occurrences": 2
+    },
+    {
+      "byte_count": 1063694,
+      "header_field_count": 4,
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "row_or_cell_row_count": 12162,
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "sheet_count": 0,
+      "value_pattern_counts": {
+        "atc_code_shape": 10770,
+        "explicit_terminology_marker": 0,
+        "numeric_identifier_candidate": 0,
+        "umls_cui": 0,
+        "vocabulary_marker_cells": 165
+      },
+      "vocabulary_marker_header_occurrences": 3
+    },
+    {
+      "byte_count": 117376499,
+      "header_field_count": 0,
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "row_or_cell_row_count": 1378316,
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "sheet_count": 5,
+      "value_pattern_counts": {
+        "atc_code_shape": 1304100,
+        "explicit_terminology_marker": 0,
+        "numeric_identifier_candidate": 0,
+        "umls_cui": 0,
+        "vocabulary_marker_cells": 955
+      },
+      "vocabulary_marker_header_occurrences": 0
+    }
+  ],
+  "results": {
+    "all_object_digests_and_byte_counts_match_pinned_lineage": true,
+    "full_vocabulary_exclusion_review_complete": false,
+    "interpretation": "Pattern counts are candidate indicators only. The exact six-object maintainer attestation covers all file contents, including otherwise unlicensed vocabulary, but its permission instrument was not independently reviewed. This screen does not itself provide that rights basis or establish vocabulary membership.",
+    "permission_instrument_independently_reviewed": false,
+    "restricted_vocabulary_membership_resolved": false,
+    "rights_basis_recorded_by_attestation": true
+  },
+  "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "rights_scope_assessment": {
+    "instrument_independently_reviewed": false,
+    "public_release_performed": false,
+    "state": "maintainer_attested_for_exact_six_objects_including_all_vocabulary"
+  },
+  "schema_id": "global-medicines-atlas.australian-pbs-utilisation-identifier-shape-screen",
+  "schema_version": 1,
+  "scope": {
+    "object_count": 6,
+    "prior_screen": "quality/qualifications/australian-pbs-utilisation-limited-vocabulary-screen-20261020.json",
+    "rights_attestation": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+    "source_authorization": "quality/qualifications/australian-pbs-utilisation-publication-authorization.json"
+  },
+  "screened_at": "2026-10-21"
+}

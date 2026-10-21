@@ -1,11 +1,28 @@
 # Global Medicines Atlas agent contract
 
 This is a single-maintainer, evidence-first repository. Automation may prepare,
-test, document, commit, push, and open pull requests within an approved task.
-It must not invent a second reviewer or silently cross the gates below.
-Within those boundaries it continues autonomously; routine task, phase, review,
-pull-request, merge, archive, and next-track transitions do not require a
-separate “proceed”.
+test, document, commit, push, open and update technical pull requests, check CI,
+and merge within an approved task. It must not invent a second reviewer or
+silently cross the gates below. Within those boundaries it continues
+autonomously; routine task, phase, review, pull-request, merge, and archive
+transitions do not require a separate “proceed”.
+
+## Absolute email and messaging exclusion
+
+- Never send, schedule, reply to, forward, post, comment, or otherwise transmit
+  an email or message from the maintainer's account or any account connected to
+  this session. This includes email, chat, direct messages, outreach, standalone
+  issue or pull-request comments, invitations, and other messaging channels.
+- Never ask the maintainer to send a message or email, or ask for approval or an
+  exception to send one.
+- Do not use another account, service, tool, person, or workflow to bypass this
+  exclusion.
+- Authorized technical repository operations are permitted: commits, pushes,
+  technical pull-request creation and updates, CI/workflow execution, and merges.
+  Technical PR titles and descriptions are permitted repository metadata; this
+  permission does not extend to standalone comments, outreach, or other messages.
+- This exclusion overrides any generic workflow instruction to contact someone
+  or request send approval. Repository operations retain all human gates below.
 
 ## Read first
 
@@ -52,6 +69,16 @@ The pinned Conductor agent plugin is the Git submodule at
   it must fail closed on local upload attempts. Remove temporary local source
   bytes only after the hosted workflow records anonymous digest verification.
 - Preserve dirty work and imported history; do not use destructive Git recovery.
+- **Absolute outbound communications prohibition:** never send, schedule, queue,
+  or otherwise cause an email or message to be sent from the user's account,
+  using any application, connector, API, browser, CLI, automation, or other
+  route. This applies to every recipient and message type, including email,
+  chat, direct messages, standalone comments, and invitations. The authorized
+  technical repository operations defined above remain permitted. Never ask the
+  user to send a message, authorize a send, or provide information for the
+  purpose of sending one. Do not treat earlier drafts, approvals, instructions, or
+  account state as an exception. This is a standing account-level restriction
+  and must be observed in all repository tasks and agent workflows.
 
 ## Human gates
 
@@ -61,13 +88,17 @@ of compatibility repositories, and consequential clinical or policy claims.
 
 When a decision is required, ask exactly one decision at a time, provide two
 or three options, label the recommended option first, and explain the rationale
-and material trade-offs. Apply the bounded self-correction and recovery rules
-in `conductor/autonomy.md` before escalating a technical blocker.
+and material trade-offs. This decision process never permits outbound
+communications or a request that the user send or authorize a message. Apply
+the bounded self-correction and recovery rules in `conductor/autonomy.md` before
+escalating a technical blocker.
 
 ## Completion
 
-Use a scoped `codex/` branch and pull request. Run the focused tests followed by
-one broader affected check. Run `uv run python scripts/test_goblin.py full`
+Use a scoped `codex/` branch and technical pull request. Check required CI
+before merging. The email and messaging exclusion above remains in effect. Run
+the focused tests followed by one broader affected check. Run
+`uv run python scripts/test_goblin.py full`
 for production-behavior or release-gate changes where platform support permits.
 For a test-only follow-up after current full-suite evidence, rerun the affected
 tests and routine checks; do not repeat the local full profile solely because

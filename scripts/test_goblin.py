@@ -160,6 +160,9 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_australian_m112_historical_source_receipts.py",
         "tests/test_australian_m112_historical_receipt_gate_crosswalk.py",
         "tests/test_mbs_workbook_values.py",
+        "tests/test_mbs_q1hr_age_context_mapping.py",
+        "tests/test_pbs_utilisation_atc_internal_consistency.py",
+        "tests/test_screen_pbs_expenditure_marker_context.py",
         "tests/test_australian_mbs_m106_source_review.py",
         "tests/test_mbs_compatibility.py",
         "tests/test_mbs_tables.py",
@@ -1406,40 +1409,42 @@ def gremlins() -> None:
 
 
 def dependencies() -> None:
-    """Test declared contracts against newest resolvable dependencies."""
-    run([
-        "uv",
-        "run",
-        "--group",
-        "edge",
-        "edgetest",
-        "-c",
-        "pyproject.toml",
-        "--environment",
-        "contracts",
-    ])
-    run([
-        "uv",
-        "run",
-        "--group",
-        "edge",
-        "edgetest",
-        "-c",
-        "pyproject.toml",
-        "--environment",
-        "columnar",
-    ])
-    run([
-        "uv",
-        "run",
-        "--group",
-        "edge",
-        "edgetest",
-        "-c",
-        "pyproject.toml",
-        "--environment",
-        "product",
-    ])
+    """Require successful setup and tests, including edgetest's report status."""
+    uv_executable = shutil.which("uv")
+    if uv_executable is None:
+        raise SystemExit("uv is required for dependency canaries")
+    for environment in ("contracts", "columnar", "product"):
+        completed = subprocess.run(
+            [
+                uv_executable,
+                "run",
+                "--group",
+                "edge",
+                "edgetest",
+                "-c",
+                "pyproject.toml",
+                "--environment",
+                environment,
+            ],
+            cwd=PROJECT_ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+        print(completed.stdout, end="", flush=True)
+        if completed.returncode:
+            raise SystemExit(completed.returncode)
+        # edgetest 2026.5.1 reports failed setup/tests but still exits zero.
+        rows = re.findall(
+            rf"^{environment}\s+(True|False)\s+(True|False)\s+",
+            completed.stdout,
+            flags=re.MULTILINE,
+        )
+        if not rows or any(row != ("True", "True") for row in rows):
+            raise SystemExit(
+                f"Dependency canary failed or missing: {environment}"
+            )
 
 
 def regeneration() -> None:

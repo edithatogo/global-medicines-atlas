@@ -1,0 +1,562 @@
+{
+  "boundaries": {
+    "inventory_changed": false,
+    "matcher_calibration_performed": false,
+    "new_sources_or_datasets_added": false,
+    "public_release_or_publication_performed": false,
+    "raw_source_values_emitted": false,
+    "rights_attestation_scope_changed": false,
+    "rights_inferred_from_screen": false,
+    "v4_admission_or_canary_performed": false
+  },
+  "inputs": {
+    "quality/qualifications/australian-mbs-v4-bounded-content-screen-20261021.json": "83ae8b29ad197495c6cb929165bf2560eaaf22f13ffbb8c7410f8a26ce2d6e5e",
+    "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+    "quality/qualifications/australian-pbs-expenditure-marker-context-screen-20261021.json": "150c92ae5a2e488243b3bb324651ba946593246b548eb17c25694c7f0de149a1",
+    "quality/qualifications/australian-pbs-utilisation-field-pattern-screen-20261021.json": "a865255e2139db9bc3ec5bd46ca35db840dc6782fcd7df998cc7a8a32e66ffb9",
+    "quality/qualifications/australian-pbs-utilisation-identifier-shape-screen-20261021.json": "d7bfad7e5fe036d3eddf1565fbae7953bdb10fe3fec6ae128881074ef7a7e82c",
+    "quality/qualifications/australian-pbs-utilisation-limited-vocabulary-screen-20261020.json": "528d73c1965163d5817ed10dbaaa3363e80f4b0dfb947db7874f0ca6840cc60c",
+    "quality/qualifications/australian-pbs-utilisation-pattern-field-header-map-20261021.json": "1e6c2e254af3704ab422cfc4a495648441dae9a533907bca4097cfab15cb33a4",
+    "quality/qualifications/australian-pbs-utilisation-private-pattern-screen-20261021.json": "43c1c2a80adb86bb215dbd2340645fee1ce20d4c17a2a0545c9134c2d4c86f33",
+    "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+    "quality/qualifications/australian-pbs-utilisation-summary-workbook-header-resolution-20261021.json": "f717d2bda385a1dc7080b3493de9430998172146c03b5f8252f21e6f61ae71dd"
+  },
+  "mbs": {
+    "exact_table_count": 6,
+    "objects": [
+      {
+        "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "byte_count": 114493,
+        "finding_counts": {},
+        "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+        "row_count": 5989,
+        "screen_payload_count": 5989,
+        "screen_payload_sha256": "0a6699343e7ef3340414d86950cccc65232b5478333a5ad76f42db8a6fc9a486",
+        "screen_receipt_sha256": "df88c2034120d83a324a64492d924829e0131bd006cf5ef98cc2b5aee957af98",
+        "serialized_scan_input_bytes": 5055721,
+        "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+        "state": "no_pattern_detected"
+      },
+      {
+        "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "byte_count": 60259,
+        "finding_counts": {},
+        "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+        "row_count": 5989,
+        "screen_payload_count": 5989,
+        "screen_payload_sha256": "a14f46674a08fdf7667fd461c58915b84a9b9e1fd4715188ba2712a23bd84d9d",
+        "screen_receipt_sha256": "c15437351fdd25d2a12637006a815bd3c75f88e52526bbf43fddb499e02319eb",
+        "serialized_scan_input_bytes": 7287034,
+        "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+        "state": "no_pattern_detected"
+      },
+      {
+        "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "byte_count": 620348,
+        "finding_counts": {},
+        "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+        "row_count": 5989,
+        "screen_payload_count": 5989,
+        "screen_payload_sha256": "1fe30f48ca8623eba5fa7b46c5161e1f43250033a62385ce86b08f05df8a457c",
+        "screen_receipt_sha256": "c7df5d5e3ce54e6774cce0538f624e93b0b3df3b63864eda03f7721e54685362",
+        "serialized_scan_input_bytes": 7116905,
+        "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+        "state": "no_pattern_detected"
+      },
+      {
+        "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "byte_count": 93072,
+        "finding_counts": {},
+        "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+        "row_count": 5989,
+        "screen_payload_count": 5989,
+        "screen_payload_sha256": "ae80eb284a5cba35b730b6a473af60a72dfd69d5f8a8a798fc2a8d751f4345fb",
+        "screen_receipt_sha256": "cf05e534ab299d863d6ab3ced3005d03934c92da207eafd5d8940908d4e3afe9",
+        "serialized_scan_input_bytes": 5736614,
+        "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+        "state": "no_pattern_detected"
+      },
+      {
+        "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "byte_count": 51851,
+        "finding_counts": {},
+        "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+        "row_count": 5989,
+        "screen_payload_count": 5989,
+        "screen_payload_sha256": "6e58bfad2010c0b4283c9385c5d11bea10e93c0845cc3bace00753257df32c15",
+        "screen_receipt_sha256": "d524090a87a1215b7d0f7b81e25b76bd245597c47a9a9b14d4af4d0daf8525b3",
+        "serialized_scan_input_bytes": 3946308,
+        "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+        "state": "no_pattern_detected"
+      },
+      {
+        "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "byte_count": 100062,
+        "finding_counts": {},
+        "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "row_count": 5989,
+        "screen_payload_count": 5989,
+        "screen_payload_sha256": "9a3a0085f87309275a361bdbdaba034b6011dce1897e664598c221c658dd54cd",
+        "screen_receipt_sha256": "d492692f772dc17c444b00de88e44fab0792cd1325e6539a92d9ee7abd7abbc6",
+        "serialized_scan_input_bytes": 9806271,
+        "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+        "state": "no_pattern_detected"
+      }
+    ],
+    "revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+    "rights_attestation": {
+      "path": "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json",
+      "permission_instrument_independently_reviewed": false,
+      "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327"
+    },
+    "screen_is_exhaustive": false,
+    "total_rows_screened": 35934
+  },
+  "observed_at": "2026-10-21T04:06:09Z",
+  "pbs": {
+    "attestation": {
+      "exact_six_objects_and_all_contents_including_vocabulary": true,
+      "path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+      "permission_instrument_independently_reviewed": false,
+      "public_release_performed": false,
+      "sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968"
+    },
+    "bounded_screening_complete_for_reported_patterns": true,
+    "classification": {
+      "ATC_like_code_shapes": "confined to fields identified by existing header evidence as ATC5_Code or ATC5_CODE in the existing map and summary workbook",
+      "exact_UMLS_CUI_text_occurrences": 0,
+      "expenditure_ATC_markers": "136 detected marker cells classified by retained report as contextual/label text; zero ATC code-shaped cells",
+      "membership_against_external_vocabulary": "not performed; no vocabulary source added",
+      "pharmacy_type_numeric_patterns": "mapped by existing header evidence to month, prescription count, contribution, cost, and markup fields; not terminology membership"
+    },
+    "expenditure_context": [
+      {
+        "atc_code_shape_cell_count": 0,
+        "byte_count": 372149,
+        "context_text_cell_count": 75,
+        "marker_cell_count": 75,
+        "marker_only_cell_count": 0,
+        "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+        "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b"
+      },
+      {
+        "atc_code_shape_cell_count": 0,
+        "byte_count": 468764,
+        "context_text_cell_count": 61,
+        "marker_cell_count": 61,
+        "marker_only_cell_count": 0,
+        "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+        "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+      }
+    ],
+    "field_header_maps": [
+      {
+        "byte_count": 35384567,
+        "fields": [
+          {
+            "column_index": 0,
+            "field_label": "MONTH_OF_SUPPLY",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 389050,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 6,
+            "field_label": "PRESCRIPTIONS",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 269,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 7,
+            "field_label": "PATIENT_CONTRIB",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 7478,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 8,
+            "field_label": "GOVT_CONTRIB",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 21173,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 9,
+            "field_label": "TOTAL_COST",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 27620,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 10,
+            "field_label": "RETAIL_MARKUP",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 3808,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 11,
+            "field_label": "PATIENT_NET_CONTRIB",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 7266,
+              "umls_cui": 0
+            }
+          }
+        ],
+        "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+        "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+      },
+      {
+        "byte_count": 36381946,
+        "fields": [
+          {
+            "column_index": 0,
+            "field_label": "MONTH_OF_SUPPLY",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 399660,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 6,
+            "field_label": "PRESCRIPTIONS",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 220,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 7,
+            "field_label": "PATIENT_CONTRIB",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 7596,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 8,
+            "field_label": "GOVT_CONTRIB",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 23182,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 9,
+            "field_label": "TOTAL_COST",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 29768,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 10,
+            "field_label": "RETAIL_MARKUP",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 3883,
+              "umls_cui": 0
+            }
+          },
+          {
+            "column_index": 11,
+            "field_label": "PATIENT_NET_CONTRIB",
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 7437,
+              "umls_cui": 0
+            }
+          }
+        ],
+        "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+        "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+      },
+      {
+        "byte_count": 1063694,
+        "fields": [
+          {
+            "column_index": 3,
+            "field_label": "ATC5_Code",
+            "pattern_counts": {
+              "atc_code_shape": 10770,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 0,
+              "umls_cui": 0
+            }
+          }
+        ],
+        "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+        "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+      }
+    ],
+    "objects": [
+      {
+        "byte_count": 372149,
+        "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "screen_receipts": {
+          "field_pattern_profile_present": true,
+          "identifier_shape": {
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 75,
+              "numeric_identifier_candidate": 0,
+              "umls_cui": 0,
+              "vocabulary_marker_cells": 170
+            }
+          },
+          "private_pattern": {
+            "email_like_cell_values": 0,
+            "screen_state": "no_email_or_sensitive_field_label_pattern",
+            "sensitive_header_or_label_hits": 0,
+            "sensitive_token_cell_values": 114
+          }
+        },
+        "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b"
+      },
+      {
+        "byte_count": 468764,
+        "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "screen_receipts": {
+          "field_pattern_profile_present": true,
+          "identifier_shape": {
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 61,
+              "numeric_identifier_candidate": 0,
+              "umls_cui": 0,
+              "vocabulary_marker_cells": 183
+            }
+          },
+          "private_pattern": {
+            "email_like_cell_values": 0,
+            "screen_state": "no_email_or_sensitive_field_label_pattern",
+            "sensitive_header_or_label_hits": 0,
+            "sensitive_token_cell_values": 191
+          }
+        },
+        "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+      },
+      {
+        "byte_count": 35384567,
+        "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "screen_receipts": {
+          "field_pattern_profile_present": true,
+          "identifier_shape": {
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 456664,
+              "umls_cui": 0
+            }
+          },
+          "private_pattern": {
+            "email_like_cell_values": 0,
+            "screen_state": "review_required",
+            "sensitive_header_or_label_hits": 3,
+            "sensitive_token_cell_values": 0
+          }
+        },
+        "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+      },
+      {
+        "byte_count": 36381946,
+        "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "screen_receipts": {
+          "field_pattern_profile_present": true,
+          "identifier_shape": {
+            "pattern_counts": {
+              "atc_code_shape": 0,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 471746,
+              "umls_cui": 0
+            }
+          },
+          "private_pattern": {
+            "email_like_cell_values": 0,
+            "screen_state": "review_required",
+            "sensitive_header_or_label_hits": 3,
+            "sensitive_token_cell_values": 0
+          }
+        },
+        "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+      },
+      {
+        "byte_count": 1063694,
+        "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "screen_receipts": {
+          "field_pattern_profile_present": true,
+          "identifier_shape": {
+            "pattern_counts": {
+              "atc_code_shape": 10770,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 0,
+              "umls_cui": 0,
+              "vocabulary_marker_cells": 165
+            }
+          },
+          "private_pattern": {
+            "email_like_cell_values": 0,
+            "screen_state": "no_email_or_sensitive_field_label_pattern",
+            "sensitive_header_or_label_hits": 0,
+            "sensitive_token_cell_values": 0
+          }
+        },
+        "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+      },
+      {
+        "byte_count": 117376499,
+        "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+        "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+        "screen_receipts": {
+          "field_pattern_profile_present": true,
+          "identifier_shape": {
+            "pattern_counts": {
+              "atc_code_shape": 1304100,
+              "explicit_terminology_marker": 0,
+              "numeric_identifier_candidate": 0,
+              "umls_cui": 0,
+              "vocabulary_marker_cells": 955
+            }
+          },
+          "private_pattern": {
+            "email_like_cell_values": 0,
+            "screen_state": "no_email_or_sensitive_field_label_pattern",
+            "sensitive_header_or_label_hits": 0,
+            "sensitive_token_cell_values": 10
+          }
+        },
+        "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca"
+      }
+    ],
+    "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+    "summary_workbook_header_resolutions": [
+      {
+        "column_index": 2,
+        "header_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+        "matching_shared_string_count": 1,
+        "pattern_counts": {
+          "atc_code_shape": 230819,
+          "explicit_terminology_marker": 0,
+          "numeric_identifier_candidate": 0,
+          "umls_cui": 0
+        },
+        "resolved_label": "ATC5_CODE",
+        "sheet_index": 0,
+        "sheet_name": "DOS_FY2021_22"
+      },
+      {
+        "column_index": 2,
+        "header_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+        "matching_shared_string_count": 1,
+        "pattern_counts": {
+          "atc_code_shape": 239316,
+          "explicit_terminology_marker": 0,
+          "numeric_identifier_candidate": 0,
+          "umls_cui": 0
+        },
+        "resolved_label": "ATC5_CODE",
+        "sheet_index": 1,
+        "sheet_name": "DOS_FY2022_23"
+      },
+      {
+        "column_index": 2,
+        "header_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+        "matching_shared_string_count": 1,
+        "pattern_counts": {
+          "atc_code_shape": 257881,
+          "explicit_terminology_marker": 0,
+          "numeric_identifier_candidate": 0,
+          "umls_cui": 0
+        },
+        "resolved_label": "ATC5_CODE",
+        "sheet_index": 2,
+        "sheet_name": "DOS_FY2023_24"
+      },
+      {
+        "column_index": 2,
+        "header_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+        "matching_shared_string_count": 1,
+        "pattern_counts": {
+          "atc_code_shape": 284808,
+          "explicit_terminology_marker": 0,
+          "numeric_identifier_candidate": 0,
+          "umls_cui": 0
+        },
+        "resolved_label": "ATC5_CODE",
+        "sheet_index": 3,
+        "sheet_name": "DOS_FY2024_25"
+      },
+      {
+        "column_index": 2,
+        "header_sha256": "20f9f06f6a7ddb3b7b96622cd4c29704ac436e71860946a02dff60152ae524ad",
+        "matching_shared_string_count": 1,
+        "pattern_counts": {
+          "atc_code_shape": 291276,
+          "explicit_terminology_marker": 0,
+          "numeric_identifier_candidate": 0,
+          "umls_cui": 0
+        },
+        "resolved_label": "ATC5_CODE",
+        "sheet_index": 4,
+        "sheet_name": "DOS_FY2025_26"
+      }
+    ]
+  },
+  "remaining": {
+    "mbs_screen_is_bounded_not_exhaustive": true,
+    "pbs_permission_instrument_not_independently_reviewed": true,
+    "pbs_vocabulary_membership_not_independently_validated": true,
+    "restricted_content_clearance_claimed": false,
+    "row3_complete": false
+  },
+  "schema_id": "global-medicines-atlas.australian-restricted-content-screen-reconciliation",
+  "schema_version": 1,
+  "scope": {
+    "admission_or_canary_performed": false,
+    "mbs_candidate_table_count": 6,
+    "new_sources_added": false,
+    "pbs_object_count": 6,
+    "public_release_performed": false,
+    "source_payload_bytes_read_this_reconciliation": false,
+    "source_values_emitted": false
+  },
+  "status": "bounded_screen_results_reconciled_membership_and_independent_instrument_review_open"
+}
