@@ -79,10 +79,30 @@ def test_two_august_mbs_paths_are_reconciled_without_promoting_other_gates() -> 
         assert row["disposition"] == old["disposition"]
 
 
-def test_addendum_binds_local_source_digests() -> None:
+def test_addendum_binds_exact_historical_source_digests() -> None:
     addendum = _read(ADDENDUM)
     inputs = cast("list[dict[str, str]]", addendum["inputs"])
     assert inputs
+    bindings = _read(
+        ROOT
+        / "quality/qualifications/australian-m112-root-manifest-historical-input-bindings-20261022.json"
+    )
+    assert (
+        bindings["historical_readback"]["sha256"]
+        == hashlib.sha256(ADDENDUM.read_bytes()).hexdigest()
+    )
+    assert bindings["historical_evidence_rewritten"] is False
+    assert bindings["snapshot_is_executable_workflow"] is False
+    retained = {row["path"]: row for row in bindings["retained_inputs"]}
+    assert set(retained) == {
+        ".github/workflows/australian-mbs-root-manifest-append.yml"
+    }
     for item in inputs:
-        path = ROOT / item["path"]
+        replacement = retained.get(item["path"])
+        path = ROOT / (
+            replacement["retained_path"] if replacement else item["path"]
+        )
+        if replacement:
+            assert replacement["sha256"] == item["sha256"]
+            assert path.suffix == ".txt"
         assert hashlib.sha256(path.read_bytes()).hexdigest() == item["sha256"]

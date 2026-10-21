@@ -5389,3 +5389,16 @@ source qualification remains pending their actual final artifacts.
   comment-capable workflows: none running or queued was observed.
 - [ ] Finish remaining MBS workbook/archive/family coverage, PBS domain/era
   qualification, reproducible exact output roles and eligible consumer delivery.
+
+### PBS route CI source-binding repair (2026-10-22)
+
+- [x] Resolve hosted unit failures on `d89fbd4f` without restoring outbound
+  comments: verify harvest destinations against the actual authorization files
+  and invoked runners, and retain the exact historical root-manifest workflow
+  snapshot matching the published input digest. The old readback is unchanged;
+  the inert text snapshot and binding sidecar make its provenance reviewable.
+- [x] Verify 126 affected harvesting, historical binding and outbound checks.
+- [~] Retire the known-failing PBS full profile (exit 130), preserve its limits
+  and rerun the repaired source tree. No full pass is claimed for the old run.
+- [ ] Require repaired-head protected CI and complete exact-main PBS values
+  qualification before recording any real-corpus value-projection result.
