@@ -5144,8 +5144,11 @@ not itself perform the pending Q1 HR admission or canary.
 
 - [x] Diagnose the exact retained Q1 workbook/CSV benefit discrepancy with
   full-key rounding and truncation controls; keep aggregate evidence only.
-- [ ] Resolve the source-defined nonnumeric age category without replacing
-  native labels or treating row co-occurrence as semantic authority.
+- [x] Identify the exact Q1 native nonnumeric data category as `Unknown`.
+  Preserve it as the source-reported nominal unknown-age category, distinct
+  from blank, absent, zero, suppression and numeric age intervals. Its cause
+  and CSV semantic equivalence are not established. This local in-memory
+  observation requires hosted requalification before Silver promotion.
 - [ ] Resolve P7 date and numeric conventions using the exact retained
   workbook and its source-era evidence; preserve formula/error states.
 - [ ] Establish patient-count population, period and deduplication semantics
