@@ -4658,3 +4658,31 @@ and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualificat
 - [ ] Qualify Q1 HR field meanings, formula semantics, temporal interpretation,
   and a loss-aware typed projection. The physical layout check does not admit
   or canary the raw object; M-112 exact-main admission and canary remain open.
+
+
+## M-112 Q1 HR formula and existing-CSV comparison (2026-10-21)
+
+- [x] Verify both existing Q1 objects at the same pinned revision and compare
+  workbook formula structure without emitting formula text or cell values. The
+  workbook contains 171,477 formula cells, all in `Age_Range`; 171,346 have
+  formula text with one normalized syntax shape, and 131 shared-formula cells
+  have no local formula text. No formula results were evaluated. Aggregate
+  profile: `quality/qualifications/australian-mbs-demographics-q1hr-formula-syntax-profile-20261021.json`
+  (SHA-256 `01034f8a4d7f341a342c09f7591262ff13563ec492fea35294d9c83c9200a556`).
+- [x] Compare workbook values to the already inventoried Q1 CSV in memory, with
+  no row values retained or emitted. Both objects passed their pinned digest
+  and byte-count checks. The workbook has 545,074 parsed data rows versus
+  545,070 in the CSV; row-order comparison and order-independent full-row
+  comparison found zero exact full-row matches. The workbook `Age_Range`
+  frequencies had no exact values in common with the CSV; `Benefits ($)` also
+  differs substantially under exact numeric canonicalization. Aggregate
+  reports: `quality/qualifications/australian-mbs-demographics-q1hr-existing-csv-comparison-20261021.json`
+  (SHA-256 `5318d9328e72d64bb12a3157b3a59f7c16edd59cae22a7de5e6540e707684446`)
+  and `quality/qualifications/australian-mbs-demographics-q1hr-existing-csv-multiset-comparison-20261021.json`
+  (SHA-256 `dc3ac67bb87954227e28775546a26c5a75200c06b500f50a913f5516d35bc2eb`).
+- [ ] Resolve field mapping, formula authoring and cached-result meaning, four
+  additional workbook rows, and source-era semantics before defining a
+  loss-aware typed projection. The comparisons do not establish equivalence or
+  explain differences. No admission, canary, Silver projection, or public
+  mutation followed; current M-112 counts remain 7 admissions, 7 canaries,
+  and 1,752 deferred of 1,759.
