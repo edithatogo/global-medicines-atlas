@@ -4739,3 +4739,26 @@ not itself perform the pending Q1 HR admission or canary.
 - [x] Preserve the pending Q1 HR admission/canary and all other gates; this
   documentation update does not change inventory, rights, admission, canaries,
   publication, or release state.
+
+
+## M-110 expenditure-workbook marker context (2026-10-21)
+
+- [x] Re-read the two exact expenditure workbooks at pinned revision
+  `9f1d53cd50eea251b326da42a96f3ac72ebce97a`, verifying their original byte
+  counts and SHA-256 digests before parsing XLSX text cells in memory.
+- [x] Classify all 136 detected ATC marker cells across the two reports as
+  contextual/label text; the separate ATC-shaped identifier scan found zero
+  cells. The aggregate-only receipt is
+  `quality/qualifications/australian-pbs-expenditure-marker-context-screen-20261021.json`
+  (SHA-256 `150c92ae5a2e488243b3bb324651ba946593246b548eb17c25694c7f0de149a1`).
+  No source values were emitted or persisted locally.
+- [x] The focused parser tests passed (2); the report regenerated and passed
+  `--check`, Python compilation, line-length review, and `git diff --check`.
+  Ruff was unavailable because the locked typing-group tool bootstrap stalled
+  while downloading its runtime; no lint pass is claimed.
+- [ ] Complete restricted-content classification across all six PBS objects
+  and the MBS candidate scope. This marker-context screen does not establish
+  vocabulary rights, rights clearance, admission, or release.
+- [ ] Calibrate the actual matcher on representative reviewed cross-jurisdiction
+  labels. The retained scope still lacks non-synthetic medicine labels for that
+  calibration; synthetic graph parity remains insufficient.
