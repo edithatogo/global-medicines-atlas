@@ -17,8 +17,14 @@ from typing import Any, cast
 
 import pyarrow as pa
 
+from .pbs_entities import (
+    _entity_batches,  # pyright: ignore[reportPrivateUsage] -- validated internal stream
+)
 from .pbs_historical_silver import iter_pbs_historical_silver_batches
 from .pbs_member_identity import PbsXmlMemberBinding
+from .pbs_native_values import (
+    _value_batches,  # pyright: ignore[reportPrivateUsage] -- validated internal stream
+)
 from .receipts import SourceReceipt
 
 INVENTORY = "quality/qualifications/pbs-schema-paths-20261022-39667604237.json"
@@ -163,7 +169,10 @@ def iter_observed_historical_domain_batches(
     batch bounds. Unknown paths remain visible. It performs no joins, value
     interpretation, reference resolution, acquisition, admission or publication.
     """
-    if binding.member_payload.sha256 != profile.member_sha256:
+    if (
+        binding.member_payload.sha256 != MEMBER_SHA256
+        or profile.member_sha256 != MEMBER_SHA256
+    ):
         raise ValueError("PBS observed profile member identity differs")
     for batch in iter_pbs_historical_silver_batches(
         archive, member, parent, binding, rows_per_batch=rows_per_batch
@@ -211,3 +220,54 @@ def iter_observed_historical_domain_batches(
             ],
             schema=schema,
         )
+
+
+def iter_observed_historical_value_batches(
+    archive: bytes,
+    member: bytes,
+    parent: SourceReceipt,
+    binding: PbsXmlMemberBinding,
+    profile: ObservedDomainProfile,
+    *,
+    rows_per_batch: int = 1024,
+) -> Iterator[pa.RecordBatch]:
+    """Preserve all entity/native evidence with loss-aware amount candidates.
+
+    Source-structural amount roles do not establish price basis, currency,
+    payment, clinical meaning or current status. Generic references remain
+    unresolved and are never labelled AMT or ATC from their mere presence.
+    Existing entity field/byte and output batch bounds remain authoritative.
+    """
+    domain = iter_observed_historical_domain_batches(
+        archive, member, parent, binding, profile, rows_per_batch=rows_per_batch
+    )
+    entities = _entity_batches(domain, rows_per_batch)
+    for batch in _value_batches(entities):
+        targets = cast(
+            "pa.StringArray", batch.column("mapping_target")
+        ).to_pylist()
+        states = cast(
+            "pa.StringArray", batch.column("reference_meaning_state")
+        ).to_pylist()
+        references = pa.array(
+            [
+                "native_reference_only"
+                if target in {"references", "vocabulary_metadata"}
+                else state
+                for target, state in zip(targets, states, strict=True)
+            ],
+            type=pa.string(),
+        )
+        index = batch.schema.get_field_index("reference_meaning_state")
+        updated = pa.RecordBatch.from_arrays(  # pyright: ignore[reportUnknownMemberType] -- Arrow constructor stub
+            [
+                references
+                if i == index
+                else cast("pa.Array[Any]", batch.column(i))
+                for i in range(batch.num_columns)
+            ],
+            schema=batch.schema,
+        )
+        metadata = dict(updated.schema.metadata or {})
+        metadata[b"value_profile"] = b"pbs-observed-native-values-v1"
+        yield updated.replace_schema_metadata(metadata)  # pyright: ignore[reportUnknownMemberType] -- Arrow metadata replacement stub
