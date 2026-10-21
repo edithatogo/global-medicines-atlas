@@ -1474,9 +1474,12 @@ for credentialed or rights-unresolved sources.
 The latest rights-release preflight records all 1,759 frozen objects with
 resolved rights, seven v4 admissions, seven admitted-object canaries, and 1,752
 deferred objects. Earlier zero-count statements above describe their original
-dated checkpoints and are superseded. Two MBS sidecar B1 bindings remain
-incomplete; broader Bronze-source landing and coverage work is tracked
-separately and remains outside the frozen M-112 denominator. Current evidence:
+dated checkpoints and are superseded. The preflight's sidecar reminder derives
+from an earlier per-object gate overlay; separate reviewed path-lineage reports
+close the July 2025 MBS XML and legacy P7 workbook B1/B2 bindings.
+Broader Bronze-source landing and coverage work is tracked separately and
+remains outside the frozen M-112 denominator. Current evidence:
 `quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
-and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
+`quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`,
+and `quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-july-mbs-source-lineage-reviewed.json`.

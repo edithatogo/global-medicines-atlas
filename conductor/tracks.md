@@ -17,7 +17,9 @@ is not qualified, and no public dataset mutation or external publication was
 performed. Use [preflight snapshot 20261021-5](../quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json),
 [current rights reconciliation](../quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json),
 and the [M-112 role qualification](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json)
-as the current readback. Older count statements in dated plan sections remain
+as the rights/admission readback. The reviewed MBS path-lineage overlay also
+closes the July 2025 XML and P7 workbook B1/B2 joins and reports 22 complete
+raw lineages. Older count statements in dated plan sections remain
 historical snapshots and must not be read as today's totals.
 
 - [x] **Track: Migrate nzmedicines into the canonical atlas repository**

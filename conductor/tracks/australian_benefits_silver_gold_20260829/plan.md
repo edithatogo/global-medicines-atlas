@@ -4510,3 +4510,25 @@ dataset was added and no external publication was performed. Current receipts:
 `quality/qualifications/australian-m112-rights-release-preflight-20261021-5.json`,
 `quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json`,
 and `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261020.json`.
+
+## M-112 lineage and next bounded v4 cohort (2026-10-21)
+
+- [x] Bind the July 2025 MBS XML (`db873768…11a556`, 8,194,522 bytes) and
+  July 2024 P7 workbook (`2f1cbc2d…e27b8`, 87,727 bytes) to their existing
+  receipt, acquisition, external-reference B2 manifest, and landed unreviewed
+  admission. Their lineage reports preserve the approved inventory revision
+  and path membership. P7's archive retrieval lineage does not establish its
+  original source-origin acquisition or qualify workbook date semantics.
+- [x] Qualify the next bounded cohort from the frozen inventory. The v4 role
+  report binds seven exact objects, eligibility, admissions, and passed
+  `FederatedReader` consumer canaries; seven remain admitted and canaried while
+  1,752 objects remain deferred. Native workbook layout and relationship
+  semantics remain unqualified.
+- [x] Reconcile the current evidence without changing inventory membership,
+  adding sources, mutating the public dataset, or publishing. The reviewed
+  lineage overlay reports 22 complete raw B1/B2 lineages, 118 exact raw
+  digest/path joins (119 including the separately identified same-content
+  alias), and zero raw/projection objects without direct or alias SHA-256
+  evidence.
+- [x] Record the bounded completion in this track's append-only evidence
+  ledger under `m112_mbs_lineage_and_next_bounded_cohort`.
