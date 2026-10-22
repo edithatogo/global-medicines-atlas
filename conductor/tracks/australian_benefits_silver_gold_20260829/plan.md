@@ -5737,3 +5737,27 @@ source qualification remains pending their actual final artifacts.
   preflight reconciliation and protected CI before exact-main PBS execution.
 - [ ] Complete all 91 historical workbook cells/tables, source-specific
   semantics across the remaining MBS/PBS families, and eligible delivery.
+
+### Historical workbook physical extraction
+
+- [x] Implement extraction over original frozen member bindings without a
+  fabricated member acquisition receipt or assumed demographic/group header.
+  Reuse bounded ZIP/XML/shared-string/cell decoding; retain every sheet's
+  cells, native numeric text, formulas, cached values, errors, row attributes,
+  empty rows, empty sheets and package fingerprints. Reject identity changes,
+  duplicate/misplaced cells, invalid row order and unexpected XML roots/parents.
+  All 48 affected synthetic tests and strict typing pass.
+- [ ] Complete deterministic Parquet packages, independent native restoration,
+  actual-source qualification across all 91 workbooks, source-specific field
+  meanings and eligible output delivery. This extractor is not those proofs.
+
+- [x] Implement atomic deterministic historical workbook Parquet packages with
+  every native extraction record plus queryable cell properties and lossless
+  decimal candidates. Full source reparse checks every restored record and
+  annotation; two independent builds must agree, and actual DuckDB counts must
+  match records/cells/rows/sheets. Reject rehashed corruption, manifest
+  promotions, unequal builds, truncation and resource-limit failures. All 109
+  affected tests pass; new-module combined branch coverage is 98.32%; typing
+  has zero errors. No actual historical workbook is yet package-qualified.
+- [ ] Reconcile the current preflight, complete review/full/protected checks,
+  and register bounded exact-main execution over all 91 existing workbooks.
