@@ -141,3 +141,11 @@ def test_index_files_are_removed_on_success_and_parse_failure(
         module.screen_native_references(*inputs())
     assert len(paths) == 2
     assert list(tmp_path.iterdir()) == []
+
+
+def test_screen_bounds_allow_complete_pinned_member_profile():
+    # The first protected run stopped at 13.5m fields with a generic
+    # validation failure. Increase finite index bounds for the retry.
+    assert module.MAX_NATIVE_FIELDS >= 18_208_758
+    assert module.MAX_INDEX_ROWS == 8_000_000
+    assert module.MAX_INDEX_BYTES == 4 * 1024**3
