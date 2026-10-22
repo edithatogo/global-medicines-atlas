@@ -127,23 +127,28 @@ def iter_pbs_historical_value_batches(
     )
 
 
+def pbs_value_schema(native: pa.Schema) -> pa.Schema:
+    """Annotate a validated entity schema without materializing source rows."""
+    schema = native
+    for field in _ADDITIONS:
+        schema = schema.append(field)  # pyright: ignore[reportUnknownMemberType] -- Arrow schema append stub
+    metadata = dict(schema.metadata or {})
+    metadata.update({
+        b"schema_name": b"global-medicines-atlas.pbs-silver.native-value-candidates",
+        b"value_profile": b"pbs-native-unresolved-values-v1",
+        b"domain_semantics_qualified": b"false",
+        b"decimal_candidate_type": b"decimal128(38,9)",
+        b"cross_era_equivalence": b"unestablished",
+    })
+    return schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType] -- Arrow schema metadata stub
+
+
 def _value_batches(
     batches: Iterator[pa.RecordBatch],
 ) -> Iterator[pa.RecordBatch]:
     """Annotate only internally validated ordinary or historical entity streams."""
     for batch in batches:
-        schema = batch.schema
-        for field in _ADDITIONS:
-            schema = schema.append(field)  # pyright: ignore[reportUnknownMemberType] -- Arrow schema append stub
-        metadata = dict(schema.metadata or {})
-        metadata.update({
-            b"schema_name": b"global-medicines-atlas.pbs-silver.native-value-candidates",
-            b"value_profile": b"pbs-native-unresolved-values-v1",
-            b"domain_semantics_qualified": b"false",
-            b"decimal_candidate_type": b"decimal128(38,9)",
-            b"cross_era_equivalence": b"unestablished",
-        })
-        schema = schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType] -- Arrow schema metadata stub
+        schema = pbs_value_schema(batch.schema)
         values = [_values(row) for row in batch.to_pylist()]
         additions = [
             pa.array([row[field.name] for row in values], type=field.type)
