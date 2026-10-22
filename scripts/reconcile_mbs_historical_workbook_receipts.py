@@ -172,7 +172,7 @@ def reconcile(  # ruff: ignore[too-many-statements,too-many-locals] -- verify ev
             or coverage["sheets"] != entry["duckdb_sheets"]
             or coverage["sheets"] != kinds["sheet"]
             or coverage["cells"] != sum(coverage["native_states"].values())
-            or coverage["cells"]
+            or coverage["records"]
             != sum(coverage["conversion_statuses"].values())
         ):
             raise ValueError("historical workbook package counts differ")

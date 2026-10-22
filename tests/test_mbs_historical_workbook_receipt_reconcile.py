@@ -43,9 +43,16 @@ def fixture_receipt(tmp_path, monkeypatch):
             "member": profile["native_profile"]["member_count"],
         },
         "native_states": {"value": 2, "null": 1},
-        "conversion_statuses": {"converted": 2, "missing_value": 1},
+        "conversion_statuses": {
+            "converted": 2,
+            "missing_value": 1,
+            "not_numeric_cell": 0,
+        },
     }
     coverage["records"] = sum(coverage["kinds"].values())
+    coverage["conversion_statuses"]["not_numeric_cell"] = (
+        coverage["records"] - 3
+    )
     manifest = {
         "schema_id": "global-medicines-atlas.mbs-historical-workbook-package",
         "schema_version": 1,
