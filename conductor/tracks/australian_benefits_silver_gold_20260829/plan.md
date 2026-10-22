@@ -5761,3 +5761,18 @@ source qualification remains pending their actual final artifacts.
   has zero errors. No actual historical workbook is yet package-qualified.
 - [ ] Reconcile the current preflight, complete review/full/protected checks,
   and register bounded exact-main execution over all 91 existing workbooks.
+
+
+### Protected historical workbook package route
+
+- [x] Register all 91 existing frozen workbook members as disjoint single-member
+  jobs, with two-job concurrency, original parent/member digest checks,
+  anonymous public revision readback, private staging and aggregate-only
+  receipts. Keep the 30-minute bound and preserve safe progress on interruption.
+  Select group 76 (largest retained native XML profile) for initial real runtime
+  qualification before launching the full cohort. All 155 affected tests,
+  typing and actionlint pass; runner branch coverage is 95.73%.
+- [ ] Complete review/full/protected CI, merge and execute the largest member
+  on exact main. Retain runtime/restore/consumer outcome before all 91 jobs.
+- [ ] Complete substantive source-column/domain semantics and eligible output
+  admission and consumer delivery; native package passes do not establish them.
