@@ -5624,3 +5624,7 @@ source qualification remains pending their actual final artifacts.
   Reject unequal builds and incorrect consumer denominators.
 - [ ] Merge after protected checks and qualify the three existing actual
   source objects. Semantics, admission and publication remain separate.
+
+- [x] Reconcile existing workflow contract with the added sidecar-package
+  selection and exact exclusion condition after unit job 119582066980
+  identified the stale expected mode list. All 50 affected tests pass.
