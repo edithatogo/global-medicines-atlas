@@ -50,6 +50,8 @@ def test_v2_package_retains_every_existing_row_and_schema(tmp_path):
         "native",
         "schema",
         "truncated",
+        "empty",
+        "split",
     ],
 )
 def test_rehashed_v2_corruption_requires_full_native_and_annotation_parity(
@@ -62,7 +64,11 @@ def test_rehashed_v2_corruption_requires_full_native_and_annotation_parity(
     schema = table.schema
     rows = table.to_pylist()
     field = rows[0]["native_fields"][0]
-    if change == "lineage":
+    if change == "empty":
+        rows[0]["native_fields"] = []
+    elif change == "split":
+        rows.insert(1, rows[0].copy())
+    elif change == "lineage":
         field["receipt_sha256"] = "0" * 64
     elif change == "field_id":
         field["source_field_id"] = "invented"
@@ -190,3 +196,40 @@ def test_v2_wrong_source_or_unequal_files_never_finalize(
     with pytest.raises(ValueError, match=r"member|builds differ"):
         qualify_value_package_pair_v2(*args, tmp_path / "out")
     assert list(tmp_path.iterdir()) == []
+
+
+@pytest.mark.parametrize("change", ["digest", "manifest_limit", "file_limit"])
+def test_v2_explicit_manifest_and_file_bounds(tmp_path, monkeypatch, change):
+    args = inputs()
+    qualify_value_package_pair_v2(*args, tmp_path / "pair")
+    out = tmp_path / "pair/first"
+    if change == "digest":
+        with (out / "values.parquet").open("ab") as stream:
+            stream.write(b"changed")
+    elif change == "manifest_limit":
+        monkeypatch.setattr(module, "MAX_MANIFEST_BYTES", 1)
+    else:
+        monkeypatch.setattr(module, "MAX_FILE_BYTES", 1)
+    with pytest.raises(ValueError, match=r"PBS v2.*differs"):
+        verify_value_package_v2(out, *args)
+
+
+def test_v2_progress_intervals_retain_bounded_counts(tmp_path, monkeypatch):
+    monkeypatch.setattr(module, "BATCH_ROWS", 1)
+    monkeypatch.setattr(module, "PROGRESS_BATCHES", 1)
+    events = []
+    qualify_value_package_pair_v2(
+        *inputs(),
+        tmp_path / "pair",
+        progress=lambda *event: events.append(event),
+    )
+    assert (
+        len([event for event in events if event[0] == "package-native-oracle"])
+        > 2
+    )
+    assert len([event for event in events if event[0] == "package-write"]) > 1
+    assert all(
+        type(count) is int and count >= 0
+        for event in events
+        for count in event[1:]
+    )
