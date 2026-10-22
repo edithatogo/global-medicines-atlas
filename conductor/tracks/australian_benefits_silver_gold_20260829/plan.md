@@ -5586,3 +5586,31 @@ source qualification remains pending their actual final artifacts.
 - [ ] Qualify source-specific headers/column roles, meanings and applicable
   eligible delivery. Numeric/date interpretations and patient rates remain
   unresolved/unavailable; no cross-source equivalence is inferred.
+
+
+### Actual observed PBS structural/value qualification (2026-10-22)
+
+- [x] Verify and retain exact-main run 39672588063: 18,208,758 native fields,
+  7,730,684 records, complete structural role denominators and Parquet
+  round-trip. Preserve 816,157 lossless price candidates and 16 unsupported
+  numeric grammars; every record remains native_unresolved.
+- [ ] Complete PBS package performance recovery and substantive semantics.
+  This structural qualification establishes neither complete-package restore,
+  domain semantic acceptance, admission nor publication.
+
+### Actual historical member inventory (2026-10-22)
+
+- [x] Verify all six archive receipts from exact-main run 39678641506 against
+  original source identities and acquisitions: 181 members, complete expanded
+  byte accounting and container integrity, including both previously held
+  archives. Keep prior statuses as historical evidence.
+- [ ] Qualify member formats and native tables. The 91 ZIP-signature/.xlsx
+  hints and 90 .csv suffix hints do not establish workbook or CSV schemas.
+
+### Complete native BSD/RVG package local verification
+
+- [x] Implement atomic deterministic Parquet packages with exact schema and
+  metadata, complete record restore and independent native-layout coverage
+  and digest checks. Reject a truncated producer and rehashed corruption.
+  All 54 affected tests, strict typing and routine checks pass.
+- [ ] Qualify all three actual source packages on protected exact-main runners.

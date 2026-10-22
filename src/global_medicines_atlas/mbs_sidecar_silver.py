@@ -182,7 +182,11 @@ def sidecar_schema(source: BoundSidecar) -> pa.Schema:
         pa.field("record_ordinal", pa.int64(), nullable=False),
         pa.field("record_id", pa.string(), nullable=False),
         pa.field("parent_record_id", pa.string()),
-        pa.field("native_fields", pa.list_(native), nullable=False),
+        pa.field(
+            "native_fields",
+            pa.list_(pa.field("element", native)),
+            nullable=False,
+        ),
         pa.field("line_ending", pa.string()),
         pa.field("interpretation_state", pa.string(), nullable=False),
     ])
@@ -200,7 +204,7 @@ def sidecar_schema(source: BoundSidecar) -> pa.Schema:
     return schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType] -- Arrow schema metadata stub
 
 
-def _account(row: dict[str, Any], kind: str, digest: Any) -> None:
+def account_native_record(row: dict[str, Any], kind: str, digest: Any) -> None:
     if kind == "text":
         raw = (
             "\t".join(field["value"] for field in row["native_fields"])
@@ -257,7 +261,7 @@ def iter_sidecar_batches(
             "source_sha256": source.sha256,
             "acquisition_id": source.acquisition_id,
         })
-        _account(row, source.format, digest)
+        account_native_record(row, source.format, digest)
         row_bytes = len(_encoded(row))
         if row_bytes > MAX_BATCH_BYTES:
             raise ValueError("MBS sidecar record byte bound exceeded")
