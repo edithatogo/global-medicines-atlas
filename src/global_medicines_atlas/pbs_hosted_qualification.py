@@ -53,7 +53,9 @@ from .pbs_reference_shards import (
     prepare_reference_shards,
 )
 from .pbs_schema_inventory import profile_schema_paths
-from .pbs_value_package import qualify_value_package_pair
+from .pbs_value_package_v2 import (
+    qualify_value_package_pair_v2 as qualify_value_package_pair,
+)
 from .receipts import SourceReceipt
 
 DATASET = "edithatogo/australian-pbs-source-archive"
@@ -286,6 +288,7 @@ class _RetryBudget:
                 "values",
                 "package-write",
                 "package-restore",
+                "package-native-oracle",
                 "schema-inventory",
             }
             or any(
