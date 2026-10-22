@@ -5808,3 +5808,8 @@ source qualification remains pending their actual final artifacts.
   two workflow-scope assertion failures, three skipped and 96.89% coverage.
   Add the new mutually exclusive job to those old-route tests; rerun affected
   checks and routine. Preserve the failed full result separately.
+- [~] Correct Codecov patch coverage on PR #1279. The initial exact head had
+  39 passing Actions checks, but Codecov reported 89.47% patch coverage and
+  did not post the required passing check. Exercise the actual 100,000-field
+  progress checkpoint, refresh the current preflight and rerun affected checks
+  before requesting final protected CI on the new head.

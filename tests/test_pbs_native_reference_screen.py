@@ -1,6 +1,7 @@
 """Source-local lexical reference screening never asserts vocabulary equivalence."""
 
 import json
+from types import SimpleNamespace
 
 import pytest
 from test_au_pbs_v3 import (
@@ -60,6 +61,25 @@ def test_progress_is_aggregate_and_reports_match_phase():
     )
     assert checkpoints == [
         ("native-reference-match", 1, report["native_fields"])
+    ]
+
+
+def test_index_progress_at_first_bounded_checkpoint(monkeypatch):
+    slot = SimpleNamespace(path="/root/text", value=None, record_id="synthetic")
+    monkeypatch.setattr(
+        module,
+        "iter_pbs_xml_slots",
+        lambda _member: (slot for _ in range(100_000)),
+    )
+    checkpoints = []
+    report = module.screen_native_references(
+        *inputs(), progress=lambda *values: checkpoints.append(values)
+    )
+    assert report["native_fields"] == 100_000
+    assert report["reference_fields"] == 0
+    assert checkpoints == [
+        ("native-reference-index", 1, 100_000),
+        ("native-reference-match", 1, 100_000),
     ]
 
 
