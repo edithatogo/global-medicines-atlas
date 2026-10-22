@@ -25,6 +25,7 @@ from global_medicines_atlas.mbs_sidecar_inventory import (
     load_sidecars,
 )
 from global_medicines_atlas.mbs_sidecar_layout import MAX_BYTES, profile_sidecar
+from global_medicines_atlas.mbs_sidecar_package import qualify_sidecar_package
 from global_medicines_atlas.parser_safety import ParserSafetyError
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -86,7 +87,9 @@ def _public(client: httpx.Client) -> None:
         raise ValueError("MBS sidecar exact public revision differs")
 
 
-def _object(client: httpx.Client, source: BoundSidecar) -> dict[str, Any]:
+def _object(
+    client: httpx.Client, source: BoundSidecar, *, package: bool = False
+) -> dict[str, Any]:
     if source.dataset != DATASET or source.revision != REVISION:
         raise ValueError("MBS sidecar source transport binding differs")
     for pin in source.metadata:
@@ -96,13 +99,20 @@ def _object(client: httpx.Client, source: BoundSidecar) -> dict[str, Any]:
     payload = _pinned(
         client, source.source_path, source.sha256, source.byte_count
     )
-    report = profile_sidecar(payload, source)
+    report = (
+        qualify_sidecar_package(payload, source)
+        if package
+        else profile_sidecar(payload, source)
+    )
     del payload
     return report
 
 
 def qualify(
-    exact_commit: str, *, transport: httpx.BaseTransport | None = None
+    exact_commit: str,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    package: bool = False,
 ) -> dict[str, Any]:
     """Stop before transport unless exact main; verify metadata before payloads."""
     _context(exact_commit)
@@ -123,10 +133,16 @@ def qualify(
         headers={"Accept-Encoding": "identity"},
     ) as client:
         _public(client)
-        reports = [_object(client, source) for source in sources]
+        reports = [
+            _object(client, source, package=package) for source in sources
+        ]
         _public(client)
     return {
-        "schema_id": "global-medicines-atlas.frozen-mbs-sidecar-native-inventory",
+        "schema_id": (
+            "global-medicines-atlas.frozen-mbs-sidecar-native-packages"
+            if package
+            else "global-medicines-atlas.frozen-mbs-sidecar-native-inventory"
+        ),
         "schema_version": 1,
         "status": "passed",
         "workflow_commit": exact_commit,
@@ -134,7 +150,9 @@ def qualify(
         "revision": REVISION,
         "objects": reports,
         "native_values_emitted": False,
-        "typed_output_qualified": False,
+        "typed_output_qualified": package,
+        "semantic_interpretation_qualified": False,
+        "qualification_scope": "native-package" if package else "native-layout",
         "new_sources": 0,
         "new_admissions": 0,
         "new_federated_canaries": 0,
@@ -173,11 +191,16 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--package", action="store_true")
     args = parser.parse_args(argv)
     if args.output.exists():
         parser.error("existing sidecar receipt must be preserved")
     try:
-        report = qualify(args.exact_commit)
+        report = (
+            qualify(args.exact_commit, package=True)
+            if args.package
+            else qualify(args.exact_commit)
+        )
         payload = _receipt_payload(report)
     except Exception as error:
         report = {

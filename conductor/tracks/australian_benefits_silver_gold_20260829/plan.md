@@ -5614,3 +5614,13 @@ source qualification remains pending their actual final artifacts.
   and digest checks. Reject a truncated producer and rehashed corruption.
   All 54 affected tests, strict typing and routine checks pass.
 - [ ] Qualify all three actual source packages on protected exact-main runners.
+
+### Protected complete BSD/RVG package qualifier
+
+- [x] Add exact-main package mode reusing original five-role metadata and
+  source digest/size checks, anonymous transport and revision readback.
+  Qualify two independent builds, complete native restore and actual DuckDB
+  record counts. Retain aggregate-only receipts and unchanged 20-minute bound.
+  Reject unequal builds and incorrect consumer denominators.
+- [ ] Merge after protected checks and qualify the three existing actual
+  source objects. Semantics, admission and publication remain separate.

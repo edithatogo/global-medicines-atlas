@@ -114,3 +114,57 @@ def test_rehashed_corruption_never_establishes_source_parity(tmp_path, change):
     (output / "manifest.json").write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match="MBS sidecar"):
         verify_sidecar_package(output, payload, selected)
+
+
+@pytest.mark.parametrize(
+    ("kind", "payload"),
+    [
+        ("csv", b"A,B\n00123,SYNTHETIC\n"),
+        ("xml", b'<r a="SYNTHETIC"><c/></r>'),
+        ("text", b"00123\tSYNTHETIC\r\n"),
+    ],
+)
+def test_complete_qualification_emits_only_identity_and_coverage(kind, payload):
+    report = module.qualify_sidecar_package(payload, source(payload, kind))
+    assert report["two_builds_equal"] is True
+    assert report["complete_native_restore_verified"] is True
+    assert report["duckdb_records"] == report["manifest"]["coverage"]["records"]
+    assert "SYNTHETIC" not in json.dumps(report)
+    assert report["manifest"]["boundaries"]["admitted"] is False
+
+
+def test_qualification_rejects_unequal_independent_builds(monkeypatch):
+    original = module.build_sidecar_package
+    calls = 0
+
+    def changed(payload, selected, output):
+        nonlocal calls
+        calls += 1
+        report = original(payload, selected, output)
+        if calls == 2:
+            report["output_id"] = "0" * 64
+        return report
+
+    monkeypatch.setattr(module, "build_sidecar_package", changed)
+    with pytest.raises(ValueError, match="independent builds differ"):
+        module.qualify_sidecar_package(b"A\n", source(b"A\n", "csv"))
+
+
+@pytest.mark.parametrize("result", [None, (999,)])
+def test_qualification_rejects_consumer_count_mismatch(monkeypatch, result):
+    class FakeConnection:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_):
+            return False
+
+        def execute(self, *_):
+            return self
+
+        def fetchone(self):
+            return result
+
+    monkeypatch.setattr(module.duckdb, "connect", lambda _: FakeConnection())
+    with pytest.raises(ValueError, match="DuckDB record denominator"):
+        module.qualify_sidecar_package(b"A\n", source(b"A\n", "csv"))

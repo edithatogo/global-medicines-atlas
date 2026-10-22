@@ -11,6 +11,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
 
+import duckdb
 import pyarrow as pa
 import pyarrow.parquet as pq
 
@@ -182,3 +183,33 @@ def build_sidecar_package(
         verify_sidecar_package(staged, payload, source)
         staged.rename(output)
     return report
+
+
+def qualify_sidecar_package(
+    payload: bytes, source: BoundSidecar
+) -> dict[str, Any]:
+    """Build twice, exhaustively restore and query locally staged candidates.
+
+    Only identities and aggregate counts leave the private temporary directory.
+    The caller must enforce the protected main runner before source acquisition.
+    """
+    with TemporaryDirectory(prefix="mbs-sidecar-qualification-") as temporary:
+        root = Path(temporary)
+        first = build_sidecar_package(payload, source, root / "first")
+        second = build_sidecar_package(payload, source, root / "second")
+        if first != second:
+            raise ValueError("MBS sidecar independent builds differ")
+        with duckdb.connect(":memory:") as connection:
+            result = connection.execute(
+                "SELECT count(*) FROM read_parquet(?)",
+                [str(root / "first" / DATA_FILE)],
+            ).fetchone()
+        if result is None or result[0] != first["coverage"]["records"]:
+            raise ValueError("MBS sidecar DuckDB record denominator differs")
+        return {
+            "manifest": first,
+            "two_builds_equal": True,
+            "complete_native_restore_verified": True,
+            "duckdb_records": result[0],
+            "native_values_emitted": False,
+        }
