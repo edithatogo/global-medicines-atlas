@@ -169,3 +169,33 @@ def test_workflow_runs_all_six_read_only_bounded_jobs():
     assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in step["run"]
     assert job["steps"][-1]["if"] == "always()"
     assert job["steps"][-1]["with"]["path"] == "archive-members.json"
+
+
+def test_native_format_mode_keeps_every_member_and_visible_holds(synthetic):
+    report = module.qualify(SHA, 0, transport=synthetic[3], native_formats=True)
+    assert report["native_format_profiles_executed"] is True
+    assert report["result"]["members_parsed"] == 1
+    assert report["result"]["members_held"] == 2
+    assert report["result"]["member_count"] == 3
+    assert report["source_faithful_tables_qualified"] is False
+    assert "SYNTHETIC" not in json.dumps(report)
+
+
+def test_registered_native_formats_route_preserves_bounded_read_only_cohort():
+    root = Path(__file__).resolve().parents[1]
+    document = yaml.load(
+        (
+            root / ".github/workflows/mbs-q1-source-meaning-diagnostics.yml"
+        ).read_text(),
+        Loader=yaml.BaseLoader,
+    )
+    job = document["jobs"]["archive-formats"]
+    assert job["strategy"]["matrix"]["archive"] == [str(i) for i in range(6)]
+    assert job["strategy"]["max-parallel"] == "2"
+    assert job["permissions"] == {"contents": "read"}
+    assert job["timeout-minutes"] == "30"
+    step = next(step for step in job["steps"] if "run" in step)
+    assert "--formats" in step["run"]
+    assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in step["run"]
+    assert job["steps"][-1]["with"]["path"] == "archive-formats.json"
+    assert job["steps"][-1]["if"] == "always()"
