@@ -17,6 +17,7 @@ from global_medicines_atlas.acquisition import (
     BoundIPAddressTransport,
 )
 from global_medicines_atlas.federation_reader import HOSTS
+from global_medicines_atlas.mbs_archive_formats import profile_archive_formats
 from global_medicines_atlas.mbs_archive_inventory import (
     DATASET,
     EXPECTED_ARCHIVES,
@@ -96,6 +97,7 @@ def qualify(
     archive_index: int,
     *,
     transport: httpx.BaseTransport | None = None,
+    native_formats: bool = False,
 ) -> dict[str, Any]:
     """Read only the frozen cohort on exact main; stage privately without extraction."""
     require_main_actions(exact_commit)
@@ -126,7 +128,11 @@ def qualify(
         ) as client:
             _public(client)
             _stage(client, source, path)
-            report = profile_archive_members(path, source)
+            report = (
+                profile_archive_formats(path, source)
+                if native_formats
+                else profile_archive_members(path, source)
+            )
             _public(client)
     return {
         "schema_version": 1,
@@ -138,6 +144,8 @@ def qualify(
         "result": report,
         "temporary_source_removed": True,
         "member_formats_qualified": False,
+        "native_format_profiles_executed": native_formats,
+        "source_faithful_tables_qualified": False,
         "new_sources": 0,
         "new_admissions": 0,
         "publications": 0,
@@ -165,11 +173,16 @@ def main(argv: list[str] | None = None) -> int:
         required=True,
     )
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--formats", action="store_true")
     args = parser.parse_args(argv)
     if args.output.exists():
         parser.error("existing archive receipt must be preserved")
     try:
-        report = qualify(args.exact_commit, args.archive_index)
+        report = (
+            qualify(args.exact_commit, args.archive_index, native_formats=True)
+            if args.formats
+            else qualify(args.exact_commit, args.archive_index)
+        )
         payload = _encoded(report)
     except Exception as error:
         report = {

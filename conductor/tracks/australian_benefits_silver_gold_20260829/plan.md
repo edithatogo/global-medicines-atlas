@@ -5641,3 +5641,28 @@ source qualification remains pending their actual final artifacts.
   qualification and terminal failure cause remain unavailable.
 - [ ] Qualify the changed package path on exact-main hosted execution after
   protected checks. Synthetic 5,012-row speedup does not qualify real runtime.
+
+### Actual complete BSD/RVG native packages (2026-10-22)
+
+- [x] Qualify all three exact existing source objects in protected main run
+  39706928954. Verify original identities and metadata, two equal builds,
+  complete native restore and DuckDB counts: BSD CSV 4,655 records/9,310
+  fields; BSD XML 13,963 records/27,926 slots including six nulls; RVG
+  482 records/2,410 literal tab fields including 299 empty fields.
+- [ ] Qualify source-specific meanings and eligible delivery. This evidence
+  establishes no CSV/XML equivalence, clinical/payment meaning, derived release
+  rights, new admission or federated canary.
+
+### Native historical member format profiles
+
+- [x] Implement bounded private staging and digest revalidation of every
+  inventoried member, complete native CSV record counts/digests and reuse
+  existing bounded file-backed workbook container/worksheet XML validation.
+  Preserve member parser/resource holds individually; abort integrity failures.
+  All 67 affected tests, strict typing, actionlint and routine checks pass.
+- [x] Register exact-main archive-formats over the original six-object cohort,
+  with unchanged two-job concurrency, 30-minute timeout and aggregate-only
+  receipts. Each member has a 32 MiB bound, above the retained largest member
+  (25,122,918 bytes); no archive policy or source membership is expanded.
+- [ ] Execute actual protected profiles and retain all outcomes. Workbook
+  cell values, native tables, dates, decimals and domain semantics remain open.
