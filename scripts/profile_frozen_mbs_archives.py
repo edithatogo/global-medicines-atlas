@@ -199,5 +199,10 @@ def main(argv: list[str] | None = None) -> int:
     return 0 if report["status"] == "passed" else 1
 
 
+# Share the exact bounded anonymous transport with native package qualification.
+require_public_archive_revision = _public
+stage_pinned_archive = _stage
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

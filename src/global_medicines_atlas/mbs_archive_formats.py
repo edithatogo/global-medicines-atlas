@@ -178,3 +178,7 @@ def profile_archive_formats(path: Path, source: BoundArchive) -> dict[str, Any]:
     ):
         raise ValueError("native-format-report-byte-bound")
     return report
+
+
+# Reuse identical digest/size checks and finite staging limits for native packages.
+stage_bound_member = _stage
