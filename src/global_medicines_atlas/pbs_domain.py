@@ -114,20 +114,25 @@ def iter_pbs_domain_batches(
     )
 
 
+def pbs_domain_schema(native: pa.Schema) -> pa.Schema:
+    """Annotate a validated native schema without materializing any source rows."""
+    schema = native
+    for field in _ADDITIONS:
+        schema = schema.append(field)  # pyright: ignore[reportUnknownMemberType]
+    metadata = dict(schema.metadata or {})
+    metadata.update({
+        b"schema_name": b"global-medicines-atlas.pbs-silver.domain-fields",
+        b"mapping_profile": b"pbs-adapter-structural-v2",
+    })
+    return schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
+
+
 def _domain_batches(
     batches: Iterator[pa.RecordBatch],
 ) -> Iterator[pa.RecordBatch]:
     """Map an internally validated native stream without changing its lineage."""
     for batch in batches:
-        schema = batch.schema
-        for field in _ADDITIONS:
-            schema = schema.append(field)  # pyright: ignore[reportUnknownMemberType]
-        metadata = dict(schema.metadata or {})
-        metadata.update({
-            b"schema_name": b"global-medicines-atlas.pbs-silver.domain-fields",
-            b"mapping_profile": b"pbs-adapter-structural-v2",
-        })
-        schema = schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
+        schema = pbs_domain_schema(batch.schema)
         # Mapping reads only identity columns. Keep every original Arrow buffer
         # (including offsets/nulls and historical lineage) rather than decoding
         # and reconstructing all native fields for these three annotations.

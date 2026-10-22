@@ -5628,3 +5628,16 @@ source qualification remains pending their actual final artifacts.
 - [x] Reconcile existing workflow contract with the added sidecar-package
   selection and exact exclusion condition after unit job 119582066980
   identified the stale expected mode list. All 50 affected tests pass.
+
+### PBS direct native value producer performance recovery
+
+- [x] Remove intermediate native/domain/entity Arrow materialization from
+  paired package writing. Reuse exact lineage validation, schemas, mapping,
+  entity rules, decimal exceptions and element/batch bounds. Preserve the
+  existing producer and separate native digest as independent restore checks.
+  All 117 affected tests pass; new module branch coverage is 98.41%.
+- [x] Retain incomplete hosted run 39671037524 separately: 7,730,684 rows
+  reached package-restore at the last observed progress; complete package
+  qualification and terminal failure cause remain unavailable.
+- [ ] Qualify the changed package path on exact-main hosted execution after
+  protected checks. Synthetic 5,012-row speedup does not qualify real runtime.

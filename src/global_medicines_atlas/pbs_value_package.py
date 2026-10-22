@@ -24,6 +24,7 @@ from .mbs_demographic_package import (
     canonical_package_json,
     file_fingerprint,
 )
+from .pbs_direct_values import iter_direct_historical_value_batches
 from .pbs_member_identity import (
     PbsXmlMemberBinding,
     validate_pbs_xml_member_binding,
@@ -270,7 +271,9 @@ def qualify_value_package_pair(
         for directory in directories:
             directory.mkdir(parents=True)
         batches = iter(
-            iter_pbs_historical_value_batches(archive, member, parent, binding)
+            iter_direct_historical_value_batches(
+                archive, member, parent, binding
+            )
         )
         first = next(batches, None)
         if first is None:
