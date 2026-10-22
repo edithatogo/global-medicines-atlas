@@ -334,8 +334,8 @@
     ".github/workflows/pbs-public-metadata-diagnostic.yml": "cafcf903585fcba4795e9fa2603f2ebc193607f58a144a56e9be236cf2d44307",
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
     "conductor/tracks.md": "35bec621ed7c7bd888b7c9a17b9397a369b2ea99dc86bafb7f48d8e3deb2db67",
-    "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl": "7a48a215cc4996e29b01be0b1598dd0ab40b1bcda57e5f418eb4d29ab83fd842",
-    "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md": "5e89c0aa5961d97ac0f1095cb39f6eed86146545185575801ffc38c8c664353e",
+    "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl": "660c931c4f49806077318051ea37c1d516ac3145b01c19822311461e21049e03",
+    "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md": "bba0cb55019076abdb4b531e56a401e56bce1c5831eefa667ffd103b42cb5768",
     "conductor/tracks/australian_benefits_silver_gold_20260829/spec.md": "dac6f99dc5388e0fe35e9e6e217482171a5319ee5fcf9a9be16850e840243ba4",
     "conductor/tracks/bronze_medallion_completion_20260819/plan.md": "fed9ea6291e19701f812f65c6823a16f03fee10fe759fdd119b76e34fac856d8",
     "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
@@ -436,6 +436,7 @@
     "quality/qualifications/pbs-direct-value-synthetic-benchmark-20261022.json": "855c4471f36ddc904f8a152438579ac74cc75d426aae74d25eb34d5a12d84168",
     "quality/qualifications/pbs-native-core-v2-synthetic-benchmark-20261022.json": "89f68276d746e86171aa57008a894101da0560e06dad3f9fa664efda6e96b9a7",
     "quality/qualifications/pbs-native-digest-synthetic-benchmark-20261022.json": "835c0bb0f27a77258671182c92b1154406b5403fbb2fd9965b61803e62b34ef6",
+    "quality/qualifications/pbs-native-reference-screen-20261022-39730665004.json": "a1adda4e946365b98bf3febc03b9ae51acdae6db1569c7fc6606f8892c7ae48e",
     "quality/qualifications/pbs-native-reference-screen-failure-20261022-39729236096.json": "66a8dba04aa13db14a8f33f2155e0840d8c4887719125f2b504bd7c931e31aca",
     "quality/qualifications/pbs-native-value-package-incomplete-20261022-39671037524.json": "21d1b9b4b715dad75b9383cb29c4f08555c8dfec065b4e9b965deb8119dea5c6",
     "quality/qualifications/pbs-native-value-package-incomplete-20261022-39708116811.json": "194027012a7c596282c62100ead3d95fdd6b7ef9c27669fb244e3b34765fbed7",
@@ -517,7 +518,7 @@
     "tests/test_australian_pbs_hf_publication.py": "e5d9573ff32d96462bc135d9ef8a9f9d97917402c0c24a562ab7b789eebea436",
     "tests/test_frozen_matcher_calibration.py": "f1fe73272c2e3e980627abec0f263ee3484f7225951b413fb0aeaaf5621a0427",
     "tests/test_hf_estate_visibility_workflow.py": "65572c193cfdffdd1b241bb806ede9abb60dbe60710532c581ea4a87a0441958",
-    "tests/test_m112_rights_release_preflight.py": "836d1f708aabfb9c7e4325517b09ac586ea1bcfb93fa78f3e3ad51675d445aae",
+    "tests/test_m112_rights_release_preflight.py": "af1cb5de5a809804663f8b76f7a06efa2f9f4822fb98fa81772534b09c9d5171",
     "tests/test_mbs_archive_formats.py": "b1f089f97bbff57bbd48d898088723e595b20c57f4f695b4ef4e7340141790f9",
     "tests/test_mbs_archive_inventory.py": "2ebe3c2bceaf5ef19aab586f7398401ab3625df7f0413a346c2dd157f9c5351c",
     "tests/test_mbs_archive_members.py": "3701edd5fa7cf0f0eff3f9b71bb27cce8b4805cc49dc139951ef0b22402250ed",
@@ -1045,8 +1046,23 @@
     "status": "success",
     "workflow_sha256": "4d1dd4f6f0695019004dcf31cee6a639bede4b444834dced22db3ca52cf70bd7"
   },
+  "pbs_native_reference_screen_actual_readback": {
+    "definition_fields": 567785,
+    "domain_semantics_qualified": false,
+    "native_fields": 18208758,
+    "new_admissions": 0,
+    "no_exact_literal": 73577,
+    "publications": 0,
+    "receipt": "quality/qualifications/pbs-native-reference-screen-20261022-39730665004.json",
+    "receipt_sha256": "a1adda4e946365b98bf3febc03b9ae51acdae6db1569c7fc6606f8892c7ae48e",
+    "reference_fields": 2160066,
+    "run_id": 39730665004,
+    "semantic_relationships_qualified": false,
+    "unique_exact_literal": 2086489,
+    "workflow_commit": "c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4"
+  },
   "pbs_native_reference_screen_bounded_retry": {
-    "actual_source_qualified": false,
+    "actual_source_qualified": true,
     "admissions": 0,
     "exact_failing_bound_confirmed": false,
     "failed_receipt": "quality/qualifications/pbs-native-reference-screen-failure-20261022-39729236096.json",
@@ -20310,7 +20326,7 @@
     "row_denominator": "independent exact-source reader; no CSV or period substitution",
     "successful_workflow_run": 39648296077
   },
-  "recorded_at": "2026-10-22T05:59:55.433212+00:00",
+  "recorded_at": "2026-10-22T06:03:06.495965+00:00",
   "registered_native_qualification_route": {
     "completed_modes": [
       "native-silver",

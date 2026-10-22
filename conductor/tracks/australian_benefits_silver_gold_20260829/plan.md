@@ -5842,3 +5842,8 @@ source qualification remains pending their actual final artifacts.
   exact eligible output rights, admission and consumer delivery.
 
 - [x] Run local full profile for workbook reconciler; it reached about 51% of pytest then stalled after three timeout traces and was interrupted with exit 130. Preserve the log as failed/incomplete evidence; focused and routine checks passed, and protected PR checks remain required.
+
+### Actual PBS source-local lexical reference screen
+
+- [x] Protected exact-main retry 39730665004 passed on c9fd61e9. Retain the aggregate-only receipt with 18,208,758 native fields, 567,785 definitions, 2,160,066 candidate references, 2,086,489 unique exact literals and 73,577 without an exact literal. The screen emitted no native values and made no semantic relationship or domain claim.
+- [ ] Review source-specific relationship meaning and calibrate any matcher behavior using authorized bounded evidence before promoting these lexical matches.
