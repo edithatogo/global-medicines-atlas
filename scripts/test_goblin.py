@@ -178,6 +178,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_mbs_archive_inventory.py",
         "tests/test_mbs_archive_members.py",
         "tests/test_mbs_archive_formats.py",
+        "tests/test_mbs_historical_csv_package.py",
         "tests/test_profile_frozen_mbs_archives.py",
         "tests/test_mbs_sidecar_inventory.py",
         "tests/test_mbs_sidecar_layout.py",
