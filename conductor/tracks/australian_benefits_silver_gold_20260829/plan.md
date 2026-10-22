@@ -5813,3 +5813,9 @@ source qualification remains pending their actual final artifacts.
   did not post the required passing check. Exercise the actual 100,000-field
   progress checkpoint, refresh the current preflight and rerun affected checks
   before requesting final protected CI on the new head.
+
+### PBS source-local reference screen bounded retry
+
+- [x] Inspect protected run 39729236096 and its aggregate-only failure receipt. It stopped after 13,500,000 native fields with a validation classification; the safe receipt does not identify the exact failing bound.
+- [x] Raise only finite SQLite index limits from 2 million rows/1 GiB to 8 million rows/4 GiB, retaining exact-main source binding, private temporary cleanup, no native literal emission, and candidate-only meaning.
+- [ ] Obtain a successful exact-main protected rerun and reconcile its aggregate receipt before any source-local relation claim.

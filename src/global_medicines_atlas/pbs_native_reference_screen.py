@@ -29,9 +29,9 @@ RDF_ABOUT = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about"
 RDF_RESOURCE = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource"
 XLINK_HREF = "{http://www.w3.org/1999/xlink}href"
 MAX_LITERAL_BYTES = 4096
-MAX_INDEX_ROWS = 2_000_000
+MAX_INDEX_ROWS = 8_000_000
 MAX_NATIVE_FIELDS = 20_000_000
-MAX_INDEX_BYTES = 1024**3
+MAX_INDEX_BYTES = 4 * 1024**3
 PAGE_BYTES = 4096
 
 
