@@ -53,6 +53,16 @@ def test_all_exact_matches_ambiguities_missing_and_empty_are_accounted():
     assert report == module.screen_native_references(*inputs())
 
 
+def test_progress_is_aggregate_and_reports_match_phase():
+    checkpoints = []
+    report = module.screen_native_references(
+        *inputs(), progress=lambda *values: checkpoints.append(values)
+    )
+    assert checkpoints == [
+        ("native-reference-match", 1, report["native_fields"])
+    ]
+
+
 @pytest.mark.parametrize(
     "limit",
     [

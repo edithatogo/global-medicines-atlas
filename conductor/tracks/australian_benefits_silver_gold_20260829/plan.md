@@ -5792,5 +5792,19 @@ source qualification remains pending their actual final artifacts.
   three skipped, 96.86% coverage; overall exit 1 from a mutation baseline
   Hypothesis timing failure (265.76ms/200ms). Focused unchanged recheck passed;
   no local full pass or deadline change is claimed.
-- [ ] Add protected exact-main reference screening, retain actual denominators
-  and diagnostics, and continue source-specific semantic qualification.
+- [x] Add an exact-main, read-only PBS native reference screen route with a
+  private bounded index, aggregate-only checkpoints and receipt, source-local
+  literal comparison and no semantic promotion. Local source-boundary, workflow,
+  screening and failure-sanitization checks pass; actual-source execution is
+  still pending protected CI and merge.
+- [ ] Run the protected reference screen and retain its actual denominators and
+  diagnostics; continue source-specific PBS meaning qualification.
+- [x] Retain exact-main PBS v2 package run 39721534876 as passed. The aggregate
+  receipt verifies 18,208,758 native fields, 7,730,684 entities, two identical
+  serializations, complete source reparse and full restore, with no admission
+  or publication. The two serializations share one producer pipeline; PBS
+  domain meanings and derived release rights remain unqualified.
+- [x] Retain the reference-screen local full profile as failed: 7,818 passed,
+  two workflow-scope assertion failures, three skipped and 96.89% coverage.
+  Add the new mutually exclusive job to those old-route tests; rerun affected
+  checks and routine. Preserve the failed full result separately.

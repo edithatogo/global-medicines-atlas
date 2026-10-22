@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from collections.abc import Callable
 from contextlib import closing
 from hashlib import sha256
 from pathlib import Path
@@ -42,7 +43,11 @@ def _attribute(path: str) -> str | None:
     )
 
 
-def _screen(connection: sqlite3.Connection, member: bytes) -> dict[str, Any]:
+def _screen(
+    connection: sqlite3.Connection,
+    member: bytes,
+    progress: Callable[[str, int, int], None] | None = None,
+) -> dict[str, Any]:
     connection.execute(
         "CREATE TABLE definitions (ordinal INTEGER PRIMARY KEY, space TEXT NOT NULL, literal TEXT, occurrence TEXT NOT NULL)"
     )
@@ -54,6 +59,8 @@ def _screen(connection: sqlite3.Connection, member: bytes) -> dict[str, Any]:
     with connection:
         for ordinal, slot in enumerate(iter_pbs_xml_slots(member)):
             fields += 1
+            if progress is not None and fields % 100_000 == 0:
+                progress("native-reference-index", fields // 100_000, fields)
             if fields > MAX_NATIVE_FIELDS:
                 raise ValueError(
                     "PBS reference screen native field bound exceeded"
@@ -115,6 +122,8 @@ def _screen(connection: sqlite3.Connection, member: bytes) -> dict[str, Any]:
     connection.execute(
         "CREATE INDEX definition_literal ON definitions(space, literal)"
     )
+    if progress is not None:
+        progress("native-reference-match", 1, fields)
     statuses = dict(
         connection.execute("""
         WITH matches AS (
@@ -153,6 +162,8 @@ def screen_native_references(
     member: bytes,
     parent: SourceReceipt,
     binding: PbsXmlMemberBinding,
+    *,
+    progress: Callable[[str, int, int], None] | None = None,
 ) -> dict[str, Any]:
     """Account every source slot and candidate reference without exporting literals.
 
@@ -177,7 +188,7 @@ def screen_native_references(
         )
         connection.execute("PRAGMA cache_size=-8192")
         connection.execute("PRAGMA temp_store=FILE")
-        result = _screen(connection, member)
+        result = _screen(connection, member, progress)
     return {
         "schema_id": "global-medicines-atlas.pbs-native-reference-screen",
         "schema_version": 1,
