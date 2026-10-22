@@ -5718,3 +5718,22 @@ source qualification remains pending their actual final artifacts.
   native-core verifier that still checks every original field, full lineage,
   schema and typed annotation. Measure write/read phases; preserve old package
   verification, file bounds and deadlines. Do not rerun unchanged code.
+
+### Complete actual historical CSV packages and PBS v2 verification
+
+- [x] Reconcile all 18 successful groups from exact-main run 39717430728
+  against the original frozen bindings and independent native format profiles:
+  90 distinct member/output identities, 38,398,407 native records and
+  307,187,256 native fields. Every member has two equal builds, complete
+  native restore and actual DuckDB count checks. Retain all 18 metadata-only
+  receipts. Source-column semantics, admission and release remain unqualified.
+- [x] Implement a versioned PBS native-core verifier preserving the full
+  existing logical Arrow schema and every original field. Verify all repeated
+  lineage constants, field identities, grouping, source-slot digest, structural
+  annotations and lossless conversion annotations. Preserve v1 verification.
+  All 214 affected tests pass; new-module branch coverage is 92.24%; typing
+  has zero errors. These are synthetic checks, not actual PBS qualification.
+- [ ] Complete performance measurement, further review, routine/full checks,
+  preflight reconciliation and protected CI before exact-main PBS execution.
+- [ ] Complete all 91 historical workbook cells/tables, source-specific
+  semantics across the remaining MBS/PBS families, and eligible delivery.

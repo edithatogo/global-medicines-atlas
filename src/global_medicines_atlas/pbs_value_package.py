@@ -30,6 +30,10 @@ from .pbs_member_identity import (
     validate_pbs_xml_member_binding,
 )
 from .pbs_native_values import iter_pbs_historical_value_batches
+from .pbs_value_package_v2 import (
+    PACKAGE_SCHEMA_VERSION,
+    verify_value_package_v2,
+)
 from .pbs_xml_slots import iter_pbs_xml_slots
 from .receipts import SourceReceipt
 
@@ -160,6 +164,8 @@ def verify_value_package(
     if {path.name for path in output.iterdir()} != {MANIFEST, PARQUET}:
         raise ValueError("PBS package file inventory differs")
     report: dict[str, Any] = json.loads((output / MANIFEST).read_bytes())
+    if report.get("schema_version") == PACKAGE_SCHEMA_VERSION:
+        return verify_value_package_v2(output, archive, member, parent, binding)
     if report.get("parquet") != file_fingerprint(output / PARQUET):
         raise ValueError("PBS package digest or size differs")
     parquet = pq.ParquetFile(output / PARQUET)

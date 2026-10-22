@@ -1,0 +1,148 @@
+{
+  "full_logical_table_and_schema_equal": true,
+  "items": 1000,
+  "real_source_performance_qualified": false,
+  "runs": [
+    {
+      "coverage": {
+        "conversion_statuses": {
+          "not_price": 10001,
+          "unrepresentable": 1000
+        },
+        "entities": 11001,
+        "mapping_targets": {
+          "amt_references": 3000,
+          "classifications": 2000,
+          "items": 1000,
+          "presentations": 2000,
+          "prices": 1000,
+          "restrictions": 2000,
+          "schedules": 1
+        },
+        "native_fields": 27003,
+        "native_fields_sha256": "898e3989949f7f23266d1c52b40db1482c2b8021385690860c79dbc466f3bf04"
+      },
+      "parquet_bytes": 515767,
+      "phases": [
+        {
+          "phase": "package-write",
+          "rows": 1024,
+          "seconds": 0.267
+        },
+        {
+          "phase": "package-write",
+          "rows": 2048,
+          "seconds": 0.5067
+        },
+        {
+          "phase": "package-write",
+          "rows": 3072,
+          "seconds": 0.6657
+        },
+        {
+          "phase": "package-write",
+          "rows": 4096,
+          "seconds": 0.8852
+        },
+        {
+          "phase": "package-write",
+          "rows": 5120,
+          "seconds": 1.1086
+        },
+        {
+          "phase": "package-write",
+          "rows": 6144,
+          "seconds": 1.3476
+        },
+        {
+          "phase": "package-write",
+          "rows": 7168,
+          "seconds": 1.5807
+        },
+        {
+          "phase": "package-write",
+          "rows": 8192,
+          "seconds": 1.8039
+        },
+        {
+          "phase": "package-write",
+          "rows": 9216,
+          "seconds": 1.9964
+        },
+        {
+          "phase": "package-write",
+          "rows": 10240,
+          "seconds": 2.4575
+        },
+        {
+          "phase": "package-write",
+          "rows": 11001,
+          "seconds": 2.7594
+        },
+        {
+          "phase": "package-restore",
+          "rows": 11001,
+          "seconds": 2.85
+        }
+      ],
+      "seconds": 9.1158,
+      "version": "v1"
+    },
+    {
+      "coverage": {
+        "conversion_statuses": {
+          "not_price": 10001,
+          "unrepresentable": 1000
+        },
+        "entities": 11001,
+        "mapping_targets": {
+          "amt_references": 3000,
+          "classifications": 2000,
+          "items": 1000,
+          "presentations": 2000,
+          "prices": 1000,
+          "restrictions": 2000,
+          "schedules": 1
+        },
+        "native_core_sha256": "85ed24a35b268cd348c2b84fa84a405d312067c40db64219dd3349ca64e2acf6",
+        "native_fields": 27003
+      },
+      "parquet_bytes": 689426,
+      "phases": [
+        {
+          "phase": "package-native-oracle",
+          "rows": 0,
+          "seconds": 0.0572
+        },
+        {
+          "phase": "package-native-oracle",
+          "rows": 27003,
+          "seconds": 0.2923
+        },
+        {
+          "phase": "package-write",
+          "rows": 0,
+          "seconds": 0.2934
+        },
+        {
+          "phase": "package-write",
+          "rows": 11001,
+          "seconds": 2.7792
+        },
+        {
+          "phase": "package-restore",
+          "rows": 0,
+          "seconds": 2.7838
+        },
+        {
+          "phase": "package-restore",
+          "rows": 11001,
+          "seconds": 4.2901
+        }
+      ],
+      "seconds": 4.3095,
+      "version": "v2"
+    }
+  ],
+  "synthetic_only": true
+}
