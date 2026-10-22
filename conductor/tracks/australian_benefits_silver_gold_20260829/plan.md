@@ -5776,3 +5776,40 @@ source qualification remains pending their actual final artifacts.
   on exact main. Retain runtime/restore/consumer outcome before all 91 jobs.
 - [ ] Complete substantive source-column/domain semantics and eligible output
   admission and consumer delivery; native package passes do not establish them.
+
+
+### Source-local PBS reference screening
+
+- [x] Implement bounded private on-disk indexing of original XML ID/RDF about
+  definitions and RDF resource/XLink fragment candidates. Count exact lexical
+  matches, ambiguity, missing/empty literals and unsupported forms. Keep
+  namespaces and case distinct; perform no URI normalization or external
+  lookup. All 61 affected tests and strict typing pass; no real-source
+  reference screen or semantic relationship is yet qualified.
+- [x] Merge workbook PR #1278 after all 40 checks and start exact-main group
+  76 in run 39722586797. The full 91-member cohort has not been dispatched.
+- [x] Retain PBS local full result separately: main pytest 7,740 passed,
+  three skipped, 96.86% coverage; overall exit 1 from a mutation baseline
+  Hypothesis timing failure (265.76ms/200ms). Focused unchanged recheck passed;
+  no local full pass or deadline change is claimed.
+- [x] Add an exact-main, read-only PBS native reference screen route with a
+  private bounded index, aggregate-only checkpoints and receipt, source-local
+  literal comparison and no semantic promotion. Local source-boundary, workflow,
+  screening and failure-sanitization checks pass; actual-source execution is
+  still pending protected CI and merge.
+- [ ] Run the protected reference screen and retain its actual denominators and
+  diagnostics; continue source-specific PBS meaning qualification.
+- [x] Retain exact-main PBS v2 package run 39721534876 as passed. The aggregate
+  receipt verifies 18,208,758 native fields, 7,730,684 entities, two identical
+  serializations, complete source reparse and full restore, with no admission
+  or publication. The two serializations share one producer pipeline; PBS
+  domain meanings and derived release rights remain unqualified.
+- [x] Retain the reference-screen local full profile as failed: 7,818 passed,
+  two workflow-scope assertion failures, three skipped and 96.89% coverage.
+  Add the new mutually exclusive job to those old-route tests; rerun affected
+  checks and routine. Preserve the failed full result separately.
+- [~] Correct Codecov patch coverage on PR #1279. The initial exact head had
+  39 passing Actions checks, but Codecov reported 89.47% patch coverage and
+  did not post the required passing check. Exercise the actual 100,000-field
+  progress checkpoint, refresh the current preflight and rerun affected checks
+  before requesting final protected CI on the new head.
