@@ -5776,3 +5776,21 @@ source qualification remains pending their actual final artifacts.
   on exact main. Retain runtime/restore/consumer outcome before all 91 jobs.
 - [ ] Complete substantive source-column/domain semantics and eligible output
   admission and consumer delivery; native package passes do not establish them.
+
+
+### Source-local PBS reference screening
+
+- [x] Implement bounded private on-disk indexing of original XML ID/RDF about
+  definitions and RDF resource/XLink fragment candidates. Count exact lexical
+  matches, ambiguity, missing/empty literals and unsupported forms. Keep
+  namespaces and case distinct; perform no URI normalization or external
+  lookup. All 61 affected tests and strict typing pass; no real-source
+  reference screen or semantic relationship is yet qualified.
+- [x] Merge workbook PR #1278 after all 40 checks and start exact-main group
+  76 in run 39722586797. The full 91-member cohort has not been dispatched.
+- [x] Retain PBS local full result separately: main pytest 7,740 passed,
+  three skipped, 96.86% coverage; overall exit 1 from a mutation baseline
+  Hypothesis timing failure (265.76ms/200ms). Focused unchanged recheck passed;
+  no local full pass or deadline change is claimed.
+- [ ] Add protected exact-main reference screening, retain actual denominators
+  and diagnostics, and continue source-specific semantic qualification.
