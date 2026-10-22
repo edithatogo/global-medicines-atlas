@@ -255,7 +255,7 @@ def test_restored_nulls_are_not_native_csv_empty_strings(
     _, member, _ = native_fixture
     row = {
         "record_ordinal": 0,
-        "native_record_id": f"{member.sha256}:/records/0",
+        "native_record_id": f"{module._member_identity(member)}:/records/0",
         "native_fields": fields,
     }
     with pytest.raises((TypeError, ValueError), match="field state"):
@@ -363,3 +363,44 @@ def test_empty_native_csv_preserves_zero_without_absence_claim(native_fixture):
     assert report["duckdb_records"] == report["duckdb_native_fields"] == 0
     assert report["manifest"]["coverage"]["record_widths"] == {}
     assert report["manifest"]["boundaries"]["semantics_qualified"] is False
+
+
+@pytest.mark.parametrize("scope", ["member-path", "archive-path"])
+def test_identical_bytes_at_distinct_member_paths_keep_distinct_record_ids(
+    tmp_path, native_fixture, scope
+):
+    path, member, native = native_fixture
+    other_name = "SYNTHETIC-ALIAS.csv"
+    other = replace(
+        member,
+        path_sha256=hashlib.sha256(other_name.encode()).hexdigest(),
+        ordinal=1,
+    )
+    if scope == "archive-path":
+        other_name = native
+        other = replace(
+            member,
+            source=replace(
+                member.source, source_path="raw/synthetic-alias.zip"
+            ),
+        )
+    build_csv_package(path, member, native, tmp_path / "one")
+    build_csv_package(path, other, other_name, tmp_path / "two")
+    first = pq.read_table(tmp_path / "one/records.parquet").to_pylist()
+    second = pq.read_table(tmp_path / "two/records.parquet").to_pylist()
+    assert first[0]["native_fields"] == second[0]["native_fields"]
+    assert first[0]["native_record_id"] != second[0]["native_record_id"]
+
+
+def test_alias_package_cannot_substitute_for_another_member_binding(
+    tmp_path, native_fixture
+):
+    path, member, native = native_fixture
+    alias_name = "SYNTHETIC-ALIAS.csv"
+    alias = replace(
+        member, path_sha256=hashlib.sha256(alias_name.encode()).hexdigest()
+    )
+    out = tmp_path / "out"
+    build_csv_package(path, alias, alias_name, out)
+    with pytest.raises(ValueError, match="schema or lineage"):
+        verify_csv_package(out, path, member, native)

@@ -5684,3 +5684,18 @@ source qualification remains pending their actual final artifacts.
 - [x] Retain local full run at 16d7b01e as failed: 7,606 passed, three
   browser/consumer timeouts, three skipped, 96.87% coverage. No deadline is
   relaxed and passing protected CI remains separate from a local full pass.
+
+### Actual historical format profiles and CSV identity review
+
+- [x] Verify every original member identity and outcome from protected run
+  39709530322: all 181 members parsed, zero holds, including 91 workbook
+  container/worksheet XML profiles and 90 native CSV profiles. The CSVs
+  contain 38,398,407 records and 307,187,256 fields, all width eight.
+  Preserve first records; headers and domain semantics remain unqualified.
+- [x] Fix the independently reproduced CSV occurrence identity collision for
+  identical bytes at different paths. Scope IDs to archive object and member
+  path/content, reject alias package substitution, and preserve all native
+  values. All 77 affected tests pass with 100% new-module branch coverage.
+- [ ] Qualify complete actual CSV packages, complete workbook cells/tables,
+  source-column semantics and eligible delivery. Format profiles do not
+  complete source-faithful Silver tables or authorize admission/publication.

@@ -154,6 +154,20 @@ def _bind(path: Path, member: FrozenMbsMember, native_path: str) -> None:
         raise ValueError("MBS native CSV member digest or size differs")
 
 
+def _member_identity(member: FrozenMbsMember) -> str:
+    """Keep distinct source objects and member paths distinct, even for aliases."""
+    source = member.source
+    identity = {
+        "dataset": source.dataset,
+        "revision": source.revision,
+        "source_path": source.source_path,
+        "source_sha256": source.source_sha256,
+        "member_path_sha256": member.path_sha256,
+        "member_sha256": member.sha256,
+    }
+    return hashlib.sha256(canonical_package_json(identity)).hexdigest()
+
+
 def _schema(member: FrozenMbsMember, native_path: str) -> pa.Schema:
     return pa.schema(
         [
@@ -176,6 +190,7 @@ def _schema(member: FrozenMbsMember, native_path: str) -> pa.Schema:
             b"patient_rates": b"unavailable",
             b"absence_interpretation": b"unknown",
             b"conversion": b"none",
+            b"record_identity_scope": b"archive-object-member-path-and-content",
             b"cross_source_equivalence": b"unestablished",
         },
     )
@@ -185,6 +200,7 @@ def _batches(
     path: Path, member: FrozenMbsMember, native_path: str
 ) -> Iterator[pa.RecordBatch]:
     schema = _schema(member, native_path)
+    identity = _member_identity(member)
     rows: list[dict[str, Any]] = []
     size = 0
     before = csv.field_size_limit(formats.MAX_FIELD_CHARS)
@@ -193,7 +209,7 @@ def _batches(
             for ordinal, fields in enumerate(csv.reader(stream, strict=True)):
                 row = {
                     "record_ordinal": ordinal,
-                    "native_record_id": f"{member.sha256}:/records/{ordinal}",
+                    "native_record_id": f"{identity}:/records/{ordinal}",
                     "native_fields": fields,
                 }
                 encoded_size = len(canonical_package_json(row))
@@ -219,6 +235,7 @@ def _batches(
 def _restored_profile(
     rows: Iterator[dict[str, Any]], member: FrozenMbsMember
 ) -> dict[str, Any]:
+    identity = _member_identity(member)
     records = fields = empty = 0
     widths: Counter[int] = Counter()
     digest = hashlib.sha256()
@@ -229,7 +246,7 @@ def _restored_profile(
         native = cast("list[object]", raw)
         if (
             row["record_ordinal"] != records
-            or row["native_record_id"] != f"{member.sha256}:/records/{records}"
+            or row["native_record_id"] != f"{identity}:/records/{records}"
             or any(not isinstance(value, str) for value in native)
         ):
             raise ValueError(
