@@ -5699,3 +5699,22 @@ source qualification remains pending their actual final artifacts.
 - [ ] Qualify complete actual CSV packages, complete workbook cells/tables,
   source-column semantics and eligible delivery. Format profiles do not
   complete source-faithful Silver tables or authorize admission/publication.
+
+### Protected complete historical CSV group runner
+
+- [x] Partition all 90 frozen CSV members into 18 disjoint groups of five.
+  Reuse bounded anonymous exact-parent staging and selected-member hashes,
+  validate every path identity, complete two package builds and native restore,
+  and require final public revision readback. Keep all native values/private
+  member names inside the runner. Preserve atomic bounded progress on
+  interruption and coded failures without source-bearing exception text.
+  All 98 affected tests, typing, actionlint and routine checks pass.
+- [ ] Merge after protected checks and qualify all 18 groups; reconcile every
+  member/output digest and native field denominator against existing profiles.
+- [x] Retain actual PBS complete-package timeout 39708116811 separately: the
+  restore phase began at 1,816,751ms after 7,730,684 rows, but the unchanged
+  55-minute step limit expired. No complete package is qualified.
+- [ ] Replace costly repeated PBS projection/restore work with a versioned
+  native-core verifier that still checks every original field, full lineage,
+  schema and typed annotation. Measure write/read phases; preserve old package
+  verification, file bounds and deadlines. Do not rerun unchanged code.
