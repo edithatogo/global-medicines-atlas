@@ -110,6 +110,12 @@ def test_complete_aggregate_identity_and_counts(tmp_path, monkeypatch):
     assert result["status"] == "passed"
     assert result["groups"] == 1
     assert result["totals"]["cells"] == 3
+    assert result["silver_field_state_coverage"]["native_unresolved_cells"] == 3
+    assert result["silver_field_state_coverage"]["interpreted_cells"] == 0
+    assert (
+        result["silver_field_state_coverage"]["unavailable_patient_rates"]
+        is True
+    )
     assert result["source_column_semantics_qualified"] is False
     assert (
         result["receipt_sha256_by_group"]["0"]

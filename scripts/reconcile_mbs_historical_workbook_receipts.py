@@ -206,6 +206,13 @@ def reconcile(  # ruff: ignore[too-many-statements,too-many-locals] -- verify ev
         "unique_output_ids": len(output_ids),
         "totals": totals,
         "receipt_sha256_by_group": receipt_hashes,
+        "silver_field_state_coverage": {
+            "native_unresolved_cells": totals["cells"],
+            "interpreted_cells": 0,
+            "unavailable_patient_rates": True,
+            "date_and_currency_meaning_inferred": False,
+            "source_column_meaning_inferred": False,
+        },
         "source_column_semantics_qualified": False,
         "new_admissions": 0,
         "new_federated_canaries": 0,
