@@ -41,6 +41,7 @@ from .pbs_member_identity import (
     PbsXmlMemberBinding,
     build_pbs_xml_member_binding,
 )
+from .pbs_native_reference_screen import screen_native_references
 from .pbs_observed_domain import load_observed_profile
 from .pbs_observed_qualification import qualify_observed_values
 from .pbs_reference_shards import (
@@ -290,6 +291,8 @@ class _RetryBudget:
                 "package-restore",
                 "package-native-oracle",
                 "schema-inventory",
+                "native-reference-index",
+                "native-reference-match",
             }
             or any(
                 type(value) is not int or not 0 <= value < 2**63
@@ -1349,6 +1352,46 @@ def run_hosted_observed_values(
         "schema_version": 1,
         "status": "passed",
         "operation": "pbs-observed-structural-values",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "source_receipt_file_sha256": RECEIPT.sha256,
+        "qualification": qualification,
+        "rights_conclusion_changed": False,
+        "publication_performed": False,
+    }
+
+
+def run_hosted_native_reference_screen(
+    exact_commit: str,
+    *,
+    transport: httpx.BaseTransport | None = None,
+    progress: Callable[[dict[str, Any]], None] | None = None,
+) -> dict[str, Any]:
+    """Screen source-local reference literals within the exact-main boundary."""
+    retry = _RetryBudget(progress=progress)
+    try:
+        inputs = _verified_inputs(
+            exact_commit, transport=transport, retry=retry
+        )
+        with _at("projection-qualification", progress=retry.checkpoint):
+            qualification = screen_native_references(
+                inputs.archive,
+                inputs.xml,
+                inputs.parent,
+                inputs.binding,
+                progress=lambda phase, batches, rows: retry.checkpoint(
+                    "projection-qualification", phase, batches, rows
+                ),
+            )
+    except QualificationError as error:
+        error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
+        raise
+    return {
+        "schema_version": 1,
+        "status": "passed",
+        "operation": "pbs-native-reference-screen",
         **inputs.context,
         "dataset": DATASET,
         "revision": REVISION,
