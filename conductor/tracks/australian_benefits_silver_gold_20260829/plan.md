@@ -5666,3 +5666,21 @@ source qualification remains pending their actual final artifacts.
   (25,122,918 bytes); no archive policy or source membership is expanded.
 - [ ] Execute actual protected profiles and retain all outcomes. Workbook
   cell values, native tables, dates, decimals and domain semantics remain open.
+
+### Complete historical native CSV packages
+
+- [x] Bind every one of the 181 inventoried members to immutable inventory
+  receipts and the original six archives/acquisitions/B1/B2; identify the
+  existing 90 CSV members without new sources or fabricated member receipts.
+- [x] Implement atomic deterministic native CSV packages with every first,
+  empty and quoted record, exact identifiers/Unknown/numeric strings, original
+  metadata and source identity, independent native digest/coverage restore,
+  two builds and actual DuckDB record/field counts. Preserve unqualified
+  headers, native numeric/date text, unavailable patient rates and uncertainty.
+  All 74 affected tests, 100% new-module branch coverage, typing and routine pass.
+- [ ] Register protected actual CSV package qualification over the frozen
+  member cohort after observing current native-format outcomes. Complete
+  source-column/domain semantics, workbook members and eligible delivery.
+- [x] Retain local full run at 16d7b01e as failed: 7,606 passed, three
+  browser/consumer timeouts, three skipped, 96.87% coverage. No deadline is
+  relaxed and passing protected CI remains separate from a local full pass.
