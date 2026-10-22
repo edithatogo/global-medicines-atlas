@@ -186,3 +186,32 @@ def test_failure_classification_never_renders_exception_text():
             raise AssertionError("source exception text rendered")
 
     assert module._failure_category(NeverRenderError()) == "validation"
+
+
+def test_hosted_packages_restore_all_three_without_emitting_values(synthetic):
+    _, _, calls, transport = synthetic
+    report = module.qualify(SHA, transport=transport, package=True)
+    assert len(calls) == 20
+    assert report["typed_output_qualified"] is True
+    assert report["semantic_interpretation_qualified"] is False
+    assert report["new_admissions"] == report["publications"] == 0
+    assert len(report["objects"]) == 3
+    assert all(item["two_builds_equal"] for item in report["objects"])
+    assert "SYNTHETIC" not in json.dumps(report)
+
+
+def test_registered_package_mode_is_read_only_and_bounded():
+    document = yaml.load(
+        (
+            ROOT / ".github/workflows/mbs-q1-source-meaning-diagnostics.yml"
+        ).read_text(),
+        Loader=yaml.BaseLoader,
+    )
+    job = document["jobs"]["sidecar-package"]
+    assert job["permissions"] == {"contents": "read"}
+    assert job["timeout-minutes"] == "20"
+    run = next(step["run"] for step in job["steps"] if "run" in step)
+    assert "--package" in run
+    assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in run
+    assert job["steps"][-1]["if"] == "always()"
+    assert job["steps"][-1]["with"]["path"] == "sidecar-package.json"
