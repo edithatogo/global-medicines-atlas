@@ -135,6 +135,20 @@ def _validate_source(report: dict[str, Any]) -> dict[str, Any]:
     return qualification
 
 
+def _validate_expected_run_identity(
+    report: dict[str, Any], expected_exact_commit: str, expected_run_id: str
+) -> None:
+    """Bind a per-kind receipt to the caller's exact-main workflow run."""
+    if re.fullmatch(r"[0-9a-f]{40}", expected_exact_commit) is None:
+        raise ValueError("expected exact-main commit is invalid")
+    if not expected_run_id.isdigit():
+        raise ValueError("expected workflow run ID is invalid")
+    if report.get("workflow_commit") != expected_exact_commit:
+        raise ValueError("PBS reference screen workflow commit differs")
+    if report.get("run_id") != expected_run_id:
+        raise ValueError("PBS reference screen workflow run ID differs")
+
+
 def _meaning_profile() -> dict[str, Any]:
     return {
         "rdf_resource_to_rdf_about": {
@@ -221,6 +235,8 @@ def review_reference_meanings(
     receipt_path: str | Path = SCREEN_RECEIPT,
     *,
     require_per_kind: bool = False,
+    expected_exact_commit: str | None = None,
+    expected_run_id: str | None = None,
 ) -> dict[str, Any]:
     """Bind reviewed meanings to an exact hosted screen receipt.
 
@@ -236,6 +252,14 @@ def review_reference_meanings(
                 raise ValueError("PBS reference screen receipt digest differs")
     envelope, receipt_sha256 = _read_receipt(root, receipt_path)
     report = envelope["report"]
+    if require_per_kind:
+        if expected_exact_commit is None or expected_run_id is None:
+            raise ValueError(
+                "expected exact-main commit and workflow run ID are required"
+            )
+        _validate_expected_run_identity(
+            report, expected_exact_commit, expected_run_id
+        )
     qualification = _validate_source(report)
     counts = qualification.get("reference_status_counts")
     if (

@@ -19,6 +19,7 @@ from global_medicines_atlas.pbs_native_reference_screen import (
 )
 from global_medicines_atlas.pbs_reference_meaning import (
     SCREEN_RECEIPT,
+    _validate_expected_run_identity,  # ruff: ignore[import-private-name]
     _validated_per_kind,  # ruff: ignore[import-private-name]
     review_reference_meanings,
 )
@@ -105,7 +106,7 @@ def test_synthetic_screen_receipt_cannot_generate_exact_source_report(tmp_path):
             "operation": "pbs-native-reference-screen",
             "dataset": "synthetic/pbs-screen-fixture",
             "revision": "synthetic-revision-001",
-            "run_id": "synthetic-run-001",
+            "run_id": "10000000001",
             "run_attempt": "1",
             "workflow_commit": "a" * 40,
             "source_receipt_file_sha256": "b" * 64,
@@ -153,7 +154,25 @@ def test_synthetic_screen_receipt_cannot_generate_exact_source_report(tmp_path):
     path = tmp_path / "synthetic-screen-receipt.json"
     path.write_text(json.dumps(synthetic))
     with pytest.raises(ValueError, match="source contract differs"):
-        review_reference_meanings(tmp_path, path, require_per_kind=True)
+        review_reference_meanings(
+            tmp_path,
+            path,
+            require_per_kind=True,
+            expected_exact_commit="a" * 40,
+            expected_run_id="10000000001",
+        )
+
+
+def test_expected_hosted_run_binding_accepts_and_rejects_synthetic_identity():
+    report = {
+        "workflow_commit": "a" * 40,
+        "run_id": "10000000001",
+    }
+    _validate_expected_run_identity(report, "a" * 40, "10000000001")
+    with pytest.raises(ValueError, match="workflow commit differs"):
+        _validate_expected_run_identity(report, "b" * 40, "10000000001")
+    with pytest.raises(ValueError, match="workflow run ID differs"):
+        _validate_expected_run_identity(report, "a" * 40, "10000000002")
 
 
 def test_different_base_uri_contexts_never_promote_same_literal():

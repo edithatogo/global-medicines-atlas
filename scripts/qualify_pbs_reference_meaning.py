@@ -26,6 +26,14 @@ def main() -> int:
         help="fail unless the exact receipt includes source counts by reference kind",
     )
     parser.add_argument(
+        "--exact-commit",
+        help="expected exact-main commit for a per-kind hosted receipt",
+    )
+    parser.add_argument(
+        "--run-id",
+        help="expected GitHub Actions run ID for a per-kind hosted receipt",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=Path(
@@ -34,11 +42,19 @@ def main() -> int:
         ),
     )
     args = parser.parse_args()
+    if args.require_per_kind and (
+        args.exact_commit is None or args.run_id is None
+    ):
+        parser.error(
+            "--require-per-kind requires both --exact-commit and --run-id"
+        )
     report = review_reference_meanings(
         args.root,
         args.screen_receipt
         or "quality/qualifications/pbs-native-reference-screen-20261022-39730665004.json",
         require_per_kind=args.require_per_kind,
+        expected_exact_commit=args.exact_commit,
+        expected_run_id=args.run_id,
     )
     canonical = json.dumps(
         report, sort_keys=True, separators=(",", ":"), ensure_ascii=False
