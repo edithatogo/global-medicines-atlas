@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-35.json"
+    "australian-m112-rights-release-preflight-20261023-36.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-34.json"
+    "australian-m112-rights-release-preflight-20261023-35.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -56,7 +56,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261023-34.json"
+        "australian-m112-rights-release-preflight-20261023-35.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -141,12 +141,58 @@ def test_pbs_native_silver_field_state_is_candidate_only() -> None:
     assert pbs_silver["native_unresolved_fields"] == 18_208_758
     assert pbs_silver["interpreted_fields"] == 0
     assert pbs_silver["candidate_only"] is True
-    assert pbs_silver["rights_qualified"] is False
+    assert pbs_silver["rights_qualified"] is True
     assert pbs_silver["admitted"] is False
     assert pbs_silver["published"] is False
     assert (
         hashlib.sha256((ROOT / pbs_silver["receipt"]).read_bytes()).hexdigest()
         == pbs_silver["receipt_sha256"]
+    )
+
+
+def test_pbs_native_silver_exact_derived_rights_attestation() -> None:
+    binding = _json(PREFLIGHT)[
+        "pbs_native_silver_exact_derived_rights_attestation"
+    ]
+    attestation_path = ROOT / binding["path"]
+    assert (
+        hashlib.sha256(attestation_path.read_bytes()).hexdigest()
+        == binding["sha256"]
+    )
+    attestation = _json(attestation_path)
+    report_binding = attestation["source_report"]
+    source_report_path = ROOT / report_binding["path"]
+    assert (
+        hashlib.sha256(source_report_path.read_bytes()).hexdigest()
+        == report_binding["sha256"]
+        == binding["report_sha256"]
+    )
+    source_report = _json(source_report_path)
+    output = source_report["candidate_output"]
+    assert attestation["authorized_output"] == {
+        "dataset": source_report["dataset"],
+        "revision": source_report["revision"],
+        **{
+            key: output[key]
+            for key in (
+                "output_id",
+                "parquet_sha256",
+                "parquet_bytes",
+                "archive_sha256",
+                "member_sha256",
+                "native_core_sha256",
+            )
+        },
+    }
+    assert attestation["maintainer_response"] == "Attest exact output"
+    assert attestation["public_release_rights_attested"] is True
+    assert binding["instrument_independently_reviewed"] is False
+    assert all(value is False for value in attestation["boundaries"].values())
+    assert (
+        binding["new_admissions"]
+        == binding["consumer_canaries"]
+        == binding["publications"]
+        == 0
     )
 
 

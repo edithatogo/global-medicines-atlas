@@ -5875,3 +5875,4 @@ source qualification remains pending their actual final artifacts.
 - [x] Preserve preflight revision 32 and bind the current field-state receipt and reconciler in revision 33 after merging PR #1283's verified candidate output inventory.
 - [x] Correct PR #1284 review's digest-type finding: a rehashed package with 64 hex characters encoded as an array is rejected. Preserve the interrupted pre-fix full profile as exit 130 and rerun the corrected head.
 - [ ] Bind any supportable source-specific meanings and exact eligible output rights/admission, then run authorized consumer restore and delivery canaries.
+- [x] Record the maintainer's public-release rights attestation for the one exact PBS native Silver candidate Parquet output, bound to its output ID, SHA-256, byte count, source revision, and member identity. The instrument was not independently reviewed. Domain semantics, admission, publication, and consumer canaries remain separate.
