@@ -45,7 +45,8 @@ The pinned Conductor agent plugin is the Git submodule at
 - Regulatory, funding, formulary, and terminology assertions are independent.
 - Missing coverage is not negative evidence.
 - Preserve source-native identifiers, provenance, dates, rights, and uncertainty.
-- Python 3.14 is the complete fallback; Mojo promotion requires parity evidence.
+- CPython 3.15.1 is the supported runtime; Mojo remains optional and requires
+  parity evidence before promotion.
 - The immutable source payload and its content-addressed receipt are
   evidentiary truth; source-faithful Parquet is the portable analytical
   representation; table/catalogue layers are rebuildable metadata over those

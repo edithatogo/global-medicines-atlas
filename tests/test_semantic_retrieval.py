@@ -232,7 +232,7 @@ def test_optional_retriever_preserves_constructor_arguments(
 ) -> None:
     governed = identity()
     expected = identity()
-    sentinel = UnavailableSemanticRetriever()
+    candidate = UnavailableSemanticRetriever()
     observed: dict[str, object] = {}
 
     def construct(
@@ -248,7 +248,7 @@ def test_optional_retriever_preserves_constructor_arguments(
             "identity": identity,
             "expected_identity": expected_identity,
         })
-        return sentinel
+        return candidate
 
     monkeypatch.setattr(
         semantic_retrieval,
@@ -263,7 +263,7 @@ def test_optional_retriever_preserves_constructor_arguments(
             expected_identity=expected,
             table_name="custom",
         )
-        is sentinel
+        is candidate
     )
     assert observed == {
         "index_path": tmp_path,

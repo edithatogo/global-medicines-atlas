@@ -45,7 +45,7 @@ jobs:
           REQUESTED_COMMIT: ${{ inputs.exact_commit }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.14.6 python scripts/preflight_australian_mbs_workbooks.py \
+          uv run --locked --python 3.15.1 python scripts/preflight_australian_mbs_workbooks.py \
             --exact-commit "$REQUESTED_COMMIT" \
             --output build/mbs-workbook-egress-preflight.json
 

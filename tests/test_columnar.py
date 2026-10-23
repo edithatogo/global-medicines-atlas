@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from pathlib import Path
 
 import polars as pl
 import pyarrow.parquet as pq
+import pytest
 
+from global_medicines_atlas import columnar as columnar_module
 from global_medicines_atlas.columnar import (
     ASSERTION_SCHEMA,
     arrow_to_polars,
@@ -81,3 +84,46 @@ def test_parquet_round_trip_preserves_schema_metadata(tmp_path: Path) -> None:
 
     assert restored.schema.metadata == ASSERTION_SCHEMA.metadata
     assert pl.read_parquet(destination).height == 2
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "case",
+    [0, 1],
+)
+def test_duckdb_empty_arrow_result_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+    case: int,
+) -> None:
+    class Result:
+        def to_arrow_table(self) -> None:
+            return None
+
+    class Connection:
+        def register(self, _name: str, _table: object) -> None:
+            pass
+
+        def execute(self, *_args: object) -> Result:
+            return Result()
+
+        def sql(self, *_args: object) -> Result:
+            return Result()
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(
+        columnar_module.duckdb, "connect", lambda *_: Connection()
+    )
+    table = records_to_arrow([record()])
+    operations = (
+        lambda: columnar_module.temporal_assertions_as_of(
+            table,
+            valid_at=datetime.now(UTC),
+            observed_at=datetime.now(UTC),
+        ),
+        lambda: columnar_module.coverage_by_jurisdiction(table),
+    )
+
+    with pytest.raises(RuntimeError, match="no Arrow table"):
+        operations[case]()

@@ -35,22 +35,22 @@ jobs:
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
       - name: Install Chromium for the candidate Atlas browser traversal
         run: >-
-          uv run --locked --python 3.14.6 --group test-goblin
+          uv run --locked --python 3.15.1 --group test-goblin
           playwright install --with-deps chromium
       - name: Verify pinned source objects and build the local candidate
         run: |
           set -euo pipefail
           QUALIFICATION_DIR="$RUNNER_TEMP/gma-mbs-gold-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           mkdir -p "$QUALIFICATION_DIR"
-          uv run --locked --python 3.14.6 python scripts/qualify_australian_mbs_gold_real_silver.py --check
-          uv run --locked --python 3.14.6 python scripts/export_australian_mbs_gold_candidate_edges.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_australian_mbs_gold_real_silver.py --check
+          uv run --locked --python 3.15.1 python scripts/export_australian_mbs_gold_candidate_edges.py \
             --output "$QUALIFICATION_DIR/candidate-edges.parquet" \
             --scalar-output "$QUALIFICATION_DIR/candidate-scalar.parquet"
       - name: Canary the exact reviewed candidate edges through all consumers
         run: |
           set -euo pipefail
           QUALIFICATION_DIR="$RUNNER_TEMP/gma-mbs-gold-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          uv run --locked --python 3.14.6 --group test-goblin python scripts/qualify_australian_mbs_gold_candidate_consumers.py \
+          uv run --locked --python 3.15.1 --group test-goblin python scripts/qualify_australian_mbs_gold_candidate_consumers.py \
             --edge-file "$QUALIFICATION_DIR/candidate-edges.parquet" \
             --scalar-file "$QUALIFICATION_DIR/candidate-scalar.parquet" \
             --output "$QUALIFICATION_DIR/candidate-consumer-qualification.json" \

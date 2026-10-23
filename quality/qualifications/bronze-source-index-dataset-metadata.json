@@ -19,7 +19,7 @@
       "format": "Parquet",
       "media_type": "application/vnd.apache.parquet",
       "path": "quality/qualifications/bronze-source-index-v1.parquet",
-      "sha256": "a8e7c1e8c61d019fd842be24cbf92f6c296b6cc0e2e33c1a92ecaf21d17425b6"
+      "sha256": "f81ed62e0af777c12296488a1b69193c82a565ea5e3f48aa6be834ce5a61c5da"
     }
   ],
   "evidence_boundary": {
