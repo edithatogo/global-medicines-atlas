@@ -122,6 +122,102 @@ def test_complete_aggregate_identity_and_counts(tmp_path, monkeypatch):
         == hashlib.sha256(artifact.read_bytes()).hexdigest()
     )
     assert receipt["members"][0]["complete_native_restore_verified"] is True
+    assert result["receipt_origin_by_group"]["0"] == {
+        "run_id": 123,
+        "workflow_commit": COMMIT,
+    }
+    assert result["retry_groups"] == []
+
+
+def retry_fixture(tmp_path, monkeypatch):
+    baseline = tmp_path / "baseline"
+    retry_root = tmp_path / "retry"
+    baseline.mkdir()
+    retry_root.mkdir()
+    artifact, complete = fixture_receipt(baseline, monkeypatch)
+    retry_artifact = retry_root / "group-0" / artifact.name
+    retry_artifact.parent.mkdir()
+    retried = dict(complete, workflow_commit="b" * 40)
+    retry_artifact.write_text(json.dumps(retried))
+    incomplete = {
+        "status": "incomplete",
+        "workflow_commit": COMMIT,
+        "group": 0,
+        "phase": "member-native-check",
+        "completed_members": 0,
+        "native_member_names_or_values_emitted": False,
+        "new_sources": 0,
+        "new_admissions": 0,
+        "publications": 0,
+    }
+    artifact.write_text(json.dumps(incomplete))
+    return baseline, retry_root, artifact, retry_artifact
+
+
+def test_exact_retry_reconciles_without_double_counting(tmp_path, monkeypatch):
+    baseline, retry_root, incomplete, retried = retry_fixture(
+        tmp_path, monkeypatch
+    )
+    result = module.reconcile(
+        ROOT,
+        baseline,
+        123,
+        COMMIT,
+        retry_artifact_root=retry_root,
+        retry_run_id=456,
+        retry_commit="b" * 40,
+        retry_groups=(0,),
+    )
+    assert result["groups"] == 1
+    assert result["unique_member_identities"] == 1
+    assert result["retry_groups"] == [0]
+    assert result["receipt_origin_by_group"]["0"] == {
+        "run_id": 456,
+        "workflow_commit": "b" * 40,
+    }
+    assert (
+        result["receipt_sha256_by_group"]["0"]
+        == hashlib.sha256(retried.read_bytes()).hexdigest()
+    )
+    assert result["baseline_incomplete_receipt_sha256_by_group"]["0"] == (
+        hashlib.sha256(incomplete.read_bytes()).hexdigest()
+    )
+    assert result["silver_field_state_coverage"]["native_unresolved_cells"] == 3
+
+
+@pytest.mark.parametrize("change", ["baseline", "retry", "identity", "groups"])
+def test_retry_rejects_incomplete_or_misaligned_inputs(
+    tmp_path, monkeypatch, change
+):
+    baseline, retry_root, incomplete, retried = retry_fixture(
+        tmp_path, monkeypatch
+    )
+    groups = (0,)
+    if change == "baseline":
+        report = json.loads(incomplete.read_text())
+        report["phase"] = "not-started"
+        incomplete.write_text(json.dumps(report))
+    elif change == "retry":
+        report = json.loads(retried.read_text())
+        report["status"] = "incomplete"
+        retried.write_text(json.dumps(report))
+    elif change == "identity":
+        report = json.loads(retried.read_text())
+        report["workflow_commit"] = COMMIT
+        retried.write_text(json.dumps(report))
+    else:
+        groups = (0, 0)
+    with pytest.raises(ValueError, match=r"retry|identity"):
+        module.reconcile(
+            ROOT,
+            baseline,
+            123,
+            COMMIT,
+            retry_artifact_root=retry_root,
+            retry_run_id=456,
+            retry_commit="b" * 40,
+            retry_groups=groups,
+        )
 
 
 @pytest.mark.parametrize(
@@ -156,6 +252,8 @@ def test_reject_invalid_input_boundary(tmp_path):
         module.reconcile(ROOT, tmp_path, 123, "short")
     with pytest.raises(ValueError, match="directory"):
         module.reconcile(ROOT, tmp_path / "missing", 123, COMMIT)
+    with pytest.raises(ValueError, match="run id"):
+        module.reconcile(ROOT, tmp_path, 0, COMMIT)
 
 
 def test_reject_symlink_receipt(tmp_path, monkeypatch):
@@ -191,6 +289,50 @@ def test_cli_writes_once_and_preserves_existing(tmp_path, monkeypatch):
     with pytest.raises(SystemExit):
         module.main(args)
     assert json.loads(output.read_bytes()) == {"status": "passed"}
+
+
+def test_cli_binds_retry_run_and_groups(tmp_path, monkeypatch):
+    baseline = tmp_path / "baseline"
+    retry_root = tmp_path / "retry"
+    baseline.mkdir()
+    retry_root.mkdir()
+    output = tmp_path / "result.json"
+    calls = []
+
+    def capture(_root, _baseline, _run_id, _commit, **kwargs):
+        calls.append(kwargs)
+        return {"status": "passed"}
+
+    monkeypatch.setattr(module, "reconcile", capture)
+    assert (
+        module.main([
+            "--artifact-root",
+            str(baseline),
+            "--run-id",
+            "123",
+            "--workflow-commit",
+            COMMIT,
+            "--retry-artifact-root",
+            str(retry_root),
+            "--retry-run-id",
+            "456",
+            "--retry-workflow-commit",
+            "b" * 40,
+            "--retry-group",
+            "0",
+            "--output",
+            str(output),
+        ])
+        == 0
+    )
+    assert calls == [
+        {
+            "retry_artifact_root": retry_root,
+            "retry_run_id": 456,
+            "retry_commit": "b" * 40,
+            "retry_groups": (0,),
+        }
+    ]
 
 
 @pytest.mark.parametrize("change", ["state", "duplicate", "denominator"])
