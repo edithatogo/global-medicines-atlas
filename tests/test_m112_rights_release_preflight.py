@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-34.json"
+    "australian-m112-rights-release-preflight-20261023-35.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-33.json"
+    "australian-m112-rights-release-preflight-20261023-34.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -56,7 +56,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261023-33.json"
+        "australian-m112-rights-release-preflight-20261023-34.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -377,6 +377,63 @@ def test_historical_workbook_candidate_output_inventory_keeps_gates_closed() -> 
         == report["receipt_sha256"]
     )
     assert report["field_state"] == "native_unresolved"
-    assert report["rights_qualified"] is False
+    assert report["rights_qualified"] is True
     assert report["admitted"] is False
     assert report["published"] is False
+
+
+def test_historical_workbook_rights_attestation_binds_exact_91_outputs() -> (
+    None
+):
+    preflight = _json(PREFLIGHT)
+    binding = preflight["historical_workbook_91_derived_rights_attestation"]
+    attestation_path = ROOT / binding["path"]
+    assert (
+        hashlib.sha256(attestation_path.read_bytes()).hexdigest()
+        == binding["sha256"]
+    )
+    attestation = _json(attestation_path)
+    cohort_binding = attestation["cohort_report"]
+    cohort_path = ROOT / cohort_binding["path"]
+    assert (
+        hashlib.sha256(cohort_path.read_bytes()).hexdigest()
+        == cohort_binding["sha256"]
+    )
+    cohort = _json(cohort_path)
+    expected = {
+        int(group): {
+            "group": int(group),
+            **{
+                key: entry[key]
+                for key in (
+                    "output_id",
+                    "parquet_sha256",
+                    "parquet_bytes",
+                    "source_sha256",
+                    "member_sha256",
+                    "member_path_sha256",
+                )
+            },
+        }
+        for group, entry in cohort["candidate_outputs_by_group"].items()
+    }
+    authorized_outputs = attestation["authorized_outputs"]
+    assert len(authorized_outputs) == binding["output_count"] == 91
+    assert len({entry["group"] for entry in authorized_outputs}) == 91
+    assert len({entry["output_id"] for entry in authorized_outputs}) == 91
+    actual = {entry["group"]: entry for entry in authorized_outputs}
+    assert len(expected) == len(actual) == binding["output_count"] == 91
+    assert actual == expected
+    assert len({entry["output_id"] for entry in actual.values()}) == 91
+    assert (
+        attestation["maintainer_response"] == "Attest permission covers all 91"
+    )
+    assert attestation["public_release_rights_attested"] is True
+    assert binding["instrument_independently_reviewed"] is False
+    assert all(value is False for value in attestation["boundaries"].values())
+    assert (
+        binding["new_admissions"]
+        == binding["consumer_canaries"]
+        == binding["publications"]
+        == 0
+    )
