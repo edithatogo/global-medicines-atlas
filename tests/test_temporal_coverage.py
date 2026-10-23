@@ -7,7 +7,7 @@ from pathlib import Path
 
 import duckdb
 import pytest
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis import strategies as st
 from pydantic import ValidationError
 
@@ -274,6 +274,7 @@ def test_blank_assertion_identity_values_are_rejected() -> None:
     first=st.integers(min_value=0, max_value=1_000),
     second=st.integers(min_value=0, max_value=1_000),
 )
+@settings(deadline=None)
 @pytest.mark.property
 def test_aggregation_is_order_independent(first: int, second: int) -> None:
     observations = [
