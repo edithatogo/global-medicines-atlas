@@ -242,6 +242,7 @@ def reconcile(  # ruff: ignore[too-many-statements,too-many-locals,too-many-bran
             or entry["native_values_or_names_emitted"] is not False
             or type(parquet["bytes"]) is not int
             or not 0 < parquet["bytes"] <= MAX_PARQUET_BYTES
+            or type(parquet["sha256"]) is not str
             or len(parquet["sha256"]) != SHA256_HEX_LENGTH
             or any(ch not in "0123456789abcdef" for ch in parquet["sha256"])
         ):

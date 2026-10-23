@@ -5863,4 +5863,5 @@ source qualification remains pending their actual final artifacts.
 ### Historical workbook candidate output inventory
 
 - [x] Extend exact two-run reconciliation to emit each verified candidate output ID, Parquet digest and byte count, source/member digests, and `native_unresolved` field state. Reject malformed Parquet fingerprints even if an output ID is recomputed. This is aggregate metadata only; rights, admission and publication stay false. Twenty-three focused tests pass with 93.07% branch coverage.
+- [x] Complete the pinned-uv local full profile with exit 0. Correct PR #1283 review's digest-type gap by requiring a string SHA-256 and rejecting a rehashed array of 64 valid hex characters. Recheck affected tests and protected exact-head CI before merge.
 - [ ] Once protected six-member retry succeeds, reconcile the original 85 and retried six, retain exact output identities, then bind eligible rights, admission, restore and consumer evidence separately.

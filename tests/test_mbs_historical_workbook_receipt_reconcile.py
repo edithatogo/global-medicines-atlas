@@ -258,7 +258,7 @@ def test_reject_drift_and_promotion(tmp_path, monkeypatch, mutate):
         module.reconcile(ROOT, tmp_path, 123, COMMIT)
 
 
-@pytest.mark.parametrize("change", ["bytes", "digest"])
+@pytest.mark.parametrize("change", ["bytes", "digest", "digest_type"])
 def test_reject_invalid_candidate_fingerprint_even_with_rehashed_output_id(
     tmp_path, monkeypatch, change
 ):
@@ -266,6 +266,8 @@ def test_reject_invalid_candidate_fingerprint_even_with_rehashed_output_id(
     manifest = report["members"][0]["manifest"]
     if change == "bytes":
         manifest["parquet"]["bytes"] = 0
+    elif change == "digest_type":
+        manifest["parquet"]["sha256"] = ["a"] * 64
     else:
         manifest["parquet"]["sha256"] = "invalid"
     identity = {
