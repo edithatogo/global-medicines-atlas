@@ -16,6 +16,16 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path.cwd())
     parser.add_argument(
+        "--screen-receipt",
+        type=Path,
+        help="exact hosted PBS reference-screen receipt to reconcile",
+    )
+    parser.add_argument(
+        "--require-per-kind",
+        action="store_true",
+        help="fail unless the exact receipt includes source counts by reference kind",
+    )
+    parser.add_argument(
         "--output",
         type=Path,
         default=Path(
@@ -24,7 +34,12 @@ def main() -> int:
         ),
     )
     args = parser.parse_args()
-    report = review_reference_meanings(args.root)
+    report = review_reference_meanings(
+        args.root,
+        args.screen_receipt
+        or "quality/qualifications/pbs-native-reference-screen-20261022-39730665004.json",
+        require_per_kind=args.require_per_kind,
+    )
     canonical = json.dumps(
         report, sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode()
