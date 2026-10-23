@@ -417,3 +417,34 @@ the date roles remain separate and do not establish intervals or current
 listing status. Native values remain `native_unresolved`, and complete PBS
 domain semantics, other eras, rights, admission, publication and consumer
 canaries are not qualified by this bounded result.
+
+## PBS native field-state reconciliation, 2026-10-23
+
+The [field-state reconciliation receipt](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261023.json)
+partitions all 18,208,758 native field occurrences from the exact 1 April 2026
+PBS v3 member across every one of the 5,163 inventoried schema paths. It binds
+the complete native Silver package, source-local
+reference screen, prior field-state reconciliation, observed role counters,
+schema-path inventory, and bounded domain-meaning profile by digest.
+
+| State | Fields | Meaning |
+| --- | ---: | --- |
+| `interpreted` | 17,252,839 | Bounded source-structure role for item, product, restriction/rule, and price-component fields. This does not interpret individual native values. |
+| `native_unresolved` | 955,919 | Historical-record, organisation, reference, schedule, and vocabulary-metadata roles without a qualified domain meaning. |
+| `unavailable` | 0 | The exact-source parse and role counters account for the full field denominator. This is a field-state count, not a claim that all PBS facts are available. |
+| **Total** | **18,208,758** | **Denominator closes exactly.** |
+
+The 2,800 qualified schedule/item/restriction date-role occurrences are a
+non-additive overlay within the role partition. The date profile applies only
+to this pinned member and does not establish validity intervals, precedence,
+or current status. Native values, including identifiers, amounts, references,
+and text, remain preserved and unresolved; exact-literal references remain
+lexical diagnostics.
+
+This is one historical PBS v3 schedule, so no cross-era or cross-jurisdiction
+pooling is qualified. No explicit PBS status field was observed; snapshot dates
+do not establish current listing status. Patient rates are unavailable because
+this source contains no patient-level numerator/denominator evidence. Price
+structure does not establish currency, payable benefit, patient cost, or
+clinical eligibility. These findings change no rights, admission, canary, or
+publication status and use no new sources or source values.
