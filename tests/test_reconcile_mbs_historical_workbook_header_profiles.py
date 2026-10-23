@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import runpy
+import sys
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -17,6 +20,27 @@ from global_medicines_atlas.mbs_archive_inventory import (
     BoundArchive,
 )
 from global_medicines_atlas.mbs_historical_csv_package import FrozenMbsMember
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_standalone_entrypoint_imports_from_scripts_directory(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    script = (
+        ROOT / "scripts/reconcile_mbs_historical_workbook_header_profiles.py"
+    )
+    paths = [
+        entry
+        for entry in sys.path
+        if Path(entry or ".").resolve() != ROOT.resolve()
+    ]
+    monkeypatch.setattr(sys, "path", paths)
+    monkeypatch.syspath_prepend(str(ROOT / "scripts"))
+    module = runpy.run_path(
+        str(script), run_name="standalone_mbs_header_reconciler"
+    )
+    assert callable(module["main"])
 
 
 def _source(index: int) -> BoundArchive:

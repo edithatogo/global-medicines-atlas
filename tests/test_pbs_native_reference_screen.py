@@ -33,9 +33,29 @@ def inputs():
 
 
 def test_all_exact_matches_ambiguities_missing_and_empty_are_accounted():
-    report = module.screen_native_references(*inputs())
+    screen_inputs = inputs()
+    report = module.screen_native_references(*screen_inputs)
+    assert report["schema_version"] == 2
     assert report["definition_fields"] == 4
     assert report["reference_fields"] == 7
+    assert report["definition_kind_counts"] == {"rdf_about": 3, "xml_id": 1}
+    assert report["reference_kind_counts"] == {
+        "rdf_resource": 4,
+        "xlink_href": 3,
+    }
+    assert report["reference_kind_status_counts"] == {
+        "rdf_resource": {
+            "ambiguous_exact_literal": 1,
+            "empty_literal": 1,
+            "no_exact_literal": 1,
+            "unique_exact_literal": 1,
+        },
+        "xlink_href": {
+            "no_exact_literal": 1,
+            "unique_exact_literal": 1,
+            "unsupported_reference_form": 1,
+        },
+    }
     assert report["reference_status_counts"] == {
         "unique_exact_literal": 2,
         "ambiguous_exact_literal": 1,
@@ -51,7 +71,7 @@ def test_all_exact_matches_ambiguities_missing_and_empty_are_accounted():
     assert report["external_targets_fetched"] == 0
     assert "SYNTHETIC-ID" not in json.dumps(report)
     assert "example.test" not in json.dumps(report)
-    assert report == module.screen_native_references(*inputs())
+    assert report == module.screen_native_references(*screen_inputs)
 
 
 def test_progress_is_aggregate_and_reports_match_phase():
@@ -121,6 +141,28 @@ def test_identifier_namespaces_and_exact_literals_do_not_collapse():
     assert report["reference_fields"] == 10
     assert report["reference_status_counts"]["unique_exact_literal"] == 2
     assert report["reference_status_counts"]["no_exact_literal"] == 5
+
+
+def test_exact_rdf_literal_with_different_xml_base_stays_a_candidate():
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xml:base="https://one.example/">
+      <rdf:Description rdf:about="item"/>
+      <group xml:base="https://two.example/">
+        <link rdf:resource="item"/>
+      </group>
+    </root>"""
+    archive = _zip([(PATH, xml)])
+    parent = _receipt(archive, SOURCE)
+    report = module.screen_native_references(
+        archive, xml, parent, build_pbs_xml_member_binding(archive, parent)
+    )
+    # The lexical screener correctly reports exact spelling but cannot resolve
+    # xml:base. These relative URI references can therefore denote different
+    # targets even though the source literals are identical.
+    assert report["reference_status_counts"] == {"unique_exact_literal": 1}
+    assert report["semantic_relationships_qualified"] is False
+    assert report["native_values_emitted"] is False
 
 
 def test_index_files_are_removed_on_success_and_parse_failure(

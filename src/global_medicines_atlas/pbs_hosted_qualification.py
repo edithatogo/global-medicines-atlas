@@ -1389,7 +1389,7 @@ def run_hosted_native_reference_screen(
         error.retry_detail = retry.retry_detail
         raise
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "status": "passed",
         "operation": "pbs-native-reference-screen",
         **inputs.context,

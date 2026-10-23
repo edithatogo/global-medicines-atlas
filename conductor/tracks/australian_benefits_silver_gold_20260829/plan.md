@@ -5828,7 +5828,21 @@ source qualification remains pending their actual final artifacts.
 
 - [x] Inspect protected run 39729236096 and its aggregate-only failure receipt. It stopped after 13,500,000 native fields with a validation classification; the safe receipt does not identify the exact failing bound.
 - [x] Raise only finite SQLite index limits from 2 million rows/1 GiB to 8 million rows/4 GiB, retaining exact-main source binding, private temporary cleanup, no native literal emission, and candidate-only meaning.
-- [ ] Obtain a successful exact-main protected rerun and reconcile its aggregate receipt before any source-local relation claim.
+- [x] Obtain the successful exact-main protected rerun and reconcile its
+  aggregate receipt before any source-local relation claim. [Run `39730665004`](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39730665004)
+  passed at workflow commit `c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4` for
+  the exact pinned April 2026 PBS v3 member. It accounts for 2,160,066
+  source-local reference occurrences: 2,086,489 unique exact-literal
+  candidates and 73,577 with no exact literal. This is lexical screening only;
+  effective `xml:base`, document/graph scope, target type, link role and
+  predicate semantics remain unresolved, so zero semantic relationships are
+  qualified.
+- [~] Add value-free denominator and match-outcome counts by native reference
+  kind (`rdf:resource`, `xlink:href`, `rdf:about`, and `xml:id`) so the exact
+  PBS source can distinguish its reference forms. Synthetic controls now pass;
+  the source-bound counts and any occurrence-level URI/base/scope review still
+  require an exact-main protected rerun. These counts alone will not promote
+  semantic relationships.
 
 ### Historical workbook cohort reconciliation
 
@@ -5856,7 +5870,7 @@ source qualification remains pending their actual final artifacts.
 ### Actual PBS source-local lexical reference screen
 
 - [x] Protected exact-main retry 39730665004 passed on c9fd61e9. Retain the aggregate-only receipt with 18,208,758 native fields, 567,785 definitions, 2,160,066 candidate references, 2,086,489 unique exact literals and 73,577 without an exact literal. The screen emitted no native values and made no semantic relationship or domain claim.
-- [ ] Review source-specific relationship meaning and calibrate any matcher behavior using authorized bounded evidence before promoting these lexical matches.
+- [~] Complete source-specific relationship calibration. The bounded source-local meaning review and synthetic abstention controls are recorded; literal matching remains lexical only and no semantic relationships are promoted. Exact-main per-kind counts and reviewed source occurrences with base, scope, target-type, and predicate evidence remain open before any relationship qualification.
 
 ### Six historical workbook runtime cancellations
 
@@ -5884,8 +5898,10 @@ source qualification remains pending their actual final artifacts.
 
 ### PBS native Silver field-state reconciliation
 
-- [x] Independently reconcile the protected PBS v2 complete package and source-local reference screen aggregate receipts. Bind the exact candidate output ID and Parquet digest, 18,208,758 source fields all `native_unresolved`, zero interpreted fields, and 2,160,066 lexical reference candidates with 2,086,489 unique exact literal matches and 73,577 without an exact match. No source-native values are emitted. The lexical screen does not qualify relationship or domain meaning; rights, admission, canaries and publication remain false.
+- [x] Independently reconcile the protected PBS v2 complete package and source-local reference screen aggregate receipts. The initial field-state receipt counted all 18,208,758 source fields as `native_unresolved`; see the additive field-state reconciliation below for the later evidence-backed structural-role split. Bind the exact candidate output ID and Parquet digest and retain the lexical-reference boundary. No source-native values are emitted; rights, admission, canaries and publication remain false.
 - [x] Preserve preflight revision 32 and bind the current field-state receipt and reconciler in revision 33 after merging PR #1283's verified candidate output inventory.
 - [x] Correct PR #1284 review's digest-type finding: a rehashed package with 64 hex characters encoded as an array is rejected. Preserve the interrupted pre-fix full profile as exit 130 and rerun the corrected head.
 - [ ] Bind any supportable source-specific meanings and exact eligible output rights/admission, then run authorized consumer restore and delivery canaries.
 - [x] Record the maintainer's public-release rights attestation for the one exact PBS native Silver candidate Parquet output, bound to its output ID, SHA-256, byte count, source revision, and member identity. The instrument was not independently reviewed. Domain semantics, admission, publication, and consumer canaries remain separate.
+- [x] Qualify bounded item, product, restriction, price-component, and effective-date meanings against the exact pinned PBS v3 path inventory and existing official-schema evidence. Record the absence of an explicit status field, and leave status, price basis/currency/benefit, value interpretation, and cross-era meaning unresolved. No new sources, raw values, admission, canary, or publication are part of this qualification.
+- [x] Reconcile all 18,208,758 native field occurrences into mutually exclusive states using exact source-bound role counters: 17,252,839 bounded structural-role interpretations, 955,919 `native_unresolved`, and zero unavailable field occurrences. Retain native values as unresolved. Count the 2,800 qualified date-role occurrences as a non-additive overlay. Patient rates, current listing status, and cross-era/jurisdiction pooling remain unavailable or unqualified.

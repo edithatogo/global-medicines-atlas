@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-43.json"
+    "australian-m112-rights-release-preflight-20261024-48.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-42.json"
+    "australian-m112-rights-release-preflight-20261024-47.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -120,7 +120,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     report = _json(PREFLIGHT)
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-42.json"
+        "australian-m112-rights-release-preflight-20261024-47.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -129,7 +129,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-41.json"
+        "australian-m112-rights-release-preflight-20261024-46.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -142,7 +142,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261023-40.json"
+        "australian-m112-rights-release-preflight-20261024-45.json"
+    )
+    older_path = ROOT / predecessor["previous_preflight"]["path"]
+    older = _json(older_path)
+    assert older["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261024-44.json"
     )
 
 

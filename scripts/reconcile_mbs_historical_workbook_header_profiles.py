@@ -11,11 +11,18 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, cast
 
-from scripts.profile_frozen_mbs_sidecars import require_main_actions
-from scripts.profile_mbs_historical_workbook_headers import (
-    ARCHIVE_COUNT,
-    WORKBOOK_COUNT,
-)
+if __package__:
+    from scripts.profile_frozen_mbs_sidecars import require_main_actions
+    from scripts.profile_mbs_historical_workbook_headers import (
+        ARCHIVE_COUNT,
+        WORKBOOK_COUNT,
+    )
+else:
+    from profile_frozen_mbs_sidecars import require_main_actions
+    from profile_mbs_historical_workbook_headers import (
+        ARCHIVE_COUNT,
+        WORKBOOK_COUNT,
+    )
 
 from global_medicines_atlas.mbs_archive_inventory import (
     DATASET,

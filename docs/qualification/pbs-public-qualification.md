@@ -389,3 +389,94 @@ aggregate at [issue #341 comment 5863205715](https://github.com/edithatogo/globa
 The exact-main [run 36417477472](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36417477472) selected `pbs-v3-pinned-2026-04-01-v1` for the archive member pinned at dataset revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`. The durable aggregate at [issue #341 comment 5870245890](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5870245890) binds manifest, parent receipt, archive and member digests. It records 2,799 conversions, one missing recognized date slot, and 7,727,884 XML elements outside the recognized date roles. No invalid or unsupported date state was reported; those unmapped elements are not date failures. All five structural/storage projections share the same native digest and verified Parquet round trips.
 
 The [value-free qualification receipt](../../quality/qualifications/pbs-v3-2026-04-01-date-profile-qualification-20260929.json) preserves the run and aggregate hashes. This qualifies only the documented XSD `YYYY-MM-DD` grammar for the exact 1 April 2026 V3 member. It does not infer validity intervals or current status, qualify PBS domain semantics or other eras, confer terminology rights, or authorize derived-data publication. The aggregate continues to state `domain_semantics_qualified=false` and `structural_storage_candidate_only`.
+
+## Bounded PBS domain-field meanings, 2026-10-23
+
+The value-free [domain-field qualification](../../quality/qualifications/pbs-domain-field-semantics-20261023.json)
+binds a small set of meanings to the exact April 2026 v3 member, its complete
+5,163-path/18,208,758-slot inventory, the prior source-bound role receipt, and
+the pinned date-profile receipt. The meaning basis is the existing PBS v3
+structural contract plus the official v3 developer guide and mapping
+specification already used by the date qualification. No new source or payload
+was added to this qualification.
+
+The source `pharmaceutical-item` occurrence, drug/product and nested `mp`
+structures, prescribing restriction/rule structures, source-labelled price
+component/amount structures, and the exact documented schedule/effectivity
+date roles have bounded source-structure meanings. The `dcterms:valid` field
+is classified separately from schedule effective dates. This records what the
+source fields represent in their native PBS XML structure. It does not turn
+codes into global identities, resolve product or terminology references,
+interpret restrictions as patient eligibility, or treat a price amount as a
+payable benefit or patient cost.
+
+The complete inventory contains no field named `status`; status remains
+unresolved. Price basis, currency, contribution and benefit meaning also
+remain unresolved. The 2026-04-01 v3 date grammar applies only to that member;
+the date roles remain separate and do not establish intervals or current
+listing status. Native values remain `native_unresolved`, and complete PBS
+domain semantics, other eras, rights, admission, publication and consumer
+canaries are not qualified by this bounded result.
+
+## PBS native field-state reconciliation, 2026-10-23
+
+The [field-state reconciliation receipt](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261023.json)
+partitions all 18,208,758 native field occurrences from the exact 1 April 2026
+PBS v3 member across every one of the 5,163 inventoried schema paths. It binds
+the complete native Silver package, source-local
+reference screen, prior field-state reconciliation, observed role counters,
+schema-path inventory, and bounded domain-meaning profile by digest.
+
+| State | Fields | Meaning |
+| --- | ---: | --- |
+| `interpreted` | 17,252,839 | Bounded source-structure role for item, product, restriction/rule, and price-component fields. This does not interpret individual native values. |
+| `native_unresolved` | 955,919 | Historical-record, organisation, reference, schedule, and vocabulary-metadata roles without a qualified domain meaning. |
+| `unavailable` | 0 | The exact-source parse and role counters account for the full field denominator. This is a field-state count, not a claim that all PBS facts are available. |
+| **Total** | **18,208,758** | **Denominator closes exactly.** |
+
+The 2,800 qualified schedule/item/restriction date-role occurrences are a
+non-additive overlay within the role partition. The date profile applies only
+to this pinned member and does not establish validity intervals, precedence,
+or current status. Native values, including identifiers, amounts, references,
+and text, remain preserved and unresolved; exact-literal references remain
+lexical diagnostics.
+
+This is one historical PBS v3 schedule, so no cross-era or cross-jurisdiction
+pooling is qualified. No explicit PBS status field was observed; snapshot dates
+do not establish current listing status. Patient rates are unavailable because
+this source contains no patient-level numerator/denominator evidence. Price
+structure does not establish currency, payable benefit, patient cost, or
+clinical eligibility. These findings change no rights, admission, canary, or
+publication status and use no new sources or source values.
+
+## PBS source-local reference review, 2026-10-23
+
+The [value-free interpretation receipt](../../quality/qualifications/pbs-native-reference-meaning-review-20261023.json)
+reviews the exact-main lexical screen for the 1 April 2026 V3 member at
+revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`. It binds screen run
+`39730665004`, member SHA-256
+`73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43`, and
+native digest `890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25`.
+
+The screen reported 2,086,489 unique exact-literal candidates among 2,160,066
+references (96.5938% candidate yield), with 73,577 references having no exact
+literal and no duplicate definition literals. These are aggregate lexical
+counts, not semantic precision or recall. The receipt does not provide
+per-reference-kind counts.
+
+An `rdf:resource` literal matching an `rdf:about` literal is only a same-spelling
+RDF subject candidate. An XLink fragment matching an `xml:id` is only a
+candidate fragment target. An `xml:id` remains a source-local identifier; it
+is not a global PBS item key or terminology identity. Effective `xml:base`,
+URI resolution, graph/document scope, link role, target type, and predicate
+meaning are needed before those candidates can support relationships.
+
+Synthetic calibration includes positive, missing, empty, duplicate-target,
+case, namespace, and unsupported-form controls. A counterexample with identical
+relative RDF literals under different `xml:base` contexts still passes literal
+equality, demonstrating why the matcher must abstain from semantic promotion.
+No PBS semantic relationship is qualified by this review. Future qualification
+requires kind-specific counts and occurrence-level context sufficient to
+resolve bases, scopes, target types, and relation meaning. No source values or
+new sources were added; this review changes no rights, admission, canary, or
+publication status.

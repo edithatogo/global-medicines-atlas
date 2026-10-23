@@ -1,0 +1,81 @@
+{
+  "report": {
+    "calibration": {
+      "controls": [
+        "same-space exact literal yields a lexical candidate",
+        "duplicate target literals are ambiguous and cannot produce a unique candidate",
+        "missing, empty, case-different, namespace-different and unsupported forms do not match",
+        "identical relative RDF literals under different xml:base contexts still yield a lexical candidate and must abstain from semantic promotion"
+      ],
+      "method": "deterministic synthetic positive, negative, ambiguity and base-context controls",
+      "promotion_rule": "abstain; no literal-only candidate is emitted as a semantic edge",
+      "source_semantic_precision": "not estimable from aggregate-only source receipt"
+    },
+    "exact_source_screen": {
+      "ambiguous_definition_literals": 0,
+      "candidate_coverage_percent": 96.5938,
+      "definitions": 567785,
+      "interpretation": "candidate yield, not precision, recall, semantic validity, or relation accuracy",
+      "no_exact_literal": 73577,
+      "per_kind_match_counts_available": false,
+      "references": 2160066,
+      "unique_exact_literal_candidates": 2086489
+    },
+    "profile_id": "pbs-april-2026-source-local-reference-review-v1",
+    "reference_kinds": {
+      "item_xml_id": {
+        "limits": [
+          "not a global PBS item key",
+          "not a terminology identity or medicine-equivalence assertion"
+        ],
+        "meaning": "source-local XML identifier literal",
+        "screen_rule": "identifier occurrence and duplicate count only",
+        "semantic_links_qualified": false
+      },
+      "rdf_resource_to_rdf_about": {
+        "meaning": "RDF resource literal with a same-spelling RDF subject candidate",
+        "missing_context": [
+          "effective xml:base on both occurrences",
+          "RDF graph/document scope",
+          "target type and predicate meaning"
+        ],
+        "screen_rule": "binary literal equality in the RDF namespace only",
+        "semantic_links_qualified": false
+      },
+      "xlink_fragment_to_xml_id": {
+        "meaning": "XLink fragment literal with a same-spelling XML ID candidate",
+        "missing_context": [
+          "effective xml:base and URI resolution",
+          "link role and source/target element types",
+          "fragment target semantics for this link occurrence"
+        ],
+        "screen_rule": "leading # removed only for nonempty fragment syntax, then binary equality in the XML-ID namespace",
+        "semantic_links_qualified": false
+      }
+    },
+    "schema_id": "global-medicines-atlas.pbs-reference-meaning-review",
+    "schema_version": 1,
+    "scope": {
+      "consumer_canaries": 0,
+      "new_admissions": 0,
+      "new_sources": 0,
+      "publications": 0,
+      "rights_conclusion_changed": false,
+      "semantic_relationships_qualified": false,
+      "source_values_emitted": false
+    },
+    "source": {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "native_digest": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+      "native_fields": 18208758,
+      "reference_fields_sha256": "4a182e94b791fa0939792fe0159c8daca8ec2577c7f6f49a3de88378e5485793",
+      "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "screen_receipt_sha256": "a1adda4e946365b98bf3febc03b9ae51acdae6db1569c7fc6606f8892c7ae48e",
+      "screen_run_id": "39730665004",
+      "screen_workflow_commit": "c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4"
+    },
+    "status": "lexical_candidates_reviewed_semantic_links_unqualified"
+  },
+  "report_sha256": "a15d0dcc2a1e58fb70baa79051e8e15a3ae16e7361debab61ada42bb52c0b78c"
+}
