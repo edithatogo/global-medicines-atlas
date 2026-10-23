@@ -389,3 +389,31 @@ aggregate at [issue #341 comment 5863205715](https://github.com/edithatogo/globa
 The exact-main [run 36417477472](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36417477472) selected `pbs-v3-pinned-2026-04-01-v1` for the archive member pinned at dataset revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`. The durable aggregate at [issue #341 comment 5870245890](https://github.com/edithatogo/global-medicines-atlas/issues/341#issuecomment-5870245890) binds manifest, parent receipt, archive and member digests. It records 2,799 conversions, one missing recognized date slot, and 7,727,884 XML elements outside the recognized date roles. No invalid or unsupported date state was reported; those unmapped elements are not date failures. All five structural/storage projections share the same native digest and verified Parquet round trips.
 
 The [value-free qualification receipt](../../quality/qualifications/pbs-v3-2026-04-01-date-profile-qualification-20260929.json) preserves the run and aggregate hashes. This qualifies only the documented XSD `YYYY-MM-DD` grammar for the exact 1 April 2026 V3 member. It does not infer validity intervals or current status, qualify PBS domain semantics or other eras, confer terminology rights, or authorize derived-data publication. The aggregate continues to state `domain_semantics_qualified=false` and `structural_storage_candidate_only`.
+
+## Bounded PBS domain-field meanings, 2026-10-23
+
+The value-free [domain-field qualification](../../quality/qualifications/pbs-domain-field-semantics-20261023.json)
+binds a small set of meanings to the exact April 2026 v3 member, its complete
+5,163-path/18,208,758-slot inventory, the prior source-bound role receipt, and
+the pinned date-profile receipt. The meaning basis is the existing PBS v3
+structural contract plus the official v3 developer guide and mapping
+specification already used by the date qualification. No new source or payload
+was added to this qualification.
+
+The source `pharmaceutical-item` occurrence, drug/product and nested `mp`
+structures, prescribing restriction/rule structures, source-labelled price
+component/amount structures, and the exact documented schedule/effectivity
+date roles have bounded source-structure meanings. The `dcterms:valid` field
+is classified separately from schedule effective dates. This records what the
+source fields represent in their native PBS XML structure. It does not turn
+codes into global identities, resolve product or terminology references,
+interpret restrictions as patient eligibility, or treat a price amount as a
+payable benefit or patient cost.
+
+The complete inventory contains no field named `status`; status remains
+unresolved. Price basis, currency, contribution and benefit meaning also
+remain unresolved. The 2026-04-01 v3 date grammar applies only to that member;
+the date roles remain separate and do not establish intervals or current
+listing status. Native values remain `native_unresolved`, and complete PBS
+domain semantics, other eras, rights, admission, publication and consumer
+canaries are not qualified by this bounded result.
