@@ -3,6 +3,7 @@
 import json
 from datetime import date
 from decimal import Decimal
+from hashlib import sha256
 from io import BytesIO
 from pathlib import Path
 from types import SimpleNamespace
@@ -383,3 +384,53 @@ def test_p7_parsed_dates_remain_unresolved_for_temporal_consumers() -> None:
 def test_workbook_temporal_consumer_rejects_nondate_columns() -> None:
     with pytest.raises(ValueError, match="not a source date"):
         workbook_date_for_comparison(rows_for(fixture())["A2"])
+
+
+def test_p7_value_era_rules_bind_exact_source_without_selecting_dates() -> None:
+    root = Path(__file__).resolve().parents[1]
+    rules_path = (
+        root / "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
+    )
+    rules = json.loads(rules_path.read_text(encoding="utf-8"))
+
+    assert rules["source"]["source_id"] == "au-mbs-p7-legacy-workbook"
+    assert rules["source"]["sha256"] == (
+        "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+    )
+    assert rules["source"]["byte_count"] == 87727
+    assert rules["rules"]["dates"]["selected_profile"] is None
+    assert rules["rules"]["dates"]["calendar_compatibility"] == {
+        "both_dmy_and_mdy_valid": 1276,
+        "dmy_only": 4,
+        "mdy_only": 0,
+        "source_values_emitted": False,
+        "profile_selected": False,
+    }
+    assert rules["rules"]["dates"]["consumer_state"] == "native_unresolved"
+    assert rules["rules"]["dates"]["temporal_comparison_enabled"] is False
+    assert rules["rules"]["benefits"]["formula_cells"] == 4
+    assert rules["rules"]["benefits"]["error_cells"] == 2
+    assert (
+        rules["rules"]["schema_eras"]["historical_workbook"]
+        != (rules["rules"]["schema_eras"]["current_xml"])
+    )
+    assert rules["gates"]["all_13742_cells_remain_native_unresolved"] is True
+    assert rules["gates"]["date_profile_selected"] is False
+
+    for evidence in rules["evidence"].values():
+        evidence_path = root / evidence["path"]
+        assert (
+            sha256(evidence_path.read_bytes()).hexdigest() == evidence["sha256"]
+        )
+
+    qualification_path = (
+        root / rules["evidence"]["typed_candidate_qualification"]["path"]
+    )
+    qualification = json.loads(qualification_path.read_text(encoding="utf-8"))
+    typed = qualification["typed_candidate_package"]
+    assert typed["coverage"]["native_cells"] == 13742
+    assert typed["coverage"]["unresolved_cells"] == 13742
+    assert typed["coverage"]["formula_cells"] == 4
+    assert typed["coverage"]["error_cells"] == 2
+    assert typed["date_profile"] is None
+    assert typed["semantic_promotion"] is False
