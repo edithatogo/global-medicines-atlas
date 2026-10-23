@@ -1457,6 +1457,8 @@ def gremlins() -> None:
             ),
             "--gremlins",
             "--gremlin-executor=subprocess",
+            "--gremlin-cache",
+            "--gremlin-workers=4",
         )
     )
 

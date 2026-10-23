@@ -231,6 +231,8 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
     assert "pytest -q -n 2 --dist worksteal" in workflow
     assert "Restore content-validated gremlins cache" in workflow
     assert "actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9" in workflow
+    assert "gremlins-${{ runner.os }}-py315-" in workflow
+    assert "matrix.profile == 'gremlins' && 180 || 45" in workflow
     assert "'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*'" in workflow
 
 

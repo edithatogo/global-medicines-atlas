@@ -343,7 +343,7 @@ jobs:
   quality:
     name: Python 3.15 / ${{ matrix.profile }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: ${{ matrix.profile == 'gremlins' && 180 || 45 }}
     permissions:
       contents: read
       id-token: write # Required only for keyless Codecov OIDC upload.
@@ -389,9 +389,9 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .gremlins_cache
-          key: gremlins-${{ runner.os }}-py314-${{ hashFiles('uv.lock', 'pyproject.toml', 'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*') }}
+          key: gremlins-${{ runner.os }}-py315-${{ hashFiles('uv.lock', 'pyproject.toml', 'scripts/test_goblin.py', 'src/**/*.py', 'tests/**/*') }}
           restore-keys: |
-            gremlins-${{ runner.os }}-py314-
+            gremlins-${{ runner.os }}-py315-
       - name: Run Test-Goblin ${{ matrix.profile }} profile
         if: >-
           (matrix.profile != 'mutation' && matrix.profile != 'gremlins') ||
