@@ -9,7 +9,7 @@ import operator
 from dataclasses import dataclass, field
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any
+from typing import Any, cast
 
 from scripts.profile_frozen_mbs_sidecars import require_main_actions
 from scripts.profile_mbs_historical_workbook_headers import (
@@ -134,16 +134,18 @@ def _profile_groups(report: dict[str, Any]) -> _ProfileTotals:
         profile_sha = group.get("header_profile_sha256")
         if not isinstance(profile, dict) or not isinstance(profile_sha, str):
             raise TypeError("MBS header-profile group is malformed")
-        if _sha256(_canonical(profile)) != profile_sha:
+        typed_profile = cast("dict[str, Any]", profile)
+        typed_group = cast("dict[str, Any]", group)
+        if _sha256(_canonical(typed_profile)) != profile_sha:
             raise ValueError("MBS header-profile digest differs")
         if profile_sha in totals.groups:
             raise ValueError("MBS header-profile group is duplicated")
         count = group.get("member_count")
         if type(count) is not int or count <= 0:
             raise ValueError("MBS header-profile member count differs")
-        totals.groups[profile_sha] = group
+        totals.groups[profile_sha] = typed_group
 
-        candidate_counts = _count_profile_candidates(profile, count)
+        candidate_counts = _count_profile_candidates(typed_profile, count)
         totals.exact_headers += candidate_counts[0]
         totals.unresolved_headers += candidate_counts[1]
         totals.interpreted_bindings += candidate_counts[2]
@@ -417,7 +419,7 @@ def _read_inputs(input_dir: Path) -> list[dict[str, Any]]:
         report = json.loads(raw)
         if not isinstance(report, dict):
             raise TypeError("MBS archive profile receipt is malformed")
-        reports.append(report)
+        reports.append(cast("dict[str, Any]", report))
     return reports
 
 
