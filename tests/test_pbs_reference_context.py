@@ -60,6 +60,50 @@ def test_context_screen_is_deterministic_and_classifies_negative_controls():
     }
 
 
+def test_nested_subject_and_duplicate_targets_have_exact_occurrence_addresses():
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <outer rdf:about="urn:subject">
+        <wrapper><edge rdf:resource="urn:target"/></wrapper>
+      </outer>
+      <target rdf:about="urn:target"/>
+      <target rdf:about="urn:target"/>
+    </root>"""
+    report = screen_reference_context(xml)
+    row = next(
+        row
+        for row in report["strata"]
+        if row["match_status"] == "ambiguous_exact_literal"
+    )
+    example = row["examples"][0]
+    assert row["predicate_element_qname"] == "{http://schema.pbs.gov.au/}edge"
+    assert (
+        row["nearest_subject_element_qname"]
+        == "{http://schema.pbs.gov.au/}outer"
+    )
+    assert (
+        example["predicate_element"]["qname"]
+        == "{http://schema.pbs.gov.au/}edge"
+    )
+    assert example["predicate_element"]["occurrence"].endswith("}edge/1")
+    assert (
+        example["nearest_subject_element"]["qname"]
+        == "{http://schema.pbs.gov.au/}outer"
+    )
+    assert example["nearest_subject_element"]["occurrence"].endswith("}outer/1")
+    assert example["target_multiplicity"] == 2
+    assert [target["qname"] for target in example["targets"]] == [
+        "{http://schema.pbs.gov.au/}target",
+        "{http://schema.pbs.gov.au/}target",
+    ]
+    assert [
+        target["occurrence"].rsplit("/", 1)[-1] for target in example["targets"]
+    ] == ["1", "2"]
+    serialized = json.dumps(report)
+    assert "urn:subject" not in serialized
+    assert "urn:target" not in serialized
+
+
 def test_context_screen_rejects_wrong_root():
     with pytest.raises(ValueError, match="root does not match"):
         screen_reference_context(b"<wrong/>")

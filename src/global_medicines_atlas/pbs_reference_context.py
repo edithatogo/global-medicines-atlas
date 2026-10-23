@@ -62,7 +62,7 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
             "CREATE TABLE defs (space TEXT, literal TEXT, address TEXT, target_qname TEXT)"
         )
         db.execute(
-            "CREATE TABLE refs (kind TEXT, space TEXT, literal TEXT, address TEXT, predicate_qname TEXT, subject_qname TEXT, base_depth INTEGER, literal_class TEXT)"
+            "CREATE TABLE refs (kind TEXT, space TEXT, literal TEXT, address TEXT, predicate_qname TEXT, predicate_address TEXT, subject_qname TEXT, subject_address TEXT, base_depth INTEGER, literal_class TEXT)"
         )
         stack: list[dict[str, Any]] = []
         child_counts: list[Counter[str]] = []
@@ -92,11 +92,11 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                     base_depth = inherited_base + (
                         1 if XML_BASE in element.attrib else 0
                     )
-                    subject_qname = next(
+                    subject_frame = next(
                         (
-                            frame["subject_qname"]
+                            frame
                             for frame in reversed(stack)
-                            if frame["subject_qname"]
+                            if frame["subject_address"]
                         ),
                         None,
                     )
@@ -111,7 +111,20 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                         "address": address,
                         "base_depth": base_depth,
                         "element": element,
-                        "subject_qname": local_subject or subject_qname,
+                        "subject_address": address
+                        if local_subject
+                        else (
+                            subject_frame["subject_address"]
+                            if subject_frame
+                            else None
+                        ),
+                        "subject_qname": element.tag
+                        if local_subject
+                        else (
+                            subject_frame["subject_qname"]
+                            if subject_frame
+                            else None
+                        ),
                         "tag": element.tag,
                     }
                     stack.append(current)
@@ -162,14 +175,16 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                                     "PBS reference context occurrence bound exceeded"
                                 )
                             db.execute(
-                                "INSERT INTO refs VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                "INSERT INTO refs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 (
                                     kind,
                                     space,
                                     target_literal,
                                     f"{address}/attributes/{_pointer(attr)}",
-                                    attr,
+                                    element.tag,
+                                    address,
                                     current["subject_qname"],
+                                    current["subject_address"],
                                     base_depth,
                                     _literal_class(kind, literal),
                                 ),
@@ -192,9 +207,9 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
         summaries: dict[tuple[str, ...], dict[str, Any]] = {}
         cursor = db.execute("""
             SELECT r.kind, r.literal, r.space, r.address, r.predicate_qname,
-                   coalesce(r.subject_qname, 'none'), r.base_depth,
-                   r.literal_class, count(d.address),
-                   coalesce(group_concat(DISTINCT d.target_qname), '')
+                   r.predicate_address, coalesce(r.subject_qname, 'none'),
+                   r.subject_address, r.base_depth,
+                   r.literal_class, count(d.address)
             FROM refs r LEFT JOIN defs d ON r.space = d.space AND r.literal = d.literal
             GROUP BY r.rowid
             ORDER BY r.kind, r.address
@@ -204,14 +219,14 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
             literal,
             space,
             address,
-            predicate,
+            predicate_qname,
+            predicate_address,
             subject,
+            subject_address,
             base_depth,
             form,
             target_count,
-            target_qnames,
         ) in cursor:
-            target_names = str(target_qnames).split(",")
             status = (
                 "empty_literal"
                 if not literal
@@ -224,14 +239,14 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                 else "ambiguous_exact_literal"
             )
             base = "no_xml_base" if base_depth == 0 else "xml_base_present"
-            key = (kind, status, predicate, subject, base, form)
+            key = (kind, status, predicate_qname, subject, base, form)
             row = summaries.setdefault(
                 key,
                 {
                     "kind": kind,
                     "match_status": status,
-                    "predicate_qname": predicate,
-                    "nearest_subject_attribute_qname": subject,
+                    "predicate_element_qname": predicate_qname,
+                    "nearest_subject_element_qname": subject,
                     "xml_base_context": base,
                     "literal_shape": form,
                     "occurrences": 0,
@@ -244,12 +259,29 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
             row["unique_target_occurrences"] += target_count == 1
             row["ambiguous_target_occurrences"] += target_count > 1
             if len(row["examples"]) < MAX_EXAMPLES_PER_STRATUM:
+                targets = db.execute(
+                    "SELECT address, target_qname FROM defs WHERE space = ? AND literal = ? ORDER BY address LIMIT 10",
+                    (space, literal),
+                ).fetchall()
                 row["examples"].append({
                     "reference_occurrence": address,
-                    "target_multiplicity": target_count,
-                    "target_qnames": sorted(
-                        name for name in target_names if name
+                    "predicate_element": {
+                        "occurrence": predicate_address,
+                        "qname": predicate_qname,
+                    },
+                    "nearest_subject_element": (
+                        {
+                            "occurrence": subject_address,
+                            "qname": subject,
+                        }
+                        if subject_address is not None
+                        else None
                     ),
+                    "target_multiplicity": target_count,
+                    "targets": [
+                        {"occurrence": target_address, "qname": target_qname}
+                        for target_address, target_qname in targets
+                    ],
                 })
         strata = [summaries[key] for key in sorted(summaries)]
         return {
