@@ -5865,3 +5865,10 @@ source qualification remains pending their actual final artifacts.
 - [x] Extend exact two-run reconciliation to emit each verified candidate output ID, Parquet digest and byte count, source/member digests, and `native_unresolved` field state. Reject malformed Parquet fingerprints even if an output ID is recomputed. This is aggregate metadata only; rights, admission and publication stay false. Twenty-three focused tests pass with 93.07% branch coverage.
 - [x] Complete the pinned-uv local full profile with exit 0. Correct PR #1283 review's digest-type gap by requiring a string SHA-256 and rejecting a rehashed array of 64 valid hex characters. Recheck affected tests and protected exact-head CI before merge.
 - [ ] Once protected six-member retry succeeds, reconcile the original 85 and retried six, retain exact output identities, then bind eligible rights, admission, restore and consumer evidence separately.
+
+### PBS native Silver field-state reconciliation
+
+- [x] Independently reconcile the protected PBS v2 complete package and source-local reference screen aggregate receipts. Bind the exact candidate output ID and Parquet digest, 18,208,758 source fields all `native_unresolved`, zero interpreted fields, and 2,160,066 lexical reference candidates with 2,086,489 unique exact literal matches and 73,577 without an exact match. No source-native values are emitted. The lexical screen does not qualify relationship or domain meaning; rights, admission, canaries and publication remain false.
+- [x] Preserve preflight revision 32 and bind the current field-state receipt and reconciler in revision 33 after merging PR #1283's verified candidate output inventory.
+- [x] Correct PR #1284 review's digest-type finding: a rehashed package with 64 hex characters encoded as an array is rejected. Preserve the interrupted pre-fix full profile as exit 130 and rerun the corrected head.
+- [ ] Bind any supportable source-specific meanings and exact eligible output rights/admission, then run authorized consumer restore and delivery canaries.
