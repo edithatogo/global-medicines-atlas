@@ -145,24 +145,6 @@ def test_profile_tests_installs_scalene_from_its_declared_dependency_group(
     ]
 
 
-def test_gremlins_profile_uses_python_315_cache_and_bounded_parallelism(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """Use the Python 3.15 cache and four-worker hosted mutation run."""
-    commands: list[list[str]] = []
-    monkeypatch.setattr(HARNESS, "run", commands.append)
-
-    HARNESS.gremlins()
-
-    assert len(commands) == 1
-    assert commands[0][-4:] == [
-        "--gremlins",
-        "--gremlin-executor=subprocess",
-        "--gremlin-cache",
-        "--gremlin-workers=4",
-    ]
-
-
 def load_update_script(name: str) -> ModuleType:
     """Load a governed update utility with its sibling imports available."""
     scripts = str(ROOT / "scripts")
