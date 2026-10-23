@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-31.json"
+    "australian-m112-rights-release-preflight-20261023-32.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261022-30.json"
+    "australian-m112-rights-release-preflight-20261023-31.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -56,7 +56,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261022-30.json"
+        "australian-m112-rights-release-preflight-20261023-31.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -344,3 +344,16 @@ def test_two_run_reconciler_remains_candidate_until_actual_retry() -> None:
     assert report["actual_retry_qualified"] is False
     assert report["all_91_qualified"] is False
     assert report["new_admissions"] == 0
+
+
+def test_historical_workbook_candidate_output_inventory_keeps_gates_closed() -> (
+    None
+):
+    report = _json(PREFLIGHT)["historical_workbook_candidate_output_inventory"]
+    assert report["original_run_id"] == 39724026209
+    assert report["retry_run_id"] == 39891918206
+    assert report["all_91_qualified"] is False
+    assert report["field_state"] == "native_unresolved"
+    assert report["rights_qualified"] is False
+    assert report["admitted"] is False
+    assert report["published"] is False

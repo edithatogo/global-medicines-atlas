@@ -5859,3 +5859,8 @@ source qualification remains pending their actual final artifacts.
 - [x] Address PR #1282 review finding before merge: the 85 successful original receipts and six retry receipts have different exact-main commits. Require all 91 original receipts; verify the six original `member-native-check` incomplete states and their digests; select exactly six successful retry receipts; retain per-group run and commit; reject duplicate output/member identities and double counting. Nineteen focused tests pass with 92.89% branch coverage; 46 affected workbook tests and typing pass. Actual retry outcome remains pending.
 - [x] Retain the local full profile as failed: 7,834 passed, two stable-v1 reproducibility failures caused by host `uv` 0.13.4 where the repository requires 0.11.29, three skipped. A pinned `uv` 0.11.29 focused recheck is running.
 - [ ] Refresh current preflight, pass protected exact-head CI, resolve the review finding only after the fix is on the PR head, then merge and dispatch the exact six-member retry.
+
+### Historical workbook candidate output inventory
+
+- [x] Extend exact two-run reconciliation to emit each verified candidate output ID, Parquet digest and byte count, source/member digests, and `native_unresolved` field state. Reject malformed Parquet fingerprints even if an output ID is recomputed. This is aggregate metadata only; rights, admission and publication stay false. Twenty-three focused tests pass with 93.07% branch coverage.
+- [ ] Once protected six-member retry succeeds, reconcile the original 85 and retried six, retain exact output identities, then bind eligible rights, admission, restore and consumer evidence separately.
