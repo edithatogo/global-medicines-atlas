@@ -274,7 +274,7 @@
       ],
       "fallback": "Use immutable Parquet plus append-only receipts and embedded DuckDB.",
       "rollback": "Remove optional experiment state and rebuild from immutable evidence.",
-      "disposition": "reused",
+      "disposition": "defer",
       "experiment_started": false,
       "production_dependency_adopted": false,
       "technology_promotion_claimed": false

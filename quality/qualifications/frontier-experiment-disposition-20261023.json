@@ -7,7 +7,7 @@
   "reviewed_inputs": [
     {
       "path": "quality/qualifications/frontier-experiment-matrix.json",
-      "sha256": "94fcfbdc40bd8ff7fc841de90fa0a9a1dd2a782e9e7387b54c62b08e8f1b10d9"
+      "sha256": "56b501af293280b0a7867fa1c5d6ee1a46be4be2e6883459ccf7f805280f1412"
     },
     {
       "path": "quality/qualifications/frontier-screen-calibration-v2-20261018.json",
