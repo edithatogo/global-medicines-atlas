@@ -55,6 +55,7 @@ AUSTRALIAN_HEALTH_REQUIREMENTS = {
     "M-113",
 }
 M105_WAIVER = "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
+M105_CURRENT_DISPOSITION = "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
 M105_DISPOSITIONS = (
     "quality/qualifications/australian-donor-m105-dispositions.json"
 )
@@ -387,6 +388,24 @@ def _m105_qualification_with_approved_waiver() -> bool:
     )
 
 
+def _m105_currently_blocked() -> bool:
+    """Keep M-105 blocked under the latest explicit maintainer disposition."""
+    try:
+        disposition = json.loads(
+            (ROOT / M105_CURRENT_DISPOSITION).read_text(encoding="utf-8")
+        )
+    except OSError, json.JSONDecodeError:
+        return True
+    return not (
+        disposition.get("schema_id")
+        == "global-medicines-atlas.australian-donor-m105-current-disposition"
+        and disposition.get("schema_version") == 1
+        and disposition.get("requirement") == "M-105"
+        and disposition.get("status")
+        == "accepted_after_new_maintainer_decision"
+    )
+
+
 def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
     raw: dict[str, Any],
 ) -> dict[str, Any]:
@@ -455,7 +474,8 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                 AUSTRALIAN_HEALTH_GATE
             }
             if (
-                _m105_qualification_with_approved_waiver()
+                not _m105_currently_blocked()
+                and _m105_qualification_with_approved_waiver()
                 and not adverse
                 and not other_blockers
             ):
@@ -472,7 +492,12 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                 )
             requirement["evidence"] = _append_unique(
                 requirement["evidence"],
-                [M105_WAIVER, M105_DISPOSITIONS, M105_PARITY_GAP],
+                [
+                    M105_CURRENT_DISPOSITION,
+                    M105_WAIVER,
+                    M105_DISPOSITIONS,
+                    M105_PARITY_GAP,
+                ],
             )
         elif requirement_id == "M-113":
             adverse = requirement["state"] in {"failed", "unverified"}
