@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-37.json"
+    "australian-m112-rights-release-preflight-20261023-38.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-36.json"
+    "australian-m112-rights-release-preflight-20261023-37.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -53,24 +53,6 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert not any(
         "full PBS utilisation vocabulary exclusion review" in item["work"]
         for item in report["remaining_rights_work"]
-    )
-    previous = report["previous_preflight"]
-    assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261023-36.json"
-    )
-    assert previous["preserved_unchanged"] is True
-    assert (
-        hashlib.sha256(PREVIOUS_PREFLIGHT.read_bytes()).hexdigest()
-        == previous["sha256"]
-    )
-    previous_report = _json(PREVIOUS_PREFLIGHT)
-    assert (
-        previous_report["release_and_admission_boundaries"]["v4_admissions"]
-        == 8
-    )
-    assert (
-        previous_report["release_and_admission_boundaries"]["consumer_canaries"]
-        == 8
     )
     pbs_screen = report["pbs_native_reference_screen_actual_readback"]
     assert pbs_screen["run_id"] == 39730665004
@@ -132,6 +114,31 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert projection["public_release_rights_attested"] is True
     assert projection["permission_instrument_independently_reviewed"] is False
     assert projection["release_performed_by_this_reconciliation"] is False
+
+
+def test_preflight_successor_preserves_the_snapshot_chain() -> None:
+    report = _json(PREFLIGHT)
+    previous = report["previous_preflight"]
+    assert previous["path"].endswith(
+        "australian-m112-rights-release-preflight-20261023-37.json"
+    )
+    assert previous["preserved_unchanged"] is True
+    assert (
+        hashlib.sha256(PREVIOUS_PREFLIGHT.read_bytes()).hexdigest()
+        == previous["sha256"]
+    )
+    previous_report = _json(PREVIOUS_PREFLIGHT)
+    assert previous_report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261023-36.json"
+    )
+    assert (
+        previous_report["release_and_admission_boundaries"]["v4_admissions"]
+        == 8
+    )
+    assert (
+        previous_report["release_and_admission_boundaries"]["consumer_canaries"]
+        == 8
+    )
 
 
 def test_pbs_native_silver_field_state_is_candidate_only() -> None:
