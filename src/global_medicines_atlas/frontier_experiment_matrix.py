@@ -34,6 +34,7 @@ def maximum_latency_ceiling_ns(size: WorkloadSize) -> int:
 
 class FrontierDisposition(StrEnum):
     REUSED = "reused"
+    RETAIN_PREVIEW = "retain-preview"
     DEFER = "defer"
 
 

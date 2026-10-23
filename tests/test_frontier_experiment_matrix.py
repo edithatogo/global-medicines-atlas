@@ -37,6 +37,40 @@ def test_checked_in_matrix_is_complete_bounded_and_inert() -> None:
     )
 
 
+def test_matrix_records_preview_dispositions_without_promotion() -> None:
+    raw = document()
+    for experiment_id in (
+        "iceberg_catalogue",
+        "batch_attestation",
+        "graph_semantic_projection",
+    ):
+        row = next(
+            item
+            for item in raw["experiments"]
+            if item["experiment_id"] == experiment_id
+        )
+        row["disposition"] = "retain-preview"
+
+    matrix = FrontierExperimentMatrix.model_validate(raw)
+
+    retained = {
+        item.experiment_id
+        for item in matrix.experiments
+        if item.disposition.value == "retain-preview"
+    }
+    assert retained == {
+        "iceberg_catalogue",
+        "batch_attestation",
+        "graph_semantic_projection",
+    }
+    assert not any(
+        item.production_dependency_adopted for item in matrix.experiments
+    )
+    assert not any(
+        item.technology_promotion_claimed for item in matrix.experiments
+    )
+
+
 def test_latency_ceiling_is_predeclared_for_each_workload() -> None:
     raw = document()
     for profile, ceiling in zip(
