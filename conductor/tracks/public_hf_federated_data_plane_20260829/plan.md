@@ -776,3 +776,21 @@ and the reviewed MBS lineage overlay. The later role refresh preserves the same
 canary evidence. That overlay closes the July 2025 XML and
 legacy P7 B1/B2 joins and reports 22 complete raw lineages; it does not change
 the 1,759 denominator or imply broader federation acceptance.
+
+## 2026-10-23 primary recovery identity reconciliation
+
+- [x] Reconcile each of the eight current M-112 v4 admissions to its exact
+  contract-pinned clean-room anonymous restore receipt and current immutable
+  HF manifest identity. The live pinned 28-file manifest digest matches all
+  eight object paths, byte counts, and SHA-256 values; the hosted restore
+  receipt body digest and successful workflow run were independently read
+  back. See
+  `quality/qualifications/australian-m112-primary-recovery-readback-20261023.json`.
+- [x] Keep this evidence classified as primary-only recovery: the same HF
+  administrative domain is used, `independent=false`, region is unverified,
+  and RPO/RTO are null. The 1,759 denominator, 8 admissions, 8 reader canaries,
+  and 1,751 deferrals are unchanged.
+- [ ] Configure and rehearse an approved geographically and administratively
+  independent recovery target with checksum inventory and qualified RPO/RTO.
+  No qualifying target or authority is present in the current repository
+  evidence; do not treat the same-account HF copy as independent.
