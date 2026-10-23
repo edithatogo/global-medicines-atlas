@@ -334,3 +334,13 @@ def test_historical_workbook_timeout_retry_scope_is_exact_and_unqualified() -> (
             hashlib.sha256((ROOT / item["path"]).read_bytes()).hexdigest()
             == item["sha256"]
         )
+
+
+def test_two_run_reconciler_remains_candidate_until_actual_retry() -> None:
+    report = _json(PREFLIGHT)["historical_workbook_two_run_reconciler"]
+    assert report["original_successes"] == 85
+    assert report["required_retry_groups"] == [65, 71, 80, 84, 86, 87]
+    assert report["requires_distinct_run_and_commit_per_group"] is True
+    assert report["actual_retry_qualified"] is False
+    assert report["all_91_qualified"] is False
+    assert report["new_admissions"] == 0

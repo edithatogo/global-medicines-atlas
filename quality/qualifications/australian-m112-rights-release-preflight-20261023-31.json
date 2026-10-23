@@ -353,6 +353,26 @@
     "retry_qualified": false,
     "successful_members": 85
   },
+  "historical_workbook_two_run_reconciler": {
+    "actual_retry_qualified": false,
+    "all_91_qualified": false,
+    "new_admissions": 0,
+    "new_federated_canaries": 0,
+    "new_sources": 0,
+    "original_successes": 85,
+    "publications": 0,
+    "required_retry_groups": [
+      65,
+      71,
+      80,
+      84,
+      86,
+      87
+    ],
+    "requires_distinct_run_and_commit_per_group": true,
+    "requires_original_incomplete_receipts": true,
+    "requires_unique_output_and_member_identities": true
+  },
   "inputs": {
     ".github/workflows/australian-donor-history.yml": "3899f5c7ec1b1c4beb2d15ff00950cf9bb6b9e8f02fc82c8cf69a723867bbe8f",
     ".github/workflows/australian-legacy-hf-publication.yml": "9eff8c742d240a6b7276d96e6be40aa5e5906e0f4860d9df1af5ce3609793325",
@@ -382,8 +402,8 @@
     ".github/workflows/pbs-public-metadata-diagnostic.yml": "cafcf903585fcba4795e9fa2603f2ebc193607f58a144a56e9be236cf2d44307",
     "conductor/decisions/0009-australian-health-authority-and-public-data-plane.md": "9a8e4dde55e56c04f59035080ce96ad64bfcbafd84bc8580e74a940facd3199f",
     "conductor/tracks.md": "35bec621ed7c7bd888b7c9a17b9397a369b2ea99dc86bafb7f48d8e3deb2db67",
-    "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl": "e11dab962571fb3a7a3e64ec6d781ad7f26f5d9f95fa205218169ae3860efbac",
-    "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md": "1709987a4cff8a2213d871aeba0abba1e737f0c74cde8ce2538773e56ce02933",
+    "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl": "e2dc0a0af7b553d6fa352c67291e0296400d2165a7c4566612c29a6c0f6b73c1",
+    "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md": "ad56ff1b76387d138fca3c1b0fcb9e58adf4d41240929a672e26912ca14e9e9f",
     "conductor/tracks/australian_benefits_silver_gold_20260829/spec.md": "dac6f99dc5388e0fe35e9e6e217482171a5319ee5fcf9a9be16850e840243ba4",
     "conductor/tracks/bronze_medallion_completion_20260819/plan.md": "fed9ea6291e19701f812f65c6823a16f03fee10fe759fdd119b76e34fac856d8",
     "quality/bronze/admissions/us-cms-hcpcs/db750eb63ae9d6037145e1acddc800ff2e93288640fc59fba97e59c8d947ce2a/d820173ded1797b36b5504da096d725746b0fef1288d4fb632b9897e3a9876c6.json": "4548ff63dfd237098fa69d09bad32876bdfee59973c65494c88f303a86123c9b",
@@ -529,7 +549,7 @@
     "scripts/qualify_mbs_q1hr_context_measure_diagnostics.py": "9bc7213747ae192e6964fd3fd151576e287fa2640c118674d45eb3fee70179bd",
     "scripts/qualify_observed_pbs_values.py": "272e67e20fc5e1cb5a4747dd1cb9208e3af3ff166e09e68a325d3491b6cf9576",
     "scripts/reconcile_m112_current_rights_state.py": "1741136ccb869dc6a10351a29ef91bc17fa988c5bdf5ca9894004ccc4b8a93ef",
-    "scripts/reconcile_mbs_historical_workbook_receipts.py": "985e930bbbd7020ddc1bb452332a84a075dafac5e2f92748315b5c2e9ac132a9",
+    "scripts/reconcile_mbs_historical_workbook_receipts.py": "31b2c777ba8d0e02761dbcc185ec93224ff9b7d1f0079ff4478e5dfa0a370c6a",
     "scripts/screen_historical_pbs_references.py": "532577d6181a24377b7f1188602ba67ecaa9afab4d56216a92755b216d6a9f07",
     "scripts/test_goblin.py": "d7919cd9253a640fdc72703c523f77fdf8f458f36fa0a5c4d8d6b033651f21f9",
     "src/global_medicines_atlas/adapters/au_mbs_workbook.py": "67715c5ee50fbbe91b6d0331572f671cae1f80768321f572d5fcef1b22ea12a6",
@@ -572,7 +592,7 @@
     "tests/test_australian_pbs_hf_publication.py": "e5d9573ff32d96462bc135d9ef8a9f9d97917402c0c24a562ab7b789eebea436",
     "tests/test_frozen_matcher_calibration.py": "f1fe73272c2e3e980627abec0f263ee3484f7225951b413fb0aeaaf5621a0427",
     "tests/test_hf_estate_visibility_workflow.py": "65572c193cfdffdd1b241bb806ede9abb60dbe60710532c581ea4a87a0441958",
-    "tests/test_m112_rights_release_preflight.py": "4cc9e90c322ea61efb75391d4c74e655e1a4a99d8f1428bb471579498777ffee",
+    "tests/test_m112_rights_release_preflight.py": "bad77545a89a9fdd14224fa962708bb6f2546441d7ff55f7c39faa42b7dfd43c",
     "tests/test_mbs_archive_formats.py": "b1f089f97bbff57bbd48d898088723e595b20c57f4f695b4ef4e7340141790f9",
     "tests/test_mbs_archive_inventory.py": "2ebe3c2bceaf5ef19aab586f7398401ab3625df7f0413a346c2dd157f9c5351c",
     "tests/test_mbs_archive_members.py": "3701edd5fa7cf0f0eff3f9b71bb27cce8b4805cc49dc139951ef0b22402250ed",
@@ -589,7 +609,7 @@
     "tests/test_mbs_historical_csv_package.py": "94afbe3d6b543e6a72692be01b3fda92355593421a81a76c9db876ec0807c59c",
     "tests/test_mbs_historical_workbook_native.py": "6e2cb88e586f990fd961e31f035e27812793f93823591793bcea06cb04e7305f",
     "tests/test_mbs_historical_workbook_package.py": "7bb24abd20c2d761c4e38f313c58e61dcfcbf87c94e54b9e351e2c36aca20ee0",
-    "tests/test_mbs_historical_workbook_receipt_reconcile.py": "7e2a4c55b0b78e2bde177729b130f83a3730fc8fcabf1222801eb301818d89d8",
+    "tests/test_mbs_historical_workbook_receipt_reconcile.py": "8c1c4df40224a0fb897409cc45b8e4c0ac360a3e071c65814eddf227ff3a1a8a",
     "tests/test_mbs_patient_rates.py": "6231183855a983890085b4b2bf9196335111305e20d7c1662489027c827e8c8f",
     "tests/test_mbs_q1_native_silver.py": "d8442e96c4c0d0951c0e4e4913a8bd77ec31e996206649e7483cd9b50a936a92",
     "tests/test_mbs_q1_source_meanings.py": "5645126294c95c8485476689218c26a72647d81bf7f55ee6940522ea6d79b303",
@@ -20380,7 +20400,7 @@
     "row_denominator": "independent exact-source reader; no CSV or period substitution",
     "successful_workflow_run": 39648296077
   },
-  "recorded_at": "2026-10-23T02:26:55.744842+00:00",
+  "recorded_at": "2026-10-23T02:42:24.438755+00:00",
   "registered_native_qualification_route": {
     "completed_modes": [
       "native-silver",

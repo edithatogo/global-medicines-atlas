@@ -5853,3 +5853,9 @@ source qualification remains pending their actual final artifacts.
 - [x] Reconcile terminal protected run 39724026209 at exact main d338ee01: 85 of 91 member jobs passed; six (65, 71, 80, 84, 86, 87) were cancelled at the 30-minute job bound. Their aggregate receipts remain `incomplete` at `member-native-check`; none are qualified.
 - [x] Add an exact six-member retry selection with a finite 60-minute job bound and unchanged two-job concurrency, source identity, byte limits, complete restore, output checks, and aggregate-only receipts.
 - [ ] Merge after protected CI, execute the six on exact main, retain each successful receipt, and reconcile the 85 original successes plus six retry successes without double-counting.
+
+### Two-run workbook receipt reconciliation
+
+- [x] Address PR #1282 review finding before merge: the 85 successful original receipts and six retry receipts have different exact-main commits. Require all 91 original receipts; verify the six original `member-native-check` incomplete states and their digests; select exactly six successful retry receipts; retain per-group run and commit; reject duplicate output/member identities and double counting. Nineteen focused tests pass with 92.89% branch coverage; 46 affected workbook tests and typing pass. Actual retry outcome remains pending.
+- [x] Retain the local full profile as failed: 7,834 passed, two stable-v1 reproducibility failures caused by host `uv` 0.13.4 where the repository requires 0.11.29, three skipped. A pinned `uv` 0.11.29 focused recheck is running.
+- [ ] Refresh current preflight, pass protected exact-head CI, resolve the review finding only after the fix is on the PR head, then merge and dispatch the exact six-member retry.
