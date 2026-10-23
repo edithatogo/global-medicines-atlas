@@ -242,6 +242,32 @@ def test_invalid_observed_role_partition_is_rejected(monkeypatch, mutate):
         reconcile_pbs_field_states(ROOT)
 
 
+def test_interpreted_role_count_must_match_domain_evidence(monkeypatch):
+    def mutate_envelope(envelope):
+        counts = envelope["report"]["qualification"]["role_field_counts"]
+        counts["items"] += 1
+        counts["historical_records"] -= 1
+        canonical = json.dumps(
+            envelope["report"],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        envelope["report_sha256"] = hashlib.sha256(canonical).hexdigest()
+
+    observed_path = (
+        "quality/qualifications/"
+        "pbs-observed-domain-values-qualification-20261022-39672588063.json"
+    )
+    _bypass_preflight_data_reads(monkeypatch)
+    _intercept_json_loads(monkeypatch, observed_path, mutate_envelope)
+    with pytest.raises(
+        ValueError,
+        match="PBS interpreted role counts differ from meaning evidence",
+    ):
+        reconcile_pbs_field_states(ROOT)
+
+
 def test_path_role_partition_failure_is_rejected(monkeypatch):
     inventory_path = reconciliation.PATH_INVENTORY
 
