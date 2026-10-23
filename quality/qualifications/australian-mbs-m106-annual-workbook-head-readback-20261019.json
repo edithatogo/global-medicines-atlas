@@ -1,0 +1,50 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-m106-annual-workbook-head-readback",
+  "schema_version": 1,
+  "observed_at": "2026-10-18T14:28:39Z",
+  "requirement": "M-106",
+  "status": "attachment_reachable_period_identity_conflict",
+  "official_page": {
+    "url": "https://www.health.gov.au/resources/publications/medicare-annual-statistics-state-and-territory-2009-10-to-2025-26?language=en",
+    "http_status": 200,
+    "content_type": "text/html; charset=UTF-8",
+    "response_bytes": 34921,
+    "response_sha256": "911469fafee395e1014c89f4300b139ae324550e35b0394d11dcd3e0d2114c10",
+    "response_body_retained": false,
+    "response_body_retention_reason": "The Department's published copyright terms restrict reproduction of website content on another website without express written permission; no such permission has been observed. The targeted copyright inquiry received a receipt-only acknowledgement.",
+    "copyright_terms_url": "https://www.health.gov.au/using-our-websites/copyright?language=en",
+    "last_modified": "Fri, 16 Oct 2026 16:23:25 GMT",
+    "etag": "\"1792167805\"",
+    "title": "Medicare annual statistics – State and territory (2009-10 to 2025-26)",
+    "publication_date": "2026-08-10",
+    "described_period": "2009-10 through 2025-26",
+    "attachment_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+    "attachment_filename_period": "2009-10 through 2024-25"
+  },
+  "attachment_head": {
+    "method": "HEAD",
+    "requested_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+    "final_url": "https://www.health.gov.au/sites/default/files/2026-08/medicare-annual-statistics-state-and-territory-2009-10-to-2024-25.xlsx",
+    "http_status": 200,
+    "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "content_length": 1058479,
+    "last_modified": "Wed, 05 Aug 2026 05:59:59 GMT",
+    "etag": "\"6a72d15f-1026af\"",
+    "response_body_bytes": 0
+  },
+  "owner_clarification": {
+    "status_as_of": "2026-10-18",
+    "sent_message_id": "1a14abd12b459daf",
+    "substantive_response_received": false,
+    "auto_replies_are_receipt_only": true
+  },
+  "interpretation": "The published page advertises 2025-26 coverage, but its linked attachment filename identifies 2024-25. A local metadata-only HEAD confirms that the attachment is reachable and returns an XLSX content type and length; it does not establish the workbook's internal period, patient-count semantics, or reuse terms. Earlier hosted GETs timed out with zero bytes. Do not request the workbook body before substantive source-owner clarification and the applicable source-rights gate.",
+  "boundaries": {
+    "workbook_body_requested": false,
+    "workbook_payload_bytes_read": 0,
+    "acquisition_performed": false,
+    "source_rights_changed": false,
+    "distinct_patient_denominator_qualified": false,
+    "m106_accepted": false
+  }
+}
