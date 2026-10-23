@@ -5818,7 +5818,21 @@ source qualification remains pending their actual final artifacts.
 
 - [x] Inspect protected run 39729236096 and its aggregate-only failure receipt. It stopped after 13,500,000 native fields with a validation classification; the safe receipt does not identify the exact failing bound.
 - [x] Raise only finite SQLite index limits from 2 million rows/1 GiB to 8 million rows/4 GiB, retaining exact-main source binding, private temporary cleanup, no native literal emission, and candidate-only meaning.
-- [ ] Obtain a successful exact-main protected rerun and reconcile its aggregate receipt before any source-local relation claim.
+- [x] Obtain the successful exact-main protected rerun and reconcile its
+  aggregate receipt before any source-local relation claim. [Run `39730665004`](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39730665004)
+  passed at workflow commit `c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4` for
+  the exact pinned April 2026 PBS v3 member. It accounts for 2,160,066
+  source-local reference occurrences: 2,086,489 unique exact-literal
+  candidates and 73,577 with no exact literal. This is lexical screening only;
+  effective `xml:base`, document/graph scope, target type, link role and
+  predicate semantics remain unresolved, so zero semantic relationships are
+  qualified.
+- [~] Add value-free denominator and match-outcome counts by native reference
+  kind (`rdf:resource`, `xlink:href`, `rdf:about`, and `xml:id`) so the exact
+  PBS source can distinguish its reference forms. Synthetic controls now pass;
+  the source-bound counts and any occurrence-level URI/base/scope review still
+  require an exact-main protected rerun. These counts alone will not promote
+  semantic relationships.
 
 ### Historical workbook cohort reconciliation
 

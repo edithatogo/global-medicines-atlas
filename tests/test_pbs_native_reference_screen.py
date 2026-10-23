@@ -34,8 +34,27 @@ def inputs():
 
 def test_all_exact_matches_ambiguities_missing_and_empty_are_accounted():
     report = module.screen_native_references(*inputs())
+    assert report["schema_version"] == 2
     assert report["definition_fields"] == 4
     assert report["reference_fields"] == 7
+    assert report["definition_kind_counts"] == {"rdf_about": 3, "xml_id": 1}
+    assert report["reference_kind_counts"] == {
+        "rdf_resource": 4,
+        "xlink_href": 3,
+    }
+    assert report["reference_kind_status_counts"] == {
+        "rdf_resource": {
+            "ambiguous_exact_literal": 1,
+            "empty_literal": 1,
+            "no_exact_literal": 1,
+            "unique_exact_literal": 1,
+        },
+        "xlink_href": {
+            "no_exact_literal": 1,
+            "unique_exact_literal": 1,
+            "unsupported_reference_form": 1,
+        },
+    }
     assert report["reference_status_counts"] == {
         "unique_exact_literal": 2,
         "ambiguous_exact_literal": 1,

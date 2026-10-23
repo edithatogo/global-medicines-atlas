@@ -37,6 +37,12 @@ def test_verified_route_returns_only_aggregate(synthetic, monkeypatch):
             "native_fields": 8,
             "reference_fields": 2,
             "reference_status_counts": {"no_exact_literal": 2},
+            "definition_kind_counts": {"rdf_about": 1, "xml_id": 0},
+            "reference_kind_counts": {"rdf_resource": 2},
+            "reference_kind_status_counts": {
+                "rdf_resource": {"no_exact_literal": 2}
+            },
+            "schema_version": 2,
             "semantic_relationships_qualified": False,
             "native_values_emitted": False,
         }
@@ -50,6 +56,10 @@ def test_verified_route_returns_only_aggregate(synthetic, monkeypatch):
     assert len(synthetic[1]) == 5
     assert checkpoints[-1]["progress"]["phase"] == "native-reference-match"
     assert report["qualification"]["semantic_relationships_qualified"] is False
+    assert report["qualification"]["schema_version"] == 2
+    assert report["qualification"]["reference_kind_counts"] == {
+        "rdf_resource": 2
+    }
     assert report["publication_performed"] is False
 
 

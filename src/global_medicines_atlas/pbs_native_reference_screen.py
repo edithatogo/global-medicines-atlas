@@ -124,33 +124,61 @@ def _screen(
     )
     if progress is not None:
         progress("native-reference-match", 1, fields)
-    statuses = dict(
-        connection.execute("""
+    kind_status_rows = connection.execute("""
         WITH matches AS (
-          SELECT r.ordinal, r.original, r.space, count(d.ordinal) AS targets
+          SELECT r.kind, r.ordinal, r.original, r.space,
+                 count(d.ordinal) AS targets
           FROM refs AS r LEFT JOIN definitions AS d
           ON r.space = d.space AND r.literal = d.literal
-          GROUP BY r.ordinal
+          GROUP BY r.kind, r.ordinal, r.original, r.space
         ), classified AS (
-          SELECT CASE
+          SELECT kind, CASE
             WHEN original IS NULL OR original = '' THEN 'empty_literal'
             WHEN space IS NULL THEN 'unsupported_reference_form'
             WHEN targets = 0 THEN 'no_exact_literal'
             WHEN targets = 1 THEN 'unique_exact_literal'
             ELSE 'ambiguous_exact_literal' END AS status
           FROM matches
-        ) SELECT status, count(*) FROM classified GROUP BY status
+        ) SELECT kind, status, count(*)
+          FROM classified GROUP BY kind, status
+          ORDER BY kind, status
     """).fetchall()
+    kind_status_counts: dict[str, dict[str, int]] = {}
+    statuses: dict[str, int] = {}
+    for kind, status, count in kind_status_rows:
+        kind_counts = kind_status_counts.setdefault(kind, {})
+        kind_counts[status] = count
+        statuses[status] = statuses.get(status, 0) + count
+    definition_spaces = dict(
+        connection.execute(
+            "SELECT space, count(*) FROM definitions GROUP BY space ORDER BY space"
+        ).fetchall()
     )
+    definition_kind_counts = {
+        "rdf_about": definition_spaces.get("rdf_literal", 0),
+        "xml_id": definition_spaces.get("xml_id", 0),
+    }
+    reference_kind_counts = {
+        kind: sum(counts.values())
+        for kind, counts in sorted(kind_status_counts.items())
+    }
     duplicate = connection.execute(
         "SELECT count(*) FROM (SELECT space, literal FROM definitions WHERE literal IS NOT NULL AND literal != '' GROUP BY space, literal HAVING count(*) > 1)"
     ).fetchone()
-    if sum(statuses.values()) != references or duplicate is None:
+    if (
+        sum(statuses.values()) != references
+        or sum(definition_kind_counts.values()) != definitions
+        or sum(reference_kind_counts.values()) != references
+        or duplicate is None
+    ):
         raise ValueError("PBS reference screen denominator differs")
     return {
         "native_fields": fields,
         "definition_fields": definitions,
+        "definition_kind_counts": definition_kind_counts,
         "reference_fields": references,
+        "reference_kind_counts": reference_kind_counts,
+        "reference_kind_status_counts": kind_status_counts,
         "ambiguous_definition_literals": duplicate[0],
         "reference_status_counts": dict(sorted(statuses.items())),
         "reference_fields_sha256": digest.hexdigest(),
@@ -191,7 +219,7 @@ def screen_native_references(
         result = _screen(connection, member, progress)
     return {
         "schema_id": "global-medicines-atlas.pbs-native-reference-screen",
-        "schema_version": 1,
+        "schema_version": 2,
         "member_sha256": binding.member_payload.sha256,
         "member_binding_sha256": binding.digest(),
         "parent_receipt_sha256": parent.digest(),
