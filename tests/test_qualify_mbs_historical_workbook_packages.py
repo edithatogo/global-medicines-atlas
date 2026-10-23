@@ -282,11 +282,19 @@ def test_workflow_qualifies_all_groups_with_original_read_only_bounds():
     expression = job["strategy"]["matrix"]["group"]
     assert json.dumps(list(range(91)), separators=(",", ":")) in expression
     assert "inputs.workbook_selection == 'all'" in expression
+    assert "inputs.workbook_selection == 'timeout-retry-six'" in expression
+    assert "[65,71,80,84,86,87]" in expression
     assert "|| '[76]'" in expression
+    assert (
+        "timeout-retry-six"
+        in document["on"]["workflow_dispatch"]["inputs"]["workbook_selection"][
+            "options"
+        ]
+    )
     assert job["strategy"]["max-parallel"] == "2"
     assert job["strategy"]["fail-fast"] == "false"
     assert job["permissions"] == {"contents": "read"}
-    assert job["timeout-minutes"] == "30"
+    assert "'timeout-retry-six' && '60' || '30'" in job["timeout-minutes"]
     step = next(step for step in job["steps"] if "run" in step)
     assert "scripts/qualify_mbs_historical_workbook_packages.py" in step["run"]
     assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in step["run"]
