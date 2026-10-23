@@ -5,16 +5,77 @@ from hashlib import sha256
 from typing import Any, cast
 
 import pytest
+import scripts.profile_mbs_historical_workbook_headers as profile_script
 from test_mbs_historical_workbook_native import bound, workbook
 
 from global_medicines_atlas import (
     mbs_historical_workbook_headers as header_module,
+)
+from global_medicines_atlas.mbs_archive_inventory import (
+    DATASET,
+    REVISION,
+    BoundArchive,
 )
 from global_medicines_atlas.mbs_historical_workbook_headers import (
     profile_workbook_headers,
 )
 
 MAIN = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+
+
+def _bound_archive() -> BoundArchive:
+    return BoundArchive(
+        dataset=DATASET,
+        revision=REVISION,
+        source_path="raw/mbs/historical.zip",
+        source_sha256="a" * 64,
+        source_bytes=10,
+        source_id="fixture",
+        acquisition_id="fixture",
+        b1_sha256="b" * 64,
+        b2_sha256="c" * 64,
+        prior_status="structure_verified",
+        prior_member_count=0,
+        prior_expanded_bytes=0,
+        prior_inventory_sha256="d" * 64,
+    )
+
+
+def test_empty_archive_profile_does_not_claim_header_labels_emitted():
+    report = profile_script._aggregate("1" * 40, 4, _bound_archive(), [])
+
+    assert report["status"] == "passed"
+    assert report["workbook_count"] == 0
+    assert report["profile_count"] == 0
+    assert report["header_labels_emitted"] is False
+
+
+def test_header_labels_emitted_tracks_observed_candidate_labels():
+    profile = {"schema": "fixture"}
+    profiled = [
+        {
+            "header_profile_sha256": "e" * 64,
+            "profile": profile,
+            "member_sha256": "f" * 64,
+            "member_path_sha256": "0" * 64,
+            "member_bytes": 1,
+            "ordinal": 0,
+            "sheets": [
+                {
+                    "candidate_rows": [
+                        {
+                            "labels": [{"text": "Year"}],
+                            "disposition": "unresolved_candidate",
+                        }
+                    ],
+                }
+            ],
+        }
+    ]
+
+    report = profile_script._aggregate("1" * 40, 0, _bound_archive(), profiled)
+
+    assert report["header_labels_emitted"] is True
 
 
 def worksheet(rows: str, *, root: str = "worksheet") -> bytes:

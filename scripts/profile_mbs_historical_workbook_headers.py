@@ -130,6 +130,12 @@ def _aggregate(
         )
     if len(assignments) != len(profiled):
         raise ValueError("MBS header profile assignment count differs")
+    labels_emitted = any(
+        candidate["labels"]
+        for workbook in profiled
+        for sheet in workbook["sheets"]
+        for candidate in sheet["candidate_rows"]
+    )
     return {
         "schema_id": "global-medicines-atlas.mbs-historical-workbook-header-profiles",
         "schema_version": 1,
@@ -166,7 +172,7 @@ def _aggregate(
         "whole_workbook_semantics_complete": False,
         "unmatched_header_cells": "unresolved",
         "non_header_cells": "native_unresolved",
-        "header_labels_emitted": True,
+        "header_labels_emitted": labels_emitted,
         "non_header_values_emitted": False,
         "new_sources": 0,
         "new_admissions": 0,

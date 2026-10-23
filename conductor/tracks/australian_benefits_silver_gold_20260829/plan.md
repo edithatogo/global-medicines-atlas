@@ -5869,6 +5869,7 @@ source qualification remains pending their actual final artifacts.
 - [ ] Bind exact eligible derived-output rights, source-column interpretation where supportable, admission, restore and consumer evidence separately.
 - [x] Record the maintainer's exact public-release rights attestation for all 91 digest-pinned historical workbook Parquet candidate outputs. The instrument was not independently located or reviewed. Semantic interpretation, admission, restore, public release and consumer canaries remain separate gates.
 - [~] Add an exact-main protected profile of the 91 existing workbook members, grouping observed sheet/header candidates and binding only exact demographic/group contracts. Preserve unmatched headers and non-header cells as unresolved; actual-source profile receipts and member-level reconciliation remain pending the merged workflow run.
+- [x] Correct PR #1288's empty-archive observation: `header_labels_emitted` is now derived from observed candidate labels, so the CSV-only archive reports false while workbook candidates report true. Added both cases to the profile aggregation tests. Forty focused workbook-header/package tests pass; Ruff, formatting and diff checks pass. Protected exact-head checks remain required.
 
 ### PBS native Silver field-state reconciliation
 
