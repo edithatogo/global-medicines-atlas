@@ -54,6 +54,8 @@ def _format_profiles(root: Path) -> dict[tuple[str, str], dict[str, Any]]:
 
 COMMIT_LENGTH = 40
 MAX_RECEIPT_BYTES = 1_000_000
+MAX_PARQUET_BYTES = 4 * 1024**3
+SHA256_HEX_LENGTH = 64
 
 
 def _receipts(
@@ -148,6 +150,7 @@ def reconcile(  # ruff: ignore[too-many-statements,too-many-locals,too-many-bran
     receipt_hashes: dict[str, str] = {}
     incomplete_hashes: dict[str, str] = {}
     receipt_origins: dict[str, dict[str, Any]] = {}
+    candidate_outputs: dict[str, dict[str, Any]] = {}
     for group in sorted(expected):
         base_report, base_raw = baseline[group]
         selected_commit, selected_run = commit, run_id
@@ -209,6 +212,7 @@ def reconcile(  # ruff: ignore[too-many-statements,too-many-locals,too-many-bran
         key = source["source_sha256"], member["path_sha256"]
         profile = profiles[key]
         coverage = manifest["coverage"]
+        parquet = manifest["parquet"]
         identity = {
             name: value
             for name, value in manifest.items()
@@ -236,6 +240,11 @@ def reconcile(  # ruff: ignore[too-many-statements,too-many-locals,too-many-bran
             or not entry["two_builds_equal"]
             or not entry["complete_native_restore_verified"]
             or entry["native_values_or_names_emitted"] is not False
+            or type(parquet["bytes"]) is not int
+            or not 0 < parquet["bytes"] <= MAX_PARQUET_BYTES
+            or type(parquet["sha256"]) is not str
+            or len(parquet["sha256"]) != SHA256_HEX_LENGTH
+            or any(ch not in "0123456789abcdef" for ch in parquet["sha256"])
         ):
             raise ValueError("historical workbook package identity differs")
         kinds = coverage["kinds"]
@@ -260,6 +269,18 @@ def reconcile(  # ruff: ignore[too-many-statements,too-many-locals,too-many-bran
         receipt_origins[str(group)] = {
             "run_id": selected_run,
             "workflow_commit": selected_commit,
+        }
+        candidate_outputs[str(group)] = {
+            "output_id": output_id,
+            "parquet_sha256": parquet["sha256"],
+            "parquet_bytes": parquet["bytes"],
+            "source_sha256": source["source_sha256"],
+            "member_sha256": member["sha256"],
+            "member_path_sha256": member["path_sha256"],
+            "field_state": "native_unresolved",
+            "rights_qualified": False,
+            "admitted": False,
+            "published": False,
         }
         totals["records"] += coverage["records"]
         totals["cells"] += coverage["cells"]
@@ -288,6 +309,7 @@ def reconcile(  # ruff: ignore[too-many-statements,too-many-locals,too-many-bran
         "totals": totals,
         "receipt_sha256_by_group": receipt_hashes,
         "receipt_origin_by_group": receipt_origins,
+        "candidate_outputs_by_group": candidate_outputs,
         "baseline_incomplete_receipt_sha256_by_group": incomplete_hashes,
         "retry_groups": sorted(retry_set),
         "silver_field_state_coverage": {

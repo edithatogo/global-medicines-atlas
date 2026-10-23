@@ -127,6 +127,16 @@ def test_complete_aggregate_identity_and_counts(tmp_path, monkeypatch):
         "workflow_commit": COMMIT,
     }
     assert result["retry_groups"] == []
+    output = result["candidate_outputs_by_group"]["0"]
+    manifest = receipt["members"][0]["manifest"]
+    assert output["output_id"] == manifest["output_id"]
+    assert output["parquet_sha256"] == manifest["parquet"]["sha256"]
+    assert output["parquet_bytes"] == manifest["parquet"]["bytes"]
+    assert output["member_sha256"] == manifest["member_binding"]["sha256"]
+    assert output["field_state"] == "native_unresolved"
+    assert output["rights_qualified"] is False
+    assert output["admitted"] is False
+    assert output["published"] is False
 
 
 def retry_fixture(tmp_path, monkeypatch):
@@ -232,6 +242,12 @@ def test_retry_rejects_incomplete_or_misaligned_inputs(
             admitted=True
         ),
         lambda report: report.update(new_admissions=1),
+        lambda report: report["members"][0]["manifest"]["parquet"].update(
+            bytes=0
+        ),
+        lambda report: report["members"][0]["manifest"]["parquet"].update(
+            sha256="invalid"
+        ),
     ],
 )
 def test_reject_drift_and_promotion(tmp_path, monkeypatch, mutate):
@@ -239,6 +255,29 @@ def test_reject_drift_and_promotion(tmp_path, monkeypatch, mutate):
     mutate(report)
     artifact.write_text(json.dumps(report))
     with pytest.raises(ValueError, match="differ"):
+        module.reconcile(ROOT, tmp_path, 123, COMMIT)
+
+
+@pytest.mark.parametrize("change", ["bytes", "digest", "digest_type"])
+def test_reject_invalid_candidate_fingerprint_even_with_rehashed_output_id(
+    tmp_path, monkeypatch, change
+):
+    artifact, report = fixture_receipt(tmp_path, monkeypatch)
+    manifest = report["members"][0]["manifest"]
+    if change == "bytes":
+        manifest["parquet"]["bytes"] = 0
+    elif change == "digest_type":
+        manifest["parquet"]["sha256"] = ["a"] * 64
+    else:
+        manifest["parquet"]["sha256"] = "invalid"
+    identity = {
+        key: value for key, value in manifest.items() if key != "output_id"
+    }
+    manifest["output_id"] = hashlib.sha256(
+        canonical_package_json(identity)
+    ).hexdigest()
+    artifact.write_text(json.dumps(report))
+    with pytest.raises(ValueError, match="package identity"):
         module.reconcile(ROOT, tmp_path, 123, COMMIT)
 
 
