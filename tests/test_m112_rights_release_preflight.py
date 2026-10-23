@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261022-29.json"
+    "australian-m112-rights-release-preflight-20261022-30.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261022-28.json"
+    "australian-m112-rights-release-preflight-20261022-29.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -56,7 +56,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261022-28.json"
+        "australian-m112-rights-release-preflight-20261022-29.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -71,6 +71,18 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert (
         previous_report["release_and_admission_boundaries"]["consumer_canaries"]
         == 8
+    )
+    pbs_screen = report["pbs_native_reference_screen_actual_readback"]
+    assert pbs_screen["run_id"] == 39730665004
+    assert pbs_screen["native_fields"] == 18_208_758
+    assert pbs_screen["reference_fields"] == (
+        pbs_screen["unique_exact_literal"] + pbs_screen["no_exact_literal"]
+    )
+    assert pbs_screen["semantic_relationships_qualified"] is False
+    assert pbs_screen["domain_semantics_qualified"] is False
+    assert (
+        hashlib.sha256((ROOT / pbs_screen["receipt"]).read_bytes()).hexdigest()
+        == pbs_screen["receipt_sha256"]
     )
     reconciliation = report["current_rights_reconciliation"]
     assert reconciliation["approved_denominator"] == 1759

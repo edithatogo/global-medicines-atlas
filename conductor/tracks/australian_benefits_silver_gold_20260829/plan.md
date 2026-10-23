@@ -5819,3 +5819,31 @@ source qualification remains pending their actual final artifacts.
 - [x] Inspect protected run 39729236096 and its aggregate-only failure receipt. It stopped after 13,500,000 native fields with a validation classification; the safe receipt does not identify the exact failing bound.
 - [x] Raise only finite SQLite index limits from 2 million rows/1 GiB to 8 million rows/4 GiB, retaining exact-main source binding, private temporary cleanup, no native literal emission, and candidate-only meaning.
 - [ ] Obtain a successful exact-main protected rerun and reconcile its aggregate receipt before any source-local relation claim.
+
+### Historical workbook cohort reconciliation
+
+- [x] Validate the largest workbook group 76 in protected run 39722586797
+  against the frozen member identity, native format profile, output ID, full
+  restore and DuckDB denominators. Retain its aggregate-only receipt. It has
+  5,141,641 records and 4,570,321 cells; source-column meanings and output
+  admission remain unqualified.
+- [x] Dispatch all 91 frozen workbooks on exact main d338ee01 in protected
+  run 39724026209 with two concurrent members and unchanged 30-minute job
+  bound. This is in progress; no complete-cohort claim follows from dispatch.
+- [x] Implement offline reconciliation requiring all 91 exact aggregate
+  receipts, unique source/member and output identities, retained native format
+  profiles, two-build/full-restore claims and consistent record, cell, row,
+  sheet and conversion denominators. Test both record and cell denominators
+  against the actual early group 1 receipt. Account every retained cell as
+  `native_unresolved` until source-specific meaning is supported. Thirteen
+  focused tests pass with 95.62% branch coverage; production typing is clean.
+- [ ] Retain and reconcile all 91 successful receipts, resolve any failed
+  member jobs without weakening source, size or runtime gates, and complete
+  exact eligible output rights, admission and consumer delivery.
+
+- [x] Run local full profile for workbook reconciler; it reached about 51% of pytest then stalled after three timeout traces and was interrupted with exit 130. Preserve the log as failed/incomplete evidence; focused and routine checks passed, and protected PR checks remain required.
+
+### Actual PBS source-local lexical reference screen
+
+- [x] Protected exact-main retry 39730665004 passed on c9fd61e9. Retain the aggregate-only receipt with 18,208,758 native fields, 567,785 definitions, 2,160,066 candidate references, 2,086,489 unique exact literals and 73,577 without an exact literal. The screen emitted no native values and made no semantic relationship or domain claim.
+- [ ] Review source-specific relationship meaning and calibrate any matcher behavior using authorized bounded evidence before promoting these lexical matches.
