@@ -33,7 +33,8 @@ def inputs():
 
 
 def test_all_exact_matches_ambiguities_missing_and_empty_are_accounted():
-    report = module.screen_native_references(*inputs())
+    screen_inputs = inputs()
+    report = module.screen_native_references(*screen_inputs)
     assert report["schema_version"] == 2
     assert report["definition_fields"] == 4
     assert report["reference_fields"] == 7
@@ -70,7 +71,7 @@ def test_all_exact_matches_ambiguities_missing_and_empty_are_accounted():
     assert report["external_targets_fetched"] == 0
     assert "SYNTHETIC-ID" not in json.dumps(report)
     assert "example.test" not in json.dumps(report)
-    assert report == module.screen_native_references(*inputs())
+    assert report == module.screen_native_references(*screen_inputs)
 
 
 def test_progress_is_aggregate_and_reports_match_phase():
