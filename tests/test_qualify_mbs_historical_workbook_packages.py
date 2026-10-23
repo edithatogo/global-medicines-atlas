@@ -346,6 +346,7 @@ def test_header_profile_workflow_is_exact_main_read_only_and_bounded():
     step = next(step for step in job["steps"] if "run" in step)
     assert "scripts/profile_mbs_historical_workbook_headers.py" in step["run"]
     assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in step["run"]
+    assert "uv run --locked --python 3.15.1" in step["run"]
     assert job["steps"][-1]["if"] == "always()"
     assert job["steps"][-1]["with"]["retention-days"] == "30"
 

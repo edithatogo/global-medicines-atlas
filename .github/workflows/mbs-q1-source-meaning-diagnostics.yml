@@ -488,7 +488,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/profile_mbs_historical_workbook_headers.py \
+          uv run --locked --python 3.15.1 python scripts/profile_mbs_historical_workbook_headers.py \
             --exact-commit "$REQUESTED_COMMIT" --archive-index "$ARCHIVE_INDEX" --output historical-workbook-header-profiles.json
       - name: Retain bounded profile receipt
         if: always()
