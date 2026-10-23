@@ -3998,10 +3998,20 @@
   only at 0.33 coverage and 0.50 recall. These six self-authored cases cannot
   establish calibration or select a production threshold. Report:
   `quality/qualifications/matching-behavior-synthetic-20261019.json`.
-- [ ] Complete PBS real admitted Silver screening, representative
-  human-adjudicated held-out labels, per-method/source calibration, and exact
-  candidate review before any scored relationship promotion. Synthetic graph
-  parity and this diagnostic do not close M-110.
+- [x] Run a value-free source-local reference screen over the exact admitted
+  April 2026 PBS v3 source object. Hosted run `39730665004` screened 2,160,066
+  reference fields against 567,785 definitions: 2,086,489 unique exact-literal
+  candidates and 73,577 with no exact literal. It fetched no external targets
+  and emitted no source values. This is lexical diagnostic coverage only; it
+  does not resolve URI bases, target type, predicate, or semantic relationship.
+  Receipt:
+  `quality/qualifications/pbs-native-reference-screen-20261022-39730665004.json`.
+- [ ] Complete PBS real Silver semantic relationship review, representative
+  human-adjudicated cross-jurisdiction held-out labels, per-method/source
+  calibration, and exact candidate review before scored relationship
+  promotion. The existing source-local screen remains unqualified for semantic
+  links; the 400/400 actual-matcher experiment is synthetic-only and has poor
+  held-out fit. No synthetic graph parity or literal match closes this gate.
 - [x] Focused matcher/graph/review selection: 98 passed. Broader affected MBS,
   PBS, matcher, and M-110 selection: 106 passed. Test-Goblin routine,
   deterministic report regeneration, Ruff, Ruff format, `ty`, BasedPyright,
@@ -5882,6 +5892,9 @@ source qualification remains pending their actual final artifacts.
 - [x] Correct PR #1285 review's retained-report test gap by deriving both output-ID and source/member uniqueness from the 91 actual candidate entries, independently of reported summary counters.
 - [ ] Bind exact eligible derived-output rights, source-column interpretation where supportable, admission, restore and consumer evidence separately.
 - [x] Record the maintainer's exact public-release rights attestation for all 91 digest-pinned historical workbook Parquet candidate outputs. The instrument was not independently located or reviewed. Semantic interpretation, admission, restore, public release and consumer canaries remain separate gates.
+- [~] Add an exact-main protected profile of the 91 existing workbook members, grouping observed sheet/header candidates and binding only exact demographic/group contracts. Preserve unmatched headers and non-header cells as unresolved; actual-source profile receipts and member-level reconciliation remain pending the merged workflow run.
+- [x] Correct PR #1288's empty-archive observation: `header_labels_emitted` is now derived from observed candidate labels, so the CSV-only archive reports false while workbook candidates report true. Added both cases to the profile aggregation tests. Forty focused workbook-header/package tests pass; Ruff, formatting and diff checks pass. Protected exact-head checks remain required.
+- [x] Add and wire a six-archive reconciler for the frozen 91-workbook header-profile receipts. It checks exact archive/source/revision and workflow commit bindings, profile digests, per-profile member assignment counts, exact and unresolved header denominators, and every frozen member identity before aggregating. The exact-main workflow downloads all six archive receipts and emits the combined cohort receipt. Python 3.15.1 workflow-contract tests pass; actual-source profile receipts and cohort reconciliation remain pending exact-main execution.
 
 ### PBS native Silver field-state reconciliation
 
