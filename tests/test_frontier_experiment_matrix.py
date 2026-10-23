@@ -220,6 +220,18 @@ def test_reused_result_requires_imported_decision() -> None:
         FrontierExperimentMatrix.model_validate(raw)
 
 
+def test_retained_preview_requires_imported_evidence() -> None:
+    raw = document()
+    preview = raw["experiments"][0]
+    preview["disposition"] = "retain-preview"
+    preview["reused_evidence"] = []
+
+    with pytest.raises(
+        ValidationError, match="retained experiment requires imported evidence"
+    ):
+        FrontierExperimentMatrix.model_validate(raw)
+
+
 def test_matrix_rejects_unimported_or_changed_evidence(tmp_path: Path) -> None:
     raw = document()
     raw["experiments"][0]["reused_evidence"] = [

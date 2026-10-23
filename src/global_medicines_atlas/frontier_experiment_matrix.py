@@ -141,10 +141,14 @@ class FrontierExperiment(FrozenModel):
                 "experiment started without complete prerequisites"
             )
         if (
-            self.disposition is FrontierDisposition.REUSED
+            self.disposition
+            in {
+                FrontierDisposition.REUSED,
+                FrontierDisposition.RETAIN_PREVIEW,
+            }
             and not self.reused_evidence
         ):
-            raise ValueError("reused experiment requires imported evidence")
+            raise ValueError("retained experiment requires imported evidence")
         return self
 
 
