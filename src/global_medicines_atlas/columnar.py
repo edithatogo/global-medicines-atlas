@@ -185,7 +185,7 @@ def temporal_assertions_as_of(
     connection = duckdb.connect(":memory:")
     try:
         connection.register("temporal_assertions", table)
-        return connection.execute(
+        result = connection.execute(
             """
             SELECT *
             FROM temporal_assertions
@@ -196,7 +196,11 @@ def temporal_assertions_as_of(
             ORDER BY jurisdiction, concept_id, kind, assertion_id
             """,
             [valid_at, valid_at, observed_at, observed_at],
-        ).pl()
+        )
+        arrow_table = result.to_arrow_table()
+        if arrow_table is None:
+            raise RuntimeError("DuckDB returned no Arrow table for as-of query")
+        return cast("pl.DataFrame", pl.from_arrow(arrow_table))
     finally:
         connection.close()
 
@@ -315,7 +319,7 @@ def coverage_by_jurisdiction(table: pa.Table) -> pl.DataFrame:
     connection = duckdb.connect(":memory:")
     try:
         connection.register("assertions", table)
-        return connection.sql(
+        result = connection.sql(
             """
             SELECT
                 jurisdiction,
@@ -329,6 +333,12 @@ def coverage_by_jurisdiction(table: pa.Table) -> pl.DataFrame:
             GROUP BY jurisdiction
             ORDER BY jurisdiction
             """
-        ).pl()
+        )
+        arrow_table = result.to_arrow_table()
+        if arrow_table is None:
+            raise RuntimeError(
+                "DuckDB returned no Arrow table for coverage query"
+            )
+        return cast("pl.DataFrame", pl.from_arrow(arrow_table))
     finally:
         connection.close()

@@ -51,7 +51,7 @@ jobs:
           TARGET_PATH: ${{ inputs.target_path }}
         run: |
           set -euo pipefail
-          uv run --locked --python 3.14.6 python scripts/qualify_m112_v4_july2016_admission.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_m112_v4_july2016_admission.py \
             --target-path "$TARGET_PATH" \
             --check \
             --verify \

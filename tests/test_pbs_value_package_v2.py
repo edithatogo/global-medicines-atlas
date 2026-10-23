@@ -169,11 +169,11 @@ def test_v2_byte_limit_cleanup_and_existing_output(tmp_path):
     assert list(tmp_path.iterdir()) == []
     out = tmp_path / "out"
     out.mkdir()
-    sentinel = out / "manual"
-    sentinel.write_text("keep")
+    marker = out / "manual"
+    marker.write_text("keep")
     with pytest.raises(FileExistsError):
         qualify_value_package_pair_v2(*args, out)
-    assert sentinel.read_text() == "keep"
+    assert marker.read_text() == "keep"
 
 
 @pytest.mark.parametrize("change", ["source", "unequal"])

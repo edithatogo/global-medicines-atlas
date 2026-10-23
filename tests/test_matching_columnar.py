@@ -88,7 +88,7 @@ def test_outputs_are_sorted_and_expose_duckdb_views(tmp_path):
     ]
     connection = duckdb.connect(str(tmp_path / "matching.duckdb"))
     try:
-        assert connection.sql(
+        assert connection.execute(
             "select sum(candidate_count) from matching_review_summary"
         ).fetchone() == (2,)
     finally:
@@ -111,6 +111,8 @@ def test_output_manifest_and_jsonl_are_reproducible(tmp_path):
     second = write_matching_outputs(entries, tmp_path)
     assert first.input_digest == second.input_digest
     assert first.files == second.files
+    assert first.database_logical_sha256 == second.database_logical_sha256
+    assert "matching.duckdb" not in first.files
     assert first_queue == (tmp_path / "review_queue.jsonl").read_bytes()
     assert b'"clinical_equivalence_claim":false' in first_queue
     assert b'"confidence":null' in first_queue

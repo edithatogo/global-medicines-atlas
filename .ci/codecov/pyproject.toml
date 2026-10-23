@@ -2,7 +2,7 @@
 name = "gma-codecov-verification-tools"
 version = "0.1.0"
 description = "Isolated, locked tools for verifying and running Codecov uploads"
-requires-python = ">=3.14,<3.15"
+requires-python = ">=3.15,<3.16"
 dependencies = [
   "click>=8.0,<8.3",
   "ijson==3.*",

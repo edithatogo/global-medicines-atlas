@@ -1,7 +1,7 @@
 schema_version = 1
 repository = "edithatogo/global-medicines-atlas"
 maintainer_model = "single-accountable-maintainer"
-python = "3.14"
+python = "3.15.1"
 coverage_floor = 91
 
 required_context = [

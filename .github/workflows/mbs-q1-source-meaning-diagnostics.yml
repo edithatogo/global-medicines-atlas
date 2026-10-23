@@ -62,7 +62,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_q1_source_meanings.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_q1_source_meanings.py \
             --exact-commit "$REQUESTED_COMMIT" --output q1-source-meaning-diagnostics.json
       - name: Retain aggregate receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -91,7 +91,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_q1_native_silver.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_q1_native_silver.py \
             --exact-commit "$REQUESTED_COMMIT" --output q1-native-silver-candidate.json
       - name: Retain aggregate receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -126,7 +126,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_demographic_csv_cohort.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_demographic_csv_cohort.py \
             --quarter "$SELECTED_QUARTER" --exact-commit "$REQUESTED_COMMIT" --output demographic-csv-candidate.json
       - name: Retain aggregate receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -155,7 +155,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_group_native_silver.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_group_native_silver.py \
             --exact-commit "$REQUESTED_COMMIT" --output group-native-silver-candidate.json
       - name: Retain aggregate receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -190,7 +190,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_demographic_workbook_cohort.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_demographic_workbook_cohort.py \
             --quarter "$SELECTED_QUARTER" --exact-commit "$REQUESTED_COMMIT" --output demographic-workbook-candidate.json
       - name: Retain aggregate receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -219,7 +219,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_group_workbook_layout.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_group_workbook_layout.py \
             --exact-commit "$REQUESTED_COMMIT" --output group-workbook-layout.json
       - name: Retain aggregate receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -248,7 +248,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_group_workbook.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_group_workbook.py \
             --exact-commit "$REQUESTED_COMMIT" --output group-workbook-silver.json
       - name: Retain aggregate receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
@@ -277,7 +277,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/profile_frozen_mbs_sidecars.py \
+          uv run --locked --python 3.15.1 python scripts/profile_frozen_mbs_sidecars.py \
             --exact-commit "$REQUESTED_COMMIT" --output sidecar-layout.json
       - name: Retain aggregate receipt
         if: always()
@@ -307,7 +307,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/profile_frozen_mbs_sidecars.py \
+          uv run --locked --python 3.15.1 python scripts/profile_frozen_mbs_sidecars.py \
             --package --exact-commit "$REQUESTED_COMMIT" --output sidecar-package.json
       - name: Retain aggregate receipt
         if: always()
@@ -343,7 +343,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/profile_frozen_mbs_archives.py \
+          uv run --locked --python 3.15.1 python scripts/profile_frozen_mbs_archives.py \
             --exact-commit "$REQUESTED_COMMIT" --archive-index "$ARCHIVE_INDEX" --output archive-members.json
       - name: Retain aggregate receipt
         if: always()
@@ -379,7 +379,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/profile_frozen_mbs_archives.py \
+          uv run --locked --python 3.15.1 python scripts/profile_frozen_mbs_archives.py \
             --formats --exact-commit "$REQUESTED_COMMIT" --archive-index "$ARCHIVE_INDEX" --output archive-formats.json
       - name: Retain aggregate receipt
         if: always()
@@ -415,7 +415,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_historical_csv_packages.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_historical_csv_packages.py \
             --exact-commit "$REQUESTED_COMMIT" --group "$CSV_GROUP" --output historical-csv-packages.json
       - name: Retain aggregate receipt
         if: always()
@@ -451,7 +451,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_historical_workbook_packages.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_historical_workbook_packages.py \
             --exact-commit "$REQUESTED_COMMIT" --group "$WORKBOOK_GROUP" --output historical-workbook-packages.json
       - name: Retain aggregate receipt
         if: always()

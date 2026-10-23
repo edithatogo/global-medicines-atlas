@@ -104,11 +104,11 @@ def _test_goblin_check_names(
 ) -> set[str]:
     names = {
         *(
-            f"Python 3.14 / {lane}"
+            f"Python 3.15 / {lane}"
             for lane in _matrix_values(jobs["tests"], "lane")
         ),
         *(
-            f"Python 3.14 / {profile}"
+            f"Python 3.15 / {profile}"
             for profile in _matrix_values(jobs["quality"], "profile")
         ),
     }
@@ -120,7 +120,7 @@ def _test_goblin_check_names(
         "list[dict[str, JsonValue]]", consumer_matrix["include"]
     )
     names.update(
-        f"Consumer / {row['platform']} / Python 3.14" for row in consumer_rows
+        f"Consumer / {row['platform']} / Python 3.15" for row in consumer_rows
     )
     names.update(
         cast("str", jobs[job]["name"])
@@ -305,9 +305,9 @@ def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
     workflow = (
         ROOT / ".github/workflows/python-free-threaded-canary.yml"
     ).read_text(encoding="utf-8")
-    assert "CPython 3.14t / advisory smoke" in workflow
+    assert "CPython 3.15.1t / advisory smoke" in workflow
     assert "continue-on-error: true" in workflow
-    assert "uv run --python 3.14t" in workflow
+    assert "uv run --python 3.15.1t" in workflow
     assert "--no-project" in workflow
     assert 'PYTHON_GIL: "0"' in workflow
     assert (
@@ -504,11 +504,11 @@ def test_repository_and_branch_policy_mismatches_are_nonconforming() -> None:
 @pytest.mark.parametrize(
     "required_check",
     [
-        "Consumer / linux / Python 3.14",
-        "Consumer / macos / Python 3.14",
-        "Consumer / windows / Python 3.14",
-        "Python 3.14 / governed recovery rehearsal",
-        "Python 3.14 / operational exercises",
+        "Consumer / linux / Python 3.15",
+        "Consumer / macos / Python 3.15",
+        "Consumer / windows / Python 3.15",
+        "Python 3.15 / governed recovery rehearsal",
+        "Python 3.15 / operational exercises",
     ],
 )
 def test_each_hardening_lane_is_mandatory(required_check: str) -> None:
@@ -534,7 +534,7 @@ def test_each_hardening_lane_is_mandatory(required_check: str) -> None:
 
 
 def test_required_check_app_identity_mismatch_is_nonconforming() -> None:
-    required_check = "Python 3.14 / governed recovery rehearsal"
+    required_check = "Python 3.15 / governed recovery rehearsal"
 
     def spoof_app(data: object) -> None:
         protection = cast("dict[str, JsonValue]", data)
@@ -549,7 +549,7 @@ def test_required_check_app_identity_mismatch_is_nonconforming() -> None:
 
     assert control.status is ControlStatus.NONCONFORMING
     assert (
-        "required-check-app:mismatch:Python 3.14 / governed recovery rehearsal:"
+        "required-check-app:mismatch:Python 3.15 / governed recovery rehearsal:"
         f"expected:{GITHUB_ACTIONS_APP_ID}:observed:{CODECOV_APP_ID}"
         in control.findings
     )

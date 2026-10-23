@@ -104,11 +104,11 @@ def test_existing_package_is_preserved(tmp_path):
     args = bound(tmp_path, workbook())
     out = tmp_path / "out"
     out.mkdir()
-    sentinel = out / "manual"
-    sentinel.write_text("keep")
+    marker = out / "manual"
+    marker.write_text("keep")
     with pytest.raises(FileExistsError):
         build_workbook_package(*args, out)
-    assert sentinel.read_text() == "keep"
+    assert marker.read_text() == "keep"
 
 
 @pytest.mark.parametrize("change", ["manifest", "file", "record"])

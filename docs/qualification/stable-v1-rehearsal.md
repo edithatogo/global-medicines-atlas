@@ -3,7 +3,7 @@
 Run the deterministic representative rehearsal with:
 
 ```console
-uv run --python 3.14 python scripts/rehearse_stable_v1.py
+uv run --python 3.15.1 python scripts/rehearse_stable_v1.py
 ```
 
 The command writes a content-bound receipt to

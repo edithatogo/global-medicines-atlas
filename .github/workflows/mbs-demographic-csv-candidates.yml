@@ -39,7 +39,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_mbs_demographic_csv_cohort.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_mbs_demographic_csv_cohort.py \
             --quarter "$SELECTED_QUARTER" --exact-commit "$REQUESTED_COMMIT" --output demographic-csv-candidate.json
       - name: Retain aggregate receipt
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0

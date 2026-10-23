@@ -33,4 +33,4 @@ def test_hosted_mbs_workflow_preserves_archive_and_verifies_before_cleanup() -> 
         "shutil.rmtree(target)"
     )
     assert "huggingface-hub==1.14.0" in text
-    assert "--python 3.14.6" in text
+    assert "--python 3.15.1" in text

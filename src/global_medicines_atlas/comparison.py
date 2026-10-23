@@ -5,12 +5,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import duckdb
+import polars as pl
 
 if TYPE_CHECKING:
-    import polars as pl
     import pyarrow as pa
 
 
@@ -29,7 +29,7 @@ def compare_countries_as_of(
     connection = duckdb.connect(":memory:")
     try:
         connection.register("temporal_assertions", table)
-        return connection.execute(
+        result = connection.execute(
             """
             SELECT
                 jurisdiction,
@@ -52,7 +52,7 @@ def compare_countries_as_of(
                     list_distinct(
                         list_filter(
                             list(conflict_id),
-                            value -> value IS NOT NULL
+                            lambda value: value IS NOT NULL
                         )
                     )
                 ) AS conflict_ids
@@ -66,6 +66,10 @@ def compare_countries_as_of(
             ORDER BY jurisdiction, kind
             """,
             [concept_id, valid_at, valid_at, observed_at, observed_at],
-        ).pl()
+        )
+        arrow_table = result.to_arrow_table()
+        if arrow_table is None:
+            raise RuntimeError("DuckDB returned no Arrow table for comparison")
+        return cast("pl.DataFrame", pl.from_arrow(arrow_table))
     finally:
         connection.close()

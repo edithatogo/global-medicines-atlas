@@ -33,7 +33,7 @@ jobs:
           set -euo pipefail
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
-          uv run --locked --python 3.14.6 python scripts/qualify_australian_legacy_payload.py \
+          uv run --locked --python 3.15.1 python scripts/qualify_australian_legacy_payload.py \
             --kind p7-workbook --public-hf-workbook \
             --source-uri 'https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/4d1dae488ac43522f20e8320a8b2a56bf9138341/raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx' \
             --retrieved-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \

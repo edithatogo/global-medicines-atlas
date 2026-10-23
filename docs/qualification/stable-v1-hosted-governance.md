@@ -120,13 +120,13 @@ and the active-ruleset observation has digest
 Offline verification uses only committed evidence and performs no network call:
 
 ```console
-uv run --python 3.14.6 --group dev python scripts/qualify_stable_v1_hosted_governance.py
+uv run --python 3.15.1 --group dev python scripts/qualify_stable_v1_hosted_governance.py
 ```
 
 An authorized operator can refresh the snapshot with read-only GitHub calls:
 
 ```console
-uv run --python 3.14.6 --group dev python scripts/qualify_stable_v1_hosted_governance.py --acquire
+uv run --python 3.15.1 --group dev python scripts/qualify_stable_v1_hosted_governance.py --acquire
 ```
 
 Review the diff after acquisition. A changed receipt can reflect legitimate

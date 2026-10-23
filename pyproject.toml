@@ -7,13 +7,13 @@ name = "global-medicines-atlas"
 dynamic = ["version"]
 description = "Global comparison of medicine registration, approval, funding, and reimbursement systems"
 license = "Apache-2.0"
-requires-python = ">=3.14,<3.15"
+requires-python = ">=3.15,<3.16"
 authors = [
   { name = "Edith Atogo" },
 ]
 classifiers = [
   "License :: OSI Approved :: Apache Software License",
-  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Typing :: Typed",
 ]
 dependencies = [
@@ -101,16 +101,16 @@ package = true
 default-groups = ["test-goblin"]
 # Temporary edgetest compatibility override: its uv ceiling predates the CA fix.
 # Keep the three dependency environments qualified before removing this bound.
-override-dependencies = ["uv==0.13.4"]
+override-dependencies = ["uv==0.13.5"]
 
 [tool.uv.dependency-groups]
-test = { requires-python = ">=3.14,<3.15" }
-test-goblin = { requires-python = ">=3.14,<3.15" }
-typing = { requires-python = ">=3.14,<3.15" }
-profiling = { requires-python = ">=3.14,<3.15" }
-dev = { requires-python = ">=3.14,<3.15" }
-edge = { requires-python = ">=3.14,<3.15" }
-security = { requires-python = ">=3.14,<3.15" }
+test = { requires-python = ">=3.15,<3.16" }
+test-goblin = { requires-python = ">=3.15,<3.16" }
+typing = { requires-python = ">=3.15,<3.16" }
+profiling = { requires-python = ">=3.15,<3.16" }
+dev = { requires-python = ">=3.15,<3.16" }
+edge = { requires-python = ">=3.15,<3.16" }
+security = { requires-python = ">=3.15,<3.16" }
 
 [tool.hatch.version]
 source = "vcs"
@@ -125,6 +125,9 @@ version-file = "src/global_medicines_atlas/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/global_medicines_atlas"]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["LICENSE", "README.md", "pyproject.toml", "src"]
 
 [tool.pytest.ini_options]
 addopts = [
@@ -186,19 +189,19 @@ command = "pytest -q tests/test_columnar.py tests/test_settings.py tests/test_pr
 name = "contracts"
 upgrade = ["pydantic", "pydantic-settings"]
 deps = ["beautifulsoup4", "hypothesis", "jsonschema[format-nongpl]", "pytest", "pytest-timeout"]
-python_version = "3.14"
+python_version = "3.15"
 
 [[tool.edgetest.env]]
 name = "columnar"
 upgrade = ["duckdb", "polars", "pyarrow"]
 deps = ["beautifulsoup4", "hypothesis", "jsonschema[format-nongpl]", "pytest", "pytest-timeout"]
-python_version = "3.14"
+python_version = "3.15"
 
 [[tool.edgetest.env]]
 name = "product"
 upgrade = ["fastapi", "httpx", "jinja2", "pydantic", "rich", "typer"]
 deps = ["beautifulsoup4", "hypothesis", "jsonschema[format-nongpl]", "pytest", "pytest-playwright", "pytest-timeout"]
-python_version = "3.14"
+python_version = "3.15"
 
 [tool.coverage.run]
 branch = true
@@ -221,19 +224,19 @@ output = "coverage.xml"
 [tool.basedpyright]
 include = ["src", "sources", "scripts"]
 stubPath = "typing_stubs"
-pythonVersion = "3.14"
+pythonVersion = "3.15"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = "warning"
 
 [tool.ty.environment]
-python-version = "3.14"
+python-version = "3.15"
 extra-paths = ["typing_stubs"]
 
 [tool.ty.src]
 include = ["src", "sources"]
 
 [tool.ruff]
-target-version = "py314"
+target-version = "py315"
 line-length = 80
 src = ["src", "sources"]
 # Pinned upstream Conductor code follows its own formatting policy.

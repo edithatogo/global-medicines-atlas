@@ -26,6 +26,7 @@ class MatchingOutputManifest(FrozenModel):
     candidate_count: int = Field(ge=0)
     feature_count: int = Field(ge=0)
     files: dict[str, str]
+    database_logical_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     input_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
     clinical_equivalence_disclaimer: str
 
@@ -243,6 +244,25 @@ def write_matching_outputs(  # ruff: ignore[too-many-locals]
             GROUP BY ALL
             """
         )
+        candidate_readback = connection.execute(
+            "SELECT * FROM candidate_data ORDER BY candidate_id"
+        ).to_arrow_table()
+        feature_readback = connection.execute(
+            "SELECT * FROM feature_data ORDER BY candidate_id, position"
+        ).to_arrow_table()
+        if candidate_readback is None or feature_readback is None:
+            raise RuntimeError("DuckDB returned no Arrow readback tables")
+        database_logical_sha256 = hashlib.sha256(
+            _canonical_bytes({
+                "candidate_data": candidate_readback.to_pylist(),
+                "feature_data": feature_readback.to_pylist(),
+                "views": (
+                    "matching_candidates",
+                    "matching_features",
+                    "matching_review_summary",
+                ),
+            })
+        ).hexdigest()
     finally:
         connection.close()
 
@@ -258,12 +278,12 @@ def write_matching_outputs(  # ruff: ignore[too-many-locals]
         features_path,
         queue_path,
         events_path,
-        database_path,
     )
     manifest = MatchingOutputManifest(
         candidate_count=len(candidate_rows),
         feature_count=len(feature_rows),
         files={path.name: _digest(path) for path in paths},
+        database_logical_sha256=database_logical_sha256,
         input_digest=input_digest,
         clinical_equivalence_disclaimer=DISCLAIMER,
     )
