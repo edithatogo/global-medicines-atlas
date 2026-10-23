@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-32.json"
+    "australian-m112-rights-release-preflight-20261023-33.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-31.json"
+    "australian-m112-rights-release-preflight-20261023-32.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -56,7 +56,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261023-31.json"
+        "australian-m112-rights-release-preflight-20261023-32.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -132,6 +132,22 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert projection["public_release_rights_attested"] is True
     assert projection["permission_instrument_independently_reviewed"] is False
     assert projection["release_performed_by_this_reconciliation"] is False
+
+
+def test_pbs_native_silver_field_state_is_candidate_only() -> None:
+    report = _json(PREFLIGHT)
+    pbs_silver = report["pbs_native_silver_field_state_current_readback"]
+    assert pbs_silver["source_fields"] == 18_208_758
+    assert pbs_silver["native_unresolved_fields"] == 18_208_758
+    assert pbs_silver["interpreted_fields"] == 0
+    assert pbs_silver["candidate_only"] is True
+    assert pbs_silver["rights_qualified"] is False
+    assert pbs_silver["admitted"] is False
+    assert pbs_silver["published"] is False
+    assert (
+        hashlib.sha256((ROOT / pbs_silver["receipt"]).read_bytes()).hexdigest()
+        == pbs_silver["receipt_sha256"]
+    )
 
 
 def test_scoped_rights_do_not_cross_object_or_release_boundaries() -> None:

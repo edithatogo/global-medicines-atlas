@@ -5869,4 +5869,5 @@ source qualification remains pending their actual final artifacts.
 ### PBS native Silver field-state reconciliation
 
 - [x] Independently reconcile the protected PBS v2 complete package and source-local reference screen aggregate receipts. Bind the exact candidate output ID and Parquet digest, 18,208,758 source fields all `native_unresolved`, zero interpreted fields, and 2,160,066 lexical reference candidates with 2,086,489 unique exact literal matches and 73,577 without an exact match. No source-native values are emitted. The lexical screen does not qualify relationship or domain meaning; rights, admission, canaries and publication remain false.
+- [x] Preserve preflight revision 32 and bind the current field-state receipt and reconciler in revision 33 after merging PR #1283's verified candidate output inventory.
 - [ ] Bind any supportable source-specific meanings and exact eligible output rights/admission, then run authorized consumer restore and delivery canaries.
