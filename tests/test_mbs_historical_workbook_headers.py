@@ -1,14 +1,43 @@
 """Historical workbook header candidates stay identity-bound and unpromoted."""
 
+from dataclasses import replace
 from hashlib import sha256
 from typing import Any, cast
 
 import pytest
 from test_mbs_historical_workbook_native import bound, workbook
 
+from global_medicines_atlas import (
+    mbs_historical_workbook_headers as header_module,
+)
 from global_medicines_atlas.mbs_historical_workbook_headers import (
     profile_workbook_headers,
 )
+
+MAIN = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+
+
+def worksheet(rows: str, *, root: str = "worksheet") -> bytes:
+    return (
+        f'<{root} xmlns="{MAIN}"><dimension ref="A1:H40"/>'
+        f"<sheetData>{rows}</sheetData></{root}>"
+    ).encode()
+
+
+def row_xml(
+    row_index: str,
+    labels: tuple[str, ...],
+    *,
+    columns: tuple[str, ...] | None = None,
+) -> str:
+    cols = columns or tuple(
+        header_module._column_name(index) for index in range(1, len(labels) + 1)
+    )
+    cells = "".join(
+        f'<c r="{column}{row_index}" t="inlineStr"><is><t>{label}</t></is></c>'
+        for column, label in zip(cols, labels, strict=True)
+    )
+    return f'<row r="{row_index}">{cells}</row>'
 
 
 def test_header_candidates_bind_sheet_and_exact_text_without_mapping(tmp_path):
@@ -119,3 +148,88 @@ def test_exact_group_header_uses_only_group_contract(tmp_path):
         "service_count_label",
         "benefit_amount_label_currency_unresolved",
     ]
+
+
+def test_workbook_identity_guards_reject_unbound_metadata(tmp_path):
+    path, member, native = bound(tmp_path, workbook())
+    with pytest.raises(ValueError, match="identity or bound"):
+        profile_workbook_headers(path, replace(member, suffix=".xls"), native)
+    with pytest.raises(ValueError, match="identity or bound"):
+        profile_workbook_headers(path, member, "other.xlsx")
+    with pytest.raises(ValueError, match="identity or bound"):
+        profile_workbook_headers(path, replace(member, byte_count=True), native)
+    path.unlink()
+    path.symlink_to(tmp_path / "missing-target.xlsx")
+    with pytest.raises(ValueError, match="identity or bound"):
+        profile_workbook_headers(path, member, native)
+
+
+def test_sheet_profile_rejects_invalid_row_and_parent_and_root():
+    with pytest.raises(ValueError, match="row index"):
+        header_module._sheet_profile(worksheet('<row r="x"/>'), ())
+    with pytest.raises(ValueError, match="row parent"):
+        header_module._sheet_profile(
+            worksheet('<other><row r="1"/></other>'), ()
+        )
+    with pytest.raises(ValueError, match="root differs"):
+        header_module._sheet_profile(worksheet("", root="notWorksheet"), ())
+
+
+def test_sheet_profile_stops_at_bound_and_keeps_other_header_rows_unresolved():
+    labels = ("Title", "Description")
+    dimension, rows = header_module._sheet_profile(
+        worksheet(row_xml("21", labels) + row_xml("22", labels)), ()
+    )
+    assert dimension == "A1:H40"
+    assert rows == []
+    dimension, rows = header_module._sheet_profile(
+        worksheet(row_xml("2", labels)), ()
+    )
+    assert dimension == "A1:H40"
+    assert rows[0]["disposition"] == "unresolved_candidate"
+
+
+@pytest.mark.parametrize(
+    "cells",
+    [
+        '<c r="A1" t="str"><f>1</f><v>cached</v></c><c r="B1" t="inlineStr"><is><t>Other</t></is></c>',
+        '<c r="A1"><v>12</v></c><c r="B1" t="inlineStr"><is><t>Other</t></is></c>',
+        '<c r="A1" t="inlineStr"><is><t>Same</t></is></c><c r="B1" t="inlineStr"><is><t>Same</t></is></c>',
+    ],
+)
+def test_sheet_profile_does_not_promote_formula_numeric_or_duplicate_rows(
+    cells,
+):
+    _, rows = header_module._sheet_profile(
+        worksheet(f'<row r="1">{cells}</row>'), ()
+    )
+    assert rows == []
+
+
+def test_contract_requires_contiguous_columns_and_caps_candidate_width():
+    headers = (
+        "Year",
+        "Month",
+        "Item_Number",
+        "State",
+        "Age_Range",
+        "Gender",
+        "Services",
+        "Benefits ($)",
+    )
+    _, rows = header_module._sheet_profile(
+        worksheet(
+            row_xml(
+                "3", headers, columns=("A", "C", "D", "E", "F", "G", "H", "I")
+            )
+        ),
+        (),
+    )
+    assert rows[0]["disposition"] == "unresolved_candidate"
+    too_many = tuple(f"Label{index}" for index in range(65))
+    columns = tuple(header_module._column_name(index) for index in range(1, 66))
+    _, rows = header_module._sheet_profile(
+        worksheet(row_xml("1", too_many, columns=columns)), ()
+    )
+    assert rows == []
+    assert header_module._column_name(27) == "AA"
