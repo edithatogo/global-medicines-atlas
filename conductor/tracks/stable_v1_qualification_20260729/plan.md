@@ -772,3 +772,12 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   `v1.0.0` approval is not exercised and no stable tag, signed asset,
   attestation or release was produced. Production disaster-recovery authority
   remains separately `not_claimed` and outside the acceptance-gate set.
+
+## 2026-10-23 current M-105 disposition
+
+- [x] Apply D-006-12 to the current Stable v1 contract while preserving the
+  historical D-006-10 chronology-waiver receipt. The current M-105 requirement
+  is blocked because pre-archive parity evidence cannot be established
+  retroactively; contract totals are now 84 verified and 8 blocked. The
+  Australian federation release gate remains blocked and the M5 Bronze
+  qualification is unchanged.

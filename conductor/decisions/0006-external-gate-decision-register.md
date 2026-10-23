@@ -190,6 +190,23 @@ This approval does not authorize source-rights or scope changes, dataset
 publication, production deployment, or production disaster recovery. The
 release action has not been performed.
 
+## D-006-12 — M-105 blocked status reaffirmation
+
+**Status:** maintainer instruction recorded 2026-10-23. M-105 remains blocked
+because the required pre-archive parity evidence cannot be established
+retroactively.
+
+The 2026-10-18 D-006-10 chronology waiver remains in the historical record, but
+the current M-105 status is blocked under this later instruction. Do not use
+the prior waiver qualification to report current M-105 acceptance or change
+post-archive evidence into pre-archive proof. No source, criterion, or donor
+history was changed by this status reaffirmation.
+
+- **Selected:** keep M-105 blocked and continue independent source and
+  semantic work under their own gates.
+- **Scope boundary:** this does not alter M-107's separate Health.gov workbook
+  delivery blocker, authorize a new source, or authorize any communication.
+
 ## Autonomous continuation
 
 While decisions remain open, the agent may validate schemas, run tests, prepare receipts, reconcile documentation, and review hosted state. It must not install Apps, redistribute restricted data, sign or promote a public stable release before all qualification conditions and exact-candidate verification pass, or claim production qualification without durable evidence. OSF is deprecated and must not be treated as an open submission gate.

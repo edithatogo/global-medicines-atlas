@@ -259,6 +259,7 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         if item["state"] != "verified"
     }
     assert blocked_requirements == {
+        "M-105",
         "M-106",
         "M-107",
         "M-108",
@@ -283,7 +284,7 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         _validator(QUALIFICATION_SCHEMA).validate(invalid)
 
 
-def test_m105_waiver_clears_only_the_chronology_blocker(
+def test_current_maintainer_disposition_keeps_m105_blocked(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -292,18 +293,39 @@ def test_m105_waiver_clears_only_the_chronology_blocker(
     requirements = {
         row["requirement_id"]: row for row in reconciled["requirements"]
     }
-    assert requirements["M-105"]["state"] == "verified"
-    assert requirements["M-105"]["blocker_ids"] == []
+    assert requirements["M-105"]["state"] == "blocked"
+    assert requirements["M-105"]["blocker_ids"] == [
+        "stable-v1-australian-health-federation"
+    ]
+    assert (
+        "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+        in requirements["M-105"]["evidence"]
+    )
     assert (
         "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
         in requirements["M-105"]["evidence"]
     )
+    disposition = _load(
+        ROOT
+        / "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+    )
+    assert disposition["decision_id"] == "D-006-12"
+    assert disposition["status"] == "blocked"
+    assert not disposition["boundaries"]["pre_archive_parity_proof_created"]
+    assert not disposition["boundaries"]["new_sources_added"]
+    assert not disposition["boundaries"]["outbound_communication_performed"]
     assert all(
         requirements[f"M-{number}"]["state"] == "blocked"
         for number in range(106, 113)
     )
     gates = {row["gate_id"]: row for row in reconciled["release_gates"]}
     assert gates["stable-v1-australian-health-federation"]["state"] == "blocked"
+
+    status_page = (
+        ROOT / "docs/qualification/stable-v1-m5-maturity-status.md"
+    ).read_text(encoding="utf-8")
+    assert "84 verified and 8 blocked requirements" in status_page
+    assert "M-105 remains blocked" in status_page
 
     invalid_waiver = _load(
         ROOT
@@ -324,6 +346,50 @@ def test_m105_waiver_clears_only_the_chronology_blocker(
     assert (
         "stable-v1-australian-health-federation" in invalid_m105["blocker_ids"]
     )
+
+
+def test_missing_current_m105_disposition_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        reconciliation,
+        "M105_CURRENT_DISPOSITION",
+        "quality/qualifications/missing-m105-current-disposition.json",
+    )
+    result = build_contract(_load(QUALIFICATION))
+    m105 = next(
+        row
+        for row in result["requirements"]
+        if row["requirement_id"] == "M-105"
+    )
+    assert m105["state"] == "blocked"
+    assert "stable-v1-australian-health-federation" in m105["blocker_ids"]
+
+
+@pytest.mark.parametrize("decision_id", ["D-006-12", "D-006-99"])
+def test_m105_unblock_requires_a_later_bound_decision(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    decision_id: str,
+) -> None:
+    disposition = _load(
+        ROOT
+        / "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+    )
+    disposition["decision_id"] = decision_id
+    disposition["status"] = "accepted_after_new_maintainer_decision"
+    path = tmp_path / "m105-current-disposition.json"
+    path.write_text(json.dumps(disposition), encoding="utf-8")
+    monkeypatch.setattr(reconciliation, "M105_CURRENT_DISPOSITION", str(path))
+
+    result = build_contract(_load(QUALIFICATION))
+    m105 = next(
+        row
+        for row in result["requirements"]
+        if row["requirement_id"] == "M-105"
+    )
+    assert m105["state"] == "blocked"
+    assert "stable-v1-australian-health-federation" in m105["blocker_ids"]
 
 
 @pytest.mark.parametrize(

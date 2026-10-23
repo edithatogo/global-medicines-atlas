@@ -1343,3 +1343,27 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   pre-correction four-failure result is superseded for current local status.
   All 28 required hosted checks passed on this exact head; later local Goblin
   lanes were not reached after the coverage-profile failure.
+
+## 2026-10-23 current M-105 and M-107 dispositions
+
+- [x] Reconcile the current M-105 state to the maintainer's 2026-10-23
+  instruction: M-105 remains blocked because required pre-archive parity
+  evidence cannot be established retroactively. Preserve D-006-10 as a
+  historical approval, but do not use its prior qualification state to claim
+  current M-105 acceptance. The current disposition is recorded in
+  `quality/qualifications/australian-donor-m105-current-disposition-20261023.json`
+  and D-006-12.
+- [x] Reconcile the current M-107 delivery state to the exact-main
+  HEAD-only receipt from run [36452243269](https://github.com/edithatogo/global-medicines-atlas/actions/runs/36452243269):
+  quarterly, annual, and year-to-date Health.gov workbook requests all timed
+  out before response bodies were read. No payload, receipt, or new source was
+  acquired. Do not repeat the unchanged probe or contact the source owner.
+- [x] Bind any future M-105 promotion to a later, exact decision-register
+  entry that explicitly records acceptance; arbitrary disposition JSON edits
+  fail closed. Date the readiness receipt at the current contract observation.
+  The review-correction suite passes on Python 3.15.1; exact-head hosted checks
+  are rerunning before merge.
+- [~] Keep the gates distinct and open. M-105's historical ordering cannot be
+  repaired by post-archive evidence; M-107 requires delivery of the already
+  authorized Health.gov workbook families and the remaining historical
+  denominator. Neither status closes or expands no-new-sources semantic work.
