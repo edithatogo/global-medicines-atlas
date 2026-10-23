@@ -1,5 +1,25 @@
 # Stable v1 hosted governance qualification
 
+## Latest live refresh — 2026-10-24
+
+A new read-only acquisition is bound to `main` commit
+`e95ad00d8a0553bd6edef28161d9bbfea637b412`. Its snapshot digest is
+`55d6c096076403830514cb137e83eb87b73be5e33706e5978667a0579edf0df2` and
+receipt digest is `85546fe68c16a930677eac50d931b8c8d67ac76854840563de34c252d367ca46`.
+The 28 required check identities and their producer app IDs remain present,
+strict mode is still enabled, and all non-status branch-protection settings
+were preserved when the 21 Python 3.14 context labels were changed to the
+workflow's Python 3.15 labels.
+
+The current receipt is `partial`: the live repository now allows merge commits
+and rebase merges, while the recorded governance contract expects both off.
+That difference is unrelated to the required-check rename and was not changed
+here. The current snapshot accurately preserves this drift; it does not claim a
+fully conforming Stable v1 governance state. The former 2026-08-01 snapshot and
+receipt are preserved byte-for-byte under `quality/snapshots/history/2026-08-01/`
+and `quality/qualifications/history/2026-08-01/`.
+
+
 This qualification records point-in-time, authenticated, read-only GitHub
 evidence for `edithatogo/global-medicines-atlas` and the linked
 [Global Medicines Atlas Conductor project](https://github.com/users/edithatogo/projects/35).
@@ -32,8 +52,8 @@ receipt.
 
 ## Current result
 
-The snapshot is bound to `main` commit
-`0917a7d7f1de1b865ca2fc0a6d1a73d5b5aa3204`. Repository identity, the active
+The preserved 2026-08-01 snapshot was bound to `main` commit
+`0917a7d7f1de1b865ca2fc0a6d1a73d5b5aa3204`. At that point repository identity, the active
 `Protect main from destructive updates` ruleset, classic branch protection,
 all 28 required checks and their producer application IDs, security controls,
 issue hierarchy, project identity, project fields, five project views, and all
@@ -42,7 +62,7 @@ with active enforcement; classic protection independently blocks force pushes
 and deletions, requires linear history and resolved conversations, and retains
 zero required approving reviews.
 
-The overall state is `qualified`. Project #35 remains linked to
+The historical 2026-08-01 overall state was `qualified`. Project #35 remains linked to
 `edithatogo/global-medicines-atlas`; Phase 1 and Phase 2 are `Done`/`Verified`,
 while the still-open Phase 3 item remains `Todo`/`Unverified` behind its human
 gate. The two risk/evidence views retain their expected custom fields.
@@ -104,11 +124,11 @@ with an empty removal set. The required contexts now comprise 26 mandatory
 matrices and fixed job names, preventing another hand-maintained count from
 silently omitting a lane.
 
-The post-change branch-protection observation digest is
+The post-hardening, pre-migration branch-protection observation digest was
 `68e624d5cdd74a1066ad9ba6ce74112050efe895befddcc568d4f0de69581ac8`.
-The full snapshot digest is
+The preserved 2026-08-01 full snapshot digest is
 `8acdd6d66666076cf2dfcfc0901d0ffea4f6f55372388d899c3c7e4a762fbc9a`.
-The derived qualification receipt digest is
+The preserved 2026-08-01 qualification receipt digest is
 `cf7ad5e998b69b1fc5f35f7fe0b154eca279eb373a991078a2d589544502a072`.
 Project #35 retained response digest
 `b53e1e504c3635f0c7e708ca4ada3c7c8b4a306997ba1b4909062ae4c34e103c`,

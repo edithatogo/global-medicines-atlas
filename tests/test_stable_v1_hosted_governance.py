@@ -158,7 +158,7 @@ def test_live_snapshot_is_exactly_available_and_point_in_time() -> None:
     )
     assert repository["default_branch"] == "main"
     assert repository["default_branch_sha"] == (
-        "0917a7d7f1de1b865ca2fc0a6d1a73d5b5aa3204"
+        "e95ad00d8a0553bd6edef28161d9bbfea637b412"
     )
 
 
@@ -324,13 +324,15 @@ def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
     assert "group: python-free-threaded-canary\n" not in workflow
 
 
-def test_current_receipt_reports_all_hosted_controls_verified() -> None:
+def test_current_receipt_reports_live_repository_setting_drift() -> None:
     receipt = qualify_hosted_governance(_snapshot())
 
-    assert receipt.qualification_state is QualificationState.QUALIFIED
-    assert (
-        _control(receipt, "repository_identity").status
-        is ControlStatus.VERIFIED
+    assert receipt.qualification_state is QualificationState.PARTIAL
+    repository = _control(receipt, "repository_identity")
+    assert repository.status is ControlStatus.NONCONFORMING
+    assert repository.findings == (
+        "repository:allow_merge_commit:expected:False",
+        "repository:allow_rebase_merge:expected:False",
     )
     assert (
         _control(receipt, "security_features").status is ControlStatus.VERIFIED
@@ -804,6 +806,14 @@ def _fix_project_drift(data: object) -> None:
 
 def test_resolving_snapshot_drift_produces_a_fully_qualified_receipt() -> None:
     snapshot = _replace_data(_snapshot(), "project", _fix_project_drift)
+    snapshot = _replace_data(
+        snapshot,
+        "repository",
+        lambda data: cast("dict[str, JsonValue]", data).update({
+            "allow_merge_commit": False,
+            "allow_rebase_merge": False,
+        }),
+    )
 
     receipt = qualify_hosted_governance(snapshot)
 
@@ -828,7 +838,7 @@ def test_receipt_and_control_models_reject_forged_conclusions() -> None:
             evidence=("repository",),
         )
     payload = qualify_hosted_governance(_snapshot()).model_dump(mode="json")
-    payload["qualification_state"] = "partial"
+    payload["qualification_state"] = "qualified"
     with pytest.raises(ValidationError, match="does not match controls"):
         HostedGovernanceReceipt.model_validate(payload)
 
