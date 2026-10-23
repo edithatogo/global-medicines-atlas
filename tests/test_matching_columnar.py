@@ -4,6 +4,7 @@ import duckdb
 import pyarrow.parquet as pq
 import pytest
 
+from global_medicines_atlas import matching_columnar
 from global_medicines_atlas.matching_columnar import (
     DISCLAIMER,
     write_matching_outputs,
@@ -118,6 +119,25 @@ def test_output_manifest_and_jsonl_are_reproducible(tmp_path):
     assert b'"clinical_equivalence_claim":false' in first_queue
     assert b'"confidence":null' in first_queue
     assert b'"confidence_state":"not_calibrated"' in first_queue
+
+
+def test_database_logical_digest_binds_view_definitions() -> None:
+    candidate_rows = [{"candidate_id": "candidate-1"}]
+    feature_rows = [{"candidate_id": "candidate-1", "position": 1}]
+    view_definitions = [
+        ("matching_candidates", "SELECT * FROM candidate_data"),
+    ]
+
+    initial = matching_columnar._database_logical_digest(
+        candidate_rows, feature_rows, view_definitions
+    )
+    changed = matching_columnar._database_logical_digest(
+        candidate_rows,
+        feature_rows,
+        [("matching_candidates", "SELECT * FROM candidate_data WHERE TRUE")],
+    )
+
+    assert initial != changed
 
 
 def test_empty_queue_has_stable_schemas(tmp_path):

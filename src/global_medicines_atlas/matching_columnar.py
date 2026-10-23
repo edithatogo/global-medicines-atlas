@@ -81,6 +81,12 @@ FEATURE_SCHEMA = pa.schema([
     ("provenance_ids", pa.list_(pa.string())),
 ])
 
+MATCHING_VIEW_NAMES = (
+    "matching_candidates",
+    "matching_features",
+    "matching_review_summary",
+)
+
 
 def _canonical_bytes(value: object) -> bytes:
     def encode(item: object) -> str:
@@ -99,6 +105,20 @@ def _canonical_bytes(value: object) -> bytes:
 
 def _digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _database_logical_digest(
+    candidate_rows: list[dict[str, object]],
+    feature_rows: list[dict[str, object]],
+    view_definitions: list[tuple[str, str]],
+) -> str:
+    return hashlib.sha256(
+        _canonical_bytes({
+            "candidate_data": candidate_rows,
+            "feature_data": feature_rows,
+            "view_definitions": view_definitions,
+        })
+    ).hexdigest()
 
 
 def _candidate_row(entry: ReviewQueueEntry) -> dict[str, object]:
@@ -252,17 +272,28 @@ def write_matching_outputs(  # ruff: ignore[too-many-locals]
         ).to_arrow_table()
         if candidate_readback is None or feature_readback is None:
             raise RuntimeError("DuckDB returned no Arrow readback tables")
-        database_logical_sha256 = hashlib.sha256(
-            _canonical_bytes({
-                "candidate_data": candidate_readback.to_pylist(),
-                "feature_data": feature_readback.to_pylist(),
-                "views": (
-                    "matching_candidates",
-                    "matching_features",
-                    "matching_review_summary",
-                ),
-            })
-        ).hexdigest()
+        view_definitions = connection.execute(
+            """
+            SELECT view_name, sql
+            FROM duckdb_views()
+            WHERE schema_name = current_schema()
+              AND view_name IN (
+                  'matching_candidates',
+                  'matching_features',
+                  'matching_review_summary'
+              )
+            ORDER BY view_name
+            """
+        ).fetchall()
+        if tuple(name for name, _ in view_definitions) != tuple(
+            sorted(MATCHING_VIEW_NAMES)
+        ):
+            raise RuntimeError("DuckDB view definitions are incomplete")
+        database_logical_sha256 = _database_logical_digest(
+            candidate_readback.to_pylist(),
+            feature_readback.to_pylist(),
+            [(str(name), str(sql)) for name, sql in view_definitions],
+        )
     finally:
         connection.close()
 

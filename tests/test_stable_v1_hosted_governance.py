@@ -212,6 +212,13 @@ def test_required_checks_match_harness_and_exact_hosted_protection() -> None:
         "codeql",
     }
     assert set(dependency_jobs) == {"dependency-review"}
+    assert test_jobs["hudi-comparison"]["if"] == (
+        "github.event_name == 'workflow_dispatch'"
+    )
+    assert (
+        "preview (manual)"
+        in cast("str", test_jobs["hudi-comparison"]["name"]).lower()
+    )
 
     expanded_test_goblin = _test_goblin_check_names(test_jobs)
     expanded_security = {
