@@ -5847,3 +5847,9 @@ source qualification remains pending their actual final artifacts.
 
 - [x] Protected exact-main retry 39730665004 passed on c9fd61e9. Retain the aggregate-only receipt with 18,208,758 native fields, 567,785 definitions, 2,160,066 candidate references, 2,086,489 unique exact literals and 73,577 without an exact literal. The screen emitted no native values and made no semantic relationship or domain claim.
 - [ ] Review source-specific relationship meaning and calibrate any matcher behavior using authorized bounded evidence before promoting these lexical matches.
+
+### Six historical workbook runtime cancellations
+
+- [x] Reconcile terminal protected run 39724026209 at exact main d338ee01: 85 of 91 member jobs passed; six (65, 71, 80, 84, 86, 87) were cancelled at the 30-minute job bound. Their aggregate receipts remain `incomplete` at `member-native-check`; none are qualified.
+- [x] Add an exact six-member retry selection with a finite 60-minute job bound and unchanged two-job concurrency, source identity, byte limits, complete restore, output checks, and aggregate-only receipts.
+- [ ] Merge after protected CI, execute the six on exact main, retain each successful receipt, and reconcile the 85 original successes plus six retry successes without double-counting.

@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261022-30.json"
+    "australian-m112-rights-release-preflight-20261023-31.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261022-29.json"
+    "australian-m112-rights-release-preflight-20261022-30.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -56,7 +56,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261022-29.json"
+        "australian-m112-rights-release-preflight-20261022-30.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -314,3 +314,23 @@ def test_q1_hr_exact_hosted_identity_is_in_current_preflight() -> None:
     assert q1["reader_cache_bytes_after_close"] == 0
     receipt_path = ROOT / q1["path"]
     assert hashlib.sha256(receipt_path.read_bytes()).hexdigest() == q1["sha256"]
+
+
+def test_historical_workbook_timeout_retry_scope_is_exact_and_unqualified() -> (
+    None
+):
+    report = _json(PREFLIGHT)
+    workbook_retry = report["historical_workbook_six_member_runtime_retry"]
+    assert workbook_retry["original_run_id"] == 39724026209
+    assert workbook_retry["successful_members"] == 85
+    assert workbook_retry["cancelled_groups"] == [65, 71, 80, 84, 86, 87]
+    assert workbook_retry["retry_job_timeout_minutes"] == 60
+    assert workbook_retry["retry_qualified"] is False
+    assert workbook_retry["new_sources"] == 0
+    assert workbook_retry["new_admissions"] == 0
+    for item in workbook_retry["incomplete_receipts"]:
+        assert _json(ROOT / item["path"])["status"] == "incomplete"
+        assert (
+            hashlib.sha256((ROOT / item["path"]).read_bytes()).hexdigest()
+            == item["sha256"]
+        )
