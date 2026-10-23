@@ -1686,3 +1686,9 @@ preflight admission or canary evidence.
   objects; every contract marks the target non-independent and has null
   RPO/RTO. Independent recovery, M-111 admitted-product queries, and release
   remain open.
+- [x] Preserve M-112 release-preflight snapshot #36 unchanged and create
+  successor #37 after the E2E registry change. Snapshot #37 binds the current
+  `scripts/test_goblin.py` and `tests/test_m112_rights_release_preflight.py`
+  digests and points to #36 by exact SHA-256. Focused preflight and live
+  consumer/recovery readback checks pass (16 tests). The successor changes no
+  admission, rights, product, recovery-independence, or publication state.
