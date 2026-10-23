@@ -417,9 +417,11 @@ def test_historical_workbook_rights_attestation_binds_exact_91_outputs() -> (
         }
         for group, entry in cohort["candidate_outputs_by_group"].items()
     }
-    actual = {
-        entry["group"]: entry for entry in attestation["authorized_outputs"]
-    }
+    authorized_outputs = attestation["authorized_outputs"]
+    assert len(authorized_outputs) == binding["output_count"] == 91
+    assert len({entry["group"] for entry in authorized_outputs}) == 91
+    assert len({entry["output_id"] for entry in authorized_outputs}) == 91
+    actual = {entry["group"]: entry for entry in authorized_outputs}
     assert len(expected) == len(actual) == binding["output_count"] == 91
     assert actual == expected
     assert len({entry["output_id"] for entry in actual.values()}) == 91
