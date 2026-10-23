@@ -77,5 +77,5 @@ historical snapshots and must not be read as today's totals.
 - [~] **Track: Deliver federated medicines Platinum products**
   *Link: [tracks/federated_medicines_platinum_20260829/index.md](./tracks/federated_medicines_platinum_20260829/index.md); remote-first API, CLI, atlas, exports, provenance, coverage, and cross-repository compatibility.*
 
-- [~] **Track: Evaluate federated medallion frontier capabilities**
-  *Link: [tracks/federated_medallion_frontier_experiments_20260829/index.md](./tracks/federated_medallion_frontier_experiments_20260829/index.md); measured remote-query, Xet, Iceberg, attestation, graph, semantic, and streaming previews with no implicit promotion.*
+- [x] **Track: Evaluate federated medallion frontier capabilities**
+  *Link: [tracks/federated_medallion_frontier_experiments_20260829/index.md](./tracks/federated_medallion_frontier_experiments_20260829/index.md); every experiment is measured, retained as a non-authoritative preview, reused, or deferred with a fallback. Product-owned exhaustive screening and real matcher calibration remain open.*

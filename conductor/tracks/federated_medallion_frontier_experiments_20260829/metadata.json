@@ -29,9 +29,9 @@
     "C-009", "C-010", "C-011", "C-012", "C-013", "C-014", "C-015",
     "W-003", "W-005"
   ],
-  "status": "in_progress",
+  "status": "complete",
   "target_versions": ["1.0.0"],
   "track_id": "federated_medallion_frontier_experiments_20260829",
   "type": "experiment",
-  "updated_at": "2026-10-23T12:17:55Z"
+  "updated_at": "2026-10-23T13:06:33Z"
 }

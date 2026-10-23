@@ -451,7 +451,7 @@
 
 ## Phase 6: Threat, cost, and disposition review (AC-07, AC-08)
 
-- [~] Run focused, parity, benchmark, property, mutation, security, dependency,
+- [x] Run focused, parity, benchmark, property, mutation, security, dependency,
   typing, provenance, rights, full Test-Goblin where supported, and hosted lanes.
   The synthetic benchmark has full local and 38/38 hosted evidence. The hosted
   graph lanes now verify exact synthetic MBS/PBS parity on Neo4j 2026.09.0 and
@@ -470,7 +470,10 @@
   output. The current frontier evidence and its non-promotion boundaries are
   reconciled in `quality/qualifications/frontier-experiment-disposition-20261023.json`.
   Local validation for this disposition is recorded in the append-only track
-  evidence; protected hosted checks for its exact PR head remain pending.
+  evidence. PR #1293 merged at `29638c14`; all 40 hosted check rows passed on
+  its exact head, including the full Test-Goblin matrix and Codecov patch gate.
+  The previously recorded local full-profile failures remain historical
+  environment/browser outcomes and are not reclassified as passes.
   Live engines and catalogue registration remain optional previews; actual
   restricted-content clearance and representative matcher calibration remain
   separate product gates. This is not public-graph qualification or production
@@ -486,6 +489,13 @@
   production-promotion gate.
 - [x] Do not promote dependencies or production authority in this track; open a
   separate ADR/implementation track for any candidate that passes.
+
+- [x] Track completion: every experiment now has measured, reused, retained-
+  preview, or deferred disposition; bounded source screening and poor synthetic
+  matcher calibration remain explicitly non-authoritative. Product-owned
+  exhaustive restricted-content qualification and real cross-jurisdiction
+  matcher calibration remain open in their owner tracks and are not claimed by
+  this optional-experiment evaluation.
 
 ## 2026-10-18 synthetic candidate fixture identity correction
 
