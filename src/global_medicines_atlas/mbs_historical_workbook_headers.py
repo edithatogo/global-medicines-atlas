@@ -31,7 +31,7 @@ MAX_HEADER_SCAN_ROWS = 20
 MIN_CANDIDATE_LABELS = 2
 MAX_CANDIDATE_LABELS = 64
 MAIN = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-HEADER_CONTRACTS = {
+HEADER_CONTRACTS: dict[tuple[str, ...], tuple[str, tuple[str, ...]]] = {
     (
         "Year",
         "Month",
