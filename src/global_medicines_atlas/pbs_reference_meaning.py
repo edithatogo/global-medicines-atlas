@@ -6,7 +6,7 @@ import hashlib
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 SCREEN_RECEIPT = (
     "quality/qualifications/"
@@ -183,37 +183,57 @@ def _meaning_profile() -> dict[str, Any]:
     }
 
 
+def _string_keyed_mapping(value: object) -> dict[str, object] | None:
+    if not isinstance(value, dict):
+        return None
+    normalized: dict[str, object] = {}
+    for key, item in cast("dict[object, object]", value).items():
+        if not isinstance(key, str):
+            return None
+        normalized[key] = item
+    return normalized
+
+
+def _count_mapping(value: object, allowed: set[str]) -> dict[str, int] | None:
+    mapping = _string_keyed_mapping(value)
+    if mapping is None or not set(mapping) <= allowed:
+        return None
+    counts: dict[str, int] = {}
+    for key, item in mapping.items():
+        if isinstance(item, bool) or not isinstance(item, int) or item < 0:
+            return None
+        counts[key] = item
+    return counts
+
+
 def _validated_per_kind(
     qualification: dict[str, Any], counts: dict[str, int], references: int
 ) -> dict[str, Any] | None:
     per_kind = qualification.get("reference_kind_status_counts")
     if per_kind is None:
         return None
-    kind_totals = qualification.get("reference_kind_counts")
+    per_kind_mapping = _string_keyed_mapping(per_kind)
+    kind_totals = _count_mapping(
+        qualification.get("reference_kind_counts"), REFERENCE_KINDS
+    )
     if (
-        not isinstance(per_kind, dict)
-        or set(per_kind) != REFERENCE_KINDS
-        or not isinstance(kind_totals, dict)
+        per_kind_mapping is None
+        or set(per_kind_mapping) != REFERENCE_KINDS
+        or kind_totals is None
         or set(kind_totals) != REFERENCE_KINDS
     ):
         raise ValueError("PBS per-kind reference denominators are required")
     normalized: dict[str, Any] = {}
     summed: dict[str, int] = {}
+    kind_reference_total = 0
     for kind in sorted(REFERENCE_KINDS):
-        kind_counts = per_kind[kind]
-        if (
-            not isinstance(kind_counts, dict)
-            or not set(kind_counts) <= STATUSES
-            or not kind_counts
-            or not all(
-                isinstance(value, int) and value >= 0
-                for value in kind_counts.values()
-            )
-        ):
+        kind_counts = _count_mapping(per_kind_mapping[kind], STATUSES)
+        if kind_counts is None or not kind_counts:
             raise ValueError("PBS per-kind reference status counts are invalid")
         denominator = sum(kind_counts.values())
         if denominator == 0 or kind_totals.get(kind) != denominator:
             raise ValueError("PBS per-kind reference denominator differs")
+        kind_reference_total += denominator
         normalized[kind] = {
             "reference_fields": denominator,
             "status_counts": dict(sorted(kind_counts.items())),
@@ -221,11 +241,7 @@ def _validated_per_kind(
         }
         for status, value in kind_counts.items():
             summed[status] = summed.get(status, 0) + value
-    if (
-        summed != counts
-        or sum(item["reference_fields"] for item in normalized.values())
-        != references
-    ):
+    if summed != counts or kind_reference_total != references:
         raise ValueError("PBS per-kind and aggregate denominators differ")
     return normalized
 
@@ -261,20 +277,19 @@ def review_reference_meanings(
             report, expected_exact_commit, expected_run_id
         )
     qualification = _validate_source(report)
-    counts = qualification.get("reference_status_counts")
-    if (
-        not isinstance(counts, dict)
-        or not set(counts) <= STATUSES
-        or not {"unique_exact_literal", "no_exact_literal"} <= set(counts)
-    ):
+    counts = _count_mapping(
+        qualification.get("reference_status_counts"), STATUSES
+    )
+    if counts is None or not {
+        "unique_exact_literal",
+        "no_exact_literal",
+    } <= set(counts):
         raise ValueError("PBS reference screen aggregate counts are invalid")
     references = qualification.get("reference_fields")
     if (
         not isinstance(references, int)
+        or isinstance(references, bool)
         or sum(counts.values()) != references
-        or not all(
-            isinstance(value, int) and value >= 0 for value in counts.values()
-        )
     ):
         raise ValueError("PBS reference screen match denominator differs")
 
