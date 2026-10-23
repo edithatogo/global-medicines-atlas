@@ -5868,6 +5868,7 @@ source qualification remains pending their actual final artifacts.
 - [x] Correct PR #1285 review's retained-report test gap by deriving both output-ID and source/member uniqueness from the 91 actual candidate entries, independently of reported summary counters.
 - [ ] Bind exact eligible derived-output rights, source-column interpretation where supportable, admission, restore and consumer evidence separately.
 - [x] Record the maintainer's exact public-release rights attestation for all 91 digest-pinned historical workbook Parquet candidate outputs. The instrument was not independently located or reviewed. Semantic interpretation, admission, restore, public release and consumer canaries remain separate gates.
+- [~] Add an exact-main protected profile of the 91 existing workbook members, grouping observed sheet/header candidates and binding only exact demographic/group contracts. Preserve unmatched headers and non-header cells as unresolved; actual-source profile receipts and member-level reconciliation remain pending the merged workflow run.
 
 ### PBS native Silver field-state reconciliation
 

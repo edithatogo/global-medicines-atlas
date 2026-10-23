@@ -320,6 +320,36 @@ def test_final_public_revision_readback_is_mandatory(synthetic):
         module.qualify(SHA, 0, transport=httpx.MockTransport(changed))
 
 
+def test_header_profile_workflow_is_exact_main_read_only_and_bounded():
+    document = yaml.load(
+        (
+            module.ROOT
+            / ".github/workflows/mbs-q1-source-meaning-diagnostics.yml"
+        ).read_text(),
+        Loader=yaml.BaseLoader,
+    )
+    job = document["jobs"]["historical-workbook-header-profiles"]
+    assert job["if"] == (
+        "inputs.qualification_scope == 'historical-workbook-header-profiles'"
+    )
+    assert job["strategy"]["max-parallel"] == "2"
+    assert job["strategy"]["matrix"]["archive_index"] == [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+    ]
+    assert job["timeout-minutes"] == "30"
+    assert job["permissions"] == {"contents": "read"}
+    step = next(step for step in job["steps"] if "run" in step)
+    assert "scripts/profile_mbs_historical_workbook_headers.py" in step["run"]
+    assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in step["run"]
+    assert job["steps"][-1]["if"] == "always()"
+    assert job["steps"][-1]["with"]["retention-days"] == "30"
+
+
 def test_cli_success_retains_only_completed_metadata(
     tmp_path, monkeypatch, synthetic
 ):

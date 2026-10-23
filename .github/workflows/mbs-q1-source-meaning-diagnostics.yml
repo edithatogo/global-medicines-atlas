@@ -22,6 +22,7 @@ on:
           - archive-formats
           - historical-csv-packages
           - historical-workbook-packages
+          - historical-workbook-header-profiles
       workbook_selection:
         description: Historical workbook scope after native performance qualification
         required: false
@@ -44,7 +45,7 @@ concurrency:
 
 jobs:
   qualify:
-    if: inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv' && inputs.qualification_scope != 'quarterly-workbooks' && inputs.qualification_scope != 'group-workbook-layout' && inputs.qualification_scope != 'group-workbook-silver' && inputs.qualification_scope != 'sidecar-layout' && inputs.qualification_scope != 'sidecar-package' && inputs.qualification_scope != 'archive-members' && inputs.qualification_scope != 'archive-formats' && inputs.qualification_scope != 'historical-csv-packages' && inputs.qualification_scope != 'historical-workbook-packages'
+    if: inputs.qualification_scope != 'native-silver' && inputs.qualification_scope != 'quarterly-csv' && inputs.qualification_scope != 'group-csv' && inputs.qualification_scope != 'quarterly-workbooks' && inputs.qualification_scope != 'group-workbook-layout' && inputs.qualification_scope != 'group-workbook-silver' && inputs.qualification_scope != 'sidecar-layout' && inputs.qualification_scope != 'sidecar-package' && inputs.qualification_scope != 'archive-members' && inputs.qualification_scope != 'archive-formats' && inputs.qualification_scope != 'historical-csv-packages' && inputs.qualification_scope != 'historical-workbook-packages' && inputs.qualification_scope != 'historical-workbook-header-profiles'
     name: Verify exact Q1 age marker and decimal diagnostics
     runs-on: ubuntu-24.04
     timeout-minutes: 20
@@ -459,5 +460,41 @@ jobs:
         with:
           name: historical-workbook-packages-${{ matrix.group }}
           path: historical-workbook-packages.json
+          if-no-files-found: error
+          retention-days: 30
+
+  historical-workbook-header-profiles:
+    if: inputs.qualification_scope == 'historical-workbook-header-profiles'
+    name: Profile frozen historical workbook headers / archive ${{ matrix.archive_index }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        archive_index: [0, 1, 2, 3, 4, 5]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read exact existing objects and emit digest-bound profiles
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+          ARCHIVE_INDEX: ${{ matrix.archive_index }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.14.6 python scripts/profile_mbs_historical_workbook_headers.py \
+            --exact-commit "$REQUESTED_COMMIT" --archive-index "$ARCHIVE_INDEX" --output historical-workbook-header-profiles.json
+      - name: Retain bounded profile receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: historical-workbook-header-profiles-${{ matrix.archive_index }}
+          path: historical-workbook-header-profiles.json
           if-no-files-found: error
           retention-days: 30
