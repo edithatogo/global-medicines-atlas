@@ -1660,3 +1660,29 @@ and the later candidate-role refresh
 `quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json`,
 which preserves the same 7/7 counts and 1,752 deferrals without changing the
 preflight admission or canary evidence.
+
+## 2026-10-23 exact-main reviewed-candidate consumer traversal
+
+- [x] Run the protected four-surface consumer traversal on exact `main`
+  commit `78e857839aad8298060c65eb5ef03a4e3114827a`. Hosted run
+  [39939296038](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39939296038)
+  passed API, CLI, Atlas, and Chromium traversal over 5,989 edges and six
+  pages. All surfaces returned the same ordered edge-ID digest. Bounded date
+  and decimal queries matched between DuckDB and Polars. The report binds the
+  current v4 candidate, semantic-manifest, exact-six-use-authorization, and
+  maintainer-reviewed same-record receipt identities.
+- [x] Preserve the aggregate-only hosted result at
+  `quality/qualifications/australian-mbs-gold-candidate-consumers-20261023-39939296038.json`
+  (artifact 12495406664; SHA-256
+  `c27ffdf46bfe07285578580348027bd566aa76ad8b1020f0175a45e69b474c8b`). The
+  nested state is `reviewed_candidate`; the top-level `not_reviewed` retains
+  the original pre-review graph state. M-110 overall acceptance and M-112
+  acceptance remain false. Product and output remain candidate-only.
+- [x] Reconcile the eight current M-112 admissions to their existing exact
+  clean-room anonymous restore receipt and live pinned 28-file checksum
+  inventory. See
+  `quality/qualifications/australian-m112-primary-recovery-readback-20261023.json`.
+  This closes the primary restore identity join for the eight admitted
+  objects; every contract marks the target non-independent and has null
+  RPO/RTO. Independent recovery, M-111 admitted-product queries, and release
+  remain open.
