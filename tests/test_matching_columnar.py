@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 import duckdb
 import pyarrow.parquet as pq
+import pytest
 
 from global_medicines_atlas.matching_columnar import (
     DISCLAIMER,
@@ -123,3 +124,29 @@ def test_empty_queue_has_stable_schemas(tmp_path):
     manifest = write_matching_outputs([], tmp_path)
     assert manifest.candidate_count == 0
     assert pq.read_table(tmp_path / "matching_candidates.parquet").schema.names
+
+
+@pytest.mark.unit
+def test_matching_output_rejects_missing_database_arrow_readback(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    class Result:
+        def to_arrow_table(self) -> None:
+            return None
+
+    class Connection:
+        def register(self, _name: str, _table: object) -> None:
+            pass
+
+        def execute(self, *_args: object) -> Result:
+            return Result()
+
+        def close(self) -> None:
+            pass
+
+    monkeypatch.setattr(
+        duckdb, "connect", lambda *_args, **_kwargs: Connection()
+    )
+
+    with pytest.raises(RuntimeError, match="no Arrow readback tables"):
+        write_matching_outputs([sample_entry()], tmp_path)
