@@ -5865,6 +5865,7 @@ source qualification remains pending their actual final artifacts.
 - [x] Extend exact two-run reconciliation to emit each verified candidate output ID, Parquet digest and byte count, source/member digests, and `native_unresolved` field state. Reject malformed Parquet fingerprints even if an output ID is recomputed. This is aggregate metadata only; rights, admission and publication stay false. Twenty-three focused tests pass with 93.07% branch coverage.
 - [x] Complete the pinned-uv local full profile with exit 0. Correct PR #1283 review's digest-type gap by requiring a string SHA-256 and rejecting a rehashed array of 64 valid hex characters. Recheck affected tests and protected exact-head CI before merge.
 - [x] Reconcile the original 85 and retried six in `mbs-historical-workbook-cohort-20261023-39724026209-39891918206.json`: 91 unique member identities and candidate output IDs, 348,952,606 native records, 310,177,657 cells, 38,773,552 rows and 181 sheets. All cells remain `native_unresolved`; zero interpretations, admissions, canaries or publications are claimed.
+- [x] Correct PR #1285 review's retained-report test gap by deriving both output-ID and source/member uniqueness from the 91 actual candidate entries, independently of reported summary counters.
 - [ ] Bind exact eligible derived-output rights, source-column interpretation where supportable, admission, restore and consumer evidence separately.
 
 ### PBS native Silver field-state reconciliation

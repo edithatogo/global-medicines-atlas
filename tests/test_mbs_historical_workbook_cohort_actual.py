@@ -21,6 +21,15 @@ def test_all_frozen_workbooks_have_distinct_candidate_outputs() -> None:
     assert len(report["receipt_sha256_by_group"]) == 91
     assert len(report["baseline_incomplete_receipt_sha256_by_group"]) == 6
     assert len(report["candidate_outputs_by_group"]) == 91
+    outputs = list(report["candidate_outputs_by_group"].values())
+    assert len({output["output_id"] for output in outputs}) == 91
+    assert (
+        len({
+            (output["source_sha256"], output["member_path_sha256"])
+            for output in outputs
+        })
+        == 91
+    )
     assert {
         int(group)
         for group, origin in report["receipt_origin_by_group"].items()
@@ -36,7 +45,7 @@ def test_all_frozen_workbooks_have_distinct_candidate_outputs() -> None:
     assert report["new_admissions"] == 0
     assert report["new_federated_canaries"] == 0
     assert report["publications"] == 0
-    for output in report["candidate_outputs_by_group"].values():
+    for output in outputs:
         assert output["field_state"] == "native_unresolved"
         assert output["rights_qualified"] is False
         assert output["admitted"] is False
