@@ -308,6 +308,8 @@ def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
     assert "CPython 3.15.1t / advisory smoke" in workflow
     assert "continue-on-error: true" in workflow
     assert "uv run --python 3.15.1t" in workflow
+    assert "--with pydantic==2.14.1" in workflow
+    assert "pydantic==2.12.5" not in workflow
     assert "--no-project" in workflow
     assert 'PYTHON_GIL: "0"' in workflow
     assert (

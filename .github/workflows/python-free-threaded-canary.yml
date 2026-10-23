@@ -43,6 +43,6 @@ jobs:
         run: >-
           uv run --python 3.15.1t --no-project
           --with pytest==9.1.0 --with pytest-timeout==2.4.0
-          --with pydantic==2.12.5
+          --with pydantic==2.14.1
           pytest -q
           tests/test_matching_normalization.py
