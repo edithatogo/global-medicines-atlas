@@ -470,7 +470,7 @@
   output. The current frontier evidence and its non-promotion boundaries are
   reconciled in `quality/qualifications/frontier-experiment-disposition-20261023.json`.
   Follow-up relationship reconciliation records 2,160,066 PBS source-local
-  references, of which 2,086,489 have unique exact-literal candidates and
+  reference fields screened, of which 2,086,489 have unique exact-literal candidates and
   73,577 have none. This is lexical diagnostic evidence only; no semantic
   links are qualified. The 5,989 reviewed MBS edges are same-record
   service-benefit relations, and no reviewed cross-jurisdiction medicine-pair
