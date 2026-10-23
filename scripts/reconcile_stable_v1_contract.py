@@ -56,6 +56,7 @@ AUSTRALIAN_HEALTH_REQUIREMENTS = {
 }
 M105_WAIVER = "quality/qualifications/australian-donor-m105-chronology-waiver-20261018.json"
 M105_CURRENT_DISPOSITION = "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+M105_CURRENT_DECISION_NUMBER = 12
 M105_DISPOSITIONS = (
     "quality/qualifications/australian-donor-m105-dispositions.json"
 )
@@ -394,15 +395,32 @@ def _m105_currently_blocked() -> bool:
         disposition = json.loads(
             (ROOT / M105_CURRENT_DISPOSITION).read_text(encoding="utf-8")
         )
+        decision_text = (ROOT / M105_DECISION_REGISTER).read_text(
+            encoding="utf-8"
+        )
     except OSError, json.JSONDecodeError:
         return True
-    return not (
+    decision_id = disposition.get("decision_id")
+    if (
         disposition.get("schema_id")
-        == "global-medicines-atlas.australian-donor-m105-current-disposition"
-        and disposition.get("schema_version") == 1
-        and disposition.get("requirement") == "M-105"
-        and disposition.get("status")
-        == "accepted_after_new_maintainer_decision"
+        != "global-medicines-atlas.australian-donor-m105-current-disposition"
+        or disposition.get("schema_version") != 1
+        or disposition.get("requirement") != "M-105"
+        or disposition.get("status") != "accepted_after_new_maintainer_decision"
+    ):
+        return True
+    if not isinstance(decision_id, str) or not decision_id.startswith("D-006-"):
+        return True
+    suffix = decision_id.removeprefix("D-006-")
+    if not suffix.isdigit() or int(suffix) <= M105_CURRENT_DECISION_NUMBER:
+        return True
+    heading = f"{decision_id} — M-105 acceptance"
+    sections = decision_text.split("\n## ")
+    return not any(
+        section.startswith(heading)
+        and "**Status:** maintainer instruction recorded" in section
+        and "M-105 is accepted under this decision." in section
+        for section in sections
     )
 
 

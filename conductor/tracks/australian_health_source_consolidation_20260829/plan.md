@@ -1358,6 +1358,11 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   quarterly, annual, and year-to-date Health.gov workbook requests all timed
   out before response bodies were read. No payload, receipt, or new source was
   acquired. Do not repeat the unchanged probe or contact the source owner.
+- [x] Bind any future M-105 promotion to a later, exact decision-register
+  entry that explicitly records acceptance; arbitrary disposition JSON edits
+  fail closed. Date the readiness receipt at the current contract observation.
+  The review-correction suite passes on Python 3.15.1; exact-head hosted checks
+  are rerunning before merge.
 - [~] Keep the gates distinct and open. M-105's historical ordering cannot be
   repaired by post-archive evidence; M-107 requires delivery of the already
   authorized Health.gov workbook families and the remaining historical

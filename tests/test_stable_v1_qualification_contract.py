@@ -366,6 +366,32 @@ def test_missing_current_m105_disposition_fails_closed(
     assert "stable-v1-australian-health-federation" in m105["blocker_ids"]
 
 
+@pytest.mark.parametrize("decision_id", ["D-006-12", "D-006-99"])
+def test_m105_unblock_requires_a_later_bound_decision(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    decision_id: str,
+) -> None:
+    disposition = _load(
+        ROOT
+        / "quality/qualifications/australian-donor-m105-current-disposition-20261023.json"
+    )
+    disposition["decision_id"] = decision_id
+    disposition["status"] = "accepted_after_new_maintainer_decision"
+    path = tmp_path / "m105-current-disposition.json"
+    path.write_text(json.dumps(disposition), encoding="utf-8")
+    monkeypatch.setattr(reconciliation, "M105_CURRENT_DISPOSITION", str(path))
+
+    result = build_contract(_load(QUALIFICATION))
+    m105 = next(
+        row
+        for row in result["requirements"]
+        if row["requirement_id"] == "M-105"
+    )
+    assert m105["state"] == "blocked"
+    assert "stable-v1-australian-health-federation" in m105["blocker_ids"]
+
+
 @pytest.mark.parametrize(
     "mutation",
     [
