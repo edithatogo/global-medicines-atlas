@@ -35,18 +35,12 @@ def test_project_execution_manifests_select_python_3151() -> None:
     pixi = tomllib.loads((ROOT / "pixi.toml").read_text())
     uv_lock = tomllib.loads((ROOT / "uv.lock").read_text())
     pylock = tomllib.loads((ROOT / "pylock.toml").read_text())
-    codecov_project = tomllib.loads(
-        (ROOT / ".ci/codecov/pyproject.toml").read_text()
-    )
-    codecov_lock = tomllib.loads((ROOT / ".ci/codecov/uv.lock").read_text())
     toolchain = tomllib.loads((ROOT / "pyproject.toml").read_text())
     assert pixi["dependencies"]["python"] == "3.15.*"
     assert "--python 3.15.1" in pixi["tasks"]["python-sync"]
     assert "--python 3.15.1" in pixi["tasks"]["python-test"]
     assert uv_lock["requires-python"] == "==3.15.*"
     assert pylock["requires-python"] == "==3.15.*"
-    assert codecov_project["project"]["requires-python"] == ">=3.15,<3.16"
-    assert codecov_lock["requires-python"] == "==3.15.*"
     assert toolchain["project"]["requires-python"] == ">=3.15,<3.16"
     release_toolchain = json.loads(
         (ROOT / "quality/release-build-toolchain.json").read_text()

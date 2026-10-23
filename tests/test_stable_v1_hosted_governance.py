@@ -239,7 +239,7 @@ def test_coverage_upload_verifies_the_exact_pypi_attested_cli_first() -> None:
         (ROOT / ".github/workflows/test-goblin.yml").read_text(encoding="utf-8")
     )
     jobs = cast("dict[str, dict[str, object]]", workflow["jobs"])
-    uploader = "${{ github.workspace }}/.ci/codecov/.venv/bin/codecovcli"
+    uploader = "${{ runner.temp }}/codecov-cli/codecovcli"
 
     test_steps = cast("list[dict[str, object]]", jobs["tests"]["steps"])
     test_prepare_index = next(
@@ -293,12 +293,9 @@ def test_coverage_upload_verifies_the_exact_pypi_attested_cli_first() -> None:
     assert quality_config["fail_ci_if_error"] is True
     assert quality_config["use_oidc"] is True
 
-    isolated_project = (ROOT / ".ci/codecov/pyproject.toml").read_text(
-        encoding="utf-8"
-    )
     assert prepare_codecov_cli.CODECOV_CLI_VERSION == "11.3.1"
-    assert '"pypi-attestations==0.0.30"' in isolated_project
-    assert "test-results-parser" not in isolated_project
+    assert prepare_codecov_cli.CODECOV_ASSET_NAME == "codecovcli_linux"
+    assert len(prepare_codecov_cli.CODECOV_ASSET_SHA256) == 64
 
 
 def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
