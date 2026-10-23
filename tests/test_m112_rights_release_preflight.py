@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-33.json"
+    "australian-m112-rights-release-preflight-20261023-34.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261023-32.json"
+    "australian-m112-rights-release-preflight-20261023-33.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -56,7 +56,7 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261023-32.json"
+        "australian-m112-rights-release-preflight-20261023-33.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -332,16 +332,16 @@ def test_q1_hr_exact_hosted_identity_is_in_current_preflight() -> None:
     assert hashlib.sha256(receipt_path.read_bytes()).hexdigest() == q1["sha256"]
 
 
-def test_historical_workbook_timeout_retry_scope_is_exact_and_unqualified() -> (
+def test_historical_workbook_timeout_retry_scope_is_exact_and_qualified() -> (
     None
 ):
     report = _json(PREFLIGHT)
     workbook_retry = report["historical_workbook_six_member_runtime_retry"]
     assert workbook_retry["original_run_id"] == 39724026209
-    assert workbook_retry["successful_members"] == 85
+    assert workbook_retry["successful_members"] == 91
     assert workbook_retry["cancelled_groups"] == [65, 71, 80, 84, 86, 87]
     assert workbook_retry["retry_job_timeout_minutes"] == 60
-    assert workbook_retry["retry_qualified"] is False
+    assert workbook_retry["retry_qualified"] is True
     assert workbook_retry["new_sources"] == 0
     assert workbook_retry["new_admissions"] == 0
     for item in workbook_retry["incomplete_receipts"]:
@@ -352,13 +352,13 @@ def test_historical_workbook_timeout_retry_scope_is_exact_and_unqualified() -> (
         )
 
 
-def test_two_run_reconciler_remains_candidate_until_actual_retry() -> None:
+def test_two_run_reconciler_qualifies_exact_candidate_cohort() -> None:
     report = _json(PREFLIGHT)["historical_workbook_two_run_reconciler"]
     assert report["original_successes"] == 85
     assert report["required_retry_groups"] == [65, 71, 80, 84, 86, 87]
     assert report["requires_distinct_run_and_commit_per_group"] is True
-    assert report["actual_retry_qualified"] is False
-    assert report["all_91_qualified"] is False
+    assert report["actual_retry_qualified"] is True
+    assert report["all_91_qualified"] is True
     assert report["new_admissions"] == 0
 
 
@@ -368,7 +368,14 @@ def test_historical_workbook_candidate_output_inventory_keeps_gates_closed() -> 
     report = _json(PREFLIGHT)["historical_workbook_candidate_output_inventory"]
     assert report["original_run_id"] == 39724026209
     assert report["retry_run_id"] == 39891918206
-    assert report["all_91_qualified"] is False
+    assert report["all_91_qualified"] is True
+    assert report["candidate_output_count"] == 91
+    assert report["native_unresolved_cells"] == 310_177_657
+    assert report["interpreted_cells"] == 0
+    assert (
+        hashlib.sha256((ROOT / report["receipt"]).read_bytes()).hexdigest()
+        == report["receipt_sha256"]
+    )
     assert report["field_state"] == "native_unresolved"
     assert report["rights_qualified"] is False
     assert report["admitted"] is False

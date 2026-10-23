@@ -5837,9 +5837,9 @@ source qualification remains pending their actual final artifacts.
   against the actual early group 1 receipt. Account every retained cell as
   `native_unresolved` until source-specific meaning is supported. Thirteen
   focused tests pass with 95.62% branch coverage; production typing is clean.
-- [ ] Retain and reconcile all 91 successful receipts, resolve any failed
-  member jobs without weakening source, size or runtime gates, and complete
-  exact eligible output rights, admission and consumer delivery.
+- [x] Retain and reconcile all 91 successful workbook package receipts,
+  resolving the six timed-out jobs through the bounded exact-member retry.
+- [ ] Complete exact eligible output rights, admission and consumer delivery.
 
 - [x] Run local full profile for workbook reconciler; it reached about 51% of pytest then stalled after three timeout traces and was interrupted with exit 130. Preserve the log as failed/incomplete evidence; focused and routine checks passed, and protected PR checks remain required.
 
@@ -5852,19 +5852,20 @@ source qualification remains pending their actual final artifacts.
 
 - [x] Reconcile terminal protected run 39724026209 at exact main d338ee01: 85 of 91 member jobs passed; six (65, 71, 80, 84, 86, 87) were cancelled at the 30-minute job bound. Their aggregate receipts remain `incomplete` at `member-native-check`; none are qualified.
 - [x] Add an exact six-member retry selection with a finite 60-minute job bound and unchanged two-job concurrency, source identity, byte limits, complete restore, output checks, and aggregate-only receipts.
-- [ ] Merge after protected CI, execute the six on exact main, retain each successful receipt, and reconcile the 85 original successes plus six retry successes without double-counting.
+- [x] Merge after protected CI, execute the six on exact main, retain each successful receipt, and reconcile the 85 original successes plus six retry successes without double-counting. Protected run 39891918206 completed successfully for all six retry groups.
 
 ### Two-run workbook receipt reconciliation
 
-- [x] Address PR #1282 review finding before merge: the 85 successful original receipts and six retry receipts have different exact-main commits. Require all 91 original receipts; verify the six original `member-native-check` incomplete states and their digests; select exactly six successful retry receipts; retain per-group run and commit; reject duplicate output/member identities and double counting. Nineteen focused tests pass with 92.89% branch coverage; 46 affected workbook tests and typing pass. Actual retry outcome remains pending.
-- [x] Retain the local full profile as failed: 7,834 passed, two stable-v1 reproducibility failures caused by host `uv` 0.13.4 where the repository requires 0.11.29, three skipped. A pinned `uv` 0.11.29 focused recheck is running.
-- [ ] Refresh current preflight, pass protected exact-head CI, resolve the review finding only after the fix is on the PR head, then merge and dispatch the exact six-member retry.
+- [x] Address PR #1282 review finding before merge: the 85 successful original receipts and six retry receipts have different exact-main commits. Require all 91 original receipts; verify the six original `member-native-check` incomplete states and their digests; select exactly six successful retry receipts; retain per-group run and commit; reject duplicate output/member identities and double counting. Nineteen focused tests pass with 92.89% branch coverage; 46 affected workbook tests and typing pass. The actual retry outcome is bound below.
+- [x] Retain the local full profile as failed: 7,834 passed, two stable-v1 reproducibility failures caused by host `uv` 0.13.4 where the repository requires 0.11.29, three skipped. A later pinned `uv` 0.11.29 full profile on the merged PBS head passed.
+- [x] Refresh current preflight, pass protected exact-head CI, resolve the review finding after the fix is on the PR head, merge and dispatch the exact six-member retry.
 
 ### Historical workbook candidate output inventory
 
 - [x] Extend exact two-run reconciliation to emit each verified candidate output ID, Parquet digest and byte count, source/member digests, and `native_unresolved` field state. Reject malformed Parquet fingerprints even if an output ID is recomputed. This is aggregate metadata only; rights, admission and publication stay false. Twenty-three focused tests pass with 93.07% branch coverage.
 - [x] Complete the pinned-uv local full profile with exit 0. Correct PR #1283 review's digest-type gap by requiring a string SHA-256 and rejecting a rehashed array of 64 valid hex characters. Recheck affected tests and protected exact-head CI before merge.
-- [ ] Once protected six-member retry succeeds, reconcile the original 85 and retried six, retain exact output identities, then bind eligible rights, admission, restore and consumer evidence separately.
+- [x] Reconcile the original 85 and retried six in `mbs-historical-workbook-cohort-20261023-39724026209-39891918206.json`: 91 unique member identities and candidate output IDs, 348,952,606 native records, 310,177,657 cells, 38,773,552 rows and 181 sheets. All cells remain `native_unresolved`; zero interpretations, admissions, canaries or publications are claimed.
+- [ ] Bind exact eligible derived-output rights, source-column interpretation where supportable, admission, restore and consumer evidence separately.
 
 ### PBS native Silver field-state reconciliation
 
