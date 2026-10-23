@@ -216,7 +216,6 @@ dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
     { name = "sentry-sdk" },
-    { name = "test-results-parser" },
 ]
 
 [package.metadata]
@@ -227,7 +226,6 @@ requires-dist = [
     { name = "pyyaml", specifier = "==6.*" },
     { name = "requests", specifier = ">=2.25" },
     { name = "sentry-sdk", specifier = "==2.*" },
-    { name = "test-results-parser", specifier = "==0.6.1" },
 ]
 
 [[package]]
@@ -538,12 +536,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/b4/54/102e772445c5e849b
 wheels = [
     { url = "https://files.pythonhosted.org/packages/45/7c/f0b4e19fd424df4cc964f5d454e1d814fd2dc3b386342e6040441024318f/sigstore_rekor_types-0.0.18-py3-none-any.whl", hash = "sha256:b62bf38c5b1a62bc0d7fe0ee51a0709e49311d137c7880c329882a8f4b2d1d78", size = 20610, upload-time = "2024-11-22T13:59:52.684Z" },
 ]
-
-[[package]]
-name = "test-results-parser"
-version = "0.6.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e4/bd/ee2278f92c6fdee1490c9dacd3ab5d6cdf61a26de988465723f52c17fb03/test_results_parser-0.6.1.tar.gz", hash = "sha256:5ea92dc7ae84bd89e9c3fc375317d85c981f9d139c3cca1b0afe16d96e34e7f6", size = 17272, upload-time = "2025-11-17T15:40:34.035Z" }
 
 [[package]]
 name = "tuf"

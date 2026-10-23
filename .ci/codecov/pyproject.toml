@@ -10,7 +10,6 @@ dependencies = [
   "PyYAML==6.*",
   "requests>=2.25",
   "sentry-sdk==2.*",
-  "test-results-parser==0.6.1",
 ]
 
 [tool.uv]

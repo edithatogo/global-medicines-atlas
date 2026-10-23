@@ -298,7 +298,7 @@ def test_coverage_upload_verifies_the_exact_pypi_attested_cli_first() -> None:
     )
     assert prepare_codecov_cli.CODECOV_CLI_VERSION == "11.3.1"
     assert '"pypi-attestations==0.0.30"' in isolated_project
-    assert '"test-results-parser==0.6.1"' in isolated_project
+    assert "test-results-parser" not in isolated_project
 
 
 def test_free_threaded_canary_is_advisory_and_sha_pinned() -> None:
