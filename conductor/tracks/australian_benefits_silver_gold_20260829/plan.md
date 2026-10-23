@@ -3998,10 +3998,20 @@
   only at 0.33 coverage and 0.50 recall. These six self-authored cases cannot
   establish calibration or select a production threshold. Report:
   `quality/qualifications/matching-behavior-synthetic-20261019.json`.
-- [ ] Complete PBS real admitted Silver screening, representative
-  human-adjudicated held-out labels, per-method/source calibration, and exact
-  candidate review before any scored relationship promotion. Synthetic graph
-  parity and this diagnostic do not close M-110.
+- [x] Run a value-free source-local reference screen over the exact admitted
+  April 2026 PBS v3 source object. Hosted run `39730665004` screened 2,160,066
+  reference fields against 567,785 definitions: 2,086,489 unique exact-literal
+  candidates and 73,577 with no exact literal. It fetched no external targets
+  and emitted no source values. This is lexical diagnostic coverage only; it
+  does not resolve URI bases, target type, predicate, or semantic relationship.
+  Receipt:
+  `quality/qualifications/pbs-native-reference-screen-20261022-39730665004.json`.
+- [ ] Complete PBS real Silver semantic relationship review, representative
+  human-adjudicated cross-jurisdiction held-out labels, per-method/source
+  calibration, and exact candidate review before scored relationship
+  promotion. The existing source-local screen remains unqualified for semantic
+  links; the 400/400 actual-matcher experiment is synthetic-only and has poor
+  held-out fit. No synthetic graph parity or literal match closes this gate.
 - [x] Focused matcher/graph/review selection: 98 passed. Broader affected MBS,
   PBS, matcher, and M-110 selection: 106 passed. Test-Goblin routine,
   deterministic report regeneration, Ruff, Ruff format, `ty`, BasedPyright,
