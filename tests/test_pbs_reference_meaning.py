@@ -19,6 +19,7 @@ from global_medicines_atlas.pbs_native_reference_screen import (
 )
 from global_medicines_atlas.pbs_reference_meaning import (
     SCREEN_RECEIPT,
+    _validated_per_kind,  # ruff: ignore[import-private-name]
     review_reference_meanings,
 )
 
@@ -64,86 +65,93 @@ def test_review_rejects_changed_exact_source_receipt(tmp_path):
         review_reference_meanings(tmp_path)
 
 
-def _per_kind_receipt(tmp_path):
-    receipt = json.loads((ROOT / SCREEN_RECEIPT).read_text())
-    qualification = receipt["report"]["qualification"]
-    qualification["reference_kind_status_counts"] = {
-        "rdf_resource": {"unique_exact_literal": 1_500_000},
-        "xlink_href": {
-            "unique_exact_literal": 586_489,
-            "no_exact_literal": 73_577,
+def test_per_kind_count_reconciliation_stays_diagnostic():
+    qualification = {
+        "reference_kind_status_counts": {
+            "rdf_resource": {"unique_exact_literal": 150},
+            "xlink_href": {
+                "unique_exact_literal": 58,
+                "no_exact_literal": 42,
+            },
         },
+        "reference_kind_counts": {"rdf_resource": 150, "xlink_href": 100},
     }
-    qualification["reference_kind_counts"] = {
-        "rdf_resource": 1_500_000,
-        "xlink_href": 660_066,
-    }
-    canonical = json.dumps(
-        receipt["report"],
-        sort_keys=True,
-        separators=(",", ":"),
-        ensure_ascii=False,
-    ).encode()
-    receipt["report_sha256"] = hashlib.sha256(canonical).hexdigest()
-    path = tmp_path / "hosted-screen.json"
-    path.write_text(json.dumps(receipt))
-    return path
-
-
-def test_per_kind_receipt_is_bound_and_never_promoted(tmp_path):
-    path = _per_kind_receipt(tmp_path)
-    report = review_reference_meanings(tmp_path, path, require_per_kind=True)
-    assert report["schema_version"] == 2
-    assert (
-        report["source"]["screen_receipt_sha256"]
-        == hashlib.sha256(path.read_bytes()).hexdigest()
+    normalized = _validated_per_kind(
+        qualification,
+        {"unique_exact_literal": 208, "no_exact_literal": 42},
+        250,
     )
-    assert report["source"]["screen_run_id"] == "39730665004"
-    assert report["source"]["screen_workflow_commit"] == (
-        "c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4"
-    )
-    assert (
-        report["exact_source_screen"]["per_kind"]["rdf_resource"][
-            "reference_fields"
-        ]
-        == 1_500_000
-    )
-    assert (
-        report["exact_source_screen"]["per_kind_match_counts_available"] is True
-    )
-    assert report["scope"]["semantic_relationships_qualified"] is False
+    assert normalized is not None
+    assert normalized["rdf_resource"]["reference_fields"] == 150
     assert all(
-        not item["semantic_links_qualified"]
-        for item in report["exact_source_screen"]["per_kind"].values()
+        not item["semantic_links_qualified"] for item in normalized.values()
     )
 
-
-def test_per_kind_receipt_rejects_denominator_or_identity_mismatch(tmp_path):
-    path = _per_kind_receipt(tmp_path)
-    receipt = json.loads(path.read_text())
-    receipt["report"]["qualification"]["reference_kind_counts"][
-        "xlink_href"
-    ] -= 1
-    canonical = json.dumps(
-        receipt["report"],
-        sort_keys=True,
-        separators=(",", ":"),
-        ensure_ascii=False,
-    ).encode()
-    receipt["report_sha256"] = hashlib.sha256(canonical).hexdigest()
-    path.write_text(json.dumps(receipt))
+    qualification["reference_kind_counts"]["xlink_href"] -= 1
     with pytest.raises(ValueError, match="denominator differs"):
-        review_reference_meanings(tmp_path, path, require_per_kind=True)
+        _validated_per_kind(
+            qualification,
+            {"unique_exact_literal": 208, "no_exact_literal": 42},
+            250,
+        )
 
-    receipt["report"]["revision"] = "0" * 40
+
+def test_synthetic_screen_receipt_cannot_generate_exact_source_report(tmp_path):
+    # This standalone fixture deliberately uses synthetic source and run IDs.
+    synthetic = {
+        "report": {
+            "schema_version": 1,
+            "status": "passed",
+            "operation": "pbs-native-reference-screen",
+            "dataset": "synthetic/pbs-screen-fixture",
+            "revision": "synthetic-revision-001",
+            "run_id": "synthetic-run-001",
+            "run_attempt": "1",
+            "workflow_commit": "a" * 40,
+            "source_receipt_file_sha256": "b" * 64,
+            "qualification": {
+                "schema_id": "global-medicines-atlas.pbs-native-reference-screen",
+                "schema_version": 1,
+                "member_sha256": "c" * 64,
+                "native_fields": 250,
+                "reference_fields": 250,
+                "reference_fields_sha256": "d" * 64,
+                "reference_status_counts": {
+                    "unique_exact_literal": 208,
+                    "no_exact_literal": 42,
+                },
+                "reference_kind_status_counts": {
+                    "rdf_resource": {"unique_exact_literal": 150},
+                    "xlink_href": {
+                        "unique_exact_literal": 58,
+                        "no_exact_literal": 42,
+                    },
+                },
+                "reference_kind_counts": {
+                    "rdf_resource": 150,
+                    "xlink_href": 100,
+                },
+                "semantic_relationships_qualified": False,
+                "domain_semantics_qualified": False,
+                "native_values_emitted": False,
+                "external_targets_fetched": 0,
+                "new_sources": 0,
+                "new_admissions": 0,
+                "publications": 0,
+            },
+            "rights_conclusion_changed": False,
+            "publication_performed": False,
+        }
+    }
     canonical = json.dumps(
-        receipt["report"],
+        synthetic["report"],
         sort_keys=True,
         separators=(",", ":"),
         ensure_ascii=False,
     ).encode()
-    receipt["report_sha256"] = hashlib.sha256(canonical).hexdigest()
-    path.write_text(json.dumps(receipt))
+    synthetic["report_sha256"] = hashlib.sha256(canonical).hexdigest()
+    path = tmp_path / "synthetic-screen-receipt.json"
+    path.write_text(json.dumps(synthetic))
     with pytest.raises(ValueError, match="source contract differs"):
         review_reference_meanings(tmp_path, path, require_per_kind=True)
 
