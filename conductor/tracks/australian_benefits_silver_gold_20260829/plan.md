@@ -5867,6 +5867,7 @@ source qualification remains pending their actual final artifacts.
 - [x] Reconcile the original 85 and retried six in `mbs-historical-workbook-cohort-20261023-39724026209-39891918206.json`: 91 unique member identities and candidate output IDs, 348,952,606 native records, 310,177,657 cells, 38,773,552 rows and 181 sheets. All cells remain `native_unresolved`; zero interpretations, admissions, canaries or publications are claimed.
 - [x] Correct PR #1285 review's retained-report test gap by deriving both output-ID and source/member uniqueness from the 91 actual candidate entries, independently of reported summary counters.
 - [ ] Bind exact eligible derived-output rights, source-column interpretation where supportable, admission, restore and consumer evidence separately.
+- [x] Record the maintainer's exact public-release rights attestation for all 91 digest-pinned historical workbook Parquet candidate outputs. The instrument was not independently located or reviewed. Semantic interpretation, admission, restore, public release and consumer canaries remain separate gates.
 
 ### PBS native Silver field-state reconciliation
 
