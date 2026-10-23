@@ -14,6 +14,7 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     DOMAIN,
     FIELD_STATE,
     PACKAGE,
+    REFERENCE_REVIEW,
     SCREEN,
     reconcile_pbs_field_states,
 )
@@ -54,8 +55,22 @@ def test_every_pinned_field_has_one_evidenced_state():
             assert (
                 row["interpretation_evidence"]["value_interpretation"] is False
             )
-        else:
+        elif role != "references":
             assert row["interpretation_evidence"] is None
+    reference = report["role_reconciliation"]["references"]
+    assert reference["state"] == "native_unresolved"
+    assert (
+        reference["interpretation_evidence"]["semantic_relationships_qualified"]
+        is False
+    )
+    assert (
+        report["source_local_reference_review"]["screen_reference_denominator"]
+        == 2_160_066
+    )
+    assert (
+        report["source_local_reference_review"]["reference_role_field_count"]
+        == reference["field_count"]
+    )
     assert report["date_role_overlay"]["field_count"] == 2_800
     assert report["date_role_overlay"]["additive_to_denominator"] is False
     assert report["non_claims"]["cross_era_or_jurisdiction_pooling"] is False
@@ -69,6 +84,7 @@ def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
     for relative in (
         PACKAGE,
         SCREEN,
+        REFERENCE_REVIEW,
         DOMAIN,
         INVENTORY,
         OBSERVED,

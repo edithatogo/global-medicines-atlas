@@ -24,6 +24,9 @@ DOMAIN = "quality/qualifications/pbs-domain-field-semantics-20261023.json"
 FIELD_STATE = (
     "quality/qualifications/pbs-native-silver-field-state-20261023.json"
 )
+REFERENCE_REVIEW = (
+    "quality/qualifications/pbs-native-reference-meaning-review-20261023.json"
+)
 PACKAGE_SHA256 = (
     "769a1d88ab52d6ed9ab08d07ce7d7b433dd7f9034e6b501ad30198a9b6e59202"
 )
@@ -32,6 +35,9 @@ SCREEN_SHA256 = (
 )
 FIELD_STATE_SHA256 = (
     "2f35eebe45c0326dc80e76c461b0a8af23585923479cec8b74dcb9de5019120d"
+)
+REFERENCE_REVIEW_SHA256 = (
+    "545bda85c569705ab0ca90e3e49b434a4c07be9c30baac1d0e3878c8a9aef054"
 )
 DOMAIN_REPORT_SHA256 = (
     "6999155565770f6112385705ba22b6b819db51508d352b3d16330ec8077c8a72"
@@ -60,14 +66,17 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     package_path = root / PACKAGE
     screen_path = root / SCREEN
     field_state_path = root / FIELD_STATE
+    reference_review_path = root / REFERENCE_REVIEW
     domain_path = root / DOMAIN
     package_sha = _file_sha256(package_path)
     screen_sha = _file_sha256(screen_path)
     field_state_sha = _file_sha256(field_state_path)
+    reference_review_sha = _file_sha256(reference_review_path)
     if (
         package_sha != PACKAGE_SHA256
         or screen_sha != SCREEN_SHA256
         or field_state_sha != FIELD_STATE_SHA256
+        or reference_review_sha != REFERENCE_REVIEW_SHA256
     ):
         raise ValueError("PBS field evidence receipt digest differs")
     native = json.loads(field_state_path.read_bytes())
@@ -97,6 +106,27 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         raise ValueError(
             "PBS field-meaning report differs from its source evidence"
         )
+
+    reference_envelope = json.loads(reference_review_path.read_bytes())
+    reference_review = reference_envelope["report"]
+    reference_canonical = json.dumps(
+        reference_review,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    if (
+        hashlib.sha256(reference_canonical).hexdigest()
+        != reference_envelope["report_sha256"]
+        or reference_review["source"]["member_sha256"]
+        != domain_report["source"]["member_sha256"]
+        or reference_review["source"]["native_digest"]
+        != domain_report["source"]["native_digest"]
+        or reference_review["source"]["native_fields"] != SOURCE_FIELDS
+        or reference_review["scope"]["semantic_relationships_qualified"]
+        is not False
+    ):
+        raise ValueError("PBS source-local reference review differs")
 
     observed_path = (
         root
@@ -184,10 +214,31 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     for name, state in roles.items():
         evidence_key = meaning_for_role.get(name)
         meaning = meanings[evidence_key] if evidence_key is not None else None
+        reference_evidence = (
+            {
+                "profile": reference_review["profile_id"],
+                "status": reference_review["status"],
+                "source": reference_review["source"],
+                "reference_kinds": reference_review["reference_kinds"],
+                "exact_source_screen": reference_review["exact_source_screen"],
+                "calibration": reference_review["calibration"],
+                "semantic_relationships_qualified": False,
+            }
+            if name == "references"
+            else None
+        )
         state_rows[name] = {
             "field_count": role_counts[name],
             "state": state,
-            "meaning": meaning["meaning"] if meaning is not None else None,
+            "meaning": (
+                meaning["meaning"]
+                if meaning is not None
+                else (
+                    "source-local reference literals; target relationships unresolved"
+                    if name == "references"
+                    else None
+                )
+            ),
             "interpretation_evidence": (
                 {
                     "profile": "pbs-v3-pinned-2026-04-01-domain-fields-v1",
@@ -199,7 +250,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
                     "value_interpretation": False,
                 }
                 if meaning is not None
-                else None
+                else reference_evidence
             ),
         }
     path_inventory = json.loads((root / PATH_INVENTORY).read_bytes())
@@ -231,7 +282,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         "schema_id": "global-medicines-atlas.pbs-field-state-reconciliation",
         "schema_version": 1,
         "profile_id": "pbs-v3-2026-04-01-field-state-v1",
-        "status": "complete_field_denominator_bounded_structural_interpretation",
+        "status": "complete_field_denominator_bounded_semantics_with_unresolved_references",
         "domain_semantics_qualified": False,
         "rights_conclusion_changed": False,
         "source": {
@@ -244,6 +295,9 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "screen_receipt_sha256": screen_sha,
             "prior_field_state_receipt_sha256": field_state_sha,
             "domain_semantics_report_sha256": domain_envelope["report_sha256"],
+            "reference_meaning_report_sha256": reference_envelope[
+                "report_sha256"
+            ],
             "observed_roles_report_sha256": observed_envelope["report_sha256"],
         },
         "field_state_coverage": {
@@ -274,6 +328,19 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
                 "evidence": domain_report["meaning_basis"],
             }
             for key in ("item", "product", "restriction", "price")
+        },
+        "source_local_reference_review": {
+            "report_sha256": reference_envelope["report_sha256"],
+            "reference_role_field_count": role_counts["references"],
+            "screen_reference_denominator": reference_review[
+                "exact_source_screen"
+            ]["references"],
+            "denominator_note": (
+                "The schema-role field-state count and source reference-screen "
+                "candidate count are separate measures."
+            ),
+            "semantic_relationships_qualified": False,
+            "promotion_rule": reference_review["calibration"]["promotion_rule"],
         },
         "non_claims": {
             "cross_era_or_jurisdiction_pooling": False,
