@@ -36,7 +36,7 @@ jobs:
           REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
         run: |
           set -euo pipefail
-          uv run --frozen --python 3.14.6 --with huggingface-hub==1.14.0 \
+          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
             python scripts/publish_mbs_utilisation_rights.py \
             --exact-commit "$REQUESTED_COMMIT"
       - name: Record fail-honest outcome

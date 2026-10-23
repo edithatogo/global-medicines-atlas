@@ -67,31 +67,31 @@ in its isolated subprocess mode; the cache only avoids repeating unchanged
 mutants across eligible hosted runs. Worker and batch experiments remain
 rejected because they caused contention and increased wall time.
 
-An advisory weekly/manual CPython 3.14 free-threaded canary runs deterministic
+An advisory weekly/manual CPython 3.15.1 free-threaded canary runs deterministic
 normalization tests with `PYTHON_GIL=0`. It uses an isolated minimal core
 environment because the optional LanceDB semantic backend does not yet publish
-CPython 3.14t distributions. The canary is explicitly non-blocking and does
-not replace the supported Python 3.14 lane.
+CPython 3.15.1t distributions. The canary is explicitly non-blocking and does
+not replace the supported Python 3.15 lane.
 
 ## Local Commands
 
 ```powershell
-uv sync --python 3.14.6 --group test-goblin --locked
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py fast
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py changed
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py failed
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py picked
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contracts
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py metamorphic
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py contract
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py simulation
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py coverage
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py routine
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py strict
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py package
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile
-uv run --python 3.14.6 --group dev python scripts/test_goblin.py profile-tests
+uv sync --python 3.15.1 --group test-goblin --locked
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py quick
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py fast
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py changed
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py failed
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py picked
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py contracts
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py metamorphic
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py contract
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py simulation
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py coverage
+uv run --python 3.15.1 --group dev python scripts/test_goblin.py routine
+uv run --python 3.15.1 --group dev python scripts/test_goblin.py strict
+uv run --python 3.15.1 --group dev python scripts/test_goblin.py package
+uv run --python 3.15.1 --group dev python scripts/test_goblin.py profile
+uv run --python 3.15.1 --group dev python scripts/test_goblin.py profile-tests
 ```
 
 Local pytest profiles remain serial by default. Set a positive
@@ -112,7 +112,7 @@ host coordination facility, not a repository dependency, and does not replace
 hosted CI.
 
 ```bash
-TEST_GOBLIN_WORKERS=4 uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py quick
+TEST_GOBLIN_WORKERS=4 uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py quick
 ```
 
 The `fast` profile excludes modules carrying the governed `slow` marker. Use
@@ -128,7 +128,7 @@ run:
 
 ```bash
 TEST_GOBLIN_PICKED_MODE=branch TEST_GOBLIN_PICKED_PARENT=origin/main \
-  uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py picked
+  uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py picked
 ```
 
 The `changed` profile uses pytest-testmon's dependency map and stays serial so
@@ -138,7 +138,7 @@ silently bootstrapping. Build the map only when the full run is intentional:
 
 ```bash
 TEST_GOBLIN_ALLOW_TESTMON_BOOTSTRAP=1 \
-  uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py changed
+  uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py changed
 ```
 
 Delete `.testmondata*` when the environment or test inventory changes
@@ -174,14 +174,14 @@ selection. This repository already has random ordering, timeouts, bounded
 benchmarks, and Scalene profiling.
 
 Hosted coverage explicitly selects Coverage.py's `sys.monitoring` core on
-Python 3.14. The bounded smoke lane verified that current dynamic test contexts,
+Python 3.15. The bounded smoke lane verified that current dynamic test contexts,
 branch coverage, xdist collection, and XML output remain compatible. Aggregate
 coverage remains serial: a measured two-worker experiment ran slower and caused
 resource contention in the product-performance gate.
 
 The stable release consumer reproduction runs its two independent clean-clone
 contracts with two pytest-xdist workers. Required check names, exact Python
-3.14.6 toolchain enforcement, LF/CRLF policy, receipt comparison, and wheel and
+3.15.1 toolchain enforcement, LF/CRLF policy, receipt comparison, and wheel and
 sdist consumption remain unchanged.
 
 Gremlin subprocess isolation remains serial at the harness boundary. Two
@@ -195,7 +195,7 @@ profiles a bounded representative pytest workload and stores its Scalene JSON
 and measured receipt beneath ignored `build/` paths.
 
 The `package` profile builds both wheel and source distribution, installs each
-into a disposable core-only Python 3.14 environment, verifies metadata and
+into a disposable core-only Python 3.15.1 environment, verifies metadata and
 dynamic version identity, exercises import/CLI/API/OpenAPI behavior, reinstalls
 the artifact, and writes `build/quality-receipts/consumer.json`. CI repeats the
 same rehearsal on Windows, Linux, and macOS with platform-specific receipts.
@@ -203,7 +203,7 @@ same rehearsal on Windows, Linux, and macOS with platform-specific receipts.
 Run the mutation profile on Linux CI or in WSL:
 
 ```bash
-uv run --python 3.14.6 --group test-goblin python scripts/test_goblin.py mutation
+uv run --python 3.15.1 --group test-goblin python scripts/test_goblin.py mutation
 ```
 
 Mutmut 3 requires operating-system `fork` support and therefore cannot execute
@@ -244,7 +244,7 @@ on native Windows. The harness reports that boundary explicitly.
 
 ### Coverage and Codecov
 
-- Python 3.14.6 is selected by `.python-version` and enforced by the project
+- Python 3.15.1 is selected by `.python-version` and enforced by the project
   metadata and CI commands.
 - Property, metamorphic, contract, deterministic-simulation and randomized-order
   tests are blocking on pull requests. The three specialized profiles are also
@@ -303,7 +303,7 @@ the strict formal gate and additionally includes `scripts/`, where subprocess,
 CLI and optional-tool boundaries require the more mature checker. This
 asymmetry is intentional and executable in `pyproject.toml`; new production
 packages must enter both scopes, while script inclusion in `ty` will be
-promoted only after its Python 3.14 subprocess and dynamic-import behavior is
+promoted only after its Python 3.15 subprocess and dynamic-import behavior is
 compatible.
 
 The initial governed NZ FHIR adapter suite is the first operational slice.

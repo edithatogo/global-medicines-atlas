@@ -111,7 +111,7 @@ class ExperimentMatrix(FrozenModel):
     fixture_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
     dependency_lock_path: Literal["uv.lock"]
     dependency_lock_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
-    python_reference: Literal["3.14"]
+    python_reference: Literal["3.15"]
     bronze_completion_blocking: Literal[False]
     payload_receipts_remain_authoritative: Literal[True]
     experiments: tuple[ExperimentResult, ...]

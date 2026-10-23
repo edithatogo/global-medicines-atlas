@@ -40,16 +40,16 @@ publication, no release, no signature, no credential lookup, and no remote
 write. It does not approve a software or dataset licence and does not qualify a
 production medicine-data package.
 
-Run the deterministic check with Python 3.14:
+Run the deterministic check with Python 3.15.1:
 
 ```console
-uv run --python 3.14.6 --group dev python scripts/qualify_stable_v1_publication_metadata.py --check
+uv run --python 3.15.1 --group dev python scripts/qualify_stable_v1_publication_metadata.py --check
 ```
 
 Regeneration is explicit and local:
 
 ```console
-uv run --python 3.14.6 --group dev python scripts/qualify_stable_v1_publication_metadata.py
+uv run --python 3.15.1 --group dev python scripts/qualify_stable_v1_publication_metadata.py
 ```
 
 Both commands are offline. The first recomputes every input and rejects a stale

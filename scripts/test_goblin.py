@@ -409,6 +409,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_source_census.py",
         "tests/test_source_profiles.py",
         "tests/test_repository_governance.py",
+        "tests/test_python_runtime_policy.py",
         "tests/test_operational_track_evidence.py",
         "tests/test_openprescribing_access_request_contract.py",
         "tests/test_stable_v1_qualification_contract.py",
@@ -528,6 +529,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_atlas_e2e.py",
         "tests/test_platinum_edges_atlas.py",
         "tests/test_mbs_gold_candidate_consumers.py",
+        "tests/test_federated_live_qualification_readbacks.py",
         "tests/test_mbs_gold_scalar_browser_e2e.py",
         "tests/test_platinum_surfaces_e2e.py",
         "tests/test_atlas_browser_e2e.py",
@@ -1063,7 +1065,7 @@ def worker_args() -> tuple[str, ...]:
 def build_pytest_command(
     tests: Sequence[str], *extra: str, parallel: bool = True
 ) -> list[str]:
-    """Build a pytest command using the active Python 3.14 environment."""
+    """Build a pytest command using the active Python 3.15 environment."""
     return [
         sys.executable,
         "-m",

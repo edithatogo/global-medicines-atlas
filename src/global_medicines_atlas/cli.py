@@ -374,19 +374,22 @@ def comparison(
 ) -> None:
     """Compare regulatory, funding, and formulary evidence."""
     output = ExportRequest(format=format_, max_rows=max_rows)
-    query = ComparisonQuery(
-        concept_id=concept_id,
-        jurisdictions=tuple(jurisdiction),
-        dimensions=tuple(
-            dimension
-            or (EvidenceDimension.REGULATORY, EvidenceDimension.FUNDING)
-        ),
-        valid_at=valid_at,
-        observed_at=observed_at,
-        limit=limit,
-        cursor=cursor,
-        export=output,
-    )
+    try:
+        query = ComparisonQuery(
+            concept_id=concept_id,
+            jurisdictions=tuple(jurisdiction),
+            dimensions=tuple(
+                dimension
+                or (EvidenceDimension.REGULATORY, EvidenceDimension.FUNDING)
+            ),
+            valid_at=valid_at,
+            observed_at=observed_at,
+            limit=limit,
+            cursor=cursor,
+            export=output,
+        )
+    except ValidationError as exc:
+        raise typer.BadParameter(str(exc)) from exc
     service = _service(database, allowed_root)
     _run(
         "comparison",

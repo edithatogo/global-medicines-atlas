@@ -86,12 +86,22 @@ Each experiment records:
 
 ## Acceptance criteria
 
+Deferral is a valid terminal disposition for this experiment track when the
+capability has no unmet current product requirement. The matrix must name the
+missing prerequisite or product need, retain the applicable baseline and
+fallback, and state what evidence would reopen the experiment. A deferred
+capability remains unqualified for product use; completing this evaluation
+track does not close product-owned screening, calibration, or release gates.
+
 - **AC-01:** A versioned matrix maps every experiment to a measured requirement,
   reused prior evidence, dataset/revision, baseline, threshold, rollback, and
   final disposition; speculative rows without prerequisites fail closed.
-- **AC-02:** Remote DuckDB/Polars/Arrow tests measure correctness, predicate and
-  projection pushdown, request/byte amplification, bounded memory/cache, cold/
-  warm/concurrent latency, interruption/resume, offline behavior, and parity.
+- **AC-02:** If remote DuckDB/Polars/Arrow is required by a current product need,
+  measure correctness, predicate and projection pushdown, request/byte
+  amplification, bounded memory/cache, cold/warm/concurrent latency,
+  interruption/resume, offline behavior, and parity before promotion. Otherwise
+  a prerequisite-bound `defer` with a named local fallback and reopen condition
+  satisfies this experiment track without qualifying remote-query behavior.
 - **AC-03:** Iceberg REST/v3 experiments register only rebuildable public
   Parquet metadata, preserve acquisition/payload identities, and document all
   compatibility degradation without changing core dependencies.
@@ -101,8 +111,11 @@ Each experiment records:
 - **AC-05:** Graph exports are deterministic projections of the same Gold
   tables; engine parity and query semantics pass, and no candidate or
   restricted terminology becomes authoritative/public by projection.
-- **AC-06:** Xet/dedup experiments prove that optimization never changes source
-  object identity, raw-byte restoration, or per-object digest evidence.
+- **AC-06:** If Xet/dedup is required by a current product need, prove that
+  optimization never changes source-object identity, raw-byte restoration, or
+  per-object digest evidence before promotion. Otherwise a prerequisite-bound
+  `defer` with the ordinary verified restore path and reopen condition satisfies
+  this experiment track; it does not qualify Xet behavior.
 - **AC-07:** Security/threat, dependency/supply-chain, free-tier cost,
   operational burden, fallback, and deletion/withdrawal assessments accompany
   every promotion candidate.

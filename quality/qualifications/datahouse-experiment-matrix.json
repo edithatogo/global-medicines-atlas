@@ -5,8 +5,8 @@
   "fixture_path": "tests/fixtures/datahouse/bronze_records.json",
   "fixture_sha256": "f5f2b56824852355c200c72246f25b7009f60ee0d4326535d34eb2340588b1da",
   "dependency_lock_path": "uv.lock",
-  "dependency_lock_sha256": "abf033420a58c0bceb5cb80e8d43d9cc62e080aff15802212429ce1c99620cb9",
-  "python_reference": "3.14",
+  "dependency_lock_sha256": "843d4d0ea6d56be02baceb5d761d84b96a5836001ee9612a309ecef0bf680449",
+  "python_reference": "3.15",
   "bronze_completion_blocking": false,
   "payload_receipts_remain_authoritative": true,
   "experiments": [
@@ -47,7 +47,7 @@
       "technology_promotion_claimed": false,
       "unmet_requirement": "Evaluate iceberg rest for a measured federated data-plane requirement.",
       "hypothesis": "The optional iceberg rest capability can improve interoperability or verification without changing source identity.",
-      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.15 fallback.",
       "thresholds": [
         "Correctness and deterministic identity parity with baseline",
         "No production dependency or evidentiary-authority change"
@@ -92,7 +92,7 @@
       "technology_promotion_claimed": false,
       "unmet_requirement": "Evaluate iceberg v3 for a measured federated data-plane requirement.",
       "hypothesis": "The optional iceberg v3 capability can improve interoperability or verification without changing source identity.",
-      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.15 fallback.",
       "thresholds": [
         "Correctness and deterministic identity parity with baseline",
         "No production dependency or evidentiary-authority change"
@@ -136,7 +136,7 @@
       "technology_promotion_claimed": false,
       "unmet_requirement": "Evaluate ducklake for a measured federated data-plane requirement.",
       "hypothesis": "The optional ducklake capability can improve interoperability or verification without changing source identity.",
-      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.15 fallback.",
       "thresholds": [
         "Correctness and deterministic identity parity with baseline",
         "No production dependency or evidentiary-authority change"
@@ -181,7 +181,7 @@
       "technology_promotion_claimed": false,
       "unmet_requirement": "Evaluate object versioning for a measured federated data-plane requirement.",
       "hypothesis": "The optional object versioning capability can improve interoperability or verification without changing source identity.",
-      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.15 fallback.",
       "thresholds": [
         "Correctness and deterministic identity parity with baseline",
         "No production dependency or evidentiary-authority change"
@@ -223,7 +223,7 @@
       "technology_promotion_claimed": false,
       "unmet_requirement": "Evaluate batch attestation for a measured federated data-plane requirement.",
       "hypothesis": "The optional batch attestation capability can improve interoperability or verification without changing source identity.",
-      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.15 fallback.",
       "thresholds": [
         "Correctness and deterministic identity parity with baseline",
         "No production dependency or evidentiary-authority change"
@@ -272,7 +272,7 @@
       "technology_promotion_claimed": false,
       "unmet_requirement": "Evaluate delta hudi for a measured federated data-plane requirement.",
       "hypothesis": "The optional delta hudi capability can improve interoperability or verification without changing source identity.",
-      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.14 fallback.",
+      "baseline": "Source-faithful Parquet with immutable B1/B2 payload receipts and Python 3.15 fallback.",
       "thresholds": [
         "Correctness and deterministic identity parity with baseline",
         "No production dependency or evidentiary-authority change"

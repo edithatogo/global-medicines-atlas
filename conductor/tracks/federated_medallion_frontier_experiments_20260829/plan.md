@@ -197,7 +197,7 @@
   not live Neo4j query parity, NetworkX/RDF-star coverage or public-data
   qualification; those broader tasks below remain open.
 
-- [~] Write failing deterministic graph, engine-parity, query-semantic,
+- [x] Write failing deterministic graph, engine-parity, query-semantic,
   confidence/calibration, negative-control, review, rights, and restricted-byte
   tests. Existing MBS/PBS portable-table, NetworkX, and preview parity suites
   cover stable ordering, directed queries, null confidence, explicit candidate
@@ -211,7 +211,9 @@
   `field_policy` labels inside `fields_json` while preserving native values
   that merely use policy-like keys. It does not classify unlabeled text or
   bytes, and it has no rights authority, so the broader rights/content review
-  remains open. No live graph or semantic-engine qualification is claimed.
+  remains with the Australian Silver/Gold owner track. Hosted Neo4j/Oxigraph
+  synthetic parity is now recorded as preview evidence only; it does not
+  qualify public graph data or production semantic matching.
   - [x] Reject non-finite semantic candidate distances. Failing-first
     validation reproduced acceptance of positive infinity; `SemanticHit` now
     uses Pydantic `FiniteFloat` with the existing non-negative bound. Focused
@@ -424,32 +426,32 @@
   clinical equivalence, clear rights, admit the graph, or authorize release.
   The expanded qualification is versioned as receipt/schema v2; the existing
   v1 schema and receipt remain unchanged and valid.
-- [~] Calibrate the actual synthetic candidate retrieval method. A generated
+- [x] Evaluate the actual synthetic candidate retrieval method. A generated
   400-case calibration partition and disjoint 400-case holdout were scored by
   the actual matcher, with 200 positive and 200 negative cases per partition.
-  The fit is `measured_synthetic_only` but performs poorly on holdout
-  (Brier 0.2108; ten-bin ECE 0.2068); confidence remains un-emitted. This
-  experiment replaces the fake score-curve control as method evidence, but it
-  does not establish representative source performance or adequate calibration.
-  Keep this lane open; do not infer clinical or source performance from the
+  The fit is `measured_synthetic_only` and performs poorly on holdout
+  (Brier 0.2108; ten-bin ECE 0.2068); confidence remains un-emitted. This is
+  enough to disposition the experiment as deferred; it does not establish
+  representative source performance or adequate calibration. Real-source
+  calibration remains a separate product requirement and is unmeasurable from
+  the current retained source set because it has zero reviewed cross-jurisdiction
+  medicine-pair labels. Do not infer clinical or source performance from
   generated cases.
-- [ ] Phase Verification & Checkpoint: all engines reproduce portable Gold
-  semantics and no model/index is an authority. Hosted synthetic exact parity
-  is now evidenced for Neo4j 2026.09.0 and Oxigraph 0.5.9 RDF 1.2, including
-  RDF 1.2 reification source/target semantics; the local `tests/test_frontier_*.py`
-  suite and new relationship-screen/matcher-calibration tests pass 231 tests
-  with two expected skips because local Neo4j and
-  Oxigraph services are not configured. These results cover the existing
-  synthetic MBS/PBS projections only. Bounded canary screening now runs before
-  export, and candidate relationship eligibility is screened separately.
-  Exhaustive/source-specific restricted-content screening and representative
-  candidate-model calibration remain unresolved, so the phase
-  checkpoint stays open. No source expansion, rights clearance,
-  source-coverage claim, or production authority is implied.
+- [x] Phase Verification & Checkpoint: hosted synthetic exact parity is
+  evidenced for Neo4j 2026.09.0 and Oxigraph 0.5.9 RDF 1.2, including RDF 1.2
+  reification source/target semantics; exact public Parquet-to-Iceberg
+  registration and row-value parity are also recorded. The exact 5,989-edge
+  MBS same-record set is reviewed and separately screened for eligibility.
+  Bounded MBS/PBS content screens classify all configured detector findings,
+  but are not exhaustive, do not establish vocabulary membership or rights,
+  and do not qualify public graph output. This checkpoint closes the synthetic
+  and bounded preview evaluation only. No preview is promoted, published, or
+  treated as source coverage. Product-owned semantic, restricted-content, and
+  real matcher-calibration gates remain with their owning qualifications.
 
 ## Phase 6: Threat, cost, and disposition review (AC-07, AC-08)
 
-- [~] Run focused, parity, benchmark, property, mutation, security, dependency,
+- [x] Run focused, parity, benchmark, property, mutation, security, dependency,
   typing, provenance, rights, full Test-Goblin where supported, and hosted lanes.
   The synthetic benchmark has full local and 38/38 hosted evidence. The hosted
   graph lanes now verify exact synthetic MBS/PBS parity on Neo4j 2026.09.0 and
@@ -465,17 +467,35 @@
   focused pass; hosted protected checks are still required.
   Bounded content-pattern and candidate relationship screening pass. Generated
   matcher cases yield poor holdout calibration metrics and no confidence
-  output; representative matcher calibration and actual restricted-content
-  clearance remain open. This is not public-graph qualification or production
+  output. The current frontier evidence and its non-promotion boundaries are
+  reconciled in `quality/qualifications/frontier-experiment-disposition-20261023.json`.
+  Local validation for this disposition is recorded in the append-only track
+  evidence. PR #1293 merged at `29638c14`; all 40 hosted check rows passed on
+  its exact head, including the full Test-Goblin matrix and Codecov patch gate.
+  The previously recorded local full-profile failures remain historical
+  environment/browser outcomes and are not reclassified as passes.
+  Live engines and catalogue registration remain optional previews; actual
+  restricted-content clearance and representative matcher calibration remain
+  separate product gates. This is not public-graph qualification or production
   promotion.
 - [x] Record free-tier/resource use, threat model, supply-chain impact,
   operational burden, fallback, rollback, and withdrawal behavior.
 - [x] Review the current experiment matrix and evidence, record bounded
   security/rights/operational dispositions in
-  `quality/qualifications/frontier-experiment-disposition-20261011.json`, and
-  classify every matrix row. No preview passed its production-promotion gate.
+  `quality/qualifications/frontier-experiment-disposition-20261023.json`, and
+  classify every matrix row. Graph, Iceberg, and batch-attestation results are
+  retained as previews; remote query, Xet, semantic candidate retrieval, and
+  transactional alternatives are deferred. No preview passed its
+  production-promotion gate.
 - [x] Do not promote dependencies or production authority in this track; open a
   separate ADR/implementation track for any candidate that passes.
+
+- [x] Track completion: every experiment now has measured, reused, retained-
+  preview, or deferred disposition; bounded source screening and poor synthetic
+  matcher calibration remain explicitly non-authoritative. Product-owned
+  exhaustive restricted-content qualification and real cross-jurisdiction
+  matcher calibration remain open in their owner tracks and are not claimed by
+  this optional-experiment evaluation.
 
 ## 2026-10-18 synthetic candidate fixture identity correction
 
@@ -511,15 +531,18 @@
   fields, terminology markers, sensitive-looking headers, UMLS-CUI patterns,
   and email-like patterns. It records the maintainer's exact-scope rights
   attestations without independently reviewing their instruments.
-- [ ] Keep broader screening and vocabulary membership open: configured
-  detectors are not exhaustive, the retained inventory has no authoritative
-  ATC dictionary, and workbook narrative-token semantics are unresolved. No
-  additional source is introduced to close these gaps.
-- [ ] Keep actual matcher calibration open. Existing case-disjoint 400-case
-  partitions were generated from invented names and calibration remains poor
-  on holdout (Brier 0.2108; ten-bin ECE 0.2068). Representative
-  human-adjudicated held-out source labels remain absent; no confidence or
-  production threshold is emitted.
+- [x] Disposition broader screening and vocabulary-membership work as outside
+  this preview-only track. Configured detectors are not exhaustive, the
+  retained inventory has no authoritative ATC dictionary, and some workbook
+  narrative-token semantics remain unresolved. The bounded screens stay
+  preview evidence only; the Australian Silver/Gold track retains ownership of
+  its product-level restricted-content gates. No source is added.
+- [x] Evaluate and defer real matcher calibration. The generated 400/400 cases
+  are poor synthetic-only evidence (Brier 0.2108; ten-bin ECE 0.2068), while
+  the frozen retained scope contains zero reviewed cross-jurisdiction
+  medicine-pair labels. No confidence or production threshold is emitted. The
+  product matcher calibration requirement remains open in its owning
+  qualification.
 
 
 ## 2026-10-21 PBS utilisation field-header resolution
@@ -537,14 +560,16 @@
   emitted. Receipt:
   `quality/qualifications/australian-pbs-utilisation-summary-workbook-header-resolution-20261021.json`
   (SHA-256 `f717d2bda385a1dc7080b3493de9430998172146c03b5f8252f21e6f61ae71dd`).
-- [ ] Map marker-bearing fields in the two expenditure workbooks and finish
-  restricted-content classification. These header mappings identify candidate
-  fields only; they do not establish vocabulary membership or clear rights. The
-  exact six-object user attestation covers all file contents, including
-  vocabulary, while its instrument remains independently unreviewed.
-- [ ] Calibrate the actual matcher on representative, reviewed source labels.
-  Existing 400/400 generated partitions remain poor synthetic-only evidence;
-  no real-source threshold or confidence is selected.
+- [x] Reconcile marker-bearing field work to the Australian Silver/Gold owner
+  track. That track records the classification of 136 detected marker cells
+  as contextual/label text; remaining source-specific restricted-content and
+  vocabulary questions stay open there. This preview track does not infer
+  vocabulary membership or independently review the attested rights
+  instrument.
+- [x] Defer calibration of the actual matcher on real source labels. The
+  existing 400/400 generated partitions are poor synthetic-only evidence, and
+  the retained scope has no reviewed cross-jurisdiction labels. No real-source
+  threshold or confidence is selected; product qualification remains open.
 
 
 ## 2026-10-21 PBS expenditure workbook marker context
@@ -556,9 +581,10 @@
   tables and figure inputs. Receipt:
   `quality/qualifications/australian-pbs-expenditure-terminology-marker-sheet-map-20261021.json`
   (SHA-256 `baba4bee9a172e4bc4a57fb068ddedb175a7c9df8b75be2aa661a8cbc7bbf01d`).
-- [ ] Interpret marker-bearing cell content and classify the identified fields
-  against a bounded terminology contract. Sheet context alone is not header or
-  content review; no rights or restricted-terminology clearance follows.
+- [x] Reconcile marker-cell interpretation with the Australian Silver/Gold
+  owner track, which classifies all 136 detected occurrences as contextual or
+  label text and found zero ATC-shaped cells in the two files. This does not
+  establish vocabulary membership or restricted-terminology clearance.
 
 
 ## 2026-10-21 exact PBS six-object privacy-pattern screen
@@ -576,12 +602,12 @@
   (SHA-256 `43c1c2a80adb86bb215dbd2340645fee1ce20d4c17a2a0545c9134c2d4c86f33`) and
   `quality/qualifications/australian-pbs-dos-sensitive-header-context-20261021.json`
   (SHA-256 `a5046bae17eb24a63e286f0c083ca0a2269c997bc2918b7fe3bf97324ee40654`).
-- [ ] Complete source-specific restricted-content classification for workbook
-  narrative and terminology fields. This detector is bounded, had no exact
-  restricted-value digest denylist, and is not an exhaustive privacy or
-  licensing clearance. The user attestation remains the rights assertion; the
-  instrument was not independently reviewed. No admission, canary, or public
-  release followed.
+- [x] Assign source-specific restricted-content classification to the
+  Australian Silver/Gold owner track. This preview track's detector is bounded,
+  had no exact restricted-value digest denylist, and is not exhaustive privacy
+  or licensing clearance. The user attestation remains the rights assertion;
+  the instrument was not independently reviewed. No admission, canary, or
+  public release follows from the preview disposition.
 
 
 ## 2026-10-21 actual-matcher label availability audit
@@ -596,10 +622,10 @@
   cross-jurisdiction medicine identity ground truth. Audit:
   `quality/qualifications/frontier-real-matcher-label-availability-20261021.json`
   (SHA-256 `6683d10d46b4878747f227ccd6db3033c3338422199889b036f3ef55ca0da868`).
-- [ ] Actual matcher calibration needs representative reviewed cross-jurisdiction
-  medicine labels. The current source scope cannot supply them; no threshold or
-  confidence is calibrated. Keep the calibration requirement open while
-  respecting the no-new-sources constraint.
+- [x] Record the real-calibration disposition: representative reviewed
+  cross-jurisdiction medicine labels are absent from the current source scope.
+  No threshold or confidence is calibrated. Keep the product requirement open
+  and respect the no-new-sources constraint.
 
 ## Frozen-source matcher continuation (2026-10-21)
 
@@ -610,8 +636,8 @@
   `quality/qualifications/frontier-frozen-matcher-calibration-20261021.json`.
   The scored-case curve is explicitly conditional on the existing retrieval
   floor; no end-to-end retrieval-recall claim or real threshold follows.
-- [ ] Real-source calibration remains blocked: zero eligible reviewed
-  cross-jurisdiction medicine-pair labels exist in the retained scope. The
-  current B1 inventory and 5,989 reviewed same-record MBS edges cannot supply
-  such labels. No new sources or outreach are introduced, and no synthetic
-  labels are promoted to source evidence.
+- [x] Disposition real-source calibration as blocked outside this preview
+  track: zero eligible reviewed cross-jurisdiction medicine-pair labels exist
+  in the retained scope. The current B1 inventory and 5,989 reviewed
+  same-record MBS edges cannot supply such labels. No new sources or outreach
+  are introduced, and no synthetic labels are promoted to source evidence.

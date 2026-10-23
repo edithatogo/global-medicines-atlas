@@ -935,12 +935,12 @@ def _assert_projection_rejects_embedded_b2(
                 payload=payload,
             )
 
-    for name, sentinel in (
+    for name, marker in (
         ("path", path_sentinel.encode()),
         ("payload", payload),
     ):
         metadata = dict(table.schema.metadata or {})
-        metadata[f"leaked_{name}".encode()] = sentinel
+        metadata[f"leaked_{name}".encode()] = marker
         leaked_table = table.replace_schema_metadata(metadata)
         leaked_path = tmp_path / f"leaked-metadata-{name}.parquet"
         pq.write_table(leaked_table, leaked_path)

@@ -548,7 +548,7 @@ def test_health_is_machine_readable(database: Path) -> None:
                 "--observed-at",
                 CLOCK,
             ],
-            "invalid value",
+            "timezone",
         ),
         (
             [

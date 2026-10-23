@@ -1,6 +1,7 @@
 """Frontier experiments cannot begin from speculative prerequisites."""
 
 import copy
+import hashlib
 import json
 from pathlib import Path
 
@@ -29,6 +30,84 @@ def test_checked_in_matrix_is_complete_bounded_and_inert() -> None:
         "large",
     }
     assert not any(item.experiment_started for item in matrix.experiments)
+    assert not any(
+        item.production_dependency_adopted for item in matrix.experiments
+    )
+    assert not any(
+        item.technology_promotion_claimed for item in matrix.experiments
+    )
+
+
+def test_checked_in_dispositions_match_the_review_receipt() -> None:
+    matrix = FrontierExperimentMatrix.model_validate(document())
+    receipt_path = ROOT / (
+        "quality/qualifications/frontier-experiment-disposition-20261024-2.json"
+    )
+    receipt = json.loads(receipt_path.read_text())
+    receipt_rows = {
+        item["experiment_id"]: item["disposition"]
+        for item in receipt["dispositions"]
+    }
+    matrix_rows = {
+        item.experiment_id: item.disposition.value
+        for item in matrix.experiments
+    }
+
+    assert {
+        experiment_id: receipt_rows[experiment_id]
+        for experiment_id in matrix_rows
+    } == matrix_rows
+    assert receipt_rows["semantic_candidate_retrieval"] == "defer"
+    assert (
+        receipt["matcher_calibration"]["reviewed_cross_jurisdiction_pair_count"]
+        == 0
+    )
+    assert receipt["matcher_calibration"]["confidence_emitted"] is False
+    assert receipt["matcher_calibration"]["threshold_selected"] is False
+    assert (
+        receipt["matcher_calibration"][
+            "product_requirement_m072_qualified_by_this_receipt"
+        ]
+        is False
+    )
+    assert receipt["screening"]["exhaustive_screening"] is False
+    assert (
+        receipt["screening"]["rights_instruments_independently_reviewed"]
+        is False
+    )
+    assert receipt["source_boundary"]["sources_added_or_acquired"] is False
+    assert receipt["source_boundary"]["production_authority_promoted"] is False
+    for item in receipt["reviewed_inputs"]:
+        source = ROOT / item["path"]
+        assert hashlib.sha256(source.read_bytes()).hexdigest() == item["sha256"]
+
+
+def test_matrix_records_preview_dispositions_without_promotion() -> None:
+    raw = document()
+    for experiment_id in (
+        "iceberg_catalogue",
+        "batch_attestation",
+        "graph_semantic_projection",
+    ):
+        row = next(
+            item
+            for item in raw["experiments"]
+            if item["experiment_id"] == experiment_id
+        )
+        row["disposition"] = "retain-preview"
+
+    matrix = FrontierExperimentMatrix.model_validate(raw)
+
+    retained = {
+        item.experiment_id
+        for item in matrix.experiments
+        if item.disposition.value == "retain-preview"
+    }
+    assert retained == {
+        "iceberg_catalogue",
+        "batch_attestation",
+        "graph_semantic_projection",
+    }
     assert not any(
         item.production_dependency_adopted for item in matrix.experiments
     )
@@ -134,11 +213,22 @@ def test_missing_prerequisite_key_blocks_start() -> None:
 
 def test_reused_result_requires_imported_decision() -> None:
     raw = document()
-    reused = next(
-        item for item in raw["experiments"] if item["disposition"] == "reused"
-    )
+    reused = raw["experiments"][0]
+    reused["disposition"] = "reused"
     reused["reused_evidence"] = []
     with pytest.raises(ValidationError, match="requires imported evidence"):
+        FrontierExperimentMatrix.model_validate(raw)
+
+
+def test_retained_preview_requires_imported_evidence() -> None:
+    raw = document()
+    preview = raw["experiments"][0]
+    preview["disposition"] = "retain-preview"
+    preview["reused_evidence"] = []
+
+    with pytest.raises(
+        ValidationError, match="retained experiment requires imported evidence"
+    ):
         FrontierExperimentMatrix.model_validate(raw)
 
 

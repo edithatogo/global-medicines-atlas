@@ -29,11 +29,11 @@ def test_local_observed_route_stops_before_transport(monkeypatch):
 def test_observed_route_uses_verified_source_and_safe_aggregate(
     synthetic, monkeypatch
 ):
-    sentinel = object()
-    monkeypatch.setattr(module, "load_observed_profile", lambda _: sentinel)
+    marker = object()
+    monkeypatch.setattr(module, "load_observed_profile", lambda _: marker)
 
     def qualify(archive, member, parent, binding, profile, *, progress):
-        assert profile is sentinel
+        assert profile is marker
         assert binding.member_payload.sha256 == module.MEMBER.sha256
         assert binding.archive_payload.sha256 == module.ARCHIVE.sha256
         assert binding.parent_receipt_sha256 == parent.digest()

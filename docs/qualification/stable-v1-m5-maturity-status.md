@@ -27,7 +27,7 @@ The machine-readable Bronze report records the exact source-code commit it
 evaluated. Its report, bounded future-source ledger, and the stable-v1 contract
 must be regenerated after any merge that changes their hashed inputs.
 
-Current Bronze qualification source commit: `50a0655269bc79f22cf9577a11118f7928892d37`.
+Current Bronze qualification source commit: `78e857839aad8298060c65eb5ef03a4e3114827a`.
 
 ## Current-main M5 reconciliation — 2026-10-17
 
@@ -70,16 +70,18 @@ The regenerated Bronze maturity report evaluates the source commit recorded
 in its current qualification. Its bounded-scope counts are 42 active sources,
 159 public sources, 117 deferred, and 29 directly receipt-backed.
 
-The contract has 85 verified and 7 blocked requirements. Within the Australian denominator,
-M-105 is verified under the narrow chronology waiver and M-106–M-112 remain
-blocked. The waiver does not claim pre-archive parity proof or change the
-remaining evidence requirements. Sixteen of 17 release gates pass, including
+The current reconciled contract has 84 verified and 8 blocked requirements.
+Within the Australian denominator, M-105 remains blocked under the current
+maintainer disposition because required pre-archive parity evidence cannot be
+established retroactively; M-106–M-112 also remain blocked. The prior D-006-10
+chronology waiver remains historical and is not used for current acceptance.
+Sixteen of 17 release gates pass, including
 the conditional Stable v1 release-approval gate and the Bronze and M5 gates.
 Australian health federation is the remaining unresolved qualification gate:
 
 | Gate | Accountable party | State and exact acceptance evidence still needed |
 | --- | --- | --- |
-| Australian health federation | Dependent Australian workstreams; the sole maintainer for source-specific rights/admission decisions and federation acceptance; relevant source owners for external evidence | Blocked. The [acceptance matrix](./australian-health-federation-acceptance.md) lists M-105–M-112 individually: M-105 is verified under D-006-10, which waives only the pre-archive timing condition and makes no claim that such proof exists; M-106–M-112 remain blocked on their listed denominator, source, rights, semantic, lineage, product, and admission evidence. Future-source dispositions alone do not satisfy federation acceptance. |
+| Australian health federation | Dependent Australian workstreams; the sole maintainer for source-specific rights/admission decisions and federation acceptance; relevant source owners for external evidence | Blocked. The [acceptance matrix](./australian-health-federation-acceptance.md) lists M-105–M-112 individually: M-105 is blocked under D-006-12 because required pre-archive parity evidence cannot be established retroactively; M-106–M-112 remain blocked on their listed denominator, source, rights, semantic, lineage, product, and admission evidence. Future-source dispositions alone do not satisfy federation acceptance. |
 | Stable v1 release | Sole maintainer | Conditional software-only `v1.0.0` promotion approval is recorded in D-006-11 and the release-approval gate has passed. Promotion remains unexecuted until all qualification gates pass and the exact candidate, protected checks, and attestation are verified. Australian federation remains blocked; no stable tag, signed asset, attestation, or release has been produced. |
 
 Production disaster-recovery authority is separately recorded as
@@ -90,3 +92,34 @@ production backup storage, approved retention/deletion authority, RPO/RTO,
 crash consistency, or a named recovery operator. A production authority
 receipt would need to specify those controls and evidence a successful
 independent restore.
+
+## Current-main M5 reconciliation — 2026-10-23
+
+On exact `main` commit `78e857839aad8298060c65eb5ef03a4e3114827a` (PR #1287),
+the Bronze maturity generator re-qualified the bounded horizon and rebound the
+committed report's provenance to that commit. The substantive qualification is
+unchanged from the 2026-10-17 exact-main rebind and the 2026-10-18 contract
+count reconciliation: 42/42 approved bounded sources,
+a 159-source public/no-credential universe with 117 deferred entries, and the
+separate 29-source direct-receipt cohort with 130 sources lacking a direct
+receipt. No count in this refresh promotes a deferred source, grants rights or
+turns a missing receipt into negative medicines evidence.
+
+The bounded future-source ledger, the source-maturity catalogue projection and
+the M5 Bronze refresh are unchanged. The current Stable v1 contract records 84
+verified and 8 blocked requirements following the M-105 status reaffirmation in
+D-006-12; eight of eight blocking dimensions remain at M5/verified, and 16 of
+17 release gates remain passed. Australian health federation remains the
+single unresolved qualification gate. The prior 85/7 requirement count
+preserves the 2026-10-23 pre-reaffirmation snapshot and is not current. The
+conditional D-006-11 software-only `v1.0.0` approval has not been exercised and
+no stable tag, signed asset, attestation or release exists. Production
+disaster-recovery authority remains separately `not_claimed` and outside the
+Stable v1 acceptance-gate set.
+
+Rebinding this page is enforced by
+`tests/test_stable_v1_qualification_contract.py::test_stable_v1_status_page_matches_current_bronze_report_provenance`,
+which fails until the page records the report's current source commit. That
+acceptance test failed on the regenerated report before this page was rebound
+and passed afterwards; the focused qualification selection then reported 280
+passed.

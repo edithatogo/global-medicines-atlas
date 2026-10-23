@@ -68,11 +68,11 @@ def test_two_builds_and_restore_bind_exact_source_and_conversion_exception(
 def test_existing_output_is_never_overwritten(tmp_path):
     destination = tmp_path / "existing"
     destination.mkdir()
-    sentinel = destination / "manual.txt"
-    sentinel.write_text("keep")
+    marker = destination / "manual.txt"
+    marker.write_text("keep")
     with pytest.raises(FileExistsError):
         build_value_package(*inputs(), destination)
-    assert sentinel.read_text() == "keep"
+    assert marker.read_text() == "keep"
 
 
 def test_wrong_member_leaves_no_partial_output(tmp_path):

@@ -1,11 +1,13 @@
-# Australian donor parity review, updated 2026-10-18
+# Australian donor parity review, updated 2026-10-23
 
-On 2026-10-18, the sole maintainer approved a narrow chronology waiver under
-[D-006-10](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-10--m-105-narrow-chronology-waiver).
-M-105 is now qualified under that waiver: the complete post-archive evidence
-may be used for reassessment, but no pre-archive complete-parity proof is
-claimed. The waiver changes no other M-105 evidence requirement and leaves
-M-106–M-113, source rights, and Stable v1 release approval separate.
+M-105 remains **blocked**. The required pre-archive donor parity evidence
+cannot be established retroactively. The 2026-10-18 narrow chronology waiver
+([D-006-10](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-10--m-105-narrow-chronology-waiver))
+is preserved as a historical decision, but the maintainer's later
+2026-10-23 instruction ([D-006-12](../../conductor/decisions/0006-external-gate-decision-register.md#d-006-12--m-105-blocked-status-reaffirmation))
+keeps the current gate blocked. Post-archive evidence is not described as
+pre-archive proof. M-106–M-113, source rights, and Stable v1 release approval
+remain separate gates.
 
 The pinned inventory covers 54 tracked blobs (16 graph, 38 scraper), including
 every Python function and both workflows. The later delta review covers two
