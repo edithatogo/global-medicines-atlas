@@ -5859,3 +5859,8 @@ source qualification remains pending their actual final artifacts.
 - [x] Address PR #1282 review finding before merge: the 85 successful original receipts and six retry receipts have different exact-main commits. Require all 91 original receipts; verify the six original `member-native-check` incomplete states and their digests; select exactly six successful retry receipts; retain per-group run and commit; reject duplicate output/member identities and double counting. Nineteen focused tests pass with 92.89% branch coverage; 46 affected workbook tests and typing pass. Actual retry outcome remains pending.
 - [x] Retain the local full profile as failed: 7,834 passed, two stable-v1 reproducibility failures caused by host `uv` 0.13.4 where the repository requires 0.11.29, three skipped. A pinned `uv` 0.11.29 focused recheck is running.
 - [ ] Refresh current preflight, pass protected exact-head CI, resolve the review finding only after the fix is on the PR head, then merge and dispatch the exact six-member retry.
+
+### PBS native Silver field-state reconciliation
+
+- [x] Independently reconcile the protected PBS v2 complete package and source-local reference screen aggregate receipts. Bind the exact candidate output ID and Parquet digest, 18,208,758 source fields all `native_unresolved`, zero interpreted fields, and 2,160,066 lexical reference candidates with 2,086,489 unique exact literal matches and 73,577 without an exact match. No source-native values are emitted. The lexical screen does not qualify relationship or domain meaning; rights, admission, canaries and publication remain false.
+- [ ] Bind any supportable source-specific meanings and exact eligible output rights/admission, then run authorized consumer restore and delivery canaries.
