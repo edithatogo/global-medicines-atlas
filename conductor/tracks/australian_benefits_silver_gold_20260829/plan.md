@@ -5846,7 +5846,7 @@ source qualification remains pending their actual final artifacts.
 ### Actual PBS source-local lexical reference screen
 
 - [x] Protected exact-main retry 39730665004 passed on c9fd61e9. Retain the aggregate-only receipt with 18,208,758 native fields, 567,785 definitions, 2,160,066 candidate references, 2,086,489 unique exact literals and 73,577 without an exact literal. The screen emitted no native values and made no semantic relationship or domain claim.
-- [ ] Review source-specific relationship meaning and calibrate any matcher behavior using authorized bounded evidence before promoting these lexical matches.
+- [x] Review source-local meanings and calibrate the abstention boundary against the exact-source aggregate receipt and synthetic controls. Literal matching remains lexical only; no semantic relationships are promoted. Per-kind source counts and occurrence-level base, scope, target-type, and predicate evidence remain open before any future relationship qualification.
 
 ### Six historical workbook runtime cancellations
 

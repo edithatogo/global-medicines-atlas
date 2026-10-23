@@ -448,3 +448,35 @@ this source contains no patient-level numerator/denominator evidence. Price
 structure does not establish currency, payable benefit, patient cost, or
 clinical eligibility. These findings change no rights, admission, canary, or
 publication status and use no new sources or source values.
+
+## PBS source-local reference review, 2026-10-23
+
+The [value-free interpretation receipt](../../quality/qualifications/pbs-native-reference-meaning-review-20261023.json)
+reviews the exact-main lexical screen for the 1 April 2026 V3 member at
+revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`. It binds screen run
+`39730665004`, member SHA-256
+`73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43`, and
+native digest `890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25`.
+
+The screen reported 2,086,489 unique exact-literal candidates among 2,160,066
+references (96.5938% candidate yield), with 73,577 references having no exact
+literal and no duplicate definition literals. These are aggregate lexical
+counts, not semantic precision or recall. The receipt does not provide
+per-reference-kind counts.
+
+An `rdf:resource` literal matching an `rdf:about` literal is only a same-spelling
+RDF subject candidate. An XLink fragment matching an `xml:id` is only a
+candidate fragment target. An `xml:id` remains a source-local identifier; it
+is not a global PBS item key or terminology identity. Effective `xml:base`,
+URI resolution, graph/document scope, link role, target type, and predicate
+meaning are needed before those candidates can support relationships.
+
+Synthetic calibration includes positive, missing, empty, duplicate-target,
+case, namespace, and unsupported-form controls. A counterexample with identical
+relative RDF literals under different `xml:base` contexts still passes literal
+equality, demonstrating why the matcher must abstain from semantic promotion.
+No PBS semantic relationship is qualified by this review. Future qualification
+requires kind-specific counts and occurrence-level context sufficient to
+resolve bases, scopes, target types, and relation meaning. No source values or
+new sources were added; this review changes no rights, admission, canary, or
+publication status.
