@@ -140,6 +140,18 @@ def test_rejects_tampered_envelope_and_symlink(tmp_path):
         module.reconcile(copied, SCREEN)
 
 
+def test_rejects_array_digest_with_rehashed_output_id(tmp_path):
+    def change(report):
+        package = report["qualification"]["package"]
+        digest = ["a"] * 64
+        package["parquet"]["sha256"] = digest
+        report["qualification"]["restored_file_digest"]["sha256"] = digest
+
+    package = _changed(tmp_path, PACKAGE, change)
+    with pytest.raises(ValueError, match="identity"):
+        module.reconcile(package, SCREEN)
+
+
 def test_cli_preserves_existing_output(tmp_path):
     output = tmp_path / "reconciled.json"
     args = [

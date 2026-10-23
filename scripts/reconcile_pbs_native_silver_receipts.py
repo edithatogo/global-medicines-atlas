@@ -24,9 +24,11 @@ PACKAGE_SCHEMA_VERSION = 2
 SERIALIZATION_BUILDS = 2
 
 
-def _digest(value: str) -> bool:
-    return len(value) == SHA256_HEX_LENGTH and all(
-        char in "0123456789abcdef" for char in value
+def _digest(value: object) -> bool:
+    return (
+        type(value) is str
+        and len(value) == SHA256_HEX_LENGTH
+        and all(char in "0123456789abcdef" for char in value)
     )
 
 
