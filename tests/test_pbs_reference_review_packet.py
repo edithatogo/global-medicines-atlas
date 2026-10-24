@@ -204,6 +204,25 @@ def test_review_packet_separates_candidate_examples_and_controls_without_edges()
     assert "private-target" not in json.dumps(packet)
 
 
+def test_review_packet_accepts_stratified_v2_context_from_screen():
+    report = _meaning_report()
+    context = report["source_context_screen"]
+    context["schema_version"] = 2
+    context["example_selection_policy"] = (
+        "up_to_five_value_free_examples_per_structural_stratum"
+    )
+
+    packet = prepare_reference_review_packet(report)
+
+    assert packet["status"] == (
+        "source_context_examples_unreviewed_semantic_links_unqualified"
+    )
+    assert len(packet["cases"]) == 7
+    assert all(
+        not case["semantic_relationship_qualified"] for case in packet["cases"]
+    )
+
+
 def test_review_packet_round_robin_keeps_positive_and_negative_controls_bounded():
     packet = prepare_reference_review_packet(_meaning_report(), max_cases=3)
 
@@ -275,6 +294,7 @@ def test_review_packet_rejects_bad_case_limits_and_unreconciled_reports():
     ("operation", "message"),
     [
         ("contract", "contract differs"),
+        ("example_policy", "contract differs"),
         ("external_target", "fetched an external target"),
         ("strata_count", "strata differ"),
         ("example_bound", "examples exceed the bound"),
@@ -297,7 +317,10 @@ def test_review_packet_rejects_malformed_context(  # ruff: ignore[too-many-branc
     row = context["strata"][0]
     example = row["examples"][0]
     if operation == "contract":
+        context["schema_version"] = 3
+    elif operation == "example_policy":
         context["schema_version"] = 2
+        context["example_selection_policy"] = "unbounded"
     elif operation == "external_target":
         context["external_targets_fetched"] = 1
     elif operation == "strata_count":
