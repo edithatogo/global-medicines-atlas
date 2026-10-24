@@ -231,6 +231,55 @@ def test_context_example_budget_covers_rdf_and_xlink_kinds(
     assert "target-id" not in json.dumps(report)
 
 
+@pytest.mark.parametrize(
+    ("staging_bytes", "report_bytes", "example_limit", "expected_examples"),
+    [
+        (4 * 1024**2, 64_000, 1, 1),
+        (4 * 1024**2, 1, 6, 0),
+        (1, 64_000, 6, 0),
+    ],
+)
+def test_context_example_budgets_preserve_all_occurrence_counts(
+    monkeypatch: pytest.MonkeyPatch,
+    staging_bytes: int,
+    report_bytes: int,
+    example_limit: int,
+    expected_examples: int,
+) -> None:
+    monkeypatch.setattr(
+        context_module, "MAX_STAGED_EXAMPLE_BYTES", staging_bytes
+    )
+    monkeypatch.setattr(
+        context_module, "MAX_REPORT_EXAMPLE_BYTES", report_bytes
+    )
+    monkeypatch.setattr(context_module, "MAX_REPORT_EXAMPLES", example_limit)
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+      <target rdf:about="target"/><target xml:id="fragment"/>
+      <negative rdf:resource="missing"/>
+      <positive rdf:resource="target"/>
+      <link xlink:href="#fragment"/>
+    </root>"""
+
+    report = screen_reference_context(xml)
+
+    assert report["examples_emitted"] == expected_examples
+    assert report["examples_omitted"] == 3 - expected_examples
+    assert (
+        sum(row["occurrences"] for row in report["strata"])
+        == report["reference_occurrences"]
+        == 3
+    )
+    assert (
+        sum(
+            row["examples_omitted"] + len(row["examples"])
+            for row in report["strata"]
+        )
+        == 3
+    )
+
+
 def test_context_receipt_compression_round_trips_the_complete_profile():
     context = screen_reference_context(
         b'<root xmlns="http://schema.pbs.gov.au/" '

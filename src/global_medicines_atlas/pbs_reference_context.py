@@ -40,6 +40,8 @@ MAX_OCCURRENCE_ADDRESS_BYTES = 4096
 # Keep the full structural aggregate bounded in memory. The hosted receipt
 # embeds a deterministic compressed envelope with its own smaller byte cap.
 MAX_REPORT_BYTES = 4 * 1024**2
+# Stage representative examples separately from the smaller final report cap.
+MAX_STAGED_EXAMPLE_BYTES = MAX_REPORT_BYTES
 # Bound the two variable-size portions independently so the exact hosted
 # receipt remains serializable as strata and occurrence examples grow.
 MAX_REPORT_STRATA_BYTES = 4 * 1024**2
@@ -610,7 +612,10 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                         example, ensure_ascii=False, separators=(",", ":")
                     ).encode()
                 )
-                if staged_example_bytes + example_bytes <= MAX_REPORT_BYTES:
+                if (
+                    staged_example_bytes + example_bytes
+                    <= MAX_STAGED_EXAMPLE_BYTES
+                ):
                     row["examples"].append(example)
                     staged_example_bytes += example_bytes
                 else:
