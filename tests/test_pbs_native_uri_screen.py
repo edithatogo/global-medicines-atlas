@@ -114,6 +114,38 @@ def test_duplicate_rdf_about_targets_are_ambiguous_and_absolute_without_base_is_
     }
 
 
+@pytest.mark.parametrize(
+    ("definition", "reference"),
+    [
+        ('rdf:about=""', 'rdf:resource="https://synthetic.example/doc"'),
+        ('rdf:about="https://synthetic.example/doc"', 'rdf:resource=""'),
+    ],
+)
+def test_empty_rdf_reference_resolves_only_with_an_absolute_base(
+    definition: str, reference: str
+):
+    member = (
+        '<root xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
+        'xml:base="https://synthetic.example/doc">'
+        f"<rdf:Description {definition}/><link {reference}/></root>"
+    ).encode()
+    report = screen_pbs_native_uris(member)
+    assert report["outcome_counts_by_kind"]["rdf_resource"] == {
+        "absolute_uri_unique_candidate": 1
+    }
+
+
+def test_empty_rdf_reference_abstains_without_an_absolute_base():
+    member = (
+        b'<root xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+        b'<link rdf:resource=""/></root>'
+    )
+    report = screen_pbs_native_uris(member)
+    assert report["outcome_counts_by_kind"]["rdf_resource"] == {
+        "unresolved_unknown_base": 1
+    }
+
+
 def test_qname_denominators_are_aggregate_and_unknown_namespaces_are_bucketed():
     member = b"""<pbs:root xmlns:pbs="http://schema.pbs.gov.au/"
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"

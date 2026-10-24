@@ -121,7 +121,7 @@ def _effective_base(parent: str | None, override: str | None) -> str | None:
 
 
 def _resolve(value: str | None, base: str | None) -> str | None:
-    if value is None or not value or len(value) > MAX_URI_CHARS:
+    if value is None or len(value) > MAX_URI_CHARS:
         return None
     if not _valid_reference(value):
         return None
