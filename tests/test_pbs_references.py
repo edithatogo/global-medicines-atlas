@@ -561,7 +561,19 @@ def test_exact_retained_context_is_bound_without_values_or_semantic_promotion():
         packet, packet_sha, screen, screen_sha, reconciliation
     )["report"]
 
+    saved_envelope, _ = _load_context_artifact(
+        "pbs-native-reference-uri-context-packet-20261025-195638.json"
+    )
+    assert saved_envelope["report"] == report
     assert report["context_examples_bound"] == 46
+    reconciled_cases = {
+        case["case_id"]: case for case in reconciliation["report"]["cases"]
+    }
+    assert all(
+        {key: value for key, value in case.items() if key != "source_context"}
+        == reconciled_cases[case["case_id"]]
+        for case in report["cases"]
+    )
     assert report["source_values_emitted"] is False
     assert report["semantic_relationships_qualified"] is False
     assert report["precision_claimed"] is False

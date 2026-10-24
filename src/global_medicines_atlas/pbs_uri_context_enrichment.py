@@ -139,7 +139,7 @@ def enrich_uri_review_packet(  # ruff: ignore[too-many-branches,too-many-locals,
                 "occurrence_sha256": _digest(address),
             }
 
-        row = dict(case)
+        row = dict(uri_case)
         row["source_context"] = {
             "document_scope": stratum.get("document_scope"),
             "xml_base_context": stratum.get("xml_base_context"),
