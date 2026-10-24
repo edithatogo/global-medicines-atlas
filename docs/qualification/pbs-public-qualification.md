@@ -639,3 +639,37 @@ coverage and review context but does not qualify PBS relationship meaning or
 matcher performance. The existing field-state partition remains unchanged.
 No new source, source value, right, admission, canary, or publication was
 added.
+
+### Exact PBS amount and restriction field meanings, 2026-10-25
+
+The versioned [PBS domain-field profile v2](../../quality/qualifications/pbs-domain-field-semantics-20261025-v2.json)
+and [field-state reconciliation r11](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r11.json)
+add two exact-schema meanings for the pinned 1 April 2026 v3 member. The
+published PBS XML Schema v3.1.9 defines `pbs:amount` content as a dollar value and
+defines `pbs:contribution` as patient contributions to drug and brand prices;
+the `pbs:price` content definition describes the product-price structure.
+The path inventory binds 891,163 exact PBS-namespace `amount/text` slots:
+817,216 within price structures, 2,279 within contribution structures, and
+71,668 in other source contexts. These are source-field roles, not a
+qualification of the native amount lexemes, precision, explicit currency,
+amount-reference classification, or an actual payment. A price amount does
+not establish a payable benefit or patient cost, and a patient-contribution
+role does not establish what a patient paid.
+
+The same schema defines `pbs:restriction` as the reason for subsidisation,
+including indications and criteria. This narrows the interpretation of the
+two direct restriction text slots (6,056 occurrences total) without resolving
+their reference descendants or making a patient-specific eligibility or
+clinical claim. The exact source documents are the [PBS amount definition](https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_amount.html),
+[price content definition](https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_pbs.price.content.html),
+[contribution definition](https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_contribution.html),
+and [restriction definition](https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_pbs.restriction.html).
+The path inventory does not independently bind the exact schema minor release
+used to author the archive; these labels are applied to its exact PBS namespace
+paths under the published v3.1.9 definitions.
+
+Reconciliation r11 partitions all 18,208,758 fields into 934,628 interpreted
+source roles, 17,274,130 `native_unresolved`, and zero unavailable. Native
+values remain unresolved. The pinned path inventory contains no explicit PBS
+`status` field; current status, intervals, cross-era pooling, source rights,
+admission, publication, and consumer canaries remain outside this result.

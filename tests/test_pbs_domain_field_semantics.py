@@ -60,9 +60,67 @@ def test_qualifies_only_bounded_pbs_v3_source_meanings():
         "unresolved_no_explicit_status_field_qualified"
     )
     assert domains["status"]["meaning"] is None
+    amount_roles = report["source_schema_field_meanings"]["pbs_amount_text"]
+    assert amount_roles == {
+        "pbs_amount_fields": 891_163,
+        "product_price_fields": 817_216,
+        "patient_contribution_fields": 2_279,
+        "status": "qualified_exact_pinned_v3_schema_role",
+        "meaning": (
+            "PBS amount content is defined by the source schema as a dollar "
+            "value; nested price and patient-contribution contexts retain "
+            "their distinct source roles"
+        ),
+        "limits": [
+            "the schema does not supply an explicit currency code for these fields",
+            "the exact schema minor release used for the archive is not separately bound by the value-free path inventory",
+            "native lexemes, precision classification, amount category references, and monetary values remain unresolved",
+            "a source price amount is not thereby a payable benefit or patient cost",
+            "patient-contribution role does not establish the amount actually paid by a patient",
+            "applies only to exact PBS namespace amount/text paths in the pinned v3 member",
+        ],
+    }
+    assert report["source_schema_field_meanings"]["restriction"]["status"] == (
+        "qualified_exact_pinned_v3_schema_label"
+    )
     assert report["scope"]["complete_domain_semantics_qualified"] is False
     assert report["scope"]["source_values_emitted"] is False
     assert report["scope"]["new_sources"] == 0
+
+
+def test_source_amount_role_counts_require_exact_pbs_qnames():
+    inventory = {
+        "paths": [
+            {
+                "schema_path": (
+                    "/{http:~1~1schema.pbs.gov.au~1}root/"
+                    "{http:~1~1schema.pbs.gov.au~1}amount/text"
+                ),
+                "native_fields": 3,
+            },
+            {
+                "schema_path": (
+                    "/{http:~1~1schema.pbs.gov.au~1}root/"
+                    "{http:~1~1schema.pbs.gov.au~1}price/"
+                    "{http:~1~1schema.pbs.gov.au~1}contribution/"
+                    "{http:~1~1schema.pbs.gov.au~1}amount/text"
+                ),
+                "native_fields": 5,
+            },
+            {
+                "schema_path": (
+                    "/{http:~1~1schema.pbs.gov.au~1}root/"
+                    "{urn:extension}amount/text"
+                ),
+                "native_fields": 7,
+            },
+        ]
+    }
+    assert domain_semantics._pbs_amount_role_counts(inventory) == {
+        "pbs_amount_fields": 8,
+        "product_price_fields": 0,
+        "patient_contribution_fields": 5,
+    }
 
 
 def test_source_label_overlay_keeps_values_unresolved():

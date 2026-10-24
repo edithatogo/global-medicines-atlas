@@ -31,7 +31,7 @@ CONTEXT_SCREEN = (
     "quality/qualifications/"
     "pbs-native-reference-screen-20261025-40103169910.json"
 )
-DOMAIN = "quality/qualifications/pbs-domain-field-semantics-20261023.json"
+DOMAIN = "quality/qualifications/pbs-domain-field-semantics-20261025-v2.json"
 FIELD_STATE = (
     "quality/qualifications/pbs-native-silver-field-state-20261023.json"
 )
@@ -85,10 +85,10 @@ DATE_OCCURRENCE_CROSSWALK_REPORT_SHA256 = (
 )
 SUPERSEDED_REPORT = (
     "quality/qualifications/"
-    "pbs-native-silver-field-reconciliation-20261024-r5.json"
+    "pbs-native-silver-field-reconciliation-20261025-r10.json"
 )
 SUPERSEDED_REPORT_SHA256 = (
-    "d897b164aaf3f5524ed5cdddaac36a33c88bd0153f94464c65a78408c0dd94ca"
+    "70980d3d10449e04bb57d602d12866fcbb0536bae88b2adb445b829c7d3c75a4"
 )
 SCREEN_RUN_ID = "40103169910"
 SCREEN_WORKFLOW_COMMIT = "83465c87d5952e123cedd93a02b1ec9b4daa4eb4"
@@ -115,7 +115,7 @@ REFERENCE_CONTEXT_EXAMPLE_POLICIES = {
     "one_example_per_stratum_round_robin_by_kind_status",
 }
 DOMAIN_REPORT_SHA256 = (
-    "6999155565770f6112385705ba22b6b819db51508d352b3d16330ec8077c8a72"
+    "9233d8d93126c929bde3e8b59486b4865f45c89f0d8370405cf6988cbfa0b5db"
 )
 SOURCE_FIELDS = 18_208_758
 SOURCE_PATHS = 5_163
@@ -123,7 +123,7 @@ ITEM_DATE_FIELDS = 2_798
 PATH_INVENTORY = (
     "quality/qualifications/pbs-schema-paths-20261022-39667604237.json"
 )
-CURRENT_RECONCILIATION = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r10.json"
+CURRENT_RECONCILIATION = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r11.json"
 
 
 def _file_sha256(path: Path) -> str:
@@ -151,7 +151,7 @@ def _path_qnames(schema_path: str) -> tuple[str, ...]:
     )
 
 
-def _semantic_adjudication(schema_path: str) -> dict[str, str | None]:  # ruff: ignore[too-many-return-statements] -- ordered path/QName allowlist keeps each adjudication independently auditable
+def _semantic_adjudication(schema_path: str) -> dict[str, str | None]:  # ruff: ignore[too-many-branches,too-many-return-statements] -- ordered path/QName allowlist keeps each adjudication independently auditable
     """Apply only exact PBS path/QName decisions supported by the contract."""
     names = _path_qnames(schema_path)
     entity = names[:-2] if names[-2] == "attributes" else names[:-1]
@@ -239,6 +239,43 @@ def _semantic_adjudication(schema_path: str) -> dict[str, str | None]:  # ruff: 
             "meaning": "source-local RDF resource literal attached to an AMT reference",
             "rule": "exact AMT code element plus RDF resource attribute QName",
         }
+    if slot == "text" and entity[-1:] == (PBS_QNAME + "amount",):
+        if PBS_QNAME + "contribution" in entity:
+            return {
+                "state": "interpreted",
+                "domain": "pbs_patient_contribution_dollar_amount",
+                "meaning": (
+                    "source PBS dollar amount nested under a contribution "
+                    "element defined for patient contributions to drug and "
+                    "brand prices; source role only"
+                ),
+                "rule": (
+                    "exact PBS amount/text QName and contribution ancestry; "
+                    "official PBS XML v3.1.9 amount and contribution definitions"
+                ),
+            }
+        if PBS_QNAME + "price" in entity:
+            return {
+                "state": "interpreted",
+                "domain": "pbs_product_price_dollar_amount",
+                "meaning": (
+                    "source PBS dollar amount within a product price "
+                    "structure; source role only"
+                ),
+                "rule": (
+                    "exact PBS amount/text QName and price ancestry; official "
+                    "PBS XML v3.1.9 price and amount definitions"
+                ),
+            }
+        return {
+            "state": "interpreted",
+            "domain": "pbs_dollar_amount",
+            "meaning": (
+                "source PBS amount element content defined as a dollar "
+                "value; source role only"
+            ),
+            "rule": "exact PBS amount/text QName and official PBS XML v3.1.9 amount definition",
+        }
     if (
         PBS_QNAME + "classification" in entity
         and entity[-1:] == (PBS_QNAME + "code",)
@@ -264,8 +301,16 @@ def _semantic_adjudication(schema_path: str) -> dict[str, str | None]:  # ruff: 
         return {
             "state": "interpreted",
             "domain": "restriction_text",
-            "meaning": "restriction-associated native text occurrence",
-            "rule": "exact direct text or tail slot on the pinned PBS prescribing-texts restriction QName path",
+            "meaning": (
+                "native text within the source PBS restriction, defined as "
+                "the reason for subsidisation including indications and "
+                "criteria; source role only"
+            ),
+            "rule": (
+                "exact direct text or tail slot on the pinned PBS "
+                "prescribing-texts restriction QName path and official "
+                "PBS XML v3.1.9 restriction definition"
+            ),
         }
     if (
         restriction_index is not None
@@ -928,7 +973,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         "role_reconciliation": state_rows,
         "path_reconciliation": path_reconciliation,
         "semantic_adjudication": {
-            "profile_id": "pbs-v3-pinned-2026-04-01-path-qname-adjudication-v2",
+            "profile_id": "pbs-v3-pinned-2026-04-01-path-qname-adjudication-v3",
             "inventory_sha256": "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b",
             "date_profile_sha256": date_profile_sha,
             "date_profile_item_effective_date_fields": date_roles[
@@ -974,7 +1019,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "explicit_non_claims": [
                 "AMT and RDF resource literals are not resolved to terminology concepts",
                 "classification code is unresolved unless the exact unqualified type value ATC is evidenced; current path inventory does not preserve that attribute value",
-                "price, currency, unit, status/currentness, and cross-era date effects remain unresolved",
+                "native price values, explicit currency, units, status/currentness, and cross-era date effects remain unresolved",
                 "item effective-date literals identify a source role only; they do not establish intervals, precedence, listing status, currentness, or cross-era equivalence",
                 "the schedule effective-date path is not present in the pinned schema-path inventory; dcterms:valid is a separate document-level date",
                 "the pinned inventory contains no classification/code text path, so fixture-level ATC typing is not a source-level assertion",

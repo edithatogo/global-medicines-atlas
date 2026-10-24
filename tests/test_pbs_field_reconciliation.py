@@ -58,8 +58,8 @@ def test_every_pinned_field_has_one_evidenced_state():
     report = reconcile_pbs_field_states(ROOT)
     coverage = report["field_state_coverage"]
     assert coverage == {
-        "interpreted": 43_465,
-        "native_unresolved": 18_208_758 - 43_465,
+        "interpreted": 934_628,
+        "native_unresolved": 18_208_758 - 934_628,
         "unavailable": 0,
         "source_fields": 18_208_758,
         "denominator_closed": True,
@@ -321,6 +321,9 @@ def test_semantic_adjudication_promotes_only_exact_supported_paths():
         "amt_literal_reference_resource": 8_328,
         "item_identity_literal": 2_798,
         "item_effective_date_literal": 2_798,
+        "pbs_dollar_amount": 71_668,
+        "pbs_patient_contribution_dollar_amount": 2_279,
+        "pbs_product_price_dollar_amount": 817_216,
         "product_presentation_label": 12_128,
         "restriction_text": 6_056,
         "restriction_effective_date_literal": 3_028,
@@ -369,6 +372,21 @@ def test_semantic_adjudication_promotes_only_exact_supported_paths():
             "interpreted",
             "schedule_effective_date_literal",
         ),
+        (
+            "/{http:~1~1schema.pbs.gov.au~1}root/{http:~1~1schema.pbs.gov.au~1}schedule/{http:~1~1schema.pbs.gov.au~1}program/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/{http:~1~1schema.pbs.gov.au~1}product-listing/{http:~1~1schema.pbs.gov.au~1}reimbursement/{http:~1~1schema.pbs.gov.au~1}dpmq/{http:~1~1schema.pbs.gov.au~1}price/{http:~1~1schema.pbs.gov.au~1}amount/text",
+            "interpreted",
+            "pbs_product_price_dollar_amount",
+        ),
+        (
+            "/{http:~1~1schema.pbs.gov.au~1}root/{http:~1~1schema.pbs.gov.au~1}schedule/{http:~1~1schema.pbs.gov.au~1}program/{http:~1~1schema.pbs.gov.au~1}prescribing-rule/{http:~1~1schema.pbs.gov.au~1}product-listing/{http:~1~1schema.pbs.gov.au~1}reimbursement/{http:~1~1schema.pbs.gov.au~1}dpmq/{http:~1~1schema.pbs.gov.au~1}price/{http:~1~1schema.pbs.gov.au~1}contribution/{http:~1~1schema.pbs.gov.au~1}amount/text",
+            "interpreted",
+            "pbs_patient_contribution_dollar_amount",
+        ),
+        (
+            "/{http:~1~1schema.pbs.gov.au~1}root/{http:~1~1extension.schema.pbs.gov.au~1}amount/text",
+            "native_unresolved",
+            None,
+        ),
     ],
 )
 def test_exact_unusual_domain_paths_keep_bounded_semantics(path, state, domain):
@@ -406,6 +424,10 @@ def test_restriction_text_is_limited_to_direct_source_slots():
     assert reconciliation._semantic_adjudication(direct)["domain"] == (
         "restriction_text"
     )
+    assert (
+        "reason for subsidisation"
+        in reconciliation._semantic_adjudication(direct)["meaning"]
+    )
     assert reconciliation._semantic_adjudication(nested)["state"] == (
         "native_unresolved"
     )
@@ -441,10 +463,13 @@ def test_versioned_path_qname_matrix_is_reconciled_and_value_free():
     }
     assert len(restriction_text) == 2
     assert all(
-        row["semantic_interpretation"]["meaning"]
-        == "restriction-associated native text occurrence"
+        "reason for subsidisation" in row["semantic_interpretation"]["meaning"]
         and row["semantic_interpretation"]["rule"]
-        == "exact direct text or tail slot on the pinned PBS prescribing-texts restriction QName path"
+        == (
+            "exact direct text or tail slot on the pinned PBS "
+            "prescribing-texts restriction QName path and official "
+            "PBS XML v3.1.9 restriction definition"
+        )
         for row in restriction_text
     )
     assert receipt["semantic_adjudication"]["source_values_read"] is False
