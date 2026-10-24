@@ -37,6 +37,33 @@ test_uri_packet_rejects_changed_packet = (
 test_uri_packet_rejects_contract_mismatch = (
     _uri_packet_cases.test_rejects_receipt_contract_mismatch
 )
+test_uri_packet_rejects_malformed_envelopes = (
+    _uri_packet_cases.test_load_envelope_rejects_malformed_inputs
+)
+test_uri_packet_rejects_missing_envelope = (
+    _uri_packet_cases.test_load_envelope_rejects_missing_file
+)
+test_uri_packet_rejects_non_json_digest = (
+    _uri_packet_cases.test_report_digest_rejects_non_json_value
+)
+test_uri_packet_rejects_required_mapping = (
+    _uri_packet_cases.test_required_rejects_invalid_mapping
+)
+test_uri_packet_rejects_invalid_expected_arguments = (
+    _uri_packet_cases.test_rejects_invalid_expected_arguments
+)
+test_uri_packet_rejects_wrong_packet_filename = (
+    _uri_packet_cases.test_rejects_wrong_packet_filename
+)
+test_uri_packet_rejects_invalid_pinned_cases = (
+    _uri_packet_cases.test_rejects_invalid_pinned_packet_cases
+)
+test_uri_packet_rejects_missing_case_binding_structures = (
+    _uri_packet_cases.test_rejects_missing_uri_case_binding_structures
+)
+test_uri_packet_rejects_invalid_uri_case_rows = (
+    _uri_packet_cases.test_rejects_invalid_uri_case_rows
+)
 
 
 @pytest.mark.parametrize(

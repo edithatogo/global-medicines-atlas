@@ -10,6 +10,9 @@ from typing import Any
 
 import pytest
 
+from global_medicines_atlas import (
+    pbs_uri_review_packet_reconciler as uri_reconciler,
+)
 from global_medicines_atlas.pbs_uri_review_packet_reconciler import (
     PACKET_FILENAME,
     ReconciliationError,
@@ -132,6 +135,64 @@ def _reconcile(
         expected_commit=COMMIT,
         expected_uri_receipt_sha256=digest,
     )
+
+
+def _refresh_uri_receipt(
+    inputs: tuple[Path, Path, str, dict[str, Any]],
+) -> tuple[Path, Path, str, dict[str, Any]]:
+    packet, receipt, _, report = inputs
+    receipt.write_text(
+        json.dumps(_seal(report), sort_keys=True, indent=2) + "\n"
+    )
+    return (
+        packet,
+        receipt,
+        hashlib.sha256(receipt.read_bytes()).hexdigest(),
+        report,
+    )
+
+
+def _mutate_pinned_packet(
+    inputs: tuple[Path, Path, str, dict[str, Any]],
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+) -> tuple[Path, Path, str, dict[str, Any]]:
+    packet_path, receipt_path, _, uri_report = inputs
+    envelope = json.loads(packet_path.read_text())
+    packet = envelope["report"]
+    cases = packet["cases"]
+    if mutation == "not_list":
+        packet["cases"] = None
+    elif mutation == "wrong_count":
+        packet["cases"] = cases[:-1]
+    elif mutation == "not_mapping":
+        cases[0] = None
+    elif mutation == "invalid_id":
+        cases[0]["case_id"] = "bad"
+    elif mutation == "duplicate_id":
+        cases[1]["case_id"] = cases[0]["case_id"]
+    elif mutation == "missing_occurrence":
+        cases[0].pop("reference_occurrence")
+    elif mutation == "semantic_escalation":
+        cases[0]["semantic_relationship_qualified"] = True
+    elif mutation == "target_meaning":
+        cases[0]["target_type_meaning"] = "medicine"
+    elif mutation == "adjudication":
+        cases[0]["adjudication"] = "accepted"
+    elif mutation == "missing_source":
+        packet.pop("source")
+    sealed = _seal(packet)
+    packet_path.write_text(json.dumps(sealed, sort_keys=True, indent=2) + "\n")
+    packet_digest = hashlib.sha256(packet_path.read_bytes()).hexdigest()
+    monkeypatch.setattr(uri_reconciler, "PACKET_SHA256", packet_digest)
+    monkeypatch.setattr(
+        uri_reconciler, "PACKET_REPORT_SHA256", sealed["report_sha256"]
+    )
+    binding = uri_report["review_packet_binding"]
+    binding["packet_file_sha256"] = packet_digest
+    uri_report = _seal(uri_report)["report"]
+    inputs = (packet_path, receipt_path, inputs[2], uri_report)
+    return _refresh_uri_receipt(inputs)
 
 
 def test_reconciles_all_cases_to_value_free_pending_structural_packet(
@@ -308,3 +369,250 @@ def test_never_overwrites_existing_derived_packet(tmp_path: Path):
     with pytest.raises(ReconciliationError, match="existing output"):
         write_new_envelope({"report": {}, "report_sha256": "0" * 64}, target)
     assert target.read_text() == "keep"
+
+
+def test_writes_new_derived_packet(tmp_path: Path):
+    target = tmp_path / "nested" / "derived.json"
+    envelope = _seal({"status": "value_free"})
+    write_new_envelope(envelope, target)
+    assert json.loads(target.read_text()) == envelope
+
+
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        ("not-json", "input envelope cannot be read"),
+        ("[]", "input envelope shape is invalid"),
+        ('{"report": []}', "input envelope shape is invalid"),
+        (
+            '{"report": {}, "report_sha256": "bad"}',
+            "canonical report digest is missing",
+        ),
+    ],
+)
+def test_load_envelope_rejects_malformed_inputs(
+    tmp_path: Path, payload: str, message: str
+):
+    path = tmp_path / "envelope.json"
+    path.write_text(payload)
+    with pytest.raises(ReconciliationError, match=message):
+        uri_reconciler._load_envelope(path)  # pyright: ignore[reportPrivateUsage]
+
+
+def test_load_envelope_rejects_missing_file(tmp_path: Path):
+    with pytest.raises(
+        ReconciliationError, match="input envelope cannot be read"
+    ):
+        uri_reconciler._load_envelope(  # pyright: ignore[reportPrivateUsage]
+            tmp_path / "missing.json"
+        )
+
+
+def test_report_digest_rejects_non_json_value():
+    with pytest.raises(ReconciliationError, match="not canonical JSON data"):
+        uri_reconciler._canonical_report_digest(  # pyright: ignore[reportPrivateUsage]
+            {"bad": object()}
+        )
+
+
+@pytest.mark.parametrize(
+    ("mapping", "key", "value", "message"),
+    [
+        (None, "status", "passed", "status does not match"),
+        ({}, "status", "passed", "status does not match"),
+    ],
+)
+def test_required_rejects_invalid_mapping(
+    mapping: Any, key: str, value: Any, message: str
+):
+    with pytest.raises(ReconciliationError, match=message):
+        uri_reconciler._required(  # pyright: ignore[reportPrivateUsage]
+            mapping, key, value, "status"
+        )
+
+
+@pytest.mark.parametrize(
+    ("argument", "message"),
+    [
+        ("run", "expected run ID is invalid"),
+        ("commit", "expected commit is invalid"),
+        ("digest", "expected URI receipt digest is invalid"),
+    ],
+)
+def test_rejects_invalid_expected_arguments(
+    tmp_path: Path, argument: str, message: str
+):
+    inputs = _inputs(tmp_path)
+    packet, receipt, digest, _ = inputs
+    kwargs: dict[str, str] = {
+        "expected_run_id": RUN_ID,
+        "expected_commit": COMMIT,
+        "expected_uri_receipt_sha256": digest,
+    }
+    if argument == "run":
+        kwargs["expected_run_id"] = "not-a-run"
+    elif argument == "commit":
+        kwargs["expected_commit"] = "bad"
+    else:
+        kwargs["expected_uri_receipt_sha256"] = "bad"
+    with pytest.raises(ReconciliationError, match=message):
+        reconcile_uri_review_packet(packet, receipt, **kwargs)
+
+
+def test_rejects_wrong_packet_filename(tmp_path: Path):
+    inputs = _inputs(tmp_path)
+    packet, receipt, digest, _ = inputs
+    wrong_name = tmp_path / "other-packet.json"
+    shutil.copyfile(packet, wrong_name)
+    with pytest.raises(ReconciliationError, match="packet filename"):
+        reconcile_uri_review_packet(
+            wrong_name,
+            receipt,
+            expected_run_id=RUN_ID,
+            expected_commit=COMMIT,
+            expected_uri_receipt_sha256=digest,
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("not_list", "packet case count differs"),
+        ("wrong_count", "packet case count differs"),
+        ("not_mapping", "packet case shape is invalid"),
+        ("invalid_id", "packet case identity is invalid"),
+        ("duplicate_id", "packet case identity is duplicated"),
+        ("missing_occurrence", "packet case identity is duplicated"),
+        ("semantic_escalation", "packet semantic state is escalated"),
+        ("target_meaning", "packet target meaning is not unresolved"),
+        ("adjudication", "packet case is not unreviewed"),
+        ("missing_source", "pinned packet source binding is missing"),
+    ],
+)
+def test_rejects_invalid_pinned_packet_cases(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    mutation: str,
+    message: str,
+):
+    inputs = _mutate_pinned_packet(_inputs(tmp_path), monkeypatch, mutation)
+    packet, receipt, digest, _ = inputs
+    with pytest.raises(ReconciliationError, match=message):
+        reconcile_uri_review_packet(
+            packet,
+            receipt,
+            expected_run_id=RUN_ID,
+            expected_commit=COMMIT,
+            expected_uri_receipt_sha256=digest,
+        )
+
+
+@pytest.mark.parametrize(
+    ("location", "mutation", "message"),
+    [
+        ("binding", "missing", "URI case binding is missing"),
+        ("binding", "not_mapping", "URI case binding is missing"),
+        ("qualification", "missing", "URI case binding is missing"),
+        ("qualification", "not_mapping", "URI case binding is missing"),
+        ("rows", "not_list", "URI case binding count differs"),
+        ("rows", "wrong_count", "URI case binding count differs"),
+    ],
+)
+def test_rejects_missing_uri_case_binding_structures(
+    tmp_path: Path,
+    location: str,
+    mutation: str,
+    message: str,
+):
+    inputs = _inputs(tmp_path)
+    packet, receipt, _, report = inputs
+    if location == "binding":
+        if mutation == "missing":
+            report.pop("review_packet_binding")
+        else:
+            report["review_packet_binding"] = None
+    elif location == "qualification":
+        if mutation == "missing":
+            report.pop("qualification")
+        else:
+            report["qualification"] = None
+    elif mutation == "not_list":
+        report["qualification"]["review_case_uri_bindings"] = None
+    else:
+        report["qualification"]["review_case_uri_bindings"].pop()
+    refreshed = _refresh_uri_receipt((packet, receipt, inputs[2], report))
+    packet, receipt, digest, _ = refreshed
+    with pytest.raises(ReconciliationError, match=message):
+        reconcile_uri_review_packet(
+            packet,
+            receipt,
+            expected_run_id=RUN_ID,
+            expected_commit=COMMIT,
+            expected_uri_receipt_sha256=digest,
+        )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("not_mapping", "URI case binding shape is invalid"),
+        ("invalid_occurrence_hash", "URI occurrence digest is invalid"),
+        ("unsupported_kind", "URI reference kind is invalid"),
+        ("mismatched_kind", "URI reference kind differs from packet"),
+        ("unsupported_role", "URI structural role is invalid"),
+        ("mismatched_role", "URI structural role differs from packet"),
+        ("invalid_reference_qname", "URI reference QName is missing"),
+        ("invalid_resolution", "URI resolution outcome is missing"),
+        ("invalid_target_hash", "URI target occurrence digest is invalid"),
+        ("invalid_target_qname", "URI target QName is invalid"),
+        ("incomplete_target", "URI target identity is incomplete"),
+    ],
+)
+def test_rejects_invalid_uri_case_rows(
+    tmp_path: Path,
+    mutation: str,
+    message: str,
+):
+    inputs = _inputs(tmp_path)
+    packet, receipt, _, report = inputs
+    rows = report["qualification"]["review_case_uri_bindings"]
+    if mutation == "not_mapping":
+        rows[0] = None
+    elif mutation == "invalid_occurrence_hash":
+        rows[0]["reference_occurrence_sha256"] = "bad"
+    elif mutation == "unsupported_kind":
+        rows[0]["reference_kind"] = "other"
+    elif mutation == "mismatched_kind":
+        rows[0]["reference_kind"] = (
+            "xlink_href"
+            if rows[0]["reference_kind"] == "rdf_resource"
+            else "rdf_resource"
+        )
+    elif mutation == "unsupported_role":
+        rows[0]["structural_role"] = "other"
+    elif mutation == "mismatched_role":
+        rows[0]["structural_role"] = (
+            "xlink_href_attribute"
+            if rows[0]["structural_role"] == "rdf_resource_attribute"
+            else "rdf_resource_attribute"
+        )
+    elif mutation == "invalid_reference_qname":
+        rows[0]["reference_element_qname"] = "invalid qname"
+    elif mutation == "invalid_resolution":
+        rows[0]["uri_resolution"] = "not-a-resolution"
+    elif mutation == "invalid_target_hash":
+        rows[0]["target_occurrence_sha256"] = "bad"
+    elif mutation == "invalid_target_qname":
+        rows[0]["target_element_qname"] = "invalid qname"
+    else:
+        rows[0]["target_element_qname"] = None
+    refreshed = _refresh_uri_receipt((packet, receipt, inputs[2], report))
+    packet, receipt, digest, _ = refreshed
+    with pytest.raises(ReconciliationError, match=message):
+        reconcile_uri_review_packet(
+            packet,
+            receipt,
+            expected_run_id=RUN_ID,
+            expected_commit=COMMIT,
+            expected_uri_receipt_sha256=digest,
+        )
