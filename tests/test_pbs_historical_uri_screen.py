@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sqlite3
 from collections.abc import Callable
 from pathlib import Path
 from types import SimpleNamespace
@@ -339,6 +340,149 @@ def test_xlink_cross_member_identifier_does_not_resolve(
 )
 def test_xlink_ncname_validation(name: str, expected_int: int) -> None:
     assert bool(xlink._NCNAME.fullmatch(name)) is bool(expected_int)
+
+
+def test_xlink_qname_and_occurrence_address_bounds(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    assert xlink._qname(f"{{{xlink.PBS_V3_NAMESPACE}}}code") == "pbs:code"
+    assert xlink._qname("{urn:foreign}code") is None
+    assert "x-unknown" not in xlink._ALLOWED_PBS_ELEMENTS
+    assert xlink._qname(f"{{{xlink.PBS_V3_NAMESPACE}}}not-allowlisted") is None
+    monkeypatch.setattr(xlink, "MAX_OCCURRENCE_ADDRESS_BYTES", 3)
+    with pytest.raises(ValueError, match="occurrence address exceeds"):
+        xlink._address_digest("four")
+
+
+def test_xlink_long_identifier_and_href_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(xlink, "MAX_LITERAL_BYTES", 3)
+    with pytest.raises(ValueError, match="identifier byte limit"):
+        _run_xlink(b'<code xml:id="long"/>', tmp_path / "identifier.jsonl")
+    with pytest.raises(ValueError, match="reference byte limit"):
+        _run_xlink(b'<code xlink:href="#long"/>', tmp_path / "href.jsonl")
+    assert not list(tmp_path.iterdir())
+
+
+def test_xlink_unallowlisted_source_or_target_abstains(
+    tmp_path: Path,
+) -> None:
+    report = _run_xlink(
+        b'<code xml:id="target"/><x-unknown xlink:href="#target"/>'
+        b'<x-unknown xml:id="unlisted"/><code xlink:href="#unlisted"/>',
+        tmp_path / "edges.jsonl",
+    )
+    assert report["candidate_edge_count"] == 0
+    assert report["abstention_counts"] == {"element_qname_not_allowlisted": 2}
+    assert (tmp_path / "edges.jsonl").read_bytes() == b""
+
+
+def test_xlink_element_and_index_storage_limits_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    monkeypatch.setattr(xlink, "MAX_ELEMENTS", 1)
+    with pytest.raises(ValueError, match="element count limit"):
+        _run_xlink(b"<code/>", tmp_path / "element-limit.jsonl")
+    monkeypatch.setattr(xlink, "MAX_ELEMENTS", 20_000_000)
+    monkeypatch.setattr(xlink, "MAX_INDEX_BYTES", 4096)
+    member = (
+        b"<root "
+        + XLINK_NS
+        + b">"
+        + b"".join(
+            f'<code xml:id="identifier-{number}"/>'.encode()
+            for number in range(4096)
+        )
+        + b"</root>"
+    )
+    with sqlite3.connect(":memory:") as index:
+        index.execute(
+            "CREATE TABLE identifiers ("
+            "literal TEXT PRIMARY KEY, occurrence_count INTEGER NOT NULL, "
+            "occurrence_sha256 TEXT NOT NULL, element_qname TEXT)"
+        )
+        with pytest.raises(ValueError, match="identifier index byte limit"):
+            xlink._build_identifier_index(member, index)
+    monkeypatch.setattr(xlink, "MAX_INDEX_BYTES", xlink.MIN_INDEX_BYTES - 1)
+    with pytest.raises(ValueError, match="minimum supported schema size"):
+        _run_xlink(b"<code/>", tmp_path / "index-minimum.jsonl")
+    assert not list(tmp_path.iterdir())
+
+
+def test_xlink_inconsistent_parser_stack_is_rejected(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        xlink,
+        "iter_xml_events",
+        lambda *_args, **_kwargs: iter([
+            ("end", SimpleNamespace(tag="root"), None)
+        ]),
+    )
+    with pytest.raises(ValueError, match="event stack is inconsistent"):
+        list(xlink._iter_member_starts(b"<root/>"))
+
+
+def test_xlink_short_write_removes_incomplete_temporary_artifact(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    real_factory = xlink.NamedTemporaryFile
+
+    class ShortWriter:
+        def __init__(self, handle: Any) -> None:
+            self.handle = handle
+            self.name = handle.name
+
+        def __enter__(self) -> ShortWriter:
+            return self
+
+        def __exit__(self, *args: Any) -> Any:
+            return self.handle.__exit__(*args)
+
+        def write(self, data: bytes) -> int:
+            self.handle.write(data[:1])
+            return len(data) - 1
+
+        def flush(self) -> None:
+            self.handle.flush()
+
+        def fileno(self) -> int:
+            return self.handle.fileno()
+
+    monkeypatch.setattr(
+        xlink,
+        "NamedTemporaryFile",
+        lambda **kwargs: ShortWriter(real_factory(**kwargs)),
+    )
+    with pytest.raises(OSError, match="write was incomplete"):
+        _run_xlink(
+            b'<code xml:id="target"/><code xlink:href="#target"/>',
+            tmp_path / "edges.jsonl",
+        )
+    assert not list(tmp_path.iterdir())
+
+
+def test_xlink_two_pass_element_count_mismatch_cleans_temporary_artifact(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    resolve = xlink._resolve_and_write
+
+    def mismatched(*args: Any, **kwargs: Any) -> Any:
+        result = resolve(*args, **kwargs)
+        return (*result[:-1], result[-1] + 1)
+
+    monkeypatch.setattr(xlink, "_resolve_and_write", mismatched)
+    with pytest.raises(ValueError, match="pass element counts differ"):
+        _run_xlink(
+            b'<code xml:id="target"/><code xlink:href="#target"/>',
+            tmp_path / "edges.jsonl",
+        )
+    assert not list(tmp_path.iterdir())
 
 
 @pytest.mark.parametrize(

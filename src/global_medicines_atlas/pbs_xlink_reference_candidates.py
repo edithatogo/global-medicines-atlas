@@ -38,6 +38,7 @@ MAX_OUTPUT_EDGES = 1_000_000
 # 200 bytes; 512 MiB accommodates that envelope while retaining a hard cap.
 MAX_OUTPUT_BYTES = 512 * 1024**2
 MAX_INDEX_BYTES = 256 * 1024**2
+MIN_INDEX_BYTES = 3 * 4096
 MAX_LITERAL_BYTES = 4096
 MAX_OCCURRENCE_ADDRESS_BYTES = 4096
 XML_ID = f"{{{XML_NAMESPACE}}}id"
@@ -341,6 +342,11 @@ def export_pbs_xlink_reference_candidates(
         ) as work:
             with closing(sqlite3.connect(Path(work) / "ids.sqlite")) as index:
                 index.execute(f"PRAGMA page_size = {4096}")
+                if MAX_INDEX_BYTES < MIN_INDEX_BYTES:
+                    raise ValueError(
+                        "PBS XLink identifier index byte limit is below "
+                        "the minimum supported schema size"
+                    )
                 index.execute(
                     f"PRAGMA max_page_count = {MAX_INDEX_BYTES // 4096}"
                 )
@@ -353,12 +359,6 @@ def export_pbs_xlink_reference_candidates(
                 first_elements, identifier_count = _build_identifier_index(
                     member, index
                 )
-                page_count = index.execute("PRAGMA page_count").fetchone()[0]
-                page_size = index.execute("PRAGMA page_size").fetchone()[0]
-                if page_count * page_size > MAX_INDEX_BYTES:
-                    raise ValueError(
-                        "PBS XLink identifier index byte limit exceeded"
-                    )
                 with NamedTemporaryFile(
                     mode="wb",
                     dir=output_path.parent,
