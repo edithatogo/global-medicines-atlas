@@ -31,6 +31,21 @@ NATIVE_DIGEST = (
 )
 REVISION = "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
 EXPECTED_NATIVE_FIELDS = 18_208_758
+SOURCE_LABEL_SIGNATURES = {
+    "brand_name_text": ("brand-name", "text"),
+    "ex_manufacturer_amount_text": (
+        "ex-manufacturer",
+        "amount",
+        "text",
+    ),
+    "copayment_amount_text": ("copayment", "amount", "text"),
+    "threshold_amount_text": ("threshold", "amount", "text"),
+    "fee_definition_amount_text": (
+        "fee-definition",
+        "amount",
+        "text",
+    ),
+}
 
 
 def _canonical_digest(value: dict[str, Any]) -> str:
@@ -46,6 +61,38 @@ def _canonical_digest(value: dict[str, Any]) -> str:
 
 def _read_json(root: Path, relative: str) -> dict[str, Any]:
     return json.loads((root / relative).read_bytes())
+
+
+def _source_label_observations(
+    inventory: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    """Summarize exact-source path labels without interpreting their values."""
+    observations = {
+        label: {
+            "interpretation_state": "native_unresolved",
+            "null_fields": 0,
+            "schema_path_count": 0,
+            "status": "source_path_label_only",
+            "value_fields": 0,
+            "native_fields": 0,
+        }
+        for label in SOURCE_LABEL_SIGNATURES
+    }
+    for row in inventory["paths"]:
+        names = [
+            segment.split("}")[-1] for segment in row["schema_path"].split("/")
+        ]
+        for label, signature in SOURCE_LABEL_SIGNATURES.items():
+            width = len(signature)
+            if any(
+                tuple(names[index : index + width]) == signature
+                for index in range(len(names) - width + 1)
+            ):
+                target = observations[label]
+                target["schema_path_count"] += 1
+                for count in ("native_fields", "value_fields", "null_fields"):
+                    target[count] += row[count]
+    return observations
 
 
 def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
@@ -196,6 +243,7 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
             date_profile["date_profile"]["developers_guide"],
             date_profile["date_profile"]["mapping_specification"],
         ],
+        "source_label_observations": _source_label_observations(inventory),
         "domains": domains,
         "scope": {
             "source_values_emitted": False,

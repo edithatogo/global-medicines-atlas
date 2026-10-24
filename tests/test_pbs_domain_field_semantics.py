@@ -61,6 +61,22 @@ def test_qualifies_only_bounded_pbs_v3_source_meanings():
     assert domains["status"]["meaning"] is None
     assert report["scope"]["complete_domain_semantics_qualified"] is False
     assert report["scope"]["source_values_emitted"] is False
+    labels = report["source_label_observations"]
+    assert {
+        label: observation["native_fields"]
+        for label, observation in labels.items()
+    } == {
+        "brand_name_text": 6_084,
+        "ex_manufacturer_amount_text": 57_922,
+        "copayment_amount_text": 2,
+        "threshold_amount_text": 2,
+        "fee_definition_amount_text": 193,
+    }
+    assert all(
+        observation["status"] == "source_path_label_only"
+        and observation["interpretation_state"] == "native_unresolved"
+        for observation in labels.values()
+    )
 
 
 def test_exact_path_inventory_rejects_status_semantic_drift(
