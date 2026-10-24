@@ -32,6 +32,26 @@ PBS_NAMESPACE = "http://schema.pbs.gov.au/"
 RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 _SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 _BAD_PERCENT = re.compile(r"%(?![0-9A-Fa-f]{2})")
+URI_SCREEN_FAILURE_CODES = frozenset({
+    "uri-value-bound",
+    "indexed-uri-bound",
+    "reference-row-bound",
+    "review-occurrence-absent",
+    "review-case-bound",
+    "review-case-binding-invalid",
+    "element-bound",
+    "member-byte-bound",
+    "xml-malformed-or-unsafe",
+})
+
+
+class UriScreenError(ValueError):
+    """A scanner-owned failure with a fixed, value-free diagnostic code."""
+
+    def __init__(self, code: str, message: str) -> None:
+        self.code = code if code in URI_SCREEN_FAILURE_CODES else "unknown"
+        super().__init__(message)
+
 
 _KINDS = {
     RDF_ABOUT: "rdf_about",
@@ -175,11 +195,15 @@ def _record_attribute(
     selected_addresses: set[str],
 ) -> None:
     if len(value) > MAX_URI_CHARS:
-        raise ValueError("PBS URI screen URI bound exceeded")
+        raise UriScreenError(
+            "uri-value-bound", "PBS URI screen URI bound exceeded"
+        )
     if attribute in {XML_ID, RDF_ABOUT, RDF_RESOURCE, XLINK_HREF}:
         index.indexed_uri_chars += len(value)
         if index.indexed_uri_chars > MAX_INDEXED_URI_CHARS:
-            raise ValueError("PBS URI screen indexed URI bound exceeded")
+            raise UriScreenError(
+                "indexed-uri-bound", "PBS URI screen indexed URI bound exceeded"
+            )
     if attribute == XML_ID:
         index.definition_counts["xml:id"] += 1
         index.definition_element_qnames[element_qname] += 1
@@ -195,7 +219,9 @@ def _record_attribute(
             index.rdf_definitions[resolved] += 1
     elif attribute in {RDF_RESOURCE, XLINK_HREF}:
         if len(index.refs) >= MAX_REFERENCE_ROWS:
-            raise ValueError("PBS URI screen reference bound exceeded")
+            raise UriScreenError(
+                "reference-row-bound", "PBS URI screen reference bound exceeded"
+            )
         occurrence = f"{element_address}/attributes/{_pointer(attribute)}"
         index.refs.append((
             attribute,
@@ -224,7 +250,10 @@ def _bind_review_cases(
         address = case.get("reference_occurrence", "")
         outcome = occurrence_outcomes.get(address)
         if outcome is None:
-            raise ValueError("PBS URI review occurrence is absent")
+            raise UriScreenError(
+                "review-occurrence-absent",
+                "PBS URI review occurrence is absent",
+            )
         bindings.append({
             "case_id": case_id,
             "reference_occurrence_sha256": hashlib.sha256(
@@ -243,7 +272,9 @@ def _review_case_addresses(
     if review_cases is None:
         return set()
     if len(review_cases) > MAX_REVIEW_CASES:
-        raise ValueError("PBS URI review case bound exceeded")
+        raise UriScreenError(
+            "review-case-bound", "PBS URI review case bound exceeded"
+        )
     addresses: set[str] = set()
     case_ids: set[str] = set()
     for case in review_cases:
@@ -257,7 +288,10 @@ def _review_case_addresses(
             or case_id in case_ids
             or address in addresses
         ):
-            raise ValueError("PBS URI review case binding is invalid")
+            raise UriScreenError(
+                "review-case-binding-invalid",
+                "PBS URI review case binding is invalid",
+            )
         case_ids.add(case_id)
         addresses.add(address)
     return addresses
@@ -291,7 +325,9 @@ def _index_member(
             continue
         index.elements += 1
         if index.elements > MAX_ELEMENTS:
-            raise ValueError("PBS URI screen element bound exceeded")
+            raise UriScreenError(
+                "element-bound", "PBS URI screen element bound exceeded"
+            )
         parent_base = base_stack[-1] if base_stack else None
         parent_override = (
             inherited_override[-1] if inherited_override else False
@@ -350,13 +386,18 @@ def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outco
     inferred as a document base.
     """
     if len(member) > MAX_MEMBER_BYTES:
-        raise ValueError("PBS URI screen member byte bound exceeded")
+        raise UriScreenError(
+            "member-byte-bound", "PBS URI screen member byte bound exceeded"
+        )
     selected_addresses = _review_case_addresses(review_cases)
     # Only bounded in-memory identities/counters survive element release.
     try:
         index = _index_member(member, progress, selected_addresses)
     except ParserSafetyError as exc:
-        raise ValueError("PBS URI screen XML is malformed or unsafe") from exc
+        raise UriScreenError(
+            "xml-malformed-or-unsafe",
+            "PBS URI screen XML is malformed or unsafe",
+        ) from exc
 
     # XML IDs are member-local anchors; retain a count so ambiguous IDs abstain.
     outcomes: dict[str, Counter[str]] = defaultdict(Counter)

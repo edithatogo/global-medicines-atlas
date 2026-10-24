@@ -16,7 +16,10 @@ from global_medicines_atlas.pbs_hosted_qualification import (
     _verified_inputs,  # ruff: ignore[import-private-name] -- reuse exact verified-input route  # pyright: ignore[reportPrivateUsage]
     failure_report,
 )
-from global_medicines_atlas.pbs_native_uri_screen import screen_pbs_native_uris
+from global_medicines_atlas.pbs_native_uri_screen import (
+    UriScreenError,
+    screen_pbs_native_uris,
+)
 
 REVIEW_PACKET = (
     Path(__file__).parents[1]
@@ -152,6 +155,8 @@ def run(exact_commit: str, output: Path) -> dict[str, Any]:
         }
     except Exception as error:
         report = failure_report(error)
+        if isinstance(error, UriScreenError):
+            report["failure_code"] = error.code
         report.update({
             "schema_id": "global-medicines-atlas.pbs-native-uri-screen",
             "schema_version": 1,

@@ -12,6 +12,8 @@ import pytest
 import yaml
 from scripts import screen_historical_pbs_uri_references as cli
 
+from global_medicines_atlas.pbs_native_uri_screen import UriScreenError
+
 COMMIT = "a" * 40
 
 
@@ -167,3 +169,52 @@ def test_existing_receipt_is_not_overwritten(tmp_path: Path):
         cli.main(["--exact-commit", COMMIT, "--output", str(output)])
     assert captured.value.code == 2
     assert output.read_text() == "existing"
+
+
+@pytest.mark.parametrize(
+    ("error", "expected_code"),
+    [
+        (
+            UriScreenError("element-bound", "private synthetic marker"),
+            "element-bound",
+        ),
+        (RuntimeError("private synthetic marker"), None),
+    ],
+)
+def test_failure_receipt_emits_only_allowlisted_scanner_code(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    error: Exception,
+    expected_code: str | None,
+):
+    inputs = SimpleNamespace(
+        context={"workflow_commit": COMMIT, "run_id": "17", "run_attempt": "1"},
+        xml=b"<synthetic/>",
+        binding=SimpleNamespace(
+            archive_payload=SimpleNamespace(sha256="b" * 64, byte_count=1),
+            member_path="synthetic.xml",
+            member_payload=SimpleNamespace(sha256="c" * 64, byte_count=12),
+        ),
+        parent=SimpleNamespace(digest=lambda: "d" * 64),
+    )
+
+    def verified(*_args: Any, **_kwargs: Any) -> Any:
+        return inputs
+
+    def review_cases(
+        _digest: str,
+    ) -> tuple[list[dict[str, str]], dict[str, Any]]:
+        return [], {"packet_case_count": 0, "packet_cases_reviewed": 0}
+
+    monkeypatch.setattr(cli, "_verified_inputs", verified)
+    monkeypatch.setattr(cli, "load_review_cases", review_cases)
+
+    def fail(*_args: Any, **_kwargs: Any) -> dict[str, Any]:
+        raise error
+
+    monkeypatch.setattr(cli, "screen_pbs_native_uris", fail)
+    output = tmp_path / "failure.json"
+    report = cli.run(COMMIT, output)
+
+    assert report.get("failure_code") == expected_code
+    assert "private synthetic marker" not in output.read_text()

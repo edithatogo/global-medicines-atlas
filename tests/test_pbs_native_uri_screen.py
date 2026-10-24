@@ -89,7 +89,9 @@ def test_binds_selected_occurrence_outcome_by_address_digest_only():
 
 def test_selected_uri_review_case_must_match_a_unique_reference_occurrence():
     member = b"<root><link/></root>"
-    with pytest.raises(ValueError, match="occurrence is absent"):
+    with pytest.raises(
+        module.UriScreenError, match="occurrence is absent"
+    ) as caught:
         screen_pbs_native_uris(
             member,
             review_cases=[
@@ -99,15 +101,21 @@ def test_selected_uri_review_case_must_match_a_unique_reference_occurrence():
                 }
             ],
         )
-    with pytest.raises(ValueError, match="binding is invalid"):
+    assert caught.value.code == "review-occurrence-absent"
+    with pytest.raises(
+        module.UriScreenError, match="binding is invalid"
+    ) as caught:
         screen_pbs_native_uris(
             member,
             review_cases=[{"case_id": "bad", "reference_occurrence": "/x"}],
         )
+    assert caught.value.code == "review-case-binding-invalid"
 
 
 def test_review_case_count_and_occurrence_address_are_bounded():
-    with pytest.raises(ValueError, match="case bound exceeded"):
+    with pytest.raises(
+        module.UriScreenError, match="case bound exceeded"
+    ) as caught:
         screen_pbs_native_uris(
             b"<root/>",
             review_cases=[
@@ -118,7 +126,10 @@ def test_review_case_count_and_occurrence_address_are_bounded():
                 for index in range(65)
             ],
         )
-    with pytest.raises(ValueError, match="binding is invalid"):
+    assert caught.value.code == "review-case-bound"
+    with pytest.raises(
+        module.UriScreenError, match="binding is invalid"
+    ) as caught:
         screen_pbs_native_uris(
             b"<root/>",
             review_cases=[
@@ -128,6 +139,7 @@ def test_review_case_count_and_occurrence_address_are_bounded():
                 }
             ],
         )
+    assert caught.value.code == "review-case-binding-invalid"
 
 
 @pytest.mark.parametrize(
@@ -263,12 +275,16 @@ def test_bounded_input_and_malformed_xml_fail_without_echoing_values(
     monkeypatch,
 ):
     monkeypatch.setattr(module, "MAX_MEMBER_BYTES", 1)
-    with pytest.raises(ValueError, match="byte bound") as caught:
+    with pytest.raises(module.UriScreenError, match="byte bound") as caught:
         screen_pbs_native_uris(b"<root/>")
+    assert caught.value.code == "member-byte-bound"
     assert "root" not in str(caught.value)
     monkeypatch.setattr(module, "MAX_MEMBER_BYTES", 100)
-    with pytest.raises(ValueError, match="XML is malformed") as caught:
+    with pytest.raises(
+        module.UriScreenError, match="XML is malformed"
+    ) as caught:
         screen_pbs_native_uris(b"<root>PRIVATE-SYNTHETIC-TOKEN")
+    assert caught.value.code == "xml-malformed-or-unsafe"
     assert "PRIVATE-SYNTHETIC-TOKEN" not in str(caught.value)
 
 
@@ -380,24 +396,31 @@ def test_uri_reference_and_indexed_character_bounds(
     monkeypatch: pytest.MonkeyPatch,
 ):
     monkeypatch.setattr(module, "MAX_URI_CHARS", 2)
-    with pytest.raises(ValueError, match="URI bound"):
+    with pytest.raises(module.UriScreenError, match="URI bound") as caught:
         screen_pbs_native_uris(
             b'<root xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><a rdf:resource="long"/></root>'
         )
+    assert caught.value.code == "uri-value-bound"
     monkeypatch.setattr(module, "MAX_URI_CHARS", 100)
     monkeypatch.setattr(module, "MAX_INDEXED_URI_CHARS", 0)
-    with pytest.raises(ValueError, match="indexed URI bound"):
+    with pytest.raises(
+        module.UriScreenError, match="indexed URI bound"
+    ) as caught:
         screen_pbs_native_uris(
             b'<root xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><a rdf:resource="x"/></root>'
         )
+    assert caught.value.code == "indexed-uri-bound"
 
 
 def test_reference_and_element_count_bounds(monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(module, "MAX_REFERENCE_ROWS", 0)
-    with pytest.raises(ValueError, match="reference bound"):
+    with pytest.raises(
+        module.UriScreenError, match="reference bound"
+    ) as caught:
         screen_pbs_native_uris(
             b'<root xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><a rdf:resource="x"/></root>'
         )
+    assert caught.value.code == "reference-row-bound"
     monkeypatch.setattr(module, "MAX_REFERENCE_ROWS", 8_000_000)
     monkeypatch.setattr(module, "MAX_ELEMENTS", 1)
     element = type("Element", (), {"tag": "root", "attrib": {}})()
@@ -408,8 +431,9 @@ def test_reference_and_element_count_bounds(monkeypatch: pytest.MonkeyPatch):
         yield "start", element, None
 
     monkeypatch.setattr(module, "iter_xml_events", over_limit_events)
-    with pytest.raises(ValueError, match="element bound"):
+    with pytest.raises(module.UriScreenError, match="element bound") as caught:
         screen_pbs_native_uris(b"<root><child/></root>")
+    assert caught.value.code == "element-bound"
 
 
 def test_parse_progress_is_coarse_and_value_free(
