@@ -130,6 +130,16 @@
   See `quality/qualifications/mbs-p7-workbook-field-lineage-20261011.json`.
   This closes exact-main storage/header/lineage requalification only; broader
   value harmonisation and source-era date qualification remain open.
+- [x] Reconcile the frozen 91-workbook header and cell-state denominators into
+  one value-free report bound to the exact package, header, P7 typed-value, and
+  era-rule receipt digests. All 91 workbook identities match; 728 header roles
+  are interpreted; all 310,177,657 non-header cells remain `native_unresolved`;
+  the separate P7 denominator records 13,742 unresolved cells. The report keeps
+  formula, error, decimal and date diagnostics orthogonal and selects no P7
+  date profile or cross-era equivalence. Focused tests (7), Ruff and
+  BasedPyright pass. This reconciles field states; it does not establish domain
+  meanings for non-header cells. See
+  `quality/qualifications/mbs-workbook-field-state-reconciliation-20261024.json`.
 
 ## Workbook value harmonisation
 

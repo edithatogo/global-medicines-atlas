@@ -1,0 +1,92 @@
+{
+  "historical_workbook_cohort": {
+    "candidate_outputs": 91,
+    "cell_values": {
+      "decimal_candidates": 154927930,
+      "denominator": 310177657,
+      "denominator_relation": "non_header_cell_values_only_header_role_denominator_not_added",
+      "interpreted": 0,
+      "missing_native_values": 2909,
+      "unavailable": 0,
+      "unresolved": 310177657
+    },
+    "header_assignments": 91,
+    "header_column_roles": {
+      "denominator": 728,
+      "denominator_relation": "separate_non_additive_header_role_occurrences",
+      "interpreted": 728,
+      "unavailable": 0,
+      "unresolved": 0,
+      "unresolved_header_candidates": 0,
+      "unresolved_header_labels": 0
+    },
+    "identity_matches": 91,
+    "unique_candidate_identities": 91,
+    "workbooks_expected": 91
+  },
+  "inputs": {
+    "header_cohort": {
+      "sha256": "5a5858e0a458c46452188a4f52ea396bf1f98c9ce3710d747dd1a58588c196f1"
+    },
+    "p7_typed": {
+      "sha256": "26b8952a41dacc2a88df23f6bd2b4c0df7cd9ba91fe29d580e0a5e46016d9929"
+    },
+    "p7_value_era_rules": {
+      "sha256": "e5703612c96b37d968fe4cce8db5831b9e9dcb7ca476febebde9eb9a12c3fe5a"
+    },
+    "package_cohort": {
+      "sha256": "3bbcc74fee209cee521ce6ee85ef87f3ed13df2d202cb1f96effb02274b48546"
+    }
+  },
+  "p7_workbook": {
+    "cell_values": {
+      "denominator": 13742,
+      "denominator_relation": "independent_source_cell_denominator_not_added_to_historical_cohort",
+      "interpreted": 0,
+      "unavailable": 0,
+      "unresolved": 13742
+    },
+    "orthogonal_diagnostics": {
+      "date_order_compatibility": {
+        "both_dmy_and_mdy_valid": 1276,
+        "dmy_only": 4,
+        "mdy_only": 0,
+        "profile_selected": false,
+        "source_values_emitted": false
+      },
+      "date_profile_selected": false,
+      "date_shaped_cells": 1280,
+      "decimal_unrepresentable": 36,
+      "diagnostics_are_additive_to_cell_state": false,
+      "error_cells": 2,
+      "formula_cells": 4,
+      "temporal_comparison_enabled": false,
+      "value_conversion_statuses": {
+        "converted": 924,
+        "header": 97,
+        "missing_value": 6080,
+        "preserved": 5321,
+        "unmapped": 4,
+        "unrepresentable": 36,
+        "unsupported_format": 1280
+      }
+    },
+    "schema_eras": {
+      "comparison_rule": "Keep native fields and row identity within their source era. Cross-era comparison requires an explicit field mapping and dated change evidence; shared labels alone do not establish equivalence.",
+      "current_xml": "mbs-xml-v3-2025-07",
+      "historical_workbook": "mbs-p7-2024-07-headers-v1"
+    },
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+  },
+  "schema_id": "global-medicines-atlas.mbs-workbook-field-state-reconciliation",
+  "schema_version": 1,
+  "semantic_boundaries": {
+    "benefit_currency_qualified": false,
+    "cross_era_equivalence_qualified": false,
+    "historical_workbook_non_header_domain_meanings_qualified": false,
+    "new_sources_added": false,
+    "p7_date_convention_selected": false,
+    "source_values_emitted": false
+  },
+  "status": "field_states_reconciled_with_semantic_limits"
+}
