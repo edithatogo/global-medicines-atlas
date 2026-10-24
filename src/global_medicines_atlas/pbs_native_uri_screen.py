@@ -6,6 +6,7 @@ values, literals, payload excerpts, external targets, or semantic edges.
 
 from __future__ import annotations
 
+import hashlib
 import re
 from collections import Counter, defaultdict
 from collections.abc import Callable
@@ -147,7 +148,9 @@ def _safe_qname(name: str) -> str:
 class _ScreenIndex:
     rdf_definitions: Counter[str] = field(default_factory=Counter)
     xml_ids: Counter[str] = field(default_factory=Counter)
-    refs: list[tuple[str, str, str | None, bool]] = field(default_factory=list)
+    refs: list[tuple[str, str, str | None, bool, str | None]] = field(
+        default_factory=list
+    )
     definition_counts: Counter[str] = field(default_factory=Counter)
     definition_element_qnames: Counter[str] = field(default_factory=Counter)
     predicate_qnames: Counter[str] = field(default_factory=Counter)
@@ -166,6 +169,8 @@ def _record_attribute(
     *,
     has_base_override: bool,
     element_qname: str,
+    element_address: str,
+    selected_addresses: set[str],
 ) -> None:
     if len(value) > MAX_URI_CHARS:
         raise ValueError("PBS URI screen URI bound exceeded")
@@ -189,18 +194,79 @@ def _record_attribute(
     elif attribute in {RDF_RESOURCE, XLINK_HREF}:
         if len(index.refs) >= MAX_REFERENCE_ROWS:
             raise ValueError("PBS URI screen reference bound exceeded")
-        index.refs.append((attribute, value, effective_base, has_base_override))
+        occurrence = f"{element_address}/attributes/{_pointer(attribute)}"
+        index.refs.append((
+            attribute,
+            value,
+            effective_base,
+            has_base_override,
+            occurrence if occurrence in selected_addresses else None,
+        ))
         index.reference_element_qnames[element_qname] += 1
         index.reference_attribute_qnames[_QNAME[attribute]] += 1
+
+
+def _pointer(value: str) -> str:
+    return value.replace("~", "~0").replace("/", "~1")
+
+
+def _bind_review_cases(
+    review_cases: list[dict[str, str]] | None,
+    occurrence_outcomes: dict[str, str],
+) -> list[dict[str, Any]]:
+    if review_cases is None:
+        return []
+    bindings: list[dict[str, Any]] = []
+    for case in review_cases:
+        case_id = case.get("case_id", "")
+        address = case.get("reference_occurrence", "")
+        outcome = occurrence_outcomes.get(address)
+        if outcome is None:
+            raise ValueError("PBS URI review occurrence is absent")
+        bindings.append({
+            "case_id": case_id,
+            "reference_occurrence_sha256": hashlib.sha256(
+                address.encode("utf-8")
+            ).hexdigest(),
+            "uri_resolution": outcome,
+            "adjudication": "unreviewed",
+            "semantic_relationship_qualified": False,
+        })
+    return bindings
+
+
+def _review_case_addresses(
+    review_cases: list[dict[str, str]] | None,
+) -> set[str]:
+    if review_cases is None:
+        return set()
+    addresses: set[str] = set()
+    case_ids: set[str] = set()
+    for case in review_cases:
+        case_id = case.get("case_id", "")
+        address = case.get("reference_occurrence", "")
+        if (
+            re.fullmatch(r"[0-9a-f]{64}", case_id) is None
+            or not address
+            or case_id in case_ids
+            or address in addresses
+        ):
+            raise ValueError("PBS URI review case binding is invalid")
+        case_ids.add(case_id)
+        addresses.add(address)
+    return addresses
 
 
 def _index_member(
     member: bytes,
     progress: Callable[[str, int, int], None] | None,
+    selected_addresses: set[str],
 ) -> _ScreenIndex:
     index = _ScreenIndex()
     base_stack: list[str | None] = []
     inherited_override: list[bool] = []
+    address_stack: list[str] = []
+    child_counts: list[Counter[str]] = []
     policy = ParserPolicy(
         max_bytes=MAX_MEMBER_BYTES,
         max_xml_depth=256,
@@ -214,6 +280,8 @@ def _index_member(
             element.clear()
             base_stack.pop()
             inherited_override.pop()
+            address_stack.pop()
+            child_counts.pop()
             continue
         index.elements += 1
         if index.elements > MAX_ELEMENTS:
@@ -223,10 +291,18 @@ def _index_member(
             inherited_override[-1] if inherited_override else False
         )
         has_override = XML_BASE in element.attrib
+        if parent is None:
+            element_address = f"/{_pointer(element.tag)}/1"
+        else:
+            counts = child_counts[-1]
+            counts[element.tag] += 1
+            element_address = f"{address_stack[-1]}/{_pointer(element.tag)}/{counts[element.tag]}"
         effective = _effective_base(parent_base, element.attrib.get(XML_BASE))
         base_stack.append(effective)
         effective_override = parent_override or has_override
         inherited_override.append(effective_override)
+        address_stack.append(element_address)
+        child_counts.append(Counter())
         if parent is not None and (
             parent.tag == f"{{{RDF_NAMESPACE}}}Description"
             or RDF_ABOUT in parent.attrib
@@ -241,6 +317,8 @@ def _index_member(
                 effective,
                 has_base_override=effective_override,
                 element_qname=element_qname,
+                element_address=element_address,
+                selected_addresses=selected_addresses,
             )
         if progress is not None and index.elements % 100_000 == 0:
             progress(
@@ -255,6 +333,7 @@ def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outco
     member: bytes,
     *,
     progress: Callable[[str, int, int], None] | None = None,
+    review_cases: list[dict[str, str]] | None = None,
 ) -> dict[str, Any]:
     """Screen one XML member using strict, in-memory URI resolution.
 
@@ -266,16 +345,18 @@ def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outco
     """
     if len(member) > MAX_MEMBER_BYTES:
         raise ValueError("PBS URI screen member byte bound exceeded")
+    selected_addresses = _review_case_addresses(review_cases)
     # Only bounded in-memory identities/counters survive element release.
     try:
-        index = _index_member(member, progress)
+        index = _index_member(member, progress, selected_addresses)
     except ParserSafetyError as exc:
         raise ValueError("PBS URI screen XML is malformed or unsafe") from exc
 
     # XML IDs are member-local anchors; retain a count so ambiguous IDs abstain.
     outcomes: dict[str, Counter[str]] = defaultdict(Counter)
     qname_outcomes: dict[str, Counter[str]] = defaultdict(Counter)
-    for kind, value, effective, has_override in index.refs:
+    occurrence_outcomes: dict[str, str] = {}
+    for kind, value, effective, has_override, address in index.refs:
         if kind == XLINK_HREF and value.startswith("#") and len(value) > 1:
             fragment = value[1:]
             if has_override:
@@ -318,6 +399,10 @@ def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outco
         label = _KINDS[kind]
         outcomes[label][outcome] += 1
         qname_outcomes[_QNAME[kind]][outcome] += 1
+        if address is not None:
+            occurrence_outcomes[address] = outcome
+
+    case_bindings = _bind_review_cases(review_cases, occurrence_outcomes)
 
     if progress is not None:
         progress("pbs-uri-screen-classify", 1, len(index.refs))
@@ -369,4 +454,8 @@ def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outco
         "admissions": 0,
         "publications": 0,
         "canaries": 0,
+        "review_case_uri_bindings": case_bindings,
+        "review_case_count": len(case_bindings),
+        "review_cases_adjudicated": 0,
+        "review_case_sampling_is_probability_based": False,
     }

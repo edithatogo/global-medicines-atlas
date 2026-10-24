@@ -1,5 +1,6 @@
 """Synthetic coverage for strict, aggregate-only PBS URI resolution."""
 
+import hashlib
 import json
 
 import pytest
@@ -51,6 +52,58 @@ def test_resolves_only_defensible_absolute_rdf_and_bare_member_fragments():
         "rdf:resource": 3,
         "xlink:href": 3,
     }
+
+
+def test_binds_selected_occurrence_outcome_by_address_digest_only():
+    member = b"""<pbs:root xmlns:pbs="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <pbs:target rdf:about="https://synthetic.example/target"/>
+      <pbs:link rdf:resource="https://synthetic.example/target"/>
+    </pbs:root>"""
+    address = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/1/"
+        "{http:~1~1schema.pbs.gov.au~1}link/1/attributes/"
+        "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource"
+    )
+    case_id = "a" * 64
+    report = screen_pbs_native_uris(
+        member,
+        review_cases=[{"case_id": case_id, "reference_occurrence": address}],
+    )
+    assert report["review_case_uri_bindings"] == [
+        {
+            "case_id": case_id,
+            "reference_occurrence_sha256": hashlib.sha256(
+                address.encode()
+            ).hexdigest(),
+            "uri_resolution": "absolute_uri_unique_candidate",
+            "adjudication": "unreviewed",
+            "semantic_relationship_qualified": False,
+        }
+    ]
+    assert address not in json.dumps(report)
+    assert "https://synthetic.example" not in json.dumps(report)
+    assert report["review_cases_adjudicated"] == 0
+    assert report["review_case_sampling_is_probability_based"] is False
+
+
+def test_selected_uri_review_case_must_match_a_unique_reference_occurrence():
+    member = b"<root><link/></root>"
+    with pytest.raises(ValueError, match="occurrence is absent"):
+        screen_pbs_native_uris(
+            member,
+            review_cases=[
+                {
+                    "case_id": "a" * 64,
+                    "reference_occurrence": "/root/1/link/1/attributes/missing",
+                }
+            ],
+        )
+    with pytest.raises(ValueError, match="binding is invalid"):
+        screen_pbs_native_uris(
+            member,
+            review_cases=[{"case_id": "bad", "reference_occurrence": "/x"}],
+        )
 
 
 @pytest.mark.parametrize(

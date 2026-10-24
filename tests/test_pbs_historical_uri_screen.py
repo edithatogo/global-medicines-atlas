@@ -41,6 +41,16 @@ def test_workflow_dispatch_is_separate_and_exact_main_gated():
     assert "screen_historical_pbs_references.py" not in step["run"]
 
 
+def test_pinned_review_packet_has_46_unreviewed_cases_for_same_member():
+    cases, binding = cli.load_review_cases(
+        "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+    )
+    assert len(cases) == binding["packet_case_count"] == 46
+    assert binding["packet_cases_reviewed"] == 0
+    assert len(binding["packet_file_sha256"]) == 64
+    assert all(len(case["case_id"]) == 64 for case in cases)
+
+
 def test_script_uses_verified_member_route_and_retains_aggregate_only(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):
@@ -65,9 +75,18 @@ def test_script_uses_verified_member_route_and_retains_aggregate_only(
         return inputs
 
     def screen(
-        member: bytes, *, progress: Callable[[str, int, int], None]
+        member: bytes,
+        *,
+        progress: Callable[[str, int, int], None],
+        review_cases: list[dict[str, str]],
     ) -> dict[str, Any]:
         assert member is inputs.xml
+        assert review_cases == [
+            {
+                "case_id": "e" * 64,
+                "reference_occurrence": "/synthetic/occurrence",
+            }
+        ]
         progress("pbs-uri-screen-parse", 1, 1)
         return {
             "schema_id": "global-medicines-atlas.pbs-native-uri-screen",
@@ -90,6 +109,19 @@ def test_script_uses_verified_member_route_and_retains_aggregate_only(
 
     monkeypatch.setattr(cli, "_verified_inputs", verified)
     monkeypatch.setattr(cli, "screen_pbs_native_uris", screen)
+    monkeypatch.setattr(
+        cli,
+        "load_review_cases",
+        lambda _digest: (
+            [
+                {
+                    "case_id": "e" * 64,
+                    "reference_occurrence": "/synthetic/occurrence",
+                }
+            ],
+            {"packet_case_count": 1, "packet_cases_reviewed": 0},
+        ),
+    )
     output = tmp_path / "receipt.json"
     report = cli.run(COMMIT, output)
 
@@ -105,6 +137,7 @@ def test_script_uses_verified_member_route_and_retains_aggregate_only(
     assert report["source_receipt_file_sha256"] == cli.RECEIPT.sha256
     assert report["qualification"]["semantic_relationships_qualified"] is False
     assert report["qualification"]["external_targets_fetched"] == 0
+    assert report["review_packet_binding"]["packet_case_count"] == 1
     assert report["source_values_emitted"] is False
     assert report["admissions_created"] == report["canaries_performed"] == 0
     assert report["new_sources_added"] == 0
