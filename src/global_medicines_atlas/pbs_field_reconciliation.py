@@ -83,6 +83,10 @@ REFERENCE_CONTEXT_SCHEMA_VERSION = 3
 REFERENCE_CONTEXT_EXAMPLE_POLICY = (
     "up_to_five_value_free_examples_per_structural_stratum"
 )
+REFERENCE_CONTEXT_EXAMPLE_POLICIES = {
+    REFERENCE_CONTEXT_EXAMPLE_POLICY,
+    "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets",
+}
 DOMAIN_REPORT_SHA256 = (
     "6999155565770f6112385705ba22b6b819db51508d352b3d16330ec8077c8a72"
 )
@@ -299,7 +303,7 @@ def _context_screen_matches(
     return (
         context_screen["schema_version"] == schema_version
         and context_screen["example_selection_policy"]
-        == REFERENCE_CONTEXT_EXAMPLE_POLICY
+        in REFERENCE_CONTEXT_EXAMPLE_POLICIES
         and context_screen["reference_occurrences"] == REFERENCE_FIELDS
         and all(context_screen[flag] is False for flag in diagnostic_flags)
         and context_screen["external_targets_fetched"] == 0

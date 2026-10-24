@@ -40,6 +40,10 @@ REFERENCE_CONTEXT_ENRICHED_VERSION = 3
 REFERENCE_CONTEXT_EXAMPLE_POLICY = (
     "up_to_five_value_free_examples_per_structural_stratum"
 )
+REFERENCE_CONTEXT_EXAMPLE_POLICIES = {
+    REFERENCE_CONTEXT_EXAMPLE_POLICY,
+    "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets",
+}
 STATUSES = {
     "ambiguous_exact_literal",
     "empty_literal",
@@ -413,7 +417,7 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
             REFERENCE_CONTEXT_ENRICHED_VERSION,
         }
         and mapping["example_selection_policy"]
-        != REFERENCE_CONTEXT_EXAMPLE_POLICY
+        not in REFERENCE_CONTEXT_EXAMPLE_POLICIES
     ):
         raise ValueError("PBS reference context contract differs")
     if not isinstance(strata, list):
