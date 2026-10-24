@@ -720,7 +720,9 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
         rules["evidence"]["calendar_profile"]["path"] = "other.json"
     elif case == "p7_state_totals":
         typed["typed_candidate_package"]["coverage"]["interpreted_cells"] = 87
-        typed["typed_candidate_package"]["coverage"]["unresolved_cells"] = 13_655
+        typed["typed_candidate_package"]["coverage"]["unresolved_cells"] = (
+            13_655
+        )
     with pytest.raises((TypeError, ValueError), match=message):
         reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
