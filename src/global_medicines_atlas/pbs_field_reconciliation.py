@@ -24,11 +24,11 @@ SCREEN = (
 )
 REFERENCE_SCREEN = (
     "quality/qualifications/"
-    "pbs-native-reference-screen-20261024-40076190245.json"
+    "pbs-native-reference-screen-20261025-40103169910.json"
 )
 CONTEXT_SCREEN = (
     "quality/qualifications/"
-    "pbs-native-reference-screen-20261024-40091358786.json"
+    "pbs-native-reference-screen-20261025-40103169910.json"
 )
 DOMAIN = "quality/qualifications/pbs-domain-field-semantics-20261023.json"
 FIELD_STATE = (
@@ -36,7 +36,11 @@ FIELD_STATE = (
 )
 REFERENCE_REVIEW = (
     "quality/qualifications/"
-    "pbs-native-reference-meaning-review-20261024-40076190245.json"
+    "pbs-native-reference-meaning-review-20261025-40103169910.json"
+)
+REFERENCE_PACKET = (
+    "quality/qualifications/"
+    "pbs-native-reference-review-packet-20261025-40103169910.json"
 )
 PACKAGE_SHA256 = (
     "769a1d88ab52d6ed9ab08d07ce7d7b433dd7f9034e6b501ad30198a9b6e59202"
@@ -45,19 +49,25 @@ SCREEN_SHA256 = (
     "a1adda4e946365b98bf3febc03b9ae51acdae6db1569c7fc6606f8892c7ae48e"
 )
 REFERENCE_SCREEN_SHA256 = (
-    "570cc803a6657e421dc614855fe75013440f716dd3ff1d0096232c08ae363711"
+    "62a01d660dc8e59bcef39768f64a9deda10bc5a58ae899e3f138ec2816862722"
 )
 CONTEXT_SCREEN_SHA256 = (
-    "5bcc25fef1ad5a1a68a05fdc943f5b96e89848b56d5b6c506e9cba49d3b9db37"
+    "7f223a138a89064c4dbdaad375174f5584cd0de1871dc34735167a3d670fe688"
 )
 CONTEXT_SCREEN_FILE_SHA256 = (
-    "1bed1a970d599e2bf8cc422352bced094c9568afd4776930b9df2a01d0273313"
+    "62a01d660dc8e59bcef39768f64a9deda10bc5a58ae899e3f138ec2816862722"
 )
 FIELD_STATE_SHA256 = (
     "2f35eebe45c0326dc80e76c461b0a8af23585923479cec8b74dcb9de5019120d"
 )
 REFERENCE_REVIEW_SHA256 = (
-    "9c15cbfd8fb12b7078caf3c61411eb77df24a139b4cc27851c1abad2ca458084"
+    "f8fd02dfdb1212ab35f8e60d7c449243398bdd0a706e5e96f08733293a79218d"
+)
+REFERENCE_PACKET_SHA256 = (
+    "c38840116e821dffe5b06e5df14b1d7140f9e4446fbf8c14ea009a9e8b732829"
+)
+REFERENCE_PACKET_REPORT_SHA256 = (
+    "885960352dcee9e70f12ac3aa843d5129b75a2c44b16263835ff5bc7b57a5c6b"
 )
 SUPERSEDED_REPORT = (
     "quality/qualifications/"
@@ -66,10 +76,10 @@ SUPERSEDED_REPORT = (
 SUPERSEDED_REPORT_SHA256 = (
     "d897b164aaf3f5524ed5cdddaac36a33c88bd0153f94464c65a78408c0dd94ca"
 )
-SCREEN_RUN_ID = "40076190245"
-SCREEN_WORKFLOW_COMMIT = "b3139f9c655f48ccbb7a1714712219ac2281d838"
-CONTEXT_SCREEN_RUN_ID = "40091358786"
-CONTEXT_SCREEN_WORKFLOW_COMMIT = "a198ffff88531f06a34e4f237af6d55dfc74260a"
+SCREEN_RUN_ID = "40103169910"
+SCREEN_WORKFLOW_COMMIT = "83465c87d5952e123cedd93a02b1ec9b4daa4eb4"
+CONTEXT_SCREEN_RUN_ID = "40103169910"
+CONTEXT_SCREEN_WORKFLOW_COMMIT = "83465c87d5952e123cedd93a02b1ec9b4daa4eb4"
 CONTEXT_SCREEN_SOURCE_RECEIPT_SHA256 = (
     "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1"
 )
@@ -80,6 +90,7 @@ REFERENCE_STATUS_COUNTS = {
     "unique_exact_literal": 2_086_489,
 }
 REFERENCE_CONTEXT_SCHEMA_VERSION = 3
+REFERENCE_CONTEXT_EXAMPLES_EMITTED = 46
 REFERENCE_CONTEXT_EXAMPLE_POLICY = (
     "up_to_five_value_free_examples_per_structural_stratum"
 )
@@ -370,6 +381,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     context_screen_path = root / CONTEXT_SCREEN
     field_state_path = root / FIELD_STATE
     reference_review_path = root / REFERENCE_REVIEW
+    reference_packet_path = root / REFERENCE_PACKET
     domain_path = root / DOMAIN
     package_sha = _file_sha256(package_path)
     screen_sha = _file_sha256(screen_path)
@@ -377,6 +389,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     context_screen_file_sha = _file_sha256(context_screen_path)
     field_state_sha = _file_sha256(field_state_path)
     reference_review_sha = _file_sha256(reference_review_path)
+    reference_packet_sha = _file_sha256(reference_packet_path)
     superseded_report_sha = _file_sha256(root / SUPERSEDED_REPORT)
     digest_pairs = (
         (package_sha, PACKAGE_SHA256),
@@ -384,6 +397,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         (reference_screen_sha, REFERENCE_SCREEN_SHA256),
         (field_state_sha, FIELD_STATE_SHA256),
         (reference_review_sha, REFERENCE_REVIEW_SHA256),
+        (reference_packet_sha, REFERENCE_PACKET_SHA256),
         (superseded_report_sha, SUPERSEDED_REPORT_SHA256),
     )
     if any(actual != expected for actual, expected in digest_pairs):
@@ -423,7 +437,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         and context_payload["schema_version"]
         == REFERENCE_CONTEXT_SCHEMA_VERSION
         and context_reference["payload_sha256"]
-        == "85b46210cc982c21f317cb6e5b1e64306ed166add87083c1d8f19d177521f5a2"
+        == "8aa9c594b881c478a177e803a886ad591ae93ec9d965f4ba629ac58dd5902e34"
         and _context_screen_matches(
             context_payload, schema_version=REFERENCE_CONTEXT_SCHEMA_VERSION
         )
@@ -443,12 +457,15 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         raise ValueError("PBS source-context screen receipt differs")
     context_sample = _context_sample_summary(context_payload)
     if context_sample != {
-        "examples_emitted": 61,
-        "no_exact_literal": 52,
-        "unique_exact_literal": 9,
-        "sampled_reference_kind_counts": {"rdf_resource": 61},
-        "distinct_predicate_qname_count": 2,
-        "nearest_subject_elements": 0,
+        "examples_emitted": 46,
+        "no_exact_literal": 11,
+        "unique_exact_literal": 35,
+        "sampled_reference_kind_counts": {
+            "rdf_resource": 29,
+            "xlink_href": 17,
+        },
+        "distinct_predicate_qname_count": 17,
+        "nearest_subject_elements": 8,
     }:
         raise ValueError("PBS source-context sample summary differs")
     native = json.loads(field_state_path.read_bytes())
@@ -484,6 +501,14 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     screen_qualification = screen_report["qualification"]
     reference_envelope = json.loads(reference_review_path.read_bytes())
     reference_review = reference_envelope["report"]
+    packet_envelope = json.loads(reference_packet_path.read_bytes())
+    reference_packet = packet_envelope["report"]
+    packet_canonical = json.dumps(
+        reference_packet,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
     screen_kind_counts = screen_qualification["reference_kind_counts"]
     screen_kind_status_counts = screen_qualification[
         "reference_kind_status_counts"
@@ -564,8 +589,45 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         reference_review["scope"]["semantic_relationships_qualified"] is False,
         isinstance(review_context_screen, dict)
         and _context_screen_matches(
-            cast("dict[str, Any]", review_context_screen), schema_version=2
+            cast("dict[str, Any]", review_context_screen),
+            schema_version=REFERENCE_CONTEXT_SCHEMA_VERSION,
         ),
+        hashlib.sha256(packet_canonical).hexdigest()
+        == packet_envelope["report_sha256"]
+        == REFERENCE_PACKET_REPORT_SHA256,
+        reference_packet["source"]["screen_receipt_sha256"]
+        == reference_screen_sha,
+        reference_packet["source"]["screen_run_id"] == SCREEN_RUN_ID,
+        reference_packet["source"]["screen_workflow_commit"]
+        == SCREEN_WORKFLOW_COMMIT,
+        reference_packet["screen_denominator"] == REFERENCE_FIELDS,
+        reference_packet["status"]
+        == "source_context_examples_unreviewed_semantic_links_unqualified",
+        reference_packet["sampling_method"]
+        == "deterministic source-order examples within context strata; not a probability sample",
+        reference_packet["context_examples_emitted"]
+        == REFERENCE_CONTEXT_EXAMPLES_EMITTED,
+        reference_packet["context_examples_omitted"]
+        == REFERENCE_FIELDS - REFERENCE_CONTEXT_EXAMPLES_EMITTED,
+        len(reference_packet["cases"]) == REFERENCE_CONTEXT_EXAMPLES_EMITTED,
+        reference_packet["candidate_occurrences_by_category"]
+        == {
+            "no_target_negative_control": 73_577,
+            "unique_fragment_literal_candidate": 992_456,
+            "unique_literal_candidate_requires_uri_review": 1_094_033,
+        },
+        reference_packet["scope"]["new_sources"] == 0,
+        reference_packet["scope"]["new_admissions"] == 0,
+        reference_packet["scope"]["publications"] == 0,
+        reference_packet["scope"]["consumer_canaries"] == 0,
+        reference_packet["scope"]["raw_source_emitted"] is False,
+        reference_packet["scope"]["source_values_emitted"] is False,
+        all(
+            case["adjudication"] == "unreviewed"
+            and case["semantic_relationship_qualified"] is False
+            for case in reference_packet["cases"]
+        ),
+        reference_packet["scope"]["semantic_relationships_qualified"] is False,
     )):
         raise ValueError("PBS source-local reference review differs")
 
@@ -824,6 +886,14 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         },
         "source_local_reference_review": {
             "report_sha256": reference_envelope["report_sha256"],
+            "review_packet": {
+                "path": REFERENCE_PACKET,
+                "file_sha256": reference_packet_sha,
+                "report_sha256": packet_envelope["report_sha256"],
+                "cases": len(reference_packet["cases"]),
+                "adjudicated_cases": 0,
+                "semantic_relationships_qualified": False,
+            },
             "reference_role_field_count": role_counts["references"],
             "screen_reference_denominator": reference_review[
                 "exact_source_screen"
@@ -867,9 +937,10 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
                 ],
                 "semantic_relationships_qualified": False,
                 "calibration_note": (
-                    "The bounded sample is value-free diagnostic context; "
-                    "it has no reviewed semantic labels or negative controls "
-                    "and does not qualify matcher behavior."
+                    "The 46 deterministic value-free cases remain unreviewed; "
+                    "the sample is not probability-based and cannot estimate "
+                    "semantic match precision. Matcher behavior remains "
+                    "unqualified."
                 ),
             },
             "denominator_note": (

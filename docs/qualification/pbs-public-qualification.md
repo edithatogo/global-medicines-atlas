@@ -514,3 +514,31 @@ requires kind-specific counts and occurrence-level context sufficient to
 resolve bases, scopes, target types, and relation meaning. No source values or
 new sources were added; this review changes no rights, admission, canary, or
 publication status.
+
+## Current PBS reference and field-state readback, 2026-10-25
+
+The current exact-main source-local context readback is protected run
+`40103169910` on commit `83465c87d5952e123cedd93a02b1ec9b4daa4eb4`. It screened
+2,160,066 reference occurrences and 567,785 definitions in the same pinned
+2026-04-01 PBS v3 member. The value-free context packet contains 46 examples
+across RDF and XLink kinds, with 11 no-target controls; all remain unreviewed.
+Its deterministic source-order sample is not a probability sample and cannot
+estimate semantic precision or recall.
+
+The screen records 1,094,033 unique RDF literal candidates, 73,577 RDF
+no-target cases, and 992,456 unique XLink fragment candidates. URI/base
+resolution was not performed. These remain lexical or fragment candidates:
+no source cases are adjudicated and no semantic relationships are qualified.
+The screen, meaning review and packet are retained in
+[`pbs-native-reference-screen-20261025-40103169910.json`](../../quality/qualifications/pbs-native-reference-screen-20261025-40103169910.json),
+[`pbs-native-reference-meaning-review-20261025-40103169910.json`](../../quality/qualifications/pbs-native-reference-meaning-review-20261025-40103169910.json),
+and [`pbs-native-reference-review-packet-20261025-40103169910.json`](../../quality/qualifications/pbs-native-reference-review-packet-20261025-40103169910.json).
+
+The current denominator-closed [field-state reconciliation r8](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r8.json)
+accounts for all 18,208,758 native fields: 40,667 interpreted, 18,168,091
+`native_unresolved`, and zero unavailable. The interpretations remain limited
+to exact path/QName meanings already supported by the pinned source contract
+and documentation; native values and reference relationships are not
+promoted. This completes field accounting, not full PBS domain semantics.
+No new source was added, and rights, admission, publication and canary states
+did not change.
