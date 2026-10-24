@@ -92,6 +92,11 @@
       "title": "State",
       "type": "string"
     },
+    "temporal_use_qualified": {
+      "default": true,
+      "title": "Temporal Use Qualified",
+      "type": "boolean"
+    },
     "unit": {
       "anyOf": [
         {

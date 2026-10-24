@@ -390,6 +390,8 @@ def test_selected_file_consistency_inference_is_literal_p7_only(
     if expected_date is not None:
         assert row["semantic_evidence_sha256"] == digest
         assert "Department provenance" in row["interpretation_reason"]
+        with pytest.raises(ValueError, match="domain-qualified meaning"):
+            workbook_date_for_comparison(row)
 
 
 @pytest.mark.parametrize("value", ["not-a-date", "31.02.2024"])

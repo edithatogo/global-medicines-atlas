@@ -49,6 +49,7 @@ class SilverFieldSemantics(FrozenModel):
     evidence_sha256: Digest | None = None
     semantic_definition: str | None = Field(default=None, min_length=1)
     unit: str | None = Field(default=None, min_length=1)
+    temporal_use_qualified: bool = True
 
     @model_validator(mode="after")
     def interpreted_has_evidence(self) -> SilverFieldSemantics:
@@ -105,6 +106,10 @@ def qualified_date(
     semantics: SilverFieldSemantics, parsed_value: date | None
 ) -> date:
     """Require semantic evidence before temporal comparisons/current claims."""
+    if not semantics.temporal_use_qualified:
+        raise ValueError(
+            "temporal comparison requires domain-qualified meaning"
+        )
     semantics.require_interpreted()
     if semantics.value_kind != "date":
         raise ValueError("field is not a date")

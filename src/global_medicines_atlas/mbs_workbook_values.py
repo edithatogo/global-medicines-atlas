@@ -576,5 +576,8 @@ def workbook_date_for_comparison(row: dict[str, Any]) -> date:
         reason=row["interpretation_reason"],
         evidence_sha256=row["semantic_evidence_sha256"],
         semantic_definition=row.get("semantic_definition"),
+        temporal_use_qualified=(
+            row.get("domain_status") != "qualified_file_consistency_dmy"
+        ),
     )
     return qualified_date(semantics, row["domain_date"])
