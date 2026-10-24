@@ -11,6 +11,7 @@ from test_australian_source_contracts import (
 )
 from test_pbs_historical_silver import PATH, SOURCE
 
+import global_medicines_atlas.pbs_reference_meaning as meaning_module
 from global_medicines_atlas.pbs_member_identity import (
     build_pbs_xml_member_binding,
 )
@@ -404,6 +405,19 @@ def test_reference_context_validation_rejects_non_object_and_non_string_keys():
         _validate_reference_context("invalid", 0)
     with pytest.raises(ValueError, match="keys are invalid"):
         _validate_reference_context({1: "invalid"}, 0)
+
+
+def test_reference_context_compressed_envelope_byte_limit_is_enforced(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    profile = _context()
+    envelope = encode_reference_context_receipt(profile)
+    monkeypatch.setattr(meaning_module, "MAX_COMPRESSED_RECEIPT_BYTES", 1)
+
+    with pytest.raises(
+        ValueError, match="compressed reference context byte bound"
+    ):
+        _validate_reference_context(envelope, 2_160_066)
 
 
 @pytest.mark.parametrize(
