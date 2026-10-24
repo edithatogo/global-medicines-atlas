@@ -1,0 +1,96 @@
+name: Qualify PBS URI context from exact-main screen receipt
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact main commit recorded by the selected URI-screen run
+        required: true
+        type: string
+      uri_run_id:
+        description: Successful workflow_dispatch run of the PBS URI screen on main
+        required: true
+        type: string
+      uri_receipt_sha256:
+        description: SHA-256 of the retained URI-screen receipt artifact
+        required: true
+        type: string
+permissions: {}
+concurrency:
+  group: pbs-uri-context-${{ inputs.uri_run_id }}
+  cancel-in-progress: false
+jobs:
+  qualify-context:
+    if: github.ref == 'refs/heads/main'
+    name: Bind URI diagnostics to retained source context
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Verify source screen was a successful exact-main workflow run
+        id: source-run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          URI_RUN_ID: ${{ inputs.uri_run_id }}
+          URI_RECEIPT_SHA256: ${{ inputs.uri_receipt_sha256 }}
+          EXPECTED_COMMIT: ${{ inputs.exact_commit }}
+          INTEGRATION_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          [[ "$URI_RUN_ID" =~ ^[0-9]+$ ]]
+          [[ "$URI_RECEIPT_SHA256" =~ ^[0-9a-f]{64}$ ]]
+          [[ "$EXPECTED_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          git merge-base --is-ancestor "$EXPECTED_COMMIT" "$INTEGRATION_COMMIT"
+          run_json="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$URI_RUN_ID")"
+          workflow_id="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/pbs-historical-qualification.yml" --jq .id)"
+          jq -e \
+            --arg commit "$EXPECTED_COMMIT" \
+            --arg workflow_id "$workflow_id" \
+            '.head_branch == "main" and .head_sha == $commit and .event == "workflow_dispatch" and .status == "completed" and .conclusion == "success" and (.workflow_id|tostring) == $workflow_id' \
+            <<< "$run_json" >/dev/null
+          echo "run_attempt=$(jq -r .run_attempt <<< "$run_json")" >> "$GITHUB_OUTPUT"
+      - name: Download only the bound URI-screen receipt artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: pbs-native-reference-uri-screen-receipt-${{ inputs.uri_run_id }}
+          run-id: ${{ inputs.uri_run_id }}
+          github-token: ${{ github.token }}
+          path: uri-screen
+      - name: Verify artifact digest and enrich the 46 retained cases
+        env:
+          URI_RUN_ID: ${{ inputs.uri_run_id }}
+          URI_RUN_ATTEMPT: ${{ steps.source-run.outputs.run_attempt }}
+          URI_RECEIPT_SHA256: ${{ inputs.uri_receipt_sha256 }}
+          EXPECTED_COMMIT: ${{ inputs.exact_commit }}
+          INTEGRATION_RUN_ID: ${{ github.run_id }}
+          INTEGRATION_COMMIT: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          receipt="uri-screen/pbs-native-reference-uri-screen-receipt.json"
+          test -f "$receipt"
+          test "$(sha256sum "$receipt" | cut -d ' ' -f 1)" = "$URI_RECEIPT_SHA256"
+          uv run --locked --python 3.15.1 python scripts/qualify_pbs_uri_review_context.py \
+            --uri-receipt "$receipt" \
+            --expected-uri-receipt-sha256 "$URI_RECEIPT_SHA256" \
+            --expected-uri-run-id "$URI_RUN_ID" \
+            --expected-uri-run-attempt "$URI_RUN_ATTEMPT" \
+            --expected-commit "$EXPECTED_COMMIT" \
+            --integration-run-id "$INTEGRATION_RUN_ID" \
+            --integration-commit "$INTEGRATION_COMMIT" \
+            --context-packet-output "pbs-native-reference-uri-context-packet-${INTEGRATION_RUN_ID}.json" \
+            --qualification-receipt-output "pbs-native-reference-uri-context-qualification-${INTEGRATION_RUN_ID}.json"
+      - name: Retain exact URI context packet and qualification receipt
+        if: always() && hashFiles('pbs-native-reference-uri-context-packet-*.json') != '' && hashFiles('pbs-native-reference-uri-context-qualification-*.json') != ''
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-uri-context-qualification-${{ github.run_id }}
+          path: |
+            pbs-native-reference-uri-context-packet-${{ github.run_id }}.json
+            pbs-native-reference-uri-context-qualification-${{ github.run_id }}.json
+          if-no-files-found: error
+          retention-days: 30

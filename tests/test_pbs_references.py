@@ -13,6 +13,7 @@ import pbs_uri_review_packet_reconciler_cases as _uri_packet_cases
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from scripts.qualify_pbs_uri_review_context import qualify_context
 from test_au_pbs_v3 import (
     _production_xml,  # ruff: ignore[import-private-name] -- synthetic fixture
     _xml,  # ruff: ignore[import-private-name] -- synthetic fixture
@@ -26,6 +27,15 @@ from global_medicines_atlas.pbs_entities import iter_pbs_entity_batches
 from global_medicines_atlas.pbs_uri_context_enrichment import (
     ContextEnrichmentError,
     enrich_uri_review_packet,
+)
+from global_medicines_atlas.pbs_uri_review_packet_reconciler import (
+    PACKET_FILENAME as URI_REVIEW_PACKET_FILENAME,
+)
+from global_medicines_atlas.pbs_uri_review_packet_reconciler import (
+    ReconciliationError as UriPacketReconciliationError,
+)
+from global_medicines_atlas.pbs_uri_review_packet_reconciler import (
+    reconcile_uri_review_packet,
 )
 
 _QUALIFICATIONS = Path(__file__).parents[1] / "quality/qualifications"
@@ -599,6 +609,105 @@ def test_exact_retained_context_is_bound_without_values_or_semantic_promotion():
         )
         == 35
     )
+
+
+def test_exact_main_uri_context_qualification_binds_same_run_commit_and_packet(
+    tmp_path: Path,
+) -> None:
+    uri_path = _QUALIFICATIONS / (
+        "pbs-native-reference-uri-screen-20261025-40120162365.json"
+    )
+    uri_bytes = uri_path.read_bytes()
+    uri = json.loads(uri_bytes)["report"]
+    packet_output = tmp_path / "context-packet.json"
+    receipt_output = tmp_path / "qualification-receipt.json"
+
+    packet, receipt = qualify_context(
+        root=Path(__file__).parents[1],
+        uri_receipt_path=uri_path,
+        expected_uri_receipt_sha256=hashlib.sha256(uri_bytes).hexdigest(),
+        expected_uri_run_id=uri["run_id"],
+        expected_uri_run_attempt=uri["run_attempt"],
+        expected_commit=uri["workflow_commit"],
+        integration_run_id="40130000000",
+        integration_commit="1d53292ad8792e143f862993e7c79eac643697f0",
+        context_packet_output=packet_output,
+        qualification_receipt_output=receipt_output,
+    )
+    packet_report = packet["report"]
+    receipt_report = receipt["report"]
+    assert packet_report["uri_run_id"] == uri["run_id"]
+    assert packet_report["uri_workflow_commit"] == uri["workflow_commit"]
+    assert (
+        packet_report["uri_receipt_sha256"]
+        == hashlib.sha256(uri_bytes).hexdigest()
+    )
+    assert packet_report["context_examples_bound"] == 46
+    assert len(packet_report["cases"]) == 46
+    assert all(
+        case["uri_resolution"] != "not_performed"
+        and case["source_context"]
+        and case["adjudication"] == "unreviewed"
+        and case["semantic_review_state"] == "pending"
+        and case["semantic_relationship_qualified"] is False
+        for case in packet_report["cases"]
+    )
+    assert receipt_report["integration_run_id"] == "40130000000"
+    assert receipt_report["integration_workflow_commit"] == (
+        "1d53292ad8792e143f862993e7c79eac643697f0"
+    )
+    assert (
+        receipt_report["source_packet_sha256"]
+        == (packet_report["source_packet_sha256"])
+    )
+    assert (
+        receipt_report["context_screen_receipt_sha256"]
+        == (packet_report["context_screen_receipt_sha256"])
+    )
+    reconciliation = reconcile_uri_review_packet(
+        _QUALIFICATIONS / URI_REVIEW_PACKET_FILENAME,
+        uri_path,
+        expected_run_id=uri["run_id"],
+        expected_commit=uri["workflow_commit"],
+        expected_uri_receipt_sha256=hashlib.sha256(uri_bytes).hexdigest(),
+    )
+    assert (
+        receipt_report["uri_reconciliation_report_sha256"]
+        == (reconciliation["report_sha256"])
+    )
+    assert packet_output.is_file()
+    assert receipt_output.is_file()
+    assert receipt_report["source_values_emitted"] is False
+    assert receipt_report["external_targets_fetched"] == 0
+    assert receipt_report["semantic_relationships_qualified"] is False
+    assert receipt_report["edges_emitted"] is False
+
+
+def test_uri_context_qualification_rejects_wrong_receipt_digest(
+    tmp_path: Path,
+) -> None:
+    uri_path = _QUALIFICATIONS / (
+        "pbs-native-reference-uri-screen-20261025-40120162365.json"
+    )
+    uri = json.loads(uri_path.read_bytes())["report"]
+    with pytest.raises(
+        UriPacketReconciliationError, match="URI receipt file digest differs"
+    ):
+        qualify_context(
+            root=Path(__file__).parents[1],
+            uri_receipt_path=uri_path,
+            expected_uri_receipt_sha256="0" * 64,
+            expected_uri_run_id=uri["run_id"],
+            expected_uri_run_attempt=uri["run_attempt"],
+            expected_commit=uri["workflow_commit"],
+            integration_run_id="40130000000",
+            integration_commit="1d53292ad8792e143f862993e7c79eac643697f0",
+            context_packet_output=tmp_path / "context-packet.json",
+            qualification_receipt_output=tmp_path
+            / "qualification-receipt.json",
+        )
+    assert not (tmp_path / "context-packet.json").exists()
+    assert not (tmp_path / "qualification-receipt.json").exists()
 
 
 def test_context_enrichment_rejects_wrong_screen_receipt_digest():
