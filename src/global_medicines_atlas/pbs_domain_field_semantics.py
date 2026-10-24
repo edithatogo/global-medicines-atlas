@@ -195,7 +195,7 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
         },
         "effective_date": {
             "status": "qualified_bounded_source_structure_and_date_grammar",
-            "meaning": "source schedule, item-effectivity, and restriction-effective date roles",
+            "meaning": "source schedule and item-effectivity date roles",
             "field_count": dates["pbs_effective_date"]
             + dates["schedule_effective_date"],
             "entity_count": dates["pbs_effective_date"]
