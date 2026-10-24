@@ -24,6 +24,7 @@ from global_medicines_atlas.mbs_workbook_field_reconciliation import (
     _dict,  # ruff: ignore[import-private-name]
     _dict_list,  # ruff: ignore[import-private-name]
     _int,  # ruff: ignore[import-private-name]
+    _p7_date_field_rows,  # ruff: ignore[import-private-name]
     _p7_source_field_states,  # ruff: ignore[import-private-name]
     _read_json,  # ruff: ignore[import-private-name]
     _sha256,  # ruff: ignore[import-private-name]
@@ -699,6 +700,46 @@ def test_rejects_missing_selected_p7_inference_decision(
         reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
 
+def test_p7_date_field_rows_rejects_non_list_inferred_fields() -> None:
+    profile = {
+        "profile": {
+            "by_field": {
+                "BenefitStartDate": {
+                    "ambiguous_calendar_order": 1,
+                    "unique_calendar_date": 0,
+                    "unique_dmy_calendar_date": 0,
+                }
+            }
+        }
+    }
+    with pytest.raises(TypeError, match="inferred date fields must be a list"):
+        _p7_date_field_rows(
+            profile,
+            {"date_fields_with_populated_values": "BenefitStartDate"},
+        )
+
+
+def test_retained_p7_qualification_rejects_workflow_identity_drift() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    typed.pop("_candidate_run_receipt")
+    typed["_run_receipt"]["workflow"]["exact_commit"] = _hash(998)
+    with pytest.raises(ValueError, match="exact-main qualification identity"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_inferred_candidate_rejects_separate_receipt_mismatch() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    with pytest.raises(ValueError, match="inferred candidate receipt binding"):
+        reconcile_workbook_field_states(
+            package,
+            headers,
+            typed,
+            rules,
+            hashes,
+            candidate_qualification_receipt={"schema_id": "wrong"},
+        )
+
+
 def test_rejects_p7_candidate_inference_binding_mismatch() -> None:
     package, headers, typed, rules, hashes = _inputs()
     typed["typed_candidate_package"]["date_inference"]["source_sha256"] = _hash(
@@ -856,6 +897,31 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         "p7_value_era_rules",
     }
     assert all(len(item["sha256"]) == 64 for item in report["inputs"].values())
+
+
+def test_reconcile_from_paths_rejects_inference_without_candidate_receipt(
+    tmp_path: Any,
+) -> None:
+    package, headers, typed, rules, _ = _inputs()
+    documents = {
+        "package_cohort": package,
+        "header_cohort": headers,
+        "p7_typed": typed,
+        "p7_run_receipt": typed["_run_receipt"],
+        "p7_date_profile": typed["_p7_date_profile"],
+        "p7_date_inference": typed["_p7_date_inference"],
+        "p7_value_era_rules": rules,
+    }
+    paths: dict[str, Path] = {}
+    for name, value in documents.items():
+        path = tmp_path / f"{name}.json"
+        path.write_text(json.dumps(value), encoding="utf-8")
+        paths[name] = path
+    with pytest.raises(
+        ValueError,
+        match="inference evidence requires a separate candidate qualification receipt",
+    ):
+        reconcile_from_paths(paths)
 
 
 def test_default_reconciliation_uses_retained_historical_p7_qualification() -> (

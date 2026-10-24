@@ -760,8 +760,6 @@ def reconcile_workbook_field_states(
     ):
         raise ValueError("P7 date profile must remain unselected")
     if candidate_qualification_receipt is not None:
-        if inference_decision is None:
-            raise ValueError("P7 candidate inference decision is required")
         candidate_inference = _dict(
             candidate.get("date_inference"), "P7 candidate date inference"
         )
@@ -769,7 +767,9 @@ def reconcile_workbook_field_states(
             "kind": "selected_internal_file_consistency_inference",
             "source_sha256": value_profile.get("source_sha256"),
             "profile": "dotted_DMY",
-            "fields": inference_decision["date_fields_with_populated_values"],
+            "fields": cast("dict[str, Any]", inference_decision)[
+                "date_fields_with_populated_values"
+            ],
             "interpreted_cells": P7_INFERENCE_INTERPRETED_DATE_CELLS,
             "evidence_sha256": inference_sha256,
             "department_provenance_established": False,
