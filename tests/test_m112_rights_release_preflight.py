@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-77.json"
+    "australian-m112-rights-release-preflight-20261024-78.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-76.json"
+    "australian-m112-rights-release-preflight-20261024-77.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -186,10 +186,16 @@ def test_preflight_binds_bounded_pbs_semantics_and_packet() -> None:
     assert pbs_semantics["native_unresolved_fields"] == 18_168_091
     assert pbs_semantics["native_values_interpreted"] is False
     pbs_packet = report["pbs_native_reference_review_packet"]
-    assert pbs_packet["workflow_run_id"] == 40091358786
-    assert pbs_packet["context_examples"] == 61
+    assert pbs_packet["workflow_run_id"] == 40103169910
+    assert pbs_packet["context_examples"] == 46
     assert pbs_packet["source_cases_reviewed"] == 0
     assert pbs_packet["semantic_relationships_qualified"] is False
+    current = report["pbs_native_semantic_reconciliation_current_readback"]
+    assert current["interpreted_fields"] == 40_667
+    assert current["native_unresolved_fields"] == 18_168_091
+    assert current["unavailable_fields"] == 0
+    assert current["source_fields"] == 18_208_758
+    assert current["semantic_links_promoted"] == 0
 
 
 def test_preflight_binds_pbs_context_screen_attempt_and_readback() -> None:
@@ -197,11 +203,12 @@ def test_preflight_binds_pbs_context_screen_attempt_and_readback() -> None:
     context_screen = report[
         "pbs_native_reference_context_screen_latest_attempt"
     ]
-    assert context_screen["run_id"] == 40091358786
+    assert context_screen["run_id"] == 40103169910
     assert context_screen["status"] == "success"
     assert context_screen["source_values_emitted"] is False
     assert context_screen["semantic_relationships_qualified"] is False
     assert context_screen["source_cases_reviewed"] == 0
+    assert context_screen["uri_resolution_performed"] is False
     assert (
         hashlib.sha256(
             (ROOT / context_screen["receipt"]).read_bytes()
@@ -235,6 +242,15 @@ def test_preflight_binds_pbs_context_screen_attempt_and_readback() -> None:
         ).hexdigest()
         == context_readback["receipt_sha256"]
     )
+    latest = report["pbs_native_reference_context_current_readback"]
+    assert latest["run_id"] == 40103169910
+    assert latest["strata"] == 184
+    assert latest["examples"] == 46
+    assert latest["examples_by_kind"] == {"rdf_resource": 29, "xlink_href": 17}
+    assert latest["omitted_occurrences"] == 2_160_020
+    assert latest["uri_resolution_performed"] is False
+    assert latest["source_cases_reviewed"] == 0
+    assert latest["semantic_relationships_qualified"] is False
     prior_failure = report["pbs_native_reference_context_screen_prior_failure"]
     assert prior_failure["run_id"] == 40052770374
     assert prior_failure["status"] == "failed"
@@ -250,7 +266,8 @@ def test_preflight_binds_context_sampler_fairness_followup() -> None:
     assert followup["staging_byte_limit"] == 4_194_304
     assert followup["final_example_byte_limit"] == 64_000
     assert followup["final_example_count_limit"] == 1_000
-    assert followup["exact_main_source_rerun_pending"] is True
+    assert followup["exact_main_source_rerun_pending"] is False
+    assert followup["exact_main_source_run_id"] == 40103169910
     assert followup["source_cases_reviewed"] == 0
     assert followup["semantic_relationships_qualified"] is False
 
@@ -280,12 +297,11 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     assert encoding["semantic_relationships_qualified"] is False
     assert (
         report["reference_packet_coverage_followup"]["hosted_recheck"]
-        == "exact-main context run 40091358786 passed; 61 bounded examples "
-        "prepared; source cases remain unreviewed"
+        == "exact-main context run 40103169910 passed; 46 value-free examples across RDF and XLink strata prepared; source cases remain unreviewed"
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-76.json"
+        "australian-m112-rights-release-preflight-20261024-77.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -294,7 +310,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-75.json"
+        "australian-m112-rights-release-preflight-20261024-76.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -307,12 +323,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-74.json"
+        "australian-m112-rights-release-preflight-20261024-75.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-73.json"
+        "australian-m112-rights-release-preflight-20261024-74.json"
     )
 
 
@@ -341,14 +357,17 @@ def test_pbs_native_silver_field_state_is_candidate_only() -> None:
     report = _json(PREFLIGHT)
     pbs_silver = report["pbs_native_silver_field_state_current_readback"]
     assert pbs_silver["source_fields"] == 18_208_758
-    assert pbs_silver["native_unresolved_fields"] == 955_919
-    assert pbs_silver["interpreted_fields"] == 17_252_839
+    assert pbs_silver["native_unresolved_fields"] == 18_168_091
+    assert pbs_silver["interpreted_fields"] == 40_667
     assert pbs_silver["unavailable_fields"] == 0
     assert pbs_silver["native_values_remain_unresolved"] is True
     assert pbs_silver["candidate_only"] is True
     assert pbs_silver["rights_qualified"] is True
     assert pbs_silver["admitted"] is False
     assert pbs_silver["published"] is False
+    assert pbs_silver["report_sha256"] == (
+        "dd75a90151ee5c4be608fe534c1ef6ab0f84244e792521ab4dc4fb378f8cd0b7"
+    )
     assert (
         hashlib.sha256((ROOT / pbs_silver["receipt"]).read_bytes()).hexdigest()
         == pbs_silver["receipt_sha256"]

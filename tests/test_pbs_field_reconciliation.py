@@ -17,6 +17,7 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     DOMAIN,
     FIELD_STATE,
     PACKAGE,
+    REFERENCE_PACKET,
     REFERENCE_REVIEW,
     REFERENCE_SCREEN,
     SCREEN,
@@ -102,9 +103,9 @@ def test_every_pinned_field_has_one_evidenced_state():
         report["source_local_reference_review"]["screen_reference_denominator"]
         == 2_160_066
     )
-    assert report["source"]["reference_screen_run_id"] == "40076190245"
+    assert report["source"]["reference_screen_run_id"] == "40103169910"
     assert report["source"]["reference_screen_workflow_commit"] == (
-        "b3139f9c655f48ccbb7a1714712219ac2281d838"
+        "83465c87d5952e123cedd93a02b1ec9b4daa4eb4"
     )
     assert report["source_local_reference_review"]["per_kind_screen"] == {
         "rdf_resource": {
@@ -121,32 +122,35 @@ def test_every_pinned_field_has_one_evidenced_state():
             "status_counts": {"unique_exact_literal": 992_456},
         },
     }
-    assert report["source"]["reference_context_screen_run_id"] == "40091358786"
+    assert report["source"]["reference_context_screen_run_id"] == "40103169910"
     assert report["source"]["reference_context_screen_workflow_commit"] == (
-        "a198ffff88531f06a34e4f237af6d55dfc74260a"
+        "83465c87d5952e123cedd93a02b1ec9b4daa4eb4"
     )
     context_screen = report["source_local_reference_review"]["context_screen"]
     assert context_screen == {
         "status": "value_free_context_screen_reconciled",
-        "workflow_run_id": "40091358786",
-        "workflow_commit": "a198ffff88531f06a34e4f237af6d55dfc74260a",
-        "receipt_sha256": "5bcc25fef1ad5a1a68a05fdc943f5b96e89848b56d5b6c506e9cba49d3b9db37",
-        "receipt_file_sha256": "1bed1a970d599e2bf8cc422352bced094c9568afd4776930b9df2a01d0273313",
+        "workflow_run_id": "40103169910",
+        "workflow_commit": "83465c87d5952e123cedd93a02b1ec9b4daa4eb4",
+        "receipt_sha256": "7f223a138a89064c4dbdaad375174f5584cd0de1871dc34735167a3d670fe688",
+        "receipt_file_sha256": "62a01d660dc8e59bcef39768f64a9deda10bc5a58ae899e3f138ec2816862722",
         "source_receipt_sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1",
         "source_revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
         "source_member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
         "source_native_digest": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
         "schema_version": 3,
         "strata_count": 184,
-        "examples_emitted": 61,
-        "examples_omitted": 2_160_005,
+        "examples_emitted": 46,
+        "examples_omitted": 2_160_020,
         "sample_summary": {
-            "examples_emitted": 61,
-            "no_exact_literal": 52,
-            "unique_exact_literal": 9,
-            "sampled_reference_kind_counts": {"rdf_resource": 61},
-            "distinct_predicate_qname_count": 2,
-            "nearest_subject_elements": 0,
+            "examples_emitted": 46,
+            "no_exact_literal": 11,
+            "unique_exact_literal": 35,
+            "sampled_reference_kind_counts": {
+                "rdf_resource": 29,
+                "xlink_href": 17,
+            },
+            "distinct_predicate_qname_count": 17,
+            "nearest_subject_elements": 8,
         },
         "external_targets_fetched": 0,
         "uri_resolution_performed": False,
@@ -155,11 +159,15 @@ def test_every_pinned_field_has_one_evidenced_state():
         "source_values_emitted": False,
         "semantic_relationships_qualified": False,
         "calibration_note": (
-            "The bounded sample is value-free diagnostic context; it has no "
-            "reviewed semantic labels or negative controls and does not "
-            "qualify matcher behavior."
+            "The 46 deterministic value-free cases remain unreviewed; the "
+            "sample is not probability-based and cannot estimate semantic "
+            "match precision. Matcher behavior remains unqualified."
         ),
     }
+    packet = report["source_local_reference_review"]["review_packet"]
+    assert packet["cases"] == 46
+    assert packet["adjudicated_cases"] == 0
+    assert packet["semantic_relationships_qualified"] is False
     assert report["supersedes_report"]["path"] == SUPERSEDED_REPORT
     assert (
         report["source_local_reference_review"]["reference_role_field_count"]
@@ -180,6 +188,7 @@ def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
         SCREEN,
         REFERENCE_SCREEN,
         CONTEXT_SCREEN,
+        REFERENCE_PACKET,
         REFERENCE_REVIEW,
         SUPERSEDED_REPORT,
         DOMAIN,
@@ -475,9 +484,9 @@ def test_reference_review_must_bind_the_exact_context_screen(
         reconcile_pbs_field_states(ROOT)
 
 
-def test_reference_review_requires_v2_context_screen(monkeypatch):
+def test_reference_review_requires_v3_context_screen(monkeypatch):
     def mutate(envelope):
-        envelope["report"]["source_context_screen"]["schema_version"] = 1
+        envelope["report"]["source_context_screen"]["schema_version"] = 2
         canonical = json.dumps(
             envelope["report"],
             ensure_ascii=False,
