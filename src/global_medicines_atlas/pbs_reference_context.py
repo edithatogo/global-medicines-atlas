@@ -425,7 +425,9 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                 row["examples_omitted"] += 1
                 omitted_examples += 1
         strata = [summaries[key] for key in sorted(summaries)]
-        strata_representation = [{**row, "examples": []} for row in strata]
+        strata_representation: list[dict[str, Any]] = [
+            {**row, "examples": []} for row in strata
+        ]
         strata_bytes = len(
             json.dumps(
                 strata_representation,

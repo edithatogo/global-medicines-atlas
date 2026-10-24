@@ -5905,6 +5905,7 @@ source qualification remains pending their actual final artifacts.
 - [x] Cover malformed XML and context-receipt validation bounds in the PBS reference screen and meaning tests. The focused 67-test run passes with 100% statement and branch coverage for both affected modules; commit `2fe9336335bd36ee04c7bd2eb0b88902b65d48a1`.
 - [x] Preserve the first protected rerun's stale preflight test-digest failure and bind the expanded tests in preflight revision 51, preserving revision 50 and all release boundaries.
 - [x] Resolve the two source-context review findings: bound serialized examples and example-free strata before the receipt ceiling, and exclude empty literals from match candidate counters. Commit `5eab02679ea6fe61fb4bec07f68d20439c1a8985`; 164 broader affected tests pass and both affected modules retain 100% statement and branch coverage.
+- [x] Correct the strict-profile `reportUnknownVariableType` finding by typing the empty-example strata representation explicitly. Local strict profile passes with 0 errors and 4 existing missing-source warnings; the first protected run's strict failure is retained pending the corrected head.
 - [ ] Rerun protected CI on the corrected head, then run the exact-main source-context screen and reconcile its aggregate-only receipt. Contextual screening remains distinct from semantic relationship qualification.
 
 ### PBS native Silver field-state reconciliation
