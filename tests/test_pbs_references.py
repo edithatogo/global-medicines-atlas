@@ -1,7 +1,9 @@
 """Synthetic source-local PBS identifier/reference diagnostics."""
 
+import base64
 import hashlib
 import json
+import zlib
 from collections.abc import Iterator
 from io import BytesIO
 from pathlib import Path
@@ -48,6 +50,32 @@ def _enrich_context(
         packet_file_sha256=packet_sha,
         screen_file_sha256=screen_sha,
     )
+
+
+def _context_inputs() -> tuple[
+    dict[str, Any], str, dict[str, Any], str, dict[str, Any]
+]:
+    packet, packet_sha = _load_context_artifact(
+        "pbs-native-reference-review-packet-20261025-40103169910.json"
+    )
+    screen, screen_sha = _load_context_artifact(
+        "pbs-native-reference-screen-20261025-40103169910.json"
+    )
+    reconciliation, _ = _load_context_artifact(
+        "pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json"
+    )
+    return packet, packet_sha, screen, screen_sha, reconciliation
+
+
+def _replace_compressed_context(screen: dict[str, Any], transform: Any) -> None:
+    compressed = screen["report"]["qualification"]["reference_context"]
+    context = json.loads(
+        zlib.decompress(base64.b64decode(compressed["payload"]))
+    )
+    transform(context)
+    raw = json.dumps(context, separators=(",", ":")).encode("utf-8")
+    compressed["payload"] = base64.b64encode(zlib.compress(raw)).decode("ascii")
+    compressed["payload_sha256"] = hashlib.sha256(raw).hexdigest()
 
 
 test_uri_packet_never_overwrites_existing_output = (
@@ -574,3 +602,130 @@ def test_context_enrichment_rejects_wrong_screen_receipt_digest():
 
     with pytest.raises(ContextEnrichmentError, match="receipt digests differ"):
         _enrich_context(packet, packet_sha, screen, "0" * 64, reconciliation)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    [
+        "malformed_payload",
+        "run_id",
+        "receipt_digest",
+        "reconciliation_digest",
+        "payload_digest",
+        "literal_values",
+        "raw_source",
+        "invalid_context_occurrence",
+        "duplicate_context_occurrence",
+        "duplicate_uri_case_id",
+        "uri_case_count",
+        "missing_packet_address",
+        "missing_uri_case",
+        "uri_occurrence_digest",
+        "missing_context_occurrence",
+        "invalid_target_path",
+        "invalid_target_qname",
+        "mismatched_target_path",
+        "invalid_predicate_ancestry",
+        "invalid_subject_ancestry_address",
+    ],
+)
+def test_context_enrichment_rejects_invalid_evidence(  # ruff: ignore[too-many-branches, too-many-statements] -- one mutation matrix exercises each fail-closed evidence guard
+    scenario: str,
+) -> None:
+    packet, packet_sha, screen, screen_sha, reconciliation = _context_inputs()
+    packet_report = packet["report"]
+    reconciliation_report = reconciliation["report"]
+    compressed = screen["report"]["qualification"]["reference_context"]
+
+    if scenario == "malformed_payload":
+        compressed["payload"] = "!"
+    elif scenario == "run_id":
+        packet_report["source"]["screen_run_id"] = "different-run"
+    elif scenario == "receipt_digest":
+        packet_report["source"]["screen_receipt_sha256"] = "0" * 64
+    elif scenario == "reconciliation_digest":
+        reconciliation_report["source_packet_sha256"] = "0" * 64
+    elif scenario == "payload_digest":
+        compressed["payload_sha256"] = "0" * 64
+    elif scenario in {"literal_values", "raw_source"}:
+        key = (
+            "literal_values_emitted"
+            if scenario == "literal_values"
+            else "raw_source_emitted"
+        )
+        _replace_compressed_context(
+            screen, lambda context: context.update({key: True})
+        )
+    elif scenario == "invalid_context_occurrence":
+
+        def invalidate_occurrence(context: dict[str, Any]) -> None:
+            context["strata"][0]["examples"][0]["reference_occurrence"] = None
+
+        _replace_compressed_context(screen, invalidate_occurrence)
+    elif scenario == "duplicate_context_occurrence":
+
+        def duplicate_occurrence(context: dict[str, Any]) -> None:
+            example = context["strata"][0]["examples"][0]
+            context["strata"][0]["examples"].append(example)
+
+        _replace_compressed_context(screen, duplicate_occurrence)
+    elif scenario == "duplicate_uri_case_id":
+        reconciliation_report["cases"][1]["case_id"] = reconciliation_report[
+            "cases"
+        ][0]["case_id"]
+    elif scenario == "uri_case_count":
+        reconciliation_report["cases"].pop()
+    elif scenario == "missing_packet_address":
+        packet_report["cases"][0]["reference_occurrence"] = None
+    elif scenario == "missing_uri_case":
+        packet_report["cases"][0]["case_id"] = "missing-case"
+    elif scenario == "uri_occurrence_digest":
+        reconciliation_report["cases"][0]["reference_occurrence_sha256"] = (
+            "0" * 64
+        )
+    elif scenario == "missing_context_occurrence":
+
+        def remove_examples(context: dict[str, Any]) -> None:
+            for stratum in context["strata"]:
+                stratum["examples"] = []
+
+        _replace_compressed_context(screen, remove_examples)
+    elif scenario in {"invalid_target_path", "invalid_target_qname"}:
+
+        def invalidate_target(context: dict[str, Any]) -> None:
+            example = next(
+                example
+                for stratum in context["strata"]
+                for example in stratum["examples"]
+                if example["targets"]
+            )
+            target = example["targets"][0]
+            target[
+                "occurrence" if scenario == "invalid_target_path" else "qname"
+            ] = None
+
+        _replace_compressed_context(screen, invalidate_target)
+    elif scenario == "mismatched_target_path":
+        row = next(
+            row
+            for row in reconciliation_report["cases"]
+            if row.get("target_occurrence_sha256") is not None
+        )
+        row["target_occurrence_sha256"] = "0" * 64
+    elif scenario == "invalid_predicate_ancestry":
+
+        def invalidate_predicate(context: dict[str, Any]) -> None:
+            context["strata"][0]["examples"][0]["predicate_element"] = []
+
+        _replace_compressed_context(screen, invalidate_predicate)
+    elif scenario == "invalid_subject_ancestry_address":
+
+        def invalidate_subject_address(context: dict[str, Any]) -> None:
+            context["strata"][0]["examples"][0]["nearest_subject_element"] = {
+                "qname": "subject"
+            }
+
+        _replace_compressed_context(screen, invalidate_subject_address)
+
+    with pytest.raises(ContextEnrichmentError):
+        _enrich_context(packet, packet_sha, screen, screen_sha, reconciliation)
