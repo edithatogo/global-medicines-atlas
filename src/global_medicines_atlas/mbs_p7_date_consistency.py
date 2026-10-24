@@ -163,7 +163,7 @@ def decide_p7_date_consistency(
         and profile.get("source_values_emitted") is False
         and by_field is not None
         and lexical_by_field is not None
-        and set(by_field) == _DATE_FIELDS
+        and frozenset(by_field) == _DATE_FIELDS
         and all(
             sum(by_field[field].values()) == _EXPECTED_PROFILED_CELLS_PER_FIELD
             for field in _DATE_FIELDS
