@@ -7,11 +7,13 @@ from typing import Any
 
 import pytest
 
+import global_medicines_atlas.mbs_workbook_field_reconciliation as field_reconciliation
 from global_medicines_atlas.mbs_workbook_field_reconciliation import (
     _candidate_identity,  # ruff: ignore[import-private-name]
     _dict,  # ruff: ignore[import-private-name]
     _dict_list,  # ruff: ignore[import-private-name]
     _int,  # ruff: ignore[import-private-name]
+    _p7_source_field_states,  # ruff: ignore[import-private-name]
     _read_json,  # ruff: ignore[import-private-name]
     _sha256,  # ruff: ignore[import-private-name]
     canonical_json,
@@ -150,16 +152,7 @@ def _inputs() -> tuple[
         ],
         "workbook_field_lineage": {
             "source_sha256": _hash(777),
-            "fields": [
-                {
-                    "sheet_name": "Sheet1",
-                    "column": "A",
-                    "mapping_field": "ItemNum",
-                    "mapping_target": "services",
-                    "cell_count": 13_742,
-                    "statuses": [["preserved", 13_742]],
-                }
-            ],
+            "fields": [],
         },
     }
     date_profile = {
@@ -187,9 +180,68 @@ def _inputs() -> tuple[
                     "ambiguous_calendar_order": 312,
                     "unique_calendar_date": 8,
                 },
+                "DerivedFeeStartDate": {"missing_value": 320},
+                "EMSNChangeDate": {"missing_value": 320},
+                "EMSNEndDate": {"missing_value": 320},
+                "EMSNStartDate": {"missing_value": 320},
+                "ItemEndDate": {"missing_value": 320},
+                "QFEEndDate": {"missing_value": 320},
+                "QFEStartDate": {"missing_value": 320},
             },
         },
     }
+    target_by_date_field = {
+        "BenefitStartDate": "benefits",
+        "DerivedFeeStartDate": "fees",
+        "DescriptionStartDate": "descriptions",
+        "EMSNChangeDate": "caps",
+        "EMSNEndDate": "caps",
+        "EMSNStartDate": "caps",
+        "FeeStartDate": "fees",
+        "ItemEndDate": "services",
+        "ItemStartDate": "services",
+        "QFEEndDate": "services",
+        "QFEStartDate": "services",
+    }
+    date_fields = date_profile["profile"]["by_field"]
+    p7_typed["workbook_field_lineage"]["fields"] = [
+        {
+            "sheet_name": "Dates",
+            "column": chr(ord("A") + index),
+            "mapping_field": field,
+            "mapping_target": target_by_date_field[field],
+            "cell_count": 322,
+            "statuses": [
+                ["header", 2],
+                [
+                    "missing_value"
+                    if "missing_value" in field_states
+                    else "unsupported_format",
+                    320,
+                ],
+            ],
+        }
+        for index, (field, field_states) in enumerate(
+            sorted(date_fields.items())
+        )
+    ] + [
+        {
+            "sheet_name": "Other",
+            "column": "A",
+            "mapping_field": "ItemNum",
+            "mapping_target": "services",
+            "cell_count": 10_196,
+            "statuses": [["header", 75], ["preserved", 10_121]],
+        },
+        {
+            "sheet_name": "Other",
+            "column": "B",
+            "mapping_field": None,
+            "mapping_target": "unmapped",
+            "cell_count": 4,
+            "statuses": [["unmapped", 4]],
+        },
+    ]
     hashes = {
         key: _hash(index + 500)
         for index, key in enumerate((
@@ -305,25 +357,145 @@ def test_report_separates_field_mapping_from_value_state() -> None:
         for row in cohort["field_rows"]
     )
     p7_fields = report["p7_workbook"]["field_rows"]
-    assert p7_fields == [
-        {
-            "sheet_name": "Sheet1",
-            "column": "A",
-            "field": "ItemNum",
-            "mapping_target": "services",
-            "header_state": "interpreted",
-            "source_value_state": "not_classified_per_sheet_column",
-            "source_value_state_detail": (
-                "aggregate_date_field_states report date counts across sheets"
-            ),
-            "cell_count": 13_742,
-            "conversion_statuses": [{"state": "preserved", "count": 13_742}],
-        }
+    assert len(p7_fields) == 13
+    item_num = next(row for row in p7_fields if row["field"] == "ItemNum")
+    assert item_num["cell_count"] == 10_196
+    assert item_num["conversion_statuses"] == [
+        {"state": "header", "count": 75},
+        {"state": "preserved", "count": 10_121},
     ]
     date_fields = report["p7_workbook"]["date_field_states"]
     assert sum(row["interpreted"] for row in date_fields) == 86
-    assert sum(row["native_unresolved"] for row in date_fields) == 1_194
+    assert (
+        sum(
+            row["date_states"].get("ambiguous_calendar_order", 0)
+            for row in date_fields
+        )
+        == 1_194
+    )
+    assert sum(row["native_unresolved"] for row in date_fields) == 3_434
     assert sum(row["unavailable"] for row in date_fields) == 0
+
+
+def test_p7_separates_header_cells_from_value_field_states() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    p7 = report["p7_workbook"]
+    assert p7["source_cells"] == {
+        "denominator": 13_742,
+        "header_cells": 97,
+        "value_cells": 13_645,
+        "denominator_relation": "header_cells_plus_value_cells",
+    }
+    assert p7["header_column_roles"] == {
+        "denominator": 97,
+        "interpreted": 97,
+        "unresolved": 0,
+        "unavailable": 0,
+        "denominator_relation": "separate_non_additive_header_role_occurrences",
+    }
+    assert p7["cell_values"] == {
+        "denominator": 13_645,
+        "interpreted": 86,
+        "unresolved": 13_559,
+        "unavailable": 0,
+        "denominator_relation": "non_header_cell_values_only_header_role_denominator_not_added",
+    }
+    fields = p7["source_field_states"]
+    assert len(fields) == 13
+    assert sum(row["value_cells"]["denominator"] for row in fields) == 13_645
+    assert sum(row["value_cells"]["interpreted"] for row in fields) == 86
+    assert (
+        sum(row["value_cells"]["native_unresolved"] for row in fields) == 13_559
+    )
+    fee_start = next(
+        row for row in fields if row["source_field"] == "FeeStartDate"
+    )
+    assert fee_start["value_cells"] == {
+        "denominator": 320,
+        "interpreted": 58,
+        "native_unresolved": 262,
+        "unavailable": 0,
+    }
+    unmapped = next(
+        row for row in fields if row["source_field"] == "unmapped::Other::B"
+    )
+    assert unmapped["value_cells"] == {
+        "denominator": 4,
+        "interpreted": 0,
+        "native_unresolved": 4,
+        "unavailable": 0,
+    }
+
+
+def test_p7_source_field_states_reject_conflicting_mapping_targets() -> None:
+    field_rows = [
+        {
+            "field": "SharedField",
+            "mapping_target": target,
+            "sheet_name": "Sheet",
+            "column": column,
+            "cell_count": 1,
+            "conversion_statuses": [],
+            "header_state": "interpreted",
+        }
+        for target, column in (("fees", "A"), ("benefits", "B"))
+    ]
+    with pytest.raises(ValueError, match="inconsistent mapping targets"):
+        _p7_source_field_states(field_rows, [])
+
+
+def test_p7_source_field_states_reject_date_fields_without_lineage() -> None:
+    with pytest.raises(ValueError, match="lack source-column lineage"):
+        _p7_source_field_states([], [{"field": "MissingField"}])
+
+
+def test_p7_source_field_states_reject_date_denominator_drift() -> None:
+    field_rows = [
+        {
+            "field": "DateField",
+            "mapping_target": "services",
+            "sheet_name": "Sheet",
+            "column": "A",
+            "cell_count": 2,
+            "conversion_statuses": [],
+            "header_state": "interpreted",
+        }
+    ]
+    date_rows = [{"field": "DateField", "cell_count": 1}]
+    with pytest.raises(ValueError, match="denominators differ"):
+        _p7_source_field_states(field_rows, date_rows)
+
+
+def test_p7_rejects_uninterpreted_header_roles() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    typed["workbook_field_lineage"]["fields"][-2]["mapping_target"] = "unmapped"
+    with pytest.raises(ValueError, match="header role states differ"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_p7_rejects_source_value_constant_drift(monkeypatch: Any) -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    monkeypatch.setattr(field_reconciliation, "P7_VALUE_CELL_COUNT", 13_644)
+    with pytest.raises(ValueError, match="non-header field-state denominator"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_p7_rejects_field_state_aggregate_drift(monkeypatch: Any) -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    original = field_reconciliation._p7_source_field_states
+
+    def changed_field_states(
+        field_rows: list[dict[str, Any]], date_rows: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        rows = original(field_rows, date_rows)
+        rows[0]["value_cells"]["native_unresolved"] -= 1
+        return rows
+
+    monkeypatch.setattr(
+        field_reconciliation, "_p7_source_field_states", changed_field_states
+    )
+    with pytest.raises(ValueError, match="source field states differ"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
 
 def _rehash_headers(headers: dict[str, Any]) -> None:
@@ -393,11 +565,11 @@ def test_p7_diagnostics_are_orthogonal_and_date_order_stays_unselected() -> (
     report = reconcile_workbook_field_states(*_inputs())
     p7 = report["p7_workbook"]
     assert p7["cell_values"] == {
-        "denominator": 13_742,
+        "denominator": 13_645,
         "interpreted": 86,
-        "unresolved": 13_656,
+        "unresolved": 13_559,
         "unavailable": 0,
-        "denominator_relation": "independent_source_cell_denominator_not_added_to_historical_cohort",
+        "denominator_relation": "non_header_cell_values_only_header_role_denominator_not_added",
     }
     assert p7["orthogonal_diagnostics"]["formula_cells"] == 4
     assert p7["orthogonal_diagnostics"]["error_cells"] == 2
@@ -460,6 +632,17 @@ def test_rejects_p7_status_total_drift() -> None:
     changed_typed = copy.deepcopy(typed)
     changed_typed["domain_value_profile"]["statuses"]["preserved"] -= 1
     with pytest.raises(ValueError, match="conversion statuses differ"):
+        reconcile_workbook_field_states(
+            package, headers, changed_typed, rules, hashes
+        )
+
+
+def test_rejects_p7_header_role_drift() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    changed_typed = copy.deepcopy(typed)
+    changed_typed["domain_value_profile"]["statuses"]["header"] -= 1
+    changed_typed["domain_value_profile"]["statuses"]["preserved"] += 1
+    with pytest.raises(ValueError, match="P7 header cell denominator differs"):
         reconcile_workbook_field_states(
             package, headers, changed_typed, rules, hashes
         )

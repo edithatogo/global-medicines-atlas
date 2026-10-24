@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import operator
 from pathlib import Path
 from typing import Any, cast
 
@@ -29,8 +30,11 @@ P7_DATE_PROFILE_PATH = (
 P7_RULES_PATH = "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
 WORKBOOK_COUNT = 91
 P7_CELL_COUNT = 13_742
+P7_HEADER_CELL_COUNT = 97
+P7_VALUE_CELL_COUNT = 13_645
 P7_INTERPRETED_DATE_CELLS = 86
 P7_UNRESOLVED_CELL_COUNT = 13_656
+P7_UNRESOLVED_VALUE_COUNT = 13_559
 P7_EXACT_MAIN_RUN_ID = 40094025412
 P7_EXACT_MAIN_COMMIT = "11be72e328affc0df87395fd59165ef4f5bf9055"
 P7_EXACT_MAIN_ARTIFACT_ID = 12559848688
@@ -264,6 +268,95 @@ def _p7_date_field_rows(
             "date_states": dict(sorted(states.items())),
         })
     return rows
+
+
+def _p7_source_field_states(
+    field_rows: list[dict[str, Any]],
+    date_field_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    grouped: dict[str, dict[str, Any]] = {}
+    for row in field_rows:
+        field_name = row.get("field")
+        source_field = (
+            field_name
+            if isinstance(field_name, str)
+            else f"unmapped::{row['sheet_name']}::{row['column']}"
+        )
+        target = row["mapping_target"]
+        field_state = grouped.setdefault(
+            source_field,
+            {
+                "source_field": source_field,
+                "mapping_target": target,
+                "source_columns": [],
+                "source_cells": 0,
+                "header_cells": 0,
+                "interpreted_header_cells": 0,
+            },
+        )
+        if field_state["mapping_target"] != target:
+            raise ValueError("P7 source field has inconsistent mapping targets")
+        field_state["source_columns"].append({
+            "sheet_name": row["sheet_name"],
+            "column": row["column"],
+        })
+        field_state["source_cells"] += _int(
+            row.get("cell_count"), "P7 source field cell count"
+        )
+        for status in row["conversion_statuses"]:
+            if status["state"] == "header":
+                field_state["header_cells"] += status["count"]
+                if row["header_state"] == "interpreted":
+                    field_state["interpreted_header_cells"] += status["count"]
+
+    date_by_field = {row["field"]: row for row in date_field_rows}
+    if not set(date_by_field).issubset(grouped):
+        raise ValueError("P7 date profile fields lack source-column lineage")
+    result: list[dict[str, Any]] = []
+    for source_field in sorted(grouped):
+        field_state = grouped[source_field]
+        source_columns = sorted(
+            field_state["source_columns"],
+            key=operator.itemgetter("sheet_name", "column"),
+        )
+        header_cells = field_state["header_cells"]
+        value_cells = field_state["source_cells"] - header_cells
+        date_state = date_by_field.get(source_field)
+        interpreted_values = 0
+        date_states: dict[str, int] | None = None
+        if date_state is not None:
+            if date_state["cell_count"] != value_cells:
+                raise ValueError(
+                    "P7 date field and source-column denominators differ"
+                )
+            interpreted_values = date_state["interpreted"]
+            date_states = date_state["date_states"]
+        result.append({
+            "source_field": source_field,
+            "mapping_target": field_state["mapping_target"],
+            "source_columns": source_columns,
+            "header_cells": {
+                "denominator": header_cells,
+                "interpreted": field_state["interpreted_header_cells"],
+                "native_unresolved": (
+                    header_cells - field_state["interpreted_header_cells"]
+                ),
+                "unavailable": 0,
+            },
+            "value_cells": {
+                "denominator": value_cells,
+                "interpreted": interpreted_values,
+                "native_unresolved": value_cells - interpreted_values,
+                "unavailable": 0,
+            },
+            "value_state_basis": (
+                "source-column calendar profile"
+                if date_state is not None
+                else "no supported domain interpretation in bound evidence"
+            ),
+            **({"date_states": date_states} if date_states is not None else {}),
+        })
+    return result
 
 
 def _profile_binding_count(profile: dict[str, Any]) -> tuple[int, int]:
@@ -622,6 +715,45 @@ def reconcile_workbook_field_states(
         for sheet in p7_sheets
     ) != p7_coverage.get("error_cells"):
         raise ValueError("P7 error diagnostic denominators differ")
+    p7_field_rows = _p7_field_rows(p7_typed)
+    header_cells = _int(p7_statuses.get("header"), "P7 header cell count")
+    if header_cells != P7_HEADER_CELL_COUNT:
+        raise ValueError("P7 header cell denominator differs")
+    header_roles = {"interpreted": 0, "native_unresolved": 0}
+    for row in p7_field_rows:
+        for status in row["conversion_statuses"]:
+            if status["state"] == "header":
+                header_roles[row["header_state"]] += status["count"]
+    if sum(header_roles.values()) != header_cells or (
+        header_roles["interpreted"] != header_cells
+    ):
+        raise ValueError("P7 header role states differ from header cells")
+    value_cells = p7_cells - header_cells
+    unresolved_values = value_cells - p7_interpreted
+    if (
+        value_cells != P7_VALUE_CELL_COUNT
+        or unresolved_values != P7_UNRESOLVED_VALUE_COUNT
+    ):
+        raise ValueError("P7 non-header field-state denominator differs")
+    source_field_states = _p7_source_field_states(
+        p7_field_rows, date_field_rows
+    )
+    if (
+        sum(row["value_cells"]["denominator"] for row in source_field_states)
+        != value_cells
+        or sum(row["value_cells"]["interpreted"] for row in source_field_states)
+        != p7_interpreted
+        or sum(
+            row["value_cells"]["native_unresolved"]
+            for row in source_field_states
+        )
+        != unresolved_values
+        or sum(
+            row["header_cells"]["denominator"] for row in source_field_states
+        )
+        != header_cells
+    ):
+        raise ValueError("P7 source field states differ from cohort totals")
     date_compatibility = _dict(
         date_rules.get("calendar_compatibility"), "P7 date compatibility"
     )
@@ -681,14 +813,28 @@ def reconcile_workbook_field_states(
             "source_sha256": value_profile["source_sha256"],
             "exact_main_qualification": exact_run,
             "exact_main_artifact": artifact,
-            "field_rows": _p7_field_rows(p7_typed),
+            "field_rows": p7_field_rows,
+            "source_field_states": source_field_states,
             "date_field_states": date_field_rows,
-            "cell_values": {
+            "source_cells": {
                 "denominator": p7_cells,
-                "interpreted": p7_interpreted,
-                "unresolved": p7_unresolved,
+                "header_cells": header_cells,
+                "value_cells": value_cells,
+                "denominator_relation": "header_cells_plus_value_cells",
+            },
+            "header_column_roles": {
+                "denominator": header_cells,
+                "interpreted": header_roles["interpreted"],
+                "unresolved": header_roles["native_unresolved"],
                 "unavailable": 0,
-                "denominator_relation": "independent_source_cell_denominator_not_added_to_historical_cohort",
+                "denominator_relation": "separate_non_additive_header_role_occurrences",
+            },
+            "cell_values": {
+                "denominator": value_cells,
+                "interpreted": p7_interpreted,
+                "unresolved": unresolved_values,
+                "unavailable": 0,
+                "denominator_relation": "non_header_cell_values_only_header_role_denominator_not_added",
             },
             "orthogonal_diagnostics": {
                 "value_conversion_statuses": dict(sorted(p7_statuses.items())),
