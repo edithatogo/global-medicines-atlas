@@ -546,23 +546,27 @@ across RDF and XLink kinds, with 11 no-target controls; all remain unreviewed.
 Its deterministic source-order sample is not a probability sample and cannot
 estimate semantic precision or recall.
 
-The bounded URI-resolution screen now binds its aggregate classifier result to
-these 46 exact packet occurrences by structural address. The hosted receipt
-retains each existing case ID, a SHA-256 digest of its occurrence address, and
-the URI-resolution outcome class; it does not retain the address, URI/literal,
-or source payload. The packet is checked against the same pinned member digest
-before screening. This makes the resolution outcome traceable to the selected
-case while leaving all 46 cases unreviewed: resolution alone does not establish
-document scope, relation role, target type, predicate meaning, or semantic
-correctness. The sample remains deterministic and non-probabilistic, so no
-precision or recall estimate is available and no semantic relationship is
+The bounded URI-resolution screen implementation now binds its aggregate
+classifier result to these 46 exact packet occurrences by structural address.
+The first exact-main attempt (`40108285562`) stopped during screening and did
+not produce case outcomes; its aggregate failure receipt retained no source
+values. A later successful hosted receipt is still required before reporting
+URI-resolution outcomes for these cases. The intended receipt retains each
+existing case ID, a SHA-256 digest of its occurrence address, and the
+URI-resolution outcome class; it does not retain the address, URI/literal, or
+source payload. The packet is checked against the same pinned member digest
+before screening. Even after outcomes are available, resolution alone does not
+establish document scope, relation role, target type, predicate meaning, or
+semantic correctness. The sample remains deterministic and non-probabilistic,
+so no precision or recall estimate is available and no semantic relationship is
 qualified.
 
 The earlier context screen records 1,094,033 unique RDF literal candidates,
 73,577 RDF no-target cases, and 992,456 unique XLink fragment candidates. That
-context pass did not perform URI/base resolution. The subsequent exact-member
-URI screen binds resolution outcome classes to the selected packet cases; no
-source cases are adjudicated and no semantic relationships are qualified.
+context pass did not perform URI/base resolution. The URI-screen implementation
+is prepared to bind resolution outcome classes to the selected packet cases,
+but hosted case binding remains pending; no source cases are adjudicated and no
+semantic relationships are qualified.
 The screen, meaning review and packet are retained in
 [`pbs-native-reference-screen-20261025-40103169910.json`](../../quality/qualifications/pbs-native-reference-screen-20261025-40103169910.json),
 [`pbs-native-reference-meaning-review-20261025-40103169910.json`](../../quality/qualifications/pbs-native-reference-meaning-review-20261025-40103169910.json),
