@@ -48,9 +48,19 @@ def main() -> int:
             packet_file_sha256=packet_sha,
             screen_file_sha256=screen_sha,
         )
-        output = args.output if args.output.is_absolute() else args.root / args.output
+        output = (
+            args.output
+            if args.output.is_absolute()
+            else args.root / args.output
+        )
         write_new_envelope(envelope, output.resolve())
-    except (OSError, UnicodeError, json.JSONDecodeError, ValueError, ReconciliationError) as exc:
+    except (
+        OSError,
+        UnicodeError,
+        json.JSONDecodeError,
+        ValueError,
+        ReconciliationError,
+    ) as exc:
         parser.error(str(exc))
     return 0
 

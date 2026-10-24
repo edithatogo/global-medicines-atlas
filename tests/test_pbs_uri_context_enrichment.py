@@ -24,8 +24,10 @@ def _load(name: str) -> tuple[dict[str, Any], str]:
 
 
 def _enriched(
-    packet: dict[str, Any], packet_sha: str,
-    screen: dict[str, Any], screen_sha: str,
+    packet: dict[str, Any],
+    packet_sha: str,
+    screen: dict[str, Any],
+    screen_sha: str,
     reconciliation: dict[str, Any],
 ) -> dict[str, Any]:
     return enrich_uri_review_packet(
@@ -57,18 +59,27 @@ def test_exact_retained_context_is_bound_without_values_or_semantic_promotion():
     assert report["semantic_relationships_qualified"] is False
     assert report["precision_claimed"] is False
     assert report["recall_claimed"] is False
-    assert sum(
-        case["source_context"]["nearest_subject_element"] is not None
-        for case in report["cases"]
-    ) == 8
-    assert sum(
-        case["source_context"]["nearest_identifier_element"] is not None
-        for case in report["cases"]
-    ) == 38
-    assert sum(
-        case["source_context"]["same_member_literal_candidate_target_count"]
-        for case in report["cases"]
-    ) == 35
+    assert (
+        sum(
+            case["source_context"]["nearest_subject_element"] is not None
+            for case in report["cases"]
+        )
+        == 8
+    )
+    assert (
+        sum(
+            case["source_context"]["nearest_identifier_element"] is not None
+            for case in report["cases"]
+        )
+        == 38
+    )
+    assert (
+        sum(
+            case["source_context"]["same_member_literal_candidate_target_count"]
+            for case in report["cases"]
+        )
+        == 35
+    )
 
 
 def test_context_enrichment_rejects_wrong_screen_receipt_digest():

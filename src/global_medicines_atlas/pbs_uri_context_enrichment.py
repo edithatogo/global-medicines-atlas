@@ -45,20 +45,25 @@ def enrich_uri_review_packet(  # ruff: ignore[too-many-branches,too-many-locals,
         cases = cast("list[dict[str, Any]]", packet["cases"])
         uri_cases = cast("list[dict[str, Any]]", reconciliation["cases"])
     except (KeyError, TypeError, ValueError, zlib.error) as exc:
-        raise ContextEnrichmentError("retained context evidence is invalid") from exc
+        raise ContextEnrichmentError(
+            "retained context evidence is invalid"
+        ) from exc
 
     if packet_source.get("screen_run_id") != screen.get("run_id"):
         raise ContextEnrichmentError("packet and context run identities differ")
     if packet_source.get("screen_receipt_sha256") != screen_file_sha256:
-        raise ContextEnrichmentError("packet and context receipt digests differ")
+        raise ContextEnrichmentError(
+            "packet and context receipt digests differ"
+        )
     if reconciliation.get("source_packet_sha256") != packet_file_sha256:
         raise ContextEnrichmentError("URI reconciliation packet digest differs")
     payload_digest = hashlib.sha256(payload).hexdigest()
     if compressed.get("payload_sha256") != payload_digest:
         raise ContextEnrichmentError("compressed context digest differs")
-    if context.get("literal_values_emitted") is not False or context.get(
-        "raw_source_emitted"
-    ) is not False:
+    if (
+        context.get("literal_values_emitted") is not False
+        or context.get("raw_source_emitted") is not False
+    ):
         raise ContextEnrichmentError("context value boundary is not preserved")
 
     examples: dict[str, tuple[dict[str, Any], dict[str, Any]]] = {}
@@ -93,8 +98,12 @@ def enrich_uri_review_packet(  # ruff: ignore[too-many-branches,too-many-locals,
         for target in example.get("targets", []):
             target_path = target.get("occurrence")
             target_qname = target.get("qname")
-            if not isinstance(target_path, str) or not isinstance(target_qname, str):
-                raise ContextEnrichmentError("context target identity is invalid")
+            if not isinstance(target_path, str) or not isinstance(
+                target_qname, str
+            ):
+                raise ContextEnrichmentError(
+                    "context target identity is invalid"
+                )
             targets.append({
                 "occurrence_sha256": _digest(target_path),
                 "element_qname": target_qname,
@@ -112,12 +121,15 @@ def enrich_uri_review_packet(  # ruff: ignore[too-many-branches,too-many-locals,
         def ancestry(item: Any) -> dict[str, str] | None:
             if item is None:
                 return None
-            if not isinstance(item, dict) or not isinstance(item.get("occurrence"), str):
+            if not isinstance(item, dict) or not isinstance(
+                item.get("occurrence"), str
+            ):
                 raise ContextEnrichmentError("context ancestry is invalid")
             return {
                 "element_qname": str(item.get("qname", "unknown")),
                 "occurrence_sha256": _digest(item["occurrence"]),
             }
+
         row = dict(case)
         row["source_context"] = {
             "document_scope": stratum.get("document_scope"),
@@ -134,7 +146,9 @@ def enrich_uri_review_packet(  # ruff: ignore[too-many-branches,too-many-locals,
         enriched.append(row)
 
     report = dict(reconciliation)
-    report["schema_id"] = "global-medicines-atlas.pbs-uri-reference-review-context-packet"
+    report["schema_id"] = (
+        "global-medicines-atlas.pbs-uri-reference-review-context-packet"
+    )
     report["schema_version"] = 1
     report["status"] = "value_free_context_enriched_semantics_unreviewed"
     report["context_screen_receipt_sha256"] = screen_file_sha256
@@ -145,4 +159,7 @@ def enrich_uri_review_packet(  # ruff: ignore[too-many-branches,too-many-locals,
     encoded = json.dumps(
         report, sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode("utf-8")
-    return {"report": report, "report_sha256": hashlib.sha256(encoded).hexdigest()}
+    return {
+        "report": report,
+        "report_sha256": hashlib.sha256(encoded).hexdigest(),
+    }
