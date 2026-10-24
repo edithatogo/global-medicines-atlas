@@ -44,6 +44,41 @@ def _receipt_with_report(tmp_path, mutate):
     return path
 
 
+def _context(references=2_160_066):
+    return {
+        "schema_id": "global-medicines-atlas.pbs-reference-context-screen",
+        "schema_version": 1,
+        "reference_occurrences": references,
+        "strata_count": 1,
+        "examples_emitted": 0,
+        "examples_omitted": 0,
+        "unique_exact_literal_no_xml_base_candidates": 0,
+        "strata": [
+            {
+                "kind": "rdf_resource",
+                "match_status": "unique_exact_literal",
+                "predicate_element_qname": "{urn:source}link",
+                "nearest_subject_element_qname": "{urn:source}item",
+                "nearest_identifier_element_qname": "none",
+                "xml_base_context": "no_xml_base",
+                "literal_shape": "relative_or_other",
+                "occurrences": references,
+                "unique_target_occurrences": 2_086_489,
+                "ambiguous_target_occurrences": 0,
+                "no_xml_base_exact_target_occurrences": 0,
+                "unique_exact_literal_no_xml_base_candidates": 0,
+                "examples_omitted": 0,
+                "examples": [],
+            }
+        ],
+        "uri_resolution_performed": False,
+        "literal_values_emitted": False,
+        "raw_source_emitted": False,
+        "semantic_relationships_qualified": False,
+        "external_targets_fetched": 0,
+    }
+
+
 def test_exact_source_review_qualifies_candidate_scope_not_semantic_links():
     report = review_reference_meanings(ROOT)
     assert report["exact_source_screen"]["definitions"] == 567_785
@@ -238,6 +273,7 @@ def test_per_kind_reconciliation_rejects_malformed_maps_and_aggregate_drift():
 def test_v2_report_path_keeps_per_kind_candidates_diagnostic(tmp_path):
     def add_synthetic_kinds(report):
         qualification = report["qualification"]
+        qualification["reference_context"] = _context()
         qualification["reference_kind_status_counts"] = {
             "rdf_resource": {"unique_exact_literal": 1_043_244},
             "xlink_href": {
@@ -258,7 +294,11 @@ def test_v2_report_path_keeps_per_kind_candidates_diagnostic(tmp_path):
         expected_exact_commit="c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4",
         expected_run_id="39730665004",
     )
-    assert result["schema_version"] == 2
+    assert result["schema_version"] == 3
+    assert result["source_context_screen"]["reference_occurrences"] == 2_160_066
+    assert result["status"] == (
+        "source_context_screen_reconciled_semantic_links_unqualified"
+    )
     assert result["exact_source_screen"]["per_kind_match_counts_available"]
     assert result["scope"]["semantic_relationships_qualified"] is False
 
@@ -302,6 +342,54 @@ def test_review_requires_exact_run_binding_and_per_kind_counts():
             expected_exact_commit="c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4",
             expected_run_id="39730665004",
         )
+
+
+def test_exact_receipt_requires_context_and_context_denominator(tmp_path):
+    without_context = _receipt_with_report(
+        tmp_path,
+        lambda report: report["qualification"].update({
+            "reference_kind_status_counts": {
+                "rdf_resource": {"unique_exact_literal": 1_043_244},
+                "xlink_href": {
+                    "unique_exact_literal": 1_043_245,
+                    "no_exact_literal": 73_577,
+                },
+            },
+            "reference_kind_counts": {
+                "rdf_resource": 1_043_244,
+                "xlink_href": 1_116_822,
+            },
+        }),
+    )
+    with pytest.raises(ValueError, match="context is required"):
+        review_reference_meanings(
+            ROOT,
+            without_context,
+            require_per_kind=True,
+            expected_exact_commit="c9fd61e92bf9c36d46f37d941a0cbdaf3db1b1f4",
+            expected_run_id="39730665004",
+        )
+
+    def add_context(report):
+        report["qualification"]["reference_context"] = _context(2_160_065)
+
+    wrong_denominator = _receipt_with_report(tmp_path, add_context)
+    with pytest.raises(ValueError, match="denominator differs"):
+        review_reference_meanings(ROOT, wrong_denominator)
+
+
+def test_reference_context_rejects_source_values(tmp_path):
+    def add_value(report):
+        context = _context()
+        context["strata"][0]["examples"] = [
+            {"literal": "withheld source value"}
+        ]
+        context["examples_emitted"] = 1
+        report["qualification"]["reference_context"] = context
+
+    path = _receipt_with_report(tmp_path, add_value)
+    with pytest.raises(ValueError, match="contains source values"):
+        review_reference_meanings(ROOT, path)
 
 
 def test_receipt_reader_and_aggregate_denominators_fail_closed(tmp_path):

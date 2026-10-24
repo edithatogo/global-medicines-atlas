@@ -48,6 +48,22 @@ def test_verified_route_returns_only_aggregate(synthetic, monkeypatch):
         }
 
     monkeypatch.setattr(module, "screen_native_references", qualify)
+    context = {
+        "schema_id": "global-medicines-atlas.pbs-reference-context-screen",
+        "schema_version": 1,
+        "reference_occurrences": 2,
+        "strata_count": 0,
+        "examples_emitted": 0,
+        "examples_omitted": 0,
+        "unique_exact_literal_no_xml_base_candidates": 0,
+        "strata": [],
+        "uri_resolution_performed": False,
+        "literal_values_emitted": False,
+        "raw_source_emitted": False,
+        "semantic_relationships_qualified": False,
+        "external_targets_fetched": 0,
+    }
+    monkeypatch.setattr(module, "screen_reference_context", lambda _: context)
     checkpoints = []
     report = module.run_hosted_native_reference_screen(
         SHA, transport=synthetic[2], progress=checkpoints.append
@@ -60,7 +76,28 @@ def test_verified_route_returns_only_aggregate(synthetic, monkeypatch):
     assert report["qualification"]["reference_kind_counts"] == {
         "rdf_resource": 2
     }
+    assert report["qualification"]["reference_context"] == context
     assert report["publication_performed"] is False
+
+
+def test_context_denominator_must_match_lexical_reference_count(
+    synthetic, monkeypatch
+):
+    def qualify(*_, **__):
+        return {
+            "reference_fields": 2,
+            "schema_version": 2,
+            "semantic_relationships_qualified": False,
+        }
+
+    monkeypatch.setattr(module, "screen_native_references", qualify)
+    monkeypatch.setattr(
+        module,
+        "screen_reference_context",
+        lambda _: {"reference_occurrences": 1},
+    )
+    with pytest.raises(module.QualificationError, match="denominator"):
+        module.run_hosted_native_reference_screen(SHA, transport=synthetic[2])
 
 
 def test_cli_withholds_source_exception_and_preserves_existing_receipt(

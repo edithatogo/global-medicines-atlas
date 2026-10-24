@@ -122,6 +122,8 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_pbs_entities.py",
         "tests/test_pbs_references.py",
         "tests/test_pbs_native_reference_screen.py",
+        "tests/test_pbs_reference_context.py",
+        "tests/test_pbs_reference_negative_controls.py",
         "tests/test_pbs_reference_meaning.py",
         "tests/test_reconcile_pbs_native_silver_receipts.py",
         "tests/test_pbs_native_reference_hosted.py",

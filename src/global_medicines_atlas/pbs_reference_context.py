@@ -33,7 +33,10 @@ MAX_EXAMPLES_PER_STRATUM = 5
 MAX_REPORT_EXAMPLES = 1_000
 MAX_STRUCTURAL_QNAME_BYTES = 256
 MAX_OCCURRENCE_ADDRESS_BYTES = 4096
-MAX_REPORT_BYTES = 64 * 1024**2
+# The hosted parent receipt is capped at 48,000 bytes. Reserve room for its
+# source bindings and aggregate lexical screen by keeping this embedded object
+# below 36,000 bytes.
+MAX_REPORT_BYTES = 36_000
 ROOT_CHILD_STACK_DEPTH = 2
 
 
