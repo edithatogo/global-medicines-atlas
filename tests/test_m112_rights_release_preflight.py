@@ -243,7 +243,7 @@ def test_preflight_binds_pbs_context_screen_attempt_and_readback() -> None:
 def test_preflight_binds_context_sampler_fairness_followup() -> None:
     report = _json(PREFLIGHT)
     followup = report["pbs_native_reference_context_sampling_followup"]
-    assert followup["implementation_commit"] == "36fe1ad9"
+    assert followup["implementation_commit"] == "555d013c"
     assert followup["example_selection_policy"] == (
         "one_example_per_stratum_round_robin_by_kind_status"
     )
