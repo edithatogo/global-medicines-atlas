@@ -140,9 +140,7 @@ def run_hosted_date_occurrence_reconciliation(
 ) -> dict[str, Any]:
     """Reconcile exact date-field identities from the pinned PBS archive."""
     retry = _RetryBudget()
-    inputs = _verified_inputs(
-        exact_commit, transport=transport, retry=retry
-    )
+    inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
     denominator = _denominator(inputs.xml)
     entities = iter_pbs_historical_entity_batches(
         inputs.archive, inputs.xml, inputs.parent, inputs.binding

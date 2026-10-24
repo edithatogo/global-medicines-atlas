@@ -43,7 +43,9 @@ def test_hosted_date_crosswalk_rejects_nonmatching_denominators(monkeypatch):
         "iter_pbs_historical_entity_batches",
         lambda _archive, _xml, _parent, _binding: (),
     )
-    monkeypatch.setattr(hosted_dates, "_date_batches", lambda _entities, _profile, _size: ())
+    monkeypatch.setattr(
+        hosted_dates, "_date_batches", lambda _entities, _profile, _size: ()
+    )
     monkeypatch.setattr(
         hosted_dates,
         "reconcile_pbs_date_occurrences",
