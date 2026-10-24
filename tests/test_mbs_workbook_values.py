@@ -105,6 +105,26 @@ def test_aggregate_calendar_profile_counts_without_emitting_values() -> None:
     assert "15.07.2024" not in json.dumps(profile)
 
 
+def test_aggregate_calendar_profile_classifies_missing_null_error_and_text() -> (
+    None
+):
+    payload = payload_with(
+        '<c r="C3"/> '
+        '<c r="C4"><v/></c>'
+        '<c r="C5" t="e"><v>#N/A</v></c>'
+        '<c r="C6" t="inlineStr"><is><t>not a date</t></is></c>'
+    )
+
+    profile = profile_p7_calendar_dates(payload, _receipt(payload))
+
+    assert profile["by_field"]["ItemStartDate"] == {
+        "invalid": 1,
+        "missing_value": 1,
+        "null": 1,
+        "source_error": 1,
+    }
+
+
 def test_calendar_profile_cli_emits_only_pinned_aggregate_output(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

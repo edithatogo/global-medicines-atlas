@@ -477,6 +477,11 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   ecosystem validation, and `git diff --check`. Hosted unit CI exposed a
   coupling to pinned admission inputs in the first implementation; the
   standalone profile design removes that coupling.
+- [x] Close the hosted patch-coverage findings for malformed date text,
+  null/missing values, and source-error cells with focused aggregate-profile
+  regressions. The four directly affected test nodes pass with 100% statement
+  and branch coverage for the new profiler; no repository-wide local suite was
+  rerun.
 - [~] Dispatch the aggregate profile after the new workflow reaches main and
   reconcile its report. The P7 workbook-wide date convention remains
   unresolved for ambiguous cells; no source-owner confirmation or global
