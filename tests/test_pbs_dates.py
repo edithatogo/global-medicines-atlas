@@ -26,6 +26,19 @@ test_date_crosswalk_empty_is_unresolved = (
 )
 test_date_crosswalk_digest_contract = _date_occurrence_cases.test_exact_identity_set_digests_are_stable_and_roles_are_closed
 test_hosted_date_crosswalk_rejects_nonmatching_denominators = _date_occurrence_cases.test_hosted_date_crosswalk_rejects_nonmatching_denominators
+test_date_crosswalk_counts_missing_identity_slots = _date_occurrence_cases.test_counts_effective_date_slots_without_source_identity
+test_date_crosswalk_deduplicates_repeated_occurrences = (
+    _date_occurrence_cases.test_duplicate_restriction_occurrences_count_once
+)
+test_date_crosswalk_enforces_identity_limit = (
+    _date_occurrence_cases.test_rejects_occurrence_identity_limit
+)
+test_hosted_date_crosswalk_builds_bounded_report = (
+    _date_occurrence_cases.test_hosted_reconciliation_builds_bounded_report
+)
+test_hosted_date_crosswalk_rejects_oversized_report = (
+    _date_occurrence_cases.test_hosted_reconciliation_rejects_oversized_report
+)
 
 
 def table(
