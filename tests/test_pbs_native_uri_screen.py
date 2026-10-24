@@ -2,10 +2,12 @@
 
 import hashlib
 import json
+from pathlib import Path
 
 import pytest
 
 import global_medicines_atlas.pbs_native_uri_screen as module
+import global_medicines_atlas.pbs_uri_structural_review as structural_review
 from global_medicines_atlas.pbs_native_uri_screen import screen_pbs_native_uris
 
 
@@ -679,3 +681,60 @@ def test_parse_progress_is_coarse_and_value_free(
         ("pbs-uri-screen-classify", 1, 0),
     ]
     assert report["xml_elements"] == 100_000
+
+
+def test_pinned_uri_sample_structural_review_is_narrow_and_value_free():
+    root = Path(__file__).resolve().parents[1]
+    report = structural_review.review_structural_match_behavior(root)
+    assert report["case_count"] == 46
+    assert report["outcome_counts"] == {
+        "same_member_unique_id": 17,
+        "absolute_uri_unique_candidate": 18,
+        "no_member_definition_negative_controls": 11,
+    }
+    cases = report["cases"]
+    assert len(cases) == 46
+    assert sum(case["relationship_label"] is not None for case in cases) == 35
+    assert all(case["candidate_edge_emitted"] is False for case in cases)
+    assert all(
+        set(case)
+        == {
+            "case_id",
+            "reference_occurrence_sha256",
+            "target_occurrence_sha256",
+            "structural_disposition",
+            "relationship_label",
+            "candidate_edge_emitted",
+        }
+        for case in cases
+    )
+    assert (
+        report["review_scope"] == "structural_match_behavior_calibration_only"
+    )
+    assert report["limitations"]["clinical_meaning_asserted"] is False
+    assert report["limitations"]["precision_claimed"] is False
+    assert report["limitations"]["recall_claimed"] is False
+    assert report["limitations"]["generalized_to_corpus"] is False
+    encoded = json.dumps(report)
+    assert '"uri":' not in encoded
+    assert '"literal":' not in encoded
+    assert '"source_element_qname":' not in encoded
+
+
+def test_structural_review_fails_closed_on_changed_reconciliation(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    destination = tmp_path / "quality/qualifications"
+    destination.mkdir(parents=True)
+    source = (
+        root
+        / "quality/qualifications"
+        / structural_review.RECONCILIATION_FILENAME
+    )
+    (destination / structural_review.RECONCILIATION_FILENAME).write_bytes(
+        source.read_bytes() + b" "
+    )
+    with pytest.raises(
+        structural_review.StructuralReviewError,
+        match="pinned reconciliation bytes differ",
+    ):
+        structural_review.review_structural_match_behavior(tmp_path)
