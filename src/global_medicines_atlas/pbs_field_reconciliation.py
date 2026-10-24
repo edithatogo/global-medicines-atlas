@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from global_medicines_atlas.pbs_domain_field_semantics import (
+    DATE_PROFILE,
     qualify_pbs_domain_fields,
 )
 from global_medicines_atlas.pbs_observed_domain import load_observed_profile
@@ -69,6 +70,19 @@ REFERENCE_PACKET_SHA256 = (
 REFERENCE_PACKET_REPORT_SHA256 = (
     "885960352dcee9e70f12ac3aa843d5129b75a2c44b16263835ff5bc7b57a5c6b"
 )
+DATE_PROFILE_SHA256 = (
+    "383f69a7e69e62527b07d45d0833ce21ccaea07e2d7a0b7fbc3d1b9a0f97ecfb"
+)
+DATE_OCCURRENCE_CROSSWALK = (
+    "quality/qualifications/"
+    "pbs-date-occurrence-crosswalk-20261025-40121732132.json"
+)
+DATE_OCCURRENCE_CROSSWALK_SHA256 = (
+    "8eb6fee47f50b61ed93963d6261f5b1b7cbb366cdb5de9e8c4da3bac013cf592"
+)
+DATE_OCCURRENCE_CROSSWALK_REPORT_SHA256 = (
+    "47b3806c8b28e5b38b3df8ad52fc91e86dc1d12d537a1a3496435d2f18c705c3"
+)
 SUPERSEDED_REPORT = (
     "quality/qualifications/"
     "pbs-native-silver-field-reconciliation-20261024-r5.json"
@@ -105,12 +119,11 @@ DOMAIN_REPORT_SHA256 = (
 )
 SOURCE_FIELDS = 18_208_758
 SOURCE_PATHS = 5_163
+ITEM_DATE_FIELDS = 2_798
 PATH_INVENTORY = (
     "quality/qualifications/pbs-schema-paths-20261022-39667604237.json"
 )
-SEMANTIC_ADJUDICATION = (
-    "quality/qualifications/pbs-domain-semantic-adjudication-20261024.json"
-)
+CURRENT_RECONCILIATION = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r10.json"
 
 
 def _file_sha256(path: Path) -> str:
@@ -154,6 +167,18 @@ def _semantic_adjudication(schema_path: str) -> dict[str, str | None]:  # ruff: 
             "domain": "item_identity_literal",
             "meaning": "source pharmaceutical-item XML identifier literal",
             "rule": "exact pinned item QName ancestry plus xml:id attribute QName",
+        }
+    if names == (
+        *item_path,
+        PBS_QNAME + "effective",
+        PBS_QNAME + "date",
+        "text",
+    ):
+        return {
+            "state": "interpreted",
+            "domain": "item_effective_date_literal",
+            "meaning": "source PBS item effective-date literal; temporal role only",
+            "rule": "exact pinned pharmaceutical-item/effective/date/text QName path and qualified v3 date-role receipt",
         }
     if (
         names[:2] == (PBS_QNAME + "root", PBS_QNAME + "drugs-list")
@@ -376,6 +401,8 @@ def _context_sample_summary(payload: dict[str, Any]) -> dict[str, Any]:
 def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[too-many-branches,too-many-locals,too-many-statements] -- exact receipt bindings and path-level partition are auditable together
     """Assign every field occurrence once; retain unqualified values as native."""
     package_path = root / PACKAGE
+    date_profile_path = root / DATE_PROFILE
+    date_occurrence_crosswalk_path = root / DATE_OCCURRENCE_CROSSWALK
     screen_path = root / SCREEN
     reference_screen_path = root / REFERENCE_SCREEN
     context_screen_path = root / CONTEXT_SCREEN
@@ -384,6 +411,8 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     reference_packet_path = root / REFERENCE_PACKET
     domain_path = root / DOMAIN
     package_sha = _file_sha256(package_path)
+    date_profile_sha = _file_sha256(date_profile_path)
+    date_occurrence_crosswalk_sha = _file_sha256(date_occurrence_crosswalk_path)
     screen_sha = _file_sha256(screen_path)
     reference_screen_sha = _file_sha256(reference_screen_path)
     context_screen_file_sha = _file_sha256(context_screen_path)
@@ -402,6 +431,63 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     )
     if any(actual != expected for actual, expected in digest_pairs):
         raise ValueError("PBS field evidence receipt digest differs")
+    if date_profile_sha != DATE_PROFILE_SHA256:
+        raise ValueError("PBS exact-source date-profile receipt differs")
+    if date_occurrence_crosswalk_sha != DATE_OCCURRENCE_CROSSWALK_SHA256:
+        raise ValueError("PBS exact-source date occurrence crosswalk differs")
+    date_profile = json.loads(date_profile_path.read_bytes())
+    date_source = date_profile["source"]
+    date_roles = date_profile["date_profile"]["role_counts"]
+    date_profile_binding = (
+        date_profile["status"],
+        date_profile["date_profile"]["profile_id"],
+        date_profile["date_profile"]["format"],
+        date_source["member_sha256"],
+        date_source["native_digest"],
+        date_roles.get("pbs_effective_date"),
+    )
+    if date_profile_binding != (
+        "exact_source_date_profile_qualified",
+        "pbs-v3-pinned-2026-04-01-v1",
+        "XSD YYYY-MM-DD",
+        "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+        "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+        ITEM_DATE_FIELDS,
+    ):
+        raise ValueError("PBS exact-source item date role differs")
+    date_crosswalk_envelope = json.loads(
+        date_occurrence_crosswalk_path.read_bytes()
+    )
+    date_crosswalk_report = date_crosswalk_envelope["report"]
+    date_crosswalk = date_crosswalk_report["crosswalk"]
+    date_crosswalk_join = date_crosswalk["join"]
+    date_crosswalk_binding = (
+        date_crosswalk_report["status"],
+        date_crosswalk_report["run_id"],
+        date_crosswalk_report["workflow_commit"],
+        date_crosswalk_envelope["report_sha256"],
+        date_crosswalk_report["source"]["member_sha256"],
+        date_crosswalk_report["source"]["native_digest"],
+        date_crosswalk_join["identity"],
+        date_crosswalk_join["item_profile_only_fields"],
+        date_crosswalk_join["restriction_only_fields"],
+        date_crosswalk_join["overlap_fields"],
+        date_crosswalk["date_role_slots_without_source_field"],
+    )
+    if date_crosswalk_binding != (
+        "passed",
+        "40121732132",
+        "a91ce7f994391a6d7aae182618c92049fcf088d2",
+        DATE_OCCURRENCE_CROSSWALK_REPORT_SHA256,
+        "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+        "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+        "source_field_id_exact_match",
+        ITEM_DATE_FIELDS,
+        3_028,
+        0,
+        0,
+    ):
+        raise ValueError("PBS exact-source date occurrence crosswalk differs")
     context_envelope = json.loads(context_screen_path.read_bytes())
     context_report = context_envelope["report"]
     context_canonical = json.dumps(
@@ -787,12 +873,19 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         or path_role_counts != role_counts
         or sum(row["field_count"] for row in path_reconciliation)
         != SOURCE_FIELDS
+        or sum(
+            row["field_count"]
+            for row in path_reconciliation
+            if row["semantic_interpretation"]["domain"]
+            == "item_effective_date_literal"
+        )
+        != ITEM_DATE_FIELDS
     ):
         raise ValueError("PBS schema-path field-state partition does not close")
     return {
         "schema_id": "global-medicines-atlas.pbs-field-state-reconciliation",
         "schema_version": 1,
-        "profile_id": "pbs-v3-2026-04-01-field-state-v1",
+        "profile_id": "pbs-v3-2026-04-01-field-state-v2",
         "status": "complete_field_denominator_path_adjudication_with_unresolved_semantics",
         "domain_semantics_qualified": False,
         "rights_conclusion_changed": False,
@@ -835,8 +928,31 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         "role_reconciliation": state_rows,
         "path_reconciliation": path_reconciliation,
         "semantic_adjudication": {
-            "profile_id": "pbs-v3-pinned-2026-04-01-path-qname-adjudication-v1",
+            "profile_id": "pbs-v3-pinned-2026-04-01-path-qname-adjudication-v2",
             "inventory_sha256": "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b",
+            "date_profile_sha256": date_profile_sha,
+            "date_profile_item_effective_date_fields": date_roles[
+                "pbs_effective_date"
+            ],
+            "date_occurrence_crosswalk": {
+                "path": DATE_OCCURRENCE_CROSSWALK,
+                "file_sha256": date_occurrence_crosswalk_sha,
+                "report_sha256": date_crosswalk_envelope["report_sha256"],
+                "workflow_run_id": date_crosswalk_report["run_id"],
+                "workflow_commit": date_crosswalk_report["workflow_commit"],
+                "identity": date_crosswalk_join["identity"],
+                "item_profile_only_fields": date_crosswalk_join[
+                    "item_profile_only_fields"
+                ],
+                "restriction_only_fields": date_crosswalk_join[
+                    "restriction_only_fields"
+                ],
+                "overlap_fields": date_crosswalk_join["overlap_fields"],
+                "date_role_slots_without_source_field": date_crosswalk[
+                    "date_role_slots_without_source_field"
+                ],
+                "source_values_emitted": False,
+            },
             "source_values_read": False,
             "source_values_emitted": False,
             "field_count_conserved": interpreted + unresolved == SOURCE_FIELDS,
@@ -859,6 +975,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
                 "AMT and RDF resource literals are not resolved to terminology concepts",
                 "classification code is unresolved unless the exact unqualified type value ATC is evidenced; current path inventory does not preserve that attribute value",
                 "price, currency, unit, status/currentness, and cross-era date effects remain unresolved",
+                "item effective-date literals identify a source role only; they do not establish intervals, precedence, listing status, currentness, or cross-era equivalence",
                 "the schedule effective-date path is not present in the pinned schema-path inventory; dcterms:valid is a separate document-level date",
                 "the pinned inventory contains no classification/code text path, so fixture-level ATC typing is not a source-level assertion",
                 "unknown wrappers and codes remain native_unresolved",
@@ -869,6 +986,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "field_count": meanings["effective_date"]["field_count"]
             + meanings["document_valid_date"]["field_count"],
             "evidence_profile": "pbs-v3-pinned-2026-04-01-date-profile-v1",
+            "item_effective_date_fields_in_semantic_partition": True,
             "counted_in_role_partition": True,
             "additive_to_denominator": False,
             "limits": meanings["effective_date"]["limits"]

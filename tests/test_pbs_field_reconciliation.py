@@ -14,6 +14,8 @@ from global_medicines_atlas.pbs_domain_field_semantics import (
 )
 from global_medicines_atlas.pbs_field_reconciliation import (
     CONTEXT_SCREEN,
+    CURRENT_RECONCILIATION,
+    DATE_OCCURRENCE_CROSSWALK,
     DOMAIN,
     FIELD_STATE,
     PACKAGE,
@@ -21,7 +23,6 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     REFERENCE_REVIEW,
     REFERENCE_SCREEN,
     SCREEN,
-    SEMANTIC_ADJUDICATION,
     SUPERSEDED_REPORT,
     reconcile_pbs_field_states,
 )
@@ -57,8 +58,8 @@ def test_every_pinned_field_has_one_evidenced_state():
     report = reconcile_pbs_field_states(ROOT)
     coverage = report["field_state_coverage"]
     assert coverage == {
-        "interpreted": 40_667,
-        "native_unresolved": 18_208_758 - 40_667,
+        "interpreted": 43_465,
+        "native_unresolved": 18_208_758 - 43_465,
         "unavailable": 0,
         "source_fields": 18_208_758,
         "denominator_closed": True,
@@ -195,6 +196,7 @@ def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
         INVENTORY,
         OBSERVED,
         DATE_PROFILE,
+        DATE_OCCURRENCE_CROSSWALK,
     ):
         destination = tmp_path / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
@@ -229,10 +231,23 @@ def test_semantic_adjudication_promotes_only_exact_supported_paths():
     assert adjudication["field_count_conserved"] is True
     assert adjudication["source_values_read"] is False
     assert adjudication["source_values_emitted"] is False
+    assert adjudication["date_profile_sha256"] == (
+        "383f69a7e69e62527b07d45d0833ce21ccaea07e2d7a0b7fbc3d1b9a0f97ecfb"
+    )
+    assert adjudication["date_profile_item_effective_date_fields"] == 2_798
+    crosswalk = adjudication["date_occurrence_crosswalk"]
+    assert crosswalk["workflow_run_id"] == "40121732132"
+    assert crosswalk["identity"] == "source_field_id_exact_match"
+    assert crosswalk["item_profile_only_fields"] == 2_798
+    assert crosswalk["restriction_only_fields"] == 3_028
+    assert crosswalk["overlap_fields"] == 0
+    assert crosswalk["date_role_slots_without_source_field"] == 0
+    assert crosswalk["source_values_emitted"] is False
     assert adjudication["interpretations"] == {
         "amt_literal_reference": 8_328,
         "amt_literal_reference_resource": 8_328,
         "item_identity_literal": 2_798,
+        "item_effective_date_literal": 2_798,
         "product_presentation_label": 12_128,
         "restriction_text": 6_056,
         "restriction_effective_date_literal": 3_028,
@@ -247,7 +262,7 @@ def test_semantic_adjudication_promotes_only_exact_supported_paths():
         "ATC typing is not a source-level assertion" in claim
         for claim in adjudication["explicit_non_claims"]
     )
-    assert len(adjudication["explicit_non_claims"]) == 7
+    assert len(adjudication["explicit_non_claims"]) == 8
     assert any(
         "price" in claim for claim in adjudication["explicit_non_claims"]
     )
@@ -289,6 +304,23 @@ def test_exact_unusual_domain_paths_keep_bounded_semantics(path, state, domain):
     assert result["domain"] == domain
 
 
+def test_exact_item_effective_date_path_has_source_role_only():
+    path = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/"
+        "{http:~1~1schema.pbs.gov.au~1}pharmaceutical-items-list/"
+        "{http:~1~1schema.pbs.gov.au~1}pharmaceutical-item/"
+        "{http:~1~1schema.pbs.gov.au~1}effective/"
+        "{http:~1~1schema.pbs.gov.au~1}date/text"
+    )
+    result = reconciliation._semantic_adjudication(path)
+    assert result == {
+        "state": "interpreted",
+        "domain": "item_effective_date_literal",
+        "meaning": "source PBS item effective-date literal; temporal role only",
+        "rule": "exact pinned pharmaceutical-item/effective/date/text QName path and qualified v3 date-role receipt",
+    }
+
+
 def test_restriction_text_is_limited_to_direct_source_slots():
     direct = (
         "/{http:~1~1schema.pbs.gov.au~1}root/"
@@ -307,7 +339,7 @@ def test_restriction_text_is_limited_to_direct_source_slots():
 
 
 def test_versioned_path_qname_matrix_is_reconciled_and_value_free():
-    envelope = json.loads((ROOT / SEMANTIC_ADJUDICATION).read_bytes())
+    envelope = json.loads((ROOT / CURRENT_RECONCILIATION).read_bytes())
     receipt = envelope["report"]
     canonical = json.dumps(
         receipt, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -316,14 +348,16 @@ def test_versioned_path_qname_matrix_is_reconciled_and_value_free():
     current = reconcile_pbs_field_states(ROOT)
     assert receipt["field_state_coverage"] == current["field_state_coverage"]
     assert receipt["semantic_adjudication"] == current["semantic_adjudication"]
-    matrix = receipt["path_qname_matrix"]
+    matrix = receipt["path_reconciliation"]
     assert len(matrix) == 5_163
     assert sum(row["field_count"] for row in matrix) == 18_208_758
     assert all(
         "value" not in row and "source_value" not in row for row in matrix
     )
     restriction_text = [
-        row for row in matrix if row["domain"] == "restriction_text"
+        row
+        for row in matrix
+        if row["semantic_interpretation"]["domain"] == "restriction_text"
     ]
     assert {
         row["schema_path"].rsplit("/", maxsplit=1)[-1]
@@ -334,13 +368,14 @@ def test_versioned_path_qname_matrix_is_reconciled_and_value_free():
     }
     assert len(restriction_text) == 2
     assert all(
-        row["meaning"] == "restriction-associated native text occurrence"
-        and row["rule"]
+        row["semantic_interpretation"]["meaning"]
+        == "restriction-associated native text occurrence"
+        and row["semantic_interpretation"]["rule"]
         == "exact direct text or tail slot on the pinned PBS prescribing-texts restriction QName path"
         for row in restriction_text
     )
-    assert receipt["scope"]["source_values_read"] is False
-    assert receipt["scope"]["source_values_emitted"] is False
+    assert receipt["semantic_adjudication"]["source_values_read"] is False
+    assert receipt["semantic_adjudication"]["source_values_emitted"] is False
 
 
 @pytest.mark.parametrize(
