@@ -459,8 +459,24 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   `quality/qualifications/provider-outreach-receipts-20260929.json` and
   `mbs-workbook-date-convention-request.md`.
 - [~] Keep the date profile unset and semantic promotion disabled pending
-  source-specific documentation or confirmation. No source bytes or cell
-  values were sent; no response has yet been observed.
+  source-specific documentation or confirmation. Earlier value-free outreach
+  did not establish the exact workbook's date order; no further contact is in
+  scope.
+
+## MBS P7 value-level calendar dates (2026-10-24)
+
+- [x] Add an opt-in `calendar-unique-dotted` profile that converts a dotted
+  date only when its components yield one possible calendar date. Values valid
+  under both DMY and MDY remain unresolved; invalid dates remain invalid;
+  numeric Excel serials are not guessed. Emit aggregate-only profile counts
+  beside the default unresolved profile in the hosted P7 qualifier. This is a
+  value-level rule and does not select a workbook-wide date order.
+- [x] Verify the affected workbook-value test module (32 passed) on Python
+  3.15.1, plus Ruff lint and formatting. The module covers parser behavior,
+  source-serial non-conversion, aggregate reporting, and value non-disclosure.
+- [~] Keep the P7 workbook-wide date convention unresolved. Ambiguous dates
+  still require source-specific evidence; this rule does not assert a global
+  date order or promote workbook semantics.
 
 ## M-106 item-demographic source discovery (2026-09-29)
 

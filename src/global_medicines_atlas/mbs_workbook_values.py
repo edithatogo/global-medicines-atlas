@@ -146,7 +146,11 @@ def iter_workbook_value_batches(
             b"semantic_usage": b"native_observations_only_until_qualified",
             b"conversion_version": CONVERSION_VERSION.encode(),
             b"date_profile": (date_format or "unselected").encode(),
-            b"date_interpretation": b"explicit_text_profile_only_no_serial_dates",
+            b"date_interpretation": (
+                b"unique_calendar_date_per_value_no_order_selected"
+                if date_format == "calendar-unique-dotted"
+                else b"explicit_text_profile_only_no_serial_dates"
+            ),
             b"currency_interpretation": b"per_domain_field",
             b"decimal_type": b"decimal128(38,9)",
         })

@@ -220,6 +220,9 @@ def main() -> None:
         summary["domain_value_profile"] = profile_workbook_values(
             payload, receipt
         )
+        summary["calendar_unique_date_profile"] = profile_workbook_values(
+            payload, receipt, date_format="calendar-unique-dotted"
+        )
         with TemporaryDirectory(prefix="mbs-p7-typed-") as temporary:
             directory = Path(temporary)
             first = build_workbook_value_package(
