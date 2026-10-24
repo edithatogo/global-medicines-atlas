@@ -24,8 +24,32 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     SUPERSEDED_REPORT,
     reconcile_pbs_field_states,
 )
+from global_medicines_atlas.pbs_reference_context import (
+    screen_reference_context,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_context_reconciliation_accepts_balanced_sampling_policy(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    context = screen_reference_context(
+        b'<root xmlns="http://schema.pbs.gov.au/" '
+        b'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
+        b'xmlns:xlink="http://www.w3.org/1999/xlink" '
+        b'xmlns:xml="http://www.w3.org/XML/1998/namespace">'
+        b'<edge rdf:resource="unmatched"/>'
+        b'<target xml:id="target-id"/><link xlink:href="#target-id"/>'
+        b"</root>"
+    )
+    monkeypatch.setattr(
+        reconciliation, "REFERENCE_FIELDS", context["reference_occurrences"]
+    )
+
+    assert reconciliation._context_screen_matches(
+        context, schema_version=context["schema_version"]
+    )
 
 
 def test_every_pinned_field_has_one_evidenced_state():

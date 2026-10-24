@@ -20,6 +20,7 @@ from global_medicines_atlas.pbs_native_reference_screen import (
 )
 from global_medicines_atlas.pbs_reference_context import (
     encode_reference_context_receipt,
+    screen_reference_context,
 )
 from global_medicines_atlas.pbs_reference_meaning import (
     MAX_CONTEXT_REPORT_BYTES,
@@ -359,6 +360,27 @@ def test_enriched_v3_context_validates_without_promoting_links():
     assert validated["schema_version"] == 3
     assert validated["document_scope"] == "single_xml_member"
     assert validated["semantic_relationships_qualified"] is False
+
+
+def test_new_context_sampling_policy_passes_through_meaning_consumer():
+    produced = screen_reference_context(
+        b'<root xmlns="http://schema.pbs.gov.au/" '
+        b'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
+        b'xmlns:xlink="http://www.w3.org/1999/xlink" '
+        b'xmlns:xml="http://www.w3.org/XML/1998/namespace">'
+        b'<edge rdf:resource="unmatched"/>'
+        b'<target xml:id="target-id"/><link xlink:href="#target-id"/>'
+        b"</root>"
+    )
+
+    validated = _validate_reference_context(
+        produced, produced["reference_occurrences"]
+    )
+
+    assert validated["schema_version"] == 3
+    assert validated["example_selection_policy"] == (
+        "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets"
+    )
 
 
 @pytest.mark.parametrize(

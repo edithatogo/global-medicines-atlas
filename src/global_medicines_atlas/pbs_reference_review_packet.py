@@ -29,6 +29,10 @@ ENRICHED_CONTEXT_SCHEMA_VERSION = 3
 STRATIFIED_CONTEXT_EXAMPLE_POLICY = (
     "up_to_five_value_free_examples_per_structural_stratum"
 )
+STRATIFIED_CONTEXT_EXAMPLE_POLICIES = {
+    STRATIFIED_CONTEXT_EXAMPLE_POLICY,
+    "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets",
+}
 MEANING_REPORT_SCHEMA_VERSION = 3
 MAX_OCCURRENCE_BYTES = 4096
 MAX_QNAME_BYTES = 256
@@ -140,10 +144,11 @@ def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements, t
         }
     ):
         raise ValueError("reference context contract differs")
-    if (
-        version == STRATIFIED_CONTEXT_SCHEMA_VERSION
-        and context["example_selection_policy"]
-        != STRATIFIED_CONTEXT_EXAMPLE_POLICY
+    if version in {
+        STRATIFIED_CONTEXT_SCHEMA_VERSION,
+        ENRICHED_CONTEXT_SCHEMA_VERSION,
+    } and context["example_selection_policy"] not in (
+        STRATIFIED_CONTEXT_EXAMPLE_POLICIES
     ):
         raise ValueError("reference context contract differs")
     for flag in _CONTEXT_FLAGS:

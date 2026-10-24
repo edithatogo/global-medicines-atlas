@@ -176,7 +176,7 @@ def _enriched_meaning_report() -> dict[str, Any]:
     context = report["source_context_screen"]
     context["schema_version"] = 3
     context["example_selection_policy"] = (
-        "up_to_five_value_free_examples_per_structural_stratum"
+        "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets"
     )
     context["uri_resolution_screen_performed"] = True
     context["document_scope"] = "single_xml_member"
