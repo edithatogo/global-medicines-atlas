@@ -167,7 +167,7 @@ def test_context_examples_cover_structural_strata_without_emitting_values():
 
     report = screen_reference_context(xml)
 
-    assert report["examples_emitted"] < report["strata_count"]
+    assert report["examples_emitted"] == report["strata_count"]
     assert all(len(row["examples"]) <= 1 for row in report["strata"])
     assert all(
         row["examples_omitted"] == row["occurrences"] - len(row["examples"])
@@ -186,14 +186,7 @@ def test_context_example_budget_covers_rdf_and_xlink_kinds(
     monkeypatch: pytest.MonkeyPatch,
 ):
     monkeypatch.setattr(context_module, "MAX_REPORT_EXAMPLE_BYTES", 12_000)
-    monkeypatch.setattr(
-        context_module, "MAX_REPORT_EXAMPLE_BYTES_PER_KIND", 6_000
-    )
-    monkeypatch.setattr(
-        context_module,
-        "MAX_REPORT_EXAMPLE_BYTES_PER_KIND_STATUS",
-        1_200,
-    )
+    monkeypatch.setattr(context_module, "MAX_REPORT_EXAMPLES", 6)
     rdf_references = "".join(
         f'<rdf-edge-{index:02d} rdf:resource="missing-{index}"/>'
         for index in range(20)
@@ -214,13 +207,21 @@ def test_context_example_budget_covers_rdf_and_xlink_kinds(
     report = screen_reference_context(xml)
 
     assert any(
-        row["kind"] == "rdf_resource" and row["examples"]
+        row["kind"] == "rdf_resource"
+        and row["match_status"] == "unique_exact_literal"
+        and row["examples"]
         for row in report["strata"]
     )
     assert any(
-        row["kind"] == "xlink_href" and row["examples"]
+        row["kind"] == "xlink_href"
+        and row["match_status"] == "unique_exact_literal"
+        and row["examples"]
         for row in report["strata"]
     )
+    assert report["example_selection_policy"] == (
+        "one_example_per_stratum_round_robin_by_kind_status"
+    )
+    assert report["examples_emitted"] == 6
     assert any(
         row["kind"] == "rdf_resource"
         and row["match_status"] == "unique_exact_literal"
@@ -228,6 +229,55 @@ def test_context_example_budget_covers_rdf_and_xlink_kinds(
         for row in report["strata"]
     )
     assert "target-id" not in json.dumps(report)
+
+
+@pytest.mark.parametrize(
+    ("staging_bytes", "report_bytes", "example_limit", "expected_examples"),
+    [
+        (4 * 1024**2, 64_000, 1, 1),
+        (4 * 1024**2, 1, 6, 0),
+        (1, 64_000, 6, 0),
+    ],
+)
+def test_context_example_budgets_preserve_all_occurrence_counts(
+    monkeypatch: pytest.MonkeyPatch,
+    staging_bytes: int,
+    report_bytes: int,
+    example_limit: int,
+    expected_examples: int,
+) -> None:
+    monkeypatch.setattr(
+        context_module, "MAX_STAGED_EXAMPLE_BYTES", staging_bytes
+    )
+    monkeypatch.setattr(
+        context_module, "MAX_REPORT_EXAMPLE_BYTES", report_bytes
+    )
+    monkeypatch.setattr(context_module, "MAX_REPORT_EXAMPLES", example_limit)
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+      <target rdf:about="target"/><target xml:id="fragment"/>
+      <negative rdf:resource="missing"/>
+      <positive rdf:resource="target"/>
+      <link xlink:href="#fragment"/>
+    </root>"""
+
+    report = screen_reference_context(xml)
+
+    assert report["examples_emitted"] == expected_examples
+    assert report["examples_omitted"] == 3 - expected_examples
+    assert (
+        sum(row["occurrences"] for row in report["strata"])
+        == report["reference_occurrences"]
+        == 3
+    )
+    assert (
+        sum(
+            row["examples_omitted"] + len(row["examples"])
+            for row in report["strata"]
+        )
+        == 3
+    )
 
 
 def test_context_receipt_compression_round_trips_the_complete_profile():
@@ -507,19 +557,9 @@ def test_reference_and_target_base_contexts_are_reported_without_resolution():
         for example in row["examples"]
     ]
     assert ("no_xml_base", "no_xml_base") in target_contexts
-    assert ("no_xml_base", "xml_base_present") in target_contexts
     assert ("xml_base_present", "no_xml_base") in target_contexts
-    reference_contexts_by_target: dict[str, set[str]] = {}
-    for row in rows:
-        for example in row["examples"]:
-            for target in example["targets"]:
-                reference_contexts_by_target.setdefault(
-                    target["occurrence"], set()
-                ).add(row["xml_base_context"])
-    assert {
-        "no_xml_base",
-        "xml_base_present",
-    } in reference_contexts_by_target.values()
+    assert len(rows) == report["strata_count"]
+    assert all(len(row["examples"]) == 1 for row in rows)
     assert report["uri_resolution_performed"] is False
     serialized = json.dumps(report)
     assert "example.invalid" not in serialized
