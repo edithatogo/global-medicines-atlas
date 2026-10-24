@@ -67,8 +67,12 @@ def enrich_uri_review_packet(  # ruff: ignore[too-many-branches,too-many-locals,
         raise ContextEnrichmentError("context value boundary is not preserved")
 
     examples: dict[str, tuple[dict[str, Any], dict[str, Any]]] = {}
-    for stratum in context.get("strata", []):
-        for example in stratum.get("examples", []):
+    strata = cast("list[dict[str, Any]]", context.get("strata", []))
+    for stratum in strata:
+        context_examples = cast(
+            "list[dict[str, Any]]", stratum.get("examples", [])
+        )
+        for example in context_examples:
             address = example.get("reference_occurrence")
             if not isinstance(address, str):
                 raise ContextEnrichmentError("context occurrence is invalid")
@@ -94,8 +98,11 @@ def enrich_uri_review_packet(  # ruff: ignore[too-many-branches,too-many-locals,
         if match is None:
             raise ContextEnrichmentError("context occurrence is absent")
         stratum, example = match
-        targets = []
-        for target in example.get("targets", []):
+        targets: list[dict[str, Any]] = []
+        context_targets = cast(
+            "list[dict[str, Any]]", example.get("targets", [])
+        )
+        for target in context_targets:
             target_path = target.get("occurrence")
             target_qname = target.get("qname")
             if not isinstance(target_path, str) or not isinstance(
@@ -121,13 +128,15 @@ def enrich_uri_review_packet(  # ruff: ignore[too-many-branches,too-many-locals,
         def ancestry(item: Any) -> dict[str, str] | None:
             if item is None:
                 return None
-            if not isinstance(item, dict) or not isinstance(
-                item.get("occurrence"), str
-            ):
+            if not isinstance(item, dict):
+                raise ContextEnrichmentError("context ancestry is invalid")
+            ancestry_item = cast("dict[str, Any]", item)
+            address = ancestry_item.get("occurrence")
+            if not isinstance(address, str):
                 raise ContextEnrichmentError("context ancestry is invalid")
             return {
-                "element_qname": str(item.get("qname", "unknown")),
-                "occurrence_sha256": _digest(item["occurrence"]),
+                "element_qname": str(ancestry_item.get("qname", "unknown")),
+                "occurrence_sha256": _digest(address),
             }
 
         row = dict(case)
