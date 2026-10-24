@@ -102,7 +102,9 @@ def _profile_field_rows(
                 sheet.get("candidate_rows"), "header profile candidates"
             )
             for candidate in candidates:
-                row_index = _int(candidate.get("row_index"), "candidate row index")
+                row_index = _int(
+                    candidate.get("row_index"), "candidate row index"
+                )
                 bindings = _dict_list(
                     candidate.get("column_bindings", []),
                     "header column bindings",
@@ -110,12 +112,18 @@ def _profile_field_rows(
                 for binding in bindings:
                     column = binding.get("column")
                     status = binding.get("status")
-                    state = status_map.get(status) if isinstance(status, str) else None
+                    state = (
+                        status_map.get(status)
+                        if isinstance(status, str)
+                        else None
+                    )
                     if not isinstance(column, str) or state is None:
                         raise ValueError("header field binding is malformed")
                     field = binding.get("field")
                     if state == "interpreted" and not isinstance(field, str):
-                        raise ValueError("interpreted header binding lacks a field")
+                        raise ValueError(
+                            "interpreted header binding lacks a field"
+                        )
                     rows.append({
                         "header_profile_sha256": digest,
                         "workbooks_represented": member_counts[digest],
@@ -141,7 +149,12 @@ def _p7_field_rows(
     )
     if lineage.get("source_sha256") != domain_profile.get("source_sha256"):
         raise ValueError("P7 field lineage source identity differs")
-    if sum(_int(row.get("cell_count"), "P7 field cell count") for row in fields) != P7_CELL_COUNT:
+    if (
+        sum(
+            _int(row.get("cell_count"), "P7 field cell count") for row in fields
+        )
+        != P7_CELL_COUNT
+    ):
         raise ValueError("P7 field rows differ from cell denominator")
     rows: list[dict[str, Any]] = []
     for row in fields:
@@ -166,8 +179,22 @@ def _p7_field_rows(
         if sum(item["count"] for item in statuses) != cell_count:
             raise ValueError("P7 field status counts differ from cell count")
         mapping_target = row.get("mapping_target")
-        header_state = "native_unresolved" if mapping_target == "unmapped" else "interpreted"
-        if mapping_target not in {"unmapped", "services", "benefits", "fees", "caps", "descriptions", "hierarchy", "legacy_annotations", "source_headers"}:
+        header_state = (
+            "native_unresolved"
+            if mapping_target == "unmapped"
+            else "interpreted"
+        )
+        if mapping_target not in {
+            "unmapped",
+            "services",
+            "benefits",
+            "fees",
+            "caps",
+            "descriptions",
+            "hierarchy",
+            "legacy_annotations",
+            "source_headers",
+        }:
             raise ValueError("P7 field mapping target is unsupported")
         rows.append({
             "sheet_name": row.get("sheet_name"),
@@ -179,7 +206,9 @@ def _p7_field_rows(
             "cell_count": cell_count,
             "conversion_statuses": statuses,
         })
-    return sorted(rows, key=lambda row: (str(row["sheet_name"]), str(row["column"])))
+    return sorted(
+        rows, key=lambda row: (str(row["sheet_name"]), str(row["column"]))
+    )
 
 
 def _profile_binding_count(profile: dict[str, Any]) -> tuple[int, int]:

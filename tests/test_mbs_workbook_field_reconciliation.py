@@ -66,7 +66,7 @@ def _inputs() -> tuple[
                         "contract_id": "mbs-demographic-workbook-v1",
                         "disposition": "exact_contract_match",
                     }
-                ]
+                ],
             }
         ]
     }
@@ -217,8 +217,12 @@ def test_report_lists_each_field_role_and_source_value_state() -> None:
     report = reconcile_workbook_field_states(*_inputs())
     cohort = report["historical_workbook_cohort"]
     assert len(cohort["field_rows"]) == 8
-    assert sum(row["workbooks_represented"] for row in cohort["field_rows"]) == 728
-    assert all(row["header_state"] == "interpreted" for row in cohort["field_rows"])
+    assert (
+        sum(row["workbooks_represented"] for row in cohort["field_rows"]) == 728
+    )
+    assert all(
+        row["header_state"] == "interpreted" for row in cohort["field_rows"]
+    )
     assert all(
         row["source_value_state"] == "native_unresolved"
         for row in cohort["field_rows"]
@@ -248,7 +252,9 @@ def _rehash_headers(headers: dict[str, Any]) -> None:
 
 def test_rejects_unrecognized_header_field_state() -> None:
     package, headers, typed, rules, hashes = _inputs()
-    headers["header_profiles"][0]["profile"]["sheets"][0]["candidate_rows"][0]["column_bindings"][0]["status"] = "unknown"
+    headers["header_profiles"][0]["profile"]["sheets"][0]["candidate_rows"][0][
+        "column_bindings"
+    ][0]["status"] = "unknown"
     _rehash_headers(headers)
     headers["interpreted_header_column_binding_count"] = 637
     headers["unresolved_header_label_count"] = 91
@@ -258,16 +264,22 @@ def test_rejects_unrecognized_header_field_state() -> None:
 
 def test_rejects_interpreted_header_without_canonical_field() -> None:
     package, headers, typed, rules, hashes = _inputs()
-    headers["header_profiles"][0]["profile"]["sheets"][0]["candidate_rows"][0]["column_bindings"][0]["field"] = None
+    headers["header_profiles"][0]["profile"]["sheets"][0]["candidate_rows"][0][
+        "column_bindings"
+    ][0]["field"] = None
     _rehash_headers(headers)
-    with pytest.raises(ValueError, match="interpreted header binding lacks a field"):
+    with pytest.raises(
+        ValueError, match="interpreted header binding lacks a field"
+    ):
         reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
 
 def test_rejects_p7_field_lineage_with_wrong_source_identity() -> None:
     package, headers, typed, rules, hashes = _inputs()
     typed["workbook_field_lineage"]["source_sha256"] = _hash(778)
-    with pytest.raises(ValueError, match="P7 field lineage source identity differs"):
+    with pytest.raises(
+        ValueError, match="P7 field lineage source identity differs"
+    ):
         reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
 
@@ -276,14 +288,18 @@ def test_rejects_p7_field_conversion_statuses_that_do_not_cover_cells() -> None:
     typed["workbook_field_lineage"]["fields"][0]["statuses"] = [
         ["preserved", 13_741]
     ]
-    with pytest.raises(ValueError, match="P7 field status counts differ from cell count"):
+    with pytest.raises(
+        ValueError, match="P7 field status counts differ from cell count"
+    ):
         reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
 
 def test_rejects_unknown_p7_field_mapping_target() -> None:
     package, headers, typed, rules, hashes = _inputs()
     typed["workbook_field_lineage"]["fields"][0]["mapping_target"] = "inferred"
-    with pytest.raises(ValueError, match="P7 field mapping target is unsupported"):
+    with pytest.raises(
+        ValueError, match="P7 field mapping target is unsupported"
+    ):
         reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
 
@@ -384,7 +400,9 @@ def test_rejects_a_selected_p7_date_profile() -> None:
 
 
 @pytest.mark.parametrize("value", [True, -1, 1.0, "1"])
-def test_nonnegative_integer_helper_rejects_non_integer_values(value: Any) -> None:
+def test_nonnegative_integer_helper_rejects_non_integer_values(
+    value: Any,
+) -> None:
     with pytest.raises(ValueError, match="nonnegative integer"):
         _int(value, "count")
 
@@ -447,7 +465,10 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         ("candidate_promoted", "promoted workbook state"),
         ("cohort_summary", "summary denominator differs"),
         ("profile_shape", "header profile group identity is malformed"),
-        ("profile_digest_mismatch", "header profile digest differs from profile"),
+        (
+            "profile_digest_mismatch",
+            "header profile digest differs from profile",
+        ),
         ("profile_sheets", "header profile sheets are malformed"),
         ("profile_duplicate", "duplicate header profile digest"),
         ("profile_member_count", "profile member denominator differs"),
@@ -487,9 +508,13 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
         headers["workbook_assignments"].pop()
     elif case == "candidate_duplicate":
         for key in ("source_sha256", "member_path_sha256", "member_sha256"):
-            package["candidate_outputs_by_group"]["1"][key] = package["candidate_outputs_by_group"]["0"][key]
+            package["candidate_outputs_by_group"]["1"][key] = package[
+                "candidate_outputs_by_group"
+            ]["0"][key]
     elif case == "candidate_promoted":
-        package["candidate_outputs_by_group"]["0"]["field_state"] = "interpreted"
+        package["candidate_outputs_by_group"]["0"]["field_state"] = (
+            "interpreted"
+        )
     elif case == "cohort_summary":
         package["unique_member_identities"] = 90
     elif case == "profile_shape":
@@ -500,7 +525,9 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
         headers["header_profiles"][0]["profile"]["sheets"] = None
         _rehash_headers(headers)
     elif case == "profile_duplicate":
-        headers["header_profiles"].append(copy.deepcopy(headers["header_profiles"][0]))
+        headers["header_profiles"].append(
+            copy.deepcopy(headers["header_profiles"][0])
+        )
         headers["profile_count"] = 2
     elif case == "profile_member_count":
         headers["header_profiles"][0]["member_count"] = 90
@@ -515,7 +542,9 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
     elif case == "unresolved_candidate":
         headers["unresolved_header_candidate_count"] = 1
     elif case == "unsupported_semantics":
-        package["silver_field_state_coverage"]["source_column_meaning_inferred"] = True
+        package["silver_field_state_coverage"][
+            "source_column_meaning_inferred"
+        ] = True
     elif case == "p7_kind":
         typed["kind"] = "wrong"
     elif case == "p7_denominator":
@@ -529,7 +558,9 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
     elif case == "p7_source":
         rules["source"]["sha256"] = _hash(888)
     elif case == "rules_typed_ref":
-        rules["evidence"]["typed_candidate_qualification"]["sha256"] = _hash(889)
+        rules["evidence"]["typed_candidate_qualification"]["sha256"] = _hash(
+            889
+        )
     elif case == "date_profile":
         rules["rules"]["dates"]["selected_profile"] = "dmy"
     elif case == "hashes":
