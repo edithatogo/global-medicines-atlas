@@ -562,6 +562,19 @@ scope, relation role, target type, predicate meaning, or semantic correctness.
 The sample remains deterministic and non-probabilistic, so no precision or
 recall estimate is available and no semantic relationship is qualified.
 
+The follow-up URI-screen schema v2 adds each selected reference kind, its
+structural attribute role, and reference element QName. For a unique in-member
+resolution it also binds the target element QName and a digest of its
+structural occurrence address. QNames are exposed only through explicit
+namespace/local-name allowlists; unknown QNames are bucketed. Missing or
+ambiguous targets have no target identity. The case record marks semantic
+review pending and preserves abstention. These value-free bindings improve
+case review but do not assign domain meaning or qualify a semantic
+relationship; an exact-main hosted rerun is required before they become
+current readback evidence. The occurrence-address hashes are deterministic
+structural digests, not anonymization; they are not a privacy boundary if
+source paths or source bytes are otherwise known.
+
 The earlier context screen records 1,094,033 unique RDF literal candidates,
 73,577 RDF no-target cases, and 992,456 unique XLink fragment candidates. That
 context pass did not perform URI/base resolution. The later URI screen resolves

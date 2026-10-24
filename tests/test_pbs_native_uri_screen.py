@@ -57,15 +57,19 @@ def test_resolves_only_defensible_absolute_rdf_and_bare_member_fragments():
 def test_binds_selected_occurrence_outcome_by_address_digest_only():
     member = b"""<pbs:root xmlns:pbs="http://schema.pbs.gov.au/"
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-      <pbs:target rdf:about="https://synthetic.example/target"/>
-      <pbs:link rdf:resource="https://synthetic.example/target"/>
+      <pbs:mpp rdf:about="https://synthetic.example/target"/>
+      <pbs:mp rdf:resource="https://synthetic.example/target"/>
     </pbs:root>"""
     address = (
         "/{http:~1~1schema.pbs.gov.au~1}root/1/"
-        "{http:~1~1schema.pbs.gov.au~1}link/1/attributes/"
+        "{http:~1~1schema.pbs.gov.au~1}mp/1/attributes/"
         "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource"
     )
     case_id = "a" * 64
+    target_address = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/1/"
+        "{http:~1~1schema.pbs.gov.au~1}mpp/1"
+    )
     report = screen_pbs_native_uris(
         member,
         review_cases=[{"case_id": case_id, "reference_occurrence": address}],
@@ -76,7 +80,15 @@ def test_binds_selected_occurrence_outcome_by_address_digest_only():
             "reference_occurrence_sha256": hashlib.sha256(
                 address.encode()
             ).hexdigest(),
+            "reference_kind": "rdf_resource",
+            "structural_role": "rdf_resource_attribute",
+            "reference_element_qname": "pbs:mp",
             "uri_resolution": "absolute_uri_unique_candidate",
+            "target_element_qname": "pbs:mpp",
+            "target_occurrence_sha256": hashlib.sha256(
+                target_address.encode()
+            ).hexdigest(),
+            "semantic_review_state": "pending",
             "adjudication": "unreviewed",
             "semantic_relationship_qualified": False,
         }
@@ -85,6 +97,7 @@ def test_binds_selected_occurrence_outcome_by_address_digest_only():
     assert "https://synthetic.example" not in json.dumps(report)
     assert report["review_cases_adjudicated"] == 0
     assert report["review_case_sampling_is_probability_based"] is False
+    assert report["schema_version"] == module.URI_SCREEN_SCHEMA_VERSION
 
 
 def test_selected_uri_review_case_must_match_a_unique_reference_occurrence():
@@ -110,6 +123,114 @@ def test_selected_uri_review_case_must_match_a_unique_reference_occurrence():
             review_cases=[{"case_id": "bad", "reference_occurrence": "/x"}],
         )
     assert caught.value.code == "review-case-binding-invalid"
+
+
+def test_selected_unresolved_case_has_no_target_identity():
+    member = b"""<pbs:root xmlns:pbs="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <pbs:covert-field rdf:resource="https://synthetic.example/missing"/>
+    </pbs:root>"""
+    address = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/1/"
+        "{http:~1~1schema.pbs.gov.au~1}covert-field/1/attributes/"
+        "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource"
+    )
+    report = screen_pbs_native_uris(
+        member,
+        review_cases=[{"case_id": "b" * 64, "reference_occurrence": address}],
+    )
+    binding = report["review_case_uri_bindings"][0]
+    assert binding["uri_resolution"] == "absolute_uri_no_member_definition"
+    assert binding["reference_kind"] == "rdf_resource"
+    assert binding["structural_role"] == "rdf_resource_attribute"
+    assert binding["reference_element_qname"] == "other_or_unresolved"
+    assert binding["semantic_review_state"] == "pending"
+    assert binding["target_element_qname"] is None
+    assert binding["target_occurrence_sha256"] is None
+    encoded = json.dumps(binding)
+    assert "synthetic.example" not in encoded
+    assert "covert-field" not in encoded
+
+
+def test_binds_unique_xlink_target_element_without_emitting_id_value():
+    member = b"""<pbs:root xmlns:pbs="http://schema.pbs.gov.au/"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+      <pbs:pharmaceutical-item xml:id="private-id"/>
+      <pbs:mp xlink:href="#private-id"/>
+    </pbs:root>"""
+    address = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/1/"
+        "{http:~1~1schema.pbs.gov.au~1}mp/1/attributes/"
+        "{http:~1~1www.w3.org~11999~1xlink}href"
+    )
+    target_address = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/1/"
+        "{http:~1~1schema.pbs.gov.au~1}pharmaceutical-item/1"
+    )
+    report = screen_pbs_native_uris(
+        member,
+        review_cases=[{"case_id": "c" * 64, "reference_occurrence": address}],
+    )
+    binding = report["review_case_uri_bindings"][0]
+    assert binding["uri_resolution"] == "same_member_unique_id"
+    assert binding["reference_kind"] == "xlink_href"
+    assert binding["structural_role"] == "xlink_href_attribute"
+    assert binding["reference_element_qname"] == "pbs:mp"
+    assert binding["target_element_qname"] == "pbs:pharmaceutical-item"
+    assert (
+        binding["target_occurrence_sha256"]
+        == hashlib.sha256(target_address.encode()).hexdigest()
+    )
+    assert "private-id" not in json.dumps(binding)
+
+
+def test_review_allowlist_preserves_observed_secondary_pbs_namespace_qname():
+    member = b"""<pbs:root xmlns:pbs="http://schema.pbs.gov.au/"
+      xmlns:data="http://pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <data:pricing rdf:about="https://synthetic.example/target"/>
+      <pbs:mp rdf:resource="https://synthetic.example/target"/>
+    </pbs:root>"""
+    address = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/1/"
+        "{http:~1~1schema.pbs.gov.au~1}mp/1/attributes/"
+        "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource"
+    )
+    report = screen_pbs_native_uris(
+        member,
+        review_cases=[{"case_id": "d" * 64, "reference_occurrence": address}],
+    )
+    binding = report["review_case_uri_bindings"][0]
+    assert binding["reference_element_qname"] == "pbs:mp"
+    assert binding["target_element_qname"] == "pbsdata:pricing"
+    encoded = json.dumps(report)
+    assert "https://synthetic.example" not in encoded
+    assert address not in encoded
+
+
+def test_selected_unique_target_buckets_unrecognized_target_qname():
+    member = b"""<pbs:root xmlns:pbs="http://schema.pbs.gov.au/"
+      xmlns:other="urn:synthetic:unknown"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <other:covert rdf:about="https://synthetic.example/target"/>
+      <pbs:mp rdf:resource="https://synthetic.example/target"/>
+    </pbs:root>"""
+    address = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/1/"
+        "{http:~1~1schema.pbs.gov.au~1}mp/1/attributes/"
+        "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource"
+    )
+    report = screen_pbs_native_uris(
+        member,
+        review_cases=[{"case_id": "e" * 64, "reference_occurrence": address}],
+    )
+    binding = report["review_case_uri_bindings"][0]
+    assert binding["uri_resolution"] == "absolute_uri_unique_candidate"
+    assert binding["target_element_qname"] == "other_or_unresolved"
+    assert isinstance(binding["target_occurrence_sha256"], str)
+    encoded = json.dumps(binding)
+    assert "covert" not in encoded
+    assert "synthetic.example" not in encoded
 
 
 def test_review_case_count_and_occurrence_address_are_bounded():
@@ -240,23 +361,25 @@ def test_qname_denominators_are_aggregate_and_unknown_namespaces_are_bucketed():
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
       xmlns:other="urn:synthetic:unknown">
       <rdf:Description rdf:about="https://synthetic.example/subject">
-        <pbs:item rdf:resource="https://synthetic.example/target"/>
-        <other:private rdf:resource="https://synthetic.example/unknown"/>
+        <pbs:mp rdf:resource="https://synthetic.example/target"/>
+        <pbs:covert-field rdf:resource="https://synthetic.example/hidden"/>
+        <other:covert rdf:resource="https://synthetic.example/unknown"/>
       </rdf:Description>
     </pbs:root>"""
     report = screen_pbs_native_uris(member)
     assert report["definition_element_qname_counts"] == {"rdf:Description": 1}
     assert report["predicate_qname_counts"] == {
-        "other_or_unresolved": 1,
-        "pbs:item": 1,
+        "other_or_unresolved": 2,
+        "pbs:mp": 1,
     }
     assert report["target_element_qname_counts"] == {
-        "other_or_unresolved": 1,
-        "pbs:item": 1,
+        "other_or_unresolved": 2,
+        "pbs:mp": 1,
     }
     encoded = json.dumps(report)
     assert "urn:synthetic:unknown" not in encoded
-    assert "private" not in encoded
+    assert "covert-field" not in encoded
+    assert "covert" not in encoded
 
 
 def test_output_and_errors_do_not_include_source_values():
