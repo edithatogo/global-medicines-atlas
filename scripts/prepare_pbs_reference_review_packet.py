@@ -25,10 +25,15 @@ def main() -> int:
     parser.add_argument("--max-cases", type=int, default=MAX_PACKET_CASES)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    if args.output.exists():
+    root = args.root.resolve()
+    destination = (
+        args.output if args.output.is_absolute() else root / args.output
+    )
+    destination = destination.resolve()
+    if destination.exists():
         parser.error("existing review packet must be preserved")
     meaning = review_reference_meanings(
-        args.root,
+        root,
         args.screen_receipt,
         require_per_kind=True,
         expected_exact_commit=args.exact_commit,
@@ -43,11 +48,12 @@ def main() -> int:
         "report": packet,
         "report_sha256": hashlib.sha256(canonical).hexdigest(),
     }
-    destination = args.root / args.output
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(
-        json.dumps(envelope, sort_keys=True, indent=2) + "\n", encoding="utf-8"
-    )
+    try:
+        with destination.open("x", encoding="utf-8") as output:
+            output.write(json.dumps(envelope, sort_keys=True, indent=2) + "\n")
+    except FileExistsError:
+        parser.error("existing review packet must be preserved")
     return 0
 
 

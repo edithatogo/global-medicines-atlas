@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import json
+import sys
+from pathlib import Path
 from typing import Any, cast
 
 import pytest
+import scripts.prepare_pbs_reference_review_packet as packet_cli
 
 from global_medicines_atlas.pbs_reference_review_packet import (
     MAX_PACKET_CASES,
@@ -13,6 +16,14 @@ from global_medicines_atlas.pbs_reference_review_packet import (
 )
 
 _PBS = "{http://schema.pbs.gov.au/}"
+
+
+def _cli_meaning_stub(*_args: Any, **_kwargs: Any) -> dict[str, Any]:
+    return {}
+
+
+def _cli_packet_stub(*_args: Any, **_kwargs: Any) -> dict[str, Any]:
+    return {"ok": True}
 
 
 def _example(
@@ -442,3 +453,82 @@ def test_review_packet_rejects_unreviewed_or_malformed_contract_paths(  # ruff: 
 
     with pytest.raises(ValueError, match=message):
         prepare_reference_review_packet(report)
+
+
+def test_packet_cli_resolves_relative_output_against_explicit_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    working_directory = tmp_path / "working"
+    root = tmp_path / "repository"
+    working_directory.mkdir()
+    root.mkdir()
+    unrelated = working_directory / "packet.json"
+    unrelated.write_text("preserve cwd file", encoding="utf-8")
+    monkeypatch.chdir(working_directory)
+    monkeypatch.setattr(
+        packet_cli, "review_reference_meanings", _cli_meaning_stub
+    )
+    monkeypatch.setattr(
+        packet_cli, "prepare_reference_review_packet", _cli_packet_stub
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "prepare-packet",
+            "--root",
+            str(root),
+            "--screen-receipt",
+            "receipt.json",
+            "--exact-commit",
+            "a" * 40,
+            "--run-id",
+            "123",
+            "--output",
+            "packet.json",
+        ],
+    )
+
+    assert packet_cli.main() == 0
+    written = json.loads((root / "packet.json").read_text(encoding="utf-8"))
+    assert written["report"] == {"ok": True}
+    assert unrelated.read_text(encoding="utf-8") == "preserve cwd file"
+
+
+def test_packet_cli_preserves_existing_output_under_explicit_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    working_directory = tmp_path / "working"
+    root = tmp_path / "repository"
+    working_directory.mkdir()
+    root.mkdir()
+    existing = root / "packet.json"
+    existing.write_text("preserve root file", encoding="utf-8")
+    monkeypatch.chdir(working_directory)
+    monkeypatch.setattr(
+        packet_cli, "review_reference_meanings", _cli_meaning_stub
+    )
+    monkeypatch.setattr(
+        packet_cli, "prepare_reference_review_packet", _cli_packet_stub
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "prepare-packet",
+            "--root",
+            str(root),
+            "--screen-receipt",
+            "receipt.json",
+            "--exact-commit",
+            "a" * 40,
+            "--run-id",
+            "123",
+            "--output",
+            "packet.json",
+        ],
+    )
+
+    with pytest.raises(SystemExit, match="2"):
+        packet_cli.main()
+    assert existing.read_text(encoding="utf-8") == "preserve root file"
