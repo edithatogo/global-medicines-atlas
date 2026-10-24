@@ -482,10 +482,24 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   regressions. The four directly affected test nodes pass with 100% statement
   and branch coverage for the new profiler; no repository-wide local suite was
   rerun.
-- [~] Dispatch the aggregate profile after the new workflow reaches main and
-  reconcile its report. The P7 workbook-wide date convention remains
-  unresolved for ambiguous cells; no source-owner confirmation or global
-  date order is claimed.
+- [x] Dispatch the main-only aggregate profile against the exact pinned P7
+  source. Run `40086831574` binds the exact 87,727-byte, SHA-256
+  `2f1cbc2d...e27b8` object and reports 86 uniquely resolvable dotted dates,
+  1,194 ambiguous dates, and no invalid or numeric-serial date cells among the
+  1,280 populated date cells. The artifact is value-free at
+  `quality/qualifications/mbs-p7-calendar-profile-20261024-40086831574.json`.
+- [x] Preserve the prior date-order report unchanged and identify its
+  `1,276 both / 4 DMY-only / 0 MDY-only` aggregate as inconsistent with the
+  newer exact-source profile; do not carry the old count into a selected
+  semantic rule.
+- [x] Extend profile schema v2 to separate uniquely DMY-valid, uniquely
+  MDY-valid, and same-components-valid dates while keeping order ambiguous
+  dates distinct. Focused profile tests pass with 100% statement and branch
+  coverage; the exact-source profile must be rerun after this change reaches
+  main before updating the rule receipt.
+- [~] Select only the per-cell unique-date rule after the order-partitioned
+  exact-source report is reconciled. Keep workbook-wide order and current
+  candidate-output promotion unresolved until then.
 
 ## M-106 item-demographic source discovery (2026-09-29)
 

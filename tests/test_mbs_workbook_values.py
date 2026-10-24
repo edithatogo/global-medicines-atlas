@@ -90,16 +90,20 @@ def test_aggregate_calendar_profile_counts_without_emitting_values() -> None:
         '<c r="C4" t="inlineStr"><is><t>06.06.2024</t></is></c>'
         '<c r="C5" t="inlineStr"><is><t>31.02.2024</t></is></c>'
         '<c r="C6"><v>45000</v></c>'
+        '<c r="C7" t="inlineStr"><is><t>07.15.2024</t></is></c>'
     )
     profile = profile_p7_calendar_dates(payload, _receipt(payload))
 
     assert profile["source_sha256"] == sha256(payload).hexdigest()
+    assert profile["schema_version"] == 2
     assert profile["date_order_selected"] is False
     assert profile["source_values_emitted"] is False
     assert profile["by_field"]["ItemStartDate"] == {
         "ambiguous_calendar_order": 1,
         "invalid": 1,
-        "unique_calendar_date": 2,
+        "unique_calendar_date": 1,
+        "unique_dmy_calendar_date": 1,
+        "unique_mdy_calendar_date": 1,
         "unsupported_serial_date": 1,
     }
     assert "15.07.2024" not in json.dumps(profile)
@@ -170,7 +174,7 @@ def test_calendar_profile_cli_emits_only_pinned_aggregate_output(
 
     assert report["profile"]["by_field"]["ItemStartDate"] == {
         "ambiguous_calendar_order": 1,
-        "unique_calendar_date": 1,
+        "unique_dmy_calendar_date": 1,
     }
     assert report["profile"]["source_values_emitted"] is False
     assert "15.07.2024" not in json.dumps(report)
