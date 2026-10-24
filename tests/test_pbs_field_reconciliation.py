@@ -20,6 +20,7 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     REFERENCE_REVIEW,
     REFERENCE_SCREEN,
     SCREEN,
+    SEMANTIC_ADJUDICATION,
     SUPERSEDED_REPORT,
     reconcile_pbs_field_states,
 )
@@ -31,12 +32,13 @@ def test_every_pinned_field_has_one_evidenced_state():
     report = reconcile_pbs_field_states(ROOT)
     coverage = report["field_state_coverage"]
     assert coverage == {
-        "interpreted": 17_252_839,
-        "native_unresolved": 955_919,
+        "interpreted": 40_667,
+        "native_unresolved": 18_208_758 - 40_667,
         "unavailable": 0,
         "source_fields": 18_208_758,
         "denominator_closed": True,
         "all_native_values_remain_unresolved": True,
+        "semantic_field_states_distinct_from_structural_destinations": True,
     }
     assert (
         sum(
@@ -50,22 +52,26 @@ def test_every_pinned_field_has_one_evidenced_state():
         == coverage["source_fields"]
     )
     assert all(
-        row["state"] in {"interpreted", "native_unresolved"}
+        row["semantic_state"] in {"interpreted", "native_unresolved"}
         for row in report["path_reconciliation"]
     )
     for role, row in report["role_reconciliation"].items():
-        assert row["state"] in {"interpreted", "native_unresolved"}
-        if row["state"] == "interpreted":
-            assert row["interpretation_evidence"] is not None, role
-            assert (
-                row["interpretation_evidence"]["value_interpretation"] is False
+        assert row["structural_state"] in {
+            "structural_destination_mapped",
+            "unmapped_native",
+        }
+        if row["structural_state"] == "structural_destination_mapped":
+            assert row["structural_evidence"] is not None, role
+            assert row["structural_evidence"]["evidence_kind"] == (
+                "structural_destination_only"
             )
+            assert row["structural_evidence"]["value_interpretation"] is False
         elif role != "references":
-            assert row["interpretation_evidence"] is None
+            assert row["structural_evidence"] is None
     reference = report["role_reconciliation"]["references"]
-    assert reference["state"] == "native_unresolved"
+    assert reference["structural_state"] == "unmapped_native"
     assert (
-        reference["interpretation_evidence"]["semantic_relationships_qualified"]
+        reference["structural_evidence"]["semantic_relationships_qualified"]
         is False
     )
     assert (
@@ -173,17 +179,135 @@ def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
 def test_interpreted_roles_carry_their_domain_specific_limits():
     report = reconcile_pbs_field_states(ROOT)
     for role in ("prices", "pricing_components"):
-        evidence = report["role_reconciliation"][role][
-            "interpretation_evidence"
-        ]
+        evidence = report["role_reconciliation"][role]["structural_evidence"]
+        assert evidence["evidence_kind"] == "structural_destination_only"
         assert evidence["domain"] == "price"
         assert "payable benefit or patient cost" in evidence["limits"][0]
     for role in ("restrictions", "prescribing_rules"):
-        evidence = report["role_reconciliation"][role][
-            "interpretation_evidence"
-        ]
+        evidence = report["role_reconciliation"][role]["structural_evidence"]
+        assert evidence["evidence_kind"] == "structural_destination_only"
         assert evidence["domain"] == "restriction"
         assert evidence["limits"]
+
+
+def test_semantic_adjudication_promotes_only_exact_supported_paths():
+    report = reconcile_pbs_field_states(ROOT)
+    adjudication = report["semantic_adjudication"]
+    assert adjudication["field_count_conserved"] is True
+    assert adjudication["source_values_read"] is False
+    assert adjudication["source_values_emitted"] is False
+    assert adjudication["interpretations"] == {
+        "amt_literal_reference": 8_328,
+        "amt_literal_reference_resource": 8_328,
+        "item_identity_literal": 2_798,
+        "product_presentation_label": 12_128,
+        "restriction_text": 6_056,
+        "restriction_effective_date_literal": 3_028,
+        "schedule_metadata_valid_date_literal": 1,
+    }
+    assert not any(
+        row["semantic_interpretation"]["domain"]
+        == "classification_code_candidate"
+        for row in report["path_reconciliation"]
+    )
+    assert any(
+        "ATC typing is not a source-level assertion" in claim
+        for claim in adjudication["explicit_non_claims"]
+    )
+    assert len(adjudication["explicit_non_claims"]) == 7
+    assert any(
+        "price" in claim for claim in adjudication["explicit_non_claims"]
+    )
+    assert any(
+        "currentness" in claim for claim in adjudication["explicit_non_claims"]
+    )
+    assert any(
+        "unknown wrappers" in claim
+        for claim in adjudication["explicit_non_claims"]
+    )
+    assert any(
+        "not resolved" in claim for claim in adjudication["explicit_non_claims"]
+    )
+
+
+@pytest.mark.parametrize(
+    ("path", "state", "domain"),
+    [
+        (
+            "/{http:~1~1schema.pbs.gov.au~1}root/{http:~1~1schema.pbs.gov.au~1}classification/{http:~1~1schema.pbs.gov.au~1}code/text",
+            "native_unresolved",
+            "classification_code_candidate",
+        ),
+        (
+            "/{http:~1~1schema.pbs.gov.au~1}root/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/{http:~1~1schema.pbs.gov.au~1}restriction/attributes/effective-date",
+            "interpreted",
+            "restriction_effective_date_literal",
+        ),
+        (
+            "/{http:~1~1schema.pbs.gov.au~1}root/{http:~1~1schema.pbs.gov.au~1}schedule/attributes/effective-date",
+            "interpreted",
+            "schedule_effective_date_literal",
+        ),
+    ],
+)
+def test_exact_unusual_domain_paths_keep_bounded_semantics(path, state, domain):
+    result = reconciliation._semantic_adjudication(path)
+    assert result["state"] == state
+    assert result["domain"] == domain
+
+
+def test_restriction_text_is_limited_to_direct_source_slots():
+    direct = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/"
+        "{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/"
+        "{http:~1~1schema.pbs.gov.au~1}restriction/text"
+    )
+    nested = direct.removesuffix("/text") + (
+        "/{http:~1~1docbook.org~1ns~1docbook#}para/text"
+    )
+    assert reconciliation._semantic_adjudication(direct)["domain"] == (
+        "restriction_text"
+    )
+    assert reconciliation._semantic_adjudication(nested)["state"] == (
+        "native_unresolved"
+    )
+
+
+def test_versioned_path_qname_matrix_is_reconciled_and_value_free():
+    envelope = json.loads((ROOT / SEMANTIC_ADJUDICATION).read_bytes())
+    receipt = envelope["report"]
+    canonical = json.dumps(
+        receipt, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode()
+    assert hashlib.sha256(canonical).hexdigest() == envelope["report_sha256"]
+    current = reconcile_pbs_field_states(ROOT)
+    assert receipt["field_state_coverage"] == current["field_state_coverage"]
+    assert receipt["semantic_adjudication"] == current["semantic_adjudication"]
+    matrix = receipt["path_qname_matrix"]
+    assert len(matrix) == 5_163
+    assert sum(row["field_count"] for row in matrix) == 18_208_758
+    assert all(
+        "value" not in row and "source_value" not in row for row in matrix
+    )
+    restriction_text = [
+        row for row in matrix if row["domain"] == "restriction_text"
+    ]
+    assert {
+        row["schema_path"].rsplit("/", maxsplit=1)[-1]
+        for row in restriction_text
+    } == {
+        "text",
+        "tail",
+    }
+    assert len(restriction_text) == 2
+    assert all(
+        row["meaning"] == "restriction-associated native text occurrence"
+        and row["rule"]
+        == "exact direct text or tail slot on the pinned PBS prescribing-texts restriction QName path"
+        for row in restriction_text
+    )
+    assert receipt["scope"]["source_values_read"] is False
+    assert receipt["scope"]["source_values_emitted"] is False
 
 
 @pytest.mark.parametrize(

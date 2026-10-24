@@ -91,6 +91,9 @@ SOURCE_PATHS = 5_163
 PATH_INVENTORY = (
     "quality/qualifications/pbs-schema-paths-20261022-39667604237.json"
 )
+SEMANTIC_ADJUDICATION = (
+    "quality/qualifications/pbs-domain-semantic-adjudication-20261024.json"
+)
 
 
 def _file_sha256(path: Path) -> str:
@@ -103,6 +106,185 @@ def _entity_path(schema_path: str) -> str:
     if schema_path.endswith(("/text", "/tail")):
         return schema_path.rsplit("/", maxsplit=1)[0]
     raise ValueError("PBS schema path does not identify a native field")
+
+
+PBS_QNAME = "{http://schema.pbs.gov.au/}"
+XML_ID_QNAME = "{http://www.w3.org/XML/1998/namespace}id"
+RDF_RESOURCE_QNAME = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource"
+
+
+def _path_qnames(schema_path: str) -> tuple[str, ...]:
+    """Decode inventory JSON-pointer segments without inspecting source values."""
+    return tuple(
+        segment.replace("~1", "/").replace("~0", "~")
+        for segment in schema_path.split("/")[1:]
+    )
+
+
+def _semantic_adjudication(schema_path: str) -> dict[str, str | None]:  # ruff: ignore[too-many-return-statements] -- ordered path/QName allowlist keeps each adjudication independently auditable
+    """Apply only exact PBS path/QName decisions supported by the contract."""
+    names = _path_qnames(schema_path)
+    entity = names[:-2] if names[-2] == "attributes" else names[:-1]
+    slot = names[-1]
+    item_path = (
+        PBS_QNAME + "root",
+        PBS_QNAME + "pharmaceutical-items-list",
+        PBS_QNAME + "pharmaceutical-item",
+    )
+    if names[:3] == item_path and names[3:5] == ("attributes", XML_ID_QNAME):
+        return {
+            "state": "interpreted",
+            "domain": "item_identity_literal",
+            "meaning": "source pharmaceutical-item XML identifier literal",
+            "rule": "exact pinned item QName ancestry plus xml:id attribute QName",
+        }
+    if (
+        names[:2] == (PBS_QNAME + "root", PBS_QNAME + "drugs-list")
+        and slot == "text"
+        and (
+            entity[-2:]
+            in {
+                (PBS_QNAME + "tpp", PBS_QNAME + "brand-name"),
+                (PBS_QNAME + "tpuu", PBS_QNAME + "brand-name"),
+            }
+            or entity[-3:]
+            in {
+                (
+                    PBS_QNAME + "tpp",
+                    PBS_QNAME + "brand-name",
+                    PBS_QNAME + "value",
+                ),
+                (
+                    PBS_QNAME + "tpuu",
+                    PBS_QNAME + "brand-name",
+                    PBS_QNAME + "value",
+                ),
+            }
+        )
+    ):
+        return {
+            "state": "interpreted",
+            "domain": "product_presentation_label",
+            "meaning": "source brand-name presentation label text",
+            "rule": "exact PBS drugs-list tpp/tpuu brand-name QName ancestry",
+        }
+    reference_path = (
+        PBS_QNAME + "drug-references-list",
+        PBS_QNAME + "mp-reference",
+        PBS_QNAME + "code",
+    )
+    is_current_reference_path = (
+        len(entity) >= len(reference_path)
+        and entity[-len(reference_path) :] == reference_path
+        and names[0] == PBS_QNAME + "root"
+        and PBS_QNAME + "previous-list" not in entity
+        and (
+            PBS_QNAME + "pharmaceutical-item" in entity
+            or PBS_QNAME + "drugs-list" in entity
+        )
+    )
+    if slot == "text" and is_current_reference_path:
+        return {
+            "state": "interpreted",
+            "domain": "amt_literal_reference",
+            "meaning": "source-local AMT reference code literal",
+            "rule": "exact drug-references-list/mp-reference/code text QName path",
+        }
+    if slot == RDF_RESOURCE_QNAME and is_current_reference_path:
+        return {
+            "state": "interpreted",
+            "domain": "amt_literal_reference_resource",
+            "meaning": "source-local RDF resource literal attached to an AMT reference",
+            "rule": "exact AMT code element plus RDF resource attribute QName",
+        }
+    if (
+        PBS_QNAME + "classification" in entity
+        and entity[-1:] == (PBS_QNAME + "code",)
+        and slot == "text"
+    ):
+        return {
+            "state": "native_unresolved",
+            "domain": "classification_code_candidate",
+            "meaning": None,
+            "rule": "classification/code path is visible, but this value-free inventory cannot bind its unqualified type attribute value ATC",
+        }
+    restriction_entity = (
+        PBS_QNAME + "root",
+        PBS_QNAME + "prescribing-texts-list",
+        PBS_QNAME + "restriction",
+    )
+    restriction_index = (
+        entity.index(PBS_QNAME + "restriction")
+        if PBS_QNAME + "restriction" in entity
+        else None
+    )
+    if entity == restriction_entity and slot in {"text", "tail"}:
+        return {
+            "state": "interpreted",
+            "domain": "restriction_text",
+            "meaning": "restriction-associated native text occurrence",
+            "rule": "exact direct text or tail slot on the pinned PBS prescribing-texts restriction QName path",
+        }
+    if (
+        restriction_index is not None
+        and PBS_QNAME + "previous-list" not in entity
+    ):
+        if (
+            slot == "text"
+            and entity[-3:]
+            == (
+                PBS_QNAME + "restriction",
+                PBS_QNAME + "effective",
+                PBS_QNAME + "date",
+            )
+            and restriction_index == len(entity) - 3
+        ):
+            return {
+                "state": "interpreted",
+                "domain": "restriction_effective_date_literal",
+                "meaning": "source date literal attached beneath this restriction's effective element",
+                "rule": "exact direct PBS restriction/effective/date/text QName path; reference-nested dates excluded",
+            }
+        if (
+            names[-2:] == ("attributes", "effective-date")
+            and entity == names[: restriction_index + 1]
+        ):
+            return {
+                "state": "interpreted",
+                "domain": "restriction_effective_date_literal",
+                "meaning": "date literal attached to this source restriction",
+                "rule": "effective-date attribute on an exact non-historical PBS restriction QName",
+            }
+    if names == (
+        PBS_QNAME + "root",
+        PBS_QNAME + "schedule",
+        "attributes",
+        "effective-date",
+    ):
+        return {
+            "state": "interpreted",
+            "domain": "schedule_effective_date_literal",
+            "meaning": "PBS schedule-level effective-date literal",
+            "rule": "exact root/schedule/effective-date attribute QName path",
+        }
+    if names == (
+        PBS_QNAME + "root",
+        PBS_QNAME + "info",
+        "{http://purl.org/dc/terms/}valid",
+        "text",
+    ):
+        return {
+            "state": "interpreted",
+            "domain": "schedule_metadata_valid_date_literal",
+            "meaning": "source document-level dcterms:valid date literal",
+            "rule": "exact root/info/DCTERMS valid text QName path; distinct from schedule effective date",
+        }
+    return {
+        "state": "native_unresolved",
+        "domain": None,
+        "meaning": None,
+        "rule": "no exact path/QName semantic rule established",
+    }
 
 
 def _context_screen_matches(
@@ -441,19 +623,12 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "PBS interpreted role counts differ from meaning evidence"
         )
 
-    interpreted = sum(
-        role_counts[name]
-        for name, state in roles.items()
-        if state == "interpreted"
-    )
-    unresolved = sum(
-        role_counts[name]
-        for name, state in roles.items()
-        if state == "native_unresolved"
-    )
+    # Structural role destinations are useful table routing metadata, not
+    # semantic interpretations. Recount the actual source fields only after
+    # exact path/QName adjudication below.
+    interpreted = 0
+    unresolved = 0
     unavailable = 0
-    if interpreted + unresolved + unavailable != SOURCE_FIELDS:
-        raise ValueError("PBS field-state denominator does not close")
 
     meaning_for_role = {
         "items": "item",
@@ -482,8 +657,12 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         )
         state_rows[name] = {
             "field_count": role_counts[name],
-            "state": state,
-            "meaning": (
+            "structural_state": (
+                "structural_destination_mapped"
+                if state == "interpreted"
+                else "unmapped_native"
+            ),
+            "structural_meaning": (
                 meaning["meaning"]
                 if meaning is not None
                 else (
@@ -492,8 +671,9 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
                     else None
                 )
             ),
-            "interpretation_evidence": (
+            "structural_evidence": (
                 {
+                    "evidence_kind": "structural_destination_only",
                     "profile": "pbs-v3-pinned-2026-04-01-domain-fields-v1",
                     "domain": evidence_key,
                     "status": meaning["status"],
@@ -514,12 +694,22 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             _entity_path(path_row["schema_path"]), "unmapped"
         )
         state = roles.get(role, "native_unresolved")
+        adjudication = _semantic_adjudication(path_row["schema_path"])
+        if adjudication["state"] == "interpreted":
+            interpreted += path_row["native_fields"]
+        else:
+            unresolved += path_row["native_fields"]
         path_reconciliation.append({
             "schema_path": path_row["schema_path"],
             "field_count": path_row["native_fields"],
             "role": role,
-            "state": state,
-            "interpretation_domain": meaning_for_role.get(role),
+            "structural_state": (
+                "structural_destination_mapped"
+                if state == "interpreted"
+                else "unmapped_native"
+            ),
+            "semantic_state": adjudication["state"],
+            "semantic_interpretation": adjudication,
         })
         path_role_counts[role] = (
             path_role_counts.get(role, 0) + path_row["native_fields"]
@@ -535,7 +725,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         "schema_id": "global-medicines-atlas.pbs-field-state-reconciliation",
         "schema_version": 1,
         "profile_id": "pbs-v3-2026-04-01-field-state-v1",
-        "status": "complete_field_denominator_bounded_semantics_with_unresolved_references",
+        "status": "complete_field_denominator_path_adjudication_with_unresolved_semantics",
         "domain_semantics_qualified": False,
         "rights_conclusion_changed": False,
         "source": {
@@ -572,9 +762,41 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "source_fields": SOURCE_FIELDS,
             "denominator_closed": True,
             "all_native_values_remain_unresolved": True,
+            "semantic_field_states_distinct_from_structural_destinations": True,
         },
         "role_reconciliation": state_rows,
         "path_reconciliation": path_reconciliation,
+        "semantic_adjudication": {
+            "profile_id": "pbs-v3-pinned-2026-04-01-path-qname-adjudication-v1",
+            "inventory_sha256": "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b",
+            "source_values_read": False,
+            "source_values_emitted": False,
+            "field_count_conserved": interpreted + unresolved == SOURCE_FIELDS,
+            "interpreted_fields": interpreted,
+            "native_unresolved_fields": unresolved,
+            "unavailable_fields": unavailable,
+            "interpretations": {
+                domain: sum(
+                    row["field_count"]
+                    for row in path_reconciliation
+                    if row["semantic_interpretation"]["domain"] == domain
+                )
+                for domain in sorted({
+                    row["semantic_interpretation"]["domain"]
+                    for row in path_reconciliation
+                    if row["semantic_interpretation"]["domain"] is not None
+                })
+            },
+            "explicit_non_claims": [
+                "AMT and RDF resource literals are not resolved to terminology concepts",
+                "classification code is unresolved unless the exact unqualified type value ATC is evidenced; current path inventory does not preserve that attribute value",
+                "price, currency, unit, status/currentness, and cross-era date effects remain unresolved",
+                "the schedule effective-date path is not present in the pinned schema-path inventory; dcterms:valid is a separate document-level date",
+                "the pinned inventory contains no classification/code text path, so fixture-level ATC typing is not a source-level assertion",
+                "unknown wrappers and codes remain native_unresolved",
+                "structural table destinations do not count as semantic interpretations",
+            ],
+        },
         "date_role_overlay": {
             "field_count": meanings["effective_date"]["field_count"]
             + meanings["document_valid_date"]["field_count"],

@@ -16,12 +16,24 @@ HEADER_PATH = (
     "20261024-40040624592.json"
 )
 P7_TYPED_PATH = (
-    "quality/qualifications/mbs-p7-typed-qualification-"
-    "20261022-39636095527.json"
+    "quality/qualifications/mbs-p7-workbook-storage-qualification-"
+    "20261024-40094025412.json"
+)
+P7_RUN_RECEIPT_PATH = (
+    "quality/qualifications/mbs-p7-exact-main-run-receipt-"
+    "20261024-40094025412.json"
+)
+P7_DATE_PROFILE_PATH = (
+    "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json"
 )
 P7_RULES_PATH = "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
 WORKBOOK_COUNT = 91
 P7_CELL_COUNT = 13_742
+P7_INTERPRETED_DATE_CELLS = 86
+P7_UNRESOLVED_CELL_COUNT = 13_656
+P7_EXACT_MAIN_RUN_ID = 40094025412
+P7_EXACT_MAIN_COMMIT = "11be72e328affc0df87395fd59165ef4f5bf9055"
+P7_EXACT_MAIN_ARTIFACT_ID = 12559848688
 SHA256_HEX_LENGTH = 64
 P7_STATUS_PAIR_LENGTH = 2
 
@@ -202,13 +214,56 @@ def _p7_field_rows(
             "field": row.get("mapping_field"),
             "mapping_target": mapping_target,
             "header_state": header_state,
-            "source_value_state": "native_unresolved",
+            # This is a structural lineage row for one sheet/column. The
+            # separate P7 date profile aggregates across sheets and cannot be
+            # allocated back to these rows without per-sheet date evidence.
+            "source_value_state": "not_classified_per_sheet_column",
+            "source_value_state_detail": (
+                "aggregate_date_field_states report date counts across sheets"
+            ),
             "cell_count": cell_count,
             "conversion_statuses": statuses,
         })
     return sorted(
         rows, key=lambda row: (str(row["sheet_name"]), str(row["column"]))
     )
+
+
+def _p7_date_field_rows(
+    date_profile: dict[str, Any],
+) -> list[dict[str, Any]]:
+    profile = _dict(date_profile.get("profile"), "P7 calendar profile")
+    fields = _dict(profile.get("by_field"), "P7 calendar profile fields")
+    rows: list[dict[str, Any]] = []
+    for field in sorted(fields):
+        states = _dict(fields[field], "P7 calendar field states")
+        interpreted = _int(
+            states.get("unique_calendar_date", 0),
+            "unique calendar date count",
+        ) + _int(
+            states.get("unique_dmy_calendar_date", 0),
+            "unique DMY calendar date count",
+        )
+        unresolved = (
+            sum(
+                _int(count, "calendar field state count")
+                for count in states.values()
+            )
+            - interpreted
+        )
+        rows.append({
+            "field": field,
+            "scope": "source_column_across_all_sheets",
+            "cell_count": sum(
+                _int(count, "calendar field state count")
+                for count in states.values()
+            ),
+            "interpreted": interpreted,
+            "native_unresolved": unresolved,
+            "unavailable": 0,
+            "date_states": dict(sorted(states.items())),
+        })
+    return rows
 
 
 def _profile_binding_count(profile: dict[str, Any]) -> tuple[int, int]:
@@ -377,14 +432,80 @@ def reconcile_workbook_field_states(
         p7_typed.get("typed_candidate_package"), "P7 candidate package"
     )
     p7_cells = _int(value_profile.get("cells"), "P7 cell denominator")
-    if (
-        p7_cells != P7_CELL_COUNT
-        or _dict(candidate.get("coverage"), "P7 candidate coverage").get(
-            "unresolved_cells"
-        )
-        != p7_cells
-    ):
+    p7_coverage = _dict(candidate.get("coverage"), "P7 candidate coverage")
+    p7_interpreted = _int(
+        p7_coverage.get("interpreted_cells"), "P7 interpreted cell count"
+    )
+    p7_unresolved = _int(
+        p7_coverage.get("unresolved_cells"), "P7 unresolved cell count"
+    )
+    if p7_cells != P7_CELL_COUNT or p7_interpreted + p7_unresolved != p7_cells:
         raise ValueError("P7 all-cell unresolved denominator differs")
+    p7_run_receipt = _dict(
+        p7_typed.get("_run_receipt"), "P7 exact-main run receipt"
+    )
+    if p7_run_receipt.get("schema_id") != (
+        "global-medicines-atlas.mbs-p7-exact-main-workbook-storage-run-receipt"
+    ):
+        raise ValueError("P7 exact-main run receipt schema differs")
+    exact_run = _dict(
+        p7_run_receipt.get("workflow"), "P7 exact-main qualification"
+    )
+    expected_run = {
+        "run_id": P7_EXACT_MAIN_RUN_ID,
+        "conclusion": "success",
+        "exact_commit": P7_EXACT_MAIN_COMMIT,
+        "python": "3.15.1",
+        "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40094025412",
+    }
+    actual_run = {key: exact_run.get(key) for key in expected_run}
+    if actual_run != expected_run:
+        raise ValueError("P7 exact-main qualification identity differs")
+    if p7_typed.get("workflow_run") != exact_run.get("url") or p7_typed.get(
+        "workflow_commit"
+    ) != exact_run.get("exact_commit"):
+        raise ValueError("P7 exact-main qualification identity differs")
+    p7_date_profile = _dict(
+        p7_typed.get("_p7_date_profile"), "P7 calendar profile receipt"
+    )
+    p7_date_profile_data = _dict(
+        p7_date_profile.get("profile"), "P7 calendar profile"
+    )
+    if (
+        p7_date_profile.get("kind") != "mbs_p7_unique_calendar_date_profile"
+        or p7_date_profile_data.get("source_sha256")
+        != value_profile.get("source_sha256")
+        or p7_date_profile_data.get("date_order_selected") is not False
+        or p7_date_profile_data.get("source_values_emitted") is not False
+    ):
+        raise ValueError("P7 calendar profile identity differs")
+    date_evidence = _dict(
+        p7_typed.get("p7_calendar_profile_evidence"),
+        "P7 calendar profile evidence",
+    )
+    date_profile_digest = input_sha256.get("p7_date_profile", "")
+    calendar_ref = _dict(
+        p7_run_receipt.get("calendar_profile"),
+        "P7 calendar profile receipt reference",
+    )
+    expected_calendar_binding = {
+        "path": P7_DATE_PROFILE_PATH,
+        "sha256": date_profile_digest,
+        "source_sha256": value_profile.get("source_sha256"),
+        "date_order_selected": False,
+        "source_values_emitted": False,
+    }
+    actual_calendar_binding = {
+        "path": calendar_ref.get("path"),
+        "sha256": date_evidence.get("sha256"),
+        "source_sha256": date_evidence.get("source_sha256"),
+        "date_order_selected": date_evidence.get("date_order_selected"),
+        "source_values_emitted": date_evidence.get("source_values_emitted"),
+    }
+    if actual_calendar_binding != expected_calendar_binding or (
+        calendar_ref.get("sha256") != date_profile_digest
+    ):
+        raise ValueError("P7 calendar profile does not bind the exact source")
     if (
         p7_rules.get("schema_id")
         != "global-medicines-atlas.mbs-p7-value-era-rules"
@@ -394,13 +515,32 @@ def reconcile_workbook_field_states(
         "sha256"
     ) != value_profile.get("source_sha256"):
         raise ValueError("P7 typed qualification and value-era source differ")
-    typed_ref = _dict(p7_rules.get("evidence"), "P7 rule evidence").get(
-        "typed_candidate_qualification", {}
-    )
+    rule_evidence = _dict(p7_rules.get("evidence"), "P7 rule evidence")
+    typed_ref = rule_evidence.get("exact_main_storage_qualification", {})
     if _dict(typed_ref, "P7 typed receipt reference").get(
         "sha256"
     ) != input_sha256.get("p7_typed"):
-        raise ValueError("P7 value-era rules do not bind the typed receipt")
+        raise ValueError(
+            "P7 value-era rules do not bind exact-main typed receipt"
+        )
+    run_ref = _dict(
+        rule_evidence.get("exact_main_run_receipt", {}),
+        "P7 exact-main run receipt reference",
+    )
+    if run_ref.get("sha256") != input_sha256.get("p7_run_receipt"):
+        raise ValueError("P7 value-era rules do not bind the exact-main run")
+    date_ref = _dict(
+        rule_evidence.get("calendar_profile", {}),
+        "P7 calendar profile reference",
+    )
+    if date_ref.get("sha256") != input_sha256.get("p7_date_profile"):
+        raise ValueError("P7 value-era rules do not bind the calendar profile")
+    if (
+        date_ref.get("path") != P7_DATE_PROFILE_PATH
+        or date_ref.get("path") != calendar_ref.get("path")
+        or date_ref.get("sha256") != calendar_ref.get("sha256")
+    ):
+        raise ValueError("P7 value-era rules calendar path differs")
     rule_groups = _dict(p7_rules.get("rules"), "P7 rules")
     date_rules = _dict(rule_groups.get("dates"), "P7 date rules")
     if (
@@ -408,11 +548,52 @@ def reconcile_workbook_field_states(
         or date_rules.get("semantic_promotion") is not False
     ):
         raise ValueError("P7 date profile must remain unselected")
+    if (
+        p7_interpreted != P7_INTERPRETED_DATE_CELLS
+        or p7_unresolved != P7_UNRESOLVED_CELL_COUNT
+    ):
+        raise ValueError("P7 exact-main cell-state totals differ")
+    date_field_rows = _p7_date_field_rows(p7_date_profile)
+    if sum(row["interpreted"] for row in date_field_rows) != p7_interpreted:
+        raise ValueError(
+            "P7 unique date fields differ from typed qualification"
+        )
+    ambiguous_dates = sum(
+        _int(
+            _dict(row.get("date_states"), "P7 date field states").get(
+                "ambiguous_calendar_order", 0
+            ),
+            "ambiguous calendar date count",
+        )
+        for row in date_field_rows
+    )
+    if ambiguous_dates != _int(
+        date_rules.get("ambiguous_date_shaped_cells"),
+        "ambiguous date-shaped cell count",
+    ) or ambiguous_dates + p7_interpreted != _int(
+        date_rules.get("lexical_date_cells"),
+        "P7 date-shaped cell count",
+    ):
+        raise ValueError(
+            "P7 date profile counts differ from the value-era rules"
+        )
 
+    artifact = _dict(p7_run_receipt.get("artifact"), "P7 artifact receipt")
+    if (
+        artifact.get("path") != P7_TYPED_PATH
+        or artifact.get("artifact_id") != P7_EXACT_MAIN_ARTIFACT_ID
+        or artifact.get("name") != "workbook-storage-qualification"
+        or artifact.get("report_sha256") != input_sha256.get("p7_typed")
+        or artifact.get("member_sha256")
+        != "fd893d18c6a96d7daf6c6bae27066f56d207b8d01c14d8fc7622bdc07af99bd"
+    ):
+        raise ValueError("P7 exact-main artifact identity differs")
     expected_hash_keys = {
         "package_cohort",
         "header_cohort",
         "p7_typed",
+        "p7_run_receipt",
+        "p7_date_profile",
         "p7_value_era_rules",
     }
     if set(input_sha256) != expected_hash_keys or any(
@@ -421,7 +602,6 @@ def reconcile_workbook_field_states(
     ):
         raise ValueError("exact input receipt digests are required")
 
-    p7_coverage = _dict(candidate.get("coverage"), "P7 candidate coverage")
     p7_statuses = _dict(value_profile.get("statuses"), "P7 value statuses")
     p7_status_total = sum(
         _int(count, "P7 value conversion status count")
@@ -457,7 +637,7 @@ def reconcile_workbook_field_states(
         )
     return {
         "schema_id": "global-medicines-atlas.mbs-workbook-field-state-reconciliation",
-        "schema_version": 1,
+        "schema_version": 2,
         "status": "field_states_reconciled_with_semantic_limits",
         "inputs": {
             key: {"sha256": input_sha256[key]} for key in sorted(input_sha256)
@@ -499,11 +679,14 @@ def reconcile_workbook_field_states(
         },
         "p7_workbook": {
             "source_sha256": value_profile["source_sha256"],
+            "exact_main_qualification": exact_run,
+            "exact_main_artifact": artifact,
             "field_rows": _p7_field_rows(p7_typed),
+            "date_field_states": date_field_rows,
             "cell_values": {
                 "denominator": p7_cells,
-                "interpreted": 0,
-                "unresolved": p7_cells,
+                "interpreted": p7_interpreted,
+                "unresolved": p7_unresolved,
                 "unavailable": 0,
                 "denominator_relation": "independent_source_cell_denominator_not_added_to_historical_cohort",
             },
@@ -527,6 +710,12 @@ def reconcile_workbook_field_states(
                     sorted(date_compatibility.items())
                 ),
                 "date_profile_selected": False,
+                "date_profile_sha256": date_profile_digest,
+                "uniquely_determined_calendar_dates": p7_interpreted,
+                "ambiguous_date_shaped_cells": _int(
+                    date_rules.get("ambiguous_date_shaped_cells"),
+                    "ambiguous date-shaped cell count",
+                ),
                 "temporal_comparison_enabled": False,
                 "diagnostics_are_additive_to_cell_state": False,
             },
@@ -538,6 +727,7 @@ def reconcile_workbook_field_states(
             "historical_workbook_non_header_domain_meanings_qualified": False,
             "benefit_currency_qualified": False,
             "p7_date_convention_selected": False,
+            "p7_unique_calendar_date_values_interpreted": p7_interpreted,
             "cross_era_equivalence_qualified": False,
             "source_values_emitted": False,
             "new_sources_added": False,
@@ -548,6 +738,8 @@ def reconcile_workbook_field_states(
 def reconcile_from_paths(paths: dict[str, Path]) -> dict[str, Any]:
     reports = {key: _read_json(path) for key, path in paths.items()}
     digests = {key: _sha256(path) for key, path in paths.items()}
+    reports["p7_typed"]["_run_receipt"] = reports["p7_run_receipt"]
+    reports["p7_typed"]["_p7_date_profile"] = reports["p7_date_profile"]
     return reconcile_workbook_field_states(
         reports["package_cohort"],
         reports["header_cohort"],

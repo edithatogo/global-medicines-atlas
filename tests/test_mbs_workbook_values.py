@@ -671,7 +671,12 @@ def test_p7_value_era_rules_bind_exact_source_without_selecting_dates() -> None:
         "source_values_emitted": False,
         "profile_selected": False,
     }
-    assert rules["rules"]["dates"]["consumer_state"] == "native_unresolved"
+    assert rules["rules"]["dates"]["consumer_state"] == (
+        "86 uniquely determined calendar values interpreted; 1194 ambiguous "
+        "date-shaped values and all remaining cells stay native_unresolved"
+    )
+    assert rules["rules"]["dates"]["per_cell_unique_calendar_interpretation"]
+    assert rules["rules"]["dates"]["profile_wide_semantic_promotion"] is False
     assert rules["rules"]["dates"]["temporal_comparison_enabled"] is False
     assert rules["rules"]["benefits"]["formula_cells"] == 4
     assert rules["rules"]["benefits"]["error_cells"] == 2
@@ -679,7 +684,9 @@ def test_p7_value_era_rules_bind_exact_source_without_selecting_dates() -> None:
         rules["rules"]["schema_eras"]["historical_workbook"]
         != (rules["rules"]["schema_eras"]["current_xml"])
     )
-    assert rules["gates"]["all_13742_cells_remain_native_unresolved"] is True
+    assert rules["gates"]["all_13742_cells_remain_native_unresolved"] is False
+    assert rules["gates"]["per_cell_unique_calendar_dates_interpreted"] is True
+    assert rules["gates"]["remaining_unresolved_cells"] == 13_656
     assert rules["gates"]["date_profile_selected"] is False
 
     for evidence in rules["evidence"].values():
