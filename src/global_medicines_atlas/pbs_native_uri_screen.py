@@ -23,7 +23,10 @@ RDF_RESOURCE = "{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource"
 XLINK_HREF = "{http://www.w3.org/1999/xlink}href"
 MAX_MEMBER_BYTES = 512 * 1024**2
 MAX_URI_CHARS = 16_384
-MAX_INDEXED_URI_CHARS = 32 * 1024**2
+# Keep the aggregate URI/index budget consistent with the already-enforced
+# maximum member size, rather than imposing a smaller arbitrary ceiling on a
+# valid pinned member. Individual URIs, rows, and XML elements stay bounded.
+MAX_INDEXED_URI_CHARS = MAX_MEMBER_BYTES
 MAX_ELEMENTS = 20_000_000
 MAX_REFERENCE_ROWS = 8_000_000
 MAX_REVIEW_CASES = 64
