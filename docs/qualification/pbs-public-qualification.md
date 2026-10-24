@@ -434,8 +434,8 @@ schema-path inventory, and bounded domain-meaning profile by digest.
 | `unavailable` | 0 | The exact-source parse and role counters account for the full field denominator. This is a field-state count, not a claim that all PBS facts are available. |
 | **Total** | **18,208,758** | **Denominator closes exactly.** |
 
-The 2,800 qualified schedule/item/restriction date-role occurrences are a
-non-additive overlay within the role partition. The date profile applies only
+The 2,800 qualified date-role slots are a non-additive overlay within the role
+partition. The date profile applies only
 to this pinned member and does not establish validity intervals, precedence,
 or current status. Native values, including identifiers, amounts, references,
 and text, remain preserved and unresolved; exact-literal references remain
@@ -444,6 +444,27 @@ lexical diagnostics. This receipt is digest-bound to exact-main screen run
 reference fields and `xlink:href` has 992,456. Their candidate and no-match
 counts remain lexical diagnostics, and neither kind is promoted to semantic
 relationships.
+
+### PBS date denominator reconciliation
+
+The date counters above and the source-field reconciliation count different
+path populations. The value-free semantic path receipt interprets 3,028 fields
+at the direct
+`/root/prescribing-texts-list/restriction/effective/date/text` path as a
+restriction-associated date literal. That path interpretation does not qualify
+date grammar or the values. The pinned date-profile receipt instead counts
+2,798 item-level `pbs_effective_date` roles, one schedule effective-date role,
+and one document `dct:valid` role: 2,800 role slots, of which 2,799 values were
+converted and one recognized schedule slot was missing. Its role counters do
+not include a restriction-effective-date role. The domain field-semantics
+receipt reports 2,799 for `effective_date` (2,798 item roles plus one schedule
+role), while its prose also mentions restriction-effective dates. The 230
+difference between 3,028 and 2,798 cannot be treated as an unmatched remainder
+because the reports do not bind those counts to a common occurrence-level
+crosswalk. The domain description/count conflict and the 230 difference remain
+unresolved; no field identity or date meaning is inferred. See the value-free
+[date denominator reconciliation receipt](../../quality/qualifications/pbs-date-denominator-reconciliation-20261025.json)
+for exact input digests and limits.
 
 The current successor r6 binds the exact-main context screen and meaning review described below. Context screening supplies bounded, value-free diagnostics; no source cases have been reviewed and semantic relationships remain unqualified.
 
