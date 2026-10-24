@@ -606,6 +606,12 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         ("p7_formula_count", "formula diagnostic denominators differ"),
         ("p7_error_count", "error diagnostic denominators differ"),
         ("date_compatibility", "date compatibility counts differ"),
+        ("workflow_reference", "P7 exact-main qualification identity differs"),
+        ("date_profile_identity", "P7 calendar profile identity differs"),
+        ("run_receipt_reference", "do not bind the exact-main run"),
+        ("date_receipt_reference", "do not bind the calendar profile"),
+        ("date_receipt_path", "calendar path differs"),
+        ("p7_state_totals", "exact-main cell-state totals differ"),
     ],
 )
 # ruff: ignore[too-many-branches, too-many-statements]
@@ -702,6 +708,19 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
         typed["sheets"][0]["error_cells"] = 0
     elif case == "date_compatibility":
         rules["rules"]["dates"]["calendar_compatibility"]["dmy_only"] = 3
+    elif case == "workflow_reference":
+        typed["workflow_commit"] = _hash(901)
+    elif case == "date_profile_identity":
+        typed["_p7_date_profile"]["profile"]["source_values_emitted"] = True
+    elif case == "run_receipt_reference":
+        rules["evidence"]["exact_main_run_receipt"]["sha256"] = _hash(902)
+    elif case == "date_receipt_reference":
+        rules["evidence"]["calendar_profile"]["sha256"] = _hash(903)
+    elif case == "date_receipt_path":
+        rules["evidence"]["calendar_profile"]["path"] = "other.json"
+    elif case == "p7_state_totals":
+        typed["typed_candidate_package"]["coverage"]["interpreted_cells"] = 87
+        typed["typed_candidate_package"]["coverage"]["unresolved_cells"] = 13_655
     with pytest.raises((TypeError, ValueError), match=message):
         reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 

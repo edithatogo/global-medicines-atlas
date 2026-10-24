@@ -230,6 +230,32 @@ def test_semantic_adjudication_promotes_only_exact_supported_paths():
     )
 
 
+@pytest.mark.parametrize(
+    ("path", "state", "domain"),
+    [
+        (
+            "/{http:~1~1schema.pbs.gov.au~1}root/{http:~1~1schema.pbs.gov.au~1}classification/{http:~1~1schema.pbs.gov.au~1}code/text",
+            "native_unresolved",
+            "classification_code_candidate",
+        ),
+        (
+            "/{http:~1~1schema.pbs.gov.au~1}root/{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/{http:~1~1schema.pbs.gov.au~1}restriction/attributes/effective-date",
+            "interpreted",
+            "restriction_effective_date_literal",
+        ),
+        (
+            "/{http:~1~1schema.pbs.gov.au~1}root/{http:~1~1schema.pbs.gov.au~1}schedule/attributes/effective-date",
+            "interpreted",
+            "schedule_effective_date_literal",
+        ),
+    ],
+)
+def test_exact_unusual_domain_paths_keep_bounded_semantics(path, state, domain):
+    result = reconciliation._semantic_adjudication(path)
+    assert result["state"] == state
+    assert result["domain"] == domain
+
+
 def test_restriction_text_is_limited_to_direct_source_slots():
     direct = (
         "/{http:~1~1schema.pbs.gov.au~1}root/"
