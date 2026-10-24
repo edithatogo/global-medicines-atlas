@@ -17,6 +17,9 @@ from global_medicines_atlas.pbs_member_identity import (
 from global_medicines_atlas.pbs_native_reference_screen import (
     screen_native_references,
 )
+from global_medicines_atlas.pbs_reference_context import (
+    encode_reference_context_receipt,
+)
 from global_medicines_atlas.pbs_reference_meaning import (
     MAX_CONTEXT_REPORT_BYTES,
     SCREEN_RECEIPT,
@@ -275,7 +278,9 @@ def test_per_kind_reconciliation_rejects_malformed_maps_and_aggregate_drift():
 def test_v2_report_path_keeps_per_kind_candidates_diagnostic(tmp_path):
     def add_synthetic_kinds(report):
         qualification = report["qualification"]
-        qualification["reference_context"] = _context()
+        qualification["reference_context"] = encode_reference_context_receipt(
+            _context()
+        )
         qualification["reference_kind_status_counts"] = {
             "rdf_resource": {"unique_exact_literal": 1_043_244},
             "xlink_href": {

@@ -84,7 +84,11 @@ def test_verified_route_returns_only_aggregate(synthetic, monkeypatch):
     assert report["qualification"]["reference_kind_counts"] == {
         "rdf_resource": 2
     }
-    assert report["qualification"]["reference_context"] == context
+    encoded_context = report["qualification"]["reference_context"]
+    assert encoded_context["schema_id"].endswith("-compressed")
+    assert context_screen.decode_reference_context_receipt(encoded_context) == (
+        context
+    )
     assert report["publication_performed"] is False
 
 

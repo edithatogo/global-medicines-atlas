@@ -111,6 +111,94 @@ def test_context_screen_is_deterministic_and_classifies_negative_controls():
     }
 
 
+def test_context_receipt_compression_round_trips_the_complete_profile():
+    context = screen_reference_context(
+        b'<root xmlns="http://schema.pbs.gov.au/" '
+        b'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+        b'<edge rdf:resource="private-target"/></root>'
+    )
+
+    receipt = context_module.encode_reference_context_receipt(context)
+
+    assert receipt["schema_id"].endswith("-compressed")
+    assert context_module.decode_reference_context_receipt(receipt) == context
+    assert len(json.dumps(receipt).encode()) <= (
+        context_module.MAX_COMPRESSED_RECEIPT_BYTES
+    )
+
+
+def test_context_receipt_compression_fits_high_cardinality_profile():
+    strata = [
+        {
+            "kind": "rdf_resource",
+            "match_status": "unique_exact_literal",
+            "predicate_element_qname": (
+                "{http://schema.pbs.gov.au/}reference-element-" + str(index)
+            ),
+            "nearest_subject_element_qname": (
+                "{http://schema.pbs.gov.au/}subject-element-" + str(index)
+            ),
+            "nearest_identifier_element_qname": "none",
+            "xml_base_context": "no_xml_base",
+            "literal_shape": "absolute_looking",
+            "occurrences": 1,
+            "unique_target_occurrences": 1,
+            "ambiguous_target_occurrences": 0,
+            "no_xml_base_exact_target_occurrences": 1,
+            "unique_exact_literal_no_xml_base_candidates": 1,
+            "examples_omitted": 0,
+            "examples": [],
+        }
+        for index in range(400)
+    ]
+    context = {
+        "schema_id": "global-medicines-atlas.pbs-reference-context-screen",
+        "schema_version": 1,
+        "reference_occurrences": len(strata),
+        "strata_count": len(strata),
+        "examples_emitted": 0,
+        "examples_omitted": 0,
+        "unique_exact_literal_no_xml_base_candidates": len(strata),
+        "strata": strata,
+        "uri_resolution_performed": False,
+        "literal_values_emitted": False,
+        "raw_source_emitted": False,
+        "semantic_relationships_qualified": False,
+        "external_targets_fetched": 0,
+    }
+
+    uncompressed = json.dumps(context, separators=(",", ":")).encode()
+    receipt = context_module.encode_reference_context_receipt(context)
+
+    assert len(uncompressed) > 31_000
+    assert len(json.dumps(receipt).encode()) < len(uncompressed)
+    assert context_module.decode_reference_context_receipt(receipt) == context
+
+
+def test_context_receipt_compression_enforces_parent_receipt_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    context = screen_reference_context(
+        b'<root xmlns="http://schema.pbs.gov.au/"/>'
+    )
+    monkeypatch.setattr(context_module, "MAX_COMPRESSED_RECEIPT_BYTES", 1)
+    with pytest.raises(ReferenceContextError) as captured:
+        context_module.encode_reference_context_receipt(context)
+    assert captured.value.diagnostic_code == (
+        "context-compressed-report-byte-limit"
+    )
+
+
+def test_context_receipt_decoder_rejects_tampered_payload():
+    context = screen_reference_context(
+        b'<root xmlns="http://schema.pbs.gov.au/"/>'
+    )
+    receipt = context_module.encode_reference_context_receipt(context)
+    receipt["payload_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="integrity differs"):
+        context_module.decode_reference_context_receipt(receipt)
+
+
 def test_nested_subject_and_duplicate_targets_have_exact_occurrence_addresses():
     xml = b"""<root xmlns="http://schema.pbs.gov.au/"
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
