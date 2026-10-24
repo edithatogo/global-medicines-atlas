@@ -5,6 +5,7 @@ from collections.abc import Iterator
 from io import BytesIO
 from typing import Any
 
+import pbs_uri_review_packet_reconciler_cases as _uri_packet_cases
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
@@ -18,6 +19,51 @@ from test_australian_source_contracts import (
 
 from global_medicines_atlas import pbs_references
 from global_medicines_atlas.pbs_entities import iter_pbs_entity_batches
+
+test_uri_packet_never_overwrites_existing_output = (
+    _uri_packet_cases.test_never_overwrites_existing_derived_packet
+)
+test_uri_packet_reconciles_pending_cases = _uri_packet_cases.test_reconciles_all_cases_to_value_free_pending_structural_packet
+test_uri_packet_rejects_bad_digests = _uri_packet_cases.test_rejects_bad_canonical_digest_and_wrong_expected_receipt_bytes
+test_uri_packet_rejects_v1_receipt = (
+    _uri_packet_cases.test_rejects_current_pinned_v1_actions_receipt
+)
+test_uri_packet_rejects_bad_case_binding = (
+    _uri_packet_cases.test_rejects_non_bijective_or_escalated_case_binding
+)
+test_uri_packet_rejects_changed_packet = (
+    _uri_packet_cases.test_rejects_packet_bytes_that_differ_from_pinned_identity
+)
+test_uri_packet_rejects_contract_mismatch = (
+    _uri_packet_cases.test_rejects_receipt_contract_mismatch
+)
+test_uri_packet_rejects_malformed_envelopes = (
+    _uri_packet_cases.test_load_envelope_rejects_malformed_inputs
+)
+test_uri_packet_rejects_missing_envelope = (
+    _uri_packet_cases.test_load_envelope_rejects_missing_file
+)
+test_uri_packet_rejects_non_json_digest = (
+    _uri_packet_cases.test_report_digest_rejects_non_json_value
+)
+test_uri_packet_rejects_required_mapping = (
+    _uri_packet_cases.test_required_rejects_invalid_mapping
+)
+test_uri_packet_rejects_invalid_expected_arguments = (
+    _uri_packet_cases.test_rejects_invalid_expected_arguments
+)
+test_uri_packet_rejects_wrong_packet_filename = (
+    _uri_packet_cases.test_rejects_wrong_packet_filename
+)
+test_uri_packet_rejects_invalid_pinned_cases = (
+    _uri_packet_cases.test_rejects_invalid_pinned_packet_cases
+)
+test_uri_packet_rejects_missing_case_binding_structures = (
+    _uri_packet_cases.test_rejects_missing_uri_case_binding_structures
+)
+test_uri_packet_rejects_invalid_uri_case_rows = (
+    _uri_packet_cases.test_rejects_invalid_uri_case_rows
+)
 
 
 @pytest.mark.parametrize(
