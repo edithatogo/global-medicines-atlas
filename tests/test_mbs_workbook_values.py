@@ -724,3 +724,131 @@ def test_exact_main_p7_calendar_profile_is_digest_bound() -> None:
         )
         == 86
     )
+
+
+def test_p7_profile_rejects_digest_without_evidence() -> None:
+    payload = fixture()
+    with pytest.raises(ValueError, match="digest has no evidence"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                _receipt(payload),
+                calendar_profile_sha256="a" * 64,
+            )
+        )
+
+
+@pytest.mark.parametrize("evidence", [b"{", b"[]"])
+def test_p7_profile_rejects_malformed_document(
+    evidence: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    payload = fixture()
+    receipt = _receipt(payload)
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(
+        values_module, "_P7_DATE_PROFILE_SHA256", sha256(evidence).hexdigest()
+    )
+
+    with pytest.raises(ValueError, match="evidence is invalid"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                receipt,
+                calendar_profile_evidence=evidence,
+                calendar_profile_sha256=sha256(evidence).hexdigest(),
+            )
+        )
+
+
+def test_p7_profile_rejects_wrong_qualification_metadata(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = fixture()
+    receipt = _receipt(payload)
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    report = json.loads(p7_calendar_profile_evidence(payload, receipt))
+    report["profile"]["date_order_selected"] = True
+    evidence = json.dumps(report, separators=(",", ":")).encode()
+    monkeypatch.setattr(
+        values_module, "_P7_DATE_PROFILE_SHA256", sha256(evidence).hexdigest()
+    )
+
+    with pytest.raises(ValueError, match="does not qualify"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                receipt,
+                calendar_profile_evidence=evidence,
+                calendar_profile_sha256=sha256(evidence).hexdigest(),
+            )
+        )
+
+
+@pytest.mark.parametrize(
+    ("value", "status"),
+    [
+        ("2024-07-15", "invalid"),
+        ("07.15.2024", "unique_mdy_calendar_date"),
+        ("15.07.2024", "unique_dmy_calendar_date"),
+        ("05.06.2024", "ambiguous_calendar_order"),
+        ("31.02.2024", "invalid"),
+    ],
+)
+def test_calendar_status_handles_non_dotted_and_each_date_order(
+    value: str, status: str
+) -> None:
+    assert values_module._calendar_profile_status(value) == status
+
+
+def test_profile_count_validation_accounts_for_null_missing_error_and_serial() -> (
+    None
+):
+    payload = payload_with(
+        '<c r="C10"/><c r="C11"><v/></c>'
+        '<c r="C12" t="e"><v>#N/A</v></c><c r="C13"><v>45000</v></c>'
+    )
+    receipt = _receipt(payload)
+    evidence = p7_calendar_profile_evidence(payload, receipt)
+    report = json.loads(evidence)
+
+    assert values_module._profile_counts_match(
+        payload, receipt, report["profile"]
+    )
+    assert report["profile"]["by_field"]["ItemStartDate"] == {
+        "missing_value": 1,
+        "null": 1,
+        "source_error": 1,
+        "unsupported_serial_date": 1,
+    }
+
+
+def test_qualified_date_returns_unresolved_for_null_cell() -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
+    )
+    row = rows_for(payload)["C2"]
+    row["display_value"] = None
+    assert values_module._qualified_profile_date(row, {}, "a" * 64) == {}
+
+
+def test_profile_evidence_missing_after_validation_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    payload = fixture()
+    monkeypatch.setattr(
+        values_module, "_validated_p7_date_profile", lambda *_args: (None, None)
+    )
+
+    with pytest.raises(ValueError, match="evidence is missing"):
+        list(
+            iter_workbook_value_batches(
+                payload,
+                _receipt(payload),
+                calendar_profile_evidence=b"qualified evidence",
+                calendar_profile_sha256="a" * 64,
+            )
+        )
