@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any
+from typing import Any, cast
 
 import pytest
 
@@ -342,6 +342,103 @@ def test_review_packet_rejects_bad_source_and_denominator(
     for key in path[:-1]:
         target = target[key]
     target[path[-1]] = value
+
+    with pytest.raises(ValueError, match=message):
+        prepare_reference_review_packet(report)
+
+
+def test_review_packet_low_level_validators_reject_non_contract_types():
+    with pytest.raises(
+        TypeError, match="reference meaning report must be an object"
+    ):
+        prepare_reference_review_packet(cast("dict[str, Any]", None))
+
+    with pytest.raises(
+        ValueError, match="reference meaning report must be an object"
+    ):
+        prepare_reference_review_packet(cast("dict[str, Any]", {1: "invalid"}))
+
+    for value in (True, -1, "1"):
+        report = _meaning_report()
+        report["exact_source_screen"]["references"] = value
+        with pytest.raises(
+            ValueError, match="reference screen denominator differs"
+        ):
+            prepare_reference_review_packet(report)
+
+
+@pytest.mark.parametrize(
+    ("operation", "message"),
+    [
+        ("context_schema", "context schema differs"),
+        ("context_denominator", "context denominator differs"),
+        ("strata_bound", "strata exceed the bound"),
+        ("long_qname", "QName differs"),
+        ("unique_target", "unique reference example target differs"),
+        ("ambiguous_target", "ambiguous reference example target differs"),
+        ("negative_target", "negative reference example target differs"),
+        ("summary_denominator", "context denominator differs"),
+        ("example_schema", "example schema differs"),
+        ("element_schema", "element schema differs"),
+        ("targets_bound", "context targets differ"),
+        ("target_schema", "target schema differs"),
+        ("qualified_kind", "reference kind must preserve semantic abstention"),
+    ],
+)
+def test_review_packet_rejects_unreviewed_or_malformed_contract_paths(  # ruff: ignore[too-many-branches] - exercises explicit fail-closed schema branches
+    operation: str, message: str
+) -> None:
+    report = _meaning_report()
+    context = report["source_context_screen"]
+    rows = context["strata"]
+    if operation == "context_schema":
+        context["unexpected"] = False
+    elif operation == "context_denominator":
+        context["reference_occurrences"] += 1
+    elif operation == "strata_bound":
+        context["strata"] = [None] * 10_001
+        context["strata_count"] = 10_001
+    elif operation == "long_qname":
+        rows[0]["predicate_element_qname"] = "q" * 257
+    elif operation == "unique_target":
+        rows[0]["examples"][0]["target_multiplicity"] = 0
+        rows[0]["examples"][0]["targets"] = []
+    elif operation == "ambiguous_target":
+        rows[2]["examples"][0]["target_multiplicity"] = 1
+        rows[2]["examples"][0]["targets"] = rows[2]["examples"][0]["targets"][
+            :1
+        ]
+    elif operation == "negative_target":
+        rows[3]["examples"][0]["target_multiplicity"] = 1
+        rows[3]["examples"][0]["targets"] = [
+            {
+                "occurrence": "/target/1",
+                "qname": "target",
+                "xml_base_context": "no_xml_base",
+            }
+        ]
+    elif operation == "summary_denominator":
+        context["examples_omitted"] = 1
+    elif operation == "example_schema":
+        rows[0]["examples"][0]["unexpected"] = False
+    elif operation == "element_schema":
+        rows[0]["examples"][0]["predicate_element"]["unexpected"] = False
+    elif operation == "targets_bound":
+        rows[0]["examples"][0]["target_multiplicity"] = 11
+        rows[0]["examples"][0]["targets"] = [
+            {
+                "occurrence": f"/target/{index}",
+                "qname": "target",
+                "xml_base_context": "no_xml_base",
+            }
+            for index in range(11)
+        ]
+    elif operation == "target_schema":
+        rows[0]["examples"][0]["targets"][0]["unexpected"] = False
+    else:
+        report["exact_source_screen"]["per_kind"]["rdf_resource"][
+            "semantic_links_qualified"
+        ] = True
 
     with pytest.raises(ValueError, match=message):
         prepare_reference_review_packet(report)
