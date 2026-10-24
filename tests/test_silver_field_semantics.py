@@ -78,6 +78,19 @@ def test_parsed_candidate_date_is_not_qualified_by_parsing():
     assert qualified_date(known, date(2024, 7, 1)) == date(2024, 7, 1)
 
 
+def test_internal_file_consistency_does_not_qualify_temporal_consumers():
+    inferred = field(
+        native_name="FeeStartDate",
+        state="interpreted",
+        evidence_sha256="c" * 64,
+        semantic_definition="internal exact-file DMY consistency",
+        value_kind="date",
+        temporal_use_qualified=False,
+    )
+    with pytest.raises(ValueError, match="domain-qualified meaning"):
+        qualified_date(inferred, date(2024, 7, 1))
+
+
 def test_unavailable_is_distinct_from_native_unresolved():
     missing = field(state="unavailable", reason="No patient denominator")
     assert missing.state == "unavailable"

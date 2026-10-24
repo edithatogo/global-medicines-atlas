@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-85.json"
+    "australian-m112-rights-release-preflight-20261025-90.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-84.json"
+    "australian-m112-rights-release-preflight-20261025-89.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -60,6 +60,16 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert report["status"] == (
         "frozen_m112_exact_object_rights_attested_lineage_and_admission_gaps_open"
     )
+    p7 = report["mbs_p7_bounded_file_consistency_implementation"]
+    assert p7["implementation_commit"] == (
+        "e586d665bb94631d1bdc5c00f0314a6036a14433"
+    )
+    assert p7["focused_tests"] == 209
+    assert p7["exact_main_typed_requalification_pending"] is True
+    assert p7["candidate_hosted_qualification_claimed"] is False
+    assert p7["date_semantic_completion_claimed"] is False
+    assert p7["new_sources"] == 0
+    assert p7["admissions"] == p7["canaries"] == p7["publications"] == 0
     assert report["effective_m112_rights"]["resolved_object_count"] == 1759
     assert report["effective_m112_rights"]["unresolved_object_count"] == 0
     assert not any(
@@ -335,7 +345,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-84.json"
+        "australian-m112-rights-release-preflight-20261025-89.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -344,7 +354,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-83.json"
+        "australian-m112-rights-release-preflight-20261025-88.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -357,12 +367,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-82.json"
+        "australian-m112-rights-release-preflight-20261025-87.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-81.json"
+        "australian-m112-rights-release-preflight-20261025-86.json"
     )
 
 

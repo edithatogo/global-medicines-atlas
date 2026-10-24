@@ -3,22 +3,38 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import sys
+from pathlib import Path
 from typing import Any
 
 import pytest
+from scripts import reconcile_mbs_workbook_field_states as reconcile_cli
 
 import global_medicines_atlas.mbs_workbook_field_reconciliation as field_reconciliation
 from global_medicines_atlas.mbs_workbook_field_reconciliation import (
+    HEADER_PATH,
+    P7_DATE_INFERENCE_PATH,
+    P7_DATE_INFERENCE_SHA256,
+    P7_DATE_PROFILE_PATH,
+    P7_RULES_PATH,
+    P7_RUN_RECEIPT_PATH,
+    P7_TYPED_PATH,
+    PACKAGE_PATH,
     _candidate_identity,  # ruff: ignore[import-private-name]
     _dict,  # ruff: ignore[import-private-name]
     _dict_list,  # ruff: ignore[import-private-name]
     _int,  # ruff: ignore[import-private-name]
+    _p7_date_field_rows,  # ruff: ignore[import-private-name]
     _p7_source_field_states,  # ruff: ignore[import-private-name]
     _read_json,  # ruff: ignore[import-private-name]
     _sha256,  # ruff: ignore[import-private-name]
     canonical_json,
     reconcile_from_paths,
     reconcile_workbook_field_states,
+)
+
+P7_SOURCE_SHA256 = (
+    "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
 )
 
 
@@ -117,11 +133,11 @@ def _inputs() -> tuple[
     }
     p7_typed: dict[str, Any] = {
         "kind": "p7-workbook",
-        "workflow_commit": "11be72e328affc0df87395fd59165ef4f5bf9055",
-        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40094025412",
+        "workflow_commit": "a" * 40,
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40150001001",
         "domain_value_profile": {
             "cells": 13_742,
-            "source_sha256": _hash(777),
+            "source_sha256": P7_SOURCE_SHA256,
             "statuses": {
                 "converted": 924,
                 "header": 97,
@@ -134,15 +150,31 @@ def _inputs() -> tuple[
         },
         "typed_candidate_package": {
             "coverage": {
-                "interpreted_cells": 86,
-                "unresolved_cells": 13_656,
+                "interpreted_cells": 1_280,
+                "unresolved_cells": 12_462,
                 "formula_cells": 4,
                 "error_cells": 2,
-            }
+            },
+            "date_inference": {
+                "kind": "selected_internal_file_consistency_inference",
+                "source_sha256": P7_SOURCE_SHA256,
+                "profile": "dotted_DMY",
+                "fields": [
+                    "BenefitStartDate",
+                    "DescriptionStartDate",
+                    "FeeStartDate",
+                    "ItemStartDate",
+                ],
+                "interpreted_cells": 1_194,
+                "evidence_sha256": P7_DATE_INFERENCE_SHA256,
+                "department_provenance_established": False,
+                "domain_meaning_established": False,
+                "other_workbooks_or_eras_in_scope": False,
+            },
         },
         "p7_calendar_profile_evidence": {
             "sha256": _hash(600),
-            "source_sha256": _hash(777),
+            "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
             "date_order_selected": False,
             "source_values_emitted": False,
         },
@@ -151,7 +183,7 @@ def _inputs() -> tuple[
             {"formula_cells": 2, "error_cells": 1},
         ],
         "workbook_field_lineage": {
-            "source_sha256": _hash(777),
+            "source_sha256": P7_SOURCE_SHA256,
             "fields": [],
         },
     }
@@ -160,7 +192,7 @@ def _inputs() -> tuple[
         "profile": {
             "date_order_selected": False,
             "source_values_emitted": False,
-            "source_sha256": _hash(777),
+            "source_sha256": P7_SOURCE_SHA256,
             "by_field": {
                 "BenefitStartDate": {
                     "ambiguous_calendar_order": 310,
@@ -250,30 +282,37 @@ def _inputs() -> tuple[
             "p7_typed",
             "p7_run_receipt",
             "p7_date_profile",
+            "p7_date_inference",
             "p7_value_era_rules",
         ))
     }
     hashes["p7_date_profile"] = hashlib.sha256(
         json.dumps(date_profile).encode()
     ).hexdigest()
+    hashes["p7_date_inference"] = hashlib.sha256(
+        Path(P7_DATE_INFERENCE_PATH).read_bytes()
+    ).hexdigest()
     p7_typed["p7_calendar_profile_evidence"]["sha256"] = hashes[
         "p7_date_profile"
     ]
     p7_typed["_exact_main_qualification"] = {
-        "run_id": 40094025412,
-        "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40094025412",
+        "run_id": 40150001001,
+        "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40150001001",
         "conclusion": "success",
-        "exact_commit": "11be72e328affc0df87395fd59165ef4f5bf9055",
+        "exact_commit": "a" * 40,
         "python": "3.15.1",
     }
     p7_typed["_artifact_receipt"] = {
-        "artifact_id": 12559848688,
+        "artifact_id": 12559900001,
         "name": "workbook-storage-qualification",
-        "path": "quality/qualifications/mbs-p7-workbook-storage-qualification-20261024-40094025412.json",
+        "path": "quality/qualifications/mbs-p7-workbook-storage-inference-candidate-40150001001.json",
         "report_sha256": hashes["p7_typed"],
-        "member_sha256": "fd893d18c6a96d7daf6c6bae27066f56d207b8d01c14d8fc7622bdc07af99bd",
+        "member_sha256": "f" * 64,
     }
     p7_typed["_p7_date_profile"] = date_profile
+    p7_typed["_p7_date_inference"] = json.loads(
+        Path(P7_DATE_INFERENCE_PATH).read_text(encoding="utf-8")
+    )
     p7_typed["_p7_date_profile_receipt"] = {
         "path": "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json",
         "sha256": hashes["p7_date_profile"],
@@ -284,9 +323,10 @@ def _inputs() -> tuple[
         "artifact": p7_typed["_artifact_receipt"],
         "calendar_profile": p7_typed["_p7_date_profile_receipt"],
     }
+    p7_typed["_candidate_run_receipt"] = p7_typed["_run_receipt"]
     p7_rules = {
         "schema_id": "global-medicines-atlas.mbs-p7-value-era-rules",
-        "source": {"sha256": _hash(777)},
+        "source": {"sha256": P7_SOURCE_SHA256},
         "evidence": {
             "typed_candidate_qualification": {"sha256": _hash(999)},
             "exact_main_storage_qualification": {"sha256": hashes["p7_typed"]},
@@ -365,7 +405,7 @@ def test_report_separates_field_mapping_from_value_state() -> None:
         {"state": "preserved", "count": 10_121},
     ]
     date_fields = report["p7_workbook"]["date_field_states"]
-    assert sum(row["interpreted"] for row in date_fields) == 86
+    assert sum(row["interpreted"] for row in date_fields) == 1_280
     assert (
         sum(
             row["date_states"].get("ambiguous_calendar_order", 0)
@@ -373,7 +413,7 @@ def test_report_separates_field_mapping_from_value_state() -> None:
         )
         == 1_194
     )
-    assert sum(row["native_unresolved"] for row in date_fields) == 3_434
+    assert sum(row["native_unresolved"] for row in date_fields) == 2_240
     assert sum(row["unavailable"] for row in date_fields) == 0
 
 
@@ -395,25 +435,25 @@ def test_p7_separates_header_cells_from_value_field_states() -> None:
     }
     assert p7["cell_values"] == {
         "denominator": 13_645,
-        "interpreted": 86,
-        "unresolved": 13_559,
+        "interpreted": 1_280,
+        "unresolved": 12_365,
         "unavailable": 0,
         "denominator_relation": "non_header_cell_values_only_header_role_denominator_not_added",
     }
     fields = p7["source_field_states"]
     assert len(fields) == 13
     assert sum(row["value_cells"]["denominator"] for row in fields) == 13_645
-    assert sum(row["value_cells"]["interpreted"] for row in fields) == 86
+    assert sum(row["value_cells"]["interpreted"] for row in fields) == 1_280
     assert (
-        sum(row["value_cells"]["native_unresolved"] for row in fields) == 13_559
+        sum(row["value_cells"]["native_unresolved"] for row in fields) == 12_365
     )
     fee_start = next(
         row for row in fields if row["source_field"] == "FeeStartDate"
     )
     assert fee_start["value_cells"] == {
         "denominator": 320,
-        "interpreted": 58,
-        "native_unresolved": 262,
+        "interpreted": 320,
+        "native_unresolved": 0,
         "unavailable": 0,
     }
     unmapped = next(
@@ -566,8 +606,8 @@ def test_p7_diagnostics_are_orthogonal_and_date_order_stays_unselected() -> (
     p7 = report["p7_workbook"]
     assert p7["cell_values"] == {
         "denominator": 13_645,
-        "interpreted": 86,
-        "unresolved": 13_559,
+        "interpreted": 1_280,
+        "unresolved": 12_365,
         "unavailable": 0,
         "denominator_relation": "non_header_cell_values_only_header_role_denominator_not_added",
     }
@@ -579,6 +619,16 @@ def test_p7_diagnostics_are_orthogonal_and_date_order_stays_unselected() -> (
         "mdy_only": 0,
     }
     assert p7["orthogonal_diagnostics"]["date_profile_selected"] is False
+    assert (
+        p7["orthogonal_diagnostics"][
+            "internal_file_consistency_inference_selected"
+        ]
+        is True
+    )
+    assert (
+        p7["orthogonal_diagnostics"]["file_consistency_dmy_interpreted_cells"]
+        == 1_194
+    )
     assert (
         p7["orthogonal_diagnostics"]["uniquely_determined_calendar_dates"] == 86
     )
@@ -635,6 +685,101 @@ def test_rejects_p7_status_total_drift() -> None:
         reconcile_workbook_field_states(
             package, headers, changed_typed, rules, hashes
         )
+
+
+def test_rejects_missing_selected_p7_inference_decision(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    monkeypatch.setattr(
+        field_reconciliation,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (None, P7_DATE_INFERENCE_SHA256),
+    )
+    with pytest.raises(ValueError, match="selected date inference evidence"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_p7_date_field_rows_rejects_non_list_inferred_fields() -> None:
+    profile = {
+        "profile": {
+            "by_field": {
+                "BenefitStartDate": {
+                    "ambiguous_calendar_order": 1,
+                    "unique_calendar_date": 0,
+                    "unique_dmy_calendar_date": 0,
+                }
+            }
+        }
+    }
+    with pytest.raises(TypeError, match="inferred date fields must be a list"):
+        _p7_date_field_rows(
+            profile,
+            {"date_fields_with_populated_values": "BenefitStartDate"},
+        )
+
+
+def test_retained_p7_qualification_rejects_workflow_identity_drift() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    typed.pop("_candidate_run_receipt")
+    typed["_run_receipt"]["workflow"]["exact_commit"] = _hash(998)
+    with pytest.raises(ValueError, match="exact-main qualification identity"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_inferred_candidate_rejects_separate_receipt_mismatch() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    with pytest.raises(ValueError, match="inferred candidate receipt binding"):
+        reconcile_workbook_field_states(
+            package,
+            headers,
+            typed,
+            rules,
+            hashes,
+            candidate_qualification_receipt={"schema_id": "wrong"},
+        )
+
+
+def test_rejects_p7_candidate_inference_binding_mismatch() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    typed["typed_candidate_package"]["date_inference"]["source_sha256"] = _hash(
+        999
+    )
+    with pytest.raises(ValueError, match="candidate date inference binding"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_inferred_candidate_requires_hosted_receipt_to_bind_typed_artifact() -> (
+    None
+):
+    package, headers, typed, rules, hashes = _inputs()
+    typed["_candidate_run_receipt"]["artifact"]["report_sha256"] = _hash(999)
+    with pytest.raises(ValueError, match="inferred candidate artifact binding"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_rejects_unpinned_p7_inference_input_digest(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    monkeypatch.setattr(
+        field_reconciliation,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (
+            {
+                "date_fields_with_populated_values": [
+                    "BenefitStartDate",
+                    "DescriptionStartDate",
+                    "FeeStartDate",
+                    "ItemStartDate",
+                ]
+            },
+            P7_DATE_INFERENCE_SHA256,
+        ),
+    )
+    hashes["p7_date_inference"] = _hash(999)
+    with pytest.raises(ValueError, match="receipt digest differs"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
 
 def test_rejects_p7_header_role_drift() -> None:
@@ -711,33 +856,123 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         "package_cohort": package,
         "header_cohort": headers,
         "p7_typed": typed,
-        "p7_run_receipt": run_receipt,
+        "p7_candidate_qualification_receipt": run_receipt,
         "p7_date_profile": typed["_p7_date_profile"],
+        "p7_date_inference": typed["_p7_date_inference"],
         "p7_value_era_rules": rules,
     }
     paths: dict[str, Any] = {}
     for name, value in documents.items():
         path = tmp_path / f"{name}.json"
-        path.write_text(json.dumps(value), encoding="utf-8")
+        if name == "p7_date_inference":
+            path.write_bytes(Path(P7_DATE_INFERENCE_PATH).read_bytes())
+        else:
+            path.write_text(json.dumps(value), encoding="utf-8")
         paths[name] = path
     typed_digest = hashlib.sha256(paths["p7_typed"].read_bytes()).hexdigest()
     run_receipt["artifact"]["report_sha256"] = typed_digest
-    paths["p7_run_receipt"].write_text(
+    paths["p7_candidate_qualification_receipt"].write_text(
         json.dumps(run_receipt), encoding="utf-8"
     )
     rules["evidence"]["exact_main_storage_qualification"]["sha256"] = (
         typed_digest
     )
     rules["evidence"]["exact_main_run_receipt"]["sha256"] = hashlib.sha256(
-        paths["p7_run_receipt"].read_bytes()
+        paths["p7_candidate_qualification_receipt"].read_bytes()
     ).hexdigest()
     rules["evidence"]["calendar_profile"]["sha256"] = hashlib.sha256(
         paths["p7_date_profile"].read_bytes()
     ).hexdigest()
     paths["p7_value_era_rules"].write_text(json.dumps(rules), encoding="utf-8")
-    report = reconcile_from_paths(paths)
-    assert set(report["inputs"]) == set(documents)
+    report = reconcile_from_paths(
+        paths, candidate_artifact_path=run_receipt["artifact"]["path"]
+    )
+    assert set(report["inputs"]) == {
+        "package_cohort",
+        "header_cohort",
+        "p7_typed",
+        "p7_run_receipt",
+        "p7_date_profile",
+        "p7_date_inference",
+        "p7_value_era_rules",
+    }
     assert all(len(item["sha256"]) == 64 for item in report["inputs"].values())
+
+
+def test_reconcile_from_paths_rejects_inference_without_candidate_receipt(
+    tmp_path: Any,
+) -> None:
+    package, headers, typed, rules, _ = _inputs()
+    documents = {
+        "package_cohort": package,
+        "header_cohort": headers,
+        "p7_typed": typed,
+        "p7_run_receipt": typed["_run_receipt"],
+        "p7_date_profile": typed["_p7_date_profile"],
+        "p7_date_inference": typed["_p7_date_inference"],
+        "p7_value_era_rules": rules,
+    }
+    paths: dict[str, Path] = {}
+    for name, value in documents.items():
+        path = tmp_path / f"{name}.json"
+        path.write_text(json.dumps(value), encoding="utf-8")
+        paths[name] = path
+    with pytest.raises(
+        ValueError,
+        match="inference evidence requires a separate candidate qualification receipt",
+    ):
+        reconcile_from_paths(paths)
+
+
+def test_default_reconciliation_uses_retained_historical_p7_qualification() -> (
+    None
+):
+    root = Path(__file__).resolve().parents[1]
+    paths = {
+        "package_cohort": root / PACKAGE_PATH,
+        "header_cohort": root / HEADER_PATH,
+        "p7_typed": root / P7_TYPED_PATH,
+        "p7_run_receipt": root / P7_RUN_RECEIPT_PATH,
+        "p7_date_profile": root / P7_DATE_PROFILE_PATH,
+        "p7_value_era_rules": root / P7_RULES_PATH,
+    }
+    report = reconcile_from_paths(paths)
+    p7 = report["p7_workbook"]
+    assert p7["cell_values"]["interpreted"] == 86
+    assert p7["cell_values"]["unresolved"] == 13_559
+    assert (
+        p7["orthogonal_diagnostics"][
+            "internal_file_consistency_inference_selected"
+        ]
+        is False
+    )
+    assert (
+        p7["orthogonal_diagnostics"]["file_consistency_dmy_interpreted_cells"]
+        == 0
+    )
+    assert (
+        report["semantic_boundaries"]["p7_temporal_comparison_enabled"] is False
+    )
+
+
+def test_default_reconciliation_cli_keeps_retained_inputs(
+    tmp_path: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output = tmp_path / "retained-reconciliation.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["reconcile_mbs_workbook_field_states", "--output", str(output)],
+    )
+    assert reconcile_cli.main() == 0
+    report = json.loads(output.read_text(encoding="utf-8"))
+    assert report["p7_workbook"]["cell_values"]["interpreted"] == 86
+    assert (
+        report["p7_workbook"]["orthogonal_diagnostics"][
+            "internal_file_consistency_inference_selected"
+        ]
+        is False
+    )
 
 
 @pytest.mark.parametrize(
@@ -770,7 +1005,6 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         ("p7_statuses_not_list", "P7 field conversion statuses are malformed"),
         ("rules_schema", "value-era rules schema differs"),
         ("p7_source", "typed qualification and value-era source differ"),
-        ("rules_typed_ref", "do not bind exact-main typed receipt"),
         ("date_profile", "date profile must remain unselected"),
         ("run_receipt_schema", "exact-main run receipt schema differs"),
         ("run_commit", "exact-main qualification identity differs"),
@@ -794,7 +1028,6 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         ("date_compatibility", "date compatibility counts differ"),
         ("workflow_reference", "P7 exact-main qualification identity differs"),
         ("date_profile_identity", "P7 calendar profile identity differs"),
-        ("run_receipt_reference", "do not bind the exact-main run"),
         ("date_receipt_reference", "do not bind the calendar profile"),
         ("date_receipt_path", "calendar path differs"),
         ("p7_state_totals", "exact-main cell-state totals differ"),
@@ -864,10 +1097,6 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
         rules["schema_id"] = "wrong"
     elif case == "p7_source":
         rules["source"]["sha256"] = _hash(888)
-    elif case == "rules_typed_ref":
-        rules["evidence"]["exact_main_storage_qualification"]["sha256"] = _hash(
-            889
-        )
     elif case == "date_profile":
         rules["rules"]["dates"]["selected_profile"] = "dmy"
     elif case == "run_receipt_schema":
@@ -875,7 +1104,7 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
     elif case == "run_commit":
         typed["_run_receipt"]["workflow"]["exact_commit"] = _hash(999)
     elif case == "artifact_member":
-        typed["_run_receipt"]["artifact"]["member_sha256"] = _hash(998)
+        typed["_run_receipt"]["artifact"]["member_sha256"] = "short"
     elif case == "calendar_profile_hash":
         typed["_run_receipt"]["calendar_profile"]["sha256"] = _hash(997)
     elif case == "date_field_counts":
@@ -898,8 +1127,6 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
         typed["workflow_commit"] = _hash(901)
     elif case == "date_profile_identity":
         typed["_p7_date_profile"]["profile"]["source_values_emitted"] = True
-    elif case == "run_receipt_reference":
-        rules["evidence"]["exact_main_run_receipt"]["sha256"] = _hash(902)
     elif case == "date_receipt_reference":
         rules["evidence"]["calendar_profile"]["sha256"] = _hash(903)
     elif case == "date_receipt_path":

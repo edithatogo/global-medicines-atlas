@@ -326,6 +326,130 @@ def test_exact_p7_profile_interprets_only_individually_unique_text_dates(
             workbook_date_for_comparison(rows[coordinate])
 
 
+@pytest.mark.parametrize(
+    ("cell", "expected_state", "expected_status", "expected_date"),
+    [
+        (
+            '<c r="C2" t="inlineStr"><is><t>05.06.2024</t></is></c>',
+            "interpreted",
+            "qualified_file_consistency_dmy",
+            date(2024, 6, 5),
+        ),
+        (
+            '<c r="C2" t="str"><f>TEXT(1,1)</f><v>05.06.2024</v></c>',
+            "native_unresolved",
+            "unsupported_format",
+            None,
+        ),
+        (
+            '<c r="C2"><v>45448</v></c>',
+            "native_unresolved",
+            "unsupported_serial_date",
+            None,
+        ),
+        (
+            '<c r="C2" t="e"><v>#VALUE!</v></c>',
+            "native_unresolved",
+            "source_error",
+            None,
+        ),
+    ],
+)
+def test_selected_file_consistency_inference_is_literal_p7_only(
+    monkeypatch, cell, expected_state, expected_status, expected_date
+) -> None:
+    payload = payload_with(cell)
+    receipt = _receipt(payload)
+    digest = "a" * 64
+    decision = {"date_fields_with_populated_values": ["ItemStartDate"]}
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(values_module, "_P7_DATE_INFERENCE_SHA256", digest)
+    monkeypatch.setattr(
+        values_module,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (decision, digest),
+    )
+    rows = rows_for(
+        payload,
+        date_inference_evidence=b"selected inference",
+        date_inference_sha256=digest,
+    )
+    row = rows["C2"]
+    assert row["interpretation_state"] == expected_state
+    assert row["domain_status"] == expected_status
+    assert row["domain_date"] == expected_date
+    assert row["display_value"] == (
+        "#VALUE!"
+        if expected_status == "source_error"
+        else "05.06.2024"
+        if expected_date is not None or expected_status == "unsupported_format"
+        else "45448"
+    )
+    if expected_date is not None:
+        assert row["semantic_evidence_sha256"] == digest
+        assert "Department provenance" in row["interpretation_reason"]
+        with pytest.raises(ValueError, match="domain-qualified meaning"):
+            workbook_date_for_comparison(row)
+
+
+@pytest.mark.parametrize("value", ["not-a-date", "31.02.2024"])
+def test_selected_inference_leaves_invalid_or_non_date_text_unresolved(
+    monkeypatch, value
+) -> None:
+    payload = payload_with(
+        f'<c r="C2" t="inlineStr"><is><t>{value}</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    digest = "a" * 64
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(values_module, "_P7_DATE_INFERENCE_SHA256", digest)
+    monkeypatch.setattr(
+        values_module,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (
+            {"date_fields_with_populated_values": ["ItemStartDate"]},
+            digest,
+        ),
+    )
+    row = rows_for(
+        payload,
+        date_inference_evidence=b"selected inference",
+        date_inference_sha256=digest,
+    )["C2"]
+    assert row["interpretation_state"] == "native_unresolved"
+    assert row["domain_date"] is None
+
+
+def test_selected_inference_requires_pinned_digest(monkeypatch) -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    digest = "a" * 64
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(values_module, "_P7_DATE_INFERENCE_SHA256", "b" * 64)
+    monkeypatch.setattr(
+        values_module,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (
+            {"date_fields_with_populated_values": ["ItemStartDate"]},
+            digest,
+        ),
+    )
+    with pytest.raises(ValueError, match="not the pinned receipt"):
+        rows_for(
+            payload,
+            date_inference_evidence=b"selected inference",
+            date_inference_sha256=digest,
+        )
+
+
 def test_p7_profile_mismatch_and_other_source_fail_closed(monkeypatch) -> None:
     payload = payload_with(
         '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 from collections import Counter, defaultdict
 from datetime import date
@@ -30,6 +32,158 @@ _SOURCE_BYTES = 87727
 # cells each. Requiring this complete inventory prevents a partial extraction
 # from qualifying an era-wide file-consistency inference.
 _EXPECTED_PROFILED_CELLS_PER_FIELD = 320
+_EXPECTED_SCHEMA_VERSION = 1
+P7_DATE_FIELDS = _DATE_FIELDS
+_EXPECTED_INFERENCE_SHA256 = (
+    "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486"
+)
+_EXPECTED_INFERENCE_RUN = (
+    "https://github.com/edithatogo/global-medicines-atlas/actions/runs/"
+    "40139026116"
+)
+_EXPECTED_INFERENCE_COMMIT = "cc5c6615be033b60a2e1bf6c50dc64d2cae9763c"
+
+
+def validate_p7_date_consistency_inference(
+    evidence: bytes | None,
+    *,
+    expected_sha256: str | None,
+    source_sha256: str,
+    source_byte_count: int,
+) -> tuple[dict[str, Any] | None, str | None]:
+    """Validate the retained exact-main, value-free P7 inference receipt."""
+    if evidence is None:
+        if expected_sha256 is not None:
+            raise ValueError("P7 date inference digest has no evidence")
+        return None, None
+    actual_sha256 = hashlib.sha256(evidence).hexdigest()
+    if (
+        expected_sha256 != _EXPECTED_INFERENCE_SHA256
+        or actual_sha256 != _EXPECTED_INFERENCE_SHA256
+    ):
+        raise ValueError("P7 date inference evidence digest differs")
+    if source_sha256 != _SOURCE_SHA256 or source_byte_count != _SOURCE_BYTES:
+        raise ValueError("P7 date inference source identity differs")
+    try:
+        report = json.loads(evidence)
+        profile = report["profile"]
+        decision = report["decision"]
+    except (json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise ValueError("P7 date inference evidence is invalid") from exc
+    fields = sorted(_DATE_FIELDS)
+    expected_by_field = {
+        "BenefitStartDate": {
+            "ambiguous_calendar_order": 310,
+            "unique_calendar_date": 10,
+        },
+        "DescriptionStartDate": {
+            "ambiguous_calendar_order": 310,
+            "unique_calendar_date": 8,
+            "unique_dmy_calendar_date": 2,
+        },
+        "FeeStartDate": {
+            "ambiguous_calendar_order": 262,
+            "unique_calendar_date": 56,
+            "unique_dmy_calendar_date": 2,
+        },
+        "ItemStartDate": {
+            "ambiguous_calendar_order": 312,
+            "unique_calendar_date": 8,
+        },
+    }
+    expected_statuses = {
+        "ambiguous_calendar_order": 1194,
+        "unique_calendar_date": 82,
+        "unique_dmy_calendar_date": 4,
+    }
+    normalized_statuses = {
+        status: sum(
+            int(profile["by_field"][field].get(status, 0)) for field in fields
+        )
+        for status in expected_statuses
+    }
+    expected_evidence_counts = {
+        "ambiguous_calendar_order": 1194,
+        "formula_unresolved": 0,
+        "invalid": 0,
+        "source_error": 0,
+        "unique_dmy_calendar_date": 4,
+        "unique_mdy_calendar_date": 0,
+        "unsupported_serial_date": 0,
+    }
+    checks = [
+        report.get("schema_id")
+        == "global-medicines-atlas.mbs-p7-date-consistency-inference",
+        report.get("schema_version") == _EXPECTED_SCHEMA_VERSION,
+        profile.get("schema_version") == _EXPECTED_SCHEMA_VERSION,
+        profile.get("expected_profiled_cells_per_field")
+        == _EXPECTED_PROFILED_CELLS_PER_FIELD,
+        profile.get("source_sha256") == _SOURCE_SHA256,
+        profile.get("source_byte_count") == _SOURCE_BYTES,
+        profile.get("source_values_emitted") is False,
+        profile.get("date_order_selected") is False,
+        decision.get("source_sha256") == _SOURCE_SHA256,
+        decision.get("source_values_emitted") is False,
+        decision.get("selection_status")
+        == "selected_internal_file_consistency_inference",
+        decision.get("selected_profile") == "mbs-dmy",
+        decision.get("workflow_run") == _EXPECTED_INFERENCE_RUN,
+        decision.get("workflow_commit") == _EXPECTED_INFERENCE_COMMIT,
+        decision.get("department_provenance_or_attestation")
+        == "not_established",
+        decision.get("inference_basis")
+        == "internal exact-copy file-consistency inference from value-free calendar and lexical counts",
+        decision.get("lexical_profile") == "dd_mm_yyyy_dotted",
+        decision.get("expected_date_fields") == fields,
+        decision.get("date_fields_with_populated_values") == fields,
+        decision.get("profile_completeness")
+        == {
+            field: {
+                "expected_cells": _EXPECTED_PROFILED_CELLS_PER_FIELD,
+                "observed_cells": _EXPECTED_PROFILED_CELLS_PER_FIELD,
+            }
+            for field in fields
+        },
+        decision.get("scope")
+        == {
+            "domain_meaning": False,
+            "other_mbs_eras": False,
+            "other_workbooks": False,
+            "source_sha256": _SOURCE_SHA256,
+        },
+        profile.get("expected_date_fields") == fields,
+        profile.get("profiled_cells_by_field")
+        == dict.fromkeys(fields, _EXPECTED_PROFILED_CELLS_PER_FIELD),
+        profile.get("by_field") == expected_by_field,
+        profile.get("lexical_profile_by_field")
+        == {
+            field: {"dd_mm_yyyy_dotted": _EXPECTED_PROFILED_CELLS_PER_FIELD}
+            for field in fields
+        },
+        all(
+            sum(profile["by_field"][field].values())
+            == _EXPECTED_PROFILED_CELLS_PER_FIELD
+            for field in fields
+        ),
+        normalized_statuses == expected_statuses,
+        all(
+            not profile["by_field"][field].get(status, 0)
+            for field in fields
+            for status in (
+                "unique_mdy_calendar_date",
+                "invalid",
+                "formula_unresolved",
+                "source_error",
+                "unsupported_serial_date",
+            )
+        ),
+        decision.get("evidence_counts") == expected_evidence_counts,
+    ]
+    if not all(checks):
+        raise ValueError(
+            "P7 date inference evidence does not qualify this source"
+        )
+    return decision, actual_sha256
 
 
 def _validated_counts(value: Any) -> dict[str, dict[str, int]] | None:
