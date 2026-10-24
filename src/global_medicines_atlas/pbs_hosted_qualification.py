@@ -47,6 +47,7 @@ from .pbs_observed_qualification import qualify_observed_values
 from .pbs_reference_context import (
     CONTEXT_FAILURE_CODES,
     ReferenceContextError,
+    encode_reference_context_receipt,
     screen_reference_context,
 )
 from .pbs_reference_shards import (
@@ -1453,5 +1454,7 @@ def _screen_native_reference_with_context(
     )
     if context["reference_occurrences"] != qualification["reference_fields"]:
         raise QualificationError("denominator", "validation")
-    qualification["reference_context"] = context
+    qualification["reference_context"] = encode_reference_context_receipt(
+        context
+    )
     return qualification

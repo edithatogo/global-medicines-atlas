@@ -8,6 +8,12 @@ import re
 from pathlib import Path
 from typing import Any, cast
 
+from .pbs_reference_context import (
+    MAX_COMPRESSED_RECEIPT_BYTES,
+    MAX_REPORT_STRATA_BYTES,
+    decode_reference_context_receipt,
+)
+
 SCREEN_RECEIPT = (
     "quality/qualifications/"
     "pbs-native-reference-screen-20261022-39730665004.json"
@@ -37,7 +43,7 @@ STATUSES = {
 }
 COMMIT_HEX_LENGTH = 40
 SHA256_HEX_LENGTH = 64
-MAX_CONTEXT_REPORT_BYTES = 36_000
+MAX_CONTEXT_REPORT_BYTES = MAX_REPORT_STRATA_BYTES
 MAX_CONTEXT_STRATA = 10_000
 MAX_CONTEXT_EXAMPLES = 1_000
 MAX_CONTEXT_EXAMPLES_PER_STRATUM = 5
@@ -267,6 +273,19 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
     if any(not isinstance(key, str) for key in members):
         raise ValueError("PBS reference context keys are invalid")
     mapping = cast("dict[str, Any]", value)
+    if mapping.get("schema_id") == (
+        "global-medicines-atlas.pbs-reference-context-screen-compressed"
+    ):
+        encoded_size = len(
+            json.dumps(
+                mapping, ensure_ascii=False, separators=(",", ":")
+            ).encode()
+        )
+        if encoded_size > MAX_COMPRESSED_RECEIPT_BYTES:
+            raise ValueError(
+                "PBS compressed reference context byte bound exceeded"
+            )
+        mapping = decode_reference_context_receipt(mapping)
     encoded = json.dumps(
         mapping, ensure_ascii=False, separators=(",", ":")
     ).encode()

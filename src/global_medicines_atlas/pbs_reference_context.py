@@ -8,14 +8,17 @@ does not resolve URIs, emit literal values, or qualify semantic relationships.
 
 from __future__ import annotations
 
+import base64
+import hashlib
 import json
 import sqlite3
+import zlib
 from collections import Counter
 from collections.abc import Callable
 from contextlib import closing
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any
+from typing import Any, cast
 
 from .adapters.au_pbs import PBS_V3_NAMESPACE, PBS_XML_POLICY
 from .parser_safety import iter_xml_events
@@ -34,13 +37,16 @@ MAX_EXAMPLES_PER_STRATUM = 5
 MAX_REPORT_EXAMPLES = 1_000
 MAX_STRUCTURAL_QNAME_BYTES = 256
 MAX_OCCURRENCE_ADDRESS_BYTES = 4096
-# The hosted parent receipt is capped at 48,000 bytes. Reserve room for its
-# source bindings and aggregate lexical screen by keeping this embedded object
-# below 36,000 bytes.
-MAX_REPORT_BYTES = 36_000
+# Keep the full structural aggregate bounded in memory. The hosted receipt
+# embeds a deterministic compressed envelope with its own smaller byte cap.
+MAX_REPORT_BYTES = 4 * 1024**2
 # Bound the two variable-size portions independently so the exact hosted
 # receipt remains serializable as strata and occurrence examples grow.
-MAX_REPORT_STRATA_BYTES = 31_000
+MAX_REPORT_STRATA_BYTES = 4 * 1024**2
+# The hosted qualification receipt has a 48 KB envelope. Preserve the full
+# bounded context profile there as deterministic zlib/base64 JSON.
+MAX_COMPRESSED_RECEIPT_BYTES = 32_000
+SHA256_HEX_LENGTH = 64
 MAX_REPORT_EXAMPLE_BYTES = 3_500
 ROOT_CHILD_STACK_DEPTH = 2
 CONTEXT_PROGRESS_EVENT_INTERVAL = 500_000
@@ -58,6 +64,7 @@ CONTEXT_FAILURE_CODES = frozenset({
     "target-address-limit",
     "strata-report-byte-limit",
     "context-report-byte-limit",
+    "context-compressed-report-byte-limit",
 })
 
 
@@ -554,3 +561,102 @@ def screen_reference_context(
         "schema_version": 1,
         **result,
     }
+
+
+def encode_reference_context_receipt(
+    context: dict[str, Any],
+) -> dict[str, Any]:
+    """Compress a bounded value-free context profile for the hosted receipt."""
+    payload = json.dumps(
+        context,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    if len(payload) > MAX_REPORT_STRATA_BYTES:
+        raise ReferenceContextError(
+            "context-report-byte-limit",
+            "PBS reference context report byte bound exceeded",
+        )
+    compressed = zlib.compress(payload, level=9)
+    envelope = {
+        "schema_id": "global-medicines-atlas.pbs-reference-context-screen-compressed",
+        "schema_version": 1,
+        "encoding": "zlib-base64-json",
+        "uncompressed_bytes": len(payload),
+        "payload_sha256": hashlib.sha256(payload).hexdigest(),
+        "payload": base64.b64encode(compressed).decode("ascii"),
+    }
+    if (
+        len(json.dumps(envelope, separators=(",", ":")).encode())
+        > MAX_COMPRESSED_RECEIPT_BYTES
+    ):
+        raise ReferenceContextError(
+            "context-compressed-report-byte-limit",
+            "PBS compressed context receipt byte bound exceeded",
+        )
+    return envelope
+
+
+def decode_reference_context_receipt(  # ruff: ignore[too-many-branches] -- layered shape, size, and integrity gates
+    value: object,
+) -> dict[str, Any]:
+    """Decode and integrity-check the bounded compressed context envelope."""
+    if not isinstance(value, dict):
+        raise TypeError("PBS compressed reference context must be an object")
+    envelope = cast("dict[str, Any]", value)
+    if set(envelope) != {
+        "schema_id",
+        "schema_version",
+        "encoding",
+        "uncompressed_bytes",
+        "payload_sha256",
+        "payload",
+    }:
+        raise ValueError("PBS compressed reference context schema differs")
+    if (
+        envelope["schema_id"]
+        != "global-medicines-atlas.pbs-reference-context-screen-compressed"
+        or envelope["schema_version"] != 1
+        or envelope["encoding"] != "zlib-base64-json"
+    ):
+        raise ValueError("PBS compressed reference context contract differs")
+    size = envelope["uncompressed_bytes"]
+    digest = envelope["payload_sha256"]
+    encoded = envelope["payload"]
+    if isinstance(size, bool) or not isinstance(size, int):
+        raise TypeError("PBS compressed reference context size is invalid")
+    if not 0 <= size <= MAX_REPORT_STRATA_BYTES:
+        raise ValueError("PBS compressed reference context bound differs")
+    if not isinstance(digest, str) or len(digest) != SHA256_HEX_LENGTH:
+        raise ValueError("PBS compressed reference context bound differs")
+    if any(character not in "0123456789abcdef" for character in digest):
+        raise ValueError("PBS compressed reference context bound differs")
+    if not isinstance(encoded, str):
+        raise TypeError("PBS compressed reference context payload is invalid")
+    try:
+        encoded_bytes = encoded.encode("ascii")
+    except UnicodeEncodeError as error:
+        raise ValueError(
+            "PBS compressed reference context bound differs"
+        ) from error
+    if len(encoded_bytes) > MAX_COMPRESSED_RECEIPT_BYTES:
+        raise ValueError("PBS compressed reference context bound differs")
+    try:
+        compressed = base64.b64decode(encoded_bytes, validate=True)
+        inflater = zlib.decompressobj()
+        payload = inflater.decompress(compressed, MAX_REPORT_STRATA_BYTES + 1)
+    except (ValueError, zlib.error) as error:
+        raise ValueError(
+            "PBS compressed reference context is invalid"
+        ) from error
+    if len(payload) != size or len(payload) > MAX_REPORT_STRATA_BYTES:
+        raise ValueError("PBS compressed reference context integrity differs")
+    if inflater.unconsumed_tail or inflater.unused_data or not inflater.eof:
+        raise ValueError("PBS compressed reference context integrity differs")
+    if hashlib.sha256(payload).hexdigest() != digest:
+        raise ValueError("PBS compressed reference context integrity differs")
+    report = json.loads(payload)
+    if not isinstance(report, dict):
+        raise TypeError("PBS compressed reference context payload differs")
+    return cast("dict[str, Any]", report)

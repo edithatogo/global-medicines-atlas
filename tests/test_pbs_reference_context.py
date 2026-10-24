@@ -1,6 +1,9 @@
 """PBS contextual screening emits structure and counts, never source values."""
 
+import base64
+import hashlib
 import json
+import zlib
 
 import pytest
 
@@ -109,6 +112,206 @@ def test_context_screen_is_deterministic_and_classifies_negative_controls():
         "no_exact_literal",
         "empty_literal",
     }
+
+
+def test_context_receipt_compression_round_trips_the_complete_profile():
+    context = screen_reference_context(
+        b'<root xmlns="http://schema.pbs.gov.au/" '
+        b'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+        b'<edge rdf:resource="private-target"/></root>'
+    )
+
+    receipt = context_module.encode_reference_context_receipt(context)
+
+    assert receipt["schema_id"].endswith("-compressed")
+    assert context_module.decode_reference_context_receipt(receipt) == context
+    assert len(json.dumps(receipt).encode()) <= (
+        context_module.MAX_COMPRESSED_RECEIPT_BYTES
+    )
+
+
+def test_context_receipt_compression_fits_high_cardinality_profile():
+    strata = [
+        {
+            "kind": "rdf_resource",
+            "match_status": "unique_exact_literal",
+            "predicate_element_qname": (
+                "{http://schema.pbs.gov.au/}reference-element-" + str(index)
+            ),
+            "nearest_subject_element_qname": (
+                "{http://schema.pbs.gov.au/}subject-element-" + str(index)
+            ),
+            "nearest_identifier_element_qname": "none",
+            "xml_base_context": "no_xml_base",
+            "literal_shape": "absolute_looking",
+            "occurrences": 1,
+            "unique_target_occurrences": 1,
+            "ambiguous_target_occurrences": 0,
+            "no_xml_base_exact_target_occurrences": 1,
+            "unique_exact_literal_no_xml_base_candidates": 1,
+            "examples_omitted": 0,
+            "examples": [],
+        }
+        for index in range(400)
+    ]
+    context = {
+        "schema_id": "global-medicines-atlas.pbs-reference-context-screen",
+        "schema_version": 1,
+        "reference_occurrences": len(strata),
+        "strata_count": len(strata),
+        "examples_emitted": 0,
+        "examples_omitted": 0,
+        "unique_exact_literal_no_xml_base_candidates": len(strata),
+        "strata": strata,
+        "uri_resolution_performed": False,
+        "literal_values_emitted": False,
+        "raw_source_emitted": False,
+        "semantic_relationships_qualified": False,
+        "external_targets_fetched": 0,
+    }
+
+    uncompressed = json.dumps(context, separators=(",", ":")).encode()
+    receipt = context_module.encode_reference_context_receipt(context)
+
+    assert len(uncompressed) > 31_000
+    assert len(json.dumps(receipt).encode()) < len(uncompressed)
+    assert context_module.decode_reference_context_receipt(receipt) == context
+
+
+def test_context_receipt_compression_enforces_parent_receipt_budget(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    context = screen_reference_context(
+        b'<root xmlns="http://schema.pbs.gov.au/"/>'
+    )
+    monkeypatch.setattr(context_module, "MAX_COMPRESSED_RECEIPT_BYTES", 1)
+    with pytest.raises(ReferenceContextError) as captured:
+        context_module.encode_reference_context_receipt(context)
+    assert captured.value.diagnostic_code == (
+        "context-compressed-report-byte-limit"
+    )
+
+
+def test_context_receipt_decoder_rejects_tampered_payload():
+    context = screen_reference_context(
+        b'<root xmlns="http://schema.pbs.gov.au/"/>'
+    )
+    receipt = context_module.encode_reference_context_receipt(context)
+    receipt["payload_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="integrity differs"):
+        context_module.decode_reference_context_receipt(receipt)
+
+
+def _envelope_for_payload(payload: bytes) -> dict[str, object]:
+    return {
+        "schema_id": (
+            "global-medicines-atlas.pbs-reference-context-screen-compressed"
+        ),
+        "schema_version": 1,
+        "encoding": "zlib-base64-json",
+        "uncompressed_bytes": len(payload),
+        "payload_sha256": hashlib.sha256(payload).hexdigest(),
+        "payload": base64.b64encode(zlib.compress(payload)).decode("ascii"),
+    }
+
+
+@pytest.mark.parametrize(
+    ("field", "replacement"),
+    [
+        ("schema_id", "wrong-schema"),
+        ("schema_version", 2),
+        ("encoding", "gzip-json"),
+        ("uncompressed_bytes", True),
+        ("uncompressed_bytes", -1),
+        (
+            "uncompressed_bytes",
+            context_module.MAX_REPORT_STRATA_BYTES + 1,
+        ),
+        ("payload_sha256", None),
+        ("payload_sha256", "0" * 63),
+        ("payload_sha256", "z" * 64),
+        ("payload", None),
+        ("payload", "\u2603"),
+        ("payload", "x" * (context_module.MAX_COMPRESSED_RECEIPT_BYTES + 1)),
+    ],
+)
+def test_context_receipt_decoder_rejects_invalid_envelope_fields(
+    field: str, replacement: object
+) -> None:
+    receipt = _envelope_for_payload(b"{}")
+    receipt[field] = replacement
+
+    with pytest.raises((TypeError, ValueError)):
+        context_module.decode_reference_context_receipt(receipt)
+
+
+def test_context_receipt_decoder_rejects_wrong_shape_and_payload_type():
+    with pytest.raises(TypeError, match="must be an object"):
+        context_module.decode_reference_context_receipt([])
+
+    receipt = _envelope_for_payload(b"{}")
+    receipt.pop("payload")
+    with pytest.raises(ValueError, match="schema differs"):
+        context_module.decode_reference_context_receipt(receipt)
+
+    receipt = _envelope_for_payload(b"[]")
+    with pytest.raises(TypeError, match="payload differs"):
+        context_module.decode_reference_context_receipt(receipt)
+
+
+@pytest.mark.parametrize(
+    "encoded",
+    ["!", base64.b64encode(b"not-zlib").decode("ascii")],
+)
+def test_context_receipt_decoder_rejects_invalid_compressed_bytes(encoded: str):
+    receipt = _envelope_for_payload(b"{}")
+    receipt["payload"] = encoded
+
+    with pytest.raises(ValueError, match="is invalid"):
+        context_module.decode_reference_context_receipt(receipt)
+
+
+@pytest.mark.parametrize(
+    "compressed",
+    [
+        zlib.compress(b"{}")[:-1],
+        zlib.compress(b"{}") + b"trailing",
+    ],
+)
+def test_context_receipt_decoder_rejects_incomplete_or_trailing_streams(
+    compressed: bytes,
+):
+    receipt = _envelope_for_payload(b"{}")
+    receipt["payload"] = base64.b64encode(compressed).decode("ascii")
+
+    with pytest.raises(ValueError, match="integrity differs"):
+        context_module.decode_reference_context_receipt(receipt)
+
+
+def test_context_receipt_decoder_rejects_length_and_decompression_overflow():
+    receipt = _envelope_for_payload(b"{}")
+    receipt["uncompressed_bytes"] = 3
+    with pytest.raises(ValueError, match="integrity differs"):
+        context_module.decode_reference_context_receipt(receipt)
+
+    oversized = b"x" * (context_module.MAX_REPORT_STRATA_BYTES + 1)
+    receipt = _envelope_for_payload(oversized)
+    receipt["uncompressed_bytes"] = context_module.MAX_REPORT_STRATA_BYTES
+    with pytest.raises(ValueError, match="integrity differs"):
+        context_module.decode_reference_context_receipt(receipt)
+
+
+def test_context_report_uncompressed_bound_fails_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    context = screen_reference_context(
+        b'<root xmlns="http://schema.pbs.gov.au/"/>'
+    )
+    monkeypatch.setattr(context_module, "MAX_REPORT_STRATA_BYTES", 1)
+
+    with pytest.raises(ReferenceContextError) as captured:
+        context_module.encode_reference_context_receipt(context)
+    assert captured.value.diagnostic_code == "context-report-byte-limit"
 
 
 def test_nested_subject_and_duplicate_targets_have_exact_occurrence_addresses():
