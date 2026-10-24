@@ -196,6 +196,17 @@ def test_root_version_reader_rejects_unbound_or_unsafe_metadata(xml):
         module._pbs_root_schema_version(xml)
 
 
+def test_root_version_reader_rejects_metadata_beyond_prefix_bound(monkeypatch):
+    xml = (
+        b" " * 80
+        + f'<pbs:root xmlns:pbs="{module.PBS_V3_NAMESPACE}" version="3"/>'.encode()
+    )
+    monkeypatch.setattr(module, "_ROOT_METADATA_PREFIX_BYTES", 64)
+    monkeypatch.setattr(module, "_ROOT_METADATA_CHUNK_BYTES", 16)
+    with pytest.raises(ValueError, match="within prefix bound"):
+        module._pbs_root_schema_version(xml)
+
+
 def test_hosted_root_version_receipt_binds_only_pinned_identity_and_version(
     tmp_path, monkeypatch
 ):
@@ -237,6 +248,19 @@ def test_hosted_root_version_receipt_binds_only_pinned_identity_and_version(
     assert report["schema_minor_bound"] is False
     assert report["source_field_values_emitted"] is False
     assert "SECRET_SOURCE_VALUE" not in json.dumps(report)
+
+
+def test_existing_root_version_receipt_is_preserved(tmp_path, monkeypatch):
+    output = tmp_path / "receipt.json"
+    output.write_text("existing evidence", encoding="utf-8")
+    monkeypatch.setattr(
+        module,
+        "_verified_inputs",
+        lambda *_args, **_kwargs: pytest.fail("must not load pinned inputs"),
+    )
+    with pytest.raises(ValueError, match="output already exists"):
+        module.run_hosted_root_schema_version_metadata(SHA, output)
+    assert output.read_text(encoding="utf-8") == "existing evidence"
 
 
 def test_root_version_cli_failure_receipt_never_serializes_source_text(

@@ -1334,7 +1334,6 @@ def _pbs_root_schema_version(xml: bytes) -> tuple[str, tuple[int, ...]]:
 
     parser.StartDoctypeDeclHandler = reject_doctype
     parser.EntityDeclHandler = reject_doctype
-    parser.ExternalEntityRefHandler = lambda *_args: 0
     parser.StartElementHandler = start_element
     parser.SetParamEntityParsing(expat.XML_PARAM_ENTITY_PARSING_NEVER)
     # Feed bounded slices and stop from the root-start callback. No descendant
@@ -1350,9 +1349,7 @@ def _pbs_root_schema_version(xml: bytes) -> tuple[str, tuple[int, ...]]:
         raise ValueError(
             "PBS root version metadata not found within prefix bound"
         )
-    if observed is None:
-        raise ValueError("PBS root version metadata missing")
-    return observed
+    return cast("tuple[str, tuple[int, ...]]", observed)
 
 
 def run_hosted_root_schema_version_metadata(
