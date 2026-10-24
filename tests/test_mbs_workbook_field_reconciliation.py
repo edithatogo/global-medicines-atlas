@@ -677,6 +677,52 @@ def test_rejects_p7_status_total_drift() -> None:
         )
 
 
+def test_rejects_missing_selected_p7_inference_decision(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    monkeypatch.setattr(
+        field_reconciliation,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (None, P7_DATE_INFERENCE_SHA256),
+    )
+    with pytest.raises(ValueError, match="selected date inference evidence"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_rejects_p7_candidate_inference_binding_mismatch() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    typed["typed_candidate_package"]["date_inference"]["source_sha256"] = _hash(
+        999
+    )
+    with pytest.raises(ValueError, match="candidate date inference binding"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_rejects_unpinned_p7_inference_input_digest(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    monkeypatch.setattr(
+        field_reconciliation,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (
+            {
+                "date_fields_with_populated_values": [
+                    "BenefitStartDate",
+                    "DescriptionStartDate",
+                    "FeeStartDate",
+                    "ItemStartDate",
+                ]
+            },
+            P7_DATE_INFERENCE_SHA256,
+        ),
+    )
+    hashes["p7_date_inference"] = _hash(999)
+    with pytest.raises(ValueError, match="receipt digest differs"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
 def test_rejects_p7_header_role_drift() -> None:
     package, headers, typed, rules, hashes = _inputs()
     changed_typed = copy.deepcopy(typed)

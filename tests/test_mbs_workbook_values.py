@@ -392,6 +392,62 @@ def test_selected_file_consistency_inference_is_literal_p7_only(
         assert "Department provenance" in row["interpretation_reason"]
 
 
+@pytest.mark.parametrize("value", ["not-a-date", "31.02.2024"])
+def test_selected_inference_leaves_invalid_or_non_date_text_unresolved(
+    monkeypatch, value
+) -> None:
+    payload = payload_with(
+        f'<c r="C2" t="inlineStr"><is><t>{value}</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    digest = "a" * 64
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(values_module, "_P7_DATE_INFERENCE_SHA256", digest)
+    monkeypatch.setattr(
+        values_module,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (
+            {"date_fields_with_populated_values": ["ItemStartDate"]},
+            digest,
+        ),
+    )
+    row = rows_for(
+        payload,
+        date_inference_evidence=b"selected inference",
+        date_inference_sha256=digest,
+    )["C2"]
+    assert row["interpretation_state"] == "native_unresolved"
+    assert row["domain_date"] is None
+
+
+def test_selected_inference_requires_pinned_digest(monkeypatch) -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    digest = "a" * 64
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(values_module, "_P7_DATE_INFERENCE_SHA256", "b" * 64)
+    monkeypatch.setattr(
+        values_module,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (
+            {"date_fields_with_populated_values": ["ItemStartDate"]},
+            digest,
+        ),
+    )
+    with pytest.raises(ValueError, match="not the pinned receipt"):
+        rows_for(
+            payload,
+            date_inference_evidence=b"selected inference",
+            date_inference_sha256=digest,
+        )
+
+
 def test_p7_profile_mismatch_and_other_source_fail_closed(monkeypatch) -> None:
     payload = payload_with(
         '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
