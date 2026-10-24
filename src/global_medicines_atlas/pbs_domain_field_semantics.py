@@ -31,6 +31,21 @@ NATIVE_DIGEST = (
 )
 REVISION = "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
 EXPECTED_NATIVE_FIELDS = 18_208_758
+SOURCE_LABEL_SIGNATURES = {
+    "brand_name_text": ("brand-name", "text"),
+    "ex_manufacturer_amount_text": (
+        "ex-manufacturer",
+        "amount",
+        "text",
+    ),
+    "copayment_amount_text": ("copayment", "amount", "text"),
+    "threshold_amount_text": ("threshold", "amount", "text"),
+    "fee_definition_amount_text": (
+        "fee-definition",
+        "amount",
+        "text",
+    ),
+}
 
 
 def _canonical_digest(value: dict[str, Any]) -> str:
@@ -46,6 +61,38 @@ def _canonical_digest(value: dict[str, Any]) -> str:
 
 def _read_json(root: Path, relative: str) -> dict[str, Any]:
     return json.loads((root / relative).read_bytes())
+
+
+def _source_label_observations(
+    inventory: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    """Summarize exact-source path labels without interpreting their values."""
+    observations: dict[str, dict[str, Any]] = {
+        label: {
+            "interpretation_state": "native_unresolved",
+            "null_fields": 0,
+            "schema_path_count": 0,
+            "status": "source_path_label_only",
+            "value_fields": 0,
+            "native_fields": 0,
+        }
+        for label in SOURCE_LABEL_SIGNATURES
+    }
+    for row in inventory["paths"]:
+        names = [
+            segment.split("}")[-1] for segment in row["schema_path"].split("/")
+        ]
+        for label, signature in SOURCE_LABEL_SIGNATURES.items():
+            width = len(signature)
+            if any(
+                tuple(names[index : index + width]) == signature
+                for index in range(len(names) - width + 1)
+            ):
+                target = observations[label]
+                target["schema_path_count"] += 1
+                for count in ("native_fields", "value_fields", "null_fields"):
+                    target[count] += row[count]
+    return observations
 
 
 def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
@@ -206,5 +253,37 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
             "complete_domain_semantics_qualified": False,
             "rights_conclusion_changed": False,
             "cross_era_equivalence": False,
+        },
+    }
+
+
+def qualify_pbs_source_label_observations(root: Path) -> dict[str, Any]:
+    """Summarize pinned PBS path labels without altering domain meanings."""
+    domain_profile = qualify_pbs_domain_fields(root)
+    inventory = _read_json(root, INVENTORY)
+    return {
+        "schema_id": "global-medicines-atlas.pbs-source-label-observations",
+        "schema_version": 1,
+        "profile_id": "pbs-v3-pinned-2026-04-01-source-labels-v1",
+        "status": "source_path_labels_observed_values_unresolved",
+        "source": {
+            "dataset": domain_profile["source"]["dataset"],
+            "revision": REVISION,
+            "member_sha256": MEMBER_SHA256,
+            "native_digest": NATIVE_DIGEST,
+            "native_fields": EXPECTED_NATIVE_FIELDS,
+            "schema_path_inventory_sha256": domain_profile["source"][
+                "schema_path_inventory_sha256"
+            ],
+        },
+        "observations": _source_label_observations(inventory),
+        "scope": {
+            "source_values_emitted": False,
+            "new_sources": 0,
+            "new_admissions": 0,
+            "consumer_canaries": 0,
+            "publications": 0,
+            "rights_conclusion_changed": False,
+            "domain_value_semantics_qualified": False,
         },
     }
