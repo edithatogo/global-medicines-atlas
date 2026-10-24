@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import sqlite3
 from collections import Counter
+from collections.abc import Callable
 from contextlib import closing
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -42,6 +43,32 @@ MAX_REPORT_BYTES = 36_000
 MAX_REPORT_STRATA_BYTES = 31_000
 MAX_REPORT_EXAMPLE_BYTES = 3_500
 ROOT_CHILD_STACK_DEPTH = 2
+CONTEXT_PROGRESS_EVENT_INTERVAL = 500_000
+CONTEXT_PROGRESS_OCCURRENCE_INTERVAL = 250_000
+CONTEXT_FAILURE_CODES = frozenset({
+    "qname-byte-limit",
+    "source-root-mismatch",
+    "literal-byte-limit",
+    "index-row-limit",
+    "reference-occurrence-limit",
+    "element-stack-mismatch",
+    "incomplete-xml-document",
+    "stratum-limit",
+    "occurrence-address-limit",
+    "target-address-limit",
+    "strata-report-byte-limit",
+    "context-report-byte-limit",
+})
+
+
+class ReferenceContextError(ValueError):
+    """Fixed, value-free diagnostic for bounded context qualification failures."""
+
+    def __init__(self, code: str, message: str) -> None:
+        if code not in CONTEXT_FAILURE_CODES:
+            raise ValueError("invalid reference context diagnostic code")
+        self.diagnostic_code = code
+        super().__init__(message)
 
 
 def _pointer(value: str) -> str:
@@ -63,7 +90,10 @@ def _literal_class(kind: str, value: str) -> str:
     return "relative_or_other"
 
 
-def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,too-many-statements,too-many-locals] -- bounded source parser
+def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-locals] -- bounded source parser
+    member: bytes,
+    progress: Callable[[str, int, int], None] | None = None,
+) -> dict[str, Any]:
     with (
         TemporaryDirectory(prefix="pbs-reference-context-") as temporary,
         closing(sqlite3.connect(Path(temporary) / "context.sqlite")) as db,
@@ -83,22 +113,37 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
         root_seen = False
         refs_seen = 0
         definitions_seen = 0
+        events_seen = 0
+        if progress is not None:
+            progress("reference-context-index", 0, 0)
         with db:
             for event, element, parent in iter_xml_events(
                 member, policy=PBS_XML_POLICY
             ):
+                events_seen += 1
+                if (
+                    progress is not None
+                    and events_seen % CONTEXT_PROGRESS_EVENT_INTERVAL == 0
+                ):
+                    progress(
+                        "reference-context-index",
+                        events_seen // CONTEXT_PROGRESS_EVENT_INTERVAL,
+                        refs_seen + definitions_seen,
+                    )
                 if event == "start":
                     if len(element.tag.encode()) > MAX_STRUCTURAL_QNAME_BYTES:
-                        raise ValueError(
-                            "PBS reference context QName byte bound exceeded"
+                        raise ReferenceContextError(
+                            "qname-byte-limit",
+                            "PBS reference context QName byte bound exceeded",
                         )
                     if parent is None:
                         if element.tag not in {
                             f"{{{PBS_V3_NAMESPACE}}}root",
                             f"{{{PBS_V3_NAMESPACE}}}schedule",
                         }:
-                            raise ValueError(
-                                "PBS reference context root does not match source contract"
+                            raise ReferenceContextError(
+                                "source-root-mismatch",
+                                "PBS reference context root does not match source contract",
                             )
                         address = f"/{_pointer(element.tag)}/1"
                         root_seen = True
@@ -165,13 +210,15 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                     for attr, literal in element.attrib.items():
                         if attr == XML_ID:
                             if len(literal.encode()) > MAX_LITERAL_BYTES:
-                                raise ValueError(
-                                    "PBS reference context literal byte bound exceeded"
+                                raise ReferenceContextError(
+                                    "literal-byte-limit",
+                                    "PBS reference context literal byte bound exceeded",
                                 )
                             definitions_seen += 1
                             if definitions_seen + refs_seen > MAX_INDEX_ROWS:
-                                raise ValueError(
-                                    "PBS reference context index row bound exceeded"
+                                raise ReferenceContextError(
+                                    "index-row-limit",
+                                    "PBS reference context index row bound exceeded",
                                 )
                             db.execute(
                                 "INSERT INTO defs VALUES (?, ?, ?, ?, ?)",
@@ -185,13 +232,15 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                             )
                         elif attr == RDF_ABOUT:
                             if len(literal.encode()) > MAX_LITERAL_BYTES:
-                                raise ValueError(
-                                    "PBS reference context literal byte bound exceeded"
+                                raise ReferenceContextError(
+                                    "literal-byte-limit",
+                                    "PBS reference context literal byte bound exceeded",
                                 )
                             definitions_seen += 1
                             if definitions_seen + refs_seen > MAX_INDEX_ROWS:
-                                raise ValueError(
-                                    "PBS reference context index row bound exceeded"
+                                raise ReferenceContextError(
+                                    "index-row-limit",
+                                    "PBS reference context index row bound exceeded",
                                 )
                             db.execute(
                                 "INSERT INTO defs VALUES (?, ?, ?, ?, ?)",
@@ -205,8 +254,9 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                             )
                         elif attr in {RDF_RESOURCE, XLINK_HREF}:
                             if len(literal.encode()) > MAX_LITERAL_BYTES:
-                                raise ValueError(
-                                    "PBS reference context literal byte bound exceeded"
+                                raise ReferenceContextError(
+                                    "literal-byte-limit",
+                                    "PBS reference context literal byte bound exceeded",
                                 )
                             kind = (
                                 "rdf_resource"
@@ -228,8 +278,9 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                                 refs_seen > MAX_REFERENCE_OCCURRENCES
                                 or refs_seen + definitions_seen > MAX_INDEX_ROWS
                             ):
-                                raise ValueError(
-                                    "PBS reference context occurrence bound exceeded"
+                                raise ReferenceContextError(
+                                    "reference-occurrence-limit",
+                                    "PBS reference context occurrence bound exceeded",
                                 )
                             db.execute(
                                 "INSERT INTO refs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -250,8 +301,9 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                             )
                 else:
                     if not stack:
-                        raise ValueError(
-                            "PBS reference context element stack is inconsistent"
+                        raise ReferenceContextError(
+                            "element-stack-mismatch",
+                            "PBS reference context element stack is inconsistent",
                         )
                     if len(stack) == ROOT_CHILD_STACK_DEPTH:
                         root = stack[0]["element"]
@@ -260,13 +312,19 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                     child_counts.pop()
                     stack.pop()
         if not root_seen or stack:
-            raise ValueError("PBS reference context document is incomplete")
+            raise ReferenceContextError(
+                "incomplete-xml-document",
+                "PBS reference context document is incomplete",
+            )
+        if progress is not None:
+            progress("reference-context-join", 1, refs_seen)
         db.execute("CREATE INDEX definition_literal ON defs(space, literal)")
 
         summaries: dict[tuple[str, ...], dict[str, Any]] = {}
         report_example_count = 0
         report_example_bytes = 0
         omitted_examples = 0
+        grouped_occurrences = 0
         cursor = db.execute("""
             SELECT r.kind, r.literal, r.space, r.address, r.predicate_qname,
                    r.predicate_address, coalesce(r.subject_qname, 'none'),
@@ -278,7 +336,7 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
             GROUP BY r.rowid
             ORDER BY r.kind, r.address
         """)
-        for (
+        for grouped_occurrences, (
             kind,
             literal,
             space,
@@ -293,7 +351,17 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
             form,
             target_count,
             targets_with_base,
-        ) in cursor:
+        ) in enumerate(cursor, start=1):
+            if (
+                progress is not None
+                and grouped_occurrences % CONTEXT_PROGRESS_OCCURRENCE_INTERVAL
+                == 0
+            ):
+                progress(
+                    "reference-context-aggregate",
+                    grouped_occurrences // CONTEXT_PROGRESS_OCCURRENCE_INTERVAL,
+                    grouped_occurrences,
+                )
             status = (
                 "empty_literal"
                 if not literal
@@ -316,7 +384,10 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                 form,
             )
             if key not in summaries and len(summaries) >= MAX_STRATA:
-                raise ValueError("PBS reference context stratum bound exceeded")
+                raise ReferenceContextError(
+                    "stratum-limit",
+                    "PBS reference context stratum bound exceeded",
+                )
             row = summaries.setdefault(
                 key,
                 {
@@ -356,8 +427,9 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                 and report_example_count < MAX_REPORT_EXAMPLES
             ):
                 if len(address.encode()) > MAX_OCCURRENCE_ADDRESS_BYTES:
-                    raise ValueError(
-                        "PBS reference context occurrence address bound exceeded"
+                    raise ReferenceContextError(
+                        "occurrence-address-limit",
+                        "PBS reference context occurrence address bound exceeded",
                     )
                 targets = db.execute(
                     "SELECT address, target_qname, base_depth FROM defs WHERE space = ? AND literal = ? ORDER BY address LIMIT 10",
@@ -367,8 +439,9 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                     len(target_address.encode()) > MAX_OCCURRENCE_ADDRESS_BYTES
                     for target_address, _, _ in targets
                 ):
-                    raise ValueError(
-                        "PBS reference context target address bound exceeded"
+                    raise ReferenceContextError(
+                        "target-address-limit",
+                        "PBS reference context target address bound exceeded",
                     )
                 example = {
                     "reference_occurrence": address,
@@ -436,7 +509,10 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
             ).encode()
         )
         if strata_bytes > MAX_REPORT_STRATA_BYTES:
-            raise ValueError("PBS reference context strata byte bound exceeded")
+            raise ReferenceContextError(
+                "strata-report-byte-limit",
+                "PBS reference context strata byte bound exceeded",
+            )
         result = {
             "reference_occurrences": refs_seen,
             "strata_count": len(summaries),
@@ -453,17 +529,26 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
             "semantic_relationships_qualified": False,
             "external_targets_fetched": 0,
         }
+        if progress is not None:
+            progress("reference-context-report", 1, refs_seen)
         if (
             len(json.dumps(result, ensure_ascii=False).encode())
             > MAX_REPORT_BYTES
         ):
-            raise ValueError("PBS reference context report byte bound exceeded")
+            raise ReferenceContextError(
+                "context-report-byte-limit",
+                "PBS reference context report byte bound exceeded",
+            )
         return result
 
 
-def screen_reference_context(member: bytes) -> dict[str, Any]:
+def screen_reference_context(
+    member: bytes,
+    *,
+    progress: Callable[[str, int, int], None] | None = None,
+) -> dict[str, Any]:
     """Return aggregate contextual strata over one already-bound PBS XML member."""
-    result = _screen(member)
+    result = _screen(member, progress=progress)
     return {
         "schema_id": "global-medicines-atlas.pbs-reference-context-screen",
         "schema_version": 1,

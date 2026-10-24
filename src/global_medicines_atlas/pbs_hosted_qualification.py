@@ -44,7 +44,11 @@ from .pbs_member_identity import (
 from .pbs_native_reference_screen import screen_native_references
 from .pbs_observed_domain import load_observed_profile
 from .pbs_observed_qualification import qualify_observed_values
-from .pbs_reference_context import screen_reference_context
+from .pbs_reference_context import (
+    CONTEXT_FAILURE_CODES,
+    ReferenceContextError,
+    screen_reference_context,
+)
 from .pbs_reference_shards import (
     load_reference_entity_material,
     load_reference_entity_partition,
@@ -219,6 +223,7 @@ class QualificationError(ValueError):
         transport_detail: str = "unknown",
         failure_type: str = "qualification-error",
         resource_code: str = "unavailable",
+        context_diagnostic_code: str = "unavailable",
     ) -> None:
         self.retry_event: tuple[str, str] | None = None
         self.retry_detail = "unknown"
@@ -233,6 +238,11 @@ class QualificationError(ValueError):
         self.resource_code = (
             resource_code
             if resource_code in {"enospc", "unavailable"}
+            else "unavailable"
+        )
+        self.context_diagnostic_code = (
+            context_diagnostic_code
+            if context_diagnostic_code in CONTEXT_FAILURE_CODES
             else "unavailable"
         )
         super().__init__(
@@ -294,6 +304,11 @@ class _RetryBudget:
                 "schema-inventory",
                 "native-reference-index",
                 "native-reference-match",
+                "reference-context-index",
+                "reference-context-join",
+                "reference-context-aggregate",
+                "reference-context-report",
+                "reference-context-denominator",
             }
             or any(
                 type(value) is not int or not 0 <= value < 2**63
@@ -410,6 +425,11 @@ def _at(
             resource_code=(
                 "enospc"
                 if isinstance(error, OSError) and error.errno == errno.ENOSPC
+                else "unavailable"
+            ),
+            context_diagnostic_code=(
+                error.diagnostic_code
+                if isinstance(error, ReferenceContextError)
                 else "unavailable"
             ),
         ) from None
@@ -1212,8 +1232,9 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
             transport_detail=error.transport_detail,
             failure_type=error.failure_type,
             resource_code=error.resource_code,
+            context_diagnostic_code=error.context_diagnostic_code,
         )
-    return {
+    report: dict[str, Any] = {
         "schema_version": 1,
         "status": "failed",
         **context,
@@ -1238,6 +1259,16 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         else None,
         "publication_performed": False,
     }
+    diagnostic_code = (
+        error.context_diagnostic_code
+        if isinstance(error, QualificationError)
+        else error.diagnostic_code
+        if isinstance(error, ReferenceContextError)
+        else "unavailable"
+    )
+    if diagnostic_code in CONTEXT_FAILURE_CODES:
+        report["diagnostic_code"] = diagnostic_code
+    return report
 
 
 def run_hosted_schema_inventory(
@@ -1408,7 +1439,18 @@ def _screen_native_reference_with_context(
             "projection-qualification", phase, batches, rows
         ),
     )
-    context = screen_reference_context(inputs.xml)
+    context = screen_reference_context(
+        inputs.xml,
+        progress=lambda phase, batches, rows: retry.checkpoint(
+            "projection-qualification", phase, batches, rows
+        ),
+    )
+    retry.checkpoint(
+        "projection-qualification",
+        "reference-context-denominator",
+        1,
+        context["reference_occurrences"],
+    )
     if context["reference_occurrences"] != qualification["reference_fields"]:
         raise QualificationError("denominator", "validation")
     qualification["reference_context"] = context

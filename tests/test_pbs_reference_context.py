@@ -6,6 +6,7 @@ import pytest
 
 import global_medicines_atlas.pbs_reference_context as context_module
 from global_medicines_atlas.pbs_reference_context import (
+    ReferenceContextError,
     screen_reference_context,
 )
 
@@ -43,6 +44,55 @@ def test_context_screen_reports_occurrence_structure_without_literals():
         and row["literal_shape"] == "fragment"
         for row in report["strata"]
     )
+
+
+def test_context_screen_emits_value_free_substage_progress(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(context_module, "CONTEXT_PROGRESS_EVENT_INTERVAL", 1)
+    monkeypatch.setattr(
+        context_module, "CONTEXT_PROGRESS_OCCURRENCE_INTERVAL", 1
+    )
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <edge rdf:resource="private-target"/>
+    </root>"""
+    checkpoints: list[tuple[str, int, int]] = []
+
+    report = screen_reference_context(
+        xml,
+        progress=lambda phase, batches, rows: checkpoints.append((
+            phase,
+            batches,
+            rows,
+        )),
+    )
+
+    assert [checkpoint[0] for checkpoint in checkpoints] == [
+        "reference-context-index",
+        "reference-context-index",
+        "reference-context-index",
+        "reference-context-index",
+        "reference-context-index",
+        "reference-context-join",
+        "reference-context-aggregate",
+        "reference-context-report",
+    ]
+    assert checkpoints[0] == ("reference-context-index", 0, 0)
+    assert checkpoints[5:] == [
+        ("reference-context-join", 1, 1),
+        ("reference-context-aggregate", 1, 1),
+        ("reference-context-report", 1, 1),
+    ]
+    assert "private-target" not in json.dumps(checkpoints)
+    assert report["reference_occurrences"] == 1
+
+
+def test_context_failure_code_rejects_values_outside_allowlist():
+    with pytest.raises(
+        ValueError, match="invalid reference context diagnostic code"
+    ):
+        ReferenceContextError("private-source-value", "must not be retained")
 
 
 def test_context_screen_is_deterministic_and_classifies_negative_controls():
