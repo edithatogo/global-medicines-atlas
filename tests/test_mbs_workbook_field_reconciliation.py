@@ -7,11 +7,13 @@ from typing import Any
 
 import pytest
 
+import global_medicines_atlas.mbs_workbook_field_reconciliation as field_reconciliation
 from global_medicines_atlas.mbs_workbook_field_reconciliation import (
     _candidate_identity,  # ruff: ignore[import-private-name]
     _dict,  # ruff: ignore[import-private-name]
     _dict_list,  # ruff: ignore[import-private-name]
     _int,  # ruff: ignore[import-private-name]
+    _p7_source_field_states,  # ruff: ignore[import-private-name]
     _read_json,  # ruff: ignore[import-private-name]
     _sha256,  # ruff: ignore[import-private-name]
     canonical_json,
@@ -423,6 +425,77 @@ def test_p7_separates_header_cells_from_value_field_states() -> None:
         "native_unresolved": 4,
         "unavailable": 0,
     }
+
+
+def test_p7_source_field_states_reject_conflicting_mapping_targets() -> None:
+    field_rows = [
+        {
+            "field": "SharedField",
+            "mapping_target": target,
+            "sheet_name": "Sheet",
+            "column": column,
+            "cell_count": 1,
+            "conversion_statuses": [],
+            "header_state": "interpreted",
+        }
+        for target, column in (("fees", "A"), ("benefits", "B"))
+    ]
+    with pytest.raises(ValueError, match="inconsistent mapping targets"):
+        _p7_source_field_states(field_rows, [])
+
+
+def test_p7_source_field_states_reject_date_fields_without_lineage() -> None:
+    with pytest.raises(ValueError, match="lack source-column lineage"):
+        _p7_source_field_states([], [{"field": "MissingField"}])
+
+
+def test_p7_source_field_states_reject_date_denominator_drift() -> None:
+    field_rows = [
+        {
+            "field": "DateField",
+            "mapping_target": "services",
+            "sheet_name": "Sheet",
+            "column": "A",
+            "cell_count": 2,
+            "conversion_statuses": [],
+            "header_state": "interpreted",
+        }
+    ]
+    date_rows = [{"field": "DateField", "cell_count": 1}]
+    with pytest.raises(ValueError, match="denominators differ"):
+        _p7_source_field_states(field_rows, date_rows)
+
+
+def test_p7_rejects_uninterpreted_header_roles() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    typed["workbook_field_lineage"]["fields"][-2]["mapping_target"] = "unmapped"
+    with pytest.raises(ValueError, match="header role states differ"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_p7_rejects_source_value_constant_drift(monkeypatch: Any) -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    monkeypatch.setattr(field_reconciliation, "P7_VALUE_CELL_COUNT", 13_644)
+    with pytest.raises(ValueError, match="non-header field-state denominator"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_p7_rejects_field_state_aggregate_drift(monkeypatch: Any) -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    original = field_reconciliation._p7_source_field_states
+
+    def changed_field_states(
+        field_rows: list[dict[str, Any]], date_rows: list[dict[str, Any]]
+    ) -> list[dict[str, Any]]:
+        rows = original(field_rows, date_rows)
+        rows[0]["value_cells"]["native_unresolved"] -= 1
+        return rows
+
+    monkeypatch.setattr(
+        field_reconciliation, "_p7_source_field_states", changed_field_states
+    )
+    with pytest.raises(ValueError, match="source field states differ"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
 
 def _rehash_headers(headers: dict[str, Any]) -> None:
