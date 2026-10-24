@@ -31,6 +31,7 @@ NATIVE_DIGEST = (
 )
 REVISION = "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
 EXPECTED_NATIVE_FIELDS = 18_208_758
+EXPECTED_RESTRICTION_DATE_FIELDS = 3_028
 SOURCE_LABEL_SIGNATURES = {
     "brand_name_text": ("brand-name", "text"),
     "ex_manufacturer_amount_text": (
@@ -46,6 +47,13 @@ SOURCE_LABEL_SIGNATURES = {
         "text",
     ),
 }
+RESTRICTION_EFFECTIVE_DATE_TEXT_PATH = (
+    "/{http:~1~1schema.pbs.gov.au~1}root/"
+    "{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/"
+    "{http:~1~1schema.pbs.gov.au~1}restriction/"
+    "{http:~1~1schema.pbs.gov.au~1}effective/"
+    "{http:~1~1schema.pbs.gov.au~1}date/text"
+)
 
 
 def _canonical_digest(value: dict[str, Any]) -> str:
@@ -166,6 +174,18 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
     fields = observed["qualification"]["role_field_counts"]
     entities = observed["qualification"]["role_entity_counts"]
     dates = date_profile["date_profile"]["role_counts"]
+    restriction_date_rows = [
+        row
+        for row in inventory["paths"]
+        if row["schema_path"] == RESTRICTION_EFFECTIVE_DATE_TEXT_PATH
+    ]
+    if (
+        len(restriction_date_rows) != 1
+        or restriction_date_rows[0]["native_fields"]
+        != EXPECTED_RESTRICTION_DATE_FIELDS
+    ):
+        raise ValueError("PBS restriction effective-date path count differs")
+    restriction_date_fields = restriction_date_rows[0]["native_fields"]
     domains = {
         "item": {
             "status": "qualified_bounded_source_structure",
@@ -221,7 +241,7 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
         },
         "effective_date": {
             "status": "qualified_bounded_source_structure_and_date_grammar",
-            "meaning": "source schedule, item-effectivity, and restriction-effective date roles",
+            "meaning": "source schedule and item-effectivity date roles",
             "field_count": dates["pbs_effective_date"]
             + dates["schedule_effective_date"],
             "entity_count": dates["pbs_effective_date"]
@@ -230,6 +250,17 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
                 "profile applies only to the exact pinned 2026-04-01 PBS v3 member",
                 "date roles remain separate; no validity interval, commencement precedence, or current status is inferred",
                 "other date-shaped values and other PBS eras remain unresolved",
+            ],
+        },
+        "restriction_effective_date": {
+            "status": "qualified_exact_source_path_role_date_grammar_unqualified",
+            "meaning": "source date literal attached beneath a restriction's effective element",
+            "field_count": restriction_date_fields,
+            "limits": [
+                "count covers only the exact direct PBS restriction/effective/date/text QName path in the pinned member",
+                "the XSD date grammar is not qualified by the separate date-profile receipt for this path",
+                "does not establish a validity interval, precedence, current status, or clinical eligibility",
+                "reference-nested effective dates remain native_unresolved",
             ],
         },
         "document_valid_date": {
@@ -246,7 +277,7 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
     return {
         "schema_id": "global-medicines-atlas.pbs-domain-field-semantics",
         "schema_version": 1,
-        "profile_id": "pbs-v3-pinned-2026-04-01-domain-fields-v2",
+        "profile_id": "pbs-v3-pinned-2026-04-01-domain-fields-v3",
         "status": "bounded_semantics_qualified_with_explicit_unresolved_fields",
         "source": {
             "dataset": "edithatogo/australian-pbs-source-archive",

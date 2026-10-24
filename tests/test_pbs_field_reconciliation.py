@@ -23,6 +23,7 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     REFERENCE_REVIEW,
     REFERENCE_SCREEN,
     SCREEN,
+    SOURCE_FIELDS,
     SUPERSEDED_REPORT,
     reconcile_pbs_field_states,
 )
@@ -181,6 +182,90 @@ def test_every_pinned_field_has_one_evidenced_state():
     assert report["non_claims"]["patient_rates"].startswith("unavailable:")
     assert report["domain_semantics_qualified"] is False
     assert report["rights_conclusion_changed"] is False
+
+
+def test_date_population_reconciliation_binds_current_reports_and_arithmetic():
+    path = ROOT / (
+        "quality/qualifications/"
+        "pbs-date-field-population-reconciliation-20261025.json"
+    )
+    envelope = json.loads(path.read_bytes())
+    report = envelope["report"]
+    canonical = json.dumps(
+        report, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode()
+    assert hashlib.sha256(canonical).hexdigest() == envelope["report_sha256"]
+
+    populations = report["date_populations"]
+    profile = populations["date_profile"]
+    roles = profile["role_counts"]
+    assert profile["role_slots"] == (
+        roles["pbs_effective_date"]
+        + roles["schedule_effective_date"]
+        + roles["schedule_dct_valid"]
+    )
+    assert (
+        profile["converted"] + profile["recognized_slot_missing"]
+        == (profile["role_slots"])
+    )
+    crosswalk = populations["exact_occurrence_crosswalk"]
+    assert (
+        crosswalk["item_effective_date_profile_fields"]
+        == roles["pbs_effective_date"]
+    )
+    assert (
+        crosswalk["direct_restriction_effective_date_path_fields"]
+        == (
+            populations["domain_role_counts"][
+                "direct_restriction_effective_date_literal"
+            ]
+        )
+    )
+    assert crosswalk["overlap_fields"] == 0
+    assert (
+        crosswalk["item_effective_date_profile_fields"]
+        + crosswalk["direct_restriction_effective_date_path_fields"]
+        == 5_826
+    )
+
+    evidence = report["evidence"]
+    for name, expected_path in (
+        ("domain_semantics", DOMAIN),
+        ("field_state", CURRENT_RECONCILIATION),
+        ("date_crosswalk", DATE_OCCURRENCE_CROSSWALK),
+    ):
+        binding = evidence[name]
+        assert binding["path"] == expected_path
+        referenced = json.loads((ROOT / binding["path"]).read_bytes())
+        assert (
+            hashlib.sha256((ROOT / binding["path"]).read_bytes()).hexdigest()
+            == (binding["file_sha256"])
+        )
+        referenced_report = referenced["report"]
+        referenced_canonical = json.dumps(
+            referenced_report,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        assert (
+            hashlib.sha256(referenced_canonical).hexdigest()
+            == (referenced["report_sha256"])
+        )
+
+    current = json.loads((ROOT / CURRENT_RECONCILIATION).read_bytes())
+    coverage = current["report"]["field_state_coverage"]
+    assert coverage["source_fields"] == SOURCE_FIELDS
+    assert (
+        coverage["interpreted"]
+        + coverage["native_unresolved"]
+        + coverage["unavailable"]
+        == SOURCE_FIELDS
+    )
+    assert (
+        report["field_state_partition"]["interpreted"]
+        == coverage["interpreted"]
+    )
 
 
 def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
