@@ -260,6 +260,50 @@ def test_root_version_cli_failure_receipt_never_serializes_source_text(
     assert "SECRET_SOURCE_VALUE" not in receipt.read_text()
 
 
+def test_root_version_cli_success_writes_bounded_receipt(tmp_path, monkeypatch):
+    report = {
+        "status": "passed",
+        "operation": "pbs-root-schema-version-metadata",
+        "declared_schema_version": "3",
+        "schema_minor_bound": False,
+        "source_field_values_emitted": False,
+    }
+    monkeypatch.setattr(
+        root_version_cli,
+        "run_hosted_root_schema_version_metadata",
+        lambda *_args: report,
+    )
+    receipt = tmp_path / "receipt.json"
+    assert (
+        root_version_cli.main([
+            "--exact-commit",
+            SHA,
+            "--output",
+            str(receipt),
+        ])
+        == 0
+    )
+    envelope = json.loads(receipt.read_bytes())
+    assert envelope["report"] == report
+    assert len(envelope["report_sha256"]) == 64
+
+
+def test_local_root_version_profile_stops_before_source_transport(
+    tmp_path, monkeypatch
+):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+
+    def refuse(_request):
+        raise AssertionError("local context must stop before transport")
+
+    output = tmp_path / "receipt.json"
+    with pytest.raises(module.QualificationError, match="context"):
+        module.run_hosted_root_schema_version_metadata(
+            SHA, output, transport=httpx.MockTransport(refuse)
+        )
+    assert not output.exists()
+
+
 def test_root_version_workflow_is_exact_main_and_uploads_only_receipt():
     path = (
         Path(__file__).resolve().parents[1]

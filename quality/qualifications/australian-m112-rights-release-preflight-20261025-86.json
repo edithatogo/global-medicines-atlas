@@ -760,7 +760,7 @@
     "tests/test_pbs_reference_context.py": "fd000badf6231dabfa131a715e3d3b5c755f41a17261e9a6141e020fe6c7168d",
     "tests/test_pbs_reference_meaning.py": "b064ad90940627eb7571a2e39c1f66e6d20e8e2f7fce33502f75a448e8b1a7fa",
     "tests/test_pbs_reference_review_packet.py": "a8753bb59021ee3f62c71a6ac1244d14483f16bd417d1586487861ceb8b7c496",
-    "tests/test_pbs_schema_hosted.py": "939b5b12fa4e736a2b683d3cb39e6a8828a4b95870c147e0da316199802f6889",
+    "tests/test_pbs_schema_hosted.py": "26ad30fc0e0552fbbca74a1fcd2b72f2ba7d639addb9b78d99e75f676e1b0019",
     "tests/test_pbs_schema_inventory.py": "f85eb526b10fdfc96c4509414324bd726b7f7fcc4b6f9c4c9cc288f9ea5fd057",
     "tests/test_pbs_value_package.py": "0e279b5a158d861a463680d10c56a308efad365f555cc9219414801fff74beac",
     "tests/test_pbs_value_package_v2.py": "76278e12287cec4955b54f2f53294c8d731d42776d46a68a4a80e47303dec905",
