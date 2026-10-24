@@ -3,6 +3,7 @@
 from datetime import date
 from io import BytesIO
 
+import pbs_date_occurrence_reconciliation_cases as _date_occurrence_cases
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
@@ -18,6 +19,16 @@ from test_australian_source_contracts import (
 
 from global_medicines_atlas import pbs_dates
 from global_medicines_atlas.pbs_entities import iter_pbs_entity_batches
+
+test_date_crosswalk_distinct_paths = (
+    _date_occurrence_cases.test_distinct_date_paths_reconcile_by_exact_field_identity
+)
+test_date_crosswalk_empty_is_unresolved = (
+    _date_occurrence_cases.test_empty_crosswalk_remains_unresolved
+)
+test_date_crosswalk_digest_contract = (
+    _date_occurrence_cases.test_exact_identity_set_digests_are_stable_and_roles_are_closed
+)
 
 
 def table(

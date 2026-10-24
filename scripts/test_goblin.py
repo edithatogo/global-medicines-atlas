@@ -131,7 +131,6 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_reconcile_pbs_native_silver_receipts.py",
         "tests/test_pbs_native_reference_hosted.py",
         "tests/test_pbs_dates.py",
-        "tests/test_pbs_date_occurrence_reconciliation.py",
         "tests/test_pbs_member_identity.py",
         "tests/test_pbs_historical_silver.py",
         "tests/test_pbs_historical_projections.py",
