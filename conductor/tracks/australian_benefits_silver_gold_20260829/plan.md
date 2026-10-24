@@ -5900,6 +5900,12 @@ source qualification remains pending their actual final artifacts.
 - [x] Complete the 91-workbook header and source-column review at the supported scope. Exact-main run `40040624592` binds all 91 workbook profiles to `mbs-demographic-workbook-v1`, with 728 interpreted column/header bindings and no unresolved header candidates or labels. This review interprets header roles, including the benefit amount label while leaving currency unresolved; all 310,177,657 non-header cells remain `native_unresolved`, so value semantics and whole-workbook semantics remain incomplete.
 - [x] Bind the supported P7 value, formula, error, and era-handling rules in `quality/qualifications/mbs-p7-value-era-rules-20261024.json`: exact decimal preservation without rounding, native Benefit75/85 amount candidates, no formula evaluation, formula/cache/origin preservation, OOXML error preservation, and explicit source-era separation. Date order remains unselected because 1,276 of 1,280 date-shaped cells are compatible with both DMY and MDY; preserve all 13,742 P7 cells as `native_unresolved` and disable temporal comparison until a source-supported convention exists.
 
+### PBS native reference-context follow-through
+
+- [x] Cover malformed XML and context-receipt validation bounds in the PBS reference screen and meaning tests. The focused 67-test run passes with 100% statement and branch coverage for both affected modules; commit `2fe9336335bd36ee04c7bd2eb0b88902b65d48a1`.
+- [x] Preserve the first protected rerun's stale preflight test-digest failure and bind the expanded tests in preflight revision 51, preserving revision 50 and all release boundaries.
+- [ ] Rerun protected CI on the corrected head, then run the exact-main source-context screen and reconcile its aggregate-only receipt. Contextual screening remains distinct from semantic relationship qualification.
+
 ### PBS native Silver field-state reconciliation
 
 - [x] Independently reconcile the protected PBS v2 complete package and source-local reference screen aggregate receipts. The initial field-state receipt counted all 18,208,758 source fields as `native_unresolved`; see the additive field-state reconciliation below for the later evidence-backed structural-role split. Bind the exact candidate output ID and Parquet digest and retain the lexical-reference boundary. No source-native values are emitted; rights, admission, canaries and publication remain false.
