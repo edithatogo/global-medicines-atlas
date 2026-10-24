@@ -172,7 +172,10 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     assert encoding["compressed_receipt_byte_limit"] == 32_000
     assert encoding["value_free_complete_profile_preserved"] is True
     assert encoding["semantic_relationships_qualified"] is False
-    assert report["reference_packet_coverage_followup"]["hosted_recheck"] == "pending on this revision"
+    assert (
+        report["reference_packet_coverage_followup"]["hosted_recheck"]
+        == "pending on this revision"
+    )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
         "australian-m112-rights-release-preflight-20261024-61.json"
