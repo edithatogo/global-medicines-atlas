@@ -208,44 +208,27 @@ def _semantic_adjudication(schema_path: str) -> dict[str, str | None]:  # ruff: 
             "meaning": None,
             "rule": "classification/code path is visible, but this value-free inventory cannot bind its unqualified type attribute value ATC",
         }
-    restriction_index = next(
-        (
-            i
-            for i, name in enumerate(entity)
-            if name == PBS_QNAME + "restriction"
-        ),
-        None,
+    restriction_entity = (
+        PBS_QNAME + "root",
+        PBS_QNAME + "prescribing-texts-list",
+        PBS_QNAME + "restriction",
     )
+    restriction_index = (
+        entity.index(PBS_QNAME + "restriction")
+        if PBS_QNAME + "restriction" in entity
+        else None
+    )
+    if entity == restriction_entity and slot in {"text", "tail"}:
+        return {
+            "state": "interpreted",
+            "domain": "restriction_text",
+            "meaning": "restriction-associated native text occurrence",
+            "rule": "exact direct text or tail slot on the pinned PBS prescribing-texts restriction QName path",
+        }
     if (
         restriction_index is not None
         and PBS_QNAME + "previous-list" not in entity
     ):
-        restriction_suffix = entity[restriction_index + 1 :]
-        reference_or_code = any(
-            name.endswith(("-reference", "}code", "}assessment"))
-            or name
-            in {
-                PBS_QNAME + "criteria",
-                PBS_QNAME + "effective",
-                PBS_QNAME + "non-effective",
-            }
-            or name == PBS_QNAME + "all"
-            for name in restriction_suffix
-        )
-        if (
-            slot in {"text", "tail"}
-            and not reference_or_code
-            and all(
-                name.startswith((PBS_QNAME, "{http://docbook.org/ns/docbook#}"))
-                for name in restriction_suffix
-            )
-        ):
-            return {
-                "state": "interpreted",
-                "domain": "restriction_text",
-                "meaning": "source restriction narrative text occurrence",
-                "rule": "exact non-historical PBS restriction QName ancestry; references and date subtrees excluded",
-            }
         if (
             slot == "text"
             and entity[-3:]

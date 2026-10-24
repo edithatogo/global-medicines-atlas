@@ -230,6 +230,23 @@ def test_semantic_adjudication_promotes_only_exact_supported_paths():
     )
 
 
+def test_restriction_text_is_limited_to_direct_source_slots():
+    direct = (
+        "/{http:~1~1schema.pbs.gov.au~1}root/"
+        "{http:~1~1schema.pbs.gov.au~1}prescribing-texts-list/"
+        "{http:~1~1schema.pbs.gov.au~1}restriction/text"
+    )
+    nested = direct.removesuffix("/text") + (
+        "/{http:~1~1docbook.org~1ns~1docbook#}para/text"
+    )
+    assert reconciliation._semantic_adjudication(direct)["domain"] == (
+        "restriction_text"
+    )
+    assert reconciliation._semantic_adjudication(nested)["state"] == (
+        "native_unresolved"
+    )
+
+
 def test_versioned_path_qname_matrix_is_reconciled_and_value_free():
     envelope = json.loads((ROOT / SEMANTIC_ADJUDICATION).read_bytes())
     receipt = envelope["report"]
@@ -245,6 +262,23 @@ def test_versioned_path_qname_matrix_is_reconciled_and_value_free():
     assert sum(row["field_count"] for row in matrix) == 18_208_758
     assert all(
         "value" not in row and "source_value" not in row for row in matrix
+    )
+    restriction_text = [
+        row for row in matrix if row["domain"] == "restriction_text"
+    ]
+    assert {
+        row["schema_path"].rsplit("/", maxsplit=1)[-1]
+        for row in restriction_text
+    } == {
+        "text",
+        "tail",
+    }
+    assert len(restriction_text) == 2
+    assert all(
+        row["meaning"] == "restriction-associated native text occurrence"
+        and row["rule"]
+        == "exact direct text or tail slot on the pinned PBS prescribing-texts restriction QName path"
+        for row in restriction_text
     )
     assert receipt["scope"]["source_values_read"] is False
     assert receipt["scope"]["source_values_emitted"] is False
