@@ -19,7 +19,7 @@ def main() -> int:
         "--output",
         type=Path,
         default=Path(
-            "quality/qualifications/pbs-domain-field-semantics-20261025-v2.json"
+            "quality/qualifications/pbs-domain-field-semantics-20261025-v3.json"
         ),
     )
     args = parser.parse_args()

@@ -57,6 +57,17 @@ def test_qualifies_only_bounded_pbs_v3_source_meanings():
     assert domains["restriction"]["entity_count"] == 2_120_959
     assert domains["price"]["entity_count"] == 4_940_077
     assert domains["effective_date"]["entity_count"] == 2_799
+    assert domains["effective_date"]["meaning"] == (
+        "source schedule and item-effectivity date roles"
+    )
+    assert domains["restriction_effective_date"]["field_count"] == 3_028
+    assert domains["restriction_effective_date"]["status"] == (
+        "qualified_exact_source_path_role_date_grammar_unqualified"
+    )
+    assert any(
+        "XSD date grammar is not qualified" in limit
+        for limit in domains["restriction_effective_date"]["limits"]
+    )
     assert domains["document_valid_date"]["entity_count"] == 1
     assert domains["status"]["status"] == (
         "unresolved_no_explicit_status_field_qualified"
@@ -125,6 +136,31 @@ def test_source_amount_role_counts_require_exact_pbs_qnames():
     }
 
 
+def test_restriction_date_role_requires_exact_path_count(tmp_path, monkeypatch):
+    _copy_receipts(ROOT, tmp_path)
+    inventory_path = tmp_path / INVENTORY
+    inventory = json.loads(inventory_path.read_bytes())
+    target = [
+        row
+        for row in inventory["paths"]
+        if row["schema_path"]
+        == domain_semantics.RESTRICTION_EFFECTIVE_DATE_TEXT_PATH
+    ]
+    assert len(target) == 1
+    target[0]["native_fields"] += 1
+    encoded = json.dumps(inventory).encode()
+    inventory_path.write_bytes(encoded)
+    monkeypatch.setattr(
+        domain_semantics,
+        "INVENTORY_SHA256",
+        hashlib.sha256(encoded).hexdigest(),
+    )
+    with pytest.raises(
+        ValueError, match="restriction effective-date path count differs"
+    ):
+        qualify_pbs_domain_fields(tmp_path)
+
+
 def test_domain_writer_default_preserves_historical_receipt(
     tmp_path, monkeypatch
 ):
@@ -150,13 +186,13 @@ def test_domain_writer_default_preserves_historical_receipt(
     assert script["main"]() == 0
 
     output = tmp_path / (
-        "quality/qualifications/pbs-domain-field-semantics-20261025-v2.json"
+        "quality/qualifications/pbs-domain-field-semantics-20261025-v3.json"
     )
     assert output.is_file()
     assert historical.read_bytes() == historical_bytes
     envelope = json.loads(output.read_bytes())
     assert envelope["report"]["profile_id"] == (
-        "pbs-v3-pinned-2026-04-01-domain-fields-v2"
+        "pbs-v3-pinned-2026-04-01-domain-fields-v3"
     )
     assert (
         hashlib.sha256(

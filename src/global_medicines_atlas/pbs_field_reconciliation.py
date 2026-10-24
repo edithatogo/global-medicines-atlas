@@ -31,7 +31,7 @@ CONTEXT_SCREEN = (
     "quality/qualifications/"
     "pbs-native-reference-screen-20261025-40103169910.json"
 )
-DOMAIN = "quality/qualifications/pbs-domain-field-semantics-20261025-v2.json"
+DOMAIN = "quality/qualifications/pbs-domain-field-semantics-20261025-v3.json"
 FIELD_STATE = (
     "quality/qualifications/pbs-native-silver-field-state-20261023.json"
 )
@@ -85,10 +85,10 @@ DATE_OCCURRENCE_CROSSWALK_REPORT_SHA256 = (
 )
 SUPERSEDED_REPORT = (
     "quality/qualifications/"
-    "pbs-native-silver-field-reconciliation-20261025-r10.json"
+    "pbs-native-silver-field-reconciliation-20261025-r11.json"
 )
 SUPERSEDED_REPORT_SHA256 = (
-    "70980d3d10449e04bb57d602d12866fcbb0536bae88b2adb445b829c7d3c75a4"
+    "c8afb1586e6d4b18025950cdce3a563d168de6283d9afd82d08202ba954339b3"
 )
 SCREEN_RUN_ID = "40103169910"
 SCREEN_WORKFLOW_COMMIT = "83465c87d5952e123cedd93a02b1ec9b4daa4eb4"
@@ -115,7 +115,7 @@ REFERENCE_CONTEXT_EXAMPLE_POLICIES = {
     "one_example_per_stratum_round_robin_by_kind_status",
 }
 DOMAIN_REPORT_SHA256 = (
-    "9233d8d93126c929bde3e8b59486b4865f45c89f0d8370405cf6988cbfa0b5db"
+    "ea11c97eff13051152fde6bf6c3be1788102e75b89662a38c9eb76712f21401a"
 )
 SOURCE_FIELDS = 18_208_758
 SOURCE_PATHS = 5_163
@@ -123,7 +123,7 @@ ITEM_DATE_FIELDS = 2_798
 PATH_INVENTORY = (
     "quality/qualifications/pbs-schema-paths-20261022-39667604237.json"
 )
-CURRENT_RECONCILIATION = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r11.json"
+CURRENT_RECONCILIATION = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r12.json"
 
 
 def _file_sha256(path: Path) -> str:
@@ -930,7 +930,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     return {
         "schema_id": "global-medicines-atlas.pbs-field-state-reconciliation",
         "schema_version": 1,
-        "profile_id": "pbs-v3-2026-04-01-field-state-v2",
+        "profile_id": "pbs-v3-2026-04-01-field-state-v3",
         "status": "complete_field_denominator_path_adjudication_with_unresolved_semantics",
         "domain_semantics_qualified": False,
         "rights_conclusion_changed": False,
@@ -956,6 +956,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             ),
             "prior_field_state_receipt_sha256": field_state_sha,
             "domain_semantics_report_sha256": domain_envelope["report_sha256"],
+            "domain_semantics_report_path": DOMAIN,
             "reference_meaning_report_sha256": reference_envelope[
                 "report_sha256"
             ],
