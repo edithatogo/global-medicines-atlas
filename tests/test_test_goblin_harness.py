@@ -34,13 +34,6 @@ def test_m109_release_note_reconciliation_is_in_unit_lane() -> None:
     )
 
 
-def test_pbs_xlink_reference_candidates_are_in_unit_lane() -> None:
-    assert (
-        "tests/test_pbs_xlink_reference_candidates.py"
-        in HARNESS.TEST_LANES["unit"]
-    )
-
-
 @pytest.mark.parametrize(
     "signature",
     [

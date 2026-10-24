@@ -467,21 +467,12 @@ jobs:
           test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
           uv run --locked --python 3.15.1 python scripts/screen_historical_pbs_uri_references.py \
             --exact-commit "$REQUESTED_COMMIT" \
-            --output pbs-native-reference-uri-screen-receipt.json \
-            --xlink-output pbs-native-reference-xlink-candidates.jsonl
+            --output pbs-native-reference-uri-screen-receipt.json
       - name: Retain aggregate URI-screen receipt
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: pbs-native-reference-uri-screen-receipt-${{ github.run_id }}
           path: pbs-native-reference-uri-screen-receipt.json
-          if-no-files-found: error
-          retention-days: 30
-      - name: Retain bounded source-declared XLink candidate artifact
-        if: success()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        with:
-          name: pbs-native-reference-xlink-candidates-${{ github.run_id }}
-          path: pbs-native-reference-xlink-candidates.jsonl
           if-no-files-found: error
           retention-days: 30

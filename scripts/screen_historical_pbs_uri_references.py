@@ -21,9 +21,6 @@ from global_medicines_atlas.pbs_native_uri_screen import (
     UriScreenError,
     screen_pbs_native_uris,
 )
-from global_medicines_atlas.pbs_xlink_reference_candidates import (
-    export_pbs_xlink_reference_candidates,
-)
 
 REVIEW_PACKET = (
     Path(__file__).parents[1]
@@ -106,8 +103,8 @@ else:
     from qualify_historical_pbs_public import write_qualification_receipt
 
 
-def run(exact_commit: str, output: Path, xlink_output: Path) -> dict[str, Any]:
-    """Verify pinned inputs and retain URI aggregates plus XLink candidates."""
+def run(exact_commit: str, output: Path) -> dict[str, Any]:
+    """Verify the pinned B1/B2/member inputs, then retain URI aggregates only."""
     latest: dict[str, Any] = {}
 
     def checkpoint(report: dict[str, Any]) -> None:
@@ -131,13 +128,6 @@ def run(exact_commit: str, output: Path, xlink_output: Path) -> dict[str, Any]:
                 rows,
             ),
         )
-        xlink_qualification = export_pbs_xlink_reference_candidates(
-            inputs.archive,
-            inputs.xml,
-            inputs.parent,
-            inputs.binding,
-            xlink_output,
-        )
         report = {
             "schema_id": "global-medicines-atlas.pbs-native-uri-screen",
             "schema_version": URI_SCREEN_SCHEMA_VERSION,
@@ -154,7 +144,6 @@ def run(exact_commit: str, output: Path, xlink_output: Path) -> dict[str, Any]:
             "source_receipt_sha256": inputs.parent.digest(),
             "source_receipt_file_sha256": RECEIPT.sha256,
             "qualification": qualification,
-            "xlink_candidate_qualification": xlink_qualification,
             "review_packet_binding": review_packet,
             "uri_resolution_performed": True,
             "semantic_relationships_qualified": False,
@@ -204,13 +193,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--xlink-output", type=Path, required=True)
     args = parser.parse_args(argv)
     if args.output.exists():
         parser.error("existing receipt must be preserved")
-    if args.xlink_output.exists():
-        parser.error("existing XLink candidate artifact must be preserved")
-    report = run(args.exact_commit, args.output, args.xlink_output)
+    report = run(args.exact_commit, args.output)
     return 0 if report["status"] == "passed" else 1
 
 
