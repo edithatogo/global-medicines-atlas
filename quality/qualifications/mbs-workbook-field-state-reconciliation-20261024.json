@@ -7310,11 +7310,17 @@
     "header_cohort": {
       "sha256": "5a5858e0a458c46452188a4f52ea396bf1f98c9ce3710d747dd1a58588c196f1"
     },
+    "p7_date_profile": {
+      "sha256": "c9b49f60a9a608bc77674a2094b8fd4439115fc17bb200b04fc202c6b463d1bf"
+    },
+    "p7_run_receipt": {
+      "sha256": "190053465ca3d2722cf9f9f9bd8c78eaf296ab0c8973862e4b3f2834bdd91dde"
+    },
     "p7_typed": {
-      "sha256": "26b8952a41dacc2a88df23f6bd2b4c0df7cd9ba91fe29d580e0a5e46016d9929"
+      "sha256": "c31dbc2b6d166dbefdfa5f95fe33a231fdbecfa05ab502ea91f198771e4f0690"
     },
     "p7_value_era_rules": {
-      "sha256": "e5703612c96b37d968fe4cce8db5831b9e9dcb7ca476febebde9eb9a12c3fe5a"
+      "sha256": "b7e8e91e13b76840689f5cf6e9733bb58a9d1633f01df8f6f5b8e27fc2f61d47"
     },
     "package_cohort": {
       "sha256": "3bbcc74fee209cee521ce6ee85ef87f3ed13df2d202cb1f96effb02274b48546"
@@ -7324,9 +7330,152 @@
     "cell_values": {
       "denominator": 13742,
       "denominator_relation": "independent_source_cell_denominator_not_added_to_historical_cohort",
-      "interpreted": 0,
+      "interpreted": 86,
       "unavailable": 0,
-      "unresolved": 13742
+      "unresolved": 13656
+    },
+    "date_field_states": [
+      {
+        "cell_count": 320,
+        "date_states": {
+          "ambiguous_calendar_order": 310,
+          "unique_calendar_date": 10
+        },
+        "field": "BenefitStartDate",
+        "interpreted": 10,
+        "native_unresolved": 310,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "missing_value": 320
+        },
+        "field": "DerivedFeeStartDate",
+        "interpreted": 0,
+        "native_unresolved": 320,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "ambiguous_calendar_order": 310,
+          "unique_calendar_date": 8,
+          "unique_dmy_calendar_date": 2
+        },
+        "field": "DescriptionStartDate",
+        "interpreted": 10,
+        "native_unresolved": 310,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "missing_value": 320
+        },
+        "field": "EMSNChangeDate",
+        "interpreted": 0,
+        "native_unresolved": 320,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "missing_value": 320
+        },
+        "field": "EMSNEndDate",
+        "interpreted": 0,
+        "native_unresolved": 320,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "missing_value": 320
+        },
+        "field": "EMSNStartDate",
+        "interpreted": 0,
+        "native_unresolved": 320,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "ambiguous_calendar_order": 262,
+          "unique_calendar_date": 56,
+          "unique_dmy_calendar_date": 2
+        },
+        "field": "FeeStartDate",
+        "interpreted": 58,
+        "native_unresolved": 262,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "missing_value": 320
+        },
+        "field": "ItemEndDate",
+        "interpreted": 0,
+        "native_unresolved": 320,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "ambiguous_calendar_order": 312,
+          "unique_calendar_date": 8
+        },
+        "field": "ItemStartDate",
+        "interpreted": 8,
+        "native_unresolved": 312,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "missing_value": 320
+        },
+        "field": "QFEEndDate",
+        "interpreted": 0,
+        "native_unresolved": 320,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      },
+      {
+        "cell_count": 320,
+        "date_states": {
+          "missing_value": 320
+        },
+        "field": "QFEStartDate",
+        "interpreted": 0,
+        "native_unresolved": 320,
+        "scope": "source_column_across_all_sheets",
+        "unavailable": 0
+      }
+    ],
+    "exact_main_artifact": {
+      "artifact_id": 12559848688,
+      "member_sha256": "fd893d18c6a96d7daf6c6bae27066f56d207b8d01c14d8fc7622bdc07af99bd",
+      "name": "workbook-storage-qualification",
+      "path": "quality/qualifications/mbs-p7-workbook-storage-qualification-20261024-40094025412.json",
+      "report_sha256": "c31dbc2b6d166dbefdfa5f95fe33a231fdbecfa05ab502ea91f198771e4f0690"
+    },
+    "exact_main_qualification": {
+      "conclusion": "success",
+      "exact_commit": "11be72e328affc0df87395fd59165ef4f5bf9055",
+      "python": "3.15.1",
+      "run_id": 40094025412,
+      "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40094025412"
     },
     "field_rows": [
       {
@@ -9220,6 +9369,7 @@
       }
     ],
     "orthogonal_diagnostics": {
+      "ambiguous_date_shaped_cells": 1194,
       "date_order_compatibility": {
         "both_dmy_and_mdy_valid": 1276,
         "dmy_only": 4,
@@ -9228,12 +9378,14 @@
         "source_values_emitted": false
       },
       "date_profile_selected": false,
+      "date_profile_sha256": "c9b49f60a9a608bc77674a2094b8fd4439115fc17bb200b04fc202c6b463d1bf",
       "date_shaped_cells": 1280,
       "decimal_unrepresentable": 36,
       "diagnostics_are_additive_to_cell_state": false,
       "error_cells": 2,
       "formula_cells": 4,
       "temporal_comparison_enabled": false,
+      "uniquely_determined_calendar_dates": 86,
       "value_conversion_statuses": {
         "converted": 924,
         "header": 97,
@@ -9252,13 +9404,14 @@
     "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
   },
   "schema_id": "global-medicines-atlas.mbs-workbook-field-state-reconciliation",
-  "schema_version": 1,
+  "schema_version": 2,
   "semantic_boundaries": {
     "benefit_currency_qualified": false,
     "cross_era_equivalence_qualified": false,
     "historical_workbook_non_header_domain_meanings_qualified": false,
     "new_sources_added": false,
     "p7_date_convention_selected": false,
+    "p7_unique_calendar_date_values_interpreted": 86,
     "source_values_emitted": false
   },
   "status": "field_states_reconciled_with_semantic_limits"

@@ -113,8 +113,10 @@ def _inputs() -> tuple[
         "unresolved_header_label_count": 0,
         "unresolved_header_candidate_count": 0,
     }
-    p7_typed = {
+    p7_typed: dict[str, Any] = {
         "kind": "p7-workbook",
+        "workflow_commit": "11be72e328affc0df87395fd59165ef4f5bf9055",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40094025412",
         "domain_value_profile": {
             "cells": 13_742,
             "source_sha256": _hash(777),
@@ -130,10 +132,17 @@ def _inputs() -> tuple[
         },
         "typed_candidate_package": {
             "coverage": {
-                "unresolved_cells": 13_742,
+                "interpreted_cells": 86,
+                "unresolved_cells": 13_656,
                 "formula_cells": 4,
                 "error_cells": 2,
             }
+        },
+        "p7_calendar_profile_evidence": {
+            "sha256": _hash(600),
+            "source_sha256": _hash(777),
+            "date_order_selected": False,
+            "source_values_emitted": False,
         },
         "sheets": [
             {"formula_cells": 2, "error_cells": 1},
@@ -153,26 +162,94 @@ def _inputs() -> tuple[
             ],
         },
     }
+    date_profile = {
+        "kind": "mbs_p7_unique_calendar_date_profile",
+        "profile": {
+            "date_order_selected": False,
+            "source_values_emitted": False,
+            "source_sha256": _hash(777),
+            "by_field": {
+                "BenefitStartDate": {
+                    "ambiguous_calendar_order": 310,
+                    "unique_calendar_date": 10,
+                },
+                "DescriptionStartDate": {
+                    "ambiguous_calendar_order": 310,
+                    "unique_calendar_date": 8,
+                    "unique_dmy_calendar_date": 2,
+                },
+                "FeeStartDate": {
+                    "ambiguous_calendar_order": 262,
+                    "unique_calendar_date": 56,
+                    "unique_dmy_calendar_date": 2,
+                },
+                "ItemStartDate": {
+                    "ambiguous_calendar_order": 312,
+                    "unique_calendar_date": 8,
+                },
+            },
+        },
+    }
     hashes = {
         key: _hash(index + 500)
         for index, key in enumerate((
             "package_cohort",
             "header_cohort",
             "p7_typed",
+            "p7_run_receipt",
+            "p7_date_profile",
             "p7_value_era_rules",
         ))
+    }
+    hashes["p7_date_profile"] = hashlib.sha256(
+        json.dumps(date_profile).encode()
+    ).hexdigest()
+    p7_typed["p7_calendar_profile_evidence"]["sha256"] = hashes[
+        "p7_date_profile"
+    ]
+    p7_typed["_exact_main_qualification"] = {
+        "run_id": 40094025412,
+        "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40094025412",
+        "conclusion": "success",
+        "exact_commit": "11be72e328affc0df87395fd59165ef4f5bf9055",
+        "python": "3.15.1",
+    }
+    p7_typed["_artifact_receipt"] = {
+        "artifact_id": 12559848688,
+        "name": "workbook-storage-qualification",
+        "path": "quality/qualifications/mbs-p7-workbook-storage-qualification-20261024-40094025412.json",
+        "report_sha256": hashes["p7_typed"],
+        "member_sha256": "fd893d18c6a96d7daf6c6bae27066f56d207b8d01c14d8fc7622bdc07af99bd",
+    }
+    p7_typed["_p7_date_profile"] = date_profile
+    p7_typed["_p7_date_profile_receipt"] = {
+        "path": "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json",
+        "sha256": hashes["p7_date_profile"],
+    }
+    p7_typed["_run_receipt"] = {
+        "schema_id": "global-medicines-atlas.mbs-p7-exact-main-workbook-storage-run-receipt",
+        "workflow": p7_typed["_exact_main_qualification"],
+        "artifact": p7_typed["_artifact_receipt"],
+        "calendar_profile": p7_typed["_p7_date_profile_receipt"],
     }
     p7_rules = {
         "schema_id": "global-medicines-atlas.mbs-p7-value-era-rules",
         "source": {"sha256": _hash(777)},
         "evidence": {
-            "typed_candidate_qualification": {"sha256": hashes["p7_typed"]}
+            "typed_candidate_qualification": {"sha256": _hash(999)},
+            "exact_main_storage_qualification": {"sha256": hashes["p7_typed"]},
+            "exact_main_run_receipt": {"sha256": hashes["p7_run_receipt"]},
+            "calendar_profile": {
+                "path": "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json",
+                "sha256": hashes["p7_date_profile"],
+            },
         },
         "rules": {
             "dates": {
                 "selected_profile": None,
                 "semantic_promotion": False,
                 "lexical_date_cells": 1280,
+                "ambiguous_date_shaped_cells": 1194,
                 "calendar_compatibility": {
                     "both_dmy_and_mdy_valid": 1276,
                     "dmy_only": 4,
@@ -240,6 +317,10 @@ def test_report_lists_each_field_role_and_source_value_state() -> None:
             "conversion_statuses": [{"state": "preserved", "count": 13_742}],
         }
     ]
+    date_fields = report["p7_workbook"]["date_field_states"]
+    assert sum(row["interpreted"] for row in date_fields) == 86
+    assert sum(row["native_unresolved"] for row in date_fields) == 1_194
+    assert sum(row["unavailable"] for row in date_fields) == 0
 
 
 def _rehash_headers(headers: dict[str, Any]) -> None:
@@ -310,8 +391,8 @@ def test_p7_diagnostics_are_orthogonal_and_date_order_stays_unselected() -> (
     p7 = report["p7_workbook"]
     assert p7["cell_values"] == {
         "denominator": 13_742,
-        "interpreted": 0,
-        "unresolved": 13_742,
+        "interpreted": 86,
+        "unresolved": 13_656,
         "unavailable": 0,
         "denominator_relation": "independent_source_cell_denominator_not_added_to_historical_cohort",
     }
@@ -323,6 +404,10 @@ def test_p7_diagnostics_are_orthogonal_and_date_order_stays_unselected() -> (
         "mdy_only": 0,
     }
     assert p7["orthogonal_diagnostics"]["date_profile_selected"] is False
+    assert (
+        p7["orthogonal_diagnostics"]["uniquely_determined_calendar_dates"] == 86
+    )
+    assert p7["orthogonal_diagnostics"]["ambiguous_date_shaped_cells"] == 1194
     assert (
         p7["orthogonal_diagnostics"]["diagnostics_are_additive_to_cell_state"]
         is False
@@ -435,10 +520,13 @@ def test_json_reader_rejects_non_object_and_hashes_file(tmp_path: Any) -> None:
 
 def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
     package, headers, typed, rules, _ = _inputs()
+    run_receipt = typed["_run_receipt"]
     documents = {
         "package_cohort": package,
         "header_cohort": headers,
         "p7_typed": typed,
+        "p7_run_receipt": run_receipt,
+        "p7_date_profile": typed["_p7_date_profile"],
         "p7_value_era_rules": rules,
     }
     paths: dict[str, Any] = {}
@@ -447,7 +535,19 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         path.write_text(json.dumps(value), encoding="utf-8")
         paths[name] = path
     typed_digest = hashlib.sha256(paths["p7_typed"].read_bytes()).hexdigest()
-    rules["evidence"]["typed_candidate_qualification"]["sha256"] = typed_digest
+    run_receipt["artifact"]["report_sha256"] = typed_digest
+    paths["p7_run_receipt"].write_text(
+        json.dumps(run_receipt), encoding="utf-8"
+    )
+    rules["evidence"]["exact_main_storage_qualification"]["sha256"] = (
+        typed_digest
+    )
+    rules["evidence"]["exact_main_run_receipt"]["sha256"] = hashlib.sha256(
+        paths["p7_run_receipt"].read_bytes()
+    ).hexdigest()
+    rules["evidence"]["calendar_profile"]["sha256"] = hashlib.sha256(
+        paths["p7_date_profile"].read_bytes()
+    ).hexdigest()
     paths["p7_value_era_rules"].write_text(json.dumps(rules), encoding="utf-8")
     report = reconcile_from_paths(paths)
     assert set(report["inputs"]) == set(documents)
@@ -484,8 +584,23 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         ("p7_statuses_not_list", "P7 field conversion statuses are malformed"),
         ("rules_schema", "value-era rules schema differs"),
         ("p7_source", "typed qualification and value-era source differ"),
-        ("rules_typed_ref", "do not bind the typed receipt"),
+        ("rules_typed_ref", "do not bind exact-main typed receipt"),
         ("date_profile", "date profile must remain unselected"),
+        ("run_receipt_schema", "exact-main run receipt schema differs"),
+        ("run_commit", "exact-main qualification identity differs"),
+        ("artifact_member", "exact-main artifact identity differs"),
+        (
+            "calendar_profile_hash",
+            "calendar profile does not bind the exact source",
+        ),
+        (
+            "date_field_counts",
+            "unique date fields differ from typed qualification",
+        ),
+        (
+            "date_rule_counts",
+            "date profile counts differ from the value-era rules",
+        ),
         ("hashes", "exact input receipt digests are required"),
         ("p7_status_total", "statuses differ from cell denominator"),
         ("p7_formula_count", "formula diagnostic denominators differ"),
@@ -558,11 +673,25 @@ def test_receipt_validation_fails_closed(case: str, message: str) -> None:
     elif case == "p7_source":
         rules["source"]["sha256"] = _hash(888)
     elif case == "rules_typed_ref":
-        rules["evidence"]["typed_candidate_qualification"]["sha256"] = _hash(
+        rules["evidence"]["exact_main_storage_qualification"]["sha256"] = _hash(
             889
         )
     elif case == "date_profile":
         rules["rules"]["dates"]["selected_profile"] = "dmy"
+    elif case == "run_receipt_schema":
+        typed["_run_receipt"]["schema_id"] = "wrong"
+    elif case == "run_commit":
+        typed["_run_receipt"]["workflow"]["exact_commit"] = _hash(999)
+    elif case == "artifact_member":
+        typed["_run_receipt"]["artifact"]["member_sha256"] = _hash(998)
+    elif case == "calendar_profile_hash":
+        typed["_run_receipt"]["calendar_profile"]["sha256"] = _hash(997)
+    elif case == "date_field_counts":
+        typed["_p7_date_profile"]["profile"]["by_field"]["BenefitStartDate"][
+            "unique_calendar_date"
+        ] = 11
+    elif case == "date_rule_counts":
+        rules["rules"]["dates"]["ambiguous_date_shaped_cells"] = 1193
     elif case == "hashes":
         hashes["extra"] = _hash(900)
     elif case == "p7_status_total":
