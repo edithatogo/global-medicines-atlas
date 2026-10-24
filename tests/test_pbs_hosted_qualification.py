@@ -1619,6 +1619,7 @@ def test_package_mode_keeps_existing_hosted_deadlines_and_read_only_artifacts():
             "native-schema-inventory",
             "observed-domain-values",
             "native-reference-screen",
+            "native-reference-uri-screen",
         }:
             assert (
                 "inputs.qualification_scope != 'native-value-package'"

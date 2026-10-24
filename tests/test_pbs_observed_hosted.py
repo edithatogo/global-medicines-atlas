@@ -100,6 +100,7 @@ def test_observed_workflow_is_read_only_and_excludes_other_routes():
             "native-schema-inventory",
             "observed-domain-values",
             "native-reference-screen",
+            "native-reference-uri-screen",
         }:
             continue
         assert (

@@ -261,6 +261,7 @@ def test_registered_values_mode_is_read_only_and_sends_no_comments():
             "native-schema-inventory",
             "observed-domain-values",
             "native-reference-screen",
+            "native-reference-uri-screen",
         }:
             assert "inputs.qualification_scope != 'native-values'" in job["if"]
         for step in job["steps"]:
