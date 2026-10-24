@@ -233,6 +233,106 @@ def test_selected_unique_target_buckets_unrecognized_target_qname():
     assert "synthetic.example" not in encoded
 
 
+def test_review_target_context_bounds_and_duplicate_targets(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    element = type("Element", (), {"tag": "root", "attrib": {}})()
+
+    def over_limit_events(_member, *, policy):
+        del policy
+        yield "start", element, None
+        yield "start", element, None
+
+    monkeypatch.setattr(module, "MAX_ELEMENTS", 1)
+    monkeypatch.setattr(module, "iter_xml_events", over_limit_events)
+    with pytest.raises(module.UriScreenError, match="element bound") as caught:
+        module._review_target_contexts(b"<root/>", {("xml_id", "target")}, None)
+    assert caught.value.code == "element-bound"
+
+    target_uri = "https://synthetic.example/target"
+    duplicate = type(
+        "Element",
+        (),
+        {"tag": "root", "attrib": {module.RDF_ABOUT: target_uri}},
+    )()
+
+    def duplicate_events(_member, *, policy):
+        del policy
+        yield "start", duplicate, None
+        yield "start", duplicate, None
+
+    monkeypatch.setattr(module, "MAX_ELEMENTS", 20_000_000)
+    monkeypatch.setattr(module, "iter_xml_events", duplicate_events)
+    with pytest.raises(
+        module.UriScreenError, match="target is not unique"
+    ) as caught:
+        module._review_target_contexts(
+            b"<root/>", {("rdf_about", target_uri)}, None
+        )
+    assert caught.value.code == "review-case-binding-invalid"
+
+
+def test_review_target_context_progress_is_coarse_and_value_free(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    target = type(
+        "Element",
+        (),
+        {"tag": "root", "attrib": {module.XML_ID: "synthetic-id"}},
+    )()
+    element = type("Element", (), {"tag": "other", "attrib": {}})()
+
+    def many_events(_member, *, policy):
+        del policy
+        yield "start", target, None
+        for _ in range(99_999):
+            yield "start", element, None
+
+    monkeypatch.setattr(module, "iter_xml_events", many_events)
+    progress = []
+    result = module._review_target_contexts(
+        b"<root/>",
+        {("xml_id", "synthetic-id")},
+        lambda *args: progress.append(args),
+    )
+    assert progress == [("pbs-uri-review-target-context", 1, 100_000)]
+    assert set(result) == {("xml_id", "synthetic-id")}
+    assert "synthetic-id" not in str(progress)
+
+
+def test_review_target_context_wraps_parser_safety_and_rejects_missing_target(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    def unsafe_events(_member, *, policy):
+        del policy
+        raise module.ParserSafetyError("synthetic parser failure")
+        yield  # pragma: no cover
+
+    monkeypatch.setattr(module, "iter_xml_events", unsafe_events)
+    with pytest.raises(
+        module.UriScreenError, match="malformed or unsafe"
+    ) as caught:
+        module._review_target_contexts(
+            b"<root/>", {("xml_id", "missing")}, None
+        )
+    assert caught.value.code == "xml-malformed-or-unsafe"
+
+    element = type("Element", (), {"tag": "root", "attrib": {}})()
+
+    def missing_events(_member, *, policy):
+        del policy
+        yield "start", element, None
+
+    monkeypatch.setattr(module, "iter_xml_events", missing_events)
+    with pytest.raises(
+        module.UriScreenError, match="occurrence is absent"
+    ) as caught:
+        module._review_target_contexts(
+            b"<root/>", {("xml_id", "missing")}, None
+        )
+    assert caught.value.code == "review-occurrence-absent"
+
+
 def test_review_case_count_and_occurrence_address_are_bounded():
     with pytest.raises(
         module.UriScreenError, match="case bound exceeded"
