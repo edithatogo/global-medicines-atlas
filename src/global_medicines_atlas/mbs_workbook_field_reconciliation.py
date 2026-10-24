@@ -298,11 +298,14 @@ def _p7_date_field_rows(
             )
             - interpreted
         )
-        inference_fields = (
-            inference.get("date_fields_with_populated_values", [])
-            if inference is not None
-            else []
-        )
+        inference_fields: list[Any] = []
+        if inference is not None:
+            inference_fields_raw = inference.get(
+                "date_fields_with_populated_values", []
+            )
+            if not isinstance(inference_fields_raw, list):
+                raise TypeError("P7 inferred date fields must be a list")
+            inference_fields = cast("list[Any]", inference_fields_raw)
         inferred = ambiguous if field in inference_fields else 0
         interpreted += inferred
         unresolved -= inferred
@@ -458,14 +461,18 @@ def reconcile_workbook_field_states(
     if candidate_qualification_receipt is None:
         embedded_candidate_receipt = p7_typed.get("_candidate_run_receipt")
         if isinstance(embedded_candidate_receipt, dict):
-            candidate_qualification_receipt = embedded_candidate_receipt
+            candidate_qualification_receipt = cast(
+                "dict[str, Any]", embedded_candidate_receipt
+            )
     if (
         candidate_qualification_receipt is not None
         and candidate_artifact_path is None
     ):
         embedded_artifact = candidate_qualification_receipt.get("artifact")
         if isinstance(embedded_artifact, dict):
-            artifact_path = embedded_artifact.get("path")
+            artifact_path = cast("dict[str, Any]", embedded_artifact).get(
+                "path"
+            )
             if isinstance(artifact_path, str):
                 candidate_artifact_path = artifact_path
     if (
@@ -753,6 +760,8 @@ def reconcile_workbook_field_states(
     ):
         raise ValueError("P7 date profile must remain unselected")
     if candidate_qualification_receipt is not None:
+        if inference_decision is None:
+            raise ValueError("P7 candidate inference decision is required")
         candidate_inference = _dict(
             candidate.get("date_inference"), "P7 candidate date inference"
         )
