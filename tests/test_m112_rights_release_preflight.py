@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-80.json"
+    "australian-m112-rights-release-preflight-20261025-81.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-79.json"
+    "australian-m112-rights-release-preflight-20261024-80.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -174,7 +174,20 @@ def test_preflight_binds_p7_per_cell_calendar_readback() -> None:
         p7_run["workflow_commit"] == "11be72e328affc0df87395fd59165ef4f5bf9055"
     )
     assert p7_run["interpreted_unique_calendar_date_cells"] == 86
-    assert p7_run["native_unresolved_cells"] == 13_656
+    assert p7_run["header_cells"] == 97
+    assert p7_run["interpreted_header_cells"] == 97
+    assert p7_run["value_cells"] == 13_645
+    assert p7_run["interpreted_value_cells"] == 86
+    assert p7_run["native_unresolved_value_cells"] == 13_559
+    assert p7_run["unavailable_value_cells"] == 0
+    assert p7_run["native_unresolved_cells"] == 13_559
+    assert p7_run["field_state_report"] == (
+        "quality/qualifications/"
+        "mbs-workbook-field-state-reconciliation-20261025.json"
+    )
+    assert p7_run["field_state_report_sha256"] == (
+        "9cf68711d80142d248bea04eb6ef62c1a768e116891e10c1208a07249bd1481d"
+    )
     assert p7_run["workbook_wide_date_order_selected"] is False
 
 
@@ -301,7 +314,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-79.json"
+        "australian-m112-rights-release-preflight-20261024-80.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -310,7 +323,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-78.json"
+        "australian-m112-rights-release-preflight-20261024-79.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -323,12 +336,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-77.json"
+        "australian-m112-rights-release-preflight-20261024-78.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-76.json"
+        "australian-m112-rights-release-preflight-20261024-77.json"
     )
 
 
