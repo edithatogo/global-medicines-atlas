@@ -10,6 +10,7 @@ concurrency:
 
 jobs:
   profile:
+    name: Profile the pinned P7 calendar date convention
     if: github.repository == 'edithatogo/global-medicines-atlas' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 10

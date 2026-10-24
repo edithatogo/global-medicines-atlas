@@ -472,7 +472,7 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   conversion contract and existing M-112 pinned preflight inputs unchanged.
 - [x] Add a `workflow_dispatch`-only main workflow that reads the existing
   exact pinned public P7 object and uploads a value-free aggregate report.
-- [x] Validate the focused P7 domain/value and M-112 invariant tests (71
+- [x] Validate the focused P7 domain/value and M-112 invariant tests (72
   passed) on Python 3.15.1, Ruff, format, `ty`, BasedPyright, context and
   ecosystem validation, and `git diff --check`. Hosted unit CI exposed a
   coupling to pinned admission inputs in the first implementation; the
