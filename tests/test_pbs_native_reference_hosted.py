@@ -2,6 +2,9 @@
 
 import json
 from pathlib import Path
+from xml.etree import (  # ruff: ignore[suspicious-xml-etree-import]
+    ElementTree as ET,
+)
 
 import httpx
 import pytest
@@ -9,6 +12,7 @@ import yaml
 from scripts import screen_historical_pbs_references as cli
 from test_pbs_hosted_qualification import SHA, synthetic
 
+import global_medicines_atlas.pbs_reference_context as context_screen
 from global_medicines_atlas import pbs_hosted_qualification as module
 
 __all__ = ["synthetic"]
@@ -98,6 +102,122 @@ def test_context_denominator_must_match_lexical_reference_count(
     )
     with pytest.raises(module.QualificationError, match="denominator"):
         module.run_hosted_native_reference_screen(SHA, transport=synthetic[2])
+
+
+def test_context_screen_classifies_root_relative_reference_without_value():
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <edge rdf:resource="/private/path"/>
+    </root>"""
+    report = context_screen.screen_reference_context(xml)
+    assert report["strata"][0]["literal_shape"] == "root_relative_looking"
+    assert "/private/path" not in json.dumps(report)
+
+
+def test_context_screen_enforces_structural_qname_bound(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(context_screen, "MAX_STRUCTURAL_QNAME_BYTES", 0)
+    with pytest.raises(ValueError, match="QName byte bound"):
+        context_screen.screen_reference_context(
+            b'<root xmlns="http://schema.pbs.gov.au/"/>'
+        )
+
+
+@pytest.mark.parametrize(
+    "xml",
+    [
+        b'<root xmlns="http://schema.pbs.gov.au/"><id xml:id="id"/></root>',
+        b"""<root xmlns="http://schema.pbs.gov.au/"
+          xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+          <id rdf:about="subject"/>
+        </root>""",
+    ],
+)
+def test_context_screen_enforces_definition_index_bound(
+    xml: bytes, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(context_screen, "MAX_INDEX_ROWS", 0)
+    with pytest.raises(ValueError, match="index row bound"):
+        context_screen.screen_reference_context(xml)
+
+
+def test_context_screen_enforces_reference_index_bound(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(context_screen, "MAX_REFERENCE_OCCURRENCES", 0)
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <edge rdf:resource="target"/>
+    </root>"""
+    with pytest.raises(ValueError, match="occurrence bound"):
+        context_screen.screen_reference_context(xml)
+
+
+def test_context_screen_rejects_end_event_without_open_element(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    element = ET.Element("{http://schema.pbs.gov.au/}root")
+    monkeypatch.setattr(
+        context_screen,
+        "iter_xml_events",
+        lambda *_args, **_kwargs: iter([("end", element, None)]),
+    )
+    with pytest.raises(ValueError, match="stack is inconsistent"):
+        context_screen.screen_reference_context(b"unused")
+
+
+def test_context_screen_rejects_incomplete_event_stream(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    element = ET.Element("{http://schema.pbs.gov.au/}root")
+    monkeypatch.setattr(
+        context_screen,
+        "iter_xml_events",
+        lambda *_args, **_kwargs: iter([("start", element, None)]),
+    )
+    with pytest.raises(ValueError, match="document is incomplete"):
+        context_screen.screen_reference_context(b"unused")
+
+
+def test_context_screen_enforces_reference_occurrence_address_bound(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(context_screen, "MAX_OCCURRENCE_ADDRESS_BYTES", 0)
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <edge rdf:resource="target"/>
+    </root>"""
+    with pytest.raises(ValueError, match="occurrence address bound"):
+        context_screen.screen_reference_context(xml)
+
+
+def test_context_screen_enforces_target_occurrence_address_bound(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(context_screen, "MAX_OCCURRENCE_ADDRESS_BYTES", 150)
+    chain = b"".join(b"<a>" for _ in range(12))
+    close_chain = b"".join(b"</a>" for _ in range(12))
+    xml = (
+        b'<root xmlns="http://schema.pbs.gov.au/" '
+        b'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+        + chain
+        + b'<target rdf:about="same"/>'
+        + close_chain
+        + b'<edge rdf:resource="same"/></root>'
+    )
+    with pytest.raises(ValueError, match="target address bound"):
+        context_screen.screen_reference_context(xml)
+
+
+def test_context_screen_enforces_report_byte_bound(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(context_screen, "MAX_REPORT_BYTES", 0)
+    with pytest.raises(ValueError, match="report byte bound"):
+        context_screen.screen_reference_context(
+            b'<root xmlns="http://schema.pbs.gov.au/"/>'
+        )
 
 
 def test_cli_withholds_source_exception_and_preserves_existing_receipt(

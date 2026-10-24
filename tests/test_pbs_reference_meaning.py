@@ -18,10 +18,12 @@ from global_medicines_atlas.pbs_native_reference_screen import (
     screen_native_references,
 )
 from global_medicines_atlas.pbs_reference_meaning import (
+    MAX_CONTEXT_REPORT_BYTES,
     SCREEN_RECEIPT,
     _count_mapping,  # ruff: ignore[import-private-name]
     _string_keyed_mapping,  # ruff: ignore[import-private-name]
     _validate_expected_run_identity,  # ruff: ignore[import-private-name]
+    _validate_reference_context,  # ruff: ignore[import-private-name]
     _validated_per_kind,  # ruff: ignore[import-private-name]
     review_reference_meanings,
 )
@@ -389,6 +391,71 @@ def test_reference_context_rejects_source_values(tmp_path):
 
     path = _receipt_with_report(tmp_path, add_value)
     with pytest.raises(ValueError, match="contains source values"):
+        review_reference_meanings(ROOT, path)
+
+
+def test_reference_context_validation_rejects_non_object_and_non_string_keys():
+    with pytest.raises(TypeError, match="must be an object"):
+        _validate_reference_context("invalid", 0)
+    with pytest.raises(ValueError, match="keys are invalid"):
+        _validate_reference_context({1: "invalid"}, 0)
+
+
+@pytest.mark.parametrize(
+    ("context", "message"),
+    [
+        ({"schema_id": "x" * (MAX_CONTEXT_REPORT_BYTES + 1)}, "byte bound"),
+        ({**_context(), "unexpected": True}, "schema differs"),
+        ({**_context(), "schema_version": True}, "count is invalid"),
+        ({**_context(), "schema_id": "wrong"}, "contract differs"),
+        ({**_context(), "schema_version": 2}, "contract differs"),
+        ({**_context(), "strata": "not a list"}, "strata must be a list"),
+        ({**_context(), "strata_count": 2}, "contract differs"),
+        ({**_context(), "examples_emitted": 1_001}, "contract differs"),
+        ({**_context(), "external_targets_fetched": 1}, "contract differs"),
+        (
+            {**_context(), "semantic_relationships_qualified": True},
+            "contract differs",
+        ),
+        (
+            {
+                **_context(),
+                "strata": [{**_context()["strata"][0], "occurrences": -1}],
+            },
+            "stratum count is invalid",
+        ),
+        (
+            {**_context(), "strata": ["not an object"]},
+            "stratum must be an object",
+        ),
+        (
+            {
+                **_context(),
+                "strata": [
+                    {**_context()["strata"][0], "examples": "not a list"}
+                ],
+            },
+            "examples are invalid",
+        ),
+        (
+            {
+                **_context(),
+                "strata": [{**_context()["strata"][0], "occurrences": 2}],
+            },
+            "denominator differs",
+        ),
+    ],
+)
+def test_reference_context_rejects_malformed_receipt_contract(
+    tmp_path, context, message
+):
+    path = _receipt_with_report(
+        tmp_path,
+        lambda report: report["qualification"].__setitem__(
+            "reference_context", context
+        ),
+    )
+    with pytest.raises((TypeError, ValueError), match=message):
         review_reference_meanings(ROOT, path)
 
 
