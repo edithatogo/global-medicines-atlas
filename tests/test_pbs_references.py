@@ -5,6 +5,7 @@ from collections.abc import Iterator
 from io import BytesIO
 from typing import Any
 
+import pbs_uri_review_packet_reconciler_cases as _uri_packet_cases
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
@@ -18,6 +19,28 @@ from test_australian_source_contracts import (
 
 from global_medicines_atlas import pbs_references
 from global_medicines_atlas.pbs_entities import iter_pbs_entity_batches
+
+test_uri_packet_never_overwrites_existing_output = (
+    _uri_packet_cases.test_never_overwrites_existing_derived_packet
+)
+test_uri_packet_reconciles_pending_cases = (
+    _uri_packet_cases.test_reconciles_all_cases_to_value_free_pending_structural_packet
+)
+test_uri_packet_rejects_bad_digests = (
+    _uri_packet_cases.test_rejects_bad_canonical_digest_and_wrong_expected_receipt_bytes
+)
+test_uri_packet_rejects_v1_receipt = (
+    _uri_packet_cases.test_rejects_current_pinned_v1_actions_receipt
+)
+test_uri_packet_rejects_bad_case_binding = (
+    _uri_packet_cases.test_rejects_non_bijective_or_escalated_case_binding
+)
+test_uri_packet_rejects_changed_packet = (
+    _uri_packet_cases.test_rejects_packet_bytes_that_differ_from_pinned_identity
+)
+test_uri_packet_rejects_contract_mismatch = (
+    _uri_packet_cases.test_rejects_receipt_contract_mismatch
+)
 
 
 @pytest.mark.parametrize(
