@@ -7,9 +7,6 @@ import hashlib
 import json
 from pathlib import Path
 
-from global_medicines_atlas.mbs_historical_csv_package import (
-    canonical_package_json,
-)
 from global_medicines_atlas.pbs_field_reconciliation import (
     reconcile_pbs_field_states,
 )
@@ -23,7 +20,7 @@ def main() -> int:
         type=Path,
         default=Path(
             "quality/qualifications/"
-            "pbs-native-silver-field-reconciliation-20261025-r8.json"
+            "pbs-native-silver-field-reconciliation-20261025-r10.json"
         ),
     )
     args = parser.parse_args()
@@ -31,7 +28,14 @@ def main() -> int:
     if destination.exists():
         parser.error("existing PBS field reconciliation must be preserved")
     report = reconcile_pbs_field_states(args.root)
-    digest = hashlib.sha256(canonical_package_json(report)).hexdigest()
+    canonical = json.dumps(
+        report,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
+    digest = hashlib.sha256(canonical).hexdigest()
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(
         json.dumps(
