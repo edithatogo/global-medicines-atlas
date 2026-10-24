@@ -71,9 +71,9 @@ def test_every_pinned_field_has_one_evidenced_state():
         report["source_local_reference_review"]["screen_reference_denominator"]
         == 2_160_066
     )
-    assert report["source"]["reference_screen_run_id"] == "40040624594"
+    assert report["source"]["reference_screen_run_id"] == "40076190245"
     assert report["source"]["reference_screen_workflow_commit"] == (
-        "43f72eb7844a1f3adf13ec1fb34788c1bb8faf71"
+        "b3139f9c655f48ccbb7a1714712219ac2281d838"
     )
     assert report["source_local_reference_review"]["per_kind_screen"] == {
         "rdf_resource": {
@@ -92,9 +92,16 @@ def test_every_pinned_field_has_one_evidenced_state():
     }
     context_screen = report["source_local_reference_review"]["context_screen"]
     assert context_screen == {
-        "status": "pending_exact_main_hosted_receipt",
-        "workflow_run_id": "40063785531",
-        "receipt_available": False,
+        "status": "value_free_context_screen_reconciled",
+        "workflow_run_id": "40076190245",
+        "workflow_commit": "b3139f9c655f48ccbb7a1714712219ac2281d838",
+        "receipt_sha256": "570cc803a6657e421dc614855fe75013440f716dd3ff1d0096232c08ae363711",
+        "schema_version": 2,
+        "strata_count": 184,
+        "examples_emitted": 63,
+        "examples_omitted": 2_160_003,
+        "external_targets_fetched": 0,
+        "source_values_emitted": False,
         "semantic_relationships_qualified": False,
     }
     assert report["supersedes_report"]["path"] == SUPERSEDED_REPORT
@@ -246,6 +253,58 @@ def test_reference_review_per_kind_counts_must_match_exact_screen(monkeypatch):
         ]["unique_exact_literal"] -= 1
         canonical = json.dumps(
             review,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        envelope["report_sha256"] = hashlib.sha256(canonical).hexdigest()
+
+    _intercept_json_loads(monkeypatch, REFERENCE_REVIEW, mutate)
+    with pytest.raises(
+        ValueError, match="PBS source-local reference review differs"
+    ):
+        reconcile_pbs_field_states(ROOT)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("screen_run_id", "40040624594"),
+        (
+            "screen_workflow_commit",
+            "43f72eb7844a1f3adf13ec1fb34788c1bb8faf71",
+        ),
+        (
+            "screen_receipt_sha256",
+            "a221facbc5b9bf0250b00d9036d5b909f6408fc99d3af390b687f1f6ad8950b4",
+        ),
+    ],
+)
+def test_reference_review_must_bind_the_exact_context_screen(
+    monkeypatch, field: str, value: str
+):
+    def mutate(envelope):
+        envelope["report"]["source"][field] = value
+        canonical = json.dumps(
+            envelope["report"],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        envelope["report_sha256"] = hashlib.sha256(canonical).hexdigest()
+
+    _intercept_json_loads(monkeypatch, REFERENCE_REVIEW, mutate)
+    with pytest.raises(
+        ValueError, match="PBS source-local reference review differs"
+    ):
+        reconcile_pbs_field_states(ROOT)
+
+
+def test_reference_review_requires_v2_context_screen(monkeypatch):
+    def mutate(envelope):
+        envelope["report"]["source_context_screen"]["schema_version"] = 1
+        canonical = json.dumps(
+            envelope["report"],
             ensure_ascii=False,
             sort_keys=True,
             separators=(",", ":"),
