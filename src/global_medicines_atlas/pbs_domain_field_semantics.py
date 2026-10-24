@@ -95,6 +95,32 @@ def _source_label_observations(
     return observations
 
 
+def _pbs_amount_role_counts(
+    inventory: dict[str, Any],
+) -> dict[str, int]:
+    """Count exact PBS amount text slots and documented nested roles."""
+    counts = {
+        "pbs_amount_fields": 0,
+        "product_price_fields": 0,
+        "patient_contribution_fields": 0,
+    }
+    for row in inventory["paths"]:
+        parts = [
+            segment.replace("~1", "/").replace("~0", "~")
+            for segment in row["schema_path"].split("/")[1:]
+        ]
+        if parts[-2:] != ["{http://schema.pbs.gov.au/}amount", "text"]:
+            continue
+        count = row["native_fields"]
+        counts["pbs_amount_fields"] += count
+        ancestry = parts[:-2]
+        if "{http://schema.pbs.gov.au/}contribution" in ancestry:
+            counts["patient_contribution_fields"] += count
+        elif "{http://schema.pbs.gov.au/}price" in ancestry:
+            counts["product_price_fields"] += count
+    return counts
+
+
 def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
     """Bind conservative field-meaning decisions to the exact retained inputs."""
     inventory_bytes = (root / INVENTORY).read_bytes()
@@ -174,7 +200,7 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
         },
         "price": {
             "status": "qualified_bounded_source_structure",
-            "meaning": "source-labelled price component and amount structure",
+            "meaning": "source-labelled product price and amount structure",
             "field_count": fields["prices"] + fields["pricing_components"],
             "entity_count": entities["prices"] + entities["pricing_components"],
             "limits": [
@@ -220,7 +246,7 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
     return {
         "schema_id": "global-medicines-atlas.pbs-domain-field-semantics",
         "schema_version": 1,
-        "profile_id": "pbs-v3-pinned-2026-04-01-domain-fields-v1",
+        "profile_id": "pbs-v3-pinned-2026-04-01-domain-fields-v2",
         "status": "bounded_semantics_qualified_with_explicit_unresolved_fields",
         "source": {
             "dataset": "edithatogo/australian-pbs-source-archive",
@@ -242,8 +268,36 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
             "docs/qualification/pbs-public-qualification.md#pinned-v3-date-profile-receipt-2026-09-28",
             date_profile["date_profile"]["developers_guide"],
             date_profile["date_profile"]["mapping_specification"],
+            "https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_amount.html",
+            "https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_pbs.price.content.html",
+            "https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_contribution.html",
+            "https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_pbs.restriction.html",
         ],
         "domains": domains,
+        "source_schema_field_meanings": {
+            "pbs_amount_text": {
+                **_pbs_amount_role_counts(inventory),
+                "status": "qualified_exact_pinned_v3_schema_role",
+                "meaning": "PBS amount content is defined by the source schema as a dollar value; nested price and patient-contribution contexts retain their distinct source roles",
+                "limits": [
+                    "the schema does not supply an explicit currency code for these fields",
+                    "the exact schema minor release used for the archive is not separately bound by the value-free path inventory",
+                    "native lexemes, precision classification, amount category references, and monetary values remain unresolved",
+                    "a source price amount is not thereby a payable benefit or patient cost",
+                    "patient-contribution role does not establish the amount actually paid by a patient",
+                    "applies only to exact PBS namespace amount/text paths in the pinned v3 member",
+                ],
+            },
+            "restriction": {
+                "status": "qualified_exact_pinned_v3_schema_label",
+                "meaning": "the source restriction element represents the reason for subsidisation, including indications and criteria",
+                "limits": [
+                    "restriction text does not establish patient-specific eligibility or a clinical conclusion",
+                    "reference descendants remain source-local references and are not resolved here",
+                    "applies only to the exact pinned v3 restriction structure",
+                ],
+            },
+        },
         "scope": {
             "source_values_emitted": False,
             "new_sources": 0,

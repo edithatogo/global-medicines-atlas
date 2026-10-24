@@ -20,7 +20,7 @@ def main() -> int:
         type=Path,
         default=Path(
             "quality/qualifications/"
-            "pbs-native-silver-field-reconciliation-20261025-r10.json"
+            "pbs-native-silver-field-reconciliation-20261025-r11.json"
         ),
     )
     args = parser.parse_args()
