@@ -205,3 +205,153 @@ def test_progress_contains_only_phase_and_counts():
     assert report["outcome_counts_by_qname"] == {
         "xlink:href": {"missing_id_target": 1}
     }
+
+
+@pytest.mark.parametrize("value", ["a:b", "1starts-with-digit"])
+def test_ncname_rejects_invalid_start_or_colon(value: str):
+    assert module._is_ncname(value) is False
+
+
+@pytest.mark.parametrize(
+    "value", [None, "relative", "https://bad host/x", "https://bad/%GG"]
+)
+def test_absolute_base_rejects_missing_or_malformed_values(value: str | None):
+    assert module._absolute_base(value) is None
+
+
+def test_absolute_base_rejects_empty_parsed_scheme(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(
+        module,
+        "urlsplit",
+        lambda _value: type("Parts", (), {"scheme": "", "port": None})(),
+    )
+    assert module._absolute_base("scheme:value") is None
+
+
+def test_absolute_base_rejects_invalid_authority_port(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    class InvalidPort:
+        scheme = "https"
+
+        @property
+        def port(self):
+            raise ValueError("private synthetic authority")
+
+    monkeypatch.setattr(module, "urlsplit", lambda _value: InvalidPort())
+    assert module._absolute_base("https://synthetic.example/") is None
+
+
+def test_base_and_reference_join_errors_abstain(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(
+        module,
+        "urljoin",
+        lambda *_args: (_ for _ in ()).throw(ValueError("private")),
+    )
+    assert module._effective_base("https://synthetic.example/", "child") is None
+    assert module._resolve("child", "https://synthetic.example/") is None
+
+
+def test_relative_xml_base_resolves_against_parent():
+    assert (
+        module._effective_base("https://synthetic.example/root/", "child/")
+        == "https://synthetic.example/root/child/"
+    )
+
+
+@pytest.mark.parametrize(
+    ("value", "base"),
+    [
+        (None, "https://synthetic.example/"),
+        ("x" * (module.MAX_URI_CHARS + 1), "https://synthetic.example/"),
+        ("https://synthetic.example/%GG", None),
+    ],
+)
+def test_missing_oversized_or_invalid_uri_abstains(
+    value: str | None, base: str | None
+):
+    assert module._resolve(value, base) is None
+
+
+@pytest.mark.parametrize(
+    ("member", "expected"),
+    [
+        (
+            b'<root xmlns:xlink="http://www.w3.org/1999/xlink"><a xlink:href="#bad%GG"/></root>',
+            "abstained_malformed_fragment",
+        ),
+        (
+            b'<root xmlns:xlink="http://www.w3.org/1999/xlink"><a xlink:href="#%FF"/></root>',
+            "abstained_malformed_fragment",
+        ),
+        (
+            b'<root xmlns:xlink="http://www.w3.org/1999/xlink"><a xlink:href="https://synthetic.example/item"/></root>',
+            "external_or_nonfragment_xlink_unresolved",
+        ),
+    ],
+)
+def test_xlink_abstention_outcomes(member: bytes, expected: str):
+    report = screen_pbs_native_uris(member)
+    assert report["outcome_counts_by_kind"]["xlink_href"] == {expected: 1}
+
+
+def test_uri_reference_and_indexed_character_bounds(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(module, "MAX_URI_CHARS", 2)
+    with pytest.raises(ValueError, match="URI bound"):
+        screen_pbs_native_uris(
+            b'<root xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><a rdf:resource="long"/></root>'
+        )
+    monkeypatch.setattr(module, "MAX_URI_CHARS", 100)
+    monkeypatch.setattr(module, "MAX_INDEXED_URI_CHARS", 0)
+    with pytest.raises(ValueError, match="indexed URI bound"):
+        screen_pbs_native_uris(
+            b'<root xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><a rdf:resource="x"/></root>'
+        )
+
+
+def test_reference_and_element_count_bounds(monkeypatch: pytest.MonkeyPatch):
+    monkeypatch.setattr(module, "MAX_REFERENCE_ROWS", 0)
+    with pytest.raises(ValueError, match="reference bound"):
+        screen_pbs_native_uris(
+            b'<root xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><a rdf:resource="x"/></root>'
+        )
+    monkeypatch.setattr(module, "MAX_REFERENCE_ROWS", 8_000_000)
+    monkeypatch.setattr(module, "MAX_ELEMENTS", 1)
+    element = type("Element", (), {"tag": "root", "attrib": {}})()
+
+    def over_limit_events(_member, *, policy):
+        del policy
+        yield "start", element, None
+        yield "start", element, None
+
+    monkeypatch.setattr(module, "iter_xml_events", over_limit_events)
+    with pytest.raises(ValueError, match="element bound"):
+        screen_pbs_native_uris(b"<root><child/></root>")
+
+
+def test_parse_progress_is_coarse_and_value_free(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    element = type("Element", (), {"tag": "root", "attrib": {}})()
+
+    def many_events(_member, *, policy):
+        del policy
+        for _ in range(100_000):
+            yield "start", element, None
+
+    monkeypatch.setattr(module, "iter_xml_events", many_events)
+    progress = []
+    report = screen_pbs_native_uris(
+        b"<root/>", progress=lambda *args: progress.append(args)
+    )
+    assert progress == [
+        ("pbs-uri-screen-parse", 1, 100_000),
+        ("pbs-uri-screen-classify", 1, 0),
+    ]
+    assert report["xml_elements"] == 100_000
