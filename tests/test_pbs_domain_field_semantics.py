@@ -2,6 +2,8 @@
 
 import hashlib
 import json
+import runpy
+import sys
 from pathlib import Path
 
 import pytest
@@ -121,6 +123,52 @@ def test_source_amount_role_counts_require_exact_pbs_qnames():
         "product_price_fields": 0,
         "patient_contribution_fields": 5,
     }
+
+
+def test_domain_writer_default_preserves_historical_receipt(
+    tmp_path, monkeypatch
+):
+    _copy_receipts(ROOT, tmp_path)
+    historical = tmp_path / (
+        "quality/qualifications/pbs-domain-field-semantics-20261023.json"
+    )
+    historical.parent.mkdir(parents=True, exist_ok=True)
+    historical_bytes = (
+        ROOT / "quality/qualifications/pbs-domain-field-semantics-20261023.json"
+    ).read_bytes()
+    historical.write_bytes(historical_bytes)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["qualify_pbs_domain_fields.py", "--root", str(tmp_path)],
+    )
+    script = runpy.run_path(
+        str(ROOT / "scripts/qualify_pbs_domain_fields.py"),
+        run_name="pbs_domain_field_writer_test",
+    )
+    assert script["main"]() == 0
+
+    output = tmp_path / (
+        "quality/qualifications/pbs-domain-field-semantics-20261025-v2.json"
+    )
+    assert output.is_file()
+    assert historical.read_bytes() == historical_bytes
+    envelope = json.loads(output.read_bytes())
+    assert envelope["report"]["profile_id"] == (
+        "pbs-v3-pinned-2026-04-01-domain-fields-v2"
+    )
+    assert (
+        hashlib.sha256(
+            json.dumps(
+                envelope["report"],
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            ).encode()
+        ).hexdigest()
+        == envelope["report_sha256"]
+    )
 
 
 def test_source_label_overlay_keeps_values_unresolved():
