@@ -43,7 +43,20 @@ def test_workflow_dispatch_is_separate_and_exact_main_gated():
     assert "test \"${GITHUB_REF}\" = 'refs/heads/main'" in step["run"]
     assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in step["run"]
     assert "scripts/screen_historical_pbs_uri_references.py" in step["run"]
+    assert (
+        "--xlink-output pbs-native-reference-xlink-candidates.jsonl"
+        in step["run"]
+    )
     assert "screen_historical_pbs_references.py" not in step["run"]
+    artifact = next(
+        item
+        for item in job["steps"]
+        if item.get("name")
+        == "Retain bounded source-declared XLink candidate artifact"
+    )
+    assert artifact["if"] == "success()"
+    assert artifact["with"]["retention-days"] == 30
+    assert "issues: write" not in str(job)
 
 
 def test_pinned_review_packet_has_46_unreviewed_cases_for_same_member():
@@ -83,6 +96,7 @@ def test_script_uses_verified_member_route_and_retains_aggregate_only(
     )
     inputs = SimpleNamespace(
         context={"workflow_commit": COMMIT, "run_id": "17", "run_attempt": "1"},
+        archive=b"archive-bytes",
         xml=b"<member/>bytes",
         binding=binding,
         parent=SimpleNamespace(digest=lambda: source_digest),
@@ -128,6 +142,34 @@ def test_script_uses_verified_member_route_and_retains_aggregate_only(
 
     monkeypatch.setattr(cli, "_verified_inputs", verified)
     monkeypatch.setattr(cli, "screen_pbs_native_uris", screen)
+    xlink_calls: list[Any] = []
+
+    def export_xlink(
+        archive: bytes,
+        member: bytes,
+        parent: Any,
+        member_binding: Any,
+        destination: Path,
+    ) -> dict[str, Any]:
+        xlink_calls.append((
+            archive,
+            member,
+            parent,
+            member_binding,
+            destination,
+        ))
+        destination.write_bytes(b"candidate-jsonl\n")
+        return {
+            "qualification": "candidate",
+            "semantic_relationships_qualified": False,
+            "candidate_edge_count": 1,
+            "artifact_byte_count": 16,
+            "artifact_sha256": "f" * 64,
+        }
+
+    monkeypatch.setattr(
+        cli, "export_pbs_xlink_reference_candidates", export_xlink
+    )
     monkeypatch.setattr(
         cli,
         "load_review_cases",
@@ -142,10 +184,20 @@ def test_script_uses_verified_member_route_and_retains_aggregate_only(
         ),
     )
     output = tmp_path / "receipt.json"
-    report = cli.run(COMMIT, output)
+    xlink_output = tmp_path / "candidates.jsonl"
+    report = cli.run(COMMIT, output, xlink_output)
 
     assert calls
     assert calls[0][0:2] == (COMMIT, None)
+    assert xlink_calls == [
+        (
+            inputs.archive,
+            inputs.xml,
+            inputs.parent,
+            inputs.binding,
+            xlink_output,
+        )
+    ]
     envelope = json.loads(output.read_text())
     assert envelope["report"] == report
     assert report["status"] == "passed"
@@ -155,6 +207,13 @@ def test_script_uses_verified_member_route_and_retains_aggregate_only(
     assert report["source_receipt_sha256"] == source_digest
     assert report["source_receipt_file_sha256"] == cli.RECEIPT.sha256
     assert report["qualification"]["semantic_relationships_qualified"] is False
+    assert (
+        report["xlink_candidate_qualification"][
+            "semantic_relationships_qualified"
+        ]
+        is False
+    )
+    assert xlink_output.read_bytes() == b"candidate-jsonl\n"
     assert report["qualification"]["external_targets_fetched"] == 0
     assert report["review_packet_binding"]["packet_case_count"] == 1
     assert report["source_values_emitted"] is False
@@ -169,7 +228,14 @@ def test_existing_receipt_is_not_overwritten(tmp_path: Path):
     output.write_text("existing")
 
     with pytest.raises(SystemExit) as captured:
-        cli.main(["--exact-commit", COMMIT, "--output", str(output)])
+        cli.main([
+            "--exact-commit",
+            COMMIT,
+            "--output",
+            str(output),
+            "--xlink-output",
+            str(tmp_path / "candidates.jsonl"),
+        ])
     assert captured.value.code == 2
     assert output.read_text() == "existing"
 
@@ -217,7 +283,7 @@ def test_failure_receipt_emits_only_allowlisted_scanner_code(
 
     monkeypatch.setattr(cli, "screen_pbs_native_uris", fail)
     output = tmp_path / "failure.json"
-    report = cli.run(COMMIT, output)
+    report = cli.run(COMMIT, output, tmp_path / "candidate.jsonl")
 
     assert report.get("failure_code") == expected_code
     assert "private synthetic marker" not in output.read_text()
