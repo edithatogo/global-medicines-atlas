@@ -217,6 +217,45 @@ def test_review_packet_accepts_stratified_v2_context_from_screen():
     assert packet["status"] == (
         "source_context_examples_unreviewed_semantic_links_unqualified"
     )
+
+
+def test_review_packet_accepts_enriched_v3_context_without_promoting_links():
+    report = _meaning_report()
+    context = report["source_context_screen"]
+    context["schema_version"] = 3
+    context["example_selection_policy"] = (
+        "up_to_five_value_free_examples_per_structural_stratum"
+    )
+    context["uri_resolution_screen_performed"] = True
+    context["document_scope"] = "single_xml_member"
+    for row in context["strata"]:
+        row["uri_resolution_profile"] = "document_uri_unavailable"
+        row["document_scope"] = "single_xml_member"
+        row["predicate_role"] = (
+            "rdf_resource_attribute"
+            if row["kind"] == "rdf_resource"
+            else "xlink_href_attribute"
+        )
+        row["target_element_type_occurrence_counts"] = (
+            {f"{_PBS}target": 1}
+            if row["match_status"]
+            in {
+                "unique_exact_literal",
+                "ambiguous_exact_literal",
+            }
+            else {}
+        )
+        for example in row["examples"]:
+            example["target_element_types"] = (
+                [f"{_PBS}target"] if example["target_multiplicity"] else []
+            )
+
+    packet = prepare_reference_review_packet(report)
+
+    assert packet["status"] == (
+        "source_context_examples_unreviewed_semantic_links_unqualified"
+    )
+    assert packet["calibration"]["semantic_relationships_qualified"] is False
     assert len(packet["cases"]) == 7
     assert all(
         not case["semantic_relationship_qualified"] for case in packet["cases"]
@@ -317,7 +356,7 @@ def test_review_packet_rejects_malformed_context(  # ruff: ignore[too-many-branc
     row = context["strata"][0]
     example = row["examples"][0]
     if operation == "contract":
-        context["schema_version"] = 3
+        context["schema_version"] = 4
     elif operation == "example_policy":
         context["schema_version"] = 2
         context["example_selection_policy"] = "unbounded"

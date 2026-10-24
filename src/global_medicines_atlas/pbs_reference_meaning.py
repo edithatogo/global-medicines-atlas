@@ -35,6 +35,7 @@ REFERENCE_FIELDS_SHA256 = (
 )
 REFERENCE_KINDS = {"rdf_resource", "xlink_href"}
 REFERENCE_CONTEXT_STRATIFIED_VERSION = 2
+REFERENCE_CONTEXT_ENRICHED_VERSION = 3
 REFERENCE_CONTEXT_EXAMPLE_POLICY = (
     "up_to_five_value_free_examples_per_structural_stratum"
 )
@@ -331,6 +332,12 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
     required = base_required
     if version == REFERENCE_CONTEXT_STRATIFIED_VERSION:
         required = base_required | {"example_selection_policy"}
+    elif version == REFERENCE_CONTEXT_ENRICHED_VERSION:
+        required = base_required | {
+            "example_selection_policy",
+            "uri_resolution_screen_performed",
+            "document_scope",
+        }
     if set(mapping) != required:
         raise ValueError("PBS reference context schema differs")
     int_keys = (
@@ -354,12 +361,20 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
         raise ValueError("PBS reference context contract differs")
     if (
         mapping["schema_version"]
-        not in {1, REFERENCE_CONTEXT_STRATIFIED_VERSION}
+        not in {
+            1,
+            REFERENCE_CONTEXT_STRATIFIED_VERSION,
+            REFERENCE_CONTEXT_ENRICHED_VERSION,
+        }
         or mapping["strata_count"] > MAX_CONTEXT_STRATA
     ):
         raise ValueError("PBS reference context contract differs")
     if (
-        mapping["schema_version"] == REFERENCE_CONTEXT_STRATIFIED_VERSION
+        mapping["schema_version"]
+        in {
+            REFERENCE_CONTEXT_STRATIFIED_VERSION,
+            REFERENCE_CONTEXT_ENRICHED_VERSION,
+        }
         and mapping["example_selection_policy"]
         != REFERENCE_CONTEXT_EXAMPLE_POLICY
     ):
@@ -372,6 +387,16 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
     if mapping["examples_emitted"] > MAX_CONTEXT_EXAMPLES:
         raise ValueError("PBS reference context contract differs")
     if mapping["external_targets_fetched"] != 0:
+        raise ValueError("PBS reference context contract differs")
+    if mapping["schema_version"] == REFERENCE_CONTEXT_ENRICHED_VERSION and (
+        mapping["uri_resolution_screen_performed"] is not True
+        or mapping["document_scope"] != "single_xml_member"
+    ):
+        raise ValueError("PBS reference context contract differs")
+    if mapping["schema_version"] == REFERENCE_CONTEXT_ENRICHED_VERSION and (
+        mapping["uri_resolution_screen_performed"] is not True
+        or mapping["document_scope"] != "single_xml_member"
+    ):
         raise ValueError("PBS reference context contract differs")
     if any(
         mapping[key] is not False

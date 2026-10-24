@@ -33,6 +33,8 @@ def test_context_screen_reports_occurrence_structure_without_literals():
     assert report["raw_source_emitted"] is False
     assert report["semantic_relationships_qualified"] is False
     assert report["uri_resolution_performed"] is False
+    assert report["uri_resolution_screen_performed"] is True
+    assert report["document_scope"] == "single_xml_member"
     assert report["external_targets_fetched"] == 0
     assert "private-id" not in serialized
     assert "example.invalid" not in serialized
@@ -46,6 +48,14 @@ def test_context_screen_reports_occurrence_structure_without_literals():
         row["xml_base_context"] == "xml_base_present"
         and row["literal_shape"] == "fragment"
         for row in report["strata"]
+    )
+    assert any(
+        row["uri_resolution_profile"] == "same_member_fragment_candidate"
+        and row["predicate_role"] == "xlink_href_attribute"
+        for row in report["strata"]
+    )
+    assert any(
+        row["target_element_type_occurrence_counts"] for row in report["strata"]
     )
 
 
@@ -112,6 +122,30 @@ def test_context_screen_is_deterministic_and_classifies_negative_controls():
         "no_exact_literal",
         "empty_literal",
     }
+
+
+def test_context_screen_classifies_uri_resolution_without_emitting_uri():
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <group xml:base="https://private.example/base/">
+        <edge rdf:resource="relative-target"/>
+      </group>
+      <edge rdf:resource="unbased-relative"/>
+      <edge rdf:resource="https://private.example/absolute"/>
+    </root>"""
+
+    report = screen_reference_context(xml)
+
+    profiles = {row["uri_resolution_profile"] for row in report["strata"]}
+    assert profiles == {
+        "resolved_against_absolute_xml_base_candidate",
+        "document_uri_unavailable",
+        "absolute_uri_candidate",
+    }
+    serialized = json.dumps(report)
+    assert "private.example" not in serialized
+    assert "relative-target" not in serialized
+    assert "unbased-relative" not in serialized
 
 
 def test_context_examples_cover_structural_strata_without_emitting_values():
