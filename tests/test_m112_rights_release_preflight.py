@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-48.json"
+    "australian-m112-rights-release-preflight-20261024-55.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-47.json"
+    "australian-m112-rights-release-preflight-20261024-54.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -53,18 +53,6 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert not any(
         "full PBS utilisation vocabulary exclusion review" in item["work"]
         for item in report["remaining_rights_work"]
-    )
-    pbs_screen = report["pbs_native_reference_screen_actual_readback"]
-    assert pbs_screen["run_id"] == 39730665004
-    assert pbs_screen["native_fields"] == 18_208_758
-    assert pbs_screen["reference_fields"] == (
-        pbs_screen["unique_exact_literal"] + pbs_screen["no_exact_literal"]
-    )
-    assert pbs_screen["semantic_relationships_qualified"] is False
-    assert pbs_screen["domain_semantics_qualified"] is False
-    assert (
-        hashlib.sha256((ROOT / pbs_screen["receipt"]).read_bytes()).hexdigest()
-        == pbs_screen["receipt_sha256"]
     )
     reconciliation = report["current_rights_reconciliation"]
     assert reconciliation["approved_denominator"] == 1759
@@ -116,11 +104,46 @@ def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
     assert projection["release_performed_by_this_reconciliation"] is False
 
 
+def test_preflight_binds_current_silver_semantics_readbacks() -> None:
+    report = _json(PREFLIGHT)
+    pbs_screen = report["pbs_native_reference_screen_actual_readback"]
+    assert pbs_screen["run_id"] == 40040624594
+    assert pbs_screen["native_fields"] == 18_208_758
+    assert pbs_screen["reference_fields"] == 2_160_066
+    assert pbs_screen["per_kind_counts"]["rdf:resource"]["occurrences"] == (
+        1_167_610
+    )
+    assert pbs_screen["per_kind_counts"]["xlink:href"]["occurrences"] == (
+        992_456
+    )
+    assert pbs_screen["semantic_relationships_qualified"] is False
+    assert pbs_screen["domain_semantics_qualified"] is False
+    assert pbs_screen["source_context_screen_included"] is False
+    assert pbs_screen["context_screen_implementation_present"] is True
+    assert pbs_screen["source_context_review_pending"] is True
+    assert (
+        hashlib.sha256((ROOT / pbs_screen["receipt"]).read_bytes()).hexdigest()
+        == pbs_screen["receipt_sha256"]
+    )
+    header = report["historical_workbook_header_profile_actual_readback"]
+    assert header["run_id"] == 40040624592
+    assert header["workbooks"] == 91
+    assert header["interpreted_header_column_bindings"] == 728
+    assert header["non_header_cells"] == 310_177_657
+    assert header["non_header_cells_state"] == "native_unresolved"
+    assert header["whole_workbook_semantics_complete"] is False
+    p7 = report["mbs_p7_value_era_rules_actual_readback"]
+    assert p7["date_cells"] == 1_280
+    assert p7["date_cells_ambiguous_dmy_mdy"] == 1_276
+    assert p7["date_profile_selected"] is False
+    assert p7["formula_evaluation"] is False
+
+
 def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     report = _json(PREFLIGHT)
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-47.json"
+        "australian-m112-rights-release-preflight-20261024-54.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -129,7 +152,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-46.json"
+        "australian-m112-rights-release-preflight-20261024-53.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -142,21 +165,34 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-45.json"
+        "australian-m112-rights-release-preflight-20261024-52.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-44.json"
+        "australian-m112-rights-release-preflight-20261024-51.json"
     )
+
+
+def test_full_local_profile_failure_and_recovery_are_explicit() -> None:
+    profile = _json(PREFLIGHT)["local_full_profile"]
+    assert profile["status"] == "failed_preserved"
+    assert profile["passed"] == 7_960
+    assert profile["failed"] == 5
+    assert profile["skipped"] == 4
+    assert 96.82 < profile["coverage_percent"] < 96.84
+    assert profile["failure_only_recheck"] == "4 passed"
+    assert profile["pbs_date_isolated_recheck"] == "1 passed"
 
 
 def test_pbs_native_silver_field_state_is_candidate_only() -> None:
     report = _json(PREFLIGHT)
     pbs_silver = report["pbs_native_silver_field_state_current_readback"]
     assert pbs_silver["source_fields"] == 18_208_758
-    assert pbs_silver["native_unresolved_fields"] == 18_208_758
-    assert pbs_silver["interpreted_fields"] == 0
+    assert pbs_silver["native_unresolved_fields"] == 955_919
+    assert pbs_silver["interpreted_fields"] == 17_252_839
+    assert pbs_silver["unavailable_fields"] == 0
+    assert pbs_silver["native_values_remain_unresolved"] is True
     assert pbs_silver["candidate_only"] is True
     assert pbs_silver["rights_qualified"] is True
     assert pbs_silver["admitted"] is False

@@ -44,6 +44,7 @@ from .pbs_member_identity import (
 from .pbs_native_reference_screen import screen_native_references
 from .pbs_observed_domain import load_observed_profile
 from .pbs_observed_qualification import qualify_observed_values
+from .pbs_reference_context import screen_reference_context
 from .pbs_reference_shards import (
     load_reference_entity_material,
     load_reference_entity_partition,
@@ -1375,15 +1376,7 @@ def run_hosted_native_reference_screen(
             exact_commit, transport=transport, retry=retry
         )
         with _at("projection-qualification", progress=retry.checkpoint):
-            qualification = screen_native_references(
-                inputs.archive,
-                inputs.xml,
-                inputs.parent,
-                inputs.binding,
-                progress=lambda phase, batches, rows: retry.checkpoint(
-                    "projection-qualification", phase, batches, rows
-                ),
-            )
+            qualification = _screen_native_reference_with_context(inputs, retry)
     except QualificationError as error:
         error.retry_event = retry.event
         error.retry_detail = retry.retry_detail
@@ -1400,3 +1393,23 @@ def run_hosted_native_reference_screen(
         "rights_conclusion_changed": False,
         "publication_performed": False,
     }
+
+
+def _screen_native_reference_with_context(
+    inputs: _VerifiedInputs, retry: _RetryBudget
+) -> dict[str, Any]:
+    """Pair lexical counts with bounded, value-free occurrence context."""
+    qualification = screen_native_references(
+        inputs.archive,
+        inputs.xml,
+        inputs.parent,
+        inputs.binding,
+        progress=lambda phase, batches, rows: retry.checkpoint(
+            "projection-qualification", phase, batches, rows
+        ),
+    )
+    context = screen_reference_context(inputs.xml)
+    if context["reference_occurrences"] != qualification["reference_fields"]:
+        raise QualificationError("denominator", "validation")
+    qualification["reference_context"] = context
+    return qualification

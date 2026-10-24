@@ -37,6 +37,17 @@ STATUSES = {
 }
 COMMIT_HEX_LENGTH = 40
 SHA256_HEX_LENGTH = 64
+MAX_CONTEXT_REPORT_BYTES = 36_000
+MAX_CONTEXT_STRATA = 10_000
+MAX_CONTEXT_EXAMPLES = 1_000
+MAX_CONTEXT_EXAMPLES_PER_STRATUM = 5
+_FORBIDDEN_CONTEXT_KEYS = {
+    "literal",
+    "value",
+    "uri",
+    "reference_value",
+    "raw_source",
+}
 
 
 def _digest(payload: bytes) -> str:
@@ -246,13 +257,140 @@ def _validated_per_kind(
     return normalized
 
 
-def review_reference_meanings(
+def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-statements] -- validates bounded untrusted receipt data
+    value: object, references: int
+) -> dict[str, Any]:
+    """Validate bounded structural context without accepting source values."""
+    if not isinstance(value, dict):
+        raise TypeError("PBS reference context must be an object")
+    members = cast("dict[object, object]", value)
+    if any(not isinstance(key, str) for key in members):
+        raise ValueError("PBS reference context keys are invalid")
+    mapping = cast("dict[str, Any]", value)
+    encoded = json.dumps(
+        mapping, ensure_ascii=False, separators=(",", ":")
+    ).encode()
+    if len(encoded) > MAX_CONTEXT_REPORT_BYTES:
+        raise ValueError("PBS reference context byte bound exceeded")
+
+    def reject_source_values(item: object) -> None:
+        if isinstance(item, dict):
+            members = cast("dict[object, object]", item)
+            if any(
+                isinstance(key, str)
+                and key.casefold() in _FORBIDDEN_CONTEXT_KEYS
+                for key in members
+            ):
+                raise ValueError("PBS reference context contains source values")
+            for nested in members.values():
+                reject_source_values(nested)
+        elif isinstance(item, list):
+            for nested in cast("list[object]", item):
+                reject_source_values(nested)
+
+    reject_source_values(mapping)
+    required = {
+        "schema_id",
+        "schema_version",
+        "reference_occurrences",
+        "strata_count",
+        "examples_emitted",
+        "examples_omitted",
+        "unique_exact_literal_no_xml_base_candidates",
+        "strata",
+        "uri_resolution_performed",
+        "literal_values_emitted",
+        "raw_source_emitted",
+        "semantic_relationships_qualified",
+        "external_targets_fetched",
+    }
+    if set(mapping) != required:
+        raise ValueError("PBS reference context schema differs")
+    int_keys = (
+        "schema_version",
+        "reference_occurrences",
+        "strata_count",
+        "examples_emitted",
+        "examples_omitted",
+        "unique_exact_literal_no_xml_base_candidates",
+        "external_targets_fetched",
+    )
+    for key in int_keys:
+        item = mapping[key]
+        if isinstance(item, bool) or not isinstance(item, int) or item < 0:
+            raise ValueError("PBS reference context count is invalid")
+    strata = mapping["strata"]
+    if (
+        mapping["schema_id"]
+        != "global-medicines-atlas.pbs-reference-context-screen"
+    ):
+        raise ValueError("PBS reference context contract differs")
+    if (
+        mapping["schema_version"] != 1
+        or mapping["strata_count"] > MAX_CONTEXT_STRATA
+    ):
+        raise ValueError("PBS reference context contract differs")
+    if not isinstance(strata, list):
+        raise TypeError("PBS reference context strata must be a list")
+    strata_rows = cast("list[object]", strata)
+    if mapping["strata_count"] != len(strata_rows):
+        raise ValueError("PBS reference context contract differs")
+    if mapping["examples_emitted"] > MAX_CONTEXT_EXAMPLES:
+        raise ValueError("PBS reference context contract differs")
+    if mapping["external_targets_fetched"] != 0:
+        raise ValueError("PBS reference context contract differs")
+    if any(
+        mapping[key] is not False
+        for key in (
+            "uri_resolution_performed",
+            "literal_values_emitted",
+            "raw_source_emitted",
+            "semantic_relationships_qualified",
+        )
+    ):
+        raise ValueError("PBS reference context contract differs")
+    if mapping["reference_occurrences"] != references:
+        raise ValueError("PBS reference context denominator differs")
+    occurrences = examples = 0
+    for row_value in strata_rows:
+        if not isinstance(row_value, dict):
+            raise TypeError("PBS reference context stratum must be an object")
+        row = cast("dict[str, Any]", row_value)
+        for key in (
+            "occurrences",
+            "unique_target_occurrences",
+            "ambiguous_target_occurrences",
+            "no_xml_base_exact_target_occurrences",
+            "unique_exact_literal_no_xml_base_candidates",
+            "examples_omitted",
+        ):
+            item = row.get(key)
+            if isinstance(item, bool) or not isinstance(item, int) or item < 0:
+                raise ValueError(
+                    "PBS reference context stratum count is invalid"
+                )
+        row_examples = row.get("examples")
+        if (
+            not isinstance(row_examples, list)
+            or len(cast("list[object]", row_examples))
+            > MAX_CONTEXT_EXAMPLES_PER_STRATUM
+        ):
+            raise ValueError("PBS reference context examples are invalid")
+        occurrences += row["occurrences"]
+        examples += len(cast("list[object]", row_examples))
+    if occurrences != references or examples != mapping["examples_emitted"]:
+        raise ValueError("PBS reference context denominator differs")
+    return mapping
+
+
+def review_reference_meanings(  # ruff: ignore[too-many-branches] -- receipt compatibility and context gating
     root: Path,
     receipt_path: str | Path = SCREEN_RECEIPT,
     *,
     require_per_kind: bool = False,
     expected_exact_commit: str | None = None,
     expected_run_id: str | None = None,
+    require_context: bool = False,
 ) -> dict[str, Any]:
     """Bind reviewed meanings to an exact hosted screen receipt.
 
@@ -303,13 +441,29 @@ def review_reference_meanings(
             qualification, counts, references
         )
 
+    raw_context = qualification.get("reference_context")
+    if raw_context is None:
+        if require_context or require_per_kind:
+            raise ValueError("PBS reference context is required")
+        normalized_context = None
+    else:
+        normalized_context = _validate_reference_context(
+            raw_context, references
+        )
+
     matched = counts.get("unique_exact_literal", 0)
     unmatched = counts.get("no_exact_literal", 0)
     return {
         "schema_id": "global-medicines-atlas.pbs-reference-meaning-review",
-        "schema_version": 2 if normalized_per_kind is not None else 1,
+        "schema_version": 3
+        if normalized_context is not None
+        else (2 if normalized_per_kind is not None else 1),
         "profile_id": "pbs-april-2026-source-local-reference-review-v1",
-        "status": "lexical_candidates_reviewed_semantic_links_unqualified",
+        "status": (
+            "source_context_screen_reconciled_semantic_links_unqualified"
+            if normalized_context is not None
+            else "lexical_candidates_reviewed_semantic_links_unqualified"
+        ),
         "source": {
             "dataset": report["dataset"],
             "revision": report["revision"],
@@ -338,6 +492,7 @@ def review_reference_meanings(
             "per_kind_match_counts_available": normalized_per_kind is not None,
             "per_kind": normalized_per_kind,
         },
+        "source_context_screen": normalized_context,
         "calibration": {
             "method": "deterministic synthetic positive, negative, ambiguity and base-context controls",
             "controls": [
@@ -346,7 +501,11 @@ def review_reference_meanings(
                 "missing, empty, case-different, namespace-different and unsupported forms do not match",
                 "identical relative RDF literals under different xml:base contexts still yield a lexical candidate and must abstain from semantic promotion",
             ],
-            "source_semantic_precision": "not estimable from aggregate-only source receipt",
+            "source_semantic_precision": (
+                "not estimable without reviewed semantic labels"
+                if normalized_context is not None
+                else "not estimable from aggregate-only source receipt"
+            ),
             "promotion_rule": "abstain; no literal-only candidate is emitted as a semantic edge",
         },
         "scope": {
