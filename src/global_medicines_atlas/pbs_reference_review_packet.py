@@ -32,6 +32,7 @@ STRATIFIED_CONTEXT_EXAMPLE_POLICY = (
 STRATIFIED_CONTEXT_EXAMPLE_POLICIES = {
     STRATIFIED_CONTEXT_EXAMPLE_POLICY,
     "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets",
+    "up_to_five_examples_per_stratum_with_equal_kind_status_budgets",
 }
 MEANING_REPORT_SCHEMA_VERSION = 3
 MAX_OCCURRENCE_BYTES = 4096

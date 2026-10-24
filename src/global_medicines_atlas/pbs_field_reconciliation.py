@@ -86,6 +86,7 @@ REFERENCE_CONTEXT_EXAMPLE_POLICY = (
 REFERENCE_CONTEXT_EXAMPLE_POLICIES = {
     REFERENCE_CONTEXT_EXAMPLE_POLICY,
     "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets",
+    "up_to_five_examples_per_stratum_with_equal_kind_status_budgets",
 }
 DOMAIN_REPORT_SHA256 = (
     "6999155565770f6112385705ba22b6b819db51508d352b3d16330ec8077c8a72"
