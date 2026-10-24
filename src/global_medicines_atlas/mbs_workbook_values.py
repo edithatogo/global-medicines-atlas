@@ -313,12 +313,11 @@ def iter_workbook_value_batches(
     profile, profile_sha256 = _validated_p7_date_profile(
         receipt, calendar_profile_evidence, calendar_profile_sha256
     )
-    if calendar_profile_evidence is not None and not _profile_counts_match(
-        payload,
-        receipt,
-        profile,  # type: ignore[arg-type]
-    ):
-        raise ValueError("P7 date profile counts differ from source")
+    if calendar_profile_evidence is not None:
+        if profile is None:
+            raise ValueError("P7 date profile evidence is missing")
+        if not _profile_counts_match(payload, receipt, profile):
+            raise ValueError("P7 date profile counts differ from source")
     for batch in iter_workbook_domain_batches(
         payload, receipt, rows_per_batch=rows_per_batch
     ):

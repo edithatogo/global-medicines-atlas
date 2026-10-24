@@ -23,12 +23,11 @@ from test_mbs_workbook_silver import (
 
 from global_medicines_atlas import mbs_workbook_values as values_module
 from global_medicines_atlas.adapters.au_mbs_workbook import parse_mbs_workbook
-<<<<<<< HEAD
-from global_medicines_atlas.mbs_workbook_domain import (
-    iter_workbook_domain_batches,
-)
 from global_medicines_atlas.mbs_p7_calendar_profile import (
     profile_p7_calendar_dates,
+)
+from global_medicines_atlas.mbs_workbook_domain import (
+    iter_workbook_domain_batches,
 )
 from global_medicines_atlas.mbs_workbook_values import (
     iter_workbook_value_batches,
@@ -600,6 +599,7 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
     assert typed["native_cell_parity_verified"] is True
     assert typed["temporary_derivatives_removed"] is True
     assert typed["date_profile"] is None
+    assert report["p7_calendar_profile_evidence"] is None
     assert typed["output_admitted"] is False
     storage = report["storage_qualification"]
     assert storage["parquet_roundtrip_verified"] is True
@@ -623,6 +623,15 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
         ]
         == 1
     )
+
+
+def test_p7_profile_evidence_is_loaded_only_for_exact_source() -> None:
+    assert cli._p7_calendar_profile_evidence("a" * 64) == (None, None)
+    evidence, digest = cli._p7_calendar_profile_evidence(cli.P7_SOURCE_SHA256)
+    assert evidence is not None
+    assert digest == cli.P7_CALENDAR_PROFILE_SHA256
+    assert b'"date_order_selected":false' in evidence
+    assert b'"source_values_emitted":false' in evidence
 
 
 def test_p7_parsed_dates_remain_unresolved_for_temporal_consumers() -> None:
