@@ -44,6 +44,7 @@ REFERENCE_CONTEXT_EXAMPLE_POLICIES = {
     REFERENCE_CONTEXT_EXAMPLE_POLICY,
     "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets",
     "up_to_five_examples_per_stratum_with_equal_kind_status_budgets",
+    "one_example_per_stratum_round_robin_by_kind_status",
 }
 STATUSES = {
     "ambiguous_exact_literal",

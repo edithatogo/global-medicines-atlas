@@ -34,7 +34,6 @@ MAX_INDEX_BYTES = 4 * 1024**3
 MAX_REFERENCE_OCCURRENCES = 3_000_000
 MAX_LITERAL_BYTES = 4096
 MAX_STRATA = 10_000
-MAX_EXAMPLES_PER_STRATUM = 5
 MAX_REPORT_EXAMPLES = 1_000
 MAX_STRUCTURAL_QNAME_BYTES = 256
 MAX_OCCURRENCE_ADDRESS_BYTES = 4096
@@ -49,26 +48,6 @@ MAX_REPORT_STRATA_BYTES = 4 * 1024**2
 MAX_COMPRESSED_RECEIPT_BYTES = 32_000
 SHA256_HEX_LENGTH = 64
 MAX_REPORT_EXAMPLE_BYTES = 64_000
-# Split the example budgets evenly between RDF and XLink references so a
-# source-order group from one kind cannot consume the entire review context.
-REFERENCE_KINDS = ("rdf_resource", "xlink_href")
-REFERENCE_MATCH_STATUSES = (
-    "ambiguous_exact_literal",
-    "empty_literal",
-    "no_exact_literal",
-    "unique_exact_literal",
-    "unsupported_reference_form",
-)
-MAX_REPORT_EXAMPLES_PER_KIND = MAX_REPORT_EXAMPLES // len(REFERENCE_KINDS)
-MAX_REPORT_EXAMPLE_BYTES_PER_KIND = MAX_REPORT_EXAMPLE_BYTES // len(
-    REFERENCE_KINDS
-)
-MAX_REPORT_EXAMPLES_PER_KIND_STATUS = MAX_REPORT_EXAMPLES // (
-    len(REFERENCE_KINDS) * len(REFERENCE_MATCH_STATUSES)
-)
-MAX_REPORT_EXAMPLE_BYTES_PER_KIND_STATUS = MAX_REPORT_EXAMPLE_BYTES // (
-    len(REFERENCE_KINDS) * len(REFERENCE_MATCH_STATUSES)
-)
 ROOT_CHILD_STACK_DEPTH = 2
 CONTEXT_PROGRESS_EVENT_INTERVAL = 500_000
 CONTEXT_PROGRESS_OCCURRENCE_INTERVAL = 250_000
@@ -158,6 +137,58 @@ def _effective_base_uri(
         return candidate if candidate and urlsplit(candidate).scheme else None
     except ValueError:
         return None
+
+
+def _select_context_examples(
+    strata: list[dict[str, Any]],
+) -> tuple[int, int, int]:
+    """Select one bounded example per stratum, round-robin by kind/status."""
+    groups: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    for row in strata:
+        if row["examples"]:
+            groups.setdefault((row["kind"], row["match_status"]), []).append(
+                row
+            )
+    group_keys = sorted(groups)
+    positions = dict.fromkeys(group_keys, 0)
+    selected_bytes = 0
+    selected_count = 0
+    omitted_count = 0
+    while selected_count < MAX_REPORT_EXAMPLES:
+        progressed = False
+        for key in group_keys:
+            rows = groups[key]
+            position = positions[key]
+            if position >= len(rows):
+                continue
+            row = rows[position]
+            example_bytes = len(
+                json.dumps(
+                    row["examples"][0],
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                ).encode()
+            )
+            positions[key] += 1
+            if (
+                selected_count < MAX_REPORT_EXAMPLES
+                and selected_bytes + example_bytes <= MAX_REPORT_EXAMPLE_BYTES
+            ):
+                selected_bytes += example_bytes
+                selected_count += 1
+                progressed = True
+            else:
+                row["examples"] = []
+                row["examples_omitted"] += 1
+                omitted_count += 1
+        if not progressed:
+            break
+    for key, rows in groups.items():
+        for row in rows[positions[key] :]:
+            row["examples"] = []
+            row["examples_omitted"] += 1
+            omitted_count += 1
+    return selected_count, selected_bytes, omitted_count
 
 
 def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-locals] -- bounded source parser
@@ -402,18 +433,7 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
         db.execute("CREATE INDEX definition_literal ON defs(space, literal)")
 
         summaries: dict[tuple[str, ...], dict[str, Any]] = {}
-        report_example_count = 0
-        report_example_bytes = 0
-        report_examples_by_kind = dict.fromkeys(REFERENCE_KINDS, 0)
-        report_example_bytes_by_kind = dict.fromkeys(REFERENCE_KINDS, 0)
-        report_examples_by_kind_status = {
-            kind: dict.fromkeys(REFERENCE_MATCH_STATUSES, 0)
-            for kind in REFERENCE_KINDS
-        }
-        report_example_bytes_by_kind_status = {
-            kind: dict.fromkeys(REFERENCE_MATCH_STATUSES, 0)
-            for kind in REFERENCE_KINDS
-        }
+        staged_example_bytes = 0
         omitted_examples = 0
         grouped_occurrences = 0
         cursor = db.execute("""
@@ -528,13 +548,7 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                 row["no_xml_base_exact_target_occurrences"] += 1
                 if status == "unique_exact_literal":
                     row["unique_exact_literal_no_xml_base_candidates"] += 1
-            if (
-                len(row["examples"]) < MAX_EXAMPLES_PER_STRATUM
-                and report_example_count < MAX_REPORT_EXAMPLES
-                and report_examples_by_kind[kind] < MAX_REPORT_EXAMPLES_PER_KIND
-                and report_examples_by_kind_status[kind][status]
-                < MAX_REPORT_EXAMPLES_PER_KIND_STATUS
-            ):
+            if not row["examples"]:
                 if len(address.encode()) > MAX_OCCURRENCE_ADDRESS_BYTES:
                     raise ReferenceContextError(
                         "occurrence-address-limit",
@@ -596,24 +610,9 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                         example, ensure_ascii=False, separators=(",", ":")
                     ).encode()
                 )
-                if (
-                    report_example_bytes + example_bytes
-                    <= MAX_REPORT_EXAMPLE_BYTES
-                    and report_example_bytes_by_kind[kind] + example_bytes
-                    <= MAX_REPORT_EXAMPLE_BYTES_PER_KIND
-                    and report_example_bytes_by_kind_status[kind][status]
-                    + example_bytes
-                    <= MAX_REPORT_EXAMPLE_BYTES_PER_KIND_STATUS
-                ):
+                if staged_example_bytes + example_bytes <= MAX_REPORT_BYTES:
                     row["examples"].append(example)
-                    report_example_count += 1
-                    report_example_bytes += example_bytes
-                    report_examples_by_kind[kind] += 1
-                    report_example_bytes_by_kind[kind] += example_bytes
-                    report_examples_by_kind_status[kind][status] += 1
-                    report_example_bytes_by_kind_status[kind][status] += (
-                        example_bytes
-                    )
+                    staged_example_bytes += example_bytes
                 else:
                     row["examples_omitted"] += 1
                     omitted_examples += 1
@@ -678,6 +677,10 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
             ] = count
 
         strata = [summaries[key] for key in sorted(summaries)]
+        report_example_count, _, omitted_candidates = _select_context_examples(
+            strata
+        )
+        omitted_examples += omitted_candidates
         strata_representation: list[dict[str, Any]] = [
             {**row, "examples": []} for row in strata
         ]
@@ -735,7 +738,7 @@ def screen_reference_context(
         "schema_id": "global-medicines-atlas.pbs-reference-context-screen",
         "schema_version": 3,
         "example_selection_policy": (
-            "up_to_five_examples_per_stratum_with_equal_kind_status_budgets"
+            "one_example_per_stratum_round_robin_by_kind_status"
         ),
         **result,
     }
