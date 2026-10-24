@@ -1,8 +1,10 @@
 """Synthetic source-local PBS identifier/reference diagnostics."""
 
+import hashlib
 import json
 from collections.abc import Iterator
 from io import BytesIO
+from pathlib import Path
 from typing import Any
 
 import pbs_uri_review_packet_reconciler_cases as _uri_packet_cases
@@ -19,6 +21,34 @@ from test_australian_source_contracts import (
 
 from global_medicines_atlas import pbs_references
 from global_medicines_atlas.pbs_entities import iter_pbs_entity_batches
+from global_medicines_atlas.pbs_uri_context_enrichment import (
+    ContextEnrichmentError,
+    enrich_uri_review_packet,
+)
+
+_QUALIFICATIONS = Path(__file__).parents[1] / "quality/qualifications"
+
+
+def _load_context_artifact(name: str) -> tuple[dict[str, Any], str]:
+    raw = (_QUALIFICATIONS / name).read_bytes()
+    return json.loads(raw), hashlib.sha256(raw).hexdigest()
+
+
+def _enrich_context(
+    packet: dict[str, Any],
+    packet_sha: str,
+    screen: dict[str, Any],
+    screen_sha: str,
+    reconciliation: dict[str, Any],
+) -> dict[str, Any]:
+    return enrich_uri_review_packet(
+        packet,
+        screen,
+        reconciliation,
+        packet_file_sha256=packet_sha,
+        screen_file_sha256=screen_sha,
+    )
+
 
 test_uri_packet_never_overwrites_existing_output = (
     _uri_packet_cases.test_never_overwrites_existing_derived_packet
@@ -486,3 +516,61 @@ def test_foreign_codes_and_unknown_item_wrappers_stay_unmapped() -> None:
 def test_invalid_batch_size(size: int) -> None:
     with pytest.raises(ValueError, match="batch size"):
         table(_xml(), size)
+
+
+def test_exact_retained_context_is_bound_without_values_or_semantic_promotion():
+    packet, packet_sha = _load_context_artifact(
+        "pbs-native-reference-review-packet-20261025-40103169910.json"
+    )
+    screen, screen_sha = _load_context_artifact(
+        "pbs-native-reference-screen-20261025-40103169910.json"
+    )
+    reconciliation, _ = _load_context_artifact(
+        "pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json"
+    )
+
+    report = _enrich_context(
+        packet, packet_sha, screen, screen_sha, reconciliation
+    )["report"]
+
+    assert report["context_examples_bound"] == 46
+    assert report["source_values_emitted"] is False
+    assert report["semantic_relationships_qualified"] is False
+    assert report["precision_claimed"] is False
+    assert report["recall_claimed"] is False
+    assert (
+        sum(
+            case["source_context"]["nearest_subject_element"] is not None
+            for case in report["cases"]
+        )
+        == 8
+    )
+    assert (
+        sum(
+            case["source_context"]["nearest_identifier_element"] is not None
+            for case in report["cases"]
+        )
+        == 38
+    )
+    assert (
+        sum(
+            case["source_context"]["same_member_literal_candidate_target_count"]
+            for case in report["cases"]
+        )
+        == 35
+    )
+
+
+def test_context_enrichment_rejects_wrong_screen_receipt_digest():
+    packet, packet_sha = _load_context_artifact(
+        "pbs-native-reference-review-packet-20261025-40103169910.json"
+    )
+    screen, _screen_sha = _load_context_artifact(
+        "pbs-native-reference-screen-20261025-40103169910.json"
+    )
+    reconciliation, _ = _load_context_artifact(
+        "pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json"
+    )
+
+    with pytest.raises(ContextEnrichmentError, match="receipt digests differ"):
+        _enrich_context(packet, packet_sha, screen, "0" * 64, reconciliation)
