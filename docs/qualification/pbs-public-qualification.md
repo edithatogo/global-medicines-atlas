@@ -420,7 +420,7 @@ canaries are not qualified by this bounded result.
 
 ## PBS native field-state reconciliation, 2026-10-24
 
-The [current field-state reconciliation receipt](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261024-r5.json)
+The [current field-state reconciliation receipt](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261024-r6.json)
 partitions all 18,208,758 native field occurrences from the exact 1 April 2026
 PBS v3 member across every one of the 5,163 inventoried schema paths. It binds
 the complete native Silver package, source-local
@@ -445,7 +445,7 @@ reference fields and `xlink:href` has 992,456. Their candidate and no-match
 counts remain lexical diagnostics, and neither kind is promoted to semantic
 relationships.
 
-A separate exact-main context screen is still pending hosted receipt `40063785531`. No context-screen results are included in this report; semantic relationships remain unqualified until that receipt is available and reviewed.
+The current successor r6 binds the exact-main context screen and meaning review described below. Context screening supplies bounded, value-free diagnostics; no source cases have been reviewed and semantic relationships remain unqualified.
 
 This is one historical PBS v3 schedule, so no cross-era or cross-jurisdiction
 pooling is qualified. No explicit PBS status field was observed; snapshot dates
@@ -456,6 +456,31 @@ clinical eligibility. These findings change no rights, admission, canary, or
 publication status and use no new sources or source values.
 
 ## PBS source-local reference review, 2026-10-24
+
+The original lexical screen and interpretation below are retained as historical
+evidence. The current source-context successor is bound to protected exact-main
+run `40076190245`, merge commit
+`b3139f9c655f48ccbb7a1714712219ac2281d838`, and screen receipt
+[`pbs-native-reference-screen-20261024-40076190245.json`](../../quality/qualifications/pbs-native-reference-screen-20261024-40076190245.json)
+(SHA-256 `570cc803a6657e421dc614855fe75013440f716dd3ff1d0096232c08ae363711`).
+Its context schema v2 contains 184 structural strata, 63 value-free examples,
+and 2,160,003 omitted occurrences. The exact-run meaning review
+([receipt](../../quality/qualifications/pbs-native-reference-meaning-review-20261024-40076190245.json),
+SHA-256 `9c15cbfd8fb12b7078caf3c61411eb77df24a139b4cc27851c1abad2ca458084`)
+and review packet
+([receipt](../../quality/qualifications/pbs-native-reference-review-packet-20261024-40076190245.json),
+SHA-256 `2c27b44e32e0d0f4d9117c53f1f8417fbf572d7b06ec98194fa5be32654dd9df`)
+bind the same screen run, commit, and source-receipt digest. The refreshed
+[field-state reconciliation r6](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261024-r6.json)
+(SHA-256 `f1bf15ae0ed971de6bec1fed5d6f4a7265531e7fdd21708f100d6fb713136b6e`)
+records this evidence without changing the existing field partition.
+
+This context is diagnostic and does not expose source values. It does not
+resolve effective URIs or establish source-case scope, relation roles, target
+types, or predicate meaning. No source cases have been reviewed; exact-literal
+matches remain lexical diagnostics and semantic relationships remain
+unqualified. The 63 examples are a bounded review sample, not reviewed labels
+or matcher calibration.
 
 The [value-free interpretation receipt](../../quality/qualifications/pbs-native-reference-meaning-review-20261024-40040624594.json)
 reviews the exact-main lexical screen for the 1 April 2026 V3 member at
