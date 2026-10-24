@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-73.json"
+    "australian-m112-rights-release-preflight-20261024-75.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-72.json"
+    "australian-m112-rights-release-preflight-20261024-74.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -169,7 +169,7 @@ def test_preflight_binds_pbs_context_screen_attempt_and_readback() -> None:
     context_screen = report[
         "pbs_native_reference_context_screen_latest_attempt"
     ]
-    assert context_screen["run_id"] == 40076190245
+    assert context_screen["run_id"] == 40091358786
     assert context_screen["status"] == "success"
     assert context_screen["source_values_emitted"] is False
     assert context_screen["semantic_relationships_qualified"] is False
@@ -183,11 +183,21 @@ def test_preflight_binds_pbs_context_screen_attempt_and_readback() -> None:
     context_readback = report[
         "pbs_native_reference_context_screen_actual_readback"
     ]
-    assert context_readback["run_id"] == 40076190245
-    assert context_readback["context_schema_version"] == 2
+    assert context_readback["run_id"] == 40091358786
+    assert context_readback["context_schema_version"] == 3
     assert context_readback["structural_strata"] == 184
-    assert context_readback["value_free_examples"] == 63
-    assert context_readback["omitted_occurrences"] == 2_160_003
+    assert context_readback["value_free_examples"] == 61
+    assert context_readback["omitted_occurrences"] == 2_160_005
+    assert context_readback["examples_by_status"] == {
+        "no_exact_literal": 52,
+        "unique_exact_literal": 9,
+    }
+    assert context_readback["example_reference_kinds"] == {"rdf_resource": 61}
+    assert context_readback["examples_with_nearest_subject"] == 0
+    assert (
+        context_readback["screen_is_sufficient_for_semantic_calibration"]
+        is False
+    )
     assert context_readback["source_cases_reviewed"] == 0
     assert context_readback["semantic_relationships_qualified"] is False
     assert context_readback["consumer_canaries"] == 0
@@ -209,7 +219,8 @@ def test_preflight_binds_uri_context_v3_candidate_without_source_claims() -> (
     assert candidate["schema_version"] == 3
     assert candidate["implementation_commit"] == "48c2a7c5"
     assert candidate["validation_commit"] == "ecdd34e8"
-    assert candidate["exact_main_run_status"] == "pending"
+    assert candidate["exact_main_run_status"] == "passed"
+    assert candidate["exact_main_run_id"] == 40091358786
     assert candidate["source_cases_reviewed"] == 0
     assert candidate["semantic_relationships_qualified"] is False
     assert candidate["source_values_emitted"] is False
@@ -230,7 +241,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-72.json"
+        "australian-m112-rights-release-preflight-20261024-74.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -239,7 +250,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-71.json"
+        "australian-m112-rights-release-preflight-20261024-73.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -252,12 +263,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-70.json"
+        "australian-m112-rights-release-preflight-20261024-72.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-69.json"
+        "australian-m112-rights-release-preflight-20261024-71.json"
     )
 
 
