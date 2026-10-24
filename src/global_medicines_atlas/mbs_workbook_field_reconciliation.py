@@ -214,7 +214,13 @@ def _p7_field_rows(
             "field": row.get("mapping_field"),
             "mapping_target": mapping_target,
             "header_state": header_state,
-            "source_value_state": "native_unresolved",
+            # This is a structural lineage row for one sheet/column. The
+            # separate P7 date profile aggregates across sheets and cannot be
+            # allocated back to these rows without per-sheet date evidence.
+            "source_value_state": "not_classified_per_sheet_column",
+            "source_value_state_detail": (
+                "aggregate_date_field_states report date counts across sheets"
+            ),
             "cell_count": cell_count,
             "conversion_statuses": statuses,
         })

@@ -290,7 +290,7 @@ def test_reconciles_header_and_body_states_without_adding_denominators() -> (
     assert "header_column_roles" not in cohort["cell_values"]
 
 
-def test_report_lists_each_field_role_and_source_value_state() -> None:
+def test_report_separates_field_mapping_from_value_state() -> None:
     report = reconcile_workbook_field_states(*_inputs())
     cohort = report["historical_workbook_cohort"]
     assert len(cohort["field_rows"]) == 8
@@ -312,7 +312,10 @@ def test_report_lists_each_field_role_and_source_value_state() -> None:
             "field": "ItemNum",
             "mapping_target": "services",
             "header_state": "interpreted",
-            "source_value_state": "native_unresolved",
+            "source_value_state": "not_classified_per_sheet_column",
+            "source_value_state_detail": (
+                "aggregate_date_field_states report date counts across sheets"
+            ),
             "cell_count": 13_742,
             "conversion_statuses": [{"state": "preserved", "count": 13_742}],
         }
