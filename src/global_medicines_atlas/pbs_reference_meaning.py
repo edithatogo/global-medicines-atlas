@@ -11,6 +11,7 @@ from typing import Any, cast
 from .pbs_reference_context import (
     MAX_COMPRESSED_RECEIPT_BYTES,
     MAX_REPORT_STRATA_BYTES,
+    MAX_STRUCTURAL_QNAME_BYTES,
     decode_reference_context_receipt,
 )
 
@@ -268,6 +269,42 @@ def _validated_per_kind(
     return normalized
 
 
+def _validate_enriched_context_row(row: dict[str, Any]) -> None:
+    expected_role = (
+        "rdf_resource_attribute"
+        if row.get("kind") == "rdf_resource"
+        else "xlink_href_attribute"
+    )
+    target_types = row.get("target_element_type_occurrence_counts")
+    if (
+        row.get("uri_resolution_profile")
+        not in {
+            "empty_reference",
+            "same_member_fragment_candidate",
+            "absolute_uri_candidate",
+            "document_uri_unavailable",
+            "resolved_against_absolute_xml_base_candidate",
+            "relative_base_unresolved",
+            "invalid_uri_reference",
+        }
+        or row.get("document_scope") != "single_xml_member"
+        or row.get("predicate_role") != expected_role
+        or not isinstance(target_types, dict)
+        or any(
+            not isinstance(qname, str)
+            or not qname
+            or len(qname.encode()) > MAX_STRUCTURAL_QNAME_BYTES
+            or isinstance(count, bool)
+            or not isinstance(count, int)
+            or count < 1
+            for qname, count in cast(
+                "dict[object, object]", target_types
+            ).items()
+        )
+    ):
+        raise ValueError("PBS reference context enriched profile is invalid")
+
+
 def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-statements] -- validates bounded untrusted receipt data
     value: object, references: int
 ) -> dict[str, Any]:
@@ -393,11 +430,6 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
         or mapping["document_scope"] != "single_xml_member"
     ):
         raise ValueError("PBS reference context contract differs")
-    if mapping["schema_version"] == REFERENCE_CONTEXT_ENRICHED_VERSION and (
-        mapping["uri_resolution_screen_performed"] is not True
-        or mapping["document_scope"] != "single_xml_member"
-    ):
-        raise ValueError("PBS reference context contract differs")
     if any(
         mapping[key] is not False
         for key in (
@@ -415,6 +447,8 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
         if not isinstance(row_value, dict):
             raise TypeError("PBS reference context stratum must be an object")
         row = cast("dict[str, Any]", row_value)
+        if mapping["schema_version"] == REFERENCE_CONTEXT_ENRICHED_VERSION:
+            _validate_enriched_context_row(row)
         for key in (
             "occurrences",
             "unique_target_occurrences",

@@ -477,6 +477,53 @@ def test_reference_and_target_base_contexts_are_reported_without_resolution():
     assert "example.invalid" not in serialized
 
 
+@pytest.mark.parametrize(
+    ("kind", "reference", "base", "expected"),
+    [
+        ("rdf_resource", "", None, "empty_reference"),
+        ("xlink_href", "#item", None, "same_member_fragment_candidate"),
+        (
+            "rdf_resource",
+            "https://example.invalid/item",
+            None,
+            "absolute_uri_candidate",
+        ),
+        (
+            "rdf_resource",
+            "relative-item",
+            None,
+            "document_uri_unavailable",
+        ),
+        (
+            "rdf_resource",
+            "relative-item",
+            "https://example.invalid/base/",
+            "resolved_against_absolute_xml_base_candidate",
+        ),
+        (
+            "rdf_resource",
+            "relative-item",
+            "relative/base/",
+            "relative_base_unresolved",
+        ),
+        (
+            "rdf_resource",
+            "http://[invalid",
+            None,
+            "invalid_uri_reference",
+        ),
+    ],
+)
+def test_uri_resolution_profiles_are_bounded_and_value_free(
+    kind, reference, base, expected
+):
+    assert context_module._resolution_profile(kind, reference, base) == expected
+
+
+def test_invalid_xml_base_is_abstained_without_emitting_it():
+    assert context_module._effective_base_uri("http://[invalid", None) is None
+
+
 def test_xml_id_is_not_misreported_as_an_rdf_subject():
     xml = b"""<root xmlns="http://schema.pbs.gov.au/"
       xmlns:xlink="http://www.w3.org/1999/xlink">

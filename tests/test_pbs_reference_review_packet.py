@@ -171,6 +171,36 @@ def _meaning_report() -> dict[str, Any]:
     }
 
 
+def _enriched_meaning_report() -> dict[str, Any]:
+    report = _meaning_report()
+    context = report["source_context_screen"]
+    context["schema_version"] = 3
+    context["example_selection_policy"] = (
+        "up_to_five_value_free_examples_per_structural_stratum"
+    )
+    context["uri_resolution_screen_performed"] = True
+    context["document_scope"] = "single_xml_member"
+    for row in context["strata"]:
+        row["uri_resolution_profile"] = "document_uri_unavailable"
+        row["document_scope"] = "single_xml_member"
+        row["predicate_role"] = (
+            "rdf_resource_attribute"
+            if row["kind"] == "rdf_resource"
+            else "xlink_href_attribute"
+        )
+        row["target_element_type_occurrence_counts"] = (
+            {f"{_PBS}target": 1}
+            if row["match_status"]
+            in {"unique_exact_literal", "ambiguous_exact_literal"}
+            else {}
+        )
+        for example in row["examples"]:
+            example["target_element_types"] = (
+                [f"{_PBS}target"] if example["target_multiplicity"] else []
+            )
+    return report
+
+
 def test_review_packet_separates_candidate_examples_and_controls_without_edges():
     packet = prepare_reference_review_packet(_meaning_report())
 
@@ -220,36 +250,7 @@ def test_review_packet_accepts_stratified_v2_context_from_screen():
 
 
 def test_review_packet_accepts_enriched_v3_context_without_promoting_links():
-    report = _meaning_report()
-    context = report["source_context_screen"]
-    context["schema_version"] = 3
-    context["example_selection_policy"] = (
-        "up_to_five_value_free_examples_per_structural_stratum"
-    )
-    context["uri_resolution_screen_performed"] = True
-    context["document_scope"] = "single_xml_member"
-    for row in context["strata"]:
-        row["uri_resolution_profile"] = "document_uri_unavailable"
-        row["document_scope"] = "single_xml_member"
-        row["predicate_role"] = (
-            "rdf_resource_attribute"
-            if row["kind"] == "rdf_resource"
-            else "xlink_href_attribute"
-        )
-        row["target_element_type_occurrence_counts"] = (
-            {f"{_PBS}target": 1}
-            if row["match_status"]
-            in {
-                "unique_exact_literal",
-                "ambiguous_exact_literal",
-            }
-            else {}
-        )
-        for example in row["examples"]:
-            example["target_element_types"] = (
-                [f"{_PBS}target"] if example["target_multiplicity"] else []
-            )
-
+    report = _enriched_meaning_report()
     packet = prepare_reference_review_packet(report)
 
     assert packet["status"] == (
@@ -260,6 +261,46 @@ def test_review_packet_accepts_enriched_v3_context_without_promoting_links():
     assert all(
         not case["semantic_relationship_qualified"] for case in packet["cases"]
     )
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda context: context.__setitem__("document_scope", "collection"),
+            "reference context resolution profile differs",
+        ),
+        (
+            lambda context: context["strata"][0].__setitem__(
+                "uri_resolution_profile", "unrecognized"
+            ),
+            "reference context resolution profile differs",
+        ),
+        (
+            lambda context: context["strata"][0].__setitem__(
+                "predicate_role", "unrecognized"
+            ),
+            "reference context structural role differs",
+        ),
+        (
+            lambda context: context["strata"][0].__setitem__(
+                "target_element_type_occurrence_counts", {"": 1}
+            ),
+            "reference target type profile differs",
+        ),
+        (
+            lambda context: context["strata"][0]["examples"][0].__setitem__(
+                "target_element_types", [""]
+            ),
+            "reference target type sample differs",
+        ),
+    ],
+)
+def test_review_packet_rejects_malformed_enriched_v3_context(mutate, message):
+    report = _enriched_meaning_report()
+    mutate(report["source_context_screen"])
+    with pytest.raises(ValueError, match=message):
+        prepare_reference_review_packet(report)
 
 
 def test_review_packet_round_robin_keeps_positive_and_negative_controls_bounded():
