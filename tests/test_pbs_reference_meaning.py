@@ -155,6 +155,33 @@ def test_per_kind_count_reconciliation_stays_diagnostic():
         )
 
 
+def test_per_kind_counts_reject_boolean_and_non_string_keys():
+    qualification = {
+        "reference_kind_status_counts": {
+            "rdf_resource": {"unique_exact_literal": True},
+            "xlink_href": {"unique_exact_literal": 1},
+        },
+        "reference_kind_counts": {"rdf_resource": 1, "xlink_href": 1},
+    }
+    with pytest.raises(ValueError, match="status counts are invalid"):
+        _validated_per_kind(
+            qualification,
+            {"unique_exact_literal": 2},
+            2,
+        )
+
+    qualification["reference_kind_status_counts"] = {
+        "rdf_resource": {1: 1},
+        "xlink_href": {"unique_exact_literal": 1},
+    }
+    with pytest.raises(ValueError, match="status counts are invalid"):
+        _validated_per_kind(
+            qualification,
+            {"unique_exact_literal": 2},
+            2,
+        )
+
+
 def test_synthetic_screen_receipt_cannot_generate_exact_source_report(tmp_path):
     # This standalone fixture deliberately uses synthetic source and run IDs.
     synthetic = {
