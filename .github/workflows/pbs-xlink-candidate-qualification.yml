@@ -1,0 +1,53 @@
+name: Qualify pinned PBS source-declared XLink candidates
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact merged main commit containing the reviewed qualifier
+        required: true
+        type: string
+permissions: {}
+concurrency:
+  group: pbs-xlink-candidate-qualification
+  cancel-in-progress: false
+jobs:
+  qualify-xlink-candidates:
+    if: github.ref == 'refs/heads/main'
+    name: Verify pinned PBS source-local XLink candidates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Resolve candidates from the exact verified source member
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/screen_historical_pbs_xlink_references.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --output pbs-native-xlink-candidate-screen-receipt.json \
+            --xlink-output pbs-native-reference-xlink-candidates.jsonl
+      - name: Retain bounded XLink candidate receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-native-xlink-candidate-screen-receipt-${{ github.run_id }}
+          path: pbs-native-xlink-candidate-screen-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain source-declared XLink candidate artifact
+        if: success()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-native-reference-xlink-candidates-${{ github.run_id }}
+          path: pbs-native-reference-xlink-candidates.jsonl
+          if-no-files-found: error
+          retention-days: 30
