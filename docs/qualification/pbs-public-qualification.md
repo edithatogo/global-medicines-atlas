@@ -466,6 +466,20 @@ unresolved; no field identity or date meaning is inferred. See the value-free
 [date denominator reconciliation receipt](../../quality/qualifications/pbs-date-denominator-reconciliation-20261025.json)
 for exact input digests and limits.
 
+An exact-source occurrence crosswalk is now available in the
+`pbs-date-occurrence-reconciliation` Actions workflow. It compares the direct
+restriction-date path and item-level date-role set by exact `source_field_id`,
+then retains only role names, counts, and digests of the identity sets. The
+hosted crosswalk has not yet produced a receipt for this revision, so no
+overlap or unmatched count is claimed here. The denominator difference remains
+unresolved until that receipt is reviewed. Its exact-main verifier is pinned to
+the retained denominators (3,028 restriction-path fields and 2,798 item-date
+fields) and requires the expected disjoint identity sets before issuing a
+passing receipt; any mismatch fails closed. The generated domain-field profile
+description now names only schedule and item roles, which matches its existing
+2,799 count; the historical 2026-10-23 receipt remains immutable and documents
+the earlier wording conflict.
+
 The current successor r6 binds the exact-main context screen and meaning review described below. Context screening supplies bounded, value-free diagnostics; no source cases have been reviewed and semantic relationships remain unqualified.
 
 This is one historical PBS v3 schedule, so no cross-era or cross-jurisdiction
