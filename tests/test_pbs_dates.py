@@ -29,6 +29,9 @@ test_date_crosswalk_empty_is_unresolved = (
 test_date_crosswalk_digest_contract = (
     _date_occurrence_cases.test_exact_identity_set_digests_are_stable_and_roles_are_closed
 )
+test_hosted_date_crosswalk_rejects_nonmatching_denominators = (
+    _date_occurrence_cases.test_hosted_date_crosswalk_rejects_nonmatching_denominators
+)
 
 
 def table(

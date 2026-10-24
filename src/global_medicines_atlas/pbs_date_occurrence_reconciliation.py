@@ -3,13 +3,27 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    import httpx
     import pyarrow as pa
 
 from .pbs_dates import iter_pbs_date_batches
+from .pbs_historical_projections import iter_pbs_historical_entity_batches
+from .pbs_historical_qualification import (
+    _date_batches,  # pyright: ignore[reportPrivateUsage]
+    _denominator,  # pyright: ignore[reportPrivateUsage]
+)
+from .pbs_hosted_qualification import (
+    DATASET,
+    MAX_REPORT_BYTES,
+    REVISION,
+    _RetryBudget,  # pyright: ignore[reportPrivateUsage]
+    _verified_inputs,  # pyright: ignore[reportPrivateUsage]
+)
 
 if TYPE_CHECKING:
     from .receipts import SourceReceipt
@@ -24,6 +38,9 @@ _RESTRICTION_DATE_PATH = (
 _MAX_IDENTITIES = 100_000
 _EXPECTED_RESTRICTION_FIELDS = 3028
 _EXPECTED_ITEM_DATE_FIELDS = 2798
+_EXPECTED_UNMATCHED_DATE_FIELDS = (
+    _EXPECTED_RESTRICTION_FIELDS + _EXPECTED_ITEM_DATE_FIELDS
+)
 
 
 def _identity_digest(values: set[str]) -> str:
@@ -114,3 +131,56 @@ def build_pbs_date_occurrence_crosswalk(
     """Build a crosswalk from one receipt-bound PBS source member."""
     batches = iter_pbs_date_batches(payload, receipt)
     return reconcile_pbs_date_occurrences(batches)
+
+
+def run_hosted_date_occurrence_reconciliation(
+    exact_commit: str,
+    *,
+    transport: httpx.BaseTransport | None = None,
+) -> dict[str, Any]:
+    """Reconcile exact date-field identities from the pinned PBS archive."""
+    retry = _RetryBudget()
+    inputs = _verified_inputs(
+        exact_commit, transport=transport, retry=retry
+    )
+    denominator = _denominator(inputs.xml)
+    entities = iter_pbs_historical_entity_batches(
+        inputs.archive, inputs.xml, inputs.parent, inputs.binding
+    )
+    crosswalk = reconcile_pbs_date_occurrences(
+        _date_batches(entities, None, 1024)
+    )
+    occurrence_sets = crosswalk["occurrence_sets"]
+    if (
+        occurrence_sets["restriction_effective_date_path"]["fields"]
+        != _EXPECTED_RESTRICTION_FIELDS
+        or occurrence_sets["item_effective_date_profile"]["fields"]
+        != _EXPECTED_ITEM_DATE_FIELDS
+        or crosswalk["join"]["overlap_fields"] != 0
+        or crosswalk["join"]["unmatched_total"]
+        != _EXPECTED_UNMATCHED_DATE_FIELDS
+        or crosswalk["status"] != "reconciled_by_exact_occurrence_identity"
+    ):
+        raise ValueError("PBS date occurrence denominators differ")
+    report = {
+        "schema_version": 1,
+        "status": "passed",
+        **inputs.context,
+        "dataset": DATASET,
+        "revision": REVISION,
+        "source": {
+            "member_path": inputs.binding.member_path,
+            "member_sha256": inputs.binding.member_payload.sha256,
+            "archive_sha256": inputs.binding.archive_payload.sha256,
+            "native_digest": denominator["native_digest"],
+            "native_fields": denominator["native_fields"],
+            "member_binding_sha256": inputs.binding.digest(),
+            "parent_receipt_sha256": inputs.binding.parent_receipt_sha256,
+        },
+        "crosswalk": crosswalk,
+        "publication_performed": False,
+        "source_values_emitted": False,
+    }
+    if len(json.dumps(report, sort_keys=True).encode()) > MAX_REPORT_BYTES:
+        raise ValueError("PBS date occurrence report exceeds byte limit")
+    return report

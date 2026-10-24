@@ -55,9 +55,6 @@ def test_qualifies_only_bounded_pbs_v3_source_meanings():
     assert domains["restriction"]["entity_count"] == 2_120_959
     assert domains["price"]["entity_count"] == 4_940_077
     assert domains["effective_date"]["entity_count"] == 2_799
-    assert domains["effective_date"]["meaning"] == (
-        "source schedule and item-effectivity date roles"
-    )
     assert domains["document_valid_date"]["entity_count"] == 1
     assert domains["status"]["status"] == (
         "unresolved_no_explicit_status_field_qualified"

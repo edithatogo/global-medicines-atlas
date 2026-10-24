@@ -31,10 +31,8 @@ from .acquisition import (
     DestinationPolicyError,
 )
 from .adapters.au_pbs import read_pbs_v3_member
-from .pbs_date_occurrence_reconciliation import reconcile_pbs_date_occurrences
 from .pbs_historical_projections import iter_pbs_historical_entity_batches
 from .pbs_historical_qualification import (
-    _date_batches,  # pyright: ignore[reportPrivateUsage]
     _denominator,  # pyright: ignore[reportPrivateUsage]
     _projection,  # pyright: ignore[reportPrivateUsage]
     qualify_pbs_historical_projections,
@@ -134,11 +132,6 @@ FAILURE_TYPES = frozenset({
     "unexpected",
     "unavailable",
 })
-EXPECTED_RESTRICTION_DATE_FIELDS = 3028
-EXPECTED_ITEM_EFFECTIVE_DATE_FIELDS = 2798
-EXPECTED_UNMATCHED_DATE_FIELDS = (
-    EXPECTED_RESTRICTION_DATE_FIELDS + EXPECTED_ITEM_EFFECTIVE_DATE_FIELDS
-)
 
 
 def _failure_type(error: BaseException) -> str:
@@ -638,57 +631,6 @@ def run_hosted_qualification(
         error.retry_event = retry.event
         error.retry_detail = retry.retry_detail
         raise
-
-
-def run_hosted_date_occurrence_reconciliation(
-    exact_commit: str,
-    *,
-    transport: httpx.BaseTransport | None = None,
-) -> dict[str, Any]:
-    """Join exact native PBS date-field identities using the pinned source."""
-    retry = _RetryBudget()
-    inputs = _verified_inputs(exact_commit, transport=transport, retry=retry)
-    denominator = _denominator(inputs.xml)
-    entities = iter_pbs_historical_entity_batches(
-        inputs.archive, inputs.xml, inputs.parent, inputs.binding
-    )
-    crosswalk = reconcile_pbs_date_occurrences(
-        _date_batches(entities, None, 1024)
-    )
-    occurrence_sets = crosswalk["occurrence_sets"]
-    if (
-        occurrence_sets["restriction_effective_date_path"]["fields"]
-        != EXPECTED_RESTRICTION_DATE_FIELDS
-        or occurrence_sets["item_effective_date_profile"]["fields"]
-        != EXPECTED_ITEM_EFFECTIVE_DATE_FIELDS
-        or crosswalk["join"]["overlap_fields"] != 0
-        or crosswalk["join"]["unmatched_total"]
-        != EXPECTED_UNMATCHED_DATE_FIELDS
-        or crosswalk["status"] != "reconciled_by_exact_occurrence_identity"
-    ):
-        raise ValueError("PBS date occurrence denominators differ")
-    report = {
-        "schema_version": 1,
-        "status": "passed",
-        **inputs.context,
-        "dataset": DATASET,
-        "revision": REVISION,
-        "source": {
-            "member_path": inputs.binding.member_path,
-            "member_sha256": inputs.binding.member_payload.sha256,
-            "archive_sha256": inputs.binding.archive_payload.sha256,
-            "native_digest": denominator["native_digest"],
-            "native_fields": denominator["native_fields"],
-            "member_binding_sha256": inputs.binding.digest(),
-            "parent_receipt_sha256": inputs.binding.parent_receipt_sha256,
-        },
-        "crosswalk": crosswalk,
-        "publication_performed": False,
-        "source_values_emitted": False,
-    }
-    if len(json.dumps(report, sort_keys=True).encode()) > MAX_REPORT_BYTES:
-        raise _RejectionError("byte-limit")
-    return report
 
 
 def run_hosted_preparation(

@@ -8,10 +8,10 @@ from typing import Any
 
 from qualify_historical_pbs_public import write_qualification_receipt
 
-from global_medicines_atlas.pbs_hosted_qualification import (
-    failure_report,
+from global_medicines_atlas.pbs_date_occurrence_reconciliation import (
     run_hosted_date_occurrence_reconciliation,
 )
+from global_medicines_atlas.pbs_hosted_qualification import failure_report
 
 
 def main(argv: list[str] | None = None) -> int:

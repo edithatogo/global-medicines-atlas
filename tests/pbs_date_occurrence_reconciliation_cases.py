@@ -1,5 +1,8 @@
 """Exact PBS date identity crosswalk remains value-free."""
 
+from types import SimpleNamespace
+
+import pytest
 from test_au_pbs_v3 import (
     _production_xml,  # ruff: ignore[import-private-name] -- synthetic fixture
 )
@@ -7,11 +10,49 @@ from test_australian_source_contracts import (
     _receipt,  # ruff: ignore[import-private-name] -- synthetic fixture
 )
 
+import global_medicines_atlas.pbs_date_occurrence_reconciliation as hosted_dates
 from global_medicines_atlas.pbs_date_occurrence_reconciliation import (
     build_pbs_date_occurrence_crosswalk,
     reconcile_pbs_date_occurrences,
 )
 from global_medicines_atlas.pbs_dates import iter_pbs_date_batches
+
+
+def test_hosted_date_crosswalk_rejects_nonmatching_denominators(monkeypatch):
+    inputs = SimpleNamespace(
+        xml=b"synthetic",
+        archive=b"synthetic",
+        parent=object(),
+        binding=object(),
+        context={},
+    )
+    empty_crosswalk = {
+        "status": "unresolved_incomplete_or_nonmatching_denominators",
+        "occurrence_sets": {
+            "restriction_effective_date_path": {"fields": 0},
+            "item_effective_date_profile": {"fields": 0},
+        },
+        "join": {"overlap_fields": 0, "unmatched_total": 0},
+    }
+    monkeypatch.setattr(
+        hosted_dates, "_verified_inputs", lambda _commit, **_kwargs: inputs
+    )
+    monkeypatch.setattr(hosted_dates, "_denominator", lambda _xml: {})
+    monkeypatch.setattr(
+        hosted_dates,
+        "iter_pbs_historical_entity_batches",
+        lambda _archive, _xml, _parent, _binding: (),
+    )
+    monkeypatch.setattr(hosted_dates, "_date_batches", lambda _entities, _profile, _size: ())
+    monkeypatch.setattr(
+        hosted_dates,
+        "reconcile_pbs_date_occurrences",
+        lambda _batches: empty_crosswalk,
+    )
+    with pytest.raises(ValueError, match="date occurrence denominators"):
+        hosted_dates.run_hosted_date_occurrence_reconciliation(
+            "0" * 40, transport=None
+        )
 
 
 def test_distinct_date_paths_reconcile_by_exact_field_identity() -> None:

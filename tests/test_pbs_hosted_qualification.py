@@ -1549,15 +1549,6 @@ def test_hosted_values_projection_accepts_only_fixed_aggregate_progress(
     assert "001.2300" not in json.dumps(checkpoints)
 
 
-def test_hosted_date_occurrence_crosswalk_rejects_nonmatching_denominators(
-    synthetic,
-):
-    with pytest.raises(ValueError, match="date occurrence denominators"):
-        hosted.run_hosted_date_occurrence_reconciliation(
-            SHA, transport=synthetic[2]
-        )
-
-
 def test_retained_values_failure_is_not_a_qualification_result():
     path = (
         Path(__file__).resolve().parents[1]
