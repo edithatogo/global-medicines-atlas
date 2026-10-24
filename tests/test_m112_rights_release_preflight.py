@@ -189,11 +189,15 @@ def test_preflight_binds_pbs_context_screen_attempt_and_readback() -> None:
     assert context_readback["value_free_examples"] == 61
     assert context_readback["omitted_occurrences"] == 2_160_005
     assert context_readback["examples_by_status"] == {
-        "no_exact_literal": 52, "unique_exact_literal": 9
+        "no_exact_literal": 52,
+        "unique_exact_literal": 9,
     }
     assert context_readback["example_reference_kinds"] == {"rdf_resource": 61}
     assert context_readback["examples_with_nearest_subject"] == 0
-    assert context_readback["screen_is_sufficient_for_semantic_calibration"] is False
+    assert (
+        context_readback["screen_is_sufficient_for_semantic_calibration"]
+        is False
+    )
     assert context_readback["source_cases_reviewed"] == 0
     assert context_readback["semantic_relationships_qualified"] is False
     assert context_readback["consumer_canaries"] == 0
