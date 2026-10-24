@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-79.json"
+    "australian-m112-rights-release-preflight-20261024-80.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-78.json"
+    "australian-m112-rights-release-preflight-20261024-79.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -301,7 +301,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-78.json"
+        "australian-m112-rights-release-preflight-20261024-79.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -310,7 +310,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-77.json"
+        "australian-m112-rights-release-preflight-20261024-78.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -323,12 +323,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-76.json"
+        "australian-m112-rights-release-preflight-20261024-77.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-75.json"
+        "australian-m112-rights-release-preflight-20261024-76.json"
     )
 
 
@@ -371,6 +371,50 @@ def test_pbs_native_silver_field_state_is_candidate_only() -> None:
     assert (
         hashlib.sha256((ROOT / pbs_silver["receipt"]).read_bytes()).hexdigest()
         == pbs_silver["receipt_sha256"]
+    )
+
+
+def test_preflight_binds_exact_main_pbs_uri_outcomes_without_semantics() -> (
+    None
+):
+    report = _json(PREFLIGHT)
+    uri = report["pbs_native_uri_resolution_current_readback"]
+    assert uri["run_id"] == "40110616327"
+    assert uri["workflow_commit"] == "e5145eca0698bbc275c3497431ba0f179261e458"
+    assert uri["source_revision"] == "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+    assert uri["xml_elements"] == 7_730_684
+    assert uri["reference_counts_by_kind"] == {
+        "rdf_resource": 1_167_610,
+        "xlink_href": 992_456,
+    }
+    assert uri["review_case_count"] == 46
+    assert uri["review_case_outcome_counts"] == {
+        "absolute_uri_no_member_definition": 11,
+        "absolute_uri_unique_candidate": 18,
+        "same_member_unique_id": 17,
+    }
+    assert uri["source_cases_reviewed"] == 0
+    assert uri["semantic_relationships_qualified"] is False
+    assert uri["source_values_emitted"] is False
+    assert uri["external_targets_fetched"] == 0
+    assert (
+        hashlib.sha256((ROOT / uri["receipt"]).read_bytes()).hexdigest()
+        == uri["receipt_file_sha256"]
+    )
+
+
+def test_preflight_records_unresolved_pbs_date_denominator_variance() -> None:
+    report = _json(PREFLIGHT)
+    dates = report["pbs_date_denominator_reconciliation"]
+    assert dates["restriction_date_path_fields"] == 3_028
+    assert dates["date_role_slots"] == 2_800
+    assert dates["item_effective_date_roles"] == 2_798
+    assert dates["observed_difference"] == 230
+    assert dates["occurrence_crosswalk_available"] is False
+    assert dates["date_values_interpreted"] is False
+    assert (
+        hashlib.sha256((ROOT / dates["path"]).read_bytes()).hexdigest()
+        == dates["receipt_sha256"]
     )
 
 
