@@ -607,3 +607,35 @@ and documentation; native values and reference relationships are not
 promoted. This completes field accounting, not full PBS domain semantics.
 No new source was added, and rights, admission, publication and canary states
 did not change.
+
+### URI-screen v2 structural reconciliation, 2026-10-25
+
+After PR #1322 merged, exact-main run
+[`40120162365`](https://github.com/edithatogo/global-medicines-atlas/actions/runs/40120162365)
+on commit `7084ee19081b6c5ce1ce5e2b6941125a446e8ee0` produced the required
+URI-screen v2 receipt. The [receipt](../../quality/qualifications/pbs-native-reference-uri-screen-20261025-40120162365.json)
+has file SHA-256
+`4a296004773c57d7c0a6d73aacc6fd67b052fc3e1900a96badb0948193a7b411` and
+canonical report SHA-256
+`475655fd08abf4681908452ec9e76c6654904d697d10d702c6283c2490afde59`. It
+binds the same April 2026 member and reports 1,167,610 `rdf:resource`
+references and 992,456 `xlink:href` references. URI outcomes are 1,094,033
+unique same-member `rdf:about` candidates, 73,577 RDF URIs with no member
+definition, and 992,456 same-member unique `xml:id` candidates for XLink
+fragments. No external target was fetched.
+
+The value-free [reconciled case packet](../../quality/qualifications/pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json)
+has file SHA-256
+`3698d217957c4d3263fce010d8ed6441c2050866052e1308fa352c6cd22772bb` and
+canonical report SHA-256
+`31e22bbda75bb7da755af0d09ed29c93477a9da08a5c50ed499dc6bc23dcd4fa`. It
+binds all 46 deterministic cases by occurrence identity: 17 resolve to one
+same-member `xml:id`, 18 resolve to one same-member RDF subject candidate, and
+11 have no same-member definition. The receipt's aggregate target-QName
+counts are diagnostics; they are not source/target pair counts and do not
+constitute semantic edges. All 46 cases remain unreviewed, with no edges,
+precision or recall claim. The screen therefore improves URI-resolution
+coverage and review context but does not qualify PBS relationship meaning or
+matcher performance. The existing field-state partition remains unchanged.
+No new source, source value, right, admission, canary, or publication was
+added.
