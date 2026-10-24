@@ -106,49 +106,7 @@
       "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
       "schema_path_inventory_sha256": "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b"
     },
-    "source_label_observations": {
-      "brand_name_text": {
-        "interpretation_state": "native_unresolved",
-        "native_fields": 6084,
-        "null_fields": 0,
-        "schema_path_count": 4,
-        "status": "source_path_label_only",
-        "value_fields": 6084
-      },
-      "copayment_amount_text": {
-        "interpretation_state": "native_unresolved",
-        "native_fields": 2,
-        "null_fields": 0,
-        "schema_path_count": 1,
-        "status": "source_path_label_only",
-        "value_fields": 2
-      },
-      "ex_manufacturer_amount_text": {
-        "interpretation_state": "native_unresolved",
-        "native_fields": 57922,
-        "null_fields": 0,
-        "schema_path_count": 16,
-        "status": "source_path_label_only",
-        "value_fields": 57922
-      },
-      "fee_definition_amount_text": {
-        "interpretation_state": "native_unresolved",
-        "native_fields": 193,
-        "null_fields": 0,
-        "schema_path_count": 2,
-        "status": "source_path_label_only",
-        "value_fields": 193
-      },
-      "threshold_amount_text": {
-        "interpretation_state": "native_unresolved",
-        "native_fields": 2,
-        "null_fields": 0,
-        "schema_path_count": 1,
-        "status": "source_path_label_only",
-        "value_fields": 2
-      }
-    },
     "status": "bounded_semantics_qualified_with_explicit_unresolved_fields"
   },
-  "report_sha256": "831386e1323decd02f24e80f84cb531d08c4cbc0a9e6e4ca91ec30193df7f271"
+  "report_sha256": "6999155565770f6112385705ba22b6b819db51508d352b3d16330ec8077c8a72"
 }

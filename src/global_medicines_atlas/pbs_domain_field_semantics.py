@@ -67,7 +67,7 @@ def _source_label_observations(
     inventory: dict[str, Any],
 ) -> dict[str, dict[str, Any]]:
     """Summarize exact-source path labels without interpreting their values."""
-    observations = {
+    observations: dict[str, dict[str, Any]] = {
         label: {
             "interpretation_state": "native_unresolved",
             "null_fields": 0,
@@ -243,7 +243,6 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
             date_profile["date_profile"]["developers_guide"],
             date_profile["date_profile"]["mapping_specification"],
         ],
-        "source_label_observations": _source_label_observations(inventory),
         "domains": domains,
         "scope": {
             "source_values_emitted": False,
@@ -254,5 +253,37 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
             "complete_domain_semantics_qualified": False,
             "rights_conclusion_changed": False,
             "cross_era_equivalence": False,
+        },
+    }
+
+
+def qualify_pbs_source_label_observations(root: Path) -> dict[str, Any]:
+    """Summarize pinned PBS path labels without altering domain meanings."""
+    domain_profile = qualify_pbs_domain_fields(root)
+    inventory = _read_json(root, INVENTORY)
+    return {
+        "schema_id": "global-medicines-atlas.pbs-source-label-observations",
+        "schema_version": 1,
+        "profile_id": "pbs-v3-pinned-2026-04-01-source-labels-v1",
+        "status": "source_path_labels_observed_values_unresolved",
+        "source": {
+            "dataset": domain_profile["source"]["dataset"],
+            "revision": REVISION,
+            "member_sha256": MEMBER_SHA256,
+            "native_digest": NATIVE_DIGEST,
+            "native_fields": EXPECTED_NATIVE_FIELDS,
+            "schema_path_inventory_sha256": domain_profile["source"][
+                "schema_path_inventory_sha256"
+            ],
+        },
+        "observations": _source_label_observations(inventory),
+        "scope": {
+            "source_values_emitted": False,
+            "new_sources": 0,
+            "new_admissions": 0,
+            "consumer_canaries": 0,
+            "publications": 0,
+            "rights_conclusion_changed": False,
+            "domain_value_semantics_qualified": False,
         },
     }
