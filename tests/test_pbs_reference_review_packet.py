@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -14,8 +15,34 @@ from global_medicines_atlas.pbs_reference_review_packet import (
     MAX_PACKET_CASES,
     prepare_reference_review_packet,
 )
+from global_medicines_atlas.pbs_uri_context_enrichment import (
+    ContextEnrichmentError,
+    enrich_uri_review_packet,
+)
 
 _PBS = "{http://schema.pbs.gov.au/}"
+_QUALIFICATIONS = Path(__file__).parents[1] / "quality/qualifications"
+
+
+def _load_context_artifact(name: str) -> tuple[dict[str, Any], str]:
+    raw = (_QUALIFICATIONS / name).read_bytes()
+    return json.loads(raw), hashlib.sha256(raw).hexdigest()
+
+
+def _enrich_context(
+    packet: dict[str, Any],
+    packet_sha: str,
+    screen: dict[str, Any],
+    screen_sha: str,
+    reconciliation: dict[str, Any],
+) -> dict[str, Any]:
+    return enrich_uri_review_packet(
+        packet,
+        screen,
+        reconciliation,
+        packet_file_sha256=packet_sha,
+        screen_file_sha256=screen_sha,
+    )
 
 
 def _cli_meaning_stub(*_args: Any, **_kwargs: Any) -> dict[str, Any]:
@@ -635,3 +662,61 @@ def test_packet_cli_preserves_existing_output_under_explicit_root(
     with pytest.raises(SystemExit, match="2"):
         packet_cli.main()
     assert existing.read_text(encoding="utf-8") == "preserve root file"
+
+
+def test_exact_retained_context_is_bound_without_values_or_semantic_promotion():
+    packet, packet_sha = _load_context_artifact(
+        "pbs-native-reference-review-packet-20261025-40103169910.json"
+    )
+    screen, screen_sha = _load_context_artifact(
+        "pbs-native-reference-screen-20261025-40103169910.json"
+    )
+    reconciliation, _ = _load_context_artifact(
+        "pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json"
+    )
+
+    report = _enrich_context(
+        packet, packet_sha, screen, screen_sha, reconciliation
+    )["report"]
+
+    assert report["context_examples_bound"] == 46
+    assert report["source_values_emitted"] is False
+    assert report["semantic_relationships_qualified"] is False
+    assert report["precision_claimed"] is False
+    assert report["recall_claimed"] is False
+    assert (
+        sum(
+            case["source_context"]["nearest_subject_element"] is not None
+            for case in report["cases"]
+        )
+        == 8
+    )
+    assert (
+        sum(
+            case["source_context"]["nearest_identifier_element"] is not None
+            for case in report["cases"]
+        )
+        == 38
+    )
+    assert (
+        sum(
+            case["source_context"]["same_member_literal_candidate_target_count"]
+            for case in report["cases"]
+        )
+        == 35
+    )
+
+
+def test_context_enrichment_rejects_wrong_screen_receipt_digest():
+    packet, packet_sha = _load_context_artifact(
+        "pbs-native-reference-review-packet-20261025-40103169910.json"
+    )
+    screen, _screen_sha = _load_context_artifact(
+        "pbs-native-reference-screen-20261025-40103169910.json"
+    )
+    reconciliation, _ = _load_context_artifact(
+        "pbs-native-reference-uri-review-reconciliation-20261025-40120162365.json"
+    )
+
+    with pytest.raises(ContextEnrichmentError, match="receipt digests differ"):
+        _enrich_context(packet, packet_sha, screen, "0" * 64, reconciliation)
