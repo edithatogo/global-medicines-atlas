@@ -379,7 +379,7 @@ def test_new_context_sampling_policy_passes_through_meaning_consumer():
 
     assert validated["schema_version"] == 3
     assert validated["example_selection_policy"] == (
-        "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets"
+        "up_to_five_examples_per_stratum_with_equal_kind_status_budgets"
     )
 
 

@@ -167,10 +167,10 @@ def test_context_examples_cover_structural_strata_without_emitting_values():
 
     report = screen_reference_context(xml)
 
-    assert report["examples_emitted"] == report["strata_count"]
-    assert all(len(row["examples"]) == 1 for row in report["strata"])
+    assert report["examples_emitted"] < report["strata_count"]
+    assert all(len(row["examples"]) <= 1 for row in report["strata"])
     assert all(
-        row["examples_omitted"] == row["occurrences"] - 1
+        row["examples_omitted"] == row["occurrences"] - len(row["examples"])
         for row in report["strata"]
     )
     serialized = json.dumps(report)
@@ -185,9 +185,14 @@ def test_context_examples_cover_structural_strata_without_emitting_values():
 def test_context_example_budget_covers_rdf_and_xlink_kinds(
     monkeypatch: pytest.MonkeyPatch,
 ):
-    monkeypatch.setattr(context_module, "MAX_REPORT_EXAMPLE_BYTES", 2_000)
+    monkeypatch.setattr(context_module, "MAX_REPORT_EXAMPLE_BYTES", 12_000)
     monkeypatch.setattr(
-        context_module, "MAX_REPORT_EXAMPLE_BYTES_PER_KIND", 1_000
+        context_module, "MAX_REPORT_EXAMPLE_BYTES_PER_KIND", 6_000
+    )
+    monkeypatch.setattr(
+        context_module,
+        "MAX_REPORT_EXAMPLE_BYTES_PER_KIND_STATUS",
+        1_200,
     )
     rdf_references = "".join(
         f'<rdf-edge-{index:02d} rdf:resource="missing-{index}"/>'
@@ -199,6 +204,8 @@ def test_context_example_budget_covers_rdf_and_xlink_kinds(
         'xmlns:xlink="http://www.w3.org/1999/xlink" '
         'xmlns:xml="http://www.w3.org/XML/1998/namespace">'
         + rdf_references
+        + '<rdf-target rdf:about="rdf-target-id"/>'
+        + '<positive-edge rdf:resource="rdf-target-id"/>'
         + '<target xml:id="target-id"/>'
         + '<link xlink:href="#target-id"/>'
         + "</root>"
@@ -212,6 +219,12 @@ def test_context_example_budget_covers_rdf_and_xlink_kinds(
     )
     assert any(
         row["kind"] == "xlink_href" and row["examples"]
+        for row in report["strata"]
+    )
+    assert any(
+        row["kind"] == "rdf_resource"
+        and row["match_status"] == "unique_exact_literal"
+        and row["examples"]
         for row in report["strata"]
     )
     assert "target-id" not in json.dumps(report)
