@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import json
 import re
 from collections import Counter, defaultdict
 from collections.abc import Iterator
 from datetime import date
 from decimal import Decimal
+from hashlib import sha256
 from typing import Any
 
 import pyarrow as pa
@@ -29,6 +31,7 @@ _ADDITIONS = (
     pa.field("interpretation_state", pa.string(), nullable=False),
     pa.field("interpretation_reason", pa.string(), nullable=False),
     pa.field("semantic_evidence_sha256", pa.string()),
+    pa.field("semantic_definition", pa.string()),
     pa.field("domain_value_type", pa.string()),
     pa.field("domain_value_state", pa.string(), nullable=False),
     pa.field("domain_status", pa.string(), nullable=False),
@@ -37,9 +40,139 @@ _ADDITIONS = (
     pa.field("domain_date", pa.date32()),
     pa.field("domain_decimal", _DECIMAL),
 )
+_P7_SOURCE_SHA256 = (
+    "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+)
+_P7_DATE_PROFILE_SHA256 = (
+    "c9b49f60a9a608bc77674a2094b8fd4439115fc17bb200b04fc202c6b463d1bf"
+)
+_DATE_PROFILE_SCHEMA_VERSION = 2
+_MAX_DATE_COMPONENT = 12
+_P7_DATE_DEFINITION = (
+    "A dotted text date cell is interpreted only when evaluating the DMY and "
+    "MDY candidates yields exactly one distinct valid calendar date. A single "
+    "valid order or equal-component candidates qualify; no workbook order is "
+    "selected."
+)
 
 
-def _values(row: dict[str, Any], date_format: str | None) -> dict[str, Any]:
+def _validated_p7_date_profile(
+    receipt: SourceReceipt,
+    evidence: bytes | None,
+    expected_sha256: str | None,
+) -> tuple[dict[str, Any] | None, str | None]:
+    if evidence is None:
+        if expected_sha256 is not None:
+            raise ValueError("P7 date profile digest has no evidence")
+        return None, None
+    actual_sha256 = sha256(evidence).hexdigest()
+    if (
+        expected_sha256 != _P7_DATE_PROFILE_SHA256
+        or actual_sha256 != _P7_DATE_PROFILE_SHA256
+    ):
+        raise ValueError("P7 date profile evidence digest differs")
+    if receipt.payload.sha256 != _P7_SOURCE_SHA256:
+        raise ValueError("P7 date profile source identity differs")
+    try:
+        document = json.loads(evidence)
+        profile = document["profile"]
+    except (json.JSONDecodeError, KeyError, TypeError) as exc:
+        raise ValueError("P7 date profile evidence is invalid") from exc
+    expected = {
+        "schema_version": _DATE_PROFILE_SCHEMA_VERSION,
+        "source_sha256": _P7_SOURCE_SHA256,
+        "source_byte_count": receipt.payload.byte_count,
+        "date_order_selected": False,
+        "source_values_emitted": False,
+        "rule": "unique_valid_calendar_date_per_value_no_order_selected",
+    }
+    if document.get("kind") != "mbs_p7_unique_calendar_date_profile" or any(
+        profile.get(key) != value for key, value in expected.items()
+    ):
+        raise ValueError(
+            "P7 date profile evidence does not qualify this source"
+        )
+    return profile, actual_sha256
+
+
+def _unique_calendar_date(value: str) -> date | None:
+    if not re.fullmatch(r"[0-9]{2}\.[0-9]{2}\.[0-9]{4}", value):
+        return None
+    first, second, year = (int(part) for part in value.split("."))
+    candidates: set[date] = set()
+    for month, day in ((second, first), (first, second)):
+        try:
+            candidates.add(date(year, month, day))
+        except ValueError:
+            continue
+    return next(iter(candidates)) if len(candidates) == 1 else None
+
+
+def _calendar_profile_status(value: str) -> str:
+    parsed = _unique_calendar_date(value)
+    if parsed is not None:
+        first, second, _ = (int(part) for part in value.split("."))
+        if first == second:
+            return "unique_calendar_date"
+        return (
+            "unique_dmy_calendar_date"
+            if first > _MAX_DATE_COMPONENT
+            else "unique_mdy_calendar_date"
+        )
+    if not re.fullmatch(r"[0-9]{2}\.[0-9]{2}\.[0-9]{4}", value):
+        return "invalid"
+    first, second, year = (int(part) for part in value.split("."))
+    valid_dmy = valid_mdy = False
+    try:
+        date(year, second, first)
+        valid_dmy = True
+    except ValueError:
+        pass
+    try:
+        date(year, first, second)
+        valid_mdy = True
+    except ValueError:
+        pass
+    return "ambiguous_calendar_order" if valid_dmy and valid_mdy else "invalid"
+
+
+def _profile_counts_match(
+    payload: bytes, receipt: SourceReceipt, profile: dict[str, Any]
+) -> bool:
+    observed: defaultdict[str, Counter[str]] = defaultdict(Counter)
+    for batch in iter_workbook_domain_batches(payload, receipt):
+        for row in batch.to_pylist():
+            name = row["mapping_field"]
+            if row["row_kind"] == "header" or _FIELDS.get(name) is None:
+                continue
+            if _FIELDS[name].value_type != "source_date":
+                continue
+            value = row["display_value"]
+            if value is None:
+                state = (
+                    "null"
+                    if "display_value" in row["present_properties"]
+                    else "missing_value"
+                )
+            elif row["cell_type"] == "e":
+                state = "source_error"
+            elif row["cell_type"] in {None, "n"}:
+                state = "unsupported_serial_date"
+            else:
+                state = _calendar_profile_status(value)
+            observed[name][state] += 1
+    expected = {
+        name: dict(sorted(counts.items()))
+        for name, counts in sorted(observed.items())
+    }
+    return profile.get("by_field") == expected
+
+
+def _values(
+    row: dict[str, Any],
+    date_format: str | None,
+    calendar_profile_sha256: str | None = None,
+) -> dict[str, Any]:
     value = row["display_value"]
     state = (
         "value"
@@ -52,6 +185,7 @@ def _values(row: dict[str, Any], date_format: str | None) -> dict[str, Any]:
         "interpretation_state": "native_unresolved",
         "interpretation_reason": "Legacy workbook field meaning is not qualified",
         "semantic_evidence_sha256": None,
+        "semantic_definition": None,
         "domain_value_type": None,
         "domain_value_state": state,
         "domain_status": "unmapped",
@@ -71,13 +205,51 @@ def _values(row: dict[str, Any], date_format: str | None) -> dict[str, Any]:
     result["domain_currency"] = (
         "AUD" if field and field.value_type == "aud_decimal" else None
     )
-    if value is None:
-        return {**result, "domain_status": state}
-    if row["cell_type"] == "e":
-        return {**result, "domain_status": "source_error"}
+    if value is None or row["cell_type"] == "e":
+        return {
+            **result,
+            "domain_status": state if value is None else "source_error",
+        }
     if field is None:
         return {**result, "domain_text": value, "domain_status": "preserved"}
+    if (
+        field.value_type == "source_date"
+        and calendar_profile_sha256 is not None
+        and row["source_sha256"] == _P7_SOURCE_SHA256
+    ):
+        qualified = _qualified_profile_date(
+            row, result, calendar_profile_sha256
+        )
+        if qualified["interpretation_state"] == "interpreted":
+            return qualified
+        date_format = None
     return _convert_field(row, field, date_format, result)
+
+
+def _qualified_profile_date(
+    row: dict[str, Any], result: dict[str, Any], evidence_sha256: str
+) -> dict[str, Any]:
+    if (
+        row["cell_type"] not in _TEXT_STORAGE
+        or row["cell_type"] == "e"
+        or row["formula_state"] != "missing_field"
+    ):
+        return result
+    value = row["display_value"]
+    if value is None:
+        return result
+    parsed = _unique_calendar_date(value)
+    if parsed is None:
+        return result
+    return {
+        **result,
+        "interpretation_state": "interpreted",
+        "interpretation_reason": "Exact P7 calendar profile uniquely determines this cell date without selecting an order",
+        "semantic_evidence_sha256": evidence_sha256,
+        "semantic_definition": _P7_DATE_DEFINITION,
+        "domain_date": parsed,
+        "domain_status": "qualified_unique_calendar_date",
+    }
 
 
 def _convert_field(
@@ -126,6 +298,8 @@ def iter_workbook_value_batches(
     receipt: SourceReceipt,
     *,
     date_format: str | None = None,
+    calendar_profile_evidence: bytes | None = None,
+    calendar_profile_sha256: str | None = None,
     rows_per_batch: int = 1024,
 ) -> Iterator[pa.RecordBatch]:
     """Type known fields without discarding native cells or cache provenance.
@@ -136,6 +310,15 @@ def iter_workbook_value_batches(
     """
     if date_format is not None and date_format not in DATE_FORMATS:
         raise ValueError("unsupported date format profile")
+    profile, profile_sha256 = _validated_p7_date_profile(
+        receipt, calendar_profile_evidence, calendar_profile_sha256
+    )
+    if calendar_profile_evidence is not None and not _profile_counts_match(
+        payload,
+        receipt,
+        profile,  # type: ignore[arg-type]
+    ):
+        raise ValueError("P7 date profile counts differ from source")
     for batch in iter_workbook_domain_batches(
         payload, receipt, rows_per_batch=rows_per_batch
     ):
@@ -146,7 +329,10 @@ def iter_workbook_value_batches(
             b"semantic_usage": b"native_observations_only_until_qualified",
             b"conversion_version": CONVERSION_VERSION.encode(),
             b"date_profile": (date_format or "unselected").encode(),
-            b"date_interpretation": b"explicit_text_profile_only_no_serial_dates",
+            b"date_profile_evidence_sha256": (
+                profile_sha256 or "unselected"
+            ).encode(),
+            b"date_interpretation": b"per_cell_unique_calendar_only_no_serial_or_formula_dates",
             b"currency_interpretation": b"per_domain_field",
             b"decimal_type": b"decimal128(38,9)",
         })
@@ -155,7 +341,10 @@ def iter_workbook_value_batches(
             schema = schema.append(field)  # pyright: ignore[reportUnknownMemberType]
         schema = schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
         yield pa.RecordBatch.from_pylist(
-            [{**row, **_values(row, date_format)} for row in batch.to_pylist()],
+            [
+                {**row, **_values(row, date_format, profile_sha256)}
+                for row in batch.to_pylist()
+            ],
             schema=schema,
         )
 

@@ -10,9 +10,10 @@ import pytest
 from test_mbs_workbook_silver import (
     _receipt,  # ruff: ignore[import-private-name]
 )
-from test_mbs_workbook_values import payload_with
+from test_mbs_workbook_values import p7_calendar_profile_evidence, payload_with
 
 from global_medicines_atlas import mbs_workbook_value_package as module
+from global_medicines_atlas import mbs_workbook_values as values_module
 from global_medicines_atlas.mbs_workbook_value_package import (
     build_workbook_value_package,
     verify_workbook_value_package,
@@ -39,6 +40,54 @@ def test_typed_package_rebuild_and_restore_keep_native_evidence(tmp_path: Path):
         == first["coverage"]["native_cells"]
     )
     assert first["coverage"]["domain_statuses"]["unrepresentable"] >= 1
+
+
+def test_p7_profile_package_records_bounded_date_evidence(
+    tmp_path: Path, monkeypatch
+):
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
+        '<c r="D2" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    evidence = p7_calendar_profile_evidence(payload, receipt)
+    monkeypatch.setattr(
+        values_module, "_P7_DATE_PROFILE_SHA256", sha256(evidence).hexdigest()
+    )
+    output = tmp_path / "profiled"
+    report = build_workbook_value_package(
+        payload,
+        receipt,
+        output,
+        calendar_profile_evidence=evidence,
+        calendar_profile_sha256=sha256(evidence).hexdigest(),
+    )
+    assert report["coverage"]["interpreted_cells"] == 1
+    assert report["date_profile"]["schema_version"] == 2
+    assert (
+        report["date_profile"]["profile_sha256"] == sha256(evidence).hexdigest()
+    )
+    assert (
+        verify_workbook_value_package(
+            output,
+            payload,
+            receipt,
+            calendar_profile_evidence=evidence,
+            calendar_profile_sha256=sha256(evidence).hexdigest(),
+        )
+        == report
+    )
+    with pytest.raises(ValueError, match="differs"):
+        verify_workbook_value_package(
+            output,
+            payload,
+            receipt,
+            calendar_profile_evidence=evidence,
+            calendar_profile_sha256="0" * 64,
+        )
 
 
 def build_fixture(tmp_path):
@@ -113,7 +162,7 @@ def test_source_identity_mismatch_leaves_no_package(tmp_path):
 def test_late_restore_failure_is_transactional(tmp_path, monkeypatch):
     payload = payload_with("")
 
-    def fail(*_args):
+    def fail(*_args, **_kwargs):
         raise ValueError("synthetic restore failed")
 
     monkeypatch.setattr(module, "verify_workbook_value_package", fail)
