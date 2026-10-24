@@ -49,6 +49,13 @@ MAX_REPORT_STRATA_BYTES = 4 * 1024**2
 MAX_COMPRESSED_RECEIPT_BYTES = 32_000
 SHA256_HEX_LENGTH = 64
 MAX_REPORT_EXAMPLE_BYTES = 64_000
+# Split the example budgets evenly between RDF and XLink references so a
+# source-order group from one kind cannot consume the entire review context.
+REFERENCE_KINDS = ("rdf_resource", "xlink_href")
+MAX_REPORT_EXAMPLES_PER_KIND = MAX_REPORT_EXAMPLES // len(REFERENCE_KINDS)
+MAX_REPORT_EXAMPLE_BYTES_PER_KIND = MAX_REPORT_EXAMPLE_BYTES // len(
+    REFERENCE_KINDS
+)
 ROOT_CHILD_STACK_DEPTH = 2
 CONTEXT_PROGRESS_EVENT_INTERVAL = 500_000
 CONTEXT_PROGRESS_OCCURRENCE_INTERVAL = 250_000
@@ -384,6 +391,8 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
         summaries: dict[tuple[str, ...], dict[str, Any]] = {}
         report_example_count = 0
         report_example_bytes = 0
+        report_examples_by_kind = dict.fromkeys(REFERENCE_KINDS, 0)
+        report_example_bytes_by_kind = dict.fromkeys(REFERENCE_KINDS, 0)
         omitted_examples = 0
         grouped_occurrences = 0
         cursor = db.execute("""
@@ -501,6 +510,7 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
             if (
                 len(row["examples"]) < MAX_EXAMPLES_PER_STRATUM
                 and report_example_count < MAX_REPORT_EXAMPLES
+                and report_examples_by_kind[kind] < MAX_REPORT_EXAMPLES_PER_KIND
             ):
                 if len(address.encode()) > MAX_OCCURRENCE_ADDRESS_BYTES:
                     raise ReferenceContextError(
@@ -566,10 +576,14 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                 if (
                     report_example_bytes + example_bytes
                     <= MAX_REPORT_EXAMPLE_BYTES
+                    and report_example_bytes_by_kind[kind] + example_bytes
+                    <= MAX_REPORT_EXAMPLE_BYTES_PER_KIND
                 ):
                     row["examples"].append(example)
                     report_example_count += 1
                     report_example_bytes += example_bytes
+                    report_examples_by_kind[kind] += 1
+                    report_example_bytes_by_kind[kind] += example_bytes
                 else:
                     row["examples_omitted"] += 1
                     omitted_examples += 1
@@ -690,7 +704,9 @@ def screen_reference_context(
     return {
         "schema_id": "global-medicines-atlas.pbs-reference-context-screen",
         "schema_version": 3,
-        "example_selection_policy": "up_to_five_value_free_examples_per_structural_stratum",
+        "example_selection_policy": (
+            "up_to_five_value_free_examples_per_stratum_with_equal_kind_budgets"
+        ),
         **result,
     }
 

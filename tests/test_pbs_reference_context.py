@@ -182,6 +182,41 @@ def test_context_examples_cover_structural_strata_without_emitting_values():
         assert private_value not in serialized
 
 
+def test_context_example_budget_covers_rdf_and_xlink_kinds(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(context_module, "MAX_REPORT_EXAMPLE_BYTES", 2_000)
+    monkeypatch.setattr(
+        context_module, "MAX_REPORT_EXAMPLE_BYTES_PER_KIND", 1_000
+    )
+    rdf_references = "".join(
+        f'<rdf-edge-{index:02d} rdf:resource="missing-{index}"/>'
+        for index in range(20)
+    )
+    xml = (
+        '<root xmlns="http://schema.pbs.gov.au/" '
+        'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
+        'xmlns:xlink="http://www.w3.org/1999/xlink" '
+        'xmlns:xml="http://www.w3.org/XML/1998/namespace">'
+        + rdf_references
+        + '<target xml:id="target-id"/>'
+        + '<link xlink:href="#target-id"/>'
+        + "</root>"
+    ).encode()
+
+    report = screen_reference_context(xml)
+
+    assert any(
+        row["kind"] == "rdf_resource" and row["examples"]
+        for row in report["strata"]
+    )
+    assert any(
+        row["kind"] == "xlink_href" and row["examples"]
+        for row in report["strata"]
+    )
+    assert "target-id" not in json.dumps(report)
+
+
 def test_context_receipt_compression_round_trips_the_complete_profile():
     context = screen_reference_context(
         b'<root xmlns="http://schema.pbs.gov.au/" '
