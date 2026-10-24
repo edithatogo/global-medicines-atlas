@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-55.json"
+    "australian-m112-rights-release-preflight-20261024-56.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-54.json"
+    "australian-m112-rights-release-preflight-20261024-55.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -125,6 +125,19 @@ def test_preflight_binds_current_silver_semantics_readbacks() -> None:
         hashlib.sha256((ROOT / pbs_screen["receipt"]).read_bytes()).hexdigest()
         == pbs_screen["receipt_sha256"]
     )
+    context_failure = report[
+        "pbs_native_reference_context_screen_latest_attempt"
+    ]
+    assert context_failure["run_id"] == 40052770374
+    assert context_failure["status"] == "failed"
+    assert context_failure["source_values_emitted"] is False
+    assert context_failure["semantic_relationships_qualified"] is False
+    assert (
+        hashlib.sha256(
+            (ROOT / context_failure["receipt"]).read_bytes()
+        ).hexdigest()
+        == context_failure["receipt_sha256"]
+    )
     header = report["historical_workbook_header_profile_actual_readback"]
     assert header["run_id"] == 40040624592
     assert header["workbooks"] == 91
@@ -143,7 +156,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     report = _json(PREFLIGHT)
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-54.json"
+        "australian-m112-rights-release-preflight-20261024-55.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -152,7 +165,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-53.json"
+        "australian-m112-rights-release-preflight-20261024-54.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -165,17 +178,18 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-52.json"
+        "australian-m112-rights-release-preflight-20261024-53.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-51.json"
+        "australian-m112-rights-release-preflight-20261024-52.json"
     )
 
 
 def test_full_local_profile_failure_and_recovery_are_explicit() -> None:
-    profile = _json(PREFLIGHT)["local_full_profile"]
+    report = _json(PREFLIGHT)
+    profile = report["local_full_profile"]
     assert profile["status"] == "failed_preserved"
     assert profile["passed"] == 7_960
     assert profile["failed"] == 5
@@ -183,6 +197,12 @@ def test_full_local_profile_failure_and_recovery_are_explicit() -> None:
     assert 96.82 < profile["coverage_percent"] < 96.84
     assert profile["failure_only_recheck"] == "4 passed"
     assert profile["pbs_date_isolated_recheck"] == "1 passed"
+    latest = report["latest_local_full_profile_attempt"]
+    assert latest["passed"] == 7995
+    assert latest["failed"] == 1
+    assert latest["skipped"] == 4
+    assert latest["production_test_failure"] is False
+    assert latest["status"] == "failed_only_on_stale_preflight_input_digest"
 
 
 def test_pbs_native_silver_field_state_is_candidate_only() -> None:

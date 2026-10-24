@@ -44,7 +44,10 @@ from .pbs_member_identity import (
 from .pbs_native_reference_screen import screen_native_references
 from .pbs_observed_domain import load_observed_profile
 from .pbs_observed_qualification import qualify_observed_values
-from .pbs_reference_context import screen_reference_context
+from .pbs_reference_context import (
+    ReferenceContextError,
+    screen_reference_context,
+)
 from .pbs_reference_shards import (
     load_reference_entity_material,
     load_reference_entity_partition,
@@ -294,6 +297,11 @@ class _RetryBudget:
                 "schema-inventory",
                 "native-reference-index",
                 "native-reference-match",
+                "reference-context-index",
+                "reference-context-join",
+                "reference-context-aggregate",
+                "reference-context-report",
+                "reference-context-denominator",
             }
             or any(
                 type(value) is not int or not 0 <= value < 2**63
@@ -1213,7 +1221,7 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
             failure_type=error.failure_type,
             resource_code=error.resource_code,
         )
-    return {
+    report: dict[str, Any] = {
         "schema_version": 1,
         "status": "failed",
         **context,
@@ -1238,6 +1246,9 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         else None,
         "publication_performed": False,
     }
+    if isinstance(error, ReferenceContextError):
+        report["diagnostic_code"] = error.diagnostic_code
+    return report
 
 
 def run_hosted_schema_inventory(
@@ -1408,7 +1419,18 @@ def _screen_native_reference_with_context(
             "projection-qualification", phase, batches, rows
         ),
     )
-    context = screen_reference_context(inputs.xml)
+    context = screen_reference_context(
+        inputs.xml,
+        progress=lambda phase, batches, rows: retry.checkpoint(
+            "projection-qualification", phase, batches, rows
+        ),
+    )
+    retry.checkpoint(
+        "projection-qualification",
+        "reference-context-denominator",
+        1,
+        context["reference_occurrences"],
+    )
     if context["reference_occurrences"] != qualification["reference_fields"]:
         raise QualificationError("denominator", "validation")
     qualification["reference_context"] = context
