@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
+import zlib
 from pathlib import Path
 from typing import Any, cast
 
@@ -24,6 +26,10 @@ REFERENCE_SCREEN = (
     "quality/qualifications/"
     "pbs-native-reference-screen-20261024-40076190245.json"
 )
+CONTEXT_SCREEN = (
+    "quality/qualifications/"
+    "pbs-native-reference-screen-20261024-40091358786.json"
+)
 DOMAIN = "quality/qualifications/pbs-domain-field-semantics-20261023.json"
 FIELD_STATE = (
     "quality/qualifications/pbs-native-silver-field-state-20261023.json"
@@ -41,6 +47,12 @@ SCREEN_SHA256 = (
 REFERENCE_SCREEN_SHA256 = (
     "570cc803a6657e421dc614855fe75013440f716dd3ff1d0096232c08ae363711"
 )
+CONTEXT_SCREEN_SHA256 = (
+    "5bcc25fef1ad5a1a68a05fdc943f5b96e89848b56d5b6c506e9cba49d3b9db37"
+)
+CONTEXT_SCREEN_FILE_SHA256 = (
+    "1bed1a970d599e2bf8cc422352bced094c9568afd4776930b9df2a01d0273313"
+)
 FIELD_STATE_SHA256 = (
     "2f35eebe45c0326dc80e76c461b0a8af23585923479cec8b74dcb9de5019120d"
 )
@@ -56,13 +68,18 @@ SUPERSEDED_REPORT_SHA256 = (
 )
 SCREEN_RUN_ID = "40076190245"
 SCREEN_WORKFLOW_COMMIT = "b3139f9c655f48ccbb7a1714712219ac2281d838"
+CONTEXT_SCREEN_RUN_ID = "40091358786"
+CONTEXT_SCREEN_WORKFLOW_COMMIT = "a198ffff88531f06a34e4f237af6d55dfc74260a"
+CONTEXT_SCREEN_SOURCE_RECEIPT_SHA256 = (
+    "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1"
+)
 REFERENCE_FIELDS = 2_160_066
 REFERENCE_KIND_COUNTS = {"rdf_resource": 1_167_610, "xlink_href": 992_456}
 REFERENCE_STATUS_COUNTS = {
     "no_exact_literal": 73_577,
     "unique_exact_literal": 2_086_489,
 }
-REFERENCE_CONTEXT_SCHEMA_VERSION = 2
+REFERENCE_CONTEXT_SCHEMA_VERSION = 3
 REFERENCE_CONTEXT_EXAMPLE_POLICY = (
     "up_to_five_value_free_examples_per_structural_stratum"
 )
@@ -88,7 +105,9 @@ def _entity_path(schema_path: str) -> str:
     raise ValueError("PBS schema path does not identify a native field")
 
 
-def _context_screen_matches(context_screen: dict[str, Any]) -> bool:
+def _context_screen_matches(
+    context_screen: dict[str, Any], *, schema_version: int
+) -> bool:
     diagnostic_flags = (
         "uri_resolution_performed",
         "literal_values_emitted",
@@ -96,7 +115,7 @@ def _context_screen_matches(context_screen: dict[str, Any]) -> bool:
         "semantic_relationships_qualified",
     )
     return (
-        context_screen["schema_version"] == REFERENCE_CONTEXT_SCHEMA_VERSION
+        context_screen["schema_version"] == schema_version
         and context_screen["example_selection_policy"]
         == REFERENCE_CONTEXT_EXAMPLE_POLICY
         and context_screen["reference_occurrences"] == REFERENCE_FIELDS
@@ -105,17 +124,69 @@ def _context_screen_matches(context_screen: dict[str, Any]) -> bool:
     )
 
 
-def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[too-many-locals,too-many-statements] -- exact receipt bindings and path-level partition are auditable together
+def _context_payload(context_report: dict[str, Any]) -> dict[str, Any]:
+    """Decode the workflow's explicitly value-free structural context."""
+    context = context_report["qualification"]["reference_context"]
+    return json.loads(
+        zlib.decompress(base64.b64decode(context["payload"], validate=True))
+    )
+
+
+def _context_sample_summary(payload: dict[str, Any]) -> dict[str, Any]:
+    """Summarize only value-free structural diagnostics from the bounded sample."""
+    examples = [
+        example
+        for stratum in payload["strata"]
+        for example in stratum["examples"]
+    ]
+    qnames = {example["predicate_element"]["qname"] for example in examples}
+    sampled_kinds = {
+        "rdf_resource": sum(
+            example["reference_occurrence"].endswith(
+                "/attributes/"
+                "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource"
+            )
+            for example in examples
+        ),
+        "xlink_href": sum(
+            example["reference_occurrence"].endswith(
+                "/attributes/{http:~1~1www.w3.org~11999~1xlink}href"
+            )
+            for example in examples
+        ),
+    }
+    return {
+        "examples_emitted": len(examples),
+        "no_exact_literal": sum(
+            example["target_multiplicity"] == 0 for example in examples
+        ),
+        "unique_exact_literal": sum(
+            example["target_multiplicity"] == 1 for example in examples
+        ),
+        "sampled_reference_kind_counts": {
+            kind: count for kind, count in sampled_kinds.items() if count
+        },
+        "distinct_predicate_qname_count": len(qnames),
+        "nearest_subject_elements": sum(
+            example["nearest_subject_element"] is not None
+            for example in examples
+        ),
+    }
+
+
+def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[too-many-branches,too-many-locals,too-many-statements] -- exact receipt bindings and path-level partition are auditable together
     """Assign every field occurrence once; retain unqualified values as native."""
     package_path = root / PACKAGE
     screen_path = root / SCREEN
     reference_screen_path = root / REFERENCE_SCREEN
+    context_screen_path = root / CONTEXT_SCREEN
     field_state_path = root / FIELD_STATE
     reference_review_path = root / REFERENCE_REVIEW
     domain_path = root / DOMAIN
     package_sha = _file_sha256(package_path)
     screen_sha = _file_sha256(screen_path)
     reference_screen_sha = _file_sha256(reference_screen_path)
+    context_screen_file_sha = _file_sha256(context_screen_path)
     field_state_sha = _file_sha256(field_state_path)
     reference_review_sha = _file_sha256(reference_review_path)
     superseded_report_sha = _file_sha256(root / SUPERSEDED_REPORT)
@@ -129,6 +200,69 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     )
     if any(actual != expected for actual, expected in digest_pairs):
         raise ValueError("PBS field evidence receipt digest differs")
+    context_envelope = json.loads(context_screen_path.read_bytes())
+    context_report = context_envelope["report"]
+    context_canonical = json.dumps(
+        context_report,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    context_qualification = context_report["qualification"]
+    context_reference = context_qualification["reference_context"]
+    context_payload = _context_payload(context_report)
+    context_screen_flags_valid = (
+        context_qualification["domain_semantics_qualified"] is False
+        and context_qualification["semantic_relationships_qualified"] is False
+        and context_qualification["native_values_emitted"] is False
+        and context_qualification["external_targets_fetched"] == 0
+        and context_qualification["new_sources"] == 0
+        and context_qualification["new_admissions"] == 0
+        and context_qualification["publications"] == 0
+        and context_qualification["reference_fields"] == REFERENCE_FIELDS
+        and context_report["status"] == "passed"
+        and context_report["run_id"] == CONTEXT_SCREEN_RUN_ID
+        and context_report["workflow_commit"] == CONTEXT_SCREEN_WORKFLOW_COMMIT
+        and context_report["source_receipt_file_sha256"]
+        == CONTEXT_SCREEN_SOURCE_RECEIPT_SHA256
+        and context_report["revision"]
+        == "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+        and context_qualification["member_sha256"]
+        == "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+        and context_qualification["native_fields"] == SOURCE_FIELDS
+        and context_qualification["archive_sha256"]
+        == "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
+        and context_payload["schema_version"]
+        == REFERENCE_CONTEXT_SCHEMA_VERSION
+        and context_reference["payload_sha256"]
+        == "85b46210cc982c21f317cb6e5b1e64306ed166add87083c1d8f19d177521f5a2"
+        and _context_screen_matches(
+            context_payload, schema_version=REFERENCE_CONTEXT_SCHEMA_VERSION
+        )
+        and context_payload["literal_values_emitted"] is False
+        and context_payload["raw_source_emitted"] is False
+        and context_payload["semantic_relationships_qualified"] is False
+        and context_payload["uri_resolution_performed"] is False
+        and context_payload["uri_resolution_screen_performed"] is True
+    )
+    if (
+        context_screen_file_sha != CONTEXT_SCREEN_FILE_SHA256
+        or hashlib.sha256(context_canonical).hexdigest()
+        != CONTEXT_SCREEN_SHA256
+        or context_envelope["report_sha256"] != CONTEXT_SCREEN_SHA256
+        or not context_screen_flags_valid
+    ):
+        raise ValueError("PBS source-context screen receipt differs")
+    context_sample = _context_sample_summary(context_payload)
+    if context_sample != {
+        "examples_emitted": 61,
+        "no_exact_literal": 52,
+        "unique_exact_literal": 9,
+        "sampled_reference_kind_counts": {"rdf_resource": 61},
+        "distinct_predicate_qname_count": 2,
+        "nearest_subject_elements": 0,
+    }:
+        raise ValueError("PBS source-context sample summary differs")
     native = json.loads(field_state_path.read_bytes())
     if (
         native["status"] != "passed"
@@ -181,6 +315,17 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         and screen_report["run_id"] == SCREEN_RUN_ID
         and screen_report["workflow_commit"] == SCREEN_WORKFLOW_COMMIT
     )
+    context_source_matches = (
+        context_report["dataset"] == native["dataset"]
+        and context_report["revision"] == native["revision"]
+        and context_report["source_receipt_file_sha256"]
+        == screen_report["source_receipt_file_sha256"]
+        and context_qualification["archive_sha256"]
+        == native["candidate_output"]["archive_sha256"]
+        and context_qualification["member_sha256"]
+        == native["candidate_output"]["member_sha256"]
+        and context_qualification["native_fields"] == SOURCE_FIELDS
+    )
     screen_denominators_match = (
         screen_qualification["reference_fields"] == REFERENCE_FIELDS
         and screen_qualification["reference_kind_counts"]
@@ -220,16 +365,19 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             for kind in screen_kind_counts
         )
     )
-    context_screen = reference_review["source_context_screen"]
+    review_context_screen = reference_review["source_context_screen"]
     if not all((
         screen_source_matches,
+        context_source_matches,
         screen_denominators_match,
         reference_digest_matches,
         reference_source_matches,
         reference_kinds_match,
         reference_review["scope"]["semantic_relationships_qualified"] is False,
-        isinstance(context_screen, dict)
-        and _context_screen_matches(cast("dict[str, Any]", context_screen)),
+        isinstance(review_context_screen, dict)
+        and _context_screen_matches(
+            cast("dict[str, Any]", review_context_screen), schema_version=2
+        ),
     )):
         raise ValueError("PBS source-local reference review differs")
 
@@ -401,6 +549,15 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "reference_screen_receipt_sha256": reference_screen_sha,
             "reference_screen_run_id": SCREEN_RUN_ID,
             "reference_screen_workflow_commit": SCREEN_WORKFLOW_COMMIT,
+            "reference_context_screen_receipt_sha256": CONTEXT_SCREEN_SHA256,
+            "reference_context_screen_file_sha256": context_screen_file_sha,
+            "reference_context_screen_run_id": CONTEXT_SCREEN_RUN_ID,
+            "reference_context_screen_workflow_commit": (
+                CONTEXT_SCREEN_WORKFLOW_COMMIT
+            ),
+            "reference_context_screen_source_receipt_sha256": (
+                CONTEXT_SCREEN_SOURCE_RECEIPT_SHA256
+            ),
             "prior_field_state_receipt_sha256": field_state_sha,
             "domain_semantics_report_sha256": domain_envelope["report_sha256"],
             "reference_meaning_report_sha256": reference_envelope[
@@ -448,24 +605,44 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             ],
             "context_screen": {
                 "status": "value_free_context_screen_reconciled",
-                "workflow_run_id": reference_review["source"]["screen_run_id"],
-                "workflow_commit": reference_review["source"][
-                    "screen_workflow_commit"
+                "workflow_run_id": CONTEXT_SCREEN_RUN_ID,
+                "workflow_commit": CONTEXT_SCREEN_WORKFLOW_COMMIT,
+                "receipt_sha256": CONTEXT_SCREEN_SHA256,
+                "receipt_file_sha256": context_screen_file_sha,
+                "source_receipt_sha256": CONTEXT_SCREEN_SOURCE_RECEIPT_SHA256,
+                "source_revision": context_report["revision"],
+                "source_member_sha256": context_qualification["member_sha256"],
+                "source_native_digest": native["candidate_output"][
+                    "native_core_sha256"
                 ],
-                "receipt_sha256": reference_review["source"][
-                    "screen_receipt_sha256"
-                ],
-                "schema_version": context_screen["schema_version"],
-                "strata_count": context_screen["strata_count"],
-                "examples_emitted": context_screen["examples_emitted"],
-                "examples_omitted": context_screen["examples_omitted"],
-                "external_targets_fetched": context_screen[
+                "schema_version": context_payload["schema_version"],
+                "strata_count": context_payload["strata_count"],
+                "examples_emitted": context_sample["examples_emitted"],
+                "examples_omitted": context_payload["examples_omitted"],
+                "sample_summary": context_sample,
+                "external_targets_fetched": context_payload[
                     "external_targets_fetched"
                 ],
-                "source_values_emitted": reference_review["scope"][
-                    "source_values_emitted"
+                "uri_resolution_performed": context_payload[
+                    "uri_resolution_performed"
+                ],
+                "uri_resolution_screen_performed": context_payload[
+                    "uri_resolution_screen_performed"
+                ],
+                "unique_exact_literal_no_xml_base_candidates": (
+                    context_payload[
+                        "unique_exact_literal_no_xml_base_candidates"
+                    ]
+                ),
+                "source_values_emitted": context_payload[
+                    "literal_values_emitted"
                 ],
                 "semantic_relationships_qualified": False,
+                "calibration_note": (
+                    "The bounded sample is value-free diagnostic context; "
+                    "it has no reviewed semantic labels or negative controls "
+                    "and does not qualify matcher behavior."
+                ),
             },
             "denominator_note": (
                 "The schema-role field-state count and source reference-screen "

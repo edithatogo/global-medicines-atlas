@@ -13,6 +13,7 @@ from global_medicines_atlas.pbs_domain_field_semantics import (
     OBSERVED,
 )
 from global_medicines_atlas.pbs_field_reconciliation import (
+    CONTEXT_SCREEN,
     DOMAIN,
     FIELD_STATE,
     PACKAGE,
@@ -90,19 +91,44 @@ def test_every_pinned_field_has_one_evidenced_state():
             "status_counts": {"unique_exact_literal": 992_456},
         },
     }
+    assert report["source"]["reference_context_screen_run_id"] == "40091358786"
+    assert report["source"]["reference_context_screen_workflow_commit"] == (
+        "a198ffff88531f06a34e4f237af6d55dfc74260a"
+    )
     context_screen = report["source_local_reference_review"]["context_screen"]
     assert context_screen == {
         "status": "value_free_context_screen_reconciled",
-        "workflow_run_id": "40076190245",
-        "workflow_commit": "b3139f9c655f48ccbb7a1714712219ac2281d838",
-        "receipt_sha256": "570cc803a6657e421dc614855fe75013440f716dd3ff1d0096232c08ae363711",
-        "schema_version": 2,
+        "workflow_run_id": "40091358786",
+        "workflow_commit": "a198ffff88531f06a34e4f237af6d55dfc74260a",
+        "receipt_sha256": "5bcc25fef1ad5a1a68a05fdc943f5b96e89848b56d5b6c506e9cba49d3b9db37",
+        "receipt_file_sha256": "1bed1a970d599e2bf8cc422352bced094c9568afd4776930b9df2a01d0273313",
+        "source_receipt_sha256": "a5eb06cf7e655eb0e0d8fe5d244297721ebede51e96c237333f7dffd76e1ccd1",
+        "source_revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+        "source_member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+        "source_native_digest": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+        "schema_version": 3,
         "strata_count": 184,
-        "examples_emitted": 63,
-        "examples_omitted": 2_160_003,
+        "examples_emitted": 61,
+        "examples_omitted": 2_160_005,
+        "sample_summary": {
+            "examples_emitted": 61,
+            "no_exact_literal": 52,
+            "unique_exact_literal": 9,
+            "sampled_reference_kind_counts": {"rdf_resource": 61},
+            "distinct_predicate_qname_count": 2,
+            "nearest_subject_elements": 0,
+        },
         "external_targets_fetched": 0,
+        "uri_resolution_performed": False,
+        "uri_resolution_screen_performed": True,
+        "unique_exact_literal_no_xml_base_candidates": 2_086_489,
         "source_values_emitted": False,
         "semantic_relationships_qualified": False,
+        "calibration_note": (
+            "The bounded sample is value-free diagnostic context; it has no "
+            "reviewed semantic labels or negative controls and does not "
+            "qualify matcher behavior."
+        ),
     }
     assert report["supersedes_report"]["path"] == SUPERSEDED_REPORT
     assert (
@@ -123,6 +149,7 @@ def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
         PACKAGE,
         SCREEN,
         REFERENCE_SCREEN,
+        CONTEXT_SCREEN,
         REFERENCE_REVIEW,
         SUPERSEDED_REPORT,
         DOMAIN,
@@ -314,6 +341,26 @@ def test_reference_review_requires_v2_context_screen(monkeypatch):
     _intercept_json_loads(monkeypatch, REFERENCE_REVIEW, mutate)
     with pytest.raises(
         ValueError, match="PBS source-local reference review differs"
+    ):
+        reconcile_pbs_field_states(ROOT)
+
+
+def test_context_screen_must_bind_exact_source_and_abstain(monkeypatch):
+    def mutate(envelope):
+        envelope["report"]["qualification"][
+            "semantic_relationships_qualified"
+        ] = True
+        canonical = json.dumps(
+            envelope["report"],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        envelope["report_sha256"] = hashlib.sha256(canonical).hexdigest()
+
+    _intercept_json_loads(monkeypatch, CONTEXT_SCREEN, mutate)
+    with pytest.raises(
+        ValueError, match="PBS source-context screen receipt differs"
     ):
         reconcile_pbs_field_states(ROOT)
 
