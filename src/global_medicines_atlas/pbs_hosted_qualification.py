@@ -22,6 +22,7 @@ from http import HTTPStatus
 from pathlib import Path
 from typing import Any, cast
 from urllib.parse import quote, urljoin, urlsplit
+from xml.parsers import expat
 
 import httpx
 
@@ -30,7 +31,7 @@ from .acquisition import (
     BoundIPAddressTransport,
     DestinationPolicyError,
 )
-from .adapters.au_pbs import read_pbs_v3_member
+from .adapters.au_pbs import PBS_V3_NAMESPACE, read_pbs_v3_member
 from .pbs_historical_projections import iter_pbs_historical_entity_batches
 from .pbs_historical_qualification import (
     _denominator,  # pyright: ignore[reportPrivateUsage]
@@ -70,6 +71,12 @@ REVISION = "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
 INFO_URL = f"https://huggingface.co/api/datasets/{DATASET}/revision/{REVISION}"
 HOSTS = ("huggingface.co", "us.aws.cdn.hf.co")
 MAX_REPORT_BYTES = 48_000
+_PBS_SCHEMA_MAJOR = 3
+_MAX_ROOT_VERSION_LITERAL_BYTES = 32
+_ROOT_METADATA_PREFIX_BYTES = 64 * 1024
+_ROOT_METADATA_CHUNK_BYTES = 4096
+_VERSION_MINOR_COMPONENT_COUNT = 2
+_VERSION_PATCH_COMPONENT_COUNT = 3
 FAILURE_STAGES = frozenset({
     "context",
     "transport-setup",
@@ -1290,6 +1297,129 @@ def run_hosted_schema_inventory(
         return _run_schema_inventory(
             exact_commit, output, transport=transport, retry=retry
         )
+    except QualificationError as error:
+        error.retry_event = retry.event
+        error.retry_detail = retry.retry_detail
+        raise
+
+
+def _pbs_root_schema_version(xml: bytes) -> tuple[str, tuple[int, ...]]:
+    """Read only the pinned PBS member's root version metadata attribute."""
+    expected_root = PBS_V3_NAMESPACE + "}root"
+    parser = expat.ParserCreate(namespace_separator="}")
+    observed: tuple[str, tuple[int, ...]] | None = None
+
+    class _RootMetadataReadError(Exception):
+        pass
+
+    def reject_doctype(*_args: object) -> None:
+        raise ValueError("PBS root metadata XML declaration rejected")
+
+    def start_element(name: str, attributes: dict[str, str]) -> None:
+        nonlocal observed
+        if name != expected_root:
+            raise ValueError("PBS root metadata QName mismatch")
+        literal = attributes.get("version")
+        if (
+            literal is None
+            or len(literal) > _MAX_ROOT_VERSION_LITERAL_BYTES
+            or re.fullmatch(r"[0-9]+(?:\.[0-9]+){0,3}", literal) is None
+        ):
+            raise ValueError("PBS root version metadata is not bounded numeric")
+        components = tuple(int(part) for part in literal.split("."))
+        if components[0] != _PBS_SCHEMA_MAJOR:
+            raise ValueError("PBS root schema major does not match pinned v3")
+        observed = (literal, components)
+        raise _RootMetadataReadError
+
+    parser.StartDoctypeDeclHandler = reject_doctype
+    parser.EntityDeclHandler = reject_doctype
+    parser.ExternalEntityRefHandler = lambda *_args: 0
+    parser.StartElementHandler = start_element
+    parser.SetParamEntityParsing(expat.XML_PARAM_ENTITY_PARSING_NEVER)
+    # Feed bounded slices and stop from the root-start callback. No descendant
+    # element, text, tail, or attribute is parsed or retained in this profile.
+    prefix_limit = min(len(xml), _ROOT_METADATA_PREFIX_BYTES)
+    for offset in range(0, prefix_limit, _ROOT_METADATA_CHUNK_BYTES):
+        chunk = xml[offset : offset + _ROOT_METADATA_CHUNK_BYTES]
+        try:
+            parser.Parse(chunk, False)  # ruff: ignore[boolean-positional-value-in-call] -- pyexpat exposes isfinal positionally
+        except _RootMetadataReadError:
+            break
+    else:
+        raise ValueError(
+            "PBS root version metadata not found within prefix bound"
+        )
+    if observed is None:
+        raise ValueError("PBS root version metadata missing")
+    return observed
+
+
+def run_hosted_root_schema_version_metadata(
+    exact_commit: str,
+    output: Path,
+    *,
+    transport: httpx.BaseTransport | None = None,
+) -> dict[str, Any]:
+    """Bind the root schema-version attribute to the exact pinned PBS bytes.
+
+    Only the numeric root version metadata is emitted; source field values are
+    neither parsed nor retained. Exact-main Actions context and all existing
+    archive/member digest checks are inherited from the pinned input loader.
+    """
+    if output.exists():
+        raise ValueError("PBS root metadata output already exists")
+    retry = _RetryBudget()
+    try:
+        inputs = _verified_inputs(
+            exact_commit, transport=transport, retry=retry
+        )
+        with _at("projection-qualification"):
+            literal, components = _pbs_root_schema_version(inputs.xml)
+        return {
+            "schema_version": 1,
+            "status": "passed",
+            "operation": "pbs-root-schema-version-metadata",
+            **inputs.context,
+            "dataset": DATASET,
+            "revision": REVISION,
+            "archive_path": ARCHIVE.path,
+            "archive_sha256": inputs.binding.archive_payload.sha256,
+            "archive_bytes": inputs.binding.archive_payload.byte_count,
+            "member_path": inputs.binding.member_path,
+            "member_sha256": inputs.binding.member_payload.sha256,
+            "member_bytes": inputs.binding.member_payload.byte_count,
+            "parent_receipt_sha256": inputs.parent.digest(),
+            "member_binding_sha256": inputs.binding.digest(),
+            "version_attribute_path": (
+                "/{http:~1~1schema.pbs.gov.au~1}root/attributes/version"
+            ),
+            "declared_schema_version": literal,
+            "schema_major": components[0],
+            "schema_minor": (
+                components[1]
+                if len(components) >= _VERSION_MINOR_COMPONENT_COUNT
+                else None
+            ),
+            "schema_patch": (
+                components[2]
+                if len(components) >= _VERSION_PATCH_COMPONENT_COUNT
+                else None
+            ),
+            "schema_minor_bound": (
+                len(components) >= _VERSION_MINOR_COMPONENT_COUNT
+            ),
+            "schema_patch_bound": (
+                len(components) >= _VERSION_PATCH_COMPONENT_COUNT
+            ),
+            "root_metadata_only": True,
+            "source_field_values_emitted": False,
+            "native_values_emitted": False,
+            "new_sources": 0,
+            "new_admissions": 0,
+            "rights_conclusion_changed": False,
+            "publications": 0,
+        }
     except QualificationError as error:
         error.retry_event = retry.event
         error.retry_detail = retry.retry_detail

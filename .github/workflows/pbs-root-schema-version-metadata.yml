@@ -1,0 +1,48 @@
+name: Read pinned PBS root schema version metadata
+
+on:
+  workflow_dispatch:
+    inputs:
+      exact_commit:
+        description: Exact merged main commit containing the reviewed profiler
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: pbs-root-schema-version-metadata
+  cancel-in-progress: false
+
+jobs:
+  inspect-root-metadata:
+    name: Bind only the pinned root version attribute
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 65
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Read only root version metadata from the digest-pinned member
+        timeout-minutes: 55
+        env:
+          REQUESTED_COMMIT: ${{ inputs.exact_commit }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"
+          uv run --locked --python 3.15.1 python scripts/profile_pbs_root_version_metadata.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --output pbs-root-schema-version-metadata.json
+      - name: Retain only the bounded value-free receipt
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-root-schema-version-metadata-${{ github.run_id }}-${{ github.run_attempt }}
+          path: pbs-root-schema-version-metadata.json
+          if-no-files-found: error
+          retention-days: 30

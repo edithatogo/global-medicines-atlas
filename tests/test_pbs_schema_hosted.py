@@ -3,11 +3,13 @@
 import hashlib
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import httpx
 import pytest
 import yaml
 from scripts import profile_historical_pbs_schema as cli
+from scripts import profile_pbs_root_version_metadata as root_version_cli
 from test_pbs_hosted_qualification import (
     SHA,
     synthetic,
@@ -162,3 +164,114 @@ def module_path():
         Path(__file__).resolve().parents[1]
         / ".github/workflows/pbs-historical-qualification.yml"
     )
+
+
+@pytest.mark.parametrize(
+    ("literal", "expected"),
+    [("3", ("3", (3,))), ("3.1.9", ("3.1.9", (3, 1, 9)))],
+)
+def test_root_version_reader_stops_at_metadata_and_emits_no_descendant_values(
+    literal, expected
+):
+    xml = (
+        f'<pbs:root xmlns:pbs="{module.PBS_V3_NAMESPACE}" '
+        f'version="{literal}"><pbs:private>SECRET_SOURCE_VALUE</pbs:private>'
+        "</pbs:root>"
+    ).encode()
+    assert module._pbs_root_schema_version(xml) == expected
+
+
+@pytest.mark.parametrize(
+    "xml",
+    [
+        b'<pbs:schedule xmlns:pbs="http://schema.pbs.gov.au/" version="3"/>',
+        b'<pbs:root xmlns:pbs="http://schema.pbs.gov.au/"/>',
+        b'<pbs:root xmlns:pbs="http://schema.pbs.gov.au/" version="4"/>',
+        b'<!DOCTYPE root [<!ENTITY e "x">]><root version="3"/>',
+        b'<pbs:root xmlns:pbs="http://schema.pbs.gov.au/" version="3.x"/>',
+    ],
+)
+def test_root_version_reader_rejects_unbound_or_unsafe_metadata(xml):
+    with pytest.raises(ValueError, match="PBS"):
+        module._pbs_root_schema_version(xml)
+
+
+def test_hosted_root_version_receipt_binds_only_pinned_identity_and_version(
+    tmp_path, monkeypatch
+):
+    xml = (
+        f'<pbs:root xmlns:pbs="{module.PBS_V3_NAMESPACE}" version="3">'
+        "<pbs:private>SECRET_SOURCE_VALUE</pbs:private></pbs:root>"
+    ).encode()
+    binding = SimpleNamespace(
+        archive_payload=SimpleNamespace(sha256="a" * 64, byte_count=123),
+        member_payload=SimpleNamespace(sha256="b" * 64, byte_count=len(xml)),
+        member_path="sch-2026-04-01-r1.xml",
+        digest=lambda: "c" * 64,
+    )
+    inputs = SimpleNamespace(
+        context={
+            "workflow_commit": SHA,
+            "run_id": "123",
+            "run_attempt": "1",
+        },
+        xml=xml,
+        binding=binding,
+        parent=SimpleNamespace(digest=lambda: "d" * 64),
+    )
+
+    def use_synthetic_inputs(*_args, **_kwargs):
+        return inputs
+
+    monkeypatch.setattr(module, "_verified_inputs", use_synthetic_inputs)
+    report = module.run_hosted_root_schema_version_metadata(
+        SHA, tmp_path / "receipt.json"
+    )
+    assert report["status"] == "passed"
+    assert report["archive_sha256"] == "a" * 64
+    assert report["member_sha256"] == "b" * 64
+    assert report["member_binding_sha256"] == "c" * 64
+    assert report["declared_schema_version"] == "3"
+    assert report["schema_major"] == 3
+    assert report["schema_minor"] is None
+    assert report["schema_minor_bound"] is False
+    assert report["source_field_values_emitted"] is False
+    assert "SECRET_SOURCE_VALUE" not in json.dumps(report)
+
+
+def test_root_version_cli_failure_receipt_never_serializes_source_text(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setattr(
+        root_version_cli,
+        "run_hosted_root_schema_version_metadata",
+        lambda *_args: (_ for _ in ()).throw(ValueError("SECRET_SOURCE_VALUE")),
+    )
+    receipt = tmp_path / "receipt.json"
+    assert (
+        root_version_cli.main([
+            "--exact-commit",
+            SHA,
+            "--output",
+            str(receipt),
+        ])
+        == 1
+    )
+    assert "SECRET_SOURCE_VALUE" not in receipt.read_text()
+
+
+def test_root_version_workflow_is_exact_main_and_uploads_only_receipt():
+    path = (
+        Path(__file__).resolve().parents[1]
+        / ".github/workflows/pbs-root-schema-version-metadata.yml"
+    )
+    document = yaml.load(
+        path.read_text(encoding="utf-8"), Loader=yaml.BaseLoader
+    )
+    job = document["jobs"]["inspect-root-metadata"]
+    assert job["if"] == "github.ref == 'refs/heads/main'"
+    run = next(step["run"] for step in job["steps"] if "run" in step)
+    assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in run
+    assert "scripts/profile_pbs_root_version_metadata.py" in run
+    artifact = job["steps"][-1]["with"]["path"]
+    assert artifact == "pbs-root-schema-version-metadata.json"

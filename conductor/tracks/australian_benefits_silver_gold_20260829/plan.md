@@ -5511,12 +5511,17 @@ source qualification remains pending their actual final artifacts.
   and 7730684 entities. All entities remain native_unresolved; 7713891 are
   unmapped and none reaches the existing price role. This does not establish
   source absence of prices or domain completion.
-- [~] Qualify the new bounded PBS native schema-path inventory route before
+- [x] Qualify the new bounded PBS native schema-path inventory route before
   extending domain mappings from the actual source structure. It emits paths,
   counts and presence states only, with a separate 1 MiB inventory bound and
   unchanged summary bound of 48000 bytes; no native values or new source are emitted.
   Read-only schema work has an independent concurrency key; legacy qualifier
-  serialization and timeout limits remain intact.
+  serialization and timeout limits remain intact. Exact-main run 39667604237
+  retained the complete 5,163-path inventory for 18,208,758 native fields.
+- [~] Read only the pinned April 2026 PBS member's root `version` metadata
+  attribute in exact-main Actions, binding the result to the archive/member
+  digests. Retain a bounded receipt with no other XML values; if it declares
+  only major v3, keep the minor schema release unbound.
 - [~] Observe complete-package run 39654897926, dispatched on exact merged
   main eaee359d after PR1264 passed all 40 protected checks. No completed
   real-source package claim is made until the terminal receipt is verified.
