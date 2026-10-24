@@ -23,6 +23,7 @@ P7_RULES_PATH = "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
 WORKBOOK_COUNT = 91
 P7_CELL_COUNT = 13_742
 SHA256_HEX_LENGTH = 64
+P7_STATUS_PAIR_LENGTH = 2
 
 
 def _sha256(path: Path) -> str:
@@ -79,6 +80,106 @@ def _candidate_identity(row: dict[str, Any]) -> tuple[str, str, str]:
     ):
         raise ValueError("workbook candidate identity is malformed")
     return cast("tuple[str, str, str]", parts)
+
+
+def _profile_field_rows(
+    profile_by_digest: dict[str, dict[str, Any]],
+    member_counts: dict[str, int],
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    status_map = {
+        "interpreted": "interpreted",
+        "unresolved": "native_unresolved",
+        "native_unresolved": "native_unresolved",
+        "unavailable": "unavailable",
+    }
+    for digest in sorted(profile_by_digest):
+        profile = profile_by_digest[digest]
+        sheets = _dict_list(profile.get("sheets"), "header profile sheets")
+        for sheet in sheets:
+            sheet_ordinal = _int(sheet.get("ordinal"), "sheet ordinal")
+            candidates = _dict_list(
+                sheet.get("candidate_rows"), "header profile candidates"
+            )
+            for candidate in candidates:
+                row_index = _int(candidate.get("row_index"), "candidate row index")
+                bindings = _dict_list(
+                    candidate.get("column_bindings", []),
+                    "header column bindings",
+                )
+                for binding in bindings:
+                    column = binding.get("column")
+                    status = binding.get("status")
+                    state = status_map.get(status) if isinstance(status, str) else None
+                    if not isinstance(column, str) or state is None:
+                        raise ValueError("header field binding is malformed")
+                    field = binding.get("field")
+                    if state == "interpreted" and not isinstance(field, str):
+                        raise ValueError("interpreted header binding lacks a field")
+                    rows.append({
+                        "header_profile_sha256": digest,
+                        "workbooks_represented": member_counts[digest],
+                        "sheet_ordinal": sheet_ordinal,
+                        "candidate_row_index": row_index,
+                        "column": column,
+                        "field": field if isinstance(field, str) else None,
+                        "header_state": state,
+                        "source_value_state": "native_unresolved",
+                    })
+    return rows
+
+
+def _p7_field_rows(
+    p7_typed: dict[str, Any],
+) -> list[dict[str, Any]]:
+    lineage = _dict(
+        p7_typed.get("workbook_field_lineage"), "P7 workbook field lineage"
+    )
+    fields = _dict_list(lineage.get("fields"), "P7 lineage fields")
+    domain_profile = _dict(
+        p7_typed.get("domain_value_profile"), "P7 typed value profile"
+    )
+    if lineage.get("source_sha256") != domain_profile.get("source_sha256"):
+        raise ValueError("P7 field lineage source identity differs")
+    if sum(_int(row.get("cell_count"), "P7 field cell count") for row in fields) != P7_CELL_COUNT:
+        raise ValueError("P7 field rows differ from cell denominator")
+    rows: list[dict[str, Any]] = []
+    for row in fields:
+        cell_count = _int(row.get("cell_count"), "P7 field cell count")
+        statuses_raw = row.get("statuses")
+        if not isinstance(statuses_raw, list):
+            raise TypeError("P7 field conversion statuses are malformed")
+        statuses: list[dict[str, Any]] = []
+        for item in cast("list[Any]", statuses_raw):
+            if (
+                not isinstance(item, list)
+                or len(cast("list[Any]", item)) != P7_STATUS_PAIR_LENGTH
+            ):
+                raise ValueError("P7 field conversion status is malformed")
+            state, count = cast("list[Any]", item)
+            if not isinstance(state, str) or not state:
+                raise ValueError("P7 field conversion status is malformed")
+            statuses.append({
+                "state": state,
+                "count": _int(count, "P7 field status count"),
+            })
+        if sum(item["count"] for item in statuses) != cell_count:
+            raise ValueError("P7 field status counts differ from cell count")
+        mapping_target = row.get("mapping_target")
+        header_state = "native_unresolved" if mapping_target == "unmapped" else "interpreted"
+        if mapping_target not in {"unmapped", "services", "benefits", "fees", "caps", "descriptions", "hierarchy", "legacy_annotations", "source_headers"}:
+            raise ValueError("P7 field mapping target is unsupported")
+        rows.append({
+            "sheet_name": row.get("sheet_name"),
+            "column": row.get("column"),
+            "field": row.get("mapping_field"),
+            "mapping_target": mapping_target,
+            "header_state": header_state,
+            "source_value_state": "native_unresolved",
+            "cell_count": cell_count,
+            "conversion_statuses": statuses,
+        })
+    return sorted(rows, key=lambda row: (str(row["sheet_name"]), str(row["column"])))
 
 
 def _profile_binding_count(profile: dict[str, Any]) -> tuple[int, int]:
@@ -187,18 +288,15 @@ def reconcile_workbook_field_states(
         "profile_count"
     ) != len(profiles):
         raise ValueError("header profile member denominator differs")
-    if any(
-        row.get("header_profile_sha256") not in profile_by_digest
-        for row in assignments
-    ):
-        raise ValueError(
-            "workbook assignment references an unknown header profile"
-        )
     assignment_frequency: dict[str, int] = {}
     for assignment in assignments:
         digest = assignment.get("header_profile_sha256")
         if not isinstance(digest, str):
             raise TypeError("workbook header profile digest is malformed")
+        if digest not in profile_by_digest:
+            raise ValueError(
+                "workbook assignment references an unknown header profile"
+            )
         assignment_frequency[digest] = assignment_frequency.get(digest, 0) + 1
     if assignment_frequency != member_counts:
         raise ValueError("header profile member counts differ from assignments")
@@ -220,6 +318,8 @@ def reconcile_workbook_field_states(
         raise ValueError("unresolved header label count differs from profiles")
     if headers.get("unresolved_header_candidate_count") != 0:
         raise ValueError("unresolved header candidates remain")
+
+    header_field_rows = _profile_field_rows(profile_by_digest, member_counts)
 
     totals = _dict(package.get("totals"), "workbook totals")
     coverage = _dict(
@@ -352,6 +452,7 @@ def reconcile_workbook_field_states(
                 ],
                 "denominator_relation": "separate_non_additive_header_role_occurrences",
             },
+            "field_rows": header_field_rows,
             "cell_values": {
                 "denominator": non_header_cells,
                 "interpreted": 0,
@@ -369,6 +470,7 @@ def reconcile_workbook_field_states(
         },
         "p7_workbook": {
             "source_sha256": value_profile["source_sha256"],
+            "field_rows": _p7_field_rows(p7_typed),
             "cell_values": {
                 "denominator": p7_cells,
                 "interpreted": 0,
