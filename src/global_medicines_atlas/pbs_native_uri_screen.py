@@ -31,10 +31,131 @@ MAX_ELEMENTS = 20_000_000
 MAX_REFERENCE_ROWS = 8_000_000
 MAX_REVIEW_CASES = 64
 MAX_REVIEW_OCCURRENCE_ADDRESS_BYTES = 4096
+URI_SCREEN_SCHEMA_VERSION = 2
 PBS_NAMESPACE = "http://schema.pbs.gov.au/"
 RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 _SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 _BAD_PERCENT = re.compile(r"%(?![0-9A-Fa-f]{2})")
+_REVIEW_PBS_ELEMENTS = frozenset({
+    "ATC",
+    "administrative-advice",
+    "administrative-advice-reference",
+    "age",
+    "amount",
+    "assessment",
+    "benefit-type",
+    "block-container",
+    "brand-name",
+    "care-type",
+    "caution",
+    "caution-reference",
+    "chart-categories-list",
+    "chart-category",
+    "clinical",
+    "code",
+    "condition",
+    "condition-parameter",
+    "condition-reference",
+    "container",
+    "container-definition",
+    "content",
+    "contribution",
+    "copayment",
+    "criteria-reference",
+    "discount",
+    "dispensing-rule",
+    "dispensing-rule-reference",
+    "dpmq",
+    "episodicity",
+    "episodicity-reference",
+    "ex-manufacturer",
+    "fee",
+    "fee-definition",
+    "hundred-grams",
+    "incentive",
+    "increase",
+    "indication",
+    "indication-reference",
+    "location",
+    "markup",
+    "markup-band",
+    "maximum-prescribable",
+    "medication-chart-definition",
+    "member-of",
+    "moved",
+    "mp",
+    "mp-reference",
+    "mpp",
+    "mpp-reference",
+    "mpuu",
+    "mpuu-reference",
+    "one-gram",
+    "one-tenth",
+    "organisation",
+    "organisation-reference",
+    "other",
+    "parameter-reference",
+    "patient",
+    "pharmaceutical-item",
+    "pharmaceutical-item-reference",
+    "pharmacist",
+    "population",
+    "preferred-term",
+    "prescriber",
+    "prescriber-instruction",
+    "prescriber-instruction-reference",
+    "prescribing-rule",
+    "previous",
+    "pricing",
+    "pricing-model",
+    "product-listing",
+    "program",
+    "quantity",
+    "recovery-price-reference",
+    "restriction",
+    "restriction-reference",
+    "safety-net",
+    "severity",
+    "severity-reference",
+    "sex",
+    "ten-grams",
+    "threshold",
+    "to-pharmacist",
+    "tpp",
+    "tpp-reference",
+    "tpuu",
+    "tpuu-reference",
+    "treatment",
+    "treatment-parameter",
+    "treatment-phase",
+    "treatment-phase-reference",
+    "unit-of-measure",
+})
+_REVIEW_QNAME_ALLOWLIST = {
+    PBS_NAMESPACE: ("pbs", _REVIEW_PBS_ELEMENTS),
+    "http://pbs.gov.au/": (
+        "pbsdata",
+        frozenset({
+            "applies-to",
+            "assessment",
+            "concept",
+            "fee",
+            "has-fee",
+            "has-revision",
+            "has-revision-history",
+            "patient",
+            "pricing",
+        }),
+    ),
+    "http://extension.schema.pbs.gov.au/": (
+        "pbsext",
+        frozenset({"ex-manufacturer"}),
+    ),
+    "http://www.w3.org/2004/02/skos/core#": (
+        "skos",
+        frozenset({"Concept"}),
+    ),
+}
 URI_SCREEN_FAILURE_CODES = frozenset({
     "uri-value-bound",
     "indexed-uri-bound",
@@ -162,19 +283,34 @@ def _resolve(value: str | None, base: str | None) -> str | None:
 
 
 def _safe_qname(name: str) -> str:
-    if name.startswith(f"{{{PBS_NAMESPACE}}}"):
-        return f"pbs:{name.split('}', 1)[1]}"
+    for namespace, (prefix, allowed_names) in _REVIEW_QNAME_ALLOWLIST.items():
+        if name.startswith(f"{{{namespace}}}"):
+            local_name = name.split("}", 1)[1]
+            return (
+                f"{prefix}:{local_name}"
+                if local_name in allowed_names
+                else "other_or_unresolved"
+            )
     if name.startswith(f"{{{RDF_NAMESPACE}}}"):
-        return f"rdf:{name.split('}', 1)[1]}"
+        return (
+            "rdf:Description"
+            if name.split("}", 1)[1] == "Description"
+            else "other_or_unresolved"
+        )
     return "other_or_unresolved"
+
+
+def _safe_review_qname(name: str) -> str:
+    """Expose only allowlisted vocabulary QNames in selected case bindings."""
+    return _safe_qname(name)
 
 
 @dataclass
 class _ScreenIndex:
     rdf_definitions: Counter[str] = field(default_factory=Counter)
     xml_ids: Counter[str] = field(default_factory=Counter)
-    refs: list[tuple[str, str, str | None, bool, str | None]] = field(
-        default_factory=list
+    refs: list[tuple[str, str, str | None, bool, str | None, str | None]] = (
+        field(default_factory=list)
     )
     definition_counts: Counter[str] = field(default_factory=Counter)
     definition_element_qnames: Counter[str] = field(default_factory=Counter)
@@ -232,6 +368,7 @@ def _record_attribute(
             effective_base,
             has_base_override,
             occurrence if occurrence in selected_addresses else None,
+            element_qname if occurrence in selected_addresses else None,
         ))
         index.reference_element_qnames[element_qname] += 1
         index.reference_attribute_qnames[_QNAME[attribute]] += 1
@@ -244,6 +381,7 @@ def _pointer(value: str) -> str:
 def _bind_review_cases(
     review_cases: list[dict[str, str]] | None,
     occurrence_outcomes: dict[str, str],
+    occurrence_contexts: dict[str, dict[str, str | None]],
 ) -> list[dict[str, Any]]:
     if review_cases is None:
         return []
@@ -262,7 +400,9 @@ def _bind_review_cases(
             "reference_occurrence_sha256": hashlib.sha256(
                 address.encode("utf-8")
             ).hexdigest(),
+            **occurrence_contexts[address],
             "uri_resolution": outcome,
+            "semantic_review_state": "pending",
             "adjudication": "unreviewed",
             "semantic_relationship_qualified": False,
         })
@@ -374,7 +514,95 @@ def _index_member(
     return index
 
 
-def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outcome matrix is the auditable report contract
+def _review_target_contexts(  # ruff: ignore[too-many-branches] -- bounded streaming parse keeps only selected target identities
+    member: bytes,
+    selected_targets: set[tuple[str, str]],
+    progress: Callable[[str, int, int], None] | None,
+) -> dict[tuple[str, str], tuple[str, str]]:
+    """Locate only selected unique targets in a bounded second XML pass."""
+    if not selected_targets:
+        return {}
+    contexts: dict[tuple[str, str], tuple[str, str]] = {}
+    base_stack: list[str | None] = []
+    address_stack: list[str] = []
+    child_counts: list[Counter[str]] = []
+    elements = 0
+    policy = ParserPolicy(
+        max_bytes=MAX_MEMBER_BYTES,
+        max_xml_depth=256,
+        max_xml_elements=MAX_ELEMENTS,
+        max_xml_text_bytes=MAX_MEMBER_BYTES,
+    )
+    try:  # ruff: ignore[too-many-statements-in-try-clause] -- one parser pass maintains synchronized bounded context stacks
+        for event, element, parent in iter_xml_events(member, policy=policy):
+            if event != "start":
+                if parent is not None:
+                    parent.remove(element)
+                element.clear()
+                base_stack.pop()
+                address_stack.pop()
+                child_counts.pop()
+                continue
+            elements += 1
+            if elements > MAX_ELEMENTS:
+                raise UriScreenError(
+                    "element-bound", "PBS URI screen element bound exceeded"
+                )
+            if parent is None:
+                element_address = f"/{_pointer(element.tag)}/1"
+            else:
+                counts = child_counts[-1]
+                counts[element.tag] += 1
+                element_address = (
+                    f"{address_stack[-1]}/{_pointer(element.tag)}"
+                    f"/{counts[element.tag]}"
+                )
+            parent_base = base_stack[-1] if base_stack else None
+            effective_base = _effective_base(
+                parent_base, element.attrib.get(XML_BASE)
+            )
+            base_stack.append(effective_base)
+            address_stack.append(element_address)
+            child_counts.append(Counter())
+            element_qname = _safe_review_qname(element.tag)
+            for attribute, value in element.attrib.items():
+                target_key: tuple[str, str] | None = None
+                if attribute == XML_ID and _is_ncname(value):
+                    target_key = ("xml_id", value)
+                elif attribute == RDF_ABOUT:
+                    resolved = _resolve(value, effective_base)
+                    if resolved is not None:
+                        target_key = ("rdf_about", resolved)
+                if target_key in selected_targets:
+                    if target_key in contexts:
+                        raise UriScreenError(
+                            "review-case-binding-invalid",
+                            "PBS URI review target is not unique",
+                        )
+                    contexts[target_key] = (
+                        element_qname,
+                        hashlib.sha256(element_address.encode()).hexdigest(),
+                    )
+            if progress is not None and elements % 100_000 == 0:
+                progress(
+                    "pbs-uri-review-target-context",
+                    elements // 100_000,
+                    elements,
+                )
+    except ParserSafetyError as exc:
+        raise UriScreenError(
+            "xml-malformed-or-unsafe",
+            "PBS URI review target pass XML is malformed or unsafe",
+        ) from exc
+    if contexts.keys() != selected_targets:
+        raise UriScreenError(
+            "review-occurrence-absent",
+            "PBS URI review target occurrence is absent",
+        )
+    return contexts
+
+
+def screen_pbs_native_uris(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements] -- explicit outcome matrix and selected-case bindings are the auditable report contract
     member: bytes,
     *,
     progress: Callable[[str, int, int], None] | None = None,
@@ -406,7 +634,17 @@ def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outco
     outcomes: dict[str, Counter[str]] = defaultdict(Counter)
     qname_outcomes: dict[str, Counter[str]] = defaultdict(Counter)
     occurrence_outcomes: dict[str, str] = {}
-    for kind, value, effective, has_override, address in index.refs:
+    selected_reference_qnames: dict[str, str] = {}
+    selected_reference_kinds: dict[str, str] = {}
+    selected_target_by_address: dict[str, tuple[str, str]] = {}
+    for (
+        kind,
+        value,
+        effective,
+        has_override,
+        address,
+        element_qname,
+    ) in index.refs:
         if kind == XLINK_HREF and value.startswith("#") and len(value) > 1:
             fragment = value[1:]
             if has_override:
@@ -427,6 +665,11 @@ def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outco
                         if count > 1
                         else "missing_id_target"
                     )
+                    if (
+                        outcome == "same_member_unique_id"
+                        and address is not None
+                    ):
+                        selected_target_by_address[address] = ("xml_id", target)
         elif kind == XLINK_HREF:
             outcome = "external_or_nonfragment_xlink_unresolved"
         else:
@@ -446,19 +689,56 @@ def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outco
                     if targets > 1
                     else "absolute_uri_no_member_definition"
                 )
+                if (
+                    outcome == "absolute_uri_unique_candidate"
+                    and address is not None
+                ):
+                    selected_target_by_address[address] = (
+                        "rdf_about",
+                        resolved,
+                    )
         label = _KINDS[kind]
         outcomes[label][outcome] += 1
         qname_outcomes[_QNAME[kind]][outcome] += 1
         if address is not None:
             occurrence_outcomes[address] = outcome
+            selected_reference_qnames[address] = element_qname or ""
+            selected_reference_kinds[address] = label
 
-    case_bindings = _bind_review_cases(review_cases, occurrence_outcomes)
+    target_contexts = _review_target_contexts(
+        member, set(selected_target_by_address.values()), progress
+    )
+    occurrence_contexts: dict[str, dict[str, str | None]] = {}
+    for address in occurrence_outcomes:
+        target_key = selected_target_by_address.get(address)
+        target_context = (
+            target_contexts.get(target_key) if target_key is not None else None
+        )
+        occurrence_contexts[address] = {
+            "reference_kind": selected_reference_kinds[address],
+            "structural_role": (
+                "rdf_resource_attribute"
+                if selected_reference_kinds[address] == "rdf_resource"
+                else "xlink_href_attribute"
+            ),
+            "reference_element_qname": selected_reference_qnames[address],
+            "target_element_qname": (
+                target_context[0] if target_context is not None else None
+            ),
+            "target_occurrence_sha256": (
+                target_context[1] if target_context is not None else None
+            ),
+        }
+
+    case_bindings = _bind_review_cases(
+        review_cases, occurrence_outcomes, occurrence_contexts
+    )
 
     if progress is not None:
         progress("pbs-uri-screen-classify", 1, len(index.refs))
     return {
         "schema_id": "global-medicines-atlas.pbs-native-uri-screen",
-        "schema_version": 1,
+        "schema_version": URI_SCREEN_SCHEMA_VERSION,
         "native_member_bytes": len(member),
         "xml_elements": index.elements,
         "definition_counts_by_qname": {

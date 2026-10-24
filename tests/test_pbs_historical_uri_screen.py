@@ -12,7 +12,10 @@ import pytest
 import yaml
 from scripts import screen_historical_pbs_uri_references as cli
 
-from global_medicines_atlas.pbs_native_uri_screen import UriScreenError
+from global_medicines_atlas.pbs_native_uri_screen import (
+    URI_SCREEN_SCHEMA_VERSION,
+    UriScreenError,
+)
 
 COMMIT = "a" * 40
 
@@ -106,7 +109,7 @@ def test_script_uses_verified_member_route_and_retains_aggregate_only(
         progress("pbs-uri-screen-parse", 1, 1)
         return {
             "schema_id": "global-medicines-atlas.pbs-native-uri-screen",
-            "schema_version": 1,
+            "schema_version": URI_SCREEN_SCHEMA_VERSION,
             "reference_counts_by_kind": {"xlink_href": 1},
             "outcome_counts_by_kind": {
                 "xlink_href": {"same_member_unique_id": 1}

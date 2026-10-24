@@ -17,6 +17,7 @@ from global_medicines_atlas.pbs_hosted_qualification import (
     failure_report,
 )
 from global_medicines_atlas.pbs_native_uri_screen import (
+    URI_SCREEN_SCHEMA_VERSION,
     UriScreenError,
     screen_pbs_native_uris,
 )
@@ -129,7 +130,7 @@ def run(exact_commit: str, output: Path) -> dict[str, Any]:
         )
         report = {
             "schema_id": "global-medicines-atlas.pbs-native-uri-screen",
-            "schema_version": 1,
+            "schema_version": URI_SCREEN_SCHEMA_VERSION,
             "status": "passed",
             **inputs.context,
             "operation": "pbs-native-uri-screen",
@@ -159,7 +160,7 @@ def run(exact_commit: str, output: Path) -> dict[str, Any]:
             report["failure_code"] = error.code
         report.update({
             "schema_id": "global-medicines-atlas.pbs-native-uri-screen",
-            "schema_version": 1,
+            "schema_version": URI_SCREEN_SCHEMA_VERSION,
             "operation": "pbs-native-uri-screen",
             "uri_resolution_performed": False,
             "semantic_relationships_qualified": False,
