@@ -47,7 +47,7 @@ MAX_REPORT_STRATA_BYTES = 4 * 1024**2
 # bounded context profile there as deterministic zlib/base64 JSON.
 MAX_COMPRESSED_RECEIPT_BYTES = 32_000
 SHA256_HEX_LENGTH = 64
-MAX_REPORT_EXAMPLE_BYTES = 3_500
+MAX_REPORT_EXAMPLE_BYTES = 64_000
 ROOT_CHILD_STACK_DEPTH = 2
 CONTEXT_PROGRESS_EVENT_INTERVAL = 500_000
 CONTEXT_PROGRESS_OCCURRENCE_INTERVAL = 250_000
@@ -337,11 +337,14 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                    r.predicate_address, coalesce(r.subject_qname, 'none'),
                    r.subject_address, r.identifier_qname, r.identifier_address,
                    r.base_depth,
-                   r.literal_class, count(d.address),
+                   r.literal_class, count(d.address) AS target_count,
                    sum(CASE WHEN d.base_depth > 0 THEN 1 ELSE 0 END)
             FROM refs r LEFT JOIN defs d ON r.space = d.space AND r.literal = d.literal
             GROUP BY r.rowid
-            ORDER BY r.kind, r.address
+            ORDER BY r.kind, target_count,
+                     r.predicate_qname, coalesce(r.subject_qname, 'none'),
+                     coalesce(r.identifier_qname, 'none'), r.base_depth,
+                     r.literal_class, r.address
         """)
         for grouped_occurrences, (
             kind,
@@ -558,7 +561,8 @@ def screen_reference_context(
     result = _screen(member, progress=progress)
     return {
         "schema_id": "global-medicines-atlas.pbs-reference-context-screen",
-        "schema_version": 1,
+        "schema_version": 2,
+        "example_selection_policy": "up_to_five_value_free_examples_per_structural_stratum",
         **result,
     }
 

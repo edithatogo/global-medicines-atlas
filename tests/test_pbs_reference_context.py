@@ -114,6 +114,40 @@ def test_context_screen_is_deterministic_and_classifies_negative_controls():
     }
 
 
+def test_context_examples_cover_structural_strata_without_emitting_values():
+    links = "".join(
+        f'<edge-{index} rdf:resource="missing-{index}"/>' for index in range(20)
+    )
+    xml = (
+        '<root xmlns="http://schema.pbs.gov.au/" '
+        'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
+        'xmlns:xlink="http://www.w3.org/1999/xlink" '
+        'xmlns:xml="http://www.w3.org/XML/1998/namespace">'
+        '<target rdf:about="shared-target"/>'
+        '<target xml:id="fragment-target"/>'
+        + links
+        + '<exact rdf:resource="shared-target"/>'
+        + '<fragment xlink:href="#fragment-target"/>'
+        + "</root>"
+    ).encode()
+
+    report = screen_reference_context(xml)
+
+    assert report["examples_emitted"] == report["strata_count"]
+    assert all(len(row["examples"]) == 1 for row in report["strata"])
+    assert all(
+        row["examples_omitted"] == row["occurrences"] - 1
+        for row in report["strata"]
+    )
+    serialized = json.dumps(report)
+    for private_value in (
+        "missing-",
+        "shared-target",
+        "fragment-target",
+    ):
+        assert private_value not in serialized
+
+
 def test_context_receipt_compression_round_trips_the_complete_profile():
     context = screen_reference_context(
         b'<root xmlns="http://schema.pbs.gov.au/" '

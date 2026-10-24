@@ -407,6 +407,27 @@ def test_reference_context_validation_rejects_non_object_and_non_string_keys():
         _validate_reference_context({1: "invalid"}, 0)
 
 
+def test_reference_context_validation_accepts_stratified_v2_and_rejects_policy():
+    profile = {
+        **_context(),
+        "schema_version": 2,
+        "example_selection_policy": (
+            "up_to_five_value_free_examples_per_structural_stratum"
+        ),
+    }
+    assert (
+        _validate_reference_context(profile, 2_160_066)[
+            "example_selection_policy"
+        ]
+        == "up_to_five_value_free_examples_per_structural_stratum"
+    )
+    with pytest.raises(ValueError, match="contract differs"):
+        _validate_reference_context(
+            {**profile, "example_selection_policy": "unbounded"},
+            2_160_066,
+        )
+
+
 def test_reference_context_compressed_envelope_byte_limit_is_enforced(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -427,7 +448,14 @@ def test_reference_context_compressed_envelope_byte_limit_is_enforced(
         ({**_context(), "unexpected": True}, "schema differs"),
         ({**_context(), "schema_version": True}, "count is invalid"),
         ({**_context(), "schema_id": "wrong"}, "contract differs"),
-        ({**_context(), "schema_version": 2}, "contract differs"),
+        (
+            {
+                **_context(),
+                "schema_version": 2,
+                "example_selection_policy": "wrong",
+            },
+            "contract differs",
+        ),
         ({**_context(), "strata": "not a list"}, "strata must be a list"),
         ({**_context(), "strata_count": 2}, "contract differs"),
         ({**_context(), "examples_emitted": 1_001}, "contract differs"),
