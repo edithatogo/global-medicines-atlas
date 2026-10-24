@@ -20,12 +20,17 @@ SCREEN = (
     "quality/qualifications/"
     "pbs-native-reference-screen-20261022-39730665004.json"
 )
+REFERENCE_SCREEN = (
+    "quality/qualifications/"
+    "pbs-native-reference-screen-20261024-40040624594.json"
+)
 DOMAIN = "quality/qualifications/pbs-domain-field-semantics-20261023.json"
 FIELD_STATE = (
     "quality/qualifications/pbs-native-silver-field-state-20261023.json"
 )
 REFERENCE_REVIEW = (
-    "quality/qualifications/pbs-native-reference-meaning-review-20261023.json"
+    "quality/qualifications/"
+    "pbs-native-reference-meaning-review-20261024-40040624594.json"
 )
 PACKAGE_SHA256 = (
     "769a1d88ab52d6ed9ab08d07ce7d7b433dd7f9034e6b501ad30198a9b6e59202"
@@ -33,12 +38,31 @@ PACKAGE_SHA256 = (
 SCREEN_SHA256 = (
     "a1adda4e946365b98bf3febc03b9ae51acdae6db1569c7fc6606f8892c7ae48e"
 )
+REFERENCE_SCREEN_SHA256 = (
+    "a221facbc5b9bf0250b00d9036d5b909f6408fc99d3af390b687f1f6ad8950b4"
+)
 FIELD_STATE_SHA256 = (
     "2f35eebe45c0326dc80e76c461b0a8af23585923479cec8b74dcb9de5019120d"
 )
 REFERENCE_REVIEW_SHA256 = (
-    "545bda85c569705ab0ca90e3e49b434a4c07be9c30baac1d0e3878c8a9aef054"
+    "9130f7dcfbc1160d15b7dbbe3236614a1afc2d5327efc0dcd7f8d0197299d7dc"
 )
+SUPERSEDED_REPORT = (
+    "quality/qualifications/"
+    "pbs-native-silver-field-reconciliation-20261024-r4.json"
+)
+SUPERSEDED_REPORT_SHA256 = (
+    "defea61ae053788867ebdbbeefb2c1185956b992b60f6eaa0e89faca15f91517"
+)
+CONTEXT_SCREEN_RUN_ID = "40063785531"
+SCREEN_RUN_ID = "40040624594"
+SCREEN_WORKFLOW_COMMIT = "43f72eb7844a1f3adf13ec1fb34788c1bb8faf71"
+REFERENCE_FIELDS = 2_160_066
+REFERENCE_KIND_COUNTS = {"rdf_resource": 1_167_610, "xlink_href": 992_456}
+REFERENCE_STATUS_COUNTS = {
+    "no_exact_literal": 73_577,
+    "unique_exact_literal": 2_086_489,
+}
 DOMAIN_REPORT_SHA256 = (
     "6999155565770f6112385705ba22b6b819db51508d352b3d16330ec8077c8a72"
 )
@@ -65,19 +89,25 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     """Assign every field occurrence once; retain unqualified values as native."""
     package_path = root / PACKAGE
     screen_path = root / SCREEN
+    reference_screen_path = root / REFERENCE_SCREEN
     field_state_path = root / FIELD_STATE
     reference_review_path = root / REFERENCE_REVIEW
     domain_path = root / DOMAIN
     package_sha = _file_sha256(package_path)
     screen_sha = _file_sha256(screen_path)
+    reference_screen_sha = _file_sha256(reference_screen_path)
     field_state_sha = _file_sha256(field_state_path)
     reference_review_sha = _file_sha256(reference_review_path)
-    if (
-        package_sha != PACKAGE_SHA256
-        or screen_sha != SCREEN_SHA256
-        or field_state_sha != FIELD_STATE_SHA256
-        or reference_review_sha != REFERENCE_REVIEW_SHA256
-    ):
+    superseded_report_sha = _file_sha256(root / SUPERSEDED_REPORT)
+    digest_pairs = (
+        (package_sha, PACKAGE_SHA256),
+        (screen_sha, SCREEN_SHA256),
+        (reference_screen_sha, REFERENCE_SCREEN_SHA256),
+        (field_state_sha, FIELD_STATE_SHA256),
+        (reference_review_sha, REFERENCE_REVIEW_SHA256),
+        (superseded_report_sha, SUPERSEDED_REPORT_SHA256),
+    )
+    if any(actual != expected for actual, expected in digest_pairs):
         raise ValueError("PBS field evidence receipt digest differs")
     native = json.loads(field_state_path.read_bytes())
     if (
@@ -107,25 +137,73 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "PBS field-meaning report differs from its source evidence"
         )
 
+    screen_envelope = json.loads(reference_screen_path.read_bytes())
+    screen_report = screen_envelope["report"]
+    screen_qualification = screen_report["qualification"]
     reference_envelope = json.loads(reference_review_path.read_bytes())
     reference_review = reference_envelope["report"]
+    screen_kind_counts = screen_qualification["reference_kind_counts"]
+    screen_kind_status_counts = screen_qualification[
+        "reference_kind_status_counts"
+    ]
+    review_kind_counts = reference_review["exact_source_screen"]["per_kind"]
     reference_canonical = json.dumps(
         reference_review,
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
     ).encode()
-    if (
+    screen_source_matches = (
+        screen_qualification["member_sha256"]
+        == domain_report["source"]["member_sha256"]
+        and screen_qualification["native_fields"] == SOURCE_FIELDS
+        and screen_qualification["semantic_relationships_qualified"] is False
+    )
+    screen_denominators_match = (
+        screen_qualification["reference_fields"] == REFERENCE_FIELDS
+        and screen_qualification["reference_kind_counts"]
+        == REFERENCE_KIND_COUNTS
+        and screen_qualification["reference_status_counts"]
+        == REFERENCE_STATUS_COUNTS
+    )
+    reference_digest_matches = (
         hashlib.sha256(reference_canonical).hexdigest()
-        != reference_envelope["report_sha256"]
-        or reference_review["source"]["member_sha256"]
-        != domain_report["source"]["member_sha256"]
-        or reference_review["source"]["native_digest"]
-        != domain_report["source"]["native_digest"]
-        or reference_review["source"]["native_fields"] != SOURCE_FIELDS
-        or reference_review["scope"]["semantic_relationships_qualified"]
-        is not False
-    ):
+        == reference_envelope["report_sha256"]
+    )
+    reference_source_matches = (
+        reference_review["source"]["member_sha256"]
+        == domain_report["source"]["member_sha256"]
+        and reference_review["source"]["native_digest"]
+        == domain_report["source"]["native_digest"]
+        and reference_review["source"]["native_fields"] == SOURCE_FIELDS
+        and reference_review["source"]["screen_receipt_sha256"]
+        == reference_screen_sha
+        and reference_review["source"]["screen_run_id"] == SCREEN_RUN_ID
+        and reference_review["source"]["screen_workflow_commit"]
+        == SCREEN_WORKFLOW_COMMIT
+    )
+    reference_kinds_match = (
+        reference_review["exact_source_screen"][
+            "per_kind_match_counts_available"
+        ]
+        and set(review_kind_counts) == set(screen_kind_counts)
+        and all(
+            review_kind_counts[kind]["reference_fields"]
+            == screen_kind_counts[kind]
+            and review_kind_counts[kind]["semantic_links_qualified"] is False
+            and review_kind_counts[kind]["status_counts"]
+            == screen_kind_status_counts[kind]
+            for kind in screen_kind_counts
+        )
+    )
+    if not all((
+        screen_source_matches,
+        screen_denominators_match,
+        reference_digest_matches,
+        reference_source_matches,
+        reference_kinds_match,
+        reference_review["scope"]["semantic_relationships_qualified"] is False,
+    )):
         raise ValueError("PBS source-local reference review differs")
 
     observed_path = (
@@ -293,6 +371,9 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "source_fields": SOURCE_FIELDS,
             "package_receipt_sha256": package_sha,
             "screen_receipt_sha256": screen_sha,
+            "reference_screen_receipt_sha256": reference_screen_sha,
+            "reference_screen_run_id": SCREEN_RUN_ID,
+            "reference_screen_workflow_commit": SCREEN_WORKFLOW_COMMIT,
             "prior_field_state_receipt_sha256": field_state_sha,
             "domain_semantics_report_sha256": domain_envelope["report_sha256"],
             "reference_meaning_report_sha256": reference_envelope[
@@ -335,6 +416,15 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "screen_reference_denominator": reference_review[
                 "exact_source_screen"
             ]["references"],
+            "per_kind_screen": reference_review["exact_source_screen"][
+                "per_kind"
+            ],
+            "context_screen": {
+                "status": "pending_exact_main_hosted_receipt",
+                "workflow_run_id": CONTEXT_SCREEN_RUN_ID,
+                "receipt_available": False,
+                "semantic_relationships_qualified": False,
+            },
             "denominator_note": (
                 "The schema-role field-state count and source reference-screen "
                 "candidate count are separate measures."
@@ -355,4 +445,8 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "publications": 0,
         },
         "candidate_output": native["candidate_output"],
+        "supersedes_report": {
+            "path": SUPERSEDED_REPORT,
+            "sha256": superseded_report_sha,
+        },
     }

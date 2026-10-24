@@ -418,9 +418,9 @@ listing status. Native values remain `native_unresolved`, and complete PBS
 domain semantics, other eras, rights, admission, publication and consumer
 canaries are not qualified by this bounded result.
 
-## PBS native field-state reconciliation, 2026-10-23
+## PBS native field-state reconciliation, 2026-10-24
 
-The [field-state reconciliation receipt](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261023.json)
+The [current field-state reconciliation receipt](../../quality/qualifications/pbs-native-silver-field-reconciliation-20261024-r5.json)
 partitions all 18,208,758 native field occurrences from the exact 1 April 2026
 PBS v3 member across every one of the 5,163 inventoried schema paths. It binds
 the complete native Silver package, source-local
@@ -439,7 +439,13 @@ non-additive overlay within the role partition. The date profile applies only
 to this pinned member and does not establish validity intervals, precedence,
 or current status. Native values, including identifiers, amounts, references,
 and text, remain preserved and unresolved; exact-literal references remain
-lexical diagnostics.
+lexical diagnostics. This receipt is digest-bound to exact-main screen run
+`40040624594` and its value-free per-kind review; `rdf:resource` has 1,167,610
+reference fields and `xlink:href` has 992,456. Their candidate and no-match
+counts remain lexical diagnostics, and neither kind is promoted to semantic
+relationships.
+
+A separate exact-main context screen is still pending hosted receipt `40063785531`. No context-screen results are included in this report; semantic relationships remain unqualified until that receipt is available and reviewed.
 
 This is one historical PBS v3 schedule, so no cross-era or cross-jurisdiction
 pooling is qualified. No explicit PBS status field was observed; snapshot dates
@@ -449,20 +455,23 @@ structure does not establish currency, payable benefit, patient cost, or
 clinical eligibility. These findings change no rights, admission, canary, or
 publication status and use no new sources or source values.
 
-## PBS source-local reference review, 2026-10-23
+## PBS source-local reference review, 2026-10-24
 
-The [value-free interpretation receipt](../../quality/qualifications/pbs-native-reference-meaning-review-20261023.json)
+The [value-free interpretation receipt](../../quality/qualifications/pbs-native-reference-meaning-review-20261024-40040624594.json)
 reviews the exact-main lexical screen for the 1 April 2026 V3 member at
 revision `31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7`. It binds screen run
-`39730665004`, member SHA-256
+`40040624594`, workflow commit `43f72eb7844a1f3adf13ec1fb34788c1bb8faf71`, member SHA-256
 `73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43`, and
 native digest `890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25`.
 
 The screen reported 2,086,489 unique exact-literal candidates among 2,160,066
-references (96.5938% candidate yield), with 73,577 references having no exact
-literal and no duplicate definition literals. These are aggregate lexical
-counts, not semantic precision or recall. The receipt does not provide
-per-reference-kind counts.
+references (96.5938% candidate yield), with 73,577 `rdf:resource` references
+having no exact literal and no duplicate definition literals. Among the
+1,167,610 `rdf:resource` fields, 1,094,033 have a unique exact literal;
+992,456 `xlink:href` fields each have a unique exact literal. These are
+aggregate lexical counts, not semantic precision or recall, and do not
+establish target type, document scope, effective URI/base, relation role, or
+predicate meaning.
 
 An `rdf:resource` literal matching an `rdf:about` literal is only a same-spelling
 RDF subject candidate. An XLink fragment matching an `xml:id` is only a

@@ -17,7 +17,9 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     FIELD_STATE,
     PACKAGE,
     REFERENCE_REVIEW,
+    REFERENCE_SCREEN,
     SCREEN,
+    SUPERSEDED_REPORT,
     reconcile_pbs_field_states,
 )
 
@@ -69,6 +71,33 @@ def test_every_pinned_field_has_one_evidenced_state():
         report["source_local_reference_review"]["screen_reference_denominator"]
         == 2_160_066
     )
+    assert report["source"]["reference_screen_run_id"] == "40040624594"
+    assert report["source"]["reference_screen_workflow_commit"] == (
+        "43f72eb7844a1f3adf13ec1fb34788c1bb8faf71"
+    )
+    assert report["source_local_reference_review"]["per_kind_screen"] == {
+        "rdf_resource": {
+            "reference_fields": 1_167_610,
+            "semantic_links_qualified": False,
+            "status_counts": {
+                "no_exact_literal": 73_577,
+                "unique_exact_literal": 1_094_033,
+            },
+        },
+        "xlink_href": {
+            "reference_fields": 992_456,
+            "semantic_links_qualified": False,
+            "status_counts": {"unique_exact_literal": 992_456},
+        },
+    }
+    context_screen = report["source_local_reference_review"]["context_screen"]
+    assert context_screen == {
+        "status": "pending_exact_main_hosted_receipt",
+        "workflow_run_id": "40063785531",
+        "receipt_available": False,
+        "semantic_relationships_qualified": False,
+    }
+    assert report["supersedes_report"]["path"] == SUPERSEDED_REPORT
     assert (
         report["source_local_reference_review"]["reference_role_field_count"]
         == reference["field_count"]
@@ -86,7 +115,9 @@ def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
     for relative in (
         PACKAGE,
         SCREEN,
+        REFERENCE_SCREEN,
         REFERENCE_REVIEW,
+        SUPERSEDED_REPORT,
         DOMAIN,
         INVENTORY,
         OBSERVED,
@@ -203,6 +234,27 @@ def test_noncanonical_domain_report_is_rejected(monkeypatch):
     _intercept_json_loads(monkeypatch, DOMAIN, mutate)
     with pytest.raises(
         ValueError, match="PBS field-meaning evidence digest differs"
+    ):
+        reconcile_pbs_field_states(ROOT)
+
+
+def test_reference_review_per_kind_counts_must_match_exact_screen(monkeypatch):
+    def mutate(envelope):
+        review = envelope["report"]
+        review["exact_source_screen"]["per_kind"]["xlink_href"][
+            "status_counts"
+        ]["unique_exact_literal"] -= 1
+        canonical = json.dumps(
+            review,
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        envelope["report_sha256"] = hashlib.sha256(canonical).hexdigest()
+
+    _intercept_json_loads(monkeypatch, REFERENCE_REVIEW, mutate)
+    with pytest.raises(
+        ValueError, match="PBS source-local reference review differs"
     ):
         reconcile_pbs_field_states(ROOT)
 
