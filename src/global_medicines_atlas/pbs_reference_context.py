@@ -37,6 +37,10 @@ MAX_OCCURRENCE_ADDRESS_BYTES = 4096
 # source bindings and aggregate lexical screen by keeping this embedded object
 # below 36,000 bytes.
 MAX_REPORT_BYTES = 36_000
+# Bound the two variable-size portions independently so the exact hosted
+# receipt remains serializable as strata and occurrence examples grow.
+MAX_REPORT_STRATA_BYTES = 31_000
+MAX_REPORT_EXAMPLE_BYTES = 3_500
 ROOT_CHILD_STACK_DEPTH = 2
 
 
@@ -261,6 +265,7 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
 
         summaries: dict[tuple[str, ...], dict[str, Any]] = {}
         report_example_count = 0
+        report_example_bytes = 0
         omitted_examples = 0
         cursor = db.execute("""
             SELECT r.kind, r.literal, r.space, r.address, r.predicate_qname,
@@ -333,11 +338,18 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                 },
             )
             row["occurrences"] += 1
-            row["unique_target_occurrences"] += target_count == 1
-            row["ambiguous_target_occurrences"] += target_count > 1
-            if base_depth == 0 and target_count > 0 and targets_with_base == 0:
+            row["unique_target_occurrences"] += status == "unique_exact_literal"
+            row["ambiguous_target_occurrences"] += (
+                status == "ambiguous_exact_literal"
+            )
+            if (
+                base_depth == 0
+                and status
+                in {"unique_exact_literal", "ambiguous_exact_literal"}
+                and targets_with_base == 0
+            ):
                 row["no_xml_base_exact_target_occurrences"] += 1
-                if target_count == 1:
+                if status == "unique_exact_literal":
                     row["unique_exact_literal_no_xml_base_candidates"] += 1
             if (
                 len(row["examples"]) < MAX_EXAMPLES_PER_STRATUM
@@ -358,7 +370,7 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                     raise ValueError(
                         "PBS reference context target address bound exceeded"
                     )
-                row["examples"].append({
+                example = {
                     "reference_occurrence": address,
                     "predicate_element": {
                         "occurrence": predicate_address,
@@ -393,12 +405,36 @@ def _screen(member: bytes) -> dict[str, Any]:  # ruff: ignore[too-many-branches,
                         }
                         for target_address, target_qname, target_base_depth in targets
                     ],
-                })
-                report_example_count += 1
+                }
+                example_bytes = len(
+                    json.dumps(
+                        example, ensure_ascii=False, separators=(",", ":")
+                    ).encode()
+                )
+                if (
+                    report_example_bytes + example_bytes
+                    <= MAX_REPORT_EXAMPLE_BYTES
+                ):
+                    row["examples"].append(example)
+                    report_example_count += 1
+                    report_example_bytes += example_bytes
+                else:
+                    row["examples_omitted"] += 1
+                    omitted_examples += 1
             else:
                 row["examples_omitted"] += 1
                 omitted_examples += 1
         strata = [summaries[key] for key in sorted(summaries)]
+        strata_representation = [{**row, "examples": []} for row in strata]
+        strata_bytes = len(
+            json.dumps(
+                strata_representation,
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ).encode()
+        )
+        if strata_bytes > MAX_REPORT_STRATA_BYTES:
+            raise ValueError("PBS reference context strata byte bound exceeded")
         result = {
             "reference_occurrences": refs_seen,
             "strata_count": len(summaries),

@@ -220,6 +220,69 @@ def test_context_screen_enforces_report_byte_bound(
         )
 
 
+def test_context_screen_bounds_examples_for_many_predicate_strata():
+    declarations = (
+        b'<root xmlns="http://schema.pbs.gov.au/" '
+        b'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">'
+    )
+    references = b"".join(
+        f"<predicate{index} rdf:resource='unmatched'/>".encode() * 5
+        for index in range(62)
+    )
+    report = context_screen.screen_reference_context(
+        declarations + references + b"</root>"
+    )
+    serialized = json.dumps(report, ensure_ascii=False, separators=(",", ":"))
+    assert report["strata_count"] == 62
+    assert report["reference_occurrences"] == 310
+    assert report["examples_omitted"] > 0
+    assert report["examples_emitted"] < report["reference_occurrences"]
+    assert len(serialized.encode()) <= context_screen.MAX_REPORT_BYTES
+    strata_representation = [
+        {**row, "examples": []} for row in report["strata"]
+    ]
+    assert (
+        len(
+            json.dumps(
+                strata_representation,
+                ensure_ascii=False,
+                separators=(",", ":"),
+            ).encode()
+        )
+        <= context_screen.MAX_REPORT_STRATA_BYTES
+    )
+
+
+def test_context_screen_bounds_strata_representation_before_receipt(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    monkeypatch.setattr(context_screen, "MAX_REPORT_STRATA_BYTES", 1)
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <edge rdf:resource="unmatched"/>
+    </root>"""
+    with pytest.raises(ValueError, match="strata byte bound"):
+        context_screen.screen_reference_context(xml)
+
+
+def test_empty_rdf_literals_do_not_count_as_exact_candidates():
+    xml = b"""<root xmlns="http://schema.pbs.gov.au/"
+      xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <target rdf:about=""/>
+      <edge rdf:resource=""/>
+    </root>"""
+    report = context_screen.screen_reference_context(xml)
+    empty_reference = next(
+        row for row in report["strata"] if row["kind"] == "rdf_resource"
+    )
+    assert empty_reference["match_status"] == "empty_literal"
+    assert empty_reference["unique_target_occurrences"] == 0
+    assert empty_reference["ambiguous_target_occurrences"] == 0
+    assert empty_reference["no_xml_base_exact_target_occurrences"] == 0
+    assert empty_reference["unique_exact_literal_no_xml_base_candidates"] == 0
+    assert report["unique_exact_literal_no_xml_base_candidates"] == 0
+
+
 def test_cli_withholds_source_exception_and_preserves_existing_receipt(
     tmp_path, monkeypatch
 ):
