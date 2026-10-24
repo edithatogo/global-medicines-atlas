@@ -19,6 +19,7 @@ from contextlib import closing
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, cast
+from urllib.parse import urljoin, urlsplit
 
 from .adapters.au_pbs import PBS_V3_NAMESPACE, PBS_XML_POLICY
 from .parser_safety import iter_xml_events
@@ -97,6 +98,48 @@ def _literal_class(kind: str, value: str) -> str:
     return "relative_or_other"
 
 
+def _resolution_profile(  # ruff: ignore[too-many-return-statements] -- each bucket is an explicit abstention/result class
+    kind: str, value: str, effective_base: str | None
+) -> str:
+    """Classify whether URI resolution has a usable base without retaining its result."""
+    if not value:
+        return "empty_reference"
+    if kind == "xlink_href" and value.startswith("#"):
+        # Fragment lookup is scoped to this XML member; it is not an external
+        # document lookup and remains a candidate pending source semantics.
+        return "same_member_fragment_candidate"
+    try:
+        parsed = urlsplit(value)
+        if parsed.scheme:
+            return "absolute_uri_candidate"
+        if effective_base is None:
+            return "document_uri_unavailable"
+        resolved = urlsplit(urljoin(effective_base, value))
+    except ValueError:
+        return "invalid_uri_reference"
+    if resolved.scheme:
+        return "resolved_against_absolute_xml_base_candidate"
+    return "relative_base_unresolved"
+
+
+def _effective_base_uri(
+    declared: str | None, inherited: str | None
+) -> str | None:
+    if declared is None:
+        return inherited
+    try:
+        candidate = (
+            declared
+            if urlsplit(declared).scheme
+            else urljoin(inherited, declared)
+            if inherited is not None
+            else None
+        )
+        return candidate if candidate and urlsplit(candidate).scheme else None
+    except ValueError:
+        return None
+
+
 def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-locals] -- bounded source parser
     member: bytes,
     progress: Callable[[str, int, int], None] | None = None,
@@ -113,7 +156,7 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
             "CREATE TABLE defs (space TEXT, literal TEXT, address TEXT, target_qname TEXT, base_depth INTEGER)"
         )
         db.execute(
-            "CREATE TABLE refs (kind TEXT, space TEXT, literal TEXT, address TEXT, predicate_qname TEXT, predicate_address TEXT, subject_qname TEXT, subject_address TEXT, identifier_qname TEXT, identifier_address TEXT, base_depth INTEGER, literal_class TEXT)"
+            "CREATE TABLE refs (kind TEXT, space TEXT, literal TEXT, address TEXT, predicate_qname TEXT, predicate_address TEXT, subject_qname TEXT, subject_address TEXT, identifier_qname TEXT, identifier_address TEXT, base_depth INTEGER, literal_class TEXT, resolution_profile TEXT)"
         )
         stack: list[dict[str, Any]] = []
         child_counts: list[Counter[str]] = []
@@ -159,8 +202,14 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                         counts[element.tag] += 1
                         address = f"{stack[-1]['address']}/{_pointer(element.tag)}/{counts[element.tag]}"
                     inherited_base = stack[-1]["base_depth"] if stack else 0
+                    inherited_base_uri = (
+                        stack[-1]["effective_base_uri"] if stack else None
+                    )
                     base_depth = inherited_base + (
                         1 if XML_BASE in element.attrib else 0
+                    )
+                    effective_base_uri = _effective_base_uri(
+                        element.attrib.get(XML_BASE), inherited_base_uri
                     )
                     subject_frame = next(
                         (
@@ -181,6 +230,7 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                     current = {
                         "address": address,
                         "base_depth": base_depth,
+                        "effective_base_uri": effective_base_uri,
                         "element": element,
                         "rdf_subject_address": address
                         if RDF_ABOUT in element.attrib
@@ -270,6 +320,9 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                                 if attr == RDF_RESOURCE
                                 else "xlink_href"
                             )
+                            resolution_profile = _resolution_profile(
+                                kind, literal, effective_base_uri
+                            )
                             space: str | None = (
                                 "rdf_literal" if attr == RDF_RESOURCE else None
                             )
@@ -290,7 +343,7 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                                     "PBS reference context occurrence bound exceeded",
                                 )
                             db.execute(
-                                "INSERT INTO refs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                "INSERT INTO refs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                                 (
                                     kind,
                                     space,
@@ -304,6 +357,7 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                                     current["identifier_address"],
                                     base_depth,
                                     _literal_class(kind, literal),
+                                    resolution_profile,
                                 ),
                             )
                 else:
@@ -337,9 +391,11 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                    r.predicate_address, coalesce(r.subject_qname, 'none'),
                    r.subject_address, r.identifier_qname, r.identifier_address,
                    r.base_depth,
-                   r.literal_class, count(d.address) AS target_count,
+                   r.literal_class, r.resolution_profile,
+                   count(d.address) AS target_count,
                    sum(CASE WHEN d.base_depth > 0 THEN 1 ELSE 0 END)
-            FROM refs r LEFT JOIN defs d ON r.space = d.space AND r.literal = d.literal
+            FROM refs r LEFT JOIN defs d
+              ON r.literal != '' AND r.space = d.space AND r.literal = d.literal
             GROUP BY r.rowid
             ORDER BY r.kind, target_count,
                      r.predicate_qname, coalesce(r.subject_qname, 'none'),
@@ -359,6 +415,7 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
             identifier_address,
             base_depth,
             form,
+            resolution_profile,
             target_count,
             targets_with_base,
         ) in enumerate(cursor, start=1):
@@ -392,6 +449,7 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                 identifier_qname or "none",
                 base,
                 form,
+                resolution_profile,
             )
             if key not in summaries and len(summaries) >= MAX_STRATA:
                 raise ReferenceContextError(
@@ -409,6 +467,14 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                     or "none",
                     "xml_base_context": base,
                     "literal_shape": form,
+                    "uri_resolution_profile": resolution_profile,
+                    "document_scope": "single_xml_member",
+                    "predicate_role": (
+                        "rdf_resource_attribute"
+                        if kind == "rdf_resource"
+                        else "xlink_href_attribute"
+                    ),
+                    "target_element_type_occurrence_counts": {},
                     "occurrences": 0,
                     "unique_target_occurrences": 0,
                     "ambiguous_target_occurrences": 0,
@@ -488,6 +554,9 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
                         }
                         for target_address, target_qname, target_base_depth in targets
                     ],
+                    "target_element_types": sorted({
+                        target_qname for _, target_qname, _ in targets
+                    }),
                 }
                 example_bytes = len(
                     json.dumps(
@@ -507,6 +576,63 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
             else:
                 row["examples_omitted"] += 1
                 omitted_examples += 1
+        # Aggregate target element types across all exact candidates. Only
+        # QNames and counts leave the temporary index; identifier literals and
+        # resolved URI strings are never included in the report.
+        target_type_rows = db.execute("""
+            WITH matches AS (
+              SELECT r.rowid AS ref_id, r.kind, r.space, r.literal,
+                     r.predicate_qname, coalesce(r.subject_qname, 'none') AS subject,
+                     coalesce(r.identifier_qname, 'none') AS identifier,
+                     r.base_depth, r.literal_class, r.resolution_profile,
+                     count(d.address) AS target_count
+              FROM refs r LEFT JOIN defs d
+                ON r.literal != '' AND r.space = d.space AND r.literal = d.literal
+              GROUP BY r.rowid
+            )
+            SELECT m.kind, m.target_count, m.predicate_qname, m.subject,
+                   m.identifier, m.base_depth, m.literal_class,
+                   m.resolution_profile, d.target_qname, count(d.address)
+            FROM matches m JOIN refs r ON r.rowid = m.ref_id
+              JOIN defs d ON r.literal != '' AND r.space = d.space AND r.literal = d.literal
+            GROUP BY m.kind, m.target_count, m.predicate_qname, m.subject,
+                     m.identifier, m.base_depth, m.literal_class,
+                     m.resolution_profile, d.target_qname
+            ORDER BY m.kind, m.target_count, m.predicate_qname, m.subject,
+                     m.identifier, m.base_depth, m.literal_class,
+                     m.resolution_profile, d.target_qname
+        """)
+        for (
+            kind,
+            target_count,
+            predicate_qname,
+            subject,
+            identifier,
+            base_depth,
+            form,
+            resolution_profile,
+            target_qname,
+            count,
+        ) in target_type_rows:
+            status = (
+                "unique_exact_literal"
+                if target_count == 1
+                else "ambiguous_exact_literal"
+            )
+            key = (
+                kind,
+                status,
+                predicate_qname,
+                subject,
+                identifier,
+                "no_xml_base" if base_depth == 0 else "xml_base_present",
+                form,
+                resolution_profile,
+            )
+            summaries[key]["target_element_type_occurrence_counts"][
+                target_qname
+            ] = count
+
         strata = [summaries[key] for key in sorted(summaries)]
         strata_representation: list[dict[str, Any]] = [
             {**row, "examples": []} for row in strata
@@ -534,6 +660,8 @@ def _screen(  # ruff: ignore[too-many-branches,too-many-statements,too-many-loca
             ),
             "strata": strata,
             "uri_resolution_performed": False,
+            "uri_resolution_screen_performed": True,
+            "document_scope": "single_xml_member",
             "literal_values_emitted": False,
             "raw_source_emitted": False,
             "semantic_relationships_qualified": False,
@@ -561,7 +689,7 @@ def screen_reference_context(
     result = _screen(member, progress=progress)
     return {
         "schema_id": "global-medicines-atlas.pbs-reference-context-screen",
-        "schema_version": 2,
+        "schema_version": 3,
         "example_selection_policy": "up_to_five_value_free_examples_per_structural_stratum",
         **result,
     }

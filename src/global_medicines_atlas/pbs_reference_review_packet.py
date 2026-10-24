@@ -25,6 +25,7 @@ MAX_CONTEXT_EXAMPLES = 1_000
 MAX_CONTEXT_TARGETS_PER_EXAMPLE = 10
 MIN_AMBIGUOUS_TARGETS = 2
 STRATIFIED_CONTEXT_SCHEMA_VERSION = 2
+ENRICHED_CONTEXT_SCHEMA_VERSION = 3
 STRATIFIED_CONTEXT_EXAMPLE_POLICY = (
     "up_to_five_value_free_examples_per_structural_stratum"
 )
@@ -119,13 +120,24 @@ def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements, t
     expected = required
     if version == STRATIFIED_CONTEXT_SCHEMA_VERSION:
         expected = required | {"example_selection_policy"}
+    elif version == ENRICHED_CONTEXT_SCHEMA_VERSION:
+        expected = required | {
+            "example_selection_policy",
+            "uri_resolution_screen_performed",
+            "document_scope",
+        }
     if set(context) != expected:
         raise ValueError("reference context schema differs")
     if (
         context["schema_id"]
         != "global-medicines-atlas.pbs-reference-context-screen"
         or isinstance(version, bool)
-        or version not in {1, STRATIFIED_CONTEXT_SCHEMA_VERSION}
+        or version
+        not in {
+            1,
+            STRATIFIED_CONTEXT_SCHEMA_VERSION,
+            ENRICHED_CONTEXT_SCHEMA_VERSION,
+        }
     ):
         raise ValueError("reference context contract differs")
     if (
@@ -139,6 +151,11 @@ def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements, t
             raise ValueError("reference context must remain diagnostic")
     if context["external_targets_fetched"] != 0:
         raise ValueError("reference context fetched an external target")
+    if version == ENRICHED_CONTEXT_SCHEMA_VERSION and (
+        context["uri_resolution_screen_performed"] is not True
+        or context["document_scope"] != "single_xml_member"
+    ):
+        raise ValueError("reference context resolution profile differs")
     if context["reference_occurrences"] != references:
         raise ValueError("reference context denominator differs")
     rows_value = context["strata"]
@@ -155,7 +172,7 @@ def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements, t
     ) = 0
     for row_value in rows:
         row = _object(row_value, "reference context stratum must be an object")
-        if set(row) != {
+        row_fields = {
             "kind",
             "match_status",
             "predicate_element_qname",
@@ -170,7 +187,18 @@ def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements, t
             "unique_exact_literal_no_xml_base_candidates",
             "examples_omitted",
             "examples",
-        }:
+        }
+        enriched_row_fields = row_fields | {
+            "uri_resolution_profile",
+            "document_scope",
+            "predicate_role",
+            "target_element_type_occurrence_counts",
+        }
+        if set(row) != (
+            enriched_row_fields
+            if version == ENRICHED_CONTEXT_SCHEMA_VERSION
+            else row_fields
+        ):
             raise ValueError("reference context stratum schema differs")
         if row["kind"] not in _REFERENCE_KINDS:
             raise ValueError("reference context kind differs")
@@ -180,6 +208,34 @@ def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements, t
             raise ValueError("reference context base profile differs")
         if row["literal_shape"] not in _LITERAL_SHAPES:
             raise ValueError("reference context literal shape differs")
+        if version == ENRICHED_CONTEXT_SCHEMA_VERSION and row[
+            "uri_resolution_profile"
+        ] not in {
+            "empty_reference",
+            "same_member_fragment_candidate",
+            "absolute_uri_candidate",
+            "document_uri_unavailable",
+            "resolved_against_absolute_xml_base_candidate",
+            "relative_base_unresolved",
+            "invalid_uri_reference",
+        }:
+            raise ValueError("reference context resolution profile differs")
+        if version == ENRICHED_CONTEXT_SCHEMA_VERSION:
+            if row["document_scope"] != "single_xml_member" or row[
+                "predicate_role"
+            ] not in {"rdf_resource_attribute", "xlink_href_attribute"}:
+                raise ValueError("reference context structural role differs")
+            target_types = _object(
+                row["target_element_type_occurrence_counts"],
+                "reference target types must be an object",
+            )
+            if any(
+                not qname
+                or len(qname.encode()) > MAX_QNAME_BYTES
+                or _nonnegative_int(count, "target type count differs") < 1
+                for qname, count in target_types.items()
+            ):
+                raise ValueError("reference target type profile differs")
         for name in (
             "predicate_element_qname",
             "nearest_subject_element_qname",
@@ -263,13 +319,17 @@ def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements, t
 
 def _validate_example(value: object) -> dict[str, Any]:
     example = _object(value, "reference context example must be an object")
-    if set(example) != {
+    example_fields = {
         "reference_occurrence",
         "predicate_element",
         "nearest_subject_element",
         "nearest_identifier_element",
         "target_multiplicity",
         "targets",
+    }
+    if frozenset(example) not in {
+        frozenset(example_fields),
+        frozenset(example_fields | {"target_element_types"}),
     }:
         raise ValueError("reference context example schema differs")
     _bounded_text(
@@ -323,6 +383,14 @@ def _validate_example(value: object) -> dict[str, Any]:
             "xml_base_present",
         }:
             raise ValueError("target base profile differs")
+    target_types = example.get("target_element_types", [])
+    if not isinstance(target_types, list) or any(
+        not isinstance(qname, str)
+        or not qname
+        or len(qname.encode()) > MAX_QNAME_BYTES
+        for qname in cast("list[object]", target_types)
+    ):
+        raise ValueError("reference target type sample differs")
     return example
 
 

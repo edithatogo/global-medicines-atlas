@@ -85,6 +85,22 @@ def _context(references=2_160_066):
     }
 
 
+def _enriched_context(references=2):
+    context = _context(references)
+    context["schema_version"] = 3
+    context["example_selection_policy"] = (
+        "up_to_five_value_free_examples_per_structural_stratum"
+    )
+    context["uri_resolution_screen_performed"] = True
+    context["document_scope"] = "single_xml_member"
+    for row in context["strata"]:
+        row["uri_resolution_profile"] = "document_uri_unavailable"
+        row["document_scope"] = "single_xml_member"
+        row["predicate_role"] = "rdf_resource_attribute"
+        row["target_element_type_occurrence_counts"] = {"{urn:source}target": 1}
+    return context
+
+
 def test_exact_source_review_qualifies_candidate_scope_not_semantic_links():
     report = review_reference_meanings(ROOT)
     assert report["exact_source_screen"]["definitions"] == 567_785
@@ -336,6 +352,69 @@ def test_v2_report_path_keeps_per_kind_candidates_diagnostic(tmp_path):
     )
     assert result["exact_source_screen"]["per_kind_match_counts_available"]
     assert result["scope"]["semantic_relationships_qualified"] is False
+
+
+def test_enriched_v3_context_validates_without_promoting_links():
+    validated = _validate_reference_context(_enriched_context(), 2)
+    assert validated["schema_version"] == 3
+    assert validated["document_scope"] == "single_xml_member"
+    assert validated["semantic_relationships_qualified"] is False
+
+
+@pytest.mark.parametrize(
+    ("mutate", "message"),
+    [
+        (
+            lambda context: context.update({
+                "uri_resolution_screen_performed": False
+            }),
+            "PBS reference context contract differs",
+        ),
+        (
+            lambda context: context["strata"][0].__setitem__(
+                "uri_resolution_profile", "unrecognized"
+            ),
+            "PBS reference context enriched profile is invalid",
+        ),
+        (
+            lambda context: context["strata"][0].__setitem__(
+                "predicate_role", "unrecognized"
+            ),
+            "PBS reference context enriched profile is invalid",
+        ),
+        (
+            lambda context: context["strata"][0].__setitem__(
+                "target_element_type_occurrence_counts", {"": 1}
+            ),
+            "PBS reference context enriched profile is invalid",
+        ),
+        (
+            lambda context: context["strata"][0].__setitem__(
+                "target_element_type_occurrence_counts", []
+            ),
+            "PBS reference context enriched profile is invalid",
+        ),
+        (
+            lambda context: context["strata"][0].__setitem__(
+                "target_element_type_occurrence_counts",
+                {"{urn:source}target": True},
+            ),
+            "PBS reference context enriched profile is invalid",
+        ),
+        (
+            lambda context: context["strata"][0].__setitem__(
+                "target_element_type_occurrence_counts",
+                {"q" * 257: 1},
+            ),
+            "PBS reference context enriched profile is invalid",
+        ),
+    ],
+)
+def test_enriched_v3_context_rejects_malformed_profiles(mutate, message):
+    context = _enriched_context()
+    mutate(context)
+    with pytest.raises(ValueError, match=message):
+        _validate_reference_context(context, 2)
 
 
 def test_missing_default_receipt_uses_the_documented_path_fallback(tmp_path):
