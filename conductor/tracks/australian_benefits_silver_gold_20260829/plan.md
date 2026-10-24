@@ -5850,12 +5850,17 @@ source qualification remains pending their actual final artifacts.
   effective `xml:base`, document/graph scope, target type, link role and
   predicate semantics remain unresolved, so zero semantic relationships are
   qualified.
-- [~] Add value-free denominator and match-outcome counts by native reference
-  kind (`rdf:resource`, `xlink:href`, `rdf:about`, and `xml:id`) so the exact
-  PBS source can distinguish its reference forms. Synthetic controls now pass;
-  the source-bound counts and any occurrence-level URI/base/scope review still
-  require an exact-main protected rerun. These counts alone will not promote
-  semantic relationships.
+- [x] Add value-free denominator and match-outcome counts by native reference
+  kind (`rdf:resource`, `xlink:href`, `rdf:about`, and `xml:id`) and reconcile
+  the selected URI/base/scope cases against the exact PBS source. Protected
+  exact-main run `40120162365` on `7084ee19081b6c5ce1ce5e2b6941125a446e8ee0`
+  records 1,167,610 RDF resource and 992,456 XLink occurrences, with 1,094,033
+  unique same-member RDF candidates, 992,456 same-member unique XML-ID XLink
+  candidates, and 73,577 RDF references without a member definition. Its
+  46-case packet binds 17 same-member XML-ID, 18 absolute-URI unique, and 11
+  no-member-definition outcomes. This completes source-bound screening and
+  structural outcome accounting only: zero cases are reviewed, external
+  targets are not fetched, and no semantic relationships are qualified.
 
 ### Historical workbook cohort reconciliation
 
@@ -5882,6 +5887,7 @@ source qualification remains pending their actual final artifacts.
 
 ### Actual PBS source-local lexical reference screen
 
+- [x] Run the exact-main PBS XLink candidate exporter after merge. Protected run `40134726623` passed on workflow commit `04bd8c1d4f95f7535ebf72aa66edda656a423f30`; its value-free receipt `quality/qualifications/pbs-native-xlink-candidate-screen-20261025-40134726623.json` (file SHA-256 `648e0395216405d6d59b892491379268d51d6c82f6fb6de989b8a0e81ac0594c`, report SHA-256 `4743c249352e84ff97b8ee49b7dfaddacce819b5d68db2462fed62772495cd4e`) binds 992,247 source-local same-member candidate occurrences and 209 allowlist abstentions in the exact pinned member. The 312,077,643-byte candidate artifact was downloaded and its SHA-256 verified as `37783ac24cc4ac05693d6873dbb925ad608f792c2bffabe173451bd13c577b4d`; it contains only QName categories and pseudonymous occurrence hashes. Zero semantic relationships, admissions, canaries, or publications were recorded.
 - [x] Protected exact-main retry 39730665004 passed on c9fd61e9. Retain the aggregate-only receipt with 18,208,758 native fields, 567,785 definitions, 2,160,066 candidate references, 2,086,489 unique exact literals and 73,577 without an exact literal. The screen emitted no native values and made no semantic relationship or domain claim.
 - [x] Implement bounded, value-free occurrence context for PBS reference candidates and integrate it with hosted qualification and the offline meaning reconciler. Synthetic positive, negative, ambiguity, and conflicting-`xml:base` controls pass. The reconciler validates context structure, size, exact denominators, and value exclusion, while requiring abstention from semantic edges. Commit `cacce466f31f6e02a7a7ac3fe5f285837f0f7611`; 42 focused PBS tests, Ruff, formatting, and BasedPyright pass. This is implementation evidence only; the existing source run predates context integration.
 - [x] Complete the local full Test-Goblin profile and bounded recovery. Retain the full result as failed (7,960 passed, 5 failed, 4 skipped; 96.83% coverage). All five failure nodes passed on the failure-only recheck or the isolated PBS date recheck. The failures were timing/environment related; protected CI is still required for the final branch head.
@@ -5889,6 +5895,7 @@ source qualification remains pending their actual final artifacts.
 - [x] Extend the bounded context screen to report URI resolvability categories, single-member scope, structural attribute roles, and aggregate target element types without emitting values or resolved URI strings. Rebased implementation commit `48c2a7c5`; focused URI and context regressions remain green. Preflight revision 73 binds the current implementation inputs while preserving main revisions 69–72 unchanged; the v3 exact-main run remains pending, no source cases have been reviewed, and semantic relationships remain unqualified.
 - [x] Address the initial Codecov patch finding by testing invalid URI/base inputs and malformed enriched context and review-packet profiles; the meaning validator rejects invalid URI profile, scope, role, target QName and target count shapes. The rebased affected PBS/preflight tests pass (155); Ruff, formatting, `ty`, and BasedPyright pass on changed implementation and preflight code. Hosted checks on the rebased PR head remain pending.
 - [x] Resolve the exact selected reference cases against the pinned PBS member and bind outcome classes by case ID and occurrence-address digest. Exact-main run `40110616327` on commit `e5145eca0698bbc275c3497431ba0f179261e458` passed for all 46 cases: 18 absolute URI unique candidates, 17 same-member unique XML ID candidates, and 11 no-member-definition controls. The receipt emits no source values and leaves every case unreviewed and every semantic relationship unqualified; see `quality/qualifications/pbs-native-reference-uri-screen-20261025-40110616327.json` (file SHA-256 `ac53a6d8fc79f8491d261d4e8bd552daa4e7d58c4ecd51ee780dbaf72d16e583`, report SHA-256 `2fb946cc0b53f2fede31db2e85c369d5b420c250b499f69922719a677c098ef3`).
+- [x] Complete a bounded structural match-behavior review of the exact 46-case packet. The value-free receipt `quality/qualifications/pbs-native-uri-structural-review-20261025-40120162365.json` (file SHA-256 `8e7c61609c84d19e2eaf9f127cff5943319760e2b98481b508b3e2f3bc74dd35`, report SHA-256 `b5834d4e86879c93818bfc49939423e5fbee103a7f40b5114f1f836cafc3b684`) identifies 35 cases with a unique same-member target and no `xml:base` as generic `source_declared_reference_pointer` structural dispositions; 11 no-member-definition cases remain unresolved controls. It emits no graph edges and makes no domain, clinical, precision, recall, or corpus-wide claim. Focused URI tests (45), CLI receipt regeneration, Ruff, `ty`, BasedPyright, and `git diff --check` pass; no local full suite was run.
 - [ ] Adjudicate the 46 selected source cases for document and graph scope, relation role, target type, predicate meaning, and semantic correctness; calibrate reviewed positive and negative controls before qualifying any relationship. The deterministic sample is non-probabilistic, so it cannot estimate population precision or recall. Literal and URI-resolution matches remain diagnostics until this review is complete.
 
 ### Six historical workbook runtime cancellations
@@ -5950,3 +5957,4 @@ source qualification remains pending their actual final artifacts.
 - [x] Reconcile PBS effective-date denominators by exact path and role in `quality/qualifications/pbs-date-denominator-reconciliation-20261025.json` (file SHA-256 `5bf120a13a77b8bf407978c30da960ec894d7f55c6ac3ea512290932b75912f6`). The pinned reports count 3,028 direct restriction-date path fields, 2,798 item effective-date roles, and 2,800 total date-role slots; their populations lack an occurrence-level crosswalk, leaving the 230 difference and the domain report's description/count conflict unresolved. No date values, current-status claims, or field identities were inferred.
 - [x] Refresh the M-112 preflight snapshot as revision 69 to bind the r6 report, exact-main context screen and review-packet evidence. Preserve revision 68 unchanged; no admission, canary, publication, new source, or semantic relationship qualification follows.
 - [x] Preserve preflight revision 75 and prepare revision 76 after exact-main Silver reconciliation. It binds the P7 per-cell date report (86 interpreted, 13,656 unresolved), PBS domain field-state receipt, and value-free 61-example reference packet. The packet leaves semantic relationships unqualified; rights, admission, publication, and consumer delivery are unchanged. The protected unit lane first exposed two stale assertions; four directly affected test nodes pass after the snapshot and assertions were corrected.
+- [x] Refresh the current M-112 preflight as revision 82 after the exact-main PBS URI structural review and XLink candidate screen were added to the plan. Preserve revision 81 unchanged and update only the bound track-plan digest; rights, admission, publication, source inventory, and canary state do not change.

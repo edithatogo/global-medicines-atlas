@@ -2,10 +2,19 @@
 
 import hashlib
 import json
+import sys
+from pathlib import Path
 
 import pytest
+from scripts.qualify_pbs_uri_structural_review import (
+    main as structural_review_main,
+)
+from scripts.qualify_pbs_uri_structural_review import (
+    write_receipt as write_structural_review_receipt,
+)
 
 import global_medicines_atlas.pbs_native_uri_screen as module
+import global_medicines_atlas.pbs_uri_structural_review as structural_review
 from global_medicines_atlas.pbs_native_uri_screen import screen_pbs_native_uris
 
 
@@ -679,3 +688,269 @@ def test_parse_progress_is_coarse_and_value_free(
         ("pbs-uri-screen-classify", 1, 0),
     ]
     assert report["xml_elements"] == 100_000
+
+
+def test_pinned_uri_sample_structural_review_is_narrow_and_value_free():
+    root = Path(__file__).resolve().parents[1]
+    report = structural_review.review_structural_match_behavior(root)
+    assert report["case_count"] == 46
+    assert report["outcome_counts"] == {
+        "same_member_unique_id": 17,
+        "absolute_uri_unique_candidate": 18,
+        "no_member_definition_negative_controls": 11,
+    }
+    cases = report["cases"]
+    assert len(cases) == 46
+    assert sum(case["relationship_label"] is not None for case in cases) == 35
+    assert all(case["candidate_edge_emitted"] is False for case in cases)
+    assert all(
+        set(case)
+        == {
+            "case_id",
+            "reference_occurrence_sha256",
+            "target_occurrence_sha256",
+            "structural_disposition",
+            "relationship_label",
+            "candidate_edge_emitted",
+        }
+        for case in cases
+    )
+    assert (
+        report["review_scope"] == "structural_match_behavior_calibration_only"
+    )
+    assert report["limitations"]["clinical_meaning_asserted"] is False
+    assert report["limitations"]["precision_claimed"] is False
+    assert report["limitations"]["recall_claimed"] is False
+    assert report["limitations"]["generalized_to_corpus"] is False
+    encoded = json.dumps(report)
+    assert '"uri":' not in encoded
+    assert '"literal":' not in encoded
+    assert '"source_element_qname":' not in encoded
+
+
+def test_structural_review_fails_closed_on_changed_reconciliation(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    destination = tmp_path / "quality/qualifications"
+    destination.mkdir(parents=True)
+    source = (
+        root
+        / "quality/qualifications"
+        / structural_review.RECONCILIATION_FILENAME
+    )
+    (destination / structural_review.RECONCILIATION_FILENAME).write_bytes(
+        source.read_bytes() + b" "
+    )
+    with pytest.raises(
+        structural_review.StructuralReviewError,
+        match="pinned reconciliation bytes differ",
+    ):
+        structural_review.review_structural_match_behavior(tmp_path)
+
+
+def _write_structural_input(root, monkeypatch, *, report=None, envelope=None):
+    destination = root / "quality/qualifications"
+    destination.mkdir(parents=True, exist_ok=True)
+    report_digest = structural_review.RECONCILIATION_REPORT_SHA256
+    if envelope is None:
+        if report is None:
+            source = (
+                Path(__file__).resolve().parents[1]
+                / "quality/qualifications"
+                / structural_review.RECONCILIATION_FILENAME
+            )
+            report = json.loads(source.read_bytes())["report"]
+        canonical = json.dumps(
+            report, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        ).encode("utf-8")
+        report_digest = hashlib.sha256(canonical).hexdigest()
+        envelope = {"report": report, "report_sha256": report_digest}
+    raw = json.dumps(
+        envelope, sort_keys=True, separators=(",", ":"), ensure_ascii=False
+    ).encode("utf-8")
+    target = destination / structural_review.RECONCILIATION_FILENAME
+    target.write_bytes(raw)
+    monkeypatch.setattr(
+        structural_review,
+        "RECONCILIATION_SHA256",
+        hashlib.sha256(raw).hexdigest(),
+    )
+    monkeypatch.setattr(
+        structural_review,
+        "RECONCILIATION_REPORT_SHA256",
+        report_digest,
+    )
+    return target
+
+
+def test_structural_review_rejects_noncanonical_input():
+    with pytest.raises(
+        structural_review.StructuralReviewError,
+        match="input report is not canonical JSON",
+    ):
+        structural_review._canonical_digest({"not-json": {1, 2}})
+
+
+def _pinned_review_report():
+    source = (
+        Path(__file__).resolve().parents[1]
+        / "quality/qualifications"
+        / structural_review.RECONCILIATION_FILENAME
+    )
+    report = json.loads(source.read_bytes())["report"]
+    return json.loads(json.dumps(report))
+
+
+def _assert_structural_review_rejected(
+    tmp_path, monkeypatch, report, message, envelope=None
+):
+    _write_structural_input(
+        tmp_path, monkeypatch, report=report, envelope=envelope
+    )
+    with pytest.raises(structural_review.StructuralReviewError, match=message):
+        structural_review.review_structural_match_behavior(tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("not-a-dict-envelope", "pinned reconciliation shape differs"),
+        ("missing-report", "pinned reconciliation shape differs"),
+        (
+            "declared-report-digest",
+            "pinned reconciliation report digest differs",
+        ),
+        ("canonical-report-digest", "reconciliation report digest is invalid"),
+        ("source-binding", "source and receipt binding differs"),
+        ("cases-not-list", "pinned case inventory differs"),
+        ("case-count", "pinned case inventory differs"),
+    ],
+)
+def test_structural_review_rejects_changed_input_scope(
+    tmp_path, monkeypatch, mutation, message
+):
+    report = _pinned_review_report()
+    envelope = None
+    if mutation == "not-a-dict-envelope":
+        envelope = ["invalid"]
+    elif mutation == "missing-report":
+        envelope = {"report": None, "report_sha256": "0" * 64}
+    elif mutation == "declared-report-digest":
+        envelope = {"report": report, "report_sha256": "0" * 64}
+        monkeypatch.setattr(
+            structural_review,
+            "RECONCILIATION_REPORT_SHA256",
+            structural_review._canonical_digest(report),
+        )
+    elif mutation == "canonical-report-digest":
+        report["test_only_mutation"] = True
+        envelope = {
+            "report": report,
+            "report_sha256": structural_review.RECONCILIATION_REPORT_SHA256,
+        }
+    elif mutation == "source-binding":
+        report["dataset"] = "different-dataset"
+    elif mutation == "cases-not-list":
+        report["cases"] = None
+    elif mutation == "case-count":
+        report["cases"].pop()
+    _assert_structural_review_rejected(
+        tmp_path, monkeypatch, report, message, envelope
+    )
+
+
+@pytest.mark.parametrize(
+    ("mutation", "message"),
+    [
+        ("case-shape", "pinned case shape differs"),
+        ("case-identity", "pinned case identity or limits differ"),
+        ("unique-target-base", "unique-target case is not eligible"),
+        ("negative-control-target", "negative control has target evidence"),
+        ("unsupported-outcome", "case outcome is outside pinned review scope"),
+        ("outcome-distribution", "pinned outcome distribution differs"),
+    ],
+)
+def test_structural_review_rejects_changed_case_controls(
+    tmp_path, monkeypatch, mutation, message
+):
+    report = _pinned_review_report()
+    cases = report["cases"]
+    if mutation == "case-shape":
+        report["cases"][0] = None
+    elif mutation == "case-identity":
+        report["cases"][0]["case_id"] = "bad"
+    if mutation == "unique-target-base":
+        case = next(
+            item
+            for item in cases
+            if item["uri_resolution"] in structural_review.UNIQUE_OUTCOMES
+        )
+        case["target_xml_base_context"] = "xml_base_present"
+    elif mutation == "negative-control-target":
+        case = next(
+            item
+            for item in cases
+            if item["uri_resolution"] == "absolute_uri_no_member_definition"
+        )
+        case["target_occurrence_sha256"] = "a" * 64
+    elif mutation == "unsupported-outcome":
+        cases[0]["uri_resolution"] = "unsupported"
+    elif mutation == "outcome-distribution":
+        case = next(
+            item
+            for item in cases
+            if item["uri_resolution"] == "same_member_unique_id"
+        )
+        case["uri_resolution"] = "absolute_uri_unique_candidate"
+    _assert_structural_review_rejected(tmp_path, monkeypatch, report, message)
+
+
+def test_structural_review_rejects_unreadable_reconciliation(tmp_path):
+    with pytest.raises(
+        structural_review.StructuralReviewError,
+        match="pinned reconciliation cannot be read",
+    ):
+        structural_review.review_structural_match_behavior(tmp_path)
+
+
+def test_structural_review_cli_writes_once_and_main_runs(tmp_path, monkeypatch):
+    root = Path(__file__).resolve().parents[1]
+    output = tmp_path / "nested/review.json"
+    write_structural_review_receipt(root, output)
+    envelope = json.loads(output.read_bytes())
+    assert envelope["report"]["case_count"] == 46
+    assert len(envelope["report_sha256"]) == 64
+    with pytest.raises(FileExistsError):
+        write_structural_review_receipt(root, output)
+
+    main_output = tmp_path / "main-review.json"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "qualify_pbs_uri_structural_review.py",
+            "--root",
+            str(root),
+            "--output",
+            str(main_output),
+        ],
+    )
+    assert structural_review_main() == 0
+    assert json.loads(main_output.read_bytes())["report"]["case_count"] == 46
+
+
+def test_structural_review_cli_fails_with_sanitized_input_error(
+    tmp_path, monkeypatch
+):
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "qualify_pbs_uri_structural_review.py",
+            "--root",
+            str(tmp_path),
+            "--output",
+            str(tmp_path / "bad.json"),
+        ],
+    )
+    with pytest.raises(SystemExit, match="2"):
+        structural_review_main()
