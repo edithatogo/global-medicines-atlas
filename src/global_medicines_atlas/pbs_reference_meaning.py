@@ -34,6 +34,10 @@ REFERENCE_FIELDS_SHA256 = (
     "4a182e94b791fa0939792fe0159c8daca8ec2577c7f6f49a3de88378e5485793"
 )
 REFERENCE_KINDS = {"rdf_resource", "xlink_href"}
+REFERENCE_CONTEXT_STRATIFIED_VERSION = 2
+REFERENCE_CONTEXT_EXAMPLE_POLICY = (
+    "up_to_five_value_free_examples_per_structural_stratum"
+)
 STATUSES = {
     "ambiguous_exact_literal",
     "empty_literal",
@@ -308,7 +312,7 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
                 reject_source_values(nested)
 
     reject_source_values(mapping)
-    required = {
+    base_required = {
         "schema_id",
         "schema_version",
         "reference_occurrences",
@@ -323,6 +327,10 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
         "semantic_relationships_qualified",
         "external_targets_fetched",
     }
+    version = mapping.get("schema_version")
+    required = base_required
+    if version == REFERENCE_CONTEXT_STRATIFIED_VERSION:
+        required = base_required | {"example_selection_policy"}
     if set(mapping) != required:
         raise ValueError("PBS reference context schema differs")
     int_keys = (
@@ -345,8 +353,15 @@ def _validate_reference_context(  # ruff: ignore[too-many-branches,too-many-stat
     ):
         raise ValueError("PBS reference context contract differs")
     if (
-        mapping["schema_version"] != 1
+        mapping["schema_version"]
+        not in {1, REFERENCE_CONTEXT_STRATIFIED_VERSION}
         or mapping["strata_count"] > MAX_CONTEXT_STRATA
+    ):
+        raise ValueError("PBS reference context contract differs")
+    if (
+        mapping["schema_version"] == REFERENCE_CONTEXT_STRATIFIED_VERSION
+        and mapping["example_selection_policy"]
+        != REFERENCE_CONTEXT_EXAMPLE_POLICY
     ):
         raise ValueError("PBS reference context contract differs")
     if not isinstance(strata, list):

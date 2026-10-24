@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-63.json"
+    "australian-m112-rights-release-preflight-20261024-66.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-62.json"
+    "australian-m112-rights-release-preflight-20261024-65.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -178,7 +178,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-62.json"
+        "australian-m112-rights-release-preflight-20261024-65.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -187,7 +187,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-61.json"
+        "australian-m112-rights-release-preflight-20261024-64.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -200,12 +200,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-60.json"
+        "australian-m112-rights-release-preflight-20261024-63.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-59.json"
+        "australian-m112-rights-release-preflight-20261024-62.json"
     )
 
 
@@ -220,12 +220,14 @@ def test_full_local_profile_failure_and_recovery_are_explicit() -> None:
     assert profile["failure_only_recheck"] == "4 passed"
     assert profile["pbs_date_isolated_recheck"] == "1 passed"
     latest = report["latest_local_full_profile_attempt"]
-    assert latest["passed"] == 7995
-    assert latest["failed"] == 7
+    assert latest["passed"] == 8073
+    assert latest["failed"] == 10
     assert latest["skipped"] == 4
-    assert 96.86 < latest["coverage_percent"] < 96.88
-    assert latest["status"] == "failed_unrelated_full_profile_gates_preserved"
-    assert len(latest["failure_nodes"]) == 7
+    assert 96.93 < latest["coverage_percent"] < 96.95
+    assert latest["status"] == (
+        "failed_full_profile_with_exact_input_hash_mismatch_and_transient_environment_failures"
+    )
+    assert len(latest["failure_nodes"]) == 10
 
 
 def test_pbs_native_silver_field_state_is_candidate_only() -> None:

@@ -24,6 +24,10 @@ MAX_CONTEXT_STRATA = 10_000
 MAX_CONTEXT_EXAMPLES = 1_000
 MAX_CONTEXT_TARGETS_PER_EXAMPLE = 10
 MIN_AMBIGUOUS_TARGETS = 2
+STRATIFIED_CONTEXT_SCHEMA_VERSION = 2
+STRATIFIED_CONTEXT_EXAMPLE_POLICY = (
+    "up_to_five_value_free_examples_per_structural_stratum"
+)
 MEANING_REPORT_SCHEMA_VERSION = 3
 MAX_OCCURRENCE_BYTES = 4096
 MAX_QNAME_BYTES = 256
@@ -95,7 +99,7 @@ def _validate_no_source_values(value: object) -> None:
             _validate_no_source_values(nested)
 
 
-def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements] - validate the complete untrusted aggregate contract in one pass
+def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements, too-many-locals] - validate the complete untrusted aggregate contract in one pass
     context_value: object, references: int
 ) -> dict[str, Any]:
     context = _object(context_value, "reference context must be an object")
@@ -111,12 +115,23 @@ def _validate_context(  # ruff: ignore[too-many-branches, too-many-statements] -
         *_CONTEXT_FLAGS,
         "external_targets_fetched",
     }
-    if set(context) != required:
+    version = context.get("schema_version")
+    expected = required
+    if version == STRATIFIED_CONTEXT_SCHEMA_VERSION:
+        expected = required | {"example_selection_policy"}
+    if set(context) != expected:
         raise ValueError("reference context schema differs")
     if (
         context["schema_id"]
         != "global-medicines-atlas.pbs-reference-context-screen"
-        or context["schema_version"] != 1
+        or isinstance(version, bool)
+        or version not in {1, STRATIFIED_CONTEXT_SCHEMA_VERSION}
+    ):
+        raise ValueError("reference context contract differs")
+    if (
+        version == STRATIFIED_CONTEXT_SCHEMA_VERSION
+        and context["example_selection_policy"]
+        != STRATIFIED_CONTEXT_EXAMPLE_POLICY
     ):
         raise ValueError("reference context contract differs")
     for flag in _CONTEXT_FLAGS:
