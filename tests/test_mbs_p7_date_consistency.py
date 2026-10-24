@@ -32,6 +32,38 @@ def test_date_status_calendar_profiles(value: str, expected: str) -> None:
     assert consistency._date_status(value) == expected
 
 
+def test_retained_file_consistency_receipt_binds_exact_scope() -> None:
+    path = Path(
+        "quality/qualifications/"
+        "mbs-p7-date-consistency-inference-20261025-40139026116.json"
+    )
+    evidence = path.read_bytes()
+    digest = "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486"
+    decision, observed_digest = (
+        consistency.validate_p7_date_consistency_inference(
+            evidence,
+            expected_sha256=digest,
+            source_sha256=_SHA,
+            source_byte_count=87727,
+        )
+    )
+    assert observed_digest == digest
+    assert decision is not None
+    assert decision["selection_status"] == (
+        "selected_internal_file_consistency_inference"
+    )
+    assert decision["scope"]["domain_meaning"] is False
+    assert decision["scope"]["other_mbs_eras"] is False
+    assert decision["scope"]["other_workbooks"] is False
+    with pytest.raises(ValueError, match="digest differs"):
+        consistency.validate_p7_date_consistency_inference(
+            evidence + b" ",
+            expected_sha256=digest,
+            source_sha256=_SHA,
+            source_byte_count=87727,
+        )
+
+
 def _valid_profile() -> dict[str, Any]:
     profile: dict[str, Any] = {
         "schema_version": 1,

@@ -11,6 +11,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from global_medicines_atlas.mbs_workbook_field_reconciliation import (  # ruff: ignore[module-import-not-at-top-of-file]
     HEADER_PATH,
+    P7_DATE_INFERENCE_PATH,
     P7_DATE_PROFILE_PATH,
     P7_RULES_PATH,
     P7_RUN_RECEIPT_PATH,
@@ -37,6 +38,11 @@ def main() -> int:
         "--p7-date-profile", type=Path, default=ROOT / P7_DATE_PROFILE_PATH
     )
     parser.add_argument(
+        "--p7-date-inference",
+        type=Path,
+        default=ROOT / P7_DATE_INFERENCE_PATH,
+    )
+    parser.add_argument(
         "--p7-value-era-rules", type=Path, default=ROOT / P7_RULES_PATH
     )
     parser.add_argument(
@@ -49,6 +55,7 @@ def main() -> int:
         "p7_typed": args.p7_typed,
         "p7_run_receipt": args.p7_run_receipt,
         "p7_date_profile": args.p7_date_profile,
+        "p7_date_inference": args.p7_date_inference,
         "p7_value_era_rules": args.p7_value_era_rules,
     }
     report = reconcile_from_paths(paths)

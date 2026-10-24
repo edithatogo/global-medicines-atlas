@@ -14,6 +14,10 @@ from typing import Any
 import pyarrow as pa
 
 from .australian_source_contracts import MbsFieldContract, mbs_field_contracts
+from .mbs_p7_date_consistency import (
+    P7_DATE_FIELDS,
+    validate_p7_date_consistency_inference,
+)
 from .mbs_typed_values import (
     CONVERSION_VERSION,
     DATE_FORMATS,
@@ -45,6 +49,9 @@ _P7_SOURCE_SHA256 = (
 )
 _P7_DATE_PROFILE_SHA256 = (
     "c9b49f60a9a608bc77674a2094b8fd4439115fc17bb200b04fc202c6b463d1bf"
+)
+_P7_DATE_INFERENCE_SHA256 = (
+    "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486"
 )
 _DATE_PROFILE_SCHEMA_VERSION = 2
 _MAX_DATE_COMPONENT = 12
@@ -168,10 +175,11 @@ def _profile_counts_match(
     return profile.get("by_field") == expected
 
 
-def _values(
+def _values(  # ruff: ignore[too-many-return-statements]
     row: dict[str, Any],
     date_format: str | None,
     calendar_profile_sha256: str | None = None,
+    date_inference_sha256: str | None = None,
 ) -> dict[str, Any]:
     value = row["display_value"]
     state = (
@@ -223,7 +231,58 @@ def _values(
         if qualified["interpretation_state"] == "interpreted":
             return qualified
         date_format = None
+    if (
+        field.value_type == "source_date"
+        and date_inference_sha256 is not None
+        and row["source_sha256"] == _P7_SOURCE_SHA256
+        and row["mapping_field"] in P7_DATE_FIELDS
+    ):
+        inferred = _qualified_file_consistency_date(
+            row, result, date_inference_sha256
+        )
+        if inferred["interpretation_state"] == "interpreted":
+            return inferred
     return _convert_field(row, field, date_format, result)
+
+
+def _qualified_file_consistency_date(
+    row: dict[str, Any], result: dict[str, Any], evidence_sha256: str
+) -> dict[str, Any]:
+    """Apply the selected internal DMY convention to exact P7 literal dates."""
+    if (
+        row["cell_type"] not in _TEXT_STORAGE
+        or row["cell_type"] == "e"
+        or row["formula_state"] != "missing_field"
+    ):
+        return result
+    value = row["display_value"]
+    if (
+        value is None
+        or re.fullmatch(r"[0-9]{2}\.[0-9]{2}\.[0-9]{4}", value) is None
+    ):
+        return result
+    day, month, year = (int(part) for part in value.split("."))
+    try:
+        parsed = date(year, month, day)
+    except ValueError:
+        return result
+    return {
+        **result,
+        "interpretation_state": "interpreted",
+        "interpretation_reason": (
+            "Exact P7 internal file-consistency inference selects DMY for "
+            "this literal date; Department provenance and broader domain "
+            "meaning are not established"
+        ),
+        "semantic_evidence_sha256": evidence_sha256,
+        "semantic_definition": (
+            "Valid DD.MM.YYYY literal date interpreted under the selected "
+            "internal exact-file consistency inference for the pinned July "
+            "2024 P7 workbook only"
+        ),
+        "domain_date": parsed,
+        "domain_status": "qualified_file_consistency_dmy",
+    }
 
 
 def _qualified_profile_date(
@@ -300,6 +359,8 @@ def iter_workbook_value_batches(
     date_format: str | None = None,
     calendar_profile_evidence: bytes | None = None,
     calendar_profile_sha256: str | None = None,
+    date_inference_evidence: bytes | None = None,
+    date_inference_sha256: str | None = None,
     rows_per_batch: int = 1024,
 ) -> Iterator[pa.RecordBatch]:
     """Type known fields without discarding native cells or cache provenance.
@@ -313,6 +374,17 @@ def iter_workbook_value_batches(
     profile, profile_sha256 = _validated_p7_date_profile(
         receipt, calendar_profile_evidence, calendar_profile_sha256
     )
+    inference, inference_sha256 = validate_p7_date_consistency_inference(
+        date_inference_evidence,
+        expected_sha256=date_inference_sha256,
+        source_sha256=receipt.payload.sha256,
+        source_byte_count=receipt.payload.byte_count,
+    )
+    if (
+        inference is not None
+        and date_inference_sha256 != _P7_DATE_INFERENCE_SHA256
+    ):
+        raise ValueError("P7 date inference digest is not the pinned receipt")
     if calendar_profile_evidence is not None:
         if profile is None:
             raise ValueError("P7 date profile evidence is missing")
@@ -331,6 +403,14 @@ def iter_workbook_value_batches(
             b"date_profile_evidence_sha256": (
                 profile_sha256 or "unselected"
             ).encode(),
+            b"date_inference": (
+                "selected_internal_file_consistency_inference"
+                if inference is not None
+                else "unselected"
+            ).encode(),
+            b"date_inference_evidence_sha256": (
+                inference_sha256 or "unselected"
+            ).encode(),
             b"date_interpretation": b"per_cell_unique_calendar_only_no_serial_or_formula_dates",
             b"currency_interpretation": b"per_domain_field",
             b"decimal_type": b"decimal128(38,9)",
@@ -341,7 +421,15 @@ def iter_workbook_value_batches(
         schema = schema.with_metadata(metadata)  # pyright: ignore[reportUnknownMemberType]
         yield pa.RecordBatch.from_pylist(
             [
-                {**row, **_values(row, date_format, profile_sha256)}
+                {
+                    **row,
+                    **_values(
+                        row,
+                        date_format,
+                        profile_sha256,
+                        inference_sha256,
+                    ),
+                }
                 for row in batch.to_pylist()
             ],
             schema=schema,

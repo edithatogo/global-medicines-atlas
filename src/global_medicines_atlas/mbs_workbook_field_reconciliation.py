@@ -8,6 +8,8 @@ import operator
 from pathlib import Path
 from typing import Any, cast
 
+from .mbs_p7_date_consistency import validate_p7_date_consistency_inference
+
 PACKAGE_PATH = (
     "quality/qualifications/mbs-historical-workbook-cohort-"
     "20261023-39724026209-39891918206.json"
@@ -27,14 +29,25 @@ P7_RUN_RECEIPT_PATH = (
 P7_DATE_PROFILE_PATH = (
     "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json"
 )
+P7_DATE_INFERENCE_PATH = (
+    "quality/qualifications/"
+    "mbs-p7-date-consistency-inference-20261025-40139026116.json"
+)
+P7_DATE_INFERENCE_SHA256 = (
+    "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486"
+)
 P7_RULES_PATH = "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
 WORKBOOK_COUNT = 91
 P7_CELL_COUNT = 13_742
 P7_HEADER_CELL_COUNT = 97
 P7_VALUE_CELL_COUNT = 13_645
-P7_INTERPRETED_DATE_CELLS = 86
-P7_UNRESOLVED_CELL_COUNT = 13_656
-P7_UNRESOLVED_VALUE_COUNT = 13_559
+P7_UNIQUE_INTERPRETED_DATE_CELLS = 86
+P7_INFERENCE_INTERPRETED_DATE_CELLS = 1_194
+P7_INTERPRETED_DATE_CELLS = (
+    P7_UNIQUE_INTERPRETED_DATE_CELLS + P7_INFERENCE_INTERPRETED_DATE_CELLS
+)
+P7_UNRESOLVED_CELL_COUNT = 12_462
+P7_UNRESOLVED_VALUE_COUNT = 12_365
 P7_EXACT_MAIN_RUN_ID = 40094025412
 P7_EXACT_MAIN_COMMIT = "11be72e328affc0df87395fd59165ef4f5bf9055"
 P7_EXACT_MAIN_ARTIFACT_ID = 12559848688
@@ -235,6 +248,7 @@ def _p7_field_rows(
 
 def _p7_date_field_rows(
     date_profile: dict[str, Any],
+    inference: dict[str, Any],
 ) -> list[dict[str, Any]]:
     profile = _dict(date_profile.get("profile"), "P7 calendar profile")
     fields = _dict(profile.get("by_field"), "P7 calendar profile fields")
@@ -248,6 +262,10 @@ def _p7_date_field_rows(
             states.get("unique_dmy_calendar_date", 0),
             "unique DMY calendar date count",
         )
+        ambiguous = _int(
+            states.get("ambiguous_calendar_order", 0),
+            "ambiguous calendar field count",
+        )
         unresolved = (
             sum(
                 _int(count, "calendar field state count")
@@ -255,6 +273,13 @@ def _p7_date_field_rows(
             )
             - interpreted
         )
+        inferred = (
+            ambiguous
+            if field in inference["date_fields_with_populated_values"]
+            else 0
+        )
+        interpreted += inferred
+        unresolved -= inferred
         rows.append({
             "field": field,
             "scope": "source_column_across_all_sheets",
@@ -266,6 +291,10 @@ def _p7_date_field_rows(
             "native_unresolved": unresolved,
             "unavailable": 0,
             "date_states": dict(sorted(states.items())),
+            "interpretation_basis": {
+                "per_cell_unique_calendar_date": interpreted - inferred,
+                "selected_internal_file_consistency_dmy": inferred,
+            },
         })
     return rows
 
@@ -350,7 +379,12 @@ def _p7_source_field_states(
                 "unavailable": 0,
             },
             "value_state_basis": (
-                "source-column calendar profile"
+                "per-cell unique calendar profile plus exact-P7 internal file-consistency inference"
+                if date_state is not None
+                and date_state["interpretation_basis"][
+                    "selected_internal_file_consistency_dmy"
+                ]
+                else "source-column calendar profile"
                 if date_state is not None
                 else "no supported domain interpretation in bound evidence"
             ),
@@ -561,6 +595,30 @@ def reconcile_workbook_field_states(
     p7_date_profile = _dict(
         p7_typed.get("_p7_date_profile"), "P7 calendar profile receipt"
     )
+    p7_date_inference = _dict(
+        p7_typed.get("_p7_date_inference"), "P7 date inference receipt"
+    )
+    inference_bytes = (
+        json.dumps(
+            p7_date_inference,
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        + "\n"
+    ).encode("utf-8")
+    inference_decision, inference_sha256 = (
+        validate_p7_date_consistency_inference(
+            inference_bytes,
+            expected_sha256=input_sha256.get("p7_date_inference"),
+            source_sha256=str(value_profile.get("source_sha256")),
+            source_byte_count=87727,
+        )
+    )
+    if (
+        inference_decision is None
+        or inference_sha256 != P7_DATE_INFERENCE_SHA256
+    ):
+        raise ValueError("P7 selected date inference evidence is required")
     p7_date_profile_data = _dict(
         p7_date_profile.get("profile"), "P7 calendar profile"
     )
@@ -641,12 +699,27 @@ def reconcile_workbook_field_states(
         or date_rules.get("semantic_promotion") is not False
     ):
         raise ValueError("P7 date profile must remain unselected")
+    candidate_inference = _dict(
+        candidate.get("date_inference"), "P7 candidate date inference"
+    )
+    if candidate_inference != {
+        "kind": "selected_internal_file_consistency_inference",
+        "source_sha256": value_profile.get("source_sha256"),
+        "profile": "dotted_DMY",
+        "fields": inference_decision["date_fields_with_populated_values"],
+        "interpreted_cells": P7_INFERENCE_INTERPRETED_DATE_CELLS,
+        "evidence_sha256": inference_sha256,
+        "department_provenance_established": False,
+        "domain_meaning_established": False,
+        "other_workbooks_or_eras_in_scope": False,
+    }:
+        raise ValueError("P7 candidate date inference binding differs")
     if (
         p7_interpreted != P7_INTERPRETED_DATE_CELLS
         or p7_unresolved != P7_UNRESOLVED_CELL_COUNT
     ):
         raise ValueError("P7 exact-main cell-state totals differ")
-    date_field_rows = _p7_date_field_rows(p7_date_profile)
+    date_field_rows = _p7_date_field_rows(p7_date_profile, inference_decision)
     if sum(row["interpreted"] for row in date_field_rows) != p7_interpreted:
         raise ValueError(
             "P7 unique date fields differ from typed qualification"
@@ -663,7 +736,7 @@ def reconcile_workbook_field_states(
     if ambiguous_dates != _int(
         date_rules.get("ambiguous_date_shaped_cells"),
         "ambiguous date-shaped cell count",
-    ) or ambiguous_dates + p7_interpreted != _int(
+    ) or ambiguous_dates + P7_UNIQUE_INTERPRETED_DATE_CELLS != _int(
         date_rules.get("lexical_date_cells"),
         "P7 date-shaped cell count",
     ):
@@ -687,6 +760,7 @@ def reconcile_workbook_field_states(
         "p7_typed",
         "p7_run_receipt",
         "p7_date_profile",
+        "p7_date_inference",
         "p7_value_era_rules",
     }
     if set(input_sha256) != expected_hash_keys or any(
@@ -694,6 +768,8 @@ def reconcile_workbook_field_states(
         for value in input_sha256.values()
     ):
         raise ValueError("exact input receipt digests are required")
+    if input_sha256["p7_date_inference"] != P7_DATE_INFERENCE_SHA256:
+        raise ValueError("P7 date inference receipt digest differs")
 
     p7_statuses = _dict(value_profile.get("statuses"), "P7 value statuses")
     p7_status_total = sum(
@@ -856,8 +932,11 @@ def reconcile_workbook_field_states(
                     sorted(date_compatibility.items())
                 ),
                 "date_profile_selected": False,
+                "internal_file_consistency_inference_selected": True,
+                "date_inference_sha256": inference_sha256,
+                "file_consistency_dmy_interpreted_cells": P7_INFERENCE_INTERPRETED_DATE_CELLS,
                 "date_profile_sha256": date_profile_digest,
-                "uniquely_determined_calendar_dates": p7_interpreted,
+                "uniquely_determined_calendar_dates": P7_UNIQUE_INTERPRETED_DATE_CELLS,
                 "ambiguous_date_shaped_cells": _int(
                     date_rules.get("ambiguous_date_shaped_cells"),
                     "ambiguous date-shaped cell count",
@@ -873,7 +952,12 @@ def reconcile_workbook_field_states(
             "historical_workbook_non_header_domain_meanings_qualified": False,
             "benefit_currency_qualified": False,
             "p7_date_convention_selected": False,
-            "p7_unique_calendar_date_values_interpreted": p7_interpreted,
+            "p7_unique_calendar_date_values_interpreted": P7_UNIQUE_INTERPRETED_DATE_CELLS,
+            "p7_internal_file_consistency_dmy_inference_selected": True,
+            "p7_internal_file_consistency_dmy_cells_interpreted": P7_INFERENCE_INTERPRETED_DATE_CELLS,
+            "p7_department_provenance_established": False,
+            "p7_domain_meaning_established": False,
+            "p7_temporal_comparison_enabled": False,
             "cross_era_equivalence_qualified": False,
             "source_values_emitted": False,
             "new_sources_added": False,
@@ -886,6 +970,7 @@ def reconcile_from_paths(paths: dict[str, Path]) -> dict[str, Any]:
     digests = {key: _sha256(path) for key, path in paths.items()}
     reports["p7_typed"]["_run_receipt"] = reports["p7_run_receipt"]
     reports["p7_typed"]["_p7_date_profile"] = reports["p7_date_profile"]
+    reports["p7_typed"]["_p7_date_inference"] = reports["p7_date_inference"]
     return reconcile_workbook_field_states(
         reports["package_cohort"],
         reports["header_cohort"],

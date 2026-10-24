@@ -90,6 +90,68 @@ def test_p7_profile_package_records_bounded_date_evidence(
         )
 
 
+def test_file_consistency_candidate_records_inference_and_restores(
+    tmp_path: Path, monkeypatch
+) -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+    )
+    receipt = _receipt(payload)
+    evidence = b"selected file-consistency receipt"
+    digest = sha256(evidence).hexdigest()
+    monkeypatch.setattr(
+        values_module, "_P7_SOURCE_SHA256", receipt.payload.sha256
+    )
+    monkeypatch.setattr(values_module, "_P7_DATE_INFERENCE_SHA256", digest)
+    monkeypatch.setattr(
+        values_module,
+        "validate_p7_date_consistency_inference",
+        lambda *_args, **_kwargs: (
+            {"date_fields_with_populated_values": ["ItemStartDate"]},
+            digest,
+        ),
+    )
+    output = tmp_path / "file-consistency"
+    report = build_workbook_value_package(
+        payload,
+        receipt,
+        output,
+        date_inference_evidence=evidence,
+        date_inference_sha256=digest,
+    )
+    assert report["coverage"]["interpreted_cells"] == 1
+    assert report["date_inference"] == {
+        "kind": "selected_internal_file_consistency_inference",
+        "source_sha256": receipt.payload.sha256,
+        "profile": "dotted_DMY",
+        "fields": [
+            "BenefitStartDate",
+            "DescriptionStartDate",
+            "FeeStartDate",
+            "ItemStartDate",
+        ],
+        "interpreted_cells": 1194,
+        "evidence_sha256": digest,
+        "department_provenance_established": False,
+        "domain_meaning_established": False,
+        "other_workbooks_or_eras_in_scope": False,
+    }
+    rows = pq.read_table(output / module.PARQUET).to_pylist()
+    row = next(value for value in rows if value["coordinate"] == "C2")
+    assert row["display_value"] == "05.06.2024"
+    assert row["domain_status"] == "qualified_file_consistency_dmy"
+    assert (
+        verify_workbook_value_package(
+            output,
+            payload,
+            receipt,
+            date_inference_evidence=evidence,
+            date_inference_sha256=digest,
+        )
+        == report
+    )
+
+
 def build_fixture(tmp_path):
     payload = payload_with(
         '<c r="C2" t="inlineStr"><is><t>01.07.2024</t></is></c>'
