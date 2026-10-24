@@ -42,6 +42,24 @@ _QNAME = {
 }
 _LOWER_BOUND = 0x20
 _DELETE = 0x7F
+_NCNAME_MIDDLE_DOT = 0xB7
+_NCNAME_START_RANGES = (
+    (0x41, 0x5A),
+    (0x61, 0x7A),
+    (0xC0, 0xD6),
+    (0xD8, 0xF6),
+    (0xF8, 0x2FF),
+    (0x370, 0x37D),
+    (0x37F, 0x1FFF),
+    (0x200C, 0x200D),
+    (0x2070, 0x218F),
+    (0x2C00, 0x2FEF),
+    (0x3001, 0xD7FF),
+    (0xF900, 0xFDCF),
+    (0xFDF0, 0xFFFD),
+    (0x10000, 0xEFFFF),
+)
+_NCNAME_EXTRA_RANGES = ((0x30, 0x39), (0x300, 0x36F), (0x203F, 0x2040))
 
 
 def _valid_reference(value: str) -> bool:
@@ -51,6 +69,24 @@ def _valid_reference(value: str) -> bool:
             for char in value
         )
         and _BAD_PERCENT.search(value) is None
+    )
+
+
+def _is_ncname(value: str) -> bool:
+    """Return whether a value satisfies the XML 1.0 NCName production."""
+    if not value or ":" in value:
+        return False
+    first = ord(value[0])
+    if value[0] != "_" and not any(
+        start <= first <= end for start, end in _NCNAME_START_RANGES
+    ):
+        return False
+    return all(
+        char in "_.-"
+        or any(start <= ord(char) <= end for start, end in _NCNAME_START_RANGES)
+        or any(start <= ord(char) <= end for start, end in _NCNAME_EXTRA_RANGES)
+        or ord(char) == _NCNAME_MIDDLE_DOT
+        for char in value[1:]
     )
 
 
@@ -117,6 +153,7 @@ class _ScreenIndex:
     predicate_qnames: Counter[str] = field(default_factory=Counter)
     reference_element_qnames: Counter[str] = field(default_factory=Counter)
     reference_attribute_qnames: Counter[str] = field(default_factory=Counter)
+    invalid_xml_id_count: int = 0
     indexed_uri_chars: int = 0
     elements: int = 0
 
@@ -137,9 +174,12 @@ def _record_attribute(
         if index.indexed_uri_chars > MAX_INDEXED_URI_CHARS:
             raise ValueError("PBS URI screen indexed URI bound exceeded")
     if attribute == XML_ID:
-        index.xml_ids[value] += 1
         index.definition_counts["xml:id"] += 1
         index.definition_element_qnames[element_qname] += 1
+        if _is_ncname(value):
+            index.xml_ids[value] += 1
+        else:
+            index.invalid_xml_id_count += 1
     elif attribute == RDF_ABOUT:
         index.definition_counts["rdf:about"] += 1
         index.definition_element_qnames[element_qname] += 1
@@ -290,6 +330,7 @@ def screen_pbs_native_uris(  # ruff: ignore[too-many-branches] -- explicit outco
             qname: index.definition_counts.get(qname, 0)
             for qname in ("rdf:about", "xml:id")
         },
+        "invalid_xml_id_count": index.invalid_xml_id_count,
         "definition_element_qname_counts": dict(
             sorted(index.definition_element_qnames.items())
         ),

@@ -90,6 +90,18 @@ def test_absolute_nested_base_reestablishes_rdf_resolution_but_xlink_abstains():
     }
 
 
+def test_invalid_xml_id_does_not_count_as_a_same_member_target():
+    member = b"""<root xmlns:xlink="http://www.w3.org/1999/xlink">
+      <target xml:id="not a valid NCName"/>
+      <link xlink:href="#not%20a%20valid%20NCName"/>
+    </root>"""
+    report = screen_pbs_native_uris(member)
+    assert report["invalid_xml_id_count"] == 1
+    assert report["outcome_counts_by_kind"]["xlink_href"] == {
+        "missing_id_target": 1
+    }
+
+
 def test_duplicate_rdf_about_targets_are_ambiguous_and_absolute_without_base_is_safe():
     member = b"""<root xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
       <rdf:Description rdf:about="https://synthetic.example/item"/>
