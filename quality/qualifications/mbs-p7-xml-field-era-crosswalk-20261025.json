@@ -1,0 +1,716 @@
+{
+  "admission_changed": false,
+  "basis_commit": "04bd8c1d4f95f7535ebf72aa66edda656a423f30",
+  "counts": {
+    "annotation_only": 8,
+    "named_no_counterpart": 0,
+    "named_p7_fields": 48,
+    "same_name_structural_candidates": 40,
+    "semantic_equivalences_qualified": 0,
+    "unlabelled_source_columns": 2,
+    "unlabelled_value_cell_occurrences": 4
+  },
+  "crosswalk_method": {
+    "annotation_rule": "Retained P7 legacy annotation targets remain source-local annotations; no XML counterpart is inferred.",
+    "external_fetch_performed": false,
+    "new_sources_added": false,
+    "p7_binding_basis": "Receipt-bound, value-free P7 field-lineage report and exact header contract profile.",
+    "same_name_rule": "Identical header spelling yields only a structural counterpart candidate. It does not qualify historical/current semantic equivalence.",
+    "semantic_promotion_rule": "Promote only where retained dated documentation directly establishes the meaning across both exact source eras and an effective boundary. No examined documentation meets that test.",
+    "source_values_emitted": false,
+    "source_values_read": false,
+    "xml_contract_basis": "Current XML native field names in the retained MBS adapter and typed source contract."
+  },
+  "dated_documentation": {
+    "release_change_notes": {
+      "limitation": "These 2026 metadata-only release observations do not map changed spreadsheet columns to XML elements or qualify P7-to-July-2025 semantics.",
+      "record": {
+        "path": "quality/qualifications/australian-mbs-official-release-change-notes-20261018.json",
+        "role": "later-release metadata observations; not a July 2025 field mapping",
+        "sha256": "d9047190029a1f0b070819c590678c5509a5d6922a256eb9a4e953611934ba24"
+      },
+      "status": "release_changes_observed_semantic_mapping_unqualified"
+    },
+    "review_findings": {
+      "EMSNCap": "The retained review documents conflict between the 2013 guide/current help and the February 2022 PDF; no code meaning or source-era mapping is selected.",
+      "ItemChange": "The retained review documents a wording expansion between the 2013 and February 2022 editions; its operational meaning and effective release boundary remain unresolved."
+    },
+    "review_record": {
+      "path": "quality/qualifications/australian-mbs-field-guide-semantic-history-20261018.json",
+      "role": "field-guide comparison and explicit unresolved history result",
+      "sha256": "4140b659a21ad62937dfa02ec9d1c9116ea836ef911a1127abc9e711f7f5ef73"
+    },
+    "reviewed_primary_documents": [
+      {
+        "edition": "November 2013",
+        "review_record": {
+          "path": "quality/qualifications/australian-mbs-field-guide-semantic-history-20261018.json",
+          "role": "retained review of historical MBS XML field guide; direct semantic evidence only for the fields explicitly compared there",
+          "sha256": "4140b659a21ad62937dfa02ec9d1c9116ea836ef911a1127abc9e711f7f5ef73"
+        },
+        "sha256": "b12368b56a952f3b56dc0ef50eaaa675e21a77f2bb69ba3adfa275b5fb3ff650",
+        "url": "https://mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/4106D64C0906845FCA257CCF000B1173/$File/November%202013%20XML%20data%20specifications.pdf"
+      },
+      {
+        "edition": "February 2022",
+        "official_help_page_last_updated": "2022-03-04",
+        "review_record": {
+          "path": "quality/qualifications/australian-mbs-field-guide-semantic-history-20261018.json",
+          "role": "retained review of current MBS XML field guide and help page",
+          "sha256": "4140b659a21ad62937dfa02ec9d1c9116ea836ef911a1127abc9e711f7f5ef73"
+        },
+        "sha256": "0dda6662d14e950906512a94e1d30ed014a0092f177e249697c9a9ca565692bc",
+        "url": "https://www.mbsonline.gov.au/internet/mbsonline/publishing.nsf/Content/DD1EE844DE6A60D0CA257CD0000A4485/$File/202202-XML-Field-Descriptions.pdf"
+      }
+    ]
+  },
+  "fields": [
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "Anaes",
+      "p7_native_header": "Anaes",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "Anaes"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "AnaesChange",
+      "p7_native_header": "AnaesChange",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "AnaesChange"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "BasicUnits",
+      "p7_native_header": "BasicUnits",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "BasicUnits"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "Benefit100",
+      "p7_native_header": "Benefit100",
+      "p7_silver_target": "benefits",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "Benefit100"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "Benefit75",
+      "p7_native_header": "Benefit75",
+      "p7_silver_target": "benefits",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "Benefit75"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "Benefit85",
+      "p7_native_header": "Benefit85",
+      "p7_silver_target": "benefits",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "Benefit85"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "BenefitStartDate",
+      "p7_native_header": "BenefitStartDate",
+      "p7_silver_target": "benefits",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "BenefitStartDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "BenefitType",
+      "p7_native_header": "BenefitType",
+      "p7_silver_target": "benefits",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "BenefitType"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "Category",
+      "p7_native_header": "Category",
+      "p7_silver_target": "hierarchy",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "Category"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "annotation_only",
+      "mapping_basis": "Existing P7 header profile classifies this source column as a legacy annotation; no current XML field counterpart is declared.",
+      "p7_mapping_field": "class",
+      "p7_native_header": "Class",
+      "p7_silver_target": "legacy_annotations",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": null
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "annotation_only",
+      "mapping_basis": "Existing P7 header profile classifies this source column as a legacy annotation; no current XML field counterpart is declared.",
+      "p7_mapping_field": "declining_list_member",
+      "p7_native_header": "Declining List",
+      "p7_silver_target": "legacy_annotations",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": null
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "DerivedFee",
+      "p7_native_header": "DerivedFee",
+      "p7_silver_target": "fees",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "DerivedFee"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "DerivedFeeStartDate",
+      "p7_native_header": "DerivedFeeStartDate",
+      "p7_silver_target": "fees",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "DerivedFeeStartDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "Description",
+      "p7_native_header": "Description",
+      "p7_silver_target": "descriptions",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "Description"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "DescriptionStartDate",
+      "p7_native_header": "DescriptionStartDate",
+      "p7_silver_target": "descriptions",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "DescriptionStartDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "DescriptorChange",
+      "p7_native_header": "DescriptorChange",
+      "p7_silver_target": "descriptions",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "DescriptorChange"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "annotation_only",
+      "mapping_basis": "Existing P7 header profile classifies this source column as a legacy annotation; no current XML field counterpart is declared.",
+      "p7_mapping_field": "disease",
+      "p7_native_header": "Disease",
+      "p7_silver_target": "legacy_annotations",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": null
+    },
+    {
+      "dated_documentation": [
+        {
+          "document_status": "2013_guide_and_current_help_conflict_with_2022_pdf",
+          "evidence_path": "quality/qualifications/australian-mbs-field-guide-semantic-history-20261018.json",
+          "semantic_result": "unresolved",
+          "topic": "EMSNCap"
+        }
+      ],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "EMSNCap",
+      "p7_native_header": "EMSNCap",
+      "p7_silver_target": "caps",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "EMSNCap"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "EMSNChange",
+      "p7_native_header": "EMSNChange",
+      "p7_silver_target": "caps",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "EMSNChange"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "EMSNChangeDate",
+      "p7_native_header": "EMSNChangeDate",
+      "p7_silver_target": "caps",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "EMSNChangeDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "EMSNDescription",
+      "p7_native_header": "EMSNDescription",
+      "p7_silver_target": "caps",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "EMSNDescription"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "EMSNEndDate",
+      "p7_native_header": "EMSNEndDate",
+      "p7_silver_target": "caps",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "EMSNEndDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "EMSNFixedCapAmount",
+      "p7_native_header": "EMSNFixedCapAmount",
+      "p7_silver_target": "caps",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "EMSNFixedCapAmount"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "EMSNMaximumCap",
+      "p7_native_header": "EMSNMaximumCap",
+      "p7_silver_target": "caps",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "EMSNMaximumCap"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "EMSNPercentageCap",
+      "p7_native_header": "EMSNPercentageCap",
+      "p7_silver_target": "caps",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "EMSNPercentageCap"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "EMSNStartDate",
+      "p7_native_header": "EMSNStartDate",
+      "p7_silver_target": "caps",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "EMSNStartDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "annotation_only",
+      "mapping_basis": "Existing P7 header profile classifies this source column as a legacy annotation; no current XML field counterpart is declared.",
+      "p7_mapping_field": "element",
+      "p7_native_header": "Element",
+      "p7_silver_target": "legacy_annotations",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": null
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "annotation_only",
+      "mapping_basis": "Existing P7 header profile classifies this source column as a legacy annotation; no current XML field counterpart is declared.",
+      "p7_mapping_field": "exome",
+      "p7_native_header": "Exome",
+      "p7_silver_target": "legacy_annotations",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": null
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "FeeChange",
+      "p7_native_header": "FeeChange",
+      "p7_silver_target": "fees",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "FeeChange"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "FeeStartDate",
+      "p7_native_header": "FeeStartDate",
+      "p7_silver_target": "fees",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "FeeStartDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "FeeType",
+      "p7_native_header": "FeeType",
+      "p7_silver_target": "fees",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "FeeType"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "Group",
+      "p7_native_header": "Group",
+      "p7_silver_target": "hierarchy",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "Group"
+    },
+    {
+      "dated_documentation": [
+        {
+          "document_status": "wording_broadens_between_2013_and_2022_editions",
+          "evidence_path": "quality/qualifications/australian-mbs-field-guide-semantic-history-20261018.json",
+          "semantic_result": "unresolved",
+          "topic": "ItemChange"
+        }
+      ],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "ItemChange",
+      "p7_native_header": "ItemChange",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "ItemChange"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "ItemEndDate",
+      "p7_native_header": "ItemEndDate",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "ItemEndDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "ItemNum",
+      "p7_native_header": "ItemNum",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "ItemNum"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "ItemStartDate",
+      "p7_native_header": "ItemStartDate",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "ItemStartDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "ItemType",
+      "p7_native_header": "ItemType",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "ItemType"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "NewItem",
+      "p7_native_header": "NewItem",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "NewItem"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "annotation_only",
+      "mapping_basis": "Existing P7 header profile classifies this source column as a legacy annotation; no current XML field counterpart is declared.",
+      "p7_mapping_field": "prenatal",
+      "p7_native_header": "Prenatal",
+      "p7_silver_target": "legacy_annotations",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": null
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "ProviderType",
+      "p7_native_header": "ProviderType",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "ProviderType"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "QFEEndDate",
+      "p7_native_header": "QFEEndDate",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "QFEEndDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "QFEStartDate",
+      "p7_native_header": "QFEStartDate",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "QFEStartDate"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "ScheduleFee",
+      "p7_native_header": "ScheduleFee",
+      "p7_silver_target": "fees",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "ScheduleFee"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "SubGroup",
+      "p7_native_header": "SubGroup",
+      "p7_silver_target": "hierarchy",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "SubGroup"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "SubHeading",
+      "p7_native_header": "SubHeading",
+      "p7_silver_target": "hierarchy",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "SubHeading"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "same_name_structural_candidate",
+      "mapping_basis": "Exact source header and current XML native field name coincide; this is a structural candidate only.",
+      "p7_mapping_field": "SubItemNum",
+      "p7_native_header": "SubItemNum",
+      "p7_silver_target": "services",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": "SubItemNum"
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "annotation_only",
+      "mapping_basis": "Existing P7 header profile classifies this source column as a legacy annotation; no current XML field counterpart is declared.",
+      "p7_mapping_field": "technology",
+      "p7_native_header": "Technology",
+      "p7_silver_target": "legacy_annotations",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": null
+    },
+    {
+      "dated_documentation": [],
+      "disposition": "annotation_only",
+      "mapping_basis": "Existing P7 header profile classifies this source column as a legacy annotation; no current XML field counterpart is declared.",
+      "p7_mapping_field": "tissue",
+      "p7_native_header": "Tissue",
+      "p7_silver_target": "legacy_annotations",
+      "semantic_equivalence": "unresolved",
+      "semantic_equivalence_promoted": false,
+      "xml_counterpart_candidate": null
+    }
+  ],
+  "generated_at": "2026-10-25",
+  "publication_performed": false,
+  "qualification": "structural_crosswalk_only_semantics_unresolved",
+  "report_sha256": "c563c9f467adb4ee3dd45bd05b865c04e0c81d14a0ffabbc135eda78724701a0",
+  "schema_id": "global-medicines-atlas.mbs-p7-xml-field-era-crosswalk",
+  "schema_version": 1,
+  "semantic_equivalence_promoted": false,
+  "sources": {
+    "current_july_2025_xml": {
+      "byte_count": 8194522,
+      "comparison_schema_era": "mbs-xml-v3-2025-07",
+      "effective_at": "2025-07-01",
+      "path": "raw/mbs/2025-07/MBS-XML-20250701-Version-3.XML",
+      "receipt_sha256": "0f38f07ed4f8394b98c6276071c3ffa7d55d260b4b757d9068cced7f0673ccf7",
+      "release_id": "MBS-XML-20250701 Version 3",
+      "released_at": "2025-06-16",
+      "sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+      "source_id": "au-mbs",
+      "source_revision": "2025-07-version-3"
+    },
+    "historical_p7_workbook": {
+      "byte_count": 87727,
+      "path": "raw/mbs/legacy/2024-07/MBS-2024.07-Group-P7-Genetics.xlsx",
+      "receipt_sha256": "03e3050a80ab521abd59c921f35ae20c658803d44c5f2c864ebade78f322e8d5",
+      "schema_era": "mbs-p7-2024-07-headers-v1",
+      "sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+      "source_id": "au-mbs-p7-legacy-workbook",
+      "source_revision": "legacy-donor-20260829"
+    }
+  },
+  "supporting_evidence": [
+    {
+      "path": "quality/qualifications/mbs-p7-workbook-field-lineage-20261011.json",
+      "role": "exact P7 source digest, receipt binding, 99 source-column lineage entries, and value-free header mapping profile",
+      "sha256": "335a737fec71abc6f502d65417a6a2b40b9ff20933e710abe02fc92453274f74"
+    },
+    {
+      "path": "quality/qualifications/australian-mbs-silver-candidate-qualification-20261017.json",
+      "role": "exact July 2025 XML source digest, receipt, release identity and field denominators",
+      "sha256": "de159badf4af83e0963f7a57518910e009e79b864717059b3e4389de9efcf606"
+    },
+    {
+      "path": "quality/qualifications/mbs-historical-workbook-header-cohort-20261024-40040624592.json",
+      "role": "91-workbook exact header cohort; confirms header bindings do not complete whole-workbook semantics",
+      "sha256": "5a5858e0a458c46452188a4f52ea396bf1f98c9ce3710d747dd1a58588c196f1"
+    },
+    {
+      "path": "quality/qualifications/mbs-p7-value-era-rules-20261024.json",
+      "role": "P7 value and era rules; no workbook-wide date profile and no cross-era promotion",
+      "sha256": "b7e8e91e13b76840689f5cf6e9733bb58a9d1633f01df8f6f5b8e27fc2f61d47"
+    },
+    {
+      "path": "quality/qualifications/mbs-workbook-date-source-owner-clarification-20261017.json",
+      "role": "date/provenance clarification remains unconfirmed; no date profile selected",
+      "sha256": "3a51ff9c8cb6ce66e7e3ea31b561de0524f00a4c487568c05d012afa99ebf599"
+    },
+    {
+      "path": "src/global_medicines_atlas/australian_source_contracts.py",
+      "role": "current typed MBS source-field contract",
+      "sha256": "8152ae766efa5a33e453c8c4358b66cad2998017117180559766e2638cd976bb"
+    },
+    {
+      "path": "src/global_medicines_atlas/adapters/au_mbs.py",
+      "role": "current MBS XML native-field denominator",
+      "sha256": "73098a1f6b6fcb1c4c26c75e4c8f6a80f397e697046e4dcc2d23ea39b96069f3"
+    },
+    {
+      "path": "src/global_medicines_atlas/mbs_workbook_xml_mapping.py",
+      "role": "implementation explicitly defines same-name mappings as structural, not semantic",
+      "sha256": "0ffbb2af5fbe8d4635dbea0ec6c1226e8276ce7fbe920269e7db348c3ffd648d"
+    },
+    {
+      "path": "src/global_medicines_atlas/mbs_schema_change_events.py",
+      "role": "change-event producer requires explicit complete era mappings and complete receipt-bound cohorts; no real-source event report is included here",
+      "sha256": "4c1363f7c710801d7a3be14dcad63bd98794f19b613796f1e2529e77541e690a"
+    }
+  ],
+  "unlabelled_source_columns": [
+    {
+      "cell_count": 2,
+      "column": "AV",
+      "disposition": "no_counterpart_unavailable_native_header",
+      "header_count": 0,
+      "lineage_sha256": "d325c8a66dd0a4bb15191edc3de096a8012144368c035e8cf795e826e600ed7a",
+      "semantic_status": "unresolved",
+      "sheet_name": "Sheet1"
+    },
+    {
+      "cell_count": 2,
+      "column": "AV",
+      "disposition": "no_counterpart_unavailable_native_header",
+      "header_count": 0,
+      "lineage_sha256": "027ae3a6f22cdfaf29b2497201b3031d990ab9f83c321f7d5d0e9374d7a0f46c",
+      "semantic_status": "unresolved",
+      "sheet_name": "Sheet1 (2)"
+    }
+  ],
+  "unresolved_limits": [
+    "All 40 same-name XML field mappings remain structural candidates; none is qualified as historical/current semantic equivalence.",
+    "All 8 P7 legacy annotation fields remain source-local and annotation-only.",
+    "Two unlabeled source columns have no native header, preventing a named field crosswalk.",
+    "The P7 date convention remains unset; 1,194 of 1,280 date-shaped cells remain ambiguous between DMY and MDY in the existing value-era evidence.",
+    "The retained field-guide review leaves ItemChange and EMSNCap unresolved and does not establish release-linked meaning for the complete field denominator.",
+    "No change-event, addition, cessation, renumbering, supersession, or status conclusion is produced by this crosswalk."
+  ]
+}
