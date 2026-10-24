@@ -51,6 +51,20 @@ def test_pinned_review_packet_has_46_unreviewed_cases_for_same_member():
     assert all(len(case["case_id"]) == 64 for case in cases)
 
 
+def test_review_packet_report_digest_is_verified_before_use(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    packet = json.loads(cli.REVIEW_PACKET.read_text())
+    packet["report_sha256"] = "0" * 64
+    receipt = tmp_path / "packet.json"
+    receipt.write_text(json.dumps(packet))
+    monkeypatch.setattr(cli, "REVIEW_PACKET", receipt)
+    with pytest.raises(ValueError, match="packet digest differs"):
+        cli.load_review_cases(
+            "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+        )
+
+
 def test_script_uses_verified_member_route_and_retains_aggregate_only(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ):

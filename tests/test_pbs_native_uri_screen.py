@@ -106,6 +106,30 @@ def test_selected_uri_review_case_must_match_a_unique_reference_occurrence():
         )
 
 
+def test_review_case_count_and_occurrence_address_are_bounded():
+    with pytest.raises(ValueError, match="case bound exceeded"):
+        screen_pbs_native_uris(
+            b"<root/>",
+            review_cases=[
+                {
+                    "case_id": f"{index:064x}",
+                    "reference_occurrence": f"/r/{index}",
+                }
+                for index in range(65)
+            ],
+        )
+    with pytest.raises(ValueError, match="binding is invalid"):
+        screen_pbs_native_uris(
+            b"<root/>",
+            review_cases=[
+                {
+                    "case_id": "a" * 64,
+                    "reference_occurrence": "/" + "x" * 4096,
+                }
+            ],
+        )
+
+
 @pytest.mark.parametrize(
     "base", ["relative/", "https://bad host/path", "https://bad/%GG"]
 )

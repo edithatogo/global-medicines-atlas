@@ -32,6 +32,12 @@ def load_review_cases(
     packet_bytes = REVIEW_PACKET.read_bytes()
     packet = cast("dict[str, Any]", json.loads(packet_bytes))
     report = cast("dict[str, Any]", packet.get("report", {}))
+    report_bytes = json.dumps(
+        report, sort_keys=True, separators=(",", ":")
+    ).encode()
+    expected_report_sha256 = hashlib.sha256(report_bytes).hexdigest()
+    if packet.get("report_sha256") != expected_report_sha256:
+        raise ValueError("pinned PBS reference review packet digest differs")
     source = cast("dict[str, Any]", report.get("source", {}))
     if (
         report.get("schema_id")

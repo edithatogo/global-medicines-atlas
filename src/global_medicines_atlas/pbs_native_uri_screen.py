@@ -26,6 +26,8 @@ MAX_URI_CHARS = 16_384
 MAX_INDEXED_URI_CHARS = 32 * 1024**2
 MAX_ELEMENTS = 20_000_000
 MAX_REFERENCE_ROWS = 8_000_000
+MAX_REVIEW_CASES = 64
+MAX_REVIEW_OCCURRENCE_ADDRESS_BYTES = 4096
 PBS_NAMESPACE = "http://schema.pbs.gov.au/"
 RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 _SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
@@ -240,6 +242,8 @@ def _review_case_addresses(
 ) -> set[str]:
     if review_cases is None:
         return set()
+    if len(review_cases) > MAX_REVIEW_CASES:
+        raise ValueError("PBS URI review case bound exceeded")
     addresses: set[str] = set()
     case_ids: set[str] = set()
     for case in review_cases:
@@ -248,6 +252,8 @@ def _review_case_addresses(
         if (
             re.fullmatch(r"[0-9a-f]{64}", case_id) is None
             or not address
+            or len(address.encode("utf-8"))
+            > MAX_REVIEW_OCCURRENCE_ADDRESS_BYTES
             or case_id in case_ids
             or address in addresses
         ):
