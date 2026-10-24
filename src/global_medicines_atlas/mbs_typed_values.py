@@ -24,7 +24,7 @@ _FIELDS = {field.native_name: field for field in mbs_field_contracts()}
 _DECIMAL = re.compile(r"[+-]?[0-9]+(?:\.[0-9]+)?\Z")
 _ISO_DATE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
 _MBS_DMY_DATE = re.compile(r"[0-9]{2}\.[0-9]{2}\.[0-9]{4}\Z")
-DATE_FORMATS = frozenset({"iso", "mbs-dmy", "calendar-unique-dotted"})
+DATE_FORMATS = frozenset({"iso", "mbs-dmy"})
 CONVERSION_VERSION: Literal["mbs-scalar-v2"] = "mbs-scalar-v2"
 
 
@@ -56,12 +56,9 @@ def convert_mbs_value(
         value: Unmodified native text, or None for missing/null fields.
         state: Explicit native presence state, independent of conversion.
         date_format: None leaves dates unconverted; 'iso' explicitly selects
-            strict YYYY-MM-DD; 'mbs-dmy' selects the documented DD.MM.YYYY XML
-            profile; 'calendar-unique-dotted' parses a dotted date only when
-            exactly one calendar date is possible from its components. The
-            last option does not select a workbook-wide order convention.
-            Callers must bind choices to their source era; parsing is not
-            real-corpus qualification.
+            strict YYYY-MM-DD; 'mbs-dmy' selects the officially documented
+            DD.MM.YYYY XML profile. Callers must bind the explicit choice to
+            their source era; parsing is not real-corpus qualification.
 
     Returns:
         An immutable result. Decimal precision is unlimited here; Arrow
@@ -128,9 +125,6 @@ def _convert_date(
 ) -> tuple[date | None, ConversionStatus]:
     if date_format is None:
         return None, "unsupported_format"
-    if date_format == "calendar-unique-dotted":
-        return _convert_calendar_unique_dotted(value)
-
     pattern = _ISO_DATE if date_format == "iso" else _MBS_DMY_DATE
     if not pattern.fullmatch(value):
         return None, "invalid"
@@ -141,22 +135,3 @@ def _convert_date(
         return date(int(year), int(month), int(day)), "converted"
     except ValueError:
         return None, "invalid"
-
-
-def _convert_calendar_unique_dotted(
-    value: str,
-) -> tuple[date | None, ConversionStatus]:
-    if not _MBS_DMY_DATE.fullmatch(value):
-        return None, "invalid"
-    first, second, year = (int(part) for part in value.split("."))
-    candidates: set[date] = set()
-    for month, day in ((second, first), (first, second)):
-        try:
-            candidates.add(date(year, month, day))
-        except ValueError:
-            continue
-    if len(candidates) == 1:
-        return next(iter(candidates)), "converted"
-    if candidates:
-        return None, "unsupported_format"
-    return None, "invalid"

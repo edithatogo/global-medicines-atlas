@@ -78,37 +78,6 @@ def test_dates_need_explicit_profile_and_serials_are_never_guessed() -> None:
     assert rows["D2"]["domain_date"] is None
 
 
-def test_calendar_unique_dotted_dates_do_not_select_a_workbook_order() -> None:
-    payload = payload_with(
-        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
-        '<c r="C3" t="inlineStr"><is><t>05.06.2024</t></is></c>'
-        '<c r="C4" t="inlineStr"><is><t>06.06.2024</t></is></c>'
-        '<c r="C5" t="inlineStr"><is><t>31.02.2024</t></is></c>'
-        '<c r="D2"><v>45000</v></c>'
-    )
-    rows = rows_for(payload, date_format="calendar-unique-dotted")
-
-    assert rows["C2"]["domain_date"] == date(2024, 7, 15)
-    assert rows["C3"]["domain_date"] is None
-    assert rows["C3"]["domain_status"] == "unsupported_format"
-    assert rows["C4"]["domain_date"] == date(2024, 6, 6)
-    assert rows["C5"]["domain_date"] is None
-    assert rows["C5"]["domain_status"] == "invalid"
-    assert rows["D2"]["domain_date"] is None
-    assert rows["D2"]["domain_status"] == "unsupported_serial_date"
-    profile = profile_workbook_values(
-        payload, _receipt(payload), date_format="calendar-unique-dotted"
-    )
-    assert profile["date_profile"] == "calendar-unique-dotted"
-    assert profile["by_field"]["ItemStartDate"]["converted"] == 2
-    assert profile["by_field"]["ItemStartDate"]["unsupported_format"] == 1
-    assert profile["by_field"]["ItemStartDate"]["invalid"] == 1
-    assert all(
-        rows[coordinate]["interpretation_state"] == "native_unresolved"
-        for coordinate in ("C2", "C3", "C4", "C5")
-    )
-
-
 @pytest.mark.parametrize(
     ("cell", "encoding"),
     [
@@ -369,9 +338,6 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
     cli.main()
     report = json.loads(capsys.readouterr().out)
     assert report["domain_value_profile"]["date_profile"] is None
-    unique_dates = report["calendar_unique_date_profile"]
-    assert unique_dates["date_profile"] == "calendar-unique-dotted"
-    assert unique_dates["by_field"]["ItemStartDate"]["unsupported_format"] == 1
     typed = report["typed_candidate_package"]
     assert typed["rebuild_equal"] is True
     assert typed["typed_parquet_restore_verified"] is True
@@ -390,7 +356,6 @@ def test_hosted_workbook_qualifier_does_not_select_xml_date_profile(
     )
     assert "raw_value" not in json.dumps(report)
     assert "display_value" not in json.dumps(report)
-    assert "01.07.2024" not in json.dumps(report)
     lineage = report["workbook_field_lineage"]
     assert lineage["qualification"] == "candidate_only"
     assert lineage["date_profile"] is None
