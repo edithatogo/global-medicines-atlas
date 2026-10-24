@@ -184,6 +184,18 @@ def test_every_pinned_field_has_one_evidenced_state():
 
 
 def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
+    _copy_reconciliation_inputs(tmp_path)
+    destination = tmp_path / FIELD_STATE
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    source = ROOT / FIELD_STATE
+    value = json.loads(source.read_bytes())
+    value["field_state_coverage"]["source_fields"] -= 1
+    destination.write_text(json.dumps(value), encoding="utf-8")
+    with pytest.raises(ValueError, match="receipt digest differs"):
+        reconcile_pbs_field_states(tmp_path)
+
+
+def _copy_reconciliation_inputs(tmp_path: Path) -> None:
     for relative in (
         PACKAGE,
         SCREEN,
@@ -191,6 +203,7 @@ def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
         CONTEXT_SCREEN,
         REFERENCE_PACKET,
         REFERENCE_REVIEW,
+        FIELD_STATE,
         SUPERSEDED_REPORT,
         DOMAIN,
         INVENTORY,
@@ -201,13 +214,73 @@ def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
         destination = tmp_path / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes((ROOT / relative).read_bytes())
-    destination = tmp_path / FIELD_STATE
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    source = ROOT / FIELD_STATE
-    value = json.loads(source.read_bytes())
-    value["field_state_coverage"]["source_fields"] -= 1
-    destination.write_text(json.dumps(value), encoding="utf-8")
-    with pytest.raises(ValueError, match="receipt digest differs"):
+
+
+def test_tampered_exact_date_profile_digest_is_rejected(tmp_path: Path):
+    _copy_reconciliation_inputs(tmp_path)
+    date_profile = tmp_path / DATE_PROFILE
+    date_profile.write_bytes(date_profile.read_bytes() + b" ")
+    with pytest.raises(ValueError, match="exact-source date-profile receipt"):
+        reconcile_pbs_field_states(tmp_path)
+
+
+def test_tampered_date_occurrence_crosswalk_digest_is_rejected(
+    tmp_path: Path,
+):
+    _copy_reconciliation_inputs(tmp_path)
+    crosswalk = tmp_path / DATE_OCCURRENCE_CROSSWALK
+    crosswalk.write_bytes(crosswalk.read_bytes() + b" ")
+    with pytest.raises(
+        ValueError, match="exact-source date occurrence crosswalk"
+    ):
+        reconcile_pbs_field_states(tmp_path)
+
+
+def test_date_profile_with_expected_digest_but_wrong_binding_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _copy_reconciliation_inputs(tmp_path)
+    date_profile = tmp_path / DATE_PROFILE
+    value = json.loads(date_profile.read_bytes())
+    value["date_profile"]["format"] = "MM/DD/YYYY"
+    date_profile.write_text(json.dumps(value), encoding="utf-8")
+    monkeypatch.setattr(
+        reconciliation,
+        "DATE_PROFILE_SHA256",
+        hashlib.sha256(date_profile.read_bytes()).hexdigest(),
+    )
+    with pytest.raises(ValueError, match="exact-source item date role"):
+        reconcile_pbs_field_states(tmp_path)
+
+
+def test_date_crosswalk_with_expected_digest_but_wrong_binding_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _copy_reconciliation_inputs(tmp_path)
+    crosswalk = tmp_path / DATE_OCCURRENCE_CROSSWALK
+    envelope = json.loads(crosswalk.read_bytes())
+    envelope["report"]["crosswalk"]["join"]["item_profile_only_fields"] -= 1
+    canonical = json.dumps(
+        envelope["report"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    envelope["report_sha256"] = hashlib.sha256(canonical).hexdigest()
+    crosswalk.write_text(json.dumps(envelope), encoding="utf-8")
+    monkeypatch.setattr(
+        reconciliation,
+        "DATE_OCCURRENCE_CROSSWALK_SHA256",
+        hashlib.sha256(crosswalk.read_bytes()).hexdigest(),
+    )
+    monkeypatch.setattr(
+        reconciliation,
+        "DATE_OCCURRENCE_CROSSWALK_REPORT_SHA256",
+        envelope["report_sha256"],
+    )
+    with pytest.raises(
+        ValueError, match="exact-source date occurrence crosswalk differs"
+    ):
         reconcile_pbs_field_states(tmp_path)
 
 
