@@ -23,12 +23,8 @@ from global_medicines_atlas.pbs_entities import iter_pbs_entity_batches
 test_uri_packet_never_overwrites_existing_output = (
     _uri_packet_cases.test_never_overwrites_existing_derived_packet
 )
-test_uri_packet_reconciles_pending_cases = (
-    _uri_packet_cases.test_reconciles_all_cases_to_value_free_pending_structural_packet
-)
-test_uri_packet_rejects_bad_digests = (
-    _uri_packet_cases.test_rejects_bad_canonical_digest_and_wrong_expected_receipt_bytes
-)
+test_uri_packet_reconciles_pending_cases = _uri_packet_cases.test_reconciles_all_cases_to_value_free_pending_structural_packet
+test_uri_packet_rejects_bad_digests = _uri_packet_cases.test_rejects_bad_canonical_digest_and_wrong_expected_receipt_bytes
 test_uri_packet_rejects_v1_receipt = (
     _uri_packet_cases.test_rejects_current_pinned_v1_actions_receipt
 )
