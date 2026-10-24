@@ -119,6 +119,31 @@ def test_failure_receipt_retains_only_allowlisted_context_code():
     assert "private source bytes" not in json.dumps(report)
 
 
+def test_hosted_context_failure_receipt_retains_allowlisted_code(
+    synthetic, monkeypatch
+):
+    monkeypatch.setattr(
+        module,
+        "screen_native_references",
+        lambda *_, **__: {"reference_fields": 0},
+    )
+
+    def fail_context(*_, **__):
+        raise context_screen.ReferenceContextError(
+            "source-root-mismatch", "private source bytes must not be included"
+        )
+
+    monkeypatch.setattr(module, "screen_reference_context", fail_context)
+    with pytest.raises(module.QualificationError) as captured:
+        module.run_hosted_native_reference_screen(SHA, transport=synthetic[2])
+
+    report = module.failure_report(captured.value)
+
+    assert report["failure_stage"] == "projection-qualification"
+    assert report["diagnostic_code"] == "source-root-mismatch"
+    assert "private source bytes" not in json.dumps(report)
+
+
 def test_context_screen_classifies_root_relative_reference_without_value():
     xml = b"""<root xmlns="http://schema.pbs.gov.au/"
       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">

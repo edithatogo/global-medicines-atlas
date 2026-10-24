@@ -45,6 +45,7 @@ from .pbs_native_reference_screen import screen_native_references
 from .pbs_observed_domain import load_observed_profile
 from .pbs_observed_qualification import qualify_observed_values
 from .pbs_reference_context import (
+    CONTEXT_FAILURE_CODES,
     ReferenceContextError,
     screen_reference_context,
 )
@@ -222,6 +223,7 @@ class QualificationError(ValueError):
         transport_detail: str = "unknown",
         failure_type: str = "qualification-error",
         resource_code: str = "unavailable",
+        context_diagnostic_code: str = "unavailable",
     ) -> None:
         self.retry_event: tuple[str, str] | None = None
         self.retry_detail = "unknown"
@@ -236,6 +238,11 @@ class QualificationError(ValueError):
         self.resource_code = (
             resource_code
             if resource_code in {"enospc", "unavailable"}
+            else "unavailable"
+        )
+        self.context_diagnostic_code = (
+            context_diagnostic_code
+            if context_diagnostic_code in CONTEXT_FAILURE_CODES
             else "unavailable"
         )
         super().__init__(
@@ -418,6 +425,11 @@ def _at(
             resource_code=(
                 "enospc"
                 if isinstance(error, OSError) and error.errno == errno.ENOSPC
+                else "unavailable"
+            ),
+            context_diagnostic_code=(
+                error.diagnostic_code
+                if isinstance(error, ReferenceContextError)
                 else "unavailable"
             ),
         ) from None
@@ -1220,6 +1232,7 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
             transport_detail=error.transport_detail,
             failure_type=error.failure_type,
             resource_code=error.resource_code,
+            context_diagnostic_code=error.context_diagnostic_code,
         )
     report: dict[str, Any] = {
         "schema_version": 1,
@@ -1246,8 +1259,15 @@ def failure_report(error: Exception | None = None) -> dict[str, Any]:
         else None,
         "publication_performed": False,
     }
-    if isinstance(error, ReferenceContextError):
-        report["diagnostic_code"] = error.diagnostic_code
+    diagnostic_code = (
+        error.context_diagnostic_code
+        if isinstance(error, QualificationError)
+        else error.diagnostic_code
+        if isinstance(error, ReferenceContextError)
+        else "unavailable"
+    )
+    if diagnostic_code in CONTEXT_FAILURE_CODES:
+        report["diagnostic_code"] = diagnostic_code
     return report
 
 
