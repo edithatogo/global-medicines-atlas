@@ -12,6 +12,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   reconcile:
+    name: Reconcile exact PBS date occurrences
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 65
