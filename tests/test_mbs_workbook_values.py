@@ -1,6 +1,7 @@
 """Domain types supplement native workbook evidence without guessing."""
 
 import json
+import sys
 from datetime import date
 from decimal import Decimal
 from hashlib import sha256
@@ -12,6 +13,7 @@ from zipfile import ZipFile
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from scripts import profile_mbs_p7_calendar_dates as calendar_cli
 from scripts import qualify_australian_legacy_payload as cli
 from test_mbs_workbook_domain import fixture
 from test_mbs_workbook_silver import (
@@ -19,6 +21,9 @@ from test_mbs_workbook_silver import (
 )
 
 from global_medicines_atlas.adapters.au_mbs_workbook import parse_mbs_workbook
+from global_medicines_atlas.mbs_p7_calendar_profile import (
+    profile_p7_calendar_dates,
+)
 from global_medicines_atlas.mbs_workbook_values import (
     iter_workbook_value_batches,
     profile_workbook_values,
@@ -76,6 +81,103 @@ def test_dates_need_explicit_profile_and_serials_are_never_guessed() -> None:
     assert rows["C2"]["domain_status"] == "unsupported_format"
     assert rows["D2"]["domain_status"] == "unsupported_serial_date"
     assert rows["D2"]["domain_date"] is None
+
+
+def test_aggregate_calendar_profile_counts_without_emitting_values() -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
+        '<c r="C3" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+        '<c r="C4" t="inlineStr"><is><t>06.06.2024</t></is></c>'
+        '<c r="C5" t="inlineStr"><is><t>31.02.2024</t></is></c>'
+        '<c r="C6"><v>45000</v></c>'
+        '<c r="C7" t="inlineStr"><is><t>07.15.2024</t></is></c>'
+    )
+    profile = profile_p7_calendar_dates(payload, _receipt(payload))
+
+    assert profile["source_sha256"] == sha256(payload).hexdigest()
+    assert profile["schema_version"] == 2
+    assert profile["date_order_selected"] is False
+    assert profile["source_values_emitted"] is False
+    assert profile["by_field"]["ItemStartDate"] == {
+        "ambiguous_calendar_order": 1,
+        "invalid": 1,
+        "unique_calendar_date": 1,
+        "unique_dmy_calendar_date": 1,
+        "unique_mdy_calendar_date": 1,
+        "unsupported_serial_date": 1,
+    }
+    assert "15.07.2024" not in json.dumps(profile)
+
+
+def test_aggregate_calendar_profile_classifies_missing_null_error_and_text() -> (
+    None
+):
+    payload = payload_with(
+        '<c r="C3"/> '
+        '<c r="C4"><v/></c>'
+        '<c r="C5" t="e"><v>#N/A</v></c>'
+        '<c r="C6" t="inlineStr"><is><t>not a date</t></is></c>'
+    )
+
+    profile = profile_p7_calendar_dates(payload, _receipt(payload))
+
+    assert profile["by_field"]["ItemStartDate"] == {
+        "invalid": 1,
+        "missing_value": 1,
+        "null": 1,
+        "source_error": 1,
+    }
+
+
+def test_calendar_profile_cli_emits_only_pinned_aggregate_output(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    payload = payload_with(
+        '<c r="C2" t="inlineStr"><is><t>15.07.2024</t></is></c>'
+        '<c r="C3" t="inlineStr"><is><t>05.06.2024</t></is></c>'
+    )
+
+    class Client:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+    monkeypatch.setattr(
+        calendar_cli.httpx, "Client", lambda **_kwargs: Client()
+    )
+    monkeypatch.setattr(
+        calendar_cli, "acquire_hosted_workbook", lambda _client: payload
+    )
+    monkeypatch.setattr(calendar_cli, "LEGACY_P7_BYTES", len(payload))
+    monkeypatch.setattr(
+        calendar_cli, "LEGACY_P7_SHA256", sha256(payload).hexdigest()
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "profile_mbs_p7_calendar_dates.py",
+            "--output",
+            str(tmp_path / "profile.json"),
+        ],
+    )
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_SHA", "f" * 40)
+    monkeypatch.setenv("GITHUB_RUN_ID", "12345")
+
+    calendar_cli.main()
+    report = json.loads((tmp_path / "profile.json").read_text())
+
+    assert report["profile"]["by_field"]["ItemStartDate"] == {
+        "ambiguous_calendar_order": 1,
+        "unique_dmy_calendar_date": 1,
+    }
+    assert report["profile"]["source_values_emitted"] is False
+    assert "15.07.2024" not in json.dumps(report)
 
 
 @pytest.mark.parametrize(

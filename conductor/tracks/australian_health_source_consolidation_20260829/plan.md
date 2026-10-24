@@ -459,8 +459,47 @@ See [graph archival readiness](../../../docs/migrations/graph-archive-readiness.
   `quality/qualifications/provider-outreach-receipts-20260929.json` and
   `mbs-workbook-date-convention-request.md`.
 - [~] Keep the date profile unset and semantic promotion disabled pending
-  source-specific documentation or confirmation. No source bytes or cell
-  values were sent; no response has yet been observed.
+  source-specific documentation or confirmation. Earlier value-free outreach
+  did not establish the exact workbook's date order; no further contact is in
+  scope.
+
+## MBS P7 value-level calendar dates (2026-10-24)
+
+- [x] Add a standalone aggregate-only profile that classifies a dotted date
+  only when its components yield one possible calendar date. Values valid
+  under both DMY and MDY remain ambiguous; invalid dates stay invalid; numeric
+  Excel serials and source errors remain explicit. Keep the shared MBS XML
+  conversion contract and existing M-112 pinned preflight inputs unchanged.
+- [x] Add a `workflow_dispatch`-only main workflow that reads the existing
+  exact pinned public P7 object and uploads a value-free aggregate report.
+- [x] Validate the focused P7 domain/value and M-112 invariant tests (72
+  passed) on Python 3.15.1, Ruff, format, `ty`, BasedPyright, context and
+  ecosystem validation, and `git diff --check`. Hosted unit CI exposed a
+  coupling to pinned admission inputs in the first implementation; the
+  standalone profile design removes that coupling.
+- [x] Close the hosted patch-coverage findings for malformed date text,
+  null/missing values, and source-error cells with focused aggregate-profile
+  regressions. The four directly affected test nodes pass with 100% statement
+  and branch coverage for the new profiler; no repository-wide local suite was
+  rerun.
+- [x] Dispatch the main-only aggregate profile against the exact pinned P7
+  source. Run `40086831574` binds the exact 87,727-byte, SHA-256
+  `2f1cbc2d...e27b8` object and reports 86 uniquely resolvable dotted dates,
+  1,194 ambiguous dates, and no invalid or numeric-serial date cells among the
+  1,280 populated date cells. The artifact is value-free at
+  `quality/qualifications/mbs-p7-calendar-profile-20261024-40086831574.json`.
+- [x] Preserve the prior date-order report unchanged and identify its
+  `1,276 both / 4 DMY-only / 0 MDY-only` aggregate as inconsistent with the
+  newer exact-source profile; do not carry the old count into a selected
+  semantic rule.
+- [x] Extend profile schema v2 to separate uniquely DMY-valid, uniquely
+  MDY-valid, and same-components-valid dates while keeping order ambiguous
+  dates distinct. Focused profile tests pass with 100% statement and branch
+  coverage; the exact-source profile must be rerun after this change reaches
+  main before updating the rule receipt.
+- [~] Select only the per-cell unique-date rule after the order-partitioned
+  exact-source report is reconciled. Keep workbook-wide order and current
+  candidate-output promotion unresolved until then.
 
 ## M-106 item-demographic source discovery (2026-09-29)
 

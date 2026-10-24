@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-69.json"
+    "australian-m112-rights-release-preflight-20261024-72.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261024-68.json"
+    "australian-m112-rights-release-preflight-20261024-71.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -133,28 +133,9 @@ def test_preflight_binds_current_silver_semantics_readbacks() -> None:
     assert pbs_screen["source_context_screen_included"] is True
     assert pbs_screen["context_screen_implementation_present"] is True
     assert pbs_screen["source_context_review_pending"] is True
-    assert pbs_screen["context_schema_version"] == 2
-    assert pbs_screen["context_structural_strata"] == 184
-    assert pbs_screen["context_examples"] == 63
-    assert pbs_screen["context_omitted_occurrences"] == 2_160_003
-    assert pbs_screen["source_cases_reviewed"] == 0
     assert (
         hashlib.sha256((ROOT / pbs_screen["receipt"]).read_bytes()).hexdigest()
         == pbs_screen["receipt_sha256"]
-    )
-    context_screen = report[
-        "pbs_native_reference_context_screen_actual_readback"
-    ]
-    assert context_screen["run_id"] == 40076190245
-    assert context_screen["status"] == "success"
-    assert context_screen["source_values_emitted"] is False
-    assert context_screen["semantic_relationships_qualified"] is False
-    assert context_screen["source_cases_reviewed"] == 0
-    assert (
-        hashlib.sha256(
-            (ROOT / context_screen["receipt"]).read_bytes()
-        ).hexdigest()
-        == context_screen["receipt_sha256"]
     )
     header = report["historical_workbook_header_profile_actual_readback"]
     assert header["run_id"] == 40040624592
@@ -168,6 +149,57 @@ def test_preflight_binds_current_silver_semantics_readbacks() -> None:
     assert p7["date_cells_ambiguous_dmy_mdy"] == 1_276
     assert p7["date_profile_selected"] is False
     assert p7["formula_evaluation"] is False
+    calendar = report["mbs_p7_calendar_profile_actual_readback"]
+    assert calendar["run_id"] == 40086831574
+    assert calendar["populated_date_cells"] == 1_280
+    assert calendar["ambiguous_calendar_order"] == 1_194
+    assert calendar["unique_calendar_date"] == 86
+    assert calendar["invalid"] == 0
+    assert calendar["unsupported_serial_date"] == 0
+    assert calendar["date_order_selected"] is False
+    assert calendar["source_values_emitted"] is False
+    assert (
+        hashlib.sha256((ROOT / calendar["receipt"]).read_bytes()).hexdigest()
+        == calendar["receipt_sha256"]
+    )
+
+
+def test_preflight_binds_pbs_context_screen_attempt_and_readback() -> None:
+    report = _json(PREFLIGHT)
+    context_screen = report[
+        "pbs_native_reference_context_screen_latest_attempt"
+    ]
+    assert context_screen["run_id"] == 40076190245
+    assert context_screen["status"] == "success"
+    assert context_screen["source_values_emitted"] is False
+    assert context_screen["semantic_relationships_qualified"] is False
+    assert context_screen["source_cases_reviewed"] == 0
+    assert (
+        hashlib.sha256(
+            (ROOT / context_screen["receipt"]).read_bytes()
+        ).hexdigest()
+        == context_screen["receipt_sha256"]
+    )
+    context_readback = report[
+        "pbs_native_reference_context_screen_actual_readback"
+    ]
+    assert context_readback["run_id"] == 40076190245
+    assert context_readback["context_schema_version"] == 2
+    assert context_readback["structural_strata"] == 184
+    assert context_readback["value_free_examples"] == 63
+    assert context_readback["omitted_occurrences"] == 2_160_003
+    assert context_readback["source_cases_reviewed"] == 0
+    assert context_readback["semantic_relationships_qualified"] is False
+    assert context_readback["consumer_canaries"] == 0
+    assert (
+        hashlib.sha256(
+            (ROOT / context_readback["receipt"]).read_bytes()
+        ).hexdigest()
+        == context_readback["receipt_sha256"]
+    )
+    prior_failure = report["pbs_native_reference_context_screen_prior_failure"]
+    assert prior_failure["run_id"] == 40052770374
+    assert prior_failure["status"] == "failed"
 
 
 def test_preflight_successor_preserves_the_snapshot_chain() -> None:
@@ -184,7 +216,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-68.json"
+        "australian-m112-rights-release-preflight-20261024-71.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -193,7 +225,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-67.json"
+        "australian-m112-rights-release-preflight-20261024-70.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -206,12 +238,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-66.json"
+        "australian-m112-rights-release-preflight-20261024-69.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261024-65.json"
+        "australian-m112-rights-release-preflight-20261024-68.json"
     )
 
 
