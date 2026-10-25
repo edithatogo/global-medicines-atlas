@@ -154,6 +154,8 @@ def reconcile(exact_commit: str, input_dir: Path) -> dict[str, Any]:  # ruff: ig
         **merged,
         "source_values_emitted": False,
         "source_column_meanings_qualified": False,
+        "calendar_year_vs_service_year_resolved": False,
+        "calendar_month_vs_processing_month_resolved": False,
         "date_interpreted": False,
         "p7_workbook_in_scope": False,
         "p7_date_inference_applied": False,

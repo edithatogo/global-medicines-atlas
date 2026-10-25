@@ -397,6 +397,8 @@ def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statem
         "fields": totals,
         "source_values_emitted": False,
         "source_column_meanings_qualified": False,
+        "calendar_year_vs_service_year_resolved": False,
+        "calendar_month_vs_processing_month_resolved": False,
         "currency_interpreted": False,
         "date_interpreted": False,
         "new_sources": 0,

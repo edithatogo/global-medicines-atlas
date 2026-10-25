@@ -199,6 +199,8 @@ def test_profiles_lexical_and_native_shapes_without_emitting_values():
     )
     assert report["source_values_emitted"] is False
     assert report["source_column_meanings_qualified"] is False
+    assert report["calendar_year_vs_service_year_resolved"] is False
+    assert report["calendar_month_vs_processing_month_resolved"] is False
     assert report["currency_interpreted"] is False
     assert report["date_interpreted"] is False
     assert report["p7_workbook_in_scope"] is False
@@ -264,7 +266,10 @@ def test_rejects_non_row_ordered_records():
 
 def test_merge_requires_complete_archive_indices_and_unique_candidate_ids():
     reports = _empty_archive_reports()
-    assert merge_archive_profiles(reports, 6)["workbook_count"] == 0
+    merged = merge_archive_profiles(reports, 6)
+    assert merged["workbook_count"] == 0
+    assert merged["calendar_year_vs_service_year_resolved"] is False
+    assert merged["calendar_month_vs_processing_month_resolved"] is False
     with pytest.raises(ValueError, match="denominator"):
         merge_archive_profiles(reports[:-1], 6)
     reports[1]["workbook_bindings"] = [
