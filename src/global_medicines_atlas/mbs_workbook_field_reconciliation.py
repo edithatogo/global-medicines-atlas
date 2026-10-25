@@ -1120,6 +1120,85 @@ def reconcile_from_paths(
     )
 
 
+def _value_shape_source_cell_partition(
+    value_shape_report: dict[str, Any],
+    row_counts: dict[str, Any],
+) -> dict[str, int | str]:
+    source_cell_records = _int(
+        value_shape_report.get("source_cell_records"),
+        "value-shape source cell record count",
+    )
+    header_cells = _int(
+        value_shape_report.get("header_cells"), "value-shape header cell count"
+    )
+    pre_header_cells = _int(
+        value_shape_report.get("pre_header_cells"),
+        "value-shape pre-header cell count",
+    )
+    other_sheet_cells = _int(
+        value_shape_report.get("other_sheet_cells"),
+        "value-shape other-sheet cell count",
+    )
+    out_of_contract_data_cells = _int(
+        value_shape_report.get("out_of_contract_data_cells"),
+        "value-shape out-of-contract data cell count",
+    )
+    data_field_cells = sum(
+        _int(row_counts[field], f"{field} field row count")
+        for field in EXPECTED_FIELDS
+    )
+    non_header_field_state_cells = source_cell_records - header_cells
+    if (
+        source_cell_records
+        != header_cells
+        + pre_header_cells
+        + other_sheet_cells
+        + out_of_contract_data_cells
+        + data_field_cells
+        or non_header_field_state_cells
+        != pre_header_cells
+        + other_sheet_cells
+        + out_of_contract_data_cells
+        + data_field_cells
+    ):
+        raise ValueError(
+            "historical workbook source-cell categories do not conserve"
+        )
+    return {
+        "source_cell_records": source_cell_records,
+        "header_cells": header_cells,
+        "non_header_field_state_cells": non_header_field_state_cells,
+        "data_field_cells": data_field_cells,
+        "pre_header_cells": pre_header_cells,
+        "other_sheet_cells": other_sheet_cells,
+        "out_of_contract_data_cells": out_of_contract_data_cells,
+    }
+
+
+def _apply_source_cell_partition(
+    historical: dict[str, Any], partition: dict[str, int | str]
+) -> None:
+    cell_values = _dict(historical.get("cell_values"), "historical cell values")
+    source_cell_records = partition["source_cell_records"]
+    non_header_cells = partition["non_header_field_state_cells"]
+    if (
+        _int(cell_values.get("denominator"), "field-state denominator")
+        != source_cell_records
+    ):
+        raise ValueError(
+            "field-state denominator differs from exact source cells"
+        )
+    cell_values["denominator"] = non_header_cells
+    cell_values["unresolved"] = non_header_cells
+    cell_values["denominator_relation"] = (
+        "non_header_source_cells; header_cells_reported_separately"
+    )
+    historical["source_cell_partition"] = {
+        **partition,
+        "denominator_relation": "source_cell_records_equals_header_plus_non_header_cells",
+    }
+
+
 def bind_historical_workbook_value_shapes(
     field_state_report: dict[str, Any],
     value_shape_report: dict[str, Any],
@@ -1199,6 +1278,9 @@ def bind_historical_workbook_value_shapes(
         != WORKBOOK_COUNT
     ):
         raise ValueError("historical workbook candidate identities differ")
+    source_cell_partition = _value_shape_source_cell_partition(
+        value_shape_report, row_counts
+    )
     if len(value_shape_sha256) != SHA256_HEX_LENGTH or any(
         char not in "0123456789abcdef" for char in value_shape_sha256
     ):
@@ -1297,6 +1379,7 @@ def bind_historical_workbook_value_shapes(
         result.get("historical_workbook_cohort"),
         "historical workbook field states",
     )
+    _apply_source_cell_partition(historical, source_cell_partition)
     historical["value_shape_diagnostics"] = {
         "path": value_shape_path,
         "sha256": value_shape_sha256,
@@ -1309,7 +1392,7 @@ def bind_historical_workbook_value_shapes(
         "archive_count": 6,
         "workbook_count": WORKBOOK_COUNT,
         "fields": field_rows,
-        "denominator_relation": "non_additive_storage_shape_overlay; existing cell-value state denominator is unchanged",
+        "denominator_relation": "storage-shape counts partition data-field cells; source-cell partition separates header and non-header cells",
         "source_values_emitted": False,
         "source_column_meanings_qualified": False,
         "date_meaning_qualified": False,

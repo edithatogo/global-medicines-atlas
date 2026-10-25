@@ -3,12 +3,12 @@
     "candidate_outputs": 91,
     "cell_values": {
       "decimal_candidates": 154927930,
-      "denominator": 310177657,
-      "denominator_relation": "non_header_cell_values_only_header_role_denominator_not_added",
+      "denominator": 310176929,
+      "denominator_relation": "non_header_source_cells; header_cells_reported_separately",
       "interpreted": 0,
       "missing_native_values": 2909,
       "unavailable": 0,
-      "unresolved": 310177657
+      "unresolved": 310176929
     },
     "field_rows": [
       {
@@ -7303,13 +7303,23 @@
       "unresolved_header_labels": 0
     },
     "identity_matches": 91,
+    "source_cell_partition": {
+      "data_field_cells": 310173936,
+      "denominator_relation": "source_cell_records_equals_header_plus_non_header_cells",
+      "header_cells": 728,
+      "non_header_field_state_cells": 310176929,
+      "other_sheet_cells": 1537,
+      "out_of_contract_data_cells": 0,
+      "pre_header_cells": 1456,
+      "source_cell_records": 310177657
+    },
     "unique_candidate_identities": 91,
     "value_shape_diagnostics": {
       "archive_count": 6,
       "cross_era_equivalence_qualified": false,
       "currency_qualified": false,
       "date_meaning_qualified": false,
-      "denominator_relation": "non_additive_storage_shape_overlay; existing cell-value state denominator is unchanged",
+      "denominator_relation": "storage-shape counts partition data-field cells; source-cell partition separates header and non-header cells",
       "fields": {
         "age_range_label": {
           "cell_position_denominator": 38771742,

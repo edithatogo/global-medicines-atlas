@@ -419,16 +419,17 @@ def test_report_separates_field_mapping_from_value_state() -> None:
 
 
 def _value_shape_cohort() -> dict[str, Any]:
+    data_field_cells = 38_771_742
     fields = {
         field: {
-            "cell_count": 91,
-            "value_shapes": {"numeric_integer_lexeme": 90, "missing_value": 1},
-            "native_cell_types": {"n": 90, "unspecified": 1},
-            "native_states": {"value": 90, "null": 1},
+            "cell_count": data_field_cells,
+            "value_shapes": {"numeric_integer_lexeme": data_field_cells},
+            "native_cell_types": {"n": data_field_cells},
+            "native_states": {"value": data_field_cells},
             "formula_cells": 0,
             "formula_cells_with_cache": 0,
             "source_error_cells": 0,
-            "native_missing_value_cells": 1,
+            "native_missing_value_cells": 0,
             "missing_physical_cell_positions": 0,
         }
         for field in (
@@ -450,6 +451,11 @@ def _value_shape_cohort() -> dict[str, Any]:
         "workflow_commit": "a" * 40,
         "candidate_cohort_run_id": 39724026209,
         "field_state_report_sha256": "f" * 64,
+        "source_cell_records": 310_177_657,
+        "header_cells": 728,
+        "pre_header_cells": 1_456,
+        "other_sheet_cells": 1_537,
+        "out_of_contract_data_cells": 0,
         "input_digests": {"field_state_sha256": "f" * 64},
         "source_values_emitted": False,
         "source_column_meanings_qualified": False,
@@ -466,7 +472,7 @@ def _value_shape_cohort() -> dict[str, Any]:
         "consumer_canaries": 0,
         "publications": 0,
         "fields": fields,
-        "field_row_counts": dict.fromkeys(fields, 91),
+        "field_row_counts": dict.fromkeys(fields, data_field_cells),
         "archives": [{"archive_index": index} for index in range(6)],
         "workbook_bindings": [
             {"candidate_output_id": f"out-{index}", "candidate_group": index}
@@ -490,9 +496,6 @@ def test_value_shape_overlay_reconciles_each_field_without_semantic_promotion() 
     None
 ):
     report = reconcile_workbook_field_states(*_inputs())
-    original_states = copy.deepcopy(
-        report["historical_workbook_cohort"]["cell_values"]
-    )
     reconciled = bind_historical_workbook_value_shapes(
         report,
         _shape_cohort_bound_to(report),
@@ -507,12 +510,26 @@ def test_value_shape_overlay_reconciles_each_field_without_semantic_promotion() 
     assert reconciled["inputs"]["historical_workbook_value_shapes"] == {
         "sha256": "a" * 64
     }
-    assert cohort["cell_values"] == original_states
+    assert cohort["cell_values"]["denominator"] == 310_176_929
+    assert cohort["cell_values"]["unresolved"] == 310_176_929
+    assert cohort["cell_values"]["denominator_relation"] == (
+        "non_header_source_cells; header_cells_reported_separately"
+    )
+    assert cohort["source_cell_partition"] == {
+        "source_cell_records": 310_177_657,
+        "header_cells": 728,
+        "non_header_field_state_cells": 310_176_929,
+        "data_field_cells": 310_173_936,
+        "pre_header_cells": 1_456,
+        "other_sheet_cells": 1_537,
+        "out_of_contract_data_cells": 0,
+        "denominator_relation": "source_cell_records_equals_header_plus_non_header_cells",
+    }
     assert set(overlay["fields"]) == set(_value_shape_cohort()["fields"])
     assert all(
         item["field_state"] == "native_unresolved"
         and item["interpreted"] == 0
-        and item["native_unresolved"] == 91
+        and item["native_unresolved"] == 38_771_742
         and item["unavailable"] == 0
         and item["meaning_qualified"] is False
         for item in overlay["fields"].values()
@@ -546,6 +563,24 @@ def test_value_shape_overlay_rejects_nonconserving_field_shapes() -> None:
     ] = 89
 
     with pytest.raises(ValueError, match="value-shape counts do not conserve"):
+        bind_historical_workbook_value_shapes(
+            report,
+            shapes,
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_value_shape_overlay_rejects_source_cell_category_drift() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    shapes = _shape_cohort_bound_to(report)
+    shapes["header_cells"] = 727
+
+    with pytest.raises(
+        ValueError, match="source-cell categories do not conserve"
+    ):
         bind_historical_workbook_value_shapes(
             report,
             shapes,
