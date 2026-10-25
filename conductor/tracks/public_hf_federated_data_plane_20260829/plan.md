@@ -808,3 +808,32 @@ coverage, new sources/terminology, and optional experiments remain deferred.
 This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
+
+### Shared admitted delivery: existing July 2025 MBS Silver cohort (2026-10-25)
+
+The selected system task traces the six already published July 2025 MBS v3
+Silver Parquet outputs through producer roles, v4 admission, and the remote
+reader, then exercises the actual API, CLI, and Atlas against the same admitted
+revision. It adds no source and keeps the M-112 frozen inventory unchanged.
+
+- [x] Implement a bounded, aggregate-only hosted qualifier for exact source
+  identity, six published object identities, source replay/value parity,
+  deterministic replay, primary restoration, and explicit memory-cache
+  eviction. Require exact main commit identity and anonymous guarded reads.
+  Local focused tests cover success and fail-closed replay mismatch; live roles
+  are not claimed until the manual hosted workflow succeeds.
+- [x] Implement an independently profiled typed admission adapter and bounded
+  API/CLI/Atlas/JSONL delivery canary. Local evidence uses synthetic fixtures
+  and does not admit or publish the real cohort.
+- [ ] Run and retain the exact hosted role receipts for the six objects; bind
+  them to immutable commits and check each receipt against the applicable
+  schemas and existing semantic, lineage, rights, and publication evidence.
+- [ ] Configure the six exact v4 admission profiles from independently
+  governed evidence, qualify each contract through the remote reader, and
+  preserve any unsupported role or recovery claim as a blocker.
+- [ ] Run bounded consumer canaries over the qualified admitted revisions
+  through API, CLI, Atlas, and deterministic export. Reconcile the existing
+  Stable v1 gate only after those receipts are retained.
+
+The current implementation does not change M-112 admission/canary counts,
+source membership, public objects, or release authority.

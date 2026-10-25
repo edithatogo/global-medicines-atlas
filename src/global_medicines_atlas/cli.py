@@ -1039,6 +1039,7 @@ def benefits_query(
     secret = os.environ.get(_CURSOR_ENV, "")
     if len(secret.encode()) < _BENEFITS_CURSOR_KEY_BYTES:
         _fail(ErrorCode.SERVICE_UNAVAILABLE, f"{_CURSOR_ENV} requires 32 bytes")
+    resolver = None
     try:  # ruff: ignore[too-many-statements-in-try-clause] -- one stable CLI error envelope covers resolver and page traversal errors.
         query = BenefitsQuery(
             columns=tuple(columns),
@@ -1074,6 +1075,10 @@ def benefits_query(
             ErrorCode.INVALID_REQUEST,
             "The benefits query or operator configuration is invalid",
         )
+
+    finally:
+        if resolver is not None:
+            resolver.close()
 
 
 @app.command("source-structure")
