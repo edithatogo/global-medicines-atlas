@@ -10,14 +10,14 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-94.json"
+    "australian-m112-rights-release-preflight-20261025-95.json"
 )
 PREFLIGHT_SHA256 = (
-    "6a5e7d67a2f98b2613dc18b45a36b89158d076e20ea5824803eebea0c0082bb4"
+    "f83d35dff2786f3427dda72e3636a80f4c1b25f3680812cf3ab41b71e84aa42c"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-93.json"
+    "australian-m112-rights-release-preflight-20261025-94.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -39,7 +39,7 @@ def _json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", json.loads(path.read_text(encoding="utf-8")))
 
 
-def test_preflight_94_preserves_its_historical_snapshot() -> None:
+def test_preflight_95_preserves_its_historical_snapshot() -> None:
     report = _json(PREFLIGHT)
     assert (
         hashlib.sha256(PREFLIGHT.read_bytes()).hexdigest() == PREFLIGHT_SHA256
@@ -404,7 +404,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-93.json"
+        "australian-m112-rights-release-preflight-20261025-94.json"
     )
     assert previous["preserved_unchanged"] is True
     assert (
@@ -417,7 +417,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-92.json"
+        "australian-m112-rights-release-preflight-20261025-93.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -430,12 +430,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-91.json"
+        "australian-m112-rights-release-preflight-20261025-92.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-90.json"
+        "australian-m112-rights-release-preflight-20261025-91.json"
     )
 
 
