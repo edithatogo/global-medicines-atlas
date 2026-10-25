@@ -10,11 +10,11 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-91.json"
+    "australian-m112-rights-release-preflight-20261025-92.json"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-90.json"
+    "australian-m112-rights-release-preflight-20261025-91.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -134,6 +134,50 @@ def test_preflight_records_bounded_exact_main_p7_reconciliation() -> None:
     assert reconciliation["temporal_comparison_enabled"] is False
     assert p7["new_sources"] == 0
     assert p7["admissions"] == p7["canaries"] == p7["publications"] == 0
+
+
+def test_preflight_binds_pending_pbs_root_version_metadata_route() -> None:
+    report = _json(PREFLIGHT)
+    route = report["pbs_root_schema_version_metadata"]
+    assert route["status"] == "implemented_exact_main_execution_pending"
+    assert route["workflow_path"] == (
+        ".github/workflows/pbs-root-schema-version-metadata.yml"
+    )
+    assert route["profile_script_path"] == (
+        "scripts/profile_pbs_root_version_metadata.py"
+    )
+    assert route["hosted_module_path"] == (
+        "src/global_medicines_atlas/pbs_hosted_qualification.py"
+    )
+    assert route["focused_test_path"] == "tests/test_pbs_schema_hosted.py"
+    assert route["dataset"] == "edithatogo/australian-pbs-source-archive"
+    assert route["revision"] == "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7"
+    assert route["archive_sha256"] == (
+        "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20"
+    )
+    assert route["member_sha256"] == (
+        "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+    )
+    assert route["exact_main_run_completed"] is False
+    assert route["declared_schema_version"] is None
+    assert route["schema_major"] is None
+    assert route["schema_minor"] is None
+    assert route["schema_minor_bound"] is False
+    assert route["source_field_values_emitted"] is False
+    assert route["new_sources"] == 0
+    assert report["inputs"][route["workflow_path"]] == route["workflow_sha256"]
+    assert (
+        report["inputs"][route["profile_script_path"]]
+        == route["profile_script_sha256"]
+    )
+    assert (
+        report["inputs"][route["hosted_module_path"]]
+        == route["hosted_module_sha256"]
+    )
+    assert (
+        report["inputs"][route["focused_test_path"]]
+        == route["focused_test_sha256"]
+    )
 
 
 def test_preflight_binds_current_silver_semantics_readbacks() -> None:
@@ -355,16 +399,19 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-90.json"
+        "australian-m112-rights-release-preflight-20261025-91.json"
     )
     assert previous["preserved_unchanged"] is True
+    assert previous["sha256"] == (
+        "0aa34a2275b99dd007039c1b540f797f0cc8148dea4c9cbb22156fc909f032a6"
+    )
     assert (
         hashlib.sha256(PREVIOUS_PREFLIGHT.read_bytes()).hexdigest()
         == previous["sha256"]
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-89.json"
+        "australian-m112-rights-release-preflight-20261025-90.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -377,12 +424,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-88.json"
+        "australian-m112-rights-release-preflight-20261025-89.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-87.json"
+        "australian-m112-rights-release-preflight-20261025-88.json"
     )
 
 
