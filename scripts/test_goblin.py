@@ -203,6 +203,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_mbs_historical_workbook_receipt_reconcile.py",
         "tests/test_mbs_historical_workbook_cohort_actual.py",
         "tests/test_mbs_workbook_field_reconciliation.py",
+        "tests/test_mbs_p7_date_profile_reconciliation.py",
         "tests/test_qualify_mbs_historical_csv_packages.py",
         "tests/test_qualify_mbs_historical_workbook_packages.py",
         "tests/test_profile_frozen_mbs_archives.py",
