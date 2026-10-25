@@ -197,6 +197,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_mbs_historical_workbook_headers.py",
         "tests/test_mbs_historical_workbook_value_shapes.py",
         "tests/test_profile_mbs_historical_workbook_value_shapes.py",
+        "tests/test_mbs_historical_value_shape_field_overlay.py",
         "tests/test_reconcile_mbs_historical_workbook_header_profiles.py",
         "tests/test_mbs_historical_workbook_package.py",
         "tests/test_mbs_historical_workbook_receipt_reconcile.py",
