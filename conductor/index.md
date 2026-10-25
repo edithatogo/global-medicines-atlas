@@ -15,6 +15,8 @@
 
 ## Workflow
 
+- [System Completion Execution Charter](./system-completion.md)
+- [System Completion Scheduling Plan](./system-completion.json)
 - [Workflow](./workflow.md)
 - [Autonomous Track Execution](./autonomy.md)
 - [Code Style Guides](./code_styleguides/)

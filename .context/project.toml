@@ -16,6 +16,8 @@ required_context = [
   "conductor/tech-stack.md",
   "conductor/workflow.md",
   "conductor/autonomy.md",
+  "conductor/system-completion.md",
+  "conductor/system-completion.json",
   "conductor/tracks.md",
   "docs/ECOSYSTEM_REUSE.md",
 ]

@@ -6,6 +6,15 @@ review, pull-request, merge, archive, and next-track transitions do not require
 maintainer confirmation. Genuine decisions use the options, recommendation,
 and rationale contract in that policy.
 
+Select current work through the [System Completion Execution Charter](./system-completion.md)
+and its [validated scheduling plan](./system-completion.json). Prioritize the
+shared system against the frozen inventory with no new sources. Dataset work
+must close a named capability or gate prerequisite; broader coverage and
+optional experiments remain deferred. This execution order does not change
+track acceptance, rights, admission, recovery, conditional release approval, or
+the current M-105/M-107 dispositions. Read the authoritative Stable contract,
+readiness reconciliation, and bound track receipts for current gate states.
+
 ---
 
 ## Current M-112 readback (2026-10-21)

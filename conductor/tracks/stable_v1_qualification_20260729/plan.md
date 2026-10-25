@@ -781,3 +781,31 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
   retroactively; contract totals are now 84 verified and 8 blocked. The
   Australian federation release gate remains blocked and the M5 Bronze
   qualification is unchanged.
+
+## System completion execution focus (2026-10-25)
+
+Select the next task through the [system completion charter](../../system-completion.md)
+and [validated scheduling plan](../../system-completion.json). Name its shared
+capability or gate, concrete failure, bounded frozen-inventory scope, expected
+proof, and targeted validation. Advance the system lanes when prerequisites
+permit; perform dataset semantics or coverage work only when needed for a
+named gate. Preserve unresolved fields and all mandatory eligible-object
+identity, lineage, rights, admission, recovery, and consumer evidence. Broader
+coverage, new sources/terminology, and optional experiments remain deferred.
+This scheduling direction changes no acceptance criterion, current M-105/M-107
+disposition, or conditional release approval; current states come from the
+authoritative contract, reconciliation, and bound receipts.
+
+- [x] Implement the shared execution charter and machine-validated scheduling
+  plan; require named existing gates, bounded failures, proof and stop conditions.
+  Extend the existing CI context validator to reject source/inventory expansion,
+  acceptance waivers, unknown gate/track references, and planning acceptance
+  claims. Retained archived tracks remain valid owners. Thirty focused context
+  tests pass on repo-local CPython 3.15.1; Ruff, formatting, BasedPyright, `ty`,
+  context validation and diff checks pass. No local full profile was run.
+  Existing qualification/release artifacts and protected hosted checks retain
+  their authority; hosted results for this change remain pending.
+- [ ] Advance the selected `admitted-delivery` system lane: trace an existing
+  eligible Silver producer output through v4 admission and the actual consumer
+  boundary, resolve the first shared failure, and retain all mandatory object
+  evidence and source-specific blockers under the existing contracts.
