@@ -710,7 +710,7 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
-    assert len(allowlist["regexes"]) == 12
+    assert len(allowlist["regexes"]) == 13
     assert not (ROOT / ".gitleaksignore").exists()
 
     revision = json.loads(
@@ -760,7 +760,7 @@ def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
     regexes = config["allowlists"][0]["regexes"][2:]
     expected = [
         (regexes[:2], "dataset_access_response_sha256", 2),
-        (regexes[2:], "idempotency_key", 8),
+        (regexes[2:], "idempotency_key", 9),
     ]
     for values, field, expected_count in expected:
         patterns = [re.compile(value) for value in values]
