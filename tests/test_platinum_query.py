@@ -85,6 +85,45 @@ def date_parquet_payload() -> bytes:
     return sink.getvalue()
 
 
+def nested_native_parquet_payload() -> bytes:
+    sink = io.BytesIO()
+    item_type = pa.struct([
+        pa.field("native_value", pa.string()),
+        pa.field("native_state", pa.string(), nullable=False),
+        pa.field("conversion_status", pa.string(), nullable=False),
+        pa.field("typed_value", pa.string()),
+    ])
+    pq.write_table(
+        pa.table({
+            "ItemNum": pa.array(
+                [
+                    {
+                        "native_value": "MBS-A",
+                        "native_state": "present",
+                        "conversion_status": "preserved",
+                        "typed_value": "MBS-A",
+                    },
+                    {
+                        "native_value": None,
+                        "native_state": "null",
+                        "conversion_status": "preserved",
+                        "typed_value": None,
+                    },
+                    {
+                        "native_value": "MBS-B",
+                        "native_state": "present",
+                        "conversion_status": "preserved",
+                        "typed_value": "MBS-B",
+                    },
+                ],
+                type=item_type,
+            ),
+        }),
+        sink,
+    )
+    return sink.getvalue()
+
+
 def contract(payload: bytes) -> bytes:
     document = json.loads((ROOT / "fixtures/valid.json").read_bytes())
     digest = hashlib.sha256(payload).hexdigest()
@@ -105,6 +144,7 @@ def contract(payload: bytes) -> bytes:
     document["location"].update(
         path="platinum/mbs.parquet", bytes=len(payload), sha256=digest
     )
+    document["cache"]["max_bytes"] = max(1024, len(payload))
     document["verification"].update(
         path="platinum/mbs.parquet",
         bytes=len(payload),
@@ -255,6 +295,31 @@ def test_query_projects_filters_limits_and_wraps_exact_evidence(
     )
     assert result.query_receipt.semantic_manifest_sha256 == (
         result.evidence.semantic_manifest_sha256
+    )
+
+
+@pytest.mark.parametrize(
+    ("engine", "adapter"),
+    [("duckdb", DuckDBQueryAdapter()), ("polars", PolarsQueryAdapter())],
+)
+def test_query_projects_native_components_from_source_field_structs(
+    engine: str, adapter: Any
+) -> None:
+    payload = nested_native_parquet_payload()
+    with resolver(payload) as client:
+        result = PlatinumQueryService(client, adapters={engine: adapter}).query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("ItemNum.native_value",),
+                filters=(QueryFilter("ItemNum.native_state", "=", "present"),),
+                limit=2,
+            ),
+        )
+
+    assert result.rows == (
+        {"ItemNum.native_value": "MBS-A"},
+        {"ItemNum.native_value": "MBS-B"},
     )
 
 
@@ -430,6 +495,11 @@ def test_all_polars_predicates_are_supported_without_semantic_rewrite() -> None:
     ("spec", "message"),
     [
         (QuerySpec(columns=("item_code", "item_code")), "unique"),
+        (QuerySpec(columns=("ItemNum.secret",)), "invalid query column"),
+        (
+            QuerySpec(columns=('ItemNum.native_value" or 1=1',)),
+            "invalid query column",
+        ),
         (
             QuerySpec(columns=("item_code",), max_result_bytes=0),
             "byte budget",

@@ -10,7 +10,11 @@ import pytest
 from fastapi.testclient import TestClient
 from test_platinum_benefits_api import service
 from test_platinum_configuration import configuration
-from test_platinum_query import date_parquet_payload, decimal_parquet_payload
+from test_platinum_query import (
+    date_parquet_payload,
+    decimal_parquet_payload,
+    nested_native_parquet_payload,
+)
 from typer.testing import CliRunner
 
 from global_medicines_atlas.api import create_app
@@ -106,6 +110,52 @@ def test_http_filter_and_unknown_source_column():
         },
     )
     assert response.status_code == 422
+
+
+def test_native_struct_component_is_available_through_api_and_cli(
+    tmp_path, monkeypatch
+):
+    backend = service(payload=nested_native_parquet_payload())
+    configuration(tmp_path)
+    monkeypatch.setattr(
+        "global_medicines_atlas.platinum_configuration.load_benefits_resolver",
+        lambda **_: backend._resolver,
+    )
+    expected = [
+        {"ItemNum.native_value": "MBS-A"},
+        {"ItemNum.native_value": None},
+    ]
+
+    client = TestClient(
+        create_app(cast("ReadOnlyQueryService", object()), benefits=backend)
+    )
+    response = client.get(
+        "/api/v1/benefits/au.mbs.service-items",
+        params={"columns": "ItemNum.native_value", "limit": 2},
+    )
+    assert response.status_code == 200
+    assert response.json()["rows"] == expected
+
+    result = CliRunner().invoke(
+        app,
+        [
+            "benefits",
+            "au.mbs.service-items",
+            "--trust-file",
+            str(tmp_path / "trust.json"),
+            "--metadata-root",
+            str(tmp_path),
+            "--schema-file",
+            str(tmp_path / "schema.json"),
+            "--column",
+            "ItemNum.native_value",
+            "--limit",
+            "2",
+        ],
+        env={"GMA_CURSOR_SECRET": "k" * 32},
+    )
+    assert result.exit_code == 0, result.output
+    assert json.loads(result.stdout)["rows"] == expected
 
 
 def test_generated_client_carries_filters_and_pagination_to_service():
