@@ -201,7 +201,9 @@ def test_overlay_rejects_mismatched_field_state_binding(
     else:
         state[target] = bad_value
 
-    with pytest.raises(ValueError, match="bound MBS field-state report differs"):
+    with pytest.raises(
+        ValueError, match="bound MBS field-state report differs"
+    ):
         bind_value_shape_overlay(
             state,
             _shape_report(),
@@ -245,7 +247,9 @@ def test_overlay_rejects_cell_value_state_denominator_mismatch(
 
 @pytest.mark.parametrize("bad_digest", ["a" * 63, "a" * 63 + "g"])
 def test_overlay_rejects_malformed_value_shape_digest(bad_digest: str) -> None:
-    with pytest.raises(ValueError, match="value-shape report digest is malformed"):
+    with pytest.raises(
+        ValueError, match="value-shape report digest is malformed"
+    ):
         bind_value_shape_overlay(
             _field_state(),
             _shape_report(),
@@ -268,7 +272,9 @@ def test_overlay_rejects_value_shape_schema_or_status_mismatch(
     report = _shape_report()
     report[target] = bad_value
 
-    with pytest.raises(ValueError, match="historical value-shape cohort identity differs"):
+    with pytest.raises(
+        ValueError, match="historical value-shape cohort identity differs"
+    ):
         _bind(_field_state(), report)
 
 
@@ -280,11 +286,15 @@ def test_overlay_rejects_value_shape_schema_or_status_mismatch(
         ("field_state_sha256", "0" * 64),
     ],
 )
-def test_overlay_rejects_input_digest_mismatch(target: str, bad_value: str) -> None:
+def test_overlay_rejects_input_digest_mismatch(
+    target: str, bad_value: str
+) -> None:
     report = _shape_report()
     report["input_digests"][target] = bad_value
 
-    with pytest.raises(ValueError, match="historical value-shape input binding differs"):
+    with pytest.raises(
+        ValueError, match="historical value-shape input binding differs"
+    ):
         _bind(_field_state(), report)
 
 
@@ -302,5 +312,7 @@ def test_overlay_rejects_formula_and_error_counts_above_field(
     report = _shape_report()
     report["fields"][EXPECTED_FIELDS[0]][target] = bad_value
 
-    with pytest.raises(ValueError, match="historical formula/error counts exceed field"):
+    with pytest.raises(
+        ValueError, match="historical formula/error counts exceed field"
+    ):
         _bind(_field_state(), report)
