@@ -5957,9 +5957,10 @@ source qualification remains pending their actual final artifacts.
   to the frozen field-state reconciliation without changing semantic states.
   The successor overlay records shape, storage, missing, formula/cache and error
   counts per contracted field while keeping every non-header value
-  `native_unresolved`. Local implementation and focused tests pass; exact-main
-  six-archive workflow `40149410629` is still running, so its aggregate report
-  has not yet been reconciled.
+  `native_unresolved`. Local implementation and focused tests pass. In
+  exact-main six-archive workflow `40149410629`, archives 0, 1, 2 and 4 have
+  succeeded; archive 3 is running and archive 5 is queued. Aggregate report
+  reconciliation remains pending.
 
 ### PBS native reference-context follow-through
 
