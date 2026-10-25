@@ -34,6 +34,13 @@ def test_m109_release_note_reconciliation_is_in_unit_lane() -> None:
     )
 
 
+def test_mbs_historical_value_shape_tests_are_in_unit_lane() -> None:
+    assert {
+        "tests/test_mbs_historical_workbook_value_shapes.py",
+        "tests/test_profile_mbs_historical_workbook_value_shapes.py",
+    } <= set(HARNESS.TEST_LANES["unit"])
+
+
 @pytest.mark.parametrize(
     "signature",
     [
