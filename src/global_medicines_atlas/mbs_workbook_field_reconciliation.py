@@ -2,12 +2,20 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import operator
 from pathlib import Path
 from typing import Any, cast
 
+from .mbs_archive_inventory import (
+    DATASET as MBS_DATASET,
+)
+from .mbs_archive_inventory import (
+    REVISION as MBS_REVISION,
+)
+from .mbs_historical_workbook_value_shapes import EXPECTED_FIELDS
 from .mbs_p7_date_consistency import validate_p7_date_consistency_inference
 
 PACKAGE_PATH = (
@@ -38,6 +46,8 @@ P7_DATE_INFERENCE_SHA256 = (
 )
 P7_RULES_PATH = "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
 WORKBOOK_COUNT = 91
+MBS_ARCHIVE_COUNT = 6
+MBS_COHORT_RUN_ID = 39724026209
 P7_CELL_COUNT = 13_742
 P7_HEADER_CELL_COUNT = 97
 P7_VALUE_CELL_COUNT = 13_645
@@ -54,6 +64,7 @@ P7_EXACT_MAIN_RUN_ID = 40094025412
 P7_EXACT_MAIN_COMMIT = "11be72e328affc0df87395fd59165ef4f5bf9055"
 P7_EXACT_MAIN_ARTIFACT_ID = 12559848688
 SHA256_HEX_LENGTH = 64
+GIT_COMMIT_HEX_LENGTH = 40
 P7_STATUS_PAIR_LENGTH = 2
 
 
@@ -1107,6 +1118,214 @@ def reconcile_from_paths(
         candidate_qualification_receipt=candidate_receipt,
         candidate_artifact_path=candidate_artifact_path,
     )
+
+
+def bind_historical_workbook_value_shapes(
+    field_state_report: dict[str, Any],
+    value_shape_report: dict[str, Any],
+    *,
+    value_shape_path: str,
+    value_shape_sha256: str,
+    expected_field_state_sha256: str,
+    value_shape_workflow_run_id: int,
+) -> dict[str, Any]:
+    """Bind exact 91-workbook storage-shape diagnostics without promotion."""
+    report_inputs = _dict(
+        value_shape_report.get("input_digests"), "value-shape input digests"
+    )
+    contract_invalid = (
+        value_shape_report.get("schema_id")
+        != "global-medicines-atlas.mbs-historical-workbook-value-shape-cohort",
+        value_shape_report.get("status") != "passed",
+        value_shape_report.get("archive_count") != MBS_ARCHIVE_COUNT,
+        value_shape_report.get("workbook_count") != WORKBOOK_COUNT,
+        value_shape_report.get("candidate_cohort_run_id") != MBS_COHORT_RUN_ID,
+        value_shape_report.get("dataset") != MBS_DATASET,
+        value_shape_report.get("revision") != MBS_REVISION,
+        value_shape_report.get("field_state_report_sha256")
+        != expected_field_state_sha256,
+        report_inputs.get("field_state_sha256") != expected_field_state_sha256,
+        report_inputs.get("header_cohort_sha256")
+        != _field_state_input_sha256(field_state_report, "header_cohort"),
+        report_inputs.get("candidate_cohort_sha256")
+        != _field_state_input_sha256(field_state_report, "package_cohort"),
+        value_shape_report.get("source_values_emitted") is not False,
+        value_shape_report.get("source_column_meanings_qualified") is not False,
+        value_shape_report.get("calendar_year_vs_service_year_resolved")
+        is not False,
+        value_shape_report.get("calendar_month_vs_processing_month_resolved")
+        is not False,
+        value_shape_report.get("currency_interpreted") is not False,
+        value_shape_report.get("date_interpreted") is not False,
+        value_shape_report.get("p7_workbook_in_scope") is not False,
+        value_shape_report.get("p7_date_inference_applied") is not False,
+        value_shape_report.get("p7_domain_date_semantics_qualified")
+        is not False,
+        value_shape_report.get("cross_era_equivalence_claimed") is not False,
+        value_shape_report.get("new_sources") != 0,
+        value_shape_report.get("new_admissions") != 0,
+        value_shape_report.get("consumer_canaries") != 0,
+        value_shape_report.get("publications") != 0,
+    )
+    if any(contract_invalid):
+        raise ValueError("historical workbook value-shape scope differs")
+    fields = _dict(value_shape_report.get("fields"), "value-shape fields")
+    row_counts = _dict(
+        value_shape_report.get("field_row_counts"),
+        "value-shape field row counts",
+    )
+    if set(fields) != set(EXPECTED_FIELDS) or set(row_counts) != set(
+        EXPECTED_FIELDS
+    ):
+        raise ValueError(
+            "historical workbook value-shape field identities differ"
+        )
+    archives = _dict_list(
+        value_shape_report.get("archives"), "value-shape archives"
+    )
+    if len(archives) != MBS_ARCHIVE_COUNT or {
+        row.get("archive_index") for row in archives
+    } != set(range(MBS_ARCHIVE_COUNT)):
+        raise ValueError("historical workbook archive partitions differ")
+    bindings = _dict_list(
+        value_shape_report.get("workbook_bindings"),
+        "value-shape workbook bindings",
+    )
+    if (
+        len(bindings) != WORKBOOK_COUNT
+        or len({row.get("candidate_output_id") for row in bindings})
+        != WORKBOOK_COUNT
+        or len({row.get("candidate_group") for row in bindings})
+        != WORKBOOK_COUNT
+    ):
+        raise ValueError("historical workbook candidate identities differ")
+    if len(value_shape_sha256) != SHA256_HEX_LENGTH or any(
+        char not in "0123456789abcdef" for char in value_shape_sha256
+    ):
+        raise ValueError("historical workbook value-shape digest is malformed")
+    workflow_commit = value_shape_report.get("workflow_commit")
+    if (
+        type(value_shape_workflow_run_id) is not int
+        or value_shape_workflow_run_id <= 0
+        or not isinstance(workflow_commit, str)
+        or len(workflow_commit) != GIT_COMMIT_HEX_LENGTH
+        or any(char not in "0123456789abcdef" for char in workflow_commit)
+    ):
+        raise ValueError("historical workbook workflow identity is malformed")
+
+    field_rows: dict[str, dict[str, Any]] = {}
+    for field_name in EXPECTED_FIELDS:
+        value = _dict(fields[field_name], f"value-shape field {field_name}")
+        cell_count = _int(value.get("cell_count"), f"{field_name} cell count")
+        if (
+            _int(row_counts[field_name], f"{field_name} field row count")
+            != cell_count
+        ):
+            raise ValueError(f"{field_name} row and cell counts differ")
+        value_shapes = _dict(
+            value.get("value_shapes"), f"{field_name} value shapes"
+        )
+        if (
+            sum(
+                _int(count, f"{field_name} shape count")
+                for count in value_shapes.values()
+            )
+            != cell_count
+        ):
+            raise ValueError(f"{field_name} value-shape counts do not conserve")
+        field_rows[field_name] = {
+            "field_state": "native_unresolved",
+            "cell_position_denominator": cell_count,
+            "interpreted": 0,
+            "native_unresolved": cell_count,
+            "unavailable": 0,
+            "value_shapes": dict(sorted(value_shapes.items())),
+            "native_cell_types": dict(
+                sorted(
+                    _dict(
+                        value.get("native_cell_types"),
+                        f"{field_name} cell types",
+                    ).items()
+                )
+            ),
+            "native_states": dict(
+                sorted(
+                    _dict(
+                        value.get("native_states"),
+                        f"{field_name} native states",
+                    ).items()
+                )
+            ),
+            "formula_cells": _int(
+                value.get("formula_cells"), f"{field_name} formula count"
+            ),
+            "formula_cells_with_cache": _int(
+                value.get("formula_cells_with_cache"),
+                f"{field_name} cached formula count",
+            ),
+            "source_error_cells": _int(
+                value.get("source_error_cells"),
+                f"{field_name} source error count",
+            ),
+            "native_missing_value_cells": _int(
+                value.get("native_missing_value_cells"),
+                f"{field_name} missing value count",
+            ),
+            "missing_physical_cell_positions": _int(
+                value.get("missing_physical_cell_positions"),
+                f"{field_name} missing cell position count",
+            ),
+            "meaning_qualified": False,
+        }
+        if (
+            field_rows[field_name]["formula_cells"] > cell_count
+            or field_rows[field_name]["formula_cells_with_cache"]
+            > field_rows[field_name]["formula_cells"]
+            or field_rows[field_name]["source_error_cells"] > cell_count
+            or field_rows[field_name]["native_missing_value_cells"] > cell_count
+            or field_rows[field_name]["missing_physical_cell_positions"]
+            > cell_count
+        ):
+            raise ValueError(f"{field_name} shape subcounts exceed field count")
+
+    result = copy.deepcopy(field_state_report)
+    result_inputs = _dict(result.get("inputs"), "field-state input digests")
+    result_inputs["historical_workbook_value_shapes"] = {
+        "sha256": value_shape_sha256
+    }
+    historical = _dict(
+        result.get("historical_workbook_cohort"),
+        "historical workbook field states",
+    )
+    historical["value_shape_diagnostics"] = {
+        "path": value_shape_path,
+        "sha256": value_shape_sha256,
+        "workflow_run_id": value_shape_workflow_run_id,
+        "workflow_url": (
+            "https://github.com/edithatogo/global-medicines-atlas/actions/runs/"
+            f"{value_shape_workflow_run_id}"
+        ),
+        "workflow_commit": workflow_commit,
+        "archive_count": 6,
+        "workbook_count": WORKBOOK_COUNT,
+        "fields": field_rows,
+        "denominator_relation": "non_additive_storage_shape_overlay; existing cell-value state denominator is unchanged",
+        "source_values_emitted": False,
+        "source_column_meanings_qualified": False,
+        "date_meaning_qualified": False,
+        "currency_qualified": False,
+        "cross_era_equivalence_qualified": False,
+    }
+    result["status"] = (
+        "field_states_reconciled_with_historical_value_shape_overlay_and_semantic_limits"
+    )
+    return result
+
+
+def _field_state_input_sha256(report: dict[str, Any], input_name: str) -> Any:
+    inputs = _dict(report.get("inputs"), "field-state input digests")
+    selected = _dict(inputs.get(input_name), f"{input_name} input digest")
+    return selected.get("sha256")
 
 
 def canonical_json(report: dict[str, Any]) -> str:
