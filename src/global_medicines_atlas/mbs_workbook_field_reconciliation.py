@@ -8,6 +8,8 @@ import operator
 from pathlib import Path
 from typing import Any, cast
 
+from .mbs_p7_date_consistency import validate_p7_date_consistency_inference
+
 PACKAGE_PATH = (
     "quality/qualifications/mbs-historical-workbook-cohort-"
     "20261023-39724026209-39891918206.json"
@@ -27,14 +29,27 @@ P7_RUN_RECEIPT_PATH = (
 P7_DATE_PROFILE_PATH = (
     "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json"
 )
+P7_DATE_INFERENCE_PATH = (
+    "quality/qualifications/"
+    "mbs-p7-date-consistency-inference-20261025-40139026116.json"
+)
+P7_DATE_INFERENCE_SHA256 = (
+    "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486"
+)
 P7_RULES_PATH = "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
 WORKBOOK_COUNT = 91
 P7_CELL_COUNT = 13_742
 P7_HEADER_CELL_COUNT = 97
 P7_VALUE_CELL_COUNT = 13_645
-P7_INTERPRETED_DATE_CELLS = 86
-P7_UNRESOLVED_CELL_COUNT = 13_656
-P7_UNRESOLVED_VALUE_COUNT = 13_559
+P7_UNIQUE_INTERPRETED_DATE_CELLS = 86
+P7_INFERENCE_INTERPRETED_DATE_CELLS = 1_194
+P7_INTERPRETED_DATE_CELLS = (
+    P7_UNIQUE_INTERPRETED_DATE_CELLS + P7_INFERENCE_INTERPRETED_DATE_CELLS
+)
+P7_RETAINED_UNRESOLVED_CELL_COUNT = 13_656
+P7_RETAINED_UNRESOLVED_VALUE_COUNT = 13_559
+P7_CANDIDATE_UNRESOLVED_CELL_COUNT = 12_462
+P7_CANDIDATE_UNRESOLVED_VALUE_COUNT = 12_365
 P7_EXACT_MAIN_RUN_ID = 40094025412
 P7_EXACT_MAIN_COMMIT = "11be72e328affc0df87395fd59165ef4f5bf9055"
 P7_EXACT_MAIN_ARTIFACT_ID = 12559848688
@@ -96,6 +111,29 @@ def _candidate_identity(row: dict[str, Any]) -> tuple[str, str, str]:
     ):
         raise ValueError("workbook candidate identity is malformed")
     return cast("tuple[str, str, str]", parts)
+
+
+def _candidate_hosted_run_matches(
+    exact_run: dict[str, Any], p7_typed: dict[str, Any]
+) -> bool:
+    run_id = exact_run.get("run_id")
+    url = exact_run.get("url")
+    return not any([
+        exact_run.get("conclusion") != "success",
+        exact_run.get("python") != "3.15.1",
+        type(run_id) is not int,
+        run_id <= 0 if type(run_id) is int else True,
+        run_id == P7_EXACT_MAIN_RUN_ID,
+        exact_run.get("exact_commit") != p7_typed.get("workflow_commit"),
+        url != p7_typed.get("workflow_run"),
+        not isinstance(url, str),
+        not url.startswith(
+            "https://github.com/edithatogo/global-medicines-atlas/actions/runs/"
+        )
+        if isinstance(url, str)
+        else True,
+        not url.endswith(f"/{run_id}") if isinstance(url, str) else True,
+    ])
 
 
 def _profile_field_rows(
@@ -235,6 +273,7 @@ def _p7_field_rows(
 
 def _p7_date_field_rows(
     date_profile: dict[str, Any],
+    inference: dict[str, Any] | None,
 ) -> list[dict[str, Any]]:
     profile = _dict(date_profile.get("profile"), "P7 calendar profile")
     fields = _dict(profile.get("by_field"), "P7 calendar profile fields")
@@ -248,6 +287,10 @@ def _p7_date_field_rows(
             states.get("unique_dmy_calendar_date", 0),
             "unique DMY calendar date count",
         )
+        ambiguous = _int(
+            states.get("ambiguous_calendar_order", 0),
+            "ambiguous calendar field count",
+        )
         unresolved = (
             sum(
                 _int(count, "calendar field state count")
@@ -255,6 +298,17 @@ def _p7_date_field_rows(
             )
             - interpreted
         )
+        inference_fields: list[Any] = []
+        if inference is not None:
+            inference_fields_raw = inference.get(
+                "date_fields_with_populated_values", []
+            )
+            if not isinstance(inference_fields_raw, list):
+                raise TypeError("P7 inferred date fields must be a list")
+            inference_fields = cast("list[Any]", inference_fields_raw)
+        inferred = ambiguous if field in inference_fields else 0
+        interpreted += inferred
+        unresolved -= inferred
         rows.append({
             "field": field,
             "scope": "source_column_across_all_sheets",
@@ -266,6 +320,10 @@ def _p7_date_field_rows(
             "native_unresolved": unresolved,
             "unavailable": 0,
             "date_states": dict(sorted(states.items())),
+            "interpretation_basis": {
+                "per_cell_unique_calendar_date": interpreted - inferred,
+                "selected_internal_file_consistency_dmy": inferred,
+            },
         })
     return rows
 
@@ -350,7 +408,12 @@ def _p7_source_field_states(
                 "unavailable": 0,
             },
             "value_state_basis": (
-                "source-column calendar profile"
+                "per-cell unique calendar profile plus exact-P7 internal file-consistency inference"
+                if date_state is not None
+                and date_state["interpretation_basis"][
+                    "selected_internal_file_consistency_dmy"
+                ]
+                else "source-column calendar profile"
                 if date_state is not None
                 else "no supported domain interpretation in bound evidence"
             ),
@@ -390,8 +453,28 @@ def reconcile_workbook_field_states(
     p7_typed: dict[str, Any],
     p7_rules: dict[str, Any],
     input_sha256: dict[str, str],
+    *,
+    candidate_qualification_receipt: dict[str, Any] | None = None,
+    candidate_artifact_path: str | None = None,
 ) -> dict[str, Any]:
     """Validate independent receipts and produce non-additive state totals."""
+    if candidate_qualification_receipt is None:
+        embedded_candidate_receipt = p7_typed.get("_candidate_run_receipt")
+        if isinstance(embedded_candidate_receipt, dict):
+            candidate_qualification_receipt = cast(
+                "dict[str, Any]", embedded_candidate_receipt
+            )
+    if (
+        candidate_qualification_receipt is not None
+        and candidate_artifact_path is None
+    ):
+        embedded_artifact = candidate_qualification_receipt.get("artifact")
+        if isinstance(embedded_artifact, dict):
+            artifact_path = cast("dict[str, Any]", embedded_artifact).get(
+                "path"
+            )
+            if isinstance(artifact_path, str):
+                candidate_artifact_path = artifact_path
     if (
         package.get("schema_id")
         != "global-medicines-atlas.mbs-historical-workbook-cohort-reconciliation"
@@ -544,16 +627,22 @@ def reconcile_workbook_field_states(
     exact_run = _dict(
         p7_run_receipt.get("workflow"), "P7 exact-main qualification"
     )
-    expected_run = {
-        "run_id": P7_EXACT_MAIN_RUN_ID,
-        "conclusion": "success",
-        "exact_commit": P7_EXACT_MAIN_COMMIT,
-        "python": "3.15.1",
-        "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40094025412",
-    }
-    actual_run = {key: exact_run.get(key) for key in expected_run}
-    if actual_run != expected_run:
-        raise ValueError("P7 exact-main qualification identity differs")
+    if candidate_qualification_receipt is None:
+        expected_run = {
+            "run_id": P7_EXACT_MAIN_RUN_ID,
+            "conclusion": "success",
+            "exact_commit": P7_EXACT_MAIN_COMMIT,
+            "python": "3.15.1",
+            "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40094025412",
+        }
+        actual_run = {key: exact_run.get(key) for key in expected_run}
+        if actual_run != expected_run:
+            raise ValueError("P7 exact-main qualification identity differs")
+    else:
+        if candidate_qualification_receipt != p7_run_receipt:
+            raise ValueError("P7 inferred candidate receipt binding differs")
+        if not _candidate_hosted_run_matches(exact_run, p7_typed):
+            raise ValueError("P7 exact-main qualification identity differs")
     if p7_typed.get("workflow_run") != exact_run.get("url") or p7_typed.get(
         "workflow_commit"
     ) != exact_run.get("exact_commit"):
@@ -561,6 +650,33 @@ def reconcile_workbook_field_states(
     p7_date_profile = _dict(
         p7_typed.get("_p7_date_profile"), "P7 calendar profile receipt"
     )
+    inference_decision: dict[str, Any] | None = None
+    inference_sha256: str | None = None
+    if candidate_qualification_receipt is not None:
+        p7_date_inference = _dict(
+            p7_typed.get("_p7_date_inference"), "P7 date inference receipt"
+        )
+        inference_bytes = (
+            json.dumps(
+                p7_date_inference,
+                sort_keys=True,
+                separators=(",", ":"),
+            )
+            + "\n"
+        ).encode("utf-8")
+        inference_decision, inference_sha256 = (
+            validate_p7_date_consistency_inference(
+                inference_bytes,
+                expected_sha256=input_sha256.get("p7_date_inference"),
+                source_sha256=str(value_profile.get("source_sha256")),
+                source_byte_count=87727,
+            )
+        )
+        if (
+            inference_decision is None
+            or inference_sha256 != P7_DATE_INFERENCE_SHA256
+        ):
+            raise ValueError("P7 selected date inference evidence is required")
     p7_date_profile_data = _dict(
         p7_date_profile.get("profile"), "P7 calendar profile"
     )
@@ -610,9 +726,9 @@ def reconcile_workbook_field_states(
         raise ValueError("P7 typed qualification and value-era source differ")
     rule_evidence = _dict(p7_rules.get("evidence"), "P7 rule evidence")
     typed_ref = rule_evidence.get("exact_main_storage_qualification", {})
-    if _dict(typed_ref, "P7 typed receipt reference").get(
-        "sha256"
-    ) != input_sha256.get("p7_typed"):
+    if candidate_qualification_receipt is None and _dict(
+        typed_ref, "P7 typed receipt reference"
+    ).get("sha256") != input_sha256.get("p7_typed"):
         raise ValueError(
             "P7 value-era rules do not bind exact-main typed receipt"
         )
@@ -620,7 +736,9 @@ def reconcile_workbook_field_states(
         rule_evidence.get("exact_main_run_receipt", {}),
         "P7 exact-main run receipt reference",
     )
-    if run_ref.get("sha256") != input_sha256.get("p7_run_receipt"):
+    if candidate_qualification_receipt is None and run_ref.get(
+        "sha256"
+    ) != input_sha256.get("p7_run_receipt"):
         raise ValueError("P7 value-era rules do not bind the exact-main run")
     date_ref = _dict(
         rule_evidence.get("calendar_profile", {}),
@@ -641,12 +759,47 @@ def reconcile_workbook_field_states(
         or date_rules.get("semantic_promotion") is not False
     ):
         raise ValueError("P7 date profile must remain unselected")
-    if (
-        p7_interpreted != P7_INTERPRETED_DATE_CELLS
-        or p7_unresolved != P7_UNRESOLVED_CELL_COUNT
+    if candidate_qualification_receipt is not None:
+        candidate_inference = _dict(
+            candidate.get("date_inference"), "P7 candidate date inference"
+        )
+        if candidate_inference != {
+            "kind": "selected_internal_file_consistency_inference",
+            "source_sha256": value_profile.get("source_sha256"),
+            "profile": "dotted_DMY",
+            "fields": cast("dict[str, Any]", inference_decision)[
+                "date_fields_with_populated_values"
+            ],
+            "interpreted_cells": P7_INFERENCE_INTERPRETED_DATE_CELLS,
+            "evidence_sha256": inference_sha256,
+            "department_provenance_established": False,
+            "domain_meaning_established": False,
+            "other_workbooks_or_eras_in_scope": False,
+        }:
+            raise ValueError("P7 candidate date inference binding differs")
+        receipt_artifact = _dict(
+            candidate_qualification_receipt.get("artifact"),
+            "P7 candidate artifact receipt",
+        )
+        if (
+            candidate_artifact_path is None
+            or candidate_artifact_path == P7_TYPED_PATH
+            or receipt_artifact.get("path") != candidate_artifact_path
+            or receipt_artifact.get("report_sha256")
+            != input_sha256.get("p7_typed")
+        ):
+            raise ValueError("P7 inferred candidate artifact binding differs")
+    if p7_interpreted != (
+        P7_INTERPRETED_DATE_CELLS
+        if inference_decision is not None
+        else P7_UNIQUE_INTERPRETED_DATE_CELLS
+    ) or p7_unresolved != (
+        P7_CANDIDATE_UNRESOLVED_CELL_COUNT
+        if inference_decision is not None
+        else P7_RETAINED_UNRESOLVED_CELL_COUNT
     ):
         raise ValueError("P7 exact-main cell-state totals differ")
-    date_field_rows = _p7_date_field_rows(p7_date_profile)
+    date_field_rows = _p7_date_field_rows(p7_date_profile, inference_decision)
     if sum(row["interpreted"] for row in date_field_rows) != p7_interpreted:
         raise ValueError(
             "P7 unique date fields differ from typed qualification"
@@ -663,7 +816,7 @@ def reconcile_workbook_field_states(
     if ambiguous_dates != _int(
         date_rules.get("ambiguous_date_shaped_cells"),
         "ambiguous date-shaped cell count",
-    ) or ambiguous_dates + p7_interpreted != _int(
+    ) or ambiguous_dates + P7_UNIQUE_INTERPRETED_DATE_CELLS != _int(
         date_rules.get("lexical_date_cells"),
         "P7 date-shaped cell count",
     ):
@@ -672,13 +825,25 @@ def reconcile_workbook_field_states(
         )
 
     artifact = _dict(p7_run_receipt.get("artifact"), "P7 artifact receipt")
+    if candidate_qualification_receipt is None:
+        artifact_identity_valid = (
+            artifact.get("path") == P7_TYPED_PATH
+            and artifact.get("artifact_id") == P7_EXACT_MAIN_ARTIFACT_ID
+            and artifact.get("member_sha256")
+            == "fd893d18c6a96d7daf6c6bae27066f56d207b8d01c14d8fc7622bdc07af99bd"
+        )
+    else:
+        artifact_identity_valid = (
+            artifact.get("path") == candidate_artifact_path
+            and type(artifact.get("artifact_id")) is int
+            and artifact.get("artifact_id", 0) > 0
+            and isinstance(artifact.get("member_sha256"), str)
+            and len(artifact.get("member_sha256", "")) == SHA256_HEX_LENGTH
+        )
     if (
-        artifact.get("path") != P7_TYPED_PATH
-        or artifact.get("artifact_id") != P7_EXACT_MAIN_ARTIFACT_ID
+        not artifact_identity_valid
         or artifact.get("name") != "workbook-storage-qualification"
         or artifact.get("report_sha256") != input_sha256.get("p7_typed")
-        or artifact.get("member_sha256")
-        != "fd893d18c6a96d7daf6c6bae27066f56d207b8d01c14d8fc7622bdc07af99bd"
     ):
         raise ValueError("P7 exact-main artifact identity differs")
     expected_hash_keys = {
@@ -689,11 +854,18 @@ def reconcile_workbook_field_states(
         "p7_date_profile",
         "p7_value_era_rules",
     }
+    if candidate_qualification_receipt is not None:
+        expected_hash_keys.add("p7_date_inference")
     if set(input_sha256) != expected_hash_keys or any(
         type(value) is not str or len(value) != SHA256_HEX_LENGTH
         for value in input_sha256.values()
     ):
         raise ValueError("exact input receipt digests are required")
+    if (
+        candidate_qualification_receipt is not None
+        and input_sha256["p7_date_inference"] != P7_DATE_INFERENCE_SHA256
+    ):
+        raise ValueError("P7 date inference receipt digest differs")
 
     p7_statuses = _dict(value_profile.get("statuses"), "P7 value statuses")
     p7_status_total = sum(
@@ -730,9 +902,14 @@ def reconcile_workbook_field_states(
         raise ValueError("P7 header role states differ from header cells")
     value_cells = p7_cells - header_cells
     unresolved_values = value_cells - p7_interpreted
+    expected_value_unresolved = (
+        P7_CANDIDATE_UNRESOLVED_VALUE_COUNT
+        if inference_decision is not None
+        else P7_RETAINED_UNRESOLVED_VALUE_COUNT
+    )
     if (
         value_cells != P7_VALUE_CELL_COUNT
-        or unresolved_values != P7_UNRESOLVED_VALUE_COUNT
+        or unresolved_values != expected_value_unresolved
     ):
         raise ValueError("P7 non-header field-state denominator differs")
     source_field_states = _p7_source_field_states(
@@ -856,8 +1033,17 @@ def reconcile_workbook_field_states(
                     sorted(date_compatibility.items())
                 ),
                 "date_profile_selected": False,
+                "internal_file_consistency_inference_selected": (
+                    inference_decision is not None
+                ),
+                "date_inference_sha256": inference_sha256,
+                "file_consistency_dmy_interpreted_cells": (
+                    P7_INFERENCE_INTERPRETED_DATE_CELLS
+                    if inference_decision is not None
+                    else 0
+                ),
                 "date_profile_sha256": date_profile_digest,
-                "uniquely_determined_calendar_dates": p7_interpreted,
+                "uniquely_determined_calendar_dates": P7_UNIQUE_INTERPRETED_DATE_CELLS,
                 "ambiguous_date_shaped_cells": _int(
                     date_rules.get("ambiguous_date_shaped_cells"),
                     "ambiguous date-shaped cell count",
@@ -873,7 +1059,18 @@ def reconcile_workbook_field_states(
             "historical_workbook_non_header_domain_meanings_qualified": False,
             "benefit_currency_qualified": False,
             "p7_date_convention_selected": False,
-            "p7_unique_calendar_date_values_interpreted": p7_interpreted,
+            "p7_unique_calendar_date_values_interpreted": P7_UNIQUE_INTERPRETED_DATE_CELLS,
+            "p7_internal_file_consistency_dmy_inference_selected": (
+                inference_decision is not None
+            ),
+            "p7_internal_file_consistency_dmy_cells_interpreted": (
+                P7_INFERENCE_INTERPRETED_DATE_CELLS
+                if inference_decision is not None
+                else 0
+            ),
+            "p7_department_provenance_established": False,
+            "p7_domain_meaning_established": False,
+            "p7_temporal_comparison_enabled": False,
             "cross_era_equivalence_qualified": False,
             "source_values_emitted": False,
             "new_sources_added": False,
@@ -881,17 +1078,34 @@ def reconcile_workbook_field_states(
     }
 
 
-def reconcile_from_paths(paths: dict[str, Path]) -> dict[str, Any]:
+def reconcile_from_paths(
+    paths: dict[str, Path], *, candidate_artifact_path: str | None = None
+) -> dict[str, Any]:
     reports = {key: _read_json(path) for key, path in paths.items()}
     digests = {key: _sha256(path) for key, path in paths.items()}
+    candidate_receipt = reports.pop("p7_candidate_qualification_receipt", None)
+    if candidate_receipt is not None:
+        digests["p7_run_receipt"] = digests.pop(
+            "p7_candidate_qualification_receipt"
+        )
+        reports["p7_run_receipt"] = candidate_receipt
+        reports["p7_typed"]["_candidate_run_receipt"] = candidate_receipt
+    elif "p7_date_inference" in reports:
+        raise ValueError(
+            "inference evidence requires a separate candidate qualification receipt"
+        )
     reports["p7_typed"]["_run_receipt"] = reports["p7_run_receipt"]
     reports["p7_typed"]["_p7_date_profile"] = reports["p7_date_profile"]
+    if candidate_receipt is not None:
+        reports["p7_typed"]["_p7_date_inference"] = reports["p7_date_inference"]
     return reconcile_workbook_field_states(
         reports["package_cohort"],
         reports["header_cohort"],
         reports["p7_typed"],
         reports["p7_value_era_rules"],
         digests,
+        candidate_qualification_receipt=candidate_receipt,
+        candidate_artifact_path=candidate_artifact_path,
     )
 
 

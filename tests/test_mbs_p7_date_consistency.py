@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import json
 import sys
+from hashlib import sha256
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, cast
@@ -30,6 +32,99 @@ _FIELDS = sorted(consistency._DATE_FIELDS)
 )
 def test_date_status_calendar_profiles(value: str, expected: str) -> None:
     assert consistency._date_status(value) == expected
+
+
+def test_retained_file_consistency_receipt_binds_exact_scope() -> None:
+    path = Path(
+        "quality/qualifications/"
+        "mbs-p7-date-consistency-inference-20261025-40139026116.json"
+    )
+    evidence = path.read_bytes()
+    digest = "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486"
+    decision, observed_digest = (
+        consistency.validate_p7_date_consistency_inference(
+            evidence,
+            expected_sha256=digest,
+            source_sha256=_SHA,
+            source_byte_count=87727,
+        )
+    )
+    assert observed_digest == digest
+    assert decision is not None
+    assert decision["selection_status"] == (
+        "selected_internal_file_consistency_inference"
+    )
+    assert decision["scope"]["domain_meaning"] is False
+    assert decision["scope"]["other_mbs_eras"] is False
+    assert decision["scope"]["other_workbooks"] is False
+    with pytest.raises(ValueError, match="digest differs"):
+        consistency.validate_p7_date_consistency_inference(
+            evidence + b" ",
+            expected_sha256=digest,
+            source_sha256=_SHA,
+            source_byte_count=87727,
+        )
+
+
+def test_inference_validator_rejects_missing_digest_and_wrong_source() -> None:
+    with pytest.raises(ValueError, match="digest has no evidence"):
+        consistency.validate_p7_date_consistency_inference(
+            None,
+            expected_sha256="a" * 64,
+            source_sha256=_SHA,
+            source_byte_count=87727,
+        )
+    evidence = Path(
+        "quality/qualifications/"
+        "mbs-p7-date-consistency-inference-20261025-40139026116.json"
+    ).read_bytes()
+    digest = sha256(evidence).hexdigest()
+    with pytest.raises(ValueError, match="source identity differs"):
+        consistency.validate_p7_date_consistency_inference(
+            evidence,
+            expected_sha256=digest,
+            source_sha256="0" * 64,
+            source_byte_count=87727,
+        )
+
+
+@pytest.mark.parametrize("evidence", [b"{", b"[]"])
+def test_inference_validator_rejects_malformed_document(
+    monkeypatch: pytest.MonkeyPatch, evidence: bytes
+) -> None:
+    digest = sha256(evidence).hexdigest()
+    monkeypatch.setattr(consistency, "_EXPECTED_INFERENCE_SHA256", digest)
+    with pytest.raises(ValueError, match="evidence is invalid"):
+        consistency.validate_p7_date_consistency_inference(
+            evidence,
+            expected_sha256=digest,
+            source_sha256=_SHA,
+            source_byte_count=87727,
+        )
+
+
+def test_inference_validator_rejects_incorrect_scope_flags(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    evidence = json.loads(
+        Path(
+            "quality/qualifications/"
+            "mbs-p7-date-consistency-inference-20261025-40139026116.json"
+        ).read_text(encoding="utf-8")
+    )
+    evidence["decision"]["scope"]["other_workbooks"] = True
+    encoded = json.dumps(
+        evidence, sort_keys=True, separators=(",", ":")
+    ).encode()
+    digest = sha256(encoded).hexdigest()
+    monkeypatch.setattr(consistency, "_EXPECTED_INFERENCE_SHA256", digest)
+    with pytest.raises(ValueError, match="does not qualify"):
+        consistency.validate_p7_date_consistency_inference(
+            encoded,
+            expected_sha256=digest,
+            source_sha256=_SHA,
+            source_byte_count=87727,
+        )
 
 
 def _valid_profile() -> dict[str, Any]:

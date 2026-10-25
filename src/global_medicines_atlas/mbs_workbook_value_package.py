@@ -1,7 +1,8 @@
 """Deterministic P7 typed candidates with exact native-cell restore evidence.
 
-No date convention, source meaning, rights, admission or publication is inferred.
-The caller retains the immutable source and separately binds output permissions.
+Only the pinned P7 file-consistency receipt may select DMY within its four
+contracted literal date fields. Other source meaning, rights, admission and
+publication remain independently gated.
 """
 
 from __future__ import annotations
@@ -61,6 +62,8 @@ def _restore(
     receipt: SourceReceipt,
     calendar_profile_evidence: bytes | None = None,
     calendar_profile_sha256: str | None = None,
+    date_inference_evidence: bytes | None = None,
+    date_inference_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Compare restored values, schema and every native cell against exact source."""
     workbook = parse_mbs_workbook(payload, receipt)
@@ -73,6 +76,8 @@ def _restore(
             receipt,
             calendar_profile_evidence=calendar_profile_evidence,
             calendar_profile_sha256=calendar_profile_sha256,
+            date_inference_evidence=date_inference_evidence,
+            date_inference_sha256=date_inference_sha256,
         )
     )
     expected_schema = expected_batches[0].schema
@@ -120,6 +125,26 @@ def _restore(
             if calendar_profile_evidence is not None
             else None
         ),
+        "date_inference": (
+            {
+                "kind": "selected_internal_file_consistency_inference",
+                "source_sha256": receipt.payload.sha256,
+                "profile": "dotted_DMY",
+                "fields": [
+                    "BenefitStartDate",
+                    "DescriptionStartDate",
+                    "FeeStartDate",
+                    "ItemStartDate",
+                ],
+                "interpreted_cells": 1194,
+                "evidence_sha256": sha256(date_inference_evidence).hexdigest(),
+                "department_provenance_established": False,
+                "domain_meaning_established": False,
+                "other_workbooks_or_eras_in_scope": False,
+            }
+            if date_inference_evidence is not None
+            else None
+        ),
         "candidate_only": True,
         "native_cell_parity_verified": True,
         "typed_parquet_restore_verified": True,
@@ -137,6 +162,8 @@ def build_workbook_value_package(
     *,
     calendar_profile_evidence: bytes | None = None,
     calendar_profile_sha256: str | None = None,
+    date_inference_evidence: bytes | None = None,
+    date_inference_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Atomically write source-bound native/typed cells without date guessing."""
     if output.exists():
@@ -146,6 +173,8 @@ def build_workbook_value_package(
         receipt,
         calendar_profile_evidence=calendar_profile_evidence,
         calendar_profile_sha256=calendar_profile_sha256,
+        date_inference_evidence=date_inference_evidence,
+        date_inference_sha256=date_inference_sha256,
     )
     first = next(batches)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -166,6 +195,8 @@ def build_workbook_value_package(
             receipt,
             calendar_profile_evidence,
             calendar_profile_sha256,
+            date_inference_evidence,
+            date_inference_sha256,
         )
         (staging / MANIFEST).write_bytes(canonical_package_json(report))
         verify_workbook_value_package(
@@ -174,6 +205,8 @@ def build_workbook_value_package(
             receipt,
             calendar_profile_evidence=calendar_profile_evidence,
             calendar_profile_sha256=calendar_profile_sha256,
+            date_inference_evidence=date_inference_evidence,
+            date_inference_sha256=date_inference_sha256,
         )
         staging.rename(output)
     return report
@@ -186,6 +219,8 @@ def verify_workbook_value_package(
     *,
     calendar_profile_evidence: bytes | None = None,
     calendar_profile_sha256: str | None = None,
+    date_inference_evidence: bytes | None = None,
+    date_inference_sha256: str | None = None,
 ) -> dict[str, Any]:
     """Restore fixed package files against original bytes and supplied B1 receipt.
 
@@ -205,6 +240,8 @@ def verify_workbook_value_package(
         receipt,
         calendar_profile_evidence,
         calendar_profile_sha256,
+        date_inference_evidence,
+        date_inference_sha256,
     )
     if claimed != actual:
         raise ValueError(

@@ -1,0 +1,52 @@
+{
+  "artifact": {
+    "artifact_id": 12580062422,
+    "member_sha256": "8bb426105b77584e2d51db6a45fce3614c816b21e041412822dccba20f2e9a57",
+    "name": "workbook-storage-qualification",
+    "path": "quality/qualifications/mbs-p7-workbook-storage-qualification-20261025-40143990472.json",
+    "report_sha256": "1e648fd627e0a99b52d7a81fbb7c44739335b7f817954720d6af638c811feb2c"
+  },
+  "calendar_profile": {
+    "date_order_selected": false,
+    "path": "quality/qualifications/mbs-p7-calendar-profile-20261024-40088209026.json",
+    "sha256": "c9b49f60a9a608bc77674a2094b8fd4439115fc17bb200b04fc202c6b463d1bf",
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "source_values_emitted": false
+  },
+  "date_inference": {
+    "department_provenance_established": false,
+    "domain_meaning_established": false,
+    "other_workbooks_or_eras_in_scope": false,
+    "path": "quality/qualifications/mbs-p7-date-consistency-inference-20261025-40139026116.json",
+    "selected_profile": "mbs-dmy",
+    "selection_status": "selected_internal_file_consistency_inference",
+    "sha256": "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486",
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "source_values_emitted": false
+  },
+  "qualification": {
+    "admission_performed": false,
+    "error_cells": 2,
+    "formula_cells": 4,
+    "formula_evaluation_performed": false,
+    "inferred_file_consistency_date_cells": 1194,
+    "interpreted_candidate_cells": 1280,
+    "interpreted_unique_calendar_date_cells": 86,
+    "p7_cells": 13742,
+    "publication_performed": false,
+    "rights_changed": false,
+    "source_byte_count": 87727,
+    "source_sha256": "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8",
+    "unavailable_cells": 0,
+    "unresolved_cells": 12462
+  },
+  "schema_id": "global-medicines-atlas.mbs-p7-exact-main-workbook-storage-run-receipt",
+  "schema_version": 1,
+  "workflow": {
+    "conclusion": "success",
+    "exact_commit": "3c5ecf6d1170bb9d3028ae3c9f7de8a593de5bb6",
+    "python": "3.15.1",
+    "run_id": 40143990472,
+    "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40143990472"
+  }
+}
