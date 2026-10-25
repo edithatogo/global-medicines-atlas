@@ -825,9 +825,13 @@ revision. It adds no source and keeps the M-112 frozen inventory unchanged.
 - [x] Implement an independently profiled typed admission adapter and bounded
   API/CLI/Atlas/JSONL delivery canary. Local evidence uses synthetic fixtures
   and does not admit or publish the real cohort.
-- [ ] Run and retain the exact hosted role receipts for the six objects; bind
+- [~] Run and retain the exact hosted role receipts for the six objects; bind
   them to immutable commits and check each receipt against the applicable
   schemas and existing semantic, lineage, rights, and publication evidence.
+  PR #1346's first protected run exposed a synthetic CLI fixture reusing a
+  resolver after the CLI correctly closed it. The fixture now creates an
+  independently configured resolver per invocation; three directly affected
+  tests and the routine harness pass locally. Hosted rerun is pending.
 - [ ] Configure the six exact v4 admission profiles from independently
   governed evidence, qualify each contract through the remote reader, and
   preserve any unsupported role or recovery claim as a blocker.
