@@ -113,7 +113,11 @@ def _header_bindings(  # ruff: ignore[too-many-branches, too-many-locals, too-ma
                 ):
                     raise TypeError("MBS workbook header label is malformed")
                 labels[label_column] = label_text
-            for index, (raw_binding, expected_field, expected_header) in enumerate(
+            for index, (
+                raw_binding,
+                expected_field,
+                expected_header,
+            ) in enumerate(
                 zip(bindings, EXPECTED_FIELDS, EXPECTED_HEADERS, strict=True),
                 start=1,
             ):

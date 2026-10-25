@@ -41,7 +41,9 @@ def _json(path: Path) -> dict[str, Any]:
 
 def test_preflight_92_preserves_its_historical_snapshot() -> None:
     report = _json(PREFLIGHT)
-    assert hashlib.sha256(PREFLIGHT.read_bytes()).hexdigest() == PREFLIGHT_SHA256
+    assert (
+        hashlib.sha256(PREFLIGHT.read_bytes()).hexdigest() == PREFLIGHT_SHA256
+    )
     assert "tests/test_m112_rights_release_preflight.py" not in report["inputs"]
     assert (
         "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl"
