@@ -5518,10 +5518,14 @@ source qualification remains pending their actual final artifacts.
   Read-only schema work has an independent concurrency key; legacy qualifier
   serialization and timeout limits remain intact. Exact-main run 39667604237
   retained the complete 5,163-path inventory for 18,208,758 native fields.
-- [~] Read only the pinned April 2026 PBS member's root `version` metadata
-  attribute in exact-main Actions, binding the result to the archive/member
-  digests. Retain a bounded receipt with no other XML values; if it declares
-  only major v3, keep the minor schema release unbound.
+- [x] Implement an exact-main, digest-bound PBS root `version` metadata
+  receipt. The hosted profiler stops at the root start tag, emits only the
+  version metadata plus archive/member identity, and refuses unsafe or
+  unexpected roots. Focused tests and typing/lint checks pass. No source
+  values are emitted; schema minor remains unbound until the exact-main run.
+- [ ] Run the root-version workflow after this route is merged to main, then
+  bind its value-free receipt. If it reports only major v3, keep the minor
+  schema release unbound; do not infer a minor version.
 - [~] Observe complete-package run 39654897926, dispatched on exact merged
   main eaee359d after PR1264 passed all 40 protected checks. No completed
   real-source package claim is made until the terminal receipt is verified.
