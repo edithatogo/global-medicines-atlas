@@ -10,7 +10,7 @@ import operator
 import re
 from collections import Counter
 from collections.abc import Iterable
-from typing import Any
+from typing import Any, cast
 
 CONTRACT_ID = "mbs-demographic-workbook-v1"
 EXPECTED_FIELDS = (
@@ -33,6 +33,14 @@ EXPECTED_HEADERS = (
     "Services",
     "Benefits ($)",
 )
+
+
+def _object(value: object, message: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise TypeError(message)
+    return cast("dict[str, Any]", value)
+
+
 _INTEGER = re.compile(r"[+-]?[0-9]+\Z")
 _DECIMAL = re.compile(r"[+-]?(?:[0-9]+\.[0-9]+|\.[0-9]+)\Z")
 _EXPONENT = re.compile(
@@ -52,7 +60,7 @@ def _column_number(label: str) -> int:
     return result
 
 
-def _header_bindings(  # ruff: ignore[too-many-branches] -- validate exact eight-field contract bindings
+def _header_bindings(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements] -- validate exact eight-field contract bindings
     profile: dict[str, Any],
 ) -> dict[str, dict[int, dict[str, Any]]]:
     raw_sheets = profile.get("sheets")
@@ -60,9 +68,8 @@ def _header_bindings(  # ruff: ignore[too-many-branches] -- validate exact eight
         raise ValueError("MBS workbook profile sheets are malformed")
     sheets: dict[str, dict[int, dict[str, Any]]] = {}
     seen_fields: set[str] = set()
-    for sheet in profile.get("sheets", []):
-        if not isinstance(sheet, dict):
-            raise TypeError("MBS workbook profile sheet is malformed")
+    for raw_sheet in cast("list[object]", raw_sheets):
+        sheet = _object(raw_sheet, "MBS workbook profile sheet is malformed")
         name = sheet.get("name")
         if not isinstance(name, str) or name in sheets:
             raise ValueError("MBS workbook profile sheet identity differs")
@@ -70,9 +77,10 @@ def _header_bindings(  # ruff: ignore[too-many-branches] -- validate exact eight
         candidates = sheet.get("candidate_rows", [])
         if not isinstance(candidates, list):
             raise TypeError("MBS workbook candidate rows are malformed")
-        for candidate in candidates:
-            if not isinstance(candidate, dict):
-                raise TypeError("MBS workbook header candidate is malformed")
+        for raw_candidate in cast("list[object]", candidates):
+            candidate = _object(
+                raw_candidate, "MBS workbook header candidate is malformed"
+            )
             disposition = candidate.get("disposition")
             if disposition != "exact_contract_match":
                 raise ValueError(
@@ -84,26 +92,38 @@ def _header_bindings(  # ruff: ignore[too-many-branches] -- validate exact eight
             if type(row_index) is not int or row_index < 1:
                 raise ValueError("MBS workbook header row identity differs")
             bindings = candidate.get("column_bindings")
-            if not isinstance(bindings, list) or len(bindings) != len(
-                EXPECTED_FIELDS
-            ):
+            if not isinstance(bindings, list):
+                raise TypeError("MBS workbook field bindings are malformed")
+            bindings = cast("list[object]", bindings)
+            if len(bindings) != len(EXPECTED_FIELDS):
                 raise ValueError("MBS workbook header field count differs")
             labels_raw = candidate.get("labels", [])
-            if not isinstance(labels_raw, list) or any(
-                not isinstance(label, dict) for label in labels_raw
-            ):
+            if not isinstance(labels_raw, list):
                 raise TypeError("MBS workbook header labels are malformed")
-            labels = {
-                label.get("column"): label.get("text") for label in labels_raw
-            }
-            for index, (binding, expected_field, expected_header) in enumerate(
+            labels_raw = cast("list[object]", labels_raw)
+            labels: dict[str, str] = {}
+            for raw_label in labels_raw:
+                label = _object(
+                    raw_label, "MBS workbook header label is malformed"
+                )
+                label_column = label.get("column")
+                label_text = label.get("text")
+                if not isinstance(label_column, str) or not isinstance(
+                    label_text, str
+                ):
+                    raise TypeError("MBS workbook header label is malformed")
+                labels[label_column] = label_text
+            for index, (raw_binding, expected_field, expected_header) in enumerate(
                 zip(bindings, EXPECTED_FIELDS, EXPECTED_HEADERS, strict=True),
                 start=1,
             ):
-                if not isinstance(binding, dict):
-                    raise TypeError("MBS workbook field binding is malformed")
+                binding = _object(
+                    raw_binding, "MBS workbook field binding is malformed"
+                )
                 column = binding.get("column")
                 field = binding.get("field")
+                if not isinstance(field, str):
+                    raise TypeError("MBS workbook field identity is malformed")
                 if (
                     not isinstance(column, str)  # ruff: ignore[too-many-boolean-expressions] -- every contract binding property must match
                     or binding.get("status") != "interpreted"
@@ -161,9 +181,10 @@ def _lexical_shape(value: str, *, native_numeric: bool) -> str:  # ruff: ignore[
 
 
 def _cell_shape(cell: dict[str, Any]) -> tuple[str, str, str, bool, bool]:
-    properties = cell.get("native_properties", {})
-    if not isinstance(properties, dict):
-        raise TypeError("MBS native cell properties are malformed")
+    properties = _object(
+        cell.get("native_properties", {}),
+        "MBS native cell properties are malformed",
+    )
     cell_type = properties.get("cell_type")
     cell_type_key = cell_type if isinstance(cell_type, str) else "unspecified"
     state = cell.get("state")
@@ -171,7 +192,7 @@ def _cell_shape(cell: dict[str, Any]) -> tuple[str, str, str, bool, bool]:
     formula_present = properties.get("formula_present") is True
     raw_value = properties.get("raw_value")
     value = cell.get("value")
-    error_present = state == "source_error" or cell_type == "e"
+    error_present = state_key == "source_error" or cell_type_key == "e"
     if formula_present:
         shape = (
             "formula_with_cached_value"
@@ -277,8 +298,7 @@ def profile_workbook_records(  # ruff: ignore[too-many-branches, too-many-statem
                 pre_header_cells += 1
                 continue
             cell = record.get("cell")
-            if not isinstance(cell, dict):
-                raise TypeError("MBS workbook cell payload is malformed")
+            cell = _object(cell, "MBS workbook cell payload is malformed")
             if row_index == candidate_row:
                 if target is None:
                     out_of_contract_data_cells += 1

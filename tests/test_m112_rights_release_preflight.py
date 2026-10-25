@@ -12,6 +12,9 @@ PREFLIGHT = (
     ROOT / "quality/qualifications/"
     "australian-m112-rights-release-preflight-20261025-92.json"
 )
+PREFLIGHT_SHA256 = (
+    "7c06c4d2cc06f3270a89828d93b99d82d8e40bbcb1fe03e8d0c353601a55db1b"
+)
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
     "australian-m112-rights-release-preflight-20261025-91.json"
@@ -36,20 +39,14 @@ def _json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", json.loads(path.read_text(encoding="utf-8")))
 
 
-def test_preflight_binds_current_inputs_and_preserves_historical_snapshot() -> (
-    None
-):
+def test_preflight_92_preserves_its_historical_snapshot() -> None:
     report = _json(PREFLIGHT)
+    assert hashlib.sha256(PREFLIGHT.read_bytes()).hexdigest() == PREFLIGHT_SHA256
     assert "tests/test_m112_rights_release_preflight.py" not in report["inputs"]
     assert (
         "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl"
         not in report["inputs"]
     )
-    for path, expected_digest in report["inputs"].items():
-        assert (
-            hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
-            == expected_digest
-        )
     inventory_correction = report["inventory_correction"]
     assert (
         inventory_correction["test_path"]

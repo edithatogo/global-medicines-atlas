@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from typing import Any, cast
 
 from scripts.profile_frozen_mbs_sidecars import require_main_actions
 from scripts.profile_mbs_historical_workbook_value_shapes import (
@@ -32,17 +33,17 @@ HEADER_WORKFLOW_COMMIT = "43f72eb7844a1f3adf13ec1fb34788c1bb8faf71"
 COHORT_RUN_ID = 39724026209
 
 
-def _read_bound(path: Path, expected_sha256: str) -> dict:
+def _read_bound(path: Path, expected_sha256: str) -> dict[str, Any]:
     payload = path.read_bytes()
     if hashlib.sha256(payload).hexdigest() != expected_sha256:
         raise ValueError(f"bound input digest differs: {path.name}")
     value = json.loads(payload)
     if not isinstance(value, dict):
         raise TypeError(f"bound input report malformed: {path.name}")
-    return value
+    return cast("dict[str, Any]", value)
 
 
-def _source_record(source) -> dict:
+def _source_record(source: Any) -> dict[str, Any]:
     return {
         "source_id": source.source_id,
         "source_path": source.source_path,
@@ -54,18 +55,21 @@ def _source_record(source) -> dict:
     }
 
 
-def reconcile(exact_commit: str, input_dir: Path) -> dict:  # ruff: ignore[too-many-branches] -- validate six archive partitions against 91 exact candidate identities
+def reconcile(exact_commit: str, input_dir: Path) -> dict[str, Any]:  # ruff: ignore[too-many-branches] -- validate six archive partitions against 91 exact candidate identities
     require_main_actions(exact_commit)
     header, cohort, field_state = (
         _read_bound(HEADER_REPORT, HEADER_SHA256),
         _read_bound(COHORT_REPORT, COHORT_SHA256),
         _read_bound(FIELD_STATE_REPORT, FIELD_STATE_SHA256),
     )
-    reports = []
+    reports: list[dict[str, Any]] = []
     for index in range(ARCHIVE_COUNT):
         path = input_dir / f"historical-workbook-value-shapes-{index}.json"
         payload = path.read_bytes()
-        report = json.loads(payload)
+        report_value = json.loads(payload)
+        if not isinstance(report_value, dict):
+            raise TypeError("MBS archive value-shape report malformed")
+        report = cast("dict[str, Any]", report_value)
         if (
             report.get("status") != "passed"
             or report.get("workflow_commit") != exact_commit
@@ -104,7 +108,7 @@ def reconcile(exact_commit: str, input_dir: Path) -> dict:  # ruff: ignore[too-m
     merged = merge_archive_profiles(reports, ARCHIVE_COUNT)
     if merged["workbook_count"] != WORKBOOK_COUNT:
         raise ValueError("MBS value-shape workbook denominator differs")
-    expected: dict[int, dict] = {}
+    expected: dict[int, dict[str, Any]] = {}
     for group, candidate in cohort["candidate_outputs_by_group"].items():
         expected[int(group)] = candidate
     observed = {

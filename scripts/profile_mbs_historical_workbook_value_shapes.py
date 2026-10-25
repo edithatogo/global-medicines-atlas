@@ -8,7 +8,7 @@ import json
 import operator
 from pathlib import Path, PurePosixPath
 from tempfile import TemporaryDirectory
-from typing import Any
+from typing import Any, cast
 from zipfile import ZipFile, ZipInfo
 
 import httpx
@@ -87,17 +87,17 @@ FIELD_STATE_SHA256 = (
 MAX_MEMBER_PATH_BYTES = 1024 * 1024
 
 
-def _read_bound(path: Path, expected_sha256: str) -> dict:
+def _read_bound(path: Path, expected_sha256: str) -> dict[str, Any]:
     payload = path.read_bytes()
     if hashlib.sha256(payload).hexdigest() != expected_sha256:
         raise ValueError(f"bound input digest differs: {path.name}")
     value = json.loads(payload)
     if not isinstance(value, dict):
         raise TypeError(f"bound input report malformed: {path.name}")
-    return value
+    return cast("dict[str, Any]", value)
 
 
-def _inputs() -> tuple[  # ruff: ignore[too-many-branches] -- bind all qualified MBS reports and identities
+def _inputs() -> tuple[  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements] -- bind all qualified MBS reports and identities
     dict[str, Any],
     dict[str, Any],
     dict[str, Any],
@@ -132,25 +132,32 @@ def _inputs() -> tuple[  # ruff: ignore[too-many-branches] -- bind all qualified
             "bound MBS field-state reconciliation identity differs"
         )
     assignments = header.get("workbook_assignments")
-    if not isinstance(assignments, list) or len(assignments) != WORKBOOK_COUNT:
+    if not isinstance(assignments, list):
+        raise TypeError("bound MBS workbook header assignments differ")
+    assignment_rows = cast("list[object]", assignments)
+    if len(assignment_rows) != WORKBOOK_COUNT:
         raise ValueError("bound MBS workbook header assignments differ")
     profiles = header.get("header_profiles")
     if not isinstance(profiles, list):
         raise TypeError("bound MBS header profile groups are malformed")
-    profile_by_digest = {
-        row["header_profile_sha256"]: row["profile"]
-        for row in profiles
-        if isinstance(row, dict)
-        and isinstance(row.get("header_profile_sha256"), str)
-    }
-    if len(profile_by_digest) != len(profiles):
+    profile_rows = cast("list[object]", profiles)
+    profile_by_digest: dict[str, Any] = {}
+    for value in profile_rows:
+        if not isinstance(value, dict):
+            raise TypeError("bound MBS header profile group is malformed")
+        row = cast("dict[str, Any]", value)
+        digest = row.get("header_profile_sha256")
+        if not isinstance(digest, str) or digest in profile_by_digest:
+            raise ValueError("bound MBS header profile identities differ")
+        profile_by_digest[digest] = row.get("profile")
+    if len(profile_by_digest) != len(profile_rows):
         raise ValueError("bound MBS header profile identities differ")
-    by_member: dict[str, dict] = {}
-    for row in assignments:
-        if (
-            not isinstance(row, dict)
-            or row.get("header_profile_sha256") not in profile_by_digest
-        ):
+    by_member: dict[str, dict[str, Any]] = {}
+    for value in assignment_rows:
+        if not isinstance(value, dict):
+            raise TypeError("bound MBS workbook assignment is malformed")
+        row = cast("dict[str, Any]", value)
+        if row.get("header_profile_sha256") not in profile_by_digest:
             raise ValueError("bound MBS workbook assignment profile differs")
         key = row.get("member_path_sha256")
         if not isinstance(key, str) or key in by_member:
@@ -159,10 +166,14 @@ def _inputs() -> tuple[  # ruff: ignore[too-many-branches] -- bind all qualified
             **row,
             "profile": profile_by_digest[row["header_profile_sha256"]],
         }
-    outputs: dict[str, dict] = {}
-    for group, candidate in cohort["candidate_outputs_by_group"].items():
-        if not isinstance(candidate, dict):
+    outputs: dict[str, dict[str, Any]] = {}
+    candidate_groups = cohort.get("candidate_outputs_by_group")
+    if not isinstance(candidate_groups, dict):
+        raise TypeError("bound MBS candidate output groups are malformed")
+    for group, value in cast("dict[str, Any]", candidate_groups).items():
+        if not isinstance(value, dict):
             raise TypeError("bound MBS candidate output malformed")
+        candidate = cast("dict[str, Any]", value)
         key = candidate.get("member_path_sha256")
         if not isinstance(key, str) or key in outputs:
             raise ValueError("bound MBS candidate member identity differs")
@@ -191,7 +202,7 @@ def _lookup(
     return result
 
 
-def _source_record(source: BoundArchive) -> dict:
+def _source_record(source: BoundArchive) -> dict[str, Any]:
     return {
         "source_id": source.source_id,
         "source_path": source.source_path,
@@ -208,7 +219,7 @@ def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statem
     archive_index: int,
     *,
     transport: httpx.BaseTransport | None = None,
-) -> dict:
+) -> dict[str, Any]:
     """Download a frozen archive transiently and emit shape counts only."""
     require_main_actions(exact_commit)
     _, _, _, assignments, outputs = _inputs()
@@ -237,8 +248,8 @@ def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statem
         max_attempts=1,
         max_redirects=3,
     )
-    workbook_reports: list[dict] = []
-    totals = {
+    workbook_reports: list[dict[str, Any]] = []
+    totals: dict[str, dict[str, Any]] = {
         field: {
             "cell_count": 0,
             "value_shapes": {},
@@ -330,9 +341,13 @@ def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statem
                                         raise TypeError(
                                             "MBS field counter shape differs"
                                         )
-                                    for key, count in value.items():
-                                        counter[key] = (
-                                            counter.get(key, 0) + count
+                                    typed_counter = cast(
+                                        "dict[str, int]", counter
+                                    )
+                                    counts = cast("dict[str, int]", value)
+                                    for key, count in counts.items():
+                                        typed_counter[key] = (
+                                            typed_counter.get(key, 0) + count
                                         )
                         for name in counters:
                             counters[name] += profile[name]
@@ -391,7 +406,7 @@ def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statem
     }
 
 
-def _write(output: Path, report: dict) -> None:
+def _write(output: Path, report: dict[str, Any]) -> None:
     payload = (
         json.dumps(report, sort_keys=True, separators=(",", ":")) + "\n"
     ).encode()
