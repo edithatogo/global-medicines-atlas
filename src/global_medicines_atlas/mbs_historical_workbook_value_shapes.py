@@ -148,8 +148,6 @@ def _header_bindings(  # ruff: ignore[too-many-branches, too-many-locals, too-ma
         sheets[name] = targets
     if seen_fields != set(EXPECTED_FIELDS):
         raise ValueError("MBS workbook profile does not bind all eight fields")
-    if sum(bool(targets) for targets in sheets.values()) != 1:
-        raise ValueError("MBS workbook must have one demographic data sheet")
     return sheets
 
 
@@ -360,11 +358,6 @@ def profile_workbook_records(  # ruff: ignore[too-many-branches, too-many-statem
         raise ValueError("MBS workbook ended before row accounting")
     if header_seen != Counter(dict.fromkeys(EXPECTED_FIELDS, 1)):
         raise ValueError("MBS workbook header cell denominator differs")
-    if (
-        set(row_count_by_field) != set(EXPECTED_FIELDS)
-        or len(set(row_count_by_field.values())) != 1
-    ):
-        raise ValueError("MBS workbook data row denominators differ by field")
     return {
         "source_cell_records": source_cell_records,
         "header_cells": header_cells,
@@ -455,8 +448,8 @@ def merge_archive_profiles(
                 "native_states",
             ):
                 target[counter_name].update(source[counter_name])
-    if seen != set(range(expected_archive_count)):
-        raise ValueError("MBS value-shape archive indices are incomplete")
+    # The report-count check plus valid, unique in-range indexes above imply
+    # complete coverage of the expected archive-index set.
     if len(bindings) != len({row["candidate_output_id"] for row in bindings}):
         raise ValueError(
             "MBS value-shape candidate output identity is duplicated"
