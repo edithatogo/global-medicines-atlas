@@ -5562,6 +5562,20 @@ source qualification remains pending their actual final artifacts.
   role denominators. Local synthetic checks do not qualify the real corpus.
 - [ ] Require exact-main hosted observed-profile qualification, then complete
   substantive reference/domain semantics and eligible package delivery.
+- [x] Bind the bounded PBS domain profile to the exact root schema version
+  readback. Preserve domain-semantics v3 byte-for-byte and create v4 from the
+  same profile, removing only the limitation that the archive's schema minor
+  was not bound. The exact-main value-free receipt binds the April 2026
+  archive/member hashes to declared schema 3.1; patch remains unbound. Receipt
+  `quality/qualifications/pbs-root-schema-version-metadata-20261025-40145730405.json`
+  has file SHA-256 `27ce93f8e1e94ec4df0c2ba55b1f8d947d895e844e6a4c6b6dc1f77788dcce81`
+  and report SHA-256 `eb6155e226bfd0dedca590e442b3f673e2bde566656cbfbbe07d595c54660398`.
+  Successor `quality/qualifications/pbs-domain-field-semantics-20261025-v4.json`
+  has file SHA-256 `1336cd51392a08c29928cb66ae7f80a65589ceaa17b2c0c70f33c0d9a72c40c8`
+  and report SHA-256 `f2813888a484c0b36f4dbfbf967a418f07215f15c5379883789ecb8407fc18db`.
+  Currency, amount/value interpretation, other domain semantics, field-state
+  counts, references, rights, admission, publication, and canaries remain
+  unchanged.
 
 
 ### Remaining frozen July MBS BSD/RVG family (2026-10-22)
