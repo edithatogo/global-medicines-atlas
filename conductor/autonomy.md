@@ -29,7 +29,10 @@ For each active track, the agent must:
 
 1. reconcile the registry, metadata, plan, source, tests, Git history, hosted
    checks, issues, and durable external receipts;
-2. select the next safe, unblocked task and mark it `[~]`;
+2. select the next safe, unblocked system task under
+   [system-completion.md](system-completion.md), name its existing gate,
+   failure, bounded scope, expected evidence and stop condition, then mark it
+   `[~]`; use registry order only after applying this priority;
 3. implement and verify it using `conductor/workflow.md`;
 4. record evidence before marking it `[x]`;
 5. complete phase verification without requesting ceremonial confirmation;
@@ -38,7 +41,15 @@ For each active track, the agent must:
    after its required checks pass, while observing the `AGENTS.md` email and
    messaging exclusion and all separate human gates;
 8. reconcile Conductor and GitHub state when available, archive a completed
-   track, and move to the next unblocked track.
+   track, and move to the next unblocked system task across the existing tracks.
+
+Keep the current frozen inventory. Dataset work is selected only when required
+to close the named shared capability or existing acceptance gate; process common
+profiles together. Explicit unresolved values and deferred coverage retain their
+own evidence and cannot be silently promoted or used to waive requirements.
+When source evidence or authority is unavailable, record that blocker and
+continue independent system work. Do not restart a blocked acquisition or
+optional experiment merely because it is the next unchecked plan entry.
 
 Status updates are informational and must not be phrased as approval requests.
 The absence of a user response is not a blocker for safe work already in scope.

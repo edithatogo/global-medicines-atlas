@@ -6022,3 +6022,17 @@ source qualification remains pending their actual final artifacts.
 - [x] Reconcile the exact P7 donor copy with the retained value-free internal date-profile receipt. The four DMY-only cells select the internal same-copy DMY profile for the 1,194 ambiguous cells, giving 1,280 interpreted and 12,365 unresolved of 13,645 non-header values. This is internal file consistency only: operational conversion, source-owner provenance, domain date meaning, temporal comparison, and cross-era equivalence remain disabled or unqualified. All 91 historical workbook candidates remain 0 interpreted, 310,176,929 `native_unresolved`, and 0 unavailable; their 728 header roles are counted separately.
 - [x] Bind PBS domain semantics v5 into field-state successor r14 while preserving r13. The exact 3,028-field direct restriction date grammar is recorded as a lexical-role qualification only; the 18,208,758-field partition remains 934,628 interpreted, 17,274,130 `native_unresolved`, and 0 unavailable. Native values and semantic links are not promoted.
 - [x] Qualify generic same-member XLink link targets in PBS field-state successor r15. The exact URI screen resolves all 992,456 `xlink:href` fields to unique same-member `xml:id` targets across 186 source paths. The bounded value-free review contains 17 same-member positive examples, 11 no-target controls, and 18 RDF local candidates; it is not probability-based and does not estimate precision or recall. The field-state partition becomes 1,927,084 interpreted, 16,281,674 `native_unresolved`, and 0 unavailable. PBS-specific predicates, clinical meaning, the 1,167,610 RDF `rdf:resource` fields, edge materialization, and external target resolution remain open.
+
+## System completion execution focus (2026-10-25)
+
+Select the next task through the [system completion charter](../../system-completion.md)
+and [validated scheduling plan](../../system-completion.json). Name its shared
+capability or gate, concrete failure, bounded frozen-inventory scope, expected
+proof, and targeted validation. Advance the system lanes when prerequisites
+permit; perform dataset semantics or coverage work only when needed for a
+named gate. Preserve unresolved fields and all mandatory eligible-object
+identity, lineage, rights, admission, recovery, and consumer evidence. Broader
+coverage, new sources/terminology, and optional experiments remain deferred.
+This scheduling direction changes no acceptance criterion, current M-105/M-107
+disposition, or conditional release approval; current states come from the
+authoritative contract, reconciliation, and bound receipts.

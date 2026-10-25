@@ -1692,3 +1692,17 @@ preflight admission or canary evidence.
   digests and points to #36 by exact SHA-256. Focused preflight and live
   consumer/recovery readback checks pass (16 tests). The successor changes no
   admission, rights, product, recovery-independence, or publication state.
+
+## System completion execution focus (2026-10-25)
+
+Select the next task through the [system completion charter](../../system-completion.md)
+and [validated scheduling plan](../../system-completion.json). Name its shared
+capability or gate, concrete failure, bounded frozen-inventory scope, expected
+proof, and targeted validation. Advance the system lanes when prerequisites
+permit; perform dataset semantics or coverage work only when needed for a
+named gate. Preserve unresolved fields and all mandatory eligible-object
+identity, lineage, rights, admission, recovery, and consumer evidence. Broader
+coverage, new sources/terminology, and optional experiments remain deferred.
+This scheduling direction changes no acceptance criterion, current M-105/M-107
+disposition, or conditional release approval; current states come from the
+authoritative contract, reconciliation, and bound receipts.

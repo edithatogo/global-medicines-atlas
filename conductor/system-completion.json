@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "purpose": "execution_priority_only",
+  "qualification_contract": "quality/qualifications/stable-v1-contract.json",
+  "guardrails": {
+    "new_source_acquisition": false,
+    "expand_frozen_inventory": false,
+    "require_every_value_interpreted": false,
+    "waive_existing_acceptance": false,
+    "promote_optional_previews": false,
+    "full_local_suite_per_dataset": false
+  },
+  "selected_stage": "admitted-delivery",
+  "stages": [
+    {
+      "id": "silver-gold",
+      "track": "australian_benefits_silver_gold_20260829",
+      "release_gate": "stable-v1-australian-health-federation",
+      "capability": "Source-faithful Silver and reviewed Gold with explicit unknowns",
+      "current_failure": "Structural and field-state evidence does not establish every required source meaning or semantic relationship.",
+      "next_action": "Resolve only interpretations or reviewed relationships required by the declared consumer contract; reconcile every field state and retain unsupported values as unresolved.",
+      "completion_evidence": "Existing exact-source semantic, field-state, reviewed-control and producer receipts satisfy the required product contract.",
+      "stop_condition": "Stop interpretation work when that contract passes or lacks supporting evidence; carry missing evidence as a blocker and advance independent system tasks.",
+      "validation": "Select affected contract or matcher tests and their negative controls; reuse unchanged corpus receipts."
+    },
+    {
+      "id": "admitted-delivery",
+      "track": "public_hf_federated_data_plane_20260829",
+      "release_gate": "stable-v1-australian-health-federation",
+      "capability": "Qualified producer output reaches independently admitted v4 delivery",
+      "current_failure": "Candidate producer output and existing object canaries do not establish complete admitted-product delivery.",
+      "next_action": "Trace an existing eligible Silver output through the producer, v4 admission and remote-reader boundary; fix the first shared contract failure and apply the same path to mandatory eligible outputs.",
+      "completion_evidence": "Exact identity, lineage, rights, qualification, admission and authorized delivery receipts for the required outputs, using existing qualifiers.",
+      "stop_condition": "Stop custom dataset work once the shared path works; record object-specific missing evidence without inventing admission or expanding the frozen inventory.",
+      "validation": "Use affected federation admission, distribution and reader selectors, then an authorized bounded admitted-product canary."
+    },
+    {
+      "id": "consumers",
+      "track": "federated_medicines_platinum_20260829",
+      "release_gate": "stable-v1-australian-health-federation",
+      "capability": "API, CLI, Atlas and exports consume the same qualified revisions",
+      "current_failure": "Fixture and reviewed-candidate traversals do not qualify every required live admitted-product consumer path.",
+      "next_action": "Run bounded actual-consumer checks over admitted outputs after their prerequisites pass, covering supported result types, provenance and unknown states.",
+      "completion_evidence": "Revision- and digest-bound API, CLI, Atlas and deterministic export receipts with explicit coverage and semantic limits.",
+      "stop_condition": "Close the shared consumer capability after required paths pass; add more datasets only when their profile exposes an uncovered mandatory behavior.",
+      "validation": "Select consumer integration, accessibility and export tests for changed behavior; preserve complete protected hosted checks."
+    },
+    {
+      "id": "recovery",
+      "track": "public_hf_federated_data_plane_20260829",
+      "release_gate": "stable-v1-australian-health-federation",
+      "capability": "Reproducible restoration and revision-pinned compatibility",
+      "current_failure": "Primary restoration and byte closure alone do not establish the independent recovery and compatibility checkpoints.",
+      "next_action": "Exercise existing restore and compatibility machinery for required qualified outputs; record unavailable independent recovery authority as its own blocker.",
+      "completion_evidence": "Required clean-room restore, independent recovery and compatibility receipts under their existing authority and acceptance contracts.",
+      "stop_condition": "Retain failed or unavailable recovery evidence explicitly; do not relabel duplicate primary storage as independent recovery or repeatedly retry an unchanged authority blocker.",
+      "validation": "Use affected restore and compatibility selectors and one bounded authorized rehearsal for the applicable failure mode."
+    },
+    {
+      "id": "release",
+      "track": "stable_v1_qualification_20260729",
+      "release_gate": "stable-v1-australian-health-federation",
+      "capability": "Existing Stable v1 acceptance and promotion close with observable evidence",
+      "current_failure": "The authoritative Stable v1 reconciliation still retains Australian federation as unresolved.",
+      "next_action": "Reconcile the existing requirement and release contract after system evidence changes; resolve required M-105/M-107 or other blockers only through their existing decision contracts.",
+      "completion_evidence": "Existing qualification contract and readiness reconciliation pass, followed by exact candidate, protected checks and attestation under the existing conditional promotion approval.",
+      "stop_condition": "Do not claim stable qualification, issue a release or waive a dependent requirement from this scheduling plan; stop at the existing release and authority boundaries.",
+      "validation": "Run affected reconciliation tests and required final integration, package, security and release gates once at the coherent system milestone."
+    }
+  ]
+}

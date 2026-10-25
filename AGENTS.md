@@ -36,6 +36,19 @@ transitions do not require a separate “proceed”.
 Repository state, source receipts, tests, hosted checks, and external artifacts
 take precedence over checklist summaries.
 
+## System completion priority
+
+Read `conductor/system-completion.md` and its scheduling JSON before selecting
+work. Complete the existing system through the declared frozen inventory.
+Choose the next task by shared capability and existing acceptance gate, with
+a concrete blocking failure, bounded scope, expected evidence and stop condition.
+Dataset-specific work must resolve that named system prerequisite; batch common
+profiles through existing machinery. Preserve explicit unresolved fields and
+all mandatory per-object evidence. New sources, inventory expansion, universal
+interpretation of every value, and optional preview promotion are outside this
+execution focus. The scheduling plan grants no qualification or release and
+does not waive M-105, M-107, rights, admission, recovery or conditional approval.
+
 The pinned Conductor agent plugin is the Git submodule at
 `.agents/plugins/conductor`. Cursor loads those protocols through
 `.cursor/skills/`. After clone, run `git submodule update --init --recursive`.
@@ -97,13 +110,16 @@ escalating a technical blocker.
 ## Completion
 
 Use a scoped `codex/` branch and technical pull request. Check required CI
-before merging. The email and messaging exclusion above remains in effect. Run
-the focused tests followed by one broader affected check. Run
-`uv run python scripts/test_goblin.py full`
-for production-behavior or release-gate changes where platform support permits.
-For a test-only follow-up after current full-suite evidence, rerun the affected
-tests and routine checks; do not repeat the local full profile solely because
-the test changed. Complete protected CI lanes still run on every pull request.
+before merging. The email and messaging exclusion above remains in effect.
+Start with exact affected test files/nodes and static checks. Broaden only for
+a demonstrated shared impact, new failure or unresolved risk. Reuse unchanged
+evidence; policy, report, receipt, and test-only edits do not trigger the local
+full profile. At coherent system milestones, run required integration, package,
+coverage, security and release checks, including
+`uv run python scripts/test_goblin.py full` where the applicable contract and
+changed behavior require it and platform support permits. Do not run or repeat
+a full profile for each dataset or routine integration. Complete protected CI
+lanes still run on every pull request.
 Linux CI is authoritative for mutmut and Mojo. Record evidence in the active
 track and reconcile plan markers only with observable results.
 
@@ -125,10 +141,10 @@ changes, and the Python and uv versions. Use the runtime required by the
 affected release/reproducibility contract, including child-process PATH, and
 keep executable inputs fixed until the run exits. A remote `main` advance
 does not invalidate evidence for that tested state. After integration, check
-the actual delta: documentation, receipts, or test-only changes require affected
-and routine checks; changed production behavior or release gates require the
-applicable full profile. Preserve failed invocations separately from successful
-recovery checks. Required hosted checks must pass on the final PR head.
+the actual delta and apply the proportional validation rules above; run the
+applicable full profile at required system milestones. Preserve failed
+invocations separately from successful recovery checks. Required hosted checks
+must pass on the final PR head.
 
 Record the checked PR head, required CI results, merge commit and resulting
 tree as observable completion evidence. GitHub provides the immediate merge
