@@ -35,16 +35,20 @@ PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256 = (
 )
 CURRENT_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-97.json"
+    "australian-m112-rights-release-preflight-20261025-98.json"
 )
 CURRENT_PREFLIGHT_SHA256 = (
-    "633c4bdf68e7c67d17e3281f53940413fdfe869e110c6550febf53850d002421"
+    "05f365d98b20a7497297a50c138ebd6b09d25d372eb3457d490411a3f9411604"
 )
 CURRENT_PREFLIGHT_PLAN_SHA256 = (
-    "ffb9eb5c95485ea9b666febcaf6766cf1d4259f0f9b96ecc8bcccd016385a45f"
+    "eafccee8f5befe5ba577056e91a68f51e121983250d1815d78f366c88dd96c99"
 )
 PREVIOUS_CURRENT_PREFLIGHT_SHA256 = (
-    "e4b4ef0aad4823775543d8104928b62735c51e7c296f7030ac0e6b50de39421c"
+    "633c4bdf68e7c67d17e3281f53940413fdfe869e110c6550febf53850d002421"
+)
+PREVIOUS_CURRENT_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-97.json"
 )
 PREFLIGHT_95_TEST_GOBLIN_SHA256 = (
     "46f6e42eb79734a5f72759c8bb924331e4ffea094ac80d5a95929cf109709e20"
@@ -55,9 +59,7 @@ def _json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", json.loads(path.read_text(encoding="utf-8")))
 
 
-def test_preflight_97_preserves_corrected_plan_binding_and_revision_96() -> (
-    None
-):
+def test_preflight_98_preserves_value_shape_state_and_revision_97() -> None:
     report = _json(CURRENT_PREFLIGHT)
     previous_path = ROOT / report["previous_preflight"]["path"]
     plan_path = (
@@ -70,17 +72,21 @@ def test_preflight_97_preserves_corrected_plan_binding_and_revision_96() -> (
     )
     assert report["previous_preflight"]["preserved_unchanged"] is True
     assert report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-96.json"
+        "australian-m112-rights-release-preflight-20261025-97.json"
     )
     assert (
         hashlib.sha256(previous_path.read_bytes()).hexdigest()
         == report["previous_preflight"]["sha256"]
         == PREVIOUS_CURRENT_PREFLIGHT_SHA256
     )
+    previous_report = _json(PREVIOUS_CURRENT_PREFLIGHT)
+    assert previous_report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-96.json"
+    )
     assert report["inputs"][str(plan_path.relative_to(ROOT))] == (
         CURRENT_PREFLIGHT_PLAN_SHA256
     )
-    assert len(report["inputs"]) == 327
+    assert len(report["inputs"]) == 329
     assert report["release_and_admission_boundaries"]["v4_admissions"] == 8
     assert report["release_and_admission_boundaries"]["consumer_canaries"] == 8
     assert (
@@ -89,6 +95,48 @@ def test_preflight_97_preserves_corrected_plan_binding_and_revision_96() -> (
         ]
         is False
     )
+    shape = report["historical_workbook_value_shape_readback"]
+    assert shape["workflow_run_id"] == 40149410629
+    assert (
+        shape["workflow_commit"] == "7763d510df47e4298175ef5148cbe0998ca09411"
+    )
+    assert shape["workflow_conclusion"] == "success"
+    for binding in (shape["aggregate_report"], shape["field_state_successor"]):
+        path = ROOT / binding["path"]
+        assert (
+            hashlib.sha256(path.read_bytes()).hexdigest()
+            == binding["file_sha256"]
+        )
+        assert report["inputs"][binding["path"]] == binding["file_sha256"]
+    counts = shape["counts"]
+    assert counts["workbooks"] == 91
+    assert counts["source_cell_records_including_headers"] == 310_177_657
+    assert counts["header_cells_separate"] == 728
+    assert counts["non_header_cell_denominator"] == 310_176_929
+    assert counts["non_header_values_interpreted"] == 0
+    assert counts["non_header_values_native_unresolved"] == 310_176_929
+    assert counts["non_header_values_unavailable"] == 0
+    assert (
+        shape["boundaries"]["non_header_cells_remain_native_unresolved"] is True
+    )
+    assert shape["boundaries"]["admissions"] == 0
+    assert shape["boundaries"]["consumer_canaries"] == 0
+    assert shape["boundaries"]["publications"] == 0
+    assert shape["boundaries"]["new_sources"] == 0
+    assert shape["semantic_completion_claimed"] is False
+    field_state = report["historical_workbook_semantic_field_state"]
+    assert field_state["path"] == shape["field_state_successor"]["path"]
+    assert (
+        field_state["sha256"] == shape["field_state_successor"]["file_sha256"]
+    )
+    assert field_state["source_cell_records_including_headers"] == 310_177_657
+    assert field_state["header_cells_separate"] == 728
+    assert field_state["interpreted_header_roles"] == 728
+    assert field_state["non_header_cell_denominator"] == 310_176_929
+    assert field_state["non_header_cells_interpreted"] == 0
+    assert field_state["non_header_cells_native_unresolved"] == 310_176_929
+    assert field_state["unavailable"] == 0
+    assert field_state["whole_workbook_semantics_complete"] is False
     assert (
         report["release_and_admission_boundaries"][
             "external_publications_performed"
