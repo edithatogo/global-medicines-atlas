@@ -204,6 +204,36 @@ def test_v5_qualifies_only_direct_restriction_date_lexical_grammar():
     assert v5["scope"]["publications"] == 0
 
 
+def test_v5_rejects_restriction_date_denominator_drift(monkeypatch):
+    original = domain_semantics.qualify_pbs_domain_fields_v4
+
+    def drifted(root):
+        result = original(root)
+        result["domains"]["restriction_effective_date"]["field_count"] += 1
+        return result
+
+    monkeypatch.setattr(
+        domain_semantics, "qualify_pbs_domain_fields_v4", drifted
+    )
+    with pytest.raises(ValueError, match="direct restriction date denominator"):
+        qualify_pbs_domain_fields_v5(ROOT)
+
+
+def test_v5_rejects_missing_grammar_baseline(monkeypatch):
+    original = domain_semantics.qualify_pbs_domain_fields_v4
+
+    def missing_baseline(root):
+        result = original(root)
+        result["domains"]["restriction_effective_date"]["limits"].clear()
+        return result
+
+    monkeypatch.setattr(
+        domain_semantics, "qualify_pbs_domain_fields_v4", missing_baseline
+    )
+    with pytest.raises(ValueError, match="date grammar baseline differs"):
+        qualify_pbs_domain_fields_v5(ROOT)
+
+
 def test_v4_rejects_root_metadata_receipt_byte_drift(tmp_path):
     _copy_receipts(ROOT, tmp_path)
     relative = domain_semantics.ROOT_VERSION_RECEIPT

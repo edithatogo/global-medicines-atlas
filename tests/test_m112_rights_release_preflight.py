@@ -50,6 +50,36 @@ SUCCESSOR_PREFLIGHT_99_SHA256 = (
 SUCCESSOR_PREFLIGHT_99_PLAN_SHA256 = (
     "f05f1adac3f5400c94db5494bbf26a2036038ea99b3864af0fc469fd5cad38ed"
 )
+SUCCESSOR_PREFLIGHT_100 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-100.json"
+)
+SUCCESSOR_PREFLIGHT_100_SHA256 = (
+    "49f38311f296cf6b40fb7920b37ea557ed0b657986aab9b9456089cff62945e9"
+)
+SUCCESSOR_PREFLIGHT_100_PLAN_SHA256 = (
+    "55c44cf5674b51d74edede20d00e8c66c6fa45dadbe6d2fa53c41e51d15dd4b1"
+)
+SUCCESSOR_PREFLIGHT_101 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-101.json"
+)
+SUCCESSOR_PREFLIGHT_101_SHA256 = (
+    "ef7e7ba6cfb7d7ef8db7161d06403ce7df29aac9db27b4ba8afec40bb201fe09"
+)
+SUCCESSOR_PREFLIGHT_101_PLAN_SHA256 = (
+    "7ba05aa5609078c5b499afe959816beb6d3a71c88dedee42886c5fb04f725b7c"
+)
+SUCCESSOR_PREFLIGHT_102 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-102.json"
+)
+SUCCESSOR_PREFLIGHT_102_SHA256 = (
+    "262626c1a30e02e2c5321a43b37b51bf7d6dbcb723c972b40c4c2f533b556d42"
+)
+SUCCESSOR_PREFLIGHT_102_PLAN_SHA256 = (
+    "7ba05aa5609078c5b499afe959816beb6d3a71c88dedee42886c5fb04f725b7c"
+)
 CURRENT_PREFLIGHT_PLAN_SHA256 = (
     "eafccee8f5befe5ba577056e91a68f51e121983250d1815d78f366c88dd96c99"
 )
@@ -219,6 +249,112 @@ def test_preflight_99_binds_silver_semantic_successors() -> None:
             "new_sources_or_datasets_added"
         ]
         is False
+    )
+
+
+def test_preflight_100_binds_pbs_field_state_r14() -> None:
+    report = _json(SUCCESSOR_PREFLIGHT_100)
+    assert (
+        hashlib.sha256(SUCCESSOR_PREFLIGHT_100.read_bytes()).hexdigest()
+        == SUCCESSOR_PREFLIGHT_100_SHA256
+    )
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-99.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == SUCCESSOR_PREFLIGHT_99_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_100_PLAN_SHA256
+    assert len(report["inputs"]) == 337
+    field_state = report["pbs_native_semantic_reconciliation_r14_readback"]
+    assert field_state["source_fields"] == 18_208_758
+    assert field_state["interpreted_fields"] == 934_628
+    assert field_state["native_unresolved_fields"] == 17_274_130
+    assert field_state["unavailable_fields"] == 0
+    assert field_state["direct_date_grammar_fields"] == 3_028
+    assert field_state["semantic_relationships_qualified"] is False
+    assert field_state["semantic_edges_emitted"] is False
+
+
+def test_preflight_101_binds_xlink_semantics_and_preserves_rdf_uncertainty() -> (
+    None
+):
+    report = _json(SUCCESSOR_PREFLIGHT_101)
+    assert (
+        hashlib.sha256(SUCCESSOR_PREFLIGHT_101.read_bytes()).hexdigest()
+        == SUCCESSOR_PREFLIGHT_101_SHA256
+    )
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-100.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == SUCCESSOR_PREFLIGHT_100_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_101_PLAN_SHA256
+    assert len(report["inputs"]) == 341
+    field_state = report["pbs_native_semantic_reconciliation_r15_readback"]
+    assert field_state["interpreted_fields"] == 1_927_084
+    assert field_state["native_unresolved_fields"] == 16_281_674
+    assert field_state["unavailable_fields"] == 0
+    assert field_state["xlink_fields_interpreted"] == 992_456
+    assert field_state["rdf_resource_fields_unresolved"] == 1_167_610
+    assert field_state["semantic_precision_or_recall_estimated"] is False
+    assert field_state["edge_payload_emitted"] is False
+    assert (
+        report["pbs_native_source_local_xlink_link_readback"][
+            "generic_link_target_meaning_qualified"
+        ]
+        is True
+    )
+
+
+def test_preflight_102_binds_focused_coverage_repairs() -> None:
+    report = _json(SUCCESSOR_PREFLIGHT_102)
+    assert (
+        hashlib.sha256(SUCCESSOR_PREFLIGHT_102.read_bytes()).hexdigest()
+        == SUCCESSOR_PREFLIGHT_102_SHA256
+    )
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-101.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == SUCCESSOR_PREFLIGHT_101_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_102_PLAN_SHA256
+    assert len(report["inputs"]) == 343
+    for input_path in (
+        "src/global_medicines_atlas/mbs_workbook_field_reconciliation.py",
+        "tests/test_mbs_workbook_field_reconciliation.py",
+        "src/global_medicines_atlas/pbs_domain_field_semantics.py",
+        "tests/test_pbs_domain_field_semantics.py",
+    ):
+        assert (
+            hashlib.sha256((ROOT / input_path).read_bytes()).hexdigest()
+            == (report["inputs"][input_path])
+        )
+    assert report["status"] == (
+        "preflight_102_rebinds_current_silver_inputs_after_focused_coverage_repair"
     )
 
 

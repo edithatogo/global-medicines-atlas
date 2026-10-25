@@ -785,9 +785,7 @@ def reconcile_workbook_field_states(
             or inference_sha256 != P7_DATE_INFERENCE_SHA256
         ):
             raise ValueError("P7 selected date inference evidence is required")
-        if reconciliation_inference is None:
-            inference_decision = cast("dict[str, Any]", inference_decision)
-        else:
+        if reconciliation_inference is not None:
             # The current exact-copy reconciliation is the governing evidence.
             # The older candidate receipt is retained only as an independent
             # binding and cannot expand interpretation beyond four cells.

@@ -27,6 +27,8 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     SOURCE_FIELDS,
     SUPERSEDED_REPORT,
     reconcile_pbs_field_states,
+    reconcile_pbs_field_states_v5,
+    reconcile_pbs_field_states_v6,
 )
 from global_medicines_atlas.pbs_reference_case_adjudication import (
     ADJUDICATION_PATH,
@@ -214,6 +216,70 @@ def test_v4_domain_semantics_bind_without_reclassifying_native_values():
     }
     assert bounded["qualified_domains"]["status"]["field_count"] == 0
     assert bounded["qualified_domains"]["price"]["field_count"] == (11_539_739)
+
+
+def test_v5_adds_direct_date_grammar_without_changing_field_states():
+    report = reconcile_pbs_field_states_v5(ROOT)
+    bounded = report["bounded_domain_semantics_v5"]
+
+    assert report["profile_id"] == "pbs-v3-2026-04-01-field-state-v5"
+    assert bounded["path"].endswith(
+        "pbs-domain-field-semantics-20261025-v5.json"
+    )
+    assert bounded["qualified_lexical_grammar"] == {
+        "source_schema_field": "restriction_effective_date_text",
+        "field_count": 3_028,
+        "grammar": "YYYY-MM-DD (XML Schema date lexical representation)",
+        "archive_schema_version": "3.1",
+        "documentation_release": "3.1.9",
+        "schema_patch_bound": False,
+        "native_values_validated": False,
+    }
+    assert bounded["field_state_partition"] == {
+        "interpreted": 934_628,
+        "native_unresolved": 18_208_758 - 934_628,
+        "unavailable": 0,
+        "source_fields": 18_208_758,
+        "state_counts_changed": False,
+        "newly_interpreted_native_value_fields": 0,
+    }
+    assert (
+        report["source_local_reference_review"][
+            "semantic_relationships_qualified"
+        ]
+        is False
+    )
+    assert report["non_claims"]["current_listing_status"] is False
+    assert report["non_claims"]["patient_rates"].startswith("unavailable:")
+
+
+def test_v6_qualifies_only_exact_same_member_xlink_targets():
+    report = reconcile_pbs_field_states_v6(ROOT)
+    coverage = report["field_state_coverage"]
+    links = report["source_local_xlink_link_semantics"]
+    xlink_rows = [
+        row
+        for row in report["path_reconciliation"]
+        if "{http:~1~1www.w3.org~11999~1xlink}href" in row["schema_path"]
+    ]
+
+    assert report["profile_id"] == "pbs-v3-2026-04-01-field-state-v6"
+    assert coverage["source_fields"] == 18_208_758
+    assert coverage["interpreted"] == 1_927_084
+    assert coverage["native_unresolved"] == 16_281_674
+    assert coverage["unavailable"] == 0
+    assert sum(row["field_count"] for row in xlink_rows) == 992_456
+    assert len(xlink_rows) == 186
+    assert all(row["semantic_state"] == "interpreted" for row in xlink_rows)
+    assert links["same_member_unique_xml_id_targets"] == 992_456
+    assert links["reviewed_same_member_positive_examples"] == 17
+    assert links["negative_control_cases"] == 11
+    assert links["other_rdf_local_candidate_cases"] == 18
+    assert links["semantic_precision_or_recall_estimated"] is False
+    assert links["pbs_predicate_or_clinical_meaning_qualified"] is False
+    assert links["edge_payload_emitted"] is False
+    assert links["source_values_emitted"] is False
+    assert coverage["interpreted"] + coverage["native_unresolved"] == 18_208_758
 
 
 def test_reference_case_structural_review_keeps_semantic_links_unqualified():
