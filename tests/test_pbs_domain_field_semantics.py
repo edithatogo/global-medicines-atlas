@@ -168,6 +168,107 @@ def test_v4_rejects_root_metadata_receipt_byte_drift(tmp_path):
         qualify_pbs_domain_fields_v4(tmp_path)
 
 
+def _write_root_version_receipt(
+    root: Path,
+    payload: object,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    report_digest: str | None = None,
+) -> None:
+    relative = domain_semantics.ROOT_VERSION_RECEIPT
+    destination = root / relative
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    encoded = json.dumps(
+        payload, sort_keys=True, separators=(",", ":")
+    ).encode()
+    destination.write_bytes(encoded)
+    monkeypatch.setattr(
+        domain_semantics,
+        "ROOT_VERSION_RECEIPT_SHA256",
+        hashlib.sha256(encoded).hexdigest(),
+    )
+    if report_digest is not None:
+        monkeypatch.setattr(
+            domain_semantics, "ROOT_VERSION_REPORT_SHA256", report_digest
+        )
+
+
+def test_v4_rejects_non_object_receipt_envelope(tmp_path, monkeypatch):
+    _copy_receipts(ROOT, tmp_path)
+    _write_root_version_receipt(tmp_path, [], monkeypatch)
+    with pytest.raises(
+        TypeError, match="PBS root schema-version receipt shape"
+    ):
+        qualify_pbs_domain_fields_v4(tmp_path)
+
+
+def test_v4_rejects_non_object_receipt_report(tmp_path, monkeypatch):
+    _copy_receipts(ROOT, tmp_path)
+    _write_root_version_receipt(
+        tmp_path,
+        {"report": [], "report_sha256": "0" * 64},
+        monkeypatch,
+    )
+    with pytest.raises(
+        TypeError, match="PBS root schema-version receipt shape"
+    ):
+        qualify_pbs_domain_fields_v4(tmp_path)
+
+
+def test_v4_rejects_root_report_digest_drift(tmp_path, monkeypatch):
+    _copy_receipts(ROOT, tmp_path)
+    _write_root_version_receipt(
+        tmp_path,
+        {"report": {}, "report_sha256": "0" * 64},
+        monkeypatch,
+    )
+    with pytest.raises(
+        ValueError, match="PBS root schema-version report digest"
+    ):
+        qualify_pbs_domain_fields_v4(tmp_path)
+
+
+def test_v4_rejects_root_source_binding_drift(tmp_path, monkeypatch):
+    _copy_receipts(ROOT, tmp_path)
+    report = json.loads(
+        (ROOT / domain_semantics.ROOT_VERSION_RECEIPT).read_text()
+    )["report"]
+    report["schema_minor"] = 2
+    report_digest = _canonical_digest(report)
+    _write_root_version_receipt(
+        tmp_path,
+        {"report": report, "report_sha256": report_digest},
+        monkeypatch,
+        report_digest=report_digest,
+    )
+    with pytest.raises(
+        ValueError, match="PBS root schema-version source binding"
+    ):
+        qualify_pbs_domain_fields_v4(tmp_path)
+
+
+def test_v4_rejects_missing_obsolete_minor_limit(tmp_path, monkeypatch):
+    _copy_receipts(ROOT, tmp_path)
+    receipt_path = tmp_path / domain_semantics.ROOT_VERSION_RECEIPT
+    receipt_path.parent.mkdir(parents=True, exist_ok=True)
+    receipt_path.write_bytes(
+        (ROOT / domain_semantics.ROOT_VERSION_RECEIPT).read_bytes()
+    )
+    base = qualify_pbs_domain_fields(ROOT)
+    obsolete_limit = (
+        "the exact schema minor release used for the archive is not separately "
+        "bound by the value-free path inventory"
+    )
+    base["source_schema_field_meanings"]["pbs_amount_text"]["limits"].remove(
+        obsolete_limit
+    )
+    monkeypatch.setattr(
+        domain_semantics, "qualify_pbs_domain_fields", lambda _: base
+    )
+    with pytest.raises(ValueError, match="PBS schema-minor limitation differs"):
+        qualify_pbs_domain_fields_v4(tmp_path)
+
+
 def test_v4_writer_adds_successor_without_overwriting_v3(tmp_path, monkeypatch):
     _copy_receipts(ROOT, tmp_path)
     root_receipt = domain_semantics.ROOT_VERSION_RECEIPT
