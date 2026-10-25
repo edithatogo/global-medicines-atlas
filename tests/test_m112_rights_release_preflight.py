@@ -40,8 +40,14 @@ CURRENT_PREFLIGHT = (
 CURRENT_PREFLIGHT_SHA256 = (
     "633c4bdf68e7c67d17e3281f53940413fdfe869e110c6550febf53850d002421"
 )
+CURRENT_PREFLIGHT_PLAN_SHA256 = (
+    "ffb9eb5c95485ea9b666febcaf6766cf1d4259f0f9b96ecc8bcccd016385a45f"
+)
 PREVIOUS_CURRENT_PREFLIGHT_SHA256 = (
     "e4b4ef0aad4823775543d8104928b62735c51e7c296f7030ac0e6b50de39421c"
+)
+PREFLIGHT_95_TEST_GOBLIN_SHA256 = (
+    "46f6e42eb79734a5f72759c8bb924331e4ffea094ac80d5a95929cf109709e20"
 )
 
 
@@ -49,7 +55,9 @@ def _json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", json.loads(path.read_text(encoding="utf-8")))
 
 
-def test_preflight_97_binds_corrected_plan_and_preserves_revision_96() -> None:
+def test_preflight_97_preserves_corrected_plan_binding_and_revision_96() -> (
+    None
+):
     report = _json(CURRENT_PREFLIGHT)
     previous_path = ROOT / report["previous_preflight"]["path"]
     plan_path = (
@@ -70,7 +78,7 @@ def test_preflight_97_binds_corrected_plan_and_preserves_revision_96() -> None:
         == PREVIOUS_CURRENT_PREFLIGHT_SHA256
     )
     assert report["inputs"][str(plan_path.relative_to(ROOT))] == (
-        hashlib.sha256(plan_path.read_bytes()).hexdigest()
+        CURRENT_PREFLIGHT_PLAN_SHA256
     )
     assert len(report["inputs"]) == 327
     assert report["release_and_admission_boundaries"]["v4_admissions"] == 8
@@ -97,9 +105,7 @@ def test_preflight_95_preserves_its_historical_snapshot() -> None:
     assert "tests/test_m112_rights_release_preflight.py" not in report["inputs"]
     assert (
         report["inputs"]["scripts/test_goblin.py"]
-        == hashlib.sha256(
-            (ROOT / "scripts/test_goblin.py").read_bytes()
-        ).hexdigest()
+        == PREFLIGHT_95_TEST_GOBLIN_SHA256
     )
     assert (
         "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl"
