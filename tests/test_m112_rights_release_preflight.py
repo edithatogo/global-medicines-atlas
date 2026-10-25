@@ -10,14 +10,14 @@ from typing import Any, cast
 ROOT = Path(__file__).resolve().parents[1]
 PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-93.json"
+    "australian-m112-rights-release-preflight-20261025-94.json"
 )
 PREFLIGHT_SHA256 = (
-    "7c06c4d2cc06f3270a89828d93b99d82d8e40bbcb1fe03e8d0c353601a55db1b"
+    "6a5e7d67a2f98b2613dc18b45a36b89158d076e20ea5824803eebea0c0082bb4"
 )
 PREVIOUS_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-92.json"
+    "australian-m112-rights-release-preflight-20261025-93.json"
 )
 PRESERVED_MAIN_PREFLIGHT = (
     ROOT / "quality/qualifications/"
@@ -39,12 +39,18 @@ def _json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", json.loads(path.read_text(encoding="utf-8")))
 
 
-def test_preflight_92_preserves_its_historical_snapshot() -> None:
+def test_preflight_94_preserves_its_historical_snapshot() -> None:
     report = _json(PREFLIGHT)
     assert (
         hashlib.sha256(PREFLIGHT.read_bytes()).hexdigest() == PREFLIGHT_SHA256
     )
     assert "tests/test_m112_rights_release_preflight.py" not in report["inputs"]
+    assert (
+        report["inputs"]["scripts/test_goblin.py"]
+        == hashlib.sha256(
+            (ROOT / "scripts/test_goblin.py").read_bytes()
+        ).hexdigest()
+    )
     assert (
         "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl"
         not in report["inputs"]
@@ -398,11 +404,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous = report["previous_preflight"]
     assert previous["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-92.json"
+        "australian-m112-rights-release-preflight-20261025-93.json"
     )
     assert previous["preserved_unchanged"] is True
-    assert previous["sha256"] == (
-        "7c06c4d2cc06f3270a89828d93b99d82d8e40bbcb1fe03e8d0c353601a55db1b"
+    assert (
+        previous["sha256"]
+        == hashlib.sha256(PREVIOUS_PREFLIGHT.read_bytes()).hexdigest()
     )
     assert (
         hashlib.sha256(PREVIOUS_PREFLIGHT.read_bytes()).hexdigest()
@@ -410,7 +417,7 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     )
     previous_report = _json(PREVIOUS_PREFLIGHT)
     assert previous_report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-91.json"
+        "australian-m112-rights-release-preflight-20261025-92.json"
     )
     assert (
         previous_report["release_and_admission_boundaries"]["v4_admissions"]
@@ -423,12 +430,12 @@ def test_preflight_successor_preserves_the_snapshot_chain() -> None:
     predecessor_path = ROOT / previous_report["previous_preflight"]["path"]
     predecessor = _json(predecessor_path)
     assert predecessor["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-90.json"
+        "australian-m112-rights-release-preflight-20261025-91.json"
     )
     older_path = ROOT / predecessor["previous_preflight"]["path"]
     older = _json(older_path)
     assert older["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-89.json"
+        "australian-m112-rights-release-preflight-20261025-90.json"
     )
 
 
