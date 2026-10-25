@@ -346,6 +346,109 @@ def test_tampered_prior_field_state_receipt_is_rejected(tmp_path: Path):
         reconcile_pbs_field_states(tmp_path)
 
 
+def test_domain_v4_scope_mismatch_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _copy_reconciliation_inputs(tmp_path)
+    path = tmp_path / DOMAIN_V4
+    envelope = json.loads(path.read_bytes())
+    envelope["report"]["scope"]["complete_domain_semantics_qualified"] = True
+    canonical = json.dumps(
+        envelope["report"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    envelope["report_sha256"] = hashlib.sha256(canonical).hexdigest()
+    path.write_text(json.dumps(envelope), encoding="utf-8")
+    monkeypatch.setattr(
+        reconciliation,
+        "DOMAIN_V4_FILE_SHA256",
+        hashlib.sha256(path.read_bytes()).hexdigest(),
+    )
+    monkeypatch.setattr(
+        reconciliation, "DOMAIN_V4_REPORT_SHA256", envelope["report_sha256"]
+    )
+
+    with pytest.raises(
+        ValueError, match="PBS bounded domain-field v4 evidence differs"
+    ):
+        reconcile_pbs_field_states(tmp_path)
+
+
+def test_reference_case_receipt_byte_mismatch_is_rejected(tmp_path: Path):
+    _copy_reconciliation_inputs(tmp_path)
+    path = tmp_path / ADJUDICATION_PATH
+    path.write_bytes(path.read_bytes() + b" ")
+
+    with pytest.raises(
+        ValueError, match="PBS reference case receipt bytes differ"
+    ):
+        reconcile_pbs_field_states(tmp_path)
+
+
+def test_reference_case_review_scope_mismatch_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    _copy_reconciliation_inputs(tmp_path)
+    path = tmp_path / ADJUDICATION_PATH
+    envelope = json.loads(path.read_bytes())
+    envelope["report"]["review_scope"]["semantic_relationships_qualified"] = (
+        True
+    )
+    canonical = json.dumps(
+        envelope["report"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    envelope["report_sha256"] = hashlib.sha256(canonical).hexdigest()
+    path.write_text(json.dumps(envelope), encoding="utf-8")
+    monkeypatch.setattr(
+        reconciliation,
+        "REFERENCE_CASE_FILE_SHA256",
+        hashlib.sha256(path.read_bytes()).hexdigest(),
+    )
+    monkeypatch.setattr(
+        reconciliation,
+        "REFERENCE_CASE_REPORT_SHA256",
+        envelope["report_sha256"],
+    )
+
+    def changed_review_report(root: Path) -> dict[str, object]:
+        return envelope["report"] if root else {}
+
+    monkeypatch.setattr(
+        reconciliation,
+        "validate_reference_case_adjudication",
+        changed_review_report,
+    )
+
+    with pytest.raises(
+        ValueError, match="PBS reference case review boundary differs"
+    ):
+        reconcile_pbs_field_states(tmp_path)
+
+
+def test_v4_domain_recomputation_mismatch_is_rejected(
+    monkeypatch: pytest.MonkeyPatch,
+):
+
+    def changed_domain_report(root: Path) -> dict[str, object]:
+        return {} if root else {"unexpected": True}
+
+    monkeypatch.setattr(
+        reconciliation,
+        "qualify_pbs_domain_fields_v4",
+        changed_domain_report,
+    )
+
+    with pytest.raises(
+        ValueError, match="PBS bounded domain-field v4 evidence differs"
+    ):
+        reconcile_pbs_field_states(ROOT)
+
+
 def _copy_reconciliation_inputs(tmp_path: Path) -> None:
     for relative in (
         PACKAGE,
