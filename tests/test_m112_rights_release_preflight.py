@@ -35,9 +35,12 @@ PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256 = (
 )
 CURRENT_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-96.json"
+    "australian-m112-rights-release-preflight-20261025-97.json"
 )
 CURRENT_PREFLIGHT_SHA256 = (
+    "633c4bdf68e7c67d17e3281f53940413fdfe869e110c6550febf53850d002421"
+)
+PREVIOUS_CURRENT_PREFLIGHT_SHA256 = (
     "e4b4ef0aad4823775543d8104928b62735c51e7c296f7030ac0e6b50de39421c"
 )
 
@@ -46,7 +49,7 @@ def _json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", json.loads(path.read_text(encoding="utf-8")))
 
 
-def test_preflight_96_binds_r13_plan_and_preserves_revision_95() -> None:
+def test_preflight_97_binds_corrected_plan_and_preserves_revision_96() -> None:
     report = _json(CURRENT_PREFLIGHT)
     previous_path = ROOT / report["previous_preflight"]["path"]
     plan_path = (
@@ -58,10 +61,13 @@ def test_preflight_96_binds_r13_plan_and_preserves_revision_95() -> None:
         == CURRENT_PREFLIGHT_SHA256
     )
     assert report["previous_preflight"]["preserved_unchanged"] is True
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-96.json"
+    )
     assert (
         hashlib.sha256(previous_path.read_bytes()).hexdigest()
         == report["previous_preflight"]["sha256"]
-        == PREFLIGHT_SHA256
+        == PREVIOUS_CURRENT_PREFLIGHT_SHA256
     )
     assert report["inputs"][str(plan_path.relative_to(ROOT))] == (
         hashlib.sha256(plan_path.read_bytes()).hexdigest()
