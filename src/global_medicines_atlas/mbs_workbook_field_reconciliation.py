@@ -2,12 +2,20 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import operator
 from pathlib import Path
 from typing import Any, cast
 
+from .mbs_archive_inventory import (
+    DATASET as MBS_DATASET,
+)
+from .mbs_archive_inventory import (
+    REVISION as MBS_REVISION,
+)
+from .mbs_historical_workbook_value_shapes import EXPECTED_FIELDS
 from .mbs_p7_date_consistency import validate_p7_date_consistency_inference
 
 PACKAGE_PATH = (
@@ -36,8 +44,20 @@ P7_DATE_INFERENCE_PATH = (
 P7_DATE_INFERENCE_SHA256 = (
     "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486"
 )
+P7_DATE_RECONCILIATION_PATH = (
+    "quality/qualifications/mbs-p7-date-profile-reconciliation-20261025.json"
+)
+P7_DATE_RECONCILIATION_SHA256 = (
+    "125c1f13acb33c40dcb45355772b5bb03fa8a89b36124195f96b55cd9f279853"
+)
+P7_SOURCE_SHA256 = (
+    "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+)
+P7_SOURCE_BYTE_COUNT = 87_727
 P7_RULES_PATH = "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
 WORKBOOK_COUNT = 91
+MBS_ARCHIVE_COUNT = 6
+MBS_COHORT_RUN_ID = 39724026209
 P7_CELL_COUNT = 13_742
 P7_HEADER_CELL_COUNT = 97
 P7_VALUE_CELL_COUNT = 13_645
@@ -54,6 +74,7 @@ P7_EXACT_MAIN_RUN_ID = 40094025412
 P7_EXACT_MAIN_COMMIT = "11be72e328affc0df87395fd59165ef4f5bf9055"
 P7_EXACT_MAIN_ARTIFACT_ID = 12559848688
 SHA256_HEX_LENGTH = 64
+GIT_COMMIT_HEX_LENGTH = 40
 P7_STATUS_PAIR_LENGTH = 2
 
 
@@ -77,6 +98,66 @@ def _read_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise TypeError("receipt root must be an object")
     return cast("dict[str, Any]", value)
+
+
+def _validate_p7_date_reconciliation(
+    report: dict[str, Any], digest: str
+) -> dict[str, Any]:
+    """Bind the narrow, value-free P7 internal consistency reconciliation."""
+    source = _dict(report.get("source"), "P7 date reconciliation source")
+    reconciliation = _dict(
+        report.get("reconciliation"), "P7 date reconciliation"
+    )
+    evidence = _dict(
+        reconciliation.get("evidence_counts"),
+        "P7 date reconciliation evidence counts",
+    )
+    limits = _dict(
+        report.get("operational_limits"), "P7 date reconciliation limits"
+    )
+    checks = [
+        digest == P7_DATE_RECONCILIATION_SHA256,
+        report.get("schema_id")
+        == "global-medicines-atlas.mbs-p7-date-profile-reconciliation",
+        report.get("schema_version") == 1,
+        report.get("status")
+        == "internal_exact_copy_dmy_inference_reconciled_conversion_disabled",
+        source.get("sha256") == P7_SOURCE_SHA256,
+        source.get("byte_count") == P7_SOURCE_BYTE_COUNT,
+        source.get("schema_era") == "mbs-p7-2024-07-headers-v1",
+        reconciliation.get("inferred_profile") == "mbs-dmy",
+        reconciliation.get("inference_scope")
+        == "internal_file_consistency_for_this_exact_donor_archived_copy_only",
+        reconciliation.get("profile_selection_status")
+        == "selected_as_internal_consistency_inference",
+        evidence
+        == {
+            "populated_date_fields": 4,
+            "profiled_cells": 1_280,
+            "ambiguous_calendar_order_cells_before_inference": 1_194,
+            "unique_dmy_calendar_date_cells": 4,
+            "unique_mdy_calendar_date_cells": 0,
+            "unique_calendar_date_cells": 86,
+        },
+        limits.get("operational_date_conversion_enabled") is False,
+        limits.get("source_owner_confirmation") is False,
+        limits.get("official_provenance_confirmed") is False,
+        limits.get("domain_date_meaning_qualified") is False,
+        limits.get("temporal_comparison_enabled") is False,
+        limits.get("cross_era_equivalence_promoted") is False,
+        limits.get("other_workbooks_or_eras_in_scope") is False,
+        limits.get("source_values_emitted") is False,
+    ]
+    if not all(checks):
+        raise ValueError("P7 date reconciliation evidence binding differs")
+    return {
+        "date_fields_with_populated_values": [
+            "BenefitStartDate",
+            "DescriptionStartDate",
+            "FeeStartDate",
+            "ItemStartDate",
+        ]
+    }
 
 
 def _int(value: Any, label: str) -> int:
@@ -287,17 +368,15 @@ def _p7_date_field_rows(
             states.get("unique_dmy_calendar_date", 0),
             "unique DMY calendar date count",
         )
+        date_states = {
+            key: _int(value, "calendar field state count")
+            for key, value in states.items()
+        }
         ambiguous = _int(
-            states.get("ambiguous_calendar_order", 0),
+            date_states.get("ambiguous_calendar_order", 0),
             "ambiguous calendar field count",
         )
-        unresolved = (
-            sum(
-                _int(count, "calendar field state count")
-                for count in states.values()
-            )
-            - interpreted
-        )
+        unresolved = sum(date_states.values()) - interpreted
         inference_fields: list[Any] = []
         if inference is not None:
             inference_fields_raw = inference.get(
@@ -306,9 +385,15 @@ def _p7_date_field_rows(
             if not isinstance(inference_fields_raw, list):
                 raise TypeError("P7 inferred date fields must be a list")
             inference_fields = cast("list[Any]", inference_fields_raw)
+        # A selected DMY profile interprets the ambiguous cells for this
+        # exact-copy internal-consistency view. Operational conversion remains
+        # disabled by the separately bound date reconciliation receipt.
         inferred = ambiguous if field in inference_fields else 0
         interpreted += inferred
         unresolved -= inferred
+        if inferred:
+            date_states["ambiguous_calendar_order"] = ambiguous - inferred
+            date_states["internal_file_consistency_dmy"] = inferred
         rows.append({
             "field": field,
             "scope": "source_column_across_all_sheets",
@@ -319,7 +404,7 @@ def _p7_date_field_rows(
             "interpreted": interpreted,
             "native_unresolved": unresolved,
             "unavailable": 0,
-            "date_states": dict(sorted(states.items())),
+            "date_states": dict(sorted(date_states.items())),
             "interpretation_basis": {
                 "per_cell_unique_calendar_date": interpreted - inferred,
                 "selected_internal_file_consistency_dmy": inferred,
@@ -601,6 +686,7 @@ def reconcile_workbook_field_states(
 
     if p7_typed.get("kind") != "p7-workbook":
         raise ValueError("P7 typed qualification kind differs")
+    reconciliation_report = p7_typed.get("_p7_date_reconciliation")
     value_profile = _dict(
         p7_typed.get("domain_value_profile"), "P7 typed value profile"
     )
@@ -617,6 +703,22 @@ def reconcile_workbook_field_states(
     )
     if p7_cells != P7_CELL_COUNT or p7_interpreted + p7_unresolved != p7_cells:
         raise ValueError("P7 all-cell unresolved denominator differs")
+    if reconciliation_report is not None:
+        if candidate_qualification_receipt is None:
+            if (
+                p7_interpreted != P7_UNIQUE_INTERPRETED_DATE_CELLS
+                or p7_unresolved != P7_RETAINED_UNRESOLVED_CELL_COUNT
+            ):
+                raise ValueError("P7 retained date-state baseline differs")
+            p7_interpreted += P7_INFERENCE_INTERPRETED_DATE_CELLS
+            p7_unresolved -= P7_INFERENCE_INTERPRETED_DATE_CELLS
+        elif (
+            p7_interpreted
+            != P7_UNIQUE_INTERPRETED_DATE_CELLS
+            + P7_INFERENCE_INTERPRETED_DATE_CELLS
+            or p7_unresolved != P7_CANDIDATE_UNRESOLVED_CELL_COUNT
+        ):
+            raise ValueError("P7 candidate date-state totals differ")
     p7_run_receipt = _dict(
         p7_typed.get("_run_receipt"), "P7 exact-main run receipt"
     )
@@ -650,7 +752,13 @@ def reconcile_workbook_field_states(
     p7_date_profile = _dict(
         p7_typed.get("_p7_date_profile"), "P7 calendar profile receipt"
     )
-    inference_decision: dict[str, Any] | None = None
+    reconciliation_inference: dict[str, Any] | None = None
+    if reconciliation_report is not None:
+        reconciliation_inference = _validate_p7_date_reconciliation(
+            _dict(reconciliation_report, "P7 date reconciliation report"),
+            cast("str", input_sha256.get("p7_date_reconciliation")),
+        )
+    inference_decision: dict[str, Any] | None = reconciliation_inference
     inference_sha256: str | None = None
     if candidate_qualification_receipt is not None:
         p7_date_inference = _dict(
@@ -677,6 +785,11 @@ def reconcile_workbook_field_states(
             or inference_sha256 != P7_DATE_INFERENCE_SHA256
         ):
             raise ValueError("P7 selected date inference evidence is required")
+        if reconciliation_inference is not None:
+            # The current exact-copy reconciliation is the governing evidence.
+            # The older candidate receipt is retained only as an independent
+            # binding and cannot expand interpretation beyond four cells.
+            inference_decision = reconciliation_inference
     p7_date_profile_data = _dict(
         p7_date_profile.get("profile"), "P7 calendar profile"
     )
@@ -813,10 +926,18 @@ def reconcile_workbook_field_states(
         )
         for row in date_field_rows
     )
-    if ambiguous_dates != _int(
+    if ambiguous_dates + (
+        P7_INFERENCE_INTERPRETED_DATE_CELLS
+        if inference_decision is not None
+        else 0
+    ) != _int(
         date_rules.get("ambiguous_date_shaped_cells"),
         "ambiguous date-shaped cell count",
-    ) or ambiguous_dates + P7_UNIQUE_INTERPRETED_DATE_CELLS != _int(
+    ) or ambiguous_dates + (
+        P7_INFERENCE_INTERPRETED_DATE_CELLS
+        if inference_decision is not None
+        else 0
+    ) + P7_UNIQUE_INTERPRETED_DATE_CELLS != _int(
         date_rules.get("lexical_date_cells"),
         "P7 date-shaped cell count",
     ):
@@ -854,6 +975,8 @@ def reconcile_workbook_field_states(
         "p7_date_profile",
         "p7_value_era_rules",
     }
+    if reconciliation_report is not None:
+        expected_hash_keys.add("p7_date_reconciliation")
     if candidate_qualification_receipt is not None:
         expected_hash_keys.add("p7_date_inference")
     if set(input_sha256) != expected_hash_keys or any(
@@ -1084,6 +1207,11 @@ def reconcile_from_paths(
     reports = {key: _read_json(path) for key, path in paths.items()}
     digests = {key: _sha256(path) for key, path in paths.items()}
     candidate_receipt = reports.pop("p7_candidate_qualification_receipt", None)
+    if "p7_date_reconciliation" not in reports:
+        repository_root = Path(__file__).resolve().parents[2]
+        reconciliation_path = repository_root / P7_DATE_RECONCILIATION_PATH
+        reports["p7_date_reconciliation"] = _read_json(reconciliation_path)
+        digests["p7_date_reconciliation"] = _sha256(reconciliation_path)
     if candidate_receipt is not None:
         digests["p7_run_receipt"] = digests.pop(
             "p7_candidate_qualification_receipt"
@@ -1096,6 +1224,10 @@ def reconcile_from_paths(
         )
     reports["p7_typed"]["_run_receipt"] = reports["p7_run_receipt"]
     reports["p7_typed"]["_p7_date_profile"] = reports["p7_date_profile"]
+    if "p7_date_reconciliation" in reports:
+        reports["p7_typed"]["_p7_date_reconciliation"] = reports[
+            "p7_date_reconciliation"
+        ]
     if candidate_receipt is not None:
         reports["p7_typed"]["_p7_date_inference"] = reports["p7_date_inference"]
     return reconcile_workbook_field_states(
@@ -1107,6 +1239,297 @@ def reconcile_from_paths(
         candidate_qualification_receipt=candidate_receipt,
         candidate_artifact_path=candidate_artifact_path,
     )
+
+
+def _value_shape_source_cell_partition(
+    value_shape_report: dict[str, Any],
+    row_counts: dict[str, Any],
+) -> dict[str, int | str]:
+    source_cell_records = _int(
+        value_shape_report.get("source_cell_records"),
+        "value-shape source cell record count",
+    )
+    header_cells = _int(
+        value_shape_report.get("header_cells"), "value-shape header cell count"
+    )
+    pre_header_cells = _int(
+        value_shape_report.get("pre_header_cells"),
+        "value-shape pre-header cell count",
+    )
+    other_sheet_cells = _int(
+        value_shape_report.get("other_sheet_cells"),
+        "value-shape other-sheet cell count",
+    )
+    out_of_contract_data_cells = _int(
+        value_shape_report.get("out_of_contract_data_cells"),
+        "value-shape out-of-contract data cell count",
+    )
+    data_field_cells = sum(
+        _int(row_counts[field], f"{field} field row count")
+        for field in EXPECTED_FIELDS
+    )
+    non_header_field_state_cells = source_cell_records - header_cells
+    if (
+        source_cell_records
+        != header_cells
+        + pre_header_cells
+        + other_sheet_cells
+        + out_of_contract_data_cells
+        + data_field_cells
+        or non_header_field_state_cells
+        != pre_header_cells
+        + other_sheet_cells
+        + out_of_contract_data_cells
+        + data_field_cells
+    ):
+        raise ValueError(
+            "historical workbook source-cell categories do not conserve"
+        )
+    return {
+        "source_cell_records": source_cell_records,
+        "header_cells": header_cells,
+        "non_header_field_state_cells": non_header_field_state_cells,
+        "data_field_cells": data_field_cells,
+        "pre_header_cells": pre_header_cells,
+        "other_sheet_cells": other_sheet_cells,
+        "out_of_contract_data_cells": out_of_contract_data_cells,
+    }
+
+
+def _apply_source_cell_partition(
+    historical: dict[str, Any], partition: dict[str, int | str]
+) -> None:
+    cell_values = _dict(historical.get("cell_values"), "historical cell values")
+    source_cell_records = partition["source_cell_records"]
+    non_header_cells = partition["non_header_field_state_cells"]
+    if (
+        _int(cell_values.get("denominator"), "field-state denominator")
+        != source_cell_records
+    ):
+        raise ValueError(
+            "field-state denominator differs from exact source cells"
+        )
+    cell_values["denominator"] = non_header_cells
+    cell_values["unresolved"] = non_header_cells
+    cell_values["denominator_relation"] = (
+        "non_header_source_cells; header_cells_reported_separately"
+    )
+    historical["source_cell_partition"] = {
+        **partition,
+        "denominator_relation": "source_cell_records_equals_header_plus_non_header_cells",
+    }
+
+
+def bind_historical_workbook_value_shapes(
+    field_state_report: dict[str, Any],
+    value_shape_report: dict[str, Any],
+    *,
+    value_shape_path: str,
+    value_shape_sha256: str,
+    expected_field_state_sha256: str,
+    value_shape_workflow_run_id: int,
+) -> dict[str, Any]:
+    """Bind exact 91-workbook storage-shape diagnostics without promotion."""
+    report_inputs = _dict(
+        value_shape_report.get("input_digests"), "value-shape input digests"
+    )
+    contract_invalid = (
+        value_shape_report.get("schema_id")
+        != "global-medicines-atlas.mbs-historical-workbook-value-shape-cohort",
+        value_shape_report.get("status") != "passed",
+        value_shape_report.get("archive_count") != MBS_ARCHIVE_COUNT,
+        value_shape_report.get("workbook_count") != WORKBOOK_COUNT,
+        value_shape_report.get("candidate_cohort_run_id") != MBS_COHORT_RUN_ID,
+        value_shape_report.get("dataset") != MBS_DATASET,
+        value_shape_report.get("revision") != MBS_REVISION,
+        value_shape_report.get("field_state_report_sha256")
+        != expected_field_state_sha256,
+        report_inputs.get("field_state_sha256") != expected_field_state_sha256,
+        report_inputs.get("header_cohort_sha256")
+        != _field_state_input_sha256(field_state_report, "header_cohort"),
+        report_inputs.get("candidate_cohort_sha256")
+        != _field_state_input_sha256(field_state_report, "package_cohort"),
+        value_shape_report.get("source_values_emitted") is not False,
+        value_shape_report.get("source_column_meanings_qualified") is not False,
+        value_shape_report.get("calendar_year_vs_service_year_resolved")
+        is not False,
+        value_shape_report.get("calendar_month_vs_processing_month_resolved")
+        is not False,
+        value_shape_report.get("currency_interpreted") is not False,
+        value_shape_report.get("date_interpreted") is not False,
+        value_shape_report.get("p7_workbook_in_scope") is not False,
+        value_shape_report.get("p7_date_inference_applied") is not False,
+        value_shape_report.get("p7_domain_date_semantics_qualified")
+        is not False,
+        value_shape_report.get("cross_era_equivalence_claimed") is not False,
+        value_shape_report.get("new_sources") != 0,
+        value_shape_report.get("new_admissions") != 0,
+        value_shape_report.get("consumer_canaries") != 0,
+        value_shape_report.get("publications") != 0,
+    )
+    if any(contract_invalid):
+        raise ValueError("historical workbook value-shape scope differs")
+    fields = _dict(value_shape_report.get("fields"), "value-shape fields")
+    row_counts = _dict(
+        value_shape_report.get("field_row_counts"),
+        "value-shape field row counts",
+    )
+    if set(fields) != set(EXPECTED_FIELDS) or set(row_counts) != set(
+        EXPECTED_FIELDS
+    ):
+        raise ValueError(
+            "historical workbook value-shape field identities differ"
+        )
+    archives = _dict_list(
+        value_shape_report.get("archives"), "value-shape archives"
+    )
+    if len(archives) != MBS_ARCHIVE_COUNT or {
+        row.get("archive_index") for row in archives
+    } != set(range(MBS_ARCHIVE_COUNT)):
+        raise ValueError("historical workbook archive partitions differ")
+    bindings = _dict_list(
+        value_shape_report.get("workbook_bindings"),
+        "value-shape workbook bindings",
+    )
+    if (
+        len(bindings) != WORKBOOK_COUNT
+        or len({row.get("candidate_output_id") for row in bindings})
+        != WORKBOOK_COUNT
+        or len({row.get("candidate_group") for row in bindings})
+        != WORKBOOK_COUNT
+    ):
+        raise ValueError("historical workbook candidate identities differ")
+    source_cell_partition = _value_shape_source_cell_partition(
+        value_shape_report, row_counts
+    )
+    if len(value_shape_sha256) != SHA256_HEX_LENGTH or any(
+        char not in "0123456789abcdef" for char in value_shape_sha256
+    ):
+        raise ValueError("historical workbook value-shape digest is malformed")
+    workflow_commit = value_shape_report.get("workflow_commit")
+    if (
+        type(value_shape_workflow_run_id) is not int
+        or value_shape_workflow_run_id <= 0
+        or not isinstance(workflow_commit, str)
+        or len(workflow_commit) != GIT_COMMIT_HEX_LENGTH
+        or any(char not in "0123456789abcdef" for char in workflow_commit)
+    ):
+        raise ValueError("historical workbook workflow identity is malformed")
+
+    field_rows: dict[str, dict[str, Any]] = {}
+    for field_name in EXPECTED_FIELDS:
+        value = _dict(fields[field_name], f"value-shape field {field_name}")
+        cell_count = _int(value.get("cell_count"), f"{field_name} cell count")
+        if (
+            _int(row_counts[field_name], f"{field_name} field row count")
+            != cell_count
+        ):
+            raise ValueError(f"{field_name} row and cell counts differ")
+        value_shapes = _dict(
+            value.get("value_shapes"), f"{field_name} value shapes"
+        )
+        if (
+            sum(
+                _int(count, f"{field_name} shape count")
+                for count in value_shapes.values()
+            )
+            != cell_count
+        ):
+            raise ValueError(f"{field_name} value-shape counts do not conserve")
+        field_rows[field_name] = {
+            "field_state": "native_unresolved",
+            "cell_position_denominator": cell_count,
+            "interpreted": 0,
+            "native_unresolved": cell_count,
+            "unavailable": 0,
+            "value_shapes": dict(sorted(value_shapes.items())),
+            "native_cell_types": dict(
+                sorted(
+                    _dict(
+                        value.get("native_cell_types"),
+                        f"{field_name} cell types",
+                    ).items()
+                )
+            ),
+            "native_states": dict(
+                sorted(
+                    _dict(
+                        value.get("native_states"),
+                        f"{field_name} native states",
+                    ).items()
+                )
+            ),
+            "formula_cells": _int(
+                value.get("formula_cells"), f"{field_name} formula count"
+            ),
+            "formula_cells_with_cache": _int(
+                value.get("formula_cells_with_cache"),
+                f"{field_name} cached formula count",
+            ),
+            "source_error_cells": _int(
+                value.get("source_error_cells"),
+                f"{field_name} source error count",
+            ),
+            "native_missing_value_cells": _int(
+                value.get("native_missing_value_cells"),
+                f"{field_name} missing value count",
+            ),
+            "missing_physical_cell_positions": _int(
+                value.get("missing_physical_cell_positions"),
+                f"{field_name} missing cell position count",
+            ),
+            "meaning_qualified": False,
+        }
+        if (
+            field_rows[field_name]["formula_cells"] > cell_count
+            or field_rows[field_name]["formula_cells_with_cache"]
+            > field_rows[field_name]["formula_cells"]
+            or field_rows[field_name]["source_error_cells"] > cell_count
+            or field_rows[field_name]["native_missing_value_cells"] > cell_count
+            or field_rows[field_name]["missing_physical_cell_positions"]
+            > cell_count
+        ):
+            raise ValueError(f"{field_name} shape subcounts exceed field count")
+
+    result = copy.deepcopy(field_state_report)
+    result_inputs = _dict(result.get("inputs"), "field-state input digests")
+    result_inputs["historical_workbook_value_shapes"] = {
+        "sha256": value_shape_sha256
+    }
+    historical = _dict(
+        result.get("historical_workbook_cohort"),
+        "historical workbook field states",
+    )
+    _apply_source_cell_partition(historical, source_cell_partition)
+    historical["value_shape_diagnostics"] = {
+        "path": value_shape_path,
+        "sha256": value_shape_sha256,
+        "workflow_run_id": value_shape_workflow_run_id,
+        "workflow_url": (
+            "https://github.com/edithatogo/global-medicines-atlas/actions/runs/"
+            f"{value_shape_workflow_run_id}"
+        ),
+        "workflow_commit": workflow_commit,
+        "archive_count": 6,
+        "workbook_count": WORKBOOK_COUNT,
+        "fields": field_rows,
+        "denominator_relation": "storage-shape counts partition data-field cells; source-cell partition separates header and non-header cells",
+        "source_values_emitted": False,
+        "source_column_meanings_qualified": False,
+        "date_meaning_qualified": False,
+        "currency_qualified": False,
+        "cross_era_equivalence_qualified": False,
+    }
+    result["status"] = (
+        "field_states_reconciled_with_historical_value_shape_overlay_and_semantic_limits"
+    )
+    return result
+
+
+def _field_state_input_sha256(report: dict[str, Any], input_name: str) -> Any:
+    inputs = _dict(report.get("inputs"), "field-state input digests")
+    selected = _dict(inputs.get(input_name), f"{input_name} input digest")
+    return selected.get("sha256")
 
 
 def canonical_json(report: dict[str, Any]) -> str:

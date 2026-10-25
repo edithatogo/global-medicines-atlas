@@ -16,6 +16,8 @@ from global_medicines_atlas.mbs_workbook_field_reconciliation import (
     P7_DATE_INFERENCE_PATH,
     P7_DATE_INFERENCE_SHA256,
     P7_DATE_PROFILE_PATH,
+    P7_DATE_RECONCILIATION_PATH,
+    P7_DATE_RECONCILIATION_SHA256,
     P7_RULES_PATH,
     P7_RUN_RECEIPT_PATH,
     P7_TYPED_PATH,
@@ -28,6 +30,7 @@ from global_medicines_atlas.mbs_workbook_field_reconciliation import (
     _p7_source_field_states,  # ruff: ignore[import-private-name]
     _read_json,  # ruff: ignore[import-private-name]
     _sha256,  # ruff: ignore[import-private-name]
+    bind_historical_workbook_value_shapes,
     canonical_json,
     reconcile_from_paths,
     reconcile_workbook_field_states,
@@ -411,10 +414,350 @@ def test_report_separates_field_mapping_from_value_state() -> None:
             row["date_states"].get("ambiguous_calendar_order", 0)
             for row in date_fields
         )
+        == 0
+    )
+    assert (
+        sum(
+            row["date_states"].get("internal_file_consistency_dmy", 0)
+            for row in date_fields
+        )
         == 1_194
     )
     assert sum(row["native_unresolved"] for row in date_fields) == 2_240
     assert sum(row["unavailable"] for row in date_fields) == 0
+
+
+def _value_shape_cohort() -> dict[str, Any]:
+    data_field_cells = 38_771_742
+    fields = {
+        field: {
+            "cell_count": data_field_cells,
+            "value_shapes": {"numeric_integer_lexeme": data_field_cells},
+            "native_cell_types": {"n": data_field_cells},
+            "native_states": {"value": data_field_cells},
+            "formula_cells": 0,
+            "formula_cells_with_cache": 0,
+            "source_error_cells": 0,
+            "native_missing_value_cells": 0,
+            "missing_physical_cell_positions": 0,
+        }
+        for field in (
+            "calendar_year_label",
+            "processing_month_label",
+            "schedule_item_identifier",
+            "state_label",
+            "age_range_label",
+            "gender_label",
+            "service_count_label",
+            "benefit_amount_label_currency_unresolved",
+        )
+    }
+    return {
+        "schema_id": "global-medicines-atlas.mbs-historical-workbook-value-shape-cohort",
+        "status": "passed",
+        "archive_count": 6,
+        "workbook_count": 91,
+        "workflow_commit": "a" * 40,
+        "candidate_cohort_run_id": 39724026209,
+        "field_state_report_sha256": "f" * 64,
+        "source_cell_records": 310_177_657,
+        "header_cells": 728,
+        "pre_header_cells": 1_456,
+        "other_sheet_cells": 1_537,
+        "out_of_contract_data_cells": 0,
+        "input_digests": {"field_state_sha256": "f" * 64},
+        "source_values_emitted": False,
+        "source_column_meanings_qualified": False,
+        "calendar_year_vs_service_year_resolved": False,
+        "calendar_month_vs_processing_month_resolved": False,
+        "currency_interpreted": False,
+        "date_interpreted": False,
+        "p7_workbook_in_scope": False,
+        "p7_date_inference_applied": False,
+        "p7_domain_date_semantics_qualified": False,
+        "cross_era_equivalence_claimed": False,
+        "new_sources": 0,
+        "new_admissions": 0,
+        "consumer_canaries": 0,
+        "publications": 0,
+        "fields": fields,
+        "field_row_counts": dict.fromkeys(fields, data_field_cells),
+        "archives": [{"archive_index": index} for index in range(6)],
+        "workbook_bindings": [
+            {"candidate_output_id": f"out-{index}", "candidate_group": index}
+            for index in range(91)
+        ],
+    }
+
+
+def _shape_cohort_bound_to(report: dict[str, Any]) -> dict[str, Any]:
+    shapes = _value_shape_cohort()
+    shapes["dataset"] = field_reconciliation.MBS_DATASET
+    shapes["revision"] = field_reconciliation.MBS_REVISION
+    shapes["input_digests"].update({
+        "header_cohort_sha256": report["inputs"]["header_cohort"]["sha256"],
+        "candidate_cohort_sha256": report["inputs"]["package_cohort"]["sha256"],
+    })
+    return shapes
+
+
+def test_value_shape_overlay_reconciles_each_field_without_semantic_promotion() -> (
+    None
+):
+    report = reconcile_workbook_field_states(*_inputs())
+    reconciled = bind_historical_workbook_value_shapes(
+        report,
+        _shape_cohort_bound_to(report),
+        value_shape_path="quality/qualifications/mbs-value-shapes.json",
+        value_shape_sha256="a" * 64,
+        expected_field_state_sha256="f" * 64,
+        value_shape_workflow_run_id=40149410629,
+    )
+
+    cohort = reconciled["historical_workbook_cohort"]
+    overlay = cohort["value_shape_diagnostics"]
+    assert reconciled["inputs"]["historical_workbook_value_shapes"] == {
+        "sha256": "a" * 64
+    }
+    assert cohort["cell_values"]["denominator"] == 310_176_929
+    assert cohort["cell_values"]["unresolved"] == 310_176_929
+    assert cohort["cell_values"]["denominator_relation"] == (
+        "non_header_source_cells; header_cells_reported_separately"
+    )
+    assert cohort["source_cell_partition"] == {
+        "source_cell_records": 310_177_657,
+        "header_cells": 728,
+        "non_header_field_state_cells": 310_176_929,
+        "data_field_cells": 310_173_936,
+        "pre_header_cells": 1_456,
+        "other_sheet_cells": 1_537,
+        "out_of_contract_data_cells": 0,
+        "denominator_relation": "source_cell_records_equals_header_plus_non_header_cells",
+    }
+    assert set(overlay["fields"]) == set(_value_shape_cohort()["fields"])
+    assert all(
+        item["field_state"] == "native_unresolved"
+        and item["interpreted"] == 0
+        and item["native_unresolved"] == 38_771_742
+        and item["unavailable"] == 0
+        and item["meaning_qualified"] is False
+        for item in overlay["fields"].values()
+    )
+    assert overlay["currency_qualified"] is False
+    assert overlay["cross_era_equivalence_qualified"] is False
+    assert overlay["workflow_run_id"] == 40149410629
+
+
+def test_value_shape_overlay_rejects_semantic_promotion() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    shapes = _shape_cohort_bound_to(report)
+    shapes["currency_interpreted"] = True
+
+    with pytest.raises(ValueError, match="value-shape scope differs"):
+        bind_historical_workbook_value_shapes(
+            report,
+            shapes,
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_value_shape_overlay_rejects_nonconserving_field_shapes() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    shapes = _shape_cohort_bound_to(report)
+    shapes["fields"]["calendar_year_label"]["value_shapes"][
+        "numeric_integer_lexeme"
+    ] = 89
+
+    with pytest.raises(ValueError, match="value-shape counts do not conserve"):
+        bind_historical_workbook_value_shapes(
+            report,
+            shapes,
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_value_shape_overlay_rejects_source_cell_category_drift() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    shapes = _shape_cohort_bound_to(report)
+    shapes["header_cells"] = 727
+
+    with pytest.raises(
+        ValueError, match="source-cell categories do not conserve"
+    ):
+        bind_historical_workbook_value_shapes(
+            report,
+            shapes,
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_value_shape_overlay_rejects_field_identity_drift() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    shapes = _shape_cohort_bound_to(report)
+    shapes["fields"].pop("calendar_year_label")
+
+    with pytest.raises(ValueError, match="field identities differ"):
+        bind_historical_workbook_value_shapes(
+            report,
+            shapes,
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_value_shape_overlay_rejects_archive_partition_drift() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    shapes = _shape_cohort_bound_to(report)
+    shapes["archives"][-1]["archive_index"] = 4
+
+    with pytest.raises(ValueError, match="archive partitions differ"):
+        bind_historical_workbook_value_shapes(
+            report,
+            shapes,
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_value_shape_overlay_rejects_duplicate_workbook_bindings() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    shapes = _shape_cohort_bound_to(report)
+    shapes["workbook_bindings"][1]["candidate_output_id"] = "out-0"
+
+    with pytest.raises(ValueError, match="candidate identities differ"):
+        bind_historical_workbook_value_shapes(
+            report,
+            shapes,
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_value_shape_overlay_rejects_malformed_digest() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+
+    with pytest.raises(ValueError, match="digest is malformed"):
+        bind_historical_workbook_value_shapes(
+            report,
+            _shape_cohort_bound_to(report),
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="g" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_value_shape_overlay_rejects_malformed_workflow_identity() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+
+    with pytest.raises(ValueError, match="workflow identity is malformed"):
+        bind_historical_workbook_value_shapes(
+            report,
+            _shape_cohort_bound_to(report),
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=0,
+        )
+
+
+def test_value_shape_overlay_rejects_field_row_count_drift() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    shapes = _shape_cohort_bound_to(report)
+    shapes["field_row_counts"]["calendar_year_label"] -= 1
+    shapes["out_of_contract_data_cells"] += 1
+
+    with pytest.raises(ValueError, match="row and cell counts differ"):
+        bind_historical_workbook_value_shapes(
+            report,
+            shapes,
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_value_shape_overlay_rejects_subcounts_above_field_count() -> None:
+    report = reconcile_workbook_field_states(*_inputs())
+    shapes = _shape_cohort_bound_to(report)
+    shapes["fields"]["calendar_year_label"]["formula_cells"] = (
+        shapes["fields"]["calendar_year_label"]["cell_count"] + 1
+    )
+
+    with pytest.raises(ValueError, match="subcounts exceed field count"):
+        bind_historical_workbook_value_shapes(
+            report,
+            shapes,
+            value_shape_path="quality/qualifications/mbs-value-shapes.json",
+            value_shape_sha256="a" * 64,
+            expected_field_state_sha256="f" * 64,
+            value_shape_workflow_run_id=40149410629,
+        )
+
+
+def test_field_state_partition_rejects_source_cell_denominator_drift() -> None:
+    with pytest.raises(ValueError, match="denominator differs"):
+        field_reconciliation._apply_source_cell_partition(
+            {"cell_values": {"denominator": 10}},
+            {
+                "source_cell_records": 11,
+                "non_header_field_state_cells": 10,
+            },
+        )
+
+
+def test_value_shape_cli_writes_an_explicit_successor(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    shape_path = tmp_path / "shape-cohort.json"
+    shape_path.write_text("{}", encoding="utf-8")
+    output_path = tmp_path / "field-state-successor.json"
+    monkeypatch.setattr(reconcile_cli, "ROOT", tmp_path)
+    monkeypatch.setattr(
+        reconcile_cli,
+        "reconcile_from_paths",
+        lambda _paths, **_kwargs: {"base": "field-state"},
+    )
+    monkeypatch.setattr(
+        reconcile_cli,
+        "bind_historical_workbook_value_shapes",
+        lambda report, _shapes, **_kwargs: {**report, "shape_overlay": "bound"},
+    )
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "reconcile_mbs_workbook_field_states.py",
+            "--value-shape-cohort",
+            str(shape_path),
+            "--value-shape-run-id",
+            "40149410629",
+            "--output",
+            str(output_path),
+        ],
+    )
+
+    assert reconcile_cli.main() == 0
+    assert json.loads(output_path.read_text(encoding="utf-8")) == {
+        "base": "field-state",
+        "shape_overlay": "bound",
+    }
 
 
 def test_p7_separates_header_cells_from_value_field_states() -> None:
@@ -465,6 +808,52 @@ def test_p7_separates_header_cells_from_value_field_states() -> None:
         "native_unresolved": 4,
         "unavailable": 0,
     }
+
+
+def test_p7_date_reconciliation_rejects_evidence_count_drift() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    reconciliation = json.loads(
+        Path(P7_DATE_RECONCILIATION_PATH).read_text(encoding="utf-8")
+    )
+    reconciliation["reconciliation"]["evidence_counts"][
+        "unique_calendar_date_cells"
+    ] += 1
+    typed["_p7_date_reconciliation"] = reconciliation
+    hashes["p7_date_reconciliation"] = P7_DATE_RECONCILIATION_SHA256
+
+    with pytest.raises(ValueError, match="evidence binding differs"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_p7_retained_date_state_rejects_count_drift() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    typed.pop("_candidate_run_receipt")
+    typed["_p7_date_reconciliation"] = json.loads(
+        Path(P7_DATE_RECONCILIATION_PATH).read_text(encoding="utf-8")
+    )
+    hashes["p7_date_reconciliation"] = P7_DATE_RECONCILIATION_SHA256
+    coverage = typed["typed_candidate_package"]["coverage"]
+    coverage["interpreted_cells"] = 87
+    coverage["unresolved_cells"] = 13_655
+
+    with pytest.raises(
+        ValueError, match="retained date-state baseline differs"
+    ):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
+
+
+def test_p7_candidate_date_state_rejects_count_drift() -> None:
+    package, headers, typed, rules, hashes = _inputs()
+    typed["_p7_date_reconciliation"] = json.loads(
+        Path(P7_DATE_RECONCILIATION_PATH).read_text(encoding="utf-8")
+    )
+    hashes["p7_date_reconciliation"] = P7_DATE_RECONCILIATION_SHA256
+    coverage = typed["typed_candidate_package"]["coverage"]
+    coverage["interpreted_cells"] += 1
+    coverage["unresolved_cells"] -= 1
+
+    with pytest.raises(ValueError, match="candidate date-state totals differ"):
+        reconcile_workbook_field_states(package, headers, typed, rules, hashes)
 
 
 def test_p7_source_field_states_reject_conflicting_mapping_targets() -> None:
@@ -859,6 +1248,9 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         "p7_candidate_qualification_receipt": run_receipt,
         "p7_date_profile": typed["_p7_date_profile"],
         "p7_date_inference": typed["_p7_date_inference"],
+        "p7_date_reconciliation": _read_json(
+            Path(field_reconciliation.P7_DATE_RECONCILIATION_PATH)
+        ),
         "p7_value_era_rules": rules,
     }
     paths: dict[str, Any] = {}
@@ -866,6 +1258,12 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         path = tmp_path / f"{name}.json"
         if name == "p7_date_inference":
             path.write_bytes(Path(P7_DATE_INFERENCE_PATH).read_bytes())
+        elif name == "p7_date_reconciliation":
+            path.write_bytes(
+                Path(
+                    field_reconciliation.P7_DATE_RECONCILIATION_PATH
+                ).read_bytes()
+            )
         else:
             path.write_text(json.dumps(value), encoding="utf-8")
         paths[name] = path
@@ -894,6 +1292,7 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         "p7_run_receipt",
         "p7_date_profile",
         "p7_date_inference",
+        "p7_date_reconciliation",
         "p7_value_era_rules",
     }
     assert all(len(item["sha256"]) == 64 for item in report["inputs"].values())
@@ -938,17 +1337,17 @@ def test_default_reconciliation_uses_retained_historical_p7_qualification() -> (
     }
     report = reconcile_from_paths(paths)
     p7 = report["p7_workbook"]
-    assert p7["cell_values"]["interpreted"] == 86
-    assert p7["cell_values"]["unresolved"] == 13_559
+    assert p7["cell_values"]["interpreted"] == 1_280
+    assert p7["cell_values"]["unresolved"] == 12_365
     assert (
         p7["orthogonal_diagnostics"][
             "internal_file_consistency_inference_selected"
         ]
-        is False
+        is True
     )
     assert (
         p7["orthogonal_diagnostics"]["file_consistency_dmy_interpreted_cells"]
-        == 0
+        == 1_194
     )
     assert (
         report["semantic_boundaries"]["p7_temporal_comparison_enabled"] is False
@@ -966,12 +1365,12 @@ def test_default_reconciliation_cli_keeps_retained_inputs(
     )
     assert reconcile_cli.main() == 0
     report = json.loads(output.read_text(encoding="utf-8"))
-    assert report["p7_workbook"]["cell_values"]["interpreted"] == 86
+    assert report["p7_workbook"]["cell_values"]["interpreted"] == 1_280
     assert (
         report["p7_workbook"]["orthogonal_diagnostics"][
             "internal_file_consistency_inference_selected"
         ]
-        is False
+        is True
     )
 
 

@@ -11,8 +11,10 @@ from typing import Any, cast
 
 from global_medicines_atlas.pbs_domain_field_semantics import (
     DATE_PROFILE,
+    EXPECTED_RESTRICTION_DATE_FIELDS,
     qualify_pbs_domain_fields,
     qualify_pbs_domain_fields_v4,
+    qualify_pbs_domain_fields_v5,
 )
 from global_medicines_atlas.pbs_observed_domain import load_observed_profile
 from global_medicines_atlas.pbs_reference_case_adjudication import (
@@ -142,6 +144,38 @@ PATH_INVENTORY = (
     "quality/qualifications/pbs-schema-paths-20261022-39667604237.json"
 )
 CURRENT_RECONCILIATION = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r13.json"
+DOMAIN_V5 = "quality/qualifications/pbs-domain-field-semantics-20261025-v5.json"
+DOMAIN_V5_FILE_SHA256 = (
+    "85dd2cd1e69971f0dd2093696798e87d1995ee86acaba2b55ee0a2c0fe905bac"
+)
+DOMAIN_V5_REPORT_SHA256 = (
+    "3c06a7a09fced148dfaa672f759886c48875ecf25e561359161964962a40cc94"
+)
+CURRENT_RECONCILIATION_V5 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r14.json"
+URI_SCREEN_V3 = (
+    "quality/qualifications/"
+    "pbs-native-reference-uri-screen-20261025-40120162365.json"
+)
+URI_SCREEN_V3_FILE_SHA256 = (
+    "4a296004773c57d7c0a6d73aacc6fd67b052fc3e1900a96badb0948193a7b411"
+)
+URI_SCREEN_V3_REPORT_SHA256 = (
+    "475655fd08abf4681908452ec9e76c6654904d697d10d702c6283c2490afde59"
+)
+URI_STRUCTURAL_REVIEW_V1 = (
+    "quality/qualifications/"
+    "pbs-native-uri-structural-review-20261025-40120162365.json"
+)
+URI_STRUCTURAL_REVIEW_V1_FILE_SHA256 = (
+    "8e7c61609c84d19e2eaf9f127cff5943319760e2b98481b508b3e2f3bc74dd35"
+)
+URI_STRUCTURAL_REVIEW_V1_REPORT_SHA256 = (
+    "b5834d4e86879c93818bfc49939423e5fbee103a7f40b5114f1f836cafc3b684"
+)
+CURRENT_RECONCILIATION_V6 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r15.json"
+XLINK_FIELD_COUNT = 992_456
+XLINK_PATH_COUNT = 186
+REFERENCE_REVIEW_CASE_COUNT = 46
 
 
 def _file_sha256(path: Path) -> str:
@@ -1276,3 +1310,215 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "sha256": superseded_report_sha,
         },
     }
+
+
+def reconcile_pbs_field_states_v5(root: Path) -> dict[str, Any]:
+    """Add the bounded PBS direct-date grammar receipt without changing counts."""
+    report = reconcile_pbs_field_states(root)
+    path = root / DOMAIN_V5
+    file_sha = _file_sha256(path)
+    if file_sha != DOMAIN_V5_FILE_SHA256:
+        raise ValueError("PBS domain-field v5 receipt bytes differ")
+    envelope = json.loads(path.read_bytes())
+    domain = envelope["report"]
+    canonical = json.dumps(
+        domain,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    if (
+        hashlib.sha256(canonical).hexdigest() != envelope["report_sha256"]
+        or envelope["report_sha256"] != DOMAIN_V5_REPORT_SHA256
+        or qualify_pbs_domain_fields_v5(root) != domain
+        or domain["source"]["member_sha256"]
+        != report["source"]["member_sha256"]
+    ):
+        raise ValueError(
+            "PBS domain-field v5 report differs from source evidence"
+        )
+    date_grammar = domain["source_schema_field_meanings"][
+        "restriction_effective_date_text"
+    ]
+    if (
+        date_grammar["field_count"] != EXPECTED_RESTRICTION_DATE_FIELDS
+        or date_grammar["archive_schema_patch_bound"] is not False
+        or domain["scope"]["source_values_emitted"] is not False
+    ):
+        raise ValueError("PBS date grammar scope differs")
+    report["profile_id"] = "pbs-v3-2026-04-01-field-state-v5"
+    report["source"]["domain_semantics_v5_file_sha256"] = file_sha
+    report["source"]["domain_semantics_v5_report_sha256"] = envelope[
+        "report_sha256"
+    ]
+    report["bounded_domain_semantics_v5"] = {
+        "path": DOMAIN_V5,
+        "file_sha256": file_sha,
+        "report_sha256": envelope["report_sha256"],
+        "profile_id": domain["profile_id"],
+        "qualified_lexical_grammar": {
+            "source_schema_field": "restriction_effective_date_text",
+            "field_count": date_grammar["field_count"],
+            "grammar": date_grammar["lexical_grammar"],
+            "archive_schema_version": date_grammar[
+                "archive_declared_schema_version"
+            ],
+            "documentation_release": date_grammar[
+                "grammar_documentation_release"
+            ],
+            "schema_patch_bound": date_grammar["archive_schema_patch_bound"],
+            "native_values_validated": False,
+        },
+        "field_state_partition": {
+            "interpreted": report["field_state_coverage"]["interpreted"],
+            "native_unresolved": report["field_state_coverage"][
+                "native_unresolved"
+            ],
+            "unavailable": report["field_state_coverage"]["unavailable"],
+            "source_fields": report["field_state_coverage"]["source_fields"],
+            "state_counts_changed": False,
+            "newly_interpreted_native_value_fields": 0,
+        },
+        "complete_domain_semantics_qualified": False,
+    }
+    return report
+
+
+def reconcile_pbs_field_states_v6(root: Path) -> dict[str, Any]:
+    """Qualify exact same-member XLink targets in the field-state partition."""
+    report = reconcile_pbs_field_states_v5(root)
+    uri_path = root / URI_SCREEN_V3
+    structural_path = root / URI_STRUCTURAL_REVIEW_V1
+    uri_file_sha = _file_sha256(uri_path)
+    structural_file_sha = _file_sha256(structural_path)
+    if (
+        uri_file_sha != URI_SCREEN_V3_FILE_SHA256
+        or structural_file_sha != URI_STRUCTURAL_REVIEW_V1_FILE_SHA256
+    ):
+        raise ValueError("PBS XLink resolution evidence bytes differ")
+    uri_envelope = json.loads(uri_path.read_bytes())
+    uri = uri_envelope["report"]
+    structural_envelope = json.loads(structural_path.read_bytes())
+    structural = structural_envelope["report"]
+    uri_binding_checks = (
+        uri_envelope["report_sha256"] == URI_SCREEN_V3_REPORT_SHA256,
+        uri["operation"] == "pbs-native-uri-screen",
+        uri["member_sha256"] == report["source"]["member_sha256"],
+        uri["qualification"]["uri_resolution_performed"] is True,
+        uri["qualification"]["uri_values_emitted"] is False,
+        uri["qualification"]["external_targets_fetched"] == 0,
+        uri["qualification"]["reference_counts_by_qname"].get("xlink:href")
+        == XLINK_FIELD_COUNT,
+        uri["qualification"]["outcome_counts_by_qname"].get("xlink:href")
+        == {"same_member_unique_id": XLINK_FIELD_COUNT},
+    )
+    structural_binding_checks = (
+        structural_envelope["report_sha256"]
+        == URI_STRUCTURAL_REVIEW_V1_REPORT_SHA256,
+        structural["outcome_counts"]
+        == {
+            "same_member_unique_id": 17,
+            "absolute_uri_unique_candidate": 18,
+            "no_member_definition_negative_controls": 11,
+        },
+        structural["case_count"] == REFERENCE_REVIEW_CASE_COUNT,
+        all(
+            case["candidate_edge_emitted"] is not False
+            for case in structural["cases"]
+        )
+        is False,
+    )
+    if not all(uri_binding_checks) or not all(structural_binding_checks):
+        raise ValueError("PBS XLink resolution or calibration evidence differs")
+
+    xlink_rows = [
+        row
+        for row in report["path_reconciliation"]
+        if "{http:~1~1www.w3.org~11999~1xlink}href" in row["schema_path"]
+    ]
+    if (
+        len(xlink_rows) != XLINK_PATH_COUNT
+        or sum(row["field_count"] for row in xlink_rows) != XLINK_FIELD_COUNT
+        or any(
+            row["semantic_state"] != "native_unresolved" for row in xlink_rows
+        )
+    ):
+        raise ValueError("PBS XLink path denominator or baseline differs")
+    for row in xlink_rows:
+        row["semantic_state"] = "interpreted"
+        row["semantic_interpretation"] = {
+            "domain": "source_local_xlink_link_target",
+            "meaning": (
+                "XLink href locator to a unique xml:id target in the exact "
+                "pinned PBS member"
+            ),
+            "rule": "exact fragment URI resolution with one same-member XML ID target",
+            "state": "interpreted",
+            "target_count": row["field_count"],
+            "source_values_emitted": False,
+            "limits": [
+                "qualifies only the generic XLink link target, not the PBS domain predicate or clinical meaning",
+                "no edge payload was emitted by the aggregate URI screen",
+                "applies only to the exact April 2026 PBS v3 member digest",
+            ],
+        }
+
+    count = XLINK_FIELD_COUNT
+    coverage = report["field_state_coverage"]
+    coverage["interpreted"] += count
+    coverage["native_unresolved"] -= count
+    coverage["all_native_values_remain_unresolved"] = False
+    report["semantic_adjudication"]["interpreted_fields"] += count
+    report["semantic_adjudication"]["native_unresolved_fields"] -= count
+    report["semantic_adjudication"]["interpretations"][
+        "source_local_xlink_link_target"
+    ] = count
+    report["source"]["xlink_uri_screen_file_sha256"] = uri_file_sha
+    report["source"]["xlink_uri_screen_report_sha256"] = uri_envelope[
+        "report_sha256"
+    ]
+    report["source"]["xlink_structural_review_file_sha256"] = (
+        structural_file_sha
+    )
+    report["source"]["xlink_structural_review_report_sha256"] = (
+        structural_envelope["report_sha256"]
+    )
+    report["profile_id"] = "pbs-v3-2026-04-01-field-state-v6"
+    report["status"] = (
+        "complete_field_partition_with_bounded_domain_and_xlink_link_semantics"
+    )
+    report["source_local_xlink_link_semantics"] = {
+        "status": "qualified_exact_same_member_unique_targets",
+        "uri_screen_path": URI_SCREEN_V3,
+        "uri_screen_file_sha256": uri_file_sha,
+        "uri_screen_report_sha256": uri_envelope["report_sha256"],
+        "xlink_href_fields": count,
+        "same_member_unique_xml_id_targets": count,
+        "other_xlink_outcomes": 0,
+        "review_cases": 46,
+        "reviewed_same_member_positive_examples": 17,
+        "negative_control_cases": 11,
+        "other_rdf_local_candidate_cases": 18,
+        "probability_sample": False,
+        "semantic_precision_or_recall_estimated": False,
+        "generic_link_target_meaning_qualified": True,
+        "pbs_predicate_or_clinical_meaning_qualified": False,
+        "edge_payload_emitted": False,
+        "source_values_emitted": False,
+        "meaning_basis": [
+            "https://www.w3.org/TR/xlink11/",
+            URI_STRUCTURAL_REVIEW_V1,
+        ],
+        "field_state_partition_after_promotion": {
+            "interpreted": coverage["interpreted"],
+            "native_unresolved": coverage["native_unresolved"],
+            "unavailable": coverage["unavailable"],
+            "source_fields": coverage["source_fields"],
+        },
+        "limits": [
+            "the 46 deterministic review cases do not estimate corpus-wide semantic precision or recall",
+            "RDF resource references remain outside this qualification",
+            "link target identity does not establish a PBS-specific predicate, medicine equivalence, eligibility, or clinical meaning",
+        ],
+    }
+    return report

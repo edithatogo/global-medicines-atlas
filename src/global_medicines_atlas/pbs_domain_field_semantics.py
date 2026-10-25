@@ -439,6 +439,60 @@ def qualify_pbs_domain_fields_v4(root: Path) -> dict[str, Any]:
     return result
 
 
+def qualify_pbs_domain_fields_v5(root: Path) -> dict[str, Any]:
+    """Qualify XSD date lexical grammar for the exact direct restriction path.
+
+    The official Mapping Specification documents PBS XML dates as XSD
+    ``YYYY-MM-DD``. The retained source metadata binds the archive to schema
+    3.1, while the cited specification is documentation release 3.1.9; the
+    patch release is not bound, so this profile retains that limitation.
+    This is grammar evidence only: no field values are read or validated.
+    """
+    result = qualify_pbs_domain_fields_v4(root)
+    restriction_date = result["domains"]["restriction_effective_date"]
+    if restriction_date["field_count"] != EXPECTED_RESTRICTION_DATE_FIELDS:
+        raise ValueError("PBS direct restriction date denominator differs")
+    grammar_unqualified = "the XSD date grammar is not qualified by the separate date-profile receipt for this path"
+    limits = restriction_date["limits"]
+    if limits.count(grammar_unqualified) != 1:
+        raise ValueError("PBS restriction date grammar baseline differs")
+    limits.remove(grammar_unqualified)
+    restriction_date["status"] = (
+        "qualified_exact_source_path_role_and_xsd_date_grammar"
+    )
+    limits.extend([
+        "grammar is supported by the official PBS XML Mapping Specification documentation release 3.1.9; the archive root binds schema 3.1 but not its patch release",
+        "this qualifies the documented lexical form only; no native values were inspected or checked for calendar validity",
+    ])
+    result["profile_id"] = "pbs-v3.1-pinned-2026-04-01-domain-fields-v5"
+    result["source_schema_field_meanings"][
+        "restriction_effective_date_text"
+    ] = {
+        "status": "qualified_exact_source_path_xsd_lexical_grammar",
+        "meaning": "the direct restriction/effective/date/text field uses the documented XSD YYYY-MM-DD lexical grammar",
+        "field_count": EXPECTED_RESTRICTION_DATE_FIELDS,
+        "lexical_grammar": "YYYY-MM-DD (XML Schema date lexical representation)",
+        "grammar_documentation_release": "3.1.9",
+        "archive_declared_schema_version": "3.1",
+        "archive_schema_patch_bound": False,
+        "source_schema_version_evidence": result["schema_version_evidence"],
+        "limits": [
+            "the source root binds schema major/minor 3.1; the exact patch release is unbound",
+            "no native field values were emitted, inspected, or validated against the grammar",
+            "lexical grammar does not establish a valid calendar date, interval, precedence, current status, or clinical eligibility",
+            "applies only to the exact direct restriction/effective/date/text path in the pinned member; nested reference dates remain unresolved",
+        ],
+    }
+    result["meaning_basis"].append(
+        "https://info.data.pbs.gov.au/xml-schema/doc/html/mapping.html (Mapping Specification documentation release 3.1.9; states PBS XML dates use XSD YYYY-MM-DD)"
+    )
+    result["scope"]["date_grammar_qualified_fields"] = (
+        EXPECTED_RESTRICTION_DATE_FIELDS
+    )
+    result["scope"]["source_values_emitted"] = False
+    return result
+
+
 def qualify_pbs_source_label_observations(root: Path) -> dict[str, Any]:
     """Summarize pinned PBS path labels without altering domain meanings."""
     domain_profile = qualify_pbs_domain_fields(root)

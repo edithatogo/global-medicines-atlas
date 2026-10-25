@@ -35,13 +35,63 @@ PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256 = (
 )
 CURRENT_PREFLIGHT = (
     ROOT / "quality/qualifications/"
-    "australian-m112-rights-release-preflight-20261025-97.json"
+    "australian-m112-rights-release-preflight-20261025-98.json"
 )
 CURRENT_PREFLIGHT_SHA256 = (
-    "633c4bdf68e7c67d17e3281f53940413fdfe869e110c6550febf53850d002421"
+    "05f365d98b20a7497297a50c138ebd6b09d25d372eb3457d490411a3f9411604"
+)
+SUCCESSOR_PREFLIGHT_99 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-99.json"
+)
+SUCCESSOR_PREFLIGHT_99_SHA256 = (
+    "dc4d3e6d760aa8427837fb5c107421f6f21d0c4a6b9573d6f62df3bc2113ca12"
+)
+SUCCESSOR_PREFLIGHT_99_PLAN_SHA256 = (
+    "f05f1adac3f5400c94db5494bbf26a2036038ea99b3864af0fc469fd5cad38ed"
+)
+SUCCESSOR_PREFLIGHT_100 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-100.json"
+)
+SUCCESSOR_PREFLIGHT_100_SHA256 = (
+    "49f38311f296cf6b40fb7920b37ea557ed0b657986aab9b9456089cff62945e9"
+)
+SUCCESSOR_PREFLIGHT_100_PLAN_SHA256 = (
+    "55c44cf5674b51d74edede20d00e8c66c6fa45dadbe6d2fa53c41e51d15dd4b1"
+)
+SUCCESSOR_PREFLIGHT_101 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-101.json"
+)
+SUCCESSOR_PREFLIGHT_101_SHA256 = (
+    "ef7e7ba6cfb7d7ef8db7161d06403ce7df29aac9db27b4ba8afec40bb201fe09"
+)
+SUCCESSOR_PREFLIGHT_101_PLAN_SHA256 = (
+    "7ba05aa5609078c5b499afe959816beb6d3a71c88dedee42886c5fb04f725b7c"
+)
+SUCCESSOR_PREFLIGHT_102 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-102.json"
+)
+SUCCESSOR_PREFLIGHT_102_SHA256 = (
+    "262626c1a30e02e2c5321a43b37b51bf7d6dbcb723c972b40c4c2f533b556d42"
+)
+SUCCESSOR_PREFLIGHT_102_PLAN_SHA256 = (
+    "7ba05aa5609078c5b499afe959816beb6d3a71c88dedee42886c5fb04f725b7c"
+)
+CURRENT_PREFLIGHT_PLAN_SHA256 = (
+    "eafccee8f5befe5ba577056e91a68f51e121983250d1815d78f366c88dd96c99"
 )
 PREVIOUS_CURRENT_PREFLIGHT_SHA256 = (
-    "e4b4ef0aad4823775543d8104928b62735c51e7c296f7030ac0e6b50de39421c"
+    "633c4bdf68e7c67d17e3281f53940413fdfe869e110c6550febf53850d002421"
+)
+PREVIOUS_CURRENT_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-97.json"
+)
+PREFLIGHT_95_TEST_GOBLIN_SHA256 = (
+    "46f6e42eb79734a5f72759c8bb924331e4ffea094ac80d5a95929cf109709e20"
 )
 
 
@@ -49,7 +99,7 @@ def _json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", json.loads(path.read_text(encoding="utf-8")))
 
 
-def test_preflight_97_binds_corrected_plan_and_preserves_revision_96() -> None:
+def test_preflight_98_preserves_value_shape_state_and_revision_97() -> None:
     report = _json(CURRENT_PREFLIGHT)
     previous_path = ROOT / report["previous_preflight"]["path"]
     plan_path = (
@@ -62,17 +112,21 @@ def test_preflight_97_binds_corrected_plan_and_preserves_revision_96() -> None:
     )
     assert report["previous_preflight"]["preserved_unchanged"] is True
     assert report["previous_preflight"]["path"].endswith(
-        "australian-m112-rights-release-preflight-20261025-96.json"
+        "australian-m112-rights-release-preflight-20261025-97.json"
     )
     assert (
         hashlib.sha256(previous_path.read_bytes()).hexdigest()
         == report["previous_preflight"]["sha256"]
         == PREVIOUS_CURRENT_PREFLIGHT_SHA256
     )
-    assert report["inputs"][str(plan_path.relative_to(ROOT))] == (
-        hashlib.sha256(plan_path.read_bytes()).hexdigest()
+    previous_report = _json(PREVIOUS_CURRENT_PREFLIGHT)
+    assert previous_report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-96.json"
     )
-    assert len(report["inputs"]) == 327
+    assert report["inputs"][str(plan_path.relative_to(ROOT))] == (
+        CURRENT_PREFLIGHT_PLAN_SHA256
+    )
+    assert len(report["inputs"]) == 329
     assert report["release_and_admission_boundaries"]["v4_admissions"] == 8
     assert report["release_and_admission_boundaries"]["consumer_canaries"] == 8
     assert (
@@ -81,11 +135,226 @@ def test_preflight_97_binds_corrected_plan_and_preserves_revision_96() -> None:
         ]
         is False
     )
+    shape = report["historical_workbook_value_shape_readback"]
+    assert shape["workflow_run_id"] == 40149410629
+    assert (
+        shape["workflow_commit"] == "7763d510df47e4298175ef5148cbe0998ca09411"
+    )
+    assert shape["workflow_conclusion"] == "success"
+    for binding in (shape["aggregate_report"], shape["field_state_successor"]):
+        path = ROOT / binding["path"]
+        assert (
+            hashlib.sha256(path.read_bytes()).hexdigest()
+            == binding["file_sha256"]
+        )
+        assert report["inputs"][binding["path"]] == binding["file_sha256"]
+    counts = shape["counts"]
+    assert counts["workbooks"] == 91
+    assert counts["source_cell_records_including_headers"] == 310_177_657
+    assert counts["header_cells_separate"] == 728
+    assert counts["non_header_cell_denominator"] == 310_176_929
+    assert counts["non_header_values_interpreted"] == 0
+    assert counts["non_header_values_native_unresolved"] == 310_176_929
+    assert counts["non_header_values_unavailable"] == 0
+    assert (
+        shape["boundaries"]["non_header_cells_remain_native_unresolved"] is True
+    )
+    assert shape["boundaries"]["admissions"] == 0
+    assert shape["boundaries"]["consumer_canaries"] == 0
+    assert shape["boundaries"]["publications"] == 0
+    assert shape["boundaries"]["new_sources"] == 0
+    assert shape["semantic_completion_claimed"] is False
+    field_state = report["historical_workbook_semantic_field_state"]
+    assert field_state["path"] == shape["field_state_successor"]["path"]
+    assert (
+        field_state["sha256"] == shape["field_state_successor"]["file_sha256"]
+    )
+    assert field_state["source_cell_records_including_headers"] == 310_177_657
+    assert field_state["header_cells_separate"] == 728
+    assert field_state["interpreted_header_roles"] == 728
+    assert field_state["non_header_cell_denominator"] == 310_176_929
+    assert field_state["non_header_cells_interpreted"] == 0
+    assert field_state["non_header_cells_native_unresolved"] == 310_176_929
+    assert field_state["unavailable"] == 0
+    assert field_state["whole_workbook_semantics_complete"] is False
     assert (
         report["release_and_admission_boundaries"][
             "external_publications_performed"
         ]
         is False
+    )
+
+
+def test_preflight_99_binds_silver_semantic_successors() -> None:
+    report = _json(SUCCESSOR_PREFLIGHT_99)
+    successor_sha = hashlib.sha256(
+        SUCCESSOR_PREFLIGHT_99.read_bytes()
+    ).hexdigest()
+    assert successor_sha == SUCCESSOR_PREFLIGHT_99_SHA256
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-98.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    assert (
+        hashlib.sha256(
+            (ROOT / report["previous_preflight"]["path"]).read_bytes()
+        ).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == CURRENT_PREFLIGHT_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_99_PLAN_SHA256
+    assert len(report["inputs"]) == 333
+
+    p7 = report["p7_internal_date_reconciliation_current"]
+    assert p7["interpreted_values"] == 1_280
+    assert p7["native_unresolved_values"] == 12_365
+    assert p7["unavailable_values"] == 0
+    assert p7["internal_dmy_cells"] == 1_194
+    assert p7["operational_date_conversion_enabled"] is False
+    assert p7["date_domain_meaning_established"] is False
+    assert p7["temporal_comparison_enabled"] is False
+    assert p7["cross_era_equivalence_established"] is False
+
+    workbooks = report["historical_workbook_field_state_local_successor"]
+    assert workbooks["workbooks"] == 91
+    assert workbooks["header_roles_interpreted"] == 728
+    assert workbooks["non_header_cells"] == 310_176_929
+    assert workbooks["interpreted"] == 0
+    assert workbooks["native_unresolved"] == 310_176_929
+    assert workbooks["unavailable"] == 0
+    assert (
+        workbooks["status"]
+        == "local_reconciliation_pending_exact_main_readback"
+    )
+
+    pbs = report["pbs_domain_semantics_v5_readback"]
+    assert pbs["direct_restriction_date_fields"] == 3_028
+    assert pbs["lexical_grammar"] == "XSD YYYY-MM-DD"
+    assert pbs["schema_patch_bound"] is False
+    assert pbs["native_values_inspected"] is False
+    assert pbs["reference_nested_dates_qualified"] is False
+
+    schema = report["pbs_root_schema_version_metadata_readback"]
+    assert schema["run_id"] == 40145730405
+    assert schema["declared_schema_version"] == "3.1"
+    assert schema["schema_major"] == 3
+    assert schema["schema_minor"] == 1
+    assert schema["schema_patch_bound"] is False
+    assert schema["source_field_values_emitted"] is False
+    assert (
+        report["release_and_admission_boundaries"][
+            "new_sources_or_datasets_added"
+        ]
+        is False
+    )
+
+
+def test_preflight_100_binds_pbs_field_state_r14() -> None:
+    report = _json(SUCCESSOR_PREFLIGHT_100)
+    assert (
+        hashlib.sha256(SUCCESSOR_PREFLIGHT_100.read_bytes()).hexdigest()
+        == SUCCESSOR_PREFLIGHT_100_SHA256
+    )
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-99.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == SUCCESSOR_PREFLIGHT_99_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_100_PLAN_SHA256
+    assert len(report["inputs"]) == 337
+    field_state = report["pbs_native_semantic_reconciliation_r14_readback"]
+    assert field_state["source_fields"] == 18_208_758
+    assert field_state["interpreted_fields"] == 934_628
+    assert field_state["native_unresolved_fields"] == 17_274_130
+    assert field_state["unavailable_fields"] == 0
+    assert field_state["direct_date_grammar_fields"] == 3_028
+    assert field_state["semantic_relationships_qualified"] is False
+    assert field_state["semantic_edges_emitted"] is False
+
+
+def test_preflight_101_binds_xlink_semantics_and_preserves_rdf_uncertainty() -> (
+    None
+):
+    report = _json(SUCCESSOR_PREFLIGHT_101)
+    assert (
+        hashlib.sha256(SUCCESSOR_PREFLIGHT_101.read_bytes()).hexdigest()
+        == SUCCESSOR_PREFLIGHT_101_SHA256
+    )
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-100.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == SUCCESSOR_PREFLIGHT_100_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_101_PLAN_SHA256
+    assert len(report["inputs"]) == 341
+    field_state = report["pbs_native_semantic_reconciliation_r15_readback"]
+    assert field_state["interpreted_fields"] == 1_927_084
+    assert field_state["native_unresolved_fields"] == 16_281_674
+    assert field_state["unavailable_fields"] == 0
+    assert field_state["xlink_fields_interpreted"] == 992_456
+    assert field_state["rdf_resource_fields_unresolved"] == 1_167_610
+    assert field_state["semantic_precision_or_recall_estimated"] is False
+    assert field_state["edge_payload_emitted"] is False
+    assert (
+        report["pbs_native_source_local_xlink_link_readback"][
+            "generic_link_target_meaning_qualified"
+        ]
+        is True
+    )
+
+
+def test_preflight_102_binds_focused_coverage_repairs() -> None:
+    report = _json(SUCCESSOR_PREFLIGHT_102)
+    assert (
+        hashlib.sha256(SUCCESSOR_PREFLIGHT_102.read_bytes()).hexdigest()
+        == SUCCESSOR_PREFLIGHT_102_SHA256
+    )
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-101.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    previous = ROOT / report["previous_preflight"]["path"]
+    assert (
+        hashlib.sha256(previous.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == SUCCESSOR_PREFLIGHT_101_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_102_PLAN_SHA256
+    assert len(report["inputs"]) == 343
+    for input_path in (
+        "src/global_medicines_atlas/mbs_workbook_field_reconciliation.py",
+        "tests/test_mbs_workbook_field_reconciliation.py",
+        "src/global_medicines_atlas/pbs_domain_field_semantics.py",
+        "tests/test_pbs_domain_field_semantics.py",
+    ):
+        assert (
+            hashlib.sha256((ROOT / input_path).read_bytes()).hexdigest()
+            == (report["inputs"][input_path])
+        )
+    assert report["status"] == (
+        "preflight_102_rebinds_current_silver_inputs_after_focused_coverage_repair"
     )
 
 
@@ -97,9 +366,7 @@ def test_preflight_95_preserves_its_historical_snapshot() -> None:
     assert "tests/test_m112_rights_release_preflight.py" not in report["inputs"]
     assert (
         report["inputs"]["scripts/test_goblin.py"]
-        == hashlib.sha256(
-            (ROOT / "scripts/test_goblin.py").read_bytes()
-        ).hexdigest()
+        == PREFLIGHT_95_TEST_GOBLIN_SHA256
     )
     assert (
         "conductor/tracks/australian_benefits_silver_gold_20260829/evidence.jsonl"

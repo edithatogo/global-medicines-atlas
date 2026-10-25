@@ -15,6 +15,7 @@ from global_medicines_atlas.pbs_domain_field_semantics import (
     OBSERVED,
     qualify_pbs_domain_fields,
     qualify_pbs_domain_fields_v4,
+    qualify_pbs_domain_fields_v5,
     qualify_pbs_source_label_observations,
 )
 
@@ -154,6 +155,83 @@ def test_v4_binds_minor_schema_without_changing_other_semantics():
         "complete_domain_semantics_qualified": False,
         "source_values_emitted": False,
     }
+
+
+def test_v5_qualifies_only_direct_restriction_date_lexical_grammar():
+    v4 = qualify_pbs_domain_fields_v4(ROOT)
+    v5 = qualify_pbs_domain_fields_v5(ROOT)
+    original = v4["domains"]["restriction_effective_date"]
+    qualified = v5["domains"]["restriction_effective_date"]
+    assert v5["profile_id"] == "pbs-v3.1-pinned-2026-04-01-domain-fields-v5"
+    assert qualified["field_count"] == 3_028
+    assert qualified["status"] == (
+        "qualified_exact_source_path_role_and_xsd_date_grammar"
+    )
+    assert any(
+        "not its patch release" in limit for limit in qualified["limits"]
+    )
+    assert any(
+        "no native values were inspected" in limit
+        for limit in qualified["limits"]
+    )
+    assert all(
+        limit in qualified["limits"]
+        for limit in original["limits"]
+        if "does not establish" in limit or "reference-nested" in limit
+    )
+    meaning = v5["source_schema_field_meanings"][
+        "restriction_effective_date_text"
+    ]
+    assert meaning["field_count"] == 3_028
+    assert meaning["lexical_grammar"] == (
+        "YYYY-MM-DD (XML Schema date lexical representation)"
+    )
+    assert meaning["grammar_documentation_release"] == "3.1.9"
+    assert meaning["archive_declared_schema_version"] == "3.1"
+    assert meaning["archive_schema_patch_bound"] is False
+    assert (
+        meaning["source_schema_version_evidence"]
+        == (v4["schema_version_evidence"])
+    )
+    assert v5["domains"]["effective_date"] == v4["domains"]["effective_date"]
+    assert v5["source"]["native_fields"] == 18_208_758
+    assert v5["scope"]["source_values_emitted"] is False
+    assert v5["scope"]["date_grammar_qualified_fields"] == 3_028
+    assert v5["scope"]["complete_domain_semantics_qualified"] is False
+    assert v5["scope"]["new_sources"] == 0
+    assert v5["scope"]["new_admissions"] == 0
+    assert v5["scope"]["consumer_canaries"] == 0
+    assert v5["scope"]["publications"] == 0
+
+
+def test_v5_rejects_restriction_date_denominator_drift(monkeypatch):
+    original = domain_semantics.qualify_pbs_domain_fields_v4
+
+    def drifted(root):
+        result = original(root)
+        result["domains"]["restriction_effective_date"]["field_count"] += 1
+        return result
+
+    monkeypatch.setattr(
+        domain_semantics, "qualify_pbs_domain_fields_v4", drifted
+    )
+    with pytest.raises(ValueError, match="direct restriction date denominator"):
+        qualify_pbs_domain_fields_v5(ROOT)
+
+
+def test_v5_rejects_missing_grammar_baseline(monkeypatch):
+    original = domain_semantics.qualify_pbs_domain_fields_v4
+
+    def missing_baseline(root):
+        result = original(root)
+        result["domains"]["restriction_effective_date"]["limits"].clear()
+        return result
+
+    monkeypatch.setattr(
+        domain_semantics, "qualify_pbs_domain_fields_v4", missing_baseline
+    )
+    with pytest.raises(ValueError, match="date grammar baseline differs"):
+        qualify_pbs_domain_fields_v5(ROOT)
 
 
 def test_v4_rejects_root_metadata_receipt_byte_drift(tmp_path):
