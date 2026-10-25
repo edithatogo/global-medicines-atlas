@@ -17,6 +17,7 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     CURRENT_RECONCILIATION,
     DATE_OCCURRENCE_CROSSWALK,
     DOMAIN,
+    DOMAIN_V4,
     FIELD_STATE,
     PACKAGE,
     REFERENCE_PACKET,
@@ -26,6 +27,9 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     SOURCE_FIELDS,
     SUPERSEDED_REPORT,
     reconcile_pbs_field_states,
+)
+from global_medicines_atlas.pbs_reference_case_adjudication import (
+    ADJUDICATION_PATH,
 )
 from global_medicines_atlas.pbs_reference_context import (
     screen_reference_context,
@@ -161,7 +165,8 @@ def test_every_pinned_field_has_one_evidenced_state():
         "source_values_emitted": False,
         "semantic_relationships_qualified": False,
         "calibration_note": (
-            "The 46 deterministic value-free cases remain unreviewed; the "
+            "The 46 deterministic value-free cases have structural pointer "
+            "roles reviewed; semantic relationships remain unreviewed. The "
             "sample is not probability-based and cannot estimate semantic "
             "match precision. Matcher behavior remains unqualified."
         ),
@@ -181,13 +186,58 @@ def test_every_pinned_field_has_one_evidenced_state():
     assert report["non_claims"]["current_listing_status"] is False
     assert report["non_claims"]["patient_rates"].startswith("unavailable:")
     assert report["domain_semantics_qualified"] is False
+    assert report["bounded_domain_semantics_qualified"] is True
     assert report["rights_conclusion_changed"] is False
+
+
+def test_v4_domain_semantics_bind_without_reclassifying_native_values():
+    report = reconcile_pbs_field_states(ROOT)
+    bounded = report["bounded_domain_semantics"]
+
+    assert bounded["path"] == DOMAIN_V4
+    assert bounded["profile_id"] == (
+        "pbs-v3.1-pinned-2026-04-01-domain-fields-v4"
+    )
+    assert bounded["source_member_sha256"] == (
+        "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+    )
+    assert bounded["complete_domain_semantics_qualified"] is False
+    assert bounded["counts_are_additive_to_field_partition"] is False
+    assert bounded["field_state_partition"] == {
+        "interpreted": 934_628,
+        "native_unresolved": 18_208_758 - 934_628,
+        "unavailable": 0,
+        "source_fields": 18_208_758,
+        "newly_interpreted_native_value_fields": 0,
+        "state_counts_changed": False,
+        "all_native_values_remain_unresolved": True,
+    }
+    assert bounded["qualified_domains"]["status"]["field_count"] == 0
+    assert bounded["qualified_domains"]["price"]["field_count"] == (11_539_739)
+
+
+def test_reference_case_structural_review_keeps_semantic_links_unqualified():
+    report = reconcile_pbs_field_states(ROOT)
+    review = report["source_local_reference_review"]["structural_case_review"]
+
+    assert review["path"] == ADJUDICATION_PATH
+    assert review["cases"] == 46
+    assert review["structural_pointer_roles_supported"] == 46
+    assert review["no_target_hard_negatives"] == 11
+    assert review["semantic_relationships_qualified"] is False
+    assert review["edges_emitted"] is False
+    assert (
+        report["source_local_reference_review"]["review_packet"][
+            "adjudicated_cases"
+        ]
+        == 0
+    )
 
 
 def test_date_population_reconciliation_binds_current_reports_and_arithmetic():
     path = ROOT / (
         "quality/qualifications/"
-        "pbs-date-field-population-reconciliation-20261025.json"
+        "pbs-date-field-population-reconciliation-20261025-r2.json"
     )
     envelope = json.loads(path.read_bytes())
     report = envelope["report"]
@@ -195,6 +245,22 @@ def test_date_population_reconciliation_binds_current_reports_and_arithmetic():
         report, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ).encode()
     assert hashlib.sha256(canonical).hexdigest() == envelope["report_sha256"]
+    assert report["schema_version"] == 2
+    assert report["profile_id"] == (
+        "pbs-v3.1-pinned-2026-04-01-date-fields-reconciliation-v2"
+    )
+    assert report["evidence"]["field_state"]["path"] == (CURRENT_RECONCILIATION)
+    assert report["evidence"]["field_state"]["file_sha256"] == (
+        hashlib.sha256((ROOT / CURRENT_RECONCILIATION).read_bytes()).hexdigest()
+    )
+    assert report["evidence"]["domain_semantics_v4"] == {
+        "file_sha256": "1336cd51392a08c29928cb66ae7f80a65589ceaa17b2c0c70f33c0d9a72c40c8",
+        "path": DOMAIN_V4,
+        "report_sha256": "f2813888a484c0b36f4dbfbf967a418f07215f15c5379883789ecb8407fc18db",
+    }
+    assert report["supersedes_report"]["path"].endswith(
+        "pbs-date-field-population-reconciliation-20261025.json"
+    )
 
     populations = report["date_populations"]
     profile = populations["date_profile"]
@@ -287,10 +353,12 @@ def _copy_reconciliation_inputs(tmp_path: Path) -> None:
         REFERENCE_SCREEN,
         CONTEXT_SCREEN,
         REFERENCE_PACKET,
+        ADJUDICATION_PATH,
         REFERENCE_REVIEW,
         FIELD_STATE,
         SUPERSEDED_REPORT,
         DOMAIN,
+        DOMAIN_V4,
         INVENTORY,
         OBSERVED,
         DATE_PROFILE,

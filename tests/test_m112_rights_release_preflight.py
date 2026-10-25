@@ -33,10 +33,54 @@ PRESERVED_AUGUST_RIGHTS_PREFLIGHT = (
 PRESERVED_AUGUST_RIGHTS_PREFLIGHT_SHA256 = (
     "20cf284b95eb83436fdd437eca1d5075dda1bc6bc23bda7c12f1591d25c9bd3f"
 )
+CURRENT_PREFLIGHT = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-96.json"
+)
+CURRENT_PREFLIGHT_SHA256 = (
+    "e4b4ef0aad4823775543d8104928b62735c51e7c296f7030ac0e6b50de39421c"
+)
 
 
 def _json(path: Path) -> dict[str, Any]:
     return cast("dict[str, Any]", json.loads(path.read_text(encoding="utf-8")))
+
+
+def test_preflight_96_binds_r13_plan_and_preserves_revision_95() -> None:
+    report = _json(CURRENT_PREFLIGHT)
+    previous_path = ROOT / report["previous_preflight"]["path"]
+    plan_path = (
+        ROOT
+        / "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert (
+        hashlib.sha256(CURRENT_PREFLIGHT.read_bytes()).hexdigest()
+        == CURRENT_PREFLIGHT_SHA256
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    assert (
+        hashlib.sha256(previous_path.read_bytes()).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == PREFLIGHT_SHA256
+    )
+    assert report["inputs"][str(plan_path.relative_to(ROOT))] == (
+        hashlib.sha256(plan_path.read_bytes()).hexdigest()
+    )
+    assert len(report["inputs"]) == 327
+    assert report["release_and_admission_boundaries"]["v4_admissions"] == 8
+    assert report["release_and_admission_boundaries"]["consumer_canaries"] == 8
+    assert (
+        report["release_and_admission_boundaries"][
+            "new_sources_or_datasets_added"
+        ]
+        is False
+    )
+    assert (
+        report["release_and_admission_boundaries"][
+            "external_publications_performed"
+        ]
+        is False
+    )
 
 
 def test_preflight_95_preserves_its_historical_snapshot() -> None:
