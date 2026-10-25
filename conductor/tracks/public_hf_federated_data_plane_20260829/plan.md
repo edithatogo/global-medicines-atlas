@@ -825,19 +825,28 @@ revision. It adds no source and keeps the M-112 frozen inventory unchanged.
 - [x] Implement an independently profiled typed admission adapter and bounded
   API/CLI/Atlas/JSONL delivery canary. Local evidence uses synthetic fixtures
   and does not admit or publish the real cohort.
-- [~] Run and retain the exact hosted role receipts for the six objects; bind
+- [x] Run and retain the exact hosted role receipts for the six objects; bind
   them to immutable commits and check each receipt against the applicable
   schemas and existing semantic, lineage, rights, and publication evidence.
-  PR #1346's first protected run exposed a synthetic CLI fixture reusing a
-  resolver after the CLI correctly closed it. The fixture now creates an
-  independently configured resolver per invocation; three directly affected
-  tests and the routine harness pass locally. Hosted rerun is pending.
-- [ ] Configure the six exact v4 admission profiles from independently
-  governed evidence, qualify each contract through the remote reader, and
-  preserve any unsupported role or recovery claim as a blocker.
-- [ ] Run bounded consumer canaries over the qualified admitted revisions
-  through API, CLI, Atlas, and deterministic export. Reconcile the existing
-  Stable v1 gate only after those receipts are retained.
+  PR #1346 merged as `8558ba0ee07c459f41030ee254d068e0b77b062b`; hosted role
+  qualification run `40176576600` passed for all six published objects. The
+  seven aggregate-only reports and byte-digest manifest are retained under
+  `quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/`.
+  v1/v2/v3 schemas, role semantics, and all four pinned input document digests
+  validate. This qualification performed no v4 admission, consumer canary, or
+  publication.
+- [~] Configure six exact v4.1 product profiles from the pinned role, source,
+  semantic, lineage, rights, and publication evidence; close all required
+  receipt bytes; qualify each exact revision and digest through the remote
+  reader; retain primary-only recovery as such. Local exact-profile admission
+  and contract-role tests pass. Hosted readback is pending. These candidate
+  product profiles do not update M-112 federation counts or claim independent
+  recovery.
+- [~] Run six bounded API, CLI, Atlas, and deterministic-export canaries over
+  the admitted MBS service-benefit resources. Locally, the request set is
+  bounded to two rows per exact native field and exercises no source values in
+  the retained output. The actual hosted consumers are pending. Reconcile the
+  existing Stable v1 gate only after those receipts are retained.
 
 The current implementation does not change M-112 admission/canary counts,
 source membership, public objects, or release authority.

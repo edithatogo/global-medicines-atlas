@@ -2,8 +2,18 @@
 
 import hashlib
 import json
+from contextlib import contextmanager
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
+import scripts.qualify_mbs_silver_v4_admission as mbs_v4_qualification
+from scripts.qualify_mbs_silver_v4_admission import (
+    fetch_receipt,
+    normalize_receipt_time,
+    raw_receipt_url,
+)
 from test_federation_admission import BODY, SCHEMA, URL, evidence
 
 from global_medicines_atlas.federation_receipt_closure import (
@@ -14,6 +24,140 @@ from global_medicines_atlas.platinum_admission import (
     ProductAdmissionProfile,
     admit_product_configuration,
 )
+
+
+def test_hosted_mbs_receipt_urls_are_immutable_and_allowlisted():
+    commit = "a" * 40
+    url = raw_receipt_url(commit, "quality/qualification.json")
+
+    assert url == (
+        "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/"
+        f"{commit}/quality/qualification.json"
+    )
+    with pytest.raises(ValueError, match="allowlist"):
+        fetch_receipt("file:///etc/passwd")
+
+
+def test_hosted_mbs_receipt_times_are_normalized_to_utc_z():
+    assert normalize_receipt_time("2026-10-25T08:26:05.677420+00:00") == (
+        "2026-10-25T08:26:05.677420Z"
+    )
+
+
+def test_exact_six_mbs_profiles_close_receipts_and_prepare_consumer_canaries(
+    monkeypatch, tmp_path
+):
+    commit = "a" * 40
+    publication_objects = [
+        {
+            "path": f"silver/mbs/v4/2025-07-v3/{filename}",
+            "sha256": digest,
+            "byte_count": size,
+        }
+        for filename, digest, size in mbs_v4_qualification.OBJECTS.values()
+    ]
+    comment = json.dumps({
+        "id": 5859624790,
+        "body": json.dumps({
+            "candidate_only": True,
+            "dataset": mbs_v4_qualification.DATASET,
+            "manifest_sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59",
+            "revision": "ba82cd1d0f9b0f28514df431b8da3a6c207d76fa",
+            "verified_objects": publication_objects,
+        }),
+    }).encode()
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_SHA", commit)
+    monkeypatch.setattr(
+        mbs_v4_qualification,
+        "fetch_receipt",
+        lambda _url, _limit=mbs_v4_qualification.MAX_RECEIPT_BYTES: comment,
+    )
+
+    class Reader:
+        def __init__(self, *, resources, **_kwargs):
+            self.resources = {item.resource_id: item for item in resources}
+            self.cached_bytes = 0
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *_args):
+            return None
+
+        @contextmanager
+        def open(self, resource_id):
+            resource = self.resources[resource_id]
+            yield SimpleNamespace(
+                verified=SimpleNamespace(
+                    contract_sha256=resource.binding.contract_sha256,
+                    sha256=resource.binding.object.sha256,
+                    byte_count=resource.binding.object.byte_count,
+                    origin="remote",
+                ),
+                metadata=SimpleNamespace(
+                    sha256=resource.binding.object.sha256,
+                    byte_count=resource.binding.object.byte_count,
+                ),
+            )
+
+        def evict(self):
+            self.cached_bytes = 0
+
+    consumer_calls = []
+
+    def consumer_canary(_trust, _metadata, _schema, requests):
+        consumer_calls.extend(requests)
+        return {
+            "status": "passed",
+            "request_count": len(requests),
+            "surface_request_counts": {
+                "api": len(requests),
+                "atlas": len(requests),
+                "cli_json": len(requests),
+                "cli_jsonl": len(requests),
+            },
+        }
+
+    monkeypatch.setattr(mbs_v4_qualification, "StorageNeutralResolver", Reader)
+    monkeypatch.setattr(
+        mbs_v4_qualification,
+        "run_product_delivery_qualification",
+        consumer_canary,
+    )
+    result = mbs_v4_qualification.qualify(
+        Path(__file__).resolve().parents[1], tmp_path, commit
+    )
+
+    assert result["status"] == "passed"
+    assert result["verified_object_count"] == 6
+    assert len(result["objects"]) == len(result["remote_reads"]) == 6
+    assert all(len(item["receipt_roles"]) == 11 for item in result["objects"])
+    assert result["historical_cache_cleanup"]["status"] == "passed"
+    assert result["historical_cache_cleanup"]["remaining_entries"] == 0
+    assert {item["semantic_dimension"] for item in result["objects"]} == {
+        "service_benefit"
+    }
+    assert len(consumer_calls) == 6
+    assert result["consumer_canary"]["surface_request_counts"] == {
+        "api": 6,
+        "atlas": 6,
+        "cli_json": 6,
+        "cli_jsonl": 6,
+    }
+    assert (tmp_path / "deployment-trust.json").is_file()
+    assert len(tuple((tmp_path / "metadata" / "contracts").glob("*.json"))) == 6
+    contracts = [
+        json.loads(path.read_bytes())
+        for path in (tmp_path / "metadata" / "contracts").glob("*.json")
+    ]
+    for contract in contracts:
+        cache = contract["cache"]
+        created_at = datetime.fromisoformat(cache["created_at"])
+        expires_at = datetime.fromisoformat(cache["expires_at"])
+        assert cache["state"] == "transient"
+        assert created_at <= datetime.now(UTC) < expires_at
+        assert expires_at - created_at == timedelta(hours=1)
 
 
 def product_inputs():
