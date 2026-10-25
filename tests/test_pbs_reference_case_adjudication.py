@@ -11,6 +11,8 @@ import pytest
 
 from global_medicines_atlas.pbs_reference_case_adjudication import (
     ADJUDICATION_PATH,
+    PACKET_PATH,
+    URI_RECONCILIATION_PATH,
     build_reference_case_adjudication,
     validate_reference_case_adjudication,
 )
@@ -118,4 +120,26 @@ def test_validator_rejects_semantic_promotion_in_receipt(
     destination.write_text(json.dumps(envelope, indent=2) + "\n")
 
     with pytest.raises(ValueError, match="differs from pinned inputs"):
+        validate_reference_case_adjudication(tmp_path)
+
+
+@pytest.mark.parametrize(
+    ("payload", "message"),
+    [
+        ("[]", "envelope is not an object"),
+        (json.dumps({"report": []}), "report is not an object"),
+    ],
+)
+def test_receipt_reader_rejects_non_object_envelope_and_report(
+    tmp_path: Path, payload: str, message: str
+) -> None:
+    for relative in (PACKET_PATH, URI_RECONCILIATION_PATH):
+        destination = tmp_path / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes((_ROOT / relative).read_bytes())
+    destination = tmp_path / ADJUDICATION_PATH
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(payload, encoding="utf-8")
+
+    with pytest.raises(TypeError, match=message):
         validate_reference_case_adjudication(tmp_path)

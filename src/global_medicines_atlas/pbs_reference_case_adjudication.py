@@ -74,11 +74,15 @@ def _read_envelope(
     root: Path, relative_path: str
 ) -> tuple[bytes, dict[str, Any]]:
     raw = (root / relative_path).read_bytes()
-    envelope = cast("dict[str, Any]", json.loads(raw))
-    report = cast("dict[str, Any]", envelope.get("report"))
-    if not isinstance(report, dict) or envelope.get("report_sha256") != (
-        _canonical_sha256(report)
-    ):
+    decoded: object = json.loads(raw)
+    if not isinstance(decoded, dict):
+        raise TypeError(f"{relative_path} envelope is not an object")
+    envelope = cast("dict[str, Any]", decoded)
+    report_value = envelope.get("report")
+    if not isinstance(report_value, dict):
+        raise TypeError(f"{relative_path} report is not an object")
+    report = cast("dict[str, Any]", report_value)
+    if envelope.get("report_sha256") != _canonical_sha256(report):
         raise ValueError(f"{relative_path} report digest differs")
     return raw, envelope
 
