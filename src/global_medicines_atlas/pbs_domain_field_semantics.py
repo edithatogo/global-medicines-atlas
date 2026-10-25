@@ -6,10 +6,11 @@ native values to funding, payment, currency, clinical, or current-status facts.
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 INVENTORY = "quality/qualifications/pbs-schema-paths-20261022-39667604237.json"
 OBSERVED = (
@@ -19,6 +20,16 @@ OBSERVED = (
 DATE_PROFILE = (
     "quality/qualifications/"
     "pbs-v3-2026-04-01-date-profile-qualification-20260929.json"
+)
+ROOT_VERSION_RECEIPT = (
+    "quality/qualifications/"
+    "pbs-root-schema-version-metadata-20261025-40145730405.json"
+)
+ROOT_VERSION_RECEIPT_SHA256 = (
+    "27ce93f8e1e94ec4df0c2ba55b1f8d947d895e844e6a4c6b6dc1f77788dcce81"
+)
+ROOT_VERSION_REPORT_SHA256 = (
+    "eb6155e226bfd0dedca590e442b3f673e2bde566656cbfbbe07d595c54660398"
 )
 INVENTORY_SHA256 = (
     "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b"
@@ -274,6 +285,7 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
             ],
         },
     }
+
     return {
         "schema_id": "global-medicines-atlas.pbs-domain-field-semantics",
         "schema_version": 1,
@@ -340,6 +352,91 @@ def qualify_pbs_domain_fields(root: Path) -> dict[str, Any]:
             "cross_era_equivalence": False,
         },
     }
+
+
+def qualify_pbs_domain_fields_v4(root: Path) -> dict[str, Any]:
+    """Bind the existing bounded meanings to the exact root schema minor."""
+    base = qualify_pbs_domain_fields(root)
+    receipt_bytes = (root / ROOT_VERSION_RECEIPT).read_bytes()
+    if hashlib.sha256(receipt_bytes).hexdigest() != ROOT_VERSION_RECEIPT_SHA256:
+        raise ValueError("PBS root schema-version receipt bytes differ")
+    parsed: object = json.loads(receipt_bytes)
+    if not isinstance(parsed, dict):
+        raise TypeError("PBS root schema-version receipt shape differs")
+    envelope = cast("dict[str, Any]", parsed)
+    report_value = envelope.get("report")
+    if not isinstance(report_value, dict):
+        raise TypeError("PBS root schema-version receipt shape differs")
+    report = cast("dict[str, Any]", report_value)
+    if (
+        envelope.get("report_sha256") != ROOT_VERSION_REPORT_SHA256
+        or _canonical_digest(report) != ROOT_VERSION_REPORT_SHA256
+    ):
+        raise ValueError("PBS root schema-version report digest differs")
+    expected = {
+        "schema_version": 1,
+        "status": "passed",
+        "operation": "pbs-root-schema-version-metadata",
+        "dataset": "edithatogo/australian-pbs-source-archive",
+        "revision": REVISION,
+        "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+        "archive_bytes": 11_156_706,
+        "member_path": "sch-2026-04-01-r1.xml",
+        "member_sha256": MEMBER_SHA256,
+        "member_bytes": 313_437_585,
+        "member_binding_sha256": "5bc111736f76cee651a73be99b37f5921b2924e53428b0c0f8ae45964943c4f2",
+        "declared_schema_version": "3.1",
+        "schema_major": 3,
+        "schema_minor": 1,
+        "schema_minor_bound": True,
+        "schema_patch": None,
+        "schema_patch_bound": False,
+        "root_metadata_only": True,
+        "source_field_values_emitted": False,
+        "native_values_emitted": False,
+        "new_sources": 0,
+        "new_admissions": 0,
+        "publications": 0,
+        "rights_conclusion_changed": False,
+        "run_id": "40145730405",
+        "workflow_commit": "fb1aaabacc204c19eb1661dc8e00ce7855489e62",
+        "version_attribute_path": (
+            "/{http:~1~1schema.pbs.gov.au~1}root/attributes/version"
+        ),
+    }
+    if any(report.get(key) != value for key, value in expected.items()):
+        raise ValueError("PBS root schema-version source binding differs")
+
+    result = copy.deepcopy(base)
+    amount = result["source_schema_field_meanings"]["pbs_amount_text"]
+    obsolete_limit = "the exact schema minor release used for the archive is not separately bound by the value-free path inventory"
+    if amount["limits"].count(obsolete_limit) != 1:
+        raise ValueError("PBS schema-minor limitation differs")
+    amount["limits"].remove(obsolete_limit)
+    result["profile_id"] = "pbs-v3.1-pinned-2026-04-01-domain-fields-v4"
+    result["schema_version_evidence"] = {
+        "receipt_path": ROOT_VERSION_RECEIPT,
+        "receipt_file_sha256": ROOT_VERSION_RECEIPT_SHA256,
+        "report_sha256": ROOT_VERSION_REPORT_SHA256,
+        "workflow_run_id": "40145730405",
+        "workflow_commit": "fb1aaabacc204c19eb1661dc8e00ce7855489e62",
+        "archive_sha256": expected["archive_sha256"],
+        "archive_bytes": expected["archive_bytes"],
+        "member_path": expected["member_path"],
+        "member_sha256": MEMBER_SHA256,
+        "member_bytes": expected["member_bytes"],
+        "member_binding_sha256": expected["member_binding_sha256"],
+        "revision": REVISION,
+        "declared_schema_version": "3.1",
+        "schema_major": 3,
+        "schema_minor": 1,
+        "schema_minor_bound": True,
+        "schema_patch": None,
+        "schema_patch_bound": False,
+        "root_metadata_only": True,
+        "source_field_values_emitted": False,
+    }
+    return result
 
 
 def qualify_pbs_source_label_observations(root: Path) -> dict[str, Any]:
