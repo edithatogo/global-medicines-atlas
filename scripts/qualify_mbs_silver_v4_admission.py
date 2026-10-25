@@ -11,7 +11,7 @@ import argparse
 import hashlib
 import json
 import os
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from http import HTTPStatus
 from pathlib import Path
 from typing import Any, cast
@@ -93,6 +93,7 @@ MAX_RECEIPT_BYTES = 1024 * 1024
 REVISION_LENGTH = 40
 PUBLICATION_COMMENT_ID = 5859624790
 ROLE_RUN_ID = 40176576600
+CACHE_TTL = timedelta(hours=1)
 CANARY_FIELDS = {
     "services": "ItemNum",
     "hierarchy": "Group",
@@ -212,6 +213,19 @@ def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruf
     validate_role_semantics(
         *(json.loads(role_documents[name]) for name in role_schemas)
     )
+    historical_cache_cleanup = json.loads(role_documents["cache-cleanup"])
+    expected_cache_paths = sorted(
+        f"silver/mbs/v4/2025-07-v3/{item[0]}" for item in OBJECTS.values()
+    )
+    if (
+        historical_cache_cleanup["status"] != "passed"
+        or historical_cache_cleanup["remaining_entries"] != 0
+        or historical_cache_cleanup["source_payload_written_to_disk"]
+        is not False
+        or sorted(historical_cache_cleanup["evicted_paths"])
+        != expected_cache_paths
+    ):
+        raise ValueError("historical transient-cache cleanup receipt differs")
     rights_raw = (root / RIGHTS_PATH).read_bytes()
     use_raw = (root / USE_PATH).read_bytes()
     tree_raw = (root / TREE_PATH).read_bytes()
@@ -328,6 +342,8 @@ def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruf
     semantics: list[bytes] = []
     admitted: list[Any] = []
     configurations: list[Any] = []
+    transient_cache_created_at = datetime.now(UTC)
+    transient_cache_expires_at = transient_cache_created_at + CACHE_TTL
     object_urls = {
         url: ReceiptPayload(url=url, payload=raw)
         for url, raw in receipt_docs.items()
@@ -386,7 +402,6 @@ def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruf
         report_completed_at = json.loads(role_documents["primary-restore"])[
             "completed_at"
         ]
-        cache = json.loads(role_documents["cache-cleanup"])
         contract_doc: dict[str, Any] = {
             "version": "4.1.0",
             "evidence_kind": "live",
@@ -473,11 +488,15 @@ def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruf
             },
             "cache": {
                 "origin": "github_actions",
-                "state": "removed",
+                "state": "transient",
                 "max_bytes": 67108864,
-                "created_at": normalize_receipt_time(cache["created_at"]),
-                "expires_at": normalize_receipt_time(cache["expires_at"]),
-                "cleanup_receipt": ref(urls["cache"]),
+                "created_at": normalize_receipt_time(
+                    transient_cache_created_at.isoformat()
+                ),
+                "expires_at": normalize_receipt_time(
+                    transient_cache_expires_at.isoformat()
+                ),
+                "cleanup_receipt": None,
                 "offline_behavior": "fail_closed",
             },
             "consumers": [],
@@ -497,7 +516,6 @@ def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruf
             "/lineage/promotion_receipt": urls["promotion"],
             "/recovery/checksum_inventory": urls["restore"],
             "/recovery/restore_receipt": urls["restore"],
-            "/cache/cleanup_receipt": urls["cache"],
         }
         roles = contract_receipt_roles(contract, schema=schema)
         if {role.role: role.url for role in roles} != expected_role_payloads:
@@ -680,6 +698,15 @@ def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruf
         "revision": REVISION,
         "contract_commit": commit,
         "role_receipt_bundle": ROLE_DIR,
+        "historical_cache_cleanup": {
+            "receipt_sha256": _digest(role_documents["cache-cleanup"]),
+            "status": historical_cache_cleanup["status"],
+            "remaining_entries": historical_cache_cleanup["remaining_entries"],
+            "source_payload_written_to_disk": historical_cache_cleanup[
+                "source_payload_written_to_disk"
+            ],
+            "scope": "prior hosted role run; not the current transient cache lifetime",
+        },
         "objects": table_configs,
         "remote_reads": read_receipts,
         "consumer_canary": consumer_canary,

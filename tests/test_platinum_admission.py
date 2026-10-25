@@ -3,6 +3,7 @@
 import hashlib
 import json
 from contextlib import contextmanager
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -131,7 +132,9 @@ def test_exact_six_mbs_profiles_close_receipts_and_prepare_consumer_canaries(
     assert result["status"] == "passed"
     assert result["verified_object_count"] == 6
     assert len(result["objects"]) == len(result["remote_reads"]) == 6
-    assert all(len(item["receipt_roles"]) == 12 for item in result["objects"])
+    assert all(len(item["receipt_roles"]) == 11 for item in result["objects"])
+    assert result["historical_cache_cleanup"]["status"] == "passed"
+    assert result["historical_cache_cleanup"]["remaining_entries"] == 0
     assert {item["semantic_dimension"] for item in result["objects"]} == {
         "service_benefit"
     }
@@ -144,6 +147,17 @@ def test_exact_six_mbs_profiles_close_receipts_and_prepare_consumer_canaries(
     }
     assert (tmp_path / "deployment-trust.json").is_file()
     assert len(tuple((tmp_path / "metadata" / "contracts").glob("*.json"))) == 6
+    contracts = [
+        json.loads(path.read_bytes())
+        for path in (tmp_path / "metadata" / "contracts").glob("*.json")
+    ]
+    for contract in contracts:
+        cache = contract["cache"]
+        created_at = datetime.fromisoformat(cache["created_at"])
+        expires_at = datetime.fromisoformat(cache["expires_at"])
+        assert cache["state"] == "transient"
+        assert created_at <= datetime.now(UTC) < expires_at
+        assert expires_at - created_at == timedelta(hours=1)
 
 
 def product_inputs():
