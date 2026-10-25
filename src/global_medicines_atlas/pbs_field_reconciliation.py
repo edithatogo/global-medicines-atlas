@@ -12,8 +12,13 @@ from typing import Any, cast
 from global_medicines_atlas.pbs_domain_field_semantics import (
     DATE_PROFILE,
     qualify_pbs_domain_fields,
+    qualify_pbs_domain_fields_v4,
 )
 from global_medicines_atlas.pbs_observed_domain import load_observed_profile
+from global_medicines_atlas.pbs_reference_case_adjudication import (
+    ADJUDICATION_PATH,
+    validate_reference_case_adjudication,
+)
 
 PACKAGE = (
     "quality/qualifications/"
@@ -32,6 +37,19 @@ CONTEXT_SCREEN = (
     "pbs-native-reference-screen-20261025-40103169910.json"
 )
 DOMAIN = "quality/qualifications/pbs-domain-field-semantics-20261025-v3.json"
+DOMAIN_V4 = "quality/qualifications/pbs-domain-field-semantics-20261025-v4.json"
+DOMAIN_V4_FILE_SHA256 = (
+    "1336cd51392a08c29928cb66ae7f80a65589ceaa17b2c0c70f33c0d9a72c40c8"
+)
+DOMAIN_V4_REPORT_SHA256 = (
+    "f2813888a484c0b36f4dbfbf967a418f07215f15c5379883789ecb8407fc18db"
+)
+REFERENCE_CASE_FILE_SHA256 = (
+    "d0701afb167b20f3a67b89b9773e2db4d6ec41f8b9247eddff5a3a9c317e680f"
+)
+REFERENCE_CASE_REPORT_SHA256 = (
+    "e61cf3c3b5744b23d5b68282414750d9322b2ae53fa18298eac60e5eb5384260"
+)
 FIELD_STATE = (
     "quality/qualifications/pbs-native-silver-field-state-20261023.json"
 )
@@ -85,10 +103,10 @@ DATE_OCCURRENCE_CROSSWALK_REPORT_SHA256 = (
 )
 SUPERSEDED_REPORT = (
     "quality/qualifications/"
-    "pbs-native-silver-field-reconciliation-20261025-r11.json"
+    "pbs-native-silver-field-reconciliation-20261025-r12.json"
 )
 SUPERSEDED_REPORT_SHA256 = (
-    "c8afb1586e6d4b18025950cdce3a563d168de6283d9afd82d08202ba954339b3"
+    "942db270550595c24486db48c5095bad92308dc7f7ac0a6afce3d4306232ada1"
 )
 SCREEN_RUN_ID = "40103169910"
 SCREEN_WORKFLOW_COMMIT = "83465c87d5952e123cedd93a02b1ec9b4daa4eb4"
@@ -123,7 +141,7 @@ ITEM_DATE_FIELDS = 2_798
 PATH_INVENTORY = (
     "quality/qualifications/pbs-schema-paths-20261022-39667604237.json"
 )
-CURRENT_RECONCILIATION = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r12.json"
+CURRENT_RECONCILIATION = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r13.json"
 
 
 def _file_sha256(path: Path) -> str:
@@ -455,6 +473,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     reference_review_path = root / REFERENCE_REVIEW
     reference_packet_path = root / REFERENCE_PACKET
     domain_path = root / DOMAIN
+    domain_v4_path = root / DOMAIN_V4
     package_sha = _file_sha256(package_path)
     date_profile_sha = _file_sha256(date_profile_path)
     date_occurrence_crosswalk_sha = _file_sha256(date_occurrence_crosswalk_path)
@@ -464,6 +483,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
     field_state_sha = _file_sha256(field_state_path)
     reference_review_sha = _file_sha256(reference_review_path)
     reference_packet_sha = _file_sha256(reference_packet_path)
+    domain_v4_sha = _file_sha256(domain_v4_path)
     superseded_report_sha = _file_sha256(root / SUPERSEDED_REPORT)
     digest_pairs = (
         (package_sha, PACKAGE_SHA256),
@@ -472,6 +492,7 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         (field_state_sha, FIELD_STATE_SHA256),
         (reference_review_sha, REFERENCE_REVIEW_SHA256),
         (reference_packet_sha, REFERENCE_PACKET_SHA256),
+        (domain_v4_sha, DOMAIN_V4_FILE_SHA256),
         (superseded_report_sha, SUPERSEDED_REPORT_SHA256),
     )
     if any(actual != expected for actual, expected in digest_pairs):
@@ -626,6 +647,61 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         raise ValueError(
             "PBS field-meaning report differs from its source evidence"
         )
+
+    domain_v4_envelope = json.loads(domain_v4_path.read_bytes())
+    domain_v4_report = domain_v4_envelope["report"]
+    domain_v4_canonical = json.dumps(
+        domain_v4_report,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+    domain_v4_digest_valid = (
+        hashlib.sha256(domain_v4_canonical).hexdigest()
+        == domain_v4_envelope["report_sha256"]
+        == DOMAIN_V4_REPORT_SHA256
+    )
+    domain_v4_source_valid = (
+        domain_v4_report["source"]["native_fields"] == SOURCE_FIELDS
+        and domain_v4_report["source"]["member_sha256"]
+        == domain_report["source"]["member_sha256"]
+    )
+    domain_v4_scope_valid = (
+        domain_v4_report["scope"]["complete_domain_semantics_qualified"]
+        is False
+        and domain_v4_report["scope"]["source_values_emitted"] is False
+    )
+    if not (
+        domain_v4_digest_valid
+        and domain_v4_source_valid
+        and domain_v4_scope_valid
+    ):
+        raise ValueError("PBS bounded domain-field v4 evidence differs")
+
+    reference_case_path = root / ADJUDICATION_PATH
+    reference_case_sha = _file_sha256(reference_case_path)
+    if reference_case_sha != REFERENCE_CASE_FILE_SHA256:
+        raise ValueError("PBS reference case receipt bytes differ")
+    reference_case_report = validate_reference_case_adjudication(root)
+    reference_case_envelope = json.loads(reference_case_path.read_bytes())
+    if (
+        reference_case_envelope["report_sha256"] != REFERENCE_CASE_REPORT_SHA256
+        or reference_case_envelope["report"] != reference_case_report
+        or reference_case_report["review_scope"]
+        != {
+            "case_count": 46,
+            "structural_pointer_roles_supported": 46,
+            "no_target_hard_negatives": 11,
+            "semantic_relationships_qualified": False,
+            "edges_emitted": False,
+            "precision_claimed": False,
+            "recall_claimed": False,
+            "corpus_generalizable_match_quality_claimed": False,
+            "admission_or_clinical_meaning_claimed": False,
+            "meaning": "structural roles and exact member-scoped resolution only; no semantic relationship adjudication",
+        }
+    ):
+        raise ValueError("PBS reference case review boundary differs")
 
     screen_envelope = json.loads(reference_screen_path.read_bytes())
     screen_report = screen_envelope["report"]
@@ -821,6 +897,8 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         raise ValueError(
             "PBS interpreted role counts differ from meaning evidence"
         )
+    if qualify_pbs_domain_fields_v4(root) != domain_v4_report:
+        raise ValueError("PBS bounded domain-field v4 evidence differs")
 
     # Structural role destinations are useful table routing metadata, not
     # semantic interpretations. Recount the actual source fields only after
@@ -929,10 +1007,11 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
         raise ValueError("PBS schema-path field-state partition does not close")
     return {
         "schema_id": "global-medicines-atlas.pbs-field-state-reconciliation",
-        "schema_version": 1,
-        "profile_id": "pbs-v3-2026-04-01-field-state-v3",
-        "status": "complete_field_denominator_path_adjudication_with_unresolved_semantics",
+        "schema_version": 2,
+        "profile_id": "pbs-v3-2026-04-01-field-state-v4",
+        "status": "complete_field_partition_with_bounded_domain_semantics_and_unresolved_values",
         "domain_semantics_qualified": False,
+        "bounded_domain_semantics_qualified": True,
         "rights_conclusion_changed": False,
         "source": {
             "dataset": native["dataset"],
@@ -957,6 +1036,14 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "prior_field_state_receipt_sha256": field_state_sha,
             "domain_semantics_report_sha256": domain_envelope["report_sha256"],
             "domain_semantics_report_path": DOMAIN,
+            "domain_semantics_v4_file_sha256": domain_v4_sha,
+            "domain_semantics_v4_report_sha256": domain_v4_envelope[
+                "report_sha256"
+            ],
+            "reference_case_receipt_file_sha256": reference_case_sha,
+            "reference_case_receipt_report_sha256": reference_case_envelope[
+                "report_sha256"
+            ],
             "reference_meaning_report_sha256": reference_envelope[
                 "report_sha256"
             ],
@@ -970,6 +1057,45 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
             "denominator_closed": True,
             "all_native_values_remain_unresolved": True,
             "semantic_field_states_distinct_from_structural_destinations": True,
+        },
+        "bounded_domain_semantics": {
+            "path": DOMAIN_V4,
+            "file_sha256": domain_v4_sha,
+            "report_sha256": domain_v4_envelope["report_sha256"],
+            "profile_id": domain_v4_report["profile_id"],
+            "status": domain_v4_report["status"],
+            "schema_version_evidence": domain_v4_report[
+                "schema_version_evidence"
+            ],
+            "source_member_sha256": domain_v4_report["source"]["member_sha256"],
+            "qualified_domains": {
+                name: {
+                    key: meaning.get(key)
+                    for key in (
+                        "status",
+                        "meaning",
+                        "field_count",
+                        "entity_count",
+                        "limits",
+                    )
+                    if key in meaning
+                }
+                for name, meaning in domain_v4_report["domains"].items()
+            },
+            "source_schema_field_meanings": domain_v4_report[
+                "source_schema_field_meanings"
+            ],
+            "complete_domain_semantics_qualified": False,
+            "counts_are_additive_to_field_partition": False,
+            "field_state_partition": {
+                "interpreted": interpreted,
+                "native_unresolved": unresolved,
+                "unavailable": unavailable,
+                "source_fields": SOURCE_FIELDS,
+                "newly_interpreted_native_value_fields": 0,
+                "state_counts_changed": False,
+                "all_native_values_remain_unresolved": True,
+            },
         },
         "role_reconciliation": state_rows,
         "path_reconciliation": path_reconciliation,
@@ -1058,6 +1184,23 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
                 "adjudicated_cases": 0,
                 "semantic_relationships_qualified": False,
             },
+            "structural_case_review": {
+                "path": ADJUDICATION_PATH,
+                "file_sha256": reference_case_sha,
+                "report_sha256": reference_case_envelope["report_sha256"],
+                "cases": reference_case_report["review_scope"]["case_count"],
+                "structural_pointer_roles_supported": reference_case_report[
+                    "review_scope"
+                ]["structural_pointer_roles_supported"],
+                "no_target_hard_negatives": reference_case_report[
+                    "review_scope"
+                ]["no_target_hard_negatives"],
+                "semantic_relationships_qualified": False,
+                "edges_emitted": False,
+                "precision_claimed": False,
+                "recall_claimed": False,
+                "source_values_emitted": False,
+            },
             "reference_role_field_count": role_counts["references"],
             "screen_reference_denominator": reference_review[
                 "exact_source_screen"
@@ -1101,10 +1244,11 @@ def reconcile_pbs_field_states(root: Path) -> dict[str, Any]:  # ruff: ignore[to
                 ],
                 "semantic_relationships_qualified": False,
                 "calibration_note": (
-                    "The 46 deterministic value-free cases remain unreviewed; "
-                    "the sample is not probability-based and cannot estimate "
-                    "semantic match precision. Matcher behavior remains "
-                    "unqualified."
+                    "The 46 deterministic value-free cases have structural "
+                    "pointer roles reviewed; semantic relationships remain "
+                    "unreviewed. The sample is not probability-based and "
+                    "cannot estimate semantic match precision. Matcher "
+                    "behavior remains unqualified."
                 ),
             },
             "denominator_note": (
