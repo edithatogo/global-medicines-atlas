@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import operator
+from collections import Counter
 from pathlib import Path, PurePosixPath
 from tempfile import TemporaryDirectory
 from typing import Any, cast
@@ -214,6 +215,18 @@ def _source_record(source: BoundArchive) -> dict[str, Any]:
     }
 
 
+def _field_row_counts(profile: dict[str, Any]) -> dict[str, int]:
+    value = profile.get("field_row_counts")
+    if not isinstance(value, dict):
+        raise TypeError("MBS workbook field row counts are malformed")
+    counts = cast("dict[str, Any]", value)
+    if set(counts) != set(EXPECTED_FIELDS) or any(
+        type(count) is not int or count < 0 for count in counts.values()
+    ):
+        raise ValueError("MBS workbook field row count identities differ")
+    return cast("dict[str, int]", counts)
+
+
 def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statements] -- bounded one-archive source readback and aggregate receipt
     exact_commit: str,
     archive_index: int,
@@ -274,6 +287,7 @@ def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statem
         ),
         0,
     )
+    field_row_counts: Counter[str] = Counter(dict.fromkeys(EXPECTED_FIELDS, 0))
     if workbook_members:  # ruff: ignore[too-many-nested-blocks] -- source archive lifetime encloses streamed member validation
         with (
             TemporaryDirectory(prefix="mbs-workbook-value-shape-") as temp,
@@ -331,6 +345,8 @@ def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statem
                             iter_workbook_records(path, member, native),
                             binding["profile"],
                         )
+                        workbook_field_row_counts = _field_row_counts(profile)
+                        field_row_counts.update(workbook_field_row_counts)
                         for field in EXPECTED_FIELDS:
                             for name, value in profile["fields"][field].items():
                                 if isinstance(value, int):
@@ -367,6 +383,7 @@ def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statem
                                 "header_profile_sha256"
                             ],
                             "source_sha256": source.source_sha256,
+                            "field_row_counts": workbook_field_row_counts,
                             "profile": profile,
                         })
                     finally:
@@ -395,6 +412,7 @@ def qualify(  # ruff: ignore[too-many-branches, too-many-locals, too-many-statem
         ),
         **counters,
         "fields": totals,
+        "field_row_counts": dict(sorted(field_row_counts.items())),
         "source_values_emitted": False,
         "source_column_meanings_qualified": False,
         "calendar_year_vs_service_year_resolved": False,

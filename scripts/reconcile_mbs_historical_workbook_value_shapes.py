@@ -8,17 +8,30 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
-from scripts.profile_frozen_mbs_sidecars import require_main_actions
-from scripts.profile_mbs_historical_workbook_value_shapes import (
-    ARCHIVE_COUNT,
-    COHORT_REPORT,
-    COHORT_SHA256,
-    FIELD_STATE_REPORT,
-    FIELD_STATE_SHA256,
-    HEADER_REPORT,
-    HEADER_SHA256,
-    WORKBOOK_COUNT,
-)
+if __package__:
+    from scripts.profile_frozen_mbs_sidecars import require_main_actions
+    from scripts.profile_mbs_historical_workbook_value_shapes import (
+        ARCHIVE_COUNT,
+        COHORT_REPORT,
+        COHORT_SHA256,
+        FIELD_STATE_REPORT,
+        FIELD_STATE_SHA256,
+        HEADER_REPORT,
+        HEADER_SHA256,
+        WORKBOOK_COUNT,
+    )
+else:
+    from profile_frozen_mbs_sidecars import require_main_actions
+    from profile_mbs_historical_workbook_value_shapes import (
+        ARCHIVE_COUNT,
+        COHORT_REPORT,
+        COHORT_SHA256,
+        FIELD_STATE_REPORT,
+        FIELD_STATE_SHA256,
+        HEADER_REPORT,
+        HEADER_SHA256,
+        WORKBOOK_COUNT,
+    )
 
 from global_medicines_atlas.mbs_archive_inventory import (
     DATASET,

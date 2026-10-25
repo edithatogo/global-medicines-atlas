@@ -176,6 +176,7 @@ def test_profiles_lexical_and_native_shapes_without_emitting_values():
 
     assert report["header_cells"] == 8
     assert report["data_rows"] == 2
+    assert report["field_row_counts"] == dict.fromkeys(EXPECTED_FIELDS, 2)
     assert report["fields"]["calendar_year_label"]["value_shapes"] == {
         "numeric_integer_lexeme": 1
     }
@@ -266,8 +267,10 @@ def test_rejects_non_row_ordered_records():
 
 def test_merge_requires_complete_archive_indices_and_unique_candidate_ids():
     reports = _empty_archive_reports()
+    reports[0]["field_row_counts"] = dict.fromkeys(EXPECTED_FIELDS, 3)
     merged = merge_archive_profiles(reports, 6)
     assert merged["workbook_count"] == 0
+    assert merged["field_row_counts"] == dict.fromkeys(EXPECTED_FIELDS, 3)
     assert merged["calendar_year_vs_service_year_resolved"] is False
     assert merged["calendar_month_vs_processing_month_resolved"] is False
     with pytest.raises(ValueError, match="denominator"):
