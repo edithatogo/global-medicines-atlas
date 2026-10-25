@@ -41,6 +41,13 @@ def test_mbs_historical_value_shape_tests_are_in_unit_lane() -> None:
     } <= set(HARNESS.TEST_LANES["unit"])
 
 
+def test_pbs_reference_case_adjudication_is_in_unit_lane() -> None:
+    assert (
+        "tests/test_pbs_reference_case_adjudication.py"
+        in HARNESS.TEST_LANES["unit"]
+    )
+
+
 @pytest.mark.parametrize(
     "signature",
     [
