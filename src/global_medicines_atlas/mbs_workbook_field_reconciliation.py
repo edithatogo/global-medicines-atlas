@@ -44,6 +44,16 @@ P7_DATE_INFERENCE_PATH = (
 P7_DATE_INFERENCE_SHA256 = (
     "a9df045f3893c0f2774d80a2a0d806ad19c17c4d7173da64bde57d1169e06486"
 )
+P7_DATE_RECONCILIATION_PATH = (
+    "quality/qualifications/mbs-p7-date-profile-reconciliation-20261025.json"
+)
+P7_DATE_RECONCILIATION_SHA256 = (
+    "125c1f13acb33c40dcb45355772b5bb03fa8a89b36124195f96b55cd9f279853"
+)
+P7_SOURCE_SHA256 = (
+    "2f1cbc2d2dcbb93be86f42c8dbbe9f5f9e8fb550cad38b6ee54d0e9bdd2e27b8"
+)
+P7_SOURCE_BYTE_COUNT = 87_727
 P7_RULES_PATH = "quality/qualifications/mbs-p7-value-era-rules-20261024.json"
 WORKBOOK_COUNT = 91
 MBS_ARCHIVE_COUNT = 6
@@ -88,6 +98,66 @@ def _read_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise TypeError("receipt root must be an object")
     return cast("dict[str, Any]", value)
+
+
+def _validate_p7_date_reconciliation(
+    report: dict[str, Any], digest: str
+) -> dict[str, Any]:
+    """Bind the narrow, value-free P7 internal consistency reconciliation."""
+    source = _dict(report.get("source"), "P7 date reconciliation source")
+    reconciliation = _dict(
+        report.get("reconciliation"), "P7 date reconciliation"
+    )
+    evidence = _dict(
+        reconciliation.get("evidence_counts"),
+        "P7 date reconciliation evidence counts",
+    )
+    limits = _dict(
+        report.get("operational_limits"), "P7 date reconciliation limits"
+    )
+    checks = [
+        digest == P7_DATE_RECONCILIATION_SHA256,
+        report.get("schema_id")
+        == "global-medicines-atlas.mbs-p7-date-profile-reconciliation",
+        report.get("schema_version") == 1,
+        report.get("status")
+        == "internal_exact_copy_dmy_inference_reconciled_conversion_disabled",
+        source.get("sha256") == P7_SOURCE_SHA256,
+        source.get("byte_count") == P7_SOURCE_BYTE_COUNT,
+        source.get("schema_era") == "mbs-p7-2024-07-headers-v1",
+        reconciliation.get("inferred_profile") == "mbs-dmy",
+        reconciliation.get("inference_scope")
+        == "internal_file_consistency_for_this_exact_donor_archived_copy_only",
+        reconciliation.get("profile_selection_status")
+        == "selected_as_internal_consistency_inference",
+        evidence
+        == {
+            "populated_date_fields": 4,
+            "profiled_cells": 1_280,
+            "ambiguous_calendar_order_cells_before_inference": 1_194,
+            "unique_dmy_calendar_date_cells": 4,
+            "unique_mdy_calendar_date_cells": 0,
+            "unique_calendar_date_cells": 86,
+        },
+        limits.get("operational_date_conversion_enabled") is False,
+        limits.get("source_owner_confirmation") is False,
+        limits.get("official_provenance_confirmed") is False,
+        limits.get("domain_date_meaning_qualified") is False,
+        limits.get("temporal_comparison_enabled") is False,
+        limits.get("cross_era_equivalence_promoted") is False,
+        limits.get("other_workbooks_or_eras_in_scope") is False,
+        limits.get("source_values_emitted") is False,
+    ]
+    if not all(checks):
+        raise ValueError("P7 date reconciliation evidence binding differs")
+    return {
+        "date_fields_with_populated_values": [
+            "BenefitStartDate",
+            "DescriptionStartDate",
+            "FeeStartDate",
+            "ItemStartDate",
+        ]
+    }
 
 
 def _int(value: Any, label: str) -> int:
@@ -298,17 +368,15 @@ def _p7_date_field_rows(
             states.get("unique_dmy_calendar_date", 0),
             "unique DMY calendar date count",
         )
+        date_states = {
+            key: _int(value, "calendar field state count")
+            for key, value in states.items()
+        }
         ambiguous = _int(
-            states.get("ambiguous_calendar_order", 0),
+            date_states.get("ambiguous_calendar_order", 0),
             "ambiguous calendar field count",
         )
-        unresolved = (
-            sum(
-                _int(count, "calendar field state count")
-                for count in states.values()
-            )
-            - interpreted
-        )
+        unresolved = sum(date_states.values()) - interpreted
         inference_fields: list[Any] = []
         if inference is not None:
             inference_fields_raw = inference.get(
@@ -317,9 +385,15 @@ def _p7_date_field_rows(
             if not isinstance(inference_fields_raw, list):
                 raise TypeError("P7 inferred date fields must be a list")
             inference_fields = cast("list[Any]", inference_fields_raw)
+        # A selected DMY profile interprets the ambiguous cells for this
+        # exact-copy internal-consistency view. Operational conversion remains
+        # disabled by the separately bound date reconciliation receipt.
         inferred = ambiguous if field in inference_fields else 0
         interpreted += inferred
         unresolved -= inferred
+        if inferred:
+            date_states["ambiguous_calendar_order"] = ambiguous - inferred
+            date_states["internal_file_consistency_dmy"] = inferred
         rows.append({
             "field": field,
             "scope": "source_column_across_all_sheets",
@@ -330,7 +404,7 @@ def _p7_date_field_rows(
             "interpreted": interpreted,
             "native_unresolved": unresolved,
             "unavailable": 0,
-            "date_states": dict(sorted(states.items())),
+            "date_states": dict(sorted(date_states.items())),
             "interpretation_basis": {
                 "per_cell_unique_calendar_date": interpreted - inferred,
                 "selected_internal_file_consistency_dmy": inferred,
@@ -612,6 +686,7 @@ def reconcile_workbook_field_states(
 
     if p7_typed.get("kind") != "p7-workbook":
         raise ValueError("P7 typed qualification kind differs")
+    reconciliation_report = p7_typed.get("_p7_date_reconciliation")
     value_profile = _dict(
         p7_typed.get("domain_value_profile"), "P7 typed value profile"
     )
@@ -628,6 +703,22 @@ def reconcile_workbook_field_states(
     )
     if p7_cells != P7_CELL_COUNT or p7_interpreted + p7_unresolved != p7_cells:
         raise ValueError("P7 all-cell unresolved denominator differs")
+    if reconciliation_report is not None:
+        if candidate_qualification_receipt is None:
+            if (
+                p7_interpreted != P7_UNIQUE_INTERPRETED_DATE_CELLS
+                or p7_unresolved != P7_RETAINED_UNRESOLVED_CELL_COUNT
+            ):
+                raise ValueError("P7 retained date-state baseline differs")
+            p7_interpreted += P7_INFERENCE_INTERPRETED_DATE_CELLS
+            p7_unresolved -= P7_INFERENCE_INTERPRETED_DATE_CELLS
+        elif (
+            p7_interpreted
+            != P7_UNIQUE_INTERPRETED_DATE_CELLS
+            + P7_INFERENCE_INTERPRETED_DATE_CELLS
+            or p7_unresolved != P7_CANDIDATE_UNRESOLVED_CELL_COUNT
+        ):
+            raise ValueError("P7 candidate date-state totals differ")
     p7_run_receipt = _dict(
         p7_typed.get("_run_receipt"), "P7 exact-main run receipt"
     )
@@ -661,7 +752,13 @@ def reconcile_workbook_field_states(
     p7_date_profile = _dict(
         p7_typed.get("_p7_date_profile"), "P7 calendar profile receipt"
     )
-    inference_decision: dict[str, Any] | None = None
+    reconciliation_inference: dict[str, Any] | None = None
+    if reconciliation_report is not None:
+        reconciliation_inference = _validate_p7_date_reconciliation(
+            _dict(reconciliation_report, "P7 date reconciliation report"),
+            cast("str", input_sha256.get("p7_date_reconciliation")),
+        )
+    inference_decision: dict[str, Any] | None = reconciliation_inference
     inference_sha256: str | None = None
     if candidate_qualification_receipt is not None:
         p7_date_inference = _dict(
@@ -688,6 +785,13 @@ def reconcile_workbook_field_states(
             or inference_sha256 != P7_DATE_INFERENCE_SHA256
         ):
             raise ValueError("P7 selected date inference evidence is required")
+        if reconciliation_inference is None:
+            inference_decision = cast("dict[str, Any]", inference_decision)
+        else:
+            # The current exact-copy reconciliation is the governing evidence.
+            # The older candidate receipt is retained only as an independent
+            # binding and cannot expand interpretation beyond four cells.
+            inference_decision = reconciliation_inference
     p7_date_profile_data = _dict(
         p7_date_profile.get("profile"), "P7 calendar profile"
     )
@@ -824,10 +928,18 @@ def reconcile_workbook_field_states(
         )
         for row in date_field_rows
     )
-    if ambiguous_dates != _int(
+    if ambiguous_dates + (
+        P7_INFERENCE_INTERPRETED_DATE_CELLS
+        if inference_decision is not None
+        else 0
+    ) != _int(
         date_rules.get("ambiguous_date_shaped_cells"),
         "ambiguous date-shaped cell count",
-    ) or ambiguous_dates + P7_UNIQUE_INTERPRETED_DATE_CELLS != _int(
+    ) or ambiguous_dates + (
+        P7_INFERENCE_INTERPRETED_DATE_CELLS
+        if inference_decision is not None
+        else 0
+    ) + P7_UNIQUE_INTERPRETED_DATE_CELLS != _int(
         date_rules.get("lexical_date_cells"),
         "P7 date-shaped cell count",
     ):
@@ -865,6 +977,8 @@ def reconcile_workbook_field_states(
         "p7_date_profile",
         "p7_value_era_rules",
     }
+    if reconciliation_report is not None:
+        expected_hash_keys.add("p7_date_reconciliation")
     if candidate_qualification_receipt is not None:
         expected_hash_keys.add("p7_date_inference")
     if set(input_sha256) != expected_hash_keys or any(
@@ -1095,6 +1209,11 @@ def reconcile_from_paths(
     reports = {key: _read_json(path) for key, path in paths.items()}
     digests = {key: _sha256(path) for key, path in paths.items()}
     candidate_receipt = reports.pop("p7_candidate_qualification_receipt", None)
+    if "p7_date_reconciliation" not in reports:
+        repository_root = Path(__file__).resolve().parents[2]
+        reconciliation_path = repository_root / P7_DATE_RECONCILIATION_PATH
+        reports["p7_date_reconciliation"] = _read_json(reconciliation_path)
+        digests["p7_date_reconciliation"] = _sha256(reconciliation_path)
     if candidate_receipt is not None:
         digests["p7_run_receipt"] = digests.pop(
             "p7_candidate_qualification_receipt"
@@ -1107,6 +1226,10 @@ def reconcile_from_paths(
         )
     reports["p7_typed"]["_run_receipt"] = reports["p7_run_receipt"]
     reports["p7_typed"]["_p7_date_profile"] = reports["p7_date_profile"]
+    if "p7_date_reconciliation" in reports:
+        reports["p7_typed"]["_p7_date_reconciliation"] = reports[
+            "p7_date_reconciliation"
+        ]
     if candidate_receipt is not None:
         reports["p7_typed"]["_p7_date_inference"] = reports["p7_date_inference"]
     return reconcile_workbook_field_states(

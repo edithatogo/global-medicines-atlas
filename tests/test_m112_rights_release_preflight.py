@@ -40,6 +40,16 @@ CURRENT_PREFLIGHT = (
 CURRENT_PREFLIGHT_SHA256 = (
     "05f365d98b20a7497297a50c138ebd6b09d25d372eb3457d490411a3f9411604"
 )
+SUCCESSOR_PREFLIGHT_99 = (
+    ROOT / "quality/qualifications/"
+    "australian-m112-rights-release-preflight-20261025-99.json"
+)
+SUCCESSOR_PREFLIGHT_99_SHA256 = (
+    "dc4d3e6d760aa8427837fb5c107421f6f21d0c4a6b9573d6f62df3bc2113ca12"
+)
+SUCCESSOR_PREFLIGHT_99_PLAN_SHA256 = (
+    "f05f1adac3f5400c94db5494bbf26a2036038ea99b3864af0fc469fd5cad38ed"
+)
 CURRENT_PREFLIGHT_PLAN_SHA256 = (
     "eafccee8f5befe5ba577056e91a68f51e121983250d1815d78f366c88dd96c99"
 )
@@ -140,6 +150,73 @@ def test_preflight_98_preserves_value_shape_state_and_revision_97() -> None:
     assert (
         report["release_and_admission_boundaries"][
             "external_publications_performed"
+        ]
+        is False
+    )
+
+
+def test_preflight_99_binds_silver_semantic_successors() -> None:
+    report = _json(SUCCESSOR_PREFLIGHT_99)
+    successor_sha = hashlib.sha256(
+        SUCCESSOR_PREFLIGHT_99.read_bytes()
+    ).hexdigest()
+    assert successor_sha == SUCCESSOR_PREFLIGHT_99_SHA256
+    assert report["previous_preflight"]["path"].endswith(
+        "australian-m112-rights-release-preflight-20261025-98.json"
+    )
+    assert report["previous_preflight"]["preserved_unchanged"] is True
+    assert (
+        hashlib.sha256(
+            (ROOT / report["previous_preflight"]["path"]).read_bytes()
+        ).hexdigest()
+        == report["previous_preflight"]["sha256"]
+        == CURRENT_PREFLIGHT_SHA256
+    )
+    plan_path = (
+        "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md"
+    )
+    assert report["inputs"][plan_path] == SUCCESSOR_PREFLIGHT_99_PLAN_SHA256
+    assert len(report["inputs"]) == 333
+
+    p7 = report["p7_internal_date_reconciliation_current"]
+    assert p7["interpreted_values"] == 1_280
+    assert p7["native_unresolved_values"] == 12_365
+    assert p7["unavailable_values"] == 0
+    assert p7["internal_dmy_cells"] == 1_194
+    assert p7["operational_date_conversion_enabled"] is False
+    assert p7["date_domain_meaning_established"] is False
+    assert p7["temporal_comparison_enabled"] is False
+    assert p7["cross_era_equivalence_established"] is False
+
+    workbooks = report["historical_workbook_field_state_local_successor"]
+    assert workbooks["workbooks"] == 91
+    assert workbooks["header_roles_interpreted"] == 728
+    assert workbooks["non_header_cells"] == 310_176_929
+    assert workbooks["interpreted"] == 0
+    assert workbooks["native_unresolved"] == 310_176_929
+    assert workbooks["unavailable"] == 0
+    assert (
+        workbooks["status"]
+        == "local_reconciliation_pending_exact_main_readback"
+    )
+
+    pbs = report["pbs_domain_semantics_v5_readback"]
+    assert pbs["direct_restriction_date_fields"] == 3_028
+    assert pbs["lexical_grammar"] == "XSD YYYY-MM-DD"
+    assert pbs["schema_patch_bound"] is False
+    assert pbs["native_values_inspected"] is False
+    assert pbs["reference_nested_dates_qualified"] is False
+
+    schema = report["pbs_root_schema_version_metadata_readback"]
+    assert schema["run_id"] == 40145730405
+    assert schema["declared_schema_version"] == "3.1"
+    assert schema["schema_major"] == 3
+    assert schema["schema_minor"] == 1
+    assert schema["schema_patch_bound"] is False
+    assert schema["source_field_values_emitted"] is False
+    assert (
+        report["release_and_admission_boundaries"][
+            "new_sources_or_datasets_added"
         ]
         is False
     )

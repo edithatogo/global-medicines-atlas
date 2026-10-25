@@ -412,6 +412,13 @@ def test_report_separates_field_mapping_from_value_state() -> None:
             row["date_states"].get("ambiguous_calendar_order", 0)
             for row in date_fields
         )
+        == 0
+    )
+    assert (
+        sum(
+            row["date_states"].get("internal_file_consistency_dmy", 0)
+            for row in date_fields
+        )
         == 1_194
     )
     assert sum(row["native_unresolved"] for row in date_fields) == 2_240
@@ -1071,6 +1078,9 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         "p7_candidate_qualification_receipt": run_receipt,
         "p7_date_profile": typed["_p7_date_profile"],
         "p7_date_inference": typed["_p7_date_inference"],
+        "p7_date_reconciliation": _read_json(
+            Path(field_reconciliation.P7_DATE_RECONCILIATION_PATH)
+        ),
         "p7_value_era_rules": rules,
     }
     paths: dict[str, Any] = {}
@@ -1078,6 +1088,12 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         path = tmp_path / f"{name}.json"
         if name == "p7_date_inference":
             path.write_bytes(Path(P7_DATE_INFERENCE_PATH).read_bytes())
+        elif name == "p7_date_reconciliation":
+            path.write_bytes(
+                Path(
+                    field_reconciliation.P7_DATE_RECONCILIATION_PATH
+                ).read_bytes()
+            )
         else:
             path.write_text(json.dumps(value), encoding="utf-8")
         paths[name] = path
@@ -1106,6 +1122,7 @@ def test_reconcile_from_paths_binds_exact_file_digests(tmp_path: Any) -> None:
         "p7_run_receipt",
         "p7_date_profile",
         "p7_date_inference",
+        "p7_date_reconciliation",
         "p7_value_era_rules",
     }
     assert all(len(item["sha256"]) == 64 for item in report["inputs"].values())
@@ -1150,17 +1167,17 @@ def test_default_reconciliation_uses_retained_historical_p7_qualification() -> (
     }
     report = reconcile_from_paths(paths)
     p7 = report["p7_workbook"]
-    assert p7["cell_values"]["interpreted"] == 86
-    assert p7["cell_values"]["unresolved"] == 13_559
+    assert p7["cell_values"]["interpreted"] == 1_280
+    assert p7["cell_values"]["unresolved"] == 12_365
     assert (
         p7["orthogonal_diagnostics"][
             "internal_file_consistency_inference_selected"
         ]
-        is False
+        is True
     )
     assert (
         p7["orthogonal_diagnostics"]["file_consistency_dmy_interpreted_cells"]
-        == 0
+        == 1_194
     )
     assert (
         report["semantic_boundaries"]["p7_temporal_comparison_enabled"] is False
@@ -1178,12 +1195,12 @@ def test_default_reconciliation_cli_keeps_retained_inputs(
     )
     assert reconcile_cli.main() == 0
     report = json.loads(output.read_text(encoding="utf-8"))
-    assert report["p7_workbook"]["cell_values"]["interpreted"] == 86
+    assert report["p7_workbook"]["cell_values"]["interpreted"] == 1_280
     assert (
         report["p7_workbook"]["orthogonal_diagnostics"][
             "internal_file_consistency_inference_selected"
         ]
-        is False
+        is True
     )
 
 

@@ -1,0 +1,214 @@
+{
+  "report": {
+    "domains": {
+      "document_valid_date": {
+        "entity_count": 1,
+        "field_count": 1,
+        "limits": [
+          "does not establish a medicine listing interval or current status",
+          "applies only to the exact pinned 2026-04-01 PBS v3 member"
+        ],
+        "meaning": "document-level dcterms:valid date, kept distinct from schedule effective date",
+        "status": "qualified_separate_source_date_role"
+      },
+      "effective_date": {
+        "entity_count": 2799,
+        "field_count": 2799,
+        "limits": [
+          "profile applies only to the exact pinned 2026-04-01 PBS v3 member",
+          "date roles remain separate; no validity interval, commencement precedence, or current status is inferred",
+          "other date-shaped values and other PBS eras remain unresolved"
+        ],
+        "meaning": "source schedule and item-effectivity date roles",
+        "status": "qualified_bounded_source_structure_and_date_grammar"
+      },
+      "item": {
+        "entity_count": 58774,
+        "field_count": 132395,
+        "limits": [
+          "occurrence identity is source/member/path-bound, not a global item key",
+          "native code or identifier values are not interpreted or normalized"
+        ],
+        "meaning": "PBS pharmaceutical-item record occurrence",
+        "status": "qualified_bounded_source_structure"
+      },
+      "price": {
+        "entity_count": 4940077,
+        "field_count": 11539739,
+        "limits": [
+          "an amount under a PBS price path is not by itself a payable benefit or patient cost",
+          "price basis, currency, contribution, and benefit semantics remain unresolved",
+          "numeric candidate conversion remains lossless-only and native values remain native_unresolved"
+        ],
+        "meaning": "source-labelled product price and amount structure",
+        "status": "qualified_bounded_source_structure"
+      },
+      "product": {
+        "entity_count": 238514,
+        "field_count": 561085,
+        "limits": [
+          "source structure does not establish ingredient equivalence or a unique marketed product",
+          "mp/product code references remain literal and unresolved"
+        ],
+        "meaning": "PBS drug/product and nested mp structures",
+        "status": "qualified_bounded_source_structure"
+      },
+      "restriction": {
+        "entity_count": 2120959,
+        "field_count": 5019620,
+        "limits": [
+          "text and rule structure are preserved; no patient eligibility or clinical conclusion is inferred",
+          "linked criteria and administrative advice remain source references unless separately resolved"
+        ],
+        "meaning": "PBS prescribing restriction and prescribing-rule source material",
+        "status": "qualified_bounded_source_structure"
+      },
+      "restriction_effective_date": {
+        "field_count": 3028,
+        "limits": [
+          "count covers only the exact direct PBS restriction/effective/date/text QName path in the pinned member",
+          "does not establish a validity interval, precedence, current status, or clinical eligibility",
+          "reference-nested effective dates remain native_unresolved",
+          "grammar is supported by the official PBS XML Mapping Specification documentation release 3.1.9; the archive root binds schema 3.1 but not its patch release",
+          "this qualifies the documented lexical form only; no native values were inspected or checked for calendar validity"
+        ],
+        "meaning": "source date literal attached beneath a restriction's effective element",
+        "status": "qualified_exact_source_path_role_and_xsd_date_grammar"
+      },
+      "status": {
+        "entity_count": 0,
+        "field_count": 0,
+        "limits": [
+          "the exact path inventory contains no PBS element or attribute named status",
+          "effective, supply-only, and non-effective dates do not establish a current listing state"
+        ],
+        "meaning": null,
+        "status": "unresolved_no_explicit_status_field_qualified"
+      }
+    },
+    "meaning_basis": [
+      "docs/qualification/australian-source-contracts.md#pbs-structural-destination-candidates",
+      "docs/qualification/australian-source-contracts.md#pbs-opt-in-date-candidates",
+      "docs/qualification/pbs-public-qualification.md#pinned-v3-date-profile-receipt-2026-09-28",
+      "https://info.data.pbs.gov.au/xml-schema/doc/html/guide.html",
+      "https://info.data.pbs.gov.au/xml-schema/doc/html/mapping.html",
+      "https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_amount.html",
+      "https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_pbs.price.content.html",
+      "https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_contribution.html",
+      "https://info.data.pbs.gov.au/xml-schema/doc/html/elements/pbs_pbs.restriction.html",
+      "https://info.data.pbs.gov.au/xml-schema/doc/html/mapping.html (Mapping Specification documentation release 3.1.9; states PBS XML dates use XSD YYYY-MM-DD)"
+    ],
+    "profile_id": "pbs-v3.1-pinned-2026-04-01-domain-fields-v5",
+    "schema_id": "global-medicines-atlas.pbs-domain-field-semantics",
+    "schema_version": 1,
+    "schema_version_evidence": {
+      "archive_bytes": 11156706,
+      "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "declared_schema_version": "3.1",
+      "member_binding_sha256": "5bc111736f76cee651a73be99b37f5921b2924e53428b0c0f8ae45964943c4f2",
+      "member_bytes": 313437585,
+      "member_path": "sch-2026-04-01-r1.xml",
+      "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "receipt_file_sha256": "27ce93f8e1e94ec4df0c2ba55b1f8d947d895e844e6a4c6b6dc1f77788dcce81",
+      "receipt_path": "quality/qualifications/pbs-root-schema-version-metadata-20261025-40145730405.json",
+      "report_sha256": "eb6155e226bfd0dedca590e442b3f673e2bde566656cbfbbe07d595c54660398",
+      "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "root_metadata_only": true,
+      "schema_major": 3,
+      "schema_minor": 1,
+      "schema_minor_bound": true,
+      "schema_patch": null,
+      "schema_patch_bound": false,
+      "source_field_values_emitted": false,
+      "workflow_commit": "fb1aaabacc204c19eb1661dc8e00ce7855489e62",
+      "workflow_run_id": "40145730405"
+    },
+    "scope": {
+      "complete_domain_semantics_qualified": false,
+      "consumer_canaries": 0,
+      "cross_era_equivalence": false,
+      "date_grammar_qualified_fields": 3028,
+      "new_admissions": 0,
+      "new_sources": 0,
+      "publications": 0,
+      "rights_conclusion_changed": false,
+      "source_values_emitted": false
+    },
+    "source": {
+      "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "date_profile_receipt_sha256": "79c0590fbe39e22d7044d12b6522838e8bd32788df762cd3a648eb608f3a0b38",
+      "member_path": "sch-2026-04-01-r1.xml",
+      "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "native_digest": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+      "native_fields": 18208758,
+      "observed_domain_receipt_sha256": "c30da0bf8cdd002fd0fe47bab4a05dfaa4fb4e739c13db3ce3869c8772d21157",
+      "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "schema_path_inventory_sha256": "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b"
+    },
+    "source_schema_field_meanings": {
+      "pbs_amount_text": {
+        "limits": [
+          "the schema does not supply an explicit currency code for these fields",
+          "native lexemes, precision classification, amount category references, and monetary values remain unresolved",
+          "a source price amount is not thereby a payable benefit or patient cost",
+          "patient-contribution role does not establish the amount actually paid by a patient",
+          "applies only to exact PBS namespace amount/text paths in the pinned v3 member"
+        ],
+        "meaning": "PBS amount content is defined by the source schema as a dollar value; nested price and patient-contribution contexts retain their distinct source roles",
+        "patient_contribution_fields": 2279,
+        "pbs_amount_fields": 891163,
+        "product_price_fields": 817216,
+        "status": "qualified_exact_pinned_v3_schema_role"
+      },
+      "restriction": {
+        "limits": [
+          "restriction text does not establish patient-specific eligibility or a clinical conclusion",
+          "reference descendants remain source-local references and are not resolved here",
+          "applies only to the exact pinned v3 restriction structure"
+        ],
+        "meaning": "the source restriction element represents the reason for subsidisation, including indications and criteria",
+        "status": "qualified_exact_pinned_v3_schema_label"
+      },
+      "restriction_effective_date_text": {
+        "archive_declared_schema_version": "3.1",
+        "archive_schema_patch_bound": false,
+        "field_count": 3028,
+        "grammar_documentation_release": "3.1.9",
+        "lexical_grammar": "YYYY-MM-DD (XML Schema date lexical representation)",
+        "limits": [
+          "the source root binds schema major/minor 3.1; the exact patch release is unbound",
+          "no native field values were emitted, inspected, or validated against the grammar",
+          "lexical grammar does not establish a valid calendar date, interval, precedence, current status, or clinical eligibility",
+          "applies only to the exact direct restriction/effective/date/text path in the pinned member; nested reference dates remain unresolved"
+        ],
+        "meaning": "the direct restriction/effective/date/text field uses the documented XSD YYYY-MM-DD lexical grammar",
+        "source_schema_version_evidence": {
+          "archive_bytes": 11156706,
+          "archive_sha256": "f3e7af3610637b85577d0518ef50d3be9e692888e9acd3b5897d313706365c20",
+          "declared_schema_version": "3.1",
+          "member_binding_sha256": "5bc111736f76cee651a73be99b37f5921b2924e53428b0c0f8ae45964943c4f2",
+          "member_bytes": 313437585,
+          "member_path": "sch-2026-04-01-r1.xml",
+          "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+          "receipt_file_sha256": "27ce93f8e1e94ec4df0c2ba55b1f8d947d895e844e6a4c6b6dc1f77788dcce81",
+          "receipt_path": "quality/qualifications/pbs-root-schema-version-metadata-20261025-40145730405.json",
+          "report_sha256": "eb6155e226bfd0dedca590e442b3f673e2bde566656cbfbbe07d595c54660398",
+          "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+          "root_metadata_only": true,
+          "schema_major": 3,
+          "schema_minor": 1,
+          "schema_minor_bound": true,
+          "schema_patch": null,
+          "schema_patch_bound": false,
+          "source_field_values_emitted": false,
+          "workflow_commit": "fb1aaabacc204c19eb1661dc8e00ce7855489e62",
+          "workflow_run_id": "40145730405"
+        },
+        "status": "qualified_exact_source_path_xsd_lexical_grammar"
+      }
+    },
+    "status": "bounded_semantics_qualified_with_explicit_unresolved_fields"
+  },
+  "report_sha256": "3c06a7a09fced148dfaa672f759886c48875ecf25e561359161964962a40cc94"
+}
