@@ -49,7 +49,7 @@ MAX_RUNTIME_SECONDS = 30.0
 _MAX_DECIMAL_PRECISION = 38
 _COLUMN = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 _NESTED_COLUMN = re.compile(
-    r"([A-Za-z_][A-Za-z0-9_]*)__"
+    r"([A-Za-z_](?:[A-Za-z0-9]|_(?!_))*)__"
     r"(native_value|native_state|conversion_status|typed_value)"
 )
 _OPERATORS = {"=", "!=", "<", "<=", ">", ">="}

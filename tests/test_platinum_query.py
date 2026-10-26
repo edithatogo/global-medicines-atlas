@@ -323,6 +323,16 @@ def test_query_projects_native_components_from_source_field_structs(
     )
 
 
+def test_nested_projection_tokens_do_not_capture_gold_column_names():
+    assert platinum_query._column_parts(
+        "benefit__BenefitStartDate__typed_value"
+    ) == ("benefit__BenefitStartDate__typed_value", None)
+    assert platinum_query._column_parts("ItemNum__native_value") == (
+        "ItemNum",
+        "native_value",
+    )
+
+
 @pytest.mark.parametrize(
     ("engine", "adapter"),
     [("duckdb", DuckDBQueryAdapter()), ("polars", PolarsQueryAdapter())],
