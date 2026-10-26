@@ -122,8 +122,8 @@ def test_native_struct_component_is_available_through_api_and_cli(
         lambda **_: backend._resolver,
     )
     expected = [
-        {"ItemNum.native_value": "MBS-A"},
-        {"ItemNum.native_value": None},
+        {"ItemNum__native_value": "MBS-A"},
+        {"ItemNum__native_value": None},
     ]
 
     client = TestClient(
@@ -131,7 +131,7 @@ def test_native_struct_component_is_available_through_api_and_cli(
     )
     response = client.get(
         "/api/v1/benefits/au.mbs.service-items",
-        params={"columns": "ItemNum.native_value", "limit": 2},
+        params={"columns": "ItemNum__native_value", "limit": 2},
     )
     assert response.status_code == 200
     assert response.json()["rows"] == expected
@@ -148,7 +148,7 @@ def test_native_struct_component_is_available_through_api_and_cli(
             "--schema-file",
             str(tmp_path / "schema.json"),
             "--column",
-            "ItemNum.native_value",
+            "ItemNum__native_value",
             "--limit",
             "2",
         ],

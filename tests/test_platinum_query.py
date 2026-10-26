@@ -311,15 +311,15 @@ def test_query_projects_native_components_from_source_field_structs(
             "au.mbs.service-items",
             engine=engine,
             spec=QuerySpec(
-                columns=("ItemNum.native_value",),
-                filters=(QueryFilter("ItemNum.native_state", "=", "present"),),
+                columns=("ItemNum__native_value",),
+                filters=(QueryFilter("ItemNum__native_state", "=", "present"),),
                 limit=2,
             ),
         )
 
     assert result.rows == (
-        {"ItemNum.native_value": "MBS-A"},
-        {"ItemNum.native_value": "MBS-B"},
+        {"ItemNum__native_value": "MBS-A"},
+        {"ItemNum__native_value": "MBS-B"},
     )
 
 

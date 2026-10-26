@@ -49,7 +49,8 @@ MAX_RUNTIME_SECONDS = 30.0
 _MAX_DECIMAL_PRECISION = 38
 _COLUMN = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
 _NESTED_COLUMN = re.compile(
-    r"([A-Za-z_][A-Za-z0-9_]*)\.(native_value|native_state|conversion_status|typed_value)"
+    r"([A-Za-z_][A-Za-z0-9_]*)__"
+    r"(native_value|native_state|conversion_status|typed_value)"
 )
 _OPERATORS = {"=", "!=", "<", "<=", ">", ">="}
 
@@ -561,12 +562,12 @@ def _quote(name: str) -> str:
 def _column_parts(name: str) -> tuple[str, str | None]:
     if type(name) is not str:
         raise ValueError("invalid query column")
+    match = _NESTED_COLUMN.fullmatch(name)
+    if match is not None:
+        return match.group(1), match.group(2)
     if _COLUMN.fullmatch(name):
         return name, None
-    match = _NESTED_COLUMN.fullmatch(name)
-    if match is None:
-        raise ValueError("invalid query column")
-    return match.group(1), match.group(2)
+    raise ValueError("invalid query column")
 
 
 def _sql_column(name: str) -> str:
@@ -578,7 +579,7 @@ def _sql_column(name: str) -> str:
 
 def _sql_projection(name: str) -> str:
     expression = _sql_column(name)
-    if expression == _quote(name):
+    if _column_parts(name)[1] is None:
         return expression
     return f"{expression} AS {_quote(name)}"
 

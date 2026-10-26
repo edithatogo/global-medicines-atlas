@@ -844,9 +844,10 @@ revision. It adds no source and keeps the M-112 frozen inventory unchanged.
   scalar consumer boundary could not read the nested MBS field wrappers. Its
   artifact retains the candidate contracts and trust configuration, but has
   no final qualification receipt. A follow-up adds allowlisted projections
-  for `native_value`, `native_state`, `conversion_status`, and `typed_value`;
-  the current hosted readback remains pending. These candidate profiles do
-  not update M-112 federation counts or claim independent recovery.
+  with `SourceField__component` tokens for `native_value`, `native_state`,
+  `conversion_status`, and `typed_value`; it leaves the public column schema
+  unchanged. The current hosted readback remains pending. These candidate
+  profiles do not update M-112 federation counts or claim independent recovery.
 - [~] Run six bounded API, CLI, Atlas, and deterministic-export canaries over
   the admitted MBS service-benefit resources. Locally, the request set is
   bounded to two rows per exact native-value component and exercises all six

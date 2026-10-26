@@ -46,11 +46,7 @@ FilterScalar = Annotated[
 _WINDOW_LIMIT = 1000
 _MIN_CURSOR_KEY_BYTES = 32
 Column = Annotated[
-    str,
-    Field(
-        pattern=r"^[A-Za-z_][A-Za-z0-9_]*(\.(native_value|native_state|conversion_status|typed_value))?$",
-        max_length=128,
-    ),
+    str, Field(pattern=r"^[A-Za-z_][A-Za-z0-9_]*$", max_length=128)
 ]
 MAX_FILTERS = 16
 MAX_FILTER_TEXT = 1024
