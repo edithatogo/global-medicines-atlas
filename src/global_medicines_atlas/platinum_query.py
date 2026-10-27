@@ -48,6 +48,10 @@ MAX_RESULT_BYTES = 1024 * 1024
 MAX_RUNTIME_SECONDS = 30.0
 _MAX_DECIMAL_PRECISION = 38
 _COLUMN = re.compile(r"[A-Za-z_][A-Za-z0-9_]*")
+_NESTED_COLUMN = re.compile(
+    r"([A-Za-z_](?:[A-Za-z0-9]|_(?!_))*)__"
+    r"(native_value|native_state|conversion_status|typed_value)"
+)
 _OPERATORS = {"=", "!=", "<", "<=", ">", ">="}
 
 
@@ -242,9 +246,11 @@ class DuckDBQueryAdapter:
                 )
                 available = {item[0] for item in cursor.description}
                 _known_columns(spec, available)
-                projection = ", ".join(_quote(item) for item in spec.columns)
+                projection = ", ".join(
+                    _sql_projection(item) for item in spec.columns
+                )
                 predicates = " AND ".join(
-                    f"{_quote(item.column)} {item.operator} ?"
+                    f"{_sql_column(item.column)} {item.operator} ?"
                     for item in spec.filters
                 )
                 # Identifiers and operators passed strict allowlists above;
@@ -284,7 +290,9 @@ class PolarsQueryAdapter:
         for item in spec.filters:
             expression = _polars_predicate(item)
             frame = frame.filter(expression)
-        frame = frame.select(spec.columns).limit(spec.limit)
+        frame = frame.select([
+            _polars_column(name).alias(name) for name in spec.columns
+        ]).limit(spec.limit)
         rows = tuple(
             {name: _scalar(value) for name, value in row.items()}
             for row in frame.collect().to_dicts()
@@ -530,8 +538,7 @@ def _validate_spec(spec: QuerySpec) -> None:
     ):
         raise ValueError("query timeout budget is invalid")
     for name in (*spec.columns, *(item.column for item in spec.filters)):
-        if type(name) is not str or _COLUMN.fullmatch(name) is None:
-            raise ValueError("invalid query column")
+        _column_parts(name)
     for item in spec.filters:
         if item.operator not in _OPERATORS:
             raise ValueError("invalid query operator")
@@ -540,7 +547,10 @@ def _validate_spec(spec: QuerySpec) -> None:
 
 
 def _known_columns(spec: QuerySpec, available: set[str]) -> None:
-    selected = {*spec.columns, *(item.column for item in spec.filters)}
+    selected = {
+        _column_parts(name)[0]
+        for name in (*spec.columns, *(item.column for item in spec.filters))
+    }
     if not selected <= available:
         raise ValueError("unknown query column")
 
@@ -549,8 +559,39 @@ def _quote(name: str) -> str:
     return f'"{name}"'
 
 
+def _column_parts(name: str) -> tuple[str, str | None]:
+    if type(name) is not str:
+        raise ValueError("invalid query column")
+    match = _NESTED_COLUMN.fullmatch(name)
+    if match is not None:
+        return match.group(1), match.group(2)
+    if _COLUMN.fullmatch(name):
+        return name, None
+    raise ValueError("invalid query column")
+
+
+def _sql_column(name: str) -> str:
+    parent, child = _column_parts(name)
+    if child is None:
+        return _quote(parent)
+    return f"struct_extract({_quote(parent)}, '{child}')"
+
+
+def _sql_projection(name: str) -> str:
+    expression = _sql_column(name)
+    if _column_parts(name)[1] is None:
+        return expression
+    return f"{expression} AS {_quote(name)}"
+
+
+def _polars_column(name: str) -> pl.Expr:
+    parent, child = _column_parts(name)
+    column = pl.col(parent)
+    return column if child is None else column.struct.field(child)
+
+
 def _polars_predicate(item: QueryFilter) -> pl.Expr:
-    column = pl.col(item.column)
+    column = _polars_column(item.column)
     value = item.value
     if item.operator == "=":
         return column == value

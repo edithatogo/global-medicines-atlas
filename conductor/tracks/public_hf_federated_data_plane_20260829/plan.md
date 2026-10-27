@@ -839,14 +839,22 @@ revision. It adds no source and keeps the M-112 frozen inventory unchanged.
   semantic, lineage, rights, and publication evidence; close all required
   receipt bytes; qualify each exact revision and digest through the remote
   reader; retain primary-only recovery as such. Local exact-profile admission
-  and contract-role tests pass. Hosted readback is pending. These candidate
-  product profiles do not update M-112 federation counts or claim independent
-  recovery.
+  and contract-role tests pass. First hosted run `40186394623` constructed the
+  six profiles and completed six bounded remote reads, then exposed that the
+  scalar consumer boundary could not read the nested MBS field wrappers. Its
+  artifact retains the candidate contracts and trust configuration, but has
+  no final qualification receipt. A follow-up adds allowlisted projections
+  with `SourceField__component` tokens for `native_value`, `native_state`,
+  `conversion_status`, and `typed_value`; it leaves the public column schema
+  unchanged. The current hosted readback remains pending. These candidate
+  profiles do not update M-112 federation counts or claim independent recovery.
 - [~] Run six bounded API, CLI, Atlas, and deterministic-export canaries over
   the admitted MBS service-benefit resources. Locally, the request set is
-  bounded to two rows per exact native field and exercises no source values in
-  the retained output. The actual hosted consumers are pending. Reconcile the
-  existing Stable v1 gate only after those receipts are retained.
+  bounded to two rows per exact native-value component and exercises all six
+  exact remote resources through API, CLI JSON, CLI JSONL, and Atlas. The local
+  replay passed; its retained report contains no source values. The actual
+  hosted consumers are pending. Reconcile the existing Stable v1 gate only
+  after those receipts are retained.
 
 The current implementation does not change M-112 admission/canary counts,
 source membership, public objects, or release authority.

@@ -95,12 +95,12 @@ PUBLICATION_COMMENT_ID = 5859624790
 ROLE_RUN_ID = 40176576600
 CACHE_TTL = timedelta(hours=1)
 CANARY_FIELDS = {
-    "services": "ItemNum",
-    "hierarchy": "Group",
-    "descriptions": "Description",
-    "fees": "ScheduleFee",
-    "benefits": "Benefit100",
-    "caps": "EMSNDescription",
+    "services": "ItemNum__native_value",
+    "hierarchy": "Group__native_value",
+    "descriptions": "Description__native_value",
+    "fees": "ScheduleFee__native_value",
+    "benefits": "Benefit100__native_value",
+    "caps": "EMSNDescription__native_value",
 }
 
 
@@ -667,7 +667,11 @@ def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruf
     native_fields = {
         field.native_name: field.target_table for field in mbs_field_contracts()
     }
-    if any(native_fields.get(CANARY_FIELDS[name]) != name for name in OBJECTS):
+    if any(
+        native_fields.get(CANARY_FIELDS[name].split("__", maxsplit=1)[0])
+        != name
+        for name in OBJECTS
+    ):
         raise ValueError("consumer canary field differs from its native table")
     requests = tuple(
         DeliveryRequest(
