@@ -172,6 +172,20 @@ Execution policy: [autonomous, decision-gated](../../autonomy.md).
     and readiness records are
     `quality/qualifications/stable-v1-promotion-approval-20261018.json` and
     `quality/qualifications/stable-v1-release-readiness-reconciliation.json`.
+  - 2026-10-27 reconciliation after the Phase 4 delivery and Platinum consumer
+    receipts: the six exact July 2025 MBS Silver tables pass v4 remote read and
+    bounded API, CLI, Atlas, and JSONL canaries. The Phase 4 reconciliation
+    records no additional eligible output clearing all delivery gates, and the
+    recovery readiness receipt still lacks an approved independent target.
+    The authoritative contract remains blocked by the Australian federation
+    gate; M-105 and M-107 remain blocked, M-106 and M-108 through M-112 remain
+    unresolved, and M-113 remains verified. The refreshed receipt binds the
+    new system receipts without upgrading their scope or statuses. The retained candidate
+    is historical and unsigned, bound to `6be062860b70ce3ef28dec55adfc3a1995802947`;
+    a fresh exact candidate and protected-check verification must wait until
+    every qualification gate passes. The consumer guide now uses Python 3.15.1
+    and identifies the historical candidate limit. No signing, tag, attestation,
+    stable release, or external publication was performed.
   - GitHub attestation verification passed for the published `v1.0.0rc1`
     wheel; receipt: `quality/qualifications/stable-v1-release-provenance-receipt.json`.
     This remains prerelease evidence and does not constitute a public stable v1
