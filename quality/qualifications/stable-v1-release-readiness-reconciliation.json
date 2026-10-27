@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-27T11:13:34Z",
+  "as_of": "2026-10-27T12:22:59Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "9c12090c19d8dc39f4ef0c633be4f0a2d0e7c4795a9b1b5efc11a7244ea61729"
+    "sha256": "dd427acfeb50e42d13fa23d4b6659d1087b9511848eb5a6a9cbf9b6a19f420cb"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -99,6 +99,11 @@
         "path": "quality/qualifications/frontier-frozen-matcher-calibration-20261021.json",
         "sha256": "1c7912641b5f8cd2ebb514ac5a00b44d9c4a1cb03ee21d318bc143d3ff58be37",
         "consequence": "Matcher calibration has synthetic evidence only and no reviewed eligible real pair labels or threshold."
+      },
+      {
+        "path": "quality/qualifications/stable-v1-python-runtime-validation-20261027.md",
+        "sha256": "c079cfba1ac4ddc753cba370ab2900c60f6114188bc889734eaa3add662c2e4c",
+        "consequence": "Support readiness now records CPython 3.15.1 and the passed exact-main cross-platform consumer run; support aggregate status is derived from passing boundaries and absence of blocking unresolved risks."
       }
     ],
     "release_action_performed": false,

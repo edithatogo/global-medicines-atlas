@@ -7,7 +7,7 @@ import hashlib
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pytest
 from jsonschema import Draft202012Validator
@@ -17,6 +17,9 @@ from scripts.build_stable_v1_source_maturity import build_projection
 from scripts.reconcile_stable_v1_contract import build_contract, build_support
 
 ROOT = Path(__file__).resolve().parents[1]
+if TYPE_CHECKING:
+    from jsonschema.protocols import Validator
+
 QUALIFICATION_SCHEMA = ROOT / "schemas/stable-v1-qualification-v1.json"
 QUALIFICATION = ROOT / "quality/qualifications/stable-v1-contract.json"
 CANONICAL_SCHEMA = ROOT / "schemas/canonical-medicine-v2.json"
@@ -43,7 +46,7 @@ def _load(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def _validator(path: Path) -> Draft202012Validator:
+def _validator(path: Path) -> Validator:
     schema = _load(path)
     Draft202012Validator.check_schema(schema)
     return Draft202012Validator(schema)
@@ -86,6 +89,34 @@ def test_consumer_compatibility_contract_is_complete_and_fail_closed() -> None:
         "core_fallback",
     } <= set(contract["probes"])
     assert contract["state"] == "qualified"
+
+
+def test_support_readiness_uses_current_verified_python_runtime() -> None:
+    support = _load(SUPPORT)
+    _validator(SUPPORT_SCHEMA).validate(support)
+    runtime = next(
+        item
+        for item in support["support_boundaries"]
+        if item["gate_id"] == "python-315-reference"
+    )
+    assert runtime["scope"] == "CPython 3.15.1 reference implementation"
+    assert runtime["state"] == "passed"
+    receipt = ROOT / (
+        "quality/qualifications/stable-v1-python-runtime-validation-20261027.md"
+    )
+    assert str(receipt.relative_to(ROOT)) in runtime["evidence"]
+    evidence = receipt.read_text(encoding="utf-8")
+    assert "2851255c3bb6e3a4f9b7fc2cd7907cdf01a14bcd" in evidence
+    assert "40495426213" in evidence
+    assert "Python 3.15.1" in evidence
+    assert "Python 3.14 is authoritative" not in evidence
+    contract_support = _load(QUALIFICATION)["support"]
+    assert any(
+        "CPython 3.15.1" in item for item in contract_support["limitations"]
+    )
+    assert not any(
+        "Python 3.14" in item for item in contract_support["limitations"]
+    )
 
 
 def test_frontier_requirements_trace_to_verified_runtime_evidence() -> None:
@@ -482,26 +513,26 @@ def test_donor_archival_acceptance_rejects_missing_restore_or_approval(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    assert reconciliation._donor_archive_acceptance_observed()
+    assert reconciliation._donor_archive_acceptance_observed()  # pyright: ignore[reportPrivateUsage]
     scraper = _load(ROOT / reconciliation.SCRAPER_ARCHIVE)
     scraper["publication"]["restored"][0]["clean_restore"] = False
     unsafe = tmp_path / "scraper.json"
     unsafe.write_text(json.dumps(scraper), encoding="utf-8")
     with monkeypatch.context() as patch:
         patch.setattr(reconciliation, "SCRAPER_ARCHIVE", str(unsafe))
-        assert not reconciliation._donor_archive_acceptance_observed()
+        assert not reconciliation._donor_archive_acceptance_observed()  # pyright: ignore[reportPrivateUsage]
     graph = _load(ROOT / reconciliation.GRAPH_ARCHIVE)
     graph["archive_authorized"] = False
     unsafe.write_text(json.dumps(graph), encoding="utf-8")
     with monkeypatch.context() as patch:
         patch.setattr(reconciliation, "GRAPH_ARCHIVE", str(unsafe))
-        assert not reconciliation._donor_archive_acceptance_observed()
+        assert not reconciliation._donor_archive_acceptance_observed()  # pyright: ignore[reportPrivateUsage]
     graph = _load(ROOT / reconciliation.GRAPH_ARCHIVE)
     graph["retained_branches"]["main"] = "different-head"
     unsafe.write_text(json.dumps(graph), encoding="utf-8")
     with monkeypatch.context() as patch:
         patch.setattr(reconciliation, "GRAPH_ARCHIVE", str(unsafe))
-        assert not reconciliation._donor_archive_acceptance_observed()
+        assert not reconciliation._donor_archive_acceptance_observed()  # pyright: ignore[reportPrivateUsage]
 
 
 @pytest.mark.parametrize("state", ["failed", "unverified", "blocked"])
@@ -543,6 +574,20 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
     assert (
         receipt["contract"]["sha256"]
         == hashlib.sha256(contract_path.read_bytes()).hexdigest()
+    )
+    runtime_receipt_path = ROOT / (
+        "quality/qualifications/stable-v1-python-runtime-validation-20261027.md"
+    )
+    runtime_receipt = next(
+        item
+        for item in receipt["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == str(runtime_receipt_path.relative_to(ROOT))
+    )
+    assert (
+        runtime_receipt["sha256"]
+        == hashlib.sha256(runtime_receipt_path.read_bytes()).hexdigest()
     )
     assert receipt["release_performed"] is False
     assert receipt["candidate_package"] == {
@@ -594,7 +639,7 @@ def test_structural_medicine_v2_is_not_temporal_migration_v2() -> None:
 
 
 def test_inappropriate_comparison_requires_material_mismatch() -> None:
-    comparison = {
+    comparison: dict[str, Any] = {
         "schema_id": "global-medicines-atlas.comparison-validity",
         "schema_version": 1,
         "left_subject_id": "left",
@@ -657,7 +702,7 @@ def test_rehearsal_plan_defines_every_blocking_stable_rehearsal() -> None:
     assert all(item["blocker"] for item in rehearsals)
 
 
-def test_support_readiness_fails_closed_and_matches_residual_risks() -> None:
+def test_support_readiness_matches_boundaries_and_residual_risks() -> None:
     support = _load(SUPPORT)
     _validator(SUPPORT_SCHEMA).validate(support)
     projection_risks = {
@@ -669,7 +714,7 @@ def test_support_readiness_fails_closed_and_matches_residual_risks() -> None:
         for item in support["residual_risks"]
     }
     assert support_risks == projection_risks
-    assert support["readiness_state"] == "blocked"
+    assert support["readiness_state"] == "verified"
     unresolved = {
         item["risk_id"]
         for item in support["residual_risks"]
@@ -683,6 +728,21 @@ def test_support_readiness_fails_closed_and_matches_residual_risks() -> None:
     )
     assert production_dr["disposition"] == "accepted"
     assert production_dr["blocking"] is False
+
+
+def test_support_readiness_stays_blocked_for_unresolved_boundary_or_risk() -> (
+    None
+):
+    raw = _load(SUPPORT)
+    raw["support_boundaries"][0]["state"] = "unverified"
+    assert build_support(raw)["readiness_state"] == "blocked"
+
+    raw = _load(SUPPORT)
+    recovery = next(
+        item for item in raw["residual_risks"] if item["risk_id"] == "RISK-001"
+    )
+    recovery.update(disposition="unresolved", blocking=True)
+    assert build_support(raw)["readiness_state"] == "blocked"
 
 
 def test_stable_contract_reconciliation_is_deterministic() -> None:

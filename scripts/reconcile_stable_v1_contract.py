@@ -762,7 +762,18 @@ def build_support(raw: dict[str, Any]) -> dict[str, Any]:
                 "gate_id": "renovate-output-verification",
                 "evidence": [QUALITY_CLOSURE],
             })
-    support["readiness_state"] = "blocked"
+    support["readiness_state"] = (
+        "verified"
+        if all(
+            boundary["state"] == "passed"
+            for boundary in support["support_boundaries"]
+        )
+        and not any(
+            risk["blocking"] and risk["disposition"] == "unresolved"
+            for risk in support["residual_risks"]
+        )
+        else "blocked"
+    )
     return support
 
 
