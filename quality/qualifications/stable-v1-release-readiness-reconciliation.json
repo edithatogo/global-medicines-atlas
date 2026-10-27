@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-23T11:31:34Z",
+  "as_of": "2026-10-27T11:13:34Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "9127eed70e420b4063520e46917a85599968212d82f54fe42a986364dc187a83"
+    "sha256": "9c12090c19d8dc39f4ef0c633be4f0a2d0e7c4795a9b1b5efc11a7244ea61729"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -37,5 +37,89 @@
       "protected_hosted_checks_and_attestation_verify"
     ],
     "release_action_performed": false
+  },
+  "current_evidence_reconciliation": {
+    "system_receipts": [
+      {
+        "path": "quality/qualifications/australian-donor-m105-current-disposition-20261023.json",
+        "sha256": "ce303495a08a8eead41766e5a7e1b2ff3fe6635c281587f2f20887f018ce0269",
+        "consequence": "M-105 remains blocked because required pre-archive parity cannot be established retroactively."
+      },
+      {
+        "path": "quality/qualifications/australian-pbs-m107-link-crosswalk-20261018.json",
+        "sha256": "4614d529de0f290319757520b95cea004a2d271e18e2f67a5c1350370e5b127d",
+        "consequence": "M-107 remains blocked; 315 of 316 observed PBS schedule links remain unresolved to archive identities."
+      },
+      {
+        "path": "docs/qualification/australian-mbs-pbs-m107-snapshots.md",
+        "sha256": "e64c64b1817a1c7d1283b02bfde65cbd7937bd318932db1d0a35d41ed7bcdcf1",
+        "consequence": "The latest recorded Health.gov workbook delivery attempt timed out for all three categories with zero bytes; M-107 remains blocked."
+      },
+      {
+        "path": "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json",
+        "sha256": "48c6ea2bf1eb50790edae6e6f0c5a1a4db31a697eef00a805b0ae69706bb5723",
+        "consequence": "Six July 2025 MBS Silver tables have qualified delivery; no additional candidate output clears all delivery gates."
+      },
+      {
+        "path": "quality/qualifications/platinum-actual-consumer-reconciliation-20261027.json",
+        "sha256": "ce09c4e632dc0d54b0c19fb405a81ca6ffe59c866d972277e496b855ad69adec",
+        "consequence": "Bounded API, CLI, Atlas and JSONL canaries passed for the same six tables; browser qualification was not performed."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261027-40469072111/admission-remote-read.json",
+        "sha256": "aa94bdf19421eed202e6803daa94d58b65c8ccdcfe73b09e151ef00dc00eedd7",
+        "consequence": "Remote reader qualification passed for six exact products at one pinned revision."
+      },
+      {
+        "path": "quality/qualifications/australian-m112-recovery-readiness-20261027/recovery-readiness.json",
+        "sha256": "19926db87fceef4a74914bc2cdc2db0ee4026d9ce5987994ab36b1012f17f2f0",
+        "consequence": "Primary checksum and restore evidence passed; independent recovery remains blocked because no approved independent target or authority is evidenced."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-silver-semantic-manifest-20261017.json",
+        "sha256": "9ad5e2747949b8b7142819e981241c1f74105b3570d78025e654e780241c5882",
+        "consequence": "Exact July 2025 MBS source-era semantics are qualified; this does not qualify every Australian federation requirement."
+      },
+      {
+        "path": "quality/qualifications/mbs-historical-workbook-value-shape-cohort-20261025-40149410629.json",
+        "sha256": "12e1af2eafa0d2aa7b1c2dbb3ccda9112d6ed1e232e2779f981e421a0699e373",
+        "consequence": "91-workbook value-shape diagnostics passed; all 310176929 non-header cells remain native_unresolved."
+      },
+      {
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r15.json",
+        "sha256": "810fd3eac27e7586e7addd6bb3840eb147c7509f0cd79d26b1a9d0d07139454d",
+        "consequence": "PBS field-state partition and bounded meanings remain incomplete; unsupported native values remain unresolved."
+      },
+      {
+        "path": "quality/qualifications/pbs-native-reference-case-adjudication-20261025-v1.json",
+        "sha256": "d0701afb167b20f3a67b89b9773e2db4d6ec41f8b9247eddff5a3a9c317e680f",
+        "consequence": "Bounded PBS references have structural review only; semantic relationships were abstained and zero edges promoted."
+      },
+      {
+        "path": "quality/qualifications/frontier-frozen-matcher-calibration-20261021.json",
+        "sha256": "1c7912641b5f8cd2ebb514ac5a00b44d9c4a1cb03ee21d318bc143d3ff58be37",
+        "consequence": "Matcher calibration has synthetic evidence only and no reviewed eligible real pair labels or threshold."
+      }
+    ],
+    "release_action_performed": false,
+    "candidate_verification_performed": false,
+    "candidate_verification_reason": "The Australian health federation gate remains blocked; the retained candidate is bound to an earlier commit and must be rebuilt only after qualification gates pass.",
+    "signed_stable_release_produced": false,
+    "conditional_approval_consumed": false,
+    "disposition": "qualification_blocked",
+    "retained_candidate": {
+      "path": "quality/qualifications/stable-v1-release-candidate.json",
+      "sha256": "466b96e9b8657a5be8db25606f0bbac63b1a7eb8ac7f69b9cff472e78f844a04",
+      "candidate_id": "stable-v1-rc-6be062860b70",
+      "source_commit": "6be062860b70ce3ef28dec55adfc3a1995802947",
+      "content_sha256": "feae6ab9527ac9952d47b39a73634a6742645323528ad714737d5d8f0f955a2a",
+      "status": "historical_unsigned_candidate_not_current_stable_candidate"
+    },
+    "consumer_verification_guide": {
+      "path": "docs/qualification/stable-v1-release-candidate.md",
+      "sha256": "2745bb67519e398e72546100f8f72e08f264a17cf0b500804319d564e1532c00",
+      "runtime": "CPython 3.15.1",
+      "state": "repository_guide_complete_candidate_package_rebuild_pending"
+    }
   }
 }

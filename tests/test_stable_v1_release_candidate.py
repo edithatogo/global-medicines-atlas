@@ -1199,9 +1199,15 @@ def test_documentation_and_script_preserve_external_gates() -> None:
     assert "unsigned and unattested" in guide
     assert "stable release, production deployment" in guide.replace("\n", " ")
     assert (
-        "signing/attestation and the remaining external qualification gates"
+        "stable promotion remains blocked by the australian health federation qualification gate"
         in guide.replace("\n", " ")
     )
+    assert "after the gates pass" in guide
+    assert "protected signing and attestation workflow" in guide.replace(
+        "\n", " "
+    )
+    assert "3.15.1" in guide
+    assert "3.14.6" not in guide
     assert "subprocess.run" in script
     assert "gh release create" not in script
     assert "git tag" not in script
