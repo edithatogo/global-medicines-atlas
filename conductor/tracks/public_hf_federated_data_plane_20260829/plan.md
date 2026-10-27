@@ -835,26 +835,24 @@ revision. It adds no source and keeps the M-112 frozen inventory unchanged.
   v1/v2/v3 schemas, role semantics, and all four pinned input document digests
   validate. This qualification performed no v4 admission, consumer canary, or
   publication.
-- [~] Configure six exact v4.1 product profiles from the pinned role, source,
+- [x] Configure six exact v4.1 product profiles from the pinned role, source,
   semantic, lineage, rights, and publication evidence; close all required
   receipt bytes; qualify each exact revision and digest through the remote
-  reader; retain primary-only recovery as such. Local exact-profile admission
-  and contract-role tests pass. First hosted run `40186394623` constructed the
-  six profiles and completed six bounded remote reads, then exposed that the
-  scalar consumer boundary could not read the nested MBS field wrappers. Its
-  artifact retains the candidate contracts and trust configuration, but has
-  no final qualification receipt. A follow-up adds allowlisted projections
-  with `SourceField__component` tokens for `native_value`, `native_state`,
-  `conversion_status`, and `typed_value`; it leaves the public column schema
-  unchanged. The current hosted readback remains pending. These candidate
-  profiles do not update M-112 federation counts or claim independent recovery.
-- [~] Run six bounded API, CLI, Atlas, and deterministic-export canaries over
-  the admitted MBS service-benefit resources. Locally, the request set is
-  bounded to two rows per exact native-value component and exercises all six
-  exact remote resources through API, CLI JSON, CLI JSONL, and Atlas. The local
-  replay passed; its retained report contains no source values. The actual
-  hosted consumers are pending. Reconcile the existing Stable v1 gate only
-  after those receipts are retained.
+  reader; retain primary-only recovery as such. Hosted run `40469072111` passed
+  against exact main commit `c6ee1e35d77f3f28ed9b3056804e7e83557de391`.
+  All six products carry 11 receipt roles and match the retained role
+  qualification on path, digest, byte count, and row count. The report and its
+  GitHub artifact digest are retained under
+  `quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261027-40469072111/`.
+  Primary restore evidence remains primary-only; independent recovery is not
+  claimed.
+- [x] Run six bounded API, CLI, Atlas, and deterministic-export canaries over
+  the admitted MBS service-benefit resources. Hosted run `40469072111` passed
+  six requests per surface through API, CLI JSON, CLI JSONL, and Atlas, with two
+  rows per request. The aggregate report contains no source values. Browser
+  qualification and source completeness remain unestablished.
 
-The current implementation does not change M-112 admission/canary counts,
-source membership, public objects, or release authority.
+This completes the bounded six-table candidate delivery qualification. It does
+not change M-112 federation acceptance, source membership, public objects, or
+release authority, and it does not by itself complete Stable v1 release
+qualification.
