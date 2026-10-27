@@ -790,10 +790,18 @@ the 1,759 denominator or imply broader federation acceptance.
   administrative domain is used, `independent=false`, region is unverified,
   and RPO/RTO are null. The 1,759 denominator, 8 admissions, 8 reader canaries,
   and 1,751 deferrals are unchanged.
+- [x] Reconcile the complete 28-file public-primary checksum inventory and
+  existing clean-room restore at the pinned M-112 revision, plus the six
+  July 2025 Silver outputs at their separately pinned revision. Both inventories
+  bind path, SHA-256, bytes, and Hub blob identity; the source inventory also
+  binds the eight admitted-object contracts. Hosted runs `36333396964` and
+  `40469072111` provide the existing primary restores. See
+  `quality/qualifications/australian-m112-recovery-readiness-20261027/`.
 - [ ] Configure and rehearse an approved geographically and administratively
-  independent recovery target with checksum inventory and qualified RPO/RTO.
-  No qualifying target or authority is present in the current repository
-  evidence; do not treat the same-account HF copy as independent.
+  independent recovery target with target-specific checksum verification and
+  qualified RPO/RTO. Blocked: no approved target or authority is represented
+  in checked repository configuration or retained receipts. Do not treat the
+  same-account HF copy as independent.
 
 ## System completion execution focus (2026-10-25)
 
