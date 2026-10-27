@@ -856,3 +856,43 @@ This completes the bounded six-table candidate delivery qualification. It does
 not change M-112 federation acceptance, source membership, public objects, or
 release authority, and it does not by itself complete Stable v1 release
 qualification.
+
+### Phase 4 eligible-output reconciliation (2026-10-27)
+
+The existing July 2025 MBS Silver six-table delivery is complete. Reconcile
+other currently recorded derived-output candidates against the same identity,
+lineage, rights, qualification, admission, and delivery gates before extending
+the cohort. The bounded reconciliation is retained in
+`quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json`.
+
+- [x] Confirm the six July 2025 MBS Silver tables have exact hosted admission,
+  remote-read, and API/CLI/Atlas/export receipts. No public release or new
+  publication was performed.
+- [x] Reconcile the other recorded output candidates against existing exact
+  identity, lineage, rights, semantics, and qualification evidence without
+  changing the frozen inventory or adding sources.
+- [ ] Qualify the 91 historical workbook Parquet outputs. The cohort receipt
+  covers all 91 candidate identities and the exact-output rights attestation
+  is recorded, but source-column and value-era semantics remain unqualified;
+  the current field-state receipt leaves 310,176,929 non-header cells
+  `native_unresolved`. Keep these outputs candidate-only until supported
+  meanings and exact v4 role evidence are qualified.
+- [ ] Admit and deliver the PBS native Silver candidate. Its exact derived
+  output rights attestation and bounded field-state receipt are recorded, but
+  the field-state report is candidate-only, domain semantics are incomplete,
+  and independent pipeline builds have not passed. Preserve current-status,
+  payable-benefit, patient-cost, clinical, and cross-era uncertainty.
+- [ ] Close the separate four-object August 2026 MBS Bronze M-108 obligation.
+  Exact identities, lineage, and the bounded public-release rights attestation
+  are recorded, but these objects are outside the frozen M-112 inventory and
+  still lack product-specific v4 admission/card and independent-replica
+  evidence; resolve the unadmitted MBS prefix under M-108 as well.
+- [x] Confirm the historical 1993–2015 and July 2016 group inputs already have
+  admitted-object canary receipts. They are raw B2 deliveries, not additional
+  derived Silver outputs; this reconciliation did not rerun them.
+
+No additional derived output cleared every gate in this reconciliation. The
+three object-scoped blockers are recorded; the generic Phase 4 publication and
+integrated verification tasks above remain open. CMS HCPCS remains outside the
+M-112 inventory and its current record does not authorize processing or v4
+admission. No publication, promotion, or public release occurred.

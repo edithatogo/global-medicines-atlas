@@ -39,11 +39,11 @@
       "track": "federated_medicines_platinum_20260829",
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "API, CLI, Atlas and exports consume the same qualified revisions",
-      "current_failure": "Fixture and reviewed-candidate traversals do not qualify every required live admitted-product consumer path.",
-      "next_action": "Run bounded actual-consumer checks over admitted outputs after their prerequisites pass, covering supported result types, provenance and unknown states.",
+      "current_failure": "The six-table July 2025 MBS Silver cohort passes bounded live API, CLI, Atlas and deterministic JSONL export canaries; additional output cohorts remain blocked before admission, so they have no consumer receipts yet.",
+      "next_action": "Retain the revision- and digest-bound six-table receipts with provenance, bounded coverage and semantic limits. Reuse the same canary path only when another required output clears its identity, lineage, rights, semantics and admission gates.",
       "completion_evidence": "Revision- and digest-bound API, CLI, Atlas and deterministic export receipts with explicit coverage and semantic limits.",
       "stop_condition": "Close the shared consumer capability after required paths pass; add more datasets only when their profile exposes an uncovered mandatory behavior.",
-      "validation": "Select consumer integration, accessibility and export tests for changed behavior; preserve complete protected hosted checks."
+      "validation": "For each newly admitted output, select affected consumer integration and export checks and retain exact revision, object and semantic digests; preserve complete protected hosted checks."
     },
     {
       "id": "recovery",
