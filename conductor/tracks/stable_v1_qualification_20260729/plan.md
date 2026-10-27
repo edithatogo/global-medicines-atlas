@@ -823,3 +823,24 @@ authoritative contract, reconciliation, and bound receipts.
   eligible Silver producer output through v4 admission and the actual consumer
   boundary, resolve the first shared failure, and retain all mandatory object
   evidence and source-specific blockers under the existing contracts.
+
+### Stable support runtime reconciliation (2026-10-27)
+
+The Stable v1 support register carried a stale CPython 3.14 claim after the
+repository runtime and CI had moved to CPython 3.15.1. Reconcile the support
+register to the current project contract and the exact-main Test-Goblin
+cross-platform consumer evidence. The support aggregate is verified only when
+every support boundary passes and there is no blocking unresolved residual
+risk. This does not change or waive the independent Australian federation
+release gate.
+
+- [x] Record the exact-main Python 3.15.1 runtime and Linux/macOS/Windows
+  consumer evidence in
+  `quality/qualifications/stable-v1-python-runtime-validation-20261027.md`.
+- [x] Correct the support report and Stable v1 contract runtime claims; derive
+  support aggregate readiness from its boundary and residual-risk states.
+  Preserve the accepted production DR limit as a separate non-acceptance gate.
+- [x] Verify the focused contract suite (57 passed), Ruff, formatting, `ty`,
+  BasedPyright, context validation, and diff checks. The conditional stable
+  authority validator remains blocked by the unresolved Australian federation
+  gate; the historical release candidate remains unverified and unsigned.

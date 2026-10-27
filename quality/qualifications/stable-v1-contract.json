@@ -1055,13 +1055,14 @@
       "windows"
     ],
     "limitations": [
-      "Python 3.14 is authoritative and Mojo is experimental.",
-      "Clean wheel and sdist consumers are qualified on the declared Linux, macOS and Windows runners for the protected Phase 1 commits.",
+      "CPython 3.15.1 is the complete reference runtime; Mojo is optional and has no promoted runtime kernel.",
+      "Clean wheel and sdist consumers are qualified on Linux, macOS, and Windows by the exact-main Python 3.15.1 Test-Goblin run.",
       "LanceDB remains optional; core installation and deterministic fallback are qualified without the semantic extra."
     ],
     "evidence": [
+      "AGENTS.md",
       "conductor/tech-stack.md",
-      "quality/qualifications/v08.json",
+      "quality/qualifications/stable-v1-python-runtime-validation-20261027.md",
       "quality/qualifications/stable-v1-support-readiness.json",
       "SUPPORT.md",
       "SECURITY.md"
@@ -1099,11 +1100,12 @@
     },
     {
       "risk_id": "RISK-004",
-      "description": "Mojo remains experimental; Python 3.14 is authoritative.",
+      "description": "Mojo remains experimental; CPython 3.15.1 is the complete reference runtime.",
       "disposition": "accepted",
       "blocking": false,
       "evidence": [
-        "quality/qualifications/v08.json"
+        "conductor/tech-stack.md",
+        "quality/qualifications/stable-v1-python-runtime-validation-20261027.md"
       ]
     }
   ],
