@@ -778,6 +778,33 @@
     medallion tests and governed 31-test E2E lane pass; no source bytes or
     production admission are involved. PR #846 merged as
     `292b9719147796866cf059b3576f928ff9ed0eb8` after 38 hosted checks passed.
+
+### Actual consumers for the admitted July 2025 MBS Silver cohort (2026-10-27)
+
+- [x] Reconcile the post-admission live canaries across the API, CLI JSON,
+  Atlas HTML, and deterministic CLI JSONL export for all six exact Silver
+  resources at dataset revision
+  `3d2d528439bddf6f42e8e700c88917f0960a9f38`. Hosted workflow run `40469072111`
+  passed six requests per surface with two rows per request. The durable
+  consumer receipt binds each resource path, object digest, byte count, row
+  count, v4 contract digest, semantic-profile digest, and source/lineage roles
+  to request, identity, query, page, window, and returned-row digests. The
+  Platinum reconciliation is
+  `quality/qualifications/platinum-actual-consumer-reconciliation-20261027.json`.
+- [x] Retain coverage and semantic limits with those consumer results. Each
+  object has 5,989 declared rows, while each canary reads two rows;
+  source/product completeness remains unestablished. The exact July 2025 MBS
+  XML v3 semantic contract treats absence as `unknown`; it makes no patient
+  denominator, M110 Gold graph acceptance, M112 federation acceptance, PBS or
+  clinical equivalence, production promotion, public release, or independent
+  recovery claim. No source values are included in the aggregate receipt.
+- [ ] Publish a deterministic research package with v4 identities and
+  anonymous verification. The JSONL export canary qualifies a bounded actual
+  consumer only; package publication remains separately gated.
+- [ ] Extend these canaries to another output only after its exact identity,
+  lineage, rights, semantic qualification, and admission prerequisites pass.
+  The current historical workbook, PBS Silver, and out-of-inventory August
+  MBS candidates remain blocked as recorded in the Phase 4 reconciliation.
     This is synthetic API integration only.
   - [x] Exercise the same synthetic MBS Gold edge through `gma benefits` and
     compare rows, identity, page/window digests, and conservative coverage and
