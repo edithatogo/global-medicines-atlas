@@ -101,3 +101,19 @@ same deterministic `idempotency_key`. The key recomputes as SHA-256 of the
 canonical JSON array of its partition ID and snapshot ID; it is not an access
 credential. The additional allowlist pattern matches only this exact value in
 this exact field. Mutated values and credential field names remain rejected.
+
+## 2026-10-28 exact PBS replay identity
+
+PR #1361 head `bc0b3b349d38e4fb287714ce59bd6a6bef1de16c` failed the
+redacted history scan in run `40672929147`, job `122764005322`. Its one finding
+was line 54 of
+`quality/qualifications/australian-m112-pbs-utilisation-v3-replay-plan-20261028.json`:
+the deterministic replay idempotency field. The harness independently computes
+that value from the canonical partition and snapshot IDs.
+
+The configuration adds only that exact field/value pair to the existing
+allowlist. Controls reject a changed digest or a credential-field substitution;
+a native synthetic API-key control remains detected by Gitleaks 8.30.1. The
+same scanner version checked the complete target/head history with the revised
+configuration: 1,232 commits and approximately 366.88 MB, no leaks found.
+The hosted failure remains recorded; the corrected PR head requires new CI.

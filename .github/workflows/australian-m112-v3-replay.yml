@@ -8,7 +8,7 @@ on:
         required: true
         type: string
       target_path:
-        description: Exact raw B2 path from the qualified M-112 inventory
+        description: Exact MBS raw B2 path or one of the six frozen PBS raw B2 paths
         required: true
         type: string
 

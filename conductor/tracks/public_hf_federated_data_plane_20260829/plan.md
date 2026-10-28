@@ -959,3 +959,17 @@ append. The Stable v1 Australian federation gate remains blocked.
 - [x] Reconcile the receipt into M-111, Phase 4 delivery, Stable v1 evidence, and
   the public federation acceptance table. No additional object was admitted or
   published; other candidate outputs retain their object-specific blockers.
+
+## Exact PBS utilisation raw-B2 replay qualification (2026-10-28)
+
+- [x] Extend the existing metadata-only replay path to the six exact frozen PBS
+  utilisation identities. This addresses the missing M-112 `lineage.v3_replay`
+  role, using existing rights, B1/B2, publication and anonymous-restore evidence.
+  Bind every source input and local lifecycle record by digest. Fail before a
+  network read when a target, revision, identity, or evidence binding differs.
+- [x] Qualify the executor with synthetic download controls and unchanged MBS
+  replay checks; verify anonymous access, byte identity and temporary cleanup.
+- [ ] Review and merge after protected checks, then execute the exact-main
+  hosted replay and retain its aggregate artifact. No admission or consumer
+  canary follows from preparation alone. Keep the full federation acceptance
+  and track archival pending their remaining requirements.

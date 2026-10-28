@@ -1,0 +1,72 @@
+{
+  "contracts": [
+    {
+      "contract_id": "au-pbs-expenditure:historical-backfill-replay:v1",
+      "correction_rule": "new_snapshot_never_overwrite",
+      "deterministic_output_rule": "canonical_json_sha256",
+      "idempotency_rule": "partition_and_snapshot_sha256",
+      "late_arrival_rule": "append_then_replay_partition",
+      "missing_payload_rule": "metadata_only_fail_closed",
+      "partition_identity": [
+        "source_id",
+        "archive_period",
+        "logical_asset_id"
+      ],
+      "replay_order": [
+        "partition_id",
+        "correction_sequence",
+        "snapshot_id"
+      ],
+      "snapshot_identity": [
+        "partition_id",
+        "payload_sha256",
+        "metadata_sha256"
+      ],
+      "source_id": "au-pbs-expenditure",
+      "supersession_rule": "explicit_acyclic_predecessor"
+    }
+  ],
+  "replay_plan": {
+    "deterministic": true,
+    "eligible_snapshot_count": 1,
+    "plan_sha256": "3086a4df4cbfe07f54ec6d1aa0ace2730eec298d9d977cf8d9238d463a1961a1",
+    "schema_version": "historical-replay-plan-v1",
+    "steps": [
+      {
+        "action": "verify_and_rebuild_raw_b2_snapshot_registration",
+        "candidate_only": true,
+        "expected_byte_count": 372149,
+        "expected_payload_sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+        "hosted_replay_status": "pending",
+        "m112_consumer_canary_performed": false,
+        "partition_id": "8fd01208a1ef1e8709d088b86b2c6b559d71b7a327a5e27c1b48cebe6223d3e1",
+        "registration_semantics": "append_only_idempotent",
+        "snapshot_id": "36e86044dd52044ca04f92a5cb008b79594b14122cc3f485de03dd42ba6461e1",
+        "source_payload_values": "not_read",
+        "v4_admission_performed": false
+      }
+    ]
+  },
+  "snapshots": [
+    {
+      "archive_period": "filename-derived:Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "correction_sequence": 0,
+      "idempotency_key": "f0acc72a90fdba651eabae075462a6bff4004137b6ce2984f4f26e979aa1b29e",
+      "late_arriving": false,
+      "logical_asset_id": "929a0b9e2a32d96f36b41b99f150d44af25294152c1bc2c0081921ac42607334",
+      "metadata_sha256": "688d383422d6c71ef80d06993cda72a72e382fbb6e454e49c081ecc52a35f309",
+      "observation_status": "acquired",
+      "partition_id": "8fd01208a1ef1e8709d088b86b2c6b559d71b7a327a5e27c1b48cebe6223d3e1",
+      "partition_value": "edithatogo/australian-pbs-utilisation-archive@9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "payload_sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "replay_eligible": true,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "snapshot_id": "36e86044dd52044ca04f92a5cb008b79594b14122cc3f485de03dd42ba6461e1",
+      "source_id": "au-pbs-expenditure",
+      "source_url": "https://www.pbs.gov.au/statistics/expenditure-prescriptions/2023-2024/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "source_version_id": "expenditure-prescriptions-report-1-july-2023-30-june-2024",
+      "supersedes_snapshot_id": null
+    }
+  ],
+  "vocabulary_version": "3.0.0"
+}
