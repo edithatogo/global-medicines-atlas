@@ -914,3 +914,18 @@ release gate.
   BasedPyright, and diff checks pass.
 - [ ] Reconcile PR #1354 protected checks and merge only after they pass; keep
   Stable v1 and the federation track blocked until all contract gates pass.
+
+### PR #1354 hosted-check inventory and workflow-permission correction (2026-10-28)
+
+- [x] Diagnose the exact-head CI failures. Test-Goblin rejected the existing
+  Phase 4 workbook reconciliation test as unassigned, causing all Python lanes
+  to fail before execution. `zizmor --pedantic` also flagged two documented
+  recovery workflows' `actions: read` permission because its purpose was not
+  annotated at the permission declaration.
+- [x] Assign the reconciliation test to the unit lane and annotate the minimum
+  `actions: read` permission in the two workflows that download previous-run
+  recovery artifacts. Focused tests: 99 passed; Test-Goblin contract inventory,
+  Ruff, formatting, `zizmor --pedantic .github`, and diff checks passed.
+- [ ] Push the correction and reconcile all required checks against the exact
+  updated PR head before merging. The Australian federation and Stable v1 gates
+  remain blocked pending their substantive acceptance evidence.
