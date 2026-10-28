@@ -840,7 +840,8 @@ authoritative contract, reconciliation, and bound receipts.
   inventory identity. M-109, the Australian federation gate, and conditional
   promotion remain blocked. The affected PBS and Stable contract suites, static
   checks, and context validation pass. Review was performed by the implementing
-  agent, not an independent reviewer.
+  agent, not an independent reviewer. Commit `2f2d61f0` contains the report,
+  input digest binding, readiness reconciliation, and review correction.
 
 - [x] Implement the shared execution charter and machine-validated scheduling
   plan; require named existing gates, bounded failures, proof and stop conditions.

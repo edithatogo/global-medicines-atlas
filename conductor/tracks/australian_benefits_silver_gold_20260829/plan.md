@@ -6076,4 +6076,5 @@ authoritative contract, reconciliation, and bound receipts.
   and a canonical retained-report test. PBS field-state tests pass (56), Stable
   contract tests pass (63), and Ruff, formatting, `ty`, BasedPyright, context
   validation, and diff checks pass. Review was performed by the implementing
-  agent; no independent review or M-109 acceptance is claimed.
+  agent; no independent review or M-109 acceptance is claimed. Commit
+  `2f2d61f0` records r18 and the validation evidence.
