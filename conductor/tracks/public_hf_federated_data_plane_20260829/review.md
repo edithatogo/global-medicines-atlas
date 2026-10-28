@@ -45,4 +45,6 @@ base/head history with the revised configuration and the native API-key
 negative control remained detected. Three focused controls and 68 harness
 tests passed. Formal typing exposed a pre-existing overly broad command-list
 annotation in the affected test module; its minimal correction passed the
-affected node, ty and BasedPyright. New hosted qualification remains pending.
+affected node and ty. Full-file BasedPyright retains 195 inherited diagnostics
+versus 196 on the prior head, with zero new diagnostics. It is not a full-file
+formal-typing pass. New hosted qualification remains pending.
