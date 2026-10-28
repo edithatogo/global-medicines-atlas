@@ -1137,3 +1137,9 @@ release gate.
   digests to exact-main receipt `40653807510`; add a regression that verifies
   the consumer and readiness records against the hosted evidence. Commit
   `5a3879b7`; 67 focused tests, static checks, and Conductor validators pass.
+
+
+## M-111 exact-main browser consumer receipt (2026-10-28)
+
+- [x] Re-run the existing six-object v4 qualification on exact current `main` and retain the hosted receipt. Run 40664169948 passed at commit `ec59c2121015093b52dfb8afbd9e05a131321117`: six pinned remote reads and six requests each through API, CLI JSON, CLI JSONL, Atlas, and Chromium browser rendering; each request returned two rows. The report and artifact manifest bind exact object identities, schema/semantic trust, receipt roles, and rendered-row digests. Candidate-profile qualification only; no source additions, external publication, production promotion, M-112 acceptance, or independent recovery qualification.
+- [ ] Continue the Australian federation gate against its remaining requirements; this receipt does not clear M-105 through M-110, M-112, or the independent recovery authority gate.
