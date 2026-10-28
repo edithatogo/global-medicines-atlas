@@ -19,7 +19,11 @@ on:
         required: true
         type: string
       recovery_receipt:
-        description: Optional bot CAS acknowledgement comment ID for verification-only recovery
+        description: Optional historical read-only CAS acknowledgement comment ID
+        required: false
+        type: string
+      recovery_run_id:
+        description: Optional prior Actions run ID for artifact-based CAS recovery
         required: false
         type: string
 
@@ -37,11 +41,50 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
+      actions: read # Required to download prior workflow-run artifacts during recovery.
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Download prior metadata receipt artifact for recovery
+        if: ${{ inputs.recovery_run_id != '' }}
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: australian-federation-metadata-receipts
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.recovery_run_id }}
+          github-token: ${{ github.token }}
+          path: build/recovery-receipts
+      - name: Prepare and retain exact intent before append
+        if: ${{ inputs.recovery_receipt == '' && inputs.recovery_run_id == '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+          EXPECTED_PARENT_REVISION: ${{ inputs.expected_parent_revision }}
+          SOURCE: ${{ inputs.source }}
+        run: |
+          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python scripts/publish_source_metadata.py \
+            --source "$SOURCE" --exact-commit "$REQUESTED_COMMIT" \
+            --expected-parent-revision "$EXPECTED_PARENT_REVISION" \
+            --prepare-intent
+      - name: Retain pre-append metadata intent
+        if: ${{ inputs.recovery_receipt == '' && inputs.recovery_run_id == '' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-federation-metadata-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/source-metadata-receipts/intent-*.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Read back hosted pre-append intent
+        if: ${{ inputs.recovery_receipt == '' && inputs.recovery_run_id == '' }}
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: australian-federation-metadata-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/prepublished-intent
       - name: Append only to the pinned source parent and verify anonymously
         env:
           GH_TOKEN: ${{ github.token }}
@@ -51,9 +94,25 @@ jobs:
           EXPECTED_PARENT_REVISION: ${{ inputs.expected_parent_revision }}
           SOURCE: ${{ inputs.source }}
           RECOVERY_RECEIPT: ${{ inputs.recovery_receipt }}
+          RECOVERY_RUN_ID: ${{ inputs.recovery_run_id }}
+          PREPUBLISHED_INTENT: ${{ inputs.recovery_receipt == '' && inputs.recovery_run_id == '' && 'build/prepublished-intent' || '' }}
         run: |
-          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
-            python scripts/publish_source_metadata.py \
+          args=(
             --source "$SOURCE" --exact-commit "$REQUESTED_COMMIT" \
             --expected-parent-revision "$EXPECTED_PARENT_REVISION" \
-            --recovery-receipt "$RECOVERY_RECEIPT"
+            --recovery-receipt "$RECOVERY_RECEIPT" \
+            --recovery-run-id "$RECOVERY_RUN_ID"
+          )
+          if [[ -n "$PREPUBLISHED_INTENT" ]]; then
+            args+=(--prepublished-intent "$PREPUBLISHED_INTENT")
+          fi
+          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python scripts/publish_source_metadata.py "${args[@]}"
+      - name: Retain metadata-only receipts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-federation-metadata-receipts
+          path: build/source-metadata-receipts/*.json
+          if-no-files-found: ignore
+          retention-days: 90

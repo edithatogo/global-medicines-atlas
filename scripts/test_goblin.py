@@ -426,6 +426,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_python_runtime_policy.py",
         "tests/test_operational_track_evidence.py",
         "tests/test_openprescribing_access_request_contract.py",
+        "tests/test_phase4_historical_workbook_reconciliation.py",
         "tests/test_stable_v1_qualification_contract.py",
         "tests/test_stable_v1_monitoring.py",
         "tests/test_stable_v1_documentation.py",

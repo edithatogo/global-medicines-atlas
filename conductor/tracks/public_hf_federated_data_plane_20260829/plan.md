@@ -871,7 +871,10 @@ The existing July 2025 MBS Silver six-table delivery is complete. Reconcile
 other currently recorded derived-output candidates against the same identity,
 lineage, rights, qualification, admission, and delivery gates before extending
 the cohort. The bounded reconciliation is retained in
-`quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json`.
+`quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json`;
+the 2026-10-28 successor incorporates the later exact workbook header-semantic
+receipt without changing admission or publication status:
+`quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json`.
 
 - [x] Confirm the six July 2025 MBS Silver tables have exact hosted admission,
   remote-read, and API/CLI/Atlas/export receipts. No public release or new
@@ -881,10 +884,20 @@ the cohort. The bounded reconciliation is retained in
   changing the frozen inventory or adding sources.
 - [ ] Qualify the 91 historical workbook Parquet outputs. The cohort receipt
   covers all 91 candidate identities and the exact-output rights attestation
-  is recorded, but source-column and value-era semantics remain unqualified;
-  the current field-state receipt leaves 310,176,929 non-header cells
-  `native_unresolved`. Keep these outputs candidate-only until supported
-  meanings and exact v4 role evidence are qualified.
+  is recorded. Bounded label meanings are qualified for eight supported header
+  roles across 91 verified profiles (728 bindings); the separate header
+  adjudication does not interpret underlying values. Date/period basis,
+  currency/benefit basis, and historical-to-current era rules remain
+  unqualified. The exact field-state receipt leaves 310,176,929 non-header
+  cells `native_unresolved`, excludes legacy P7, and records zero formula and
+  source-error cells for this cohort. Keep these outputs candidate-only until
+  remaining supported value meanings and exact v4 role evidence are qualified.
+- [x] Reconcile the 91-workbook Phase 4 blocker to the exact existing header
+  evidence: 91 verified profiles and 728 bounded header-role meanings are
+  qualified; 310,176,929 non-header values remain unresolved; no formula or
+  source-error cells were observed. Refresh the candidate report and
+  append-only evidence without changing the object denominator, adding sources,
+  or promoting any output.
 - [ ] Admit and deliver the PBS native Silver candidate. Its exact derived
   output rights attestation and bounded field-state receipt are recorded, but
   the field-state report is candidate-only, domain semantics are incomplete,
@@ -904,3 +917,34 @@ three object-scoped blockers are recorded; the generic Phase 4 publication and
 integrated verification tasks above remain open. CMS HCPCS remains outside the
 M-112 inventory and its current record does not authorize processing or v4
 admission. No publication, promotion, or public release occurred.
+
+## Receipt transport and outbound-message remediation (2026-10-28)
+
+- [x] Remove active issue-comment writes from hosted publication and metadata
+  receipt paths. Preserve exact metadata receipts in 90-day run artifacts,
+  retain read-only recovery for historical comment IDs, and authenticate new
+  artifact recovery against the exact main-branch workflow run. Extend the
+  workflow/script guard and focused transaction tests.
+- [ ] Qualify artifact upload and artifact-based recovery in an authorized
+  exact-main hosted transaction. Run artifacts are temporary evidence and do
+  not replace repository-versioned qualification receipts or any required
+  admission, rights, recovery, or consumer evidence.
+- [x] Review the local receipt-transport implementation after focused
+  verification; no code findings remain. Implementation commit: `507ec28e`.
+
+The local change sends no messages and performs no dataset publication or
+append. The Stable v1 Australian federation gate remains blocked.
+
+## M-108 August out-of-inventory scope reconciliation (2026-10-28)
+
+- [x] Correct the 2026-10-28 Phase 4 reconciliation, which had mislabeled the
+  in-inventory `6bc9`/`99fada` objects as the separate M-108 out-of-inventory
+  set. The successor binds the exact `d781`/`f9f9` paths, digests, byte counts,
+  scope exception, and four-object rights attestation. It records `d781` as
+  Bronze-parser accepted and `f9f9` as lacking an admission sidecar; neither is
+  v4-admitted. Stable contract and readiness evidence were rebound without
+  changing gate state or inventory membership. Focused Phase 4, Stable v1
+  contract, and release-authority checks pass (71 tests); context validation
+  and diff checks pass. Commit: `9afe8cd3`.
+- [ ] Complete the exact M-108 product-card, v4 admission, independent-replica,
+  and unadmitted-prefix disposition requirements under their existing gates.

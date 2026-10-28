@@ -1,0 +1,88 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-august-projection-current-tree-readback",
+  "schema_version": 1,
+  "purpose": "Reconcile current public tree metadata for the four exact August 2026 MBS Bronze projections outside the frozen M-112 inventory.",
+  "observed_at": "2026-10-28T03:52:03Z",
+  "dataset": {
+    "id": "edithatogo/australian-mbs-source-archive",
+    "revision": "b925a8a80b0f90db09513e7ce1378045461b05c0",
+    "public": true,
+    "gated": false,
+    "metadata_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive"
+  },
+  "scope": {
+    "rights_attestation": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+    "rights_attestation_sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5",
+    "scope_exception": "quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json",
+    "scope_exception_sha256": "b8fb9f024cea21f4364db9867c73a44afea61615148b49a7ffd7bfffdf6edac2",
+    "frozen_m112_inventory_membership_changed": false,
+    "new_sources": 0
+  },
+  "readback": {
+    "method": "Anonymous Hugging Face repository-info and exact-revision tree API metadata; no Parquet or source payload bytes downloaded or inspected.",
+    "tree_endpoint": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-source-archive/tree/b925a8a80b0f90db09513e7ce1378045461b05c0/bronze/mbs/releases/2026-08-01?recursive=true&expand=true",
+    "objects": [
+      {
+        "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/p7.parquet",
+        "byte_count": 24367,
+        "sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7",
+        "lfs_sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7",
+        "git_blob_oid": "24b17174681a588b90a7f73b204ab7d104b762ed"
+      },
+      {
+        "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source.parquet",
+        "byte_count": 454247,
+        "sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96",
+        "lfs_sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96",
+        "git_blob_oid": "e8ee0cfd11ffcf29a1851c844da0ada779a9d521"
+      },
+      {
+        "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
+        "byte_count": 24367,
+        "sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+        "lfs_sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+        "git_blob_oid": "3b5cfa9de5c1232ac89e67a97d902faa7416b044"
+      },
+      {
+        "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
+        "byte_count": 454247,
+        "sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+        "lfs_sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+        "git_blob_oid": "cda54a7f88a7753177264ba5b73dbdaa73c9c14e"
+      }
+    ],
+    "product_admission_sidecars": [
+      {
+        "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+        "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/admission.json",
+        "http_status": 200,
+        "git_blob_oid": "d5e65dca9010e2c30430ae962cd1b380e331d4d8",
+        "schema_id": "global-medicines-atlas.bronze-admission",
+        "schema_version": 2,
+        "state": "accepted",
+        "reviewer_status": "unreviewed",
+        "decision_id": "a24e608ddce5f23e3aaba13ab8c9ac8f7d4cf84d2defc449c43f74091f6cda61",
+        "federation_v4_admission": false
+      },
+      {
+        "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+        "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/admission.json",
+        "http_status": 404,
+        "git_blob_oid": null,
+        "federation_v4_admission": false
+      }
+    ]
+  },
+  "conclusion": {
+    "current_tree_preserves_all_four_attested_parquet_identities": true,
+    "current_tree_preserves_previously_bound_lfs_digests_and_sizes": true,
+    "d781_bronze_admission_is_not_federation_v4_admission": true,
+    "f9f9_prefix_has_no_bronze_admission_sidecar": true,
+    "no_v4_admission_sidecar_observed_under_product_prefixes": true,
+    "publications_performed": 0,
+    "admissions_performed": 0,
+    "consumer_canaries_performed": 0,
+    "rights_conclusion_changed": false,
+    "scope_exception_membership_changed": false
+  }
+}

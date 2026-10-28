@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-27T12:22:59Z",
+  "as_of": "2026-10-28T04:28:00Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "dd427acfeb50e42d13fa23d4b6659d1087b9511848eb5a6a9cbf9b6a19f420cb"
+    "sha256": "95ed9ed04c6de532183a0578c7c48e888c670a518b56abf857f8711c01351111"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -104,6 +104,21 @@
         "path": "quality/qualifications/stable-v1-python-runtime-validation-20261027.md",
         "sha256": "c079cfba1ac4ddc753cba370ab2900c60f6114188bc889734eaa3add662c2e4c",
         "consequence": "Support readiness now records CPython 3.15.1 and the passed exact-main cross-platform consumer run; support aggregate status is derived from passing boundaries and absence of blocking unresolved risks."
+      },
+      {
+        "path": "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json",
+        "sha256": "a1f2c7f2d46e5f0a0e90ee153664d7ff0df8fb4bb7397b666a34a85d54ee0623",
+        "consequence": "Corrected M-108 scope reconciliation: the exact four attested d781/f9f9 outputs are outside frozen M-112; d781 is Bronze-parser accepted, f9f9 has no admission sidecar; neither has typed v4 admission, product-specific card, or independent replica evidence."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json",
+        "sha256": "941d85a576523bdf0bfa5a137ebbddac503c939b0fe6f75abe57c6828a6c4c03",
+        "consequence": "At public dataset revision b925a8a80b0f90db09513e7ce1378045461b05c0, all four attested August MBS Bronze Parquet paths retain their bound LFS SHA-256 and byte counts; d781 has only an accepted unreviewed Bronze admission, f9f9 has no admission sidecar, and neither is v4-admitted."
+      },
+      {
+        "path": "docs/qualification/australian-health-federation-acceptance.md",
+        "sha256": "81be4e21b3a0c32249db1de2c12d309d043265f71cf8a36be23184a2f0019ec7",
+        "consequence": "Federation summary binds current M-108/M-109/M-110/M-111/M-112 evidence, including exact 14-object MBS-utilisation and six-object PBS-utilisation rights boundaries; lineage, admission, independent recovery, broader semantics, and federation acceptance remain open."
       }
     ],
     "release_action_performed": false,

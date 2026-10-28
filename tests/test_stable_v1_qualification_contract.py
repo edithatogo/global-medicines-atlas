@@ -315,6 +315,136 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         _validator(QUALIFICATION_SCHEMA).validate(invalid)
 
 
+def test_m110_bounded_edge_review_is_bound_without_accepting_m110() -> None:
+    projection = build_contract(_load(QUALIFICATION))
+    requirement = next(
+        item
+        for item in projection["requirements"]
+        if item["requirement_id"] == "M-110"
+    )
+    review_path = "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json"
+    assessment_path = "quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261018.json"
+    assert requirement["state"] == "blocked"
+    assert review_path in requirement["evidence"]
+    assert assessment_path in requirement["evidence"]
+
+    review = _load(ROOT / review_path)
+    assessment = _load(ROOT / assessment_path)
+    assert review["disposition"] == "accepted_candidate_only"
+    assert review["reviewed_edge_set"]["edge_count"] == 5989
+    assert review["reviewed_edge_set"]["reviewed_state"] == "reviewed_candidate"
+    assert review["boundaries"]["m110_overall_accepted"] is False
+    assert (
+        assessment["evidence"]["gold_edge_review"]["sha256"]
+        == review["receipt_sha256"]
+    )
+    assert assessment["gate_assessment"]["m110_overall"] == (
+        "open_other_source_eras_pbs_product_admission_and_federation"
+    )
+
+
+def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
+    readback_path = ROOT / (
+        "quality/qualifications/"
+        "australian-mbs-august-projection-current-tree-readback-20261028.json"
+    )
+    report = _load(readback_path)
+    assert report["dataset"]["revision"] == (
+        "b925a8a80b0f90db09513e7ce1378045461b05c0"
+    )
+    assert report["dataset"]["public"] is True
+    assert report["dataset"]["gated"] is False
+    assert report["scope"]["new_sources"] == 0
+    assert report["scope"]["frozen_m112_inventory_membership_changed"] is False
+    rights_path = ROOT / report["scope"]["rights_attestation"]
+    scope_path = ROOT / report["scope"]["scope_exception"]
+    rights = _load(rights_path)
+    assert (
+        report["scope"]["rights_attestation_sha256"]
+        == hashlib.sha256(rights_path.read_bytes()).hexdigest()
+    )
+    assert (
+        report["scope"]["scope_exception_sha256"]
+        == hashlib.sha256(scope_path.read_bytes()).hexdigest()
+    )
+    objects = report["readback"]["objects"]
+    assert len(objects) == 4
+    assert all(
+        row["sha256"] == row["lfs_sha256"]
+        and row["byte_count"] > 0
+        and len(row["git_blob_oid"]) == 40
+        for row in objects
+    )
+    assert {
+        (row["path"], row["sha256"], row["byte_count"]) for row in objects
+    } == {
+        (row["path"], row["sha256"], row["byte_count"])
+        for row in rights["authorized_objects"]
+    }
+    admissions = {
+        row["product_id"]: row
+        for row in report["readback"]["product_admission_sidecars"]
+    }
+    assert (
+        admissions[
+            "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b"
+        ]["state"]
+        == "accepted"
+    )
+    assert (
+        admissions[
+            "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b"
+        ]["reviewer_status"]
+        == "unreviewed"
+    )
+    assert (
+        admissions[
+            "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b"
+        ]["federation_v4_admission"]
+        is False
+    )
+    assert (
+        admissions[
+            "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63"
+        ]["http_status"]
+        == 404
+    )
+    assert (
+        report["conclusion"][
+            "no_v4_admission_sidecar_observed_under_product_prefixes"
+        ]
+        is True
+    )
+    assert report["conclusion"]["publications_performed"] == 0
+
+    projection = build_contract(_load(QUALIFICATION))
+    requirement = next(
+        item
+        for item in projection["requirements"]
+        if item["requirement_id"] == "M-108"
+    )
+    gate = next(
+        item
+        for item in projection["release_gates"]
+        if item["gate_id"] == "stable-v1-australian-health-federation"
+    )
+    readback_relative = readback_path.relative_to(ROOT).as_posix()
+    assert requirement["state"] == "blocked"
+    assert readback_relative in requirement["evidence"]
+    assert readback_relative in gate["evidence"]
+    acceptance = (
+        ROOT / "docs/qualification/australian-health-federation-acceptance.md"
+    ).read_text(encoding="utf-8")
+    m108_row = next(
+        line
+        for line in acceptance.splitlines()
+        if line.startswith("| M-108 public durable data plane |")
+    )
+    assert readback_relative in m108_row
+    assert "f9f9` has no admission sidecar" in m108_row
+    assert "do not complete M-108" in m108_row
+
+
 def test_current_maintainer_disposition_keeps_m105_blocked(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -588,6 +718,53 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
     assert (
         runtime_receipt["sha256"]
         == hashlib.sha256(runtime_receipt_path.read_bytes()).hexdigest()
+    )
+    current_tree_path = ROOT / (
+        "quality/qualifications/"
+        "australian-mbs-august-projection-current-tree-readback-20261028.json"
+    )
+    current_tree_receipt = next(
+        item
+        for item in receipt["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == current_tree_path.relative_to(ROOT).as_posix()
+    )
+    assert (
+        current_tree_receipt["sha256"]
+        == hashlib.sha256(current_tree_path.read_bytes()).hexdigest()
+    )
+    assert "neither is v4-admitted" in current_tree_receipt["consequence"]
+    acceptance_path = ROOT / (
+        "docs/qualification/australian-health-federation-acceptance.md"
+    )
+    acceptance_receipt = next(
+        item
+        for item in receipt["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == acceptance_path.relative_to(ROOT).as_posix()
+    )
+    assert (
+        acceptance_receipt["sha256"]
+        == hashlib.sha256(acceptance_path.read_bytes()).hexdigest()
+    )
+    acceptance = acceptance_path.read_text(encoding="utf-8")
+    m109_row = next(
+        line
+        for line in acceptance.splitlines()
+        if line.startswith("| M-109 Silver |")
+    )
+    assert "91 verified sheet/header profiles" in m109_row
+    assert "728 interpreted header bindings" in m109_row
+    assert (
+        "310,176,929 non-header values remain `native_unresolved`" in m109_row
+    )
+    assert "1,194 ambiguous date-shaped cells" in m109_row
+    assert "`p7_date_convention_selected=false`" in m109_row
+    assert (
+        "workbook-era date convention, domain meaning, and temporal comparison remain unqualified"
+        in m109_row
     )
     assert receipt["release_performed"] is False
     assert receipt["candidate_package"] == {

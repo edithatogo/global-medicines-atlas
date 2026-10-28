@@ -844,3 +844,123 @@ release gate.
   BasedPyright, context validation, and diff checks. The conditional stable
   authority validator remains blocked by the unresolved Australian federation
   gate; the historical release candidate remains unverified and unsigned.
+
+### Australian federation evidence pointer reconciliation (2026-10-28)
+
+- [x] Preserve the 2026-10-27 Phase 4 report and add a 2026-10-28 successor
+  binding the verified 91-workbook header meanings and zero formula/source-error
+  observations to the unresolved value states. Reconcile the successor into the
+  Stable v1 gate and M-108/M-109/M-112 requirement evidence. Focused
+  evidence-binding and fail-closed tests pass (implementation 4387181c).
+  The Australian federation gate remains blocked; this does not make the stable
+  candidate promotable or the track archivable.
+
+## Phase: Review Fixes
+- [x] Task: Review the evidence reconciliation; no corrective findings. Focused
+  tests, context validation, lint, formatting, and type checks pass
+  (4387181c).
+
+
+## Phase: M-110 bounded edge-review pointer reconciliation (2026-10-28)
+
+- [x] Task: Reconcile the existing maintainer disposition for the exact 5,989 July
+  2025 MBS v3 same-record candidate edges into M-110 and the Australian
+  federation contract evidence. Correct the acceptance table: the bounded
+  candidate edge set was reviewed, while broader M-110 calibration and
+  federation acceptance remain open. Reconciliation does not alter M-110's
+  blocked state or the overall federation gate. Implementation `333f00f0`;
+  focused qualification checks passed.
+
+## Phase: Review Fixes (continued)
+
+- [x] Task: Review the bounded-review pointer and acceptance-table correction;
+  no corrective findings. The focused fail-closed qualification checks pass
+  (333f00f0).
+
+## Australian August projection current-tree reconciliation and review (2026-10-28)
+
+- [x] Perform a bounded anonymous metadata read of the four exact attested
+  August 2026 MBS Bronze Parquet objects at public revision
+  `b925a8a80b0f90db09513e7ce1378045461b05c0`. Their four LFS SHA-256 values
+  and byte counts still match the existing rights/scope receipt. The `d781`
+  prefix has only an accepted, unreviewed Bronze admission; the `f9f9` prefix
+  has no admission sidecar. No source or Parquet payload bytes were downloaded.
+- [x] Bind the readback to M-108 and the federation gate without changing any
+  qualification, rights, admission, publication, or frozen-inventory state.
+  Refresh readiness hashes and correct M-108/M-109/M-111/M-112 acceptance
+  summaries to reflect the latest Phase 4, v4 remote-reader, consumer, and
+  recovery evidence.
+- [x] Review the scoped federation changes and fix the stale acceptance summary.
+  The affected receipt, qualification, guardrail, and reconciliation tests pass
+  (523); context, Ruff, formatting, ty, BasedPyright, and diff checks pass.
+  Stable promotion authority validation correctly remains blocked on unresolved
+  Australian federation gates. No local full profile was run.
+- [ ] Keep M-108 blocked pending exact product-specific v4 cards/admission,
+  independent-replica evidence, and the `f9f9` prefix disposition. Continue
+  independent semantics and required source-evidence work where current
+  authority and source contracts support it; do not archive this track until
+  the gate is actually accepted.
+
+### Formal Conductor review correction (2026-10-28)
+
+- [x] Review commit `0bc2513b` against the Stable v1 plan, qualification
+  contract, product guidance, and affected tests. The review found the M-109
+  acceptance row did not reflect current 91-workbook header evidence or
+  distinguish the internal P7 DMY consistency inference from an unqualified
+  workbook-era date convention. Correct the row and bind its new digest in the
+  readiness reconciliation. The P7 date convention and domain meaning remain
+  unqualified; no acceptance gate changes. The Stable contract and context
+  test files pass (89 total); context validation, Ruff, formatting, `ty`,
+  BasedPyright, and diff checks pass.
+- [ ] Reconcile PR #1354 protected checks and merge only after they pass; keep
+  Stable v1 and the federation track blocked until all contract gates pass.
+
+### PR #1354 hosted-check inventory and workflow-permission correction (2026-10-28)
+
+- [x] Diagnose the exact-head CI failures. Test-Goblin rejected the existing
+  Phase 4 workbook reconciliation test as unassigned, causing all Python lanes
+  to fail before execution. `zizmor --pedantic` also flagged two documented
+  recovery workflows' `actions: read` permission because its purpose was not
+  annotated at the permission declaration.
+- [x] Assign the reconciliation test to the unit lane and annotate the minimum
+  `actions: read` permission in the two workflows that download previous-run
+  recovery artifacts. Focused tests: 99 passed; Test-Goblin contract inventory,
+  Ruff, formatting, `zizmor --pedantic .github`, and diff checks passed.
+- [x] Push correction `38a3b713`. The exact-head unit lane then exposed four
+  additional stale assertions; their diagnosis and repair are recorded below.
+
+### PR #1354 exact-head unit failure correction (2026-10-28)
+
+- [x] Diagnose the four exact unit failures on head `38a3b713`: two assertions
+  referred to superseded PR-number prose and an obsolete unadmitted-candidate
+  state; two expected a generic `durable` error while the current receipt
+  validator correctly reports stage-specific invalid-URL errors.
+- [x] Reconcile the acceptance summary with the exact 14-object MBS-utilisation
+  rights scope and the separately attested six-object PBS-utilisation rights
+  scope, preserving the pending B1/B2 lineage, admission, canary, and broader
+  rights limits. Refresh the acceptance-summary digest in Stable readiness.
+  Update regression assertions to the current evidence and validate the
+  stage-specific error behavior without changing runtime code.
+- [x] Focused affected tests: 139 passed across the M-112 state, donor-history,
+  Stable contract, and Phase 4 reconciliation modules. Ruff, formatting,
+  context validation, and diff checks pass.
+- [ ] Push the correction, reconcile all protected checks at that exact PR
+  head, and merge only after they pass. All Australian federation dispositions
+  remain as evidenced; this correction does not satisfy the gate.
+
+### PR #1354 transaction-intent retention review repair (2026-10-28)
+
+- [x] Formal review found that three metadata append workflows wrote the
+  transaction intent locally but uploaded it only after the mutation script
+  completed. Split normal runs into a preflight phase, 90-day Actions artifact
+  upload, hosted artifact download/readback, and an append phase that requires
+  exact equality with the recomputed intent. Recovery runs retain their
+  existing authenticated acknowledgement path. This creates a retained
+  precondition before mutation without outbound comments or messages.
+- [x] Add negative-control coverage for mismatched prepublished intent and
+  workflow-order assertions. The combined affected suite passes (895 tests);
+  Ruff, formatting, Actionlint, and diff checks pass.
+- [ ] Repeat the combined focused checks, push the repair, and inspect the
+  exact-head protected runs. Action artifacts have 90-day retention and do not
+  count as permanent Conductor evidence; no hosted transaction was executed.
+  Federation gate and stable promotion remain blocked.
