@@ -27,7 +27,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-      - name: Append the reviewed supplement using exact parent CAS
+      - name: Prepare exact intent before append
         env:
           GH_TOKEN: ${{ github.token }}
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -38,7 +38,33 @@ jobs:
           set -euo pipefail
           uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
             python scripts/publish_mbs_utilisation_rights.py \
-            --exact-commit "$REQUESTED_COMMIT"
+            --exact-commit "$REQUESTED_COMMIT" --prepare-intent
+      - name: Retain pre-append rights intent
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-utilisation-rights-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/mbs-utilisation-rights-receipts/intent-*.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Read back hosted pre-append rights intent
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: mbs-utilisation-rights-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/prepublished-intent
+      - name: Append the reviewed supplement using exact parent CAS
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+          HF_HUB_DISABLE_XET: "1"
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+          PREPUBLISHED_INTENT: build/prepublished-intent
+        run: |
+          set -euo pipefail
+          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python scripts/publish_mbs_utilisation_rights.py \
+            --exact-commit "$REQUESTED_COMMIT" \
+            --prepublished-intent "$PREPUBLISHED_INTENT"
       - name: Record fail-honest outcome
         if: failure() || cancelled()
         env:

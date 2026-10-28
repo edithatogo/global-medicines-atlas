@@ -25,6 +25,12 @@ from global_medicines_atlas.federation_metadata_hosted import (
     valid_receipt_url,
 )
 
+sys.path.insert(0, str(Path(__file__).parents[1] / "scripts"))
+from publish_source_metadata import (
+    IntentPreparedError,
+    persist_transaction_receipt,
+)
+
 
 class FakeHub:
     def __init__(self, document):
@@ -114,6 +120,67 @@ def test_intent_before_append_and_verification_after(setup):
     ]
     assert result["revision"] == "f" * 40
     assert records[0]["addition"] == records[2]["addition"]
+
+
+def test_prepare_phase_stops_after_local_intent_is_written(setup, tmp_path):
+    _, hub = setup
+    intent = {
+        "status": "intent",
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/123",
+        "code_commit": "a" * 40,
+    }
+    with pytest.raises(IntentPreparedError):
+        persist_transaction_receipt(intent, tmp_path, prepare_only=True)
+    assert hub.calls == []
+    assert len(tuple(tmp_path.glob("intent-*.json"))) == 1
+
+
+def test_append_phase_requires_exact_hosted_intent_readback(setup, tmp_path):
+    _, _ = setup
+    intent = {
+        "status": "intent",
+        "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/123",
+        "code_commit": "a" * 40,
+    }
+    artifact = tmp_path / "hosted"
+    artifact.mkdir()
+    receipt = artifact / "intent-prepublished.json"
+    receipt.write_text(json.dumps(intent), encoding="utf-8")
+    url = persist_transaction_receipt(
+        intent, tmp_path, prepublished_intent=artifact
+    )
+    assert url == intent["run_url"]
+    receipt.write_text(json.dumps({**intent, "code_commit": "b" * 40}))
+    with pytest.raises(ValueError, match="differs from current transaction"):
+        persist_transaction_receipt(
+            intent, tmp_path, prepublished_intent=artifact
+        )
+
+
+def test_metadata_append_workflows_retain_and_read_intent_before_append():
+    root = Path(__file__).parents[1]
+    for workflow_name, artifact_name in (
+        (
+            "australian-source-metadata.yml",
+            "australian-federation-metadata-intent-",
+        ),
+        (
+            "australian-donor-history.yml",
+            "australian-donor-history-intent-",
+        ),
+        (
+            "australian-mbs-utilisation-rights.yml",
+            "mbs-utilisation-rights-intent-",
+        ),
+    ):
+        workflow = (root / ".github/workflows" / workflow_name).read_text(
+            encoding="utf-8"
+        )
+        prepare = workflow.index("--prepare-intent")
+        retain = workflow.index(artifact_name)
+        readback = workflow.index("actions/download-artifact", retain)
+        append = workflow.index("--prepublished-intent")
+        assert prepare < retain < readback < append
 
 
 def test_hosted_append_binds_current_parent_without_rewriting_source_revision(

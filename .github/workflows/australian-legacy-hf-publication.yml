@@ -33,7 +33,7 @@ jobs:
       - name: Install the repository Python runtime
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
 
-      - name: Record durable intent before dataset creation
+      - name: Record hosted intent before dataset creation
         env:
           GH_TOKEN: ${{ github.token }}
           REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
@@ -44,7 +44,7 @@ jobs:
           default_head=$(gh api "repos/${GITHUB_REPOSITORY}/commits/${default_branch}" --jq .sha)
           test "${GITHUB_REF}" = "refs/heads/${default_branch}"
           test "${GITHUB_SHA}" = "${default_head}"
-          python3 - <<'PY'
+          uv run --python 3.15.1 python - <<'PY'
           import json
           import os
           from pathlib import Path
@@ -308,6 +308,9 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Install the repository Python runtime
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+
       - name: Restore exact newly-created dataset to private
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
@@ -316,16 +319,63 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${HF_TOKEN:-}"
-          python3 -m pip install --disable-pip-version-check --quiet huggingface-hub==1.14.0
-          python3 - <<'PY'
+          uv run --python 3.15.1 --with huggingface-hub==1.14.0 python - <<'PY'
+          import json
           import os
+          from pathlib import Path
           from huggingface_hub import HfApi
 
-          api = HfApi(token=os.environ['HF_TOKEN'])
-          api.update_repo_settings(
-              repo_id=os.environ['HF_DATASET'], repo_type='dataset', private=True
+          receipt_path = Path('australian-legacy-containment-receipt.json')
+          receipt = {
+              'schema_id': 'global-medicines-atlas.australian-legacy-publication-containment',
+              'schema_version': 1,
+              'dataset': os.environ['HF_DATASET'],
+              'workflow_commit': os.environ['GITHUB_SHA'],
+              'workflow_run': (
+                  f"https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/"
+                  f"runs/{os.environ['GITHUB_RUN_ID']}"
+              ),
+              'status': 'containment_started',
+          }
+          receipt_path.write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
           )
-          if not api.dataset_info(os.environ['HF_DATASET']).private:
-              raise RuntimeError('failed transaction was not restored to private')
+          api = HfApi(token=os.environ['HF_TOKEN'])
+          try:
+              api.update_repo_settings(
+                  repo_id=os.environ['HF_DATASET'], repo_type='dataset', private=True
+              )
+              observed = api.dataset_info(os.environ['HF_DATASET'])
+              if not observed.private:
+                  raise RuntimeError('failed transaction was not restored to private')
+          except Exception as error:
+              receipt.update({
+                  'status': 'containment_failed',
+                  'failure_type': type(error).__name__,
+              })
+              receipt_path.write_text(
+                  json.dumps(receipt, indent=2, sort_keys=True) + '\n',
+                  encoding='utf-8',
+              )
+              raise
+          receipt.update({
+              'status': 'restored_private',
+              'dataset_revision': observed.sha,
+              'gated': bool(observed.gated),
+              'private_readback_verified': True,
+          })
+          receipt_path.write_text(
+              json.dumps(receipt, indent=2, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
           PY
           : # Outbound comments prohibited; retain workflow artifacts instead.
+      - name: Retain metadata-only containment receipt
+        if: ${{ always() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-legacy-publication-containment-${{ github.run_id }}-${{ github.run_attempt }}
+          path: australian-legacy-containment-receipt.json
+          if-no-files-found: warn
+          retention-days: 90

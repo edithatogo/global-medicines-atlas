@@ -947,3 +947,20 @@ release gate.
 - [ ] Push the correction, reconcile all protected checks at that exact PR
   head, and merge only after they pass. All Australian federation dispositions
   remain as evidenced; this correction does not satisfy the gate.
+
+### PR #1354 transaction-intent retention review repair (2026-10-28)
+
+- [x] Formal review found that three metadata append workflows wrote the
+  transaction intent locally but uploaded it only after the mutation script
+  completed. Split normal runs into a preflight phase, 90-day Actions artifact
+  upload, hosted artifact download/readback, and an append phase that requires
+  exact equality with the recomputed intent. Recovery runs retain their
+  existing authenticated acknowledgement path. This creates a retained
+  precondition before mutation without outbound comments or messages.
+- [x] Add negative-control coverage for mismatched prepublished intent and
+  workflow-order assertions. The combined affected suite passes (895 tests);
+  Ruff, formatting, Actionlint, and diff checks pass.
+- [ ] Repeat the combined focused checks, push the repair, and inspect the
+  exact-head protected runs. Action artifacts have 90-day retention and do not
+  count as permanent Conductor evidence; no hosted transaction was executed.
+  Federation gate and stable promotion remain blocked.

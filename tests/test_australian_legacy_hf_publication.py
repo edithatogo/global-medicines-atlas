@@ -87,6 +87,20 @@ def test_workflow_uploads_only_from_actions_and_verifies_anonymously() -> None:
     assert "failed transaction was not restored to private" in workflow
     assert "publication_performed_by_github_actions': True" in workflow
     assert "HF_TOKEN: ${{ secrets.HF_TOKEN }}" in workflow
+    assert "python3 - <<'PY'" not in workflow
+    assert "python3 -m pip" not in workflow
+    assert "uv run --python 3.15.1 python - <<'PY'" in workflow
+    containment = workflow.split("contain-failed-publication:", maxsplit=1)[1]
+    assert (
+        "uv run --python 3.15.1 --with huggingface-hub==1.14.0 python - <<'PY'"
+        in containment
+    )
+    assert "Retain metadata-only containment receipt" in containment
+    assert (
+        "australian-legacy-publication-containment-${{ github.run_id }}"
+        in containment
+    )
+    assert "retention-days: 90" in containment
 
 
 def test_project_dependencies_are_not_expanded_for_hosted_transport() -> None:

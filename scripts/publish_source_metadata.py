@@ -252,6 +252,46 @@ def persist_receipt(document: dict[str, Any], directory: Path) -> str:
     return f"https://github.com/{REPOSITORY}/actions/runs/{run_id}"
 
 
+class IntentPreparedError(Exception):
+    """Stop after writing a pre-append intent for workflow artifact retention."""
+
+
+def persist_transaction_receipt(
+    document: dict[str, Any],
+    directory: Path,
+    *,
+    prepare_only: bool = False,
+    prepublished_intent: Path | None = None,
+) -> str:
+    """Require the exact intent to round-trip through a hosted artifact first."""
+    if document.get("status") == "intent":
+        if prepare_only:
+            persist_receipt(document, directory)
+            raise IntentPreparedError
+        if prepublished_intent is None:
+            raise ValueError("append requires a retained pre-append intent")
+        matches = tuple(prepublished_intent.glob("intent-*.json"))
+        if len(matches) != 1:
+            raise ValueError(
+                "pre-append artifact must contain one intent receipt"
+            )
+        observed = json.loads(matches[0].read_text(encoding="utf-8"))
+        if observed != document:
+            raise ValueError(
+                "pre-append artifact differs from current transaction"
+            )
+        expected_url = (
+            f"https://github.com/{REPOSITORY}/actions/runs/"
+            f"{os.environ.get('GITHUB_RUN_ID', '')}"
+        )
+        if document.get("run_url") != expected_url:
+            raise ValueError(
+                "pre-append intent belongs to another workflow run"
+            )
+        return expected_url
+    return persist_receipt(document, directory)
+
+
 def read_acknowledgement(comment_id: str) -> dict[str, Any]:
     """Authenticate a bot CAS acknowledgement and its matching prior intent.
 
@@ -413,6 +453,8 @@ def main() -> None:
     parser.add_argument("--expected-parent-revision", required=True)
     parser.add_argument("--recovery-receipt", default="")
     parser.add_argument("--recovery-run-id", default="")
+    parser.add_argument("--prepare-intent", action="store_true")
+    parser.add_argument("--prepublished-intent", type=Path)
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
     # Independently bind the current repository default head before Hub writes.
@@ -451,14 +493,29 @@ def main() -> None:
         else None
     )
     cache = Path(tempfile.mkdtemp(prefix="gma-source-metadata-"))
-    result = execute_metadata_append(
-        document,
-        exact_commit=args.exact_commit,
-        expected_parent_revision=args.expected_parent_revision,
-        hub=HubTransport(cache),
-        persist=lambda receipt: persist_receipt(receipt, receipts),
-        acknowledgement=acknowledgement,
-    )
+    if args.prepare_intent and (args.prepublished_intent or acknowledgement):
+        raise ValueError(
+            "intent preparation cannot use an artifact or recovery"
+        )
+    if args.prepublished_intent and acknowledgement:
+        raise ValueError("select prepublished intent or recovery, not both")
+    try:
+        result = execute_metadata_append(
+            document,
+            exact_commit=args.exact_commit,
+            expected_parent_revision=args.expected_parent_revision,
+            hub=HubTransport(cache),
+            persist=lambda receipt: persist_transaction_receipt(
+                receipt,
+                receipts,
+                prepare_only=args.prepare_intent,
+                prepublished_intent=args.prepublished_intent,
+            ),
+            acknowledgement=acknowledgement,
+        )
+    except IntentPreparedError:
+        shutil.rmtree(cache)
+        return
     # Only successful durable anonymous verification permits source cache removal.
     shutil.rmtree(cache)
     (receipts / "result.json").write_text(

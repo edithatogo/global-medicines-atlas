@@ -18,7 +18,8 @@ from typing import Any, BinaryIO
 
 from publish_source_metadata import (
     HubTransport,
-    persist_receipt,
+    IntentPreparedError,
+    persist_transaction_receipt,
     read_acknowledgement,
     read_artifact_acknowledgement,
 )
@@ -442,6 +443,8 @@ def main() -> None:
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--recovery-receipt", default="")
     parser.add_argument("--recovery-run-id", default="")
+    parser.add_argument("--prepare-intent", action="store_true")
+    parser.add_argument("--prepublished-intent", type=Path)
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
     contract = DonorHistoryPublicationContract.model_validate_json(
@@ -468,13 +471,28 @@ def main() -> None:
         else None
     )
     workspace = Path(tempfile.mkdtemp(prefix="gma-donor-history-"))
-    result = execute_history_append(
-        contract,
-        exact_commit=args.exact_commit,
-        transport=DonorTransport(workspace, contract),
-        persist=lambda document: persist_receipt(document, receipts),
-        acknowledgement=acknowledgement,
-    )
+    if args.prepare_intent and (args.prepublished_intent or acknowledgement):
+        raise ValueError(
+            "intent preparation cannot use an artifact or recovery"
+        )
+    if args.prepublished_intent and acknowledgement:
+        raise ValueError("select prepublished intent or recovery, not both")
+    try:
+        result = execute_history_append(
+            contract,
+            exact_commit=args.exact_commit,
+            transport=DonorTransport(workspace, contract),
+            persist=lambda document: persist_transaction_receipt(
+                document,
+                receipts,
+                prepare_only=args.prepare_intent,
+                prepublished_intent=args.prepublished_intent,
+            ),
+            acknowledgement=acknowledgement,
+        )
+    except IntentPreparedError:
+        shutil.rmtree(workspace)
+        return
     shutil.rmtree(workspace)
     (receipts / "result.json").write_text(
         json.dumps({**result, "temporary_cache_removed": True}, indent=2) + "\n"

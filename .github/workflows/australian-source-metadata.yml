@@ -56,6 +56,35 @@ jobs:
           run-id: ${{ inputs.recovery_run_id }}
           github-token: ${{ github.token }}
           path: build/recovery-receipts
+      - name: Prepare and retain exact intent before append
+        if: ${{ inputs.recovery_receipt == '' && inputs.recovery_run_id == '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_HUB_DISABLE_IMPLICIT_TOKEN: "1"
+          REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
+          EXPECTED_PARENT_REVISION: ${{ inputs.expected_parent_revision }}
+          SOURCE: ${{ inputs.source }}
+        run: |
+          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python scripts/publish_source_metadata.py \
+            --source "$SOURCE" --exact-commit "$REQUESTED_COMMIT" \
+            --expected-parent-revision "$EXPECTED_PARENT_REVISION" \
+            --prepare-intent
+      - name: Retain pre-append metadata intent
+        if: ${{ inputs.recovery_receipt == '' && inputs.recovery_run_id == '' }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-federation-metadata-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/source-metadata-receipts/intent-*.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Read back hosted pre-append intent
+        if: ${{ inputs.recovery_receipt == '' && inputs.recovery_run_id == '' }}
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: australian-federation-metadata-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/prepublished-intent
       - name: Append only to the pinned source parent and verify anonymously
         env:
           GH_TOKEN: ${{ github.token }}
@@ -66,13 +95,19 @@ jobs:
           SOURCE: ${{ inputs.source }}
           RECOVERY_RECEIPT: ${{ inputs.recovery_receipt }}
           RECOVERY_RUN_ID: ${{ inputs.recovery_run_id }}
+          PREPUBLISHED_INTENT: ${{ inputs.recovery_receipt == '' && inputs.recovery_run_id == '' && 'build/prepublished-intent' || '' }}
         run: |
-          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
-            python scripts/publish_source_metadata.py \
+          args=(
             --source "$SOURCE" --exact-commit "$REQUESTED_COMMIT" \
             --expected-parent-revision "$EXPECTED_PARENT_REVISION" \
             --recovery-receipt "$RECOVERY_RECEIPT" \
             --recovery-run-id "$RECOVERY_RUN_ID"
+          )
+          if [[ -n "$PREPUBLISHED_INTENT" ]]; then
+            args+=(--prepublished-intent "$PREPUBLISHED_INTENT")
+          fi
+          uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
+            python scripts/publish_source_metadata.py "${args[@]}"
       - name: Retain metadata-only receipts
         if: ${{ always() }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
