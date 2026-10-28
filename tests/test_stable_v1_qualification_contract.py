@@ -315,6 +315,34 @@ def test_qualification_fails_closed_with_unresolved_gates() -> None:
         _validator(QUALIFICATION_SCHEMA).validate(invalid)
 
 
+def test_m110_bounded_edge_review_is_bound_without_accepting_m110() -> None:
+    projection = build_contract(_load(QUALIFICATION))
+    requirement = next(
+        item
+        for item in projection["requirements"]
+        if item["requirement_id"] == "M-110"
+    )
+    review_path = "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json"
+    assessment_path = "quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261018.json"
+    assert requirement["state"] == "blocked"
+    assert review_path in requirement["evidence"]
+    assert assessment_path in requirement["evidence"]
+
+    review = _load(ROOT / review_path)
+    assessment = _load(ROOT / assessment_path)
+    assert review["disposition"] == "accepted_candidate_only"
+    assert review["reviewed_edge_set"]["edge_count"] == 5989
+    assert review["reviewed_edge_set"]["reviewed_state"] == "reviewed_candidate"
+    assert review["boundaries"]["m110_overall_accepted"] is False
+    assert (
+        assessment["evidence"]["gold_edge_review"]["sha256"]
+        == review["receipt_sha256"]
+    )
+    assert assessment["gate_assessment"]["m110_overall"] == (
+        "open_other_source_eras_pbs_product_admission_and_federation"
+    )
+
+
 def test_current_maintainer_disposition_keeps_m105_blocked(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,

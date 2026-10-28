@@ -890,7 +890,9 @@
         "conductor/tracks/australian_benefits_silver_gold_20260829/plan.md",
         "conductor/tracks/australian_benefits_silver_gold_20260829/spec.md",
         "quality/qualifications/frontier-frozen-matcher-calibration-20261021.json",
-        "quality/qualifications/pbs-native-reference-case-adjudication-20261025-v1.json"
+        "quality/qualifications/pbs-native-reference-case-adjudication-20261025-v1.json",
+        "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json",
+        "quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261018.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -1280,7 +1282,9 @@
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json",
         "quality/qualifications/platinum-actual-consumer-reconciliation-20261027.json",
         "quality/qualifications/scraper-archival-20260906.json",
-        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json"
+        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json",
+        "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json",
+        "quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261018.json"
       ]
     },
     {
