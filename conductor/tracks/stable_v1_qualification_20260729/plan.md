@@ -944,9 +944,11 @@ release gate.
 - [x] Focused affected tests: 139 passed across the M-112 state, donor-history,
   Stable contract, and Phase 4 reconciliation modules. Ruff, formatting,
   context validation, and diff checks pass.
-- [ ] Push the correction, reconcile all protected checks at that exact PR
-  head, and merge only after they pass. All Australian federation dispositions
-  remain as evidenced; this correction does not satisfy the gate.
+- [x] Push the correction, reconcile all protected checks at that exact PR
+  head, and merge only after they pass. PR #1354 merged at
+  `67278c534438a15bfb529f6ab10e815f6bde1b9a` after every required protected
+  check passed. All Australian federation dispositions remain as evidenced;
+  this correction does not satisfy the gate.
 
 ### PR #1354 transaction-intent retention review repair (2026-10-28)
 
@@ -960,7 +962,10 @@ release gate.
 - [x] Add negative-control coverage for mismatched prepublished intent and
   workflow-order assertions. The combined affected suite passes (895 tests);
   Ruff, formatting, Actionlint, and diff checks pass.
-- [ ] Repeat the combined focused checks, push the repair, and inspect the
-  exact-head protected runs. Action artifacts have 90-day retention and do not
-  count as permanent Conductor evidence; no hosted transaction was executed.
-  Federation gate and stable promotion remain blocked.
+- [x] Repeat the combined focused checks (895 passed), push the repair, and
+  inspect the exact-head protected runs. Every required PR check passed at
+  `7a61ecd019fe264fd03c3ac0b601841eaf4e9a8e`; PR #1354 merged as
+  `67278c534438a15bfb529f6ab10e815f6bde1b9a`. Action artifacts have 90-day
+  retention and do not count as permanent Conductor evidence; no hosted
+  transaction was executed. Federation gate and stable promotion remain
+  blocked.
