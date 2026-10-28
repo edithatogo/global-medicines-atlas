@@ -1175,3 +1175,11 @@ remaining federation criteria, and this track's archival remain pending.
   assessment and six hosted replay receipts in the owning data-plane report.
 - [~] Continue complete raw-B2 role binding and actual admission. Stable v1
   federation remains blocked; this increment does not amend its criteria.
+
+## PBS exact contract closure continuation (2026-10-28)
+
+- [x] Bind six explicit v4.1 raw-B2 contract candidates and actual anonymous
+  receipt closure. All six preserve unqualified native schemas and unsupported
+  effective dates; no source interpretation or admission is inferred.
+- [~] Continue trusted exact-main admission/consumer qualification and the
+  separate remaining federation requirements before rebuilding Stable v1.
