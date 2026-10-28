@@ -6093,3 +6093,23 @@ authoritative contract, reconciliation, and bound receipts.
   and PBS module branch-inclusive coverage is 95%. Ruff, `ty`, source/runner
   BasedPyright, context validation, and diff checks pass. Review is by the
   implementing agent only. Commit `5f64d335` records the r19 increment.
+
+## October 28 MBS historical-workbook source-column semantics
+
+- [x] Reconcile the 91 exact historical workbook profiles against the existing
+  Services Australia and data.gov.au report definitions. All 91 distinct sheet
+  profiles share one normalized eight-column contract (728 header bindings).
+  The bounded source meaning receipt qualifies the report-period year and
+  processing month, MBS item reference, claim-time State/Territory basis,
+  patient age-range and gender dimensions, adjusted service total, and total
+  benefit amount label. It keeps item remapping, demographic codes, benefit
+  currency/calculation, every cell value, and cross-era equivalence unresolved.
+  No source values or payload bytes were read; all 310,176,929 non-header
+  cells remain `native_unresolved`. The affected Stable contract module passes
+  (66 tests); Ruff, formatting, `ty`, BasedPyright, context validation,
+  ecosystem validation, and diff checks pass. Receipt:
+  `quality/qualifications/mbs-historical-workbook-source-column-semantics-20261028.json`.
+- [ ] Continue value-level and era-specific qualification only where exact
+  source evidence supports it. MBS value semantics, P7 source-owner date
+  confirmation, PBS domain meanings/relationships, and M-109 acceptance remain
+  open.
