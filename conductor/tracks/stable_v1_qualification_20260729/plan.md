@@ -852,7 +852,7 @@ authoritative contract, reconciliation, and bound receipts.
   context validation and diff checks pass. No local full profile was run.
   Existing qualification/release artifacts and protected hosted checks retain
   their authority; hosted results for this change remain pending.
-- [ ] Advance the selected `admitted-delivery` system lane: trace an existing
+- [~] Advance the selected `admitted-delivery` system lane: trace an existing
   eligible Silver producer output through v4 admission and the actual consumer
   boundary, resolve the first shared failure, and retain all mandatory object
   evidence and source-specific blockers under the existing contracts.
@@ -1090,3 +1090,19 @@ release gate.
 - [ ] Continue federation work through its remaining evidence gates. Do not
   close or archive the Stable v1 track while its authoritative contract has
   unresolved gates.
+
+### M-111 browser canary for the admitted July MBS cohort (2026-10-28)
+
+- [x] Extend the existing bounded delivery qualification to optionally render
+  the same Atlas responses through Chromium, compare rendered cells to the
+  API result in memory, enforce a same-host request boundary, and retain only
+  hashes, counts and HTTP status. Enable it in the existing exact-six MBS v4
+  admission workflow. Synthetic fixture browser test, affected delivery tests,
+  Ruff, formatting, `ty`, configured BasedPyright targets, Actionlint and diff
+  checks pass. No source payload, rights, admission, or publication state was
+  changed locally.
+- [~] Merge the scoped change after protected checks pass, dispatch the
+  existing exact-main admission workflow, then validate and reconcile the
+  resulting six-object browser receipt into M-111 and Stable readiness. The
+  Australian federation and Stable v1 gates remain blocked until all their
+  independent requirements pass.

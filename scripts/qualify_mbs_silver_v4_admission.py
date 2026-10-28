@@ -690,9 +690,12 @@ def qualify(root: Path, output_dir: Path, commit: str) -> dict[str, Any]:  # ruf
         metadata_root,
         root / "contracts/medallion/v4.1/federation.schema.json",
         requests,
+        browser=True,
     )
     if consumer_canary["status"] != "passed":
-        raise ValueError("API, CLI, Atlas, or export consumer canary failed")
+        raise ValueError(
+            "API, CLI, Atlas, export, or browser consumer canary failed"
+        )
 
     result = {
         "schema_id": "global-medicines-atlas.australian-mbs-silver-v4-remote-admission-qualification",

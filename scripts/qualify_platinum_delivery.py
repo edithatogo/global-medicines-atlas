@@ -36,6 +36,7 @@ def main() -> int:
     parser.add_argument("--requests", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--offline", action="store_true")
+    parser.add_argument("--browser", action="store_true")
     args = parser.parse_args()
     try:
         requests = _requests(args.requests)
@@ -45,6 +46,7 @@ def main() -> int:
             args.schema_file,
             requests,
             offline=args.offline,
+            browser=args.browser,
         )
     except Exception:
         # Validation and consumer exceptions may embed native values or paths.
