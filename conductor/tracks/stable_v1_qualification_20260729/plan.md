@@ -1065,7 +1065,7 @@ release gate.
   PBS and Stable contract tests pass (60 and 64); total focused coverage is
   94.60% and PBS module branch-inclusive coverage is 95%. Source/runner static
   checks, context validation, and diff checks pass. Review is by the
-  implementing agent only.
+  implementing agent only. Commit `5f64d335` records the r19 increment.
 
 ### PBS `rdf:resource` generic syntax-role qualification (2026-10-28)
 
