@@ -87,3 +87,25 @@ those hashes are raw HTTP response digests. The `not_assessed` registry state is
 preserved and no rights or sensitivity conclusion is inferred. Native Gitleaks
 8.30.1 checks passed for both new PBS conformance/discovery metadata artifacts.
 This is a candidate role observation; complete-contract binding is still open.
+
+## Six hosted PBS replay receipt review
+
+All six exact-main native runs and jobs passed once. Receipt scope, byte count,
+SHA-256, producer identity, plan digest, snapshot/partition IDs, registration
+hash and cleanup flags were checked against retained exact-source evidence.
+Their artifact IDs and native verification-step times are bound in the final
+manifest; transient dispatch journal fields are not used as completion proof.
+No source payload values were retained or interpreted.
+
+The follow-up reuses the shared v1 emitter with an isolated PBS rights basis.
+All artifacts remain candidates and promotions remain blocked. Its integrated
+source state passes 101 focused tests, Ruff, ty, BasedPyright for the v1 module
+and its tests, and unchanged six-object PBS/sixteen-object MBS regeneration.
+The harness test module retains 195 inherited formal-typing diagnostics against
+195 on main, with zero new diagnostics; this is differential evidence only.
+Nine new metadata artifacts pass native Gitleaks checks, and a synthetic
+credential-field control remains detected under the exact digest exceptions.
+Complete-history security and protected CI are tracked against the final PR.
+
+Review was by the implementing agent. No remaining scoped findings were
+identified; full federation acceptance and track archival remain incomplete.

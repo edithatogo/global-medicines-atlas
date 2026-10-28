@@ -61,3 +61,26 @@ remains a registry assessment state; it does not replace the separate exact
 rights attestation. No source object was downloaded or rehashed by this check.
 The candidate still needs a durable exact-main receipt binding in a complete
 v4 contract; discovery membership alone performs no admission.
+
+## Six hosted replays completed
+
+All six exact PBS utilisation objects passed metadata-only replay on main
+commit `8343d511179e71adea825a5f46e7c6cd60b16373`. Runs `40677682866`,
+`40678419501`, `40678703243`, `40679077698`, `40679177671`, and `40679271451`
+verified 191,047,619 source bytes in total. Each ran once, anonymously, without
+parsing source values; each verified byte count/SHA-256 and removed its replay
+workspace. No source bytes are retained in this repository increment.
+
+The aggregate manifest is
+`quality/qualifications/australian-m112-pbs-v3-replays-20261028/replay-manifest.json`.
+It binds unmodified receipt bytes, artifact identifiers and digests, expected
+plan digests, exact producer commit, and observed successful native runs, jobs
+and verification steps. Dispatch-observation state is not treated as terminal
+runtime proof. GitHub artifacts have finite retention; the repository-versioned
+receipts preserve the aggregate evidence after their expiry.
+
+All six remain raw-B2 candidates. This does not admit a v4 object, qualify a
+consumer, interpret source values, publish a dataset or establish independent
+recovery. The original B1 acquisitions and their unknown historical rights
+states remain unchanged. The current exact-file attestation supplies its
+separate permission basis without an independently reviewed instrument.

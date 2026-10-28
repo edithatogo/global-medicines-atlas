@@ -969,7 +969,7 @@ append. The Stable v1 Australian federation gate remains blocked.
   network read when a target, revision, identity, or evidence binding differs.
 - [x] Qualify the executor with synthetic download controls and unchanged MBS
   replay checks; verify anonymous access, byte identity and temporary cleanup.
-- [ ] Review and merge after protected checks, then execute the exact-main
+- [x] Review and merge after protected checks, then execute the exact-main
   hosted replay and retain its aggregate artifact. No admission or consumer
   canary follows from preparation alone. Keep the full federation acceptance
   and track archival pending their remaining requirements.
@@ -996,3 +996,17 @@ append. The Stable v1 Australian federation gate remains blocked.
 - [ ] Bind this candidate receipt from durable main into complete v4 contracts
   only after their remaining required evidence qualifies. No admission or
   consumer canary is supplied by the discovery readback.
+
+## Exact-main six-object PBS raw replay receipts (2026-10-28)
+
+- [x] Execute each of the six exact PBS raw-B2 replay targets once and serially
+  at main `8343d511179e71adea825a5f46e7c6cd60b16373`; verify successful native
+  runs, jobs and aggregate-artifact identities before advancing the next target.
+- [x] Retain the unmodified metadata receipts and normalized replay manifest.
+  All 191,047,619 bytes match the pinned identities, expected plans and producer
+  commit; all replay workspaces were removed and no source values were parsed.
+- [x] Independently derive the additional five public idempotency digests and
+  retain exact field/value leak-detector exceptions with negative controls.
+- [ ] Bind these candidate roles into complete v4 contracts after all remaining
+  required evidence qualifies. This does not add an admission, consumer canary,
+  independently durable copy or federation acceptance.

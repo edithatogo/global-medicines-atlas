@@ -1156,3 +1156,14 @@ release gate.
   verify profile normalization, evidence hashes, and the fail-closed gate state.
 - [ ] Continue the remaining M-109 evidence and all other federation
   requirements. Stable v1 and the Australian federation gate remain blocked.
+
+## PBS raw candidate role evidence (2026-10-28)
+
+The owning data-plane increment now retains an exact six-object v1 candidate
+manifest, public discovery observations, and six successful exact-main hosted
+raw-B2 replays covering 191,047,619 bytes. Native run/job/step and artifact
+readbacks are in
+`quality/qualifications/australian-m112-pbs-v3-replays-20261028/replay-manifest.json`.
+These supply candidate role evidence and preserve the frozen 1,759-object scope.
+No v4 admission or consumer canary was performed. Complete-contract binding,
+remaining federation criteria, and this track's archival remain pending.
