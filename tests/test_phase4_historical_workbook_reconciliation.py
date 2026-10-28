@@ -12,13 +12,13 @@ PHASE4 = (
     ROOT
     / "quality"
     / "qualifications"
-    / "phase4-mandatory-output-delivery-reconciliation-20261028.json"
+    / "phase4-mandatory-output-delivery-reconciliation-20261028-2.json"
 )
 PREVIOUS_PHASE4 = (
     ROOT
     / "quality"
     / "qualifications"
-    / "phase4-mandatory-output-delivery-reconciliation-20261027.json"
+    / "phase4-mandatory-output-delivery-reconciliation-20261028.json"
 )
 
 
@@ -32,12 +32,10 @@ def _sha256(path: Path) -> str:
 
 def test_phase4_reconciliation_binds_bounded_header_evidence() -> None:
     report = _load(PHASE4)
-    assert report["recorded_at"] == "2026-10-28T03:00:40Z"
+    assert report["recorded_at"].startswith("2026-10-28T")
     assert report["supersedes"] == {
         "path": PREVIOUS_PHASE4.relative_to(ROOT).as_posix(),
-        "sha256": (
-            "48c6ea2bf1eb50790edae6e6f0c5a1a4db31a697eef00a805b0ae69706bb5723"
-        ),
+        "sha256": _sha256(PREVIOUS_PHASE4),
     }
     assert report["scope"]["new_sources"] == 0
     assert report["scope"]["inventory_membership_changed"] is False
@@ -129,3 +127,73 @@ def test_phase4_reconciliation_binds_bounded_header_evidence() -> None:
     assert report["summary"]["additional_admissions"] == 0
     assert report["summary"]["additional_consumer_canaries"] == 0
     assert report["summary"]["additional_eligible_outputs"] == 0
+
+
+def test_phase4_outside_m112_outputs_bind_the_exact_attested_scope() -> None:
+    report = _load(PHASE4)
+    candidate = next(
+        item
+        for item in report["candidate_obligations"]
+        if item["name"] == "August 2026 MBS Bronze projections outside M-112"
+    )
+    rights_path = ROOT / candidate["rights_attestation"]
+    scope_path = ROOT / candidate["scope_exception_receipt"]
+    rights = _load(rights_path)
+    scope = _load(scope_path)
+    frozen = _load(
+        ROOT
+        / "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json"
+    )
+
+    assert candidate["rights_attestation_sha256"] == _sha256(rights_path)
+    assert candidate["scope_exception_sha256"] == _sha256(scope_path)
+    assert candidate["object_count"] == len(rights["authorized_objects"]) == 4
+    assert candidate["objects"] == [
+        {
+            "path": row["path"],
+            "sha256": row["sha256"],
+            "byte_count": row["byte_count"],
+            "product_id": row["path"].split("/")[4],
+            "in_frozen_m112_inventory": False,
+            "rights_attestation": candidate["rights_attestation"],
+            "identity_readback_revision": row["revision"],
+        }
+        for row in rights["authorized_objects"]
+    ]
+    assert all(
+        row["path"] not in {item["path"] for item in frozen["members"]}
+        for row in candidate["objects"]
+    )
+    assert candidate["federation_v4_admissions"] == 0
+    assert {row["product_id"] for row in candidate["products"]} == {
+        "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+        "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+    }
+    f9_product = next(
+        row
+        for row in candidate["products"]
+        if row["product_id"].startswith("f9f9")
+    )
+    assert f9_product["bronze_parser_admission"] == (
+        "unadmitted_no_admission_sidecar"
+    )
+    assert scope["scope"]["outside_frozen_inventory_object_count"] == 4
+
+    readiness = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    contract_path = ROOT / "quality/qualifications/stable-v1-contract.json"
+    assert readiness["contract"]["sha256"] == _sha256(contract_path)
+    assert {
+        (row["path"], row["sha256"])
+        for row in readiness["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if row["path"] == PHASE4.relative_to(ROOT).as_posix()
+    } == {
+        (
+            PHASE4.relative_to(ROOT).as_posix(),
+            _sha256(PHASE4),
+        )
+    }

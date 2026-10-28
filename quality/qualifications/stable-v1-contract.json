@@ -861,7 +861,8 @@
         "conductor/tracks/public_hf_federated_data_plane_20260829/plan.md",
         "quality/qualifications/hf-legacy-composite-authorization-20260829.json",
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json",
-        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json"
+        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json",
+        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -876,7 +877,8 @@
         "conductor/tracks/australian_benefits_silver_gold_20260829/spec.md",
         "quality/qualifications/pbs-domain-field-semantics-20261025-v5.json",
         "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r15.json",
-        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json"
+        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json",
+        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -922,7 +924,8 @@
         "conductor/tracks/public_hf_federated_data_plane_20260829/spec.md",
         "quality/qualifications/australian-m112-recovery-readiness-20261027/recovery-readiness.json",
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json",
-        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json"
+        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json",
+        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -1284,7 +1287,8 @@
         "quality/qualifications/scraper-archival-20260906.json",
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json",
         "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json",
-        "quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261018.json"
+        "quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261018.json",
+        "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json"
       ]
     },
     {

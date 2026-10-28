@@ -934,3 +934,15 @@ admission. No publication, promotion, or public release occurred.
 
 The local change sends no messages and performs no dataset publication or
 append. The Stable v1 Australian federation gate remains blocked.
+
+## M-108 August out-of-inventory scope reconciliation (2026-10-28)
+
+- [x] Correct the 2026-10-28 Phase 4 reconciliation, which had mislabeled the
+  in-inventory `6bc9`/`99fada` objects as the separate M-108 out-of-inventory
+  set. The successor binds the exact `d781`/`f9f9` paths, digests, byte counts,
+  scope exception, and four-object rights attestation. It records `d781` as
+  Bronze-parser accepted and `f9f9` as lacking an admission sidecar; neither is
+  v4-admitted. Stable contract and readiness evidence were rebound without
+  changing gate state or inventory membership.
+- [ ] Complete the exact M-108 product-card, v4 admission, independent-replica,
+  and unadmitted-prefix disposition requirements under their existing gates.
