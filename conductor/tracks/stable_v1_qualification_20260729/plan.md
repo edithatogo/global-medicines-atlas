@@ -810,6 +810,39 @@ This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
 
+### October 28 PBS r17 contract reconciliation
+
+- [x] Reconcile the new PBS r17 field-state receipt into M-109 evidence, the
+  Stable v1 contract, and the readiness receipt. The M-109 and Australian
+  federation gates remain blocked: the increment classifies only 10,368
+  `rdf:about` syntax-role fields and does not resolve PBS relationships or
+  source values. M-105/M-107, the remaining federation requirements, and
+  conditional promotion prerequisites are unchanged. Targeted PBS and Stable
+  contract checks, static analysis, and Conductor context validation pass;
+  details are in `evidence.jsonl`; implementation commit `636c27bf` records the report, code, and contract bindings.
+
+### October 28 M-107 exact endpoint metadata recheck
+
+- [x] Recheck the three already-authorized Health.gov workbook URLs using one
+  metadata-only `HEAD` per endpoint. All returned HTTP 200, the expected XLSX
+  content type, and the same byte lengths and Last-Modified dates as the prior
+  workstation preflight. No body was read. Because the prior exact-main hosted
+  probe timed out and transport metadata has not changed, do not repeat the
+  harvest; M-107 remains blocked pending a changed hosted route or an
+  agency-supported delivery route. The [snapshot record](../../../docs/qualification/australian-mbs-pbs-m107-snapshots.md)
+  and readiness digest now bind this observation.
+
+### October 28 PBS r18 review correction
+
+- [x] Review the r17 field-role evidence and fix the missing digest binding to
+  its exact schema-path inventory. The r18 successor enforces the inventory
+  SHA-256 and records it in the report; a negative control rejects changed
+  inventory identity. M-109, the Australian federation gate, and conditional
+  promotion remain blocked. The affected PBS and Stable contract suites, static
+  checks, and context validation pass. Review was performed by the implementing
+  agent, not an independent reviewer. Commit `2f2d61f0` contains the report,
+  input digest binding, readiness reconciliation, and review correction.
+
 - [x] Implement the shared execution charter and machine-validated scheduling
   plan; require named existing gates, bounded failures, proof and stop conditions.
   Extend the existing CI context validator to reject source/inventory expansion,
@@ -819,7 +852,7 @@ authoritative contract, reconciliation, and bound receipts.
   context validation and diff checks pass. No local full profile was run.
   Existing qualification/release artifacts and protected hosted checks retain
   their authority; hosted results for this change remain pending.
-- [ ] Advance the selected `admitted-delivery` system lane: trace an existing
+- [~] Advance the selected `admitted-delivery` system lane: trace an existing
   eligible Silver producer output through v4 admission and the actual consumer
   boundary, resolve the first shared failure, and retain all mandatory object
   evidence and source-specific blockers under the existing contracts.
@@ -944,9 +977,11 @@ release gate.
 - [x] Focused affected tests: 139 passed across the M-112 state, donor-history,
   Stable contract, and Phase 4 reconciliation modules. Ruff, formatting,
   context validation, and diff checks pass.
-- [ ] Push the correction, reconcile all protected checks at that exact PR
-  head, and merge only after they pass. All Australian federation dispositions
-  remain as evidenced; this correction does not satisfy the gate.
+- [x] Push the correction, reconcile all protected checks at that exact PR
+  head, and merge only after they pass. PR #1354 merged at
+  `67278c534438a15bfb529f6ab10e815f6bde1b9a` after every required protected
+  check passed. All Australian federation dispositions remain as evidenced;
+  this correction does not satisfy the gate.
 
 ### PR #1354 transaction-intent retention review repair (2026-10-28)
 
@@ -960,7 +995,114 @@ release gate.
 - [x] Add negative-control coverage for mismatched prepublished intent and
   workflow-order assertions. The combined affected suite passes (895 tests);
   Ruff, formatting, Actionlint, and diff checks pass.
-- [ ] Repeat the combined focused checks, push the repair, and inspect the
-  exact-head protected runs. Action artifacts have 90-day retention and do not
-  count as permanent Conductor evidence; no hosted transaction was executed.
-  Federation gate and stable promotion remain blocked.
+- [x] Repeat the combined focused checks (895 passed), push the repair, and
+  inspect the exact-head protected runs. Every required PR check passed at
+  `7a61ecd019fe264fd03c3ac0b601841eaf4e9a8e`; PR #1354 merged as
+  `67278c534438a15bfb529f6ab10e815f6bde1b9a`. Action artifacts have 90-day
+  retention and do not count as permanent Conductor evidence; no hosted
+  transaction was executed. Federation gate and stable promotion remain
+  blocked.
+
+### August `f9f9` projection disposition (2026-10-28)
+
+- [x] Bind the exact two-object `f9f9` prefix to the current anonymous tree
+  readback and rights-only attestation. Record `deferred_not_admitted` because
+  the product has no Bronze admission sidecar, product-specific federation-v4
+  card, typed admission, or independent-replica evidence, and the attestation
+  does not authorize admission or canaries. Add the disposition to generated
+  Stable M-108 and federation-gate evidence and refresh the readiness receipt.
+  No source, inventory membership, rights conclusion, publication, admission,
+  or canary changed. The M-108 and federation gates remain blocked.
+- [x] Review repair: bind the Phase 4 reconciliation digest used to support the
+  missing product-card and independent-replica findings. Focused tests,
+  `ty`, BasedPyright, Ruff, formatting, context validation, and diff checks
+  pass. Review was performed by the implementing agent; no independent review
+  or gate acceptance is claimed.
+- [x] Re-run both affected qualification modules after the review repair:
+  66 passed; context validation and diff checks pass. No full local profile was
+  run because this evidence-bound disposition does not change runtime behavior.
+- [ ] Continue M-108 only when each remaining exact output has complete
+  product-specific qualification, independent-replica evidence, and separate
+  admission authority; retain the present no-admission boundary.
+
+### Formal Conductor review of the 2026-10-28 disposition update
+
+- [x] Review the scoped change from `origin/main` through the f9f9 disposition
+  and review-fix commit. The first focused type-check pass found that the
+  affected M-112 test helper exposed decoded JSON as `dict[str, object]`,
+  producing eight indexing/iteration diagnostics. Correct it to
+  `dict[str, Any]` in `30d4fd85`; the changed range then passes the 66 focused
+  qualification tests, Ruff, Ruff formatting, `ty`, BasedPyright, and diff
+  checks. Review was performed by the implementing agent; no independent
+  reviewer or gate acceptance is claimed. M-108 and the Australian federation
+  gate remain blocked, so the Stable v1 track remains open and is not archived.
+
+### M-112 current receipt reconciliation and review (2026-10-28)
+
+- [x] Bind the current M-112 role receipt and exact 14-object MBS-utilisation
+  B1/B2 lineage overlay into the Stable M-112 requirement, federation gate,
+  acceptance summary, and release-readiness receipt. Record 8 exact v4
+  admissions and 8 canaries against the frozen 1,759-object denominator, with
+  1,751 still deferred; distinguish the 14 lineage joins from v4 admission.
+  Preserve the reviewer-unreviewed landed-admission status and blocked gate.
+  Implementation `bdeb6dc1`.
+- [x] Review the scoped contract and acceptance update. Correct the acceptance
+  page's stale reconciliation date and refresh its digest binding. The 67
+  focused M-112/Stable tests, Ruff, Ruff formatting, `ty`, BasedPyright,
+  context validation, and diff checks pass. Review was performed by the
+  implementing agent; no independent reviewer, new admission, canary, source,
+  publication, or federation acceptance is claimed.
+
+### PBS schema-version field evidence (2026-10-28)
+
+- [x] Bind PBS r19 into the Australian acceptance summary, Stable contract,
+  and release-readiness receipt. The exact root `@version` field is interpreted
+  as source schema version 3.1 from the existing metadata-only receipt; the
+  schema patch and all PBS medicine values and relationships remain unresolved.
+  The machine contract remains blocked only on the Australian federation gate.
+  No source, rights, admission, canary, publication, or stable-release state
+  changed. After review hardening the receipt path before file access, focused
+  PBS and Stable contract tests pass (60 and 64); total focused coverage is
+  94.60% and PBS module branch-inclusive coverage is 95%. Source/runner static
+  checks, context validation, and diff checks pass. Review is by the
+  implementing agent only. Commit `5f64d335` records the r19 increment.
+
+### PBS `rdf:resource` generic syntax-role qualification (2026-10-28)
+
+- [x] Add the exact QName-bound RDF/XML syntax role to PBS field-state
+  successor r16, preserving r15 and all source values. Implementation
+  `c8ea243b`. The W3C RDF/XML
+  Recommendation supports the generic object-node IRI-reference role for
+  1,159,282 additional fields. The complete PBS partition is now 3,086,366
+  interpreted, 15,122,392 `native_unresolved`, and zero unavailable. The
+  exact URI screen remains lexical evidence; target resolution, predicate
+  meaning, relationship edges, and complete M-109 acceptance remain open.
+- [x] Bind r16 and its limitations into the Australian acceptance summary,
+  Stable contract evidence, and readiness receipt. Stable v1 remains blocked
+  on `stable-v1-australian-health-federation`; M-105, M-107, M-108 and other
+  acceptance conditions were not waived or reclassified.
+- [x] The affected PBS field-state module passes (50 tests); the new runner
+  reproduces the retained r16 report byte-for-byte; Ruff, formatting, `ty`,
+  and BasedPyright pass for changed implementation and runner files. Focused
+  three focused Stable qualification tests and context validation pass and are
+  recorded in the evidence ledger. Review remains an implementing-agent review, not an
+  independent approval.
+- [ ] Continue federation work through its remaining evidence gates. Do not
+  close or archive the Stable v1 track while its authoritative contract has
+  unresolved gates.
+
+### M-111 browser canary for the admitted July MBS cohort (2026-10-28)
+
+- [x] Extend the existing bounded delivery qualification to optionally render
+  the same Atlas responses through Chromium, compare rendered cells to the
+  API result in memory, enforce a same-host request boundary, and retain only
+  hashes, counts and HTTP status. Enable it in the existing exact-six MBS v4
+  admission workflow. Synthetic fixture browser test, affected delivery tests,
+  Ruff, formatting, `ty`, configured BasedPyright targets, Actionlint and diff
+  checks pass. No source payload, rights, admission, or publication state was
+  changed locally.
+- [~] Merge the scoped change after protected checks pass, dispatch the
+  existing exact-main admission workflow, then validate and reconcile the
+  resulting six-object browser receipt into M-111 and Stable readiness. The
+  Australian federation and Stable v1 gates remain blocked until all their
+  independent requirements pass.

@@ -96,7 +96,23 @@ M105_NOT_WAIVED = (
 M105_BASELINE_ROWS = 54
 M105_DELTA_ROWS = 10
 AUSTRALIAN_PHASE4_CURRENT = "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json"
+AUSTRALIAN_M112_CURRENT_ROLE_EVIDENCE = (
+    "quality/qualifications/"
+    "australian-m112-v4-contract-role-evidence-qualification-20261021.json"
+)
+AUSTRALIAN_M112_MBS_UTIL_LINEAGE = (
+    "quality/qualifications/"
+    "australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json"
+)
 AUSTRALIAN_AUGUST_CURRENT_TREE = "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json"
+AUSTRALIAN_AUGUST_F9F9_DISPOSITION = (
+    "quality/qualifications/"
+    "australian-mbs-august-f9f9-prefix-disposition-20261028.json"
+)
+AUSTRALIAN_PBS_RDF_FIELD_STATE = (
+    "quality/qualifications/"
+    "pbs-native-silver-field-reconciliation-20261028-r19.json"
+)
 
 TECHNICAL_GATE_EVIDENCE = {
     "stable-v1-canonical-schema-v2": [
@@ -548,11 +564,25 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             if requirement_id == "M-108":
                 requirement["evidence"] = _append_unique(
                     requirement["evidence"],
-                    [AUSTRALIAN_PHASE4_CURRENT, AUSTRALIAN_AUGUST_CURRENT_TREE],
+                    [
+                        AUSTRALIAN_PHASE4_CURRENT,
+                        AUSTRALIAN_AUGUST_CURRENT_TREE,
+                        AUSTRALIAN_AUGUST_F9F9_DISPOSITION,
+                    ],
                 )
-            elif requirement_id in {"M-109", "M-112"}:
+            elif requirement_id == "M-109":
                 requirement["evidence"] = _append_unique(
-                    requirement["evidence"], [AUSTRALIAN_PHASE4_CURRENT]
+                    requirement["evidence"],
+                    [AUSTRALIAN_PHASE4_CURRENT, AUSTRALIAN_PBS_RDF_FIELD_STATE],
+                )
+            elif requirement_id == "M-112":
+                requirement["evidence"] = _append_unique(
+                    requirement["evidence"],
+                    [
+                        AUSTRALIAN_PHASE4_CURRENT,
+                        AUSTRALIAN_M112_CURRENT_ROLE_EVIDENCE,
+                        AUSTRALIAN_M112_MBS_UTIL_LINEAGE,
+                    ],
                 )
         elif requirement["evidence"] == ["conductor/requirements.md"]:
             requirement["evidence"] = _append_unique(
@@ -652,7 +682,11 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             GRAPH_ARCHIVE,
             M105_WAIVER,
             AUSTRALIAN_PHASE4_CURRENT,
+            AUSTRALIAN_M112_CURRENT_ROLE_EVIDENCE,
+            AUSTRALIAN_M112_MBS_UTIL_LINEAGE,
             AUSTRALIAN_AUGUST_CURRENT_TREE,
+            AUSTRALIAN_AUGUST_F9F9_DISPOSITION,
+            AUSTRALIAN_PBS_RDF_FIELD_STATE,
         ],
     )
 

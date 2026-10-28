@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -20,6 +21,7 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     DOMAIN_V4,
     FIELD_STATE,
     PACKAGE,
+    PATH_INVENTORY,
     REFERENCE_PACKET,
     REFERENCE_REVIEW,
     REFERENCE_SCREEN,
@@ -29,6 +31,10 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     reconcile_pbs_field_states,
     reconcile_pbs_field_states_v5,
     reconcile_pbs_field_states_v6,
+    reconcile_pbs_field_states_v7,
+    reconcile_pbs_field_states_v8,
+    reconcile_pbs_field_states_v9,
+    reconcile_pbs_field_states_v10,
 )
 from global_medicines_atlas.pbs_reference_case_adjudication import (
     ADJUDICATION_PATH,
@@ -280,6 +286,272 @@ def test_v6_qualifies_only_exact_same_member_xlink_targets():
     assert links["edge_payload_emitted"] is False
     assert links["source_values_emitted"] is False
     assert coverage["interpreted"] + coverage["native_unresolved"] == 18_208_758
+
+
+def test_v7_qualifies_generic_rdf_resource_field_role_without_edges():
+    report = reconcile_pbs_field_states_v7(ROOT)
+    coverage = report["field_state_coverage"]
+    references = report["source_local_rdf_resource_semantics"]
+    rdf_rows = [
+        row
+        for row in report["path_reconciliation"]
+        if "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource"
+        in row["schema_path"]
+    ]
+
+    assert report["profile_id"] == "pbs-v3-2026-04-01-field-state-v7"
+    assert coverage == {
+        "interpreted": 3_086_366,
+        "native_unresolved": 15_122_392,
+        "unavailable": 0,
+        "source_fields": 18_208_758,
+        "denominator_closed": True,
+        "all_native_values_remain_unresolved": False,
+        "semantic_field_states_distinct_from_structural_destinations": True,
+    }
+    assert len(rdf_rows) == 370
+    assert sum(row["field_count"] for row in rdf_rows) == 1_167_610
+    assert (
+        sum(
+            row["field_count"]
+            for row in rdf_rows
+            if row["semantic_interpretation"]["domain"]
+            == "amt_literal_reference_resource"
+        )
+        == 8_328
+    )
+    assert all(row["semantic_state"] == "interpreted" for row in rdf_rows)
+    assert references["rdf_resource_fields"] == 1_167_610
+    assert references["newly_interpreted_generic_resource_references"] == (
+        1_159_282
+    )
+    assert references["target_identity_resolution_qualified"] is False
+    assert references["semantic_relationships_qualified"] is False
+    assert references["edge_payload_emitted"] is False
+    assert references["source_values_emitted"] is False
+
+
+def test_v7_rejects_changed_rdf_screen_outcomes(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    relative_path = reconciliation.URI_SCREEN_V3
+
+    def mutate(envelope: dict[str, Any]) -> None:
+        envelope["report"]["qualification"]["outcome_counts_by_qname"][
+            "rdf:resource"
+        ]["absolute_uri_unique_candidate"] += 1
+
+    _intercept_json_loads(monkeypatch, relative_path, mutate)
+
+    with pytest.raises(
+        ValueError, match="PBS RDF resource screen qualification differs"
+    ):
+        reconcile_pbs_field_states_v7(ROOT)
+
+
+def test_v7_retained_report_is_canonical_and_digest_bound():
+    report_path = ROOT / reconciliation.CURRENT_RECONCILIATION_V7
+    envelope = json.loads(report_path.read_bytes())
+    canonical = json.dumps(
+        envelope["report"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+    assert hashlib.sha256(canonical).hexdigest() == envelope["report_sha256"]
+    assert envelope["report"]["profile_id"] == (
+        "pbs-v3-2026-04-01-field-state-v7"
+    )
+
+
+def test_v8_qualifies_generic_rdf_about_subject_role_without_resolution():
+    report = reconcile_pbs_field_states_v8(ROOT)
+    coverage = report["field_state_coverage"]
+    references = report["source_local_rdf_about_semantics"]
+    about_rows = [
+        row
+        for row in report["path_reconciliation"]
+        if "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}about"
+        in row["schema_path"]
+    ]
+
+    assert report["profile_id"] == "pbs-v3-2026-04-01-field-state-v8"
+    assert coverage["interpreted"] == 3_096_734
+    assert coverage["native_unresolved"] == 15_112_024
+    assert coverage["unavailable"] == 0
+    assert coverage["source_fields"] == 18_208_758
+    assert coverage["denominator_closed"] is True
+    assert len(about_rows) == 34
+    assert sum(row["field_count"] for row in about_rows) == 10_368
+    assert all(row["semantic_state"] == "interpreted" for row in about_rows)
+    assert references["newly_interpreted_subject_iri_references"] == 10_368
+    assert references["rdf_about_fields"] == 10_368
+    assert references["subject_iri_resolution_qualified"] is False
+    assert references["semantic_relationships_qualified"] is False
+    assert references["edge_payload_emitted"] is False
+    assert references["source_values_read"] is False
+    assert references["source_values_emitted"] is False
+
+
+def test_v8_rejects_changed_rdf_about_definition_count(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    def mutate(envelope: dict[str, Any]) -> None:
+        envelope["report"]["qualification"]["definition_counts_by_qname"][
+            "rdf:about"
+        ] += 1
+
+    _intercept_json_loads(monkeypatch, reconciliation.URI_SCREEN_V3, mutate)
+
+    with pytest.raises(
+        ValueError, match="PBS RDF about screen qualification differs"
+    ):
+        reconcile_pbs_field_states_v8(ROOT)
+
+
+def test_v8_retained_report_is_canonical_and_digest_bound():
+    report_path = ROOT / reconciliation.CURRENT_RECONCILIATION_V8
+    envelope = json.loads(report_path.read_bytes())
+    canonical = json.dumps(
+        envelope["report"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+    assert hashlib.sha256(canonical).hexdigest() == envelope["report_sha256"]
+    assert envelope["report"]["profile_id"] == (
+        "pbs-v3-2026-04-01-field-state-v8"
+    )
+
+
+def test_v9_binds_exact_schema_path_inventory_digest():
+    report = reconcile_pbs_field_states_v9(ROOT)
+
+    assert report["profile_id"] == "pbs-v3-2026-04-01-field-state-v9"
+    assert report["source"]["schema_path_inventory_path"] == PATH_INVENTORY
+    assert report["source"]["schema_path_inventory_file_sha256"] == (
+        reconciliation.PATH_INVENTORY_SHA256
+    )
+    assert (
+        report["source_local_rdf_about_semantics"][
+            "schema_path_inventory_file_sha256"
+        ]
+        == reconciliation.PATH_INVENTORY_SHA256
+    )
+
+
+def test_v9_rejects_changed_schema_path_inventory_digest(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    original = reconciliation._file_sha256
+
+    def mismatch(path: Path) -> str:
+        if path.as_posix().endswith(PATH_INVENTORY):
+            return "0" * 64
+        return original(path)
+
+    monkeypatch.setattr(reconciliation, "_file_sha256", mismatch)
+    with pytest.raises(
+        ValueError, match="PBS schema-path inventory bytes differ"
+    ):
+        reconcile_pbs_field_states_v9(ROOT)
+
+
+def test_v9_retained_report_is_canonical_and_binds_path_inventory():
+    report_path = ROOT / reconciliation.CURRENT_RECONCILIATION_V9
+    envelope = json.loads(report_path.read_bytes())
+    canonical = json.dumps(
+        envelope["report"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+    assert hashlib.sha256(canonical).hexdigest() == envelope["report_sha256"]
+    assert envelope["report"]["profile_id"] == (
+        "pbs-v3-2026-04-01-field-state-v9"
+    )
+    assert envelope["report"]["source"][
+        "schema_path_inventory_file_sha256"
+    ] == (reconciliation.PATH_INVENTORY_SHA256)
+    assert envelope["report"] == reconcile_pbs_field_states_v9(ROOT)
+
+
+def test_v10_qualifies_only_the_exact_pbs_root_schema_version_field():
+    report = reconcile_pbs_field_states_v10(ROOT)
+    path = "/{http:~1~1schema.pbs.gov.au~1}root/attributes/version"
+    row = next(
+        row
+        for row in report["path_reconciliation"]
+        if row["schema_path"] == path
+    )
+    schema_version = report["source_local_schema_version_semantics"]
+
+    assert report["profile_id"] == "pbs-v3-2026-04-01-field-state-v10"
+    assert report["field_state_coverage"]["interpreted"] == 3_096_735
+    assert report["field_state_coverage"]["native_unresolved"] == 15_112_023
+    assert report["field_state_coverage"]["denominator_closed"] is True
+    assert row["field_count"] == 1
+    assert row["semantic_state"] == "interpreted"
+    assert row["semantic_interpretation"]["domain"] == (
+        "pbs_source_schema_version_literal"
+    )
+    assert schema_version["declared_schema_version"] == "3.1"
+    assert schema_version["schema_patch_bound"] is False
+    assert schema_version["source_values_read"] is False
+
+
+def test_v10_rejects_changed_schema_version_path_receipt(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    receipt = "quality/qualifications/pbs-root-schema-version-metadata-20261025-40145730405.json"
+
+    def mutate(envelope: dict[str, Any]) -> None:
+        envelope["report"]["version_attribute_path"] = "/wrong/path"
+
+    _intercept_json_loads(monkeypatch, receipt, mutate)
+    with pytest.raises(
+        ValueError, match="PBS root schema-version report digest differs"
+    ):
+        reconcile_pbs_field_states_v10(ROOT)
+
+
+def test_v10_rejects_unexpected_receipt_path_before_reading(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    report = reconcile_pbs_field_states_v9(ROOT)
+    report["bounded_domain_semantics"]["schema_version_evidence"][
+        "receipt_path"
+    ] = "../../outside-repository.json"
+    monkeypatch.setattr(
+        reconciliation,
+        "reconcile_pbs_field_states_v9",
+        lambda _root: report,
+    )
+
+    with pytest.raises(
+        ValueError, match="PBS root schema-version receipt path differs"
+    ):
+        reconcile_pbs_field_states_v10(ROOT)
+
+
+def test_v10_retained_report_is_canonical_and_digest_bound():
+    report_path = ROOT / reconciliation.CURRENT_RECONCILIATION_V10
+    envelope = json.loads(report_path.read_bytes())
+    canonical = json.dumps(
+        envelope["report"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+    assert hashlib.sha256(canonical).hexdigest() == envelope["report_sha256"]
+    assert envelope["report"]["profile_id"] == (
+        "pbs-v3-2026-04-01-field-state-v10"
+    )
+    assert envelope["report"] == reconcile_pbs_field_states_v10(ROOT)
 
 
 def test_reference_case_structural_review_keeps_semantic_links_unqualified():
@@ -746,10 +1018,9 @@ def test_restriction_text_is_limited_to_direct_source_slots():
     assert reconciliation._semantic_adjudication(direct)["domain"] == (
         "restriction_text"
     )
-    assert (
-        "reason for subsidisation"
-        in reconciliation._semantic_adjudication(direct)["meaning"]
-    )
+    meaning = reconciliation._semantic_adjudication(direct)["meaning"]
+    assert meaning is not None
+    assert "reason for subsidisation" in meaning
     assert reconciliation._semantic_adjudication(nested)["state"] == (
         "native_unresolved"
     )

@@ -106,7 +106,8 @@ def test_exact_six_mbs_profiles_close_receipts_and_prepare_consumer_canaries(
 
     consumer_calls = []
 
-    def consumer_canary(_trust, _metadata, _schema, requests):
+    def consumer_canary(_trust, _metadata, _schema, requests, *, browser=False):
+        assert browser is True
         consumer_calls.extend(requests)
         return {
             "status": "passed",

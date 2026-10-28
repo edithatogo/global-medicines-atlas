@@ -52,6 +52,76 @@ def _validator(path: Path) -> Validator:
     return Draft202012Validator(schema)
 
 
+def _assert_f9f9_disposition_is_bound(
+    report: dict[str, Any], objects: list[dict[str, Any]]
+) -> Path:
+    path = ROOT / (
+        "quality/qualifications/"
+        "australian-mbs-august-f9f9-prefix-disposition-20261028.json"
+    )
+    disposition = _load(path)
+    assert disposition["disposition"]["state"] == "deferred_not_admitted"
+    assert disposition["disposition"]["product_id"] == (
+        "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63"
+    )
+    assert disposition["evidence"]["dataset"] == report["dataset"]["id"]
+    assert disposition["evidence"]["revision"] == report["dataset"]["revision"]
+    assert disposition["objects"] == [
+        {
+            "path": row["path"],
+            "sha256": row["sha256"],
+            "byte_count": row["byte_count"],
+        }
+        for row in objects
+        if "/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/"
+        in row["path"]
+    ]
+    references: list[dict[str, str]] = [
+        disposition["evidence"][key]
+        for key in (
+            "current_tree_readback",
+            "phase4_reconciliation",
+            "scope_exception",
+            "rights_attestation",
+        )
+    ]
+    for reference in references:
+        evidence_path: Path = ROOT / reference["path"]
+        assert (
+            reference["sha256"]
+            == hashlib.sha256(evidence_path.read_bytes()).hexdigest()
+        )
+    boundaries = disposition["boundaries"]
+    assert boundaries["new_sources"] == 0
+    assert boundaries["admission_performed"] is False
+    assert boundaries["federation_gate_closed"] is False
+    return path
+
+
+def _assert_current_m112_receipts_are_bound(
+    receipt: dict[str, Any],
+) -> None:
+    role_path = (
+        "quality/qualifications/"
+        "australian-m112-v4-contract-role-evidence-qualification-20261021.json"
+    )
+    lineage_path = (
+        "quality/qualifications/"
+        "australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json"
+    )
+    receipts = receipt["current_evidence_reconciliation"]["system_receipts"]
+    for path in (role_path, lineage_path):
+        evidence_path = ROOT / path
+        bound_receipt = next(item for item in receipts if item["path"] == path)
+        assert (
+            bound_receipt["sha256"]
+            == hashlib.sha256(evidence_path.read_bytes()).hexdigest()
+        )
+    role_receipt = next(item for item in receipts if item["path"] == role_path)
+    assert "8 v4 admissions" in role_receipt["consequence"]
+    assert "1,751 remain deferred" in role_receipt["consequence"]
+
+
 def _must_requirement_ids() -> set[str]:
     text = (ROOT / "conductor/requirements.md").read_text(encoding="utf-8")
     must_section = text.split("## Should Have", maxsplit=1)[0]
@@ -343,6 +413,55 @@ def test_m110_bounded_edge_review_is_bound_without_accepting_m110() -> None:
     )
 
 
+def test_current_m112_role_receipt_is_bound_without_accepting_denominator() -> (
+    None
+):
+    role_path = (
+        "quality/qualifications/"
+        "australian-m112-v4-contract-role-evidence-qualification-20261021.json"
+    )
+    lineage_path = (
+        "quality/qualifications/"
+        "australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json"
+    )
+    role_report = _load(ROOT / role_path)
+    assert role_report["cohort"]["approved_denominator"] == 1_759
+    assert role_report["cohort"]["v4_admissions"] == 8
+    assert role_report["cohort"]["consumer_canaries"] == 8
+    assert role_report["cohort"]["approved_denominator_changed"] is False
+    assert (
+        role_report["cohort"]["approved_denominator"]
+        - role_report["cohort"]["v4_admissions"]
+        == 1_751
+    )
+    lineage_report = _load(ROOT / lineage_path)
+    assert (
+        lineage_report["current_b1_b2_lineage_expansion"][
+            "new_complete_lineages"
+        ]
+        == 14
+    )
+    assert lineage_report["updated_gate_totals"]["preserved_deferrals"] == 1_759
+
+    contract = build_contract(_load(QUALIFICATION))
+    requirement = next(
+        item
+        for item in contract["requirements"]
+        if item["requirement_id"] == "M-112"
+    )
+    gate = next(
+        item
+        for item in contract["release_gates"]
+        if item["gate_id"] == "stable-v1-australian-health-federation"
+    )
+    assert requirement["state"] == "blocked"
+    assert gate["state"] == "blocked"
+    assert role_path in requirement["evidence"]
+    assert role_path in gate["evidence"]
+    assert lineage_path in requirement["evidence"]
+    assert lineage_path in gate["evidence"]
+
+
 def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
     readback_path = ROOT / (
         "quality/qualifications/"
@@ -368,6 +487,7 @@ def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
         == hashlib.sha256(scope_path.read_bytes()).hexdigest()
     )
     objects = report["readback"]["objects"]
+    disposition_path = _assert_f9f9_disposition_is_bound(report, objects)
     assert len(objects) == 4
     assert all(
         row["sha256"] == row["lfs_sha256"]
@@ -432,6 +552,9 @@ def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
     assert requirement["state"] == "blocked"
     assert readback_relative in requirement["evidence"]
     assert readback_relative in gate["evidence"]
+    disposition_relative = disposition_path.relative_to(ROOT).as_posix()
+    assert disposition_relative in requirement["evidence"]
+    assert disposition_relative in gate["evidence"]
     acceptance = (
         ROOT / "docs/qualification/australian-health-federation-acceptance.md"
     ).read_text(encoding="utf-8")
@@ -442,6 +565,7 @@ def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
     )
     assert readback_relative in m108_row
     assert "f9f9` has no admission sidecar" in m108_row
+    assert "explicitly deferred from M-108 admission" in m108_row
     assert "do not complete M-108" in m108_row
 
 
@@ -735,6 +859,23 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
         == hashlib.sha256(current_tree_path.read_bytes()).hexdigest()
     )
     assert "neither is v4-admitted" in current_tree_receipt["consequence"]
+    disposition_path = ROOT / (
+        "quality/qualifications/"
+        "australian-mbs-august-f9f9-prefix-disposition-20261028.json"
+    )
+    disposition_receipt = next(
+        item
+        for item in receipt["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == disposition_path.relative_to(ROOT).as_posix()
+    )
+    assert (
+        disposition_receipt["sha256"]
+        == hashlib.sha256(disposition_path.read_bytes()).hexdigest()
+    )
+    assert "deferred_not_admitted" in disposition_receipt["consequence"]
+    _assert_current_m112_receipts_are_bound(receipt)
     acceptance_path = ROOT / (
         "docs/qualification/australian-health-federation-acceptance.md"
     )
@@ -761,6 +902,14 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
         "310,176,929 non-header values remain `native_unresolved`" in m109_row
     )
     assert "1,194 ambiguous date-shaped cells" in m109_row
+    m112_row = next(
+        line
+        for line in acceptance.splitlines()
+        if line.startswith("| M-112 federation v4 |")
+    )
+    assert "8 exact v4 admissions" in m112_row
+    assert "1,751 objects remain deferred" in m112_row
+    assert "this is not 14 v4 admissions" in m112_row
     assert "`p7_date_convention_selected=false`" in m109_row
     assert (
         "workbook-era date convention, domain meaning, and temporal comparison remain unqualified"
@@ -796,6 +945,143 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
         "gate_id": "production-disaster-recovery-authority",
         "state": "blocked_external_authority",
     }
+
+
+def test_pbs_r16_field_state_is_bound_but_federation_gate_stays_blocked() -> (
+    None
+):
+    report_path = ROOT / (
+        "quality/qualifications/"
+        "pbs-native-silver-field-reconciliation-20261028-r16.json"
+    )
+    readiness = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    stable_contract = _load(QUALIFICATION)
+    receipt = next(
+        item
+        for item in readiness["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == report_path.relative_to(ROOT).as_posix()
+    )
+
+    assert (
+        receipt["sha256"]
+        == hashlib.sha256(report_path.read_bytes()).hexdigest()
+    )
+    assert "URI targets" in receipt["consequence"]
+    assert stable_contract["qualification_state"] == "blocked"
+    assert stable_contract["unresolved_gate_ids"] == [
+        "stable-v1-australian-health-federation"
+    ]
+
+
+def test_pbs_r17_field_state_is_bound_but_federation_gate_stays_blocked() -> (
+    None
+):
+    report_path = ROOT / (
+        "quality/qualifications/"
+        "pbs-native-silver-field-reconciliation-20261028-r17.json"
+    )
+    readiness = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    stable_contract = _load(QUALIFICATION)
+    receipt = next(
+        item
+        for item in readiness["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == report_path.relative_to(ROOT).as_posix()
+    )
+
+    assert (
+        receipt["sha256"]
+        == hashlib.sha256(report_path.read_bytes()).hexdigest()
+    )
+    assert "10,368" in receipt["consequence"]
+    assert stable_contract["qualification_state"] == "blocked"
+    assert stable_contract["unresolved_gate_ids"] == [
+        "stable-v1-australian-health-federation"
+    ]
+
+
+def test_pbs_r18_field_state_binds_path_inventory_and_gate_stays_blocked() -> (
+    None
+):
+    report_path = ROOT / (
+        "quality/qualifications/"
+        "pbs-native-silver-field-reconciliation-20261028-r18.json"
+    )
+    readiness = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    stable_contract = _load(QUALIFICATION)
+    receipt = next(
+        item
+        for item in readiness["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == report_path.relative_to(ROOT).as_posix()
+    )
+    report = _load(report_path)["report"]
+
+    assert (
+        receipt["sha256"]
+        == hashlib.sha256(report_path.read_bytes()).hexdigest()
+    )
+    assert report["source"]["schema_path_inventory_file_sha256"] == (
+        "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b"
+    )
+    assert report["field_state_coverage"]["denominator_closed"] is True
+    assert stable_contract["qualification_state"] == "blocked"
+    assert stable_contract["unresolved_gate_ids"] == [
+        "stable-v1-australian-health-federation"
+    ]
+
+
+def test_pbs_r19_schema_version_role_is_bound_and_gate_stays_blocked() -> None:
+    report_path = ROOT / (
+        "quality/qualifications/"
+        "pbs-native-silver-field-reconciliation-20261028-r19.json"
+    )
+    readiness = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    stable_contract = _load(QUALIFICATION)
+    receipt = next(
+        item
+        for item in readiness["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == report_path.relative_to(ROOT).as_posix()
+    )
+    report = _load(report_path)["report"]
+
+    assert (
+        receipt["sha256"]
+        == hashlib.sha256(report_path.read_bytes()).hexdigest()
+    )
+    assert (
+        report["source_local_schema_version_semantics"][
+            "declared_schema_version"
+        ]
+        == "3.1"
+    )
+    assert (
+        report["source_local_schema_version_semantics"]["schema_patch_bound"]
+        is False
+    )
+    assert report["field_state_coverage"]["denominator_closed"] is True
+    assert stable_contract["qualification_state"] == "blocked"
+    assert stable_contract["unresolved_gate_ids"] == [
+        "stable-v1-australian-health-federation"
+    ]
 
 
 def test_structural_medicine_v2_is_not_temporal_migration_v2() -> None:

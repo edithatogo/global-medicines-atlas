@@ -38,6 +38,7 @@ jobs:
           OUTPUT_DIR: ${{ runner.temp }}/gma-mbs-v4-admission-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           set -euo pipefail
+          uv run --locked --python 3.15.1 playwright install --with-deps chromium
           uv run --locked --python 3.15.1 python scripts/qualify_mbs_silver_v4_admission.py \
             --output-dir "$OUTPUT_DIR" \
             --exact-commit "$GITHUB_SHA"

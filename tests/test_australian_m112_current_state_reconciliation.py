@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 RECONCILIATION = (
@@ -25,7 +26,7 @@ LIVE_V4_ADDENDUM = (
 )
 
 
-def _read(path: str) -> dict[str, object]:
+def _read(path: str) -> dict[str, Any]:
     return json.loads((ROOT / path).read_text(encoding="utf-8"))
 
 
@@ -229,6 +230,7 @@ def test_latest_addendum_supersedes_only_v4_identity_blocker() -> None:
     ) in acceptance
     assert "no typed v4 admission" in acceptance
     assert "`f9f9` has no admission sidecar" in acceptance
+    assert "explicitly deferred from M-108 admission" in acceptance
     assert "v4 source-receipt reference is absent locally" not in acceptance
 
 
@@ -244,14 +246,12 @@ def test_acceptance_page_reconciles_exact_mbs_utilisation_rights_scope() -> (
     )
     disposition = rights["current_disposition"]
 
+    assert "exact 14-object MBS-utilisation manifest" in acceptance
     assert (
-        "MBS-utilisation rights reconciliation covers 14 candidate paths "
-        "(10 demographics and 4 group-statistics)"
-    ) in acceptance
-    assert (
-        "lineage is deferred pending per-object B1 rights/reuse fields"
+        "joins each path to its B1/B2 lifecycle and digest evidence"
         in acceptance
     )
+    assert "landed-admission reviewer status still unreviewed" in acceptance
     assert (
         "separate maintainer attestation covers public-release rights for six "
         "exact PBS-utilisation raw files"

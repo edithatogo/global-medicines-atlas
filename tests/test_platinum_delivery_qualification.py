@@ -80,6 +80,34 @@ def test_real_loader_and_consumer_routes_agree_without_retaining_values(
     assert os.environ["GMA_CURSOR_SECRET"] == "retained-user-secret"  # ruff: ignore[hardcoded-password-string] -- synthetic restoration assertion.
 
 
+def test_bounded_browser_canary_matches_actual_atlas_response(
+    tmp_path, transport
+):
+    del transport
+    configuration(tmp_path)
+    report = run(
+        tmp_path,
+        (
+            DeliveryRequest(
+                resource_id="au.mbs.items",
+                columns=("item_code", "benefit"),
+                limit=2,
+            ),
+        ),
+        browser=True,
+    )
+
+    assert report["browser_qualification"] == "passed"
+    canary = report["evidence"][0]
+    browser = canary["browser"]
+    assert browser["http_status"] == 200
+    assert browser["row_count"] == canary["atlas_rendered_row_count"] == 2
+    assert len(browser["identity_sha256"]) == 64
+    assert len(browser["rendered_rows_sha256"]) == 64
+    assert "12.5" not in json.dumps(report)
+    assert "item_code" not in json.dumps(report)
+
+
 def test_tampered_candidate_is_rejected_by_actual_loader(tmp_path):
     configuration(tmp_path)
     (tmp_path / "contract.json").write_text("{}")

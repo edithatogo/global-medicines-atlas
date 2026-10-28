@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T04:28:00Z",
+  "as_of": "2026-10-28T05:39:20Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "95ed9ed04c6de532183a0578c7c48e888c670a518b56abf857f8711c01351111"
+    "sha256": "ab294730f8ca4f7103f0bbb8c6d7ded59927ae1474e81c206b25a4cd5102752e"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -52,8 +52,8 @@
       },
       {
         "path": "docs/qualification/australian-mbs-pbs-m107-snapshots.md",
-        "sha256": "e64c64b1817a1c7d1283b02bfde65cbd7937bd318932db1d0a35d41ed7bcdcf1",
-        "consequence": "The latest recorded Health.gov workbook delivery attempt timed out for all three categories with zero bytes; M-107 remains blocked."
+        "sha256": "019d4197607882aca44c0c9c77ba08e7c370bd78aea6d0077cc35bd17ff27432",
+        "consequence": "A 2026-10-28 workstation HEAD-only recheck confirms the same HTTP 200 XLSX headers and content lengths as the prior preflight. No workbook bytes were read; the exact-main hosted delivery attempt still timed out before headers, so M-107 remains blocked and unchanged harvest retries remain deferred."
       },
       {
         "path": "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json",
@@ -117,8 +117,43 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "81be4e21b3a0c32249db1de2c12d309d043265f71cf8a36be23184a2f0019ec7",
-        "consequence": "Federation summary binds current M-108/M-109/M-110/M-111/M-112 evidence, including exact 14-object MBS-utilisation and six-object PBS-utilisation rights boundaries; lineage, admission, independent recovery, broader semantics, and federation acceptance remain open."
+        "sha256": "fe54ff8af080bc8aaa954f1ce11e3baa5f5e7bb42cb7b293c7ce2b108c94b8c8",
+        "consequence": "Federation acceptance summary binds current M-112 state and PBS r18 field-role evidence, including the exact schema-path inventory digest; M-105, M-107, M-108, M-109 and other federation acceptance conditions remain open."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",
+        "sha256": "30f04f37de72252648fe1a4c07c6488024f56c10cec35d810f3e91534155aaf4",
+        "consequence": "The exact August f9f9 MBS projection prefix is deferred_not_admitted at the pinned current tree revision; this closes no M-108 admission or canary gate."
+      },
+      {
+        "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json",
+        "sha256": "9ae96773ed19b1ec0795340aef1d341dbeeb0f8961ca7f231af633618ca21781",
+        "consequence": "The exact M-112 role reconciliation records 8 v4 admissions and 8 admitted-object canaries across the frozen 1,759-object denominator; 1,751 remain deferred. This report performs no admission or canary and does not close federation."
+      },
+      {
+        "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json",
+        "sha256": "35e4bcbb1b459c78dff837d75c6bf5ae81f307f7211e383f938d9ffc05a07f89",
+        "consequence": "The exact MBS-utilisation overlay binds 14 raw paths to B1/B2 lifecycle and digest evidence, with landed-admission reviewer status unreviewed; it records no v4 admission or canary and preserves all 1,759 deferrals."
+      },
+      {
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r16.json",
+        "sha256": "fb20eacb041db3f3d1ecdd018ccf44bfc282cab34c609a76cf82876fd176600c",
+        "consequence": "PBS r16 remains historical evidence for the generic RDF/XML rdf:resource syntax role; r17 adds the rdf:about subject-IRI-reference role for 10,368 fields while leaving individual URI targets, PBS predicate meaning, graph edges and M-109 acceptance unresolved."
+      },
+      {
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r17.json",
+        "sha256": "43b538e934e25e0a840186e3821f6ca80ceffa5f166c4276c5246f95058d325f",
+        "consequence": "PBS r17 qualifies the RDF/XML rdf:about subject-IRI-reference syntax role for 10,368 fields across 34 paths but did not bind the schema-path inventory file digest; r18 is the current successor and adds that exact input binding without changing the field partition or semantic limits."
+      },
+      {
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r18.json",
+        "sha256": "a9e613c751b05e3b1b4768fce5f7f6a978ba2a6094a62e2b303ef32c35cbc74a",
+        "consequence": "PBS r18 remains historical; r19 preserves its exact schema-path inventory binding and adds the source-declared schema-version role for one root @version field. PBS relationships, graph edges, and full M-109 acceptance remain unresolved."
+      },
+      {
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r19.json",
+        "sha256": "b83943f2a3a9a4e8180edfc8d8a6c0fc346329d890e232d5d95a0a689c2e696a",
+        "consequence": "PBS r19 binds the exact root @version field to metadata-only evidence declaring schema version 3.1 for the pinned April 2026 member. One field is interpreted; patch version and all PBS medicine values and relationships remain unresolved, so this does not establish M-109 acceptance."
       }
     ],
     "release_action_performed": false,
