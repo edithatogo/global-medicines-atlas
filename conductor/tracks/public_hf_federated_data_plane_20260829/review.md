@@ -31,3 +31,7 @@ separate from the original acquisition's unknown rights state.
 
 Full-track acceptance and archival remain pending the existing M-105–M-112
 requirements; no scope or acceptance criterion was changed by this review.
+
+Final lint found one intended regex alternation needing a raw string literal.
+It was corrected before push; all affected-file lint/format checks, the two
+locator tests, and context validation then passed.

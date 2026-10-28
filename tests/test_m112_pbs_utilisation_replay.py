@@ -189,7 +189,7 @@ def test_pbs_executor_rejects_unapproved_locator_before_downloading(
     def download(**_: Any) -> str:
         pytest.fail("unapproved PBS locator reached the download boundary")
 
-    with pytest.raises(ValueError, match="approved|exact PBS replay target"):
+    with pytest.raises(ValueError, match=r"approved|exact PBS replay target"):
         executor.execute(
             plan,
             work_dir=tmp_path / "work",
