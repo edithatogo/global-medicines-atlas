@@ -1,0 +1,205 @@
+{
+  "schema_id": "global-medicines-atlas.phase4-mandatory-output-delivery-reconciliation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-28",
+  "track_id": "public_hf_federated_data_plane_20260829",
+  "phase": 4,
+  "decision": "no_additional_candidate_clears_all_delivery_gates",
+  "scope": {
+    "frozen_inventory_path": "quality/qualifications/australian-m112-rights-release-preflight-20261025-101.json",
+    "frozen_inventory_sha256": "ef7e7ba6cfb7d7ef8db7161d06403ce7df29aac9db27b4ba8afec40bb201fe09",
+    "frozen_object_count": 1759,
+    "new_sources": 0,
+    "inventory_membership_changed": false,
+    "publications_performed": 0,
+    "external_messages_sent": false,
+    "outside_m112_august_projection_receipt": "quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json",
+    "outside_m112_august_projection_count": 4
+  },
+  "completed_delivery": {
+    "name": "July 2025 MBS Silver v3 six-table cohort",
+    "object_count": 6,
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+    "admission_and_remote_read_receipt": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/admission-remote-read.json",
+    "hosted_workflow_run": 40653807510,
+    "consumers": [
+      "API",
+      "CLI JSON",
+      "CLI JSONL export",
+      "Atlas",
+      "Atlas Chromium browser rendering"
+    ],
+    "result": "passed_bounded_delivery_and_browser_canary",
+    "limits": [
+      "No public release or new publication was performed.",
+      "Chromium browser rendering is qualified for this exact six-table cohort only.",
+      "This does not establish federation acceptance, independent recovery, source completeness, or Stable v1 release."
+    ],
+    "consumer_reconciliation": "quality/qualifications/platinum-actual-consumer-reconciliation-20261028.json"
+  },
+  "candidate_obligations": [
+    {
+      "name": "Historical MBS workbook derived Parquet cohort",
+      "object_count": 91,
+      "candidate_receipt": "quality/qualifications/mbs-historical-workbook-cohort-20261023-39724026209-39891918206.json",
+      "candidate_receipt_sha256": "3bbcc74fee209cee521ce6ee85ef87f3ed13df2d202cb1f96effb02274b48546",
+      "field_state_receipt": "quality/qualifications/mbs-historical-workbook-value-shape-cohort-20261025-40149410629.json",
+      "field_state_receipt_sha256": "12e1af2eafa0d2aa7b1c2dbb3ccda9112d6ed1e232e2779f981e421a0699e373",
+      "header_semantics": {
+        "receipt": "quality/qualifications/mbs-historical-header-semantic-adjudication-20261024.json",
+        "receipt_sha256": "e5ca37938346c4427dbc915d41bc0d63f7e6c774b17ea69bffe3898e8eed45b1",
+        "report_sha256": "9714f43a5ed8397987832252e1b23e807ea4c99c0f0849a04ea14aa2a26fc52c",
+        "header_profile_receipt": "quality/qualifications/mbs-historical-workbook-header-cohort-20261024-40040624592.json",
+        "header_profile_receipt_sha256": "5a5858e0a458c46452188a4f52ea396bf1f98c9ce3710d747dd1a58588c196f1",
+        "status": "bounded_header_label_semantics_qualified_data_values_unresolved",
+        "workbooks": 91,
+        "header_profiles": 91,
+        "interpreted_header_bindings": 728,
+        "non_header_values_interpreted": 0,
+        "non_header_values_native_unresolved": 310176929,
+        "observed_value_shapes": {
+          "formula_cells": 0,
+          "formula_cells_with_cache": 0,
+          "source_error_cells": 0,
+          "missing_value_cells": 1275,
+          "scope": "Aggregate shape counts only; no source values interpreted."
+        },
+        "legacy_p7_included": false,
+        "whole_workbook_semantics_complete": false
+      },
+      "rights": "exact 91-output maintainer attestation is recorded; instrument not independently reviewed",
+      "admissions": 0,
+      "blocker": "Bounded label meanings for the eight supported demographic headers are qualified across all 91 verified profiles. Date and period basis, currency and benefit basis, and historical-to-current era rules remain unqualified; all 310176929 non-header cells remain native_unresolved, and legacy P7 is out of scope. The exact shape receipt reports zero formula cells and zero source-error cells in this cohort.",
+      "next_evidence": "Use only existing source documentation and exact workbook evidence to qualify date/value-era meanings that are supported. Preserve all unqualified values as native_unresolved; then bind eligible exact outputs to v4 roles."
+    },
+    {
+      "name": "PBS native Silver candidate",
+      "object_count": 1,
+      "output_id": "842f4130a14574f9fe1395a284d54e759ac87726132cc4693288eff971107503",
+      "output_sha256": "e122b50a37e51f9df06fe1251f8d867283e2fc280bd00ef226f922c2693bb1b2",
+      "output_bytes": 637012122,
+      "field_state_receipt": "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r8.json",
+      "field_state_receipt_sha256": "4ffa3fc4b8824cbb3166e714a4ee5830928cd32c4d48ab1ecbfb0f1cbe687251",
+      "rights": "maintainer attestation recorded for this exact derived output; instrument not independently reviewed",
+      "field_state_counts": {
+        "interpreted": 40667,
+        "native_unresolved": 18168091,
+        "unavailable": 0
+      },
+      "admissions": 0,
+      "blocker": "field-state receipt is candidate-only and domain semantics are explicitly incomplete; the exact source package also lacks independent pipeline-build qualification",
+      "next_evidence": "Close the exact-output producer/independent-build qualification and the declared PBS semantic contract before creating an admission profile. Do not infer current status, payable benefit, patient cost, clinical eligibility, or cross-era equivalence."
+    },
+    {
+      "name": "August 2026 MBS Bronze projections outside M-112",
+      "object_count": 4,
+      "identity_and_lineage": "All four exact public Parquet identities are bound by the 2026-10-20 scope exception and rights attestation. d781 has an accepted unreviewed Bronze parser admission; f9f9 has no admission sidecar and remains an unadmitted prefix.",
+      "scope": "outside the frozen M-112 inventory; separate M-108 obligation",
+      "rights": "exact four-object maintainer attestation recorded; instrument not independently reviewed",
+      "rights_attestation": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+      "rights_attestation_sha256": "dc5a53ffaed82e758bbe918f0615b5158bdbdf65ad41da2193c6c84ba41841c5",
+      "scope_exception_receipt": "quality/qualifications/australian-mbs-public-august-projection-scope-exception-20261020.json",
+      "scope_exception_sha256": "b8fb9f024cea21f4364db9867c73a44afea61615148b49a7ffd7bfffdf6edac2",
+      "products": [
+        {
+          "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+          "prefix": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+          "bronze_parser_admission": "accepted_unreviewed",
+          "federation_v4_admission": false,
+          "product_specific_v4_card": false,
+          "independent_replica_evidence": false,
+          "disposition": "accepted Bronze projection still requires product-specific v4 qualification"
+        },
+        {
+          "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+          "prefix": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+          "bronze_parser_admission": "unadmitted_no_admission_sidecar",
+          "federation_v4_admission": false,
+          "product_specific_v4_card": false,
+          "independent_replica_evidence": false,
+          "disposition": "unadmitted public prefix requires explicit disposition"
+        }
+      ],
+      "objects": [
+        {
+          "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/p7.parquet",
+          "sha256": "c4aa29f9d4bdc683e4720649c551f59c21d6c72c40db732795f9a27a060609f7",
+          "byte_count": 24367,
+          "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+          "in_frozen_m112_inventory": false,
+          "rights_attestation": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+          "identity_readback_revision": "42d73b6facac016f14a335d36d83f1a3b630add8"
+        },
+        {
+          "path": "bronze/mbs/releases/2026-08-01/d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b/source.parquet",
+          "sha256": "02693aaa7d1aea9fc66f13061e8081ffbeea486f057e2f716caa4906ac6dda96",
+          "byte_count": 454247,
+          "product_id": "d78170f1944e8c209833b86193d403b12553a3932579dc571ff10f8485a6483b",
+          "in_frozen_m112_inventory": false,
+          "rights_attestation": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+          "identity_readback_revision": "42d73b6facac016f14a335d36d83f1a3b630add8"
+        },
+        {
+          "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/p7.parquet",
+          "sha256": "50ce02b896984a4065a9f132890f38f19ec430c3f435dc589b1cbd978111dd69",
+          "byte_count": 24367,
+          "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+          "in_frozen_m112_inventory": false,
+          "rights_attestation": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+          "identity_readback_revision": "42d73b6facac016f14a335d36d83f1a3b630add8"
+        },
+        {
+          "path": "bronze/mbs/releases/2026-08-01/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/source.parquet",
+          "sha256": "553399aa06830708a1dfb74351b5b49b6a799d7bd7b7584ab86aad168227369c",
+          "byte_count": 454247,
+          "product_id": "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63",
+          "in_frozen_m112_inventory": false,
+          "rights_attestation": "quality/qualifications/australian-mbs-august-outside-m112-projection-rights-attestation-20261020.json",
+          "identity_readback_revision": "42d73b6facac016f14a335d36d83f1a3b630add8"
+        }
+      ],
+      "federation_v4_admissions": 0,
+      "blocker": "M-108 remains open for product-specific cards, typed v4 admission and independent-replica evidence; the f9f9 prefix also needs an explicit disposition.",
+      "next_evidence": "Qualify the accepted d781 outputs under the existing product-card and v4 role contract; separately resolve the unadmitted f9f9 prefix before counting it as an eligible product."
+    }
+  ],
+  "already_completed_bronze_delivery": [
+    {
+      "objects": [
+        "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        "raw/mbs/utilisation/group/mbs-group-2016-july.csv"
+      ],
+      "status": "existing admitted-object consumer canary receipts pass",
+      "qualification": "These are raw B2 objects, not derived Silver outputs; no new canary was needed for this reconciliation."
+    }
+  ],
+  "excluded": [
+    {
+      "name": "CMS HCPCS July 2026 archive",
+      "reason": "Outside the frozen M-112 inventory; exact source rights do not qualify any derived table, and processing/v4 admission and consumer canaries are not authorized by the current record."
+    }
+  ],
+  "summary": {
+    "additional_eligible_outputs": 0,
+    "additional_admissions": 0,
+    "additional_consumer_canaries": 0,
+    "unsupported_object_specific_evidence_recorded_as_blockers": 3,
+    "status": "existing eligible delivery complete; remaining candidate outputs blocked by object-specific evidence",
+    "outside_m112_m108_outputs": 4,
+    "outside_m112_m108_outputs_admitted": 0,
+    "existing_cohort_additional_browser_canaries": 6,
+    "latest_qualified_consumer_surfaces": [
+      "API",
+      "CLI JSON",
+      "CLI JSONL export",
+      "Atlas HTML",
+      "Chromium browser rendering",
+      "remote reader"
+    ]
+  },
+  "supersedes": {
+    "path": "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json",
+    "sha256": "a1f2c7f2d46e5f0a0e90ee153664d7ff0df8fb4bb7397b666a34a85d54ee0623"
+  }
+}

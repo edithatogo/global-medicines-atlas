@@ -948,3 +948,14 @@ append. The Stable v1 Australian federation gate remains blocked.
   and diff checks pass. Commit: `9afe8cd3`.
 - [ ] Complete the exact M-108 product-card, v4 admission, independent-replica,
   and unadmitted-prefix disposition requirements under their existing gates.
+
+### Existing eligible delivery: exact-cohort browser canary (2026-10-28)
+
+- [x] After the browser canary code and CI repair merged, exact-main workflow
+  `40653807510` qualified all six existing July 2025 MBS Silver objects through
+  the remote reader and Chromium Atlas rendering. The report binds the unchanged
+  Hugging Face revision and six object identities. API, CLI JSON, CLI JSONL, and
+  Atlas HTML canaries also passed.
+- [x] Reconcile the receipt into M-111, Phase 4 delivery, Stable v1 evidence, and
+  the public federation acceptance table. No additional object was admitted or
+  published; other candidate outputs retain their object-specific blockers.

@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T05:39:20Z",
+  "as_of": "2026-10-28",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "ab294730f8ca4f7103f0bbb8c6d7ded59927ae1474e81c206b25a4cd5102752e"
+    "sha256": "426035f5340a2ce65383957f85f9242f85c1540dc31ecde573262e79cfb14665"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -63,7 +63,7 @@
       {
         "path": "quality/qualifications/platinum-actual-consumer-reconciliation-20261027.json",
         "sha256": "ce09c4e632dc0d54b0c19fb405a81ca6ffe59c866d972277e496b855ad69adec",
-        "consequence": "Bounded API, CLI, Atlas and JSONL canaries passed for the same six tables; browser qualification was not performed."
+        "consequence": "Historical four-surface receipt; browser qualification was not performed in that run and is superseded for the exact six-table cohort by the 2026-10-28 successor."
       },
       {
         "path": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261027-40469072111/admission-remote-read.json",
@@ -117,8 +117,8 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "fe54ff8af080bc8aaa954f1ce11e3baa5f5e7bb42cb7b293c7ce2b108c94b8c8",
-        "consequence": "Federation acceptance summary binds current M-112 state and PBS r18 field-role evidence, including the exact schema-path inventory digest; M-105, M-107, M-108, M-109 and other federation acceptance conditions remain open."
+        "sha256": "b0808fca2b5761a1f01ac550b43e8d2b900d85badf0c33d849ae91e00e1ab7be",
+        "consequence": "The maintainer approved these federation acceptance requirements on 2026-10-28. The current acceptance summary records M-105, M-107, M-108, M-109 and other federation conditions as evidence-gated; approval does not complete them."
       },
       {
         "path": "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",
@@ -154,6 +154,26 @@
         "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r19.json",
         "sha256": "b83943f2a3a9a4e8180edfc8d8a6c0fc346329d890e232d5d95a0a689c2e696a",
         "consequence": "PBS r19 binds the exact root @version field to metadata-only evidence declaring schema version 3.1 for the pinned April 2026 member. One field is interpreted; patch version and all PBS medicine values and relationships remain unresolved, so this does not establish M-109 acceptance."
+      },
+      {
+        "path": "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-3.json",
+        "sha256": "9e2bd75308228b6a612681bfb83fdbb77de0ad8a46d066a7d7d735b01f7a1eec",
+        "consequence": "Six eligible July 2025 MBS tables now include exact-cohort Chromium browser delivery evidence; other candidate outputs remain blocked by object-specific gates."
+      },
+      {
+        "path": "quality/qualifications/platinum-actual-consumer-reconciliation-20261028.json",
+        "sha256": "8dc029f249c0db1ad783569e95003a8025916693bbe09a80a1bc56fe403a1d49",
+        "consequence": "API, CLI JSON, CLI JSONL, Atlas, and Chromium canaries passed for the exact six-table cohort only; federation-wide acceptance remains blocked."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/admission-remote-read.json",
+        "sha256": "bb040677eeb45cc3972726b16ce1aec1d2e648c2ac92d6285216be2f9c5050ce",
+        "consequence": "Exact-main remote-reader and browser qualification passed for six exact products at the pinned revision."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/artifact-manifest.json",
+        "sha256": "ad746aebaa2a543c084e1f137c50e4a53cb57c8890db449743ccb5b0bef9f69d",
+        "consequence": "Aggregate-only hosted artifact and report digests validate the exact-main qualification run and bounded consumer evidence."
       }
     ],
     "release_action_performed": false,

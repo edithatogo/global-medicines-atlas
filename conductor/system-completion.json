@@ -28,20 +28,20 @@
       "track": "public_hf_federated_data_plane_20260829",
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "Qualified producer output reaches independently admitted v4 delivery",
-      "current_failure": "Candidate producer output and existing object canaries do not establish complete admitted-product delivery.",
-      "next_action": "Trace an existing eligible Silver output through the producer, v4 admission and remote-reader boundary; fix the first shared contract failure and apply the same path to mandatory eligible outputs.",
-      "completion_evidence": "Exact identity, lineage, rights, qualification, admission and authorized delivery receipts for the required outputs, using existing qualifiers.",
+      "current_failure": "The exact six-table July 2025 MBS Silver cohort now passes v4 admission, remote-reader, API, CLI, Atlas, export, and Chromium browser canaries. Other mandatory eligible outputs remain blocked by object-specific evidence, so system-wide admitted-product delivery is incomplete.",
+      "next_action": "Reuse the qualified shared path for other mandatory eligible outputs once their exact identity, lineage, rights, and v4 roles qualify; retain unsupported object-specific evidence as blockers without changing the frozen inventory.",
+      "completion_evidence": "Exact identity, lineage, rights, qualification, admission, remote-reader, and actual consumer receipts for every mandatory eligible output; current six-table receipts establish the shared path only.",
       "stop_condition": "Stop custom dataset work once the shared path works; record object-specific missing evidence without inventing admission or expanding the frozen inventory.",
-      "validation": "Use affected federation admission, distribution and reader selectors, then an authorized bounded admitted-product canary."
+      "validation": "Use focused affected admission, distribution, remote-reader, and consumer selectors; rerun the exact-main hosted qualification for each approved output cohort."
     },
     {
       "id": "consumers",
       "track": "federated_medicines_platinum_20260829",
       "release_gate": "stable-v1-australian-health-federation",
       "capability": "API, CLI, Atlas and exports consume the same qualified revisions",
-      "current_failure": "The six-table July 2025 MBS Silver cohort passes bounded live API, CLI, Atlas and deterministic JSONL export canaries; additional output cohorts remain blocked before admission, so they have no consumer receipts yet.",
+      "current_failure": "The exact six-table July 2025 MBS Silver cohort passes bounded API, CLI, Atlas HTML, deterministic JSONL export, Chromium rendering, and remote-reader canaries at one pinned revision; additional output cohorts remain blocked before admission, so they have no consumer receipts yet.",
       "next_action": "Retain the revision- and digest-bound six-table receipts with provenance, bounded coverage and semantic limits. Reuse the same canary path only when another required output clears its identity, lineage, rights, semantics and admission gates.",
-      "completion_evidence": "Revision- and digest-bound API, CLI, Atlas and deterministic export receipts with explicit coverage and semantic limits.",
+      "completion_evidence": "Revision- and digest-bound API, CLI, Atlas HTML, Chromium browser, remote-reader, and deterministic export receipts with explicit coverage and semantic limits.",
       "stop_condition": "Close the shared consumer capability after required paths pass; add more datasets only when their profile exposes an uncovered mandatory behavior.",
       "validation": "For each newly admitted output, select affected consumer integration and export checks and retain exact revision, object and semantic digests; preserve complete protected hosted checks."
     },

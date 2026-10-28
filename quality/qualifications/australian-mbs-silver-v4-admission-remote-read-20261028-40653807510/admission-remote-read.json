@@ -1,0 +1,788 @@
+{
+  "boundaries": {
+    "candidate_product_profiles_admitted": true,
+    "consumer_canaries": true,
+    "external_publication_performed": false,
+    "independent_recovery_qualified": false,
+    "inventory_changed": false,
+    "m112_federation_acceptance": false,
+    "new_sources_added": false,
+    "production_promotion": false,
+    "source_values_included": false
+  },
+  "consumer_canary": {
+    "browser_qualification": "passed",
+    "evidence": [
+      {
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "browser": {
+          "http_status": 200,
+          "identity_sha256": "66ff2ad4f62ef5f2ef35aa59dec3c9d4f30ea62c055febdfb3f33b8c97f8d396",
+          "rendered_rows_sha256": "33785e26e03962eb75ebdb1baf1b3946a32c925a091b6418faba33e29ba346a9",
+          "request_sha256": "f8f6ca87a3d2fd08d0d7f511fca9a8a6f39c833c8fd5f23d3a68331c6766df96",
+          "row_count": 2,
+          "table_count": 1
+        },
+        "cli_exit_code": 0,
+        "export_exit_code": 0,
+        "export_row_count": 2,
+        "identity_sha256": "fdc6d013667bfedea972475066fa93f1473a8eb95460115b022543e8fe99d133",
+        "page_sha256": "b2d2406731f1a51547fffca32152dd3aa49a5ef69fd047b4101af3d46263ef0c",
+        "query_sha256": "aed100cd3e94ac778a59b9e61a7579bce71d6af0aebc8cd1ec201c07fcb4ae21",
+        "request_sha256": "f8f6ca87a3d2fd08d0d7f511fca9a8a6f39c833c8fd5f23d3a68331c6766df96",
+        "row_count": 2,
+        "rows_sha256": "b2d2406731f1a51547fffca32152dd3aa49a5ef69fd047b4101af3d46263ef0c",
+        "window_sha256": "f70c34c98edd38ea4e0527d0737b28b2a49bf0ced6f6d18a74266aef9311e249"
+      },
+      {
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "browser": {
+          "http_status": 200,
+          "identity_sha256": "39c857e30eac6e21a445e40aab41d7aed4789fc313334f6fccf8922ca46ab110",
+          "rendered_rows_sha256": "414f702d1e7b19c7dc944bea3dbb426c1aff2a095408d1d5467489c8c3300653",
+          "request_sha256": "6dfdd79c8f415971a009edafe629d0a000460191f3c5fdc0638b0edf71f65f14",
+          "row_count": 2,
+          "table_count": 1
+        },
+        "cli_exit_code": 0,
+        "export_exit_code": 0,
+        "export_row_count": 2,
+        "identity_sha256": "968a0e8e3b7e76338a9fa472c03bb263c7f2dc2de67ec8ec6ed0c75fce6bc7eb",
+        "page_sha256": "ac6593d015c6172d8414c35d30116bdfb8916a0453571e98f6181f25d6b80ce7",
+        "query_sha256": "c269602a850793875bf4f68ddc702133afaa9c395f371d110133b32ed0be2f5f",
+        "request_sha256": "6dfdd79c8f415971a009edafe629d0a000460191f3c5fdc0638b0edf71f65f14",
+        "row_count": 2,
+        "rows_sha256": "ac6593d015c6172d8414c35d30116bdfb8916a0453571e98f6181f25d6b80ce7",
+        "window_sha256": "6df4afcc821690ed002b5c4de37943b3492f2dfb9df227d8c22640f3df3d8504"
+      },
+      {
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "browser": {
+          "http_status": 200,
+          "identity_sha256": "d351d9be6bef005d6b0362181b94ffc6930c970c3ed66f19d5d6ca2546993f5f",
+          "rendered_rows_sha256": "40ab65dca0f1e737c2ccfe4d1ca9ca950414fdd58cecc720c09cfc3e10239da1",
+          "request_sha256": "c58c330e043be0f0b02950c16a2f4e3e3876b312dd3f4d7b65b34326465e57fc",
+          "row_count": 2,
+          "table_count": 1
+        },
+        "cli_exit_code": 0,
+        "export_exit_code": 0,
+        "export_row_count": 2,
+        "identity_sha256": "0c65ffc0db655a0fa05ea00fbe9b3a1de47735ca4e3352ad7051f171030bf11c",
+        "page_sha256": "45ad39130a8c55b95a641d3cd2c8a267474e22acd30f2a91d08a1e938606d7a1",
+        "query_sha256": "b30a720f4cb9e0ad0958a7f1c899fb8031a787e1f9fc45bce62711c2a32685d5",
+        "request_sha256": "c58c330e043be0f0b02950c16a2f4e3e3876b312dd3f4d7b65b34326465e57fc",
+        "row_count": 2,
+        "rows_sha256": "45ad39130a8c55b95a641d3cd2c8a267474e22acd30f2a91d08a1e938606d7a1",
+        "window_sha256": "d1aba526063f379a42db7e799001533bd9363fbf9617b43a1ccaf9b205f5d240"
+      },
+      {
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "browser": {
+          "http_status": 200,
+          "identity_sha256": "7a4256e092cb6b21fffdb543f21a419aa7b8fc66d1836d38b331260f8cdad82d",
+          "rendered_rows_sha256": "5d7989747d9104bb9ca443b350c9d2978be18462afdd9b245fddd0b91c0fcc78",
+          "request_sha256": "e2c2e7d13273b7401f8c6dc9a11f878030219fb3c2ca20ea9828cfacbbd7d41e",
+          "row_count": 2,
+          "table_count": 1
+        },
+        "cli_exit_code": 0,
+        "export_exit_code": 0,
+        "export_row_count": 2,
+        "identity_sha256": "c96ddb4169331180e8b23dc87e18ee21d2e1e3c7d05a206c26beff1ede4dec63",
+        "page_sha256": "b7de479f8646b09889c5f92e6b584a8f4dfc243d5e21f7f9401ee3b6b41b26e4",
+        "query_sha256": "655edf94086b81c474e704ea8e7ba416754741ba3450a538427e312f682f6d04",
+        "request_sha256": "e2c2e7d13273b7401f8c6dc9a11f878030219fb3c2ca20ea9828cfacbbd7d41e",
+        "row_count": 2,
+        "rows_sha256": "b7de479f8646b09889c5f92e6b584a8f4dfc243d5e21f7f9401ee3b6b41b26e4",
+        "window_sha256": "a59f76d2aa9441bf3200773892a4b275aa04d66f068976849dcc08eaab6bdb06"
+      },
+      {
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "browser": {
+          "http_status": 200,
+          "identity_sha256": "e22777424ef2ce6446f335a1a630fb3943667c21fa9a2de5eedbb977e729434d",
+          "rendered_rows_sha256": "5d7989747d9104bb9ca443b350c9d2978be18462afdd9b245fddd0b91c0fcc78",
+          "request_sha256": "633baea4353952caed87dbbd6d5decd5cec9a39317b89c2cc97619fa9292c13e",
+          "row_count": 2,
+          "table_count": 1
+        },
+        "cli_exit_code": 0,
+        "export_exit_code": 0,
+        "export_row_count": 2,
+        "identity_sha256": "1c8c21bf3a33235fe040a13855e43e0b4a53b28a74b049269ed9542e8509f412",
+        "page_sha256": "d9aae1977af8b4d7bcbc5b3340cc4d70a952840f1ca6ede69972c6125b582019",
+        "query_sha256": "e405275458fc75134c110f37ae149b327adf694a357792585123ee2b9b03e651",
+        "request_sha256": "633baea4353952caed87dbbd6d5decd5cec9a39317b89c2cc97619fa9292c13e",
+        "row_count": 2,
+        "rows_sha256": "d9aae1977af8b4d7bcbc5b3340cc4d70a952840f1ca6ede69972c6125b582019",
+        "window_sha256": "7f5785cc19536e6253c9cae61108bab161e855c176ec5b1dfe061b5ac1b60302"
+      },
+      {
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "browser": {
+          "http_status": 200,
+          "identity_sha256": "989ec62ce6540189d403c27af6540db5366e0fb2a2fbe68ea288216d2f5b6de1",
+          "rendered_rows_sha256": "4754fd274a684ef0fdae574c74192b7fe9f28de2605d0f8f2645d44cad4c51c1",
+          "request_sha256": "0095d25059baf4d28de24368066c51a3c89adbb19fb726099a222c0b933c9120",
+          "row_count": 2,
+          "table_count": 1
+        },
+        "cli_exit_code": 0,
+        "export_exit_code": 0,
+        "export_row_count": 2,
+        "identity_sha256": "3aab6264bb5046fd7ed3df4da3fe4ad74226bc129c4daceb8a4062d0537a155f",
+        "page_sha256": "4fe8de6826c235508c9adfa995ec16e6b6f899083f9226eb4a4e64e53205e63e",
+        "query_sha256": "4f5a0b51601fd7278029e64a3bdde7c81a46b0bb61ad979992d1e5d24cdd4da6",
+        "request_sha256": "0095d25059baf4d28de24368066c51a3c89adbb19fb726099a222c0b933c9120",
+        "row_count": 2,
+        "rows_sha256": "4fe8de6826c235508c9adfa995ec16e6b6f899083f9226eb4a4e64e53205e63e",
+        "window_sha256": "d5f5b95be6ec3b14777e959740060243b4b0b9d969ed429105bad1e016401460"
+      }
+    ],
+    "offline": false,
+    "request_count": 6,
+    "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
+    "schema_version": 1,
+    "source_completeness": "not_established",
+    "status": "passed",
+    "surface_request_counts": {
+      "api": 6,
+      "atlas": 6,
+      "cli_json": 6,
+      "cli_jsonl": 6
+    },
+    "trust_sha256": "f8d7b230e09bd59ae113edd0982fd449d4fc23af6c105cd83338305b872b3659"
+  },
+  "contract_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+  "dataset": "edithatogo/australian-mbs-source-archive",
+  "historical_cache_cleanup": {
+    "receipt_sha256": "ffba71f91235d4e1544d795a17876ed6f4affe36aeb4b762a1cad877e41efc70",
+    "remaining_entries": 0,
+    "scope": "prior hosted role run; not the current transient cache lifetime",
+    "source_payload_written_to_disk": false,
+    "status": "passed"
+  },
+  "objects": [
+    {
+      "admission_record": {
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "bronze_stratum": null,
+        "byte_count": 100062,
+        "comparison_cohort": "legacy",
+        "contract_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_sha256": "40b4757e7e41b10ecf05496631ec58d6908356c3553691f88cd924da5541290b",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "effective_date": "2025-07-01",
+        "evidence_kind": "live",
+        "layer": "silver",
+        "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "representation": "projection",
+        "retrieved_at": "2026-09-27T20:37:32.916888Z",
+        "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "schema_era": "2025-07-version-3",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
+        "scope": "offline_trusted_profile",
+        "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+        "source_id": "au-mbs"
+      },
+      "byte_count": 100062,
+      "contract_sha256": "40b4757e7e41b10ecf05496631ec58d6908356c3553691f88cd924da5541290b",
+      "entity_granularity": "service_item",
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "receipt_roles": [
+        {
+          "role": "/discovery/estate_entry",
+          "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json"
+        },
+        {
+          "role": "/lineage/inputs/0",
+          "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/source-receipt.json"
+        },
+        {
+          "role": "/lineage/promotion_receipt",
+          "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/silver-promotion.json"
+        },
+        {
+          "role": "/lineage/v1_conformance",
+          "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v1-conformance.json"
+        },
+        {
+          "role": "/lineage/v2_field_lineage",
+          "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v2-field-lineage.json"
+        },
+        {
+          "role": "/lineage/v3_replay",
+          "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v3-backfill-replay.json"
+        },
+        {
+          "role": "/publication/receipt",
+          "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74",
+          "url": "https://api.github.com/repos/edithatogo/global-medicines-atlas/issues/comments/5859624790"
+        },
+        {
+          "role": "/recovery/checksum_inventory",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/recovery/restore_receipt",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/rights/authorization",
+          "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json"
+        },
+        {
+          "role": "/verification/receipt",
+          "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/qualification.json"
+        }
+      ],
+      "resource_id": "au.mbs.2025-07-v3.services",
+      "row_count": 5989,
+      "semantic_dimension": "service_benefit",
+      "semantic_sha256": "cb6946af2a4b5ec34f583044119e134a96acdca7518495b3fc27c4ae7ce44a8c",
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "table": "services"
+    },
+    {
+      "admission_record": {
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "bronze_stratum": null,
+        "byte_count": 51851,
+        "comparison_cohort": "legacy",
+        "contract_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_sha256": "0872fad5ba41a7afe10e78d8472b7620671f3f2c1663529c74cad6b8ca6b8dd9",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "effective_date": "2025-07-01",
+        "evidence_kind": "live",
+        "layer": "silver",
+        "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "representation": "projection",
+        "retrieved_at": "2026-09-27T20:37:32.916888Z",
+        "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "schema_era": "2025-07-version-3",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
+        "scope": "offline_trusted_profile",
+        "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+        "source_id": "au-mbs"
+      },
+      "byte_count": 51851,
+      "contract_sha256": "0872fad5ba41a7afe10e78d8472b7620671f3f2c1663529c74cad6b8ca6b8dd9",
+      "entity_granularity": "service_item",
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "receipt_roles": [
+        {
+          "role": "/discovery/estate_entry",
+          "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json"
+        },
+        {
+          "role": "/lineage/inputs/0",
+          "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/source-receipt.json"
+        },
+        {
+          "role": "/lineage/promotion_receipt",
+          "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/silver-promotion.json"
+        },
+        {
+          "role": "/lineage/v1_conformance",
+          "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v1-conformance.json"
+        },
+        {
+          "role": "/lineage/v2_field_lineage",
+          "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v2-field-lineage.json"
+        },
+        {
+          "role": "/lineage/v3_replay",
+          "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v3-backfill-replay.json"
+        },
+        {
+          "role": "/publication/receipt",
+          "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74",
+          "url": "https://api.github.com/repos/edithatogo/global-medicines-atlas/issues/comments/5859624790"
+        },
+        {
+          "role": "/recovery/checksum_inventory",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/recovery/restore_receipt",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/rights/authorization",
+          "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json"
+        },
+        {
+          "role": "/verification/receipt",
+          "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/qualification.json"
+        }
+      ],
+      "resource_id": "au.mbs.2025-07-v3.hierarchy",
+      "row_count": 5989,
+      "semantic_dimension": "service_benefit",
+      "semantic_sha256": "4ac8e63fcfa9f68c228e7a7e3b851f003458a5d259dd2e92725bb17d3d2b32e0",
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "table": "hierarchy"
+    },
+    {
+      "admission_record": {
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "bronze_stratum": null,
+        "byte_count": 620348,
+        "comparison_cohort": "legacy",
+        "contract_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_sha256": "428a835b47ba030c70993aaf819193df7b4a4305f91ce894288bf534e9b23d19",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "effective_date": "2025-07-01",
+        "evidence_kind": "live",
+        "layer": "silver",
+        "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "representation": "projection",
+        "retrieved_at": "2026-09-27T20:37:32.916888Z",
+        "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "schema_era": "2025-07-version-3",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
+        "scope": "offline_trusted_profile",
+        "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+        "source_id": "au-mbs"
+      },
+      "byte_count": 620348,
+      "contract_sha256": "428a835b47ba030c70993aaf819193df7b4a4305f91ce894288bf534e9b23d19",
+      "entity_granularity": "service_item",
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "receipt_roles": [
+        {
+          "role": "/discovery/estate_entry",
+          "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json"
+        },
+        {
+          "role": "/lineage/inputs/0",
+          "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/source-receipt.json"
+        },
+        {
+          "role": "/lineage/promotion_receipt",
+          "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/silver-promotion.json"
+        },
+        {
+          "role": "/lineage/v1_conformance",
+          "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v1-conformance.json"
+        },
+        {
+          "role": "/lineage/v2_field_lineage",
+          "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v2-field-lineage.json"
+        },
+        {
+          "role": "/lineage/v3_replay",
+          "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v3-backfill-replay.json"
+        },
+        {
+          "role": "/publication/receipt",
+          "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74",
+          "url": "https://api.github.com/repos/edithatogo/global-medicines-atlas/issues/comments/5859624790"
+        },
+        {
+          "role": "/recovery/checksum_inventory",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/recovery/restore_receipt",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/rights/authorization",
+          "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json"
+        },
+        {
+          "role": "/verification/receipt",
+          "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/qualification.json"
+        }
+      ],
+      "resource_id": "au.mbs.2025-07-v3.descriptions",
+      "row_count": 5989,
+      "semantic_dimension": "service_benefit",
+      "semantic_sha256": "4cc8740ad71f808edda7ef2a8f2bd666e0ccc99702ab1a5284cf35ce66555e06",
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "table": "descriptions"
+    },
+    {
+      "admission_record": {
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "bronze_stratum": null,
+        "byte_count": 93072,
+        "comparison_cohort": "legacy",
+        "contract_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_sha256": "5f6735717fbce7555122b2b2a6c2877dcf1d1b08379257da3bc69145a51ca253",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "effective_date": "2025-07-01",
+        "evidence_kind": "live",
+        "layer": "silver",
+        "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "representation": "projection",
+        "retrieved_at": "2026-09-27T20:37:32.916888Z",
+        "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "schema_era": "2025-07-version-3",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
+        "scope": "offline_trusted_profile",
+        "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+        "source_id": "au-mbs"
+      },
+      "byte_count": 93072,
+      "contract_sha256": "5f6735717fbce7555122b2b2a6c2877dcf1d1b08379257da3bc69145a51ca253",
+      "entity_granularity": "service_item",
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "receipt_roles": [
+        {
+          "role": "/discovery/estate_entry",
+          "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json"
+        },
+        {
+          "role": "/lineage/inputs/0",
+          "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/source-receipt.json"
+        },
+        {
+          "role": "/lineage/promotion_receipt",
+          "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/silver-promotion.json"
+        },
+        {
+          "role": "/lineage/v1_conformance",
+          "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v1-conformance.json"
+        },
+        {
+          "role": "/lineage/v2_field_lineage",
+          "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v2-field-lineage.json"
+        },
+        {
+          "role": "/lineage/v3_replay",
+          "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v3-backfill-replay.json"
+        },
+        {
+          "role": "/publication/receipt",
+          "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74",
+          "url": "https://api.github.com/repos/edithatogo/global-medicines-atlas/issues/comments/5859624790"
+        },
+        {
+          "role": "/recovery/checksum_inventory",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/recovery/restore_receipt",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/rights/authorization",
+          "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json"
+        },
+        {
+          "role": "/verification/receipt",
+          "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/qualification.json"
+        }
+      ],
+      "resource_id": "au.mbs.2025-07-v3.fees",
+      "row_count": 5989,
+      "semantic_dimension": "service_benefit",
+      "semantic_sha256": "6d19bbe28e6dfd9c1276615c081322fc750b3c539bf58e656cf6c39d454fb65e",
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "table": "fees"
+    },
+    {
+      "admission_record": {
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "bronze_stratum": null,
+        "byte_count": 114493,
+        "comparison_cohort": "legacy",
+        "contract_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_sha256": "edf43fec8c95e66cf12535ad5d0f872e3dded881dcdc0765ca1be908039f3693",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "effective_date": "2025-07-01",
+        "evidence_kind": "live",
+        "layer": "silver",
+        "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "representation": "projection",
+        "retrieved_at": "2026-09-27T20:37:32.916888Z",
+        "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "schema_era": "2025-07-version-3",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
+        "scope": "offline_trusted_profile",
+        "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+        "source_id": "au-mbs"
+      },
+      "byte_count": 114493,
+      "contract_sha256": "edf43fec8c95e66cf12535ad5d0f872e3dded881dcdc0765ca1be908039f3693",
+      "entity_granularity": "service_item",
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "receipt_roles": [
+        {
+          "role": "/discovery/estate_entry",
+          "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json"
+        },
+        {
+          "role": "/lineage/inputs/0",
+          "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/source-receipt.json"
+        },
+        {
+          "role": "/lineage/promotion_receipt",
+          "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/silver-promotion.json"
+        },
+        {
+          "role": "/lineage/v1_conformance",
+          "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v1-conformance.json"
+        },
+        {
+          "role": "/lineage/v2_field_lineage",
+          "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v2-field-lineage.json"
+        },
+        {
+          "role": "/lineage/v3_replay",
+          "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v3-backfill-replay.json"
+        },
+        {
+          "role": "/publication/receipt",
+          "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74",
+          "url": "https://api.github.com/repos/edithatogo/global-medicines-atlas/issues/comments/5859624790"
+        },
+        {
+          "role": "/recovery/checksum_inventory",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/recovery/restore_receipt",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/rights/authorization",
+          "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json"
+        },
+        {
+          "role": "/verification/receipt",
+          "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/qualification.json"
+        }
+      ],
+      "resource_id": "au.mbs.2025-07-v3.benefits",
+      "row_count": 5989,
+      "semantic_dimension": "service_benefit",
+      "semantic_sha256": "4602cfb3607d9ab83891b8a1e8a037961e6f6fa5ea2eaed6c9ecb540f50c5906",
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "table": "benefits"
+    },
+    {
+      "admission_record": {
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "bronze_stratum": null,
+        "byte_count": 60259,
+        "comparison_cohort": "legacy",
+        "contract_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_sha256": "943f214144177def40909348ebdc59064d0c771d6aa494419546737bf33d0be4",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "effective_date": "2025-07-01",
+        "evidence_kind": "live",
+        "layer": "silver",
+        "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "representation": "projection",
+        "retrieved_at": "2026-09-27T20:37:32.916888Z",
+        "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "schema_era": "2025-07-version-3",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
+        "scope": "offline_trusted_profile",
+        "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+        "source_id": "au-mbs"
+      },
+      "byte_count": 60259,
+      "contract_sha256": "943f214144177def40909348ebdc59064d0c771d6aa494419546737bf33d0be4",
+      "entity_granularity": "service_item",
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "receipt_roles": [
+        {
+          "role": "/discovery/estate_entry",
+          "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json"
+        },
+        {
+          "role": "/lineage/inputs/0",
+          "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/source-receipt.json"
+        },
+        {
+          "role": "/lineage/promotion_receipt",
+          "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/silver-promotion.json"
+        },
+        {
+          "role": "/lineage/v1_conformance",
+          "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v1-conformance.json"
+        },
+        {
+          "role": "/lineage/v2_field_lineage",
+          "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v2-field-lineage.json"
+        },
+        {
+          "role": "/lineage/v3_replay",
+          "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/v3-backfill-replay.json"
+        },
+        {
+          "role": "/publication/receipt",
+          "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74",
+          "url": "https://api.github.com/repos/edithatogo/global-medicines-atlas/issues/comments/5859624790"
+        },
+        {
+          "role": "/recovery/checksum_inventory",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/recovery/restore_receipt",
+          "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/primary-restore.json"
+        },
+        {
+          "role": "/rights/authorization",
+          "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json"
+        },
+        {
+          "role": "/verification/receipt",
+          "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381",
+          "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/2005165bcc48d85dbe1565dd766d92243223d3a7/quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/qualification.json"
+        }
+      ],
+      "resource_id": "au.mbs.2025-07-v3.caps",
+      "row_count": 5989,
+      "semantic_dimension": "service_benefit",
+      "semantic_sha256": "ab55ee8191d2ccc802aa3c345a9bc0b4e81bf2917e514a308912082bacd9ff67",
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "table": "caps"
+    }
+  ],
+  "remote_reads": [
+    {
+      "byte_count": 100062,
+      "contract_sha256": "40b4757e7e41b10ecf05496631ec58d6908356c3553691f88cd924da5541290b",
+      "object_sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "origin": "remote",
+      "resource_id": "au.mbs.2025-07-v3.services",
+      "status": "passed"
+    },
+    {
+      "byte_count": 51851,
+      "contract_sha256": "0872fad5ba41a7afe10e78d8472b7620671f3f2c1663529c74cad6b8ca6b8dd9",
+      "object_sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "origin": "remote",
+      "resource_id": "au.mbs.2025-07-v3.hierarchy",
+      "status": "passed"
+    },
+    {
+      "byte_count": 620348,
+      "contract_sha256": "428a835b47ba030c70993aaf819193df7b4a4305f91ce894288bf534e9b23d19",
+      "object_sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "origin": "remote",
+      "resource_id": "au.mbs.2025-07-v3.descriptions",
+      "status": "passed"
+    },
+    {
+      "byte_count": 93072,
+      "contract_sha256": "5f6735717fbce7555122b2b2a6c2877dcf1d1b08379257da3bc69145a51ca253",
+      "object_sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "origin": "remote",
+      "resource_id": "au.mbs.2025-07-v3.fees",
+      "status": "passed"
+    },
+    {
+      "byte_count": 114493,
+      "contract_sha256": "edf43fec8c95e66cf12535ad5d0f872e3dded881dcdc0765ca1be908039f3693",
+      "object_sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "origin": "remote",
+      "resource_id": "au.mbs.2025-07-v3.benefits",
+      "status": "passed"
+    },
+    {
+      "byte_count": 60259,
+      "contract_sha256": "943f214144177def40909348ebdc59064d0c771d6aa494419546737bf33d0be4",
+      "object_sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "origin": "remote",
+      "resource_id": "au.mbs.2025-07-v3.caps",
+      "status": "passed"
+    }
+  ],
+  "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+  "role_receipt_bundle": "quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600",
+  "schema_id": "global-medicines-atlas.australian-mbs-silver-v4-remote-admission-qualification",
+  "schema_version": 1,
+  "status": "passed",
+  "verified_object_count": 6
+}

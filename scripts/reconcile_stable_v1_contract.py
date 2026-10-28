@@ -95,7 +95,10 @@ M105_NOT_WAIVED = (
 )
 M105_BASELINE_ROWS = 54
 M105_DELTA_ROWS = 10
-AUSTRALIAN_PHASE4_CURRENT = "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json"
+AUSTRALIAN_PHASE4_CURRENT = "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-3.json"
+AUSTRALIAN_M111_CONSUMER_CURRENT = "quality/qualifications/platinum-actual-consumer-reconciliation-20261028.json"
+AUSTRALIAN_M111_REMOTE_RECEIPT = "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/admission-remote-read.json"
+AUSTRALIAN_M111_ARTIFACT_MANIFEST = "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/artifact-manifest.json"
 AUSTRALIAN_M112_CURRENT_ROLE_EVIDENCE = (
     "quality/qualifications/"
     "australian-m112-v4-contract-role-evidence-qualification-20261021.json"
@@ -574,6 +577,16 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                 requirement["evidence"] = _append_unique(
                     requirement["evidence"],
                     [AUSTRALIAN_PHASE4_CURRENT, AUSTRALIAN_PBS_RDF_FIELD_STATE],
+                )
+            elif requirement_id == "M-111":
+                requirement["evidence"] = _append_unique(
+                    requirement["evidence"],
+                    [
+                        AUSTRALIAN_PHASE4_CURRENT,
+                        AUSTRALIAN_M111_CONSUMER_CURRENT,
+                        AUSTRALIAN_M111_REMOTE_RECEIPT,
+                        AUSTRALIAN_M111_ARTIFACT_MANIFEST,
+                    ],
                 )
             elif requirement_id == "M-112":
                 requirement["evidence"] = _append_unique(
