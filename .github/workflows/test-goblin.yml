@@ -317,7 +317,7 @@ jobs:
       - name: Synchronize Python 3.15 Test-Goblin environment
         run: uv sync --python 3.15.1 --group test-goblin --locked
       - name: Install Chromium for browser-backed E2E
-        if: matrix.lane == 'e2e'
+        if: matrix.lane == 'e2e' || matrix.lane == 'integration'
         run: >-
           uv run --python 3.15.1 --group test-goblin playwright install
           --with-deps chromium
