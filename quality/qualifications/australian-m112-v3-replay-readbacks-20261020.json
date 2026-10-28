@@ -1,0 +1,173 @@
+{
+  "boundaries": {
+    "public_dataset_mutated": false,
+    "source_values_or_rows_read": false,
+    "temporary_source_bytes_removed": true
+  },
+  "entries": [
+    {
+      "attempt": 1,
+      "bytes": 205885063,
+      "commit": "3df35dbd1475557122faa3025b915e37cf202a55",
+      "completed_at": "2026-10-19T21:01:38Z",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "plan": {
+        "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39324097024.json",
+        "sha256": "1b1e68b33666b3d334e604534c50ab5ab912ae0c023d53764b0cd123a48fc7bf"
+      },
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39324097024.json",
+        "sha256": "d0b13510173001f20d4809d6389acd123465d55cb85091d8356c98104eb28731"
+      },
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "run_id": 39324097024,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39324097024",
+      "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+      "started_at": "2026-10-19T21:01:00Z",
+      "status": "success"
+    },
+    {
+      "attempt": 1,
+      "bytes": 12291303,
+      "commit": "7dbf14db2403485cabbe699858579cf7c7567012",
+      "completed_at": "2026-10-19T18:51:31Z",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "plan": {
+        "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39305977097.json",
+        "sha256": "fa9590744179573bad23a98acb95a6aeb03f68ae70bf5f016205a4db1bf60a19"
+      },
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39305977097.json",
+        "sha256": "6eaa516178587352704af2f2f03ade2777a2253c13e402ef4574ef92d4bd8fda"
+      },
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "run_id": 39305977097,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39305977097",
+      "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+      "started_at": "2026-10-19T18:51:00Z",
+      "status": "success"
+    },
+    {
+      "attempt": 1,
+      "bytes": 6857437,
+      "commit": "dd7a01bcd3da60190f821395ceb1260a3d9ddad9",
+      "completed_at": "2026-10-19T16:51:58Z",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "plan": {
+        "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020.json",
+        "sha256": "2fc6c9632c473d599d0fe40f93b40f2fb24269c348b7aa88a40851492e19cecd"
+      },
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020.json",
+        "sha256": "52cf19b6226a08df52cb686a7c081cbd7542e13de01f97ec94a41626e2e26a27"
+      },
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "run_id": 39289077989,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39289077989",
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+      "started_at": "2026-10-19T16:51:27Z",
+      "status": "success"
+    },
+    {
+      "attempt": 1,
+      "bytes": 7680041,
+      "commit": "1ebee786331c2e63d0a4d9501894ad657006ea9d",
+      "completed_at": "2026-10-19T23:56:37Z",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "plan": {
+        "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39344611967.json",
+        "sha256": "d9fedad2934672471af1d91752b1a86738d2a19b7d5131705e0dfa0a24028179"
+      },
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39344611967.json",
+        "sha256": "490e67b5adcfc9e38e62763549b172ca87404358ad533bae96454dc4c8dc843b"
+      },
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "run_id": 39344611967,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39344611967",
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+      "started_at": "2026-10-19T23:56:20Z",
+      "status": "success"
+    },
+    {
+      "attempt": 1,
+      "bytes": 23934884,
+      "commit": "cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a",
+      "completed_at": "2026-10-20T04:18:14Z",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "plan": {
+        "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39368825712.json",
+        "sha256": "4f7e6dd24acfc5f2864fb7bbc8e961f4fc285b560c5eef5f7eec11173727c4fb"
+      },
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39368825712.json",
+        "sha256": "8c5e4bb4f3d00641951dc680da5e0138990605fd9ff4fd5aa03d62a14be50717"
+      },
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "run_id": 39368825712,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39368825712",
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+      "started_at": "2026-10-20T04:17:51Z",
+      "status": "success"
+    },
+    {
+      "attempt": 1,
+      "bytes": 23436706,
+      "commit": "295160bab1e694f9a01a70e0befc5f7e5bf660de",
+      "completed_at": "2026-10-20T11:21:12Z",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "plan": {
+        "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39414292406.json",
+        "sha256": "a1839832483009bff331475edf89e536f304769b3c48fe9a123f8e68e774a7ba"
+      },
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39414292406.json",
+        "sha256": "f1fd2a196e1fb5cf4f8f303b0d9ba5638da68cdbee423a6f2cb6b062cbcfb62d"
+      },
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "run_id": 39414292406,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39414292406",
+      "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+      "started_at": "2026-10-20T11:21:03Z",
+      "status": "success"
+    },
+    {
+      "attempt": 1,
+      "bytes": 7316301,
+      "commit": "46b9f93bb54abcdacbfbee99dae7cd2548d505f8",
+      "completed_at": "2026-10-20T13:37:06Z",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "plan": {
+        "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39431880718.json",
+        "sha256": "7f54d35c4fea04f03d5f2180ed3d4b54bfff7a348f2f52ab8bac44edf8332fb9"
+      },
+      "receipt": {
+        "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39431880718.json",
+        "sha256": "51c8b91655463154f7c168c68b5cf81b682467b6b4971750bce0586e94c6c641"
+      },
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "run_id": 39431880718,
+      "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39431880718",
+      "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+      "started_at": "2026-10-20T13:36:38Z",
+      "status": "success"
+    }
+  ],
+  "recorded_at": "2026-10-20T13:40:00Z",
+  "schema_id": "global-medicines-atlas.m112-v3-replay-readback-manifest",
+  "schema_version": 1,
+  "scope": {
+    "approved_denominator": 1759,
+    "consumer_canaries_added": 0,
+    "replay_objects": 7,
+    "v4_admissions_added": 0
+  },
+  "status": "successful_exact_hosted_v3_replay_readbacks"
+}

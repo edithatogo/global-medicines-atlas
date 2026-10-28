@@ -1,0 +1,8 @@
+{
+  "existing_seconds": 1.5218225839780644,
+  "direct_seconds": 0.36529808305203915,
+  "synthetic_only": true,
+  "rows": 5012,
+  "complete_rows_and_metadata_equal": true,
+  "speedup": 4.165974732917694
+}

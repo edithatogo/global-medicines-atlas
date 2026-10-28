@@ -23,6 +23,20 @@ REPOSITORY = "edithatogo/global-medicines-atlas"
 MAX_RECEIPT_CHARS = 60000
 
 
+def valid_receipt_url(value: str) -> bool:
+    """Accept current run-artifact references and legacy read-only comments."""
+    return bool(
+        re.fullmatch(
+            rf"https://github\.com/{re.escape(REPOSITORY)}/actions/runs/[0-9]+",
+            value,
+        )
+        or re.fullmatch(
+            rf"https://github\.com/{re.escape(REPOSITORY)}/issues/340#issuecomment-[0-9]+",
+            value,
+        )
+    )
+
+
 @dataclass(frozen=True)
 class PublicSnapshot:
     """Anonymous all-object observations at an immutable public revision."""
@@ -81,10 +95,11 @@ def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-locals,
     persist: Callable[[dict[str, Any]], str],
     acknowledgement: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Persist intent, CAS-add metadata and persist anonymous verification.
+    """Persist intent, CAS-add metadata and save verification to run artifacts.
 
-    ``persist`` must durably store/read back its exact public-safe document and
-    return the receipt URL. Failures propagate; no rollback deletes source data.
+    ``persist`` must store/read back its exact public-safe document in the
+    current hosted run and return that run URL. Failures propagate; no rollback
+    deletes source data.
     """
     require_hosted_main(exact_commit)
     # Validate before any network call or credential use.
@@ -155,7 +170,7 @@ def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-locals,
         )
         > MAX_RECEIPT_CHARS
     ):
-        raise ValueError("durable receipt exceeds supported issue size")
+        raise ValueError("receipt exceeds supported artifact size")
     revision: str = ""
     if acknowledgement is not None:
         expected = {
@@ -182,10 +197,8 @@ def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-locals,
         intent_url = acknowledgement.get("intent_url", "")
     else:
         intent_url = persist(intent)
-    if not intent_url.startswith(
-        f"https://github.com/{REPOSITORY}/issues/340#"
-    ):
-        raise ValueError("durable intent URL missing")
+    if not valid_receipt_url(intent_url):
+        raise ValueError("intent receipt URL missing or invalid")
     # Server-side CAS remains mandatory even after this second head check.
     if acknowledgement is None:
         if hub.head(plan.dataset) != plan.parent_revision:
@@ -201,10 +214,10 @@ def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-locals,
             "parent_basis": "server_enforced_parent_commit",
         }
         acknowledgement_url = persist(acknowledgement)
-        if not acknowledgement_url.startswith(
-            f"https://github.com/{REPOSITORY}/issues/340#"
-        ):
-            raise ValueError("durable CAS acknowledgement URL missing")
+        if not valid_receipt_url(acknowledgement_url):
+            raise ValueError(
+                "CAS acknowledgement receipt URL missing or invalid"
+            )
     after = hub.snapshot(plan.dataset, revision)
     if after.revision != revision:
         raise ValueError("anonymous readback revision differs")
@@ -230,8 +243,6 @@ def execute_metadata_append(  # ruff: ignore[too-many-branches, too-many-locals,
         "gated": False,
     }
     receipt_url = persist(receipt)
-    if not receipt_url.startswith(
-        f"https://github.com/{REPOSITORY}/issues/340#"
-    ):
-        raise ValueError("durable verification URL missing")
+    if not valid_receipt_url(receipt_url):
+        raise ValueError("verification receipt URL missing or invalid")
     return {**receipt, "receipt_url": receipt_url}

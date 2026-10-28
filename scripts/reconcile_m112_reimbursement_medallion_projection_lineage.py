@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import copy
 import hashlib
 import json
@@ -65,6 +66,8 @@ CMS_SOURCE_URL = (
 CMS_SOURCE_SHA256 = (
     "5591fed257e4d2307c1d2dc9c66abc8e346b1f4c076e9e48559799e2de14b70a"
 )
+CMS_SOURCE_BYTES = 2_499_217
+CMS_RIGHTS_REVIEW = QUAL / "cms-hcpcs-rights-review-20261019.json"
 CMS_REPORT_SHA256 = (
     "5f7e0027f11cbb1b4f948bff80866bb4a1d739a7757900adc5a39c6713a874a4"
 )
@@ -438,6 +441,186 @@ def reuse_cms_readback() -> (
     readback_value = dict(readback)
     readback_value["observed_at"] = datetime.fromisoformat(observed_at)
     return readback_value, bronze, artifacts
+
+
+def reconcile_cms_effective_rights(  # ruff: ignore[too-many-locals,too-many-statements] -- binds one exact rights decision to current and historical readback
+    report: dict[str, Any], overlay: dict[str, Any]
+) -> None:
+    """Apply the exact superseding CMS rights decision without rewriting B1/B2."""
+    review = _read(CMS_RIGHTS_REVIEW)
+    external_file = review["scope"]["exact_external_file"]
+    review_status = review["rights_review"]
+    decision_path = Path(review_status["decision_path"])
+    decision_bytes = (ROOT / decision_path).read_bytes()
+    decision_sha256 = _sha(decision_bytes)
+    decision = cast("dict[str, Any]", json.loads(decision_bytes))
+    effective = decision["effective_state"]
+    if not all((
+        review["scope"]["source_id"] == CMS_SOURCE_ID,
+        review["scope"]["source_version"] == CMS_SOURCE_VERSION,
+        external_file["sha256"] == CMS_SOURCE_SHA256,
+        external_file["byte_count"] == CMS_SOURCE_BYTES,
+        review_status["rights_state_current"] == "permitted",
+        review_status["reviewer_status_current"] == "approved",
+        review_status["decision_sha256"] == decision_sha256,
+        decision["content_id"] == CMS_SOURCE_SHA256,
+        effective["rights_state"] == "permitted",
+        effective["reviewer_status"] == "approved",
+        effective["b2_state"] == "external_reference_only",
+        effective["processing_or_v4_admission_authorized"] is False,
+        effective["consumer_canaries_authorized"] is False,
+        effective["derived_table_rights_concluded"] is False,
+        effective["external_publication_authorized"] is False,
+    )):
+        raise ValueError(
+            "current CMS rights evidence does not bind the exact file"
+        )
+
+    records = report["cms_bronze_records"]
+    readback = report["lineage_inputs"]["cms_b1_b2_readback"]
+    increment = overlay["cms_input_lineage_increment"]
+    for item in (records, readback, increment):
+        if (
+            item.get(
+                "content_sha256", item.get("sha256", item.get("source_sha256"))
+            )
+            != CMS_SOURCE_SHA256
+        ):
+            raise ValueError(
+                "CMS readback digest changed during rights refresh"
+            )
+
+    historical_admission_path = records.get(
+        "historical_admission_path", records["admission_path"]
+    )
+    historical_admission_digest = records["output_bindings"][
+        historical_admission_path
+    ]
+    historical_admission_bytes = (ROOT / historical_admission_path).read_bytes()
+    if _sha(historical_admission_bytes) != historical_admission_digest:
+        raise ValueError("historical CMS admission binding changed")
+    historical_admission = cast(
+        "dict[str, Any]", json.loads(historical_admission_bytes)
+    )
+    current_admission_path = Path(review_status["superseding_admission_path"])
+    current_admission_bytes = (ROOT / current_admission_path).read_bytes()
+    current_admission_sha256 = _sha(current_admission_bytes)
+    if (
+        current_admission_sha256
+        != review_status["superseding_admission_sha256"]
+        or historical_admission["reviewer_status"] != "unreviewed"
+    ):
+        raise ValueError("CMS historical admission did not reconcile")
+    current_admission = cast(
+        "dict[str, Any]", json.loads(current_admission_bytes)
+    )
+    if not all((
+        current_admission["acquisition_id"] == records["acquisition_id"],
+        current_admission["content_id"] == CMS_SOURCE_SHA256,
+        current_admission["state"] == "landed",
+        current_admission["reviewer_status"] == "approved",
+    )):
+        raise ValueError(
+            "superseding CMS admission does not match the readback"
+        )
+
+    rights_values = {
+        "rights_state": "permitted",
+        "rights_reviewer_status": "approved",
+        "rights_reviewed_at": review["recorded_at"],
+        "acquisition_time_rights_state": "unknown",
+        "admission_state": "landed",
+        "admission_reviewer_status": "approved",
+        "historical_admission_path": historical_admission_path,
+        "historical_admission_reviewer_status": "unreviewed",
+        "rights_review_path": CMS_RIGHTS_REVIEW.as_posix(),
+        "rights_review_sha256": _sha((ROOT / CMS_RIGHTS_REVIEW).read_bytes()),
+        "rights_decision_path": decision_path.as_posix(),
+        "rights_decision_sha256": decision_sha256,
+        "derived_table_rights_concluded": False,
+        "external_publication_authorized": False,
+    }
+    records.update(rights_values)
+    records["admission_path"] = current_admission_path.as_posix()
+    records["output_bindings"][current_admission_path.as_posix()] = (
+        current_admission_sha256
+    )
+    records.pop("reviewer_status", None)
+
+    readback.update(rights_values)
+    readback["admission_path"] = current_admission_path.as_posix()
+    readback["output_bindings"] = records["output_bindings"]
+    readback.pop("reviewer_status", None)
+
+    increment.update({
+        "rights_state": "permitted",
+        "rights_reviewer_status": "approved",
+        "rights_reviewed_at": rights_values["rights_reviewed_at"],
+        "historical_acquisition_rights_state": "unknown",
+        "admission_state": "landed",
+        "admission_reviewer_status": "approved",
+        "historical_admission_reviewer_status": "unreviewed",
+        "rights_review_path": CMS_RIGHTS_REVIEW.as_posix(),
+        "rights_review_sha256": rights_values["rights_review_sha256"],
+        "rights_decision_path": decision_path.as_posix(),
+        "rights_decision_sha256": decision_sha256,
+        "derived_table_rights_concluded": False,
+        "external_publication_authorized": False,
+        "landed_but_unreviewed": False,
+    })
+    increment["admission_path"] = current_admission_path.as_posix()
+    increment["historical_admission_path"] = historical_admission_path
+
+    report["boundaries"].update({
+        "cms_effective_rights_reconciled": True,
+        "new_cms_rights_decision_created": False,
+        "historical_b1_b2_records_rewritten": False,
+    })
+    report["cms_rights_reconciliation"] = {
+        "source_id": CMS_SOURCE_ID,
+        "source_version": CMS_SOURCE_VERSION,
+        "sha256": CMS_SOURCE_SHA256,
+        "rights_state": "permitted",
+        "rights_reviewer_status": "approved",
+        "rights_reviewed_at": rights_values["rights_reviewed_at"],
+        "rights_review_path": CMS_RIGHTS_REVIEW.as_posix(),
+        "rights_review_sha256": rights_values["rights_review_sha256"],
+        "rights_decision_path": decision_path.as_posix(),
+        "rights_decision_sha256": decision_sha256,
+        "acquisition_time_rights_state_preserved": "unknown",
+        "historical_admission_reviewer_status_preserved": "unreviewed",
+        "processing_or_v4_admission_authorized": False,
+        "consumer_canaries_authorized": False,
+        "derived_table_rights_concluded": False,
+        "external_publication_authorized": False,
+    }
+    report_bytes = (
+        json.dumps(report, indent=2, sort_keys=True) + "\n"
+    ).encode()
+    report_sha256 = _sha(report_bytes)
+    expansion = overlay["projection_b1_b2_lineage_expansion"]
+    expansion["qualification_sha256"] = report_sha256
+    increment["qualification_sha256"] = report_sha256
+    for item in overlay["objects"]:
+        lineage = item.get("b1_b2_lineage", {})
+        evidence = lineage.get("evidence", {})
+        if evidence.get("path") == OUTPUT.as_posix():
+            evidence["sha256"] = report_sha256
+
+
+def refresh_existing_cms_rights_readback() -> None:
+    """Refresh persisted report metadata without reading source or projection bytes."""
+    report = _read(OUTPUT)
+    overlay = _read(OVERLAY_OUTPUT)
+    reconcile_cms_effective_rights(report, overlay)
+    (ROOT / OUTPUT).write_text(
+        json.dumps(report, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (ROOT / OVERLAY_OUTPUT).write_text(
+        json.dumps(overlay, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def _dataset_url(path: str) -> str:
@@ -1201,6 +1384,7 @@ def build_report() -> tuple[dict[str, Any], dict[str, Any], dict[str, bytes]]:  
         "v4_admission": False,
         "consumer_canary": False,
     }
+    reconcile_cms_effective_rights(report, overlay)
     overlay["pbs_source_parquet_lineage_increment"] = {
         "qualification_path": OUTPUT.as_posix(),
         "dataset": PBS_DATASET,
@@ -1313,6 +1497,21 @@ def _build_overlay(
 
 def main() -> None:
     """Write the exact projection-lineage qualification and inventory overlay."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--refresh-cms-rights-only",
+        action="store_true",
+        help=(
+            "refresh effective CMS rights fields from existing evidence "
+            "without reading source or projection payloads"
+        ),
+    )
+    args = parser.parse_args()
+    if args.refresh_cms_rights_only:
+        refresh_existing_cms_rights_readback()
+        print("refreshed effective CMS rights readback from existing evidence")
+        return
+
     report, overlay, artifacts = build_report()
     for relative_path, payload in artifacts.items():
         target_path = ROOT / relative_path

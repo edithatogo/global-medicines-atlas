@@ -1,0 +1,68 @@
+{
+  "report": {
+    "observations": {
+      "brand_name_text": {
+        "interpretation_state": "native_unresolved",
+        "native_fields": 6084,
+        "null_fields": 0,
+        "schema_path_count": 4,
+        "status": "source_path_label_only",
+        "value_fields": 6084
+      },
+      "copayment_amount_text": {
+        "interpretation_state": "native_unresolved",
+        "native_fields": 2,
+        "null_fields": 0,
+        "schema_path_count": 1,
+        "status": "source_path_label_only",
+        "value_fields": 2
+      },
+      "ex_manufacturer_amount_text": {
+        "interpretation_state": "native_unresolved",
+        "native_fields": 57922,
+        "null_fields": 0,
+        "schema_path_count": 16,
+        "status": "source_path_label_only",
+        "value_fields": 57922
+      },
+      "fee_definition_amount_text": {
+        "interpretation_state": "native_unresolved",
+        "native_fields": 193,
+        "null_fields": 0,
+        "schema_path_count": 2,
+        "status": "source_path_label_only",
+        "value_fields": 193
+      },
+      "threshold_amount_text": {
+        "interpretation_state": "native_unresolved",
+        "native_fields": 2,
+        "null_fields": 0,
+        "schema_path_count": 1,
+        "status": "source_path_label_only",
+        "value_fields": 2
+      }
+    },
+    "profile_id": "pbs-v3-pinned-2026-04-01-source-labels-v1",
+    "schema_id": "global-medicines-atlas.pbs-source-label-observations",
+    "schema_version": 1,
+    "scope": {
+      "consumer_canaries": 0,
+      "domain_value_semantics_qualified": false,
+      "new_admissions": 0,
+      "new_sources": 0,
+      "publications": 0,
+      "rights_conclusion_changed": false,
+      "source_values_emitted": false
+    },
+    "source": {
+      "dataset": "edithatogo/australian-pbs-source-archive",
+      "member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43",
+      "native_digest": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+      "native_fields": 18208758,
+      "revision": "31ec854ef9fc82f30a0dbe743fdf50a2e5bd24a7",
+      "schema_path_inventory_sha256": "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b"
+    },
+    "status": "source_path_labels_observed_values_unresolved"
+  },
+  "report_sha256": "746d1a6c57aec4fb3038d5dff17967cb2bf6fc101abffc6bccd6e5ca157cfd17"
+}

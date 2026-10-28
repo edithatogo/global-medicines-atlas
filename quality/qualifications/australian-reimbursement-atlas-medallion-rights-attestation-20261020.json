@@ -1,0 +1,95 @@
+{
+  "authorized_objects": [
+    {
+      "byte_count": 1820758,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/acquisition_b1/data.jsonl",
+      "sha256": "0bd2f7661037b620a21943ed6d7f2dd28a93437d43072d6ceabf3411b5840da1"
+    },
+    {
+      "byte_count": 27219,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/catalogue_b0/data.jsonl",
+      "sha256": "c27b998f9425714c42da0a9c8192e6fb5a613031210548cc0eb8b44388aaa8c4"
+    },
+    {
+      "byte_count": 1767273,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/evidence_b2/data.jsonl",
+      "sha256": "d7d33a8b0b6bd5cf507639286348b53e79d76e59347ef9575ff555a1e66f68c5"
+    },
+    {
+      "byte_count": 3267,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/gold/data.jsonl",
+      "sha256": "a4d3a99d9b6db9dff6a9e267e73806460b082d8ee8fbdefb55a3c7d077d85532"
+    },
+    {
+      "byte_count": 10763,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/lineage/data.jsonl",
+      "sha256": "9d73e2f79b44f221486b4ad0e1df576cdbd18763d1aa3fa7adb8e6fe526e639f"
+    },
+    {
+      "byte_count": 4340,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/pbs_archive_variants/data.jsonl",
+      "sha256": "e9059e17bf78c099f0350610487bbc78e5b51c8e9d49726b0b117e01e3c4d0db"
+    },
+    {
+      "byte_count": 811545,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/pbs_archive_verification/data.jsonl",
+      "sha256": "7cea95acfde2f023a8a3b84628b7bcd70a023ab1ebde3d5ac0449eedb36a5f8d"
+    },
+    {
+      "byte_count": 871678,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/pbs_pdf_provenance/data.jsonl",
+      "sha256": "24cb8c98f8a09f943ef3369ec63b9a2f7b3e19bfca7cf2a7ec64e1a78dcf4e07"
+    },
+    {
+      "byte_count": 548634,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/pbs_structured_provenance/data.jsonl",
+      "sha256": "fab87f283f31f51db1f5f1bee76b02c3fbe5622bea1deee4632be0ff4768a28c"
+    },
+    {
+      "byte_count": 2088,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/platinum/data.jsonl",
+      "sha256": "82aa16098cbbdedb8d6583caf367c8a41b34ca00f448e354a3921b12592dc9d6"
+    },
+    {
+      "byte_count": 1321055,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/promotion_decisions/data.jsonl",
+      "sha256": "03036720150f163e471445b594d21eeb51f95e4bd7db1070b74afc27b7d8c5c7"
+    },
+    {
+      "byte_count": 12732,
+      "dataset": "edithatogo/reimbursement-atlas",
+      "path": "data/medallion/silver/data.jsonl",
+      "sha256": "299b3721f72af235dc80a9b96f590a39ef8fe0b683618764ad56af713e1848a1"
+    }
+  ],
+  "boundaries": {
+    "consumer_canaries_authorized": false,
+    "frozen_inventory_membership_changed": false,
+    "new_sources_or_datasets_added": false,
+    "projection_values_inspected": false,
+    "public_release_performed": false,
+    "source_payload_bytes_inspected": false,
+    "v4_admission_or_promotion_authorized": false
+  },
+  "dataset": "edithatogo/reimbursement-atlas",
+  "maintainer_response": "I have exact written permission or another applicable rights instrument. Don\u2019t locate the evidence; take it as given and skip this bit.",
+  "permission_instrument_existence_and_applicability": "maintainer_attested_not_independently_reviewed_or_located_at_maintainer_direction",
+  "public_redistribution_rights_attested": true,
+  "recorded_at": "2026-10-20",
+  "revision": "8e062578f14e12cf3238700a93946339da9c5d88",
+  "schema_id": "global-medicines-atlas.australian-reimbursement-atlas-medallion-rights-attestation",
+  "schema_version": 1,
+  "scope": "Exact 12 Reimbursement Atlas medallion projection objects in the frozen M-112 inventory, each bound by dataset, revision, path, SHA-256, and byte count.",
+  "track_id": "australian_benefits_silver_gold_20260829"
+}

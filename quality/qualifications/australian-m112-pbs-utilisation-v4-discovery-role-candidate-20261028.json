@@ -1,0 +1,128 @@
+{
+  "boundaries": {
+    "consumer_canaries_performed": 0,
+    "federation_gate_closed": false,
+    "new_sources": 0,
+    "outbound_communications": 0,
+    "public_dataset_mutated": false,
+    "service_metadata_mutated": false,
+    "v4_admissions_performed": 0
+  },
+  "collection": {
+    "cli_output_sha256": "f3de5c5e59924a855dcd8d2c23cefdd348015340846284b0ec639183b74176c0",
+    "last_updated": "2026-10-26T22:17:36.501000+00:00",
+    "matching_dataset_member": {
+      "item_id": "edithatogo/australian-pbs-utilisation-archive",
+      "item_object_id": "6abdb97a40a05b0ed9d5492b",
+      "item_type": "dataset",
+      "note": "Australian PBS utilisation and expenditure source archive. Source-level rights and currency remain governed by each receipt. Collection membership is for discovery and does not grant source rights, authorize publication, or establish federation acceptance.",
+      "position": 5
+    },
+    "member_count": 12,
+    "private": false,
+    "slug": "edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+    "url": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4"
+  },
+  "dataset_access": {
+    "cli_output_sha256": "9c5dda49cc9c85c412ea2c668a1d46136ab3675063eb66cdb289ae52494ff289",
+    "gated": false,
+    "id": "edithatogo/australian-pbs-utilisation-archive",
+    "private": false,
+    "sha": "9f1d53cd50eea251b326da42a96f3ac72ebce97a"
+  },
+  "estate_registry": {
+    "catalog_path": "catalog.json",
+    "catalog_sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+    "catalog_url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/resolve/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json",
+    "dataset": "edithatogo/dataset-estate-registry",
+    "entry": {
+      "access": "public",
+      "canonical_repo_id": "edithatogo/australian-pbs-utilisation-archive",
+      "family": "unclassified",
+      "origin_repository": null,
+      "repo_id": "edithatogo/australian-pbs-utilisation-archive",
+      "rights_status": "source_specific_review_required",
+      "role": "unclassified_public_dataset",
+      "status": "not_assessed",
+      "upstream_source": "Not assessed; an exact upstream source is not claimed.",
+      "viewer_status": "not_verified"
+    },
+    "matching_entry_count": 1,
+    "revision": "4802d56a340646043fc91bed218c1e8a958f42c2"
+  },
+  "identity_evidence": {
+    "path": "quality/qualifications/australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json",
+    "sha256": "5050236f8aa68491f490ca35dd4425c3173eb54673c5072e6dcfac712cf62775"
+  },
+  "limitations": [
+    "This observes public metadata and reuses retained object identities; it does not rehash source payloads.",
+    "Collection membership and registry presence are not rights, sensitivity, source semantics, v4 admission, independent recovery or consumer acceptance evidence.",
+    "The registry entry retains its existing assessment and rights states."
+  ],
+  "method": {
+    "client": "huggingface-hub CLI 1.14.0",
+    "implicit_token_disabled": true,
+    "maximum_metadata_bytes": 1048576,
+    "operations": [
+      "datasets info --revision --expand sha,private,gated",
+      "collections info",
+      "download catalog.json at exact registry revision"
+    ],
+    "python": "3.15.1"
+  },
+  "objects": [
+    {
+      "byte_count": 372149,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b"
+    },
+    {
+      "byte_count": 468764,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+    },
+    {
+      "byte_count": 35384567,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4"
+    },
+    {
+      "byte_count": 36381946,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+    },
+    {
+      "byte_count": 1063694,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8"
+    },
+    {
+      "byte_count": 117376499,
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca"
+    }
+  ],
+  "recorded_at": "2026-10-28T10:52:20.595167+00:00",
+  "role_state": "candidate_evidence_available_unbound",
+  "schema_id": "global-medicines-atlas.m112-pbs-utilisation-discovery-role-candidate",
+  "schema_version": 1,
+  "scope": {
+    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+    "exact_objects": 6,
+    "frozen_denominator": 1759,
+    "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+    "source_payloads_read": false
+  }
+}

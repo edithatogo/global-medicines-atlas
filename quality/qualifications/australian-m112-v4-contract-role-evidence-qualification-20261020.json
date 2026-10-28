@@ -4,6 +4,18 @@
     "path": "quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json",
     "sha256": "7a4c9d171b5fe82ab71e90ec7a80578d569f2645951dadf79689d364f71cf7ef"
   },
+  "authority_identity": {
+    "candidate_objects": 16,
+    "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+    "contract_repository": "edithatogo/global-medicines-atlas",
+    "producer_repository": "edithatogo/global-medicines-atlas",
+    "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+    "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+    "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+    "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+    "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
+    "state": "candidate_identity_available_unbound_for_16_of_16"
+  },
   "boundaries": {
     "consumer_canary_performed": false,
     "contract_created": false,
@@ -13,19 +25,23 @@
     "source_payload_bytes_written": false,
     "v4_admission_performed": false
   },
+  "cache_candidate_evidence": {
+    "objects": 7,
+    "state": "candidate_cleanup_receipts_available_unbound_for_7_of_16"
+  },
   "cohort": {
     "anonymous_digest_readback": 16,
     "approved_denominator": 1759,
     "approved_denominator_changed": false,
     "b1_b2_lineage_complete": 16,
-    "consumer_canaries": 0,
+    "consumer_canaries": 7,
     "dataset_path_aliases": 1,
     "objects": 16,
     "publication_candidate_receipts": 14,
     "rights_qualified": 16,
     "selection_rule": "Exact rights state in the two listed states plus complete B1/B2 lineage plus anonymous digest readback; this does not imply admission.",
     "unique_payload_identities": 15,
-    "v4_admissions": 0,
+    "v4_admissions": 7,
     "verification_candidate_receipts": 14
   },
   "contract": {
@@ -34,23 +50,102 @@
     "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6",
     "version": "4.1"
   },
-  "decision": "Existing exact publication and token-free anonymous clean-room restore receipts now bind as unbound candidate evidence for 14 MBS utilisation paths. Two August paths and the authority, discovery, v3 replay, recovery/cache, source semantics, and consumer roles remain incomplete. Preserve zero v4 admissions and zero M-112 consumer canaries.",
+  "current_admission_evidence": [
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q1-march-raw-b2-contract.json",
+      "contract_sha256": "3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q2-may-raw-b2-contract.json",
+      "contract_sha256": "cd7ccdce266d1d42fa658abe4b097c207627d80943b01c198f7d844c16241152",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json",
+      "contract_sha256": "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json",
+      "contract_sha256": "d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-historical-1993-2015-raw-b2-contract.json",
+      "contract_sha256": "992eb2ce2d93891f51423284df2d718bc7d44af6511cc09c11c33a578588210b",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q3-julyhr-raw-b2-contract.json",
+      "contract_sha256": "f65f1da3d4b9018e61a1ba31a5de1ceeb9bfa732da363a142c88bc7260eca469",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-july2016-raw-b2-contract.json",
+      "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+    }
+  ],
+  "decision": "The exact v4.1 schema identity and successful producer workflow are now bound as candidate authority evidence for all 16 MBS utilisation objects; publication and token-free anonymous restore receipts remain unbound candidate evidence for 14 of 16 paths. Authority is not yet referenced by complete v4 contracts. Two August paths, source semantics, discovery, recovery/cache, and consumers remain incomplete. Official source temporal semantics are qualified for 13 utilisation objects; their native schema layouts and three source-role candidates remain unresolved. Location and discovery evidence now cover all 16 paths but remain unbound until referenced by complete per-object v4 contracts. V3 replay evidence is candidate-only for 7 of 16 objects. Recovery evidence covers only the 14 utilisation paths; hosted cache-cleanup candidates bind 7 of 16 paths. Consumer cache behavior remains a post-admission check. Current independently evidenced state is 7 v4 admissions and 7 admitted-object consumer canaries; this candidate-role refresh performed no admission or canary.",
+  "discovery_candidate_evidence": {
+    "objects": 16,
+    "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+    "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556",
+    "state": "candidate_receipt_available_unbound_for_16_of_16"
+  },
+  "location_candidate_evidence": {
+    "objects": 16,
+    "state": "candidate_receipt_available_unbound_for_16_of_16"
+  },
   "objects": [
     {
       "acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 8293331,
       "contract_role_states": {
-        "authority": "partial",
+        "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
         "lineage.v3_replay": "missing",
-        "location": "partial",
+        "location": "candidate_receipt_available_unbound",
         "publication": "missing",
         "recovery": "missing",
         "rights.authorization": "qualified_exact_scope",
@@ -62,11 +157,44 @@
         "path": "quality/qualifications/australian-m112-source-archive-digest-reconciliation-20261004.json",
         "sha256": "19cbf039367c3fa0ef276209d83e9172bb90b1ca72262d4794aa37bb8eeaa074"
       },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "71266cd78d98a3ba258a697890985b105917d6848b73935d2bb5b8c81e7605d7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
+      },
       "lineage_evidence": {
         "path": "quality/qualifications/australian-m112-mbs-lifecycle-crosswalk-20261004.json",
         "sha256": "7a4c9d171b5fe82ab71e90ec7a80578d569f2645951dadf79689d364f71cf7ef"
       },
       "lineage_state": "complete for the raw B1/B2 object: official source receipt, landed-to-accepted lifecycle, immutable B2 reference and anonymous digest readback are joined; producer projection lineage remains separate",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 8293331,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "dataset_access_response_sha256": "71266cd78d98a3ba258a697890985b105917d6848b73935d2bb5b8c81e7605d7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-source-archive-digest-reconciliation-20261004.json",
+          "sha256": "19cbf039367c3fa0ef276209d83e9172bb90b1ca72262d4794aa37bb8eeaa074"
+        },
+        "gated": false,
+        "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
+        "private": false,
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+      },
       "path": "raw/mbs/releases/2026-08-01/c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565.xml",
       "path_identity_group": "august-2026-mbs-xml-content-c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565",
       "path_identity_note": "This dataset path aliases the same verified payload as the second approved August path under the exact source release decision.",
@@ -96,18 +224,29 @@
     {
       "acquisition_id": "fd32879190b69ad98cd2f207ec3b70b725ab8f524218f783ec08bf98b7ffcecd",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 8293331,
       "contract_role_states": {
-        "authority": "partial",
+        "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
         "lineage.v3_replay": "missing",
-        "location": "partial",
+        "location": "candidate_receipt_available_unbound",
         "publication": "missing",
         "recovery": "missing",
         "rights.authorization": "qualified_exact_scope",
@@ -118,6 +257,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-august-alias-anonymous-readback-20261018.json",
         "sha256": "a82443f4293baa9f34c946ddab9fce10d62bb5a7f191d33bab9ea11d2638ddf7"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "71266cd78d98a3ba258a697890985b105917d6848b73935d2bb5b8c81e7605d7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-source-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "alias_anonymous_readback": {
@@ -140,6 +296,22 @@
         }
       },
       "lineage_state": "complete for the shared raw B1/B2 payload object: the alias and canonical path have the same pinned Git blob, byte count, and SHA-256; the alias also has its own exact-revision anonymous digest readback. Historical producer-archive records remain preserved, and their separate projection lineage is unqualified",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 8293331,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "dataset_access_response_sha256": "71266cd78d98a3ba258a697890985b105917d6848b73935d2bb5b8c81e7605d7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-august-alias-anonymous-readback-20261018.json",
+          "sha256": "a82443f4293baa9f34c946ddab9fce10d62bb5a7f191d33bab9ea11d2638ddf7"
+        },
+        "gated": false,
+        "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
+        "private": false,
+        "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
+        "sha256": "c5c04792cbdc7017589b4453aa4506f26b6cfcbfeaee3b0d6c866a8050b06565"
+      },
       "path": "raw/mbs/releases/Downloads-20260801/MBS-XML-20260801.XML",
       "revision": "40891976f77ee5e7688edceed25c9ac98a77547e",
       "rights_decision": {
@@ -167,28 +339,69 @@
     {
       "acquisition_id": "8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 23934884,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39368825712.json",
+          "sha256": "8c5e4bb4f3d00641951dc680da5e0138990605fd9ff4fd5aa03d62a14be50717"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-20T04:17:51Z",
+        "expires_at": "2026-10-20T04:32:51Z",
+        "max_bytes": 23934884,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
-        "authority": "partial",
-        "cache": "missing",
+        "authority": "candidate_identity_available_unbound",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
-        "location": "partial",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3.json",
@@ -202,6 +415,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 23934884,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
       "publication_candidate_receipt": {
         "bytes": 23934884,
@@ -224,6 +453,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -235,6 +486,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+      "source_candidate_receipt": {
+        "acquisition_id": "8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2016-03-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-09T13:57:28Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-04-28; resource_id=ff6d0692-4c6f-466b-9d93-015224d80b14",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "ff6d0692-4c6f-466b-9d93-015224d80b14",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2016-03-31",
+          "period_anchor": "1 January to 31 March 2016",
+          "period_end": "2016-03-31",
+          "period_start": "2016-01-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -244,6 +526,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "64b2f22cf9c17ed69e948e212ee8ea279c2fdcaf13a2a3fdeac499ee66de34d4",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39368825712.json",
+          "sha256": "4f7e6dd24acfc5f2864fb7bbc8e961f4fc285b560c5eef5f7eec11173727c4fb"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39368825712.json",
+          "sha256": "8c5e4bb4f3d00641951dc680da5e0138990605fd9ff4fd5aa03d62a14be50717"
+        },
+        "registration_sha256": "8dc0bbf5c17b07700bb3c57a3a00c61d3a61b2057035d31156e4f83d1f472f61",
+        "snapshot_id": "be3f06c474a4cc7f1c2d1b3b90e96774e526233d53749c9d917a9002ca4afba6",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "cea68bd01ad5a2938c12cf72e0c6d2aa50fb742a",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39368825712"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -276,28 +577,69 @@
     {
       "acquisition_id": "c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 23436706,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39414292406.json",
+          "sha256": "f1fd2a196e1fb5cf4f8f303b0d9ba5638da68cdbee423a6f2cb6b062cbcfb62d"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-20T11:21:03Z",
+        "expires_at": "2026-10-20T11:36:03Z",
+        "max_bytes": 23436706,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
-        "authority": "partial",
-        "cache": "missing",
+        "authority": "candidate_identity_available_unbound",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
-        "location": "partial",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd.json",
@@ -311,6 +653,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 23436706,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
       "publication_candidate_receipt": {
         "bytes": 23436706,
@@ -333,6 +691,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -344,6 +724,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+      "source_candidate_receipt": {
+        "acquisition_id": "c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2016-05-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-09T13:57:21Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-06-24; resource_id=c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2016-05-31",
+          "period_anchor": "current to 31 May 2016",
+          "period_end": "2016-05-31",
+          "period_start": "2016-04-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -353,6 +764,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "1ee54f02826fa1b0802cd5b0cb6e60f744e051bc091d92bf754471a85004e1ad",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39414292406.json",
+          "sha256": "a1839832483009bff331475edf89e536f304769b3c48fe9a123f8e68e774a7ba"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39414292406.json",
+          "sha256": "f1fd2a196e1fb5cf4f8f303b0d9ba5638da68cdbee423a6f2cb6b062cbcfb62d"
+        },
+        "registration_sha256": "70685ca50cce93050face2bfc6bc55b4f9eb6a0aa5423937e84551633f0820a0",
+        "snapshot_id": "3dc53f56ee56736fc8850ef0978d3df4fb22455541c1a6beb82397340d245b5d",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "295160bab1e694f9a01a70e0befc5f7e5bf660de",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39414292406"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -385,28 +815,69 @@
     {
       "acquisition_id": "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 7680041,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39344611967.json",
+          "sha256": "490e67b5adcfc9e38e62763549b172ca87404358ad533bae96454dc4c8dc843b"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-19T23:56:20Z",
+        "expires_at": "2026-10-20T00:11:20Z",
+        "max_bytes": 7680041,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
-        "authority": "partial",
-        "cache": "missing",
+        "authority": "candidate_identity_available_unbound",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
-        "location": "partial",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb.json",
@@ -420,6 +891,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 7680041,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
       "publication_candidate_receipt": {
         "bytes": 7680041,
@@ -442,6 +929,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -453,6 +962,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+      "source_candidate_receipt": {
+        "acquisition_id": "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2016-07-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-27T16:43:26Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-08-29; resource_id=492b39de-8c97-4bbf-880e-e97d933daa9c",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2016-07-31",
+          "period_anchor": "1 July 2016 to 31 July 2016",
+          "period_end": "2016-07-31",
+          "period_start": "2016-07-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -462,6 +1002,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "4b1bc80d66151290629164c23a9b2ff6b62ff52d1d2428a61b4ff6a4bd5541c0",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39344611967.json",
+          "sha256": "d9fedad2934672471af1d91752b1a86738d2a19b7d5131705e0dfa0a24028179"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39344611967.json",
+          "sha256": "490e67b5adcfc9e38e62763549b172ca87404358ad533bae96454dc4c8dc843b"
+        },
+        "registration_sha256": "3ddcae1434da9690b4d2849290d1826778980080da8368ca74aec5f12ab5b57d",
+        "snapshot_id": "3afcc2274c01f64d9d1b7775865e1b9f2f1bc30d833b37e8ac695182759095ed",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "1ebee786331c2e63d0a4d9501894ad657006ea9d",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39344611967"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -494,28 +1053,56 @@
     {
       "acquisition_id": "4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 21966140,
       "contract_role_states": {
-        "authority": "partial",
+        "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
         "lineage.v3_replay": "missing",
-        "location": "partial",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc.json",
@@ -529,6 +1116,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 21966140,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
       "publication_candidate_receipt": {
         "bytes": 21966140,
@@ -551,6 +1154,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -562,6 +1187,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+      "source_candidate_receipt": {
+        "acquisition_id": "4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2016-03-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-09T13:57:24Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-04-28; resource_id=e4016a05-a674-49d2-bdc4-052ccdb7b257",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "e4016a05-a674-49d2-bdc4-052ccdb7b257",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2016-03-31",
+          "period_anchor": "1 January to 31 March 2016",
+          "period_end": "2016-03-31",
+          "period_start": "2016-01-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -603,28 +1259,56 @@
     {
       "acquisition_id": "29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 23765087,
       "contract_role_states": {
-        "authority": "partial",
+        "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
         "lineage.v3_replay": "missing",
-        "location": "partial",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf.json",
@@ -638,6 +1322,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 23765087,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
       "publication_candidate_receipt": {
         "bytes": 23765087,
@@ -660,6 +1360,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -671,6 +1393,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+      "source_candidate_receipt": {
+        "acquisition_id": "29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2016-06-30",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-09T13:57:17Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-07-26; resource_id=58f69c3c-1c1e-4a6e-9176-54bfec1b9e2b",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "58f69c3c-1c1e-4a6e-9176-54bfec1b9e2b",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2016-06-30",
+          "period_anchor": "1 April to 30 June 2016",
+          "period_end": "2016-06-30",
+          "period_start": "2016-04-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -712,28 +1465,69 @@
     {
       "acquisition_id": "4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 7316301,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39431880718.json",
+          "sha256": "51c8b91655463154f7c168c68b5cf81b682467b6b4971750bce0586e94c6c641"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-20T13:36:38Z",
+        "expires_at": "2026-10-20T13:51:38Z",
+        "max_bytes": 7316301,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
-        "authority": "partial",
-        "cache": "missing",
+        "authority": "candidate_identity_available_unbound",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
-        "location": "partial",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22.json",
@@ -747,6 +1541,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 7316301,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
       "publication_candidate_receipt": {
         "bytes": 7316301,
@@ -769,6 +1579,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -780,6 +1612,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+      "source_candidate_receipt": {
+        "acquisition_id": "4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2016-07-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-27T16:43:21Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-08-29; resource_id=be3ff4f8-f443-4ed1-bfef-7dd6617ee4c8",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "be3ff4f8-f443-4ed1-bfef-7dd6617ee4c8",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2016-07-31",
+          "period_anchor": "1 July to 31 July 2016",
+          "period_end": "2016-07-31",
+          "period_start": "2016-07-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -789,6 +1652,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "e8cea17ab2f82958c2a4b9938a7d6c831a6c7845f9b29362d4c713f10f4197b5",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39431880718.json",
+          "sha256": "7f54d35c4fea04f03d5f2180ed3d4b54bfff7a348f2f52ab8bac44edf8332fb9"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39431880718.json",
+          "sha256": "51c8b91655463154f7c168c68b5cf81b682467b6b4971750bce0586e94c6c641"
+        },
+        "registration_sha256": "0325c2a95c215add80ccca47c4f3c80a0a70472bf19a5632cf1ce077e9eb818c",
+        "snapshot_id": "4563f34680c50e3c3bba6e6d4473a24fba4acbc8da151bb7f4ad81d2bd45c104",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "46b9f93bb54abcdacbfbee99dae7cd2548d505f8",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39431880718"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -821,28 +1703,56 @@
     {
       "acquisition_id": "12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 185194594,
       "contract_role_states": {
-        "authority": "partial",
+        "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
         "lineage.v3_replay": "missing",
-        "location": "partial",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521.json",
@@ -856,6 +1766,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 185194594,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
       "publication_candidate_receipt": {
         "bytes": 185194594,
@@ -878,6 +1804,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -889,6 +1837,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+      "source_candidate_receipt": {
+        "acquisition_id": "12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "1997-12-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-09T13:58:25Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2015-08-14; resource_id=28af2898-358a-445d-9539-4048992c5195",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "28af2898-358a-445d-9539-4048992c5195",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "1997-12-31",
+          "period_anchor": "July 1993 - December 1997",
+          "period_end": "1997-12-31",
+          "period_start": "1993-07-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -930,28 +1909,56 @@
     {
       "acquisition_id": "0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 240803157,
       "contract_role_states": {
-        "authority": "partial",
+        "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
         "lineage.v3_replay": "missing",
-        "location": "partial",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c.json",
@@ -965,6 +1972,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 240803157,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
       "publication_candidate_receipt": {
         "bytes": 240803157,
@@ -987,6 +2010,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -998,6 +2043,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+      "source_candidate_receipt": {
+        "acquisition_id": "0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2002-12-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-09T13:58:14Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2015-08-14; resource_id=46704d3a-7bc1-42d6-bed1-29f9419298e0",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "46704d3a-7bc1-42d6-bed1-29f9419298e0",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2002-12-31",
+          "period_anchor": "January 1998 - December 2002",
+          "period_end": "2002-12-31",
+          "period_start": "1998-01-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -1039,28 +2115,56 @@
     {
       "acquisition_id": "071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 284302149,
       "contract_role_states": {
-        "authority": "partial",
+        "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
         "lineage.v3_replay": "missing",
-        "location": "partial",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef.json",
@@ -1074,6 +2178,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 284302149,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
       "publication_candidate_receipt": {
         "bytes": 284302149,
@@ -1096,6 +2216,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -1107,6 +2249,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+      "source_candidate_receipt": {
+        "acquisition_id": "071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2007-12-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-09T13:58:01Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2015-08-14; resource_id=82c47db1-c175-4648-aafe-28cab7b0dba6",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "82c47db1-c175-4648-aafe-28cab7b0dba6",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2007-12-31",
+          "period_anchor": "January 2003 - December 2007",
+          "period_end": "2007-12-31",
+          "period_start": "2003-01-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -1148,28 +2321,56 @@
     {
       "acquisition_id": "a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 358227575,
       "contract_role_states": {
-        "authority": "partial",
+        "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
         "lineage.v3_replay": "missing",
-        "location": "partial",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690.json",
@@ -1183,6 +2384,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 358227575,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355"
+      },
       "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
       "publication_candidate_receipt": {
         "bytes": 358227575,
@@ -1205,6 +2422,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -1216,6 +2455,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+      "source_candidate_receipt": {
+        "acquisition_id": "a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2012-12-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-09T13:57:45Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2015-08-14; resource_id=827346ed-9926-47ff-a95e-3f84875f42fb",
+        "source_id": "au-data-gov-mbs-demographics",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "827346ed-9926-47ff-a95e-3f84875f42fb",
+          "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2012-12-31",
+          "period_anchor": "January 2008 - December 2012",
+          "period_end": "2012-12-31",
+          "period_start": "2008-01-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-demographics",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -1257,28 +2527,69 @@
     {
       "acquisition_id": "0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 205885063,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39324097024.json",
+          "sha256": "d0b13510173001f20d4809d6389acd123465d55cb85091d8356c98104eb28731"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-19T21:01:00Z",
+        "expires_at": "2026-10-19T21:16:00Z",
+        "max_bytes": 205885063,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
-        "authority": "partial",
-        "cache": "missing",
+        "authority": "candidate_identity_available_unbound",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
-        "location": "partial",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-group/0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638.json",
@@ -1292,6 +2603,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-group/0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 205885063,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+      },
       "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
       "publication_candidate_receipt": {
         "bytes": 205885063,
@@ -1314,6 +2641,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -1325,6 +2674,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+      "source_candidate_receipt": {
+        "acquisition_id": "0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2015-12-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-09T13:57:03Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-03-01; resource_id=5ef51b77-7b55-4df4-8740-4a19fcc861e1",
+        "source_id": "au-data-gov-mbs-group",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "5ef51b77-7b55-4df4-8740-4a19fcc861e1",
+          "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2015-12-31",
+          "period_anchor": "period 1993-2015",
+          "period_end": "2015-12-31",
+          "period_start": "1993-01-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-group",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -1334,6 +2714,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "79a3579eb6ca9d01445f22a8b27455de165bf9c70badb58f9da1441863945665",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39324097024.json",
+          "sha256": "1b1e68b33666b3d334e604534c50ab5ab912ae0c023d53764b0cd123a48fc7bf"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39324097024.json",
+          "sha256": "d0b13510173001f20d4809d6389acd123465d55cb85091d8356c98104eb28731"
+        },
+        "registration_sha256": "c4048a7dd36474416c9f41a829c6350452de5d91798ae1528fb9e03d3806adf1",
+        "snapshot_id": "dab50896f0c8fcca1db79c186144d468b171f0bd6e00144be52d89182f21f05d",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "3df35dbd1475557122faa3025b915e37cf202a55",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39324097024"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -1366,20 +2765,31 @@
     {
       "acquisition_id": "b12cc1fd8ebca1dadf2c197dcd3ca086b63fcbd9b58ac2d2e9090b94217e5090",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 237142509,
       "contract_role_states": {
-        "authority": "partial",
+        "authority": "candidate_identity_available_unbound",
         "cache": "missing",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
         "lineage.v3_replay": "missing",
-        "location": "partial",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
         "source": "partial",
         "verification": "candidate_receipt_available_unbound"
@@ -1388,6 +2798,23 @@
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-group/b12cc1fd8ebca1dadf2c197dcd3ca086b63fcbd9b58ac2d2e9090b94217e5090.json",
@@ -1401,6 +2828,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-group/b12cc1fd8ebca1dadf2c197dcd3ca086b63fcbd9b58ac2d2e9090b94217e5090.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 237142509,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "5d45554d8eae96b8e0b7f86a9fb38b63862168791b95954c9be953c03c2d1c96"
+      },
       "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
       "publication_candidate_receipt": {
         "bytes": 237142509,
@@ -1422,6 +2865,28 @@
         "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
+      },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
       },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
@@ -1475,28 +2940,69 @@
     {
       "acquisition_id": "5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 12291303,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39305977097.json",
+          "sha256": "6eaa516178587352704af2f2f03ade2777a2253c13e402ef4574ef92d4bd8fda"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-19T18:51:00Z",
+        "expires_at": "2026-10-19T19:06:00Z",
+        "max_bytes": 12291303,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
-        "authority": "partial",
-        "cache": "missing",
+        "authority": "candidate_identity_available_unbound",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
-        "location": "partial",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-group/5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967.json",
@@ -1510,6 +3016,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-group/5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 12291303,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+      },
       "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
       "publication_candidate_receipt": {
         "bytes": 12291303,
@@ -1532,6 +3054,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -1543,6 +3087,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+      "source_candidate_receipt": {
+        "acquisition_id": "5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2016-07-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-27T16:43:17Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-08-29; resource_id=663a7fac-114c-47b5-9017-a9dbb9073260",
+        "source_id": "au-data-gov-mbs-group",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "663a7fac-114c-47b5-9017-a9dbb9073260",
+          "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2016-07-31",
+          "period_anchor": "year to date summary to 31 July 2016",
+          "period_end": "2016-07-31",
+          "period_start": "2016-01-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-group",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -1552,6 +3127,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "08fdb736ab894951af6a6c6220348e9123782520251416feaab375d1f494a542",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020-39305977097.json",
+          "sha256": "fa9590744179573bad23a98acb95a6aeb03f68ae70bf5f016205a4db1bf60a19"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020-39305977097.json",
+          "sha256": "6eaa516178587352704af2f2f03ade2777a2253c13e402ef4574ef92d4bd8fda"
+        },
+        "registration_sha256": "762fba989f78e1b5981efb9b9e1aa72a44655660ce26d238f68127892653c7c5",
+        "snapshot_id": "c1c60a691ad9fbd7f3faca4895791549b9b6aa43c65e096527bb84f73df5c84b",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "7dbf14db2403485cabbe699858579cf7c7567012",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39305977097"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -1584,28 +3178,69 @@
     {
       "acquisition_id": "7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b",
       "anonymous_digest_readback": true,
+      "authority_candidate": {
+        "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+        "contract_repository": "edithatogo/global-medicines-atlas",
+        "contract_role_state": "candidate_identity_available_unbound",
+        "producer_repository": "edithatogo/global-medicines-atlas",
+        "producer_workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml",
+        "producer_workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+        "producer_workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+        "schema_path": "contracts/medallion/v4.1/federation.schema.json",
+        "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+      },
       "bytes": 6857437,
+      "cache_candidate_receipt": {
+        "cleanup_receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020.json",
+          "sha256": "52cf19b6226a08df52cb686a7c081cbd7542e13de01f97ec94a41626e2e26a27"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "created_at": "2026-10-19T16:51:27Z",
+        "expires_at": "2026-10-19T17:06:27Z",
+        "max_bytes": 6857437,
+        "offline_behavior": "fail_closed",
+        "origin": "github_actions",
+        "state": "removed"
+      },
       "contract_role_states": {
-        "authority": "partial",
-        "cache": "missing",
+        "authority": "candidate_identity_available_unbound",
+        "cache": "candidate_receipt_available_unbound",
         "consumers": "missing",
-        "discovery": "missing",
+        "discovery": "candidate_receipt_available_unbound",
         "lineage.inputs": "qualified_b1_b2_only",
         "lineage.promotion_receipt": "not_applicable_bronze_raw",
         "lineage.v1_conformance": "candidate_receipt_available_unbound",
         "lineage.v2_field_lineage": "not_applicable_raw_b2_v4_1",
-        "lineage.v3_replay": "missing",
-        "location": "partial",
+        "lineage.v3_replay": "candidate_receipt_available_unbound",
+        "location": "candidate_receipt_available_unbound",
         "publication": "candidate_receipt_available_unbound",
-        "recovery": "missing",
+        "recovery": "candidate_receipt_available_unbound",
         "rights.authorization": "qualified_exact_scope",
-        "source": "partial",
+        "source": "candidate_receipt_available_unbound",
         "verification": "candidate_receipt_available_unbound"
       },
       "dataset": "edithatogo/australian-mbs-utilisation-archive",
       "digest_evidence": {
         "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
         "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+      },
+      "discovery_candidate_receipt": {
+        "collection": "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4",
+        "collection_response_sha256": "1a1af4822f004f8f778a1d180e4bf41130ec1943f6218cb881cc25c55177f97e",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "estate_entry": {
+          "dataset": "edithatogo/australian-mbs-utilisation-archive",
+          "rights_status": "source_specific_review_required",
+          "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+          "status": "not_assessed",
+          "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/blob/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+        },
+        "evidence_report": {
+          "path": "quality/qualifications/australian-m112-v4-discovery-role-evidence-20261020.json",
+          "sha256": "7ac0aaa104f972663d552f915fbdc35d0817d1e19bb10e5530c023859fbc8556"
+        }
       },
       "lineage_evidence": {
         "acquisition_event_path": "quality/bronze/imported-acquisitions/au-data-gov-mbs-group/7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b.json",
@@ -1619,6 +3254,22 @@
         "source_receipt_path": "quality/bronze/receipts/historical_imports/au-data-gov-mbs-group/7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b.json"
       },
       "lineage_state": "The exact frozen path and revision join to a historical source receipt, acquisition event, external-reference-only B2 manifest, and a current landed admission decision marked unreviewed. The landed event binds the prior anonymous digest and byte-count readback for this immutable archive object. It does not claim locally retained payload bytes, processing acceptance, changed rights, v4 admission, or consumer validation.",
+      "location_candidate_receipt": {
+        "anonymous_digest_readback": true,
+        "bytes": 6857437,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "dataset": "edithatogo/australian-mbs-utilisation-archive",
+        "dataset_access_response_sha256": "a52755e74f081877ec4ed4b5f0849e75e2e6b7419d4c1637a80b39003a34e9e7",
+        "digest_evidence": {
+          "path": "quality/qualifications/australian-m112-utilisation-digest-reconciliation-20261004.json",
+          "sha256": "408cdf7de7020b05253d155e29918ffab06ad875643d2fd321880a7fa29c7feb"
+        },
+        "gated": false,
+        "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+        "private": false,
+        "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+        "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+      },
       "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
       "publication_candidate_receipt": {
         "bytes": 6857437,
@@ -1641,6 +3292,28 @@
         "workflow_commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
         "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964"
       },
+      "recovery_candidate_receipt": {
+        "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "authorization_receipt": null,
+        "checksum_inventory": {
+          "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+          "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+        },
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "independent": false,
+        "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+        "primary_region": "unverified",
+        "region": "unverified",
+        "restore_receipt": {
+          "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+          "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+        },
+        "role": "primary",
+        "rpo_seconds": null,
+        "rto_seconds": null,
+        "temporary_source_bytes_removed": true,
+        "verified_manifest_object_count": 28
+      },
       "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
       "rights_decision": {
         "path": "quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json",
@@ -1652,6 +3325,37 @@
       },
       "rights_state": "approved_exact_scope_CC_BY_3_0_AU_publicly_readback_verified",
       "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+      "source_candidate_receipt": {
+        "acquisition_id": "7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b",
+        "bronze_stratum": "B2",
+        "comparison_cohort": "legacy",
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "effective_date": "2016-07-31",
+        "layer": "bronze",
+        "native_schema_layout_qualified": false,
+        "representation": "raw",
+        "retrieved_at": "2026-09-27T16:43:13Z",
+        "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-08-29; resource_id=07b46b92-9cc3-4dda-8a0b-ab86f77f5419",
+        "source_id": "au-data-gov-mbs-group",
+        "source_metadata_readback": {
+          "evidence_report": {
+            "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+            "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60"
+          },
+          "http_status": 200,
+          "resource_id": "07b46b92-9cc3-4dda-8a0b-ab86f77f5419",
+          "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+          "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc"
+        },
+        "temporal_semantics": {
+          "cohort": "legacy",
+          "effective_date": "2016-07-31",
+          "period_anchor": "year to date summary to 31 July 2016",
+          "period_end": "2016-07-31",
+          "period_start": "2016-01-01",
+          "service_month_basis": "claim_processing_date_not_service_provision_date"
+        }
+      },
       "source_id": "au-data-gov-mbs-group",
       "v1_conformance_candidate_receipt": {
         "anonymous_readback_verified": true,
@@ -1661,6 +3365,25 @@
         "objects": 16,
         "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
         "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+      },
+      "v3_replay_candidate_receipt": {
+        "anonymous_digest_verified": true,
+        "candidate_only": true,
+        "contract_role_state": "candidate_receipt_available_unbound",
+        "partition_id": "189f15f0a2ad8e61c23317bfa75feeb29fb10e74909810fd84599bfaa267dbfe",
+        "plan": {
+          "path": "quality/qualifications/australian-m112-v3-replay-plan-20261020.json",
+          "sha256": "2fc6c9632c473d599d0fe40f93b40f2fb24269c348b7aa88a40851492e19cecd"
+        },
+        "receipt": {
+          "path": "quality/qualifications/australian-m112-v3-replay-execution-20261020.json",
+          "sha256": "52cf19b6226a08df52cb686a7c081cbd7542e13de01f97ec94a41626e2e26a27"
+        },
+        "registration_sha256": "d8605a929f2a625f1167e96abf2594e9048594c8f8dd34dd02a329c70a4fc738",
+        "snapshot_id": "402558734e85a93710867bdd9c34f33b9e7026ae5cdc1f4559a381b9d1d5b5ec",
+        "temporary_source_bytes_removed": true,
+        "workflow_commit": "dd7a01bcd3da60190f821395ceb1260a3d9ddad9",
+        "workflow_run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/39289077989"
       },
       "v4_admission_eligible": false,
       "verification_candidate_receipt": {
@@ -1694,28 +3417,32 @@
   "observed_hub_revision_metadata": {
     "dataset": "edithatogo/australian-mbs-utilisation-archive",
     "gated": false,
-    "observed_at": "2026-10-19T14:17:25Z",
+    "observed_at": "2026-10-19T16:13:05Z",
     "private": false,
     "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
     "url": "https://huggingface.co/api/datasets/edithatogo/australian-mbs-utilisation-archive/revision/dee9a5b0580dfe394474dc26b372559462e157e7"
   },
   "purpose": "Qualify mandatory v4.1 contract roles for every current M-112 path identity with exact approved rights, complete B1/B2 lineage, and anonymous digest evidence. This is an evidence-gap assessment; it does not create contracts or admissions.",
-  "recorded_at": "2026-10-19T14:17:25Z",
+  "recorded_at": "2026-10-19T21:01:38Z",
+  "recovery_candidate_evidence": {
+    "objects": 14,
+    "state": "candidate_receipts_available_unbound_for_14_of_16"
+  },
   "roles": [
     {
-      "evidence": "contract repositories and pinned schema identity are known, but no final contract commit is bound to a hosted v4 contract",
+      "evidence": "The successful MBS utilisation producer workflow belongs to edithatogo/global-medicines-atlas. All 16 candidate objects now bind the exact v4.1 schema digest and an exact-main commit containing those schema bytes. The identity remains unbound until referenced by each complete v4 contract.",
       "role": "authority",
-      "state": "partial"
+      "state": "candidate_identity_available_unbound_for_16_of_16"
     },
     {
-      "evidence": "source/acquisition identity and raw B2 stratum are supported by per-object B1/B2 evidence; source-era semantics and a consistent contract-level effective/retrieval representation remain to be qualified",
+      "evidence": "Official data.gov.au resource metadata qualifies reporting period, processing-month basis, and retrieval identity for 13 exact MBS utilisation B2 objects. Native workbook/archive schema layouts remain unqualified. Two August MBS XML objects and one historical archive with a source-period mismatch remain partial; the candidate source-role receipts are unbound.",
       "role": "source",
-      "state": "partial"
+      "state": "candidate_receipts_available_unbound_for_13_of_16"
     },
     {
-      "evidence": "all exact dataset/revision/path/byte-count/SHA-256 identities and prior anonymous reads are recorded; their v4 public/non-gated status is not bound by an exact v4 verification receipt",
+      "evidence": "All 16 exact dataset/revision/path/byte-count/SHA-256 identities bind to the existing anonymous digest evidence and current public, ungated repository metadata. The evidence remains unbound until referenced by each complete v4 contract.",
       "role": "location",
-      "state": "partial"
+      "state": "candidate_receipt_available_unbound_for_16_of_16"
     },
     {
       "evidence": "14 MBS utilisation paths exactly match the 28-object published manifest and token-free anonymous restore receipt; the two August paths lack this receipt. Candidate evidence is not bound to live v4.1 contracts.",
@@ -1733,9 +3460,9 @@
       "state": "qualified_exact_scope"
     },
     {
-      "evidence": "v4 collection and estate-entry receipt roles are not qualified for the candidate set",
+      "evidence": "All 16 exact candidate paths bind to their public dataset entry, a current collection membership, and the pinned dataset-estate catalog. The estate entries remain not_assessed and source_specific_review_required; discovery evidence is not a rights or admission conclusion.",
       "role": "discovery",
-      "state": "missing"
+      "state": "candidate_receipt_available_unbound_for_16_of_16"
     },
     {
       "evidence": "all 16 path identities have complete B1/B2 evidence and anonymous digest readback; the two August aliases share one payload/acquisition identity; some landed decisions remain reviewer_status=unreviewed",
@@ -1762,9 +3489,9 @@
       "state": "not_applicable_raw_b2_v4_1"
     },
     {
-      "evidence": "no exact per-object v3 replay receipt identified",
+      "evidence": "7 exact M-112 raw B2 identities have successful, anonymous, token-free hosted v3 replay receipts with byte-count/SHA-256 verification and temporary-byte cleanup. They remain candidate-only and unbound; replay roles for the remaining 9 candidates are missing.",
       "role": "lineage.v3_replay",
-      "state": "missing"
+      "state": "candidate_receipts_available_unbound_for_7_of_16"
     },
     {
       "evidence": "raw B2 is not a promoted derived layer; receipt may be null",
@@ -1772,26 +3499,33 @@
       "state": "not_applicable_bronze_raw"
     },
     {
-      "evidence": "no exact checksum inventory receipt for the v4 publication",
+      "evidence": "The 14 utilisation objects bind to the exact published manifest and successful token-free 28-object restore receipt. This is a primary, non-independent recovery role only; region and RPO/RTO remain unverified or null. Two August source-archive objects have no such receipt.",
       "role": "recovery",
-      "state": "missing"
+      "state": "candidate_receipts_available_unbound_for_14_of_16"
     },
     {
-      "evidence": "no bounded cache lifecycle and cleanup evidence is attached to the contracts",
+      "evidence": "The exact hosted v3 replay receipts bind a bounded temporary runner cache, expiry, token-free cleanup, and removal for 7 object(s). This is temporary acquisition cache evidence, not a durable reader cache or consumer claim.",
       "role": "cache",
-      "state": "missing"
+      "state": "candidate_cleanup_receipts_available_unbound_for_7_of_16"
     },
     {
-      "evidence": "M-112 consumer-canary count is zero; no consumer canary receipt qualifies",
+      "evidence": "7 exact admitted M-112 objects have successful bounded readbacks through the FederatedReader, with remote and consumer-stream digest matches and zero reader-cache bytes after close. This is cumulative receipt evidence; this candidate-role refresh performed no canary. Objects outside the admitted cohort remain untested.",
       "role": "consumers",
-      "state": "missing"
+      "state": "qualified_consumer_canaries_for_7_of_7_current_admissions"
     }
   ],
   "schema_id": "global-medicines-atlas.australian-m112-v4-contract-role-evidence-qualification",
   "schema_version": 1,
   "source_qualification": {
     "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-reimbursement-medallion-projection-lineage.json",
-    "sha256": "17724f7d2c779f5c68f1083e5cbb054e66e096d9863a83b844eed4a59e96187c"
+    "sha256": "278f7e72b098eb89453e3e42542ba3ee4fff6a5fd02726f3473e8e3d75333a7d"
+  },
+  "source_semantics_candidate_evidence": {
+    "native_schema_layout_qualified": false,
+    "objects": 13,
+    "path": "quality/qualifications/australian-m112-mbs-group-2016-source-semantics-20261020.json",
+    "sha256": "611eb087bea1aac8a792c9071bf2f40cb4dfefbd6a448a6856bec3dacb60da60",
+    "state": "candidate_receipts_available_unbound_for_13_of_16"
   },
   "supersedes": {
     "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261019.json",
@@ -1805,5 +3539,11 @@
     "objects": 16,
     "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
     "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+  },
+  "v3_replay_candidate_evidence": {
+    "objects": 7,
+    "path": "quality/qualifications/australian-m112-v3-replay-readbacks-20261020.json",
+    "sha256": "e2b52024f066877a1e3b4e3fb8461c3a7630e8e2e74f17bed288cd565df06e26",
+    "state": "candidate_receipts_available_unbound_for_7_of_16"
   }
 }

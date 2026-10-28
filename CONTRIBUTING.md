@@ -13,10 +13,10 @@ The Conductor agent plugin is pinned as a Git submodule at
 git submodule update --init --recursive
 ```
 
-Use Python 3.14 and the locked environment:
+Use Python 3.15.1 and the locked environment:
 
 ```shell
-uv sync --python 3.14.6 --locked --all-groups
+uv sync --python 3.15.1 --locked --all-groups
 uv run python scripts/test_goblin.py all
 uv run ruff check .
 uv run ruff format --check .
@@ -42,7 +42,7 @@ of rulesets, classic branch protection, security features, CodeQL, dependency
 review, and alert endpoint access. Verify the committed receipt offline with:
 
 ```shell
-uv run --python 3.14.6 --group dev python scripts/qualify_stable_v1_hosted_governance.py
+uv run --python 3.15.1 --group dev python scripts/qualify_stable_v1_hosted_governance.py
 ```
 
 An operator with authenticated read-only GitHub CLI access can refresh that

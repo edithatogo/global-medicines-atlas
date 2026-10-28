@@ -4,7 +4,7 @@ Parquet files remain Parquet and remain valid without Iceberg. This module
 records stable identifiers, namespaces, schemas, partition specs, evolution
 rules, and snapshot-to-acquisition bindings so those files can later be
 registered in an Iceberg REST catalogue. Iceberg metadata is rebuildable
-catalogue state, not evidentiary truth. Python 3.14 core does not import
+catalogue state, not evidentiary truth. Python 3.15 core does not import
 Iceberg.
 """
 

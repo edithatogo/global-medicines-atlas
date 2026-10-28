@@ -1,0 +1,99 @@
+{
+  "boundaries": {
+    "consumer_canary_performed": false,
+    "new_sources_added": false,
+    "public_dataset_mutated": false,
+    "public_release_performed": false,
+    "rights_or_vocabulary_conclusion_changed": false,
+    "v4_admission_performed": false
+  },
+  "dataset": "edithatogo/australian-pbs-utilisation-archive",
+  "limitations": [
+    "This detects email-shaped strings and a bounded set of sensitive field/label tokens; it is not exhaustive personal-data or restricted-content review.",
+    "Spreadsheet string-token counts include narrative/title cells and are not a determination that the file contains personal data.",
+    "No exact restricted-value digest denylist was supplied.",
+    "The two expenditure workbooks and known ATC5 fields still require source-specific terminology interpretation."
+  ],
+  "objects": [
+    {
+      "byte_count": 372149,
+      "email_like_cell_values": 0,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "screen_state": "no_email_or_sensitive_field_label_pattern",
+      "sensitive_header_or_label_hits": 0,
+      "sensitive_token_cell_values": 114,
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "shared_unique_strings_scanned": 1070,
+      "source_values_emitted": false
+    },
+    {
+      "byte_count": 468764,
+      "email_like_cell_values": 0,
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "screen_state": "no_email_or_sensitive_field_label_pattern",
+      "sensitive_header_or_label_hits": 0,
+      "sensitive_token_cell_values": 191,
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "shared_unique_strings_scanned": 1324,
+      "source_values_emitted": false
+    },
+    {
+      "byte_count": 35384567,
+      "email_like_cell_values": 0,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "screen_state": "review_required",
+      "sensitive_header_or_label_hits": 3,
+      "sensitive_token_cell_values": 0,
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "shared_unique_strings_scanned": 0,
+      "source_values_emitted": false
+    },
+    {
+      "byte_count": 36381946,
+      "email_like_cell_values": 0,
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "screen_state": "review_required",
+      "sensitive_header_or_label_hits": 3,
+      "sensitive_token_cell_values": 0,
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "shared_unique_strings_scanned": 0,
+      "source_values_emitted": false
+    },
+    {
+      "byte_count": 1063694,
+      "email_like_cell_values": 0,
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "screen_state": "no_email_or_sensitive_field_label_pattern",
+      "sensitive_header_or_label_hits": 0,
+      "sensitive_token_cell_values": 0,
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "shared_unique_strings_scanned": 0,
+      "source_values_emitted": false
+    },
+    {
+      "byte_count": 117376499,
+      "email_like_cell_values": 0,
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "screen_state": "no_email_or_sensitive_field_label_pattern",
+      "sensitive_header_or_label_hits": 0,
+      "sensitive_token_cell_values": 10,
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "shared_unique_strings_scanned": 9843,
+      "source_values_emitted": false
+    }
+  ],
+  "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+  "schema_id": "global-medicines-atlas.pbs-utilisation-bounded-private-pattern-screen",
+  "schema_version": 1,
+  "scope": {
+    "blocked_value_digest_denylist_supplied": false,
+    "object_count": 6,
+    "source_bytes_persisted_locally": false,
+    "source_values_emitted": false,
+    "total_bytes": 191047619
+  },
+  "source_qualification": {
+    "path": "quality/qualifications/australian-pbs-utilisation-identifier-shape-screen-20261021.json",
+    "sha256": "d7bfad7e5fe036d3eddf1565fbae7953bdb10fe3fec6ae128881074ef7a7e82c"
+  }
+}

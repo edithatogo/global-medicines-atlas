@@ -13,7 +13,12 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from publish_source_metadata import HubTransport, persist_receipt
+from publish_source_metadata import (
+    HubTransport,
+    IntentPreparedError,
+    persist_receipt,
+    persist_transaction_receipt,
+)
 
 from global_medicines_atlas.federation_metadata_hosted import (
     REPOSITORY,
@@ -72,6 +77,8 @@ def main() -> None:
     """Load fixed reviewed metadata and run the guarded single-object append."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exact-commit", required=True)
+    parser.add_argument("--prepare-intent", action="store_true")
+    parser.add_argument("--prepublished-intent", type=Path)
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
     contract = json.loads((ROOT / CONTRACT_PATH).read_bytes())
@@ -84,16 +91,29 @@ def main() -> None:
     receipts = ROOT / "build/mbs-utilisation-rights-receipts"
     receipts.mkdir(parents=True, exist_ok=True)
     cache = Path(tempfile.mkdtemp(prefix="gma-mbs-rights-"))
-    result = execute_rights_append(
-        contract,
-        payload,
-        decision,
-        joins,
-        exact_commit=args.exact_commit,
-        current_main=current_main,
-        hub=HubTransport(cache),
-        persist=lambda receipt: persist_receipt(receipt, receipts),
-    )
+    if args.prepare_intent and args.prepublished_intent:
+        raise ValueError(
+            "intent preparation cannot use a prepublished artifact"
+        )
+    try:
+        result = execute_rights_append(
+            contract,
+            payload,
+            decision,
+            joins,
+            exact_commit=args.exact_commit,
+            current_main=current_main,
+            hub=HubTransport(cache),
+            persist=lambda receipt: persist_transaction_receipt(
+                receipt,
+                receipts,
+                prepare_only=args.prepare_intent,
+                prepublished_intent=args.prepublished_intent,
+            ),
+        )
+    except IntentPreparedError:
+        shutil.rmtree(cache)
+        return
     finalize(result, cache, receipts)
 
 

@@ -1,0 +1,9 @@
+{
+  "baseline_seconds": 3.3727479999652132,
+  "native_digest_equal": true,
+  "native_fields": 100003,
+  "optimized_seconds": 1.4499279169831425,
+  "scope": "single local synthetic native-digest comparison; no full-source package timing conclusion",
+  "speedup": 2.326148741920131,
+  "synthetic_only": true
+}

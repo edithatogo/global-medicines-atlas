@@ -57,14 +57,14 @@ def test_user_guide_separates_installation_profiles_and_surfaces() -> None:
     guide = (ROOT / "docs/user-guide.md").read_text(encoding="utf-8")
     prose = _prose("docs/user-guide.md")
     required_commands = (
-        "uv sync --python 3.14.6 --locked --no-dev",
+        "uv sync --python 3.15.1 --locked --no-dev",
         "--extra semantic",
         "uv run global-medicines-atlas --help",
         "uv run global-medicines-atlas comparison --help",
         "uv run pytest tests/test_product_api.py tests/test_concept_api.py",
         "uv run pytest tests/test_atlas_e2e.py tests/test_atlas_discovery_e2e.py",
-        "uv run python scripts/test_goblin.py quick",
-        "uv run ruff check .",
+        "uv run --python 3.15.1 python scripts/test_goblin.py quick",
+        "uv run --python 3.15.1 ruff check .",
     )
     for command in required_commands:
         assert command in guide, command

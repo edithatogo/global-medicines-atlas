@@ -1,0 +1,476 @@
+{
+  "boundaries": {
+    "m112_consumer_canary_performed": false,
+    "native_schema_layout_qualified": false,
+    "official_metadata_only": true,
+    "raw_source_objects_inspected": false,
+    "raw_workbooks_downloaded": false,
+    "rights_or_admission_changed": false
+  },
+  "objects": [
+    {
+      "acquisition_id": "8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3",
+      "bytes": 23934884,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "resource": {
+        "description_sha256": "1401931d5f9bbfa6e128196b02ef19016da67bd52b78ebf03b3fda6002abc676",
+        "format": "CSV",
+        "id": "ff6d0692-4c6f-466b-9d93-015224d80b14",
+        "last_modified": "2016-04-28T00:00:00",
+        "name": "MBS Patient Demographics 2016 Qtr 1 ",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/ff6d0692-4c6f-466b-9d93-015224d80b14/download/mbs-demographics-2016-qtr-1-march.csv"
+      },
+      "retrieved_at": "2026-09-09T13:57:28Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-04-28; resource_id=ff6d0692-4c6f-466b-9d93-015224d80b14",
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2016-03-31",
+        "period_anchor": "1 January to 31 March 2016",
+        "period_end": "2016-03-31",
+        "period_start": "2016-01-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "c29e30b4419bbca60cfc062c98f855bf7c65db606636fa831c5b5438ed0262fd",
+      "bytes": 23436706,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "resource": {
+        "description_sha256": "7b494fda71b8df57e332006d9b8388528b8aeb517ad92c741b3420a3e3980de6",
+        "format": "CSV",
+        "id": "c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+        "last_modified": "2016-06-24T00:00:00",
+        "name": "MBS Patient Demographics 2016 Qtr 2",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/c3e6f879-be6c-41b9-9cf1-c74feb928b83/download/mbs-demographics-2016-qtr-2-may.csv"
+      },
+      "retrieved_at": "2026-09-09T13:57:21Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-06-24; resource_id=c3e6f879-be6c-41b9-9cf1-c74feb928b83",
+      "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2016-05-31",
+        "period_anchor": "current to 31 May 2016",
+        "period_end": "2016-05-31",
+        "period_start": "2016-04-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "75807b1ebadafa0a0566463b0cf4f28cab2bf728d7bee92f61d51fc349d8d9fb",
+      "bytes": 7680041,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "resource": {
+        "description_sha256": "c8b4114771ad59b2dfc6c2172e94ec4ad3922b739c26d02178efb4355e44d758",
+        "format": "CSV",
+        "id": "492b39de-8c97-4bbf-880e-e97d933daa9c",
+        "last_modified": "2016-08-29T00:00:00",
+        "name": "MBS Patient Demographics 2016 Qtr 3 (July)",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/492b39de-8c97-4bbf-880e-e97d933daa9c/download/mbs-demographics-2016-qtr-3-july.csv"
+      },
+      "retrieved_at": "2026-09-27T16:43:26Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-08-29; resource_id=492b39de-8c97-4bbf-880e-e97d933daa9c",
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2016-07-31",
+        "period_anchor": "1 July 2016 to 31 July 2016",
+        "period_end": "2016-07-31",
+        "period_start": "2016-07-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "4546f1d31d7e46f5b91df63eb71ccc1785f4d6d7905e654a7723f6c123ee57fc",
+      "bytes": 21966140,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "resource": {
+        "description_sha256": "eed0d9cc5aa738d31e8611b0a8b3aada21bfd6563936d54aa681a11685828804",
+        "format": "excel (.xlsx)",
+        "id": "e4016a05-a674-49d2-bdc4-052ccdb7b257",
+        "last_modified": "2016-04-28T00:00:00",
+        "name": "MBS Patient Demographics 2016 Qtr 1 ",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/e4016a05-a674-49d2-bdc4-052ccdb7b257/download/mbs-demographics-2016-qtr1-marchhr.xlsx"
+      },
+      "retrieved_at": "2026-09-09T13:57:24Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-04-28; resource_id=e4016a05-a674-49d2-bdc4-052ccdb7b257",
+      "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2016-03-31",
+        "period_anchor": "1 January to 31 March 2016",
+        "period_end": "2016-03-31",
+        "period_start": "2016-01-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "29e8aad2a8a564b75d6a7edf34fc76a2b622830589d5e2cd479b5ef2fa4eaebf",
+      "bytes": 23765087,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr2-junehr.xlsx",
+      "resource": {
+        "description_sha256": "cb6236169a1dbb955abd891717a91e253cfc0a7a187184cda1014fb5f1ef3c49",
+        "format": "XLSX",
+        "id": "58f69c3c-1c1e-4a6e-9176-54bfec1b9e2b",
+        "last_modified": "2016-07-26T00:00:00",
+        "name": "MBS Patient Demographics 2016 Qtr 2 ",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/58f69c3c-1c1e-4a6e-9176-54bfec1b9e2b/download/mbs-demographics-2016-qtr2-junehr.xlsx"
+      },
+      "retrieved_at": "2026-09-09T13:57:17Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-07-26; resource_id=58f69c3c-1c1e-4a6e-9176-54bfec1b9e2b",
+      "sha256": "7c215063a6b94c56775d7d299cf8ae7295be7a65d6ed22c9ceb924a3b5bbe46c",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2016-06-30",
+        "period_anchor": "1 April to 30 June 2016",
+        "period_end": "2016-06-30",
+        "period_start": "2016-04-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "4aea2c1c3c0895281a3f18f206316e61ea5e83b77f11c3af1fa04edc51dc3e22",
+      "bytes": 7316301,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "resource": {
+        "description_sha256": "50653abd7db8c9209dc828a66f679df22bf7bfbe8f276fd15e60e00ef874340b",
+        "format": "XLSX",
+        "id": "be3ff4f8-f443-4ed1-bfef-7dd6617ee4c8",
+        "last_modified": "2016-08-29T00:00:00",
+        "name": "MBS Patient Demographics 2016 Qtr 3 (July)",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/be3ff4f8-f443-4ed1-bfef-7dd6617ee4c8/download/mbs-demographics-2016-qtr3-julyhr.xlsx"
+      },
+      "retrieved_at": "2026-09-27T16:43:21Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-08-29; resource_id=be3ff4f8-f443-4ed1-bfef-7dd6617ee4c8",
+      "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2016-07-31",
+        "period_anchor": "1 July to 31 July 2016",
+        "period_end": "2016-07-31",
+        "period_start": "2016-07-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "12b441d8cc53434651511e110d6060bd62776f3ea6aee1c639e5fcbb5f63c521",
+      "bytes": 185194594,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1993-1997.zip",
+      "resource": {
+        "description_sha256": "4947fd5931a68942365f303e592c8f6bdeed7a046898e6ddd5c71ececb880072",
+        "format": "ZIP",
+        "id": "28af2898-358a-445d-9539-4048992c5195",
+        "last_modified": "2015-08-14T00:00:00",
+        "name": "XLSX 1993-1997 MBS Patient Demographics Historical",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/28af2898-358a-445d-9539-4048992c5195/download/mbs-demographics-historical-1993-1997.zip"
+      },
+      "retrieved_at": "2026-09-09T13:58:25Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2015-08-14; resource_id=28af2898-358a-445d-9539-4048992c5195",
+      "sha256": "7993206fd6e34ccdaaa6f59c5e5b70ff000650600dbc9dd1736e1e74c6d1914b",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "1997-12-31",
+        "period_anchor": "July 1993 - December 1997",
+        "period_end": "1997-12-31",
+        "period_start": "1993-07-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "0025afb8078fe15f4cc762d6e2671a0c14816f16e3a0888f8d76ae5b49366e9c",
+      "bytes": 240803157,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-1998-2002.zip",
+      "resource": {
+        "description_sha256": "c0fba92ba97cdc6d5d175cb9fea8f11ab228357a83605eef6550385a8b95f09a",
+        "format": "ZIP",
+        "id": "46704d3a-7bc1-42d6-bed1-29f9419298e0",
+        "last_modified": "2015-08-14T00:00:00",
+        "name": "XLSX 1998-2002 MBS Patient Demographics Historical",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/46704d3a-7bc1-42d6-bed1-29f9419298e0/download/mbs-demographics-historical-1998-2002.zip"
+      },
+      "retrieved_at": "2026-09-09T13:58:14Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2015-08-14; resource_id=46704d3a-7bc1-42d6-bed1-29f9419298e0",
+      "sha256": "0c914176b3e45caaca9c14a926ea3d61740eabd4df53210f81858a84ce40ec8d",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2002-12-31",
+        "period_anchor": "January 1998 - December 2002",
+        "period_end": "2002-12-31",
+        "period_start": "1998-01-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "071f7c259fe7e6e1527c059801528a743501a289a5aad780ed6a1ee012f2afef",
+      "bytes": 284302149,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2003-2007-.zip",
+      "resource": {
+        "description_sha256": "4bf54540b2e66a2691e05bdff36e03407c6b68e0c5a05b4ddb02944e495d5ea9",
+        "format": "ZIP",
+        "id": "82c47db1-c175-4648-aafe-28cab7b0dba6",
+        "last_modified": "2015-08-14T00:00:00",
+        "name": "XLSX 2003-2007 MBS Patient Demographics Historical",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/82c47db1-c175-4648-aafe-28cab7b0dba6/download/mbs-demographics-historical-2003-2007-.zip"
+      },
+      "retrieved_at": "2026-09-09T13:58:01Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2015-08-14; resource_id=82c47db1-c175-4648-aafe-28cab7b0dba6",
+      "sha256": "9f649eb3c7c3fdc0c3b362d34f00ffb2e9f3374ec4629e9dd15a8c8ddc1d7c00",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2007-12-31",
+        "period_anchor": "January 2003 - December 2007",
+        "period_end": "2007-12-31",
+        "period_start": "2003-01-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "a1701ca9f6f499c36c4fd35f5f8d957c22fe98559c7fc1b0ec45c9236b898690",
+      "bytes": 358227575,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-historical-2008-2012.zip",
+      "resource": {
+        "description_sha256": "74c543cd2e0a2a077bcc5e996d8a479eabb221648c4818f5c4053696cb5e0aa2",
+        "format": "ZIP",
+        "id": "827346ed-9926-47ff-a95e-3f84875f42fb",
+        "last_modified": "2015-08-14T00:00:00",
+        "name": "XLSX 2008-2012 MBS Patient Demographics Historical",
+        "url": "https://data.gov.au/data/dataset/8a19a28f-35b0-4035-8cd5-5b611b3cfa6f/resource/827346ed-9926-47ff-a95e-3f84875f42fb/download/mbs-demographics-historical-2008-2012.zip"
+      },
+      "retrieved_at": "2026-09-09T13:57:45Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2015-08-14; resource_id=827346ed-9926-47ff-a95e-3f84875f42fb",
+      "sha256": "7f7eeb62fbc6191ab76e3dcf6cc602aa9438b1eec037d7e5c385fe131acd5355",
+      "source_id": "au-data-gov-mbs-demographics",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2012-12-31",
+        "period_anchor": "January 2008 - December 2012",
+        "period_end": "2012-12-31",
+        "period_start": "2008-01-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "0bdc091b4d06d5ca8dccdacbf607c7c021b8a330662b509b871f665fa2813638",
+      "bytes": 205885063,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 16665,
+        "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc"
+      },
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "resource": {
+        "description_sha256": "a47956b146d1d275e97cd0c236b9be4fdcdac6fdce34379831e917b3298e604a",
+        "format": "ZIP",
+        "id": "5ef51b77-7b55-4df4-8740-4a19fcc861e1",
+        "last_modified": "2016-03-01T00:00:00",
+        "name": "MBS Group Statistics Report - historical csv 1993-2015",
+        "url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/5ef51b77-7b55-4df4-8740-4a19fcc861e1/download/mbs-demographics-historical-1993-2015.zip"
+      },
+      "retrieved_at": "2026-09-09T13:57:03Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-03-01; resource_id=5ef51b77-7b55-4df4-8740-4a19fcc861e1",
+      "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33",
+      "source_id": "au-data-gov-mbs-group",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2015-12-31",
+        "period_anchor": "period 1993-2015",
+        "period_end": "2015-12-31",
+        "period_start": "1993-01-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "5ba53ad638c557864f7c6b4f6a50cff44e7df26d7e7eed63cdeff38855ac9967",
+      "bytes": 12291303,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 16665,
+        "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc"
+      },
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "resource": {
+        "description_sha256": "040bc3649754be306a5b76f3d342e040fc2bdad5fbde477e0845e9368302e37f",
+        "format": "CSV",
+        "id": "663a7fac-114c-47b5-9017-a9dbb9073260",
+        "last_modified": "2016-08-29T00:00:00",
+        "name": "MBS Group Statistics Report - 2016 (YTD) csv",
+        "url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/663a7fac-114c-47b5-9017-a9dbb9073260/download/mbs-group-2016-july.csv"
+      },
+      "retrieved_at": "2026-09-27T16:43:17Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-08-29; resource_id=663a7fac-114c-47b5-9017-a9dbb9073260",
+      "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b",
+      "source_id": "au-data-gov-mbs-group",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2016-07-31",
+        "period_anchor": "year to date summary to 31 July 2016",
+        "period_end": "2016-07-31",
+        "period_start": "2016-01-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    },
+    {
+      "acquisition_id": "7b46430b1a5ec2c1b6b1617244aa6e983902004ab082aa314bfb7e3a9503663b",
+      "bytes": 6857437,
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 16665,
+        "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc"
+      },
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "resource": {
+        "description_sha256": "73cab54900f957ff6cc49a1390cd7cfacd8e3a6c928056ea00df3531307e4ab3",
+        "format": "excel (.xlsx)",
+        "id": "07b46b92-9cc3-4dda-8a0b-ab86f77f5419",
+        "last_modified": "2016-08-29T00:00:00",
+        "name": "MBS Group Statistics Report - 2016 (YTD) excel",
+        "url": "https://data.gov.au/data/dataset/5335e112-d91e-47ba-b5f8-5364c8e428dc/resource/07b46b92-9cc3-4dda-8a0b-ab86f77f5419/download/mbs-group-2016hr-july.xlsx"
+      },
+      "retrieved_at": "2026-09-27T16:43:13Z",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-08-29; resource_id=07b46b92-9cc3-4dda-8a0b-ab86f77f5419",
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285",
+      "source_id": "au-data-gov-mbs-group",
+      "temporal_semantics": {
+        "cohort": "legacy",
+        "effective_date": "2016-07-31",
+        "period_anchor": "year to date summary to 31 July 2016",
+        "period_end": "2016-07-31",
+        "period_start": "2016-01-01",
+        "service_month_basis": "claim_processing_date_not_service_provision_date"
+      }
+    }
+  ],
+  "recorded_at": "2026-10-19T16:34:01Z",
+  "schema_id": "global-medicines-atlas.m112-source-temporal-semantics-readback",
+  "schema_version": 1,
+  "source_packages": [
+    {
+      "id": "8a19a28f-35b0-4035-8cd5-5b611b3cfa6f",
+      "metadata_modified": "2023-08-09T23:46:09.504230",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 37319,
+        "response_sha256": "f3dca2e513359dacfcb9f248b4870b7fdb96ec717d6b6f6fe793efb12232d13a",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=8a19a28f-35b0-4035-8cd5-5b611b3cfa6f"
+      },
+      "title": "Medicare Benefits Schedule (MBS) - Items by Patient Demographics Report"
+    },
+    {
+      "id": "5335e112-d91e-47ba-b5f8-5364c8e428dc",
+      "metadata_modified": "2023-08-09T23:44:56.546505",
+      "metadata_readback": {
+        "http_status": 200,
+        "response_bytes": 16665,
+        "response_sha256": "f6246c66c58e6a82835c99b3528720076b83f55689caadd273f495fd2c8adfe7",
+        "url": "https://data.gov.au/data/api/3/action/package_show?id=5335e112-d91e-47ba-b5f8-5364c8e428dc"
+      },
+      "title": "Medicare Benefits Schedule (MBS) - Group Statistics Report"
+    }
+  ],
+  "status": "source_temporal_semantics_candidates_available_unbound_schema_layout_unqualified",
+  "unresolved": [
+    {
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-2013-2015.zip",
+      "reason": "The exact data.gov.au resource metadata describes 1993-2015 while the archive path says 2013-2015; source owner clarification is required before selecting an effective period.",
+      "state": "source_metadata_period_conflicts_with_resource_name"
+    }
+  ]
+}

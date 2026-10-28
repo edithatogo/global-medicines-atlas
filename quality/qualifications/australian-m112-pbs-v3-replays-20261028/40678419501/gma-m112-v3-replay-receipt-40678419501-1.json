@@ -1,0 +1,55 @@
+{
+  "boundaries": {
+    "m112_consumer_canary_performed": false,
+    "public_dataset_mutation": false,
+    "source_values_or_rows_included": false,
+    "v4_admission_performed": false
+  },
+  "candidate_only": true,
+  "hosted_workflow": {
+    "commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+    "repository": "edithatogo/global-medicines-atlas",
+    "run_attempt": 1,
+    "run_id": 40678419501,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40678419501"
+  },
+  "replay": {
+    "partition_id": "9708e26d2a8d0cfa7a5ec3a7d012975500f2df543a0718ef9e368ee815d58f53",
+    "plan_sha256": "cbe1ff4e8ab837c4e1cc88c723ab35c7463a4cc2c09bee67c0d7964848bd4e1a",
+    "registration": {
+      "archive_period": "filename-derived:Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "byte_count": 468764,
+      "idempotency_key": "fd057b36c2b050e8fc823442396af33352cf7184693125ec0dfc4c360249454b",
+      "logical_asset_id": "e6dba080728584bbdf7d24e785533802b8a3be509b15065e0007678d5c0c68d1",
+      "metadata_sha256": "70f51248dc264a1bf3ddc3d7bd4472d14347b2d858a962b5c5e2325474ec31bc",
+      "operation": "append_only_idempotent_raw_b2_registration",
+      "partition_id": "9708e26d2a8d0cfa7a5ec3a7d012975500f2df543a0718ef9e368ee815d58f53",
+      "payload_sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "payload_values_read": false,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "schema_version": "m112-raw-b2-replay-registration-v1",
+      "snapshot_id": "c8e60a8896dfde9ac65053f3e235ba5c658c474ce1ed87c003ec6a3fff2772ed",
+      "source_id": "au-pbs-expenditure",
+      "source_version_id": "expenditure-prescriptions-report-1-july-2024-30-june-2025"
+    },
+    "registration_sha256": "ebb1b46797a1fdca561ea28f9eeddcb5303c99069ffe7be19df0744ab4fe1a6e",
+    "snapshot_id": "c8e60a8896dfde9ac65053f3e235ba5c658c474ce1ed87c003ec6a3fff2772ed",
+    "vocabulary_version": "3.0.0"
+  },
+  "schema_id": "global-medicines-atlas.m112-v3-replay-execution-receipt",
+  "schema_version": 1,
+  "scope": {
+    "byte_count": 468764,
+    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+    "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+    "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+    "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99"
+  },
+  "status": "passed",
+  "verification": {
+    "anonymous": true,
+    "payload_values_read": false,
+    "temporary_source_bytes_removed": true,
+    "token_free": true
+  }
+}

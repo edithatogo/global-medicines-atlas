@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 from typing import Any
@@ -104,6 +105,7 @@ def test_frozen_inventory_has_complete_b1_b2_lineage_without_gate_changes() -> (
 
 def test_cms_reference_only_b1_b2_records_match_report_bindings() -> None:
     report = _read(module.OUTPUT.as_posix())
+    overlay = _read(module.OVERLAY_OUTPUT.as_posix())
     records = report["cms_bronze_records"]
     bindings = records["output_bindings"]
     for path, expected_sha in bindings.items():
@@ -119,6 +121,9 @@ def test_cms_reference_only_b1_b2_records_match_report_bindings() -> None:
     admission = BronzeAdmissionRecord.model_validate_json(
         (module.ROOT / records["admission_path"]).read_bytes()
     )
+    historical_admission = BronzeAdmissionRecord.model_validate_json(
+        (module.ROOT / records["historical_admission_path"]).read_bytes()
+    )
 
     assert event.content_id == module.CMS_SOURCE_SHA256
     assert event.payload_sha256 == module.CMS_SOURCE_SHA256
@@ -128,10 +133,64 @@ def test_cms_reference_only_b1_b2_records_match_report_bindings() -> None:
     assert manifest.rows[0].content_id == module.CMS_SOURCE_SHA256
     assert manifest.rows[0].payload_sha256 is None
     assert admission.state is BronzeAdmissionState.LANDED
-    assert admission.reviewer_status == "unreviewed"
+    assert admission.reviewer_status == "approved"
+    assert historical_admission.reviewer_status == "unreviewed"
+    assert records["rights_state"] == "permitted"
+    assert records["rights_reviewer_status"] == "approved"
+    assert records["acquisition_time_rights_state"] == "unknown"
+    assert records["admission_reviewer_status"] == "approved"
+    assert records["derived_table_rights_concluded"] is False
+    assert records["external_publication_authorized"] is False
+    readback = report["lineage_inputs"]["cms_b1_b2_readback"]
+    assert readback["rights_state"] == "permitted"
+    assert readback["rights_reviewer_status"] == "approved"
+    assert readback["acquisition_time_rights_state"] == "unknown"
+    assert readback["historical_admission_reviewer_status"] == "unreviewed"
+    increment = overlay["cms_input_lineage_increment"]
+    assert increment["rights_state"] == "permitted"
+    assert increment["rights_reviewer_status"] == "approved"
+    assert increment["historical_acquisition_rights_state"] == "unknown"
+    assert increment["historical_admission_reviewer_status"] == "unreviewed"
+    assert increment["external_publication_authorized"] is False
+    cms_rights = report["cms_rights_reconciliation"]
+    assert cms_rights["sha256"] == module.CMS_SOURCE_SHA256
+    assert cms_rights["rights_state"] == "permitted"
+    assert cms_rights["rights_reviewer_status"] == "approved"
+    assert cms_rights["acquisition_time_rights_state_preserved"] == "unknown"
+    assert cms_rights["historical_admission_reviewer_status_preserved"] == (
+        "unreviewed"
+    )
+    assert cms_rights["derived_table_rights_concluded"] is False
+    assert cms_rights["external_publication_authorized"] is False
     assert records["payload_persisted"] is False
     assert records["v4_admission"] is False
     assert records["consumer_canary"] is False
+
+
+def test_cms_effective_rights_refresh_rejects_a_different_file_identity() -> (
+    None
+):
+    report = _read(module.OUTPUT.as_posix())
+    overlay = _read(module.OVERLAY_OUTPUT.as_posix())
+    report = copy.deepcopy(report)
+    overlay = copy.deepcopy(overlay)
+    report["cms_bronze_records"]["content_sha256"] = "0" * 64
+
+    with pytest.raises(ValueError, match="CMS readback digest changed"):
+        module.reconcile_cms_effective_rights(report, overlay)
+
+
+def test_cms_effective_rights_refresh_is_idempotent() -> None:
+    report = copy.deepcopy(_read(module.OUTPUT.as_posix()))
+    overlay = copy.deepcopy(_read(module.OVERLAY_OUTPUT.as_posix()))
+
+    module.reconcile_cms_effective_rights(report, overlay)
+    first_report = json.dumps(report, sort_keys=True)
+    first_overlay = json.dumps(overlay, sort_keys=True)
+    module.reconcile_cms_effective_rights(report, overlay)
+
+    assert json.dumps(report, sort_keys=True) == first_report
+    assert json.dumps(overlay, sort_keys=True) == first_overlay
 
 
 def test_pbs_parquet_projection_is_bound_to_its_existing_b2_archive() -> None:

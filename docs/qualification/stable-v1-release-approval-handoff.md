@@ -36,3 +36,86 @@ recorded, but keep Stable v1 qualification blocked until all independent gates
 pass. Mark the release complete only when the exact approval scope and
 independently observable publication receipts agree. If they differ, stop
 promotion and use the withdrawal procedure.
+
+## Current work ownership — 29 October 2026
+
+This operational assignment does not change release approval or its conditions.
+Earlier approvals and assignments above remain historical evidence.
+
+- Chat: `01a10ee2-71a5-7c03-ae11-2ba1d2ebce11`,
+  **Medicines Atlas — Release — Federation and native-field delivery**.
+- Role: repository integrator for this approved no-new-sources completion lane;
+  one writer for this checkout and the shared track/evidence changes in its PR.
+- Actual checkout:
+  `/Users/doughnut/.codex/worktrees/stable-v1-federation-gate/global-medicines-atlas`.
+- Branch: `codex/bounded-native-field-delivery-20261029`, based on merged
+  `d77d4ec53aa674d6231aaa59711751ba7f6fbb48` (PR #1368).
+- Owned source paths: `src/global_medicines_atlas/{platinum_query.py,platinum_structure.py,platinum_v2_api.py,cli.py,atlas.py}`,
+  `src/global_medicines_atlas/templates/atlas_federated_source_structure.html`,
+  and the affected `test_platinum_query.py`, `test_platinum_structure.py` and
+  `test_product_cli.py` tests. Owned evidence includes the exact PBS run's
+  `quality/qualifications/pbs-independent-pipeline-builds-20261029/` receipts,
+  its qualification documentation, and the Silver/Gold, data-plane and Platinum
+  track append records in this scoped PR.
+- Native scope: PBS qualification run `40700877242` is terminal success; retain
+  and compare its receipts without redispatching. The new serialized candidate
+  differs from the older exact rights-attested output. No publication,
+  admission, new rights conclusion or real derived consumer success follows.
+- Active local operation: Test-Goblin full profile, tool session `44577`,
+  parent PID `81814`, Python PID `81821`, verified in the checkout above.
+  Preserve that operation and its environment until terminal. Source byte pins
+  are retained in `/tmp/gma-native-field-delivery-tested-source-20261029.json`;
+  the log is `/tmp/gma-native-field-delivery-full-20261029.log`.
+- Next operation: finish the review and focused malformed-selector correction,
+  reconcile milestone evidence, preserve an exact scoped commit, and open one
+  PR for protected checks. At a safe terminal checkpoint, reconcile the app's
+  managed-worktree attachment without copying another checkout or moving native
+  journals. Other chats must use separate worktrees and return terminal scoped
+  evidence; they must not write these shared paths concurrently.
+
+The primary checkout's existing dirty Bronze evidence and untracked skill
+wrappers remain untouched. No hook, index, lock, environment, dependency,
+runtime, authentication or submodule ownership is transferred by this entry.
+
+### Ownership checkpoint
+
+The `44577` full-profile operation reached terminal exit 1 after 9,412 passes,
+four failures and four skips. Two failures were the Atlas keyboard-order test
+expectations after adding the view selector; two were local performance-budget
+measurements (`PERF-QUERY` and `PERF-EXPORT-PAGE`). The initial full-profile
+source pins remain retained; the query source was subsequently changed for the
+separately reproduced malformed-selector correction, and the keyboard test was
+updated. Failure-only verification is owned by this chat and remains in flight.
+Do not describe the earlier full run as a pass on the corrected source.
+
+At the terminal checkpoint, two attempts to attach this exact existing worktree
+with the app's managed-worktree tool returned `thread attachment identity count
+exceeds 100`. No checkout or application state was reset or moved. Continue at
+the explicit checkout path above using ordinary Git with hooks enabled; do not
+claim successful app registration or remove existing attachments. This is an
+attachment-limit result, not the separate non-Git-parent fallback case.
+
+The single failure-only follow-up completed: both Atlas keyboard cases and one
+release fixture passed. The other release fixture still exceeded its local
+`PERF-QUERY` p95 budget (572.554 ms against 250 ms); the original run had also
+observed 542.927 ms for that budget. The second original release failure was
+`PERF-EXPORT-PAGE` at 1,112.131 ms against 1,000 ms. No threshold was changed
+and no further local retry was made. Protected Linux checks remain pending for
+the eventual PR. The earlier full profile stopped at coverage and did not
+establish the subsequent full-profile stages on this local run.
+
+### Offline research-package implementation lane
+
+The same integrator chat `01a10ee2-71a5-7c03-ae11-2ba1d2ebce11` owns branch
+`codex/offline-research-output-20261029` in the same explicit checkout. It is
+stacked on `98e3c5c2ac0a91062879e17f20e7b01df4a666f9` while PR #1369 runs
+protected checks. Owned source scope is the research export package, crate and
+lineage contracts and their exact affected tests. The shared track and this
+handoff remain under the same integrator; no other chat is assigned these paths.
+
+Native scope is local synthetic package construction and verification only.
+The next operation is to add a versioned local content-addressed output
+reference and verify its exact sidecar digest while retaining the existing
+public-URL contract. No source, credential, publication or other native write
+is implied. The previous native-field assignment and its captured evidence
+remain history above.

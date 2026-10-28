@@ -1439,11 +1439,63 @@ for credentialed or rights-unresolved sources.
   of 1,759. Exact raw digest/path joins remain 118 and exact receipt/acquisition
   joins remain 27.
 - [x] Preserve all 1,759 deferrals. The derived-table rights gate remains open;
-  v4 admissions and consumer canaries remain zero. No source or dataset was
-  added and no release was performed.
+  v4 admissions and consumer canaries were zero at this 2026-10-20 checkpoint.
+  The current 2026-10-21 readback in the federated data-plane plan records
+  seven admissions and seven canaries for other raw B2 objects. No source or
+  dataset was added and no release was performed.
 - [x] Focused Silver/raw lineage tests pass (8); Ruff, `ty`, BasedPyright,
   context, ecosystem, and Test-Goblin test-inventory checks pass.
 - [~] The full Test-Goblin profile completed with 6,929 passed, 3 skipped, 11
   failed, and 96.89% coverage. Failures were in existing browser/E2E, consumer,
   and stable-v1 clean-clone tests; the new lineage tests passed in the focused
   run. Protected hosted checks remain required before merge.
+
+## Exact PBS utilisation six-object rights attestation (2026-10-20)
+
+- [x] Record the maintainer's attestation against the six frozen PBS utilisation
+  paths, digests, and byte counts. The scope expressly includes all file
+  contents, including any vocabulary previously excluded; the permission
+  instrument remains not independently reviewed.
+- [x] Reconcile the effective rights report and preflight to the exact attested
+  identities. Mark the historical unlicensed-vocabulary exclusion superseded
+  only for these six exact objects; the marker screen remains incomplete and
+  does not establish content review. No release, v4 admission, or consumer
+  canary is performed by this rights reconciliation.
+- [x] Focused rights tests (25) and the broader affected M-112 suite (54) pass;
+  Ruff, `ty`, BasedPyright, governance checks, and `git diff --check` pass.
+  The full Test-Goblin profile completed with 7,012 passed, 32 failed, 3
+  skipped, and 96.79% coverage. Twenty-nine browser failures report a missing
+  Playwright Chromium executable; the other failures are one Hypothesis timing
+  flake and two Stable v1 reproducibility tests. No changed rights test failed.
+- [~] Hosted protected checks, review, and merge remain pending on updated PR
+  #1242. The full local Test-Goblin profile above ran before rebasing onto the
+  Q2 canary and Q3 replay updates; protected CI must validate the final head.
+
+## M-112 current qualification readback (2026-10-21)
+
+Preflight 20261021-15 and the current rights and role reports reconcile all
+1,759 frozen objects with resolved rights, eight exact v4 admissions, eight
+admitted-object canaries and 1,751 deferred objects. Q1 HR run 39575404598 at
+merged main b6e8a8e4f6d633dfea0056104b62972a669c1b3e passed on 2026-10-21
+at 09:14:48 UTC. Its immutable metadata receipt is retained in
+`quality/qualifications/australian-m112-v4-demographics-q1-marchhr-admission-qualification-20261021-39575404598.json`.
+The frozen denominator and source inventory are unchanged. Earlier dated
+counts are historical. Source-supported field semantics and real matcher
+calibration remain separate from this raw-B2 admission; public datasets were
+not changed. The July XML, P7 and BSD sidecar B1/B2 joins remain recorded in
+their existing exact-object reports. Broader Bronze coverage work is outside
+the frozen M-112 denominator.
+
+## System completion execution focus (2026-10-25)
+
+Select the next task through the [system completion charter](../../system-completion.md)
+and [validated scheduling plan](../../system-completion.json). Name its shared
+capability or gate, concrete failure, bounded frozen-inventory scope, expected
+proof, and targeted validation. Advance the system lanes when prerequisites
+permit; perform dataset semantics or coverage work only when needed for a
+named gate. Preserve unresolved fields and all mandatory eligible-object
+identity, lineage, rights, admission, recovery, and consumer evidence. Broader
+coverage, new sources/terminology, and optional experiments remain deferred.
+This scheduling direction changes no acceptance criterion, current M-105/M-107
+disposition, or conditional release approval; current states come from the
+authoritative contract, reconciliation, and bound receipts.

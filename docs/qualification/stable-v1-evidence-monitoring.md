@@ -9,8 +9,8 @@ performance and publication contracts by SHA-256. Its separate
 Generate and verify it offline:
 
 ```shell
-uv run --python 3.14.6 --group dev python scripts/build_stable_v1_monitoring_receipt.py
-uv run --python 3.14.6 --group dev python scripts/build_stable_v1_monitoring_receipt.py --check
+uv run --python 3.15.1 --group dev python scripts/build_stable_v1_monitoring_receipt.py
+uv run --python 3.15.1 --group dev python scripts/build_stable_v1_monitoring_receipt.py --check
 ```
 
 The script reads repository files and writes only the requested local receipt.

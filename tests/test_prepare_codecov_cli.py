@@ -3,7 +3,6 @@ from __future__ import annotations
 import hashlib
 import io
 import subprocess  # ruff: ignore[suspicious-subprocess-import] - mock only
-import urllib.request
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -11,129 +10,117 @@ import pytest
 from scripts import prepare_codecov_cli
 
 
-def test_prepare_verifies_pinned_wheel_before_installing(
+def test_prepare_verifies_pinned_release_before_execution(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    wheel = b"verified wheel fixture"
-    digest = hashlib.sha256(wheel).hexdigest()
-    calls: list[list[str]] = []
-
-    monkeypatch.setattr(prepare_codecov_cli, "CODECOV_WHEEL_SIZE", len(wheel))
-    monkeypatch.setattr(prepare_codecov_cli, "CODECOV_WHEEL_SHA256", digest)
-
-    def open_wheel(
-        _url: str | urllib.request.Request, *, timeout: float
-    ) -> io.BytesIO:
-        del timeout
-        return io.BytesIO(wheel)
-
+    binary = b"verified codecov binary fixture"
+    monkeypatch.setattr(prepare_codecov_cli, "CODECOV_ASSET_SIZE", len(binary))
     monkeypatch.setattr(
-        prepare_codecov_cli.urllib.request, "urlopen", open_wheel
+        prepare_codecov_cli,
+        "CODECOV_ASSET_SHA256",
+        hashlib.sha256(binary).hexdigest(),
+    )
+    monkeypatch.setattr(prepare_codecov_cli.platform, "system", lambda: "Linux")
+    monkeypatch.setattr(
+        prepare_codecov_cli.platform, "machine", lambda: "x86_64"
     )
 
-    def which(command: str, mode: int = 0) -> str:
-        del mode
-        return f"/tools/{command}"
+    def open_asset(_url: str, *, timeout: float) -> io.BytesIO:
+        assert timeout == 60
+        return io.BytesIO(binary)
 
-    monkeypatch.setattr(prepare_codecov_cli.shutil, "which", which)
+    monkeypatch.setattr(
+        prepare_codecov_cli.urllib.request, "urlopen", open_asset
+    )
+    calls: list[list[str]] = []
 
     def run(
         command: str | Sequence[str],
         *,
         check: bool = False,
+        capture_output: bool = False,
+        shell: bool = True,
+        text: bool = False,
         timeout: float | None = None,
-    ) -> subprocess.CompletedProcess[bytes]:
-        del check, timeout
-        calls.append([command] if isinstance(command, str) else list(command))
-        return subprocess.CompletedProcess(command, 0)
+    ) -> subprocess.CompletedProcess[str]:
+        values = [command] if isinstance(command, str) else list(command)
+        calls.append(values)
+        assert check
+        assert capture_output
+        assert not shell
+        assert text
+        assert timeout == 30
+        return subprocess.CompletedProcess(
+            values, 0, stdout="codecovcli version 11.3.1", stderr=""
+        )
 
     monkeypatch.setattr(prepare_codecov_cli.subprocess, "run", run)
 
-    destination = prepare_codecov_cli.prepare(
-        tmp_path,
-        python_executable=Path("/isolated/bin/python"),
-    )
+    destination = prepare_codecov_cli.prepare(tmp_path)
 
-    assert destination == Path("/isolated/bin/codecovcli")
-    wheel_path = str(tmp_path / prepare_codecov_cli.CODECOV_WHEEL_NAME)
-    assert calls == [
-        [
-            "/tools/pypi-attestations",
-            "verify",
-            "pypi",
-            "--repository",
-            prepare_codecov_cli.CODECOV_REPOSITORY,
-            wheel_path,
-        ],
-        [
-            "/tools/uv",
-            "pip",
-            "install",
-            "--python",
-            "/isolated/bin/python",
-            "--no-deps",
-            wheel_path,
-        ],
-    ]
-    assert not destination.exists()
+    assert destination == tmp_path / "codecovcli"
+    assert destination.read_bytes() == binary
+    assert destination.stat().st_mode & 0o111
+    assert calls == [[str(destination), "--version"]]
 
 
-@pytest.mark.parametrize("failure", ["digest", "attestation"])
-def test_prepare_never_installs_unverified_wheel(
+@pytest.mark.parametrize("failure", ["digest", "version", "platform"])
+def test_prepare_never_keeps_an_unverified_or_unsupported_binary(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
     failure: str,
 ) -> None:
-    wheel = b"verified wheel fixture"
-    monkeypatch.setattr(prepare_codecov_cli, "CODECOV_WHEEL_SIZE", len(wheel))
+    binary = b"release asset fixture"
+    monkeypatch.setattr(prepare_codecov_cli, "CODECOV_ASSET_SIZE", len(binary))
     monkeypatch.setattr(
         prepare_codecov_cli,
-        "CODECOV_WHEEL_SHA256",
-        "0" * 64 if failure == "digest" else hashlib.sha256(wheel).hexdigest(),
+        "CODECOV_ASSET_SHA256",
+        "0" * 64 if failure == "digest" else hashlib.sha256(binary).hexdigest(),
+    )
+    monkeypatch.setattr(
+        prepare_codecov_cli.platform,
+        "system",
+        lambda: "Darwin" if failure == "platform" else "Linux",
+    )
+    monkeypatch.setattr(
+        prepare_codecov_cli.platform, "machine", lambda: "x86_64"
     )
 
-    def open_wheel(
-        _url: str | urllib.request.Request, *, timeout: float
-    ) -> io.BytesIO:
+    def open_asset(_url: str, *, timeout: float) -> io.BytesIO:
         del timeout
-        return io.BytesIO(wheel)
+        return io.BytesIO(binary)
 
     monkeypatch.setattr(
-        prepare_codecov_cli.urllib.request, "urlopen", open_wheel
+        prepare_codecov_cli.urllib.request, "urlopen", open_asset
     )
-
-    def which(command: str, mode: int = 0) -> str:
-        del mode
-        return f"/tools/{command}"
-
-    monkeypatch.setattr(prepare_codecov_cli.shutil, "which", which)
-    calls: list[list[str]] = []
 
     def run(
         command: str | Sequence[str],
         *,
         check: bool = False,
+        capture_output: bool = False,
+        shell: bool = True,
+        text: bool = False,
         timeout: float | None = None,
-    ) -> subprocess.CompletedProcess[bytes]:
-        del check, timeout
-        values = [command] if isinstance(command, str) else list(command)
-        calls.append(values)
-        if failure == "attestation":
-            raise subprocess.CalledProcessError(1, values)
-        return subprocess.CompletedProcess(values, 0)
+    ) -> subprocess.CompletedProcess[str]:
+        del check, capture_output, shell, text, timeout
+        return subprocess.CompletedProcess(
+            command,
+            0,
+            stdout=(
+                "wrong version"
+                if failure == "version"
+                else "codecovcli version 11.3.1"
+            ),
+            stderr="",
+        )
 
     monkeypatch.setattr(prepare_codecov_cli.subprocess, "run", run)
 
-    with pytest.raises(ValueError if failure == "digest" else RuntimeError):
-        prepare_codecov_cli.prepare(
-            tmp_path,
-            python_executable=Path("/isolated/bin/python"),
-        )
+    with pytest.raises(
+        RuntimeError if failure in {"version", "platform"} else ValueError
+    ):
+        prepare_codecov_cli.prepare(tmp_path)
 
-    if failure == "digest":
-        assert calls == []
-    else:
-        assert len(calls) == 1
-        assert calls[0][1:3] == ["verify", "pypi"]
-    assert not list(tmp_path.iterdir())
+    assert list(tmp_path.iterdir()) == []

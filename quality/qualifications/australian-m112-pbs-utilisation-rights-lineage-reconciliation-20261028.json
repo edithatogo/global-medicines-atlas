@@ -1,0 +1,206 @@
+{
+  "schema_id": "global-medicines-atlas.m112-pbs-utilisation-rights-lineage-reconciliation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-28",
+  "purpose": "Bind the existing exact six-object PBS utilisation rights attestation to the frozen M-112 identities and landed B1/B2 lineages; preserve all admission, canary, and instrument-review gates.",
+  "frozen_inventory": {
+    "path": "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json",
+    "sha256": "eaa1d84325c7672100398acf8116f0312369ca336d42ed21eee110452d3fefa4",
+    "membership_sha256": "fe48d50a105a5dc34720d4d0176d28b442d79f4d53b1f10ba738e0745ef0208b",
+    "denominator": 1759,
+    "membership_changed": false
+  },
+  "scope": {
+    "frozen_denominator": 1759,
+    "denominator_changed": false,
+    "exact_objects": 6,
+    "rights_attestation_bound": 6,
+    "complete_b1_b2_lineage": 6,
+    "v4_admitted": 0,
+    "consumer_canaries": 0,
+    "disposition": "deferred_not_admitted"
+  },
+  "current_m112_role_counts": {
+    "evidence_path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json",
+    "evidence_sha256": "9ae96773ed19b1ec0795340aef1d341dbeeb0f8961ca7f231af633618ca21781",
+    "v4_admissions": 8,
+    "consumer_canaries": 8,
+    "deferred_objects": 1751
+  },
+  "inputs": [
+    {
+      "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-pbs-utilisation-lineage.json",
+      "sha256": "66e385c8ad2b00a2cf029170f366370ff069601ce51bed2dd8b8f6c9c56327b8"
+    },
+    {
+      "path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+      "sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json",
+      "sha256": "3e005cd8759a96ce523b400e0f9b4f72572343e2527989d98c1a920a5af444e8"
+    },
+    {
+      "path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+      "sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json",
+      "sha256": "9ae96773ed19b1ec0795340aef1d341dbeeb0f8961ca7f231af633618ca21781"
+    },
+    {
+      "path": "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json",
+      "sha256": "eaa1d84325c7672100398acf8116f0312369ca336d42ed21eee110452d3fefa4"
+    }
+  ],
+  "boundaries": {
+    "source_payload_bytes_read": false,
+    "source_payload_values_inspected": false,
+    "new_sources_added": false,
+    "rights_conclusion_added": false,
+    "public_release_performed": false,
+    "v4_admission_performed": false,
+    "consumer_canary_performed": false,
+    "frozen_denominator_changed": false
+  },
+  "objects": [
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "byte_count": 372149,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+        "sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+        "scope": "exact path, digest, byte count, and all file contents",
+        "permission_instrument_review": "maintainer_attested_not_independently_reviewed"
+      },
+      "b1_b2_lineage_complete": true,
+      "lineage_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+        "sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+        "landed_admission_reviewer_status": "unreviewed"
+      },
+      "v4_admission": false,
+      "consumer_canary": false,
+      "disposition": "deferred_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "byte_count": 468764,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+        "sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+        "scope": "exact path, digest, byte count, and all file contents",
+        "permission_instrument_review": "maintainer_attested_not_independently_reviewed"
+      },
+      "b1_b2_lineage_complete": true,
+      "lineage_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+        "sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+        "landed_admission_reviewer_status": "unreviewed"
+      },
+      "v4_admission": false,
+      "consumer_canary": false,
+      "disposition": "deferred_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "byte_count": 35384567,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+        "sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+        "scope": "exact path, digest, byte count, and all file contents",
+        "permission_instrument_review": "maintainer_attested_not_independently_reviewed"
+      },
+      "b1_b2_lineage_complete": true,
+      "lineage_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+        "sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+        "landed_admission_reviewer_status": "unreviewed"
+      },
+      "v4_admission": false,
+      "consumer_canary": false,
+      "disposition": "deferred_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "byte_count": 36381946,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+        "sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+        "scope": "exact path, digest, byte count, and all file contents",
+        "permission_instrument_review": "maintainer_attested_not_independently_reviewed"
+      },
+      "b1_b2_lineage_complete": true,
+      "lineage_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+        "sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+        "landed_admission_reviewer_status": "unreviewed"
+      },
+      "v4_admission": false,
+      "consumer_canary": false,
+      "disposition": "deferred_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "byte_count": 1063694,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+        "sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+        "scope": "exact path, digest, byte count, and all file contents",
+        "permission_instrument_review": "maintainer_attested_not_independently_reviewed"
+      },
+      "b1_b2_lineage_complete": true,
+      "lineage_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+        "sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+        "landed_admission_reviewer_status": "unreviewed"
+      },
+      "v4_admission": false,
+      "consumer_canary": false,
+      "disposition": "deferred_not_admitted"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "byte_count": 117376499,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "rights_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json",
+        "sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+        "scope": "exact path, digest, byte count, and all file contents",
+        "permission_instrument_review": "maintainer_attested_not_independently_reviewed"
+      },
+      "b1_b2_lineage_complete": true,
+      "lineage_evidence": {
+        "path": "quality/qualifications/australian-pbs-utilisation-landed-lineage-20261019.json",
+        "sha256": "758db3eb852dafae15da6979d4ae6638f245a94e23232d901d3d9dde4322bd58",
+        "landed_admission_reviewer_status": "unreviewed"
+      },
+      "v4_admission": false,
+      "consumer_canary": false,
+      "disposition": "deferred_not_admitted"
+    }
+  ]
+}

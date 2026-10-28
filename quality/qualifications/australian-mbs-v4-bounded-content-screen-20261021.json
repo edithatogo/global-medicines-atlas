@@ -1,0 +1,144 @@
+{
+  "authorization_bindings": {
+    "candidate_manifest": {
+      "path": "quality/qualifications/australian-mbs-v4-candidate-2025-07/manifest.json",
+      "sha256": "bbdb1bdac49fc1a7f8399ca02cf52a9b0e3a1fbc31e472e3957f1d278ab39a59"
+    },
+    "candidate_scope_only": true,
+    "current_public_tree_readback": {
+      "path": "quality/qualifications/australian-mbs-v4-current-public-tree-readback-20261020.json",
+      "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6"
+    },
+    "rights_attestation": {
+      "instrument_independently_reviewed": false,
+      "path": "quality/qualifications/australian-mbs-v4-public-release-rights-attestation-20261019.json",
+      "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327"
+    }
+  },
+  "boundaries": {
+    "dataset_mutated": false,
+    "new_sources_added": false,
+    "public_release_or_publication_performed": false,
+    "relationship_semantics_or_match_calibration_qualified": false,
+    "restricted_terminology_cleared": false,
+    "rights_cleared_by_screen": false,
+    "screen_is_exhaustive": false,
+    "v4_admission_or_gold_promotion_performed": false
+  },
+  "limitations": [
+    "This check covers only sensitive field-name patterns, email-like strings, and caller-supplied exact value digests; no restricted-value denylist was supplied.",
+    "A clean screen is not exhaustive inspection, restricted-terminology clearance, or a rights conclusion.",
+    "This candidate-only MBS screen does not cover PBS content or calibrate the relationship matcher."
+  ],
+  "method": {
+    "detectors": [
+      "sensitive_field_name",
+      "email_like_value",
+      "known_value_digest"
+    ],
+    "implementation": "global_medicines_atlas.frontier_content_screening.screen_graph_payloads",
+    "implementation_sha256": "7f15a5c55b277260702ebcbb5de08809347ac847ea9f9c75210f46d7bb84ee7d",
+    "known_value_digest_denylist_supplied": false,
+    "payload_values_emitted_or_persisted": false,
+    "source_table_bytes_persisted_locally": false
+  },
+  "objects": [
+    {
+      "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "byte_count": 114493,
+      "finding_counts": {},
+      "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+      "row_count": 5989,
+      "screen_payload_count": 5989,
+      "screen_payload_sha256": "0a6699343e7ef3340414d86950cccc65232b5478333a5ad76f42db8a6fc9a486",
+      "screen_receipt_sha256": "df88c2034120d83a324a64492d924829e0131bd006cf5ef98cc2b5aee957af98",
+      "serialized_scan_input_bytes": 5055721,
+      "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+      "state": "no_pattern_detected"
+    },
+    {
+      "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "byte_count": 60259,
+      "finding_counts": {},
+      "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+      "row_count": 5989,
+      "screen_payload_count": 5989,
+      "screen_payload_sha256": "a14f46674a08fdf7667fd461c58915b84a9b9e1fd4715188ba2712a23bd84d9d",
+      "screen_receipt_sha256": "c15437351fdd25d2a12637006a815bd3c75f88e52526bbf43fddb499e02319eb",
+      "serialized_scan_input_bytes": 7287034,
+      "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+      "state": "no_pattern_detected"
+    },
+    {
+      "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "byte_count": 620348,
+      "finding_counts": {},
+      "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+      "row_count": 5989,
+      "screen_payload_count": 5989,
+      "screen_payload_sha256": "1fe30f48ca8623eba5fa7b46c5161e1f43250033a62385ce86b08f05df8a457c",
+      "screen_receipt_sha256": "c7df5d5e3ce54e6774cce0538f624e93b0b3df3b63864eda03f7721e54685362",
+      "serialized_scan_input_bytes": 7116905,
+      "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+      "state": "no_pattern_detected"
+    },
+    {
+      "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "byte_count": 93072,
+      "finding_counts": {},
+      "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+      "row_count": 5989,
+      "screen_payload_count": 5989,
+      "screen_payload_sha256": "ae80eb284a5cba35b730b6a473af60a72dfd69d5f8a8a798fc2a8d751f4345fb",
+      "screen_receipt_sha256": "cf05e534ab299d863d6ab3ced3005d03934c92da207eafd5d8940908d4e3afe9",
+      "serialized_scan_input_bytes": 5736614,
+      "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+      "state": "no_pattern_detected"
+    },
+    {
+      "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "byte_count": 51851,
+      "finding_counts": {},
+      "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+      "row_count": 5989,
+      "screen_payload_count": 5989,
+      "screen_payload_sha256": "6e58bfad2010c0b4283c9385c5d11bea10e93c0845cc3bace00753257df32c15",
+      "screen_receipt_sha256": "d524090a87a1215b7d0f7b81e25b76bd245597c47a9a9b14d4af4d0daf8525b3",
+      "serialized_scan_input_bytes": 3946308,
+      "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+      "state": "no_pattern_detected"
+    },
+    {
+      "blocked_value_set_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "byte_count": 100062,
+      "finding_counts": {},
+      "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+      "row_count": 5989,
+      "screen_payload_count": 5989,
+      "screen_payload_sha256": "9a3a0085f87309275a361bdbdaba034b6011dce1897e664598c221c658dd54cd",
+      "screen_receipt_sha256": "d492692f772dc17c444b00de88e44fab0792cd1325e6539a92d9ee7abd7abbc6",
+      "serialized_scan_input_bytes": 9806271,
+      "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+      "state": "no_pattern_detected"
+    }
+  ],
+  "recorded_at": "2026-10-21T02:23:06Z",
+  "schema_id": "global-medicines-atlas.australian-mbs-v4-bounded-content-screen",
+  "schema_version": 1,
+  "scope": {
+    "candidate_only": true,
+    "dataset": "edithatogo/australian-mbs-source-archive",
+    "exact_table_count": 6,
+    "expected_rows_per_table": 5989,
+    "inventory_membership_changed": false,
+    "revision": "42d73b6facac016f14a335d36d83f1a3b630add8",
+    "source_release": "MBS XML v3, 2025-07-01",
+    "total_object_bytes_read_in_memory": 1040085,
+    "total_rows_screened": 35934
+  },
+  "summary": {
+    "finding_counts": {},
+    "objects_requiring_pattern_review": 0,
+    "objects_without_detected_patterns": 6
+  }
+}

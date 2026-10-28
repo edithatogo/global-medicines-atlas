@@ -1,0 +1,137 @@
+{
+  "authority": {
+    "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+    "contract_repository": "edithatogo/global-medicines-atlas",
+    "producer_repository": "edithatogo/global-medicines-atlas",
+    "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+  },
+  "cache": {
+    "cleanup_receipt": {
+      "sha256": "8c5e4bb4f3d00641951dc680da5e0138990605fd9ff4fd5aa03d62a14be50717",
+      "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/71b8ca00dee8275578cb8d50a0e4db12cc6160f3/quality/qualifications/australian-m112-v3-replay-execution-20261020-39368825712.json"
+    },
+    "created_at": "2026-10-20T04:17:51Z",
+    "expires_at": "2026-10-20T04:32:51Z",
+    "max_bytes": 23934884,
+    "offline_behavior": "fail_closed",
+    "origin": "github_actions",
+    "state": "removed"
+  },
+  "consumers": [],
+  "discovery": {
+    "collections": [
+      "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4"
+    ],
+    "estate_entry": {
+      "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+      "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/resolve/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+    }
+  },
+  "evidence_kind": "live",
+  "lineage": {
+    "inputs": [
+      {
+        "sha256": "da0fe5c525647ca3a43bc351a5c30fc497c5df5fc75a939c051c678c70499b87",
+        "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/71b8ca00dee8275578cb8d50a0e4db12cc6160f3/quality/bronze/receipts/historical_imports/au-data-gov-mbs-demographics/8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3.json"
+      },
+      {
+        "sha256": "035a0bb5749ecfa3a149e9410537ada3bb4094a46e4842a4149640493aa49fa4",
+        "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/71b8ca00dee8275578cb8d50a0e4db12cc6160f3/quality/bronze/imported-acquisitions/au-data-gov-mbs-demographics/8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3.json"
+      },
+      {
+        "sha256": "cae368b9ff7bf01a3b99868bdd74a0ed6fe3f799a3aa7e133c8697ba7109f52b",
+        "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/71b8ca00dee8275578cb8d50a0e4db12cc6160f3/quality/bronze/raw-evidence/au-data-gov-mbs-demographics/8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3/manifest.json"
+      }
+    ],
+    "promotion_receipt": null,
+    "v1_conformance": {
+      "sha256": "826f7380ecb925d9c51dad826307f2d94348ed9ac44320ef70f8faff25709842",
+      "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/290cc219217821404cf25bcfc58761821389d614/quality/qualifications/australian-m112-v1-conformance-20261019.json"
+    },
+    "v2_field_lineage": null,
+    "v2_field_lineage_applicability": "not_applicable_raw_b2",
+    "v3_replay": {
+      "sha256": "8c5e4bb4f3d00641951dc680da5e0138990605fd9ff4fd5aa03d62a14be50717",
+      "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/71b8ca00dee8275578cb8d50a0e4db12cc6160f3/quality/qualifications/australian-m112-v3-replay-execution-20261020-39368825712.json"
+    }
+  },
+  "location": {
+    "bytes": 23934884,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "gated": false,
+    "lfs_oid": null,
+    "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+    "private": false,
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+    "xet_hash": null
+  },
+  "publication": {
+    "commit": "979f806fcf92267f9595eb78a88707e4ec2e503c",
+    "origin": "github_actions",
+    "receipt": {
+      "sha256": "6bce093347564588b320f81344c4903c038f4659d5aeb96bca4b2802073c9c1d",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784415"
+    },
+    "run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/36333396964",
+    "workflow": ".github/workflows/australian-mbs-utilisation-harvest.yml"
+  },
+  "recovery": {
+    "administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+    "authorization_receipt": null,
+    "checksum_inventory": {
+      "sha256": "9e9848f32287cdb8141d65f2f2741916cf7e391e396ac2fcaf5794eccdaa3bab",
+      "url": "https://huggingface.co/datasets/edithatogo/australian-mbs-utilisation-archive/resolve/dee9a5b0580dfe394474dc26b372559462e157e7/manifest.json"
+    },
+    "independent": false,
+    "primary_administrative_domain": "huggingface:edithatogo/australian-mbs-utilisation-archive",
+    "primary_region": "unverified",
+    "region": "unverified",
+    "restore_receipt": {
+      "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+    },
+    "role": "primary",
+    "rpo_seconds": null,
+    "rto_seconds": null
+  },
+  "rights": {
+    "authorization": {
+      "sha256": "3b6e03a483be822b7ea3cf82ed48ff9d7c360fbc3b813512c39f2143afb47b13",
+      "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/71b8ca00dee8275578cb8d50a0e4db12cc6160f3/quality/qualifications/australian-mbs-utilisation-exact-scope-rights-decision-20261004.json"
+    },
+    "basis": "exact_scope_CC_BY_3_0_AU_authorization",
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+    "publication": "approved_exact_scope",
+    "sensitivity": "non_sensitive",
+    "subject_sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+  },
+  "source": {
+    "acquisition_id": "8b109720cd702440c4e14f35eb337ef8b8a466e11cae0556aa281567202d51e3",
+    "bronze_stratum": "B2",
+    "comparison_cohort": "legacy",
+    "effective_date": "2016-03-31",
+    "layer": "bronze",
+    "representation": "raw",
+    "retrieved_at": "2026-09-09T13:57:28Z",
+    "schema_era": "unqualified-native-schema; data.gov.au-resource-last-modified=2016-04-28; resource_id=ff6d0692-4c6f-466b-9d93-015224d80b14",
+    "source_id": "au-data-gov-mbs-demographics"
+  },
+  "verification": {
+    "anonymous": true,
+    "bytes": 23934884,
+    "clean_room": true,
+    "dataset": "edithatogo/australian-mbs-utilisation-archive",
+    "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+    "receipt": {
+      "sha256": "5069e57b54a2c3d2aff9901389738998a8944de006505a8f3ac0e02bb4e87a15",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5857784489"
+    },
+    "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+    "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5",
+    "status": "passed",
+    "verified_at": "2026-09-27T16:44:12Z"
+  },
+  "version": "4.1.0"
+}

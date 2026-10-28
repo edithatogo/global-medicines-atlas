@@ -1,0 +1,170 @@
+{
+  "schema_id": "global-medicines-atlas.m112-effective-frozen-raw-delivery-reconciliation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-28T13:09:49.743636+00:00",
+  "inputs": {
+    "historical_eight_object_qualification": {
+      "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json",
+      "sha256": "9ae96773ed19b1ec0795340aef1d341dbeeb0f8961ca7f231af633618ca21781"
+    },
+    "frozen_inventory": {
+      "path": "quality/qualifications/australian-m112-frozen-object-inventory-20261018.json",
+      "sha256": "eaa1d84325c7672100398acf8116f0312369ca336d42ed21eee110452d3fefa4"
+    },
+    "six_pbs_native_results": {
+      "path": "quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/manifest.json",
+      "sha256": "fb09cd52d1d61796af070cbfc29bfe66683206fc5195b9f7c8b6e084e1a7cd0e"
+    }
+  },
+  "effective_counts": {
+    "frozen_objects": 1759,
+    "raw_v4_admissions": 14,
+    "raw_admitted_object_reader_canaries": 14,
+    "deferred_objects": 1745,
+    "frozen_denominator_changed": false
+  },
+  "historical_counts": {
+    "raw_v4_admissions": 8,
+    "raw_admitted_object_reader_canaries": 8,
+    "deferred_objects": 1751
+  },
+  "increment": {
+    "raw_v4_admissions": 6,
+    "raw_admitted_object_reader_canaries": 6
+  },
+  "prior_admitted_identities": [
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q1-march-raw-b2-contract.json",
+      "contract_sha256": "3f4794f92a33b9e77950b2c864c7f4ae8a331a43b80297a15e73f1967814f6ce",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-1-march.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "e4c7b972587aeb96c905a737ccf7f0d5167c8d8e2edd805ce015487d4bd896a5"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q1-marchhr-raw-b2-contract.json",
+      "contract_sha256": "5a8f97b0e36ad1e90110166e3fd66fda6ee7f12fd572232c5ba3cb0e8584d9a5",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr1-marchhr.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "d44522cbd1847e73ee69cb5374c207296133254cd82be61e751f78db1a456d4d"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q2-may-raw-b2-contract.json",
+      "contract_sha256": "cd7ccdce266d1d42fa658abe4b097c207627d80943b01c198f7d844c16241152",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-2-may.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "495db013c1cb10d26455ffbcd6acbb229d1064fe6f48d3a62b92387866de4958"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q3-july-raw-b2-contract.json",
+      "contract_sha256": "fdb1164ba5d03e7946c3146ee7ecde71a6b8d40f71af483fae356a0142baef7b",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr-3-july.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "bc6ad85e41bd2394f4dc0b3550c0657eb7389f444c9300d72105a41530e08e1c"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-group2016-csv-raw-b2-contract.json",
+      "contract_sha256": "d1924c8c21a52baff437dcf0ec55e7abffe599bf091bdaea082bc020c203aab7",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016-july.csv",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "62ad118d94cd565a051164aa645eff1fef84a5beb74d501e3dc64344fcf16d3b"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-historical-1993-2015-raw-b2-contract.json",
+      "contract_sha256": "992eb2ce2d93891f51423284df2d718bc7d44af6511cc09c11c33a578588210b",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-demographics-historical-1993-2015.zip",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "e00bd214e7f9e2428000a8e67c8d46a78fb4b12f381373d813849287cbc9cc33"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-demographics-q3-julyhr-raw-b2-contract.json",
+      "contract_sha256": "f65f1da3d4b9018e61a1ba31a5de1ceeb9bfa732da363a142c88bc7260eca469",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/demographics/mbs-demographics-2016-qtr3-julyhr.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "7c0591665008e1b423cf8aa6f5dfe0d78499914ae67ef34dc566c4b0a1736152"
+    },
+    {
+      "contract_path": "quality/qualifications/australian-m112-v4-july2016-raw-b2-contract.json",
+      "contract_sha256": "b95056d6ab657f5b280870dc2ac7dcb1578019224e843d423a99e2880f451d7e",
+      "dataset": "edithatogo/australian-mbs-utilisation-archive",
+      "path": "raw/mbs/utilisation/group/mbs-group-2016hr-july.xlsx",
+      "revision": "dee9a5b0580dfe394474dc26b372559462e157e7",
+      "sha256": "9f2f28b69f58a0aa05a0b56b09515651b1e0b50a634234ce7f6f6c8426373285"
+    }
+  ],
+  "new_admitted_identities": [
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2023-24.XLSX",
+      "sha256": "32ea64558d43531fed4bb395787bbc9279fdf45a2ddc6481ce8234aac676306b",
+      "byte_count": 372149,
+      "contract_sha256": "28c6642d690e693a8a56d78186ed8befa5e28b86d6d8401a1d20a74a5a78f5a7"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/expenditure/Expenditure-prescriptions-report-tables-2024-25.XLSX",
+      "sha256": "147f4c5392e256d85beb3e47dfd8445085e5a8f0ecbbd330b535774d81aadf99",
+      "byte_count": 468764,
+      "contract_sha256": "fa2fbb020b5eb62a20ba6b808d2f1c066d7b8270ec93ac24e6ef6e1f0472927a"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2024-to-jun-2025-phrmcy-type.csv",
+      "sha256": "4a961d1d128e3aa9449a1d3a38c27f1b742d1c13dc07d12553134e04e701a6a4",
+      "byte_count": 35384567,
+      "contract_sha256": "a990f80f3554e090196a13a79a84c44e72018c0b031fad56ec1f9c7d657d80c5"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "byte_count": 36381946,
+      "contract_sha256": "699bcad8965918b5eff84c092cb53fbf4f82a401837edb6de308fbb64b6ade27"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/reference/pbs-item-drug-map.csv",
+      "sha256": "51adf3c80df2c2d526bfe88d2d96199e545579ced1b32e7ba3550dfc15f358a8",
+      "byte_count": 1063694,
+      "contract_sha256": "f12a5a8f91c3f4e3ac48ed10a2565e5a77fbeba0f789a7f11817e3276a38bc93"
+    },
+    {
+      "dataset": "edithatogo/australian-pbs-utilisation-archive",
+      "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+      "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+      "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+      "byte_count": 117376499,
+      "contract_sha256": "13b0e58ac142e2f412975b969a0604d02482fd71629d6d1f9692c99f894199f9"
+    }
+  ],
+  "separate_silver_cohort": {
+    "objects": 6,
+    "included_in_raw_frozen_count": false,
+    "evidence": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/admission-remote-read.json"
+  },
+  "remaining": [
+    "required_eligible_derived_output_roles_admission_and_consumers",
+    "supported_source_semantics_and_relationship_calibration",
+    "independent_recovery",
+    "M-105_and_M-107_existing_dispositions",
+    "federation_acceptance_and_stable_release"
+  ],
+  "boundaries": {
+    "native_admissions_performed_by_reconciliation": 0,
+    "new_sources": 0,
+    "outbound_communications": 0,
+    "public_dataset_mutation": false,
+    "federation_gate_closed": false
+  }
+}

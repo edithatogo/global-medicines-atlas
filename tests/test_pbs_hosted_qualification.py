@@ -12,6 +12,7 @@ from urllib.parse import quote
 
 import httpx
 import pytest
+import yaml
 from scripts import assemble_historical_pbs_reference_manifest as assemble_nodes
 from scripts import prepare_historical_pbs_qualification as prepare_cli
 from scripts import qualify_historical_pbs_public as cli
@@ -570,9 +571,9 @@ def test_workflow_has_durable_receipt_and_no_dataset_write() -> None:
     workflow = Path(
         ".github/workflows/pbs-historical-qualification.yml"
     ).read_text(encoding="utf-8")
-    assert "gh issue comment 341" in workflow
+    assert "gh issue comment" not in workflow
     assert "if: always()" in workflow
-    assert workflow.count("gh issue comment 341") == 1
+    assert "issues: write" not in workflow
     assert "retention-days: 1" in workflow
     assert "persist-credentials: false" in workflow
     assert "HF_TOKEN" not in workflow
@@ -1520,3 +1521,107 @@ def test_retry_record_is_allowlisted() -> None:
     report = hosted.failure_report(error)
     assert report["transport_retry"] is None
     assert "secret" not in json.dumps(report)
+
+
+def test_hosted_values_projection_accepts_only_fixed_aggregate_progress(
+    synthetic,
+):
+    checkpoints = []
+    report = hosted.run_hosted_qualification(
+        SHA,
+        projection="values",
+        transport=synthetic[2],
+        progress=checkpoints.append,
+    )
+    assert report["status"] == "passed"
+    assert report["projection_shard"] == "values"
+    assert {event["progress"]["phase"] for event in checkpoints} >= {
+        "denominator",
+        "values",
+    }
+    values = report["qualification"]["projections"]["values"]
+    assert values["native_fields"] == report["qualification"]["native_fields"]
+    assert values["native_digest"] == report["qualification"]["native_digest"]
+    assert values["interpretation_state_counts"] == {
+        "native_unresolved": values["rows"]
+    }
+    assert "Exampleline" not in json.dumps(checkpoints)
+    assert "001.2300" not in json.dumps(checkpoints)
+
+
+def test_retained_values_failure_is_not_a_qualification_result():
+    path = (
+        Path(__file__).resolve().parents[1]
+        / "quality/qualifications/pbs-native-values-failure-20261022-39641247728.json"
+    )
+    assert (
+        hashlib.sha256(path.read_bytes()).hexdigest()
+        == "052a2c314cd45bc5d381ab7f6490e606e6fa11b291a13535f87577043925b6be"
+    )
+    envelope = json.loads(path.read_text())
+    report = envelope["report"]
+    payload = json.dumps(report, sort_keys=True, separators=(",", ":")).encode()
+    assert hashlib.sha256(payload).hexdigest() == envelope["report_sha256"]
+    assert report["status"] == "failed"
+    assert (
+        report["workflow_commit"] == "c84c4898f78b7151f28c78a118d11d9b1ad765b6"
+    )
+    assert report["progress"]["phase"] == "denominator"
+    assert report["progress"]["rows"] == 18208758
+    assert report["progress"]["batches"] == 0
+    assert "qualification" not in report
+    assert report["publication_performed"] is False
+
+
+def test_hosted_value_package_reuses_exact_inputs_and_removes_derivatives(
+    synthetic,
+):
+    _, calls, transport = synthetic
+    checkpoints = []
+    report = hosted.run_hosted_qualification(
+        SHA,
+        projection="value-package",
+        transport=transport,
+        progress=checkpoints.append,
+    )
+    package = report["qualification"]
+    assert package["parquet_bytes_identical"] is True
+    assert package["complete_source_reparse_and_restore"] is True
+    assert package["temporary_derivatives_removed"] is True
+    assert package["package"]["boundaries"]["admitted"] is False
+    assert report["publication_performed"] is False
+    assert len(calls) == 5
+    phases = {entry["progress"]["phase"] for entry in checkpoints}
+    assert {"package-write", "package-restore"} <= phases
+
+
+def test_package_mode_keeps_existing_hosted_deadlines_and_read_only_artifacts():
+
+    workflow = yaml.load(
+        WORKFLOW.read_text(encoding="utf-8"), Loader=yaml.BaseLoader
+    )
+    job = workflow["jobs"]["native-value-package"]
+    assert job["if"] == "inputs.qualification_scope == 'native-value-package'"
+    assert job["timeout-minutes"] == "65"
+    assert job["permissions"] == {"contents": "read"}
+    step = next(step for step in job["steps"] if "run" in step)
+    assert step["timeout-minutes"] == "55"
+    assert "--projection value-package" in step["run"]
+    assert 'test "${GITHUB_SHA}" = "${REQUESTED_COMMIT}"' in step["run"]
+    assert (
+        job["steps"][-1]["with"]["path"]
+        == "pbs-native-value-package-receipt.json"
+    )
+    for name, old in workflow["jobs"].items():
+        if name not in {
+            "native-values",
+            "native-value-package",
+            "native-schema-inventory",
+            "observed-domain-values",
+            "native-reference-screen",
+            "native-reference-uri-screen",
+        }:
+            assert (
+                "inputs.qualification_scope != 'native-value-package'"
+                in old["if"]
+            )

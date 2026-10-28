@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import socket
-from collections.abc import Iterator
+from collections.abc import Generator
 from contextlib import contextmanager
 from threading import Thread
 from time import monotonic, sleep
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 @contextmanager
-def serve_asgi_on_loopback(app: ASGIApp) -> Iterator[str]:
+def serve_asgi_on_loopback(app: ASGIApp) -> Generator[str]:
     """Serve an ASGI app on an ephemeral loopback port for the context."""
     listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

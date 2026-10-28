@@ -1,0 +1,27 @@
+{
+  "schema_version": "pbs-raw-permission-v2",
+  "permission_status": "active",
+  "revoked_at": null,
+  "source_id": "au_pbs",
+  "decision": "allow_raw_redistribution",
+  "permission_basis": "owner_attestation",
+  "accountable_party": "repository-owner",
+  "recorded_at": "2026-08-31",
+  "owner_statements": [
+    "I have permission for raw pbs redistribution.",
+    "Don't require me to record and apply the terms, just proceed with allowing it."
+  ],
+  "scope": "Raw PBS schedule PDFs and machine-readable schedule packages, including historical editions and source-identified archived variants.",
+  "per_file_owner_approval_required": false,
+  "publisher_permission_document_verified": false,
+  "licence_identifier": null,
+  "preservation_controls": [
+    "Preserve original bytes, notices, attribution and source disclaimers.",
+    "Record source URL, retrieval evidence, edition identity, size and checksum.",
+    "Keep source payloads out of the software Git repository; use governed external archive storage.",
+    "Do not apply the software Apache-2.0 licence to PBS payloads."
+  ],
+  "exclusions": ["Non-PBS sources", "Credentials", "Papers and preprints", "Unsupported research claims"],
+  "publication_state": "not_asserted"
+}
+

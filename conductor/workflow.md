@@ -21,10 +21,14 @@
 
 ## Autonomous Execution
 
-- Continue through tasks, phases, review fixes, pull requests, green-check
-  merges, reconciliation, and archival while work is safe and in scope.
-- Select the next unblocked track automatically when the current track is
-  complete.
+- Continue through tasks, phases, review fixes, permitted pull requests,
+  green-check merges, reconciliation, and archival while work is safe and in
+  scope. Authorized pushes, technical pull requests, CI/workflow execution, and
+  merges are permitted under the `AGENTS.md` email and messaging exclusion.
+  Outreach and standalone comments remain prohibited.
+- Select the next unblocked system task using
+  [the system completion plan](system-completion.md), across existing tracks.
+  A dataset task must name the shared capability or existing gate it closes.
 - Inform the maintainer of progress without converting updates into approval
   requests.
 - Pause only at the decision boundary defined in `conductor/autonomy.md`.
@@ -35,18 +39,21 @@
 
 ## Task Lifecycle
 
-1. Select the next unblocked task and mark it `[~]`.
+1. Select the next unblocked system task and record its existing gate, concrete
+   failure, bounded scope, expected evidence and stop condition; mark it `[~]`.
 2. Write or identify failing unit, integration, end-to-end, smoke, property,
    metamorphic, contract, deterministic-simulation, mutation, or parity tests
    appropriate to the change.
 3. Confirm the intended failure.
 4. Implement the smallest coherent change.
-5. Run the focused tests, then one broader affected harness selection. Reuse
-   current full-suite evidence for a test-only follow-up when production code,
-   shared fixtures, dependencies, and release gates are unchanged; do not
-   rerun the full local profile solely because a test was added. Run the full
-   profile for changed production behavior or gates where platform support
-   permits, and retain complete protected CI lanes for every pull request.
+5. Run exact affected test files/nodes and applicable static checks. Broaden
+   only for demonstrated shared impact, new failures or unresolved risk; reuse
+   unchanged evidence. Policy, report, receipt and test-only changes do not
+   trigger a local full profile. Run required integration, package, coverage,
+   security and release checks at coherent system milestones, including the
+   full profile when the applicable contract and changed behavior require it.
+   Do not repeat broad validation for each dataset or routine integration.
+   Complete protected CI lanes remain required for every pull request.
 6. Run routine typing with `ty` and formal typing with BasedPyright.
 7. Verify coverage remains strictly above 90% for governed core code and upload CI coverage to Codecov.
 8. Run security, provenance, licensing, deterministic-regeneration, and source-boundary gates.
@@ -65,10 +72,10 @@
   release/reproducibility contract throughout child-process PATH. Keep executable
   inputs fixed while the run is live.
 - Preserve a run's result for its tested state when remote `main` advances.
-  After rebasing or otherwise integrating, inspect the actual delta. Use affected
-  and routine checks for documentation, receipts, or test-only changes; rerun the
-  applicable full profile for changed production behavior or release gates, or
-  when a demonstrated failure requires it. Complete protected CI still qualifies
+  After rebasing or otherwise integrating, inspect the actual delta and apply
+  the proportional validation rules above. Full profiles remain required at
+  applicable system milestones or when a demonstrated failure requires one.
+  Complete protected CI still qualifies
   the final PR head.
 - Retain original failed invocations and the exact recovery checks separately.
   A successful isolated rerun does not turn the original full run into a pass.
@@ -112,7 +119,10 @@ or requires judgment that cannot be represented by automated evidence.
 ## Single-Developer Controls
 
 - Do not invent independent approvals.
-- Use pull requests and protected checks for change isolation and durable evidence.
+- Use technical pull requests and protected checks for change isolation and
+  durable evidence. Preserve the `AGENTS.md` email and messaging exclusion;
+  technical repository metadata does not authorize outreach or standalone
+  comments.
 - Keep credential, licensing, publication, and high-consequence interpretation gates explicit.
 - Record unavailable external evidence as blocked or out of scope, never complete.
 

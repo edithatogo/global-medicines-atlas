@@ -8,18 +8,18 @@ date.
 
 ## Install core or semantic retrieval
 
-The authoritative runtime is Python 3.14. From a source checkout, install the
+The authoritative runtime is Python 3.15.1. From a source checkout, install the
 locked core environment without development groups:
 
 ```console
-uv sync --python 3.14.6 --locked --no-dev
+uv sync --python 3.15.1 --locked --no-dev
 ```
 
 LanceDB-backed semantic retrieval is optional. Install it explicitly when that
 capability is required:
 
 ```console
-uv sync --python 3.14.6 --locked --no-dev --extra semantic
+uv sync --python 3.15.1 --locked --no-dev --extra semantic
 ```
 
 Core operation must remain usable without LanceDB. Mojo is an experimental
@@ -119,8 +119,8 @@ harness:
 
 ```console
 uv sync --python 3.14.6 --locked --all-groups
-uv run python scripts/test_goblin.py quick
-uv run ruff check .
+uv run --python 3.15.1 python scripts/test_goblin.py quick
+uv run --python 3.15.1 ruff check .
 uv run ruff format --check .
 ```
 
