@@ -33,3 +33,18 @@ performed by this preparation. Existing MBS replay plans retain their original
 bytes. Further roles and the actual hosted receipts must be qualified before
 any PBS v4 admission or consumer delivery. Independent recovery and the wider
 Stable v1 federation gate remain open.
+
+## Medallion v1 conformance
+
+`scripts/qualify_m112_v1_conformance.py --cohort pbs` builds the exact six-object
+candidate manifest at
+`quality/qualifications/australian-m112-pbs-utilisation-v1-conformance-20261028.json`.
+The same command with `--check` verifies byte-identical regeneration. It uses
+the PBS-specific attestation only after the exact identity, publication and
+B1/B2 evidence checks pass; it does not expand the existing MBS rights bases.
+The default MBS command and its sixteen-object output retain their prior bytes.
+
+All six PBS artifacts remain `candidate`, and all six layer promotions remain
+`blocked` for incomplete v4 roles. The attestation reason records that the
+instrument was not independently reviewed. This conformance manifest needs a
+durable exact-main readback before it can supply a v4 candidate receipt role.

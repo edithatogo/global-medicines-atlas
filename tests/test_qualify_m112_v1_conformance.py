@@ -103,3 +103,85 @@ def test_stale_bound_evidence_digest_fails_closed(
     monkeypatch.setattr(qualification, "_read_json", read_json)
     with pytest.raises(ValueError, match="evidence reference digest mismatch"):
         qualification.qualify()
+
+
+def test_pbs_v1_conformance_is_exact_six_and_remains_candidate_only() -> None:
+    document = qualification.qualify(cohort="pbs")
+    assert document == qualification.qualify(cohort="pbs")
+    assert len(document["artifacts"]) == 6
+    assert len(document["promotion_decisions"]) == 6
+    for artifact in document["artifacts"]:
+        assert artifact["artifact_id"].startswith(
+            "m112:edithatogo/australian-pbs-utilisation-archive@"
+            "9f1d53cd50eea251b326da42a96f3ac72ebce97a:raw/pbs/"
+        )
+        assert artifact["promotion_status"] == "candidate"
+        assert artifact["rights_decision"]["reason_codes"] == [
+            "maintainer_attested_exact_scope_permission_not_independently_reviewed"
+        ]
+    assert all(
+        decision["status"] == "blocked"
+        for decision in document["promotion_decisions"]
+    )
+
+
+def test_pbs_rights_basis_does_not_become_a_general_mbs_permission(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = qualification._read_json  # pyright: ignore[reportPrivateUsage]
+
+    def read_json(root: Path, relative: str) -> dict[str, Any]:
+        document = original(root, relative)
+        if relative == qualification.ROLE_REPORT:
+            document["objects"][0]["rights_state"] = (
+                "maintainer_attested_exact_public_release_permission_for_pbs_"
+                "utilisation_raw_object"
+            )
+        return document
+
+    monkeypatch.setattr(qualification, "_read_json", read_json)
+    with pytest.raises(ValueError, match="exact-scope rights"):
+        qualification.qualify()
+
+
+def test_pbs_conformance_rejects_an_unbound_target(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = qualification._read_json  # pyright: ignore[reportPrivateUsage]
+
+    def read_json(root: Path, relative: str) -> dict[str, Any]:
+        document = original(root, relative)
+        if relative.endswith(
+            "australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json"
+        ):
+            document["objects"][0]["path"] = "raw/pbs/unapproved.csv"
+        return document
+
+    monkeypatch.setattr(qualification, "_read_json", read_json)
+    with pytest.raises(ValueError, match="exact PBS replay target"):
+        qualification.qualify(cohort="pbs")
+
+
+def test_v1_conformance_rejects_unknown_cohort() -> None:
+    with pytest.raises(
+        ValueError, match="unsupported M-112 conformance cohort"
+    ):
+        qualification.qualify(cohort="unknown")
+
+
+def test_pbs_conformance_rejects_partial_cohort(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original = qualification._read_json  # pyright: ignore[reportPrivateUsage]
+
+    def read_json(root: Path, relative: str) -> dict[str, Any]:
+        document = original(root, relative)
+        if relative.endswith(
+            "australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json"
+        ):
+            document["objects"].pop()
+        return document
+
+    monkeypatch.setattr(qualification, "_read_json", read_json)
+    with pytest.raises(ValueError, match="exact six-object cohort"):
+        qualification.qualify(cohort="pbs")

@@ -973,3 +973,14 @@ append. The Stable v1 Australian federation gate remains blocked.
   hosted replay and retain its aggregate artifact. No admission or consumer
   canary follows from preparation alone. Keep the full federation acceptance
   and track archival pending their remaining requirements.
+
+## Exact PBS utilisation v1 conformance role (2026-10-28)
+
+- [x] Reuse the exact PBS identity/rights/B1/B2 validation from PR #1361 to
+  produce a six-object medallion-v1 conformance manifest. This closes the
+  missing local `lineage.v1_conformance` candidate role without claiming v4
+  admission, inferred meanings, completed replay, or consumer acceptance.
+- [x] Verify the existing 16-object MBS conformance remains byte-identical and
+  does not accept the PBS-specific attestation as a new MBS rights basis.
+- [~] Review, retain the candidate manifest, and qualify its durable exact-main
+  readback after the replay implementation merges. Remaining v4 roles stay open.

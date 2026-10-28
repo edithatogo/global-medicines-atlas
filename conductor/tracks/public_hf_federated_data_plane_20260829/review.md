@@ -35,3 +35,31 @@ requirements; no scope or acceptance criterion was changed by this review.
 Final lint found one intended regex alternation needing a raw string literal.
 It was corrected before push; all affected-file lint/format checks, the two
 locator tests, and context validation then passed.
+
+# Review Report: exact PBS utilisation v1 conformance (2026-10-28)
+
+## Summary
+
+The six-object v1 candidate manifest is locally qualified and ready for a scoped
+follow-up after PR #1361; durable readback and v4 admission remain pending.
+Review was by the implementing agent and supplies no independent approval.
+
+## Verification Checks
+
+- [x] **Plan Compliance**: the shared v1 emitter accepts the exact six PBS
+  identities validated by the existing metadata-only PBS evidence join.
+- [x] **Style Compliance**: Ruff, formatting, ty and BasedPyright passed.
+- [x] **New Tests**: five cases cover the exact PBS manifest, MBS rights
+  isolation, unbound targets, unknown cohorts and partial denominators.
+- [x] **Test Coverage**: 33 focused conformance/replay cases and 54 broader
+  medallion, v4 role and context cases passed.
+- [x] **Test Results**: six-object PBS and sixteen-object MBS CLI regeneration
+  checks passed. The original MBS manifest is byte-identical.
+
+## Findings and fixes
+
+Review identified that the PBS manifest needed an explicit six-member count
+check before construction. It was added with a partial-cohort regression.
+The separate PBS rights mapping does not widen the default MBS policy. No
+remaining scoped findings were identified. Every promotion remains blocked;
+full-track acceptance and archival remain incomplete.
