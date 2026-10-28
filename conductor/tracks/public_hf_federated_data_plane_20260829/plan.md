@@ -984,3 +984,15 @@ append. The Stable v1 Australian federation gate remains blocked.
   does not accept the PBS-specific attestation as a new MBS rights basis.
 - [~] Review, retain the candidate manifest, and qualify its durable exact-main
   readback after the replay implementation merges. Remaining v4 roles stay open.
+
+## Exact PBS discovery-role metadata readback (2026-10-28)
+
+- [x] Confirm the frozen PBS-utilisation revision is public and ungated using
+  the qualified anonymous HF CLI metadata route. Bind all six retained object
+  identities without reading their source payloads.
+- [x] Verify public HEOR collection membership and the exact estate-registry
+  entry at the checksum-pinned catalog revision; preserve its `not_assessed`
+  status and keep source rights, sensitivity and admission separate.
+- [ ] Bind this candidate receipt from durable main into complete v4 contracts
+  only after their remaining required evidence qualifies. No admission or
+  consumer canary is supplied by the discovery readback.

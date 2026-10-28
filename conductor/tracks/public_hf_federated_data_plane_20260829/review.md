@@ -63,3 +63,15 @@ check before construction. It was added with a partial-cohort regression.
 The separate PBS rights mapping does not widen the default MBS policy. No
 remaining scoped findings were identified. Every promotion remains blocked;
 full-track acceptance and archival remain incomplete.
+
+## PBS discovery-role readback review
+
+The anonymous metadata route was qualified through installed CLI help and an
+exact-target read. The pinned PBS dataset, public collection membership and
+checksum-bound registry entry match the six retained identities. An initial
+extractor used `entries`; the catalog's actual `datasets` key was then used and
+the bounded read passed. The report hashes CLI JSON output rather than claiming
+those hashes are raw HTTP response digests. The `not_assessed` registry state is
+preserved and no rights or sensitivity conclusion is inferred. Native Gitleaks
+8.30.1 checks passed for both new PBS conformance/discovery metadata artifacts.
+This is a candidate role observation; complete-contract binding is still open.

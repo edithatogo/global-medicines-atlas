@@ -48,3 +48,16 @@ All six PBS artifacts remain `candidate`, and all six layer promotions remain
 `blocked` for incomplete v4 roles. The attestation reason records that the
 instrument was not independently reviewed. This conformance manifest needs a
 durable exact-main readback before it can supply a v4 candidate receipt role.
+
+## Discovery role candidate
+
+The metadata-only readback in
+`quality/qualifications/australian-m112-pbs-utilisation-v4-discovery-role-candidate-20261028.json`
+confirms anonymous public access to the frozen PBS revision, membership in the
+public Health Economics and Outcomes Research collection, and one exact entry
+in estate-registry revision `4802d56a340646043fc91bed218c1e8a958f42c2`.
+The registry catalog matched its retained SHA-256. Its `not_assessed` state
+remains a registry assessment state; it does not replace the separate exact
+rights attestation. No source object was downloaded or rehashed by this check.
+The candidate still needs a durable exact-main receipt binding in a complete
+v4 contract; discovery membership alone performs no admission.
