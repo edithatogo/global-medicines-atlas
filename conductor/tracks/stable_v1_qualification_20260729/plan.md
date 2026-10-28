@@ -844,3 +844,13 @@ release gate.
   BasedPyright, context validation, and diff checks. The conditional stable
   authority validator remains blocked by the unresolved Australian federation
   gate; the historical release candidate remains unverified and unsigned.
+
+### Australian federation evidence pointer reconciliation (2026-10-28)
+
+- [x] Preserve the 2026-10-27 Phase 4 report and add a 2026-10-28 successor
+  binding the verified 91-workbook header meanings and zero formula/source-error
+  observations to the unresolved value states. Reconcile the successor into the
+  Stable v1 gate and M-108/M-109/M-112 requirement evidence. Focused
+  evidence-binding and fail-closed tests pass.
+  The Australian federation gate remains blocked; this does not make the stable
+  candidate promotable or the track archivable.
