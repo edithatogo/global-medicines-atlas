@@ -111,6 +111,14 @@ AUSTRALIAN_M112_PBS_UTIL_RIGHTS_LINEAGE = (
     "quality/qualifications/"
     "australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json"
 )
+AUSTRALIAN_M112_PBS_NATIVE_COHORT = (
+    "quality/qualifications/"
+    "australian-m112-pbs-v4-admission-readers-20261028/manifest.json"
+)
+AUSTRALIAN_M112_EFFECTIVE_RAW_DELIVERY = (
+    "quality/qualifications/"
+    "australian-m112-effective-raw-delivery-reconciliation-20261028.json"
+)
 AUSTRALIAN_AUGUST_CURRENT_TREE = "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json"
 AUSTRALIAN_AUGUST_F9F9_DISPOSITION = (
     "quality/qualifications/"
@@ -608,6 +616,8 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                         AUSTRALIAN_M112_CURRENT_ROLE_EVIDENCE,
                         AUSTRALIAN_M112_MBS_UTIL_LINEAGE,
                         AUSTRALIAN_M112_PBS_UTIL_RIGHTS_LINEAGE,
+                        AUSTRALIAN_M112_PBS_NATIVE_COHORT,
+                        AUSTRALIAN_M112_EFFECTIVE_RAW_DELIVERY,
                     ],
                 )
         elif requirement["evidence"] == ["conductor/requirements.md"]:
@@ -711,6 +721,8 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             AUSTRALIAN_M112_CURRENT_ROLE_EVIDENCE,
             AUSTRALIAN_M112_MBS_UTIL_LINEAGE,
             AUSTRALIAN_M112_PBS_UTIL_RIGHTS_LINEAGE,
+            AUSTRALIAN_M112_PBS_NATIVE_COHORT,
+            AUSTRALIAN_M112_EFFECTIVE_RAW_DELIVERY,
             AUSTRALIAN_AUGUST_CURRENT_TREE,
             AUSTRALIAN_AUGUST_F9F9_DISPOSITION,
             AUSTRALIAN_PBS_RDF_FIELD_STATE,

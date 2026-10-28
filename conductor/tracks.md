@@ -17,7 +17,21 @@ readiness reconciliation, and bound track receipts for current gate states.
 
 ---
 
-## Current M-112 readback (2026-10-21)
+## Current M-112 raw-object readback (2026-10-28)
+
+The [effective raw-delivery reconciliation](../quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json)
+records **14 raw v4 admissions, 14 admitted-object reader canaries and 1,745
+deferred objects** across the unchanged frozen denominator of 1,759. This joins
+the previously retained eight MBS raw admissions to six exact PBS raw objects.
+All six PBS native runs passed once on exact main `10b104417ccb37da6ec20b8e7151c6486a787eec`,
+verified 191,047,619 bytes and left zero reader-cache bytes after close. Their
+[retained native cohort](../quality/qualifications/australian-m112-pbs-v4-admission-readers-20261028/manifest.json)
+is raw-byte delivery evidence, not PBS domain semantics or derived-table
+admission. The separately qualified six-table July 2025 MBS Silver cohort is
+not added to these raw-object counts. Independent recovery and federation
+acceptance remain open; no source, dataset publication or rights scope changed.
+
+## Historical M-112 readback (2026-10-21)
 
 The latest bound preflight records 1,759/1,759 frozen objects with resolved
 rights, 8 exact v4 admissions, 8 admitted-object consumer canaries, and 1,751
@@ -30,7 +44,7 @@ public dataset mutation or external publication was performed.
 Use [preflight snapshot 20261021-15](../quality/qualifications/australian-m112-rights-release-preflight-20261021-15.json),
 [current rights reconciliation](../quality/qualifications/australian-m112-current-rights-reconciliation-20261021.json),
 and the [current role qualification](../quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json)
-for current counts. These reports reconcile retained hosted receipts; they
+for the as-of-2026-10-21 counts. These reports reconcile retained hosted receipts; they
 perform no new admission or canary. Earlier preflights remain unchanged.
 The reviewed MBS path-lineage overlay also
 closes the July 2025 XML and P7 workbook B1/B2 joins. The exact July BSD

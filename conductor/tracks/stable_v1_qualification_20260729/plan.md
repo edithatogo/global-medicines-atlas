@@ -1186,7 +1186,8 @@ remaining federation criteria, and this track's archival remain pending.
 
 ## Exact PBS admission execution prerequisite (2026-10-28)
 
-- [~] Qualify and merge the six-target raw-B2 admission/reader runner, then
-  execute exact-main native runs and retain their metadata-only results.
-  Existing raw counts remain 8 admissions and 8 canaries; no candidate code or
-  synthetic test result changes those counters or closes federation.
+- [x] Qualify and merge the six-target raw-B2 admission/reader runner after
+  38 exact-head checks passed, then execute and retain all six native results.
+  Effective frozen raw totals are 14 admissions, 14 reader canaries and 1,745
+  deferred. The separate six-table MBS Silver cohort is not added to these
+  counts. Federation remains blocked; no release or archival was performed.

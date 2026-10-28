@@ -1043,8 +1043,11 @@ append. The Stable v1 Australian federation gate remains blocked.
   Local policy checks perform no admission or network read.
 - [x] Register an exact-main, dispatch-only, six-target read-only hosted
   qualification route retaining metadata-only admission and reader artifacts.
-- [~] Complete review, one coherent production-change full validation and
-  protected exact-head CI, then merge. Hosted qualification has not run.
-- [ ] Dispatch each exact object once on qualified main; verify native
-  run/job/artifact evidence, retain results and reconcile actual raw admission
-  and reader counts. Broader consumers and independent recovery stay separate.
+- [x] Complete implementing-agent review and merge PR #1365 after all 38
+  exact-head checks passed. The one local full attempt passed coverage/package
+  checks but terminated with exit 138 during pytest-gremlins; it is not recorded
+  as a local full pass. The exact-head hosted lanes passed.
+- [x] Dispatch each exact object once on main `10b104417ccb37da6ec20b8e7151c6486a787eec`;
+  all six native jobs and receipts passed. Reconcile raw totals to 14 admissions,
+  14 admitted-object reader canaries and 1,745 deferred out of 1,759. Broader
+  consumers, derived delivery and independent recovery remain separate.
