@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 RECONCILIATION = (
@@ -25,7 +26,7 @@ LIVE_V4_ADDENDUM = (
 )
 
 
-def _read(path: str) -> dict[str, object]:
+def _read(path: str) -> dict[str, Any]:
     return json.loads((ROOT / path).read_text(encoding="utf-8"))
 
 
