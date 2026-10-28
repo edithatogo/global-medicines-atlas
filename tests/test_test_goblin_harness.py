@@ -490,7 +490,7 @@ def test_coverage_reads_machine_readable_threshold(monkeypatch) -> None:
 
 def test_contract_profile_validates_before_running_pytest(monkeypatch) -> None:
     """The contract profile performs collection but no test execution."""
-    commands: list[object] = []
+    commands: list[list[str]] = []
     monkeypatch.setattr(HARNESS, "run", commands.append)
 
     HARNESS.contracts()
@@ -710,7 +710,7 @@ def test_gitleaks_allowlist_is_limited_to_verified_public_evidence() -> None:
     allowlist = allowlists[0]
     assert allowlist["targetRules"] == ["generic-api-key"]
     assert allowlist["regexTarget"] == "match"
-    assert len(allowlist["regexes"]) == 13
+    assert len(allowlist["regexes"]) == 14
     assert not (ROOT / ".gitleaksignore").exists()
 
     revision = json.loads(
@@ -760,7 +760,7 @@ def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
     regexes = config["allowlists"][0]["regexes"][2:]
     expected = [
         (regexes[:2], "dataset_access_response_sha256", 2),
-        (regexes[2:], "idempotency_key", 9),
+        (regexes[2:], "idempotency_key", 10),
     ]
     for values, field, expected_count in expected:
         patterns = [re.compile(value) for value in values]
@@ -811,6 +811,30 @@ def test_m112_gitleaks_allowlist_is_exact_to_public_sha256_fields() -> None:
     ).read_text(encoding="utf-8")
     assert "dataset_access_response_sha256" in disposition
     assert "idempotency_key" in disposition
+
+
+def test_pbs_replay_gitleaks_allowlist_binds_the_computed_key() -> None:
+    """The PBS exception is a reproducible identity, never a credential."""
+    snapshot = json.loads(
+        (
+            ROOT / "quality/qualifications/"
+            "australian-m112-pbs-utilisation-v3-replay-plan-20261028.json"
+        ).read_text()
+    )["snapshots"][0]
+    expected_key = hashlib.sha256(
+        json.dumps(
+            [snapshot["partition_id"], snapshot["snapshot_id"]],
+            ensure_ascii=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+    ).hexdigest()
+    assert snapshot["idempotency_key"] == expected_key
+    config = tomllib.loads((ROOT / ".gitleaks.toml").read_text())
+    assert any(
+        re.fullmatch(pattern, f'idempotency_key": "{expected_key}"')
+        for pattern in config["allowlists"][0]["regexes"]
+    )
 
 
 def test_gitleaks_rejects_publisher_checksum_mismatch(monkeypatch) -> None:

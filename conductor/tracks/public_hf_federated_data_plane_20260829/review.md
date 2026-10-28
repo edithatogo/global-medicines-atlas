@@ -35,3 +35,14 @@ requirements; no scope or acceptance criterion was changed by this review.
 Final lint found one intended regex alternation needing a raw string literal.
 It was corrected before push; all affected-file lint/format checks, the two
 locator tests, and context validation then passed.
+
+## PR #1361 hosted leak-detection correction
+
+The redacted hosted finding is the deterministic PBS replay identity. Its exact
+field/value exception is independently recomputed by the harness; changed
+values and API-key fields stay detected. Gitleaks 8.30.1 passed the complete
+base/head history with the revised configuration and the native API-key
+negative control remained detected. Three focused controls and 68 harness
+tests passed. Formal typing exposed a pre-existing overly broad command-list
+annotation in the affected test module; its minimal correction passed the
+affected node, ty and BasedPyright. New hosted qualification remains pending.
