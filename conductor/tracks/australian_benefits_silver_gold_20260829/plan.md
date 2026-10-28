@@ -6064,4 +6064,4 @@ authoritative contract, reconciliation, and bound receipts.
   resolved; no PBS predicate meaning, relationship, edge, or matcher behavior
   is qualified. See the digest-bound r17 report and the W3C RDF 1.1 XML Syntax
   specification. M-109 and the Australian federation gate remain blocked.
-  Focused test and contract evidence is recorded in `evidence.jsonl`.
+  Focused test and contract evidence is recorded in `evidence.jsonl`; implementation commit `636c27bf` contains the code, report, Stable v1 bindings, and validation evidence.

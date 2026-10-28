@@ -819,7 +819,7 @@ authoritative contract, reconciliation, and bound receipts.
   source values. M-105/M-107, the remaining federation requirements, and
   conditional promotion prerequisites are unchanged. Targeted PBS and Stable
   contract checks, static analysis, and Conductor context validation pass;
-  details are in `evidence.jsonl`.
+  details are in `evidence.jsonl`; implementation commit `636c27bf` records the report, code, and contract bindings.
 
 - [x] Implement the shared execution charter and machine-validated scheduling
   plan; require named existing gates, bounded failures, proof and stop conditions.
