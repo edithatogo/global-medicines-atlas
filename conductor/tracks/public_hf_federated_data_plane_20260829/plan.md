@@ -929,6 +929,8 @@ admission. No publication, promotion, or public release occurred.
   exact-main hosted transaction. Run artifacts are temporary evidence and do
   not replace repository-versioned qualification receipts or any required
   admission, rights, recovery, or consumer evidence.
+- [x] Review the local receipt-transport implementation after focused
+  verification; no code findings remain. Implementation commit: `507ec28e`.
 
 The local change sends no messages and performs no dataset publication or
 append. The Stable v1 Australian federation gate remains blocked.
