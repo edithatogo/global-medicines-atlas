@@ -871,7 +871,10 @@ The existing July 2025 MBS Silver six-table delivery is complete. Reconcile
 other currently recorded derived-output candidates against the same identity,
 lineage, rights, qualification, admission, and delivery gates before extending
 the cohort. The bounded reconciliation is retained in
-`quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json`.
+`quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json`;
+the 2026-10-28 successor incorporates the later exact workbook header-semantic
+receipt without changing admission or publication status:
+`quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json`.
 
 - [x] Confirm the six July 2025 MBS Silver tables have exact hosted admission,
   remote-read, and API/CLI/Atlas/export receipts. No public release or new
@@ -881,10 +884,20 @@ the cohort. The bounded reconciliation is retained in
   changing the frozen inventory or adding sources.
 - [ ] Qualify the 91 historical workbook Parquet outputs. The cohort receipt
   covers all 91 candidate identities and the exact-output rights attestation
-  is recorded, but source-column and value-era semantics remain unqualified;
-  the current field-state receipt leaves 310,176,929 non-header cells
-  `native_unresolved`. Keep these outputs candidate-only until supported
-  meanings and exact v4 role evidence are qualified.
+  is recorded. Bounded label meanings are qualified for eight supported header
+  roles across 91 verified profiles (728 bindings); the separate header
+  adjudication does not interpret underlying values. Date/period basis,
+  currency/benefit basis, and historical-to-current era rules remain
+  unqualified. The exact field-state receipt leaves 310,176,929 non-header
+  cells `native_unresolved`, excludes legacy P7, and records zero formula and
+  source-error cells for this cohort. Keep these outputs candidate-only until
+  remaining supported value meanings and exact v4 role evidence are qualified.
+- [x] Reconcile the 91-workbook Phase 4 blocker to the exact existing header
+  evidence: 91 verified profiles and 728 bounded header-role meanings are
+  qualified; 310,176,929 non-header values remain unresolved; no formula or
+  source-error cells were observed. Refresh the candidate report and
+  append-only evidence without changing the object denominator, adding sources,
+  or promoting any output.
 - [ ] Admit and deliver the PBS native Silver candidate. Its exact derived
   output rights attestation and bounded field-state receipt are recorded, but
   the field-state report is candidate-only, domain semantics are incomplete,
