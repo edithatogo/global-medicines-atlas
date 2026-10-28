@@ -749,6 +749,23 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
         acceptance_receipt["sha256"]
         == hashlib.sha256(acceptance_path.read_bytes()).hexdigest()
     )
+    acceptance = acceptance_path.read_text(encoding="utf-8")
+    m109_row = next(
+        line
+        for line in acceptance.splitlines()
+        if line.startswith("| M-109 Silver |")
+    )
+    assert "91 verified sheet/header profiles" in m109_row
+    assert "728 interpreted header bindings" in m109_row
+    assert (
+        "310,176,929 non-header values remain `native_unresolved`" in m109_row
+    )
+    assert "1,194 ambiguous date-shaped cells" in m109_row
+    assert "`p7_date_convention_selected=false`" in m109_row
+    assert (
+        "workbook-era date convention, domain meaning, and temporal comparison remain unqualified"
+        in m109_row
+    )
     assert receipt["release_performed"] is False
     assert receipt["candidate_package"] == {
         "consumer_verification_guide_complete": True,

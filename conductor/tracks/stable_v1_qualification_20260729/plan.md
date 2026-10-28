@@ -900,3 +900,17 @@ release gate.
   independent semantics and required source-evidence work where current
   authority and source contracts support it; do not archive this track until
   the gate is actually accepted.
+
+### Formal Conductor review correction (2026-10-28)
+
+- [x] Review commit `0bc2513b` against the Stable v1 plan, qualification
+  contract, product guidance, and affected tests. The review found the M-109
+  acceptance row did not reflect current 91-workbook header evidence or
+  distinguish the internal P7 DMY consistency inference from an unqualified
+  workbook-era date convention. Correct the row and bind its new digest in the
+  readiness reconciliation. The P7 date convention and domain meaning remain
+  unqualified; no acceptance gate changes. The Stable contract and context
+  test files pass (89 total); context validation, Ruff, formatting, `ty`,
+  BasedPyright, and diff checks pass.
+- [ ] Reconcile PR #1354 protected checks and merge only after they pass; keep
+  Stable v1 and the federation track blocked until all contract gates pass.
