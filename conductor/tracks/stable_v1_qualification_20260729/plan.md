@@ -1101,11 +1101,22 @@ release gate.
   Ruff, formatting, `ty`, configured BasedPyright targets, Actionlint and diff
   checks pass. No source payload, rights, admission, or publication state was
   changed locally.
-- [~] Merge the scoped change after protected checks pass, dispatch the
+- [x] Merge the scoped change after protected checks pass, dispatch the
   existing exact-main admission workflow, then validate and reconcile the
-  resulting six-object browser receipt into M-111 and Stable readiness. The
+  resulting six-object browser receipt into M-111 and Stable readiness. PR
+  #1357 merged as `29afcd342507f6110c557a0ddb0a9346d903bac4`; exact-main run
+  `40653807510` passed the six-object browser and consumer canaries. The
   Australian federation and Stable v1 gates remain blocked until all their
   independent requirements pass.
+
+## Phase: M-112 exact PBS-utilisation rights and lineage reconciliation (2026-10-28)
+
+- [~] Bind the existing six-object PBS-utilisation rights attestation to the
+  exact six frozen object identities and the landed B1/B2 lineage receipt.
+  Reconcile only the stale per-object rights state; preserve each Bronze
+  admission as unreviewed and keep v4 admission and consumer canary false.
+  Expected evidence: a digest-bound six-object reconciliation and tests proving
+  exact path/digest/byte binding and unchanged M-112 deferral/admission counts.
 
 ## Phase: Review Fixes — M-111 receipt binding (2026-10-28)
 
