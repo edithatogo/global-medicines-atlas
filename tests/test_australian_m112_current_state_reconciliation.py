@@ -229,6 +229,7 @@ def test_latest_addendum_supersedes_only_v4_identity_blocker() -> None:
     ) in acceptance
     assert "no typed v4 admission" in acceptance
     assert "`f9f9` has no admission sidecar" in acceptance
+    assert "explicitly deferred from M-108 admission" in acceptance
     assert "v4 source-receipt reference is absent locally" not in acceptance
 
 

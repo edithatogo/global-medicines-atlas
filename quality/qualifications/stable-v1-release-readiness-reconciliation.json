@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T04:28:00Z",
+  "as_of": "2026-10-28T04:54:38Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "95ed9ed04c6de532183a0578c7c48e888c670a518b56abf857f8711c01351111"
+    "sha256": "f29cb7d0f16e2f576854e59e3c9d23e988bf2120f19f6885f36d10833b667e2a"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -117,8 +117,13 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "81be4e21b3a0c32249db1de2c12d309d043265f71cf8a36be23184a2f0019ec7",
-        "consequence": "Federation summary binds current M-108/M-109/M-110/M-111/M-112 evidence, including exact 14-object MBS-utilisation and six-object PBS-utilisation rights boundaries; lineage, admission, independent recovery, broader semantics, and federation acceptance remain open."
+        "sha256": "2b8f298bf950cb9d226abdda5e67a4e4cb1508bedfc467553b384c90e9b1cae7",
+        "consequence": "Federation summary binds current M-108/M-109/M-110/M-111/M-112 evidence, including exact 14-object MBS-utilisation and six-object PBS-utilisation rights boundaries; the f9f9 August projection is explicitly deferred from admission, while lineage, product qualification, independent recovery, broader semantics, and federation acceptance remain open."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",
+        "sha256": "30f04f37de72252648fe1a4c07c6488024f56c10cec35d810f3e91534155aaf4",
+        "consequence": "The exact August f9f9 MBS projection prefix is deferred_not_admitted at the pinned current tree revision; this closes no M-108 admission or canary gate."
       }
     ],
     "release_action_performed": false,

@@ -52,6 +52,52 @@ def _validator(path: Path) -> Validator:
     return Draft202012Validator(schema)
 
 
+def _assert_f9f9_disposition_is_bound(
+    report: dict[str, Any], objects: list[dict[str, Any]]
+) -> Path:
+    path = ROOT / (
+        "quality/qualifications/"
+        "australian-mbs-august-f9f9-prefix-disposition-20261028.json"
+    )
+    disposition = _load(path)
+    assert disposition["disposition"]["state"] == "deferred_not_admitted"
+    assert disposition["disposition"]["product_id"] == (
+        "f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63"
+    )
+    assert disposition["evidence"]["dataset"] == report["dataset"]["id"]
+    assert disposition["evidence"]["revision"] == report["dataset"]["revision"]
+    assert disposition["objects"] == [
+        {
+            "path": row["path"],
+            "sha256": row["sha256"],
+            "byte_count": row["byte_count"],
+        }
+        for row in objects
+        if "/f9f9af5a152ea74c25a617102e3cf271054ef78867ed0eb84fb69822b6767d63/"
+        in row["path"]
+    ]
+    references: list[dict[str, str]] = [
+        disposition["evidence"][key]
+        for key in (
+            "current_tree_readback",
+            "phase4_reconciliation",
+            "scope_exception",
+            "rights_attestation",
+        )
+    ]
+    for reference in references:
+        evidence_path: Path = ROOT / reference["path"]
+        assert (
+            reference["sha256"]
+            == hashlib.sha256(evidence_path.read_bytes()).hexdigest()
+        )
+    boundaries = disposition["boundaries"]
+    assert boundaries["new_sources"] == 0
+    assert boundaries["admission_performed"] is False
+    assert boundaries["federation_gate_closed"] is False
+    return path
+
+
 def _must_requirement_ids() -> set[str]:
     text = (ROOT / "conductor/requirements.md").read_text(encoding="utf-8")
     must_section = text.split("## Should Have", maxsplit=1)[0]
@@ -368,6 +414,7 @@ def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
         == hashlib.sha256(scope_path.read_bytes()).hexdigest()
     )
     objects = report["readback"]["objects"]
+    disposition_path = _assert_f9f9_disposition_is_bound(report, objects)
     assert len(objects) == 4
     assert all(
         row["sha256"] == row["lfs_sha256"]
@@ -432,6 +479,9 @@ def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
     assert requirement["state"] == "blocked"
     assert readback_relative in requirement["evidence"]
     assert readback_relative in gate["evidence"]
+    disposition_relative = disposition_path.relative_to(ROOT).as_posix()
+    assert disposition_relative in requirement["evidence"]
+    assert disposition_relative in gate["evidence"]
     acceptance = (
         ROOT / "docs/qualification/australian-health-federation-acceptance.md"
     ).read_text(encoding="utf-8")
@@ -442,6 +492,7 @@ def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
     )
     assert readback_relative in m108_row
     assert "f9f9` has no admission sidecar" in m108_row
+    assert "explicitly deferred from M-108 admission" in m108_row
     assert "do not complete M-108" in m108_row
 
 
@@ -735,6 +786,22 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
         == hashlib.sha256(current_tree_path.read_bytes()).hexdigest()
     )
     assert "neither is v4-admitted" in current_tree_receipt["consequence"]
+    disposition_path = ROOT / (
+        "quality/qualifications/"
+        "australian-mbs-august-f9f9-prefix-disposition-20261028.json"
+    )
+    disposition_receipt = next(
+        item
+        for item in receipt["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == disposition_path.relative_to(ROOT).as_posix()
+    )
+    assert (
+        disposition_receipt["sha256"]
+        == hashlib.sha256(disposition_path.read_bytes()).hexdigest()
+    )
+    assert "deferred_not_admitted" in disposition_receipt["consequence"]
     acceptance_path = ROOT / (
         "docs/qualification/australian-health-federation-acceptance.md"
     )

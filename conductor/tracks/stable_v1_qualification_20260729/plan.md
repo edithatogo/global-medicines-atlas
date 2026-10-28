@@ -969,3 +969,25 @@ release gate.
   retention and do not count as permanent Conductor evidence; no hosted
   transaction was executed. Federation gate and stable promotion remain
   blocked.
+
+### August `f9f9` projection disposition (2026-10-28)
+
+- [x] Bind the exact two-object `f9f9` prefix to the current anonymous tree
+  readback and rights-only attestation. Record `deferred_not_admitted` because
+  the product has no Bronze admission sidecar, product-specific federation-v4
+  card, typed admission, or independent-replica evidence, and the attestation
+  does not authorize admission or canaries. Add the disposition to generated
+  Stable M-108 and federation-gate evidence and refresh the readiness receipt.
+  No source, inventory membership, rights conclusion, publication, admission,
+  or canary changed. The M-108 and federation gates remain blocked.
+- [x] Review repair: bind the Phase 4 reconciliation digest used to support the
+  missing product-card and independent-replica findings. Focused tests,
+  `ty`, BasedPyright, Ruff, formatting, context validation, and diff checks
+  pass. Review was performed by the implementing agent; no independent review
+  or gate acceptance is claimed.
+- [x] Re-run both affected qualification modules after the review repair:
+  66 passed; context validation and diff checks pass. No full local profile was
+  run because this evidence-bound disposition does not change runtime behavior.
+- [ ] Continue M-108 only when each remaining exact output has complete
+  product-specific qualification, independent-replica evidence, and separate
+  admission authority; retain the present no-admission boundary.

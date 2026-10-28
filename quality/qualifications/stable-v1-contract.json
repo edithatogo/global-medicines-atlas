@@ -863,7 +863,8 @@
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json",
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json",
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json",
-        "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json"
+        "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json",
+        "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -1290,7 +1291,8 @@
         "quality/qualifications/australian-mbs-gold-same-record-review-20261018.json",
         "quality/qualifications/australian-m110-mbs-july-2025-real-gold-assessment-20261018.json",
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json",
-        "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json"
+        "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json",
+        "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json"
       ]
     },
     {
