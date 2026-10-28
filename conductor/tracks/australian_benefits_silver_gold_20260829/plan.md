@@ -6023,6 +6023,23 @@ source qualification remains pending their actual final artifacts.
 - [x] Bind PBS domain semantics v5 into field-state successor r14 while preserving r13. The exact 3,028-field direct restriction date grammar is recorded as a lexical-role qualification only; the 18,208,758-field partition remains 934,628 interpreted, 17,274,130 `native_unresolved`, and 0 unavailable. Native values and semantic links are not promoted.
 - [x] Qualify generic same-member XLink link targets in PBS field-state successor r15. The exact URI screen resolves all 992,456 `xlink:href` fields to unique same-member `xml:id` targets across 186 source paths. The bounded value-free review contains 17 same-member positive examples, 11 no-target controls, and 18 RDF local candidates; it is not probability-based and does not estimate precision or recall. The field-state partition becomes 1,927,084 interpreted, 16,281,674 `native_unresolved`, and 0 unavailable. PBS-specific predicates, clinical meaning, the 1,167,610 RDF `rdf:resource` fields, edge materialization, and external target resolution remain open.
 
+### October 28 RDF/XML field role
+
+- [x] Qualify only the generic RDF/XML `rdf:resource` syntax role in PBS
+  field-state successor r16. The W3C RDF/XML Recommendation defines the
+  attribute as the IRI of an object node. Across 370 exact PBS schema paths,
+  1,159,282 previously unresolved fields receive that generic field role;
+  8,328 existing AMT-specific fields retain their narrower interpretation.
+  The full denominator remains 18,208,758 fields: 3,086,366 interpreted,
+  15,122,392 `native_unresolved`, and zero unavailable. The URI screen's
+  1,094,033 unique-literal candidates and 73,577 no-member-definition results
+  remain diagnostics. No source values are read or emitted; target identity,
+  PBS predicate/domain meaning, semantic edges, currentness, and M-109
+  acceptance remain unresolved. See
+  `docs/qualification/pbs-rdf-resource-field-state-20261028.md` and the
+  digest-bound r16 report. Focused reconciliation tests and local validation
+  are recorded in `evidence.jsonl`.
+
 ## System completion execution focus (2026-10-25)
 
 Select the next task through the [system completion charter](../../system-completion.md)

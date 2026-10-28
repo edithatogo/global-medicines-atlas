@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -29,6 +30,7 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     reconcile_pbs_field_states,
     reconcile_pbs_field_states_v5,
     reconcile_pbs_field_states_v6,
+    reconcile_pbs_field_states_v7,
 )
 from global_medicines_atlas.pbs_reference_case_adjudication import (
     ADJUDICATION_PATH,
@@ -280,6 +282,83 @@ def test_v6_qualifies_only_exact_same_member_xlink_targets():
     assert links["edge_payload_emitted"] is False
     assert links["source_values_emitted"] is False
     assert coverage["interpreted"] + coverage["native_unresolved"] == 18_208_758
+
+
+def test_v7_qualifies_generic_rdf_resource_field_role_without_edges():
+    report = reconcile_pbs_field_states_v7(ROOT)
+    coverage = report["field_state_coverage"]
+    references = report["source_local_rdf_resource_semantics"]
+    rdf_rows = [
+        row
+        for row in report["path_reconciliation"]
+        if "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource"
+        in row["schema_path"]
+    ]
+
+    assert report["profile_id"] == "pbs-v3-2026-04-01-field-state-v7"
+    assert coverage == {
+        "interpreted": 3_086_366,
+        "native_unresolved": 15_122_392,
+        "unavailable": 0,
+        "source_fields": 18_208_758,
+        "denominator_closed": True,
+        "all_native_values_remain_unresolved": False,
+        "semantic_field_states_distinct_from_structural_destinations": True,
+    }
+    assert len(rdf_rows) == 370
+    assert sum(row["field_count"] for row in rdf_rows) == 1_167_610
+    assert (
+        sum(
+            row["field_count"]
+            for row in rdf_rows
+            if row["semantic_interpretation"]["domain"]
+            == "amt_literal_reference_resource"
+        )
+        == 8_328
+    )
+    assert all(row["semantic_state"] == "interpreted" for row in rdf_rows)
+    assert references["rdf_resource_fields"] == 1_167_610
+    assert references["newly_interpreted_generic_resource_references"] == (
+        1_159_282
+    )
+    assert references["target_identity_resolution_qualified"] is False
+    assert references["semantic_relationships_qualified"] is False
+    assert references["edge_payload_emitted"] is False
+    assert references["source_values_emitted"] is False
+
+
+def test_v7_rejects_changed_rdf_screen_outcomes(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    relative_path = reconciliation.URI_SCREEN_V3
+
+    def mutate(envelope: dict[str, Any]) -> None:
+        envelope["report"]["qualification"]["outcome_counts_by_qname"][
+            "rdf:resource"
+        ]["absolute_uri_unique_candidate"] += 1
+
+    _intercept_json_loads(monkeypatch, relative_path, mutate)
+
+    with pytest.raises(
+        ValueError, match="PBS RDF resource screen qualification differs"
+    ):
+        reconcile_pbs_field_states_v7(ROOT)
+
+
+def test_v7_retained_report_is_canonical_and_digest_bound():
+    report_path = ROOT / reconciliation.CURRENT_RECONCILIATION_V7
+    envelope = json.loads(report_path.read_bytes())
+    canonical = json.dumps(
+        envelope["report"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+    assert hashlib.sha256(canonical).hexdigest() == envelope["report_sha256"]
+    assert envelope["report"]["profile_id"] == (
+        "pbs-v3-2026-04-01-field-state-v7"
+    )
 
 
 def test_reference_case_structural_review_keeps_semantic_links_unqualified():

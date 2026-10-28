@@ -947,6 +947,37 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
     }
 
 
+def test_pbs_r16_field_state_is_bound_but_federation_gate_stays_blocked() -> (
+    None
+):
+    report_path = ROOT / (
+        "quality/qualifications/"
+        "pbs-native-silver-field-reconciliation-20261028-r16.json"
+    )
+    readiness = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    stable_contract = _load(QUALIFICATION)
+    receipt = next(
+        item
+        for item in readiness["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == report_path.relative_to(ROOT).as_posix()
+    )
+
+    assert (
+        receipt["sha256"]
+        == hashlib.sha256(report_path.read_bytes()).hexdigest()
+    )
+    assert "URI targets" in receipt["consequence"]
+    assert stable_contract["qualification_state"] == "blocked"
+    assert stable_contract["unresolved_gate_ids"] == [
+        "stable-v1-australian-health-federation"
+    ]
+
+
 def test_structural_medicine_v2_is_not_temporal_migration_v2() -> None:
     schema = _load(CANONICAL_SCHEMA)
     assert schema["properties"]["schema_id"]["const"] == (

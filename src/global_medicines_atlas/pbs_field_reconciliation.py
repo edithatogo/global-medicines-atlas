@@ -173,7 +173,11 @@ URI_STRUCTURAL_REVIEW_V1_REPORT_SHA256 = (
     "b5834d4e86879c93818bfc49939423e5fbee103a7f40b5114f1f836cafc3b684"
 )
 CURRENT_RECONCILIATION_V6 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r15.json"
+CURRENT_RECONCILIATION_V7 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r16.json"
 XLINK_FIELD_COUNT = 992_456
+RDF_RESOURCE_FIELD_COUNT = 1_167_610
+RDF_RESOURCE_PATH_COUNT = 370
+AMT_REFERENCE_RESOURCE_FIELD_COUNT = 8_328
 XLINK_PATH_COUNT = 186
 REFERENCE_REVIEW_CASE_COUNT = 46
 
@@ -1519,6 +1523,168 @@ def reconcile_pbs_field_states_v6(root: Path) -> dict[str, Any]:
             "the 46 deterministic review cases do not estimate corpus-wide semantic precision or recall",
             "RDF resource references remain outside this qualification",
             "link target identity does not establish a PBS-specific predicate, medicine equivalence, eligibility, or clinical meaning",
+        ],
+    }
+    return report
+
+
+def reconcile_pbs_field_states_v7(root: Path) -> dict[str, Any]:
+    """Qualify the generic RDF/XML rdf:resource field role, without links."""
+    report = reconcile_pbs_field_states_v6(root)
+    uri_path = root / URI_SCREEN_V3
+    uri_file_sha = _file_sha256(uri_path)
+    if uri_file_sha != URI_SCREEN_V3_FILE_SHA256:
+        raise ValueError("PBS RDF resource screen evidence bytes differ")
+    uri_envelope = json.loads(uri_path.read_bytes())
+    uri = uri_envelope["report"]
+    qualification = uri["qualification"]
+    rdf_outcomes = qualification["outcome_counts_by_qname"].get(
+        "rdf:resource", {}
+    )
+    rdf_screen_checks = (
+        uri_envelope["report_sha256"] == URI_SCREEN_V3_REPORT_SHA256,
+        uri["operation"] == "pbs-native-uri-screen",
+        uri["member_sha256"] == report["source"]["member_sha256"],
+        qualification["reference_counts_by_qname"].get("rdf:resource")
+        == RDF_RESOURCE_FIELD_COUNT,
+        rdf_outcomes
+        == {
+            "absolute_uri_no_member_definition": 73_577,
+            "absolute_uri_unique_candidate": 1_094_033,
+        },
+        sum(rdf_outcomes.values()) == RDF_RESOURCE_FIELD_COUNT,
+        qualification["uri_values_emitted"] is False,
+        qualification["external_targets_fetched"] == 0,
+        qualification["semantic_relationships_qualified"] is False,
+        qualification["precision_claimed"] is False,
+    )
+    if not all(rdf_screen_checks):
+        raise ValueError("PBS RDF resource screen qualification differs")
+
+    rdf_rows = [
+        row
+        for row in report["path_reconciliation"]
+        if "{http:~1~1www.w3.org~11999~102~122-rdf-syntax-ns#}resource"
+        in row["schema_path"]
+    ]
+    if (
+        len(rdf_rows) != RDF_RESOURCE_PATH_COUNT
+        or sum(row["field_count"] for row in rdf_rows)
+        != RDF_RESOURCE_FIELD_COUNT
+        or sum(
+            row["field_count"]
+            for row in rdf_rows
+            if row["semantic_interpretation"]["domain"]
+            == "amt_literal_reference_resource"
+        )
+        != AMT_REFERENCE_RESOURCE_FIELD_COUNT
+        or sum(
+            row["field_count"]
+            for row in rdf_rows
+            if row["semantic_interpretation"]["domain"]
+            == "amt_literal_reference_resource"
+            and row["semantic_state"] == "interpreted"
+        )
+        != AMT_REFERENCE_RESOURCE_FIELD_COUNT
+        or any(
+            row["semantic_state"] != "native_unresolved"
+            for row in rdf_rows
+            if row["semantic_interpretation"]["domain"]
+            != "amt_literal_reference_resource"
+        )
+    ):
+        raise ValueError(
+            "PBS RDF resource path denominator or baseline differs"
+        )
+
+    generic_count = 0
+    for row in rdf_rows:
+        if row["semantic_interpretation"]["domain"] == (
+            "amt_literal_reference_resource"
+        ):
+            continue
+        row["semantic_state"] = "interpreted"
+        row["semantic_interpretation"] = {
+            "state": "interpreted",
+            "domain": "rdf_resource_reference_literal",
+            "meaning": (
+                "RDF/XML rdf:resource attribute used to identify an IRI "
+                "object node; target validity and identity are unresolved"
+            ),
+            "rule": (
+                "exact RDF namespace resource attribute QName and W3C RDF "
+                "1.1 XML Syntax Recommendation"
+            ),
+            "evidence": "https://www.w3.org/TR/rdf-syntax-grammar/",
+            "source_values_read": False,
+            "source_values_emitted": False,
+            "target_identity_resolved": False,
+            "pbs_predicate_meaning_qualified": False,
+            "semantic_relationship_qualified": False,
+            "edge_payload_emitted": False,
+            "limits": [
+                "the syntax role does not validate an individual URI value or resolve its target",
+                "the PBS predicate QName and any domain or clinical meaning remain unresolved",
+                "URI-screen candidate and no-definition outcomes remain diagnostics only",
+            ],
+        }
+        generic_count += row["field_count"]
+
+    if generic_count != (
+        RDF_RESOURCE_FIELD_COUNT - AMT_REFERENCE_RESOURCE_FIELD_COUNT
+    ):
+        raise ValueError("PBS generic RDF resource promotion count differs")
+    coverage = report["field_state_coverage"]
+    coverage["interpreted"] += generic_count
+    coverage["native_unresolved"] -= generic_count
+    coverage["all_native_values_remain_unresolved"] = False
+    adjudication = report["semantic_adjudication"]
+    adjudication["interpreted_fields"] += generic_count
+    adjudication["native_unresolved_fields"] -= generic_count
+    adjudication["interpretations"]["rdf_resource_reference_literal"] = (
+        generic_count
+    )
+    adjudication["explicit_non_claims"].extend([
+        "rdf:resource fields are interpreted only as the RDF/XML object-node IRI reference syntax role",
+        "RDF resource URI-screen candidates are not resolved targets or qualified semantic relationships",
+    ])
+    report["source"]["rdf_resource_uri_screen_file_sha256"] = uri_file_sha
+    report["source"]["rdf_resource_uri_screen_report_sha256"] = uri_envelope[
+        "report_sha256"
+    ]
+    report["profile_id"] = "pbs-v3-2026-04-01-field-state-v7"
+    report["status"] = (
+        "complete_field_partition_with_bounded_rdf_resource_syntax_role"
+    )
+    report["source_local_rdf_resource_semantics"] = {
+        "status": "generic_rdf_xml_object_node_reference_role_qualified",
+        "rdf_resource_fields": RDF_RESOURCE_FIELD_COUNT,
+        "newly_interpreted_generic_resource_references": generic_count,
+        "preexisting_amt_reference_resource_fields": (
+            AMT_REFERENCE_RESOURCE_FIELD_COUNT
+        ),
+        "uri_screen_outcomes": rdf_outcomes,
+        "uri_screen_path": URI_SCREEN_V3,
+        "uri_screen_file_sha256": uri_file_sha,
+        "uri_screen_report_sha256": uri_envelope["report_sha256"],
+        "meaning_basis": "https://www.w3.org/TR/rdf-syntax-grammar/",
+        "target_identity_resolution_qualified": False,
+        "semantic_relationships_qualified": False,
+        "pbs_predicate_or_clinical_meaning_qualified": False,
+        "edge_payload_emitted": False,
+        "source_values_read": False,
+        "source_values_emitted": False,
+        "precision_or_recall_estimated": False,
+        "field_state_partition_after_promotion": {
+            "interpreted": coverage["interpreted"],
+            "native_unresolved": coverage["native_unresolved"],
+            "unavailable": coverage["unavailable"],
+            "source_fields": coverage["source_fields"],
+        },
+        "limits": [
+            "the generic RDF/XML syntax role is not a PBS domain relationship",
+            "URI-screen matches and misses remain lexical diagnostics",
+            "source values, resolved target identities, and graph edges remain unqualified",
         ],
     }
     return report

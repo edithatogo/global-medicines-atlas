@@ -1019,3 +1019,26 @@ release gate.
   context validation, and diff checks pass. Review was performed by the
   implementing agent; no independent reviewer, new admission, canary, source,
   publication, or federation acceptance is claimed.
+
+### PBS `rdf:resource` generic syntax-role qualification (2026-10-28)
+
+- [x] Add the exact QName-bound RDF/XML syntax role to PBS field-state
+  successor r16, preserving r15 and all source values. The W3C RDF/XML
+  Recommendation supports the generic object-node IRI-reference role for
+  1,159,282 additional fields. The complete PBS partition is now 3,086,366
+  interpreted, 15,122,392 `native_unresolved`, and zero unavailable. The
+  exact URI screen remains lexical evidence; target resolution, predicate
+  meaning, relationship edges, and complete M-109 acceptance remain open.
+- [x] Bind r16 and its limitations into the Australian acceptance summary,
+  Stable contract evidence, and readiness receipt. Stable v1 remains blocked
+  on `stable-v1-australian-health-federation`; M-105, M-107, M-108 and other
+  acceptance conditions were not waived or reclassified.
+- [x] The affected PBS field-state module passes (50 tests); the new runner
+  reproduces the retained r16 report byte-for-byte; Ruff, formatting, `ty`,
+  and BasedPyright pass for changed implementation and runner files. Focused
+  three focused Stable qualification tests and context validation pass and are
+  recorded in the evidence ledger. Review remains an implementing-agent review, not an
+  independent approval.
+- [ ] Continue federation work through its remaining evidence gates. Do not
+  close or archive the Stable v1 track while its authoritative contract has
+  unresolved gates.

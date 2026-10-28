@@ -109,6 +109,10 @@ AUSTRALIAN_AUGUST_F9F9_DISPOSITION = (
     "quality/qualifications/"
     "australian-mbs-august-f9f9-prefix-disposition-20261028.json"
 )
+AUSTRALIAN_PBS_RDF_FIELD_STATE = (
+    "quality/qualifications/"
+    "pbs-native-silver-field-reconciliation-20261028-r16.json"
+)
 
 TECHNICAL_GATE_EVIDENCE = {
     "stable-v1-canonical-schema-v2": [
@@ -568,7 +572,8 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
                 )
             elif requirement_id == "M-109":
                 requirement["evidence"] = _append_unique(
-                    requirement["evidence"], [AUSTRALIAN_PHASE4_CURRENT]
+                    requirement["evidence"],
+                    [AUSTRALIAN_PHASE4_CURRENT, AUSTRALIAN_PBS_RDF_FIELD_STATE],
                 )
             elif requirement_id == "M-112":
                 requirement["evidence"] = _append_unique(
@@ -681,6 +686,7 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             AUSTRALIAN_M112_MBS_UTIL_LINEAGE,
             AUSTRALIAN_AUGUST_CURRENT_TREE,
             AUSTRALIAN_AUGUST_F9F9_DISPOSITION,
+            AUSTRALIAN_PBS_RDF_FIELD_STATE,
         ],
     )
 
