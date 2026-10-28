@@ -265,3 +265,75 @@ def test_acceptance_page_reconciles_exact_mbs_utilisation_rights_scope() -> (
     assert disposition["candidate_paths"] == 14
     assert disposition["v4_admission"] is False
     assert disposition["m112_federation_accepted"] is False
+
+
+def test_release_field_contract_binds_retained_evidence_without_scope_change():
+    contract = _read(
+        "quality/qualifications/"
+        "australian-benefits-release-field-contract-20261028.json"
+    )
+    for binding in contract["evidence"].values():
+        payload = (ROOT / binding["path"]).read_bytes()
+        assert hashlib.sha256(payload).hexdigest() == binding["sha256"]
+    inventory = _read(contract["evidence"]["frozen_inventory"]["path"])
+    assert (
+        contract["scope"]["frozen_candidate_paths"]
+        == (inventory["denominator"]["total_candidate_paths"])
+    )
+    assert contract["scope"]["scope_amendment"] is False
+    assert contract["scope"]["all_91_workbooks_remain_required"] is True
+    assert (
+        contract["scope"][
+            "all_frozen_source_families_remain_in_qualification_denominator"
+        ]
+        is True
+    )
+
+
+def test_release_field_contract_keeps_header_and_value_partitions_separate():
+    contract = _read(
+        "quality/qualifications/"
+        "australian-benefits-release-field-contract-20261028.json"
+    )
+    columns = _read(contract["evidence"]["mbs_workbook_columns"]["path"])
+    workbook = contract["baseline"]["mbs_workbooks"]
+    assert workbook["workbooks"] == columns["scope"]["workbooks"]
+    assert (
+        workbook["header_bindings"]
+        == (columns["scope"]["interpreted_header_bindings"])
+    )
+    assert (
+        workbook["non_header_values_native_unresolved"]
+        == (columns["scope"]["non_header_values"])
+    )
+    assert workbook["non_header_values_interpreted"] == 0
+    pbs = _read(contract["evidence"]["pbs_field_states"]["path"])["report"]
+    partition = pbs["field_state_coverage"]
+    baseline = contract["baseline"]["pbs_native"]
+    states = contract["field_states"]
+    assert set(states) == {"interpreted", "native_unresolved", "unavailable"}
+    assert sum(baseline[state] for state in states) == baseline["source_fields"]
+    for key in ["source_fields", *states]:
+        assert baseline[key] == partition[key]
+
+
+def test_release_field_contract_is_requirements_not_gate_clearance():
+    contract = _read(
+        "quality/qualifications/"
+        "australian-benefits-release-field-contract-20261028.json"
+    )
+    assert contract["status"] == "requirements_frozen_qualification_incomplete"
+    assert set(contract["required_consumers"]) == {
+        "API",
+        "CLI",
+        "Atlas",
+        "deterministic_export",
+    }
+    assert all(row["required"] for row in contract["consumer_requirements"])
+    assert {row["id"] for row in contract["conditional_claims"]} == {
+        "value_and_era",
+        "domain_meaning",
+        "broader_relationships",
+        "historical_comparison",
+    }
+    assert not any(contract["non_claims"].values())
