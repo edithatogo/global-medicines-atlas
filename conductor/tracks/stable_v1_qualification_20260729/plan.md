@@ -1003,3 +1003,19 @@ release gate.
   checks. Review was performed by the implementing agent; no independent
   reviewer or gate acceptance is claimed. M-108 and the Australian federation
   gate remain blocked, so the Stable v1 track remains open and is not archived.
+
+### M-112 current receipt reconciliation and review (2026-10-28)
+
+- [x] Bind the current M-112 role receipt and exact 14-object MBS-utilisation
+  B1/B2 lineage overlay into the Stable M-112 requirement, federation gate,
+  acceptance summary, and release-readiness receipt. Record 8 exact v4
+  admissions and 8 canaries against the frozen 1,759-object denominator, with
+  1,751 still deferred; distinguish the 14 lineage joins from v4 admission.
+  Preserve the reviewer-unreviewed landed-admission status and blocked gate.
+  Implementation `bdeb6dc1`.
+- [x] Review the scoped contract and acceptance update. Correct the acceptance
+  page's stale reconciliation date and refresh its digest binding. The 67
+  focused M-112/Stable tests, Ruff, Ruff formatting, `ty`, BasedPyright,
+  context validation, and diff checks pass. Review was performed by the
+  implementing agent; no independent reviewer, new admission, canary, source,
+  publication, or federation acceptance is claimed.
