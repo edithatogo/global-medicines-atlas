@@ -111,7 +111,7 @@ AUSTRALIAN_AUGUST_F9F9_DISPOSITION = (
 )
 AUSTRALIAN_PBS_RDF_FIELD_STATE = (
     "quality/qualifications/"
-    "pbs-native-silver-field-reconciliation-20261028-r16.json"
+    "pbs-native-silver-field-reconciliation-20261028-r17.json"
 )
 
 TECHNICAL_GATE_EVIDENCE = {

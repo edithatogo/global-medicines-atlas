@@ -810,6 +810,17 @@ This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
 
+### October 28 PBS r17 contract reconciliation
+
+- [x] Reconcile the new PBS r17 field-state receipt into M-109 evidence, the
+  Stable v1 contract, and the readiness receipt. The M-109 and Australian
+  federation gates remain blocked: the increment classifies only 10,368
+  `rdf:about` syntax-role fields and does not resolve PBS relationships or
+  source values. M-105/M-107, the remaining federation requirements, and
+  conditional promotion prerequisites are unchanged. Targeted PBS and Stable
+  contract checks, static analysis, and Conductor context validation pass;
+  details are in `evidence.jsonl`.
+
 - [x] Implement the shared execution charter and machine-validated scheduling
   plan; require named existing gates, bounded failures, proof and stop conditions.
   Extend the existing CI context validator to reject source/inventory expansion,

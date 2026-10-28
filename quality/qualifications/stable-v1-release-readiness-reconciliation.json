@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T05:21:25Z",
+  "as_of": "2026-10-28T05:26:21Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "57e6064acc3e06b4d471f5ad07081340e44b62f86f60f3c9818ae6efdd1fcbc8"
+    "sha256": "4d631d96b42a1c0228c5fe46548786b1720baafa3838869083af203c9668efcf"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -117,8 +117,8 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "137afbd9a2a17a99fa0547b816635a4701a70f682c151a98cf01812d85947046",
-        "consequence": "Federation acceptance summary binds the current M-112 state and the PBS r16 generic RDF/XML syntax-role qualification; M-105, M-107, M-108, M-109 and other federation acceptance conditions remain open."
+        "sha256": "8eb7ff6c75ff670d2bbeabef72461b49dcc30e8136d30485fab5159c612bd8cd",
+        "consequence": "Federation acceptance summary binds current M-112 state and PBS r17 field-role evidence; M-105, M-107, M-108, M-109 and other federation acceptance conditions remain open."
       },
       {
         "path": "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",
@@ -138,7 +138,12 @@
       {
         "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r16.json",
         "sha256": "fb20eacb041db3f3d1ecdd018ccf44bfc282cab34c609a76cf82876fd176600c",
-        "consequence": "PBS field-state successor r16 interprets the generic RDF/XML rdf:resource syntax role for 1,159,282 additional fields while leaving URI targets, PBS predicate meaning, edges and M-109 acceptance unresolved."
+        "consequence": "PBS r16 remains historical evidence for the generic RDF/XML rdf:resource syntax role; r17 adds the rdf:about subject-IRI-reference role for 10,368 fields while leaving individual URI targets, PBS predicate meaning, graph edges and M-109 acceptance unresolved."
+      },
+      {
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r17.json",
+        "sha256": "43b538e934e25e0a840186e3821f6ca80ceffa5f166c4276c5246f95058d325f",
+        "consequence": "PBS field-state successor r17 qualifies the RDF/XML rdf:about subject-IRI-reference syntax role for 10,368 fields across 34 paths. It does not resolve values or qualify predicates, semantic relationships, edges, or M-109 acceptance."
       }
     ],
     "release_action_performed": false,

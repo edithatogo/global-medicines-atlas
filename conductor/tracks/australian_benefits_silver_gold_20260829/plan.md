@@ -6053,3 +6053,15 @@ coverage, new sources/terminology, and optional experiments remain deferred.
 This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
+
+### October 28 RDF/XML subject field role
+
+- [x] Qualify the generic RDF/XML `rdf:about` subject-IRI-reference syntax
+  role for the exact pinned PBS source profile. The URI-screen definition count
+  and field inventory reconcile to 10,368 fields across 34 paths. The complete
+  field denominator remains 18,208,758: 3,096,734 interpreted, 15,112,024
+  `native_unresolved`, and zero unavailable. Individual values are not
+  resolved; no PBS predicate meaning, relationship, edge, or matcher behavior
+  is qualified. See the digest-bound r17 report and the W3C RDF 1.1 XML Syntax
+  specification. M-109 and the Australian federation gate remain blocked.
+  Focused test and contract evidence is recorded in `evidence.jsonl`.
