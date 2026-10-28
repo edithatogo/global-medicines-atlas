@@ -1010,3 +1010,16 @@ append. The Stable v1 Australian federation gate remains blocked.
 - [ ] Bind these candidate roles into complete v4 contracts after all remaining
   required evidence qualifies. This does not add an admission, consumer canary,
   independently durable copy or federation acceptance.
+
+## Exact PBS raw-B2 role readiness (2026-10-28)
+
+- [x] Bind the existing six-object header/context screens, identity, rights,
+  lineage, v1, hosted v3 and discovery evidence into a source-specific
+  role-readiness report. The existing patient-header review resolves generic
+  token flags as aggregate measures; the source-profile sensitivity assessment
+  is `non_sensitive`, with exhaustive privacy and semantic limits retained.
+- [~] Assemble complete exact raw-B2 contracts and bind durable role receipts;
+  execute receipt closure, trusted admission and reader canaries after the
+  required exact-head checks pass. Six hosted replays do not equal admission.
+- [ ] Complete independent recovery under the existing separate contract;
+  primary-copy restoration is not independent durability.

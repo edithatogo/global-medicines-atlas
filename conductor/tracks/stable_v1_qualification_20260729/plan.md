@@ -1167,3 +1167,11 @@ readbacks are in
 These supply candidate role evidence and preserve the frozen 1,759-object scope.
 No v4 admission or consumer canary was performed. Complete-contract binding,
 remaining federation criteria, and this track's archival remain pending.
+
+## PBS role-readiness continuation (2026-10-28)
+
+- [x] Reuse the exact prior PBS sensitive-header review instead of treating its
+  generic patient-token matches as a new approval gate. Bind source-profile
+  assessment and six hosted replay receipts in the owning data-plane report.
+- [~] Continue complete raw-B2 role binding and actual admission. Stable v1
+  federation remains blocked; this increment does not amend its criteria.

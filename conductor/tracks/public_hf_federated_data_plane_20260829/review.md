@@ -109,3 +109,33 @@ Complete-history security and protected CI are tracked against the final PR.
 
 Review was by the implementing agent. No remaining scoped findings were
 identified; full federation acceptance and track archival remain incomplete.
+
+# Review Report: PBS raw-B2 role readiness (2026-10-28)
+
+## Summary
+
+The metadata-only assessment resolves a superseded screening flag and identifies
+actual remaining contract work; it supplies no admission or independent approval.
+
+## Verification Checks
+
+- [x] **Plan Compliance**: six exact frozen objects are joined across retained
+  source-specific screening, identity, rights, v1, v3 and discovery evidence.
+- [x] **Style Compliance**: additive JSON evidence and Markdown documentation.
+- [x] **New Tests**: none; no production or test behavior changed.
+- [x] **Test Coverage**: unchanged replay and conformance checks are reused;
+  exact identities, input digests, native replay receipt digests and boundaries
+  are independently checked for this metadata increment.
+- [x] **Test Results**: 33 focused conformance/replay tests passed; context,
+  ecosystem, exact-input digest/identity checks and native Gitleaks passed.
+
+## Findings and fixes
+
+Review found that a generic historical `review_required` screen was being
+considered without its existing exact header-context successor. The report
+binds both, preserving the old screen and documenting the aggregate-field
+assessment. Current publisher descriptions provide family context only, because
+current download sizes differ. Source-profile sensitivity is separate from
+rights and does not claim exhaustive personal-data absence. All v4 contracts,
+receipt closure, admission, consumer canaries and independent recovery remain
+explicitly incomplete. Review was by the implementing agent.
