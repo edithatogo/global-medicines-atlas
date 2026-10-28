@@ -139,3 +139,31 @@ current download sizes differ. Source-profile sensitivity is separate from
 rights and does not claim exhaustive personal-data absence. All v4 contracts,
 receipt closure, admission, consumer canaries and independent recovery remain
 explicitly incomplete. Review was by the implementing agent.
+
+# Review Report: PBS v4 contract instances and receipt closure (2026-10-28)
+
+## Summary
+
+Six exact configuration candidates pass schema, semantics and actual opaque
+receipt closure; producer trust, admission and consumers remain incomplete.
+
+## Verification Checks
+
+- [x] **Plan Compliance**: existing raw-B2 roles are assembled without adding
+  sources or implying domain semantics, independent recovery or admission.
+- [x] **Style Compliance**: canonical JSON and scoped documentation.
+- [x] **New Tests**: none; existing validators exercise these configurations.
+- [x] **Test Coverage**: six canonical/identity/closure checks, six rights-subject
+  negative controls, and native authority-schema readback match.
+- [x] **Test Results**: 53 existing receipt-closure/admission tests passed;
+  native Gitleaks passed. Context/ecosystem checks are run before commit.
+
+## Findings and fixes
+
+Initial schema validation rejected a collection slug where the schema requires
+its full HTTPS URL. The configurations use the full observed collection URL.
+Review also separated the newer object-verification timestamp and receipt from
+the historical publication/primary-restore receipt. All six exact configurations
+then validated and their real anonymous receipt reads passed. No opaque receipt
+content was retained. Review was by the implementing agent; no independent
+human or production approval is invented. Full-track archival remains unsafe.

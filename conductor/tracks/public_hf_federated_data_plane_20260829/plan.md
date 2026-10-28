@@ -1023,3 +1023,15 @@ append. The Stable v1 Australian federation gate remains blocked.
   required exact-head checks pass. Six hosted replays do not equal admission.
 - [ ] Complete independent recovery under the existing separate contract;
   primary-copy restoration is not independent durability.
+
+## Exact PBS v4 contract configurations and receipt closure (2026-10-28)
+
+- [x] Assemble six exact raw-B2 v4.1 contract configurations using existing
+  schema/semantic validation and distinct publication, object verification,
+  source-profile assessment, lineage, discovery and primary recovery roles.
+- [x] Fetch and verify every referenced receipt anonymously through the shared
+  guarded transport: all six pass thirteen roles and ten unique URLs each.
+  Receipt bytes are not persisted; source payloads are not downloaded.
+- [~] Qualify the independent exact-source producer trust profile and execute
+  exact-main admission and consumer canaries. Configuration and opaque byte
+  closure alone do not change the eight recorded raw-object admissions.

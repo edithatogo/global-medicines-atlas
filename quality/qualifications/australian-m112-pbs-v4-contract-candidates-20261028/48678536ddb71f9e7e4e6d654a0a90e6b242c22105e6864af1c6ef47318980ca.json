@@ -1,0 +1,141 @@
+{
+  "authority": {
+    "contract_commit": "a5753b1c79ccedd9bb54112bf803882ffc9deb96",
+    "contract_repository": "edithatogo/global-medicines-atlas",
+    "producer_repository": "edithatogo/global-medicines-atlas",
+    "schema_sha256": "03acfbafd80daf0b8b768f7814dbb29a9bd13e7c9d5d68797b30261da29770c6"
+  },
+  "cache": {
+    "cleanup_receipt": {
+      "sha256": "e035b6fea7dd5dd581abd612b8880e53fafd43841040349116948dec18554bef",
+      "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/849c6b7fcaa0241e76e64590cc076e071d1ef4b8/quality/qualifications/australian-m112-pbs-v3-replays-20261028/40679271451/gma-m112-v3-replay-receipt-40679271451-1.json"
+    },
+    "created_at": "2026-10-28T11:21:10Z",
+    "expires_at": "2026-10-28T11:36:10Z",
+    "max_bytes": 117376499,
+    "offline_behavior": "fail_closed",
+    "origin": "github_actions",
+    "state": "removed"
+  },
+  "consumers": [],
+  "discovery": {
+    "collections": [
+      "https://huggingface.co/collections/edithatogo/health-economics-and-outcomes-research-6a2e9986698340a8c8f4e4b4"
+    ],
+    "estate_entry": {
+      "sha256": "45162d54cdb00d9d1a235da2f10f8eaf74f67845fe52cfdc8b2d8f995eb7ebaf",
+      "url": "https://huggingface.co/datasets/edithatogo/dataset-estate-registry/resolve/4802d56a340646043fc91bed218c1e8a958f42c2/catalog.json"
+    }
+  },
+  "evidence_kind": "live",
+  "lineage": {
+    "inputs": [
+      {
+        "sha256": "e47631987778eec565f88f8df019a109de13787c574c38a1d6f0f3a74209a098",
+        "url": "https://huggingface.co/datasets/edithatogo/australian-pbs-utilisation-archive/resolve/9f1d53cd50eea251b326da42a96f3ac72ebce97a/bronze/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx.receipt.json"
+      },
+      {
+        "sha256": "47f55a174dbc268fb4ce56c72925d9a9f71d7745cb89cb9639169ff881ec58a5",
+        "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/849c6b7fcaa0241e76e64590cc076e071d1ef4b8/quality/bronze/imported-acquisitions/au-pbs-dos-utilisation/dca1d05c85ce4a1bbdb11cd68a69cf88c2bd65f4763e51828f9be4e4882470e4.json"
+      },
+      {
+        "sha256": "f5c4e32b902a28b28954dea75a702ad995dcfba3a1f3aa818a18e136e87d42a0",
+        "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/849c6b7fcaa0241e76e64590cc076e071d1ef4b8/quality/bronze/raw-evidence/au-pbs-dos-utilisation/dca1d05c85ce4a1bbdb11cd68a69cf88c2bd65f4763e51828f9be4e4882470e4/manifest.json"
+      },
+      {
+        "sha256": "fb680271214008a850416151529a51933b16cb8b1521ec156c360872cd46d4b2",
+        "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/156d3e5cd91735b4766b86bd89cada06a44b7b67/quality/qualifications/australian-m112-pbs-utilisation-role-readiness-20261028.json"
+      }
+    ],
+    "promotion_receipt": null,
+    "v1_conformance": {
+      "sha256": "8e1e783f1e24288645f4b2895933e17dd0db9fdc846b1ee5f842615ca66fd100",
+      "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/849c6b7fcaa0241e76e64590cc076e071d1ef4b8/quality/qualifications/australian-m112-pbs-utilisation-v1-conformance-20261028.json"
+    },
+    "v2_field_lineage": null,
+    "v2_field_lineage_applicability": "not_applicable_raw_b2",
+    "v3_replay": {
+      "sha256": "e035b6fea7dd5dd581abd612b8880e53fafd43841040349116948dec18554bef",
+      "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/849c6b7fcaa0241e76e64590cc076e071d1ef4b8/quality/qualifications/australian-m112-pbs-v3-replays-20261028/40679271451/gma-m112-v3-replay-receipt-40679271451-1.json"
+    }
+  },
+  "location": {
+    "bytes": 117376499,
+    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+    "gated": false,
+    "lfs_oid": null,
+    "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+    "private": false,
+    "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+    "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+    "xet_hash": null
+  },
+  "publication": {
+    "commit": "0c2c2a241cda0265770f2e69824cd3aae34ded66",
+    "origin": "github_actions",
+    "receipt": {
+      "sha256": "a33529310f75361e9302b66568f4f1b86257b377ab8418ca4c84b490d9c06204",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5686447551"
+    },
+    "run": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/35011151213",
+    "workflow": ".github/workflows/australian-pbs-utilisation-harvest.yml"
+  },
+  "recovery": {
+    "administrative_domain": "huggingface:edithatogo/australian-pbs-utilisation-archive",
+    "authorization_receipt": null,
+    "checksum_inventory": {
+      "sha256": "965383f30612084fc17f5ee91d4cc4d2f23e9de7b2a735fec5d3321c613495b5",
+      "url": "https://huggingface.co/datasets/edithatogo/australian-pbs-utilisation-archive/resolve/9f1d53cd50eea251b326da42a96f3ac72ebce97a/manifest.json"
+    },
+    "independent": false,
+    "primary_administrative_domain": "huggingface:edithatogo/australian-pbs-utilisation-archive",
+    "primary_region": "unverified",
+    "region": "unverified",
+    "restore_receipt": {
+      "sha256": "a33529310f75361e9302b66568f4f1b86257b377ab8418ca4c84b490d9c06204",
+      "url": "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5686447551"
+    },
+    "role": "primary",
+    "rpo_seconds": null,
+    "rto_seconds": null
+  },
+  "rights": {
+    "authorization": {
+      "sha256": "903c42f29ac7518a8be0525f0c1488b78d21f25ad051c9d108bfb2b3736b2968",
+      "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/849c6b7fcaa0241e76e64590cc076e071d1ef4b8/quality/qualifications/australian-pbs-utilisation-six-object-rights-attestation-20261020.json"
+    },
+    "basis": "maintainer_attested_exact_six_object_permission_instrument_not_independently_reviewed",
+    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+    "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+    "publication": "approved_exact_scope",
+    "sensitivity": "non_sensitive",
+    "subject_sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca"
+  },
+  "source": {
+    "acquisition_id": "dca1d05c85ce4a1bbdb11cd68a69cf88c2bd65f4763e51828f9be4e4882470e4",
+    "bronze_stratum": "B2",
+    "comparison_cohort": "legacy",
+    "effective_date": null,
+    "layer": "bronze",
+    "representation": "raw",
+    "retrieved_at": "2026-09-15T19:02:24Z",
+    "schema_era": "unqualified-native-schema",
+    "source_id": "au-pbs-dos-utilisation"
+  },
+  "verification": {
+    "anonymous": true,
+    "bytes": 117376499,
+    "clean_room": true,
+    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+    "path": "raw/pbs/utilisation/summary/dos-jul-2021-to-jun-2026.xlsx",
+    "receipt": {
+      "sha256": "e035b6fea7dd5dd581abd612b8880e53fafd43841040349116948dec18554bef",
+      "url": "https://raw.githubusercontent.com/edithatogo/global-medicines-atlas/849c6b7fcaa0241e76e64590cc076e071d1ef4b8/quality/qualifications/australian-m112-pbs-v3-replays-20261028/40679271451/gma-m112-v3-replay-receipt-40679271451-1.json"
+    },
+    "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+    "sha256": "48678536ddb71f9e7e4e6d654a0a90e6b242c22105e6864af1c6ef47318980ca",
+    "status": "passed",
+    "verified_at": "2026-10-28T11:21:41Z"
+  },
+  "version": "4.1.0"
+}
