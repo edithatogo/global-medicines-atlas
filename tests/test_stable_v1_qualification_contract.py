@@ -131,7 +131,8 @@ def _assert_current_m112_receipts_are_bound(
         "exact six PBS-utilisation rights attestations"
         in rights_lineage_receipt["consequence"]
     )
-    assert "remain deferred" in rights_lineage_receipt["consequence"]
+    assert "Historical rights/lineage" in rights_lineage_receipt["consequence"]
+    assert "superseded" in rights_lineage_receipt["consequence"]
 
 
 def _must_requirement_ids() -> set[str]:
@@ -1029,9 +1030,9 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
         for line in acceptance.splitlines()
         if line.startswith("| M-112 federation v4 |")
     )
-    assert "8 exact v4 admissions" in m112_row
-    assert "1,751 objects remain deferred" in m112_row
-    assert "this is not 14 v4 admissions" in m112_row
+    assert "14 exact raw v4 admissions" in m112_row
+    assert "1,745 objects remain deferred" in m112_row
+    assert "lineage, not this admission count" in m112_row
     assert "`p7_date_convention_selected=false`" in m109_row
     assert (
         "workbook-era date convention, domain meaning, and temporal comparison remain unqualified"
@@ -1698,4 +1699,70 @@ def test_historical_workbook_source_semantics_are_bounded_and_bound() -> None:
             "kind": "dependent_repository_tracks",
             "state": "blocked",
         }
+    ]
+
+
+def test_effective_pbs_raw_delivery_counts_do_not_include_silver_or_close_federation() -> (
+    None
+):
+    path = (
+        ROOT
+        / "quality/qualifications/australian-m112-effective-raw-delivery-reconciliation-20261028.json"
+    )
+    report = _load(path)
+    assert report["effective_counts"] == {
+        "frozen_objects": 1759,
+        "raw_v4_admissions": 14,
+        "raw_admitted_object_reader_canaries": 14,
+        "deferred_objects": 1745,
+        "frozen_denominator_changed": False,
+    }
+    identities = (
+        report["prior_admitted_identities"] + report["new_admitted_identities"]
+    )
+    assert (
+        len({(r["dataset"], r["revision"], r["path"]) for r in identities})
+        == 14
+    )
+    assert (
+        report["separate_silver_cohort"]["included_in_raw_frozen_count"]
+        is False
+    )
+    assert report["boundaries"]["federation_gate_closed"] is False
+    readiness = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    receipt = next(
+        r
+        for r in readiness["current_evidence_reconciliation"]["system_receipts"]
+        if r["path"] == path.relative_to(ROOT).as_posix()
+    )
+    assert receipt["sha256"] == hashlib.sha256(path.read_bytes()).hexdigest()
+    cohort_path = ROOT / report["inputs"]["six_pbs_native_results"]["path"]
+    cohort = _load(cohort_path)
+    assert len(cohort["objects"]) == 6
+    assert cohort["scope"]["bytes"] == 191047619
+    for obj in cohort["objects"]:
+        retained = ROOT / obj["receipt"]["path"]
+        assert (
+            hashlib.sha256(retained.read_bytes()).hexdigest()
+            == obj["receipt"]["sha256"]
+        )
+        result = _load(retained)
+        assert result["admission"]["path"] == obj["path"]
+        assert result["consumer_canary"]["object"]["sha256"] == obj["sha256"]
+        assert (
+            result["consumer_canary"]["verification"][
+                "reader_cache_bytes_after_close"
+            ]
+            == 0
+        )
+        assert (
+            obj["native_run"]["conclusion"]
+            == obj["native_job"]["conclusion"]
+            == "success"
+        )
+    assert _load(QUALIFICATION)["unresolved_gate_ids"] == [
+        "stable-v1-australian-health-federation"
     ]

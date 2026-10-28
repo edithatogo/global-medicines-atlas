@@ -198,3 +198,48 @@ explicit lint/type annotations rather than duplicating its URL handling.
 No source bytes are read by local checks; real reader execution is hosted only.
 The canary qualifies raw-byte delivery and is not described as Silver or
 Platinum domain acceptance. Review was by the implementing agent.
+
+# Review Report: six native PBS admissions and current counts (2026-10-28)
+
+## Summary
+
+All six exact native admissions/readers passed; cumulative frozen raw counts
+are reconciled without changing source scope or closing federation.
+
+## Verification Checks
+
+- [x] **Plan Compliance**: one exact-main dispatch per object, independent
+  source-derived trust, complete receipt closure and real bounded reader use.
+- [x] **Style Compliance**: affected reconciliation/test lint and formatting pass.
+- [x] **New Tests**: current count partition, no Silver double count, native
+  receipt digests, exact admitted identities and empty reader caches checked.
+- [x] **Test Coverage**: existing admission/reader evidence reused; no source or
+  release acceptance predicate changed by the traceability update.
+- [x] **Test Results**: 67 focused Stable contract checks and 96 combined
+  affected checks pass; changed-file ty and BasedPyright pass; context/ecosystem
+  checks pass. Native Gitleaks passes the retained cohort and effective report.
+
+## Findings and fixes
+
+The old reports' eight-admission and six-PBS-deferred statements are historical
+snapshots. Current registry, acceptance, scheduling and release-evidence links
+now point to the effective 14-admission/14-canary/1,745-deferred reconciliation.
+The 14-object MBS lineage overlay is kept distinct from the actual admission
+count, and six MBS Silver tables are not added to the raw denominator.
+
+The preceding full-run status is superseded by its observed exit 138 during
+pytest-gremlins; coverage/package/typing results remain bounded passing proof,
+not a full local pass. Protected exact-head CI passed all 38 checks after one
+bounded retry of two artifact-service errors. Review was by the implementing
+agent. Independent recovery, derived delivery, semantic qualification and
+whole-track archival remain incomplete.
+
+## PR #1366 acceptance-scope correction
+
+The hosted unit lane found that the acceptance-table rewrite had omitted the
+existing exact MBS utilisation rights scope, historical landed-review state
+and bounded PBS rights/lineage description. Those facts are restored beside
+the updated admission totals; the test was not weakened. The exact failed node,
+its owning test file and Stable contract checks then passed (74 selected
+checks). The readiness receipt binds the corrected document digest. No source
+or admission count changed, and no full local profile was repeated.
