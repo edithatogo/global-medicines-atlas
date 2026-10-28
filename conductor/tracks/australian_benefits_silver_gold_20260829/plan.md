@@ -6137,3 +6137,14 @@ authoritative contract, reconciliation, and bound receipts.
 - [ ] Verify actual consumer behavior against the bound requirements after
   exact eligible output qualification/admission; retain unsupported claims as
   unavailable and compare all four consumer surfaces.
+
+## Actual isolated PBS pipeline builds (2026-10-29)
+
+- [x] Retain and validate two distinct successful complete pipeline jobs and
+  their artifact/envelope digests from exact-main run 40700877242. The current
+  outputs agree, including complete native-core and restore checks.
+- [ ] Resolve eligible output identity and rights binding before publication
+  or admission: new output `8e8bacdc…d23fc` has Parquet `86d65b14…6a88c`,
+  while the prior exact rights attestation binds `842f4130…17503` /
+  `e122b50a…bb1b2`. The old candidate is not independently reproduced.
+  No new rights conclusion, admission or consumer success is asserted.

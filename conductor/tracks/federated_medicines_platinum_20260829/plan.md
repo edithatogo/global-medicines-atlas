@@ -1754,3 +1754,42 @@ authoritative contract, reconciliation, and bound receipts.
   M-109/110 semantics and relationships, independent recovery, and broader
   consumer qualification remain open. No public release, new source, or
   Stable v1 promotion occurred.
+
+## Bounded native-field consumer delivery (2026-10-29)
+
+- [x] Confirm the scalar query cannot select the preserved native field list;
+  add explicit bounded collection projection with digest-bound query identity
+  and the API, CLI and Atlas source-field views. Nine initial new tests failed
+  because QuerySpec lacked this capability; 112 focused and 504 broader
+  affected tests now pass.
+- [~] Complete the required production-change milestone verification, review
+  and protected checks; the full local profile is running.
+- [ ] Qualify actual consumers only after an exact eligible derived output is
+  admitted; synthetic field-view tests do not qualify PBS or workbook delivery.
+
+### Offline research-package output reference (2026-10-29)
+
+- [~] Resolve the actual contract mismatch: research metadata packages require
+  an HTTPS output distribution and revision-bound lineage URL, while the
+  approved system scope permits local package qualification before any optional
+  public publication. The existing verifier checks canonical metadata, not
+  remote existence. A placeholder URL cannot establish a published result.
+- [ ] Add and qualify an explicit content-addressed offline output reference,
+  or another supported local representation, without weakening published URL
+  validation. Bind the package to a real admitted query and verify its result
+  digest and clean-room restoration; public publication remains a distinct
+  optional operation under its existing authorization boundary.
+
+### Native-field delivery review fixes (2026-10-29)
+
+- [x] Reject unsupported nested scalar-component selectors before a verified
+  read, and update the keyboard recovery flow to include the view selector.
+- [x] Add bounded page offsets to the shared query, source-structure API, CLI
+  and Atlas, preserving the original default query receipt representation.
+  Synthetic two-engine tests reach later flat records and nested fields; an
+  admitted synthetic object yields the same later page through API, Atlas and
+  CLI. Real derived output canaries remain outstanding.
+- [~] Complete protected CI and the review/merge checkpoint. The one local full
+  invocation stopped after coverage with four failures; the affected rerun
+  passed the two keyboard cases and one release fixture, while the other
+  release fixture still exceeded its p95 query budget. No budget was weakened.

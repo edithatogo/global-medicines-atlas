@@ -24,6 +24,8 @@ from typing import Literal, Protocol, cast
 
 import duckdb
 import polars as pl
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 from .platinum_resolver import (
     CacheReceipt,
@@ -31,6 +33,7 @@ from .platinum_resolver import (
     ResolvedResource,
     StorageNeutralResolver,
 )
+from .platinum_types import MAX_QUERY_OFFSET
 
 EngineName = Literal["duckdb", "polars"]
 Operator = Literal["=", "!=", "<", "<=", ">", ">="]
@@ -73,6 +76,8 @@ class QuerySpec:
     limit: int = 100
     max_result_bytes: int = MAX_RESULT_BYTES
     timeout_seconds: float = MAX_RUNTIME_SECONDS
+    field_collection: str | None = None
+    offset: int = 0
 
 
 @dataclass(frozen=True)
@@ -236,13 +241,25 @@ class DuckDBQueryAdapter:
         self, read: ProductRead, spec: QuerySpec
     ) -> tuple[dict[str, Scalar], ...]:
         started = time.monotonic()
+        _validate_field_collection(read, spec)
         read.verified.stream.seek(0)
         with tempfile.NamedTemporaryFile(suffix=".parquet") as parquet:
             shutil.copyfileobj(read.verified.stream, parquet)
             parquet.flush()
             with duckdb.connect(":memory:") as connection:
+                if spec.field_collection is not None or spec.offset:
+                    connection.execute("SET threads = 1")
+                relation = "read_parquet(?)"
+                if spec.field_collection is not None:
+                    collection = _quote(spec.field_collection)
+                    relation = (
+                        "(SELECT source_field.* FROM "  # ruff: ignore[hardcoded-sql-expression] -- collection identifier is allowlisted
+                        f"(SELECT unnest({collection}) AS source_field "
+                        "FROM read_parquet(?)))"
+                    )
                 cursor = connection.execute(
-                    "SELECT * FROM read_parquet(?) LIMIT 0", [parquet.name]
+                    f"SELECT * FROM {relation} LIMIT 0",  # ruff: ignore[hardcoded-sql-expression] -- fixed relation with allowlisted identifier
+                    [parquet.name],
                 )
                 available = {item[0] for item in cursor.description}
                 _known_columns(spec, available)
@@ -255,13 +272,16 @@ class DuckDBQueryAdapter:
                 )
                 # Identifiers and operators passed strict allowlists above;
                 # values and the transient path remain bound parameters.
-                sql = f"SELECT {projection} FROM read_parquet(?)"  # ruff: ignore[hardcoded-sql-expression]
+                sql = f"SELECT {projection} FROM {relation}"  # ruff: ignore[hardcoded-sql-expression]
                 if predicates:
                     sql += f" WHERE {predicates}"
                 sql += " LIMIT ?"
                 parameters: list[object] = [parquet.name]
                 parameters.extend(item.value for item in spec.filters)
                 parameters.append(spec.limit)
+                if spec.offset:
+                    sql += " OFFSET ?"
+                    parameters.append(spec.offset)
                 result = connection.execute(sql, parameters)
                 names = [item[0] for item in result.description]
                 rows = tuple(
@@ -285,14 +305,25 @@ class PolarsQueryAdapter:
     ) -> tuple[dict[str, Scalar], ...]:
         started = time.monotonic()
         read.verified.stream.seek(0)
+        _validate_field_collection(read, spec)
+        read.verified.stream.seek(0)
         frame = pl.scan_parquet(read.verified.stream)
+        if spec.field_collection is not None:
+            collection = spec.field_collection
+            frame = (
+                frame
+                .select(collection)
+                .explode(collection)
+                .filter(pl.col(collection).is_not_null())
+                .unnest(collection)
+            )
         _known_columns(spec, set(frame.collect_schema().names()))
         for item in spec.filters:
             expression = _polars_predicate(item)
             frame = frame.filter(expression)
         frame = frame.select([
             _polars_column(name).alias(name) for name in spec.columns
-        ]).limit(spec.limit)
+        ]).slice(spec.offset, spec.limit)
         rows = tuple(
             {name: _scalar(value) for name, value in row.items()}
             for row in frame.collect().to_dicts()
@@ -510,7 +541,21 @@ def _canonical_query(spec: QuerySpec) -> bytes:
             "limit": spec.limit,
             "max_result_bytes": spec.max_result_bytes,
             "timeout_seconds": spec.timeout_seconds,
-            "version": "1.0",
+            "version": (
+                "1.0"
+                if spec.field_collection is None and spec.offset == 0
+                else "1.1"
+            ),
+            **(
+                {"field_collection": spec.field_collection}
+                if spec.field_collection is not None
+                else {}
+            ),
+            **(
+                {"offset": spec.offset}
+                if spec.field_collection is not None or spec.offset
+                else {}
+            ),
         },
         allow_nan=False,
         sort_keys=True,
@@ -518,7 +563,18 @@ def _canonical_query(spec: QuerySpec) -> bytes:
     ).encode()
 
 
+def _validate_offset(offset: int) -> None:
+    if type(offset) is not int or not 0 <= offset <= MAX_QUERY_OFFSET:
+        raise ValueError("query offset exceeds budget")
+
+
 def _validate_spec(spec: QuerySpec) -> None:
+    _validate_offset(spec.offset)
+    if spec.field_collection is not None and (
+        type(spec.field_collection) is not str
+        or _COLUMN.fullmatch(spec.field_collection) is None
+    ):
+        raise ValueError("invalid query field collection")
     if not spec.columns or len(spec.columns) > MAX_COLUMNS:
         raise ValueError("query columns exceed budget")
     if len(set(spec.columns)) != len(spec.columns):
@@ -538,12 +594,34 @@ def _validate_spec(spec: QuerySpec) -> None:
     ):
         raise ValueError("query timeout budget is invalid")
     for name in (*spec.columns, *(item.column for item in spec.filters)):
-        _column_parts(name)
+        _, nested_component = _column_parts(name)
+        if spec.field_collection is not None and nested_component is not None:
+            raise ValueError("field collection requires direct scalar fields")
     for item in spec.filters:
         if item.operator not in _OPERATORS:
             raise ValueError("invalid query operator")
         if not _is_scalar(item.value):
             raise ValueError("invalid query scalar")
+
+
+def _validate_field_collection(read: ProductRead, spec: QuerySpec) -> None:
+    """Require a declared list of structs before exposing native field rows."""
+    _validate_spec(spec)
+    if spec.field_collection is None:
+        return
+    read.verified.stream.seek(0)
+    schema = pq.read_schema(read.verified.stream)  # pyright: ignore[reportUnknownMemberType] -- Arrow optional filesystem stub
+    if spec.field_collection not in schema.names:
+        raise ValueError("unknown query field collection")
+    field = cast(
+        "pa.Field[pa.DataType]",
+        schema.field(spec.field_collection),  # pyright: ignore[reportUnknownMemberType] -- Arrow field generic stub
+    )
+    data_type = field.type
+    if not (pa.types.is_list(data_type) or pa.types.is_large_list(data_type)):
+        raise ValueError("query field collection must be a list of structs")
+    if not pa.types.is_struct(data_type.value_type):
+        raise ValueError("query field collection must be a list of structs")
 
 
 def _known_columns(spec: QuerySpec, available: set[str]) -> None:
