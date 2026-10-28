@@ -23,23 +23,29 @@ state, and matching anonymously retrieved metadata bytes.
 and a required exact `expected_parent_revision` input.
 The transport uses exactly one Hub add operation and `parent_commit` CAS;
 it has no remove operation or dataset creation/visibility mutation. A current
-head differing from the expected parent is rejected before writing. The durable
-receipt labels parent evidence as server-enforced CAS and records the source
-release revision separately.
+head differing from the expected parent is rejected before writing. Each new
+run labels parent evidence as server-enforced CAS and records the source release
+revision separately. New receipt writes are metadata-only JSON files retained
+as GitHub Actions artifacts; the publisher does not create issue comments or
+other messages.
 
 Anonymous downloads use the existing DNS-bound transport and approved Hub
 delivery hosts. Each isolated download subprocess has an absolute 60-second
 deadline and is killed on expiry, with byte bounds checked before writes.
 Inventories are capped at 10,000 entries, 512 MiB per object and 2 GiB per
 snapshot (up to 4 GiB across before/after plus metadata); the workflow has a
-30-minute timeout. An issue receipt projection exceeding 60,000 characters is
-rejected before any append. Exact issue receipt readback must succeed before
-temporary source cache cleanup. Tests mock the SDK and transport. Both PBS and
-MBS hosted executions are recorded below with their durable receipts.
+30-minute timeout. A receipt exceeding 60,000 characters is rejected before
+any append. Each receipt is locally read back before the next transaction
+boundary; only anonymous source readback permits temporary cache cleanup.
+Workflow artifacts retain metadata receipts for 90 days. They are bounded run
+evidence, not permanent qualification receipts; preserve any result needed for
+long-term acceptance in the repository's versioned evidence. Tests mock the
+SDK and transport. Earlier PBS and MBS runs below used issue comments; those
+historical records remain unchanged.
 
 The hosted implementation runs only from the approved GitHub Actions
-environment, bind the reviewed default-branch commit and durable issue intent,
-and independently obtain a complete baseline inventory at the exact expected
+environment, binds the reviewed default-branch commit and run-artifact intent,
+and independently obtains a complete baseline inventory at the exact expected
 CAS parent. The metadata document separately retains the source release
 revision. Hash every baseline object and retain byte counts; API sibling names
 alone do not establish byte preservation. Submit only an add operation with
@@ -50,11 +56,12 @@ Never use the existing PBS replace-all publisher
 
 After the append, persist the server-enforced CAS acknowledgement and observe
 public non-gated identity, anonymously restore/hash all siblings, then run the
-verifier. Persist a durable issue receipt containing code commit, workflow/run,
-dataset, parent and new revisions, metadata path/bytes/SHA-256, complete before
-and after inventories and anonymous verification outcome. Cleanup must follow
-verified durable receipt persistence. A failed append leaves the prior source
-revision intact and must not trigger deletion or a dataset-wide privacy change.
+verifier. Metadata-only run receipts contain code commit, workflow/run, dataset,
+parent and new revisions, metadata path/bytes/SHA-256, complete before and after
+inventories and anonymous verification outcome. The artifact is uploaded even
+after a failed or cancelled step when the runner remains available. A failed
+append leaves the prior source revision intact and must not trigger deletion or
+a dataset-wide privacy change.
 
 PBS execution is verified from reviewed main commit
 `aa3d74a1c315b51d48688e5409283cf32cacd9cc` in workflow run `36520821504`.
@@ -93,21 +100,27 @@ before intent or mutation.
 
 ## Interrupted verification recovery
 
-The workflow persists and reads back a bot-authored `cas_acknowledged` receipt
-immediately after the Hub commit response and before anonymous verification.
-If verification is interrupted, pass that issue-comment ID as
-`recovery_receipt`. Both the acknowledgement and its linked prior intent must
-be bot-authored comments on issue 340 with matching exact plan fields. Recovery
-must pass `expected_parent_revision` equal to the original `parent_revision`
-in the CAS acknowledgement; do not pass the current acknowledged dataset head
-as the parent. The runner rejects a mismatch before reading Hub objects.
-Recovery requires the acknowledged revision still be the dataset head,
-rehashes the original baseline and the complete resulting sibling set, and
-emits verified receipt evidence without another append.
+New runs persist and read back a `cas_acknowledged` receipt immediately after
+the Hub commit response and before anonymous verification. If verification is
+interrupted, pass the prior Actions run ID as `recovery_run_id`; the workflow
+downloads the exact receipt artifact and checks GitHub run metadata for the
+expected repository, main branch, workflow-dispatch event, exact source commit,
+and one of the two approved publisher workflows. The intent and acknowledgement
+must match the same exact plan. Historical `recovery_receipt` comment IDs are
+still accepted read-only for old transactions; no new comments are created.
+
+Recovery must pass `expected_parent_revision` equal to the original
+`parent_revision` in the CAS acknowledgement; do not pass the current
+acknowledged dataset head as the parent. The runner rejects a mismatch before
+reading Hub objects. Recovery requires the acknowledged revision still be the
+dataset head, rehashes the original baseline and the complete resulting sibling
+set, and emits verified receipt evidence without another append.
 
 Parent evidence remains the authenticated workflow's recorded successful
 server-enforced CAS response; no independent Git ancestry claim is made.
-An ambiguous commit response, or interruption before acknowledgement becomes
-durable, remains a manual reconciliation boundary. Date-sorted commit lists
-are not accepted as parent evidence. Recovery preserves the exact reviewed
-code commit requirement and cannot silently adopt an unrelated newer head.
+An ambiguous commit response, or interruption before the acknowledgement
+artifact uploads, remains a manual reconciliation boundary. Artifacts expire
+after 90 days; expired run evidence cannot be reconstructed by guessing from
+Hub history. Date-sorted commit lists are not accepted as parent evidence.
+Recovery preserves the exact reviewed code commit requirement and cannot
+silently adopt an unrelated newer head.

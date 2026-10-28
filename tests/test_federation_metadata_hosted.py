@@ -1,4 +1,4 @@
-"""Hosted metadata publication preserves CAS and durable evidence ordering."""
+"""Hosted metadata publication preserves CAS and receipt ordering."""
 
 # Transport signatures mirror the protocol even when a mock ignores arguments.
 # ruff: file-ignore[unused-method-argument]
@@ -22,6 +22,7 @@ from global_medicines_atlas.federation_metadata_append import (
 from global_medicines_atlas.federation_metadata_hosted import (
     PublicSnapshot,
     execute_metadata_append,
+    valid_receipt_url,
 )
 
 
@@ -179,7 +180,7 @@ def test_local_or_unbound_execution_cannot_touch_transport(
 
 def test_failed_intent_prevents_write(setup):
     document, hub = setup
-    with pytest.raises(ValueError, match="intent URL"):
+    with pytest.raises(ValueError, match="intent receipt URL"):
         execute_metadata_append(
             document, exact_commit="a" * 40, hub=hub, persist=lambda _: ""
         )
@@ -316,7 +317,7 @@ def test_nonpublic_or_wrong_baseline_cannot_publish(setup, field, value):
 
 
 @pytest.mark.parametrize("phase", ["cas_acknowledged", "anonymously_verified"])
-def test_missing_durable_receipt_never_returns_success(setup, phase):
+def test_missing_run_receipt_never_returns_success(setup, phase):
     document, hub = setup
 
     def persist(receipt):
@@ -328,7 +329,7 @@ def test_missing_durable_receipt_never_returns_success(setup, phase):
             )
         )
 
-    with pytest.raises(ValueError, match="durable"):
+    with pytest.raises(ValueError, match="receipt URL"):
         execute_metadata_append(
             document, exact_commit="a" * 40, hub=hub, persist=persist
         )
@@ -425,6 +426,112 @@ def test_recovery_requires_authenticated_matching_intent(monkeypatch, login):
         intent["addition"] = {"sha256": "b" * 64}
         with pytest.raises(ValueError, match="prior intent"):
             script["read_acknowledgement"]("2")
+
+
+def test_metadata_receipts_are_local_artifacts_and_preserve_repeated_statuses(
+    monkeypatch, tmp_path
+):
+    script = runpy.run_path(
+        str(Path(__file__).parents[1] / "scripts/publish_source_metadata.py")
+    )
+    for key, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+        "GITHUB_RUN_ID": "123",
+    }.items():
+        monkeypatch.setenv(key, value)
+    monkeypatch.setattr(
+        subprocess,
+        "check_output",
+        lambda *_args, **_kwargs: pytest.fail(
+            "receipt persistence attempted an external call"
+        ),
+    )
+    first = {"status": "observed", "object": "a"}
+    second = {"status": "observed", "object": "b"}
+
+    url_one = script["persist_receipt"](first, tmp_path)
+    url_two = script["persist_receipt"](second, tmp_path)
+
+    assert (
+        url_one
+        == url_two
+        == (
+            "https://github.com/edithatogo/global-medicines-atlas/actions/runs/123"
+        )
+    )
+    assert len(list(tmp_path.glob("observed-*.json"))) == 2
+    assert {
+        json.loads(path.read_text())["object"]
+        for path in tmp_path.glob("observed-*.json")
+    } == {"a", "b"}
+
+
+def test_recovery_accepts_only_exact_run_bound_artifact_ack(
+    tmp_path, monkeypatch
+):
+    script = runpy.run_path(
+        str(Path(__file__).parents[1] / "scripts/publish_source_metadata.py")
+    )
+    run_url = (
+        "https://github.com/edithatogo/global-medicines-atlas/actions/runs/123"
+    )
+    intent = {
+        "status": "intent",
+        "run_url": run_url,
+        "parent_revision": "a" * 40,
+        "code_commit": "b" * 40,
+    }
+    acknowledgement = {
+        **intent,
+        "status": "cas_acknowledged",
+        "revision": "f" * 40,
+        "intent_url": run_url,
+        "parent_basis": "server_enforced_parent_commit",
+    }
+    for key, value in {
+        "GITHUB_ACTIONS": "true",
+        "GITHUB_REPOSITORY": "edithatogo/global-medicines-atlas",
+        "GITHUB_RUN_ID": "123",
+    }.items():
+        monkeypatch.setenv(key, value)
+    script["persist_receipt"](intent, tmp_path)
+    script["persist_receipt"](acknowledgement, tmp_path)
+    assert len(list(tmp_path.glob("intent-*.json"))) == 1
+    assert len(list(tmp_path.glob("cas_acknowledged-*.json"))) == 1
+    run_metadata = {
+        "id": 123,
+        "repository": {"full_name": "edithatogo/global-medicines-atlas"},
+        "head_branch": "main",
+        "event": "workflow_dispatch",
+        "head_sha": "b" * 40,
+        "path": ".github/workflows/australian-source-metadata.yml@refs/heads/main",
+    }
+    monkeypatch.setattr(
+        subprocess,
+        "check_output",
+        lambda *_args, **_kwargs: json.dumps(run_metadata),
+    )
+
+    assert (
+        script["read_artifact_acknowledgement"]("123", tmp_path)
+        == acknowledgement
+    )
+    with pytest.raises(ValueError, match="authorized main workflow"):
+        script["read_artifact_acknowledgement"]("124", tmp_path)
+
+
+def test_receipt_url_accepts_actions_run_and_legacy_read_only_reference():
+    assert valid_receipt_url(
+        "https://github.com/edithatogo/global-medicines-atlas/actions/runs/123"
+    )
+    assert valid_receipt_url(
+        "https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-1"
+    )
+    assert not valid_receipt_url(
+        "https://github.com/someone-else/global-medicines-atlas/actions/runs/123"
+    )
+    assert not valid_receipt_url("https://example.invalid/actions/runs/123")
 
 
 def test_receipt_size_rejected_before_external_write(setup):

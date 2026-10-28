@@ -657,7 +657,8 @@ def test_unverified_or_unrecorded_bytes_are_preserved(
 
     monkeypatch.setattr(runner, "persist_receipt", persist)
     if failure in {"persist", "url"}:
-        with pytest.raises(ValueError, match="durable"):
+        expected_error = "durable" if failure == "persist" else "receipt URL"
+        with pytest.raises(ValueError, match=expected_error):
             runner.main()
     else:
         runner.main()

@@ -917,3 +917,18 @@ three object-scoped blockers are recorded; the generic Phase 4 publication and
 integrated verification tasks above remain open. CMS HCPCS remains outside the
 M-112 inventory and its current record does not authorize processing or v4
 admission. No publication, promotion, or public release occurred.
+
+## Receipt transport and outbound-message remediation (2026-10-28)
+
+- [x] Remove active issue-comment writes from hosted publication and metadata
+  receipt paths. Preserve exact metadata receipts in 90-day run artifacts,
+  retain read-only recovery for historical comment IDs, and authenticate new
+  artifact recovery against the exact main-branch workflow run. Extend the
+  workflow/script guard and focused transaction tests.
+- [ ] Qualify artifact upload and artifact-based recovery in an authorized
+  exact-main hosted transaction. Run artifacts are temporary evidence and do
+  not replace repository-versioned qualification receipts or any required
+  admission, rights, recovery, or consumer evidence.
+
+The local change sends no messages and performs no dataset publication or
+append. The Stable v1 Australian federation gate remains blocked.

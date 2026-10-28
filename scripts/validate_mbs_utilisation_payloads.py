@@ -10,7 +10,6 @@ import hashlib
 import importlib
 import json
 import os
-import re
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import sys
 import tempfile
@@ -23,6 +22,7 @@ from publish_source_metadata import HubTransport, persist_receipt
 
 from global_medicines_atlas.federation_metadata_hosted import (
     require_hosted_main,
+    valid_receipt_url,
 )
 from global_medicines_atlas.mbs_csv_header_inventory import (
     header_candidates,
@@ -333,11 +333,8 @@ def main() -> None:  # ruff: ignore[too-many-locals, too-many-statements, too-ma
         object_receipts = receipts / row["acquisition_id"]
         object_receipts.mkdir()
         receipt_url = persist_receipt(document, object_receipts)
-        if not re.fullmatch(
-            r"https://github\.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-[0-9]+",
-            receipt_url,
-        ):
-            raise ValueError("validation receipt is not durable issue evidence")
+        if not valid_receipt_url(receipt_url):
+            raise ValueError("validation receipt URL is invalid")
         removed = False
         if target is not None and outcome["anonymous_digest_verified"]:
             target.unlink()

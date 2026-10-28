@@ -66,15 +66,15 @@ jobs:
           Path('publication-intent.json').write_text(
               json.dumps(intent, indent=2, sort_keys=True) + '\n', encoding='utf-8'
           )
-          Path('issue-comment.json').write_text(
-              json.dumps({'body': json.dumps(intent, indent=2, sort_keys=True) + '\n'},
-                         sort_keys=True) + '\n',
-              encoding='utf-8',
-          )
           PY
-          gh api "repos/${GITHUB_REPOSITORY}/issues/340/comments" \
-            --method POST --input issue-comment.json \
-            --jq '.html_url'
+
+      - name: Retain metadata-only publication intent
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: australian-legacy-publication-intent-${{ github.run_id }}
+          path: publication-intent.json
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Build, publish, and anonymously restore exact archive
         id: publish

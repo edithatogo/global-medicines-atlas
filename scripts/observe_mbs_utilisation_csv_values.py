@@ -8,7 +8,6 @@ import argparse
 import importlib
 import json
 import os
-import re
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
 import sys
 import tempfile
@@ -21,6 +20,7 @@ from publish_source_metadata import HubTransport, persist_receipt
 
 from global_medicines_atlas.federation_metadata_hosted import (
     require_hosted_main,
+    valid_receipt_url,
 )
 from global_medicines_atlas.mbs_utilisation_header_inventory import (
     workflow_run_url,
@@ -37,9 +37,6 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKER_SECONDS = 120
 WORKER_MEMORY_BYTES = 1_073_741_824
 WORKER_ARGUMENT_COUNT = 5
-RECEIPT_URL_PATTERN = re.compile(
-    r"https://github\.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-[0-9]+"
-)
 
 
 def worker(index: int, path: Path, exact_commit: str) -> dict[str, Any]:
@@ -191,8 +188,8 @@ def main() -> None:
             "silver_published": False,
         }
         receipt_url = persist_receipt(document, receipts)
-        if not RECEIPT_URL_PATTERN.fullmatch(receipt_url):
-            raise ValueError("value observation is not durable issue evidence")
+        if not valid_receipt_url(receipt_url):
+            raise ValueError("value observation receipt URL is invalid")
         removed = False
         if target is not None and outcome["anonymous_digest_verified"]:
             target.unlink()
@@ -221,10 +218,8 @@ def main() -> None:
         "silver_published": False,
     }
     summary_url = persist_receipt(summary, receipts)
-    if not RECEIPT_URL_PATTERN.fullmatch(summary_url):
-        raise ValueError(
-            "value observation summary is not durable issue evidence"
-        )
+    if not valid_receipt_url(summary_url):
+        raise ValueError("value observation summary receipt URL is invalid")
     print(json.dumps({"summary_receipt_url": summary_url}))
 
 

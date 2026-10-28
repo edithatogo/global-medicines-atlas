@@ -37,3 +37,11 @@ jobs:
           uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
             python scripts/validate_mbs_utilisation_payloads.py \
             --exact-commit "$REQUESTED_COMMIT" --csv-headers-only
+      - name: Retain metadata-only CSV header receipts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-utilisation-validation-receipts-${{ github.run_id }}
+          path: build/mbs-utilisation-validation-receipts/**/*.json
+          if-no-files-found: ignore
+          retention-days: 90

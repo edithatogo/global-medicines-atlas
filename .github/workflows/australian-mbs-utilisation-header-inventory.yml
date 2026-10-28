@@ -37,3 +37,11 @@ jobs:
           uv run --frozen --python 3.15.1 --with huggingface-hub==1.14.0 \
             python scripts/inventory_mbs_utilisation_csv_headers.py \
             --exact-commit "$REQUESTED_COMMIT"
+      - name: Retain metadata-only header inventory receipts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-utilisation-header-inventory-receipts-${{ github.run_id }}
+          path: build/mbs-utilisation-header-receipts/*.json
+          if-no-files-found: ignore
+          retention-days: 90

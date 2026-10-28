@@ -20,6 +20,7 @@ from publish_source_metadata import (
     HubTransport,
     persist_receipt,
     read_acknowledgement,
+    read_artifact_acknowledgement,
 )
 
 from global_medicines_atlas.donor_delta import (
@@ -440,6 +441,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--exact-commit", required=True)
     parser.add_argument("--recovery-receipt", default="")
+    parser.add_argument("--recovery-run-id", default="")
     args = parser.parse_args()
     require_hosted_main(args.exact_commit)
     contract = DonorHistoryPublicationContract.model_validate_json(
@@ -451,13 +453,20 @@ def main() -> None:
     require_donor_history_hosted_authority(contract)
     if gh(f"repos/{REPOSITORY}/commits/main")["sha"] != args.exact_commit:
         raise ValueError("reviewed main has advanced")
+    receipts = ROOT / "build/donor-history-receipts"
+    receipts.mkdir(parents=True, exist_ok=True)
+    if args.recovery_receipt and args.recovery_run_id:
+        raise ValueError("select only one recovery receipt source")
     acknowledgement = (
         read_acknowledgement(args.recovery_receipt)
         if args.recovery_receipt
+        else read_artifact_acknowledgement(
+            args.recovery_run_id,
+            ROOT / "build/recovery-receipts",
+        )
+        if args.recovery_run_id
         else None
     )
-    receipts = ROOT / "build/donor-history-receipts"
-    receipts.mkdir(parents=True, exist_ok=True)
     workspace = Path(tempfile.mkdtemp(prefix="gma-donor-history-"))
     result = execute_history_append(
         contract,
