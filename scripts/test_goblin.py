@@ -370,6 +370,7 @@ TEST_LANES: dict[str, tuple[str, ...]] = {
         "tests/test_reconcile_m112_pbs_pdf_archive_lineage.py",
         "tests/test_reconcile_m112_reimbursement_medallion_projection_lineage.py",
         "tests/test_reconcile_m112_current_rights_state.py",
+        "tests/test_reconcile_m112_pbs_utilisation_rights.py",
         "tests/test_cms_hcpcs_exact_file_rights_decision.py",
         "tests/test_m112_rights_release_preflight.py",
         "tests/test_bronze_admission.py",

@@ -1101,11 +1101,35 @@ release gate.
   Ruff, formatting, `ty`, configured BasedPyright targets, Actionlint and diff
   checks pass. No source payload, rights, admission, or publication state was
   changed locally.
-- [~] Merge the scoped change after protected checks pass, dispatch the
+- [x] Merge the scoped change after protected checks pass, dispatch the
   existing exact-main admission workflow, then validate and reconcile the
-  resulting six-object browser receipt into M-111 and Stable readiness. The
+  resulting six-object browser receipt into M-111 and Stable readiness. PR
+  #1357 merged as `29afcd342507f6110c557a0ddb0a9346d903bac4`; exact-main run
+  `40653807510` passed the six-object browser and consumer canaries. The
   Australian federation and Stable v1 gates remain blocked until all their
   independent requirements pass.
+
+## Phase: M-112 exact PBS-utilisation rights and lineage reconciliation (2026-10-28)
+
+- [x] Bind the existing six-object PBS-utilisation rights attestation to the
+  exact six frozen object identities and the landed B1/B2 lineage receipt.
+  Reconcile only the stale per-object rights state; preserve each Bronze
+  admission as unreviewed and keep v4 admission and consumer canary false.
+  The digest-bound reconciliation and negative-control tests pass. All six
+  remain deferred; the permission instrument is not independently reviewed,
+  their Bronze admission reviewer state remains unreviewed, and no v4
+  admission or canary was performed. Implementation commit `ac2679eb`.
+  Overall federation acceptance remains blocked.
+
+### Review fixes — M-112 PBS-utilisation reconciliation (2026-10-28)
+
+- [x] Add the new test module to the full-profile test inventory and update
+  the M-112 acceptance-page regression to require the exact supplemental
+  receipt. The first full profile found the stale wording assertion after
+  9,326 tests passed; the affected suite then passed (99 tests) and the routine
+  profile passed. Full-profile result before the assertion fix: 9,326 passed,
+  4 skipped, 1 failed; it was not repeated for this test-only follow-up.
+  Review-fix implementation is included in `ac2679eb`.
 
 ## Phase: Review Fixes — M-111 receipt binding (2026-10-28)
 

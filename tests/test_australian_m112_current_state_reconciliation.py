@@ -253,9 +253,14 @@ def test_acceptance_page_reconciles_exact_mbs_utilisation_rights_scope() -> (
     )
     assert "landed-admission reviewer status still unreviewed" in acceptance
     assert (
-        "separate maintainer attestation covers public-release rights for six "
-        "exact PBS-utilisation raw files"
+        "supplemental reconciliation binds the maintainer's exact six-file "
+        "PBS-utilisation rights attestation to all six frozen path/digest/byte "
+        "identities and their complete B1/B2 lineage"
     ) in acceptance
+    assert (
+        "australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json"
+        in acceptance
+    )
     assert "does not qualify a wider PBS-utilisation population" in acceptance
     assert disposition["candidate_paths"] == 14
     assert disposition["v4_admission"] is False
