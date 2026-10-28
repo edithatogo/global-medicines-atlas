@@ -926,6 +926,24 @@ release gate.
   `actions: read` permission in the two workflows that download previous-run
   recovery artifacts. Focused tests: 99 passed; Test-Goblin contract inventory,
   Ruff, formatting, `zizmor --pedantic .github`, and diff checks passed.
-- [ ] Push the correction and reconcile all required checks against the exact
-  updated PR head before merging. The Australian federation and Stable v1 gates
-  remain blocked pending their substantive acceptance evidence.
+- [x] Push correction `38a3b713`. The exact-head unit lane then exposed four
+  additional stale assertions; their diagnosis and repair are recorded below.
+
+### PR #1354 exact-head unit failure correction (2026-10-28)
+
+- [x] Diagnose the four exact unit failures on head `38a3b713`: two assertions
+  referred to superseded PR-number prose and an obsolete unadmitted-candidate
+  state; two expected a generic `durable` error while the current receipt
+  validator correctly reports stage-specific invalid-URL errors.
+- [x] Reconcile the acceptance summary with the exact 14-object MBS-utilisation
+  rights scope and the separately attested six-object PBS-utilisation rights
+  scope, preserving the pending B1/B2 lineage, admission, canary, and broader
+  rights limits. Refresh the acceptance-summary digest in Stable readiness.
+  Update regression assertions to the current evidence and validate the
+  stage-specific error behavior without changing runtime code.
+- [x] Focused affected tests: 139 passed across the M-112 state, donor-history,
+  Stable contract, and Phase 4 reconciliation modules. Ruff, formatting,
+  context validation, and diff checks pass.
+- [ ] Push the correction, reconcile all protected checks at that exact PR
+  head, and merge only after they pass. All Australian federation dispositions
+  remain as evidenced; this correction does not satisfy the gate.

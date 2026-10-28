@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T04:10:41Z",
+  "as_of": "2026-10-28T04:28:00Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -117,8 +117,8 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "19b8c646638ccf3146acb2e2365730d895958e209ddee0c2f6171fa4d7a0e287",
-        "consequence": "Federation acceptance summary reflects current M-108 delivery, M-109 workbook and P7 date evidence, M-110 bounded-review limits, and current M-111/M-112 evidence; all gate dispositions remain blocked or partial as recorded."
+        "sha256": "81be4e21b3a0c32249db1de2c12d309d043265f71cf8a36be23184a2f0019ec7",
+        "consequence": "Federation summary binds current M-108/M-109/M-110/M-111/M-112 evidence, including exact 14-object MBS-utilisation and six-object PBS-utilisation rights boundaries; lineage, admission, independent recovery, broader semantics, and federation acceptance remain open."
       }
     ],
     "release_action_performed": false,

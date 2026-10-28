@@ -223,8 +223,12 @@ def test_latest_addendum_supersedes_only_v4_identity_blocker() -> None:
     acceptance = (
         ROOT / "docs/qualification/australian-health-federation-acceptance.md"
     ).read_text(encoding="utf-8")
-    assert "PR [#755]" in acceptance
-    assert "candidate remains unadmitted" in acceptance
+    assert (
+        "The July 2025 six-table Silver cohort separately passed its scoped "
+        "v4 remote-reader qualification"
+    ) in acceptance
+    assert "no typed v4 admission" in acceptance
+    assert "`f9f9` has no admission sidecar" in acceptance
     assert "v4 source-receipt reference is absent locally" not in acceptance
 
 
@@ -240,10 +244,19 @@ def test_acceptance_page_reconciles_exact_mbs_utilisation_rights_scope() -> (
     )
     disposition = rights["current_disposition"]
 
-    assert "PR [#757]" in acceptance
-    assert "10 demographics and 4 group-statistics objects only" in acceptance
-    assert "PBS-utilisation rights remain unresolved" in acceptance
-    assert "sidecars still lack per-object" in acceptance
+    assert (
+        "MBS-utilisation rights reconciliation covers 14 candidate paths "
+        "(10 demographics and 4 group-statistics)"
+    ) in acceptance
+    assert (
+        "lineage is deferred pending per-object B1 rights/reuse fields"
+        in acceptance
+    )
+    assert (
+        "separate maintainer attestation covers public-release rights for six "
+        "exact PBS-utilisation raw files"
+    ) in acceptance
+    assert "does not qualify a wider PBS-utilisation population" in acceptance
     assert disposition["candidate_paths"] == 14
     assert disposition["v4_admission"] is False
     assert disposition["m112_federation_accepted"] is False
