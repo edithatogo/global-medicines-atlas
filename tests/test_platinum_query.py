@@ -9,15 +9,18 @@ import math
 from datetime import UTC, date, datetime
 from decimal import Decimal
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal, cast
 
 import httpx
 import pyarrow as pa
 import pyarrow.parquet as pq
 import pytest
+from fastapi.testclient import TestClient
 from test_support.federation import admission_record
+from typer.testing import CliRunner
 
-from global_medicines_atlas import platinum_query
+from global_medicines_atlas import cli, platinum_query
+from global_medicines_atlas.atlas import AtlasQueryService, create_atlas_app
 from global_medicines_atlas.federation_distribution import (
     DistributionBinding,
     ProducedObject,
@@ -36,6 +39,8 @@ from global_medicines_atlas.platinum_resolver import (
     ProductResource,
     StorageNeutralResolver,
 )
+from global_medicines_atlas.platinum_structure import SourceStructureService
+from global_medicines_atlas.platinum_v2_api import create_v2_app
 
 ROOT = Path(__file__).resolve().parents[1] / "contracts/medallion/v4"
 SCHEMA = (ROOT / "federation.schema.json").read_bytes()
@@ -186,6 +191,9 @@ def resolver(
     status: int = 200,
     metadata_json: object | None = None,
     clock: Any = lambda: NOW,
+    semantic_dimension: Literal[
+        "service_benefit", "source_structure"
+    ] = "service_benefit",
 ) -> StorageNeutralResolver:
     raw = contract(payload)
     distribution = binding(raw)
@@ -194,7 +202,7 @@ def resolver(
             "contract_sha256": distribution.contract_sha256,
             "entity_granularity": "service_item",
             "resource_id": "au.mbs.service-items",
-            "semantic_dimension": "service_benefit",
+            "semantic_dimension": semantic_dimension,
             "version": "1.0",
         },
         sort_keys=True,
@@ -202,7 +210,7 @@ def resolver(
     ).encode()
     resource = ProductResource(
         resource_id="au.mbs.service-items",
-        semantic_dimension="service_benefit",
+        semantic_dimension=semantic_dimension,
         entity_granularity="service_item",
         binding=distribution,
         contract=raw,
@@ -718,3 +726,354 @@ def test_unavailable_receipt_binds_attempted_query_plan() -> None:
     assert isinstance(second, QueryUnavailable)
     assert first.query_sha256 != second.query_sha256
     assert first.receipt_sha256 != second.receipt_sha256
+
+
+def native_field_collection_payload() -> bytes:
+    """Model the preserved PBS list of source-native field observations."""
+    sink = io.BytesIO()
+    fields = pa.list_(
+        pa.struct([
+            pa.field("source_field_id", pa.string()),
+            pa.field("value", pa.string()),
+            pa.field("state", pa.string()),
+        ])
+    )
+    pq.write_table(
+        pa.table({
+            "entity_id": ["a", "b", "c", "d"],
+            "native_fields": pa.array(
+                [
+                    [
+                        {
+                            "source_field_id": "a/text",
+                            "value": "001",
+                            "state": "present",
+                        },
+                        {
+                            "source_field_id": "a/attribute",
+                            "value": None,
+                            "state": "null",
+                        },
+                    ],
+                    [],
+                    None,
+                    [
+                        {
+                            "source_field_id": "d/text",
+                            "value": "source only",
+                            "state": "present",
+                        }
+                    ],
+                ],
+                type=fields,
+            ),
+        }),
+        sink,
+    )
+    return sink.getvalue()
+
+
+@pytest.mark.parametrize("engine", ["duckdb", "polars"])
+def test_query_reads_bounded_native_fields_without_inventing_empty_rows(engine):
+    with resolver(native_field_collection_payload()) as client:
+        result = PlatinumQueryService(client).query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("source_field_id", "value", "state"),
+                field_collection="native_fields",
+                limit=3,
+            ),
+        )
+    assert result.rows == (
+        {"source_field_id": "a/text", "value": "001", "state": "present"},
+        {"source_field_id": "a/attribute", "value": None, "state": "null"},
+        {
+            "source_field_id": "d/text",
+            "value": "source only",
+            "state": "present",
+        },
+    )
+    query = json.loads(result.query_receipt.canonical_query)
+    assert query["field_collection"] == "native_fields"
+    assert query["version"] == "1.1"
+    assert result.evidence.comparison_validity == "not_evaluated"
+
+
+@pytest.mark.parametrize("engine", ["duckdb", "polars"])
+def test_native_field_filters_apply_to_fields_and_keep_output_bounded(engine):
+    with resolver(native_field_collection_payload()) as client:
+        result = PlatinumQueryService(client).query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("source_field_id", "value"),
+                filters=(QueryFilter("state", "=", "present"),),
+                field_collection="native_fields",
+                limit=1,
+            ),
+        )
+    assert result.rows == ({"source_field_id": "a/text", "value": "001"},)
+
+
+@pytest.mark.parametrize("engine", ["duckdb", "polars"])
+@pytest.mark.parametrize("collection", ["entity_id", "unknown"])
+def test_native_field_collection_rejects_wrong_or_missing_schema(
+    engine, collection
+):
+    with (
+        resolver(native_field_collection_payload()) as client,
+        pytest.raises(ValueError, match="field collection"),
+    ):
+        PlatinumQueryService(client).query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(columns=("value",), field_collection=collection),
+        )
+
+
+def test_native_collection_name_rejects_sql_injection_before_read():
+    with resolver(native_field_collection_payload()) as client:
+        with pytest.raises(ValueError, match="field collection"):
+            PlatinumQueryService(client).query(
+                "au.mbs.service-items",
+                engine="duckdb",
+                spec=QuerySpec(
+                    columns=("value",), field_collection='x"; SELECT 1'
+                ),
+            )
+        assert client.cached_bytes == 0
+
+
+@pytest.mark.parametrize("engine", ["duckdb", "polars"])
+def test_collection_rejects_scalar_lists_and_retains_result_budget(engine):
+    sink = io.BytesIO()
+    pq.write_table(pa.table({"native_fields": [["not a field struct"]]}), sink)
+    with (
+        resolver(sink.getvalue()) as client,
+        pytest.raises(ValueError, match="list of structs"),
+    ):
+        PlatinumQueryService(client).query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("value",), field_collection="native_fields"
+            ),
+        )
+    with (
+        resolver(native_field_collection_payload()) as client,
+        pytest.raises(ValueError, match="byte budget"),
+    ):
+        PlatinumQueryService(client).query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("value",),
+                field_collection="native_fields",
+                max_result_bytes=2,
+            ),
+        )
+
+
+@pytest.mark.parametrize("engine", ["duckdb", "polars"])
+def test_field_view_rejects_nested_scalar_component_selectors(engine):
+    with (
+        resolver(native_field_collection_payload()) as client,
+        pytest.raises(ValueError, match="field collection"),
+    ):
+        PlatinumQueryService(client).query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("value__native_value",),
+                field_collection="native_fields",
+            ),
+        )
+
+
+def test_field_view_flows_through_real_service_api_atlas_and_cli(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """One admitted synthetic object carries the same rows through all surfaces."""
+    resource_id = "au.mbs.service-items"
+    with resolver(
+        native_field_collection_payload(), semantic_dimension="source_structure"
+    ) as client:
+        service = SourceStructureService(
+            client, jurisdictions={resource_id: "AU"}
+        )
+        api = TestClient(
+            create_v2_app(cast("Any", object()), source_structure=service)
+        )
+        response = api.get(
+            f"/api/v2/source-structure/{resource_id}",
+            params={
+                "view": "fields",
+                "columns": ["source_field_id", "value"],
+                "limit": 2,
+            },
+        )
+        assert response.status_code == 200
+        body = response.json()
+        assert body["rows"] == [
+            {"source_field_id": "a/text", "value": "001"},
+            {"source_field_id": "a/attribute", "value": None},
+        ]
+        later = api.get(
+            f"/api/v2/source-structure/{resource_id}",
+            params={
+                "view": "fields",
+                "columns": ["source_field_id", "value"],
+                "limit": 2,
+                "offset": 2,
+            },
+        )
+        assert later.status_code == 200
+        later_body = later.json()
+        assert later_body["rows"] == [
+            {"source_field_id": "d/text", "value": "source only"}
+        ]
+        assert later_body["offset"] == 2
+        assert later_body["query_sha256"] != body["query_sha256"]
+        atlas = TestClient(
+            create_atlas_app(
+                cast("AtlasQueryService", object()),
+                federated_source_structure=service,
+            )
+        )
+        page = atlas.get(
+            "/federated/source-structure",
+            params={
+                "resource_id": resource_id,
+                "view": "fields",
+                "columns": "source_field_id,value",
+                "limit": 2,
+                "offset": 2,
+            },
+        )
+        assert page.status_code == 200
+        assert "d/text" in page.text
+        assert "a/text" not in page.text
+        assert body["identity"]["object_sha256"] in page.text
+        trust, schema = tmp_path / "trust.json", tmp_path / "schema.json"
+        trust.write_text("{}")
+        schema.write_text("{}")
+        monkeypatch.setattr(
+            cli, "_dataset_resolver_loader", lambda: lambda **_: client
+        )
+        result = CliRunner().invoke(
+            cli.app,
+            [
+                "source-structure",
+                resource_id,
+                "--trust-file",
+                str(trust),
+                "--metadata-root",
+                str(tmp_path),
+                "--schema-file",
+                str(schema),
+                "--view",
+                "fields",
+                "--column",
+                "source_field_id",
+                "--column",
+                "value",
+                "--limit",
+                "2",
+                "--offset",
+                "2",
+            ],
+        )
+        assert result.exit_code == 0, result.stderr
+        cli_page = json.loads(result.stdout)
+        assert cli_page["rows"] == later_body["rows"]
+        assert cli_page["query_sha256"] == later_body["query_sha256"]
+        assert (
+            cli_page["identity"]["object_sha256"]
+            == body["identity"]["object_sha256"]
+        )
+
+
+@pytest.mark.parametrize("engine", ["duckdb", "polars"])
+def test_native_field_pages_are_bounded_and_bind_the_offset(engine):
+    with resolver(native_field_collection_payload()) as client:
+        service = PlatinumQueryService(client)
+        first = service.query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("source_field_id",),
+                field_collection="native_fields",
+                limit=1,
+            ),
+        )
+        second = service.query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("source_field_id",),
+                field_collection="native_fields",
+                limit=1,
+                offset=1,
+            ),
+        )
+        third = service.query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(
+                columns=("source_field_id",),
+                field_collection="native_fields",
+                limit=2,
+                offset=2,
+            ),
+        )
+        assert first.rows == ({"source_field_id": "a/text"},)
+        assert second.rows == ({"source_field_id": "a/attribute"},)
+        assert third.rows == ({"source_field_id": "d/text"},)
+        assert (
+            first.query_receipt.query_sha256
+            != second.query_receipt.query_sha256
+        )
+        assert json.loads(second.query_receipt.canonical_query)["offset"] == 1
+
+
+@pytest.mark.parametrize("offset", [-1, True, 100_000_001])
+def test_query_rejects_invalid_page_offsets_before_read(offset):
+    with (
+        resolver(native_field_collection_payload()) as client,
+        pytest.raises(ValueError, match="offset"),
+    ):
+        PlatinumQueryService(client).query(
+            "au.mbs.service-items",
+            engine="polars",
+            spec=QuerySpec(
+                columns=("source_field_id",),
+                field_collection="native_fields",
+                offset=offset,
+            ),
+        )
+
+
+@pytest.mark.parametrize("engine", ["duckdb", "polars"])
+def test_flat_source_records_are_reachable_on_later_pages(engine):
+    with resolver(parquet_payload()) as client:
+        service = PlatinumQueryService(client)
+        original = service.query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(columns=("item_code",), limit=1),
+        )
+        later = service.query(
+            "au.mbs.service-items",
+            engine=engine,
+            spec=QuerySpec(columns=("item_code",), limit=1, offset=1),
+        )
+    assert original.rows == ({"item_code": "100"},)
+    assert later.rows == ({"item_code": "200"},)
+    assert (
+        json.loads(original.query_receipt.canonical_query)["version"] == "1.0"
+    )
+    assert json.loads(later.query_receipt.canonical_query)["offset"] == 1
+    assert (
+        original.query_receipt.query_sha256 != later.query_receipt.query_sha256
+    )

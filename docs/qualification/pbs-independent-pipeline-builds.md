@@ -48,3 +48,42 @@ admission and selects no new date profile. Domain meanings, current status,
 payable benefit, patient cost, vocabulary membership, clinical eligibility,
 source-era equivalence and independent recovery remain separate. The existing
 rights attestation is not expanded by this technical qualification.
+
+## Actual isolated builds, 29 October 2026
+
+[Run 40700877242](https://github.com/edithatogo/global-medicines-atlas/actions/runs/40700877242)
+completed successfully on exact main
+`c0f17f86f5d4f9a21efc28181786201005c369da`. Jobs 122860031714 and
+122860032201 independently completed the full producer/oracle/restore path.
+Their two native artifacts were checked by archive digest, exact one-file
+inventory and receipt-envelope digest. Aggregate worker receipts and native
+job/run evidence are retained in
+`quality/qualifications/pbs-independent-pipeline-builds-20261029/`.
+
+The complete package manifests agree across workers. Both retain the same
+18,208,758 fields, 7,730,684 entities and native-core digest
+`890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25`.
+However, the current Parquet digest is
+`86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c`
+(637,012,122 bytes), and output ID is
+`8e8bacdc72ea81ecfbb84d161b3f546eee03bddeae32f82daa7231c3759d23fc`.
+These differ from the older exact candidate. Only the package's `parquet` and
+`output_id` entries differ; the source, coverage, serialization declaration and
+other package identities agree. Producer source files are unchanged between
+the old and new workflow commits; locked PyArrow changed from 25.0.0 to 26.0.0.
+This comparison does not establish the byte-level cause of the change.
+
+Independent pipeline execution is now observed for the current candidate.
+Independent algorithmic implementation is not claimed, and the older exact
+candidate is not independently reproduced. Its exact-output rights attestation
+is preserved without automatically applying it to the new bytes. No derived
+publication, admission, consumer canary or domain-semantic promotion occurred.
+
+An isolated local compatibility probe attempted the historical PyArrow 25
+writer with the verified repository Python 3.15.1. The old lock and the
+official PyPI release list contain no CPython 3.15 wheel for PyArrow 25. The
+source build stopped because the local Arrow C++ SDK was not configured.
+`historical-writer-compatibility.json` records the bounded attempt. This is a
+local build limitation, not proof that another supported build environment
+cannot reproduce the old bytes. The working environment remains on Python
+3.15.1 and PyArrow 26; neither was replaced or downgraded.

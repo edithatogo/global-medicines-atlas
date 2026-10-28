@@ -18,6 +18,7 @@ from .platinum_surface_contracts import (
     DatasetIdentityV2Envelope,
     PlatinumSurfaceModel,
 )
+from .platinum_types import MAX_QUERY_OFFSET
 
 Column = str
 
@@ -28,12 +29,16 @@ class SourceStructureQuery(PlatinumSurfaceModel):
     columns: tuple[Column, ...] = Field(min_length=1, max_length=64)
     limit: int = Field(default=100, ge=1, le=100)
     offline: bool = False
+    offset: int = Field(default=0, ge=0, le=MAX_QUERY_OFFSET)
+    view: Literal["records", "fields"] = "records"
 
 
 class SourceStructurePage(PlatinumSurfaceModel):
     """Source-structure rows paired with exact v2 identity and query receipt."""
 
     status: Literal["available", "unavailable"]
+    view: Literal["records", "fields"] = "records"
+    offset: int = 0
     identity: DatasetIdentityV2Envelope
     rows: tuple[dict[str, Scalar], ...] = ()
     query_sha256: str
@@ -68,7 +73,14 @@ class SourceStructureService:
         result = PlatinumQueryService(self._resolver).query_state(
             resource_id,
             engine="polars",
-            spec=QuerySpec(columns=query.columns, limit=query.limit),
+            spec=QuerySpec(
+                columns=query.columns,
+                limit=query.limit,
+                offset=query.offset,
+                field_collection="native_fields"
+                if query.view == "fields"
+                else None,
+            ),
             offline=query.offline,
         )
         if result.status == "unavailable":
@@ -76,6 +88,8 @@ class SourceStructureService:
             receipt_document["receipt_sha256"] = result.receipt_sha256
             return SourceStructurePage(
                 status="unavailable",
+                view=query.view,
+                offset=query.offset,
                 identity=identity,
                 query_sha256=result.query_sha256,
                 query_receipt_sha256=result.receipt_sha256,
@@ -106,6 +120,8 @@ class SourceStructureService:
         }
         return SourceStructurePage(
             status="available",
+            view=query.view,
+            offset=query.offset,
             identity=identity,
             rows=result.rows,
             query_sha256=result.query_receipt.query_sha256,

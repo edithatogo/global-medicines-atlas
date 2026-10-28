@@ -9,7 +9,7 @@ import secrets
 from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Any, NoReturn, cast
+from typing import TYPE_CHECKING, Annotated, Any, Literal, NoReturn, cast
 
 import typer
 from pydantic import ValidationError
@@ -23,6 +23,7 @@ from .gold_edge_review import (
 from .historical_change_configuration import load_historical_change_service
 from .platinum_edge_configuration import MAX_EDGE_FILE_ROWS, load_gold_edges
 from .platinum_edges import MAX_EDGE_ROWS, gold_edge_payload
+from .platinum_types import MAX_QUERY_OFFSET
 from .platinum_v2_contracts import (
     V2ComparisonQuery,
     V2ComparisonResponse,
@@ -1089,8 +1090,10 @@ def source_structure_query(
     schema_file: Annotated[Path, typer.Option(exists=True, dir_okay=False)],
     columns: Annotated[list[str], typer.Option("--column")],
     limit: Annotated[int, typer.Option(min=1, max=100)] = 100,
+    offset: Annotated[int, typer.Option(min=0, max=MAX_QUERY_OFFSET)] = 0,
     *,
     offline: bool = False,
+    view: Annotated[Literal["records", "fields"], typer.Option()] = "records",
 ) -> None:
     """Query bounded source-structure evidence from operator-pinned trust."""
     try:
@@ -1123,7 +1126,11 @@ def source_structure_query(
         ).query(
             resource_id,
             SourceStructureQuery(
-                columns=tuple(columns), limit=limit, offline=offline
+                columns=tuple(columns),
+                limit=limit,
+                offset=offset,
+                offline=offline,
+                view=view,
             ),
         )
     except UnknownPlatinumResourceError:

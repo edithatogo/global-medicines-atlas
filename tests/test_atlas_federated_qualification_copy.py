@@ -738,7 +738,7 @@ def test_browser_source_structure_errors_retain_submitted_query() -> None:
         (RESOURCE, "kind,unknown_column", 422),
     ],
 )
-def test_keyboard_user_can_recover_from_source_structure_error(
+def test_keyboard_user_can_recover_from_source_structure_error(  # ruff: ignore[too-many-statements] -- covers a complete keyboard recovery sequence
     invalid_resource: str,
     invalid_columns: str,
     error_status: int,
@@ -795,10 +795,14 @@ def test_keyboard_user_can_recover_from_source_structure_error(
             assert page.evaluate("document.activeElement.id") == "resource-id"
             _replace_focused_text(page, RESOURCE)
             page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "view"
+            page.keyboard.press("Tab")
             assert page.evaluate("document.activeElement.id") == "columns"
             _replace_focused_text(page, "kind")
             page.keyboard.press("Tab")
             assert page.evaluate("document.activeElement.id") == "limit"
+            page.keyboard.press("Tab")
+            assert page.evaluate("document.activeElement.id") == "offset"
             page.keyboard.press("Tab")
             assert page.evaluate("document.activeElement.name") == "offline"
             page.keyboard.press("Tab")
