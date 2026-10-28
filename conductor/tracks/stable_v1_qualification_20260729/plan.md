@@ -1106,3 +1106,10 @@ release gate.
   resulting six-object browser receipt into M-111 and Stable readiness. The
   Australian federation and Stable v1 gates remain blocked until all their
   independent requirements pass.
+
+## Phase: Review Fixes — M-111 receipt binding (2026-10-28)
+
+- [x] Rebind all six consumer contract, semantic-profile, and canary identity
+  digests to exact-main receipt `40653807510`; add a regression that verifies
+  the consumer and readiness records against the hosted evidence. Commit
+  `5a3879b7`; 67 focused tests, static checks, and Conductor validators pass.
