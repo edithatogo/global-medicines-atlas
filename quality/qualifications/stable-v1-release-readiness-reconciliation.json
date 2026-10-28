@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T09:27:03+00:00",
+  "as_of": "2026-10-28T09:53:08+00:00",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "1a3830ce4662b172efcca5b9cac5295b39398800166e089e19cd695f5f831c76"
+    "sha256": "4a581025bce3dacd5806d38e1437df49539c4bf99aca48810d451e7d3b48e9d5"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -83,7 +83,17 @@
       {
         "path": "quality/qualifications/mbs-historical-workbook-value-shape-cohort-20261025-40149410629.json",
         "sha256": "12e1af2eafa0d2aa7b1c2dbb3ccda9112d6ed1e232e2779f981e421a0699e373",
-        "consequence": "91-workbook value-shape diagnostics passed; all 310176929 non-header cells remain native_unresolved."
+        "consequence": "91-workbook value-shape diagnostics passed; all 310176929 non-header cells remain native_unresolved. A separate metadata-bound receipt qualifies bounded source-column meanings only."
+      },
+      {
+        "path": "quality/qualifications/mbs-historical-workbook-source-column-semantics-20261028.json",
+        "sha256": "5802c937eeb3e93cf211d0c8792a6663d3666cac9c82b194e530a3ae89f2d4a4",
+        "consequence": "Eight source-column meanings are bounded to the exact 91-workbook historical cohort; zero cell values are promoted, all 310176929 non-header values remain native_unresolved, and M-109 remains blocked."
+      },
+      {
+        "path": "docs/qualification/mbs-historical-workbook-source-column-semantics.md",
+        "sha256": "d51a642a92150be89925c1f564e05f63193eb2063f0d63a157ea16d930d81d8f",
+        "consequence": "Human-readable crosswalk for eight bounded historical workbook source-column meanings; all cell values remain native_unresolved and M-109 remains blocked."
       },
       {
         "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r15.json",
@@ -117,8 +127,8 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "991c4e9eb41f8aa1495a2b09eedaaa440695e753a4ce0301606356f1b2ee6462",
-        "consequence": "The maintainer approved these federation acceptance requirements on 2026-10-28. The current summary records the exact six-table M-111 canary as passed while M-105, M-107, M-108, M-109, M-110, M-112 and other requirements remain evidence-gated."
+        "sha256": "e355e64499e4c67f781d9ec4e760501e7f6f7a511d64ed9bcd2055988c3a7284",
+        "consequence": "Maintainer-approved federation criteria remain evidence-gated; exact six-table M-111 canaries passed and the bounded 91-workbook source-column meanings are now recorded, while all cohort values and other federation requirements remain unresolved."
       },
       {
         "path": "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",

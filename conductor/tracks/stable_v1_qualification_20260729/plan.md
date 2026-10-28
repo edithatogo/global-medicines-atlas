@@ -1143,3 +1143,16 @@ release gate.
 
 - [x] Re-run the existing six-object v4 qualification on exact current `main` and retain the hosted receipt. Run 40664169948 passed at commit `ec59c2121015093b52dfb8afbd9e05a131321117`: six pinned remote reads and six requests each through API, CLI JSON, CLI JSONL, Atlas, and Chromium browser rendering; each request returned two rows. The report and artifact manifest bind exact object identities, schema/semantic trust, receipt roles, and rendered-row digests. Candidate-profile qualification only; no source additions, external publication, production promotion, M-112 acceptance, or independent recovery qualification.
 - [ ] Continue the Australian federation gate against its remaining requirements; this receipt does not clear M-105 through M-110, M-112, or the independent recovery authority gate.
+
+## October 28 M-109 historical workbook meaning reconciliation
+
+- [x] Bind the exact 91-workbook source-column semantics receipt to the Stable
+  v1 M-109 requirement, federation acceptance summary, and current readiness
+  evidence. The receipt qualifies bounded meanings for the eight columns while
+  preserving all 310,176,929 non-header values as `native_unresolved`; it adds
+  no source, admission, canary, publication, or rights conclusion. Focused
+  contract suite passes (66 tests); Ruff, formatting, `ty`, BasedPyright,
+  context validation, ecosystem validation, and diff checks pass. The tests
+  verify profile normalization, evidence hashes, and the fail-closed gate state.
+- [ ] Continue the remaining M-109 evidence and all other federation
+  requirements. Stable v1 and the Australian federation gate remain blocked.

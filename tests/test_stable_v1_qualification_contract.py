@@ -150,6 +150,8 @@ def test_contract_schemas_are_valid_draft_2020_12() -> None:
         SOURCE_MATURITY_SCHEMA,
         CONSUMER_SCHEMA,
         IDENTITY_SCHEMA,
+        ROOT
+        / "schemas/mbs-historical-workbook-source-column-semantics-v1.json",
     ):
         _validator(path)
 
@@ -1016,6 +1018,8 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
     )
     assert "91 verified sheet/header profiles" in m109_row
     assert "728 interpreted header bindings" in m109_row
+    assert "source-column semantics qualification" in m109_row
+    assert "benefit currency and calculation" in m109_row
     assert (
         "310,176,929 non-header values remain `native_unresolved`" in m109_row
     )
@@ -1574,3 +1578,124 @@ def test_reconciliation_retains_special_gate_observations(
     )
     assert observed["state"] == state
     assert "fresh-failure.json" in observed["evidence"]
+
+
+def test_historical_workbook_source_semantics_are_bounded_and_bound() -> None:
+    report_path = ROOT / (
+        "quality/qualifications/"
+        "mbs-historical-workbook-source-column-semantics-20261028.json"
+    )
+    report = _load(report_path)
+    schema_path = ROOT / (
+        "schemas/mbs-historical-workbook-source-column-semantics-v1.json"
+    )
+    _validator(schema_path).validate(report)
+
+    for reference in (
+        report["scope"]["candidate_cohort_receipt"],
+        report["scope"]["rights_attestation"],
+        *report["evidence"],
+    ):
+        evidence_path = ROOT / reference["path"]
+        assert (
+            hashlib.sha256(evidence_path.read_bytes()).hexdigest()
+            == (reference["sha256"])
+        )
+
+    header_path = ROOT / report["evidence"][0]["path"]
+    headers = _load(header_path)
+    normalized_profiles: list[tuple[tuple[str, str, str], ...]] = []
+    for profile in headers["header_profiles"]:
+        for sheet in profile["profile"]["sheets"]:
+            normalized_profiles.extend(
+                tuple(
+                    (
+                        binding["column"],
+                        binding["native_header"],
+                        binding["field"],
+                    )
+                    for binding in row["column_bindings"]
+                )
+                for row in sheet["candidate_rows"]
+            )
+    expected_profile = (
+        ("A", "Year", "calendar_year_label"),
+        ("B", "Month", "processing_month_label"),
+        ("C", "Item_Number", "schedule_item_identifier"),
+        ("D", "State", "state_label"),
+        ("E", "Age_Range", "age_range_label"),
+        ("F", "Gender", "gender_label"),
+        ("G", "Services", "service_count_label"),
+        ("H", "Benefits ($)", "benefit_amount_label_currency_unresolved"),
+    )
+    assert len(headers["header_profiles"]) == 91
+    assert len(headers["workbook_assignments"]) == 91
+    assert set(normalized_profiles) == {expected_profile}
+    assert report["scope"]["normalized_source_column_profiles"] == 1
+    assert report["scope"]["interpreted_header_bindings"] == 728
+
+    value_shapes = _load(
+        ROOT
+        / "quality/qualifications/mbs-historical-workbook-value-shape-cohort-20261025-40149410629.json"
+    )
+    assert value_shapes["source_values_emitted"] is False
+    assert all(
+        field["formula_cells"] == 0 and field["source_error_cells"] == 0
+        for field in value_shapes["fields"].values()
+    )
+    field_states = _load(
+        ROOT
+        / "quality/qualifications/mbs-workbook-field-state-reconciliation-20261025-shapes-40149410629.json"
+    )
+    cells = field_states["historical_workbook_cohort"]["cell_values"]
+    assert cells == {
+        "decimal_candidates": 154927930,
+        "denominator": 310176929,
+        "denominator_relation": "non_header_source_cells; header_cells_reported_separately",
+        "interpreted": 0,
+        "missing_native_values": 2909,
+        "unavailable": 0,
+        "unresolved": 310176929,
+    }
+    assert all(
+        meaning["value_state"] == "native_unresolved"
+        for meaning in report["source_column_meanings"]
+    )
+    assert report["boundaries"]["cell_values_promoted"] == 0
+    assert report["boundaries"]["new_sources"] == 0
+    assert report["boundaries"]["new_admissions"] == 0
+    assert report["boundaries"]["consumer_canaries"] == 0
+    assert report["boundaries"]["publications"] == 0
+
+    contract = _load(QUALIFICATION)
+    m109 = next(
+        item
+        for item in contract["requirements"]
+        if item["requirement_id"] == "M-109"
+    )
+    assert m109["state"] == "blocked"
+    assert report_path.relative_to(ROOT).as_posix() in m109["evidence"]
+    assert contract["qualification_state"] == "blocked"
+    readiness = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    readiness_receipt = next(
+        item
+        for item in readiness["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == report_path.relative_to(ROOT).as_posix()
+    )
+    assert (
+        readiness_receipt["sha256"]
+        == hashlib.sha256(report_path.read_bytes()).hexdigest()
+    )
+    assert readiness["qualification_state"] == "blocked"
+    assert readiness["unresolved_gates"] == [
+        {
+            "gate_id": "stable-v1-australian-health-federation",
+            "kind": "dependent_repository_tracks",
+            "state": "blocked",
+        }
+    ]
