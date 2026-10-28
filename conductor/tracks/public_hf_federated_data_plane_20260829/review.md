@@ -243,3 +243,32 @@ the updated admission totals; the test was not weakened. The exact failed node,
 its owning test file and Stable contract checks then passed (74 selected
 checks). The readiness receipt binds the corrected document digest. No source
 or admission count changed, and no full local profile was repeated.
+
+# Review Report: PBS independent pipeline execution route (2026-10-28)
+
+## Summary
+
+The new workflow reuses the existing producer in two fresh isolated jobs;
+actual independent-build qualification remains pending native execution.
+
+## Verification Checks
+
+- [x] **Plan Compliance**: closes a named PBS candidate prerequisite using the
+  exact existing source; no producer or product-runtime code changes.
+- [x] **Style Compliance**: new workflow tests pass Ruff/format, ty and
+  BasedPyright; context/ecosystem validation passes.
+- [x] **New Tests**: fresh two-job execution, no source/output transfer, exact
+  main/dispatch guard, fixed existing qualifier and JSON-only artifacts.
+- [x] **Test Coverage**: existing complete-source producer checks are reused.
+- [x] **Test Results**: 32 focused workflow/package tests and 193 broader
+  hosted-qualification/harness checks passed. No full local profile repeated.
+
+## Findings and limits
+
+No remaining scoped configuration findings were identified. Each worker still
+reports its two serialization outputs as sharing batches. The future native
+comparison must establish job isolation and whole-pipeline agreement without
+claiming an independent algorithmic implementation. If current output bytes
+change, existing exact-output rights/admission do not transfer automatically.
+No actual source execution, admission or publication has occurred in this
+increment. Review was by the implementing agent.

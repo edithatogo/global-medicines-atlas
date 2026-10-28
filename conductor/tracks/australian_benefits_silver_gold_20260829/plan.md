@@ -6113,3 +6113,13 @@ authoritative contract, reconciliation, and bound receipts.
   source evidence supports it. MBS value semantics, P7 source-owner date
   confirmation, PBS domain meanings/relationships, and M-109 acceptance remain
   open.
+
+## Independent PBS native pipeline execution (2026-10-28)
+
+- [x] Identify the remaining build gap: the two existing serialization outputs
+  share a producer batch stream and do not prove two complete pipeline builds.
+- [~] Reuse the qualified exact-source producer in two isolated fresh hosted
+  jobs on the same exact main commit, retaining aggregate metadata only.
+- [ ] Retain and compare actual native job/run/artifact proof, input identities,
+  full native-core/coverage and exact Parquet fingerprints. Keep byte drift,
+  output rights, domain meaning, admission and publication as distinct states.

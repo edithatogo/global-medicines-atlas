@@ -1051,3 +1051,12 @@ append. The Stable v1 Australian federation gate remains blocked.
   all six native jobs and receipts passed. Reconcile raw totals to 14 admissions,
   14 admitted-object reader canaries and 1,745 deferred out of 1,759. Broader
   consumers, derived delivery and independent recovery remain separate.
+
+## PBS derived-output independent-build prerequisite (2026-10-28)
+
+- [~] Qualify two complete isolated PBS producer executions using the existing
+  value-package route. This addresses the named independent-build blocker for
+  the exact native Silver candidate, without adding sources or publishing.
+- [ ] Bind the resulting proof only if both native builds and the existing
+  exact candidate identities match; keep unsupported semantics, v4 roles,
+  publication and actual table consumers independently gated.
