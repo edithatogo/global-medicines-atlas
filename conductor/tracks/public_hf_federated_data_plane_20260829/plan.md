@@ -943,6 +943,8 @@ append. The Stable v1 Australian federation gate remains blocked.
   scope exception, and four-object rights attestation. It records `d781` as
   Bronze-parser accepted and `f9f9` as lacking an admission sidecar; neither is
   v4-admitted. Stable contract and readiness evidence were rebound without
-  changing gate state or inventory membership.
+  changing gate state or inventory membership. Focused Phase 4, Stable v1
+  contract, and release-authority checks pass (71 tests); context validation
+  and diff checks pass. Commit: `9afe8cd3`.
 - [ ] Complete the exact M-108 product-card, v4 admission, independent-replica,
   and unadmitted-prefix disposition requirements under their existing gates.
