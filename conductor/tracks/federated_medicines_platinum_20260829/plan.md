@@ -1793,3 +1793,13 @@ authoritative contract, reconciliation, and bound receipts.
   invocation stopped after coverage with four failures; the affected rerun
   passed the two keyboard cases and one release fixture, while the other
   release fixture still exceeded its p95 query budget. No budget was weakened.
+
+### Offline research-package implementation (2026-10-29)
+
+- [~] Implement a versioned local content-addressed result reference and
+  verify the separate canonical result without relaxing public URL validation.
+  The implementing agent reviewed the increment and 103 affected tests passed;
+  exact-head protected checks are pending.
+- [ ] Build and verify a deterministic package from an already-admitted real
+  query at a pinned source revision and exact merged assembly commit. Retain
+  digest-bound evidence; do not claim publication or federation acceptance.
