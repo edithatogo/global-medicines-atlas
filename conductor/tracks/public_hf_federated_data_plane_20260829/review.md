@@ -233,3 +233,13 @@ not a full local pass. Protected exact-head CI passed all 38 checks after one
 bounded retry of two artifact-service errors. Review was by the implementing
 agent. Independent recovery, derived delivery, semantic qualification and
 whole-track archival remain incomplete.
+
+## PR #1366 acceptance-scope correction
+
+The hosted unit lane found that the acceptance-table rewrite had omitted the
+existing exact MBS utilisation rights scope, historical landed-review state
+and bounded PBS rights/lineage description. Those facts are restored beside
+the updated admission totals; the test was not weakened. The exact failed node,
+its owning test file and Stable contract checks then passed (74 selected
+checks). The readiness receipt binds the corrected document digest. No source
+or admission count changed, and no full local profile was repeated.
