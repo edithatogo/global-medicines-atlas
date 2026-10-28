@@ -164,7 +164,7 @@ def _qualify_browser_pages(
                 _require(table.count() == 1, "Atlas browser table is missing")
                 raw_rows = table.locator("tbody tr").evaluate_all(
                     "rows => rows.map(row => Array.from("
-                    "row.querySelectorAll('td'), cell => cell.innerText))"
+                    "row.querySelectorAll('td'), cell => cell.textContent ?? ''))"
                 )
                 rendered_rows = cast("list[list[str]]", raw_rows)
                 expected_display = [
