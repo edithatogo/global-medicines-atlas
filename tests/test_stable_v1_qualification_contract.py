@@ -109,8 +109,12 @@ def _assert_current_m112_receipts_are_bound(
         "quality/qualifications/"
         "australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json"
     )
+    rights_lineage_path = (
+        "quality/qualifications/"
+        "australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json"
+    )
     receipts = receipt["current_evidence_reconciliation"]["system_receipts"]
-    for path in (role_path, lineage_path):
+    for path in (role_path, lineage_path, rights_lineage_path):
         evidence_path = ROOT / path
         bound_receipt = next(item for item in receipts if item["path"] == path)
         assert (
@@ -120,6 +124,14 @@ def _assert_current_m112_receipts_are_bound(
     role_receipt = next(item for item in receipts if item["path"] == role_path)
     assert "8 v4 admissions" in role_receipt["consequence"]
     assert "1,751 remain deferred" in role_receipt["consequence"]
+    rights_lineage_receipt = next(
+        item for item in receipts if item["path"] == rights_lineage_path
+    )
+    assert (
+        "exact six PBS-utilisation rights attestations"
+        in rights_lineage_receipt["consequence"]
+    )
+    assert "remain deferred" in rights_lineage_receipt["consequence"]
 
 
 def _must_requirement_ids() -> set[str]:
@@ -510,6 +522,10 @@ def test_current_m112_role_receipt_is_bound_without_accepting_denominator() -> (
         "quality/qualifications/"
         "australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json"
     )
+    rights_lineage_path = (
+        "quality/qualifications/"
+        "australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json"
+    )
     role_report = _load(ROOT / role_path)
     assert role_report["cohort"]["approved_denominator"] == 1_759
     assert role_report["cohort"]["v4_admissions"] == 8
@@ -528,6 +544,20 @@ def test_current_m112_role_receipt_is_bound_without_accepting_denominator() -> (
         == 14
     )
     assert lineage_report["updated_gate_totals"]["preserved_deferrals"] == 1_759
+    rights_lineage = _load(ROOT / rights_lineage_path)
+    assert rights_lineage["scope"]["exact_objects"] == 6
+    assert rights_lineage["scope"]["rights_attestation_bound"] == 6
+    assert rights_lineage["scope"]["complete_b1_b2_lineage"] == 6
+    assert rights_lineage["scope"]["disposition"] == "deferred_not_admitted"
+    assert rights_lineage["current_m112_role_counts"] == {
+        "evidence_path": role_path,
+        "evidence_sha256": hashlib.sha256(
+            (ROOT / role_path).read_bytes()
+        ).hexdigest(),
+        "v4_admissions": 8,
+        "consumer_canaries": 8,
+        "deferred_objects": 1751,
+    }
 
     contract = build_contract(_load(QUALIFICATION))
     requirement = next(
@@ -546,6 +576,8 @@ def test_current_m112_role_receipt_is_bound_without_accepting_denominator() -> (
     assert role_path in gate["evidence"]
     assert lineage_path in requirement["evidence"]
     assert lineage_path in gate["evidence"]
+    assert rights_lineage_path in requirement["evidence"]
+    assert rights_lineage_path in gate["evidence"]
 
 
 def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:

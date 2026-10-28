@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "426035f5340a2ce65383957f85f9242f85c1540dc31ecde573262e79cfb14665"
+    "sha256": "80279d30a188457c2e216e03a7b7559af85191a6fe1fdf447b2dd92893911536"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -117,7 +117,7 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "b0808fca2b5761a1f01ac550b43e8d2b900d85badf0c33d849ae91e00e1ab7be",
+        "sha256": "3dde64035a4c5a7fe7c2ddc207b92c74a465f73158f421b42d97986eeee8d74c",
         "consequence": "The maintainer approved these federation acceptance requirements on 2026-10-28. The current acceptance summary records M-105, M-107, M-108, M-109 and other federation conditions as evidence-gated; approval does not complete them."
       },
       {
@@ -134,6 +134,11 @@
         "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json",
         "sha256": "35e4bcbb1b459c78dff837d75c6bf5ae81f307f7211e383f938d9ffc05a07f89",
         "consequence": "The exact MBS-utilisation overlay binds 14 raw paths to B1/B2 lifecycle and digest evidence, with landed-admission reviewer status unreviewed; it records no v4 admission or canary and preserves all 1,759 deferrals."
+      },
+      {
+        "path": "quality/qualifications/australian-m112-pbs-utilisation-rights-lineage-reconciliation-20261028.json",
+        "sha256": "5050236f8aa68491f490ca35dd4425c3173eb54673c5072e6dcfac712cf62775",
+        "consequence": "The exact six PBS-utilisation rights attestations now bind to their frozen identities and complete B1/B2 lineage; landed admissions remain unreviewed, all six remain deferred, and no v4 admission or consumer canary was performed. Overall M-112 remains at 8 admissions, 8 canaries, and 1,751 deferred objects."
       },
       {
         "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r16.json",
