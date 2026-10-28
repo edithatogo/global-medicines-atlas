@@ -1733,3 +1733,24 @@ coverage, new sources/terminology, and optional experiments remain deferred.
 This scheduling direction changes no acceptance criterion, current M-105/M-107
 disposition, or conditional release approval; current states come from the
 authoritative contract, reconciliation, and bound receipts.
+
+## 2026-10-28 exact-main M-111 Chromium canary for the admitted cohort
+
+- [x] Re-run the exact-main six-table July 2025 MBS v4 admission and remote-reader
+  qualification after merging PRs #1355 and #1356. Run
+  [40653807510](https://github.com/edithatogo/global-medicines-atlas/actions/runs/40653807510)
+  passed on contract commit `2005165bcc48d85dbe1565dd766d92243223d3a7` at the
+  pinned source revision `3d2d528439bddf6f42e8e700c88917f0960a9f38`.
+- [x] Validate all six exact path, digest, byte-count, and row-count identities
+  against the prior admitted cohort. Remote reads, API, CLI JSON, CLI JSONL,
+  Atlas, and Chromium browser rendering passed. The browser compared rendered
+  table cell text to the API rows in memory; the retained report contains only
+  counts, statuses, and digests.
+- [x] Preserve the aggregate-only hosted receipt and artifact manifest under
+  `quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/`.
+  The consumer reconciliation and Stable v1 contract bind the exact receipt.
+- [~] M-111 and the Australian federation gate remain blocked. The browser
+  canary covers only this admitted six-table cohort; other eligible outputs,
+  M-109/110 semantics and relationships, independent recovery, and broader
+  consumer qualification remain open. No public release, new source, or
+  Stable v1 promotion occurred.

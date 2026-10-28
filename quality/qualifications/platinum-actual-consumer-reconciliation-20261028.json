@@ -1,0 +1,622 @@
+{
+  "schema_id": "global-medicines-atlas.platinum-actual-consumer-reconciliation",
+  "schema_version": 1,
+  "recorded_at": "2026-10-28",
+  "status": "passed_bounded_actual_consumers_with_explicit_limits",
+  "track_id": "federated_medicines_platinum_20260829",
+  "hosted_qualification": {
+    "workflow_run_id": 40653807510,
+    "workflow_commit": "2005165bcc48d85dbe1565dd766d92243223d3a7",
+    "source_dataset": "edithatogo/australian-mbs-source-archive",
+    "source_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+    "remote_receipt_path": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/admission-remote-read.json",
+    "remote_receipt_sha256": "bb040677eeb45cc3972726b16ce1aec1d2e648c2ac92d6285216be2f9c5050ce",
+    "artifact_manifest_path": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/artifact-manifest.json",
+    "artifact_manifest_sha256": "ad746aebaa2a543c084e1f137c50e4a53cb57c8890db449743ccb5b0bef9f69d",
+    "role_receipt_manifest_path": "quality/qualifications/australian-mbs-silver-delivery-role-qualification-20261025-40176576600/receipt-manifest.json",
+    "role_receipt_manifest_sha256": "e8591c353c17862e8acfa8da1b6cc0c0387a33f74c828e873dd3ddc418758a0f",
+    "status": "passed",
+    "browser_qualification": "passed"
+  },
+  "consumers": {
+    "surfaces": [
+      "API",
+      "CLI JSON",
+      "Atlas HTML",
+      "CLI JSONL deterministic export",
+      "Chromium browser rendering"
+    ],
+    "requests_per_surface": {
+      "api": 6,
+      "atlas": 6,
+      "cli_json": 6,
+      "cli_jsonl": 6,
+      "browser": 6
+    },
+    "logical_canary_cases": 6,
+    "surface_requests_total": 30,
+    "result_rows_per_request": 2,
+    "status": "passed",
+    "browser_qualification": "passed",
+    "offline": false
+  },
+  "semantic_contract": {
+    "manifest_path": "quality/qualifications/australian-mbs-silver-semantic-manifest-20261017.json",
+    "manifest_file_sha256": "9ad5e2747949b8b7142819e981241c1f74105b3570d78025e654e780241c5882",
+    "manifest_status": "qualified_exact_source_era_semantics",
+    "source_identity": {
+      "source_id": "au-mbs",
+      "schema_era": "2025-07-version-3",
+      "source_sha256": "db873768c5795222455033e2bad28586f19bbf2a10c7d58f06a0671d9111a556",
+      "source_byte_count": 8194522,
+      "source_record_count": 5989,
+      "release_id": "MBS-XML-20250701 Version 3",
+      "effective_at": "2025-07-01"
+    },
+    "mapping_status": "source_native",
+    "absence_interpretation": "unknown"
+  },
+  "qualified_objects": [
+    {
+      "resource_id": "au.mbs.2025-07-v3.services",
+      "table": "services",
+      "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+      "object": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+        "byte_count": 100062,
+        "declared_row_count": 5989
+      },
+      "contract_sha256": "4ad13535307b0256a070c05f757a74a6614eabf4aa9459b7ea00581904efb8b3",
+      "semantic_profile_sha256": "d6f68cb3722fa8715aff6ecc67875b84dd826abc51b25bd91425cc5e1204a896",
+      "semantic_dimension": "service_benefit",
+      "entity_granularity": "service_item",
+      "source_and_lineage": {
+        "source_id": "au-mbs",
+        "source_sha256": "46e7e652d6561ee82758b540eaf3584649d3e7e57fb3a341968678d0c2a48535",
+        "source_path": "silver/mbs/v4/2025-07-v3/services.parquet",
+        "source_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "effective_date": "2025-07-01",
+        "schema_era": "2025-07-version-3",
+        "receipt_roles": [
+          {
+            "role": "/discovery/estate_entry",
+            "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6"
+          },
+          {
+            "role": "/lineage/inputs/0",
+            "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+          },
+          {
+            "role": "/lineage/promotion_receipt",
+            "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64"
+          },
+          {
+            "role": "/lineage/v1_conformance",
+            "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8"
+          },
+          {
+            "role": "/lineage/v2_field_lineage",
+            "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae"
+          },
+          {
+            "role": "/lineage/v3_replay",
+            "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999"
+          },
+          {
+            "role": "/publication/receipt",
+            "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74"
+          },
+          {
+            "role": "/recovery/checksum_inventory",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/recovery/restore_receipt",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/rights/authorization",
+            "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327"
+          },
+          {
+            "role": "/verification/receipt",
+            "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381"
+          }
+        ]
+      },
+      "consumer_canary": {
+        "request_sha256": "f8f6ca87a3d2fd08d0d7f511fca9a8a6f39c833c8fd5f23d3a68331c6766df96",
+        "identity_sha256": "696f2cf71e93ebecc12a776cdc7e1879ca6b4fe777bac2ef8c9582138321c1bb",
+        "query_sha256": "aed100cd3e94ac778a59b9e61a7579bce71d6af0aebc8cd1ec201c07fcb4ae21",
+        "page_sha256": "b2d2406731f1a51547fffca32152dd3aa49a5ef69fd047b4101af3d46263ef0c",
+        "window_sha256": "f70c34c98edd38ea4e0527d0737b28b2a49bf0ced6f6d18a74266aef9311e249",
+        "rows_sha256": "b2d2406731f1a51547fffca32152dd3aa49a5ef69fd047b4101af3d46263ef0c",
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "cli_exit_code": 0,
+        "jsonl_export_exit_code": 0,
+        "jsonl_export_row_count": 2
+      },
+      "coverage": {
+        "rows_in_bounded_result": 2,
+        "sample_only": true,
+        "whole_source_or_product_coverage": "not_established"
+      }
+    },
+    {
+      "resource_id": "au.mbs.2025-07-v3.hierarchy",
+      "table": "hierarchy",
+      "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+      "object": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+        "sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+        "byte_count": 51851,
+        "declared_row_count": 5989
+      },
+      "contract_sha256": "3652e31bfe115cf04ea70172df0222d514a0e84d3b0bc1e00b2dd9cbfe3b1e34",
+      "semantic_profile_sha256": "b56acc301f23ab8d022d46cec9377abbc8af79b66237db05e78f3ae458ac7a27",
+      "semantic_dimension": "service_benefit",
+      "entity_granularity": "service_item",
+      "source_and_lineage": {
+        "source_id": "au-mbs",
+        "source_sha256": "05387bab5cc578e9923bfaf8a518fde7a49b4b2cde3c4ac61276a6defb3d3756",
+        "source_path": "silver/mbs/v4/2025-07-v3/hierarchy.parquet",
+        "source_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "effective_date": "2025-07-01",
+        "schema_era": "2025-07-version-3",
+        "receipt_roles": [
+          {
+            "role": "/discovery/estate_entry",
+            "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6"
+          },
+          {
+            "role": "/lineage/inputs/0",
+            "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+          },
+          {
+            "role": "/lineage/promotion_receipt",
+            "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64"
+          },
+          {
+            "role": "/lineage/v1_conformance",
+            "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8"
+          },
+          {
+            "role": "/lineage/v2_field_lineage",
+            "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae"
+          },
+          {
+            "role": "/lineage/v3_replay",
+            "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999"
+          },
+          {
+            "role": "/publication/receipt",
+            "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74"
+          },
+          {
+            "role": "/recovery/checksum_inventory",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/recovery/restore_receipt",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/rights/authorization",
+            "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327"
+          },
+          {
+            "role": "/verification/receipt",
+            "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381"
+          }
+        ]
+      },
+      "consumer_canary": {
+        "request_sha256": "6dfdd79c8f415971a009edafe629d0a000460191f3c5fdc0638b0edf71f65f14",
+        "identity_sha256": "d356d12e2df07740678108242fc7445e936cbb3bab42e351e05858f80927cb93",
+        "query_sha256": "c269602a850793875bf4f68ddc702133afaa9c395f371d110133b32ed0be2f5f",
+        "page_sha256": "ac6593d015c6172d8414c35d30116bdfb8916a0453571e98f6181f25d6b80ce7",
+        "window_sha256": "6df4afcc821690ed002b5c4de37943b3492f2dfb9df227d8c22640f3df3d8504",
+        "rows_sha256": "ac6593d015c6172d8414c35d30116bdfb8916a0453571e98f6181f25d6b80ce7",
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "cli_exit_code": 0,
+        "jsonl_export_exit_code": 0,
+        "jsonl_export_row_count": 2
+      },
+      "coverage": {
+        "rows_in_bounded_result": 2,
+        "sample_only": true,
+        "whole_source_or_product_coverage": "not_established"
+      }
+    },
+    {
+      "resource_id": "au.mbs.2025-07-v3.descriptions",
+      "table": "descriptions",
+      "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+      "object": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+        "sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+        "byte_count": 620348,
+        "declared_row_count": 5989
+      },
+      "contract_sha256": "69e6e95f366d6650dae00835371805bfb82989edbdcdc957e83a48c8f04bcfbc",
+      "semantic_profile_sha256": "bf96684f7ce7d46e158e25ada13c775f627e1519032ea7b949e289872cb6da9d",
+      "semantic_dimension": "service_benefit",
+      "entity_granularity": "service_item",
+      "source_and_lineage": {
+        "source_id": "au-mbs",
+        "source_sha256": "2822ed642938c8f6b7274a3ecee3c96effc73a6eeedff87b11ed04e12b1a2733",
+        "source_path": "silver/mbs/v4/2025-07-v3/descriptions.parquet",
+        "source_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "effective_date": "2025-07-01",
+        "schema_era": "2025-07-version-3",
+        "receipt_roles": [
+          {
+            "role": "/discovery/estate_entry",
+            "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6"
+          },
+          {
+            "role": "/lineage/inputs/0",
+            "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+          },
+          {
+            "role": "/lineage/promotion_receipt",
+            "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64"
+          },
+          {
+            "role": "/lineage/v1_conformance",
+            "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8"
+          },
+          {
+            "role": "/lineage/v2_field_lineage",
+            "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae"
+          },
+          {
+            "role": "/lineage/v3_replay",
+            "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999"
+          },
+          {
+            "role": "/publication/receipt",
+            "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74"
+          },
+          {
+            "role": "/recovery/checksum_inventory",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/recovery/restore_receipt",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/rights/authorization",
+            "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327"
+          },
+          {
+            "role": "/verification/receipt",
+            "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381"
+          }
+        ]
+      },
+      "consumer_canary": {
+        "request_sha256": "c58c330e043be0f0b02950c16a2f4e3e3876b312dd3f4d7b65b34326465e57fc",
+        "identity_sha256": "5f4d7e0a33eb4bd5f34fa525fbd005b4893586fedbb22a79511aed96d3c79918",
+        "query_sha256": "b30a720f4cb9e0ad0958a7f1c899fb8031a787e1f9fc45bce62711c2a32685d5",
+        "page_sha256": "45ad39130a8c55b95a641d3cd2c8a267474e22acd30f2a91d08a1e938606d7a1",
+        "window_sha256": "d1aba526063f379a42db7e799001533bd9363fbf9617b43a1ccaf9b205f5d240",
+        "rows_sha256": "45ad39130a8c55b95a641d3cd2c8a267474e22acd30f2a91d08a1e938606d7a1",
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "cli_exit_code": 0,
+        "jsonl_export_exit_code": 0,
+        "jsonl_export_row_count": 2
+      },
+      "coverage": {
+        "rows_in_bounded_result": 2,
+        "sample_only": true,
+        "whole_source_or_product_coverage": "not_established"
+      }
+    },
+    {
+      "resource_id": "au.mbs.2025-07-v3.fees",
+      "table": "fees",
+      "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+      "object": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+        "sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+        "byte_count": 93072,
+        "declared_row_count": 5989
+      },
+      "contract_sha256": "39e493a27046a7f22c01f5f60b94aa7bc04b2155f513f243831a5752e15f800b",
+      "semantic_profile_sha256": "610a8ceca6e8fd3cf6a54dff0ca8218072d3da53a56f6324a6bde6f30b955727",
+      "semantic_dimension": "service_benefit",
+      "entity_granularity": "service_item",
+      "source_and_lineage": {
+        "source_id": "au-mbs",
+        "source_sha256": "d4b88d6b63fcdd768a2546046f0fd9f6428017e83a5a0b3ce56d3bbbffb1a420",
+        "source_path": "silver/mbs/v4/2025-07-v3/fees.parquet",
+        "source_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "effective_date": "2025-07-01",
+        "schema_era": "2025-07-version-3",
+        "receipt_roles": [
+          {
+            "role": "/discovery/estate_entry",
+            "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6"
+          },
+          {
+            "role": "/lineage/inputs/0",
+            "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+          },
+          {
+            "role": "/lineage/promotion_receipt",
+            "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64"
+          },
+          {
+            "role": "/lineage/v1_conformance",
+            "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8"
+          },
+          {
+            "role": "/lineage/v2_field_lineage",
+            "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae"
+          },
+          {
+            "role": "/lineage/v3_replay",
+            "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999"
+          },
+          {
+            "role": "/publication/receipt",
+            "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74"
+          },
+          {
+            "role": "/recovery/checksum_inventory",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/recovery/restore_receipt",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/rights/authorization",
+            "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327"
+          },
+          {
+            "role": "/verification/receipt",
+            "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381"
+          }
+        ]
+      },
+      "consumer_canary": {
+        "request_sha256": "e2c2e7d13273b7401f8c6dc9a11f878030219fb3c2ca20ea9828cfacbbd7d41e",
+        "identity_sha256": "a0cfac1b6e689db994cf564a3ac06cec2e033ccbadae55e1f3031f017494adcc",
+        "query_sha256": "655edf94086b81c474e704ea8e7ba416754741ba3450a538427e312f682f6d04",
+        "page_sha256": "b7de479f8646b09889c5f92e6b584a8f4dfc243d5e21f7f9401ee3b6b41b26e4",
+        "window_sha256": "a59f76d2aa9441bf3200773892a4b275aa04d66f068976849dcc08eaab6bdb06",
+        "rows_sha256": "b7de479f8646b09889c5f92e6b584a8f4dfc243d5e21f7f9401ee3b6b41b26e4",
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "cli_exit_code": 0,
+        "jsonl_export_exit_code": 0,
+        "jsonl_export_row_count": 2
+      },
+      "coverage": {
+        "rows_in_bounded_result": 2,
+        "sample_only": true,
+        "whole_source_or_product_coverage": "not_established"
+      }
+    },
+    {
+      "resource_id": "au.mbs.2025-07-v3.benefits",
+      "table": "benefits",
+      "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+      "object": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+        "sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+        "byte_count": 114493,
+        "declared_row_count": 5989
+      },
+      "contract_sha256": "34d0b9429fb3a2ec6cb21d6bdafbf160209eef652972c35653d8b6ad34f46dcd",
+      "semantic_profile_sha256": "05a0e64c59b5ef8343e10bcc2107f5b837037ccbc3ec22f6d0dc464d1b6aa68f",
+      "semantic_dimension": "service_benefit",
+      "entity_granularity": "service_item",
+      "source_and_lineage": {
+        "source_id": "au-mbs",
+        "source_sha256": "51b9775dc995d9e5d92a9d90a14493ac885475eef0fb648822b9b139006d5f5f",
+        "source_path": "silver/mbs/v4/2025-07-v3/benefits.parquet",
+        "source_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "effective_date": "2025-07-01",
+        "schema_era": "2025-07-version-3",
+        "receipt_roles": [
+          {
+            "role": "/discovery/estate_entry",
+            "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6"
+          },
+          {
+            "role": "/lineage/inputs/0",
+            "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+          },
+          {
+            "role": "/lineage/promotion_receipt",
+            "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64"
+          },
+          {
+            "role": "/lineage/v1_conformance",
+            "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8"
+          },
+          {
+            "role": "/lineage/v2_field_lineage",
+            "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae"
+          },
+          {
+            "role": "/lineage/v3_replay",
+            "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999"
+          },
+          {
+            "role": "/publication/receipt",
+            "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74"
+          },
+          {
+            "role": "/recovery/checksum_inventory",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/recovery/restore_receipt",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/rights/authorization",
+            "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327"
+          },
+          {
+            "role": "/verification/receipt",
+            "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381"
+          }
+        ]
+      },
+      "consumer_canary": {
+        "request_sha256": "633baea4353952caed87dbbd6d5decd5cec9a39317b89c2cc97619fa9292c13e",
+        "identity_sha256": "2ffe50c5869fcabd52e97722fc2ff292bfa39c8e9131960e318678d174110e46",
+        "query_sha256": "e405275458fc75134c110f37ae149b327adf694a357792585123ee2b9b03e651",
+        "page_sha256": "d9aae1977af8b4d7bcbc5b3340cc4d70a952840f1ca6ede69972c6125b582019",
+        "window_sha256": "7f5785cc19536e6253c9cae61108bab161e855c176ec5b1dfe061b5ac1b60302",
+        "rows_sha256": "d9aae1977af8b4d7bcbc5b3340cc4d70a952840f1ca6ede69972c6125b582019",
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "cli_exit_code": 0,
+        "jsonl_export_exit_code": 0,
+        "jsonl_export_row_count": 2
+      },
+      "coverage": {
+        "rows_in_bounded_result": 2,
+        "sample_only": true,
+        "whole_source_or_product_coverage": "not_established"
+      }
+    },
+    {
+      "resource_id": "au.mbs.2025-07-v3.caps",
+      "table": "caps",
+      "revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+      "object": {
+        "dataset": "edithatogo/australian-mbs-source-archive",
+        "path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+        "sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+        "byte_count": 60259,
+        "declared_row_count": 5989
+      },
+      "contract_sha256": "714f55cc16294e1a7dc10c5d678077cebdd8e9054a2ba392cd197e3f4c9300d7",
+      "semantic_profile_sha256": "44752c52b10dc0ce9c34bb39d705cd3d8340a6f6ed0477c5cf391b2114ffacda",
+      "semantic_dimension": "service_benefit",
+      "entity_granularity": "service_item",
+      "source_and_lineage": {
+        "source_id": "au-mbs",
+        "source_sha256": "767677eb483f2401bd5b8a9b9f3e255fff1aee769d0c9d1d4f7b98463e1c6cbb",
+        "source_path": "silver/mbs/v4/2025-07-v3/caps.parquet",
+        "source_revision": "3d2d528439bddf6f42e8e700c88917f0960a9f38",
+        "acquisition_id": "bbd662119ebebfdf08baf14c0b15c0dd5c93465910fd4f5309f37ecd37a82b8d",
+        "effective_date": "2025-07-01",
+        "schema_era": "2025-07-version-3",
+        "receipt_roles": [
+          {
+            "role": "/discovery/estate_entry",
+            "sha256": "4eec0519b0ebf3a57ff4922d5dd8c449256a91f43a4efeb138c7ca3d5b3de5f6"
+          },
+          {
+            "role": "/lineage/inputs/0",
+            "sha256": "cbb89dde7e24e790440b7aa3ec70ff8a580801d49b5f0b8839290f63bd64819c"
+          },
+          {
+            "role": "/lineage/promotion_receipt",
+            "sha256": "c394b1017a1e69b29cfee8502917a79a1b266e15b43a101ec4a500a17a8c4b64"
+          },
+          {
+            "role": "/lineage/v1_conformance",
+            "sha256": "28a2798c8da8abf4e58da05bdccb6ebf17976654e0235042d0504873f3ca52a8"
+          },
+          {
+            "role": "/lineage/v2_field_lineage",
+            "sha256": "0d3ad26a9bbc476034af6d3624ebf92249ac86408b6f81d26e127adb5544daae"
+          },
+          {
+            "role": "/lineage/v3_replay",
+            "sha256": "3137d5e7219a8fd963db8539ae81eecbf3043ed50623ec86efb06f4ff2a2d999"
+          },
+          {
+            "role": "/publication/receipt",
+            "sha256": "d97a131ed588a04dfe61bd903c14c9a4a81fab9f68115a0323e640da63529f74"
+          },
+          {
+            "role": "/recovery/checksum_inventory",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/recovery/restore_receipt",
+            "sha256": "b6eb2c45abdf6b039352ecc85e052bca0b95a931aeb95ed0ef1c7c8eee550634"
+          },
+          {
+            "role": "/rights/authorization",
+            "sha256": "28c8c66a20498bf2a426b0ab922d0eff81d3b226a9610ac84d81db687bd7d327"
+          },
+          {
+            "role": "/verification/receipt",
+            "sha256": "65cf07ca7411066178e008ec61acc33e108eb83a92428b128ae46e5bc2438381"
+          }
+        ]
+      },
+      "consumer_canary": {
+        "request_sha256": "0095d25059baf4d28de24368066c51a3c89adbb19fb726099a222c0b933c9120",
+        "identity_sha256": "a14a81e656a60404a2db214ad00c39f4761fb6947b77f7976ec1e614f0f99cd3",
+        "query_sha256": "4f5a0b51601fd7278029e64a3bdde7c81a46b0bb61ad979992d1e5d24cdd4da6",
+        "page_sha256": "4fe8de6826c235508c9adfa995ec16e6b6f899083f9226eb4a4e64e53205e63e",
+        "window_sha256": "d5f5b95be6ec3b14777e959740060243b4b0b9d969ed429105bad1e016401460",
+        "rows_sha256": "4fe8de6826c235508c9adfa995ec16e6b6f899083f9226eb4a4e64e53205e63e",
+        "api_http_status": 200,
+        "atlas_http_status": 200,
+        "atlas_rendered_row_count": 2,
+        "cli_exit_code": 0,
+        "jsonl_export_exit_code": 0,
+        "jsonl_export_row_count": 2
+      },
+      "coverage": {
+        "rows_in_bounded_result": 2,
+        "sample_only": true,
+        "whole_source_or_product_coverage": "not_established"
+      }
+    }
+  ],
+  "limits": {
+    "source_completeness": "not_established",
+    "bounded_query_rows_do_not_establish_denominator_or_coverage": true,
+    "semantic_scope": "exact July 2025 MBS XML v3 source era and its source-native Silver meanings only",
+    "absence": "unknown; absence is not evidence of cessation or non-coverage",
+    "unresolved_or_unclaimed": [
+      "M109 full denominator acceptance",
+      "M110 Gold graph acceptance",
+      "M112 federation acceptance",
+      "patient denominator or patient-rate claims",
+      "PBS, clinical, or therapeutic equivalence",
+      "regulatory, funding, formulary, and terminology conclusions beyond their independent contracts",
+      "production promotion or public release",
+      "independent recovery",
+      "federation-wide consumer acceptance",
+      "browser qualification for cohorts beyond the exact six-table July 2025 MBS cohort"
+    ],
+    "source_values_in_retained_receipt": false,
+    "public_dataset_mutated": false,
+    "new_sources_added": false
+  }
+}
