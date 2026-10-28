@@ -161,6 +161,92 @@ def test_consumer_compatibility_contract_is_complete_and_fail_closed() -> None:
     assert contract["state"] == "qualified"
 
 
+def test_m111_consumer_reconciliation_binds_current_hosted_receipt() -> None:
+    receipt_path = ROOT / (
+        "quality/qualifications/"
+        "australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/"
+        "admission-remote-read.json"
+    )
+    consumer_path = ROOT / (
+        "quality/qualifications/"
+        "platinum-actual-consumer-reconciliation-20261028.json"
+    )
+    receipt = _load(receipt_path)
+    consumer = _load(consumer_path)
+    readiness = _load(
+        ROOT
+        / "quality/qualifications/stable-v1-release-readiness-reconciliation.json"
+    )
+    hosted = consumer["hosted_qualification"]
+    canaries = receipt["consumer_canary"]["evidence"]
+
+    assert (
+        hosted["remote_receipt_sha256"]
+        == hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+    )
+    assert hosted["workflow_commit"] == receipt["contract_commit"]
+    assert hosted["source_revision"] == receipt["revision"]
+    consumer_counts = consumer["consumers"]
+    assert set(consumer_counts["requests_per_surface"]) == {
+        "api",
+        "atlas",
+        "cli_json",
+        "cli_jsonl",
+        "browser",
+    }
+    assert (
+        sum(consumer_counts["requests_per_surface"].values())
+        == (consumer_counts["surface_requests_total"])
+    )
+    consumer_receipt = next(
+        item
+        for item in readiness["current_evidence_reconciliation"][
+            "system_receipts"
+        ]
+        if item["path"] == consumer_path.relative_to(ROOT).as_posix()
+    )
+    assert (
+        consumer_receipt["sha256"]
+        == hashlib.sha256(consumer_path.read_bytes()).hexdigest()
+    )
+    assert len(consumer["qualified_objects"]) == len(receipt["objects"])
+    assert len(canaries) == len(receipt["objects"])
+
+    for qualified, remote, canary in zip(
+        consumer["qualified_objects"], receipt["objects"], canaries, strict=True
+    ):
+        assert qualified["resource_id"] == remote["resource_id"]
+        assert qualified["object"]["path"] == remote["path"]
+        assert qualified["object"]["sha256"] == remote["sha256"]
+        assert qualified["object"]["byte_count"] == remote["byte_count"]
+        assert qualified["object"]["declared_row_count"] == remote["row_count"]
+        assert qualified["contract_sha256"] == remote["contract_sha256"]
+        assert qualified["semantic_profile_sha256"] == remote["semantic_sha256"]
+        for digest_key in (
+            "request_sha256",
+            "identity_sha256",
+            "query_sha256",
+            "page_sha256",
+            "window_sha256",
+            "rows_sha256",
+        ):
+            assert (
+                qualified["consumer_canary"][digest_key] == canary[digest_key]
+            )
+        for qualified_key, canary_key in (
+            ("api_http_status", "api_http_status"),
+            ("atlas_http_status", "atlas_http_status"),
+            ("atlas_rendered_row_count", "atlas_rendered_row_count"),
+            ("cli_exit_code", "cli_exit_code"),
+            ("jsonl_export_exit_code", "export_exit_code"),
+            ("jsonl_export_row_count", "export_row_count"),
+        ):
+            assert (
+                qualified["consumer_canary"][qualified_key]
+                == canary[canary_key]
+            )
+
+
 def test_support_readiness_uses_current_verified_python_runtime() -> None:
     support = _load(SUPPORT)
     _validator(SUPPORT_SCHEMA).validate(support)

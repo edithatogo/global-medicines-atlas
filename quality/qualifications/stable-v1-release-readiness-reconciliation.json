@@ -162,7 +162,7 @@
       },
       {
         "path": "quality/qualifications/platinum-actual-consumer-reconciliation-20261028.json",
-        "sha256": "838d59fa8821eb8bd23f566d5b2a8eeb75735614246606b4a1e4094fb85fe5ca",
+        "sha256": "8dc029f249c0db1ad783569e95003a8025916693bbe09a80a1bc56fe403a1d49",
         "consequence": "API, CLI JSON, CLI JSONL, Atlas, and Chromium canaries passed for the exact six-table cohort only; federation-wide acceptance remains blocked."
       },
       {
