@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T03:42:52Z",
+  "as_of": "2026-10-28T04:02:43Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "5476016462f67de6ee68c106e5255804fcf4eab68fd8310a0f47da30658abf53"
+    "sha256": "95ed9ed04c6de532183a0578c7c48e888c670a518b56abf857f8711c01351111"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -109,6 +109,16 @@
         "path": "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json",
         "sha256": "a1f2c7f2d46e5f0a0e90ee153664d7ff0df8fb4bb7397b666a34a85d54ee0623",
         "consequence": "Corrected M-108 scope reconciliation: the exact four attested d781/f9f9 outputs are outside frozen M-112; d781 is Bronze-parser accepted, f9f9 has no admission sidecar; neither has typed v4 admission, product-specific card, or independent replica evidence."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json",
+        "sha256": "941d85a576523bdf0bfa5a137ebbddac503c939b0fe6f75abe57c6828a6c4c03",
+        "consequence": "At public dataset revision b925a8a80b0f90db09513e7ce1378045461b05c0, all four attested August MBS Bronze Parquet paths retain their bound LFS SHA-256 and byte counts; d781 has only an accepted unreviewed Bronze admission, f9f9 has no admission sidecar, and neither is v4-admitted."
+      },
+      {
+        "path": "docs/qualification/australian-health-federation-acceptance.md",
+        "sha256": "89de495478ebd4a3331a5afe9695011c207a4fae900ca8d65cfa9840153c399d",
+        "consequence": "Federation acceptance summary now reflects the corrected four-object August MBS scope and current scoped Silver consumer/recovery evidence; all gate dispositions remain blocked or partial as recorded."
       }
     ],
     "release_action_performed": false,

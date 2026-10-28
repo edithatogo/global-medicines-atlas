@@ -95,6 +95,8 @@ M105_NOT_WAIVED = (
 )
 M105_BASELINE_ROWS = 54
 M105_DELTA_ROWS = 10
+AUSTRALIAN_PHASE4_CURRENT = "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json"
+AUSTRALIAN_AUGUST_CURRENT_TREE = "quality/qualifications/australian-mbs-august-projection-current-tree-readback-20261028.json"
 
 TECHNICAL_GATE_EVIDENCE = {
     "stable-v1-canonical-schema-v2": [
@@ -543,6 +545,15 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
             requirement["blocker_ids"] = _append_unique(
                 requirement["blocker_ids"], [AUSTRALIAN_HEALTH_GATE]
             )
+            if requirement_id == "M-108":
+                requirement["evidence"] = _append_unique(
+                    requirement["evidence"],
+                    [AUSTRALIAN_PHASE4_CURRENT, AUSTRALIAN_AUGUST_CURRENT_TREE],
+                )
+            elif requirement_id in {"M-109", "M-112"}:
+                requirement["evidence"] = _append_unique(
+                    requirement["evidence"], [AUSTRALIAN_PHASE4_CURRENT]
+                )
         elif requirement["evidence"] == ["conductor/requirements.md"]:
             requirement["evidence"] = _append_unique(
                 requirement["evidence"], [STABLE_LEDGER]
@@ -635,7 +646,14 @@ def build_contract(  # ruff: ignore[too-many-branches,too-many-statements]
         gate["evidence"] = _append_unique(gate["evidence"], evidence)
     gates[AUSTRALIAN_HEALTH_GATE]["evidence"] = _append_unique(
         gates[AUSTRALIAN_HEALTH_GATE]["evidence"],
-        [AUSTRALIAN_ACCEPTANCE, SCRAPER_ARCHIVE, GRAPH_ARCHIVE, M105_WAIVER],
+        [
+            AUSTRALIAN_ACCEPTANCE,
+            SCRAPER_ARCHIVE,
+            GRAPH_ARCHIVE,
+            M105_WAIVER,
+            AUSTRALIAN_PHASE4_CURRENT,
+            AUSTRALIAN_AUGUST_CURRENT_TREE,
+        ],
     )
 
     source_gate_id = (

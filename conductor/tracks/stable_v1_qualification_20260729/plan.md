@@ -876,3 +876,27 @@ release gate.
 - [x] Task: Review the bounded-review pointer and acceptance-table correction;
   no corrective findings. The focused fail-closed qualification checks pass
   (333f00f0).
+
+## Australian August projection current-tree reconciliation and review (2026-10-28)
+
+- [x] Perform a bounded anonymous metadata read of the four exact attested
+  August 2026 MBS Bronze Parquet objects at public revision
+  `b925a8a80b0f90db09513e7ce1378045461b05c0`. Their four LFS SHA-256 values
+  and byte counts still match the existing rights/scope receipt. The `d781`
+  prefix has only an accepted, unreviewed Bronze admission; the `f9f9` prefix
+  has no admission sidecar. No source or Parquet payload bytes were downloaded.
+- [x] Bind the readback to M-108 and the federation gate without changing any
+  qualification, rights, admission, publication, or frozen-inventory state.
+  Refresh readiness hashes and correct M-108/M-109/M-111/M-112 acceptance
+  summaries to reflect the latest Phase 4, v4 remote-reader, consumer, and
+  recovery evidence.
+- [x] Review the scoped federation changes and fix the stale acceptance summary.
+  The affected receipt, qualification, guardrail, and reconciliation tests pass
+  (523); context, Ruff, formatting, ty, BasedPyright, and diff checks pass.
+  Stable promotion authority validation correctly remains blocked on unresolved
+  Australian federation gates. No local full profile was run.
+- [ ] Keep M-108 blocked pending exact product-specific v4 cards/admission,
+  independent-replica evidence, and the `f9f9` prefix disposition. Continue
+  independent semantics and required source-evidence work where current
+  authority and source contracts support it; do not archive this track until
+  the gate is actually accepted.
