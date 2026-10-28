@@ -167,3 +167,34 @@ the historical publication/primary-restore receipt. All six exact configurations
 then validated and their real anonymous receipt reads passed. No opaque receipt
 content was retained. Review was by the implementing agent; no independent
 human or production approval is invented. Full-track archival remains unsafe.
+
+# Review Report: exact PBS admission and reader runner (2026-10-28)
+
+## Summary
+
+The bounded runner prepares real exact-main admission and raw reader execution;
+actual hosted qualification and whole-track acceptance remain incomplete.
+
+## Verification Checks
+
+- [x] **Plan Compliance**: six explicit existing objects only; independent trust
+  derives from fixed source evidence rather than candidate claims.
+- [x] **Style Compliance**: changed qualifier and tests pass Ruff and formatting.
+- [x] **New Tests**: exact-six profiles, digest and scope rejection, independent
+  trust mismatch, corrupted/oversized remote receipts, local refusal, missing
+  attempt, actual CLI check and metadata-only CLI report behavior are covered.
+- [x] **Test Coverage**: 167 focused/broader affected checks passed before three
+  CLI/schema controls were added; the final qualifier selection has 27 passes.
+- [~] **Test Results**: focused typing passed; one full Test-Goblin production
+  milestone run is active. Its outcome and protected CI must be retained.
+
+## Findings and fixes
+
+Review required a valid positive workflow attempt before any network operation,
+not merely before final receipt construction. The guard now runs immediately
+after the existing exact-main guard. Typed mock callbacks replaced ambiguous
+lambda parameters. The existing private receipt adapter is reused with narrow
+explicit lint/type annotations rather than duplicating its URL handling.
+No source bytes are read by local checks; real reader execution is hosted only.
+The canary qualifies raw-byte delivery and is not described as Silver or
+Platinum domain acceptance. Review was by the implementing agent.

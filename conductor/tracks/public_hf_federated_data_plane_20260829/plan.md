@@ -1035,3 +1035,16 @@ append. The Stable v1 Australian federation gate remains blocked.
 - [~] Qualify the independent exact-source producer trust profile and execute
   exact-main admission and consumer canaries. Configuration and opaque byte
   closure alone do not change the eight recorded raw-object admissions.
+
+## Exact PBS admission and reader runner (2026-10-28)
+
+- [x] Implement independent exact-source trust profiles for the six pinned
+  raw-B2 configurations, using the shared closure/admission/reader engines.
+  Local policy checks perform no admission or network read.
+- [x] Register an exact-main, dispatch-only, six-target read-only hosted
+  qualification route retaining metadata-only admission and reader artifacts.
+- [~] Complete review, one coherent production-change full validation and
+  protected exact-head CI, then merge. Hosted qualification has not run.
+- [ ] Dispatch each exact object once on qualified main; verify native
+  run/job/artifact evidence, retain results and reconcile actual raw admission
+  and reader counts. Broader consumers and independent recovery stay separate.

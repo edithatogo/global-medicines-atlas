@@ -1183,3 +1183,10 @@ remaining federation criteria, and this track's archival remain pending.
   effective dates; no source interpretation or admission is inferred.
 - [~] Continue trusted exact-main admission/consumer qualification and the
   separate remaining federation requirements before rebuilding Stable v1.
+
+## Exact PBS admission execution prerequisite (2026-10-28)
+
+- [~] Qualify and merge the six-target raw-B2 admission/reader runner, then
+  execute exact-main native runs and retain their metadata-only results.
+  Existing raw counts remain 8 admissions and 8 canaries; no candidate code or
+  synthetic test result changes those counters or closes federation.
