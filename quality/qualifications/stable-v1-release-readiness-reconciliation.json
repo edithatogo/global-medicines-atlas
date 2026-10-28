@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28",
+  "as_of": "2026-10-28T09:27:03+00:00",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "80279d30a188457c2e216e03a7b7559af85191a6fe1fdf447b2dd92893911536"
+    "sha256": "1a3830ce4662b172efcca5b9cac5295b39398800166e089e19cd695f5f831c76"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -117,8 +117,8 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "3dde64035a4c5a7fe7c2ddc207b92c74a465f73158f421b42d97986eeee8d74c",
-        "consequence": "The maintainer approved these federation acceptance requirements on 2026-10-28. The current acceptance summary records M-105, M-107, M-108, M-109 and other federation conditions as evidence-gated; approval does not complete them."
+        "sha256": "991c4e9eb41f8aa1495a2b09eedaaa440695e753a4ce0301606356f1b2ee6462",
+        "consequence": "The maintainer approved these federation acceptance requirements on 2026-10-28. The current summary records the exact six-table M-111 canary as passed while M-105, M-107, M-108, M-109, M-110, M-112 and other requirements remain evidence-gated."
       },
       {
         "path": "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",
@@ -179,6 +179,16 @@
         "path": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40653807510/artifact-manifest.json",
         "sha256": "ad746aebaa2a543c084e1f137c50e4a53cb57c8890db449743ccb5b0bef9f69d",
         "consequence": "Aggregate-only hosted artifact and report digests validate the exact-main qualification run and bounded consumer evidence."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/admission-remote-read.json",
+        "sha256": "b48eedc7de599f646fe4c722b2ac869c6ebbe9935be09f58464d4f7b2ab71b12",
+        "consequence": "Exact-main remote-reader and API, CLI JSON, CLI JSONL, Atlas, and Chromium browser qualification passed for the six exact July 2025 MBS products at the pinned revision."
+      },
+      {
+        "path": "quality/qualifications/australian-mbs-silver-v4-admission-remote-read-20261028-40664169948/artifact-manifest.json",
+        "sha256": "e6b73c3c086776a121b8500c06f6b1a4a5e31f7ebc101d3d00968f8d7beff40c",
+        "consequence": "The hosted artifact, aggregate report, deployment trust receipt, and retained contract/semantic inputs are digest-bound to the exact-main qualification run."
       }
     ],
     "release_action_performed": false,

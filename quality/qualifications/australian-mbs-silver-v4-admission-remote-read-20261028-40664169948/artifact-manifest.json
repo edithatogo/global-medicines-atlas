@@ -1,0 +1,107 @@
+{
+  "schema_id": "global-medicines-atlas.australian-mbs-silver-v4-remote-admission-qualification-artifact",
+  "schema_version": 1,
+  "artifact": {
+    "id": 12806040106,
+    "name": "mbs-silver-v4-admission-40664169948-1",
+    "sha256": "2c00f5804a57d8698feb0b66eca6405e956be04879849d3ed9788e38a91abda1",
+    "size_bytes": 21258,
+    "url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40664169948",
+    "expires_at": "2027-01-26T09:25:53Z"
+  },
+  "reports": [
+    {
+      "path": "admission-remote-read.json",
+      "sha256": "b48eedc7de599f646fe4c722b2ac869c6ebbe9935be09f58464d4f7b2ab71b12",
+      "size_bytes": 46739
+    },
+    {
+      "path": "deployment-trust.json",
+      "sha256": "c91a4cc53f7ae7351b47cf16e1ffa20e29e745772d29473200f8d833ff4873c8",
+      "size_bytes": 13895
+    },
+    {
+      "path": "metadata/contracts/benefits.json",
+      "sha256": "2c2da783e066441a0673346e32b39952eca128397c5770940700b07c6ede27a3",
+      "size_bytes": 5965
+    },
+    {
+      "path": "metadata/contracts/caps.json",
+      "sha256": "acf0fec34f6925708194afd464a07cb73d41f55a34cbe7b1aa95073c5b109190",
+      "size_bytes": 5951
+    },
+    {
+      "path": "metadata/contracts/descriptions.json",
+      "sha256": "a0114f345d1f3beea1e08187c563191f6df0faf5e00214102b790e3109f4f4e7",
+      "size_bytes": 5977
+    },
+    {
+      "path": "metadata/contracts/fees.json",
+      "sha256": "9f1dece299312d622ad451a9601373b4fd8617e3a874844a73f06817aa73ebf8",
+      "size_bytes": 5951
+    },
+    {
+      "path": "metadata/contracts/hierarchy.json",
+      "sha256": "26ec73cf95eb40ebea6696b9e76f9bff9634f59445dd03cc2c1ecc40f95f0f8b",
+      "size_bytes": 5966
+    },
+    {
+      "path": "metadata/contracts/services.json",
+      "sha256": "6d33e261a8480edac398a863c1bbbb05630c5921651967b3994f9d4ebcd84423",
+      "size_bytes": 5965
+    },
+    {
+      "path": "metadata/semantics/benefits.json",
+      "sha256": "c604dac067902c98cb1c98393749c1384a866aa3320ddb1c59e9ece8c2a08bbf",
+      "size_bytes": 220
+    },
+    {
+      "path": "metadata/semantics/caps.json",
+      "sha256": "e8ab0b316b01aacceb63b14373b9735f42337a21ce6b2de39d7b5552045cf2ce",
+      "size_bytes": 216
+    },
+    {
+      "path": "metadata/semantics/descriptions.json",
+      "sha256": "22eec5d6549c069f1ca0134cc024140a76ac68de0071faed5a9e80ee4e0e13da",
+      "size_bytes": 224
+    },
+    {
+      "path": "metadata/semantics/fees.json",
+      "sha256": "51b7552725a1004730d9e21a2f0efab796a6bb03d80b29d30c923dbb9cf7cb5f",
+      "size_bytes": 216
+    },
+    {
+      "path": "metadata/semantics/hierarchy.json",
+      "sha256": "56ecb6fccedd86e369a6ca1b67fd026ae5e4fe4afc3ab7277b3e94cd96e0597b",
+      "size_bytes": 221
+    },
+    {
+      "path": "metadata/semantics/services.json",
+      "sha256": "cffbfe0ad5062084f0e3ee56517e3d8f426042b35976321273ab3f3543fbd530",
+      "size_bytes": 220
+    }
+  ],
+  "workflow": {
+    "run_id": 40664169948,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40664169948",
+    "head_commit": "ec59c2121015093b52dfb8afbd9e05a131321117",
+    "workflow": ".github/workflows/australian-mbs-silver-v4-admission-qualification.yml"
+  },
+  "validation": {
+    "contract_commit": "ec59c2121015093b52dfb8afbd9e05a131321117",
+    "hosted_workflow_conclusion": "success",
+    "object_identity_and_role_evidence": "six exact July 2025 MBS table identities and existing receipt roles matched the qualified cohort",
+    "remote_reads": "six passed with verified digests and byte counts at the pinned Hugging Face revision",
+    "consumer_canaries": "six requests each through API, CLI JSON, CLI JSONL, Atlas, and Chromium browser rendering; two rows per request",
+    "source_values_included": false
+  },
+  "boundaries": {
+    "candidate_product_profiles_admitted": true,
+    "external_publication_performed": false,
+    "independent_recovery_qualified": false,
+    "m112_federation_acceptance": false,
+    "new_sources_added": false,
+    "production_promotion": false,
+    "source_completeness_established": false
+  }
+}
