@@ -1023,7 +1023,8 @@ release gate.
 ### PBS `rdf:resource` generic syntax-role qualification (2026-10-28)
 
 - [x] Add the exact QName-bound RDF/XML syntax role to PBS field-state
-  successor r16, preserving r15 and all source values. The W3C RDF/XML
+  successor r16, preserving r15 and all source values. Implementation
+  `c8ea243b`. The W3C RDF/XML
   Recommendation supports the generic object-node IRI-reference role for
   1,159,282 additional fields. The complete PBS partition is now 3,086,366
   interpreted, 15,122,392 `native_unresolved`, and zero unavailable. The
