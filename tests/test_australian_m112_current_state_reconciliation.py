@@ -246,14 +246,12 @@ def test_acceptance_page_reconciles_exact_mbs_utilisation_rights_scope() -> (
     )
     disposition = rights["current_disposition"]
 
+    assert "exact 14-object MBS-utilisation manifest" in acceptance
     assert (
-        "MBS-utilisation rights reconciliation covers 14 candidate paths "
-        "(10 demographics and 4 group-statistics)"
-    ) in acceptance
-    assert (
-        "lineage is deferred pending per-object B1 rights/reuse fields"
+        "joins each path to its B1/B2 lifecycle and digest evidence"
         in acceptance
     )
+    assert "landed-admission reviewer status still unreviewed" in acceptance
     assert (
         "separate maintainer attestation covers public-release rights for six "
         "exact PBS-utilisation raw files"

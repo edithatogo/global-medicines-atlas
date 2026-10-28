@@ -98,6 +98,30 @@ def _assert_f9f9_disposition_is_bound(
     return path
 
 
+def _assert_current_m112_receipts_are_bound(
+    receipt: dict[str, Any],
+) -> None:
+    role_path = (
+        "quality/qualifications/"
+        "australian-m112-v4-contract-role-evidence-qualification-20261021.json"
+    )
+    lineage_path = (
+        "quality/qualifications/"
+        "australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json"
+    )
+    receipts = receipt["current_evidence_reconciliation"]["system_receipts"]
+    for path in (role_path, lineage_path):
+        evidence_path = ROOT / path
+        bound_receipt = next(item for item in receipts if item["path"] == path)
+        assert (
+            bound_receipt["sha256"]
+            == hashlib.sha256(evidence_path.read_bytes()).hexdigest()
+        )
+    role_receipt = next(item for item in receipts if item["path"] == role_path)
+    assert "8 v4 admissions" in role_receipt["consequence"]
+    assert "1,751 remain deferred" in role_receipt["consequence"]
+
+
 def _must_requirement_ids() -> set[str]:
     text = (ROOT / "conductor/requirements.md").read_text(encoding="utf-8")
     must_section = text.split("## Should Have", maxsplit=1)[0]
@@ -387,6 +411,55 @@ def test_m110_bounded_edge_review_is_bound_without_accepting_m110() -> None:
     assert assessment["gate_assessment"]["m110_overall"] == (
         "open_other_source_eras_pbs_product_admission_and_federation"
     )
+
+
+def test_current_m112_role_receipt_is_bound_without_accepting_denominator() -> (
+    None
+):
+    role_path = (
+        "quality/qualifications/"
+        "australian-m112-v4-contract-role-evidence-qualification-20261021.json"
+    )
+    lineage_path = (
+        "quality/qualifications/"
+        "australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json"
+    )
+    role_report = _load(ROOT / role_path)
+    assert role_report["cohort"]["approved_denominator"] == 1_759
+    assert role_report["cohort"]["v4_admissions"] == 8
+    assert role_report["cohort"]["consumer_canaries"] == 8
+    assert role_report["cohort"]["approved_denominator_changed"] is False
+    assert (
+        role_report["cohort"]["approved_denominator"]
+        - role_report["cohort"]["v4_admissions"]
+        == 1_751
+    )
+    lineage_report = _load(ROOT / lineage_path)
+    assert (
+        lineage_report["current_b1_b2_lineage_expansion"][
+            "new_complete_lineages"
+        ]
+        == 14
+    )
+    assert lineage_report["updated_gate_totals"]["preserved_deferrals"] == 1_759
+
+    contract = build_contract(_load(QUALIFICATION))
+    requirement = next(
+        item
+        for item in contract["requirements"]
+        if item["requirement_id"] == "M-112"
+    )
+    gate = next(
+        item
+        for item in contract["release_gates"]
+        if item["gate_id"] == "stable-v1-australian-health-federation"
+    )
+    assert requirement["state"] == "blocked"
+    assert gate["state"] == "blocked"
+    assert role_path in requirement["evidence"]
+    assert role_path in gate["evidence"]
+    assert lineage_path in requirement["evidence"]
+    assert lineage_path in gate["evidence"]
 
 
 def test_current_august_tree_readback_is_bound_without_v4_promotion() -> None:
@@ -802,6 +875,7 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
         == hashlib.sha256(disposition_path.read_bytes()).hexdigest()
     )
     assert "deferred_not_admitted" in disposition_receipt["consequence"]
+    _assert_current_m112_receipts_are_bound(receipt)
     acceptance_path = ROOT / (
         "docs/qualification/australian-health-federation-acceptance.md"
     )
@@ -828,6 +902,14 @@ def test_release_readiness_reconciliation_separates_package_from_release() -> (
         "310,176,929 non-header values remain `native_unresolved`" in m109_row
     )
     assert "1,194 ambiguous date-shaped cells" in m109_row
+    m112_row = next(
+        line
+        for line in acceptance.splitlines()
+        if line.startswith("| M-112 federation v4 |")
+    )
+    assert "8 exact v4 admissions" in m112_row
+    assert "1,751 objects remain deferred" in m112_row
+    assert "this is not 14 v4 admissions" in m112_row
     assert "`p7_date_convention_selected=false`" in m109_row
     assert (
         "workbook-era date convention, domain meaning, and temporal comparison remain unqualified"

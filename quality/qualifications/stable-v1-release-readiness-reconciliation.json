@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T04:54:38Z",
+  "as_of": "2026-10-28T05:06:05Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "f29cb7d0f16e2f576854e59e3c9d23e988bf2120f19f6885f36d10833b667e2a"
+    "sha256": "1ba4f21554b3e6c17e5a7c568771900c446314dbe7667e60dacf33674e1e7f41"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -117,13 +117,23 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "2b8f298bf950cb9d226abdda5e67a4e4cb1508bedfc467553b384c90e9b1cae7",
-        "consequence": "Federation summary binds current M-108/M-109/M-110/M-111/M-112 evidence, including exact 14-object MBS-utilisation and six-object PBS-utilisation rights boundaries; the f9f9 August projection is explicitly deferred from admission, while lineage, product qualification, independent recovery, broader semantics, and federation acceptance remain open."
+        "sha256": "6a40c0b9b567a5d9e87802cc0d85ca49bb2a939a4ff0d6f727cac24b5105c676",
+        "consequence": "Federation summary binds the current 8 M-112 v4 admissions and 8 canaries, 14 exact MBS-utilisation B1/B2 lineages, the four August products deferred from admission, and the remaining semantic, independent recovery, and federation blockers."
       },
       {
         "path": "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",
         "sha256": "30f04f37de72252648fe1a4c07c6488024f56c10cec35d810f3e91534155aaf4",
         "consequence": "The exact August f9f9 MBS projection prefix is deferred_not_admitted at the pinned current tree revision; this closes no M-108 admission or canary gate."
+      },
+      {
+        "path": "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json",
+        "sha256": "9ae96773ed19b1ec0795340aef1d341dbeeb0f8961ca7f231af633618ca21781",
+        "consequence": "The exact M-112 role reconciliation records 8 v4 admissions and 8 admitted-object canaries across the frozen 1,759-object denominator; 1,751 remain deferred. This report performs no admission or canary and does not close federation."
+      },
+      {
+        "path": "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json",
+        "sha256": "35e4bcbb1b459c78dff837d75c6bf5ae81f307f7211e383f938d9ffc05a07f89",
+        "consequence": "The exact MBS-utilisation overlay binds 14 raw paths to B1/B2 lifecycle and digest evidence, with landed-admission reviewer status unreviewed; it records no v4 admission or canary and preserves all 1,759 deferrals."
       }
     ],
     "release_action_performed": false,
