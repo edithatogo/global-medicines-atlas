@@ -859,3 +859,20 @@ release gate.
 - [x] Task: Review the evidence reconciliation; no corrective findings. Focused
   tests, context validation, lint, formatting, and type checks pass
   (4387181c).
+
+
+## Phase: M-110 bounded edge-review pointer reconciliation (2026-10-28)
+
+- [x] Task: Reconcile the existing maintainer disposition for the exact 5,989 July
+  2025 MBS v3 same-record candidate edges into M-110 and the Australian
+  federation contract evidence. Correct the acceptance table: the bounded
+  candidate edge set was reviewed, while broader M-110 calibration and
+  federation acceptance remain open. Reconciliation does not alter M-110's
+  blocked state or the overall federation gate. Implementation `333f00f0`;
+  focused qualification checks passed.
+
+## Phase: Review Fixes (continued)
+
+- [x] Task: Review the bounded-review pointer and acceptance-table correction;
+  no corrective findings. The focused fail-closed qualification checks pass
+  (333f00f0).
