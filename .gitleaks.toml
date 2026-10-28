@@ -4,7 +4,7 @@ title = "Global Medicines Atlas Gitleaks configuration"
 useDefault = true
 
 [[allowlists]]
-description = "Qualified public MBS revision, deterministic replay idempotency, and consumer graph-edge digest evidence are not credentials in their exact source evidence fields."
+description = "Qualified public MBS revision, deterministic MBS/PBS replay idempotency, and consumer graph-edge digest evidence are not credentials in their exact source evidence fields."
 targetRules = ["generic-api-key"]
 regexTarget = "match"
 regexes = [
@@ -21,4 +21,5 @@ regexes = [
   '''^idempotency_key"\s*:\s*"a952a4fa742e946bee9555aa58a61218af64748ff5fe4bacce3d2ddb22070f6d"\s*$''',
   '''^idempotency_key"\s*:\s*"ac94f0aa6957a89ef8e6dbcdf0191a6f0a43242225b3f537194144f8cfcaaabb"\s*$''',
   '''^idempotency_key"\s*:\s*"1482fa5d9ccd9937027f13be70530fe7b22d52cb20957ea9216dbde81e207381"\s*$''',
+  '''^idempotency_key"\s*:\s*"f0acc72a90fdba651eabae075462a6bff4004137b6ce2984f4f26e979aa1b29e"\s*$''',
 ]
