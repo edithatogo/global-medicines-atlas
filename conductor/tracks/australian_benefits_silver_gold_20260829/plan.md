@@ -6078,3 +6078,18 @@ authoritative contract, reconciliation, and bound receipts.
   validation, and diff checks pass. Review was performed by the implementing
   agent; no independent review or M-109 acceptance is claimed. Commit
   `2f2d61f0` records r18 and the validation evidence.
+
+### October 28 PBS root schema-version field role
+
+- [x] Bind the exact root `@version` field to the retained metadata-only PBS
+  schema-version receipt. The receipt declares schema version 3.1 for the
+  pinned April 2026 member and binds the exact QName path and member digest;
+  r19 promotes only that one metadata field. Schema patch, PBS values,
+  predicates, relationships, and M-109 acceptance remain unresolved. The
+  complete field-state partition is 3,096,735 interpreted, 15,112,023
+  `native_unresolved`, and zero unavailable of 18,208,758. After review
+  hardening the receipt path before file access, focused PBS and Stable
+  contract suites pass (60 and 64 tests); total focused coverage is 94.60%
+  and PBS module branch-inclusive coverage is 95%. Ruff, `ty`, source/runner
+  BasedPyright, context validation, and diff checks pass. Review is by the
+  implementing agent only.

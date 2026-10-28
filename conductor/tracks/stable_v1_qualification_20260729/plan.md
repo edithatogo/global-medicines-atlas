@@ -1053,6 +1053,20 @@ release gate.
   implementing agent; no independent reviewer, new admission, canary, source,
   publication, or federation acceptance is claimed.
 
+### PBS schema-version field evidence (2026-10-28)
+
+- [x] Bind PBS r19 into the Australian acceptance summary, Stable contract,
+  and release-readiness receipt. The exact root `@version` field is interpreted
+  as source schema version 3.1 from the existing metadata-only receipt; the
+  schema patch and all PBS medicine values and relationships remain unresolved.
+  The machine contract remains blocked only on the Australian federation gate.
+  No source, rights, admission, canary, publication, or stable-release state
+  changed. After review hardening the receipt path before file access, focused
+  PBS and Stable contract tests pass (60 and 64); total focused coverage is
+  94.60% and PBS module branch-inclusive coverage is 95%. Source/runner static
+  checks, context validation, and diff checks pass. Review is by the
+  implementing agent only.
+
 ### PBS `rdf:resource` generic syntax-role qualification (2026-10-28)
 
 - [x] Add the exact QName-bound RDF/XML syntax role to PBS field-state

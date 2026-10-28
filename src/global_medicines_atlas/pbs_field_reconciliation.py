@@ -176,8 +176,19 @@ CURRENT_RECONCILIATION_V6 = "quality/qualifications/pbs-native-silver-field-reco
 CURRENT_RECONCILIATION_V7 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r16.json"
 CURRENT_RECONCILIATION_V8 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r17.json"
 CURRENT_RECONCILIATION_V9 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r18.json"
+CURRENT_RECONCILIATION_V10 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r19.json"
 PATH_INVENTORY_SHA256 = (
     "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b"
+)
+SCHEMA_VERSION_FIELD_PATH = (
+    "/{http:~1~1schema.pbs.gov.au~1}root/attributes/version"
+)
+PBS_SCHEMA_VERSION = "3.1"
+PBS_SCHEMA_MAJOR = 3
+PBS_SCHEMA_MINOR = 1
+SCHEMA_VERSION_RECEIPT_PATH = (
+    "quality/qualifications/"
+    "pbs-root-schema-version-metadata-20261025-40145730405.json"
 )
 XLINK_FIELD_COUNT = 992_456
 RDF_RESOURCE_FIELD_COUNT = 1_167_610
@@ -1850,4 +1861,132 @@ def reconcile_pbs_field_states_v9(root: Path) -> dict[str, Any]:
     report["source_local_rdf_about_semantics"][
         "schema_path_inventory_file_sha256"
     ] = inventory_sha256
+    return report
+
+
+def reconcile_pbs_field_states_v10(root: Path) -> dict[str, Any]:
+    """Qualify only the exact source-declared PBS schema-version field role."""
+    report = reconcile_pbs_field_states_v9(root)
+    version_evidence = report["bounded_domain_semantics"][
+        "schema_version_evidence"
+    ]
+    receipt_path = version_evidence["receipt_path"]
+    if receipt_path != SCHEMA_VERSION_RECEIPT_PATH:
+        raise ValueError("PBS root schema-version receipt path differs")
+    receipt_file_sha256 = version_evidence["receipt_file_sha256"]
+    receipt_report_sha256 = version_evidence["report_sha256"]
+    receipt_envelope = json.loads((root / receipt_path).read_bytes())
+    receipt_report = receipt_envelope["report"]
+    receipt_checks = (
+        _file_sha256(root / receipt_path) == receipt_file_sha256,
+        receipt_report_sha256
+        == "eb6155e226bfd0dedca590e442b3f673e2bde566656cbfbbe07d595c54660398",
+        receipt_envelope["report_sha256"] == receipt_report_sha256,
+        receipt_report["version_attribute_path"] == SCHEMA_VERSION_FIELD_PATH,
+        receipt_report["root_metadata_only"] is True,
+        receipt_report["source_field_values_emitted"] is False,
+        receipt_report["member_sha256"] == report["source"]["member_sha256"],
+        version_evidence["declared_schema_version"] == PBS_SCHEMA_VERSION,
+        version_evidence["schema_major"] == PBS_SCHEMA_MAJOR,
+        version_evidence["schema_minor"] == PBS_SCHEMA_MINOR,
+        version_evidence["schema_minor_bound"] is True,
+        version_evidence["schema_patch"] is None,
+        version_evidence["schema_patch_bound"] is False,
+        version_evidence["root_metadata_only"] is True,
+        version_evidence["source_field_values_emitted"] is False,
+        version_evidence["member_sha256"] == report["source"]["member_sha256"],
+    )
+    if not all(receipt_checks):
+        raise ValueError("PBS root schema-version field evidence differs")
+
+    rows = [
+        row
+        for row in report["path_reconciliation"]
+        if row["schema_path"] == SCHEMA_VERSION_FIELD_PATH
+    ]
+    if (
+        len(rows) != 1
+        or rows[0]["field_count"] != 1
+        or _path_qnames(SCHEMA_VERSION_FIELD_PATH)
+        != (PBS_QNAME + "root", "attributes", "version")
+        or rows[0]["semantic_state"] != "native_unresolved"
+    ):
+        raise ValueError("PBS root schema-version field path differs")
+
+    meaning = {
+        "state": "interpreted",
+        "domain": "pbs_source_schema_version_literal",
+        "meaning": (
+            "PBS XML root version attribute declares schema version "
+            f"{PBS_SCHEMA_VERSION}"
+        ),
+        "rule": (
+            "exact root/@version QName path bound by the root-only schema-version receipt"
+        ),
+        "evidence": {
+            "path": receipt_path,
+            "file_sha256": receipt_file_sha256,
+            "report_sha256": receipt_report_sha256,
+            "declared_schema_version": PBS_SCHEMA_VERSION,
+            "schema_patch_bound": False,
+        },
+        "source_values_read": False,
+        "source_values_emitted": False,
+        "schema_patch_inferred": False,
+        "pbs_domain_or_medicine_value_meaning_qualified": False,
+        "limits": [
+            "this role records schema-era metadata only and does not qualify other fields",
+            "schema patch version is not bound or inferred",
+            "no PBS domain meaning, medicine value, or relationship is asserted",
+        ],
+    }
+    rows[0]["semantic_state"] = "interpreted"
+    rows[0]["semantic_interpretation"] = meaning
+
+    coverage = report["field_state_coverage"]
+    coverage["interpreted"] += 1
+    coverage["native_unresolved"] -= 1
+    adjudication = report["semantic_adjudication"]
+    adjudication["interpreted_fields"] += 1
+    adjudication["native_unresolved_fields"] -= 1
+    adjudication["interpretations"]["pbs_source_schema_version_literal"] = 1
+    adjudication["explicit_non_claims"].append(
+        "the root schema-version field does not bind the schema patch or interpret PBS medicine values"
+    )
+    report["source"]["schema_version_receipt_path"] = receipt_path
+    report["source"]["schema_version_receipt_file_sha256"] = receipt_file_sha256
+    report["source"]["schema_version_receipt_report_sha256"] = (
+        receipt_report_sha256
+    )
+    report["profile_id"] = "pbs-v3-2026-04-01-field-state-v10"
+    report["status"] = (
+        "complete_field_partition_with_source_schema_version_role"
+    )
+    report["source_local_schema_version_semantics"] = {
+        "status": "source_declared_schema_version_role_qualified",
+        "field_count": 1,
+        "schema_path": SCHEMA_VERSION_FIELD_PATH,
+        "declared_schema_version": PBS_SCHEMA_VERSION,
+        "schema_major": PBS_SCHEMA_MAJOR,
+        "schema_minor": PBS_SCHEMA_MINOR,
+        "schema_minor_bound": True,
+        "schema_patch": None,
+        "schema_patch_bound": False,
+        "receipt_path": receipt_path,
+        "receipt_file_sha256": receipt_file_sha256,
+        "receipt_report_sha256": receipt_report_sha256,
+        "source_member_sha256": report["source"]["member_sha256"],
+        "source_values_read": False,
+        "source_values_emitted": False,
+        "pbs_domain_or_medicine_value_meaning_qualified": False,
+        "field_state_partition_after_promotion": {
+            key: coverage[key]
+            for key in (
+                "interpreted",
+                "native_unresolved",
+                "unavailable",
+                "source_fields",
+            )
+        },
+    }
     return report

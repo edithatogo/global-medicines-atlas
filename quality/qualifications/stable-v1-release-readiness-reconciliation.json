@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T05:33:30Z",
+  "as_of": "2026-10-28T05:39:20Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "8714b0ad4a488d8fc317ff68433d04b7040dbb5d8aad11b262fb9656b51a1c0e"
+    "sha256": "ab294730f8ca4f7103f0bbb8c6d7ded59927ae1474e81c206b25a4cd5102752e"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -117,7 +117,7 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "3c3538e6e2ec6d4887f7d3ae673d38a6f97d6e76e833c7b0e75329ca3fa6340c",
+        "sha256": "fe54ff8af080bc8aaa954f1ce11e3baa5f5e7bb42cb7b293c7ce2b108c94b8c8",
         "consequence": "Federation acceptance summary binds current M-112 state and PBS r18 field-role evidence, including the exact schema-path inventory digest; M-105, M-107, M-108, M-109 and other federation acceptance conditions remain open."
       },
       {
@@ -148,7 +148,12 @@
       {
         "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r18.json",
         "sha256": "a9e613c751b05e3b1b4768fce5f7f6a978ba2a6094a62e2b303ef32c35cbc74a",
-        "consequence": "PBS r18 binds the RDF/XML rdf:about field-state qualification to the exact schema-path inventory SHA-256 6da85f3e…219408b. The denominator remains closed; individual URI resolution, PBS relationships, graph edges, and M-109 acceptance remain unresolved."
+        "consequence": "PBS r18 remains historical; r19 preserves its exact schema-path inventory binding and adds the source-declared schema-version role for one root @version field. PBS relationships, graph edges, and full M-109 acceptance remain unresolved."
+      },
+      {
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r19.json",
+        "sha256": "b83943f2a3a9a4e8180edfc8d8a6c0fc346329d890e232d5d95a0a689c2e696a",
+        "consequence": "PBS r19 binds the exact root @version field to metadata-only evidence declaring schema version 3.1 for the pinned April 2026 member. One field is interpreted; patch version and all PBS medicine values and relationships remain unresolved, so this does not establish M-109 acceptance."
       }
     ],
     "release_action_performed": false,
