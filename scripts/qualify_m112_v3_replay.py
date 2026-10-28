@@ -14,6 +14,11 @@ from typing import Any, cast
 
 from jsonschema import Draft202012Validator
 
+if __package__:
+    from . import m112_pbs_utilisation_replay as pbs_replay
+else:
+    import m112_pbs_utilisation_replay as pbs_replay
+
 ROOT = Path(__file__).resolve().parents[1]
 ROLE_REPORT = (
     "quality/qualifications/"
@@ -361,6 +366,19 @@ def qualify(
     allow_existing: bool = False,
 ) -> dict[str, Any]:
     """Build and validate the one-object metadata replay contract."""
+    if target_path.startswith("raw/pbs/"):
+        snapshot, byte_count = pbs_replay.build_snapshot(
+            root,
+            target_path=target_path,
+        )
+        candidate = {
+            "dataset": pbs_replay.DATASET,
+            "revision": pbs_replay.REVISION,
+            "path": target_path,
+        }
+        if not allow_existing and _already_admitted(root, candidate):
+            raise ValueError("M-112 replay target already has a v4 contract")
+        return build_replay_document(snapshot, byte_count, root=root)
     report = _read_json(root, ROLE_REPORT)
     if report.get("contract", {}).get("version") != "4.1":
         raise ValueError("M-112 role report is not for v4.1")
@@ -378,6 +396,18 @@ def qualify(
     if not allow_existing and _already_admitted(root, candidate):
         raise ValueError("M-112 replay target already has a v4 contract")
     snapshot = _snapshot(root, candidate, target_path)
+    return build_replay_document(snapshot, candidate["bytes"], root=root)
+
+
+def build_replay_document(
+    snapshot: dict[str, Any],
+    byte_count: int,
+    *,
+    root: Path = ROOT,
+) -> dict[str, Any]:
+    """Validate one exact raw-B2 registration plan under the shared v3 schema."""
+    if type(byte_count) is not int or byte_count < 1:
+        raise ValueError("replay plan requires a positive exact byte count")
     contract = {
         "contract_id": (
             f"{snapshot['source_id']}:historical-backfill-replay:v1"
@@ -407,7 +437,7 @@ def qualify(
             "snapshot_id": snapshot["snapshot_id"],
             "partition_id": snapshot["partition_id"],
             "expected_payload_sha256": snapshot["payload_sha256"],
-            "expected_byte_count": candidate["bytes"],
+            "expected_byte_count": byte_count,
             "source_payload_values": "not_read",
             "registration_semantics": "append_only_idempotent",
             "candidate_only": True,

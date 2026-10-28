@@ -16,9 +16,13 @@ from typing import Any, cast
 from jsonschema import Draft202012Validator
 
 if __package__:
+    from . import m112_pbs_utilisation_replay as pbs_replay
+    from . import qualify_m112_v3_replay as qualification
     from .qualify_m112_v3_replay import OUTPUT as PLAN_PATH
     from .qualify_m112_v3_replay import ROOT, V3_SCHEMA
 else:
+    import m112_pbs_utilisation_replay as pbs_replay
+    import qualify_m112_v3_replay as qualification
     from qualify_m112_v3_replay import OUTPUT as PLAN_PATH
     from qualify_m112_v3_replay import ROOT, V3_SCHEMA
 
@@ -61,9 +65,18 @@ def _read_json(path: Path) -> dict[str, Any]:
 
 
 def _target_identity(snapshot: dict[str, Any]) -> tuple[str, str, str]:
-    """Parse and constrain the exact public M-112 MBS raw-B2 locator."""
+    """Parse the pinned MBS locator or exact-six PBS candidate locator."""
     prefix = f"{DATASET}@{REVISION}:"
     partition_value = snapshot.get("partition_value")
+    pbs_prefix = f"{pbs_replay.DATASET}@{pbs_replay.REVISION}:"
+    if isinstance(partition_value, str) and partition_value.startswith(
+        pbs_prefix
+    ):
+        return (
+            pbs_replay.DATASET,
+            pbs_replay.REVISION,
+            partition_value[len(pbs_prefix) :],
+        )
     if not isinstance(partition_value, str) or not partition_value.startswith(
         prefix
     ):
@@ -128,6 +141,10 @@ def execute(
     snapshot = cast("dict[str, Any]", snapshots[0])
     step = cast("dict[str, Any]", steps[0])
     dataset, revision, target_path = _target_identity(snapshot)
+    if dataset == pbs_replay.DATASET and plan != qualification.qualify(
+        target_path=target_path
+    ):
+        raise ValueError("plan differs from bound PBS replay evidence")
     validator = cast("Any", Draft202012Validator(_read_json(ROOT / V3_SCHEMA)))
     validator.validate({
         key: value for key, value in plan.items() if key != "scope"
@@ -155,8 +172,13 @@ def execute(
         raise TypeError("replay contract must be an object")
     contract = cast("dict[str, Any]", contract_value)
     source_id = snapshot.get("source_id")
+    supported_sources = (
+        pbs_replay.SOURCE_IDS
+        if dataset == pbs_replay.DATASET
+        else SUPPORTED_SOURCE_IDS
+    )
     replay_identity_is_valid = all((
-        source_id in SUPPORTED_SOURCE_IDS,
+        source_id in supported_sources,
         contract.get("source_id") == source_id,
         contract.get("contract_id")
         == f"{source_id}:historical-backfill-replay:v1",
