@@ -6123,3 +6123,17 @@ authoritative contract, reconciliation, and bound receipts.
 - [ ] Retain and compare actual native job/run/artifact proof, input identities,
   full native-core/coverage and exact Parquet fingerprints. Keep byte drift,
   output rights, domain meaning, admission and publication as distinct states.
+
+## Phase 1 delivery field-contract freeze (2026-10-28)
+
+- [x] Freeze the release field/relationship requirements under the existing
+  approved completion policy in
+  `quality/qualifications/australian-benefits-release-field-contract-20261028.json`.
+  Every frozen source family and all 91 workbooks remain in the qualification
+  denominator. Native unresolved delivery is permitted without inventing
+  semantics; conditional claims require exact supporting evidence. This
+  requirements baseline does not complete semantic qualification or change
+  admission, publication, recovery, consolidation or Stable v1 acceptance.
+- [ ] Verify actual consumer behavior against the bound requirements after
+  exact eligible output qualification/admission; retain unsupported claims as
+  unavailable and compare all four consumer surfaces.
