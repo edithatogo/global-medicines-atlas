@@ -117,3 +117,12 @@ a native synthetic API-key control remains detected by Gitleaks 8.30.1. The
 same scanner version checked the complete target/head history with the revised
 configuration: 1,232 commits and approximately 366.88 MB, no leaks found.
 The hosted failure remains recorded; the corrected PR head requires new CI.
+
+## Six PBS native replay receipts
+
+The six completed PBS replay receipts retain six deterministic idempotency
+identities. The first was already qualified with the replay plan; the other
+five are added as exact field/value exceptions. The harness recomputes every
+value from the canonical partition and snapshot IDs and continues to reject
+changed values or credential-field substitutions. A native synthetic API-key
+control remains detected. No rule, path, filename or value class is excluded.

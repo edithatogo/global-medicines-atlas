@@ -22,4 +22,9 @@ regexes = [
   '''^idempotency_key"\s*:\s*"ac94f0aa6957a89ef8e6dbcdf0191a6f0a43242225b3f537194144f8cfcaaabb"\s*$''',
   '''^idempotency_key"\s*:\s*"1482fa5d9ccd9937027f13be70530fe7b22d52cb20957ea9216dbde81e207381"\s*$''',
   '''^idempotency_key"\s*:\s*"f0acc72a90fdba651eabae075462a6bff4004137b6ce2984f4f26e979aa1b29e"\s*$''',
+  '''^idempotency_key"\s*:\s*"fd057b36c2b050e8fc823442396af33352cf7184693125ec0dfc4c360249454b"\s*$''',
+  '''^idempotency_key"\s*:\s*"5e6faa5d2cc27691f1cf691310f5d9ca12384ea2bd41a49a3c65c86aa39521fc"\s*$''',
+  '''^idempotency_key"\s*:\s*"1b52329dc5c389b5b7ffb6f42ff735863ce3647eca0d1b12ca5de845d51cb26c"\s*$''',
+  '''^idempotency_key"\s*:\s*"17e67855ba638c55d45a9678ad09713e6d81582620b492a525dbb4b312399537"\s*$''',
+  '''^idempotency_key"\s*:\s*"20f5d5fd97ffbc310d871c59bb0548f01e2c510c84fe3e44ebc47d6620c5f4d1"\s*$''',
 ]

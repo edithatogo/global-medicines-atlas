@@ -969,7 +969,44 @@ append. The Stable v1 Australian federation gate remains blocked.
   network read when a target, revision, identity, or evidence binding differs.
 - [x] Qualify the executor with synthetic download controls and unchanged MBS
   replay checks; verify anonymous access, byte identity and temporary cleanup.
-- [ ] Review and merge after protected checks, then execute the exact-main
+- [x] Review and merge after protected checks, then execute the exact-main
   hosted replay and retain its aggregate artifact. No admission or consumer
   canary follows from preparation alone. Keep the full federation acceptance
   and track archival pending their remaining requirements.
+
+## Exact PBS utilisation v1 conformance role (2026-10-28)
+
+- [x] Reuse the exact PBS identity/rights/B1/B2 validation from PR #1361 to
+  produce a six-object medallion-v1 conformance manifest. This closes the
+  missing local `lineage.v1_conformance` candidate role without claiming v4
+  admission, inferred meanings, completed replay, or consumer acceptance.
+- [x] Verify the existing 16-object MBS conformance remains byte-identical and
+  does not accept the PBS-specific attestation as a new MBS rights basis.
+- [~] Review, retain the candidate manifest, and qualify its durable exact-main
+  readback after the replay implementation merges. Remaining v4 roles stay open.
+
+## Exact PBS discovery-role metadata readback (2026-10-28)
+
+- [x] Confirm the frozen PBS-utilisation revision is public and ungated using
+  the qualified anonymous HF CLI metadata route. Bind all six retained object
+  identities without reading their source payloads.
+- [x] Verify public HEOR collection membership and the exact estate-registry
+  entry at the checksum-pinned catalog revision; preserve its `not_assessed`
+  status and keep source rights, sensitivity and admission separate.
+- [ ] Bind this candidate receipt from durable main into complete v4 contracts
+  only after their remaining required evidence qualifies. No admission or
+  consumer canary is supplied by the discovery readback.
+
+## Exact-main six-object PBS raw replay receipts (2026-10-28)
+
+- [x] Execute each of the six exact PBS raw-B2 replay targets once and serially
+  at main `8343d511179e71adea825a5f46e7c6cd60b16373`; verify successful native
+  runs, jobs and aggregate-artifact identities before advancing the next target.
+- [x] Retain the unmodified metadata receipts and normalized replay manifest.
+  All 191,047,619 bytes match the pinned identities, expected plans and producer
+  commit; all replay workspaces were removed and no source values were parsed.
+- [x] Independently derive the additional five public idempotency digests and
+  retain exact field/value leak-detector exceptions with negative controls.
+- [ ] Bind these candidate roles into complete v4 contracts after all remaining
+  required evidence qualifies. This does not add an admission, consumer canary,
+  independently durable copy or federation acceptance.

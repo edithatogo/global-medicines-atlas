@@ -1,0 +1,55 @@
+{
+  "boundaries": {
+    "m112_consumer_canary_performed": false,
+    "public_dataset_mutation": false,
+    "source_values_or_rows_included": false,
+    "v4_admission_performed": false
+  },
+  "candidate_only": true,
+  "hosted_workflow": {
+    "commit": "8343d511179e71adea825a5f46e7c6cd60b16373",
+    "repository": "edithatogo/global-medicines-atlas",
+    "run_attempt": 1,
+    "run_id": 40679077698,
+    "run_url": "https://github.com/edithatogo/global-medicines-atlas/actions/runs/40679077698"
+  },
+  "replay": {
+    "partition_id": "d77378e523ee7c94cbbc887e28b9758bc6d7a0c23cb3bd59b4931fe99143faf9",
+    "plan_sha256": "3ffb81d8dfa8a4bd9c1047a2e9dd99a0376b7e8ecee9654ff2c2f37c9f9f05be",
+    "registration": {
+      "archive_period": "filename-derived:dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+      "byte_count": 36381946,
+      "idempotency_key": "1b52329dc5c389b5b7ffb6f42ff735863ce3647eca0d1b12ca5de845d51cb26c",
+      "logical_asset_id": "5f638e995202126f482a51535b0035b4805a509ea97bb9b263dd1ae5767a230e",
+      "metadata_sha256": "17e4b10767f3bcbbaa08f60becdd391d16730d5c7327cc6f06438cb08ced75f4",
+      "operation": "append_only_idempotent_raw_b2_registration",
+      "partition_id": "d77378e523ee7c94cbbc887e28b9758bc6d7a0c23cb3bd59b4931fe99143faf9",
+      "payload_sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8",
+      "payload_values_read": false,
+      "rights_state": "maintainer_attested_exact_public_release_permission_for_pbs_utilisation_raw_object",
+      "schema_version": "m112-raw-b2-replay-registration-v1",
+      "snapshot_id": "7392ff526ca3b84ffa3300dc8ab382b34110cbf7de00cd1787c39db9d58ff5e9",
+      "source_id": "au-pbs-dos-utilisation",
+      "source_version_id": "jul-2025-to-jun-2026"
+    },
+    "registration_sha256": "efac6205bbb38cc1827cd51df18f0eeabd23d027ad3e7fe34a988a3c985b5d60",
+    "snapshot_id": "7392ff526ca3b84ffa3300dc8ab382b34110cbf7de00cd1787c39db9d58ff5e9",
+    "vocabulary_version": "3.0.0"
+  },
+  "schema_id": "global-medicines-atlas.m112-v3-replay-execution-receipt",
+  "schema_version": 1,
+  "scope": {
+    "byte_count": 36381946,
+    "dataset": "edithatogo/australian-pbs-utilisation-archive",
+    "path": "raw/pbs/utilisation/dos/dos-jul-2025-to-jun-2026-phrmcy-type.csv",
+    "revision": "9f1d53cd50eea251b326da42a96f3ac72ebce97a",
+    "sha256": "f502a61a472ef6db2986c5ca36a6f73b264cac1156830c38a5cf02f17bf59be8"
+  },
+  "status": "passed",
+  "verification": {
+    "anonymous": true,
+    "payload_values_read": false,
+    "temporary_source_bytes_removed": true,
+    "token_free": true
+  }
+}
