@@ -103,3 +103,19 @@ observed 542.927 ms for that budget. The second original release failure was
 and no further local retry was made. Protected Linux checks remain pending for
 the eventual PR. The earlier full profile stopped at coverage and did not
 establish the subsequent full-profile stages on this local run.
+
+### Offline research-package implementation lane
+
+The same integrator chat `01a10ee2-71a5-7c03-ae11-2ba1d2ebce11` owns branch
+`codex/offline-research-output-20261029` in the same explicit checkout. It is
+stacked on `98e3c5c2ac0a91062879e17f20e7b01df4a666f9` while PR #1369 runs
+protected checks. Owned source scope is the research export package, crate and
+lineage contracts and their exact affected tests. The shared track and this
+handoff remain under the same integrator; no other chat is assigned these paths.
+
+Native scope is local synthetic package construction and verification only.
+The next operation is to add a versioned local content-addressed output
+reference and verify its exact sidecar digest while retaining the existing
+public-URL contract. No source, credential, publication or other native write
+is implied. The previous native-field assignment and its captured evidence
+remain history above.

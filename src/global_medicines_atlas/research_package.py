@@ -18,6 +18,7 @@ from pydantic import Field, field_validator, model_validator
 
 from .models import FrozenModel
 
+LOCAL_CRATE_SCHEMA_VERSION = 2
 _HASH = r"^[0-9a-f]{64}$"
 _CROISSANT_PAYLOAD_KEYS = frozenset({
     "recordSet",
@@ -46,10 +47,19 @@ class CrateDistribution(FrozenModel):
     content_url: str = Field(min_length=1)
     media_type: str = Field(min_length=1)
     sha256: str = Field(pattern=_HASH)
+    reference_kind: Literal["public", "content_addressed"] = Field(
+        default="public", exclude_if=lambda value: value == "public"
+    )
 
-    @field_validator("content_url")
-    @classmethod
-    def content_url_is_public_https(cls, value: str) -> str:
+    @model_validator(mode="after")
+    def content_reference_matches_scope(self) -> CrateDistribution:
+        if self.reference_kind == "content_addressed":
+            if self.content_url != f"urn:sha256:{self.sha256}":
+                raise ValueError(
+                    "content address must match distribution digest"
+                )
+            return self
+        value = self.content_url
         parsed = urlsplit(value)
         if parsed.scheme != "https" or not parsed.hostname:
             raise ValueError("distribution content URL must be public HTTPS")
@@ -70,14 +80,14 @@ class CrateDistribution(FrozenModel):
             address = None
         if address is not None and not address.is_global:
             raise ValueError("distribution content URL must use a public host")
-        return value
+        return self
 
 
 class ResearchCrate(FrozenModel):
     """Small RO-Crate 1.1 JSON-LD envelope for an Atlas revision."""
 
     schema_id: Literal["global-medicines-atlas.ro-crate"]
-    schema_version: Literal[1]
+    schema_version: Literal[1, 2]
     ro_crate_version: Literal["1.1"]
     identifier: str = Field(min_length=1)
     name: str = Field(min_length=1)
@@ -113,6 +123,19 @@ class ResearchCrate(FrozenModel):
         ids = tuple(item.identifier for item in self.distributions)
         if len(ids) != len(set(ids)):
             raise ValueError("crate distribution identifiers must be unique")
+        local = [
+            item
+            for item in self.distributions
+            if item.reference_kind == "content_addressed"
+        ]
+        if (self.schema_version == LOCAL_CRATE_SCHEMA_VERSION) != bool(local):
+            raise ValueError(
+                "local distributions require crate schema version 2"
+            )
+        if local and (len(local) != 1 or len(self.distributions) != 1):
+            raise ValueError(
+                "local crate requires exactly one local distribution"
+            )
         return self
 
     def jsonld(self) -> dict[str, object]:
@@ -131,6 +154,8 @@ class ResearchCrate(FrozenModel):
                 ],
             }
         ]
+        if self.schema_version == LOCAL_CRATE_SCHEMA_VERSION:
+            graph[0]["schemaVersion"] = 2
         graph.extend(
             {
                 "@id": _distribution_field(item, "identifier"),
@@ -139,6 +164,13 @@ class ResearchCrate(FrozenModel):
                 "contentUrl": _distribution_field(item, "content_url"),
                 "encodingFormat": _distribution_field(item, "media_type"),
                 "sha256": _distribution_field(item, "sha256"),
+                **(
+                    {
+                        "additionalType": "urn:global-medicines-atlas:content-addressed"
+                    }
+                    if item.reference_kind == "content_addressed"
+                    else {}
+                ),
             }
             for item in self.distributions
         )
@@ -174,6 +206,13 @@ class ResearchCrate(FrozenModel):
                     "contentUrl": item.content_url,
                     "encodingFormat": item.media_type,
                     "sha256": item.sha256,
+                    **(
+                        {
+                            "additionalType": "urn:global-medicines-atlas:content-addressed"
+                        }
+                        if item.reference_kind == "content_addressed"
+                        else {}
+                    ),
                 }
                 for item in self.distributions
             ],
@@ -234,7 +273,11 @@ def build_research_crate(
 
     return ResearchCrate(
         schema_id="global-medicines-atlas.ro-crate",
-        schema_version=1,
+        schema_version=2
+        if any(
+            item.reference_kind == "content_addressed" for item in distributions
+        )
+        else 1,
         ro_crate_version="1.1",
         identifier=identifier,
         name=name,
