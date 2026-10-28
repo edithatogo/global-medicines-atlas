@@ -21,6 +21,7 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     DOMAIN_V4,
     FIELD_STATE,
     PACKAGE,
+    PATH_INVENTORY,
     REFERENCE_PACKET,
     REFERENCE_REVIEW,
     REFERENCE_SCREEN,
@@ -32,6 +33,7 @@ from global_medicines_atlas.pbs_field_reconciliation import (
     reconcile_pbs_field_states_v6,
     reconcile_pbs_field_states_v7,
     reconcile_pbs_field_states_v8,
+    reconcile_pbs_field_states_v9,
 )
 from global_medicines_atlas.pbs_reference_case_adjudication import (
     ADJUDICATION_PATH,
@@ -421,6 +423,59 @@ def test_v8_retained_report_is_canonical_and_digest_bound():
     assert envelope["report"]["profile_id"] == (
         "pbs-v3-2026-04-01-field-state-v8"
     )
+
+
+def test_v9_binds_exact_schema_path_inventory_digest():
+    report = reconcile_pbs_field_states_v9(ROOT)
+
+    assert report["profile_id"] == "pbs-v3-2026-04-01-field-state-v9"
+    assert report["source"]["schema_path_inventory_path"] == PATH_INVENTORY
+    assert report["source"]["schema_path_inventory_file_sha256"] == (
+        reconciliation.PATH_INVENTORY_SHA256
+    )
+    assert (
+        report["source_local_rdf_about_semantics"][
+            "schema_path_inventory_file_sha256"
+        ]
+        == reconciliation.PATH_INVENTORY_SHA256
+    )
+
+
+def test_v9_rejects_changed_schema_path_inventory_digest(
+    monkeypatch: pytest.MonkeyPatch,
+):
+    original = reconciliation._file_sha256
+
+    def mismatch(path: Path) -> str:
+        if path.as_posix().endswith(PATH_INVENTORY):
+            return "0" * 64
+        return original(path)
+
+    monkeypatch.setattr(reconciliation, "_file_sha256", mismatch)
+    with pytest.raises(
+        ValueError, match="PBS schema-path inventory bytes differ"
+    ):
+        reconcile_pbs_field_states_v9(ROOT)
+
+
+def test_v9_retained_report_is_canonical_and_binds_path_inventory():
+    report_path = ROOT / reconciliation.CURRENT_RECONCILIATION_V9
+    envelope = json.loads(report_path.read_bytes())
+    canonical = json.dumps(
+        envelope["report"],
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+    assert hashlib.sha256(canonical).hexdigest() == envelope["report_sha256"]
+    assert envelope["report"]["profile_id"] == (
+        "pbs-v3-2026-04-01-field-state-v9"
+    )
+    assert envelope["report"]["source"][
+        "schema_path_inventory_file_sha256"
+    ] == (reconciliation.PATH_INVENTORY_SHA256)
+    assert envelope["report"] == reconcile_pbs_field_states_v9(ROOT)
 
 
 def test_reference_case_structural_review_keeps_semantic_links_unqualified():

@@ -821,6 +821,27 @@ authoritative contract, reconciliation, and bound receipts.
   contract checks, static analysis, and Conductor context validation pass;
   details are in `evidence.jsonl`; implementation commit `636c27bf` records the report, code, and contract bindings.
 
+### October 28 M-107 exact endpoint metadata recheck
+
+- [x] Recheck the three already-authorized Health.gov workbook URLs using one
+  metadata-only `HEAD` per endpoint. All returned HTTP 200, the expected XLSX
+  content type, and the same byte lengths and Last-Modified dates as the prior
+  workstation preflight. No body was read. Because the prior exact-main hosted
+  probe timed out and transport metadata has not changed, do not repeat the
+  harvest; M-107 remains blocked pending a changed hosted route or an
+  agency-supported delivery route. The [snapshot record](../../../docs/qualification/australian-mbs-pbs-m107-snapshots.md)
+  and readiness digest now bind this observation.
+
+### October 28 PBS r18 review correction
+
+- [x] Review the r17 field-role evidence and fix the missing digest binding to
+  its exact schema-path inventory. The r18 successor enforces the inventory
+  SHA-256 and records it in the report; a negative control rejects changed
+  inventory identity. M-109, the Australian federation gate, and conditional
+  promotion remain blocked. The affected PBS and Stable contract suites, static
+  checks, and context validation pass. Review was performed by the implementing
+  agent, not an independent reviewer.
+
 - [x] Implement the shared execution charter and machine-validated scheduling
   plan; require named existing gates, bounded failures, proof and stop conditions.
   Extend the existing CI context validator to reject source/inventory expansion,

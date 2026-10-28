@@ -175,6 +175,10 @@ URI_STRUCTURAL_REVIEW_V1_REPORT_SHA256 = (
 CURRENT_RECONCILIATION_V6 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261025-r15.json"
 CURRENT_RECONCILIATION_V7 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r16.json"
 CURRENT_RECONCILIATION_V8 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r17.json"
+CURRENT_RECONCILIATION_V9 = "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r18.json"
+PATH_INVENTORY_SHA256 = (
+    "6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b"
+)
 XLINK_FIELD_COUNT = 992_456
 RDF_RESOURCE_FIELD_COUNT = 1_167_610
 RDF_RESOURCE_PATH_COUNT = 370
@@ -1824,4 +1828,26 @@ def reconcile_pbs_field_states_v8(root: Path) -> dict[str, Any]:
             "predicate meaning, domain links, and semantic graph relationships remain unqualified",
         ],
     }
+    return report
+
+
+def reconcile_pbs_field_states_v9(root: Path) -> dict[str, Any]:
+    """Bind the v8 field-role report to the exact source-path inventory."""
+    inventory_path = root / PATH_INVENTORY
+    inventory_sha256 = _file_sha256(inventory_path)
+    if inventory_sha256 != PATH_INVENTORY_SHA256:
+        raise ValueError("PBS schema-path inventory bytes differ")
+    report = reconcile_pbs_field_states_v8(root)
+    report["profile_id"] = "pbs-v3-2026-04-01-field-state-v9"
+    report["status"] = (
+        "complete_field_partition_with_digest_bound_rdf_subject_iri_role"
+    )
+    report["source"]["schema_path_inventory_path"] = PATH_INVENTORY
+    report["source"]["schema_path_inventory_file_sha256"] = inventory_sha256
+    report["source_local_rdf_about_semantics"]["schema_path_inventory_path"] = (
+        PATH_INVENTORY
+    )
+    report["source_local_rdf_about_semantics"][
+        "schema_path_inventory_file_sha256"
+    ] = inventory_sha256
     return report

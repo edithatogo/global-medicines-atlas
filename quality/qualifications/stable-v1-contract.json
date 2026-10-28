@@ -882,7 +882,8 @@
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028.json",
         "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261028-2.json",
         "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r16.json",
-        "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r17.json"
+        "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r17.json",
+        "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r18.json"
       ],
       "blocker_ids": [
         "stable-v1-australian-health-federation"
@@ -1300,7 +1301,8 @@
         "quality/qualifications/australian-m112-v4-contract-role-evidence-qualification-20261021.json",
         "quality/qualifications/australian-m112-per-object-gate-reconciliation-20261019-mbs-util-lineages.json",
         "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r16.json",
-        "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r17.json"
+        "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r17.json",
+        "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r18.json"
       ]
     },
     {

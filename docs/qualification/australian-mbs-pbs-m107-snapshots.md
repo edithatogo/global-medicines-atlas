@@ -7,6 +7,20 @@ immutable archive evidence. The hosted run below records anonymous digest
 verification and cleanup; this documentation update read only the public
 manifest, not raw schedule payloads.
 
+## Exact Health.gov endpoint recheck, 2026-10-28
+
+A single metadata-only `HEAD` request to each of the three already-authorized
+workbook URLs returned HTTP 200 and the expected XLSX content type. The
+quarterly, annual, and year-to-date response lengths were 3,160,065; 1,058,479;
+and 85,783 bytes, respectively. Their `Last-Modified` headers remain 10
+August 2026, 5 August 2026, and 5 August 2026. No redirect was followed and no
+response body was requested. These results match the prior workstation
+preflight and do not establish content digests, workbook integrity, current
+period completeness, or successful hosted delivery. The previous exact-main
+hosted probe timed out before receiving headers; because the endpoint
+metadata remains unchanged, do not repeat the workbook harvest until the hosted
+delivery route changes or an agency-supported route is evidenced.
+
 | Source family | Pinned public evidence | Snapshot and completeness boundary |
 | --- | --- | --- |
 | MBS schedule/legacy | Current [`australian-mbs-source-archive` revision `da83cad`](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/da83cad9116e2f9a5b927be7b080e9a5e5ea6998), [manifest](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/da83cad9116e2f9a5b927be7b080e9a5e5ea6998/manifest.json), [hosted run 39000296702](https://github.com/edithatogo/global-medicines-atlas/actions/runs/39000296702), [publication receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285185), and [cleanup receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6229285346). [`australian-mbs-source-archive` revision `52ad5c3`](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/52ad5c31cfe101c487a4c7a9c382540642e6110a), [public manifest readback](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/resolve/52ad5c31cfe101c487a4c7a9c382540642e6110a/manifest.json), [workflow run 38993834387](https://github.com/edithatogo/global-medicines-atlas/actions/runs/38993834387), [publication receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228342850), and [anonymous verification and cleanup receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-6228342987); earlier [`c39dd99` revision](https://huggingface.co/datasets/edithatogo/australian-mbs-source-archive/tree/c39dd99ab8a6fcf557aeec391e1891b5fa18754f), [donor inventory](../../quality/qualifications/australian-health-donor-inventory.json), and [August release receipt](https://github.com/edithatogo/global-medicines-atlas/issues/340#issuecomment-5467154799) | Four newly acquired source-native monthly XML snapshots are listed in the pinned manifest: `Downloads-250101/MBS-XML-20250101.xml` (8,165,147 bytes; SHA-256 `3736a72716158fc034705ede4e695dc470ccc98daff48b0533601eef2458340e`); `Downloads-250301/MBS-XML-20250301.XML` (8,149,632 bytes; `15140d523b1ea70dc1fd4bdf2b9bbc66cf6af8233315b6fbd61e097df8b21a12`); and two `Downloads-251101` revisions, `MBS-XML-20251101.XML` (8,215,464 bytes; `d738fd6eb0a8a60f276787ec6eab9f860e3de4bfefdd8c81ed5ab83eae1d8624`) and `MBS-XML-20251101 Version 2.XML` (8,215,371 bytes; `875a45e690d86925c5531e6d2d1bd692e8235935bd01423b623ba5801fa1c441`). All four are `au-mbs` `monthly_schedule_xml` B2 objects in a 40-object revision; the workflow receipt records anonymous digest verification and verified cleanup. The July 2025 XML and July 2024 four-sheet P7 workbook remain retained legacy evidence; the August 2026 XML has 6,046 admitted rows. These exact snapshots add coverage but do not establish a complete monthly series or resolve M-107's expected period/source denominator. |

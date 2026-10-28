@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-28T05:26:21Z",
+  "as_of": "2026-10-28T05:33:30Z",
   "candidate_package": {
     "consumer_verification_guide_complete": true,
     "repository_owned_work_complete": true,
@@ -8,7 +8,7 @@
   },
   "contract": {
     "path": "quality/qualifications/stable-v1-contract.json",
-    "sha256": "4d631d96b42a1c0228c5fe46548786b1720baafa3838869083af203c9668efcf"
+    "sha256": "8714b0ad4a488d8fc317ff68433d04b7040dbb5d8aad11b262fb9656b51a1c0e"
   },
   "qualification_state": "blocked",
   "release_performed": false,
@@ -52,8 +52,8 @@
       },
       {
         "path": "docs/qualification/australian-mbs-pbs-m107-snapshots.md",
-        "sha256": "e64c64b1817a1c7d1283b02bfde65cbd7937bd318932db1d0a35d41ed7bcdcf1",
-        "consequence": "The latest recorded Health.gov workbook delivery attempt timed out for all three categories with zero bytes; M-107 remains blocked."
+        "sha256": "019d4197607882aca44c0c9c77ba08e7c370bd78aea6d0077cc35bd17ff27432",
+        "consequence": "A 2026-10-28 workstation HEAD-only recheck confirms the same HTTP 200 XLSX headers and content lengths as the prior preflight. No workbook bytes were read; the exact-main hosted delivery attempt still timed out before headers, so M-107 remains blocked and unchanged harvest retries remain deferred."
       },
       {
         "path": "quality/qualifications/phase4-mandatory-output-delivery-reconciliation-20261027.json",
@@ -117,8 +117,8 @@
       },
       {
         "path": "docs/qualification/australian-health-federation-acceptance.md",
-        "sha256": "8eb7ff6c75ff670d2bbeabef72461b49dcc30e8136d30485fab5159c612bd8cd",
-        "consequence": "Federation acceptance summary binds current M-112 state and PBS r17 field-role evidence; M-105, M-107, M-108, M-109 and other federation acceptance conditions remain open."
+        "sha256": "3c3538e6e2ec6d4887f7d3ae673d38a6f97d6e76e833c7b0e75329ca3fa6340c",
+        "consequence": "Federation acceptance summary binds current M-112 state and PBS r18 field-role evidence, including the exact schema-path inventory digest; M-105, M-107, M-108, M-109 and other federation acceptance conditions remain open."
       },
       {
         "path": "quality/qualifications/australian-mbs-august-f9f9-prefix-disposition-20261028.json",
@@ -143,7 +143,12 @@
       {
         "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r17.json",
         "sha256": "43b538e934e25e0a840186e3821f6ca80ceffa5f166c4276c5246f95058d325f",
-        "consequence": "PBS field-state successor r17 qualifies the RDF/XML rdf:about subject-IRI-reference syntax role for 10,368 fields across 34 paths. It does not resolve values or qualify predicates, semantic relationships, edges, or M-109 acceptance."
+        "consequence": "PBS r17 qualifies the RDF/XML rdf:about subject-IRI-reference syntax role for 10,368 fields across 34 paths but did not bind the schema-path inventory file digest; r18 is the current successor and adds that exact input binding without changing the field partition or semantic limits."
+      },
+      {
+        "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r18.json",
+        "sha256": "a9e613c751b05e3b1b4768fce5f7f6a978ba2a6094a62e2b303ef32c35cbc74a",
+        "consequence": "PBS r18 binds the RDF/XML rdf:about field-state qualification to the exact schema-path inventory SHA-256 6da85f3e…219408b. The denominator remains closed; individual URI resolution, PBS relationships, graph edges, and M-109 acceptance remain unresolved."
       }
     ],
     "release_action_performed": false,

@@ -6065,3 +6065,15 @@ authoritative contract, reconciliation, and bound receipts.
   is qualified. See the digest-bound r17 report and the W3C RDF 1.1 XML Syntax
   specification. M-109 and the Australian federation gate remain blocked.
   Focused test and contract evidence is recorded in `evidence.jsonl`; implementation commit `636c27bf` contains the code, report, Stable v1 bindings, and validation evidence.
+
+### October 28 PBS schema-path inventory digest binding
+
+- [x] Review r17 and correct the missing input-identity binding: r18 now pins
+  `pbs-schema-paths-20261022-39667604237.json` at SHA-256
+  `6da85f3e3526a52dca7b0f41206b5ec1afde854f89d858ae659867827219408b` before
+  applying the bounded `rdf:about` role. The complete field partition and
+  semantic limits are unchanged. Added a mismatched-inventory negative control
+  and a canonical retained-report test. PBS field-state tests pass (56), Stable
+  contract tests pass (63), and Ruff, formatting, `ty`, BasedPyright, context
+  validation, and diff checks pass. Review was performed by the implementing
+  agent; no independent review or M-109 acceptance is claimed.
