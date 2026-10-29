@@ -2183,3 +2183,66 @@ def test_pbs_v4_rejects_mismatched_publication_receipt():
     ):
         with pytest.raises(ValueError, match="PBS publication receipt"):
             check({**document, key: value})
+
+
+def test_pbs_receipt_artifact_requires_exact_successful_run(monkeypatch):
+    import io  # ruff: ignore[import-outside-top-level]
+    import subprocess  # ruff: ignore[import-outside-top-level, suspicious-subprocess-import]
+    import zipfile  # ruff: ignore[import-outside-top-level]
+
+    from scripts import qualify_pbs_reproduced_v4 as admission  # ruff: ignore[import-outside-top-level]
+
+    run = {
+        "id": 123,
+        "repository": {"full_name": "edithatogo/global-medicines-atlas"},
+        "head_branch": "main",
+        "head_sha": SHA,
+        "event": "workflow_dispatch",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 1,
+        "path": ".github/workflows/australian-pbs-reproduced-publication.yml",
+    }
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("hosted-receipt.json", b"{}")
+    artifact = {
+        "id": 99,
+        "name": "pbs-silver-publication-receipt-123-1",
+        "expired": False,
+        "size_in_bytes": len(buffer.getvalue()),
+        "workflow_run": {"id": 123, "head_sha": SHA},
+    }
+
+    def fake_run(command, **_kwargs):
+        path = command[-1]
+        if path.endswith("/zip"):
+            return SimpleNamespace(stdout=buffer.getvalue())
+        return SimpleNamespace(
+            stdout=json.dumps(
+                artifact if "/artifacts/" in path else run
+            ).encode()
+        )
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    monkeypatch.setattr(
+        admission,
+        "validate_publication_receipt",
+        lambda *_args, **_kwargs: {"validated": True},
+    )
+    raw, result = admission.authenticate_publication_artifact(
+        workflow_commit=SHA, run_id="123", artifact_id="99"
+    )
+    assert raw == b"{}"
+    assert result == {"validated": True}
+    run["conclusion"] = "failure"
+    with pytest.raises(ValueError, match="successful main workflow"):
+        admission.authenticate_publication_artifact(
+            workflow_commit=SHA, run_id="123", artifact_id="99"
+        )
+    run["conclusion"] = "success"
+    artifact["workflow_run"]["head_sha"] = "b" * 40
+    with pytest.raises(ValueError, match="differs from the exact run"):
+        admission.authenticate_publication_artifact(
+            workflow_commit=SHA, run_id="123", artifact_id="99"
+        )
