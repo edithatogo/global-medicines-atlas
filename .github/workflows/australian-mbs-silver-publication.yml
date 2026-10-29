@@ -22,6 +22,7 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
+      actions: read # Verify the exact retained intent artifact.
     env:
       HF_HOME: ${{ github.workspace }}/build/mbs-silver-hf-home
       HF_XET_CACHE: ${{ github.workspace }}/build/mbs-silver-hf-home/xet
@@ -31,9 +32,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-      - name: Validate exact main and prepare, append, verify, and receipt
+      - name: Validate exact main and record publication intent
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
           GH_TOKEN: ${{ github.token }}
           REQUESTED_COMMIT: ${{ inputs.exact_contract_commit }}
         run: |
@@ -41,11 +41,34 @@ jobs:
           test "$GITHUB_REF" = refs/heads/main
           test "$GITHUB_SHA" = "$REQUESTED_COMMIT"
           test "$GITHUB_SHA" = "$(gh api repos/edithatogo/global-medicines-atlas/commits/main --jq .sha)"
-          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python -m scripts.publish_australian_mbs_silver_v4
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0 python -m scripts.publish_australian_mbs_silver_v4 --intent-only
+      - name: Retain publication intent before mutation
+        id: publication_intent
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-silver-publication-intent-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/mbs-silver-publication/intent.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Prepare, append, verify, and write receipt
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PUBLICATION_INTENT_ARTIFACT_ID: ${{ steps.publication_intent.outputs.artifact-id }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: >-
+          uv run --locked --python 3.15.1 --with huggingface-hub==1.14.0
+          python -m scripts.publish_australian_mbs_silver_v4
+      - name: Retain verified publication receipt
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: mbs-silver-publication-receipt-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/mbs-silver-publication/hosted-receipt.json
+          if-no-files-found: error
+          retention-days: 90
       - name: Remove verified hosted cache
         run: |
           set -euo pipefail
-          rm -rf "$HF_HOME"
+          rm -rf "$HF_HOME" build/mbs-silver-publication
       - name: Report fail-honest outcome
         if: failure() || cancelled()
         env:
