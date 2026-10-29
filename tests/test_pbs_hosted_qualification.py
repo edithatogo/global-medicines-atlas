@@ -2144,3 +2144,42 @@ def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(  # ruff: ignore[t
     info.siblings[0].blob_id = "changed"
     with pytest.raises(ValueError, match="prior file inventory"):
         publisher.verify_append(tmp_path, transport)
+
+
+def test_pbs_v4_rejects_mismatched_publication_receipt():
+    from scripts import qualify_pbs_reproduced_v4 as admission  # ruff: ignore[import-outside-top-level]
+
+    document = {
+        "schema_id": "global-medicines-atlas.pbs-silver-publication-receipt",
+        "status": "anonymous_verification_passed_not_admitted",
+        "dataset": delivery.DATASET,
+        "parent_revision": delivery.PUBLIC_PARENT_REVISION,
+        "revision": "b" * 40,
+        "path": f"silver/pbs/v4/2026-04-01/{delivery.OUTPUT_ID}/values.parquet",
+        "sha256": delivery.PARQUET_SHA256,
+        "bytes": delivery.PARQUET_BYTES,
+        "prior_file_count": 9,
+        "prior_file_blobs_preserved": True,
+        "anonymous_digest_verification": "passed",
+        "v4_admission_performed": False,
+        "workflow_commit": SHA,
+        "run_id": "123",
+        "run_attempt": "1",
+    }
+
+    def check(obj):
+        return admission.validate_publication_receipt(
+            json.dumps(obj).encode(),
+            workflow_commit=SHA,
+            run_id="123",
+            run_attempt="1",
+        )
+
+    assert check(document)["revision"] == "b" * 40
+    for key, value in (
+        ("sha256", "0" * 64),
+        ("v4_admission_performed", 0),
+        ("revision", "main"),
+    ):
+        with pytest.raises(ValueError, match="PBS publication receipt"):
+            check({**document, key: value})
