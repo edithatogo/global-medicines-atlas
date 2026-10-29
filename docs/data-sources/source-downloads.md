@@ -77,6 +77,7 @@ For catalogue URL changes also run the existing landing-queue and B0 generators:
 uv run --no-sync python scripts/build_bronze_source_landing_queue.py
 uv run --no-sync python scripts/build_bronze_source_index.py
 uv run --no-sync python scripts/qualify_bronze_receipt_cohort.py
+uv run --no-sync python scripts/qualify_stable_v1_measured_coverage.py
 ```
 
 ## Completion boundary for this change
