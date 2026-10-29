@@ -10,13 +10,18 @@ import re
 from hashlib import sha256
 from pathlib import Path
 from typing import Literal
-from urllib.parse import urlsplit
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from pydantic import Field
 
 from global_medicines_atlas.acquisition import AcquisitionPolicy, acquire_source
 from global_medicines_atlas.models import FrozenModel
-from global_medicines_atlas.receipts import EvidenceClass, FailureReceipt
+from global_medicines_atlas.receipts import (
+    EvidenceClass,
+    FailureReceipt,
+    HttpRetrievalEvidence,
+    SourceReceipt,
+)
 from global_medicines_atlas.reuse_gate import (
     ReuseDisposition,
     ReuseGateDecision,
@@ -144,6 +149,51 @@ def selected_source(
     )
 
 
+def redact_retrieval_uri(uri: str) -> str:
+    """Retain source identity while removing temporary signed-query credentials."""
+    parsed = urlsplit(uri)
+    sensitive = {
+        "sig",
+        "signature",
+        "token",
+        "access_token",
+        "api_key",
+        "apikey",
+        "key",
+        "x-amz-signature",
+        "x-amz-credential",
+        "x-amz-security-token",
+        "x-goog-signature",
+        "x-goog-credential",
+    }
+    pairs = parse_qsl(parsed.query, keep_blank_values=True)
+    if not any(key.lower() in sensitive for key, _ in pairs):
+        return uri
+    query = urlencode([
+        (key, "REDACTED" if key.lower() in sensitive else value)
+        for key, value in pairs
+    ])
+    return urlunsplit((
+        parsed.scheme,
+        parsed.netloc,
+        parsed.path,
+        query,
+        parsed.fragment,
+    ))
+
+
+def redact_batch_http(http: HttpRetrievalEvidence) -> HttpRetrievalEvidence:
+    """Remove signed-query credentials at the batch receipt write boundary."""
+    document = http.model_dump(mode="json")
+    for key in ("original_uri", "final_uri"):
+        if document[key] is not None:
+            document[key] = redact_retrieval_uri(document[key])
+    document["redirect_history"] = [
+        redact_retrieval_uri(uri) for uri in document["redirect_history"]
+    ]
+    return HttpRetrievalEvidence.model_validate(document)
+
+
 def run_batch(
     selections: tuple[DownloadSelection, ...],
     *,
@@ -190,6 +240,21 @@ def run_batch(
                         ),
                     ),
                 )
+                if (
+                    isinstance(receipt, SourceReceipt)
+                    and receipt.retrieval.http is not None
+                ):
+                    receipt = receipt.model_copy(
+                        update={
+                            "retrieval": receipt.retrieval.model_copy(
+                                update={
+                                    "http": redact_batch_http(
+                                        receipt.retrieval.http
+                                    )
+                                }
+                            )
+                        }
+                    )
                 directory.mkdir(parents=True, exist_ok=True)
                 (directory / "receipt.json").write_text(
                     receipt.model_dump_json(indent=2) + "\n", encoding="utf-8"

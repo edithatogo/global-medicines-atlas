@@ -7,7 +7,6 @@ from datetime import datetime
 from enum import StrEnum
 from hashlib import sha256
 from typing import TYPE_CHECKING, Any, Literal, Self, cast
-from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import orjson
 from pydantic import AnyUrl, AwareDatetime, Field, model_validator
@@ -185,39 +184,6 @@ def redact_http_headers(headers: Mapping[str, str]) -> dict[str, str]:
     return cleaned
 
 
-def redact_retrieval_uri(uri: str) -> str:
-    """Retain source identity while removing temporary signed-query credentials."""
-    parsed = urlsplit(uri)
-    sensitive = {
-        "sig",
-        "signature",
-        "token",
-        "access_token",
-        "api_key",
-        "apikey",
-        "key",
-        "x-amz-signature",
-        "x-amz-credential",
-        "x-amz-security-token",
-        "x-goog-signature",
-        "x-goog-credential",
-    }
-    pairs = parse_qsl(parsed.query, keep_blank_values=True)
-    if not any(key.lower() in sensitive for key, _ in pairs):
-        return uri
-    query = urlencode([
-        (key, "REDACTED" if key.lower() in sensitive else value)
-        for key, value in pairs
-    ])
-    return urlunsplit((
-        parsed.scheme,
-        parsed.netloc,
-        parsed.path,
-        query,
-        parsed.fragment,
-    ))
-
-
 def http_retrieval_from_response(
     response: httpx.Response,
     *,
@@ -237,13 +203,10 @@ def http_retrieval_from_response(
     content_length = None
     if length_raw is not None and length_raw.isdigit():
         content_length = int(length_raw)
-    history = tuple(
-        AnyUrl(redact_retrieval_uri(str(item.request.url)))
-        for item in response.history
-    )
-    final = redact_retrieval_uri(str(response.url)) if response.url else None
+    history = tuple(AnyUrl(str(item.request.url)) for item in response.history)
+    final = str(response.url) if response.url else None
     return HttpRetrievalEvidence(
-        original_uri=AnyUrl(redact_retrieval_uri(original_uri)),
+        original_uri=AnyUrl(original_uri),
         final_uri=AnyUrl(final) if final else None,
         redirect_history=history,
         http_method=response.request.method,
