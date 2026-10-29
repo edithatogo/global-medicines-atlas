@@ -75,7 +75,7 @@ from global_medicines_atlas.publication_transport import (
 )
 
 root = Path("build/swiss-ema-bronze-20261029/ema-package")
-root.mkdir(exist_ok=False)
+root.mkdir(parents=True, exist_ok=False)
 url = "https://www.ema.europa.eu/en/documents/report/medicines-output-medicines_json-report_en.json"
 original = next(
     s for s in load_source_catalog() if s.source_id == "eu-ema-json"
