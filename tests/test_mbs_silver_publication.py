@@ -1,7 +1,9 @@
 """Deterministic, receipt-bound packaging for MBS Silver v4 publication."""
 
+import io
 import json
 import sys
+import zipfile
 from dataclasses import replace
 from datetime import UTC, date, datetime
 from hashlib import sha256
@@ -370,7 +372,7 @@ def test_package_path_and_manifest_validation_rejects_malformed_objects(
     "failure",
     [None, "source", "private", "collision", "revision", "inventory", "digest"],
 )
-def test_hosted_publisher_verifies_or_fails_closed(
+def test_hosted_publisher_verifies_or_fails_closed(  # ruff: ignore[too-many-statements] -- exercises the full mocked publication transaction
     tmp_path, monkeypatch, failure: str | None
 ) -> None:
     monkeypatch.chdir(tmp_path)
@@ -378,7 +380,8 @@ def test_hosted_publisher_verifies_or_fails_closed(
     monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
     monkeypatch.setenv("GITHUB_SHA", "d" * 40)
     monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
-    monkeypatch.setenv("GITHUB_RUN_ID", "12345")
+    for key, value in (("GITHUB_RUN_ID", "12345"), ("GITHUB_RUN_ATTEMPT", "1")):
+        monkeypatch.setenv(key, value)
     monkeypatch.setenv("HF_TOKEN", "test-token")
 
     source = b"exact pinned public source bytes"
@@ -471,29 +474,66 @@ def test_hosted_publisher_verifies_or_fails_closed(
     hub_module.HfApi = FakeHub
     hub_module.hf_hub_download = fake_download
     monkeypatch.setitem(sys.modules, "huggingface_hub", hub_module)
-    comments: list[list[str]] = []
+    monkeypatch.setenv("PUBLICATION_INTENT_ARTIFACT_ID", "42")
+    commands = []
 
-    def fake_command(args, **_kwargs):
-        comments.append(args)
-        if "--body-file" in args:
-            receipt = json.loads(Path(args[-1]).read_text(encoding="utf-8"))
-            assert receipt["anonymous_digest_verification"] == "passed"
-            assert receipt["candidate_only"] is True
-            assert len(receipt["verified_objects"]) == 2
-        return SimpleNamespace(returncode=0)
+    def artifact_read(args, **_kwargs):
+        commands.append(args)
+        if args[-1].endswith("/zip"):
+            archive = io.BytesIO()
+            with zipfile.ZipFile(archive, "w") as zipped:
+                zipped.writestr(
+                    "intent.json",
+                    (
+                        tmp_path / "build/mbs-silver-publication/intent.json"
+                    ).read_bytes(),
+                )
+            return SimpleNamespace(stdout=archive.getvalue())
+        return SimpleNamespace(
+            stdout=json.dumps({
+                "id": 42,
+                "size_in_bytes": 1024,
+                "name": "mbs-silver-publication-intent-12345-1",
+                "expired": False,
+                "workflow_run": {"id": 12345, "head_sha": "d" * 40},
+            })
+        )
 
-    monkeypatch.setattr(hosted_publisher.subprocess, "run", fake_command)
+    monkeypatch.setattr(hosted_publisher.subprocess, "run", artifact_read)
+    assert hosted_publisher.main(intent_only=True) == 0
+    work = tmp_path / "build/mbs-silver-publication"
+    intent = json.loads((work / "intent.json").read_text(encoding="utf-8"))
+    assert intent["producer_commit"] == "d" * 40
+    assert intent["run_id"] == "12345"
+    assert intent["run_attempt"] == "1"
+    assert intent["dataset"] == hosted_publisher.DESTINATION_DATASET
 
     if failure is not None:
         with pytest.raises(RuntimeError):
             hosted_publisher.main()
+        assert (work / "intent.json").exists()
         return
 
     assert hosted_publisher.main() == 0
-    assert len(comments) == 2
-    assert "intent" in comments[0][-1]
-    assert "--body-file" in comments[1]
-    assert not (tmp_path / "build/mbs-silver-publication").exists()
+    receipt = json.loads(
+        (work / "hosted-receipt.json").read_text(encoding="utf-8")
+    )
+    assert receipt["anonymous_digest_verification"] == "passed"
+    assert receipt["candidate_only"] is True
+    assert len(receipt["verified_objects"]) == 2
+    assert (work / "intent.json").exists()
+    assert commands == [
+        [
+            "gh",
+            "api",
+            "repos/edithatogo/global-medicines-atlas/actions/artifacts/42",
+        ],
+        [
+            "gh",
+            "api",
+            "repos/edithatogo/global-medicines-atlas/actions/artifacts/42/zip",
+        ],
+    ]
 
 
 def test_hosted_publisher_fails_closed_outside_actions(monkeypatch) -> None:
@@ -510,3 +550,156 @@ def test_publication_workflow_runs_publisher_as_repository_module() -> None:
     ).read_text(encoding="utf-8")
     assert "python -m scripts.publish_australian_mbs_silver_v4" in workflow
     assert "python scripts/publish_australian_mbs_silver_v4.py" not in workflow
+
+
+def test_publication_workflow_retains_intent_before_mutation_and_receipt_before_cleanup():
+    workflow = Path(
+        ".github/workflows/australian-mbs-silver-publication.yml"
+    ).read_text(encoding="utf-8")
+    assert workflow.index(
+        "Retain publication intent before mutation"
+    ) < workflow.index("Prepare, append, verify, and write receipt")
+    assert workflow.index(
+        "Retain verified publication receipt"
+    ) < workflow.index("Remove verified hosted cache")
+    assert "gh issue comment" not in workflow
+
+
+def test_hosted_publisher_rejects_mismatched_intent(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_SHA", "d" * 40)
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_RUN_ID", "12345")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.setenv("HF_TOKEN", "test-token")
+    assert hosted_publisher.main(intent_only=True) == 0
+    intent = tmp_path / "build/mbs-silver-publication/intent.json"
+    data = json.loads(intent.read_text())
+    data["run_id"] = "other"
+    intent.write_text(json.dumps(data))
+    with pytest.raises(RuntimeError, match="intent does not match"):
+        hosted_publisher.main()
+
+
+def test_intent_only_needs_no_token_and_performs_no_hub_access(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_SHA", "d" * 40)
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_RUN_ID", "12345")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.delenv("HF_TOKEN", raising=False)
+
+    def reject_import(_name):
+        raise AssertionError("intent preparation must not access Hub")
+
+    monkeypatch.setattr(hosted_publisher, "import_module", reject_import)
+    assert hosted_publisher.main(intent_only=True) == 0
+    assert (tmp_path / "build/mbs-silver-publication/intent.json").is_file()
+
+
+def test_hosted_publisher_requires_prior_intent_before_hub_access(
+    tmp_path, monkeypatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_SHA", "d" * 40)
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_RUN_ID", "12345")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    monkeypatch.setenv("HF_TOKEN", "test-token")
+
+    def reject_import(_name):
+        raise AssertionError("missing intent must fail before Hub access")
+
+    monkeypatch.setattr(hosted_publisher, "import_module", reject_import)
+    with pytest.raises(FileNotFoundError):
+        hosted_publisher.main()
+
+
+@pytest.mark.parametrize("mutation", ["id", "name", "expired", "run", "commit"])
+def test_publication_intent_artifact_must_match_exact_run(
+    monkeypatch, mutation, tmp_path
+):
+    monkeypatch.setenv("PUBLICATION_INTENT_ARTIFACT_ID", "42")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_RUN_ID", "12345")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    artifact = {
+        "id": 42,
+        "size_in_bytes": 1024,
+        "name": "mbs-silver-publication-intent-12345-1",
+        "expired": False,
+        "workflow_run": {"id": 12345, "head_sha": "d" * 40},
+    }
+    if mutation == "id":
+        artifact["id"] = 43
+    elif mutation == "name":
+        artifact["name"] = "other"
+    elif mutation == "expired":
+        artifact["expired"] = True
+    elif mutation == "run":
+        artifact["workflow_run"]["id"] = 54321
+    else:
+        artifact["workflow_run"]["head_sha"] = "e" * 40
+    monkeypatch.setattr(
+        hosted_publisher.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(stdout=json.dumps(artifact)),
+    )
+    with pytest.raises(ValueError, match="artifact differs"):
+        hosted_publisher._verify_durable_intent(
+            "d" * 40, tmp_path / "intent.json"
+        )
+
+
+def test_publication_intent_artifact_id_is_required(monkeypatch, tmp_path):
+    monkeypatch.delenv("PUBLICATION_INTENT_ARTIFACT_ID", raising=False)
+    with pytest.raises(ValueError, match="artifact ID is unavailable"):
+        hosted_publisher._verify_durable_intent(
+            "d" * 40, tmp_path / "intent.json"
+        )
+
+
+@pytest.mark.parametrize("mutation", ["content", "extra", "path"])
+def test_publication_intent_artifact_bytes_must_match(
+    monkeypatch, tmp_path, mutation
+):
+    monkeypatch.setenv("PUBLICATION_INTENT_ARTIFACT_ID", "42")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "edithatogo/global-medicines-atlas")
+    monkeypatch.setenv("GITHUB_RUN_ID", "12345")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
+    artifact = {
+        "id": 42,
+        "size_in_bytes": 1024,
+        "name": "mbs-silver-publication-intent-12345-1",
+        "expired": False,
+        "workflow_run": {"id": 12345, "head_sha": "d" * 40},
+    }
+    intent = tmp_path / "intent.json"
+    intent.write_bytes(b"correct")
+    archive = io.BytesIO()
+    with zipfile.ZipFile(archive, "w") as zipped:
+        zipped.writestr(
+            "other.json" if mutation == "path" else "intent.json",
+            b"different" if mutation == "content" else b"correct",
+        )
+        if mutation == "extra":
+            zipped.writestr("extra", b"extra")
+
+    def fake_read(args, **_kwargs):
+        return SimpleNamespace(
+            stdout=archive.getvalue()
+            if args[-1].endswith("/zip")
+            else json.dumps(artifact)
+        )
+
+    monkeypatch.setattr(hosted_publisher.subprocess, "run", fake_read)
+    with pytest.raises(ValueError, match="retained intent bytes differ"):
+        hosted_publisher._verify_durable_intent("d" * 40, intent)

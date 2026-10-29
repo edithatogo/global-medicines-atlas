@@ -7,10 +7,12 @@
 
 from __future__ import annotations
 
+import argparse
+import io
 import json
 import os
-import shutil
 import subprocess  # ruff: ignore[suspicious-subprocess-import]
+import zipfile
 from datetime import datetime
 from hashlib import sha256
 from importlib import import_module
@@ -52,24 +54,109 @@ def _sha256(path: Path) -> str:
     return sha256(path.read_bytes()).hexdigest()
 
 
-def main() -> int:  # ruff: ignore[too-many-locals]
+def _record_or_verify_intent(
+    work: Path, commit: str, *, intent_only: bool
+) -> None:
+    intent = {
+        "schema_id": "global-medicines-atlas.mbs-silver-publication-intent",
+        "dataset": DESTINATION_DATASET,
+        "prefix": DESTINATION_PREFIX,
+        "producer_commit": commit,
+        "repository": os.environ["GITHUB_REPOSITORY"],
+        "run_id": os.environ["GITHUB_RUN_ID"],
+        "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+        "candidate_only": True,
+    }
+    intent_path = work / "intent.json"
+    if intent_only:
+        if intent_path.exists():
+            raise RuntimeError("MBS publication intent already exists")
+        intent_path.write_text(json.dumps(intent, sort_keys=True) + "\n")
+        return
+    if json.loads(intent_path.read_text(encoding="utf-8")) != intent:
+        raise RuntimeError("MBS publication intent does not match this run")
+
+
+def _verify_durable_intent(commit: str, intent_path: Path) -> None:
+    """Require a retained artifact from this exact workflow run before mutation."""
+    artifact_id = os.environ.get("PUBLICATION_INTENT_ARTIFACT_ID", "")
+    if (
+        not artifact_id.isascii()
+        or not artifact_id.isdigit()
+        or int(artifact_id) < 1
+    ):
+        raise ValueError("MBS publication intent artifact ID is unavailable")
+    repo = os.environ["GITHUB_REPOSITORY"]
+    if repo != "edithatogo/global-medicines-atlas":
+        raise ValueError("MBS publication repository differs")
+    result = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true] -- read-only exact GitHub artifact metadata
+        ["gh", "api", f"repos/{repo}/actions/artifacts/{artifact_id}"],  # ruff: ignore[start-process-with-partial-path] -- trusted GitHub CLI
+        check=True,
+        capture_output=True,
+        text=True,
+        timeout=30,
+    )
+    artifact = json.loads(result.stdout)
+    run_id = os.environ["GITHUB_RUN_ID"]
+    attempt = os.environ["GITHUB_RUN_ATTEMPT"]
+    workflow_run = artifact.get("workflow_run") or {}
+    size = artifact.get("size_in_bytes")
+    if type(size) is not int or not 0 < size <= 1024 * 1024:
+        raise ValueError("MBS publication intent artifact size is invalid")
+    if (
+        artifact.get("id") != int(artifact_id)
+        or artifact.get("name")
+        != f"mbs-silver-publication-intent-{run_id}-{attempt}"
+        or artifact.get("expired") is not False
+        or str(workflow_run.get("id")) != run_id
+        or workflow_run.get("head_sha") != commit
+    ):
+        raise ValueError(
+            "MBS publication intent artifact differs from this run"
+        )
+    archive = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true] -- read-only exact artifact download
+        ["gh", "api", f"repos/{repo}/actions/artifacts/{artifact_id}/zip"],  # ruff: ignore[start-process-with-partial-path] -- trusted GitHub CLI
+        check=True,
+        capture_output=True,
+        timeout=30,
+    ).stdout
+    if len(archive) > 1024 * 1024:
+        raise ValueError("MBS publication intent artifact exceeds its budget")
+    with zipfile.ZipFile(io.BytesIO(archive)) as zipped:
+        entries = zipped.infolist()
+        if (
+            len(entries) != 1
+            or entries[0].filename != "intent.json"
+            or entries[0].file_size > 16 * 1024
+            or zipped.read(entries[0]) != intent_path.read_bytes()
+        ):
+            raise ValueError(
+                "MBS retained intent bytes differ from the local intent"
+            )
+
+
+def main(*, intent_only: bool = False) -> int:  # ruff: ignore[too-many-locals]
     if (
         os.environ.get("GITHUB_ACTIONS") != "true"
         or os.environ.get("GITHUB_REF") != "refs/heads/main"
-        or not os.environ.get("HF_TOKEN")
+        or (not intent_only and not os.environ.get("HF_TOKEN"))
     ):
         raise RuntimeError(
             "MBS Silver publication requires protected main Actions"
         )
-    hub_client: Any = import_module("huggingface_hub")
-    commit_operation_add = hub_client.CommitOperationAdd
-    hf_api = hub_client.HfApi
-    hf_hub_download = hub_client.hf_hub_download
-
     commit = os.environ["GITHUB_SHA"]
     root = Path.cwd()
     work = root / "build/mbs-silver-publication"
     work.mkdir(parents=True, exist_ok=True)
+    _record_or_verify_intent(work, commit, intent_only=intent_only)
+    if intent_only:
+        return 0
+    _verify_durable_intent(commit, work / "intent.json")
+
+    hub_client: Any = import_module("huggingface_hub")
+    commit_operation_add = hub_client.CommitOperationAdd
+    hf_api = hub_client.HfApi
+    hf_hub_download = hub_client.hf_hub_download
     report: Any = json.loads(json.dumps(qualify(exact_commit=commit)))
     source_path = Path(
         hf_hub_download(
@@ -167,18 +254,6 @@ def main() -> int:  # ruff: ignore[too-many-locals]
     sibling_names: set[str] = {item.rfilename for item in before_siblings}
     if sibling_names.intersection(paths):
         raise RuntimeError("destination already contains a Silver v4 path")
-    # Durable public intent must precede the append transaction.
-    subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-        [  # ruff: ignore[start-process-with-partial-path]
-            "gh",
-            "issue",
-            "comment",
-            "340",
-            "--body",
-            f"MBS Silver v4 publication intent: exact_commit={commit}; run=https://github.com/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}; dataset={DESTINATION_DATASET}; prefix={DESTINATION_PREFIX}; append-only; candidate remains unpromoted.",
-        ],
-        check=True,
-    )
     result: Any = hf_api(token=os.environ["HF_TOKEN"]).create_commit(
         repo_id=DESTINATION_DATASET,
         repo_type="dataset",
@@ -242,13 +317,11 @@ def main() -> int:  # ruff: ignore[too-many-locals]
         + "\n",
         encoding="utf-8",
     )
-    subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
-        ["gh", "issue", "comment", "340", "--body-file", str(receipt_path)],  # ruff: ignore[start-process-with-partial-path]
-        check=True,
-    )
-    shutil.rmtree(work, ignore_errors=False)
     return 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--intent-only", action="store_true")
+    arguments = parser.parse_args()
+    raise SystemExit(main(intent_only=arguments.intent_only))
