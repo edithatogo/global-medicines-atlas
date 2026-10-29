@@ -27,8 +27,9 @@ claims. Do not ask the maintainer to send or authorize a message.
 
 For each active track, the agent must:
 
-1. reconcile the registry, metadata, plan, source, tests, Git history, hosted
-   checks, issues, and durable external receipts;
+1. read current ownership and the selected task's source, plan and receipts;
+   reconcile only changed or conflicting state. Reuse the previous orientation
+   and evidence rather than rescanning every track, issue and external object;
 2. select the next safe, unblocked system task under
    [system-completion.md](system-completion.md), name its existing gate,
    failure, bounded scope, expected evidence and stop condition, then mark it
@@ -36,12 +37,16 @@ For each active track, the agent must:
 3. implement and verify it using `conductor/workflow.md`;
 4. record evidence before marking it `[x]`;
 5. complete phase verification without requesting ceremonial confirmation;
-6. run `conductor-review`, apply findings, and repeat verification;
+6. perform one scoped review of the coherent batch, using `conductor-review`
+   where applicable; apply findings and rerun only affected checks. Do not
+   recursively review an unchanged batch or invent another reviewer;
 7. push scoped changes, create or update a technical pull request, and merge
    after its required checks pass, while observing the `AGENTS.md` email and
    messaging exclusion and all separate human gates;
-8. reconcile Conductor and GitHub state when available, archive a completed
-   track, and move to the next unblocked system task across the existing tracks.
+8. reconcile the batch once and select the next task inside the current
+   completion milestone. Stop when its checklist is satisfied; do not start
+   deferred federation or optional research automatically. Archive only tracks
+   whose original acceptance is actually complete.
 
 Keep the current frozen inventory. Dataset work is selected only when required
 to close the named shared capability or existing acceptance gate; process common

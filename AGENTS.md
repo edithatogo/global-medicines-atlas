@@ -39,7 +39,10 @@ take precedence over checklist summaries.
 ## System completion priority
 
 Read `conductor/system-completion.md` and its scheduling JSON before selecting
-work. Complete the existing system through the declared frozen inventory.
+work. The maintainer selected bounded software completion on 29 October 2026;
+unfinished Australian federation is a later roadmap milestone. Complete the
+finite software checklist and stop; do not automatically resume deferred tracks.
+Preserve every original federation and Stable v1 acceptance state.
 Choose the next task by shared capability and existing acceptance gate, with
 a concrete blocking failure, bounded scope, expected evidence and stop condition.
 Dataset-specific work must resolve that named system prerequisite; batch common

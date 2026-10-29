@@ -7,8 +7,11 @@ maintainer confirmation. Genuine decisions use the options, recommendation,
 and rationale contract in that policy.
 
 Select current work through the [System Completion Execution Charter](./system-completion.md)
-and its [validated scheduling plan](./system-completion.json). Prioritize the
-shared system against the frozen inventory with no new sources. Dataset work
+and its [validated scheduling plan](./system-completion.json). The maintainer's
+29 October 2026 scope is bounded software completion, with unfinished Australian
+federation qualification deferred to its later roadmap milestone. Existing
+track markers below retain their original acceptance meaning; an open federation
+track is not an instruction to extend the current software task. Dataset work
 must close a named capability or gate prerequisite; broader coverage and
 optional experiments remain deferred. This execution order does not change
 track acceptance, rights, admission, recovery, conditional release approval, or
