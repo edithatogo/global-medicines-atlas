@@ -52,9 +52,16 @@ def build_intent(plan: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def verify_retained_intent(commit: str, intent_path: Path) -> None:
+def verify_retained_intent(
+    commit: str, intent_path: Path, *, attempt_artifact: bool = False
+) -> None:
     """Verify exact artifact metadata and bytes before a future Hub mutation."""
-    artifact_id = os.environ.get("PUBLICATION_INTENT_ARTIFACT_ID", "")
+    variable = (
+        "PUBLICATION_ATTEMPT_ARTIFACT_ID"
+        if attempt_artifact
+        else "PUBLICATION_INTENT_ARTIFACT_ID"
+    )
+    artifact_id = os.environ.get(variable, "")
     if (
         not artifact_id.isascii()
         or not artifact_id.isdigit()
@@ -64,7 +71,8 @@ def verify_retained_intent(commit: str, intent_path: Path) -> None:
     if os.environ.get("GITHUB_REPOSITORY") != REPOSITORY:
         raise ValueError("PBS publication repository differs")
     run_id = os.environ["GITHUB_RUN_ID"]
-    attempt = os.environ["GITHUB_RUN_ATTEMPT"]
+    run_attempt = os.environ["GITHUB_RUN_ATTEMPT"]
+    kind = "attempt" if attempt_artifact else "intent"
     response = subprocess.run(  # ruff: ignore[subprocess-without-shell-equals-true]
         ["gh", "api", f"repos/{REPOSITORY}/actions/artifacts/{artifact_id}"],  # ruff: ignore[start-process-with-partial-path]
         check=True,
@@ -80,7 +88,7 @@ def verify_retained_intent(commit: str, intent_path: Path) -> None:
     if (
         artifact.get("id") != int(artifact_id)
         or artifact.get("name")
-        != f"pbs-silver-publication-intent-{run_id}-{attempt}"
+        != f"pbs-silver-publication-{kind}-{run_id}-{run_attempt}"
         or artifact.get("expired") is not False
         or str(run.get("id")) != run_id
         or run.get("head_sha") != commit
@@ -104,7 +112,8 @@ def verify_retained_intent(commit: str, intent_path: Path) -> None:
         entries = zipped.infolist()
         if (
             len(entries) != 1
-            or entries[0].filename != "intent.json"
+            or entries[0].filename
+            != ("append-attempt.json" if attempt_artifact else "intent.json")
             or entries[0].file_size > MAX_INTENT_BYTES
             or zipped.read(entries[0]) != intent_path.read_bytes()
         ):

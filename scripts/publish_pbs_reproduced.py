@@ -6,7 +6,9 @@ ambiguous retries, and missing retained intent are rejected before a Hub write.
 
 from __future__ import annotations
 
+import argparse
 import hashlib
+import importlib
 import json
 import os
 from pathlib import Path
@@ -21,10 +23,39 @@ AUTHORITY = (
 )
 
 
-def append_once(root: Path, sdk: Any) -> dict[str, Any]:  # ruff: ignore[too-many-locals]
+def prepare_attempt(root: Path) -> None:
+    """Persist the run-bound attempt for artifact retention before mutation."""
+    commit = os.environ.get("GITHUB_SHA", "")
+    context = preparation.hosted._context(commit)  # pyright: ignore[reportPrivateUsage]
+    if context["run_attempt"] != "1":
+        raise ValueError("PBS publication does not retry Actions attempts")
+    if os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch":
+        raise ValueError("PBS append requires explicit workflow dispatch")
+    runner_temp = Path(os.environ["RUNNER_TEMP"]).resolve(strict=True)
+    root = root.resolve(strict=True)
+    if not root.is_relative_to(runner_temp):
+        raise ValueError("PBS transaction directory must be inside RUNNER_TEMP")
+    intent_path = root / "intent.json"
+    plan = json.loads(intent_path.read_text(encoding="utf-8"))
+    if intent.build_intent(plan) != plan:
+        raise ValueError("PBS publication intent does not match this run")
+    intent.verify_retained_intent(commit, intent_path)
+    document = {
+        "status": "append_prepared",
+        "intent_sha256": hashlib.sha256(intent_path.read_bytes()).hexdigest(),
+        **context,
+    }
+    with (root / "append-attempt.json").open("x", encoding="utf-8") as output:
+        json.dump(document, output, sort_keys=True)
+        output.write("\n")
+
+
+def append_once(root: Path, sdk: Any) -> dict[str, Any]:  # ruff: ignore[too-many-locals, too-many-statements]
     """Perform one server-CAS append and persist the returned revision."""
     commit = os.environ.get("GITHUB_SHA", "")
     context = preparation.hosted._context(commit)  # pyright: ignore[reportPrivateUsage] -- protected-run guard
+    if context["run_attempt"] != "1":
+        raise ValueError("PBS publication does not retry Actions attempts")
     if os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch":
         raise ValueError("PBS append requires explicit workflow dispatch")
     preparation.verify_checkout(commit)
@@ -33,9 +64,9 @@ def append_once(root: Path, sdk: Any) -> dict[str, Any]:  # ruff: ignore[too-man
     if not root.is_relative_to(runner_temp):
         raise ValueError("PBS transaction directory must be inside RUNNER_TEMP")
     ack_path = root / "cas-acknowledgement.json"
-    attempt_path = root / "append-attempt.json"
+    started_path = root / "append-started.json"
     if any(
-        path.exists() or path.is_symlink() for path in (ack_path, attempt_path)
+        path.exists() or path.is_symlink() for path in (ack_path, started_path)
     ):
         raise ValueError("PBS transaction has already been attempted")
     intent_path = root / "intent.json"
@@ -55,6 +86,15 @@ def append_once(root: Path, sdk: Any) -> dict[str, Any]:  # ruff: ignore[too-man
     if any(authority.get(key) != value for key, value in expected.items()):
         raise ValueError("exact PBS publication authority is unavailable")
     intent.verify_retained_intent(commit, intent_path)
+    attempt_path = root / "append-attempt.json"
+    attempt = json.loads(attempt_path.read_text(encoding="utf-8"))
+    if attempt != {
+        "status": "append_prepared",
+        "intent_sha256": hashlib.sha256(intent_path.read_bytes()).hexdigest(),
+        **context,
+    }:
+        raise ValueError("PBS append attempt does not match this run")
+    intent.verify_retained_intent(commit, attempt_path, attempt_artifact=True)
     staged = root / "candidate/first/values.parquet"
     if staged.is_symlink() or not staged.is_file():
         raise ValueError("PBS staged candidate is unavailable")
@@ -70,7 +110,7 @@ def append_once(root: Path, sdk: Any) -> dict[str, Any]:  # ruff: ignore[too-man
     token = os.environ.get("HF_TOKEN")
     if not token:
         raise ValueError("protected PBS publication credential unavailable")
-    with attempt_path.open("x", encoding="utf-8") as output:
+    with started_path.open("x", encoding="utf-8") as output:
         json.dump(
             {"status": "append_attempted", **context}, output, sort_keys=True
         )
@@ -186,10 +226,31 @@ def verify_append(root: Path, transport: Any) -> dict[str, Any]:  # ruff: ignore
 
 
 def main() -> int:
-    raise SystemExit(
-        "PBS publication is not enabled until an exact authority record and hosted workflow are reviewed"
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", required=True, type=Path)
+    parser.add_argument(
+        "--stage", required=True, choices=("attempt", "append", "verify")
     )
+    args = parser.parse_args()
+    try:  # ruff: ignore[too-many-statements-in-try-clause]
+        if args.stage == "attempt":
+            prepare_attempt(args.root)
+            result = {"status": "append_prepared"}
+        elif args.stage == "append":
+            sdk: Any = importlib.import_module("huggingface_hub")
+            result = append_once(args.root, sdk)
+        else:
+            from scripts.publish_source_metadata import HubTransport  # ruff: ignore[import-outside-top-level]
+
+            cache = args.root / "verify-cache"
+            cache.mkdir(exist_ok=False)
+            result = verify_append(args.root, HubTransport(cache))
+    except Exception:  # Do not expose source-bearing errors or credentials.
+        print(json.dumps({"status": "transaction_failed", "stage": args.stage}))
+        return 1
+    print(json.dumps({"status": result["status"]}))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

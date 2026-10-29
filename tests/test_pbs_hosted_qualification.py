@@ -1962,6 +1962,14 @@ def test_pbs_publication_intent_requires_exact_retained_artifact(
     path.write_bytes(b"changed")
     with pytest.raises(ValueError, match="intent bytes differ"):
         intent.verify_retained_intent(SHA, path)
+    monkeypatch.setenv("PUBLICATION_ATTEMPT_ARTIFACT_ID", "99")
+    path.write_bytes(b"attempt")
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w") as archive:
+        archive.writestr("append-attempt.json", path.read_bytes())
+    metadata["name"] = "pbs-silver-publication-attempt-123-1"
+    metadata["size_in_bytes"] = len(buffer.getvalue())
+    intent.verify_retained_intent(SHA, path, attempt_artifact=True)
 
 
 def test_pbs_publication_intent_binds_preparation_and_run(monkeypatch):
@@ -2072,7 +2080,9 @@ def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(  # ruff: ignore[t
     )
     monkeypatch.setattr(publisher, "AUTHORITY", authority)
     monkeypatch.setattr(delivery, "verify_checkout", lambda *_args: None)
-    monkeypatch.setattr(intent, "verify_retained_intent", lambda *_args: None)
+    monkeypatch.setattr(
+        intent, "verify_retained_intent", lambda *_args, **_kwargs: None
+    )
     info = SimpleNamespace(
         sha=delivery.PUBLIC_PARENT_REVISION,
         private=False,
@@ -2093,6 +2103,7 @@ def test_pbs_append_binds_intent_parent_bytes_and_one_attempt(  # ruff: ignore[t
         HfApi=lambda **_kwargs: API(),
         CommitOperationAdd=lambda **kwargs: kwargs,
     )
+    publisher.prepare_attempt(tmp_path)
     ack = publisher.append_once(tmp_path, sdk)
     assert ack["status"] == "cas_acknowledged_not_yet_verified"
     assert calls[0]["parent_commit"] == delivery.PUBLIC_PARENT_REVISION
