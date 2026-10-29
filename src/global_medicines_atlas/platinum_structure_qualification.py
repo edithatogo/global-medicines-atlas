@@ -198,7 +198,7 @@ def qualify_structure_consumers(  # ruff: ignore[too-many-locals]
         browser_evidence: list[dict[str, object]] = []
         if browser:
             browser_evidence = _qualify_browser_pages(
-                atlas,
+                atlas,  # pyright: ignore[reportUnknownArgumentType] -- Starlette exposes an unknown app type.
                 [
                     (
                         DeliveryRequest(
