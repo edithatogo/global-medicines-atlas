@@ -14,7 +14,7 @@ on:
 
 permissions:
   contents: read
-  actions: read
+  actions: read # Recover the exact approved artifact from the earlier CI run.
 
 concurrency:
   group: ema-bronze-20261029-publication
@@ -22,6 +22,7 @@ concurrency:
 
 jobs:
   publish:
+    name: Publish and verify approved EMA snapshot
     if: github.ref == 'refs/heads/main' && inputs.confirmation == 'publish-approved-ema-snapshot'
     environment: production
     runs-on: ubuntu-24.04
