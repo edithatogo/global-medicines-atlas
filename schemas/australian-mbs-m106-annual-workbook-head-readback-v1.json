@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "global-medicines-atlas.australian-mbs-m106-annual-workbook-head-readback-v1",
+  "title": "M-106 annual workbook metadata-only HEAD readback",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "schema_version",
+    "observed_at",
+    "requirement",
+    "status",
+    "official_page",
+    "attachment_head",
+    "owner_clarification",
+    "interpretation",
+    "boundaries"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "global-medicines-atlas.australian-mbs-m106-annual-workbook-head-readback"
+    },
+    "schema_version": {"const": 1},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "requirement": {"const": "M-106"},
+    "status": {
+      "const": "attachment_reachable_period_identity_conflict"
+    },
+    "official_page": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "url",
+        "http_status",
+        "content_type",
+        "response_bytes",
+        "response_sha256",
+        "response_body_retained",
+        "verification_status",
+        "response_body_retention_reason",
+        "copyright_terms_url",
+        "last_modified",
+        "etag",
+        "title",
+        "publication_date",
+        "described_period",
+        "attachment_url",
+        "attachment_filename_period"
+      ],
+      "properties": {
+        "url": {"type": "string", "format": "uri"},
+        "http_status": {"const": 200},
+        "content_type": {"const": "text/html; charset=UTF-8"},
+        "response_bytes": {"type": "integer", "minimum": 1},
+        "response_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "response_body_retained": {"const": false},
+        "verification_status": {"const": "unverified_observation_original_response_unavailable"},
+        "response_body_retention_reason": {"type": "string", "minLength": 1},
+        "copyright_terms_url": {"type": "string", "format": "uri"},
+        "last_modified": {"type": "string", "minLength": 1},
+        "etag": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "publication_date": {"type": "string", "format": "date"},
+        "described_period": {"type": "string", "minLength": 1},
+        "attachment_url": {"type": "string", "format": "uri"},
+        "attachment_filename_period": {"type": "string", "minLength": 1}
+      }
+    },
+    "attachment_head": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "method",
+        "requested_url",
+        "final_url",
+        "http_status",
+        "content_type",
+        "content_length",
+        "last_modified",
+        "etag",
+        "response_body_bytes"
+      ],
+      "properties": {
+        "method": {"const": "HEAD"},
+        "requested_url": {"type": "string", "format": "uri"},
+        "final_url": {"type": "string", "format": "uri"},
+        "http_status": {"const": 200},
+        "content_type": {
+          "const": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        },
+        "content_length": {"type": "integer", "minimum": 1},
+        "last_modified": {"type": "string", "minLength": 1},
+        "etag": {"type": "string", "minLength": 1},
+        "response_body_bytes": {"const": 0}
+      }
+    },
+    "owner_clarification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status_as_of",
+        "sent_message_id",
+        "substantive_response_received",
+        "auto_replies_are_receipt_only"
+      ],
+      "properties": {
+        "status_as_of": {"type": "string", "format": "date"},
+        "sent_message_id": {"type": "string", "minLength": 1},
+        "substantive_response_received": {"const": false},
+        "auto_replies_are_receipt_only": {"const": true}
+      }
+    },
+    "interpretation": {"type": "string", "minLength": 1},
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workbook_body_requested",
+        "workbook_payload_bytes_read",
+        "acquisition_performed",
+        "source_rights_changed",
+        "distinct_patient_denominator_qualified",
+        "m106_accepted"
+      ],
+      "properties": {
+        "workbook_body_requested": {"const": false},
+        "workbook_payload_bytes_read": {"const": 0},
+        "acquisition_performed": {"const": false},
+        "source_rights_changed": {"const": false},
+        "distinct_patient_denominator_qualified": {"const": false},
+        "m106_accepted": {"const": false}
+      }
+    }
+  }
+}
