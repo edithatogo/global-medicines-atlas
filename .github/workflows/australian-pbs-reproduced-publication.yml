@@ -53,6 +53,15 @@ jobs:
           path: ${{ runner.temp }}/pbs-silver-transaction/intent.json
           if-no-files-found: error
           retention-days: 90
+      - name: Retain value-free preparation evidence
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: pbs-silver-preparation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/pbs-silver-transaction/preparation.json
+            ${{ runner.temp }}/pbs-silver-transaction/candidate/first/manifest.json
+          if-no-files-found: error
+          retention-days: 90
       - name: Prepare append attempt
         env:
           GH_TOKEN: ${{ github.token }}

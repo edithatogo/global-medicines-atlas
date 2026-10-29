@@ -2011,7 +2011,26 @@ def test_pbs_hosted_intent_stages_after_parent_readback(monkeypatch, tmp_path):
         "RUNNER_TEMP": str(tmp_path),
     }.items():
         monkeypatch.setenv(name, value)
-    monkeypatch.setattr(staged.preparation, "prepare", lambda *_args: candidate)
+
+    def prepare(_commit, output):
+        manifest_path = output / "first/manifest.json"
+        manifest_path.parent.mkdir(parents=True)
+        manifest_path.write_text(
+            json.dumps({
+                "output_id": delivery.OUTPUT_ID,
+                "parquet": {
+                    "bytes": delivery.PARQUET_BYTES,
+                    "sha256": delivery.PARQUET_SHA256,
+                },
+                "coverage": {"native_core_sha256": delivery.NATIVE_SHA256},
+                "member_binding": {
+                    "member_payload": {"sha256": delivery.MEMBER_SHA256}
+                },
+            })
+        )
+        return candidate
+
+    monkeypatch.setattr(staged.preparation, "prepare", prepare)
     info = SimpleNamespace(
         sha=delivery.PUBLIC_PARENT_REVISION,
         private=False,
@@ -2021,6 +2040,12 @@ def test_pbs_hosted_intent_stages_after_parent_readback(monkeypatch, tmp_path):
     public = SimpleNamespace(dataset_info=lambda *_args, **_kwargs: info)
     result = staged.prepare_intent(SHA, tmp_path, public)
     assert json.loads((tmp_path / "intent.json").read_text()) == result
+    assert (
+        json.loads((tmp_path / "preparation.json").read_text())[
+            "complete_source_reparse_and_restore"
+        ]
+        is True
+    )
     assert result["publication_performed"] is False
     with pytest.raises(ValueError, match="already exists"):
         staged.prepare_intent(SHA, tmp_path, public)
