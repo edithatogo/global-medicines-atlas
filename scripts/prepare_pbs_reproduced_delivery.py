@@ -28,6 +28,7 @@ PARQUET_SHA256 = (
     "86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c"
 )
 PARQUET_BYTES = 637012122
+REVISION_LENGTH = 40
 NATIVE_SHA256 = (
     "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25"
 )
@@ -250,6 +251,46 @@ def build_publication_plan(
             "Retain the exact intent artifact before any external mutation.",
             "Rehash staged bytes immediately before mutation and verify them anonymously afterward.",
         ],
+    }
+
+
+def verify_anonymous_published_candidate(
+    transport: Any, revision: str
+) -> dict[str, Any]:
+    """Verify the exact remote PBS output without credentials or mutation."""
+    if len(revision) != REVISION_LENGTH or any(
+        c not in "0123456789abcdef" for c in revision
+    ):
+        raise ValueError("PBS publication revision must be an exact commit")
+    info = transport.public.dataset_info(
+        DATASET, revision=revision, files_metadata=True, timeout=30
+    )
+    if info.sha != revision or info.private or info.gated:
+        raise ValueError("PBS publication revision is not anonymously public")
+    remote_path = f"silver/pbs/v4/2026-04-01/{OUTPUT_ID}/values.parquet"
+    siblings = cast("list[Any]", info.siblings or [])
+    matches = [item for item in siblings if item.rfilename == remote_path]
+    if len(matches) != 1 or matches[0].size != PARQUET_BYTES:
+        raise ValueError("PBS published object metadata differs")
+    restored = transport.download_object(
+        DATASET, revision, remote_path, PARQUET_BYTES, timeout=900
+    )
+    digest = hashlib.sha256()
+    with restored.open("rb") as source:
+        for block in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(block)
+    if (
+        restored.stat().st_size != PARQUET_BYTES
+        or digest.hexdigest() != PARQUET_SHA256
+    ):
+        raise ValueError("PBS anonymous published bytes differ")
+    return {
+        "dataset": DATASET,
+        "revision": revision,
+        "path": remote_path,
+        "sha256": PARQUET_SHA256,
+        "bytes": PARQUET_BYTES,
+        "anonymous_digest_verification": "passed",
     }
 
 

@@ -1851,3 +1851,41 @@ def test_publication_plan_rejects_destination_collision(monkeypatch):
     )
     with pytest.raises(ValueError, match="target already exists"):
         delivery.build_publication_plan(candidate, readback, tree)
+
+
+def test_anonymous_pbs_readback_binds_revision_path_and_bytes(
+    monkeypatch, tmp_path
+):
+    payload = b"synthetic PBS parquet"
+    candidate = tmp_path / "readback"
+    candidate.write_bytes(payload)
+    monkeypatch.setattr(delivery, "PARQUET_BYTES", len(payload))
+    monkeypatch.setattr(
+        delivery, "PARQUET_SHA256", hashlib.sha256(payload).hexdigest()
+    )
+    path = f"silver/pbs/v4/2026-04-01/{delivery.OUTPUT_ID}/values.parquet"
+    info = SimpleNamespace(
+        sha=SHA,
+        private=False,
+        gated=False,
+        siblings=[SimpleNamespace(rfilename=path, size=len(payload))],
+    )
+    calls = []
+    transport = SimpleNamespace(
+        public=SimpleNamespace(dataset_info=lambda *_args, **_kwargs: info),
+        download_object=lambda *args, **kwargs: (
+            calls.append((args, kwargs)),
+            candidate,
+        )[1],
+    )
+    receipt = delivery.verify_anonymous_published_candidate(transport, SHA)
+    assert receipt["anonymous_digest_verification"] == "passed"
+    assert calls == [
+        ((delivery.DATASET, SHA, path, len(payload)), {"timeout": 900})
+    ]
+    candidate.write_bytes(b"incorrect")
+    with pytest.raises(ValueError, match="published bytes differ"):
+        delivery.verify_anonymous_published_candidate(transport, SHA)
+    info.private = True
+    with pytest.raises(ValueError, match="not anonymously public"):
+        delivery.verify_anonymous_published_candidate(transport, SHA)
