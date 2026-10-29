@@ -1,0 +1,57 @@
+{
+  "boundaries": {
+    "consumer_canaries_run": false,
+    "new_output_published": false,
+    "new_sources_added": false,
+    "outbound_communications": false,
+    "prior_candidate_reproduced": false,
+    "v4_admitted": false
+  },
+  "evidence": {
+    "field_state_identity_limit": "Field-state receipt names the earlier Parquet output; matching source and native-core digests do not establish that the new output has been admitted or that all domain semantics are qualified.",
+    "field_state_source_member_and_native_core_match": true,
+    "independent_builds_use_same_algorithm": true,
+    "interpreted": 3096735,
+    "native_unresolved": 15112023,
+    "prior_field_state_receipt_names_prior_output": true,
+    "rights_maintainer_attested_instrument_not_independently_reviewed": true,
+    "source_fields": 18208758,
+    "two_independent_builds_match": true,
+    "unavailable": 0
+  },
+  "inputs": {
+    "build": {
+      "path": "quality/qualifications/pbs-independent-pipeline-builds-20261029/reconciliation.json",
+      "sha256": "2d85ee0db7a19b3276da9baaaee9389558d09c87c43a0c57f68c5f31581ebaf8"
+    },
+    "field_state": {
+      "path": "quality/qualifications/pbs-native-silver-field-reconciliation-20261028-r19.json",
+      "sha256": "b83943f2a3a9a4e8180edfc8d8a6c0fc346329d890e232d5d95a0a689c2e696a"
+    },
+    "release_contract": {
+      "path": "quality/qualifications/australian-benefits-release-field-contract-20261028.json",
+      "sha256": "7701c1c35282057c8d1b3abec7b84b58f485043818a3dcd20b4b0f201ddce645"
+    },
+    "rights": {
+      "path": "quality/qualifications/australian-pbs-reproduced-silver-output-rights-attestation-20261029.json",
+      "sha256": "93e0d64ec428ae157e030432e8cce70751df54ec111b9fa11319c74206a3c216"
+    }
+  },
+  "output": {
+    "id": "8e8bacdc72ea81ecfbb84d161b3f546eee03bddeae32f82daa7231c3759d23fc",
+    "native_core_sha256": "890c607f0e8c9de95c37770610fdc51fd241ea97210ef5ea61d7ad22fd228a25",
+    "parquet_bytes": 637012122,
+    "parquet_sha256": "86d65b147dc95787c5e3f14b13abe2630562f050e2221a1340939dcc7776a88c",
+    "source_member_sha256": "73d34185fe6ae7fd9a788a68448e20934b38553d42361117faa96cdb07f54f43"
+  },
+  "recorded_at": "2026-10-29",
+  "remaining": [
+    "Bind a product-specific semantic and v4 contract to the newly reproduced output, preserving the prior field-state receipt identity and its limits.",
+    "Establish a qualified immutable public location and anonymously verify the exact output digest under the existing publication boundary.",
+    "Complete v4 roles and admission, then run revision-bound API, CLI, Atlas and deterministic export canaries.",
+    "Retain unsupported fields and relationship meanings as unresolved; independent recovery and broader federation remain separate."
+  ],
+  "schema_id": "global-medicines-atlas.pbs-reproduced-v4-evidence-readiness",
+  "schema_version": 1,
+  "status": "candidate_evidence_matched_not_admitted"
+}
